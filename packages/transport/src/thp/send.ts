@@ -42,6 +42,7 @@ export const sendThpMessage = async ({
     graceful,
     logger,
 }: SendThpMessageProps): SendReturnType => {
+    console.log('SEND THP MESSAGE -------------------');
     if (!thpState) {
         return error({ error: 'ThpStateMissing' });
     }
@@ -122,34 +123,36 @@ export const sendThpMessage = async ({
         // fail on ThpError
         if (decodedResult?.type === 'ThpError') {
             const { code, message } = decodedResult.message;
-            console.log('==yyyyyyyyy== ThpError=====', code, message);
-            if (code === 'ThpTransportBusy') {
-                // TODO: max 3 attempts + wait 1 sec between attempts
-                // setTimeout 1000ms
-                await resolveAfter(2000, signal);
-                await sendThpMessage({
-                    thpState,
-                    skipAck,
-                    chunks,
-                    apiWrite,
-                    apiRead,
-                    signal,
-                    graceful,
-                    logger,
-                });
-                await resolveAfter(2000, signal);
+            // console.log('==yyyyyyyyy== ThpError=====', code, message);
+            // if (code === 'ThpTransportBusy') {
+            //     // TODO: max 3 attempts + wait 1 sec between attempts
+            //     // setTimeout 1000ms
+            //     await resolveAfter(2000, signal);
 
-                return sendThpMessage({
-                    thpState,
-                    skipAck,
-                    chunks,
-                    apiWrite,
-                    apiRead,
-                    signal,
-                    graceful,
-                    logger,
-                });
-            }
+            //     // await sendThpMessage({
+            //     //     thpState,
+            //     //     skipAck,
+            //     //     chunks,
+            //     //     apiWrite,
+            //     //     apiRead,
+            //     //     signal,
+            //     //     graceful,
+            //     //     logger,
+            //     // });
+
+            //     // await resolveAfter(2000, signal);
+
+            //     return sendThpMessage({
+            //         thpState,
+            //         skipAck,
+            //         chunks,
+            //         apiWrite,
+            //         apiRead,
+            //         signal,
+            //         graceful,
+            //         logger,
+            //     });
+            // }
 
             return error({ error: code, message });
         }

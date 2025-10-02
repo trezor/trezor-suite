@@ -32,6 +32,7 @@ const setupDeviceMode = async (
         // wait. THP may not be ready yet
         await resolveAfter(1000);
 
+        console.log('=================== SETUP DEVICE MODE ==================');
         // try THP pairing without interaction
         await getThpChannel(device, false);
         if (device.getThpState()?.phase === 'paired') {

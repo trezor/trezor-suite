@@ -185,7 +185,7 @@ describe('THP pairing', () => {
         }
     };
 
-    it.only('ThpPairing cancel workflow', async () => {
+    it('ThpPairing cancel workflow', async () => {
         const device = await waitForDevice({
             pairingMethods: ['CodeEntry'],
             knownCredentials: [],

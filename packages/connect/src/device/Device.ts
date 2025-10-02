@@ -584,8 +584,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                 if (this.protocol.name === 'v2') {
                     const withInteraction = !!fn;
+                    console.log('=================== runinner ==================');
+
                     await getThpChannel(this, withInteraction);
                     if (this.getThpState()?.isAutoconnectPaired || withInteraction) {
+                        console.log('THP CHANNEL READY ---------calling get features----------');
                         await this.getFeatures();
                     } else {
                         this.busy = 'thp-locked';

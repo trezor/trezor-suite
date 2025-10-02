@@ -10,6 +10,8 @@ export const callThpMessage = async ({
     graceful,
     logger,
 }: SendThpMessageProps) => {
+    console.log('CALL THP MESSAGE -------------------');
+
     // send and wait for ThpAck
     const sendResult = await sendThpMessage({
         chunks,
