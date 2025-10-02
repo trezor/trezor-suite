@@ -111,12 +111,14 @@ export const sendThpMessage = async ({
             },
         );
 
+        console.log('==yyyyyyyyy== ThpAck/ThpError result=====', result);
         if (!result.success) {
             return result;
         }
 
         // parse and check the result
         const decodedResult = protocolThp.decodeSendAck(protocolV2.decode(result.payload));
+        console.log('==yyyyyyyyy== ThpAck/ThpError response=====', decodedResult);
         // fail on ThpError
         if (decodedResult?.type === 'ThpError') {
             const { code, message } = decodedResult.message;
