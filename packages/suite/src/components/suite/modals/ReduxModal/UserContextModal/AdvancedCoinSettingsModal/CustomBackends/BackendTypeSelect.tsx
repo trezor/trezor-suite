@@ -13,7 +13,12 @@ const Capitalize = styled.span`
     text-transform: capitalize;
 `;
 
-const useBackendOptions = (network: Network) =>
+const useBackendOptions = (
+    network: Network,
+): {
+    label: React.JSX.Element;
+    value: BackendOption;
+}[] =>
     useMemo(
         () =>
             ['default', ...network.backendTypes]
@@ -43,7 +48,7 @@ const useBackendOptions = (network: Network) =>
                                 }}
                             />
                         ),
-                    value: backend,
+                    value: backend as BackendOption,
                 })),
         [network],
     );

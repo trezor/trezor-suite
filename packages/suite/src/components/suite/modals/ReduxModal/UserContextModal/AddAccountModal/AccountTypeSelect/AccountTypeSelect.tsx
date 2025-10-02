@@ -69,7 +69,7 @@ export const AccountTypeSelect = ({
 
     return (
         <Column alignItems="center" gap={spacings.md}>
-            <Select
+            <Select<Option>
                 data-testid="@add-account-type/select"
                 label={<Translation id="TR_ACCOUNT_TYPE" />}
                 isSearchable={false}
@@ -77,7 +77,7 @@ export const AccountTypeSelect = ({
                 value={buildAccountTypeOption(selectedAccountType ?? defaultAccountType)}
                 options={options}
                 formatOptionLabel={formatLabel}
-                onChange={(option: Option) => onSelectAccountType(option.value)}
+                onChange={option => onSelectAccountType(option.value)}
                 openMenuOnFocus={false}
             />
             <Paragraph variant="tertiary" typographyStyle="hint">

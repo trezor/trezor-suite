@@ -1,5 +1,10 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
+import ReactSelect, {
+    MultiValue,
+    Props as ReactSelectProps,
+    SelectInstance,
+    StylesConfig,
+} from 'react-select';
 
 import styled, { CSSObject, DefaultTheme, css, useTheme } from 'styled-components';
 
@@ -266,7 +271,12 @@ const SpinnerWrapper = styled.div`
 const closeMenuOnScroll = (e: Event) =>
     !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix);
 
-export type Option = any;
+export type Option =
+    | {
+          label: string | number | symbol | ReactNode;
+          value: number | string | Record<any, any> | Record<any, any>[];
+      }
+    | { label: ReactNode | string; options: Option[] };
 
 // Make sure isSearchable can't be defined if useKeyPressScroll===true
 // If useKeyPressScroll is false or undefined, isSearchable is a boolean value
@@ -274,10 +284,10 @@ type KeyPressScrollProps =
     | { useKeyPressScroll: true; isSearchable?: never }
     | { useKeyPressScroll?: false; isSearchable?: boolean };
 
-export type SelectProps = KeyPressScrollProps &
+export type SelectProps<O extends Option = Option> = KeyPressScrollProps &
     AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
-    Omit<ReactSelectProps<Option>, 'onChange' | 'menuIsOpen'> & {
+    Omit<ReactSelectProps<O>, 'onChange' | 'menuIsOpen'> & {
         isClean?: boolean;
         label?: ReactNode;
         size?: InputSize;
@@ -289,12 +299,12 @@ export type SelectProps = KeyPressScrollProps &
         isRenderedInModal?: boolean;
         /** @deprecated: workaround for issues with scroll */
         isScrollToSelectedEnabled?: boolean;
-        onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
+        onChange?: (value: O, ref?: SelectInstance<O, boolean> | null) => void;
         'data-testid'?: string;
         openMenuOnFocus?: boolean;
     };
 
-export const Select = ({
+export const Select = <O extends Option = Option>({
     isClean = false,
     label,
     size = 'large',
@@ -312,8 +322,8 @@ export const Select = ({
     openMenuOnFocus = true,
     'data-testid': dataTest,
     ...rest
-}: SelectProps) => {
-    const selectRef = useRef<SelectInstance<Option, boolean>>(null);
+}: SelectProps<O>) => {
+    const selectRef = useRef<SelectInstance<O, boolean>>(null);
     const { elevation } = useElevation();
     const theme = useTheme();
     const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
@@ -321,11 +331,15 @@ export const Select = ({
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled } = formCellProps;
 
-    const [selectedOption, setSelectedOption] = useState<Option | undefined>(rest.value);
+    const [selectedOption, setSelectedOption] = useState<O | MultiValue<O> | undefined | null>(
+        rest.value,
+    );
 
-    const handleOnChange = useCallback<Required<ReactSelectProps<Option>>['onChange']>(
+    const handleOnChange = useCallback<Required<ReactSelectProps<O>>['onChange']>(
         (value, { action }) => {
             if (value) {
+                // @ts-expect-error: this is an error, typed wrongy - the MultiValue case isn't handled
+                // onChage type should be O | MultiValue<O>, but we only support single value
                 onChange?.(value, selectRef.current);
                 setSelectedOption(value);
 
@@ -357,10 +371,10 @@ export const Select = ({
      */
     const memoizedComponents = useMemo(
         () => ({
-            Control: (controlProps: ControlComponentProps) => (
+            Control: (controlProps: ControlComponentProps<O>) => (
                 <Control {...controlProps} data-testid={dataTest} />
             ),
-            Option: (optionProps: OptionComponentProps) => (
+            Option: (optionProps: OptionComponentProps<O>) => (
                 <Option
                     {...optionProps}
                     data-testid={dataTest}
@@ -403,6 +417,7 @@ export const Select = ({
                     menuPlacement="auto"
                     placeholder={placeholder || ''}
                     {...rest}
+                    // @ts-expect-error: hard to type
                     styles={{
                         ...createSelectStyle(theme, isRenderedInModal),
                         ...(rest.styles || {}),

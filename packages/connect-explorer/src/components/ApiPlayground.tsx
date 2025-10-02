@@ -130,7 +130,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                         <div>
                             {options.length > 1 && (
                                 <SelectWrapper>
-                                    <Select
+                                    <Select<{ value: number; label: string }>
                                         label="Select method"
                                         value={{
                                             value: selectedOption,

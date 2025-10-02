@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { addBasePath } from 'next/dist/client/add-base-path';
 import { useRouter } from 'next/router';
@@ -23,7 +23,7 @@ export function LocaleSwitch({ lite, className }: LocaleSwitchProps): ReactEleme
     const selected = options.find(l => locale === l.locale);
 
     return (
-        <Select
+        <Select<{ label: ReactNode; value: string }>
             label="Change language"
             className={className}
             onChange={option => {

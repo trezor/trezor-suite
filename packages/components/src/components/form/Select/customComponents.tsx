@@ -1,39 +1,37 @@
 import { useRef } from 'react';
-import { ControlProps, GroupHeadingProps, OptionProps, components } from 'react-select';
+import { ControlProps, GroupBase, GroupHeadingProps, OptionProps, components } from 'react-select';
 import { useDeepCompareEffect } from 'react-use';
 
 import { deepEqual } from '@trezor/utils';
 
-import type { Option as OptionType } from './Select';
-
-export interface ControlComponentProps extends ControlProps<OptionType, boolean> {
+export type ControlComponentProps<O> = ControlProps<O, boolean, GroupBase<O>> & {
     'data-testid'?: string;
-}
+};
 
-export const Control = ({ 'data-testid': dataTest, ...controlProps }: ControlComponentProps) => (
+export const Control = <O,>({ 'data-testid': dataTest, ...controlProps }: ControlComponentProps<O>) => (
     <components.Control
-        {...controlProps}
+        {...(controlProps as any)}
         innerProps={
             dataTest
                 ? ({
                       ...controlProps.innerProps,
                       'data-testid': `${dataTest}/input`,
-                  } as ControlProps<OptionType>['innerProps'])
+                  } as ControlProps<O>['innerProps'])
                 : controlProps.innerProps
         }
     />
 );
 
-export interface OptionComponentProps extends OptionProps<OptionType, boolean> {
+export type OptionComponentProps<O> = OptionProps<O, boolean, GroupBase<O>> & {
     'data-testid'?: string;
     selectedOption?: any;
-}
+};
 
-export const Option = ({
+export const Option = <O,>({
     selectedOption,
     'data-testid': dataTest,
     ...props
-}: OptionComponentProps) => {
+}: OptionComponentProps<O>) => {
     const ref = useRef<HTMLDivElement>(undefined);
 
     useDeepCompareEffect(() => {
@@ -44,20 +42,20 @@ export const Option = ({
 
     return (
         <components.Option
-            {...props}
+            {...(props as any)}
             innerRef={ref as any}
             innerProps={
                 {
                     ...props.innerProps,
                     'data-testid': `${dataTest}/option/${
-                        typeof props.data.value === 'string' ? props.data.value : props.label
+                        typeof (props as any).data.value === 'string' ? (props as any).data.value : String(props.label)
                     }`,
-                } as OptionProps<OptionType, boolean>['innerProps']
+                } as OptionProps<O, boolean>['innerProps']
             }
         />
     );
 };
 
-export const GroupHeading = (groupHeadingProps: GroupHeadingProps<OptionType>) => (
-    <components.GroupHeading {...groupHeadingProps} />
+export const GroupHeading = <O,>(groupHeadingProps: GroupHeadingProps<O, boolean, GroupBase<O>>) => (
+    <components.GroupHeading {...(groupHeadingProps as any)} />
 );

@@ -7,19 +7,20 @@ import type { Option } from './Select';
 const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is GroupBase<Option>[] =>
     (x as readonly GroupBase<Option>[])[0]?.options !== undefined;
 
-export const useOnKeyDown = (
-    selectRef: RefObject<SelectInstance<Option, boolean> | null>,
+export const useOnKeyDown = <O extends Option = Option>(
+    selectRef: RefObject<SelectInstance<O, boolean> | null>,
     useKeyPressScroll?: boolean,
 ) => {
     const lastKeyPressTimestamp = useRef(0);
     const searchedTerm = useRef('');
 
-    const findOption = useCallback((options: Options<Option>, query: string) => {
+    const findOption = useCallback((options: Options<O>, query: string) => {
         let foundOption;
         let lowestIndexOfFirstOccurrence = Infinity;
 
         for (let i = 0; i < options.length; i++) {
-            const indexOfFirstOccurrence = (options[i].label || '')
+            // NOTE: hehe, this is bug, coz the label can be a react element. Why do we match labels and not values?
+            const indexOfFirstOccurrence = String(options[i].label || '')
                 .toLowerCase()
                 .indexOf(query.toLowerCase());
 
@@ -36,7 +37,7 @@ export const useOnKeyDown = (
     }, []);
 
     const scrollToOption = useCallback(
-        (option: Option) => {
+        (option: O) => {
             if (selectRef.current) {
                 // As per https://github.com/JedWatson/react-select/issues/3648
                 selectRef.current.scrollToFocusedOptionOnUpdate = true;
@@ -70,14 +71,15 @@ export const useOnKeyDown = (
             const { options } = selectRef.current.props;
 
             if (options && options.length > 1) {
-                let optionsToSearchThrough: Options<Option> = [];
+                let optionsToSearchThrough: Options<O> = [];
 
                 if (isOptionGrouped(options)) {
                     options.forEach(o => {
+                        // @ts-expect-error: hard to type
                         optionsToSearchThrough = optionsToSearchThrough.concat(o.options);
                     });
                 } else {
-                    optionsToSearchThrough = options as Options<Option>;
+                    optionsToSearchThrough = options as Options<O>;
                 }
 
                 const optionToFocusOn = findOption(optionsToSearchThrough, searchedTerm.current);
