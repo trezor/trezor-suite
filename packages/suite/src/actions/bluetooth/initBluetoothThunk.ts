@@ -22,6 +22,7 @@ import {
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
+import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinuxAndWindows';
 
 export const initBluetoothThunk = createThunk<void, void, void>(
@@ -148,7 +149,12 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         });
 
         bluetoothIpc.on('device-update', (deviceIpc: BluetoothDevice) => {
-            const device = fromBluetoothDevice(deviceIpc);
+            let device = fromBluetoothDevice(deviceIpc);
+
+            const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
+                d => d.id === device.id,
+            );
+            device = fixLinuxManufacturerData(device, knownDevice);
 
             dispatch(bluetoothActions.deviceUpdateAction({ device }));
         });
