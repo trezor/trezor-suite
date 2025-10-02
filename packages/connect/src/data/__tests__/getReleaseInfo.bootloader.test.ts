@@ -7,18 +7,23 @@ import {
 
 import { getReleaseInfo } from '../firmwareInfo';
 
-const { getReleaseData, getDeviceFeatures } = global.JestMocks;
+const { getDeviceFeatures, releasesT1B1, releasesT2T1 } = global.JestMocks;
+
+const [latestT1B1] = releasesT1B1;
+const [latestT2T1] = releasesT2T1;
 
 const fixtures = [
     {
         desc: 'Firmware version in bootloader mode and release version is newer than firmware version',
+        releasesOfDevice: releasesT2T1,
         features: getDeviceFeatures({
             bootloader_mode: true,
+            firmware_present: true,
             fw_major: 2,
             fw_minor: 8,
             fw_patch: 7,
         }),
-        release: getReleaseData(),
+        release: latestT2T1,
         conditions: {
             environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
             rollout_probability: 100,
@@ -32,22 +37,24 @@ const fixtures = [
                 rollout_probability: 100,
                 shouldBeOffered: true,
             },
-            release: getReleaseData(),
+            release: latestT2T1,
             intermediary: undefined,
             isRequired: false,
             isNewer: true,
-            translations: getReleaseData().translations,
+            translations: latestT2T1.translations,
         },
     },
     {
-        desc: 'Firmware version in bootloader mode is smaller than min_firmware_version so it offers intermediate FW',
+        desc: 'Firmware version in firmware mode is smaller than min_firmware_version so it offers intermediate FW',
+        releasesOfDevice: releasesT1B1,
         features: getDeviceFeatures({
-            bootloader_mode: true,
-            fw_major: 2,
-            fw_minor: 6,
-            fw_patch: 0,
+            internal_model: DeviceModelInternal.T1B1,
+            firmware_present: true,
+            major_version: 1,
+            minor_version: 6,
+            patch_version: 2,
         }),
-        release: getReleaseData(),
+        release: latestT1B1,
         conditions: {
             environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
             rollout_probability: 100,
@@ -57,8 +64,6 @@ const fixtures = [
         intermediary: {
             min_firmware_version: [1, 6, 2] as VersionArray,
             min_bootloader_version: [1, 8, 0] as VersionArray,
-            firmware_revision: '592590cf66a9b62dfeee7e4d2afb6e01005e5b2c',
-            url: '/some/path.bin',
             version: 1,
         },
         result: {
@@ -67,32 +72,32 @@ const fixtures = [
                 rollout_probability: 100,
                 shouldBeOffered: true,
             },
-            release: getReleaseData(),
+            release: latestT1B1,
             intermediary: {
                 min_firmware_version: [1, 6, 2] as VersionArray,
                 min_bootloader_version: [1, 8, 0] as VersionArray,
-                firmware_revision: '592590cf66a9b62dfeee7e4d2afb6e01005e5b2c',
-                url: '/some/path.bin',
                 version: 1,
             },
-            isRequired: false,
+            isRequired: true,
             isNewer: true,
-            translations: getReleaseData().translations,
+            translations: latestT1B1.translations,
         },
     },
     {
         desc: 'Firmware version in bootloader mode is latest version',
+        releasesOfDevice: releasesT1B1,
         features: getDeviceFeatures({
             bootloader_mode: true,
+            firmware_present: true,
             internal_model: DeviceModelInternal.T1B1,
-            fw_major: 2,
-            fw_minor: 8,
-            fw_patch: 10,
-            major_version: 2,
-            minor_version: 1,
-            patch_version: 8,
+            fw_major: latestT1B1.version[0],
+            fw_minor: latestT1B1.version[1],
+            fw_patch: latestT1B1.version[2],
+            major_version: latestT1B1.bootloader_version?.[0],
+            minor_version: latestT1B1.bootloader_version?.[1],
+            patch_version: latestT1B1.bootloader_version?.[2],
         }),
-        release: getReleaseData(),
+        release: latestT1B1,
         conditions: {
             environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
             rollout_probability: 100,
@@ -106,23 +111,25 @@ const fixtures = [
                 rollout_probability: 100,
                 shouldBeOffered: true,
             },
-            release: getReleaseData(),
+            release: latestT1B1,
             intermediary: undefined,
-            isRequired: false,
+            isRequired: null,
             isNewer: false,
-            translations: getReleaseData().translations,
+            translations: latestT1B1.translations,
         },
     },
     {
         desc: 'Bootloader does not report FW version - Firmware version in bootloader mode is smaller than min_firmware_version so it offers intermediate FW',
+        releasesOfDevice: releasesT1B1,
         features: getDeviceFeatures({
             bootloader_mode: true,
+            firmware_present: true,
             internal_model: DeviceModelInternal.T1B1,
-            major_version: 2,
-            minor_version: 1,
-            patch_version: 0,
+            major_version: 1,
+            minor_version: 6,
+            patch_version: 2,
         }),
-        release: getReleaseData(),
+        release: latestT1B1,
         conditions: {
             environment: { min_suite_version: '25.2.1', min_suite_native_version: '25.2.1' },
             rollout_probability: 100,
@@ -142,7 +149,7 @@ const fixtures = [
                 rollout_probability: 100,
                 shouldBeOffered: true,
             },
-            release: getReleaseData(),
+            release: latestT1B1,
             intermediary: {
                 min_firmware_version: [1, 6, 2] as VersionArray,
                 min_bootloader_version: [1, 8, 0] as VersionArray,
@@ -150,9 +157,9 @@ const fixtures = [
                 url: '/some/path.bin',
                 version: 1,
             },
-            isRequired: false,
+            isRequired: null,
             isNewer: true,
-            translations: getReleaseData().translations,
+            translations: latestT1B1.translations,
         },
     },
 ];
@@ -167,6 +174,7 @@ describe('getReleaseInfo() in bootloader', () => {
                 intermediary: f.intermediary,
                 firmwareType: f.firmwareType,
                 isBitcoinOnlyAvailable: f.isBitcoinOnlyAvailable,
+                releasesOfDevice: f.releasesOfDevice,
             });
             if (f.result) {
                 expect(result).toMatchObject(f.result);
