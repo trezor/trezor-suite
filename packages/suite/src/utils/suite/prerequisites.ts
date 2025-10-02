@@ -34,7 +34,7 @@ export const prerequisiteTypes = [
     'device-bootloader-locked',
     'device-hard-locked',
 ] as const;
-type PrerequisiteType = (typeof prerequisiteTypes)[number];
+export type PrerequisiteType = (typeof prerequisiteTypes)[number];
 
 export const getPrerequisiteName = ({
     router,

@@ -12,7 +12,7 @@ type TroubleshootingTipsToggleProps = {
 export const TroubleshootingTipsToggle = ({ children }: TroubleshootingTipsToggleProps) => (
     <Row gap={spacings.xs} cursor="pointer">
         <Text variant="tertiary" typographyStyle="label">
-            {children !== undefined ? children : <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
+            {children ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
         </Text>
         <Collapsible.ToggleIcon
             data-testid="@onboarding/expand-troubleshooting-tips/toggle"
