@@ -3,17 +3,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import {
-    Button,
-    Column,
-    Icon,
-    IconButton,
-    IconName,
-    List,
-    Paragraph,
-    Row,
-    Tooltip,
-} from '@trezor/components';
+import { Button, Column, Icon, IconName, List, Paragraph, Row, Tooltip } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -31,7 +21,6 @@ import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types
 import { AddWalletButton } from './AddWalletButton';
 import { WalletInstance } from './WalletInstance';
 import { CardWithDevice } from '../CardWithDevice';
-import { EjectAllConfirmation } from './EjectAllConfirmation';
 
 type DeviceItemProps = {
     device: TrezorDevice;
@@ -49,7 +38,6 @@ const ListItem = ({ children, iconName }: { children: ReactNode; iconName: IconN
 
 export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => {
     const dispatch = useDispatch();
-    const [isEjecting, setIsEjecting] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceId = selectedDevice?.id;
     const recentlyDisconnectedDevice = useSelector(state => state.suite.recentlyDisconnectedDevice);
@@ -90,109 +78,82 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
     };
 
     return (
-        <CardWithDevice
-            isFindTrezorVisible
-            onCancel={onCancel}
-            device={device}
-            actions={
-                <>
-                    {instancesWithState.length > 0 && !isEjecting ? (
-                        <Tooltip content={<Translation id="TR_EJECT_ALL_HEADING" />}>
-                            <IconButton
-                                icon="eject"
-                                variant="tertiary"
-                                size="small"
-                                onClick={() => setIsEjecting(true)}
-                            />
-                        </Tooltip>
-                    ) : null}
-                </>
-            }
-        >
-            {isEjecting ? (
-                <EjectAllConfirmation onCancel={() => setIsEjecting(false)} instances={instances} />
-            ) : (
-                <Column gap={spacings.sm}>
-                    {instancesWithState.length > 0 && (
-                        <Column gap={spacings.xs}>
-                            {instancesWithState.map((instance, index) => (
-                                <Tooltip
-                                    content={
-                                        <Column
-                                            padding={{
-                                                horizontal: spacings.sm,
-                                                vertical: spacings.xs,
-                                            }}
-                                            gap={spacings.md}
-                                        >
-                                            <Paragraph
-                                                typographyStyle="highlight"
-                                                textWrap="balance"
+        <CardWithDevice isFindTrezorVisible onCancel={onCancel} device={device}>
+            <Column gap={spacings.sm}>
+                {instancesWithState.length > 0 && (
+                    <Column gap={spacings.xs}>
+                        {instancesWithState.map((instance, index) => (
+                            <Tooltip
+                                content={
+                                    <Column
+                                        padding={{
+                                            horizontal: spacings.sm,
+                                            vertical: spacings.xs,
+                                        }}
+                                        gap={spacings.md}
+                                    >
+                                        <Paragraph typographyStyle="highlight" textWrap="balance">
+                                            <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE" />
+                                        </Paragraph>
+                                        <List bulletGap={spacings.sm}>
+                                            <ListItem iconName="eject">
+                                                <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1" />
+                                            </ListItem>
+                                            <ListItem
+                                                iconName={mapTrezorModelToIcon[deviceModelInternal]}
                                             >
-                                                <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE" />
-                                            </Paragraph>
-                                            <List bulletGap={spacings.sm}>
-                                                <ListItem iconName="eject">
-                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1" />
-                                                </ListItem>
-                                                <ListItem
-                                                    iconName={
-                                                        mapTrezorModelToIcon[deviceModelInternal]
-                                                    }
-                                                >
-                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2" />
-                                                </ListItem>
-                                            </List>
-                                            <Row gap={spacings.sm} margin={{ top: spacings.xs }}>
-                                                <Button
-                                                    size="small"
-                                                    onClick={() => {
-                                                        onTooltipClose();
-                                                        onCancel?.();
-                                                    }}
-                                                >
-                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY" />
-                                                </Button>
-                                                <Button
-                                                    size="small"
-                                                    variant="tertiary"
-                                                    onClick={() => {
-                                                        onTooltipClose();
-                                                        dispatch(
-                                                            goto('settings-index', {
-                                                                anchor: SettingsAnchor.AutoEject,
-                                                            }),
-                                                        );
-                                                    }}
-                                                >
-                                                    <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY" />
-                                                </Button>
-                                            </Row>
-                                        </Column>
-                                    }
-                                    key={`${instance.id}-${instance.instance}-${instance.state}`}
-                                    isOpen={showTooltip && index === 0}
-                                    isFullWidth
-                                    placement="right-start"
-                                    hasArrow
-                                    offset={30}
-                                >
-                                    <WalletInstance
-                                        instance={instance}
-                                        isSelected={deviceUtils.isSelectedInstance(
-                                            selectedDevice,
-                                            instance,
-                                        )}
-                                        index={index}
-                                        onCancel={onCancel}
-                                    />
-                                </Tooltip>
-                            ))}
-                        </Column>
-                    )}
-                    <AddWalletButton device={device} instances={instances} onCancel={onCancel} />
-                </Column>
-            )}
+                                                <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2" />
+                                            </ListItem>
+                                        </List>
+                                        <Row gap={spacings.sm} margin={{ top: spacings.xs }}>
+                                            <Button
+                                                size="small"
+                                                onClick={() => {
+                                                    onTooltipClose();
+                                                    onCancel?.();
+                                                }}
+                                            >
+                                                <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY" />
+                                            </Button>
+                                            <Button
+                                                size="small"
+                                                variant="tertiary"
+                                                onClick={() => {
+                                                    onTooltipClose();
+                                                    dispatch(
+                                                        goto('settings-index', {
+                                                            anchor: SettingsAnchor.AutoEject,
+                                                        }),
+                                                    );
+                                                }}
+                                            >
+                                                <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY" />
+                                            </Button>
+                                        </Row>
+                                    </Column>
+                                }
+                                key={`${instance.id}-${instance.instance}-${instance.state}`}
+                                isOpen={showTooltip && index === 0}
+                                isFullWidth
+                                placement="right-start"
+                                hasArrow
+                                offset={30}
+                            >
+                                <WalletInstance
+                                    instance={instance}
+                                    isSelected={deviceUtils.isSelectedInstance(
+                                        selectedDevice,
+                                        instance,
+                                    )}
+                                    index={index}
+                                    onCancel={onCancel}
+                                />
+                            </Tooltip>
+                        ))}
+                    </Column>
+                )}
+                <AddWalletButton device={device} instances={instances} onCancel={onCancel} />
+            </Column>
         </CardWithDevice>
     );
 };
