@@ -1,6 +1,5 @@
 import { EventType, analytics } from '@suite-native/analytics';
-import { CardStepper, CardStepperMap, TitleHeader, VStack } from '@suite-native/atoms';
-import { useDeviceLowBatteryAlert } from '@suite-native/device';
+import { CardStepper, CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import {
@@ -63,14 +62,8 @@ const cardStepperContentMap = {
 export const SecurityCheckScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
-    const { showLowBatteryAlertIfNecessary } = useDeviceLowBatteryAlert();
-
     const handleFinishStepper = () => {
-        if (showLowBatteryAlertIfNecessary()) {
-            return;
-        }
-
-        navigation.replace(DeviceOnboardingStackRoutes.FirmwareInstallation);
+        navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInfo);
     };
 
     const handlePressSecondaryButton = (id?: DeviceSuspicionCause) => {
@@ -88,28 +81,24 @@ export const SecurityCheckScreen = ({
     };
 
     return (
-        <DeviceOnboardingScreenWithExitButton>
+        <DeviceOnboardingScreenWithExitButton
+            screenHeaderTitle={
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.title" />
+            }
+            screenHeaderSubtitle={
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.subtitle" />
+            }
+        >
             <VStack justifyContent="flex-start" flex={1}>
-                <VStack spacing="sp24">
-                    <TitleHeader
-                        titleVariant="titleMedium"
-                        title={
-                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.title" />
-                        }
-                        subtitle={
-                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.subtitle" />
-                        }
-                    />
-                    <CardStepper<DeviceSuspicionCause>
-                        onFinish={handleFinishStepper}
-                        secondaryButtonText={
-                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
-                        }
-                        primaryButtonText={<Translation id="generic.buttons.yes" />}
-                        onPressSecondaryButton={handlePressSecondaryButton}
-                        stepToContentMap={cardStepperContentMap}
-                    />
-                </VStack>
+                <CardStepper<DeviceSuspicionCause>
+                    onFinish={handleFinishStepper}
+                    secondaryButtonText={
+                        <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
+                    }
+                    primaryButtonText={<Translation id="generic.buttons.yes" />}
+                    onPressSecondaryButton={handlePressSecondaryButton}
+                    stepToContentMap={cardStepperContentMap}
+                />
             </VStack>
         </DeviceOnboardingScreenWithExitButton>
     );

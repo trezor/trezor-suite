@@ -1,13 +1,9 @@
-import { useSelector } from 'react-redux';
-
-import { useSetAtom } from 'jotai';
-
-import { selectHasDeviceFirmwareInstalled } from '@suite-common/wallet-core';
-import { selectIsDeviceFirmwareSupported, useDeviceLowBatteryAlert } from '@suite-native/device';
+import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
 import {
     ConfirmFirmwareUpdateScreenContent,
     ConfirmFirmwareUpdateScreenFooter,
 } from '@suite-native/firmware';
+import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -24,10 +20,7 @@ export const ConfirmFirmwareUpdateScreen = ({
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate
 >) => {
-    const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
-
-    const { showLowBatteryAlertIfNecessary } = useDeviceLowBatteryAlert();
 
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
@@ -35,14 +28,7 @@ export const ConfirmFirmwareUpdateScreen = ({
         useNavigateToNextScreenAfterFirmwareInstallation();
 
     const handleUpdateConfirmation = () => {
-        if (showLowBatteryAlertIfNecessary()) {
-            return;
-        }
-
-        updateOnboardingAnalytics({
-            firmware: hasDeviceFirmwareInstalled ? 'update' : 'install',
-        });
-        navigation.replace(DeviceOnboardingStackRoutes.FirmwareInstallation);
+        navigation.replace(DeviceOnboardingStackRoutes.FirmwareInfo);
     };
 
     const handleSkipUpdate = () => {
@@ -54,6 +40,8 @@ export const ConfirmFirmwareUpdateScreen = ({
 
     return (
         <DeviceOnboardingScreenWithExitButton
+            screenHeaderTitle={<Translation id="firmware.firmwareUpdateScreen.title" />}
+            screenHeaderSubtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
             footer={
                 <ConfirmFirmwareUpdateScreenFooter
                     onUpdateConfirmation={handleUpdateConfirmation}
