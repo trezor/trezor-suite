@@ -120,11 +120,11 @@ export const sendThpMessage = async ({
         // fail on ThpError
         if (decodedResult?.type === 'ThpError') {
             const { code, message } = decodedResult.message;
-
+            console.log('==== ThpError=====', code, message);
             if (code === 'ThpTransportBusy') {
                 // TODO: max 3 attempts + wait 1 sec between attempts
                 // setTimeout 1000ms
-                await resolveAfter(1000, signal);
+                await resolveAfter(2000, signal);
                 return sendThpMessage({
                     thpState,
                     skipAck,
