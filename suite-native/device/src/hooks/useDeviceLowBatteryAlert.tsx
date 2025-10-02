@@ -8,7 +8,7 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 
-export function useDeviceLowBatteryAlert() {
+export const useDeviceLowBatteryAlert = () => {
     const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(
         selectIsDeviceConnectedViaBluetoothLowOnBattery,
     );
@@ -25,7 +25,7 @@ export function useDeviceLowBatteryAlert() {
                     />
                 ),
                 primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
-                primaryButtonVariant: 'redBold',
+                primaryButtonVariant: 'yellowBold',
             });
 
             return true;
@@ -37,4 +37,4 @@ export function useDeviceLowBatteryAlert() {
     return {
         showLowBatteryAlertIfNecessary,
     };
-}
+};

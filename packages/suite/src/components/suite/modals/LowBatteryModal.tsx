@@ -40,7 +40,7 @@ export const LowBatteryModal = ({ onClose, children }: LowBatteryModalProps) => 
             heading={<LowBatteryModalHeading batteryLevel={bateryLevel} />}
             onCancel={onClose}
             bottomContent={
-                <Button variant="destructive" onClick={onClose}>
+                <Button variant="warning" onClick={onClose}>
                     <Translation id="TR_GOT_IT" />
                 </Button>
             }

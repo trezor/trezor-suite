@@ -713,7 +713,7 @@ export const messages = {
             lowBattery: {
                 title: 'Charge your Trezor before continuing',
                 description:
-                    'Charge your Trezor to at least {percentage}% or power it with a cable to prevent interruptions.',
+                    'Charge your Trezor to at least {percentage}% to prevent interruptions.',
             },
         },
     },
