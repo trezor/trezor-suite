@@ -47,7 +47,7 @@ import { TokensRootState } from '@suite-native/tokens';
 
 import { SectionListData } from '../hooks/general/useSectionList';
 import { TradingRootState } from '../reducers';
-import { MyAsset, TradeableAsset } from '../types/general';
+import { MyAsset, MyAssetRow, TradeableAsset } from '../types/general';
 import { getSymbolFromTradeableAsset } from '../utils/general/tradeableAssetUtils';
 import { toCaseAwareCryptoId } from '../utils/general/utils';
 
@@ -287,6 +287,26 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                 })
                 .filter(section => section.data.length > 0);
         },
+    );
+
+export const selectAccountsWithTokensToSellSectionCondensedListByTradingType =
+    createCombinedMemoizedSelector(
+        [selectAccountsWithTokensToSellSectionListByTradingType],
+        sectionListData =>
+            sectionListData.map(section => {
+                const data = section.data.filter(({ isEnabled }) => isEnabled) as MyAssetRow[];
+
+                const nonTradeableAssetsCount = section.data.length - data.length;
+                if (nonTradeableAssetsCount > 0) {
+                    data.push({
+                        count: nonTradeableAssetsCount,
+                        name: 'non-tradeable-assets',
+                        isEnabled: false,
+                    });
+                }
+
+                return { ...section, data };
+            }),
     );
 
 export const selectTradesToWatchByAccount = createTradingWithDeviceAndAccountsMemoizedSelector(

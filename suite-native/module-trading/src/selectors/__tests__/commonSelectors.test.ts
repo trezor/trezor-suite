@@ -20,6 +20,7 @@ import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState, initialState } from '../../reducers';
 import { TradeableAsset } from '../../types/general';
 import {
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
     selectAccountsWithTokensToSellSectionListByTradingType,
     selectActiveTradingType,
     selectAmountInBaseFiatCurrency,
@@ -861,6 +862,158 @@ describe('commonSelectors', () => {
             expect(result[0].data.length).toBe(2); // Account + 2 tokens with positive balance
             expect(result[0].data[1].contract).toBe('0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48'); // USDC
             expect(result[0].data[1].isEnabled).toBe(true);
+        });
+    });
+
+    describe('selectAccountsWithTokensToSellSectionCondensedListByTradingType', () => {
+        it('should group disabled tokens', () => {
+            const testDeviceState = 'test-device';
+            const ethAccount = {
+                ...getEthAccount(),
+                balance: '1000000000000000000', // 1 ETH
+                formattedBalance: '1',
+                visible: true,
+                deviceState: testDeviceState,
+                tokens: [
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'USDC',
+                        contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        transfers: 1,
+                        symbol: 'usdc',
+                        decimals: 6,
+                        balance: '1000000', // 1 USDC
+                    },
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'non tradeable token 1',
+                        contract: '0x12123123123123123123123123123123123123',
+                        transfers: 0,
+                        symbol: '000',
+                        decimals: 18,
+                        balance: '1000000',
+                    },
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'non tradeable token 2',
+                        contract: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
+                        transfers: 0,
+                        symbol: 'ABC',
+                        decimals: 18,
+                        balance: '1000000',
+                    },
+                ],
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
+                wallet: {
+                    trading: cleanState,
+                    accounts: [ethAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {
+                    eth: {
+                        coin: {
+                            data: [
+                                // presented in selectTradingSupportedSymbols
+                                '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                                // not presented in selectTradingSupportedSymbols
+                                '0x12123123123123123123123123123123123123',
+                                '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
+                            ],
+                            error: false,
+                            isLoading: false,
+                            hide: [],
+                            show: [],
+                        },
+                    },
+                },
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionCondensedListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].data).toEqual([
+                expect.objectContaining({ name: 'Ethereum', isEnabled: true }),
+                expect.objectContaining({ name: 'USDC', isEnabled: true }),
+                {
+                    count: 2,
+                    name: 'non-tradeable-assets',
+                    isEnabled: false,
+                },
+            ]);
+        });
+
+        it('should not display empty disabled section', () => {
+            const testDeviceState = 'test-device';
+            const ethAccount = {
+                ...getEthAccount(),
+                balance: '1000000000000000000', // 1 ETH
+                formattedBalance: '1',
+                visible: true,
+                deviceState: testDeviceState,
+                tokens: [
+                    {
+                        type: 'ERC20',
+                        standard: 'ERC20',
+                        name: 'USDC',
+                        contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        transfers: 1,
+                        symbol: 'usdc',
+                        decimals: 6,
+                        balance: '1000000', // 1 USDC
+                    },
+                ],
+            };
+            const cleanState = getInitializedTradingState('exchange');
+
+            const stateWithDevice = {
+                featureFlags: featureFlagsInitialState,
+                wallet: {
+                    trading: cleanState,
+                    accounts: [ethAccount],
+                    settings: { localCurrency: 'usd', enabledNetworks: ['eth'] },
+                    transactions: { transactions: {} },
+                },
+                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
+                tokenDefinitions: {
+                    eth: {
+                        coin: {
+                            data: [
+                                // presented in selectTradingSupportedSymbols
+                                '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                            ],
+                            error: false,
+                            isLoading: false,
+                            hide: [],
+                            show: [],
+                        },
+                    },
+                },
+                fiat: { rates: {}, current: 'usd' },
+            } as any;
+
+            const result = selectAccountsWithTokensToSellSectionCondensedListByTradingType(
+                stateWithDevice,
+                'exchange',
+            );
+
+            expect(result.length).toBe(1);
+            expect(result[0].data).toEqual([
+                expect.objectContaining({ name: 'Ethereum', isEnabled: true }),
+                expect.objectContaining({ name: 'USDC', isEnabled: true }),
+            ]);
         });
     });
 

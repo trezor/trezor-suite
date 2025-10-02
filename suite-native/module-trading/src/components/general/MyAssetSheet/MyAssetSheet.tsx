@@ -11,10 +11,11 @@ import { ASSET_ITEM_HEIGHT, MyAssetListItem, MyAssetListItemProps } from './MyAs
 import { MyAssetListSectionHeader } from './MyAssetListSectionHeader';
 import {
     CombinedSelectorsRootState,
-    selectAccountsWithTokensToSellSectionListByTradingType,
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
 } from '../../../selectors/commonSelectors';
-import { MyAsset, TradeableAsset } from '../../../types/general';
+import { MyAssetRow, TradeableAsset } from '../../../types/general';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
+import { MyAssetsDisabledListItem } from './MyAssetsDisabledListItem';
 
 export type MyAssetSheetProps = {
     tradingType: TradingType;
@@ -23,13 +24,19 @@ export type MyAssetSheetProps = {
     onAssetSelect: MyAssetListItemProps['onPress'];
 };
 
-const keyExtractor = (asset: MyAsset, sectionData: Account) => `${sectionData.key}_${asset.name}`;
+const keyExtractor = (asset: MyAssetRow, sectionData: Account) =>
+    `${sectionData.key}_${asset.name}`;
 
 const renderItem = (
-    asset: MyAsset,
+    asset: MyAssetRow,
     { sectionData }: { sectionData: Account },
     onAssetSelect: MyAssetListItemProps['onPress'],
-) => <MyAssetListItem asset={asset} account={sectionData} onPress={onAssetSelect} />;
+) =>
+    asset.isEnabled ? (
+        <MyAssetListItem asset={asset} account={sectionData} onPress={onAssetSelect} />
+    ) : (
+        <MyAssetsDisabledListItem count={asset.count} />
+    );
 
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect }: MyAssetSheetProps) => {
@@ -39,7 +46,7 @@ export const MyAssetSheet = memo(
         };
 
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
-            selectAccountsWithTokensToSellSectionListByTradingType(state, tradingType),
+            selectAccountsWithTokensToSellSectionCondensedListByTradingType(state, tradingType),
         );
 
         const renderHandle = () => (
@@ -50,7 +57,7 @@ export const MyAssetSheet = memo(
         );
 
         return (
-            <BottomSheetSectionList<MyAsset, Account>
+            <BottomSheetSectionList<MyAssetRow, Account>
                 isVisible={isVisible}
                 onClose={onClose}
                 ListEmptyComponent={<MyAssetListEmptyComponent />}
