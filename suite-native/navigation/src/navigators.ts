@@ -1,4 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
+import type { ExchangeTrade } from 'invity-api';
 import { RequireAllOrNone } from 'type-fest';
 
 import { BackupType } from '@suite-common/suite-types';
@@ -344,9 +345,18 @@ export type TradingStackParamList = {
         tradingType: Exclude<TradingType, 'sell'>;
     };
     [TradingStackRoutes.TradingHistory]: undefined;
-    [TradingStackRoutes.TradingExchangePreview]: undefined;
-    [TradingStackRoutes.TradingExchangeApproval]: undefined;
-    [TradingStackRoutes.TradingExchangeRevoke]: undefined;
+    [TradingStackRoutes.TradingExchangePreview]: {
+        isApproved?: boolean;
+    };
+    [TradingStackRoutes.TradingExchangeApproval]: {
+        quote: ExchangeTrade;
+        shouldIncreaseLimit?: boolean;
+        isRevoked?: boolean;
+    };
+    [TradingStackRoutes.TradingExchangeRevoke]: {
+        quote: ExchangeTrade;
+        shouldIncreaseLimit?: boolean;
+    };
     [TradingStackRoutes.TradingFees]: {
         accountKey: AccountKey;
         tradingType: TradingType;

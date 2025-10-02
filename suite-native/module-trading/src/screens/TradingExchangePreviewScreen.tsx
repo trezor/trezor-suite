@@ -35,7 +35,11 @@ export type TradingExchangePreviewScreenProps = StackProps<
     TradingStackRoutes.TradingExchangePreview
 >;
 
-export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePreviewScreenProps) => {
+export const TradingExchangePreviewScreen = ({
+    navigation,
+    route: { params },
+}: TradingExchangePreviewScreenProps) => {
+    const { isApproved } = params;
     const { showAlert } = useAlert();
     const dispatch = useDispatch();
     const debounce = useDebounce();
@@ -146,7 +150,11 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
 
     return (
         <Screen header={<ExchangePreviewScreenHeader />}>
-            <ExchangePreviewView quote={quote} txnErrorString={txnErrorString} />
+            <ExchangePreviewView
+                quote={quote}
+                txnErrorString={txnErrorString}
+                isApproved={isApproved}
+            />
             <ExchangePreviewContinueButton
                 quote={quote}
                 isDisabled={!!txnErrorString}

@@ -12,6 +12,13 @@ import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen'
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
 
+jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
+    useExchangeFlow: () => ({
+        confirmTrade: jest.fn().mockResolvedValue(true),
+        fetchFeesAndCompose: jest.fn(),
+    }),
+}));
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
@@ -46,9 +53,20 @@ const preloadedState = {
 };
 
 const renderScreen = () =>
-    renderWithStoreProviderAsync(<TradingExchangeApprovalScreen />, {
-        preloadedState,
-    });
+    renderWithStoreProviderAsync(
+        <TradingExchangeApprovalScreen
+            route={
+                { params: { quote: testQuote } } as RouteProp<
+                    TradingStackParamList,
+                    TradingStackRoutes.TradingExchangeApproval
+                >
+            }
+            navigation={{} as any}
+        />,
+        {
+            preloadedState,
+        },
+    );
 
 describe('TradingExchangeApprovalScreen', () => {
     beforeEach(() => {

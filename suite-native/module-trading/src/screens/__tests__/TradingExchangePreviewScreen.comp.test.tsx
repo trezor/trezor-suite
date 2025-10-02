@@ -22,7 +22,7 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
         ({
-            params: undefined,
+            params: {},
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangePreview>,
 }));
 
@@ -56,7 +56,7 @@ describe('TradingExchangePreviewScreen', () => {
     let store: TestStore;
     const analyticsSpy = jest.spyOn(analytics, 'report');
 
-    const renderTradingExchangePreviewScreen = () =>
+    const renderTradingExchangePreviewScreen = (isApproved: boolean = false) =>
         renderWithStoreProviderAsync(
             <TradingExchangePreviewScreen
                 navigation={
@@ -65,7 +65,7 @@ describe('TradingExchangePreviewScreen', () => {
                         popToTop: mockPopToTop,
                     } as unknown as TradingExchangePreviewScreenProps['navigation']
                 }
-                route={{} as TradingExchangePreviewScreenProps['route']}
+                route={{ params: { isApproved } } as TradingExchangePreviewScreenProps['route']}
             />,
             { store },
         );

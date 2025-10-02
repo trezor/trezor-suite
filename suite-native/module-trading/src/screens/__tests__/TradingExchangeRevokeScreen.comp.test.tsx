@@ -35,9 +35,20 @@ const preloadedState = {
 };
 
 const renderScreen = () =>
-    renderWithStoreProviderAsync(<TradingExchangeRevokeScreen />, {
-        preloadedState,
-    });
+    renderWithStoreProviderAsync(
+        <TradingExchangeRevokeScreen
+            route={
+                { params: { quote: testQuote } } as RouteProp<
+                    TradingStackParamList,
+                    TradingStackRoutes.TradingExchangeRevoke
+                >
+            }
+            navigation={{} as any}
+        />,
+        {
+            preloadedState,
+        },
+    );
 
 describe('TradingExchangeRevokeScreen', () => {
     it('should render the revoke screen with quote details', async () => {
@@ -61,11 +72,12 @@ describe('TradingExchangeRevokeScreen', () => {
     });
 
     it('should show current limit and new limit with crypto icon', async () => {
-        const { getByText } = await renderScreen();
+        const { getByText, getAllByText } = await renderScreen();
 
         expect(getByText('Current limit')).toBeOnTheScreen();
         expect(getByText('New limit')).toBeOnTheScreen();
-        expect(getByText('0 USDC')).toBeOnTheScreen();
+        const usdcElements = getAllByText('0 USDC');
+        expect(usdcElements).toHaveLength(2);
     });
 
     it('should render continue button', async () => {
