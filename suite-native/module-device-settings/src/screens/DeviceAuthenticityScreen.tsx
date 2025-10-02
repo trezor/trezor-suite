@@ -35,6 +35,7 @@ export const DeviceAuthenticityScreen = () => {
                 <DynamicScreenHeader
                     title={<Translation id="moduleDeviceSettings.authenticity.title" />}
                     subtitle={<Translation id="moduleDeviceSettings.authenticity.subtitle" />}
+                    closeActionType="close"
                 />
             }
         >
