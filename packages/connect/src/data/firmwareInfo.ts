@@ -12,7 +12,7 @@ import {
 import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from '@trezor/utils';
 
 import { DataManager } from './DataManager';
-import { Features } from '../types/device';
+import { Features, StrictFeatures } from '../types/device';
 import { FirmwareReleaseConfigInfo, FirmwareUpdateSource } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
@@ -466,6 +466,54 @@ const calculateShouldOfferRelease = (
     }
 };
 
+const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => {
+    // releases are already filtered, so they can be considered "safe".
+    // so lets build changelog! It should include only those firmwares, that are
+    // newer than currently installed firmware.
+
+    if (features.bootloader_mode) {
+        // the problem with bootloader is that we see only bootloader and not firmware version
+        // and multiple releases may share same bootloader version. we really can not tell that
+        // the versions that are installable are newer. so...
+        if (features.firmware_present && features.major_version === 1) {
+            // return null signaling that we don't really know, but only if some firmware
+            // is already installed!
+            return null;
+        }
+        if (features.firmware_present && features.major_version === 2) {
+            // little different situation is with model 2, where in bootloader (and with some fw installed)
+            // we actually know the firmware version
+            return releases.filter(r =>
+                versionUtils.isNewer(r.version, [
+                    features.fw_major,
+                    features.fw_minor,
+                    features.fw_patch,
+                ]),
+            );
+        }
+
+        // for fresh devices, we can assume that all releases are actually "new"
+        return releases;
+    }
+
+    // otherwise we are in firmware mode and because each release in releases list has
+    // version higher than the previous one, we can filter out the version that is already
+    // installed and show only what's new!
+    return releases.filter(r =>
+        versionUtils.isNewer(r.version, [
+            features.major_version,
+            features.minor_version,
+            features.patch_version,
+        ]),
+    );
+};
+
+const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
+    if (!changelog || !changelog.length) return null;
+
+    return changelog.some(item => item.required);
+};
+
 interface GetReleaseInfoParams {
     features: Features;
     release: FirmwareRelease;
@@ -473,6 +521,7 @@ interface GetReleaseInfoParams {
     intermediary: IntermediaryReleaseConfig | undefined;
     firmwareType: FirmwareType;
     isBitcoinOnlyAvailable: boolean;
+    releasesOfDevice: FirmwareRelease[];
 }
 
 export const getReleaseInfo = ({
@@ -482,6 +531,7 @@ export const getReleaseInfo = ({
     intermediary,
     firmwareType,
     isBitcoinOnlyAvailable,
+    releasesOfDevice,
 }: GetReleaseInfoParams): FirmwareReleaseConfigInfo => {
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided.');
@@ -489,7 +539,9 @@ export const getReleaseInfo = ({
     if (!isValidConditionalRelease(release)) {
         throw new Error(`Release object in unexpected shape.`);
     }
-    const { min_firmware_version, min_bootloader_version, required } = release;
+    const { min_firmware_version, min_bootloader_version } = release;
+
+    const changelog = getChangelog(releasesOfDevice, features as StrictFeatures);
 
     let isNewer = false;
     let requiresIntermediary = false;
@@ -536,7 +588,7 @@ export const getReleaseInfo = ({
         },
         release,
         intermediary: requiresIntermediary ? intermediary : undefined,
-        isRequired: required,
+        isRequired: isRequired(changelog),
         isNewer,
         translations: release.translations,
     };
@@ -566,11 +618,16 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         versionContext.version &&
         versionUtils.isNewerOrEqual(versionContext.version, release[versionContext.minVersionKey]);
 
+    const releasesOfDevice = getReleasesAssetByDeviceModelAndFirmwareType(
+        features.internal_model,
+        firmwareType,
+    );
+
     let suitableRelease = release;
     if (!isCompatible) {
         // If the target isn't compatible, search for the best alternative.
         const alternativeRelease = findBestCompatibleRelease(
-            getReleasesAssetByDeviceModelAndFirmwareType(features.internal_model, firmwareType),
+            releasesOfDevice,
             currentVersion,
             versionContext.minVersionKey,
         );
@@ -590,6 +647,7 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
         conditions,
         intermediary,
         firmwareType: firmware_type,
+        releasesOfDevice,
     });
 };
 

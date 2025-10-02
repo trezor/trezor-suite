@@ -17,15 +17,13 @@ type VersionCheckProperty = 'min_firmware_version' | 'min_bootloader_version';
 //  It sorts available firmwares from newest to oldest and returns the first one
 //  that meets the minimum version requirement for a given device property.
 export const findBestCompatibleRelease = (
-    releasesOfDevice: Record<string, FirmwareRelease>,
+    availableFirmwares: FirmwareRelease[],
     currentVesion: CurrentVersion,
     checkProperty: VersionCheckProperty,
 ): FirmwareRelease | undefined => {
-    if (!releasesOfDevice || Object.keys(releasesOfDevice).length === 0) {
+    if (!availableFirmwares || availableFirmwares.length === 0) {
         return;
     }
-
-    const availableFirmwares = Object.values(releasesOfDevice);
 
     const currentFirmwareVersion = currentVesion.firmwareVersion;
     const currentBootloaderVersion = currentVesion.bootloaderVersion;
