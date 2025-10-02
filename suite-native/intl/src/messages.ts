@@ -2520,10 +2520,10 @@ export const messages = {
         typeBitcoinOnly: 'Bitcoin-only',
         updateNotAvailable: 'Firmware update disabled',
         seedBottomSheet: {
-            title: 'It’s a good practice to check your backup before installing new firmware.',
+            title: 'It’s a good practice to check your backup before updating firmware.',
             description:
                 'Although unlikely, a firmware update might fail. If this were to happen, you would need to access your assets with your wallet backup.',
-            continueButton: 'Install firmware',
+            continueButton: 'I’ve checked it',
             checkBackupButton: 'Check backup',
         },
         updateCard: {
@@ -2531,6 +2531,19 @@ export const messages = {
             newVersionAvailable: 'Update available',
             updateToVersionAvailable: 'Update to version {firmwareVersion} available',
             updateButton: 'Update',
+        },
+
+        firmwareInfoScreen: {
+            title: 'Firmware update',
+            subtitle: "Firmware is your Trezor's operating system",
+            list: {
+                item1: 'This update will take some time to complete.',
+                item2: '<b>Don’t leave or close the app</b> during installation. Doing so will corrupt the firmware.',
+                item3: 'While the firmware is updating, <b>leave your phone as is</b>. It won’t shut off.',
+                installButton: 'Install now',
+                updateButton: 'Update now',
+                cancelButton: 'Cancel installation',
+            },
         },
         firmwareUpdateScreen: {
             updateFirmware: 'Update firmware',

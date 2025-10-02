@@ -31,7 +31,7 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
                 isLoading={isDiscoveryRunning}
                 testID="@device-firmware/update-button"
             >
-                <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />
+                <Translation id="generic.buttons.continue" />
             </Button>
             {onSkipUpdate && (
                 <Button
