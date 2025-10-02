@@ -2534,16 +2534,23 @@ export const messages = {
         },
 
         firmwareInfoScreen: {
-            title: 'Firmware update',
+            title: { update: 'Firmware update', install: 'Firmware installation' },
             subtitle: "Firmware is your Trezor's operating system",
             list: {
-                item1: 'This update will take some time to complete.',
+                item1: {
+                    update: 'This update will take some time to complete.',
+                    install: 'This installation will take some time to complete.',
+                },
                 item2: '<b>Don’t leave or close the app</b> during installation. Doing so will corrupt the firmware.',
-                item3: 'While the firmware is updating, <b>leave your phone as is</b>. It won’t shut off.',
-                installButton: 'Install now',
-                updateButton: 'Update now',
-                cancelButton: 'Cancel installation',
+                item3: {
+                    update: 'While the firmware is updating, <b>leave your phone as is</b>. It won’t shut off.',
+                    install:
+                        'While the firmware is installing, <b>leave your phone as is</b>. It won’t shut off.',
+                },
             },
+            installButton: 'Install now',
+            updateButton: 'Update now',
+            cancelButton: 'Cancel installation',
         },
         firmwareUpdateScreen: {
             updateFirmware: 'Update firmware',

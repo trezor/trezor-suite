@@ -1,3 +1,7 @@
+import { useSelector } from 'react-redux';
+
+import { useSetAtom } from 'jotai';
+
 import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
 import {
     ConfirmFirmwareUpdateScreenContent,
