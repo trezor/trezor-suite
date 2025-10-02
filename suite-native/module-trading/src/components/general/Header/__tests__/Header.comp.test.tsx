@@ -14,16 +14,19 @@ describe('Header', () => {
         buyEnabled = false,
         sellEnabled = false,
         exchangeEnabled = false,
+        areTradingExchangeDexesEnabled = true,
     }: {
         buyEnabled?: boolean;
         sellEnabled?: boolean;
         exchangeEnabled?: boolean;
+        areTradingExchangeDexesEnabled?: boolean;
     }) => ({
         featureFlags: {
             ...featureFlagsInitialState,
             [FeatureFlag.IsTradingBuyEnabled]: buyEnabled,
             [FeatureFlag.IsTradingExchangeEnabled]: exchangeEnabled,
             [FeatureFlag.IsTradingSellEnabled]: sellEnabled,
+            [FeatureFlag.AreTradingExchangeDexesEnabled]: areTradingExchangeDexesEnabled,
         },
     });
 
@@ -31,15 +34,22 @@ describe('Header', () => {
         buyEnabled = false,
         sellEnabled = false,
         exchangeEnabled = false,
+        areTradingExchangeDexesEnabled = true,
         tradingPreloadedState = undefined,
     }: {
         buyEnabled?: boolean;
         sellEnabled?: boolean;
         exchangeEnabled?: boolean;
+        areTradingExchangeDexesEnabled?: boolean;
         tradingPreloadedState?: TradingRootState | undefined;
     }) => {
         const preloadedState: PreloadedState = {
-            ...getFFPreloadedState({ buyEnabled, sellEnabled, exchangeEnabled }),
+            ...getFFPreloadedState({
+                buyEnabled,
+                sellEnabled,
+                exchangeEnabled,
+                areTradingExchangeDexesEnabled,
+            }),
 
             messageSystem: {
                 validMessages: {
@@ -184,5 +194,15 @@ describe('Header', () => {
         });
 
         expect(getByLabelText('Advanced settings')).toBeOnTheScreen();
+    });
+
+    it('should not display settings wheel when AreTradingExchangeDexesEnabled is disabled', async () => {
+        const { queryByLabelText } = await renderHeader({
+            buyEnabled: true,
+            exchangeEnabled: true,
+            areTradingExchangeDexesEnabled: false,
+        });
+
+        expect(queryByLabelText('Advanced settings')).toBeNull();
     });
 });
