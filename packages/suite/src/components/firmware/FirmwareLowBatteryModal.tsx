@@ -1,3 +1,4 @@
+import { DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD } from '@suite-common/wallet-core';
 import { Card, Column, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -16,7 +17,10 @@ export const FirmwareLowBatteryModal = ({ onClose }: FirmwareLowBatteryModalProp
                     <Translation id="TR_FW_INSTALL_MAY_TAKE_A_WHILE" />
                 </Text>
                 <Text>
-                    <Translation id="TR_CHARGE_TO_50_ATLEAST" />
+                    <Translation
+                        id="TR_CHARGE_BATTERY_TO_ATLEAST"
+                        values={{ percentage: DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD }}
+                    />
                 </Text>
             </Column>
         </Card>

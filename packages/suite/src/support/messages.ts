@@ -4752,9 +4752,9 @@ export default defineMessages({
         id: 'TR_FW_INSTALL_MAY_TAKE_A_WHILE',
         defaultMessage: 'Firmware installation may take a while',
     },
-    TR_CHARGE_TO_50_ATLEAST: {
-        id: 'TR_CHARGE_TO_50_ATLEAST',
-        defaultMessage: 'Charge your Trezor to at least 40% to prevent interruptions.',
+    TR_CHARGE_BATTERY_TO_ATLEAST: {
+        id: 'TR_CHARGE_BATTERY_TO_ATLEAST',
+        defaultMessage: 'Charge your Trezor to at least {percentage}% to prevent interruptions.',
     },
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
