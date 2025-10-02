@@ -3,13 +3,13 @@ import { useForm } from 'react-hook-form';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
-import { CRYPTO_INPUT, OUTPUT_AMOUNT, UseStakeFormsProps } from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
@@ -17,7 +17,11 @@ import { useStakeCompose } from './form/useStakeCompose';
 export const ClaimFormContext = createContext<ClaimContextValues | null>(null);
 ClaimFormContext.displayName = 'ClaimFormContext';
 
-export const useClaimForm = ({ selectedAccount }: UseStakeFormsProps): ClaimContextValues => {
+type UseClaimFormsProps = {
+    selectedAccount: SelectedAccountLoaded;
+};
+
+export const useClaimForm = ({ selectedAccount }: UseClaimFormsProps): ClaimContextValues => {
     const dispatch = useDispatch();
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);

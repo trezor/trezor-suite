@@ -2,7 +2,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { StakeFormState } from '@suite-common/wallet-types';
-import { getInputState, getStakingLimitsByNetwork } from '@suite-common/wallet-utils';
+import { getInputState, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -47,8 +47,11 @@ export const StakeInputs = () => {
         setCurrency,
     } = useStakeFormContext();
 
-    const { MIN_FOR_WITHDRAWALS, MAX_AMOUNT_FOR_STAKING, MIN_AMOUNT_FOR_STAKING } =
-        getStakingLimitsByNetwork(account);
+    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
+
+    if (!stakingLimits) {
+        return null;
+    }
 
     const cryptoError = errors.cryptoInput;
     const fiatError = errors.fiatInput;
@@ -74,7 +77,9 @@ export const StakeInputs = () => {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
-            max: validateStakingMax(translationString, { maxAmount: MAX_AMOUNT_FOR_STAKING }),
+            max: validateStakingMax(translationString, {
+                maxAmount: stakingLimits.MAX_AMOUNT_FOR_STAKING,
+            }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
@@ -97,21 +102,21 @@ export const StakeInputs = () => {
         return new BigNumber(account.formattedBalance)
             .dividedBy(divisor)
             .decimalPlaces(network.decimals)
-            .lte(MIN_AMOUNT_FOR_STAKING);
+            .lte(stakingLimits.MIN_AMOUNT_FOR_STAKING);
     };
 
     const tooltip = (
         <Translation
             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
             values={{
-                amount: MIN_AMOUNT_FOR_STAKING.toString(),
+                amount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
                 networkDisplaySymbol,
             }}
         />
     );
 
     const isBalanceBelowMinStake = new BigNumber(account.formattedBalance || '0').lt(
-        MIN_AMOUNT_FOR_STAKING,
+        stakingLimits.MIN_AMOUNT_FOR_STAKING,
     );
 
     return (
@@ -218,7 +223,7 @@ export const StakeInputs = () => {
                                 : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
                         }
                         values={{
-                            amount: MIN_FOR_WITHDRAWALS.toString(),
+                            amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
                             networkDisplaySymbol,
                         }}
                     />
@@ -229,7 +234,7 @@ export const StakeInputs = () => {
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
-                            amount: MIN_FOR_WITHDRAWALS.toString(),
+                            amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
                             networkDisplaySymbol,
                         }}
                     />

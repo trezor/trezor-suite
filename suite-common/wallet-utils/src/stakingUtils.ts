@@ -47,8 +47,19 @@ export const getAccountTotalStakingBalance = (account: Account) => {
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
 
-export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol | undefined) => {
+export type StakingLimits = {
+    MIN_AMOUNT_FOR_STAKING: BigNumber;
+    MAX_AMOUNT_FOR_STAKING: BigNumber;
+    MIN_FOR_WITHDRAWALS: BigNumber;
+    MIN_BALANCE_FOR_STAKING: BigNumber;
+};
+
+export const getStakingLimitsByNetworkSymbol = (
+    symbol: NetworkSymbol | undefined,
+): StakingLimits | null => {
     switch (symbol) {
+        case 'tsep':
+        case 'thol':
         case 'eth':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_ETH_AMOUNT_FOR_STAKING,
@@ -56,6 +67,8 @@ export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol | undefine
                 MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_STAKING: MIN_ETH_BALANCE_FOR_STAKING,
             };
+
+        case 'dsol':
         case 'sol':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_SOL_AMOUNT_FOR_STAKING,
@@ -63,36 +76,18 @@ export const getStakingLimitsByNetworkSymbol = (symbol: NetworkSymbol | undefine
                 MIN_FOR_WITHDRAWALS: MIN_SOL_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_STAKING: MIN_SOL_BALANCE_FOR_STAKING,
             };
-        default:
-            return null;
-    }
-};
 
-export const getStakingLimitsByNetwork = (account: Account) => {
-    switch (account.networkType) {
-        case 'ethereum':
-            return {
-                MIN_AMOUNT_FOR_STAKING: MIN_ETH_AMOUNT_FOR_STAKING,
-                MAX_AMOUNT_FOR_STAKING: MAX_ETH_AMOUNT_FOR_STAKING,
-                MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
-                MIN_BALANCE_FOR_STAKING: MIN_ETH_BALANCE_FOR_STAKING,
-            };
-        case 'solana':
-            return {
-                MIN_AMOUNT_FOR_STAKING: MIN_SOL_AMOUNT_FOR_STAKING,
-                MAX_AMOUNT_FOR_STAKING: MAX_SOL_AMOUNT_FOR_STAKING,
-                MIN_FOR_WITHDRAWALS: MIN_SOL_FOR_WITHDRAWALS,
-                MIN_BALANCE_FOR_STAKING: MIN_SOL_BALANCE_FOR_STAKING,
-            };
-        case 'cardano':
+        case 'tada':
+        case 'ada':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_CARDANO_AMOUNT_FOR_STAKING,
                 MAX_AMOUNT_FOR_STAKING: MAX_CARDANO_AMOUNT_FOR_STAKING,
                 MIN_FOR_WITHDRAWALS: MIN_CARDANO_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_STAKING: MIN_CARDANO_BALANCE_FOR_STAKING,
             };
+
         default:
-            throw new Error(`Unsupported network type: ${account.networkType}`);
+            return null;
     }
 };
 

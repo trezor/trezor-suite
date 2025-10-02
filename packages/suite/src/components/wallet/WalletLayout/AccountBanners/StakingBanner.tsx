@@ -45,7 +45,6 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { route } = useSelector(state => state.router);
     const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
     const displaySymbol = getDisplaySymbol(account.symbol);
     const stakingData = getStakingDataForNetwork(account);
@@ -120,6 +119,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     };
 
     const { isStakingBannerClosed } = getNetworkDetails(account.networkType) ?? {};
+    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
     if (
         route?.name !== 'wallet-index' ||
