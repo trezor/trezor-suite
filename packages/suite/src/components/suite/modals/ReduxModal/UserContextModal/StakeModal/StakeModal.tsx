@@ -1,5 +1,6 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { StakingLimits, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Grid, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -15,12 +16,17 @@ import { StakeInfoCards } from './StakeInfoCards/StakeInfoCards';
 interface StakeModalModalProps {
     onCancel?: () => void;
     selectedAccount: SelectedAccountLoaded;
+    stakingLimits: StakingLimits;
 }
 
-export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalProps) => {
+export const StakeModalLoaded = ({
+    onCancel,
+    selectedAccount,
+    stakingLimits,
+}: StakeModalModalProps) => {
     const { account } = selectedAccount;
 
-    const stakeContextValues = useStakeForm({ selectedAccount });
+    const stakeContextValues = useStakeForm({ selectedAccount, stakingLimits });
     const { isBelowTablet } = useLayoutSize();
 
     const onCancelClick = () => {
@@ -58,7 +64,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
     );
 };
 
-export const StakeModal = ({ onCancel }: Omit<StakeModalModalProps, 'selectedAccount'>) => {
+export const StakeModal = ({ onCancel }: Pick<StakeModalModalProps, 'onCancel'>) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded' || !selectedAccount.account) {
@@ -67,10 +73,17 @@ export const StakeModal = ({ onCancel }: Omit<StakeModalModalProps, 'selectedAcc
         return null;
     }
 
+    const stakingLimits = getStakingLimitsByNetworkSymbol(selectedAccount.account.symbol);
+
+    if (!stakingLimits) {
+        return null;
+    }
+
     return (
         <StakeModalLoaded
             onCancel={onCancel}
             selectedAccount={selectedAccount as SelectedAccountLoaded}
+            stakingLimits={stakingLimits}
         />
     );
 };

@@ -16,7 +16,7 @@ import {
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
@@ -28,12 +28,7 @@ import { BigNumber, isChanged } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    CRYPTO_INPUT,
-    FIAT_INPUT,
-    OUTPUT_AMOUNT,
-    UseStakeFormsProps,
-} from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
@@ -50,7 +45,11 @@ type UnstakeContextValues = UnstakeContextValuesBase & {
 export const UnstakeFormContext = createContext<UnstakeContextValues | null>(null);
 UnstakeFormContext.displayName = 'UnstakeFormContext';
 
-export const useUnstakeForm = ({ selectedAccount }: UseStakeFormsProps): UnstakeContextValues => {
+type UseUnstakeFormsProps = {
+    selectedAccount: SelectedAccountLoaded;
+};
+
+export const useUnstakeForm = ({ selectedAccount }: UseUnstakeFormsProps): UnstakeContextValues => {
     const dispatch = useDispatch();
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,

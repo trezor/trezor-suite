@@ -12,12 +12,16 @@ import {
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import {
+    PrecomposedTransactionFinal,
+    SelectedAccountLoaded,
+    StakeFormState,
+} from '@suite-common/wallet-types';
+import {
+    StakingLimits,
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
-    getStakingLimitsByNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { isChanged } from '@trezor/utils';
@@ -25,12 +29,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    CRYPTO_INPUT,
-    FIAT_INPUT,
-    OUTPUT_AMOUNT,
-    UseStakeFormsProps,
-} from 'src/types/wallet/stakeForms';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
@@ -39,11 +38,18 @@ import { useStakeCompose } from './form/useStakeCompose';
 export const StakeFormContext = createContext<StakeContextValues | null>(null);
 StakeFormContext.displayName = 'StakeFormContext';
 
-export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
+type UseStakeFormsProps = {
+    selectedAccount: SelectedAccountLoaded;
+    stakingLimits: StakingLimits;
+};
+
+export const useStakeForm = ({
+    selectedAccount,
+    stakingLimits,
+}: UseStakeFormsProps): StakeContextValues => {
     const dispatch = useDispatch();
 
     const { account, network } = selectedAccount;
-    const { symbol } = account;
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
@@ -51,19 +57,20 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
 
     const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, baseCurrencyCode), 'current'),
+        selectFiatRatesByFiatRateKey(
+            state,
+            getFiatRateKey(account.symbol, baseCurrencyCode),
+            'current',
+        ),
     );
 
-    const { MIN_AMOUNT_FOR_STAKING, MIN_FOR_WITHDRAWALS, MIN_BALANCE_FOR_STAKING } =
-        getStakingLimitsByNetwork(account);
-
     const amountLimits: AmountLimitProps = {
-        currency: symbol,
-        minCrypto: MIN_AMOUNT_FOR_STAKING.toString(),
+        currency: account.symbol,
+        minCrypto: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
         maxCrypto: account.formattedBalance,
         minFiat:
             toFiatCurrency({
-                amount: MIN_AMOUNT_FOR_STAKING.toString(),
+                amount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
                 rate: currentRate?.rate,
             })?.toFixed(2) ?? undefined,
         maxFiat:
@@ -204,14 +211,14 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
             const balanceMinusFee = balance.minus(composedFee);
 
             if (
-                cryptoValue.gt(balanceMinusFee.minus(MIN_FOR_WITHDRAWALS)) &&
+                cryptoValue.gt(balanceMinusFee.minus(stakingLimits.MIN_FOR_WITHDRAWALS)) &&
                 cryptoValue.lt(balanceMinusFee) &&
-                cryptoValue.gte(MIN_AMOUNT_FOR_STAKING)
+                cryptoValue.gte(stakingLimits.MIN_AMOUNT_FOR_STAKING)
             ) {
                 setIsAdviceForWithdrawalWarningShown(true);
             }
         },
-        [composedFee, MIN_FOR_WITHDRAWALS, MIN_AMOUNT_FOR_STAKING],
+        [composedFee, stakingLimits.MIN_FOR_WITHDRAWALS, stakingLimits.MIN_AMOUNT_FOR_STAKING],
     );
 
     const onCryptoAmountChange = useCallback(
@@ -303,13 +310,17 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
 
         const amount = new BigNumber(account.formattedBalance).toString();
 
-        if (amount < MIN_BALANCE_FOR_STAKING.toString()) {
+        if (amount < stakingLimits.MIN_BALANCE_FOR_STAKING.toString()) {
             setIsLessAmountForWithdrawalWarningShown(true);
         }
 
-        setValue(OUTPUT_AMOUNT, new BigNumber(amount).minus(MIN_FOR_WITHDRAWALS).toString() || '', {
-            shouldDirty: true,
-        });
+        setValue(
+            OUTPUT_AMOUNT,
+            new BigNumber(amount).minus(stakingLimits.MIN_FOR_WITHDRAWALS).toString() || '',
+            {
+                shouldDirty: true,
+            },
+        );
 
         await composeRequest(CRYPTO_INPUT);
         setIsAmountForWithdrawalWarningShown(true);
@@ -318,8 +329,8 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
         clearErrors,
         composeRequest,
         setValue,
-        MIN_BALANCE_FOR_STAKING,
-        MIN_FOR_WITHDRAWALS,
+        stakingLimits.MIN_BALANCE_FOR_STAKING,
+        stakingLimits.MIN_FOR_WITHDRAWALS,
     ]);
 
     useEffect(() => {
