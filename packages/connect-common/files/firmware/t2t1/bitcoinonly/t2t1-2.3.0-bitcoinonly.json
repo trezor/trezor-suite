@@ -1,5 +1,5 @@
 {
-    "required": false,
+    "required": true,
     "version": [2, 3, 0],
     "min_bridge_version": [2, 0, 7],
     "min_bootloader_version": [2, 0, 0],
