@@ -182,7 +182,7 @@ export const prepareTrezorEmulator = async ({
                 passphrase_protection,
             });
         }
-        await TrezorUserEnvLink.startBridge();
+        await TrezorUserEnvLink.startBridge('node-bridge');
     }
 };
 
