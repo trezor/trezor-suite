@@ -44,7 +44,6 @@ export const NetworkTabs = ({
     const networkKeys = networkSymbolCollection.filter(item => tabs.includes(item));
     const networkTabs = networkKeys.map(key => getNetwork(key));
 
-    // TODO: FormattedMessage - resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325}
     return (
         <NetworkTabsWrapper $elevation={elevation}>
             <Row gap={spacings.xs} flexWrap="wrap">
