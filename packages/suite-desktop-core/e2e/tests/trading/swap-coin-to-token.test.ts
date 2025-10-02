@@ -1,5 +1,4 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
-import messages from '@trezor/suite/src/support/messages';
 
 import {
     getCompanyNameFromList,
@@ -76,8 +75,8 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnl
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
             await expect(page.getByTestId('@toast/tx-exchange')).toContainText(toastText);
-            await expect(tradingPage.transactionDetailStatus).toHaveText(
-                messages['TR_EXCHANGE_DETAIL_SUCCESS_TITLE'].defaultMessage,
+            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
             );
             await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
                 formattedSendAmount,

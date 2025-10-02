@@ -1,5 +1,4 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
-import messages from '@trezor/suite/src/support/messages';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
@@ -124,8 +123,8 @@ test.describe(
                     await route.fulfill({ json: { status: 'SUCCESS' } });
                 });
                 await page.clock.fastForward(tradingMock.watchPeriod);
-                await expect(tradingPage.transactionDetailStatus).toHaveText(
-                    messages['TR_SELL_DETAIL_SUCCESS_TITLE'].defaultMessage,
+                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                    'TR_SELL_DETAIL_SUCCESS_TITLE',
                 );
                 await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
                 await expect(tradingPage.confirmationCryptoAmount).toHaveText(
