@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsFirmwareUpgradable } from '@suite-common/wallet-core';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
-import { useDeviceLowBatteryAlert } from '@suite-native/device';
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import {
     ConfirmBottomSheet,
@@ -35,19 +34,14 @@ export const ConfirmFirmwareUpdateScreen = () => {
     const { openModal, bottomSheetRef, closeModal } = useBottomSheetModal();
     const { navigateToCheckBackup } = useNavigateToCheckBackup();
 
-    const { showLowBatteryAlertIfNecessary } = useDeviceLowBatteryAlert();
-
     const withModalClose = (callback: () => void) => () => {
         closeModal();
         callback();
     };
 
     const handleUpdateConfirmation = useCallback(() => {
-        if (showLowBatteryAlertIfNecessary()) {
-            return;
-        }
-        navigation.navigate(FirmwareUpdateStackRoutes.FirmwareInstallation);
-    }, [navigation, showLowBatteryAlertIfNecessary]);
+        navigation.replace(FirmwareUpdateStackRoutes.FirmwareInfo);
+    }, [navigation]);
 
     if (!isDeviceConnected) return;
 

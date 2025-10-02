@@ -14,6 +14,7 @@ import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySuccessScreen';
 import { DeviceDisconnectedScreen } from '../screens/DeviceDisconnectedScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
+import { FirmwareInfoScreen } from '../screens/FirmwareInfoScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { RecoveryInstructionsScreen } from '../screens/RecoveryInstructionsScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
@@ -56,6 +57,10 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.SecurityCheck}
             component={SecurityCheckScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.FirmwareInfo}
+            component={FirmwareInfoScreen}
         />
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate}

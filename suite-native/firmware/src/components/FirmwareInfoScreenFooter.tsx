@@ -23,8 +23,8 @@ export const FirmwareInfoScreenFooter = ({
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     const confirmButtonTranslationId = hasDeviceFirmwareInstalled
-        ? 'firmware.firmwareInfoScreen.list.updateButton'
-        : 'firmware.firmwareInfoScreen.list.installButton';
+        ? 'firmware.firmwareInfoScreen.updateButton'
+        : 'firmware.firmwareInfoScreen.installButton';
 
     return (
         <VStack spacing="sp12" marginHorizontal="sp16" marginBottom="sp16">
@@ -43,7 +43,7 @@ export const FirmwareInfoScreenFooter = ({
                 isLoading={isDiscoveryRunning}
                 colorScheme="tertiaryElevation0"
             >
-                <Translation id="firmware.firmwareInfoScreen.list.cancelButton" />
+                <Translation id="firmware.firmwareInfoScreen.cancelButton" />
             </Button>
         </VStack>
     );

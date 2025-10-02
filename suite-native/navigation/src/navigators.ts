@@ -142,6 +142,7 @@ export type DeviceOnboardingStackParamList = {
         suspicionCause: DeviceSuspicionCause;
     };
     [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
+    [DeviceOnboardingStackRoutes.FirmwareInfo]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
     [DeviceOnboardingStackRoutes.ThpPairingInfo]: undefined;
@@ -231,6 +232,7 @@ export type DevicePinProtectionStackParamList = {
 
 export type FirmwareUpdateStackParamList = {
     [FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate]: undefined;
+    [FirmwareUpdateStackRoutes.FirmwareInfo]: undefined;
     [FirmwareUpdateStackRoutes.FirmwareInstallation]: undefined;
     [FirmwareUpdateStackRoutes.ThpConfirmation]: undefined;
 };
