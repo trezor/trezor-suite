@@ -18,6 +18,7 @@ export class BackupSection {
     readonly failedBackupSetting: Locator;
     readonly backupFailedSettingLink: Locator;
     readonly backupFailedSettingButton: Locator;
+    readonly skipBackupButton: Locator;
 
     constructor(
         private page: Page,
@@ -47,6 +48,7 @@ export class BackupSection {
         this.backupFailedSettingButton = page.getByTestId(
             '@device-settings/backup-failed/disabled-button',
         );
+        this.skipBackupButton = this.page.getByTestId('@onboarding/skip-backup');
     }
 
     @step()

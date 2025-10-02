@@ -34,7 +34,7 @@ test.describe(
             const shares = 3;
             const threshold = 2;
             await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
-            await onboardingPage.setPinButton.click();
+            await onboardingPage.pin.setPinButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
 
             await trezorUserEnvLink.pressYes();

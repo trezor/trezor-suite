@@ -39,7 +39,6 @@ export class OnboardingPage {
     readonly continueAtYourOwnRiskButton: Locator;
     readonly pairingInputAtIndex = (index: number) =>
         this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
-    readonly setPinButton: Locator;
 
     constructor(
         public page: Page,
@@ -78,7 +77,6 @@ export class OnboardingPage {
             '@onboarding/select-seed-type-confirm',
         );
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
-        this.setPinButton = this.page.getByTestId('@onboarding/set-pin-button');
     }
 
     @step()
