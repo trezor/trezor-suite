@@ -6,7 +6,11 @@ import {
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    PrecomposedTransactionFinal,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { useForm } from '@suite-native/forms';
 
 import { FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
@@ -43,7 +47,9 @@ export const useFeesForm = ({
     const minimalFeeLimit =
         'estimatedFeeLimit' in feeLevels.normal ? feeLevels.normal.estimatedFeeLimit : undefined;
 
-    const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
+    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
+        ? (feeLevels.normal as PrecomposedTransactionFinal)
+        : undefined;
 
     return useForm<FeesFormValues>({
         validation: feesFormValidationSchema,

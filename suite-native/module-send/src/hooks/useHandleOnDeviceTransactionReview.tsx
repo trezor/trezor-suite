@@ -34,7 +34,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 type HandleOnDeviceTransactionReviewProps = {
     accountKey: string;
     tokenContract?: TokenAddress;
-    transaction: GeneralPrecomposedTransactionFinal;
+    transaction: GeneralPrecomposedTransactionFinal | null;
 };
 
 export const useHandleOnDeviceTransactionReview = ({
@@ -72,6 +72,10 @@ export const useHandleOnDeviceTransactionReview = ({
     }, [navigation, isTransactionReviewInProgress, showReviewCancellationAlert, dispatch]);
 
     const handleOnDeviceTransactionReview = useCallback(async () => {
+        if (!transaction) {
+            return;
+        }
+
         const response = await dispatch(
             signTransactionNativeThunk({
                 accountKey,

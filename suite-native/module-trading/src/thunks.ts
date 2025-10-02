@@ -24,7 +24,12 @@ import {
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { Account, FeeInfo, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    Account,
+    FeeInfo,
+    PrecomposedTransactionFinal,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { getFormDraftKey, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
@@ -168,7 +173,7 @@ export const composeTradingTransactionThunk = createThunk(
                 dispatch(transactionManagementActions.storeFeeLevels({ feeLevels }));
 
                 const selectedLevel = feeLevels[selectedFeeLevel];
-                if (selectedLevel && selectedLevel.type === 'final') {
+                if (selectedLevel && isFinalPrecomposedTransaction(selectedLevel)) {
                     const composed = (await dispatch(
                         enhancePrecomposedTransactionThunk({
                             transactionFormValues: formState,

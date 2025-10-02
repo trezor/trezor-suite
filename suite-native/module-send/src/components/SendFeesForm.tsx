@@ -91,6 +91,10 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
     });
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
+        if (!selectedFeeLevelTransaction) {
+            return;
+        }
+
         if (networkType === 'ripple' && destinationTag) {
             navigation.navigate(SendStackRoutes.SendDestinationTagReview, {
                 destinationTag,
@@ -134,11 +138,13 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
             {/*// BottomSheetModalProvider must be inside FormProvider to keep context available for sheets rendered via portal*/}
             <BottomSheetModalProvider>
                 <VStack spacing="sp32" flex={1}>
-                    <RecipientsSummary
-                        accountKey={accountKey}
-                        tokenContract={tokenContract}
-                        selectedFeeLevel={selectedFeeLevelTransaction}
-                    />
+                    {!!selectedFeeLevelTransaction && (
+                        <RecipientsSummary
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                            selectedFeeLevel={selectedFeeLevelTransaction}
+                        />
+                    )}
                     <VStack flex={1} justifyContent="space-between" spacing="sp24">
                         <VStack spacing="sp16">
                             <VStack spacing="sp4">
@@ -166,16 +172,18 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                                 />
                             </VStack>
                         </VStack>
-                        <FeesFooter
-                            accountKey={accountKey}
-                            isSubmittable={isSubmittable}
-                            onSubmit={handleNavigateToReviewScreen}
-                            totalAmount={totalAmount}
-                            fee={fee}
-                            symbol={symbol}
-                            tokenContract={tokenContract}
-                            withSubmitButton={true}
-                        />
+                        {!!totalAmount && !!fee && (
+                            <FeesFooter
+                                accountKey={accountKey}
+                                isSubmittable={isSubmittable}
+                                onSubmit={handleNavigateToReviewScreen}
+                                totalAmount={totalAmount}
+                                fee={fee}
+                                symbol={symbol}
+                                tokenContract={tokenContract}
+                                withSubmitButton={true}
+                            />
+                        )}
                     </VStack>
                 </VStack>
             </BottomSheetModalProvider>
