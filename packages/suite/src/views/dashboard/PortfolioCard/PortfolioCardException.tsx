@@ -35,11 +35,15 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
             <IconCircle name="warning" size={90} variant="warning" />
-            <H3 margin={{ top: spacings.md }}>
+            <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>
             {description && (
-                <Text variant="tertiary" typographyStyle="hint">
+                <Text
+                    data-testid={`@exception/${dataTestBase}/description`}
+                    variant="tertiary"
+                    typographyStyle="hint"
+                >
                     {typeof description === 'string' ? (
                         <Translation id={description} />
                     ) : (

@@ -54,7 +54,7 @@ test.describe(
                 await onboardingPage.pin.skip();
                 await onboardingPage.continueCoinsButton.click();
                 await expect(onboardingPage.finalTitle).toBeVisible();
-                await expect(onboardingPage.finalTitle).toContainText('Setup complete!');
+                await expect(onboardingPage.finalTitle).toContainTranslation('TR_FINAL_HEADING');
             },
         );
     },

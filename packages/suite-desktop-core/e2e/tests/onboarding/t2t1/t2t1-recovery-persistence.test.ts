@@ -72,34 +72,35 @@ test.describe(
             devicePrompt,
             indexedDb,
         }) => {
-            // Start recovery with some device
-            await page.getByTestId('@onboarding/recovery/start-button').click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.selectNumOfWordsEmu(20);
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await page.waitForTimeout(500); // Wait for device release
+            await test.step('Start recovery with some device', async () => {
+                await page.getByTestId('@onboarding/recovery/start-button').click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.selectNumOfWordsEmu(20);
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(500); // Wait for device release
+            });
 
-            // Disconnect device, reload application
-            await trezorUserEnvLink.stopEmu();
-            await devicePrompt.connectDevicePromptIsShown();
+            await test.step('Disconnect device, reload application', async () => {
+                await trezorUserEnvLink.stopEmu();
+                await devicePrompt.connectDevicePromptIsShown();
+                await indexedDb.reset();
+                await page.reload();
+            });
 
-            await indexedDb.reset();
-            await page.reload();
+            await test.step('Restart emulator and disable firmware hash check and analytics', async () => {
+                await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
+                await onboardingPage.disableNecessaryFirmwareChecks();
+                await analyticsSection.passThroughAnalytics();
+            });
 
-            // Restart emulator and disable firmware hash check
-            await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
-            await onboardingPage.disableNecessaryFirmwareChecks();
-
-            // Go through analytics opt-out again
-            await analyticsSection.passThroughAnalytics();
-
-            // Recovery device persisted after reload
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressNo();
-            await trezorUserEnvLink.pressYes();
+            await test.step('Recovery device persisted after reload', async () => {
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressNo();
+                await trezorUserEnvLink.pressYes();
+            });
         });
 
         test('Continue recovery after device is disconnected', async ({
@@ -107,41 +108,46 @@ test.describe(
             trezorUserEnvLink,
             devicePrompt,
         }) => {
-            // Start recovery
-            await page.getByTestId('@onboarding/recovery/start-button').click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.selectNumOfWordsEmu(20);
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await test.step('Start recovery', async () => {
+                await page.getByTestId('@onboarding/recovery/start-button').click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.selectNumOfWordsEmu(20);
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+            });
 
-            // Enter first Shamir share
-            for (const word of shareOneOfThree) {
-                await trezorUserEnvLink.inputEmu(word);
-            }
+            await test.step('Enter first Shamir share', async () => {
+                for (const word of shareOneOfThree) {
+                    await trezorUserEnvLink.inputEmu(word);
+                }
+                await devicePrompt.confirmOnDevicePromptIsShown();
+            });
 
-            await devicePrompt.confirmOnDevicePromptIsShown();
+            await test.step('Disconnect and reconnect device', async () => {
+                await trezorUserEnvLink.stopEmu();
+                await devicePrompt.connectDevicePromptIsShown();
+                await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
+                await devicePrompt.confirmOnDevicePromptIsShown();
 
-            // Disconnect and reconnect device
-            await trezorUserEnvLink.stopEmu();
-            await devicePrompt.connectDevicePromptIsShown();
-            await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
-            await devicePrompt.confirmOnDevicePromptIsShown();
+                // This is needed, because there seem to be some weird refreshes on the emu
+                // which means you confirm too early if you don't wait
+                await page.waitForTimeout(3000);
+                await trezorUserEnvLink.pressYes();
+            });
 
-            // This is needed, because there seem to be some weird refreshes on the emu
-            // which means you confirm too early if you don't wait
-            await page.waitForTimeout(3000);
-            await trezorUserEnvLink.pressYes();
+            await test.step('Enter second Shamir share', async () => {
+                for (const word of shareTwoOfThree) {
+                    await trezorUserEnvLink.inputEmu(word);
+                }
+                await trezorUserEnvLink.pressYes();
+            });
 
-            // Enter second Shamir share
-            for (const word of shareTwoOfThree) {
-                await trezorUserEnvLink.inputEmu(word);
-            }
-
-            await trezorUserEnvLink.pressYes();
-            await page.getByTestId('@onboarding/recovery/continue-button').click();
-            await page.getByTestId('@onboarding/skip-button').click();
+            await test.step('Finish onboarding', async () => {
+                await page.getByTestId('@onboarding/recovery/continue-button').click();
+                await page.getByTestId('@onboarding/skip-button').click();
+            });
         });
     },
 );
