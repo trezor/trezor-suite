@@ -306,7 +306,7 @@ export const TradingFormApproval = ({
     const isIncreasingAllowanceSupported = tokenSupportsIncreasingAllowance(contractAddress);
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={spacings.md} alignItems="center">
             {approvalStep === 'REQUIRED' && (
                 <>
                     {isApprovalTxPreApproved ? (
@@ -428,7 +428,7 @@ export const TradingFormApproval = ({
             )}
 
             {approvalStep === 'LOADING' && (
-                <Column alignItems="flex-start">
+                <Column width="100%" alignItems="flex-start">
                     <Row alignItems="flex-start" gap={spacings.sm}>
                         <IconWrapper>
                             <Icon name="spinnerGap" size="mediumLarge" />
