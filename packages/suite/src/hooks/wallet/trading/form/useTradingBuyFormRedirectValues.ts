@@ -15,19 +15,22 @@ export const useTradingBuyFormRedirectValues = (
 ): TradingBuyFormProps | null => {
     const { buildDefaultCryptoOption } = useTradingInfo();
 
-    return isFromRedirect && quotesRequest
-        ? {
-              amountInCrypto: quotesRequest.wantCrypto,
-              cryptoSelect: buildDefaultCryptoOption(quotesRequest.receiveCurrency),
-              currencySelect: buildTradingFiatOption(
-                  quotesRequest.fiatCurrency as FiatCurrencyCode,
-              ),
-              countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
-              cryptoInput: quotesRequest.cryptoStringAmount,
-              paymentMethod: quotesRequest.paymentMethod && {
-                  value: quotesRequest.paymentMethod,
-                  label: quotesRequest.paymentMethod,
-              },
-          }
-        : null;
+    if (!isFromRedirect || !quotesRequest) return null;
+
+    return {
+        amountInCrypto: quotesRequest.wantCrypto,
+        cryptoSelect: buildDefaultCryptoOption(quotesRequest.receiveCurrency),
+        currencySelect: buildTradingFiatOption(quotesRequest.fiatCurrency as FiatCurrencyCode),
+        countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
+
+        // fill the input that corresponds to the entered amount type
+        ...(quotesRequest.wantCrypto
+            ? { cryptoInput: quotesRequest.cryptoStringAmount }
+            : { fiatInput: quotesRequest.fiatStringAmount }),
+
+        paymentMethod: quotesRequest.paymentMethod && {
+            value: quotesRequest.paymentMethod,
+            label: quotesRequest.paymentMethod,
+        },
+    };
 };
