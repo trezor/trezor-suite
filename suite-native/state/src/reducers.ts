@@ -21,6 +21,7 @@ import {
     prepareBlockchainReducer,
     prepareDeviceReducer,
     prepareDiscoveryReducer,
+    prepareExplorerReducer,
     prepareFiatRatesReducer,
     prepareStakeReducer,
     prepareTransactionsReducer,
@@ -66,6 +67,7 @@ const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);
 const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 const blockchainReducer = prepareBlockchainReducer(extraDependencies);
+const explorerReducer = prepareExplorerReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
@@ -145,6 +147,7 @@ export const prepareRootReducers = async () => {
     const walletReducers = combineReducers({
         accounts: accountsReducer,
         blockchain: blockchainReducer,
+        explorer: explorerReducer,
         fiat: fiatRatesReducer,
         transactions: transactionsReducer,
         discovery: discoveryReducer,
