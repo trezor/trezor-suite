@@ -1,5 +1,4 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
-import messages from '@trezor/suite/src/support/messages';
 
 import { expect, test } from '../../support/fixtures';
 
@@ -42,16 +41,17 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                 await tradingPage.youPayCryptoInput.fill('0.000000001');
                 await expect
                     .soft(tradingPage.cryptoInputBottomText)
-                    .toHaveText('Maximum 8 decimals allowed', { timeout: 15_000 });
+                    .toHaveTranslation('AMOUNT_IS_NOT_IN_RANGE_DECIMALS', {
+                        placeholderValues: ['8'],
+                        timeout: 15_000,
+                    });
             });
 
             await test.step('Not enough funds', async () => {
                 await tradingPage.youPayCryptoInput.fill('10');
                 await expect
                     .soft(tradingPage.cryptoInputBottomText)
-                    .toHaveText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage, {
-                        timeout: 15_000,
-                    });
+                    .toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', { timeout: 15_000 });
             });
 
             await tradingPage.youPayCryptoInput.clear();

@@ -1,6 +1,10 @@
+/* eslint-disable playwright/no-standalone-expect */
 import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
 import { diff } from 'jest-diff';
 import { isEqual } from 'lodash';
+
+import { TranslationKey } from '@trezor/suite/src/components/suite/Translation';
+import messages from '@trezor/suite/src/support/messages';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DevicePrompt } from '../pageObjects/devicePrompt';
@@ -85,6 +89,18 @@ export const splitStringByDisplayLimit = (text: string) => {
     // Add a newline item into array after each item except the last one
     return splitLines.flatMap((line, index) =>
         index < splitLines.length - 1 ? [line.trim(), '\n'] : [line.trim()],
+    );
+};
+
+const applyPlaceholderValues = (
+    template: string,
+    placeholderValues: string[] | undefined,
+): string => {
+    if (!placeholderValues || placeholderValues.length === 0) return template;
+    let i = 0;
+
+    return template.replace(/\{[^}]+\}/g, () =>
+        i < placeholderValues.length ? placeholderValues[i++] : '',
     );
 };
 
@@ -194,6 +210,61 @@ export const expect = baseExpect.extend({
             pass: baseExpect.objectContaining(subObject).asymmetricMatch(superObject),
             message: () =>
                 `expected superObject to have subObject. Diff:\n${diff(subObject, superObject)}`,
+        };
+    },
+
+    async toHaveTranslation(
+        locator: Locator,
+        translationKey: TranslationKey,
+        // Some translations have placeholders like 'Maximum {decimals} decimals allowed'
+        options?: { isValue?: boolean; placeholderValues?: string[]; timeout?: number },
+    ) {
+        const expectedTranslation = applyPlaceholderValues(
+            messages[translationKey].defaultMessage,
+            options?.placeholderValues,
+        );
+
+        if (options?.isValue) {
+            await baseExpect(locator).toHaveValue(expectedTranslation, {
+                timeout: options?.timeout,
+            });
+        } else {
+            await baseExpect(locator).toHaveText(expectedTranslation, {
+                timeout: options?.timeout,
+            });
+        }
+
+        return {
+            pass: true,
+            message: () => 'errors are handled in expects above',
+        };
+    },
+
+    async toContainTranslation(
+        locator: Locator,
+        translationKey: TranslationKey,
+        // Some translations have placeholders like 'Maximum {decimals} decimals allowed'
+        options?: { isValue?: boolean; placeholderValues?: string[]; timeout?: number },
+    ) {
+        const expectedTranslation = applyPlaceholderValues(
+            messages[translationKey].defaultMessage,
+            options?.placeholderValues,
+        );
+        if (options?.isValue) {
+            await baseExpect
+                .poll(async () => await locator.inputValue(), {
+                    timeout: options?.timeout,
+                })
+                .toContain(expectedTranslation);
+        } else {
+            await baseExpect(locator).toContainText(expectedTranslation, {
+                timeout: options?.timeout,
+            });
+        }
+
+        return {
+            pass: true,
+            message: () => 'errors are handled in expects above',
         };
     },
 });

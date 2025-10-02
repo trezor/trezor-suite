@@ -1,5 +1,3 @@
-import messages from '@trezor/suite/src/support/messages';
-
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase duplicate', { tag: ['@group=passphrase'] }, () => {
@@ -24,11 +22,11 @@ test.describe('Passphrase duplicate', { tag: ['@group=passphrase'] }, () => {
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet(passphraseToType, { skipDiscovery: true });
             await expect(page.getByTestId('@passphrase-duplicate-header')).toBeVisible();
-            await expect(page.getByTestId('@passphrase-duplicate-header')).toHaveText(
-                messages['TR_WALLET_DUPLICATE_TITLE'].defaultMessage,
+            await expect(page.getByTestId('@passphrase-duplicate-header')).toHaveTranslation(
+                'TR_WALLET_DUPLICATE_TITLE',
             );
-            await expect(page.getByTestId('@passphrase-duplicate-description')).toHaveText(
-                messages['TR_WALLET_DUPLICATE_DESC'].defaultMessage,
+            await expect(page.getByTestId('@passphrase-duplicate-description')).toHaveTranslation(
+                'TR_WALLET_DUPLICATE_DESC',
             );
         });
     });

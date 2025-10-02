@@ -1,6 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import messages from '@trezor/suite/src/support/messages';
 import { BigNumber } from '@trezor/utils';
 
 import { calculatePercentageOfBalance } from '../../support/common';
@@ -75,7 +74,7 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
                     await stakingSection.cryptoInput.fill('4000');
                     await expect
                         .soft(stakingSection.cryptoInputBottomText)
-                        .toHaveText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage, {
+                        .toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', {
                             timeout: 15_000,
                         });
                 });
@@ -84,7 +83,7 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
                     await stakingSection.cryptoInput.clear();
                     await expect
                         .soft(stakingSection.cryptoInputBottomText)
-                        .toHaveText(messages['AMOUNT_IS_NOT_SET'].defaultMessage, {
+                        .toHaveTranslation('AMOUNT_IS_NOT_SET', {
                             timeout: 15_000,
                         });
 

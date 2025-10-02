@@ -1,6 +1,5 @@
 import { escapeRegExp } from 'lodash';
 
-import messages from '@trezor/suite/src/support/messages';
 import { EventType } from '@trezor/suite-analytics';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
@@ -50,16 +49,16 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
 
         await test.step('Check dashboard notification error banner', async () => {
             await expect(onboardingPage.backup.errorBanner).toBeVisible({ timeout: 30_000 });
-            await expect(onboardingPage.backup.errorBanner).toContainText(
-                messages['TR_FAILED_BACKUP'].defaultMessage,
+            await expect(onboardingPage.backup.errorBanner).toContainTranslation(
+                'TR_FAILED_BACKUP',
             );
         });
 
         await test.step('Check backup failed setting in device settings', async () => {
             await onboardingPage.backup.errorBannerContinueButton.click();
             await expect(onboardingPage.backup.failedBackupSetting).toBeVisible();
-            await expect(onboardingPage.backup.failedBackupSetting).toContainText(
-                messages['TR_BACKUP_RECOVERY_SEED_FAILED_DESC'].defaultMessage,
+            await expect(onboardingPage.backup.failedBackupSetting).toContainTranslation(
+                'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
             );
             // removes URL query params .../recovery-issues?utm_medium=desktop|web|???
             const urlBase = HELP_CENTER_RECOVERY_ISSUES_URL.split('?')[0];

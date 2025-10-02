@@ -40,8 +40,8 @@ export const enhancePage = (page: Page): Page => {
     //Retry mechanism for settings dropdowns which tend to be flaky in automation
     page.selectDropdownOptionWithRetry = async function (dropdown: Locator, option: Locator) {
         await test.step('Select dropdown option with RETRY', async () => {
-            await dropdown.scrollIntoViewIfNeeded();
             await expect(async () => {
+                await dropdown.scrollIntoViewIfNeeded();
                 if (!(await option.isVisible())) {
                     await dropdown.click({ timeout: 2000 });
                 }
