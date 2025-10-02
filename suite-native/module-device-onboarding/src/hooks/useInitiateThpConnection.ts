@@ -30,7 +30,7 @@ export const useInitiateThpConnection = () => {
 
     useEffect(() => {
         if (thpStep === 'ConfirmConnectionBeforePairing' || thpStep === 'ConfirmOnlyConnection') {
-            navigation.navigate(DeviceOnboardingStackRoutes.ThpConfirmation);
+            navigation.replace(DeviceOnboardingStackRoutes.ThpConfirmation);
         }
     }, [thpStep, navigation]);
 

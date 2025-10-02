@@ -42,7 +42,7 @@ export const ConfirmFirmwareUpdateScreen = ({
         updateOnboardingAnalytics({
             firmware: hasDeviceFirmwareInstalled ? 'update' : 'install',
         });
-        navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInstallation);
+        navigation.replace(DeviceOnboardingStackRoutes.FirmwareInstallation);
     };
 
     const handleSkipUpdate = () => {

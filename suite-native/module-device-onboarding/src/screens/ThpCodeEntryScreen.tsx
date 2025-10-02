@@ -21,7 +21,7 @@ export const ThpCodeEntryScreen = ({
 
     useEffect(() => {
         if (thpStep === null) {
-            navigation.navigate(DeviceOnboardingStackRoutes.ThpPairingSuccess);
+            navigation.replace(DeviceOnboardingStackRoutes.ThpPairingSuccess);
         }
     }, [thpStep, navigation]);
 

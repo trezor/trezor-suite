@@ -35,15 +35,15 @@ export const useNavigateToNextScreenAfterFirmwareInstallation = () => {
 
     const navigateToNextScreenAfterFirmwareInstallation = () => {
         if (thpStep === 'BeforeConnectionInfo') {
-            navigation.navigate(DeviceOnboardingStackRoutes.ThpPairingInfo);
+            navigation.replace(DeviceOnboardingStackRoutes.ThpPairingInfo);
         } else if (isDeviceTutorialSupported) {
-            navigation.navigate(
+            navigation.replace(
                 shouldAuthenticateSelectedDevice
                     ? DeviceOnboardingStackRoutes.DeviceAuthenticity
                     : DeviceOnboardingStackRoutes.DeviceTutorial,
             );
         } else {
-            navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
+            navigation.replace(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
         }
     };
 

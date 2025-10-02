@@ -70,7 +70,7 @@ export const SecurityCheckScreen = ({
             return;
         }
 
-        navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInstallation);
+        navigation.replace(DeviceOnboardingStackRoutes.FirmwareInstallation);
     };
 
     const handlePressSecondaryButton = (id?: DeviceSuspicionCause) => {

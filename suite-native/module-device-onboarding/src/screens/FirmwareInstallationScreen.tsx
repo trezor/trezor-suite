@@ -1,4 +1,5 @@
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
+import { useOverrideBackNavigation } from '@suite-native/navigation';
 
 import { DeviceOnboardingExitButtonScreenHeader } from '../components/DeviceOnboardingScreenWithExitButton';
 import { useExitAlert } from '../hooks/useExitAlert';
@@ -8,6 +9,7 @@ export const FirmwareInstallationScreen = () => {
     const { handleExitButtonPress } = useExitAlert();
     const { navigateToNextScreenAfterFirmwareInstallation } =
         useNavigateToNextScreenAfterFirmwareInstallation();
+    useOverrideBackNavigation();
 
     return (
         <FirmwareInstallationScreenContent
