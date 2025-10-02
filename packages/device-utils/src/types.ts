@@ -121,8 +121,6 @@ export interface IntermediaryReleaseConfig {
     min_firmware_version: VersionArray;
     min_bootloader_version: VersionArray;
     version: number;
-    firmware_revision: string;
-    url: string;
 }
 
 export interface FirmwareReleaseConfig {
