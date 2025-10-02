@@ -1,5 +1,5 @@
 import { Box, Text } from '@suite-native/atoms';
-import { formatNumberWithThousandCommas } from '@suite-native/formatters/src/utils';
+import { formatNumberWithThousandCommas } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 export type MyAssetsDisabledListItemProps = {

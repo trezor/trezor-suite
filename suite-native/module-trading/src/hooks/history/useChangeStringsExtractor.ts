@@ -11,7 +11,7 @@ import {
 import {
     convertTokenValueToDecimal,
     formatNumberWithThousandCommas,
-} from '@suite-native/formatters/src/utils';
+} from '@suite-native/formatters';
 import { BigNumber } from '@trezor/utils';
 
 import { TradeOperationData, getTradeOperationData } from '../../utils/general/utils';
