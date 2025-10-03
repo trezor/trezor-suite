@@ -1,10 +1,8 @@
-import { BuyTrade, CoinInfo, FormResponse } from 'invity-api';
+import { FormResponse } from 'invity-api';
 
 import { trezorLogo } from '@suite-common/suite-constants';
-import { TradingType, cryptoIdToNetwork } from '@suite-common/trading';
+import { TradingType } from '@suite-common/trading';
 import { xssFilters } from '@trezor/utils';
-
-import { coinInfoToTradeableAsset } from './tradeableAssetUtils';
 
 type TemplateOptions = {
     title?: string;
@@ -22,11 +20,6 @@ export type BuildTradingUrlProps = {
     tradeType: TradingType;
     orderId: string | undefined;
     exchange: string | undefined;
-};
-
-export type GetAnalyticsTradingBuyPayloadProps = {
-    quote: BuyTrade | undefined;
-    coinInfo: CoinInfo | undefined;
 };
 
 export const TRADING_URL_BASE = 'trezorsuite://trading';
@@ -145,29 +138,4 @@ export const buildTradingUrl = ({
     }
 
     return url.toString();
-};
-
-export const getAnalyticsTradingBuyPayload = ({
-    quote,
-    coinInfo,
-}: GetAnalyticsTradingBuyPayloadProps) => {
-    if (!coinInfo || !quote?.receiveCurrency) {
-        return null;
-    }
-
-    const tradeableAsset = coinInfoToTradeableAsset(quote.receiveCurrency, coinInfo);
-    const symbol = cryptoIdToNetwork(quote.receiveCurrency)?.symbol;
-
-    if (!tradeableAsset) {
-        return null;
-    }
-
-    return {
-        cryptoLabel: tradeableAsset.symbol,
-        cryptoNetworkSymbol: symbol,
-        cryptoContractAddress: tradeableAsset.contractAddress,
-        paymentMethod: quote.paymentMethod,
-        countryOfResidence: quote.country,
-        exchangeName: quote.exchange,
-    };
 };

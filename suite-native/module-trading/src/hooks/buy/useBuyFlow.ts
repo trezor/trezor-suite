@@ -25,11 +25,8 @@ import { useTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';
 import { BuyFormType } from '../../types/buy';
-import {
-    buildTradingUrl,
-    getAnalyticsTradingBuyPayload,
-    getSourceForForm,
-} from '../../utils/general/formUtils';
+import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
+import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
 import {
     getReceiveAccountAddressText,
     isFullySelectedReceiveAccount,
