@@ -829,11 +829,8 @@ export const messages = {
             title: 'Unpair Trezor',
             content: 'Unpair your Trezor from this device',
             unpairTrezorButton: 'Unpair',
-            info: {
-                title: 'Unpair Trezor',
-                description:
-                    'This removes your Trezor from the list of paired devices in Trezor Suite.',
-            },
+            description:
+                'This removes your Trezor from the list of paired devices in Trezor Suite.',
             successMessage: 'Trezor has been unpaired.',
         },
         autoconnect: {

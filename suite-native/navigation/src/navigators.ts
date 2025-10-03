@@ -221,6 +221,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.PinProtection]: undefined;
     [DeviceSettingsStackRoutes.AutoConnectSettings]: undefined;
     [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
+    [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {
