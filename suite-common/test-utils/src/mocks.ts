@@ -165,7 +165,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
 
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
-            descriptor: { apiType: 'usb' },
+            descriptor: { apiType: 'usb', id: 'device-id' },
             type: 'unreadable',
             path,
             label: 'Unreadable device',
@@ -177,7 +177,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
 
     if (dev && typeof dev.type === 'string' && dev.type === 'unacquired') {
         return {
-            descriptor: { apiType: 'usb' },
+            descriptor: { apiType: 'usb', id: 'device-id' },
             type: dev.type,
             path,
             label: 'Unacquired device',
@@ -191,7 +191,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
     const features = getDeviceFeatures(feat);
 
     return {
-        descriptor: { apiType: 'usb' },
+        descriptor: { apiType: 'usb', id: 'device-id' },
         id: features.device_id,
         // @ts-expect-error
         path: '',
@@ -245,6 +245,7 @@ const getSuiteDevice = (
             ts: 0,
             buttonRequests: [],
             metadata: {},
+
             ...dev,
             ...device,
             state: dev?.state

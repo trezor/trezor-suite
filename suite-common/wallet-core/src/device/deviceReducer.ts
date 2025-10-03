@@ -132,14 +132,16 @@ const connectDevice = (draft: DeviceReducerState, device: Device) => {
     // connected device is unacquired/unreadable
     if (!device.features) {
         const knownDevices = draft.devices.filter(
-            ({ bluetoothProps }) =>
-                bluetoothProps && bluetoothProps?.id === device.bluetoothProps?.id,
+            ({ descriptor }) =>
+                descriptor &&
+                descriptor?.id === device.descriptor?.id &&
+                descriptor.apiType === device.descriptor?.apiType,
         );
         if (knownDevices.length > 0) {
             knownDevices.forEach(dd => {
                 dd.connected = true;
                 dd.path = device.path;
-                dd.status = device.status;
+                dd.status = 'used';
                 dd.thp = device.thp;
             });
 
