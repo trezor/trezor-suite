@@ -65,6 +65,11 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (device.status === 'busy') {
         return 'device-busy';
     }
+
+    if (device.status === 'bootloader-locked') {
+        return 'device-bootloader-locked';
+    }
+
     if (device.type === 'acquired') {
         if (!device.connected) {
             return 'disconnected';
@@ -102,10 +107,6 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
 
     if (device.status === 'rebooting') {
         return 'device-rebooting';
-    }
-
-    if (device.status === 'bootloader-locked') {
-        return 'device-bootloader-locked';
     }
 
     if (device.status === 'hard-locked') {

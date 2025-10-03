@@ -41,7 +41,7 @@ const getDeviceNeedsAttentionMessage = (
         case 'device-busy':
             return 'TR_NEEDS_ATTENTION_DEVICE_BUSY';
         case 'device-bootloader-locked':
-            return 'TR_NEEDS_ATTENTION_DEVICE_BUSY'; // TODO
+            return 'TR_CONFIRM_CONNECTION';
         case 'device-hard-locked':
             return 'TR_NEEDS_ATTENTION_DEVICE_BUSY'; // TODO
         case 'device-pin-locked':

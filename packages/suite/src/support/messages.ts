@@ -11089,4 +11089,8 @@ export default defineMessages({
         id: 'TR_REINSTALL',
         defaultMessage: 'Reinstall',
     },
+    TR_CONFIRM_CONNECTION: {
+        id: 'TR_CONFIRM_CONNECTION',
+        defaultMessage: 'Confirm connection on Trezor.',
+    },
 } as const);
