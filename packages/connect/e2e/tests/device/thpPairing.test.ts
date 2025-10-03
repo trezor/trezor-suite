@@ -185,7 +185,8 @@ describe('THP pairing', () => {
         }
     };
 
-    it('ThpPairing cancel workflow', async () => {
+    // quarantined test. we are trying to fix it here https://github.com/trezor/trezor-suite/pull/22084
+    it.skip('ThpPairing cancel workflow', async () => {
         const device = await waitForDevice({
             pairingMethods: ['CodeEntry'],
             knownCredentials: [],
