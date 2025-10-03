@@ -36,13 +36,10 @@ async function readAndAssert<T extends Receiver>(
     }
 
     const bytes = chunk.payload;
-    const expected = expectedHeaders.find(header => {
-        if (bytes.length < header.length) {
-            return false;
-        }
-
-        return bytes.subarray(0, header.length).compare(header) === 0 ? true : false;
-    });
+    const expected = expectedHeaders.find(
+        header =>
+            header.length <= bytes.length && bytes.subarray(0, header.length).compare(header) === 0,
+    );
 
     if (expected) {
         logger?.debug('readAndAssert done');

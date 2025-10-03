@@ -411,6 +411,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         apiRead,
                         signal,
                         graceful: true,
+                        logger: this.logger,
                     });
 
                     if (!decoded.success) {
