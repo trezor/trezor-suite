@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { useAlert } from '@suite-native/alerts';
-import { CompactCardWithIconLayout } from '@suite-native/atoms';
+import { Button, VStack } from '@suite-native/atoms';
 import { useBluetoothDevice } from '@suite-native/bluetooth';
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
+    DynamicScreenHeader,
+    Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
@@ -16,14 +18,15 @@ type NavigationProp = StackNavigationProps<
     DeviceSettingsStackRoutes.DeviceSettings
 >;
 
-export const DeviceBluetoothCard = () => {
-    const { showAlert } = useAlert();
+export const UnpairBluetoothDeviceScreen = () => {
     const { showToast } = useToast();
     const navigation = useNavigation<NavigationProp>();
 
     const { unpairBluetoothDevice } = useBluetoothDevice();
 
-    const unpairTrezor = async () => {
+    useDeviceConnectionGuard();
+
+    const handleUnpairTrezor = async () => {
         navigation.navigate(DeviceSettingsStackRoutes.ContinueOnTrezor);
         await unpairBluetoothDevice({
             onSuccess: () => {
@@ -37,24 +40,20 @@ export const DeviceBluetoothCard = () => {
         });
     };
 
-    const showInfoAlert = () => {
-        showAlert({
-            title: <Translation id="moduleDeviceSettings.bluetooth.info.title" />,
-            description: <Translation id="moduleDeviceSettings.bluetooth.info.description" />,
-            primaryButtonTitle: (
-                <Translation id="moduleDeviceSettings.bluetooth.unpairTrezorButton" />
-            ),
-            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-            onPressPrimaryButton: unpairTrezor,
-        });
-    };
-
     return (
-        <CompactCardWithIconLayout
-            title={<Translation id="moduleDeviceSettings.bluetooth.title" />}
-            subtitle={<Translation id="moduleDeviceSettings.bluetooth.content" />}
-            icon="bluetoothSlash"
-            onPress={showInfoAlert}
-        />
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    title={<Translation id="moduleDeviceSettings.bluetooth.title" />}
+                    subtitle={<Translation id="moduleDeviceSettings.bluetooth.description" />}
+                />
+            }
+        >
+            <VStack justifyContent="flex-end" flex={1}>
+                <Button onPress={handleUnpairTrezor}>
+                    <Translation id="moduleDeviceSettings.bluetooth.unpairTrezorButton" />
+                </Button>
+            </VStack>
+        </Screen>
     );
 };

@@ -18,7 +18,6 @@
         "@suite-common/thp": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/bluetooth": "workspace:*",

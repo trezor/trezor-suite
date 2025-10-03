@@ -83,6 +83,7 @@ export enum DeviceSettingsStackRoutes {
     WipeDeviceStack = 'WipeDeviceStack',
     DeviceNameStack = 'DeviceNameStack',
     DeviceCheckBackupStack = 'DeviceCheckBackupStack',
+    UnpairBluetoothDevice = 'UnpairBluetoothDevice',
     AutoConnectSettings = 'AutoConnectSettings',
 }
 

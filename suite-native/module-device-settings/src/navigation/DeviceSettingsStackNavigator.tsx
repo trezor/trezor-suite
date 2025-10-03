@@ -19,6 +19,7 @@ import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
+import { UnpairBluetoothDeviceScreen } from '../screens/UnpairBluetoothDeviceScreen';
 
 const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
 
@@ -66,6 +67,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceCheckBackupStack}
             component={DeviceCheckBackupStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.UnpairBluetoothDevice}
+            component={UnpairBluetoothDeviceScreen}
         />
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.AutoConnectSettings}
