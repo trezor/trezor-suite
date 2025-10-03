@@ -26,6 +26,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -206,7 +207,12 @@ export const useExchangeFlow = () => {
             });
 
             const triggerAnalyticsTradeConfirmation = () => {
-                // TODO: add analytics
+                analytics.report({
+                    type: EventType.TradingConfirmTrade,
+                    payload: {
+                        type: 'exchange',
+                    },
+                });
             };
 
             const processResponseData = (response: ExchangeTrade) =>

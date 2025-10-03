@@ -1,3 +1,4 @@
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     PreloadedState,
     TestStore,
@@ -481,6 +482,42 @@ describe('useExchangeFlow', () => {
 
             // Verify that TrezorConnect.cancel was called
             expect(mockCancel).toHaveBeenCalled();
+        });
+    });
+
+    describe('analytics', () => {
+        it('should call analytics event when confirmTrade is called', async () => {
+            const analyticsSpy = jest.spyOn(analytics, 'report');
+            const store = await getInitializedStore();
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const mockNextStep = jest.fn();
+
+            const { result } = await renderUseExchangeFlow({ store });
+
+            const mockTrade = {
+                exchange: 'test-exchange',
+                orderId: 'test-order',
+            };
+
+            await act(async () => {
+                await result.current.confirmTrade({
+                    receiveAddress: 'test-address',
+                    trade: mockTrade,
+                    approvalFlow: false,
+                    nextStep: mockNextStep,
+                });
+            });
+
+            // simulate triggerAnalyticsTradeConfirmation call in thunk
+            const { triggerAnalyticsTradeConfirmation } = dispatchSpy.mock.lastCall![0].payload;
+            triggerAnalyticsTradeConfirmation();
+
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingConfirmTrade,
+                payload: {
+                    type: 'exchange',
+                },
+            });
         });
     });
 });
