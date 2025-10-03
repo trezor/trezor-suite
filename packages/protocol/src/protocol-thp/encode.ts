@@ -38,6 +38,9 @@ const getBytesFromField = (data: Record<string, unknown>, fieldName: string) => 
     if (typeof value === 'string') {
         return Buffer.from(value, 'hex');
     }
+    if (typeof value === 'number') {
+        return Buffer.from([value]);
+    }
     if (Buffer.isBuffer(value)) {
         return value;
     }
@@ -58,7 +61,9 @@ const handshakeInitRequestPayload = (data: Record<string, unknown>, _thpState: T
         throw new Error('ThpHandshakeInitRequest missing key field');
     }
 
-    return key;
+    const tryToUnlock = getBytesFromField(data, 'tryToUnlock') ?? Buffer.from([0]);
+
+    return Buffer.concat([key, tryToUnlock]);
 };
 
 const handshakeCompletionRequestPayload = (data: Record<string, unknown>) => {

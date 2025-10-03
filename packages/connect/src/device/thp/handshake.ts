@@ -91,6 +91,7 @@ export const thpHandshake = async (device: Device) => {
     // 2. Send the message HandshakeInitiationReq(host_ephemeral_pubkey) to the host.
     const handshakeInit = await thpCall(device, 'ThpHandshakeInitRequest', {
         key: hostEphemeralKeys.publicKey,
+        tryToUnlock: 0,
     });
 
     const { trezorEncryptedStaticPubkey } = handshakeInit.message;
