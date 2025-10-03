@@ -95,24 +95,18 @@ export const getExpectedResponses = (bytes: Buffer) => {
 // get expected responses from ThpState (stored as numbers)
 // and join them with the channel to receive 3 bytes header
 export const getExpectedHeaders = (state: ThpState): Buffer[] =>
-    [
-        ...state.expectedResponses,
-        THP_ERROR_HEADER_BYTE, // error could be sent any time
-    ].map(resp => {
-        let magic;
-        switch (resp) {
-            case THP_CONTINUATION_PACKET:
-                magic = Buffer.from([resp]); // THP_CONTINUATION_PACKET is not masked with sequence bit
-                break;
-            case THP_READ_ACK_HEADER_BYTE:
-                magic = addAckBit(resp, state.sendBit);
-                break;
-            default:
-                magic = addSequenceBit(resp, state.recvBit);
-        }
-
-        return Buffer.concat([magic, state.channel]);
-    });
+    [...state.expectedResponses, THP_ERROR_HEADER_BYTE] // error could be sent any time
+        .map(resp => {
+            switch (resp) {
+                case THP_CONTINUATION_PACKET:
+                    return Buffer.from([resp]); // THP_CONTINUATION_PACKET is not masked with sequence bit
+                case THP_READ_ACK_HEADER_BYTE:
+                    return addAckBit(resp, state.sendBit);
+                default:
+                    return addSequenceBit(resp, state.recvBit);
+            }
+        })
+        .map(magic => Buffer.concat([magic, state.channel]));
 
 export const isExpectedResponse = (bytes: Buffer, state: ThpState) => {
     if (bytes.length < 3) {

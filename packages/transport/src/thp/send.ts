@@ -46,7 +46,11 @@ export const sendThpMessage = async ({
 
     let attempt = 0;
 
-    const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, { signal, graceful });
+    const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, {
+        signal,
+        graceful,
+        logger,
+    });
 
     // create sequence of scheduled actions controlled by one AbortSignal (from Transport call/send)
     // 1. send message
@@ -72,6 +76,7 @@ export const sendThpMessage = async ({
                         ),
                     {
                         signal: attemptSignal,
+                        graceful,
                         deadline: Date.now() + THP_ACK_DEADLINE,
                     },
                 );

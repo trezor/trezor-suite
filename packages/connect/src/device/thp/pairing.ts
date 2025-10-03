@@ -121,9 +121,7 @@ const processThpPairingResponse = (device: Device, payload: UiResponseThpPairing
 const waitForPairingCancel = (device: Device) => {
     const readAbort = new AbortController();
     device.getThpState()?.setExpectedResponses([0x04]); // expect Cancel
-    const readCancel = device.getCurrentSession().receive({
-        signal: readAbort.signal,
-    });
+    const readCancel = device.getCurrentSession().receive({ signal: readAbort.signal });
 
     return {
         readAbort,
