@@ -1,15 +1,22 @@
-import { CoinInfo } from 'invity-api';
+import { BuyTrade, CoinInfo } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
     TradingBuyFormProps,
     TradingCountryOption,
     TradingPaymentMethodListProps,
+    cryptoIdToNetwork,
     toCryptoOption,
 } from '@suite-common/trading';
 
 import { BuyFormType } from '../../types/buy';
 import { getCurrencyLabel } from '../general/currencyUtils';
+import { coinInfoToTradeableAsset } from '../general/tradeableAssetUtils';
+
+export type GetAnalyticsTradingBuyPayloadProps = {
+    quote: BuyTrade | undefined;
+    coinInfo: CoinInfo | undefined;
+};
 
 export const getPaymentMethodFromBuyForm = (
     form: BuyFormType,
@@ -55,5 +62,30 @@ export const tradingBuyFormToTradingBuyFormProps = (
         countrySelect: country as TradingCountryOption,
         paymentMethod: getPaymentMethodFromBuyForm(form),
         amountInCrypto,
+    };
+};
+
+export const getAnalyticsTradingBuyPayload = ({
+    quote,
+    coinInfo,
+}: GetAnalyticsTradingBuyPayloadProps) => {
+    if (!coinInfo || !quote?.receiveCurrency) {
+        return null;
+    }
+
+    const tradeableAsset = coinInfoToTradeableAsset(quote.receiveCurrency, coinInfo);
+    const symbol = cryptoIdToNetwork(quote.receiveCurrency)?.symbol;
+
+    if (!tradeableAsset) {
+        return null;
+    }
+
+    return {
+        cryptoLabel: tradeableAsset.symbol,
+        cryptoNetworkSymbol: symbol,
+        cryptoContractAddress: tradeableAsset.contractAddress,
+        paymentMethod: quote.paymentMethod,
+        countryOfResidence: quote.country,
+        exchangeName: quote.exchange,
     };
 };
