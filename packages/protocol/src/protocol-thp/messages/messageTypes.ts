@@ -33,6 +33,7 @@ export type ThpCreateChannelResponse = {
 
 export type ThpHandshakeInitRequest = {
     key: Buffer;
+    tryToUnlock: 0 | 1;
 };
 
 export type ThpHandshakeInitResponse = {
