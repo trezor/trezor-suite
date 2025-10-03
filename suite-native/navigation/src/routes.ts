@@ -82,6 +82,7 @@ export enum DeviceSettingsStackRoutes {
     WipeDeviceStack = 'WipeDeviceStack',
     DeviceNameStack = 'DeviceNameStack',
     DeviceCheckBackupStack = 'DeviceCheckBackupStack',
+    AutoConnectSettings = 'AutoConnectSettings',
 }
 
 export enum DevicePinProtectionStackRoutes {
