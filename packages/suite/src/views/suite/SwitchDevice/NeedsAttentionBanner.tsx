@@ -39,7 +39,7 @@ const getDeviceNeedsAttentionMessage = (
         case 'device-thp-locked':
             return 'TR_NEEDS_ATTENTION_UNACQUIRED_THP_REQUIRED';
         case 'device-busy':
-            return 'TR_NEEDS_ATTENTION_DEVICE_BUSY';
+            return 'TR_DEVICE_CONNECTED_WRONG_STATE';
         case 'device-bootloader-locked':
             return 'TR_CONFIRM_CONNECTION';
         case 'device-hard-locked':
@@ -121,6 +121,7 @@ export const NeedsAttentionBanner = ({
             case 'disconnected':
             case 'firmware-recommended':
             case 'unknown':
+            case 'device-busy':
                 return () => selectDevice();
 
             case 'used-in-other-window':
@@ -133,7 +134,6 @@ export const NeedsAttentionBanner = ({
                     dispatch(acquireDevice({ requestedDevice: device }));
                 };
 
-            case 'device-busy':
             case 'device-rebooting':
             case 'device-bootloader-locked':
             case 'device-hard-locked':

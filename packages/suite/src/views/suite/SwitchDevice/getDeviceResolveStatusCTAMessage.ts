@@ -6,6 +6,7 @@ export const getDeviceResolveStatusCTAMessage = (
 ): TranslationKey => {
     switch (deviceStatus) {
         case 'bootloader':
+        case 'device-busy':
             return 'TR_SELECT_DEVICE_SHORT';
         case 'initialize':
             return 'TR_CONTINUE_SETUP';

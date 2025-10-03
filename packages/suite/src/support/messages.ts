@@ -2316,7 +2316,7 @@ export default defineMessages({
         id: 'TR_DEVICE_CONNECTED_BUSY_BOOTLOADER',
     },
     TR_DEVICE_CONNECTED_BUSY_BOOTLOADER_DESCRIPTION: {
-        defaultMessage: 'Device may be in the bootloader mode, restart the device and try again.',
+        defaultMessage: 'Try closing other apps that may be using your Trezor or restarting it.',
         id: 'TR_DEVICE_CONNECTED_BUSY_BOOTLOADER_DESCRIPTION',
     },
     TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING: {
@@ -11091,6 +11091,6 @@ export default defineMessages({
     },
     TR_CONFIRM_CONNECTION: {
         id: 'TR_CONFIRM_CONNECTION',
-        defaultMessage: 'Confirm connection on Trezor.',
+        defaultMessage: 'Confirm connection on your Trezor.',
     },
 } as const);
