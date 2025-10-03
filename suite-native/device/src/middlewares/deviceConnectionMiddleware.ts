@@ -161,17 +161,19 @@ deviceConnectionMiddleware.startListening({
         const isDeviceRemembered =
             !!device.features && selectDevices(getOriginalState()).some(d => d.id === device.id);
 
-        if (isDeviceRemembered) return;
+        const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
+
+        if (isDeviceRemembered && isCoinEnablingInitFinished) return;
 
         handleDeviceConnectNavigation({
             hasDeviceBitcoinOnlyFirmware: hasBitcoinOnlyFirmware(device),
-            isCoinEnablingInitFinished: selectIsCoinEnablingInitFinished(getState()),
             isDeviceInitialized: getIsDeviceInitialized({
                 deviceMode: device.mode,
                 deviceFeatures: device.features,
             }),
             isDeviceSetupSupported: getIsDeviceSetupSupported(getDeviceInternalModel(device)),
             wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
+            isCoinEnablingInitFinished,
         });
     },
 });
