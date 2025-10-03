@@ -92,6 +92,10 @@ describe('Header', () => {
         return renderWithStoreProviderAsync(<Header />, { preloadedState });
     };
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('should render nothing when no trade type is enabled', async () => {
         const { toJSON } = await renderHeader({});
 
@@ -232,7 +236,7 @@ describe('Header', () => {
                 payload: {
                     action: 'navigate',
                     type: 'exchange',
-                    from: 'trade',
+                    from: 'trade/buy',
                 },
             });
         });
@@ -246,6 +250,24 @@ describe('Header', () => {
             fireEvent.press(getByText('Swap'));
 
             expect(reportSpy).not.toHaveBeenCalled();
+        });
+
+        it('should report TradingNavigate event when tab was changed to buy', async () => {
+            const { getByText } = await renderWithStoreProviderAsync(<Header />, { store });
+            const reportSpy = jest.spyOn(analytics, 'report');
+            fireEvent.press(getByText('Swap'));
+            reportSpy.mockClear();
+
+            fireEvent.press(getByText('Buy'));
+
+            expect(reportSpy).toHaveBeenCalledWith({
+                type: EventType.TradingNavigate,
+                payload: {
+                    action: 'navigate',
+                    type: 'buy',
+                    from: 'trade/exchange',
+                },
+            });
         });
     });
 });

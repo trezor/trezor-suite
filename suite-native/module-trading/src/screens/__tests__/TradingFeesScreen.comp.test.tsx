@@ -1,4 +1,5 @@
 import { Account } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@suite-native/analytics';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import fixturesAccounts from '../../__fixtures__/accounts.json';
@@ -85,5 +86,19 @@ describe('TradingFeesScreen', () => {
         // Should not render the TradingFeesForm when account is not found
         expect(queryByTestId('trading-fees-form')).not.toBeOnTheScreen();
         expect(mockTradingFeesForm).not.toHaveBeenCalled();
+    });
+
+    it('should report to analytics on mount', async () => {
+        const analyticsSpy = jest.spyOn(analytics, 'report');
+
+        await renderScreen();
+
+        expect(analyticsSpy).toHaveBeenCalledWith({
+            type: EventType.TradingExchange,
+            payload: expect.objectContaining({
+                step: 'fee-selection',
+                action: 'visit',
+            }),
+        });
     });
 });

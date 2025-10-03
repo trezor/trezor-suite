@@ -1,8 +1,16 @@
+import { CoinInfo, ExchangeTrade } from 'invity-api';
+
 import { invariant } from '@suite-common/suite-utils';
 import { MinimalExchangeFormProps } from '@suite-common/trading';
 
 import { ExchangeFormType } from '../../types/exchange';
 import { toCaseAwareCryptoId } from '../general/utils';
+
+export type GetAnalyticsTradingExchangePayloadProps = {
+    quote: ExchangeTrade | undefined;
+    sendCoinInfo: CoinInfo | undefined;
+    receiveCoinInfo: CoinInfo | undefined;
+};
 
 export const tradingExchangeFormToTradingExchangeFormProps = (
     getValues: ExchangeFormType['getValues'],
