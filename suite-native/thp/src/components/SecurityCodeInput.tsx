@@ -7,6 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 type DigitBoxProps = {
     value?: string;
     isFocused: boolean;
+    testID?: string;
 };
 
 const digitBoxStyle = prepareNativeStyle<{ isFocused: boolean }>(
@@ -104,6 +105,7 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
                         key={i}
                         value={code.at(i)}
                         isFocused={isFocused && i === code.length}
+                        testID={`@thpSecurityCode/Input/${i}`}
                     />
                 ))}
             </HStack>
