@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'react';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
@@ -18,6 +17,7 @@ import {
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 import { DeviceDisconnectedStep } from './DeviceDisconnectedStep';
@@ -31,7 +31,7 @@ export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareInstallation();
+    const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
     const thpStep = useSelector(selectThpStep);
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();

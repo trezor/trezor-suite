@@ -1,4 +1,3 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
@@ -11,6 +10,7 @@ import {
     RotatingPhrases,
 } from 'src/components/firmware';
 import { Translation } from 'src/components/suite/Translation';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
@@ -26,7 +26,7 @@ export const FirmwareInstallationStandalone = ({
     install,
     onPromptClose,
 }: FirmwareInstallationStandaloneProps) => {
-    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareInstallation();
+    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     // Device needs to be paired twice when using web usb transport. // Once in

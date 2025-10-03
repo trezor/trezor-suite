@@ -1,7 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectThpStep } from '@suite-common/thp';
 import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
@@ -14,6 +13,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import messages from 'src/support/messages';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';
@@ -52,7 +52,7 @@ export const FirmwareModal = ({
         buttonEvent,
         confirmOnDevice,
         showConfirmationPill,
-    } = useFirmwareInstallation({ shouldSwitchFirmwareType });
+    } = useFirmwareDesktopUpdate({ shouldSwitchFirmwareType });
     const device = useSelector(selectSelectedDevice);
 
     const thpStep = useSelector(selectThpStep);

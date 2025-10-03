@@ -1,4 +1,3 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
@@ -12,6 +11,7 @@ import { spacings } from '@trezor/theme';
 import { MarkdownWithComponents, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 import { selectIsDebugModeActive } from '../../selectors/suite/suiteSelectors';
@@ -24,7 +24,7 @@ type FirmwareOfferProps = {
 export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: FirmwareOfferProps) => {
     const useDevkit = useSelector(state => state.firmware.useDevkit);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const { originalDevice } = useFirmwareInstallation();
+    const { originalDevice } = useFirmwareDesktopUpdate();
     const { translationString } = useTranslation();
 
     if (!originalDevice?.firmwareReleaseConfigInfo) {

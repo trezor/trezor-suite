@@ -2,13 +2,9 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import {
-    selectDevices,
-    selectIsDeviceConnectedViaBluetoothLowOnBattery,
-} from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core';
 import { Column, Note, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
@@ -26,6 +22,7 @@ import {
 } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useOnboarding, useSelector, useTranslation } from 'src/hooks/suite';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { PrerequisitesGuide } from '../suite';
@@ -127,21 +124,23 @@ export const FirmwareInitial = ({
     onClose,
 }: FirmwareInitialProps) => {
     const { device } = useDevice();
-    const { deviceWillBeWiped, firmwareUpdate, setStatus, targetFirmwareType } =
-        useFirmwareInstallation({
-            shouldSwitchFirmwareType,
-        });
+    const {
+        deviceWillBeWiped,
+        firmwareUpdate,
+        setStatus,
+        targetFirmwareType,
+        toggleLowBatteryModal,
+        showLowBatteryModal,
+    } = useFirmwareDesktopUpdate({
+        shouldSwitchFirmwareType,
+    });
     const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
     const { translationString } = useTranslation();
     const devices = useSelector(selectDevices);
     const isDebug = useSelector(selectIsDebugModeActive);
-    const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(
-        selectIsDeviceConnectedViaBluetoothLowOnBattery,
-    );
 
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const [showLowBatteryWarning, setShowLowBatteryWarning] = useState(false);
 
     // Just to satisfy TS, disconnected device should be handled upstream.
     if (!device?.connected || !device?.features) {
@@ -169,18 +168,12 @@ export const FirmwareInitial = ({
     const isBitcoinOnlyAvailable = !!device.firmwareReleaseConfigInfo?.isBitcoinOnlyAvailable;
 
     const installFirmware = (firmwareType: FirmwareType) => {
-        if (isDeviceConnectedViaBluetoothLowOnBattery) {
-            setShowLowBatteryWarning(true);
-
-            return;
-        }
-
         firmwareUpdate({ firmwareType });
         updateAnalytics({ firmware: 'install' });
     };
 
-    if (showLowBatteryWarning === true) {
-        return <FirmwareLowBatteryModal onClose={() => setShowLowBatteryWarning(false)} />;
+    if (showLowBatteryModal) {
+        return <FirmwareLowBatteryModal onClose={toggleLowBatteryModal} />;
     }
 
     if (bitcoinOnlyOffer) {

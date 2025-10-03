@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 import * as semver from 'semver';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { UI } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
+
+import { useFirmwareDesktopUpdate } from './useFirmwareDesktopUpdate';
 
 // because the UI is targeted to a specific bootloader screen, we can only reliably target FW versions that share the same bootloader (the 1.12.1)
 const MIN_T1B1_FW_VERSION = '1.12.1';
@@ -22,7 +23,7 @@ const getCheckSupport = (device?: TrezorDevice): boolean => {
 };
 
 export const useFirmwareInstallationProgressCheck = () => {
-    const { originalDevice, uiEvent } = useFirmwareInstallation();
+    const { originalDevice, uiEvent } = useFirmwareDesktopUpdate();
     const isCheckSupported = getCheckSupport(originalDevice);
     const isUnexpectedDelay = uiEvent?.type === UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY;
 

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { Button, Column } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
@@ -13,6 +12,7 @@ import {
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { WebUsbButton } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectHasTransportOfType,
@@ -34,7 +34,7 @@ interface FirmwareInstallationProps {
 }
 
 export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallationProps) => {
-    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareInstallation();
+    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
