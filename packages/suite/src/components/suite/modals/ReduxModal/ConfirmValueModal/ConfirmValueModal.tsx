@@ -43,9 +43,7 @@ export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & 
     account?: Account;
     'data-testid'?: string;
     isConfirmed?: boolean;
-    areStepsVisible?: boolean;
     isValueChunked?: boolean;
-    isCopyButtonVisible?: boolean;
     label?: ReactNode;
     validateOnDevice: () => ThunkAction;
     value: string;
@@ -58,8 +56,6 @@ export const ConfirmValueModal = ({
     label,
     isConfirmed,
     isValueChunked,
-    isCopyButtonVisible,
-    areStepsVisible,
     onCancel,
     validateOnDevice,
     value,
@@ -210,77 +206,74 @@ export const ConfirmValueModal = ({
                                         />
                                     )}
                                 </Column>
-                                {isCopyButtonVisible && (
-                                    <Button
-                                        onClick={copy}
-                                        variant="tertiary"
-                                        data-testid={copyButtonDataTest}
-                                        size="small"
-                                        textWrap={false}
-                                        icon={isCopied ? 'check' : 'copy'}
-                                    >
-                                        <Translation
-                                            id={
-                                                isCopied
-                                                    ? 'TR_COPIED_TO_CLIPBOARD'
-                                                    : 'TR_COPY_TO_CLIPBOARD'
-                                            }
-                                        />
-                                    </Button>
-                                )}
+
+                                <Button
+                                    onClick={copy}
+                                    variant="tertiary"
+                                    data-testid={copyButtonDataTest}
+                                    size="small"
+                                    textWrap={false}
+                                    icon={isCopied ? 'check' : 'copy'}
+                                >
+                                    <Translation
+                                        id={
+                                            isCopied
+                                                ? 'TR_COPIED_TO_CLIPBOARD'
+                                                : 'TR_COPY_TO_CLIPBOARD'
+                                        }
+                                    />
+                                </Button>
                             </Column>
                         </Row>
                     </Card>
-                    {areStepsVisible && (
-                        <Card>
-                            <Row gap={spacings.lg}>
-                                <IconCircle
-                                    hasBorder={false}
-                                    variant="info"
-                                    size={32}
-                                    name="warningFilled"
-                                />
-                                <H3>
-                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
-                                </H3>
-                            </Row>
-                            <BulletList
-                                isOrdered
-                                margin={{ top: spacings.xxxl }}
-                                gap={spacings.xl}
-                                titleGap={spacings.zero}
-                                bulletGap={spacings.lg}
+                    <Card>
+                        <Row gap={spacings.lg}>
+                            <IconCircle
+                                hasBorder={false}
+                                variant="info"
+                                size={32}
+                                name="warningFilled"
+                            />
+                            <H3>
+                                <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
+                            </H3>
+                        </Row>
+                        <BulletList
+                            isOrdered
+                            margin={{ top: spacings.xxxl }}
+                            gap={spacings.xl}
+                            titleGap={spacings.zero}
+                            bulletGap={spacings.lg}
+                        >
+                            <BulletList.Item
+                                title={
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
+                                }
                             >
-                                <BulletList.Item
-                                    title={
-                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
-                                    }
-                                >
-                                    <Paragraph variant="tertiary" textWrap="pretty">
-                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
-                                    </Paragraph>
-                                </BulletList.Item>
-                                <BulletList.Item
-                                    title={
-                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
-                                    }
-                                >
-                                    <Paragraph variant="tertiary" textWrap="pretty">
-                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
-                                    </Paragraph>
-                                </BulletList.Item>
-                                <BulletList.Item
-                                    title={
-                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
-                                    }
-                                >
-                                    <Paragraph variant="tertiary" textWrap="pretty">
-                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
-                                    </Paragraph>
-                                </BulletList.Item>
-                            </BulletList>
-                        </Card>
-                    )}
+                                <Paragraph variant="tertiary" textWrap="pretty">
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
+                                </Paragraph>
+                            </BulletList.Item>
+                            <BulletList.Item
+                                title={
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
+                                }
+                            >
+                                <Paragraph variant="tertiary" textWrap="pretty">
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
+                                </Paragraph>
+                            </BulletList.Item>
+                            <BulletList.Item
+                                title={
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
+                                }
+                            >
+                                <Paragraph variant="tertiary" textWrap="pretty">
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
+                                </Paragraph>
+                            </BulletList.Item>
+                        </BulletList>
+                    </Card>
                 </Column>
             </Modal.ModalBase>
         </Modal.Backdrop>

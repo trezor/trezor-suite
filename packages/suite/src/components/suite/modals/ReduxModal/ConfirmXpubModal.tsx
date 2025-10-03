@@ -45,7 +45,6 @@ export const ConfirmXpubModal = (
             account={account}
             heading={<Translation id="TR_XPUB" />}
             validateOnDevice={showXpub}
-            isCopyButtonVisible={true}
             value={xpubWithReplacedApostropheWithH ?? xpub}
             isValueChunked={false}
             data-testid="@metadata/copy-xpub-button"
