@@ -1,6 +1,8 @@
+import { EventType, analytics } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import {
     PreloadedState,
+    TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,
@@ -204,5 +206,46 @@ describe('Header', () => {
         });
 
         expect(queryByLabelText('Advanced settings')).toBeNull();
+    });
+
+    describe('analytics', () => {
+        let store: TestStore;
+
+        beforeEach(async () => {
+            store = await initStore(
+                getFFPreloadedState({
+                    buyEnabled: true,
+                    exchangeEnabled: true,
+                    sellEnabled: true,
+                }),
+            );
+        });
+
+        it('should report TradingNavigate event on tab change', async () => {
+            const { getByText } = await renderWithStoreProviderAsync(<Header />, { store });
+            const reportSpy = jest.spyOn(analytics, 'report');
+
+            fireEvent.press(getByText('Swap'));
+
+            expect(reportSpy).toHaveBeenCalledWith({
+                type: EventType.TradingNavigate,
+                payload: {
+                    action: 'navigate',
+                    type: 'exchange',
+                    from: 'trade',
+                },
+            });
+        });
+
+        it('should not report TradingNavigate event when tab was not changed', async () => {
+            const { getByText } = await renderWithStoreProviderAsync(<Header />, { store });
+            const reportSpy = jest.spyOn(analytics, 'report');
+            fireEvent.press(getByText('Swap'));
+            reportSpy.mockClear();
+
+            fireEvent.press(getByText('Swap'));
+
+            expect(reportSpy).not.toHaveBeenCalled();
+        });
     });
 });

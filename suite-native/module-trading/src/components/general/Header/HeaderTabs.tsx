@@ -3,6 +3,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TradingType } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
@@ -74,6 +75,22 @@ export const HeaderTabs = () => {
         selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
     );
 
+    const onTabPress = (tab: TradingType) => {
+        if (tab === activeTab) {
+            return;
+        }
+
+        setActiveTab(tab);
+        analytics.report({
+            type: EventType.TradingNavigate,
+            payload: {
+                action: 'navigate',
+                type: tab,
+                from: 'trade',
+            },
+        });
+    };
+
     return (
         <>
             <HStack justifyContent="space-between">
@@ -86,7 +103,7 @@ export const HeaderTabs = () => {
                         <HeaderTab
                             icon={item.icon}
                             active={item.key === activeTab}
-                            onPress={() => setActiveTab(item.key)}
+                            onPress={() => onTabPress(item.key)}
                         >
                             {item.label}
                         </HeaderTab>
