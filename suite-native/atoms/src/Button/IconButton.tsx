@@ -78,7 +78,7 @@ export const IconButton = ({
         <AnimatedPressable
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading}
             {...pressableProps}
             style={[
                 animatedPressStyle,
