@@ -163,7 +163,7 @@ describe('useExchangeQuotes', () => {
         const { result } = await renderUseExchangeQuotes(store);
         const { form } = result.current;
 
-        await act(async () => {
+        act(() => {
             form.setValue('sendAsset', btcAsset);
             form.setValue('receiveAsset', ethAsset);
             form.setValue('sendCryptoAmount', '10');
@@ -171,8 +171,6 @@ describe('useExchangeQuotes', () => {
                 type: 'manual',
                 message: 'VALIDATION_ERROR',
             });
-            // allow validations to run
-            await Promise.resolve();
         });
 
         expect(dispatchSpy).not.toHaveBeenCalledWith(
@@ -180,6 +178,12 @@ describe('useExchangeQuotes', () => {
                 type: 'handleRequestThunkMock',
             }),
         );
+
+        // clean up form flush async validations
+        await act(async () => {
+            form.clearErrors();
+            await form.trigger();
+        });
     });
 
     it('should query quotes as soon as form contains no errors', async () => {
@@ -283,6 +287,12 @@ describe('useExchangeQuotes', () => {
                 type: 'handleRequestThunkMock',
             }),
         );
+
+        // clean up form flush async validations
+        await act(async () => {
+            form.clearErrors();
+            await form.trigger();
+        });
     });
 
     it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {

@@ -20,6 +20,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
 import { tradingActions } from '../reducers';
 import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
@@ -46,6 +47,13 @@ export const TradingWebViewScreen = () => {
                 ('selectedAccountKey' in trade ? trade.selectedAccountKey : trade.sendAccountKey),
         ),
     );
+
+    const reportToAnalytics = useExchangeAnalyticReportCallback();
+    useEffect(() => {
+        if (trade?.tradeType === 'exchange') {
+            reportToAnalytics('webview', 'visit');
+        }
+    }, [reportToAnalytics, trade?.tradeType]);
 
     useWatchTrade({
         account: account ?? undefined,

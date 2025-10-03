@@ -21,6 +21,7 @@ import {
     ExchangePreviewScreenHeader,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
+import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import {
     selectExchangeSelectedReceiveAccount,
@@ -43,6 +44,11 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
     const hasRequestedTradeConfirmation = useRef(false);
+
+    const reportToAnalytics = useExchangeAnalyticReportCallback();
+    useEffect(() => {
+        reportToAnalytics('transaction-preview', 'visit');
+    }, [reportToAnalytics]);
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 
@@ -81,7 +87,8 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;
-    }, []);
+        reportToAnalytics('transaction-preview', 'continue');
+    }, [reportToAnalytics]);
 
     useFocusEffect(
         useCallback(() => {
@@ -115,11 +122,15 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
                 description,
                 primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
                 primaryButtonVariant: 'redBold',
-                onPressPrimaryButton: handleConfirmTrade,
+                onPressPrimaryButton: () => {
+                    handleConfirmTrade();
+                    reportToAnalytics('transaction-preview', 'retry');
+                },
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                 secondaryButtonVariant: 'redElevation0',
                 onPressSecondaryButton: () => {
                     navigation.popToTop();
+                    reportToAnalytics('transaction-preview', 'cancel');
                 },
             });
             setIsConfirmationErrorRequested(false);
@@ -130,6 +141,7 @@ export const TradingExchangePreviewScreen = ({ navigation }: TradingExchangePrev
         isInternetReachable,
         navigation,
         showAlert,
+        reportToAnalytics,
     ]);
 
     return (

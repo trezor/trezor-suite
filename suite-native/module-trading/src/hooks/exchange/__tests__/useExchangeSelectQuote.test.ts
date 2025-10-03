@@ -1,4 +1,5 @@
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     PreloadedState,
     TestStore,
@@ -113,8 +114,9 @@ describe('useExchangeSelectQuote', () => {
             expect(result.current.canProceed).toBe(true);
         });
 
-        it('should handle user consent flow', async () => {
+        it('should handle user consent flow with giveConsent', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const analyticsSpy = jest.spyOn(analytics, 'report');
 
             const { result } = await renderUseExchangeSelectQuote();
 
@@ -136,6 +138,48 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(result.current.isConsentRequested).toBe(false);
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'exchange-terms-modal',
+                    action: 'continue',
+                    exchangeName: 'mercuryo',
+                }),
+            });
+        });
+
+        it('should handle user consent flow with cancelConsent', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const analyticsSpy = jest.spyOn(analytics, 'report');
+
+            const { result } = await renderUseExchangeSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const dispatchCall = dispatchSpy.mock.calls[0][0];
+            const { userConsent } = (dispatchCall as any).payload;
+
+            act(() => {
+                userConsent('provider', 'BTC', 'ETH');
+            });
+
+            expect(result.current.isConsentRequested).toBe(true);
+
+            act(() => {
+                result.current.cancelConsent();
+            });
+
+            expect(result.current.isConsentRequested).toBe(false);
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'exchange-terms-modal',
+                    action: 'cancel',
+                    exchangeName: 'mercuryo',
+                }),
+            });
         });
 
         it('should call selectQuoteThunk when selectQuote is called', async () => {
@@ -190,6 +234,7 @@ describe('useExchangeSelectQuote', () => {
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const analyticsSpy = jest.spyOn(analytics, 'report');
             const { result } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
@@ -201,6 +246,15 @@ describe('useExchangeSelectQuote', () => {
             expect(mockNavigation.navigate).toHaveBeenCalledWith('ReceiveAccounts', {
                 symbol: 'btc',
                 tradingType: 'exchange',
+            });
+
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'account-selection',
+                    action: 'continue',
+                    exchangeName: 'mercuryo',
+                }),
             });
         });
 

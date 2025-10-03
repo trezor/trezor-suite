@@ -13,6 +13,9 @@ import {
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
+    TradingExchangeAction,
+    TradingExchangeStep,
+    TradingNavigateFrom,
 } from './definitions';
 
 export type SuiteNativeAnalyticsEvent =
@@ -405,7 +408,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               action: 'navigate' | 'cancel';
               type: TradingType;
-              from: 'trade' | 'account' | 'dashboard';
+              from: TradingNavigateFrom;
 
               networkSymbol?: string;
               contractAddress?: string;
@@ -430,14 +433,8 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.TradingExchange;
           payload: {
-              action: 'continue' | 'cancel';
-              step:
-                  | 'exchange-form'
-                  | 'exchange-terms-modal'
-                  | 'receive-address'
-                  | 'create-approval'
-                  | 'already-approved'
-                  | 'confirm-and-send';
+              action: TradingExchangeAction;
+              step: TradingExchangeStep;
 
               sendCryptoLabel?: string;
               sendCryptoNetworkSymbol?: string;

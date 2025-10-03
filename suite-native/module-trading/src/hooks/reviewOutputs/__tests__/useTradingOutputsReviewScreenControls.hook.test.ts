@@ -1,4 +1,5 @@
 import { sendFormActions } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     TestStore,
     act,
@@ -58,6 +59,7 @@ jest.mock('@suite-native/alerts', () => ({
 
 describe('useTradingOutputsReviewScreenControls', () => {
     let store: TestStore;
+    const analyticsSpy: jest.SpyInstance = jest.spyOn(analytics, 'report');
 
     const renderUseTradingOutputsReviewScreenControls = () =>
         renderHookWithStoreProviderAsync(
@@ -120,6 +122,13 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('orderId');
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'sign-and-send',
+                    action: 'continue',
+                }),
+            });
         });
 
         it('should display alert on thunk error', async () => {
@@ -183,9 +192,23 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockPop).toHaveBeenCalledTimes(1);
             expect(dispatchSpy).toHaveBeenCalledWith(sendFormActions.dispose());
             expect(dispatchSpy).toHaveBeenCalledWith(transactionManagementActions.clearFeeLevels());
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'sign-and-send',
+                    action: 'retry',
+                }),
+            });
 
             act(() => {
                 mockShowAlert.mock.calls[0][0].onPressSecondaryButton();
+                expect(analyticsSpy).toHaveBeenCalledWith({
+                    type: EventType.TradingExchange,
+                    payload: expect.objectContaining({
+                        step: 'sign-and-send',
+                        action: 'cancel',
+                    }),
+                });
             });
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
@@ -229,6 +252,18 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    it('should report visit to analytics on mount', async () => {
+        await renderUseTradingOutputsReviewScreenControls();
+
+        expect(analyticsSpy).toHaveBeenCalledWith({
+            type: EventType.TradingExchange,
+            payload: {
+                step: 'sign-and-send',
+                action: 'visit',
+            },
         });
     });
 });

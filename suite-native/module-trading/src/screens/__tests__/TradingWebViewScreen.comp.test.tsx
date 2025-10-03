@@ -1,10 +1,14 @@
+import { TradingTransaction } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
+import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingWebViewScreen } from '../TradingWebViewScreen';
 
 let mockRouteParams: {
     closeCallbackUrl: string;
     source?: { uri?: string; html?: string };
+    orderId?: string;
 } = { closeCallbackUrl: '' };
 
 jest.mock('@react-navigation/native', () => ({
@@ -52,5 +56,61 @@ describe('TradingWebViewScreen', () => {
         const { getByText } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
 
         expect(getByText('Something went wrong')).toBeTruthy();
+    });
+
+    describe('analytics', () => {
+        let analyticsSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+            analyticsSpy = jest.spyOn(analytics, 'report');
+
+            mockRouteParams = {
+                closeCallbackUrl: 'CALLBACK_URL',
+                orderId: 'orderId',
+            };
+        });
+
+        it('should not report on mount for buy', async () => {
+            const preloadedState = { wallet: getWalletState({ tradeType: 'buy' }) };
+            preloadedState.wallet.trading.trades = [
+                {
+                    tradeType: 'buy',
+                    data: {
+                        orderId: 'orderId',
+                    },
+                } as unknown as TradingTransaction,
+            ];
+
+            await renderWithStoreProviderAsync(<TradingWebViewScreen />, {
+                preloadedState,
+            });
+
+            expect(analyticsSpy).not.toHaveBeenCalled();
+        });
+
+        it('should report on mount for exchange', async () => {
+            const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
+            preloadedState.wallet.trading.trades = [
+                {
+                    tradeType: 'exchange',
+                    data: {
+                        orderId: 'orderId',
+                    },
+                } as unknown as TradingTransaction,
+            ];
+
+            await renderWithStoreProviderAsync(<TradingWebViewScreen />, {
+                preloadedState,
+            });
+
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'webview',
+                    action: 'visit',
+                }),
+            });
+        });
     });
 });

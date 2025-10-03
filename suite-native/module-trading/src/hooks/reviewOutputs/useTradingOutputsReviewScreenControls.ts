@@ -20,6 +20,7 @@ import {
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { tradingActions } from '../../reducers';
+import { useExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
 import {
     TradingExchangeSignAndSendTransactionProps,
     useExchangeFlow,
@@ -41,29 +42,43 @@ export const useTradingOutputsReviewScreenControls = (orderId: string, accountKe
     const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
     const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert(accountKey);
 
+    const reportToAnalytics = useExchangeAnalyticReportCallback();
+    useEffect(() => {
+        reportToAnalytics('sign-and-send', 'visit');
+    }, [reportToAnalytics]);
+
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
     const onReviewCanceled = useCallback(() => {
         navigation.popToTop();
-    }, [navigation]);
+        reportToAnalytics('sign-and-send', 'cancel');
+    }, [navigation, reportToAnalytics]);
     useOutputsReviewBackInterceptor(onReviewCanceled);
 
     const nextStep: TradingExchangeSignAndSendTransactionProps['nextStep'] = useCallback(() => {
         navigation.popToTop();
+        reportToAnalytics('sign-and-send', 'continue');
         dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
-    }, [dispatch, navigation, orderId]);
+    }, [dispatch, navigation, orderId, reportToAnalytics]);
 
     const onError: TradingExchangeSignAndSendTransactionProps['onError'] = useCallback(
         _error => {
             if (allowAlertRef.current) {
-                showOutputsReviewErrorAlert(() => {
-                    dispatch(sendFormActions.dispose());
-                    dispatch(transactionManagementActions.clearFeeLevels());
-                    navigation.pop();
-                }, navigation.popToTop);
+                showOutputsReviewErrorAlert(
+                    () => {
+                        dispatch(sendFormActions.dispose());
+                        dispatch(transactionManagementActions.clearFeeLevels());
+                        navigation.pop();
+                        reportToAnalytics('sign-and-send', 'retry');
+                    },
+                    () => {
+                        navigation.popToTop();
+                        reportToAnalytics('sign-and-send', 'cancel');
+                    },
+                );
             }
         },
-        [dispatch, navigation, showOutputsReviewErrorAlert],
+        [dispatch, navigation, showOutputsReviewErrorAlert, reportToAnalytics],
     );
 
     useEffect(() => {

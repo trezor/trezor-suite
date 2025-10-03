@@ -28,3 +28,23 @@ export type FirmwareUpdatePayload = {
 
 export type FirmwareUpdateStuckedState = 'modalPart1' | 'modalPart2' | 'buttonVisible';
 export type FirmwareUpdateStartType = 'normal' | 'retry';
+
+export type TradingNavigateFrom =
+    | 'trade'
+    | 'account'
+    | 'dashboard'
+    | 'trade/buy'
+    | 'trade/sell'
+    | 'trade/exchange';
+export type TradingExchangeAction = 'continue' | 'cancel' | 'retry' | 'visit';
+export type TradingExchangeStep =
+    | 'exchange-form'
+    | 'exchange-terms-modal'
+    | 'account-selection'
+    | 'create-approval'
+    | 'already-approved'
+    | 'confirm-and-send'
+    | 'transaction-preview'
+    | 'fee-selection'
+    | 'sign-and-send'
+    | 'webview';

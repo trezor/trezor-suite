@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
@@ -14,6 +15,7 @@ import {
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 
 import { TradingFeesForm } from '../components/fees/TradingFeesForm';
+import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 
 type RouteProps = StackProps<TradingStackParamList, TradingStackRoutes.TradingFees>['route'];
 
@@ -25,6 +27,11 @@ export const TradingFeesScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const reportToAnalytics = useExchangeAnalyticReportCallback();
+    useEffect(() => {
+        reportToAnalytics('fee-selection', 'visit');
+    }, [reportToAnalytics]);
 
     useSubscribeForSolanaBlockUpdates(account);
 

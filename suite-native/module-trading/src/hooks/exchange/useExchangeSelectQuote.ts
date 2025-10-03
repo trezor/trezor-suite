@@ -16,6 +16,7 @@ import {
 } from '@suite-native/navigation';
 import { useTimer } from '@trezor/react-utils';
 
+import { useExchangeAnalyticReportCallback } from './useExchangeAnalyticReportCallback';
 import { clearExchangeFormQuoteData } from './useExchangeForm';
 import {
     selectExchangeSelectedReceiveAccount,
@@ -48,6 +49,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
     const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
     useConsentDenier(candidateQuote?.exchange, resolveConsent);
+    const analyticsReportCallback = useExchangeAnalyticReportCallback(candidateQuote);
 
     const canProceed = !isLoading && !!candidateQuote && !!sendAccount;
 
@@ -63,11 +65,13 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
     const giveConsent = useCallback(() => {
         resolveConsent(true);
-    }, [resolveConsent]);
+        analyticsReportCallback('exchange-terms-modal', 'continue');
+    }, [resolveConsent, analyticsReportCallback]);
 
     const cancelConsent = useCallback(() => {
         resolveConsent(false);
-    }, [resolveConsent]);
+        analyticsReportCallback('exchange-terms-modal', 'cancel');
+    }, [resolveConsent, analyticsReportCallback]);
 
     const selectQuote = async () => {
         if (!candidateQuote || isLoading) {
@@ -76,6 +80,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
         if (!isFullySelectedReceiveAccount(receiveAccount)) {
             selectReceiveAccount();
+            analyticsReportCallback('account-selection', 'continue');
 
             return;
         }
