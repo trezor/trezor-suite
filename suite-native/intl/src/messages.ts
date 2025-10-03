@@ -2569,7 +2569,16 @@ export const messages = {
             error: {
                 title: 'Update failed',
             },
-            dontCloseAppMessage: 'Don’t close the app.',
+            doNotCloseApp: {
+                alertBox: {
+                    title: 'Please don’t close the app.',
+                    button: 'Why?',
+                },
+                alert: {
+                    title: 'Leaving the app would corrupt the firmware and you’d need to start the installation over.',
+                    button: 'Okay, got it',
+                },
+            },
             confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
             retryButton: 'Retry',
             contactSupportButton: 'Contact support',
