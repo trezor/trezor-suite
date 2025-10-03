@@ -73,6 +73,7 @@
     "dependencies": {
         "@solana-program/compute-budget": "^0.8.0",
         "@solana-program/stake": "^0.2.1",
+        "@solana-program/system": "^0.7.0",
         "@solana-program/token": "^0.5.1",
         "@solana-program/token-2022": "^0.4.2",
         "@solana/kit": "^2.3.0",

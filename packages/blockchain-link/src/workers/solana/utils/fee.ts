@@ -10,6 +10,8 @@ import {
     SimulateTransactionApi,
     TransactionMessageBytes,
     TransactionMessageBytesBase64,
+    address,
+    createNoopSigner,
     getBase64Decoder,
     getCompiledTransactionMessageEncoder,
     getTransactionEncoder,
@@ -21,6 +23,12 @@ import {
     SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR,
     getSetComputeUnitLimitInstructionDataEncoder,
 } from '@solana-program/compute-budget';
+import {
+    SYSTEM_PROGRAM_ADDRESS,
+    TRANSFER_SOL_DISCRIMINATOR,
+    getTransferSolInstruction,
+    getTransferSolInstructionDataDecoder,
+} from '@solana-program/system';
 
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { safeBigIntStringify } from '@trezor/utils';
@@ -55,6 +63,51 @@ const bumpUnitLimitComputeBudgetInstructions = (
             });
 
             return { ...ix, data };
+        }
+
+        return ix;
+    }),
+});
+
+// If we use send max amount it might fail simulation
+// because of max budget limit from bumpUnitLimitComputeBudgetInstructions
+const useMinimalLamportForTransferSolInstruction = (
+    message: CompiledTransactionMessage,
+): CompiledTransactionMessage => ({
+    ...message,
+    instructions: message.instructions.map(ix => {
+        if (message.staticAccounts[ix.programAddressIndex] === SYSTEM_PROGRAM_ADDRESS) {
+            if (!ix.data) {
+                return ix;
+            }
+            const decoder = getTransferSolInstructionDataDecoder();
+            const decoded = decoder.decode(ix.data);
+
+            const { accountIndices } = ix;
+
+            if (
+                decoded.discriminator !== TRANSFER_SOL_DISCRIMINATOR || // it is not a transfer sol instruction
+                decoded.amount === BigInt(0) || // don't modify zero amount instruction for sure
+                !accountIndices ||
+                accountIndices.length !== 2
+            ) {
+                return ix;
+            }
+
+            const fromAddress = message.staticAccounts[accountIndices[0]]?.toString();
+            const toAddress = message.staticAccounts[accountIndices[1]]?.toString();
+
+            if (!fromAddress || !toAddress) {
+                return ix;
+            }
+
+            const newInstruction = getTransferSolInstruction({
+                amount: 89088n, // 89088 is minimal amount to cover empty SOL account rent.
+                destination: address(toAddress),
+                source: createNoopSigner(address(fromAddress)),
+            });
+
+            return { ...ix, data: newInstruction.data };
         }
 
         return ix;
@@ -98,6 +151,7 @@ export const getPriorityFee = async (
     // Reconstruct TX for simulation
     const messageBytes = pipe(
         bumpUnitLimitComputeBudgetInstructions(compiledMessage),
+        useMinimalLamportForTransferSolInstruction,
         getCompiledTransactionMessageEncoder().encode,
     ) as TransactionMessageBytes;
 
