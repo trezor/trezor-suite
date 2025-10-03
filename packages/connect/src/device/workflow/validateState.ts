@@ -105,6 +105,10 @@ const getInvalidThpDeviceState = async (context: WorkflowContext) => {
 
                 return undefined;
             }
+            // user cancelled pin on device
+            if (e.code === 'Failure_PinCancelled') {
+                throw e;
+            }
         });
     }
 
