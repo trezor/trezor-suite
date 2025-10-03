@@ -1,6 +1,9 @@
 import { RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { isFulfilled } from '@reduxjs/toolkit';
+import { ExchangeTrade } from 'invity-api';
+
 import { invariant } from '@suite-common/suite-utils';
 import {
     HandleExchangeRequestThunkProps,
@@ -9,6 +12,7 @@ import {
     selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
@@ -88,6 +92,22 @@ const useShouldFetchExchangeQuotes = (
     };
 };
 
+const waitForPromiseAndReport = async (promise: AbortablePromise | undefined) => {
+    if (!promise) {
+        return;
+    }
+
+    const action = await promise;
+    if (isFulfilled(action) && (action.payload as ExchangeTrade[]).length > 0) {
+        analytics.report({
+            type: EventType.TradingQuoteReceived,
+            payload: {
+                type: 'exchange',
+            },
+        });
+    }
+};
+
 const useExchangeQuotesThunk = (
     getValues: ExchangeFormType['getValues'],
     timer: Timer,
@@ -123,6 +143,7 @@ const useExchangeQuotesThunk = (
                 };
 
                 quotesPromiseRef.current = dispatch(exchangeThunks.handleRequestThunk(payload));
+                waitForPromiseAndReport(quotesPromiseRef.current);
             });
         }
     }, [
