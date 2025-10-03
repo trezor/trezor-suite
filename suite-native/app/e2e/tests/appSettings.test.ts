@@ -14,7 +14,7 @@ const preloadedState = preparePreloadedReduxState(
 
 describe('App Settings - without device interactions', () => {
     beforeEach(async () => {
-        await openApp({ wipeData: true, args: { preloadedState } });
+        await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
     });
 

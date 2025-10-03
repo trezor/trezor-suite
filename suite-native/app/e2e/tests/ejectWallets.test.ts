@@ -1,14 +1,18 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
+import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
+    getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
@@ -16,7 +20,10 @@ import {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    regtestDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+    getModelFromEnv() === 'T3T1'
+        ? regtestDiscoveryFinishedStateT3T1
+        : regtestDiscoveryFinishedStateT3W1,
 );
 
 const navigateToEjectWallets = async () => {
@@ -26,7 +33,7 @@ const navigateToEjectWallets = async () => {
 
 conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
     beforeEach(async () => {
-        await openApp({ wipeData: true, args: { preloadedState } });
+        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
         await appIsFullyLoaded();
     });

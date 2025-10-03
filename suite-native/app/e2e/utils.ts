@@ -6,6 +6,9 @@ import { PreloadedState } from '@suite-native/state';
 import { MNEMONICS, MODELS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { onDeviceOnboarding } from './pageObjects/deviceOnboardingActions';
+import { onDevicePrompt } from './pageObjects/devicePromptActions';
+
 const platform = device.getPlatform();
 
 // There is inconsistency between platforms. Android needs to have 100% of an element visible to be able to interact with it.
@@ -87,7 +90,7 @@ const wipeAppData = async () => {
 
 export const openApp = async ({
     newInstance = true,
-    wipeData = false,
+    wipeData = true,
     args = {},
 }: {
     newInstance?: boolean;
@@ -140,7 +143,7 @@ export const scrollUntilVisible = async (
     }
 };
 
-function getModelFromEnv(): Model {
+export function getModelFromEnv(): Model {
     const envValue = process.env.EMULATOR_MODEL as Model;
 
     return MODELS.includes(envValue) ? envValue : 'T3T1';
@@ -151,6 +154,19 @@ export type PrepareTrezorEmulatorProps = {
     passphrase_protection?: boolean;
     model?: Model;
     version?: string;
+};
+
+const getFwVersion = (model: Model, version: string | undefined) => {
+    if (model === 'T3W1') {
+        return '2-main'; // At this time only this firmware works with T3W1
+    } else {
+        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+
+        return (
+            (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
+            '2-latest'
+        );
+    }
 };
 
 export const prepareTrezorEmulator = async ({
@@ -167,10 +183,7 @@ export const prepareTrezorEmulator = async ({
         await TrezorUserEnvLink.disconnect();
         await TrezorUserEnvLink.connect();
 
-        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
-        const fwVersion =
-            (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
-            '2-latest';
+        const fwVersion = getFwVersion(model, version);
         // start with latest officially released firmware (necessary to pass the firmware checks)
         await TrezorUserEnvLink.startEmu({ model, version: fwVersion, wipe: true });
 
@@ -186,6 +199,11 @@ export const prepareTrezorEmulator = async ({
     // ATM we need to terminate app, start without new instance in order for the emulator to connect to the app
     await device.terminateApp();
     await openApp({ newInstance: false, args });
+
+    if (getModelFromEnv() === 'T3W1') {
+        await onDevicePrompt.allowConnectToTrezor();
+        await onDeviceOnboarding.enterTHPPairingCode();
+    }
 };
 
 export const waitForElementByTextToBeVisible = (text: string, timeout = 30000) =>

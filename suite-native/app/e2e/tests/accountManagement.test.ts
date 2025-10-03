@@ -19,7 +19,7 @@ const preloadedState = preparePreloadedReduxState(
 
 describe('Account management', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState }, wipeData: true });
+        await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
     });
 

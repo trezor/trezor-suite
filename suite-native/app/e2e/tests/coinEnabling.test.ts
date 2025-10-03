@@ -1,14 +1,24 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../utils';
+import {
+    getModelFromEnv,
+    openApp,
+    preparePreloadedReduxState,
+    prepareTrezorEmulator,
+} from '../utils';
 
-const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
+const preloadedState = preparePreloadedReduxState(
+    onboardingCompletedState,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+);
 
 conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling', () => {
     beforeEach(async () => {

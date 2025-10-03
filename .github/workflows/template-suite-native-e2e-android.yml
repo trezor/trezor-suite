@@ -17,6 +17,16 @@ on:
         required: false
         default: false
         type: boolean
+      currents_ci_build_id:
+        description: "Custom CI build ID for Currents reporting, default is pr-run-RUN_ID-RUN_ATTEMPT"
+        required: false
+        default: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+        type: string
+      currents_tags:
+        description: "(Optional) Additional tags for Currents reporting"
+        required: false
+        default: ""
+        type: string
     secrets:
       TREZOR_BOT_APP_ID:
         required: true
@@ -138,7 +148,8 @@ jobs:
         env:
           CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-          CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+          CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
+          CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
         working-directory: ./suite-native/app
         run: |

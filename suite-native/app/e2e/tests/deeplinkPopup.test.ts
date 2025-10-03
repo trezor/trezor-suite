@@ -6,11 +6,15 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { btcDiscoveryFinishedState } from '../fixtures/btcDiscoveryFinishedState';
+import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
+import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
 import { deviceAutoEjectState } from '../fixtures/deviceAutoEjectState';
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import {
     appIsFullyLoaded,
+    getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
@@ -38,7 +42,8 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    btcDiscoveryFinishedState,
+    getModelFromEnv() === 'T3W1' ? btcDiscoveryFinishedStateT3W1 : btcDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
     deviceAutoEjectState,
 );
 

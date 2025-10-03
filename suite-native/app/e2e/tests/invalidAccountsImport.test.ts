@@ -17,7 +17,7 @@ const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
 describe('Import invalid accounts', () => {
     beforeEach(async () => {
-        await openApp({ wipeData: true, args: { preloadedState } });
+        await openApp({ args: { preloadedState } });
         await goToBtcImportXpubScreen();
     });
 

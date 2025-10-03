@@ -2,11 +2,18 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcCoinEnabled } from '../fixtures/btcCoinEnabled';
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
-import { openApp, preparePreloadedReduxState, prepareTrezorEmulator, wait } from '../utils';
+import {
+    getModelFromEnv,
+    openApp,
+    preparePreloadedReduxState,
+    prepareTrezorEmulator,
+    wait,
+} from '../utils';
 
 const proceedToCreateOrRecoverCrossroads = async () => {
     await onDeviceOnboarding.waitForUninitializedDeviceLanding();
@@ -15,8 +22,11 @@ const proceedToCreateOrRecoverCrossroads = async () => {
 
     await TrezorUserEnvLink.pressYes();
 
-    await onDeviceOnboarding.waitForDeviceAuthenticitySuccess();
-    await onDeviceOnboarding.dismissDeviceAuthenticitySuccess();
+    if (getModelFromEnv() !== 'T3W1') {
+        // skip device authenticity check on T3W1 because we are using 2-main FW
+        await onDeviceOnboarding.waitForDeviceAuthenticitySuccess();
+        await onDeviceOnboarding.dismissDeviceAuthenticitySuccess();
+    }
 
     await TrezorUserEnvLink.pressYes();
 
@@ -35,13 +45,13 @@ const finishOnboardingFlow = async () => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    deviceChecksEnabledState,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
     btcCoinEnabled,
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () => {
     beforeEach(async () => {
-        await openApp({ wipeData: true, args: { preloadedState } });
+        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator({ seed: '' });
         await proceedToCreateOrRecoverCrossroads();
     });
