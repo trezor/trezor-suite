@@ -860,6 +860,15 @@ export const messages = {
                 turnOnButton: 'Turn on',
             },
         },
+        firmware: {
+            noBackupAlert: {
+                title: 'Do you really want to proceed without backup?',
+                description:
+                    'Although unlikely, you may need to restore your wallet in case of firmware update issue.',
+                primaryButton: 'No, create wallet backup',
+                secondaryButton: 'Yes, update firmware',
+            },
+        },
     },
     moduleReceive: {
         receiveTitle: 'Receive',
