@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { selectIsFirmwareUpgradable } from '@suite-common/wallet-core';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
 import { useDeviceLowBatteryAlert } from '@suite-native/device';
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import {
     ConfirmBottomSheet,
     ConfirmFirmwareUpdateScreenContent,
@@ -20,8 +21,6 @@ import {
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
-
-import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 
 type NavigationProp = StackNavigationProps<
     FirmwareUpdateStackParamList,

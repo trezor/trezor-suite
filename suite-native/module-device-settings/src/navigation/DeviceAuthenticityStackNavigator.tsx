@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useDeviceAuthenticityCheck } from '@suite-native/device';
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import {
     DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,
@@ -15,7 +16,6 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticitySuccessScreen } from '../screens/DeviceAuthenticitySuccessScreen';
 

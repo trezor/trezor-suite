@@ -17,6 +17,7 @@
         { "path": "../atoms" },
         { "path": "../bluetooth" },
         { "path": "../device" },
+        { "path": "../device-authorization" },
         { "path": "../firmware" },
         { "path": "../forms" },
         { "path": "../helpers" },
