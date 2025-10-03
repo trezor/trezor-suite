@@ -56,6 +56,7 @@ export const handleHandshakeInit = ({
     knownCredentials,
     hostStaticKeys,
     hostEphemeralKeys,
+    tryToUnlock,
     protobufEncoder,
 }: {
     handshakeInitResponse: ThpHandshakeInitResponse;
@@ -63,6 +64,7 @@ export const handleHandshakeInit = ({
     knownCredentials: ThpCredentialResponse[];
     hostEphemeralKeys: Curve25519KeyPair;
     hostStaticKeys: Curve25519KeyPair;
+    tryToUnlock: 0 | 1;
     protobufEncoder: (name: string, data: Record<string, unknown>) => { message: Buffer };
 }) => {
     if (!thpState.handshakeCredentials) {
@@ -82,8 +84,8 @@ export const handleHandshakeInit = ({
     h = handshakeHash;
     // 2. Set h = SHA-256(h || host_ephemeral_pubkey).
     h = hashOfTwo(h, hostEphemeralKeys.publicKey);
-    // 3. Set h = SHA-256(h).
-    h = hashOfTwo(h, Buffer.alloc(0));
+    // 3. Set h = SHA-256(h || try_to_unlock).
+    h = hashOfTwo(h, Buffer.from([tryToUnlock]));
     // 4. Set h = SHA-256(h || trezor_ephemeral_pubkey).
     h = hashOfTwo(h, trezorEphemeralPubkey);
     // 5. Set ck, k = HKDF(protocol_name, X25519(host_ephemeral_privkey, trezor_ephemeral_pubkey)).
