@@ -12,6 +12,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device" },
+        { "path": "../device-authorization" },
         { "path": "../device-mutex" },
         { "path": "../intl" },
         { "path": "../link" },

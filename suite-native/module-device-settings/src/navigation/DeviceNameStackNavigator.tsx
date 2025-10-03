@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import {
     DeviceNameStackParamList,
     DeviceNameStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceNameLoadingScreen } from '../screens/DeviceNameLoadingScreen';
 import { DeviceNameScreen } from '../screens/DeviceNameScreen';

@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
 import { usePinAction } from '@suite-native/device';
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import {
     DevicePinProtectionStackParamList,
     DevicePinProtectionStackRoutes,
@@ -15,7 +16,6 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import {
     ConfirmNewPinScreen,

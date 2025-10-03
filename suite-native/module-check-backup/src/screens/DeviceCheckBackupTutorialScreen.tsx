@@ -9,7 +9,7 @@ import {
     SwipeableWalkthroughCloseButton,
     SwipeableWalkthroughScreenHeader,
 } from '@suite-native/atoms';
-import { useDeviceConnectionGuard } from '@suite-native/module-device-settings/src/hooks/useDeviceConnectionGuard';
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Screen } from '@suite-native/navigation';
 
 import { useHandleCheckBackupExitButtonPress } from '../components/CheckBackupScreenWithExitButton';
