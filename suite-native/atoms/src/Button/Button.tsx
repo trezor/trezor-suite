@@ -350,7 +350,7 @@ export const Button = ({
 
     return (
         <AnimatedPressable
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             {...pressableProps}
