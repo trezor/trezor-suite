@@ -15,26 +15,31 @@ type AlertErrorOptions = {
     title: string;
     description: string;
     icon?: IconName;
+    isRetryEnabled: boolean;
 };
 
 const alertErrorMap: Record<AlertError, AlertErrorOptions> = {
     invalidXpub: {
         title: 'Invalid Public address (XPUB)',
         description: 'Check and correct the public address (XPUB).',
+        isRetryEnabled: false,
     },
     invalidReceiveAddress: {
         title: 'Receive address invalid',
         description: 'Check and correct the receive address.',
+        isRetryEnabled: false,
     },
     networkError: {
         title: 'Network error',
         description:
             'We were unable to retrieve the data from the blockchain due to a network error.',
         icon: 'wifiX',
+        isRetryEnabled: true,
     },
     unknownError: {
         title: 'Something went wrong',
         description: 'We are unable to gather the data right now. Please try again.',
+        isRetryEnabled: true,
     },
 };
 
@@ -71,9 +76,9 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                     networkSymbol: symbol,
                 });
 
-            const { title, description, icon } = alertErrorMap[alertError];
+            const { title, description, icon, isRetryEnabled } = alertErrorMap[alertError];
 
-            if (onRetry) {
+            if (onRetry && isRetryEnabled) {
                 showAlert({
                     title,
                     description,
