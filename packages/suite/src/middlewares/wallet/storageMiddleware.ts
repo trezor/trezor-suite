@@ -19,6 +19,7 @@ import {
     deviceActions,
     explorerActions,
     selectAccountByKey,
+    selectAccounts,
     selectDeviceByStaticSessionId,
     selectDevices,
     selectHistoricFiatRates,
@@ -57,12 +58,34 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     accountsActions.updateAccount,
                 )(action)
             ) {
-                const { payload } = action;
-                const device = findAccountDevice(payload, selectDevices(api.getState()));
+                const newAccount = action.payload;
+                const state = api.getState();
+                const device = findAccountDevice(newAccount, selectDevices(state));
+
+                // ensure index 0 gets saved once index 1+ appears, since it may be skipped during initial discovery
+                if (newAccount.index > 0) {
+                    const prevAccount = selectAccounts(state).find(
+                        account =>
+                            account.deviceState === newAccount.deviceState &&
+                            account.accountType === newAccount.accountType &&
+                            account.symbol === newAccount.symbol &&
+                            account.index === newAccount.index - 1,
+                    );
+
+                    if (
+                        prevAccount &&
+                        prevAccount.index === 0 &&
+                        prevAccount.balance === '0' &&
+                        isAccountSuccessful(prevAccount)
+                    ) {
+                        storageActions.saveAccounts([prevAccount]);
+                    }
+                }
+
                 // update only transactions for remembered device
-                if (isDeviceRemembered(device) && isAccountSuccessful(payload)) {
-                    storageActions.saveAccounts([payload]);
-                    api.dispatch(storageActions.saveCoinjoinAccount(payload.key));
+                if (isDeviceRemembered(device) && isAccountSuccessful(newAccount)) {
+                    storageActions.saveAccounts([newAccount]);
+                    api.dispatch(storageActions.saveCoinjoinAccount(newAccount.key));
                 }
             }
 
