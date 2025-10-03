@@ -10187,7 +10187,7 @@ export default defineMessages({
     },
     TR_SCAN_TREZORS_NEARBY: {
         id: 'TR_SCAN_TREZORS_NEARBY',
-        defaultMessage: 'Scanning for neaby Trezors',
+        defaultMessage: 'Scanning for nearby Trezors',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE',
