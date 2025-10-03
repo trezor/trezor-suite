@@ -10179,7 +10179,7 @@ export default defineMessages({
     },
     TR_DONE_REMOVING_TREZOR_FROM_SETTINGS: {
         id: 'TR_DONE_REMOVING_TREZOR_FROM_SETTINGS',
-        defaultMessage: 'Device removed',
+        defaultMessage: 'I’ve removed it',
     },
     TR_PAIR_NEW_BLUETOOTH_DEVICE: {
         id: 'TR_PAIR_NEW_BLUETOOTH_DEVICE',
