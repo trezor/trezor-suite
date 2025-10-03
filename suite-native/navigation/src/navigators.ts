@@ -218,6 +218,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
     [DeviceSettingsStackRoutes.PinProtection]: undefined;
+    [DeviceSettingsStackRoutes.AutoConnectSettings]: undefined;
     [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
 };
 

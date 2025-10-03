@@ -14,6 +14,7 @@ import { DeviceNameStackNavigator } from './DeviceNameStackNavigator';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
 import { FirmwareUpdateStackNavigator } from './FirmwareUpdateStackNavigator';
 import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
+import { AutoConnectSettingsScreen } from '../screens/AutoConnectSettingsScreen';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
@@ -65,6 +66,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceCheckBackupStack}
             component={DeviceCheckBackupStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.AutoConnectSettings}
+            component={AutoConnectSettingsScreen}
         />
     </DeviceSettingsStack.Navigator>
 );
