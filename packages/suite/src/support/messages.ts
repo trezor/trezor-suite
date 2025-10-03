@@ -1553,10 +1553,6 @@ export default defineMessages({
         defaultMessage: '{networkName} network receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
-    TR_ADDRESS_MODAL_TITLE_EXCHANGE: {
-        defaultMessage: '{networkCurrencyName} receive address on {networkName} network',
-        id: 'TR_ADDRESS_MODAL_TITLE_EXCHANGE',
-    },
     TR_IMPORT_CSV_MODAL_TITLE: {
         defaultMessage: 'Import addresses from CSV',
         id: 'TR_IMPORT_CSV_MODAL_TITLE',
