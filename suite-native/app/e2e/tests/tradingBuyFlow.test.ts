@@ -4,7 +4,7 @@ import { onHome } from '../pageObjects/homeActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/trading/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/trading/tradingHistoryActions';
-import { openApp, preparePreloadedReduxState } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
@@ -23,7 +23,7 @@ describe('Trade Buy', () => {
         await tradingBuyActions.selectReceiveAsset('BTC');
         await tradingBuyActions.selectBtcReceiveAccount('BTC SegWit', "m/84'/0'/0'/0/0");
         await tradingBuyActions.selectFiatCurrency('PLN');
-        await tradingBuyActions.selectCountry('Polan', '🇵🇱 Poland');
+        await tradingBuyActions.selectCountry('Polan', '�� Poland');
         await tradingBuyActions.setFiatAmount('100');
 
         await tradingBuyActions.scrollScreenToBottom();

@@ -2,11 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, TextInput } from 'react-native';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
+import { isDetoxTestBuild } from '@suite-native/config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type DigitBoxProps = {
     value?: string;
     isFocused: boolean;
+    testID?: string;
 };
 
 const digitBoxStyle = prepareNativeStyle<{ isFocused: boolean }>(
@@ -76,6 +78,17 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
         }
     };
 
+    const onChangeText = (text: string) => {
+        if (!isDetoxTestBuild()) {
+            return;
+        }
+        const digits = text.replace(/\D/g, '').slice(0, length);
+        setCode(digits);
+        if (digits.length === length) {
+            onSubmit(digits);
+        }
+    };
+
     useEffect(() => {
         const timeoutId = setTimeout(focusInput, 1);
 
@@ -96,7 +109,13 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 onKeyPress={e => onKeyPress(e.nativeEvent.key)}
-                style={applyStyle(textInputStyle)}
+                onChangeText={text => onChangeText(text)}
+                style={
+                    isDetoxTestBuild()
+                        ? applyStyle(prepareNativeStyle(_ => ({})))
+                        : applyStyle(textInputStyle)
+                }
+                testID="@thpSecurityCode/Input"
             />
             <HStack justifyContent="center" alignItems="center">
                 {Array.from({ length }).map((_, i) => (

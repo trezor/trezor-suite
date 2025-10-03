@@ -10,7 +10,7 @@ import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsAct
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp, preparePreloadedReduxState } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -19,7 +19,7 @@ const preloadedState = preparePreloadedReduxState(
 
 describe('Account management', () => {
     beforeEach(async () => {
-        await openApp({ args: { preloadedState }, wipeData: true });
+        await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
     });
 

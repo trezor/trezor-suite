@@ -1,6 +1,6 @@
-import { scrollUntilVisible } from '../utils';
 import { onDeviceConnecting } from './deviceConnectingActions';
 import { onHome } from './homeActions';
+import { scrollUntilVisible } from '../support/utils';
 
 class CoinEnablingActions {
     async waitForInitScreen() {

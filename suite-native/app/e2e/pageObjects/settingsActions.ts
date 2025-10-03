@@ -1,7 +1,7 @@
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
-import { scrollUntilVisible, wait } from '../utils';
+import { scrollUntilVisible, wait } from '../support/utils';
 
 class SettingsActions {
     async tapPreferences() {

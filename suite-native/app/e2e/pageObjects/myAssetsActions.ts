@@ -1,6 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import { waitForElementByIdToBeVisible } from '../utils';
+import { waitForElementByIdToBeVisible } from '../support/utils';
 
 class MyAssetsActions {
     async waitForScreen() {

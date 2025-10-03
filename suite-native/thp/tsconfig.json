@@ -8,6 +8,7 @@
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../intl" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" }

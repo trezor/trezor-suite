@@ -1,6 +1,6 @@
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { scrollUntilVisible, wait, waitForElementByIdToBeVisible } from '../utils';
+import { scrollUntilVisible, wait, waitForElementByIdToBeVisible } from '../support/utils';
 
 const insertSeed = async (seed: string = MNEMONICS.mnemonic_immune) => {
     const seedWords = seed.split(' ');
