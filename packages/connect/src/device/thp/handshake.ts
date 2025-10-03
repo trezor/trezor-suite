@@ -68,7 +68,7 @@ export const createThpChannel = async (device: Device) => {
 // State HH1 and HH2
 // TODO: link-to-public-docs
 // https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
-export const thpHandshake = async (device: Device) => {
+export const thpHandshake = async (device: Device, unlockPin = false) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
@@ -84,6 +84,7 @@ export const thpHandshake = async (device: Device) => {
     const knownCredentials = (settings?.knownCredentials || []).sort(cre =>
         cre.autoconnect ? -1 : 1,
     );
+    const tryToUnlock = unlockPin ? 1 : 0;
 
     // 1. Generate a new ephemeral X25519 key pair (host_ephemeral_privkey, host_ephemeral_pubkey).
     const hostEphemeralKeys = protocolThp.getCurve25519KeyPair(randomBytes(32));
@@ -91,7 +92,7 @@ export const thpHandshake = async (device: Device) => {
     // 2. Send the message HandshakeInitiationReq(host_ephemeral_pubkey) to the host.
     const handshakeInit = await thpCall(device, 'ThpHandshakeInitRequest', {
         key: hostEphemeralKeys.publicKey,
-        tryToUnlock: 0,
+        tryToUnlock,
     });
 
     const { trezorEncryptedStaticPubkey } = handshakeInit.message;
@@ -103,6 +104,7 @@ export const thpHandshake = async (device: Device) => {
         hostStaticKeys,
         hostEphemeralKeys,
         knownCredentials,
+        tryToUnlock,
         protobufEncoder: (name, data) => encodeMessage(device.transport.getMessages(), name, data),
     });
 
