@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
 import { firmwareActions } from '@suite-common/firmware';
-import { Badge, Box, Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     setTemporaryRememberedDeviceThunk,
@@ -24,6 +24,7 @@ import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { DoNotCloseAppBottomSheetTrigger } from './DoNotCloseAppBottomSheetTrigger';
 import { MayBeStuckedBottomSheet } from './MayBeStuckedBottomSheet';
 import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
@@ -267,6 +268,9 @@ export const FirmwareInstallationScreenContent = ({
         <DynamicScreenHeader closeActionType="close" closeAction={handleCancel} />
     );
 
+    const isDontCloseAppAlertDisplayed =
+        indicatorStatus === 'inProgress' && !isSheetOpen && !mayBeStucked && !isDone;
+
     return (
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
@@ -296,19 +300,6 @@ export const FirmwareInstallationScreenContent = ({
                             <Text variant="body" color="textSubdued" textAlign="center">
                                 {translatedText.subtitle ?? ' '}
                             </Text>
-                        </Box>
-                        <Box paddingTop="sp24" alignItems="center" justifyContent="center">
-                            {!isError && !isDone ? (
-                                <Badge
-                                    variant="blue"
-                                    label={
-                                        <Translation id="firmware.firmwareUpdateProgress.dontCloseAppMessage" />
-                                    }
-                                />
-                            ) : (
-                                // Blank space to prevent layout shift when done
-                                <Text variant="hint"> </Text>
-                            )}
                         </Box>
                     </Animated.View>
                 </VStack>
@@ -351,6 +342,9 @@ export const FirmwareInstallationScreenContent = ({
                         </Button>
                     </Animated.View>
                 )}
+                <DoNotCloseAppBottomSheetTrigger
+                    isTriggerDisplayed={isDontCloseAppAlertDisplayed}
+                />
             </Box>
 
             <MayBeStuckedBottomSheet
