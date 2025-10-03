@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { ExchangeTrade } from 'invity-api';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
 import { ExchangeRatePicker } from './ExchangeRatePicker';
@@ -25,14 +26,33 @@ export const ExchangeRateAndProviderPicker = () => {
     }
 
     const handleItemPress = () => {
-        if (!isLoading) {
-            showSheet();
+        if (isLoading) {
+            return;
         }
+
+        showSheet();
+        analytics.report({
+            type: EventType.TradingCompareOffers,
+            payload: {
+                type: 'exchange',
+            },
+        });
     };
 
     const handleQuoteSelect = (quote: ExchangeTrade) => {
         setSelectedValue(quote);
-        // TODO analytics
+
+        if (selectedValue?.exchange === quote.exchange && selectedValue?.isDex === quote.isDex) {
+            return;
+        }
+
+        analytics.report({
+            type: EventType.TradingParameterChanged,
+            payload: {
+                type: 'exchange',
+                parameter: 'provider',
+            },
+        });
     };
 
     return (
