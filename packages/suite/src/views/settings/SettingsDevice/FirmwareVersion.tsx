@@ -1,19 +1,15 @@
-import { useState } from 'react';
-
 import styled from 'styled-components';
 
 import { getChangelogUrl } from '@suite-common/suite-utils';
-import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { AcquiredDevice } from 'src/types/suite';
 
 const Version = styled.div`
@@ -53,13 +49,8 @@ interface FirmwareVersionProps {
 }
 
 export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
-    const [lowBatteryWarning, setLowBatteryWarning] = useState(false);
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(
-        selectIsDeviceConnectedViaBluetoothLowOnBattery,
-    );
-
     if (!device?.features) {
         return null;
     }
@@ -70,11 +61,6 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const githubButtonIcon = revision ? 'arrowUpRight' : undefined;
 
     const handleUpdate = () => {
-        if (isDeviceConnectedViaBluetoothLowOnBattery) {
-            setLowBatteryWarning(true);
-
-            return;
-        }
         dispatch(goto('firmware-index', { params: { cancelable: true } }));
     };
 
@@ -89,10 +75,6 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             {currentFwVersion}
         </Button>
     );
-
-    if (lowBatteryWarning === true) {
-        return <FirmwareLowBatteryModal onClose={() => setLowBatteryWarning(false)} />;
-    }
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.FirmwareVersion}>

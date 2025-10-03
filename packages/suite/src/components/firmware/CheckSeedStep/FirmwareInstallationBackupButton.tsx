@@ -1,9 +1,9 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { Button } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 type FirmwareInstallationBackupButtonProps = {
     isBackedUp: boolean;
@@ -14,7 +14,7 @@ export const FirmwareInstallationBackupButton = ({
 }: FirmwareInstallationBackupButtonProps) => {
     const dispatch = useDispatch();
 
-    const { resetReducer } = useFirmwareInstallation();
+    const { resetReducer } = useFirmwareDesktopUpdate();
 
     const secondaryButtonText = isBackedUp ? 'TR_CHECK_SEED' : 'TR_CREATE_BACKUP';
 

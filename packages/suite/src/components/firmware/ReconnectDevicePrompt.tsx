@@ -1,6 +1,5 @@
 import * as semver from 'semver';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
@@ -15,6 +14,7 @@ import { WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useSelector } from 'src/hooks/suite';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 const RebootDeviceGraphics = ({
@@ -69,7 +69,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const { showManualReconnectPrompt, status, reconnectEvent, buttonEvent } =
-        useFirmwareInstallation();
+        useFirmwareDesktopUpdate();
     const { device } = useDevice();
 
     const eventDevice = usePreviousDefined(buttonEvent?.device || device);

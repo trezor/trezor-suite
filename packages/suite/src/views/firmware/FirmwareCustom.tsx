@@ -1,21 +1,26 @@
 import { useState } from 'react';
 
-import { useFirmwareInstallation } from '@suite-common/firmware';
-
 import { SelectCustomFirmware } from 'src/components/firmware';
+import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { Translation } from 'src/components/suite/Translation';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 import { FirmwareModal } from './FirmwareModal';
 
 export const FirmwareCustom = () => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    const { firmwareUpdate } = useFirmwareInstallation();
+    const { firmwareUpdate, showLowBatteryModal, toggleLowBatteryModal } =
+        useFirmwareDesktopUpdate();
 
     const installCustomFirmware = () => {
         if (firmwareBinary) {
             firmwareUpdate({ binary: firmwareBinary });
         }
     };
+
+    if (showLowBatteryModal) {
+        return <FirmwareLowBatteryModal onClose={toggleLowBatteryModal} />;
+    }
 
     return (
         <FirmwareModal

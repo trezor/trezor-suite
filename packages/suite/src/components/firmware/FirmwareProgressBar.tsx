@@ -1,11 +1,12 @@
 import styled, { useTheme } from 'styled-components';
 
-import { FirmwareOperationStatus, useFirmwareInstallation } from '@suite-common/firmware';
+import { FirmwareOperationStatus } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Box, Column, Icon, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 import { useSelector } from '../../hooks/suite';
 
@@ -16,7 +17,7 @@ const Percentage = styled.div`
 
 export const FirmwareProgressBar = () => {
     const theme = useTheme();
-    const { operation, progress, uiEvent } = useFirmwareInstallation();
+    const { operation, progress, uiEvent } = useFirmwareDesktopUpdate();
     const isActiveOnboarding = useSelector(state => state.onboarding.isActive);
 
     const mapOperationToTranslationId: Record<

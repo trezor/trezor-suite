@@ -1,4 +1,3 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { Banner, Card, Column, Text } from '@trezor/components';
@@ -8,6 +7,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { FirmwareOffer, FirmwareWarningsList } from 'src/components/firmware';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 type GetDescriptionProps = {
     required: boolean;
@@ -49,7 +49,7 @@ export const FirmwareInitialStandalone = ({
     shouldSwitchFirmwareType = false,
 }: FirmwareInitialProps) => {
     const { device } = useDevice();
-    const { deviceWillBeWiped, targetFirmwareType } = useFirmwareInstallation({
+    const { deviceWillBeWiped, targetFirmwareType } = useFirmwareDesktopUpdate({
         shouldSwitchFirmwareType,
     });
 

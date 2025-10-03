@@ -1,8 +1,9 @@
-import { useFirmwareInstallation } from '@suite-common/firmware';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitialStandalone } from 'src/components/firmware';
+import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { Translation } from 'src/components/suite/Translation';
+import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 import { FirmwareModal } from './FirmwareModal';
 
@@ -11,9 +12,10 @@ type FirmwareUpdateProps = {
 };
 
 export const FirmwareUpdate = ({ shouldSwitchFirmwareType }: FirmwareUpdateProps) => {
-    const { firmwareUpdate, targetFirmwareType } = useFirmwareInstallation({
-        shouldSwitchFirmwareType,
-    });
+    const { firmwareUpdate, targetFirmwareType, showLowBatteryModal, toggleLowBatteryModal } =
+        useFirmwareDesktopUpdate({
+            shouldSwitchFirmwareType,
+        });
 
     const installTargetFirmware = () =>
         firmwareUpdate({
@@ -38,6 +40,10 @@ export const FirmwareUpdate = ({ shouldSwitchFirmwareType }: FirmwareUpdateProps
     ) : (
         <Translation id="TR_INSTALL_FIRMWARE" />
     );
+
+    if (showLowBatteryModal) {
+        return <FirmwareLowBatteryModal onClose={toggleLowBatteryModal} />;
+    }
 
     return (
         <FirmwareModal
