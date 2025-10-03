@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
-import { inputTextToElement, scrollUntilVisible } from '../utils';
 import { onTabBar } from './tabBarActions';
+import { inputTextToElement, scrollUntilVisible } from '../support/utils';
 
 class AccountImportActions {
     async importAccountAndVerifyVisibility({

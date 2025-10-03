@@ -19,7 +19,7 @@ class AccountReceiveActions {
         const receiveAddressText = element(by.id('@receive/confirmed-receive-address'));
 
         await waitFor(receiveAddressText).toBeVisible().withTimeout(30000);
-        detoxExpect(receiveAddressText).toHaveText(address);
+        await detoxExpect(receiveAddressText).toHaveText(address);
     }
 }
 

@@ -4,17 +4,20 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
+import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
-    appIsFullyLoaded,
+    getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-    wait,
-} from '../utils';
+} from '../support/setup';
+import { appIsFullyLoaded, wait } from '../support/utils';
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
@@ -55,10 +58,13 @@ const expectNonEmptyWallet = async () => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    regtestDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === 'T3T1'
+        ? regtestDiscoveryFinishedStateT3T1
+        : regtestDiscoveryFinishedStateT3W1,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3W1]', () => {
     beforeAll(async () => {
         // wallet without passphrase
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
@@ -76,7 +82,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
     // TODO #16495 - currently not working
     describe.skip('with passphrase not allowed on Trezor', () => {
         beforeEach(async () => {
-            await openApp({ wipeData: true, args: { preloadedState } });
+            await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator();
             await appIsFullyLoaded();
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
@@ -113,7 +119,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
 
     describe('with passphrase already allowed on Trezor', () => {
         beforeEach(async () => {
-            await openApp({ wipeData: true, args: { preloadedState } });
+            await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator({ passphrase_protection: true });
             await appIsFullyLoaded();
         });

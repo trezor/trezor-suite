@@ -1,4 +1,4 @@
-import { waitForElementByIdToBeVisible } from '../utils';
+import { waitForElementByIdToBeVisible } from '../support/utils';
 class OnOnboardingActions {
     async finishOnboarding() {
         const testId = '@onboarding/Welcome/nextBtn';

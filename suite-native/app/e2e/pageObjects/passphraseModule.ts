@@ -2,8 +2,9 @@ import { expect as detoxExpect } from 'detox';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../utils';
 import { onDeviceManager } from './deviceManagerActions';
+import { getModelFromEnv } from '../support/setup';
+import { waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../support/utils';
 
 class PassphraseModule {
     public async openNewPassphraseFlow() {
@@ -32,6 +33,13 @@ class PassphraseModule {
     }
 
     public async allowPassphraseOnEmu() {
+        if (getModelFromEnv() === 'T3W1') {
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.pressYes();
+
+            return;
+        }
+
         await TrezorUserEnvLink.swipeEmu('up');
         await TrezorUserEnvLink.swipeEmu('up');
         await TrezorUserEnvLink.pressYes();
@@ -42,6 +50,13 @@ class PassphraseModule {
     }
 
     public async confirmPassphraseOnEmu() {
+        if (getModelFromEnv() === 'T3W1') {
+            await TrezorUserEnvLink.pressYes();
+            await TrezorUserEnvLink.pressYes();
+
+            return;
+        }
+
         await TrezorUserEnvLink.swipeEmu('up');
         await TrezorUserEnvLink.swipeEmu('up');
         await TrezorUserEnvLink.pressYes();

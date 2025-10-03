@@ -1,21 +1,30 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { btcDiscoveryFinishedState } from '../fixtures/btcDiscoveryFinishedState';
+import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
+import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../utils';
+import {
+    getModelFromEnv,
+    openApp,
+    preparePreloadedReduxState,
+    prepareTrezorEmulator,
+} from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    btcDiscoveryFinishedState,
+    getModelFromEnv() === 'T3W1' ? btcDiscoveryFinishedStateT3W1 : btcDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Receive [@fixT3W1]', () => {
     beforeAll(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();

@@ -1,6 +1,7 @@
 import { BackupType } from '@suite-common/suite-types';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../utils';
+import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../support/utils';
 
 class DeviceOnboardingActions {
     async selectCreateWalletOption() {
@@ -121,6 +122,14 @@ class DeviceOnboardingActions {
                 'SKIPPING FIRMWARE UPDATE: Firmware update was not displayed, it is already latest version.',
             );
         }
+    }
+
+    async enterTHPPairingCode() {
+        await waitForElementByIdToBeVisible('@screen/ThpCodeEntry');
+        const screenContent = await TrezorUserEnvLink.getScreenContent();
+        const screenContentBody = screenContent.body as string;
+        const code = screenContentBody.match(/(\d\s*){6}$/)?.[0].replace(/\s+/g, '') ?? '';
+        await element(by.id('@thpSecurityCode/Input')).replaceText(code);
     }
 }
 

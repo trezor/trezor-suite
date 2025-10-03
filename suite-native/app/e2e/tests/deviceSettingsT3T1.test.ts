@@ -7,12 +7,8 @@ import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySuccess';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
-import {
-    appIsFullyLoaded,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { appIsFullyLoaded } from '../support/utils';
 
 const preloadedStateT3T1 = preparePreloadedReduxState(
     onboardingCompletedState,
