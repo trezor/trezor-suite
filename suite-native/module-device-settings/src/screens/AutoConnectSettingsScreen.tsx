@@ -7,6 +7,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import { removeThpAutoconnectThunk } from '@suite-common/thp';
 import { selectDeviceAutoconnectCredentials } from '@suite-common/wallet-core';
 import { Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -18,8 +19,6 @@ import {
 import { useThpAutoconnectActions } from '@suite-native/thp';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
-
-import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
