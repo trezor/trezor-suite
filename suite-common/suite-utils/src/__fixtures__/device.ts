@@ -63,12 +63,33 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
 const getIsDeviceConnectedViaBluetooth = [
     {
         description: 'device is connected via bluetooth',
-        device: getSuiteDevice({ bluetoothProps: { id: asBluetoothDeviceId('21') } }),
+        device: getSuiteDevice({
+            bluetoothProps: { id: asBluetoothDeviceId('21') },
+            connected: true,
+        }),
         result: true,
+    },
+    {
+        description: 'device is not connected but bluetooth props are present',
+        device: getSuiteDevice({
+            bluetoothProps: { id: asBluetoothDeviceId('21') },
+            connected: false,
+        }),
+        result: false,
     },
     {
         description: 'device is not connected via bluetooth',
         device: SUITE_DEVICE,
+        result: false,
+    },
+    {
+        description: "device is connected but doesn't have bluetooth props",
+        device: getSuiteDevice({ connected: true }),
+        result: false,
+    },
+    {
+        description: 'device is undefined',
+        device: undefined,
         result: false,
     },
 ];

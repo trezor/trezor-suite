@@ -166,7 +166,7 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceSta
 export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
 
 export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
-    !!device?.bluetoothProps;
+    !!device?.connected && !!device?.bluetoothProps;
 
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
     !!device?.features;
