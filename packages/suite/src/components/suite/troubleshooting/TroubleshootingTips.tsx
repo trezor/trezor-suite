@@ -4,13 +4,11 @@ import {
     Banner,
     BannerVariant,
     Box,
+    Button,
     Card,
-    Collapsible,
     Column,
-    ElevationContext,
-    ElevationDown,
-    ElevationUp,
     IconName,
+    Modal,
     Row,
     SelectBar,
     Text,
@@ -18,10 +16,10 @@ import {
 import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
-import { TroubleshootingTipsToggle } from './TroubleshootingTipsToggle';
 import { useLayoutSize } from '../../../hooks/suite';
+import { Translation } from '../Translation';
+import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
 
 export type TroubleshootingTipsItem = {
     key: string;
@@ -108,47 +106,55 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
         );
     };
 
-    const CollapsibleTroubleshooting = () => (
-        <Collapsible
-            defaultIsOpen={initiallyIsOpen === true}
-            data-testid={dataTest || '@onboarding/expand-troubleshooting-tips'}
-        >
-            <Column gap={20} alignItems="center">
-                <Collapsible.Toggle>
-                    <TroubleshootingTipsToggle>{toggleText}</TroubleshootingTipsToggle>
-                </Collapsible.Toggle>
-                <Collapsible.Content>
-                    <ElevationContext baseElevation={-1}>
-                        <ElevationDown>
-                            <Card paddingType="small" maxWidth="656px">
-                                <Column gap={spacings.sm}>
-                                    {labelRow}
-                                    {/* Custom design, where upper card is -1, and this card is 1 */}
-                                    <ElevationUp>
-                                        <Card>
-                                            <TroubleshootingTipsList
-                                                items={items[selectedSection].items}
-                                            />
-                                        </Card>
-                                    </ElevationUp>
-                                    <TroubleshootingTipsFooter />
-                                </Column>
-                            </Card>
-                        </ElevationDown>
-                    </ElevationContext>
-                </Collapsible.Content>
+    const TroubleshootingButton = () => {
+        const [isTroubleshootingModalVisible, setIsTroubleshootingModalVisible] = useState(false);
+        const onOpen = () => {
+            setIsTroubleshootingModalVisible(true);
+        };
+        const onCancel = () => {
+            setIsTroubleshootingModalVisible(false);
+        };
+
+        return (
+            <Column
+                alignItems="center"
+                data-testid={dataTest || '@onboarding/troubleshooting-tips'}
+            >
+                <Button
+                    onClick={onOpen}
+                    variant="info"
+                    size="small"
+                    isSubtle={!initiallyIsOpen}
+                    icon="question"
+                    data-testid="@onboarding/troubleshooting-tips/button"
+                >
+                    {toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
+                </Button>
+                {isTroubleshootingModalVisible && (
+                    <Modal
+                        heading={toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
+                        onCancel={onCancel}
+                        variant="info"
+                        bottomContent={<TroubleshootingTipsFooter />}
+                        data-testid="@onboarding/troubleshooting-tips/modal"
+                    >
+                        <Card header={labelRow}>
+                            <TroubleshootingTipsList items={items[selectedSection].items} />
+                        </Card>
+                    </Modal>
+                )}
             </Column>
-        </Collapsible>
-    );
+        );
+    };
 
     return cta ? (
         <Column gap={80} alignItems="center">
             <ActionBanner />
-            <CollapsibleTroubleshooting />
+            <TroubleshootingButton />
         </Column>
     ) : (
         <Box margin={{ top: 80 }}>
-            <CollapsibleTroubleshooting />
+            <TroubleshootingButton />
         </Box>
     );
 };
