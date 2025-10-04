@@ -25,7 +25,7 @@ export const useShowDeviceDisconnectedAlert = () => {
 
     const handleReconnect = () => {
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+            screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
             params: {
                 // If user cancels the re-connecting process, redirect him to the Home screen.
                 onCancelNavigationTarget: {
