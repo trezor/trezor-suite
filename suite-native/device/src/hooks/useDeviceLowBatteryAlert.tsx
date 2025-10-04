@@ -25,7 +25,7 @@ export const useDeviceLowBatteryAlert = () => {
                     />
                 ),
                 primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
-                primaryButtonVariant: 'yellowBold',
+                primaryButtonVariant: 'redBold',
             });
 
             return true;
