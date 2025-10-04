@@ -18,6 +18,14 @@ import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper
 import { Preloader } from '../Preloader';
 import * as selectShouldDisplayDeviceCompromisedModule from '../selectShouldDisplayDeviceCompromisedOnRoute';
 
+class ResizeObserverMock {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+}
+
+window.ResizeObserver = ResizeObserverMock;
+
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({
     Translation: ({ id }: any) => <span data-testid={id}>{id}</span>,
@@ -218,7 +226,7 @@ describe(`${Preloader.name} component`, () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
+        fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
         expect(screen.getAllByText('TR_ACQUIRE_DEVICE_TITLE').length).toBe(2);
 
         unmount();
@@ -270,7 +278,7 @@ describe(`${Preloader.name} component`, () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
+        fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
         expect(findByTestId('@connect-device-prompt/unreadable-udev')).not.toBeNull();
 
         unmount();
@@ -345,7 +353,7 @@ describe(`${Preloader.name} component`, () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
+        fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
         expect(findByTestId(/TR_UNKNOWN_DEVICE/)).not.toBeNull();
 
         unmount();
@@ -371,7 +379,7 @@ describe(`${Preloader.name} component`, () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        fireEvent.click(findByTestId('@onboarding/expand-troubleshooting-tips/toggle'));
+        fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
         expect(findByTestId(/TR_YOUR_DEVICE_IS_SEEDLESS/)).not.toBeNull();
         expect(findByTestId('TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE')).not.toBeNull();
 
@@ -449,7 +457,8 @@ describe(`${Preloader.name} component`, () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId(/TR_DEVICE_IN_BOOTLOADER/)).not.toBeNull();
+        expect(findByTestId('TR_DEVICE_CONNECTED_BOOTLOADER')).not.toBeNull();
+        fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
         expect(findByTestId('TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT')).not.toBeNull();
 
         unmount();
