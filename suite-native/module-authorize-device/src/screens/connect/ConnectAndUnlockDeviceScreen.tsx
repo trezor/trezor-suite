@@ -21,7 +21,6 @@ import {
 import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
 
 export const ConnectAndUnlockDeviceScreen = ({
-    route: { params },
     navigation,
 }: StackToStackCompositeScreenProps<
     AuthorizeDeviceStackParamList,
@@ -65,11 +64,7 @@ export const ConnectAndUnlockDeviceScreen = ({
 
     return (
         <Screen
-            header={
-                <ConnectDeviceScreenHeader
-                    onCancelNavigationTarget={params?.onCancelNavigationTarget}
-                />
-            }
+            header={<ConnectDeviceScreenHeader />}
             noHorizontalPadding
             noBottomPadding
             hasBottomInset={false}

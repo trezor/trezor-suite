@@ -266,9 +266,10 @@ export type DeviceAuthenticityStackParamList = {
 };
 
 export type AuthorizeDeviceStackParamList = {
-    [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]:
+    [AuthorizeDeviceStackRoutes.DeviceConnectionGuard]:
         | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
         | undefined;
+    [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
     [AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice]: undefined;
     [AuthorizeDeviceStackRoutes.ConnectBluetoothDevice]: undefined;
     [AuthorizeDeviceStackRoutes.RemoveBluetoothDevice]: undefined;
