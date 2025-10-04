@@ -129,11 +129,11 @@ test.describe(
                 await trezorUserEnvLink.stopEmu();
                 await devicePrompt.connectDevicePromptIsShown();
                 await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
-                await devicePrompt.confirmOnDevicePromptIsShown();
+                await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
 
                 // This is needed, because there seem to be some weird refreshes on the emu
                 // which means you confirm too early if you don't wait
-                await page.waitForTimeout(3000);
+                await page.waitForTimeout(3_000);
                 await trezorUserEnvLink.pressYes();
             });
 
