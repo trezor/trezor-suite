@@ -527,6 +527,7 @@ const getOwnershipProof =
             groupParamsByDevice.map(({ device, bundle, utxos }) => async () => {
                 const proof = await TrezorConnect.getOwnershipProof({
                     device,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
                     bundle,
                 });
                 if (proof.success) {
