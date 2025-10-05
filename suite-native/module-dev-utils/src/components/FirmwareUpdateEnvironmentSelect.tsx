@@ -11,6 +11,7 @@ import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
 const options: SelectItemType<FirmwareUpdateSource>[] = [
     { label: 'Production', value: 'production' },
     { label: 'Test Unsigned', value: 'test-unsigned' },
+    { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
     { label: 'Test Signed', value: 'test-signed' },
 ];
 
