@@ -37,6 +37,10 @@ const UNSIGNED_URL_REMOTE_BASE = {
     BASE_URL: 'https://data.trezor.io',
     MIDDLE_PATH: 'dev/firmware/releases/unsigned',
 };
+const UNSIGNED_STABLE_URL_REMOTE_BASE = {
+    BASE_URL: 'https://data.trezor.io',
+    MIDDLE_PATH: 'dev/firmware/releases/unsigned-stable',
+};
 const SIGNED_URL_REMOTE_BASE = {
     BASE_URL: 'https://suite.corp.sldev.cz',
     MIDDLE_PATH: 'firmware/signed',
@@ -52,6 +56,7 @@ const UNSIGNED_LOCALHOST = {
 const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareUpdateSource, RemoteBaseInfo> = {
     production: RELEASES_URL_REMOTE_BASE,
     'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
+    'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
     'test-signed': SIGNED_URL_REMOTE_BASE,
     'localhost-unsigned': UNSIGNED_LOCALHOST,
     'localhost-signed': SIGNED_LOCALHOST,
@@ -127,6 +132,7 @@ const getOnlineReleaseByPath = async (releasePath: string) => {
         Example final URLs for reference:
         - production (default) https://data.trezor.io/firmware/t3t1/universal/t3t1-2.8.10-universal.json
         - test-unsigned https://data.trezor.io/dev/firmware/releases/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
+        - test-unsigned-stable https://data.trezor.io/dev/firmware/releases/unsigned-stable/t3t1/universal/t3t1-2.8.10-universal.json
         - localhost-unsigned http://localhost:3000/firmware/unsigned/t3t1/universal/t3t1-2.8.10-universal.json
      */
     const onlineFirmwareBaseUrl = getOnlineFirmwareBaseUrl();
