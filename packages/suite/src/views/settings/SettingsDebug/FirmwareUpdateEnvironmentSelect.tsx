@@ -18,6 +18,7 @@ export const FirmwareUpdateEnvironmentSelect = () => {
     const options: { label: string; value: FirmwareUpdateSource }[] = [
         { label: 'Production', value: 'production' },
         { label: 'Test Unsigned', value: 'test-unsigned' },
+        { label: 'Test Unsigned Stable', value: 'test-unsigned-stable' },
         { label: 'Test Signed', value: 'test-signed' },
         { label: 'Localhost Signed', value: 'localhost-signed' },
         { label: 'Localhost Unsigned', value: 'localhost-unsigned' },
