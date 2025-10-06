@@ -5,14 +5,12 @@ import { spacings } from '@trezor/theme';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     const devices = useSelector(selectDevices);
@@ -40,16 +38,14 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         onCancel={cancelable ? onCancel : undefined}
                     />
                 ))}
-                {isBluetoothEnabled && (
-                    <Button
-                        variant="tertiary"
-                        icon="bluetooth"
-                        isFullWidth
-                        onClick={openDeviceConnectionModal}
-                    >
-                        Pair Trezor Safe 7
-                    </Button>
-                )}
+                <Button
+                    variant="tertiary"
+                    icon="bluetooth"
+                    isFullWidth
+                    onClick={openDeviceConnectionModal}
+                >
+                    Pair Trezor Safe 7
+                </Button>
             </Column>
         </SwitchDeviceModal>
     );

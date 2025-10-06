@@ -65,7 +65,6 @@ export const SettingsDevice = () => {
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const isPassphraseProtectionOn = Boolean(device?.features?.passphrase_protection);
-    const flags = useSelector(selectSuiteFlags);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
@@ -184,7 +183,7 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
                 {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
-                {flags.isBluetoothEnabled && isDeviceConnectedViaBluetooth && (
+                {isDeviceConnectedViaBluetooth && (
                     <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
                 )}
                 <ForgetDevice />

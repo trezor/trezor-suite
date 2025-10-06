@@ -186,7 +186,6 @@ const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = 
                 showCopyAddressModal: true,
                 showUnhideTokenModal: true,
                 enableAutoupdateOnNextRun: false,
-                isBluetoothEnabled: false,
                 showBluetoothDebugInfo: false,
                 stellarLimitedHistoryBannerClosed: false,
                 solanaLimitedHistoryBannerClosed: false,

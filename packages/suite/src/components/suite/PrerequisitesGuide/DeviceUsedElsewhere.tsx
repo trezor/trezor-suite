@@ -8,20 +8,16 @@ import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { useDevice } from 'src/hooks/suite';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
 
 export const DeviceUsedElsewhere = () => {
     const { device } = useDevice();
-    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
     };
-
-    const isBluetoothExpected = isBluetoothEnabled && isDesktop();
 
     const tips = [
         {
@@ -46,7 +42,7 @@ export const DeviceUsedElsewhere = () => {
             cta={<AcquireDeviceButton onClick={handleClick} />}
             items={tips}
             toggleText={
-                isBluetoothExpected ? <Translation id="TR_TROUBLE_SHOOTING_BLUETOOTH" /> : undefined
+                isDesktop() ? <Translation id="TR_TROUBLE_SHOOTING_BLUETOOTH" /> : undefined
             }
         />
     );

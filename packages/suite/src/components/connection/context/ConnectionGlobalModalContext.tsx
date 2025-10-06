@@ -13,7 +13,6 @@ import { NEARBY_DEVICES_LAST_UPDATED_LIMIT } from 'src/actions/bluetooth/filterO
 import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
 import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { useBluetoothConnection } from '../hook/useBluetoothConnection';
 import { useBluetoothScanning } from '../hook/useBluetoothScanning';
@@ -74,15 +73,12 @@ const useConnectionGlobalModal = () => {
     const [shouldPairAgain, setShouldPairAgain] = useState(false);
     const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);
 
-    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
-
     const defaultConnectionMode = useSelector(selectDeviceDefaultConnectionMode);
 
     const nearbyDevices = useSelector(selectNearbyDevices);
     const knownDevices = useSelector(selectKnownDevices);
 
-    const isBluetoothMode =
-        defaultConnectionMode === 'bluetooth' && isBluetoothEnabled && isDesktop();
+    const isBluetoothMode = defaultConnectionMode === 'bluetooth' && isDesktop();
 
     const toggleBluetoothMode = () => {
         dispatch(setConnectionMode(isBluetoothMode ? 'cable' : 'bluetooth'));
