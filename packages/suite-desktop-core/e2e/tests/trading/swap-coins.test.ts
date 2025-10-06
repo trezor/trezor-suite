@@ -92,7 +92,21 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 formattedSendAmount,
             );
-            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(solanaFee);
+            // Temporary debug information to solve issue that is happening only on CI.
+            // Suite probably fails to simulate fees and use fallback. That is correct behaviour.
+            // We are trying to find out whether there is something in redux state that could help us detect such situation.
+            // Goal would be to detect such a state and adjust expected fee to fallback value.
+            const debugFeeInfo = JSON.stringify(
+                await page.getReduxObject('wallet.trading.composedTransactionInfo'),
+                null,
+                2,
+            );
+            const verboseErrorMessage =
+                'Fee displayed on the device does not match expected fee from form. Redux transaction info: ' +
+                debugFeeInfo;
+            await expect(devicePrompt.cryptoAmountOf('fee'), verboseErrorMessage).toHaveText(
+                solanaFee,
+            );
             await expect(devicePrompt).toDisplayOnEmulator({
                 header: { title: 'Summary' },
                 body: [
@@ -107,7 +121,6 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
 
             await devicePrompt.waitForFinalPromptAndConfirm();
         });
-
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();

@@ -25,7 +25,9 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
                 await trezorUserEnvLink.stopEmu();
                 await expect(page.getByTestId('@deviceStatus-disconnected')).toBeVisible();
                 await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
-                await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
+                await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible({
+                    timeout: 15_000,
+                });
             });
         }
 

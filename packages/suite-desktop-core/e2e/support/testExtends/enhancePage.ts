@@ -8,6 +8,7 @@ declare module '@playwright/test' {
         // Methods
         discoveryShouldFinish(): Promise<void>;
         selectDropdownOptionWithRetry(dropdown: Locator, option: Locator): Promise<void>;
+        getReduxObject(objectPath: string): Promise<any>;
         expectReduxObjectNotToBeEmpty(
             objectPath: string,
             options?: { timeout?: number },
@@ -51,14 +52,19 @@ export const enhancePage = (page: Page): Page => {
         });
     };
 
+    page.getReduxObject = async (objectPath: string) => {
+        const state = await page.evaluate(() => window.store.getState());
+
+        return get(state, objectPath);
+    };
+
     page.expectReduxObjectNotToBeEmpty = async function (
         objectPath: string,
         options = { timeout: 5000 },
     ) {
         await test.step('Expect Redux object not to be empty', async () => {
             await expect(async () => {
-                const state = await page.evaluate(() => window.store.getState());
-                const testedObject = get(state, objectPath);
+                const testedObject = await page.getReduxObject(objectPath);
                 expect(testedObject).toBeDefined();
                 expect(testedObject).not.toBeNull();
                 expect(testedObject).not.toEqual({});
@@ -73,8 +79,7 @@ export const enhancePage = (page: Page): Page => {
     ) {
         await test.step('Expect Redux object to equal', async () => {
             await expect(async () => {
-                const state = await page.evaluate(() => window.store.getState());
-                const testedObject = get(state, objectPath);
+                const testedObject = await page.getReduxObject(objectPath);
                 expect(testedObject).toStrictEqual(expectedValue);
             }).toPass({ timeout: options.timeout });
         });
