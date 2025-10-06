@@ -51,6 +51,9 @@ export const PIN_HELP_URL = withPlatformUtm(
 
 export const TREZOR_SUPPORT_URL: Url = withPlatformUtm('https://trezor.io/support');
 
+export const TREZOR_SUPPORT_BLUETOOTH_TROUBLESHOOTING: Url = withPlatformUtm(
+    'https://trezor.io/support/troubleshooting/device-issues/bluetooth-troubleshooting',
+);
 export const TREZOR_SUPPORT_DEVICE_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/trezor-suite-doesn-t-see-my-device',
 );
