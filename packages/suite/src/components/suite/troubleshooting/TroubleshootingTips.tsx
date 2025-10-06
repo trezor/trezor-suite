@@ -16,6 +16,7 @@ import {
     variables,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
@@ -52,10 +53,11 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
     toggleText,
     'data-testid': dataTest,
 }: TroubleshootingTipsWithSectionsProps<K, T>) => {
-    const firstSectionKey = Object.keys(items)[0] as K;
+    const itemsKeys = typedObjectKeys(items);
+    const firstSectionKey = itemsKeys[0];
     const [selectedSection, setSelectedSection] = useState<K>(defaultSection ?? firstSectionKey);
 
-    const hasMultipleSections = Object.keys(items).length > 1;
+    const hasMultipleSections = itemsKeys.length > 1;
 
     const labelRow =
         label !== undefined || hasMultipleSections ? (
@@ -70,9 +72,9 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                     <Row>
                         <SelectBar<K>
                             onChange={setSelectedSection}
-                            options={Object.entries(items).map(([k, v]) => ({
-                                label: (v as SectionDefinition).label,
-                                value: k as K,
+                            options={itemsKeys.map(key => ({
+                                label: items[key].label,
+                                value: key,
                             }))}
                             selectedOption={selectedSection}
                             size="small"
