@@ -1,7 +1,10 @@
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
+import {
+    getIsDeviceDescriptorApiTypeBluetooth,
+    isAnyDeviceEventAction,
+} from '@suite-common/suite-utils';
 import {
     accountsActions,
     deviceActions,
@@ -75,8 +78,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             case DEVICE.CONNECT: {
                 const { device } = action.payload;
                 const { features, mode } = device;
-                const isDeviceConnectedViaBluetooth =
-                    action.payload.device.descriptor.apiType === 'bluetooth';
+
                 analytics.report({
                     type: EventType.ConnectDevice,
                     payload: {
@@ -86,7 +88,9 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                         isBitcoinOnly: hasBitcoinOnlyFirmware(device),
                         deviceLanguage: features.language,
                         deviceModel: features.internal_model,
-                        connectionType: isDeviceConnectedViaBluetooth ? 'bluetooth' : 'cable',
+                        connectionType: getIsDeviceDescriptorApiTypeBluetooth(device)
+                            ? 'bluetooth'
+                            : 'cable',
                     },
                 });
 

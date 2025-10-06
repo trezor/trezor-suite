@@ -3,7 +3,10 @@ import { MiddlewareAPI } from 'redux';
 
 import { firmwareUpdate } from '@suite-common/firmware';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
+import {
+    getIsDeviceDescriptorApiTypeBluetooth,
+    getPhysicalDeviceCount,
+} from '@suite-common/suite-utils';
 import {
     WALLET_SETTINGS,
     deviceActions,
@@ -104,31 +107,33 @@ const analyticsMiddleware =
                 });
                 break;
             case DEVICE.CONNECT: {
-                const {
-                    device: { features, mode },
-                } = action.payload;
+                const { device } = action.payload;
+                const { features, mode } = device;
 
                 if (!features || !mode) return;
 
-                if (!isDeviceInBootloaderMode(action.payload.device)) {
+                if (!isDeviceInBootloaderMode(device)) {
                     analytics.report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode,
-                            firmware: getFirmwareVersion(action.payload.device),
-                            firmwareRevision: getFirmwareRevision(action.payload.device),
-                            bootloaderHash: getBootloaderHash(action.payload.device),
+                            firmware: getFirmwareVersion(device),
+                            firmwareRevision: getFirmwareRevision(device),
+                            bootloaderHash: getBootloaderHash(device),
                             backup_type: features.backup_type || 'Bip39',
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
                             totalInstances: selectDevicesCount(state),
-                            isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
+                            isBitcoinOnly: hasBitcoinOnlyFirmware(device),
                             isBitcoinOnlyDevice: !!features?.unit_btconly,
                             totalDevices: getPhysicalDeviceCount(selectDevices(state)),
                             language: features.language,
                             model: features.internal_model,
                             optiga_sec: features.optiga_sec,
-                            firmwareSource: getFirmwareSource(action.payload.device),
+                            firmwareSource: getFirmwareSource(device),
+                            connectionType: getIsDeviceDescriptorApiTypeBluetooth(device)
+                                ? 'bluetooth'
+                                : 'cable',
                         },
                     });
                 } else {

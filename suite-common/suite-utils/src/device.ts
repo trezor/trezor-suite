@@ -512,3 +512,6 @@ export const getIsDeviceConnectedAndAuthorized = ({
     deviceState: TrezorDevice['state'];
     deviceFeatures?: PROTO.Features;
 }) => !!deviceState && !!deviceFeatures;
+
+export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device) =>
+    device.descriptor.apiType === 'bluetooth';
