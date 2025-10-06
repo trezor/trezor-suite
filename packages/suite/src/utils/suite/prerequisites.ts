@@ -31,7 +31,6 @@ export const prerequisiteTypes = [
     'firmware-required',
     'firmware-corrupted',
     'device-busy',
-    'device-rebooting',
     'device-bootloader-locked',
     'device-hard-locked',
 ] as const;
@@ -58,7 +57,6 @@ export const getPrerequisiteName = ({
         return 'device-used-elsewhere';
 
     if (device.status === 'busy') return 'device-busy';
-    if (device.status === 'rebooting') return 'device-rebooting';
     if (device.status === 'bootloader-locked') return 'device-bootloader-locked';
     if (device.status === 'hard-locked') return 'device-hard-locked';
 

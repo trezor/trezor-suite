@@ -99,7 +99,6 @@ export const getMessageId = ({
             description: 'TR_FIRMWARE_CORRUPTED_CONNECT_DESCRIPTION',
         },
         'device-busy': defaultKey, // TODO: device returned Busy error - we don't know exactly why it depends on the workflow
-        'device-rebooting': defaultKey, // TODO: device is booting to normal mode
         'device-bootloader-locked': { heading: 'TR_CONFIRM_CONNECTION' },
         'device-hard-locked': defaultKey, // TODO: device is hard locked and will not respond to messages, unlock it
         'device-disconnect-required': {
