@@ -10,6 +10,7 @@ import {
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceConnectedViaBluetooth,
     getIsDeviceInitialized,
+    getIsThpDevice,
     getStatus,
 } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
@@ -176,6 +177,11 @@ export const selectIsDeviceConnected = createMemoizedSelector(
 export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
     [selectSelectedDevice],
     device => getIsDeviceConnectedViaBluetooth(device),
+);
+
+export const selectIsThpDevice = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device && getIsThpDevice(device),
 );
 
 export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSelector(

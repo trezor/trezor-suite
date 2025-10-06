@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils/';
-import { isThpDevice } from '@suite-common/suite-utils';
+import { getIsThpDevice } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -27,7 +27,7 @@ export const removeThpAutoconnectThunk = createThunk<
     ): Promise<RemoveThpAutoconnectThunkResult> => {
         const device = selectSelectedDevice(getState());
 
-        if (device === undefined || !isThpDevice(device)) {
+        if (device === undefined || !getIsThpDevice(device)) {
             return fulfillWithValue(undefined);
         }
 
