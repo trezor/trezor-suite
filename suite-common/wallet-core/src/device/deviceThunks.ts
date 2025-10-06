@@ -4,8 +4,8 @@ import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
+    getIsThpDevice,
     getSelectedDevice,
-    isThpDevice,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
 import {
@@ -372,7 +372,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     async ({ type, device }, { dispatch }) => {
         switch (type) {
             case DEVICE.CONNECT:
-                if (isThpDevice(device)) {
+                if (getIsThpDevice(device)) {
                     // awaited so that discoveryMiddleware knows what state THP is when processing deviceActions.connectDevice
                     await dispatch(connectThpDeviceThunk({ device }));
                 }

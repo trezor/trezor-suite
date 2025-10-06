@@ -493,7 +493,7 @@ export const getDeviceInternalModel = (
     (device?.thp?.properties?.internal_model as DeviceModelInternal) ??
     DeviceModelInternal.UNKNOWN;
 
-export const isThpDevice = <T extends Device | TrezorDevice>(
+export const getIsThpDevice = <T extends Device | TrezorDevice>(
     device: T,
 ): device is T & { thp: ThpStateSerialized } => device.thp !== undefined;
 
