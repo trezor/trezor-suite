@@ -17,8 +17,8 @@ export const ThpGlobalModalManager = () => {
 
     if (device !== undefined && thpStep !== null) {
         switch (thpStep) {
+            // handled in FirmwareModal and onboarding FirmwareStep
             case 'BeforeConnectionInfo':
-                // this case is not handled here since it's handles via DeviceConfirmationModal
                 return null;
             case 'ConfirmConnectionBeforePairing':
                 return <ThpConnectionModal device={device} />;

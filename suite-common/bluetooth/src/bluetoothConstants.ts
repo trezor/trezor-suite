@@ -1,2 +1,0 @@
-export const SCAN_TIMEOUT = 30_000;
-export const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT = 15_000;
