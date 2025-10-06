@@ -37,6 +37,7 @@ export type SuiteAnalyticsEventSuiteReady = {
         desktopOsArchitecture?: string;
         isAutomaticUpdateEnabled: boolean;
         experimentVariants: string[];
+        mevProtection: boolean;
     };
 };
 

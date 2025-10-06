@@ -82,6 +82,8 @@ export const getSuiteReadyPayload = async (
         isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
 
         experimentVariants: experimentVariants.map(({ name, variant }) => `${name}:${variant}`),
+
+        mevProtection: state.wallet.settings.mevProtection,
     };
 };
 
