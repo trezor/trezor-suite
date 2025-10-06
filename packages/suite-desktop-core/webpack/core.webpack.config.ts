@@ -53,6 +53,7 @@ const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
 });
 
 // Add Windows Hello child process to the build
+const winHelloChildProcessKey = 'winHelloChildProcess'; // must match the expected /dist filename that WinHelloProcessManager requires
 const winHelloChildProcessPath = path.join(
     __dirname,
     '../../suite-desktop-native/src/winHelloChildProcess.ts',
@@ -76,12 +77,13 @@ const config: webpack.Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
     devtool: 'source-map',
+    // Note that the entries key is important, it sets the the output file name in dist/
     entry: [
         // NOTE: in DEV ONLY pick app with react dev tools installed
         { app: isDev ? 'app-with-devtools' : 'app' },
         { preload: 'preload' },
         ...threads.map(thread => ({ [String(thread)]: thread })),
-        { winHelloChildProcessPath },
+        { [winHelloChildProcessKey]: winHelloChildProcessPath },
     ].reduce(
         (prev, cur) => ({
             ...prev,
@@ -89,7 +91,7 @@ const config: webpack.Configuration = {
                 (acc, [key, value]) => ({
                     ...acc,
                     [key]:
-                        key === 'winHelloChildProcessPath'
+                        key === winHelloChildProcessKey
                             ? value
                             : path.resolve(__dirname, `../src/${value}.ts`),
                 }),
