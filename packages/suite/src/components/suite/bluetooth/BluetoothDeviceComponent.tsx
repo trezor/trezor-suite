@@ -2,11 +2,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Column, Image, InfoSegments, Row, Text } from '@trezor/components';
 import { models } from '@trezor/device-utils';
 
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
-
-import { BluetoothDebugInfo } from './BluetoothDebugInfo';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
-import { useSelector } from '../../../hooks/suite';
 
 type BluetoothDeviceProps = {
     device: DesktopBluetoothDevice;
@@ -23,8 +19,6 @@ export const BluetoothDeviceComponent = ({ device }: BluetoothDeviceProps) => {
     const color = getTHPVideoColor(device);
     const colorName = modelConfig.colors[color.toString()];
 
-    const { showBluetoothDebugInfo } = useSelector(selectSuiteFlags);
-
     return (
         <Row gap={12} alignItems="stretch">
             <Column alignItems="center" justifyContent="center">
@@ -37,7 +31,6 @@ export const BluetoothDeviceComponent = ({ device }: BluetoothDeviceProps) => {
             </Column>
             <Column justifyContent="start" alignItems="start" flex="1">
                 <Text typographyStyle="body">{device.name}</Text>
-                {showBluetoothDebugInfo && <BluetoothDebugInfo device={device} />}
                 <InfoSegments typographyStyle="hint" variant="tertiary">
                     <Text>{modelName}</Text>
                     {colorName && <Text>{colorName}</Text>}

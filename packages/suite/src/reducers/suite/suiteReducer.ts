@@ -70,7 +70,6 @@ export interface Flags {
     showUnhideTokenModal: boolean;
     showCopyAddressModal: boolean;
     enableAutoupdateOnNextRun: boolean;
-    showBluetoothDebugInfo: boolean;
     stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
     solanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
     isLocalFirstStorageEnabled: boolean;
@@ -167,7 +166,6 @@ const initialState: SuiteState = {
         showCopyAddressModal: true,
         showUnhideTokenModal: true,
         enableAutoupdateOnNextRun: false,
-        showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
         solanaLimitedHistoryBannerClosed: false,
         isLocalFirstStorageEnabled: false,

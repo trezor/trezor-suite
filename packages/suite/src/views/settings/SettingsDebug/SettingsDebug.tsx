@@ -25,7 +25,6 @@ import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
 import { ResetThpCredentials } from './ResetThpCredentials';
-import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
 import { Tor } from './Tor';
 import { Transport } from './Transport';
@@ -93,7 +92,6 @@ export const SettingsDebug = () => {
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
-                    <ShowBluetoothDebugInfo />
                     <ForgetAllDevicesButton />
                 </SettingsSection>
             )}
