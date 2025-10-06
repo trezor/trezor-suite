@@ -238,7 +238,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_SWAP_MODAL_CONFIRM: {
-        defaultMessage: 'I’m ready to swap',
+        defaultMessage: 'I am ready to swap',
         id: 'TR_TRADING_SWAP_MODAL_CONFIRM',
         dynamic: true,
     },
