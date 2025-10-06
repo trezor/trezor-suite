@@ -29,8 +29,8 @@ export const useBluetoothAlerts = () => {
     const showOrHideBluetoothAlert = useCallback(() => {
         if (bluetoothPermissionStatus === 'denied') {
             showAlert({
-                title: translate('bluetooth.alerts.permissionDenied.title'),
                 type: 'bluetoothAdapter',
+                title: translate('bluetooth.alerts.permissionDenied.title'),
                 description: translate('bluetooth.alerts.permissionDenied.description'),
                 primaryButtonTitle: translate('bluetooth.alerts.permissionDenied.primaryButton'),
                 onPressPrimaryButton: requestBluetoothPermission,
@@ -39,8 +39,8 @@ export const useBluetoothAlerts = () => {
             });
         } else if (bluetoothPermissionStatus === 'blocked') {
             showAlert({
-                title: translate('bluetooth.alerts.permissionBlocked.title'),
                 type: 'bluetoothAdapter',
+                title: translate('bluetooth.alerts.permissionBlocked.title'),
                 description: translate('bluetooth.alerts.permissionBlocked.description'),
                 primaryButtonTitle: translate('bluetooth.alerts.permissionBlocked.primaryButton'),
                 onPressPrimaryButton: openSettings,
