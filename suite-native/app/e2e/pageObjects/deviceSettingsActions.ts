@@ -1,6 +1,6 @@
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../utils';
+import { scrollUntilVisible, wait, waitForElementByIdToBeVisible } from '../utils';
 
 const insertSeed = async (seed: string = MNEMONICS.mnemonic_immune) => {
     const seedWords = seed.split(' ');
@@ -170,6 +170,7 @@ class DeviceSettingsActions {
 
         await TrezorUserEnvLink.pressYes();
         await TrezorUserEnvLink.selectNumOfWordsEmu(12);
+        await wait(500); // short timeout is needed to avoid calling `.pressYes()` before the `.selectNumOfWordsEmu()` is registered by emulator
         await TrezorUserEnvLink.pressYes();
         await insertSeed();
         await TrezorUserEnvLink.pressYes();
