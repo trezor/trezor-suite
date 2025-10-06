@@ -44,12 +44,12 @@ export const useBluetoothConnection = ({
     );
 
     const notConnectedKnownDevices = useMemo(
-        () => knownDevices.filter(device => device.connected === false),
+        () => knownDevices.filter(device => device.connectionStatus.type === 'disconnected'),
         [knownDevices],
     );
 
     const notConnectedNearbyDevices = useMemo(
-        () => devices.filter(device => device.connected === false),
+        () => devices.filter(device => device.connectionStatus.type === 'disconnected'),
         [devices],
     );
 
