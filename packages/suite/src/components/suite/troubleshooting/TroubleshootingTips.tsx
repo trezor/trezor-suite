@@ -122,7 +122,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
             >
                 <Button
                     onClick={onOpen}
-                    variant="info"
+                    variant="tertiary"
                     size="small"
                     isSubtle={!initiallyIsOpen}
                     icon="question"
