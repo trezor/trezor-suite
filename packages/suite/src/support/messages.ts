@@ -2228,7 +2228,7 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_DEVICE_BUSY',
     },
     TR_DEVICE_CONNECTED_BUSY_BOOTLOADER: {
-        defaultMessage: 'Trezor is busy, it cannot communicate',
+        defaultMessage: 'Trezor is already in use',
         id: 'TR_DEVICE_CONNECTED_BUSY_BOOTLOADER',
     },
     TR_DEVICE_CONNECTED_BUSY_BOOTLOADER_DESCRIPTION: {
@@ -2298,7 +2298,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW: {
-        defaultMessage: 'Image must be in pure black and white (no grayscale).',
+        defaultMessage: 'Image must be purely black and white—no grayscale.',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
@@ -2784,7 +2784,7 @@ export default defineMessages({
     TR_AUTO_EJECT_FORCED_TOOLTIP: {
         id: 'TR_AUTO_EJECT_FORCED_TOOLTIP',
         defaultMessage:
-            'All wallets will be auto-ejected as storing device-related data is disabled.',
+            'All wallets will be automatically ejected as storing device-related data is disabled.',
     },
     TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE: {
         id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE',
@@ -2793,7 +2793,7 @@ export default defineMessages({
     TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION: {
         id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION',
         defaultMessage:
-            'Securely stores minimal device information locally to enable advanced security features like anti-counterfeit checks and secure pairing.',
+            'Stores just the essential device info locally to power features like anti-counterfeit checks and secure pairing.',
     },
     TR_STORE_DEVICE_DATA_MODAL_TITLE: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_TITLE',
@@ -2806,7 +2806,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_ENABLED_DESCRIPTION: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_ENABLED_DESCRIPTION',
         defaultMessage:
-            'Suite locally stores and compares firmware, pairing credentials, and other device data for advanced security.',
+            'Trezor Suite stores firmware, pairing credentials, and other device data locally to provide advanced security.',
     },
     TR_STORE_DEVICE_DATA_MODAL_DISABLED: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED',
@@ -2815,7 +2815,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION',
         defaultMessage:
-            'No data gets stored, advanced security features are disabled. Requires secure pairing connection to be reestablished every time. For experienced users only. Use at your own risk.',
+            'No data is stored, and advanced security features are disabled. A secure pairing connection must be reestablished every time. Recommended for experienced users only. Use at your own risk.',
     },
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE',
@@ -2824,7 +2824,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
         defaultMessage:
-            'This will automatically eject all wallets when Trezor device is disconnected.',
+            'All wallets will be automatically ejected when your Trezor is disconnected.',
     },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
@@ -4023,7 +4023,7 @@ export default defineMessages({
     TOAST_TX_EXCHANGE_BROADCASTED: {
         id: 'TOAST_TX_EXCHANGE_BROADCASTED',
         defaultMessage:
-            'Swap transaction of {sendAmount} {sendAsset} ({sendAccount}) to {receiveAmount} {receiveAsset} ({receiveAccount}) was broadcasted',
+            'Swap transaction of {sendAmount} {sendAsset} ({sendAccount}) to {receiveAmount} {receiveAsset} ({receiveAccount}) was broadcast',
     },
     TOAST_RAW_TX_SENT: {
         id: 'TOAST_RAW_TX_SENT',
@@ -4598,7 +4598,7 @@ export default defineMessages({
     },
     TR_FORGET_DEVICE_DESCRIPTION: {
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
-        defaultMessage: 'Removes all device-related data from Trezor Suite',
+        defaultMessage: 'Removes all device-related data from Trezor Suite.',
     },
     TR_DEVICE_CONNECTION: {
         id: 'TR_DEVICE_CONNECTION',
@@ -4606,15 +4606,15 @@ export default defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_HEADING: {
         id: 'TR_FORGET_DEVICE_MODAL_HEADING',
-        defaultMessage: 'Are you sure you want to forget this Trezor?',
+        defaultMessage: 'Forget this Trezor?',
     },
     TR_FORGET_DEVICE_MODAL_BULLET_FORGET: {
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_FORGET',
-        defaultMessage: 'Suite will forget any existence of this device',
+        defaultMessage: 'Trezor Suite will forget this device',
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED_AND_DISCONNECTED',
-        defaultMessage: 'Bluetooth pairing will be removed and Trezor will be disconnected',
+        defaultMessage: 'Bluetooth pairing will be removed, and your Trezor will be disconnected.',
     },
     TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED: {
         id: 'TR_FORGET_DEVICE_MODAL_BLUETOOTH_REMOVED',
@@ -4622,7 +4622,7 @@ export default defineMessages({
     },
     TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE: {
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE',
-        defaultMessage: 'This does not wipe your seed, nor your funds',
+        defaultMessage: "Your wallet backup and funds stay intact—they won't be erased",
     },
     TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_ENABLE: {
         id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_ENABLE',
@@ -4746,7 +4746,7 @@ export default defineMessages({
     },
     TR_FW_INSTALL_MAY_TAKE_A_WHILE: {
         id: 'TR_FW_INSTALL_MAY_TAKE_A_WHILE',
-        defaultMessage: 'Firmware installation may take a while',
+        defaultMessage: 'Firmware installation may take a some time to complete.',
     },
     TR_CHARGE_BATTERY_TO_ATLEAST: {
         id: 'TR_CHARGE_BATTERY_TO_ATLEAST',
@@ -6237,12 +6237,11 @@ export default defineMessages({
     },
     FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU: {
         id: 'FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU',
-        defaultMessage: 'Upgrade Firmware for Evolu Labeling.',
+        defaultMessage: "Upgrade your Trezor's firmware for Evolu storage.",
     },
     LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE: {
         id: 'LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE',
-        defaultMessage:
-            'Local First Storage (Evolu) will be turned off by enabling this Legacy Labeling',
+        defaultMessage: 'Enabling legacy labeling will disable Evolu storage.',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
@@ -7337,7 +7336,7 @@ export default defineMessages({
     },
     TR_DEVICE_CONNECTED_BOOTLOADER_RESTART_FROM_MENU: {
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RESTART_FROM_MENU',
-        defaultMessage: 'Restart the device from Trezor menu.',
+        defaultMessage: 'Go to the Trezor menu to restart your device.',
     },
     TR_DEVICE_CONNECTED_UNACQUIRED: {
         id: 'TR_DEVICE_CONNECTED_UNACQUIRED',
@@ -9358,7 +9357,7 @@ export default defineMessages({
     },
     TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
         id: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
-        defaultMessage: 'All your available {networkDisplaySymbol} is staked.',
+        defaultMessage: 'All of your available {networkDisplaySymbol} is staked.',
     },
     TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED: {
         id: 'TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED',
@@ -10082,7 +10081,7 @@ export default defineMessages({
     TR_BRIDGE_TIP_AUTOSTART: {
         id: 'TR_BRIDGE_TIP_AUTOSTART',
         defaultMessage:
-            'Tip: Enable the auto-start and allow Trezor Suite to runing the background to enable smooth interaction with 3rd party apps.',
+            'Tip: Enable the auto-start and allow Trezor Suite running in the background to enable smooth interaction with 3rd party apps.',
     },
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
@@ -10324,15 +10323,6 @@ export default defineMessages({
     TR_PAIR_AGAIN: {
         id: 'TR_PAIR_AGAIN',
         defaultMessage: 'Pair again',
-    },
-    TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
-        id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
-        defaultMessage: 'Trezor Bridge will soon no longer be supported.',
-    },
-    TR_BRIDGE_UNINSTALL_INSTRUCTIONS: {
-        id: 'TR_BRIDGE_UNINSTALL_INSTRUCTIONS',
-        defaultMessage:
-            'Trezor Bridge will soon no longer be supported. We recommend uninstalling it from your system. <a>Learn more</a>',
     },
     TR_NO_CONNECTED_APPS: {
         id: 'TR_NO_CONNECTED_APPS',
@@ -10638,46 +10628,49 @@ export default defineMessages({
     TR_DYK_ITEM_1: {
         id: 'TR_DYK_ITEM_1',
         defaultMessage:
-            'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
+            'Born in Prague and created by SatoshiLabs, Trezor continues to stand proudly independent.',
     },
     TR_DYK_ITEM_2: {
         id: 'TR_DYK_ITEM_2',
-        defaultMessage: 'Trezor launched the world’s first hardware wallet in 2014.',
+        defaultMessage: 'In 2014, Trezor introduced the world’s first hardware wallet.',
     },
     TR_DYK_ITEM_3: {
         id: 'TR_DYK_ITEM_3',
-        defaultMessage: 'Founders Stick & Slush started Trezor as a side project in 2011.',
+        defaultMessage:
+            'Trezor began as a side project in 2011, created by its founders, Stick and Slush.',
     },
     TR_DYK_ITEM_4: {
         id: 'TR_DYK_ITEM_4',
-        defaultMessage: 'Trezor means “vault” in Czech, reflecting its focus on security.',
+        defaultMessage:
+            'Trezor, which means ‘vault’ in Czech, is designed with security at its core.',
     },
     TR_DYK_ITEM_5: {
         id: 'TR_DYK_ITEM_5',
         defaultMessage:
-            'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
+            'Trezor’s hardware and firmware are completely open-source, giving you full transparency and control.',
     },
     TR_DYK_ITEM_6: {
         id: 'TR_DYK_ITEM_6',
-        defaultMessage: 'Trezor’s first prototypes were built using Raspberry Pi boards.',
+        defaultMessage: 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
     },
     TR_DYK_ITEM_7: {
         id: 'TR_DYK_ITEM_7',
-        defaultMessage: 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
+        defaultMessage:
+            'Trezor played a key role in shaping industry wallet standards, including BIP-39 and BIP-44.',
     },
     TR_DYK_ITEM_8: {
         id: 'TR_DYK_ITEM_8',
         defaultMessage:
-            'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
+            'Trezor co-founder Marek ‘Slush’ Palatinus also launched the very first Bitcoin mining pool.',
     },
     TR_DYK_ITEM_9: {
         id: 'TR_DYK_ITEM_9',
         defaultMessage:
-            'Trezor began controlling its own chip supply chain in 2023 for better security.',
+            'Since 2023, Trezor has taken direct control of its chip supply chain to enhance security.',
     },
     TR_DYK_ITEM_10: {
         id: 'TR_DYK_ITEM_10',
-        defaultMessage: 'Trezor has sold wallets in over 150 countries.',
+        defaultMessage: 'Trezor has earned the trust of users in over 150 countries worldwide.',
     },
     TR_JUST_INSTALL: {
         id: 'TR_JUST_INSTALL',
@@ -10686,16 +10679,16 @@ export default defineMessages({
     TR_DYK_ITEM_11: {
         id: 'TR_DYK_ITEM_11',
         defaultMessage:
-            'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
+            'In January 2025, Trezor introduced the Trezor Safe 5 Freedom Edition, a limited release of just 2,100 units.',
     },
     TR_DYK_ITEM_12: {
         id: 'TR_DYK_ITEM_12',
         defaultMessage:
-            'Trezor wallets can store and manage over 9,000+ cryptocurrencies securely in one place.',
+            'Trezor hardware wallets offer secure, all-in-one storage for over 9,000 cryptocurrencies.',
     },
     TR_FIRMWARE_UPDATE_TIME_WARNING: {
         id: 'TR_FIRMWARE_UPDATE_TIME_WARNING',
-        defaultMessage: 'This update will take some time to complete.',
+        defaultMessage: 'This update may take some time to complete.',
     },
     TR_FIRMWARE_DONT_CLOSE_APP: {
         id: 'TR_FIRMWARE_DONT_CLOSE_APP',
