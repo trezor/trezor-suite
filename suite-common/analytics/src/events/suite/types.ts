@@ -127,6 +127,7 @@ export type SuiteAnalyticsEvent =
               firmwareRevision?: string;
               bootloaderHash?: string;
               optiga_sec?: number;
+              connectionType?: 'cable' | 'bluetooth';
           };
       }
     | {
