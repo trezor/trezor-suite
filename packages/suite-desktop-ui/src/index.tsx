@@ -1,3 +1,4 @@
+import '../../suite/src/globalPolyfills';
 import { init } from './MainDesktop';
 
 window.onload = () => {

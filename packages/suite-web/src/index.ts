@@ -1,3 +1,4 @@
+import '../../suite/src/globalPolyfills';
 /*
  * On the start of the app, the index.html file is without div with id="app" to which React app should be rendered.
  * This div is added thanks to browser detection plugin in case that a user uses supported browser.
