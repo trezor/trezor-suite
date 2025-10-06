@@ -18,22 +18,25 @@ export const getThpChannel = async (device: Device, withInteraction?: boolean) =
             try {
                 await thpHandshake(device);
             } catch (error) {
-                if (error.code === 'ThpDeviceLocked') {
-                    thpState.resetState();
-                    if (!withInteraction) {
-                        return 'pin-locked';
-                    }
+                const isPinLocked = error.code === 'ThpDeviceLocked';
+                const isTransportBusy = error.message === 'ThpTransportBusy';
 
+                if (!isPinLocked && !isTransportBusy) throw error;
+
+                thpState.resetState();
+
+                if (isPinLocked && !withInteraction) return 'pin-locked';
+
+                if (isPinLocked) {
                     // Device is pin-locked and interactions enabled, retry handshake with tryToUnlock param
                     device.emit(DEVICE.BUTTON, {
                         device,
                         payload: { code: 'ButtonRequest_PinEntry' },
                     });
-                    await createThpChannel(device);
-                    await thpHandshake(device, true);
-                } else {
-                    throw error;
                 }
+
+                await createThpChannel(device);
+                await thpHandshake(device, isPinLocked);
             }
         }
         if (thpState.phase === 'pairing' && withInteraction) {
@@ -45,7 +48,7 @@ export const getThpChannel = async (device: Device, withInteraction?: boolean) =
             return 'thp-locked';
         }
     } catch (error) {
-        thpState?.resetState();
+        thpState.resetState();
 
         throw error;
     }
