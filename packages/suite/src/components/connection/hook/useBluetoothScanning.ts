@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { SCAN_TIMEOUT, bluetoothActions } from '@suite-common/bluetooth';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { TimerId } from '@trezor/type-utils';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothStartScanningThunk } from 'src/actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from 'src/actions/bluetooth/bluetoothStopScanningThunk';
+import { removeNonResponsiveNearbyDevicesThunk } from 'src/actions/bluetooth/removeNonResponsiveNearbyDevicesThunk';
 import { useDispatch } from 'src/hooks/suite';
 
 export type UseBluetoothScanningProps = {
@@ -17,6 +18,8 @@ export type UseBluetoothScanningProps = {
 export type UseBluetoothScanningReturn = {
     onReScanClick: () => void;
 };
+
+const SCAN_TIMEOUT = 30_000;
 
 export const useBluetoothScanning = ({
     bluetoothMode,
@@ -81,6 +84,20 @@ export const useBluetoothScanning = ({
         },
         [clearScanTimer],
     );
+
+    // currently we need to check periodically for non-responsive devices and filter them out
+    // we do not get update from bluetooth adapter when device is non responsive
+    useEffect(() => {
+        function updateNonResponsiveDevices() {
+            dispatch(removeNonResponsiveNearbyDevicesThunk());
+        }
+
+        if (bluetoothMode) {
+            const interval = setInterval(updateNonResponsiveDevices, 1_000);
+
+            return () => clearInterval(interval);
+        }
+    }, [dispatch, bluetoothMode]);
 
     return {
         onReScanClick,

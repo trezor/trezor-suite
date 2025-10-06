@@ -1,7 +1,6 @@
-import { ReactNode, createContext, useContext, useMemo, useState } from 'react';
+import { ReactNode, createContext, useContext, useState } from 'react';
 
 import {
-    UNPAIRED_DEVICES_LAST_UPDATED_LIMIT,
     prepareSelectAllDevices,
     selectKnownDevices,
     selectNearbyDevices,
@@ -10,6 +9,7 @@ import { BluetoothDeviceId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
+import { NEARBY_DEVICES_LAST_UPDATED_LIMIT } from 'src/actions/bluetooth/filterOutNonResponsiveDevices';
 import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
 import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -78,20 +78,8 @@ const useConnectionGlobalModal = () => {
 
     const defaultConnectionMode = useSelector(selectDeviceDefaultConnectionMode);
 
-    const nearbyDevicesRaw = useSelector(selectNearbyDevices);
+    const nearbyDevices = useSelector(selectNearbyDevices);
     const knownDevices = useSelector(selectKnownDevices);
-
-    const nearbyDevices = useMemo(() => {
-        const lastUpdatedBoundaryTimestamp = Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
-
-        return (
-            nearbyDevicesRaw?.filter(
-                device =>
-                    !device.connected &&
-                    device.lastUpdatedTimestamp >= lastUpdatedBoundaryTimestamp,
-            ) ?? []
-        );
-    }, [nearbyDevicesRaw]);
 
     const isBluetoothMode =
         defaultConnectionMode === 'bluetooth' && isBluetoothEnabled && isDesktop();
@@ -120,7 +108,7 @@ const useConnectionGlobalModal = () => {
 
     const allDevices = useSelector(selectAllDevices);
 
-    const lastUpdatedBoundaryTimestamp = Date.now() - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT;
+    const lastUpdatedBoundaryTimestamp = Date.now() - NEARBY_DEVICES_LAST_UPDATED_LIMIT;
 
     const devices = allDevices.filter(it => {
         const isDeviceUnresponsiveForTooLong =
