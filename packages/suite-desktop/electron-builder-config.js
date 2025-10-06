@@ -3,15 +3,6 @@ const { suiteVersion } = require('../suite/package.json');
 
 const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
 
-const filterExtraResources = resources =>
-    resources.filter(r => {
-        if (r.to.includes('bluetooth')) {
-            return !!process.env.BLUETOOTH;
-        }
-
-        return true;
-    });
-
 // to be able to use patterns like ${author} and ${arch}
 module.exports = {
     // distingush between dev and prod builds
@@ -91,7 +82,7 @@ module.exports = {
     },
     mac: {
         files: ['entitlements.mac.inherit.plist'],
-        extraResources: filterExtraResources([
+        extraResources: [
             {
                 from: 'build/static/bin/bridge/mac-${arch}',
                 to: 'bin/bridge',
@@ -108,7 +99,7 @@ module.exports = {
                 from: 'build/static/bin/bluetooth/mac-${arch}',
                 to: 'bin/bluetooth',
             },
-        ]),
+        ],
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
         hardenedRuntime: true,
@@ -128,7 +119,7 @@ module.exports = {
         target: ['dmg', 'zip'],
     },
     win: {
-        extraResources: filterExtraResources([
+        extraResources: [
             {
                 from: 'build/static/bin/bridge/win-${arch}',
                 to: 'bin/bridge',
@@ -149,7 +140,7 @@ module.exports = {
                 from: 'build/static/bin/bluetooth/win-${arch}',
                 to: 'bin/bluetooth',
             },
-        ]),
+        ],
         icon: 'build/static/images/desktop/512x512.png',
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
@@ -160,7 +151,7 @@ module.exports = {
         },
     },
     linux: {
-        extraResources: filterExtraResources([
+        extraResources: [
             {
                 from: 'build/static/bin/bridge/linux-${arch}',
                 to: 'bin/bridge',
@@ -181,7 +172,7 @@ module.exports = {
                 from: 'build/static/bin/bluetooth/linux-${arch}',
                 to: 'bin/bluetooth',
             },
-        ]),
+        ],
         icon: 'build/static/images/desktop/512x512.png',
         artifactName: 'Trezor-Suite-${version}-linux-${arch}.${ext}',
         executableName: 'trezor-suite',
