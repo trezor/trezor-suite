@@ -14,6 +14,6 @@ export const EVERSTAKE_ENDPOINT_PREFIX: Record<
 };
 
 export const EVERSTAKE_REWARDS_SOLANA_ENPOINT =
-    'https://stake-sync-api.everstake.one/solana/rewards';
+    'https://stake-sync-api.everstake.one/v1/solana/rewards';
 
 export const EVERSTAKE_VALIDATOR = '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF';
