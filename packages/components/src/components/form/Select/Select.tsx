@@ -1,6 +1,8 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import ReactSelect, {
+    GroupBase,
     MultiValue,
+    OptionsOrGroups,
     Props as ReactSelectProps,
     SelectInstance,
     StylesConfig,
@@ -271,12 +273,14 @@ const SpinnerWrapper = styled.div`
 const closeMenuOnScroll = (e: Event) =>
     !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix);
 
-export type Option =
+export type Option = Omit<
     | {
           label: string | number | symbol | ReactNode;
           value: number | string | Record<any, any> | Record<any, any>[];
       }
-    | { label: ReactNode | string; options: Option[] };
+    | { label: ReactNode | string },
+    'options'
+>;
 
 // Make sure isSearchable can't be defined if useKeyPressScroll===true
 // If useKeyPressScroll is false or undefined, isSearchable is a boolean value
@@ -284,7 +288,7 @@ type KeyPressScrollProps =
     | { useKeyPressScroll: true; isSearchable?: never }
     | { useKeyPressScroll?: false; isSearchable?: boolean };
 
-export type SelectProps<O extends Option = Option> = KeyPressScrollProps &
+export type SelectProps<O extends Option = Option> = (KeyPressScrollProps &
     AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
     Omit<ReactSelectProps<O>, 'onChange' | 'menuIsOpen'> & {
@@ -302,7 +306,9 @@ export type SelectProps<O extends Option = Option> = KeyPressScrollProps &
         onChange?: (value: O, ref?: SelectInstance<O, boolean> | null) => void;
         'data-testid'?: string;
         openMenuOnFocus?: boolean;
-    };
+    }) & {
+    options?: Omit<OptionsOrGroups<O, GroupBase<O>>, 'options'>;
+};
 
 export const Select = <O extends Option = Option>({
     isClean = false,
