@@ -55,7 +55,7 @@
         "ws": "^8.18.0"
     },
     "devDependencies": {
-        "@currents/playwright": "^1.13.4",
+        "@currents/playwright": "^1.17.0",
         "@electron/fuses": "^2.0.0",
         "@electron/notarize": "3.1.0",
         "@playwright/browser-chromium": "^1.55.0",
