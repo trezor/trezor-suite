@@ -1,5 +1,6 @@
 import { DeviceAuthenticityBlacklistConfig } from '../../../data/deviceAuthenticityBlacklistConfig';
 import { DeviceAuthenticityConfig } from '../../../data/deviceAuthenticityConfigTypes';
+import { VerifyAuthenticityProofParams } from '../verifyAuthenticity/types';
 import { verifyAuthenticityProof } from '../verifyAuthenticityProof';
 
 const CA_CERT_OPTIGA =
@@ -8,6 +9,13 @@ const DEVICE_CERT_OPTIGA =
     '3082019e30820145a00302010202044ee2a50f300a06082a8648ce3d040302304f310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3120301e06035504030c175472657a6f72204d616e75666163747572696e67204341301e170d3232303433303134313630315a170d3432303433303134313630315a301d311b301906035504030c1254324231205472657a6f72205361666520333059301306072a8648ce3d020106082a8648ce3d030107034200049bbf06dad9ab5905e05471ce16d5222c89c2caa39f26267ac0747129885fbd441bcc7fa84de120a36755daf30a6f47e8c0d4bddc15036ed2a3447dfa7a1d3e88a341303f300e0603551d0f0101ff040403020080300c0603551d130101ff04023000301f0603551d23041830168014176d8b9a403574f6a2b9ac353ef578682201a21a300a06082a8648ce3d04030203470030440220747c545e112df816173d3071f1ab25d399d8108550764ce1a3a428f1f18b506902200cda822c75b3da6e44e098014452f3fc324f29a79204c3fb4d5815afafc04b17';
 const SIGNATURE_OPTIGA =
     '3045022100c01793ffbe4f16d4efc84a4533d9bbfbbf1baa5349346678e07fdb6d848cca7902200df11b9d2850173d9c93993fca983c6d2a3f31ea69a0e19b69e18cc3b78424fe';
+// TODO get DEV signed certs and signature (these are certs from a staging device)
+const CA_CERT_TROPIC =
+    '308201c130820173a003020102020868b1982d8b917275300506032b65703054310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3125302306035504030c1c5472657a6f72204d616e75666163747572696e6720526f6f742043413020170d3235303832393132353934375a180f32303535303832323132353934375a304f310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3120301e06035504030c175472657a6f72204d616e75666163747572696e67204341302a300506032b65700321009603b4971f811ed2a1cdb9ec3e6d6d0e22facfd83892a30480460872a2003f45a3663064300e0603551d0f0101ff04040302020430120603551d130101ff040830060101ff020100301d0603551d0e04160414cf35aa12a033c044ebc6c3c0c3aefea5ae5e7db4301f0603551d2304183016801424e601ebe264f0b1cfc5bc27cc03cdf69f23a85e300506032b657003410072e527330a4b079f8b8f261489595d7e0c6bc84cd4eecdf98988f4b185df503ac3ee7364ce7ef934f56c8e823f1ac38667f85d38469884f934290efdd27bef0e';
+const DEVICE_CERT_TROPIC =
+    '308201993082014ba003020102020868b1982dacb2b041300506032b6570304f310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3120301e06035504030c175472657a6f72204d616e75666163747572696e672043413020170d3235303832393132353934375a180f32303535303832323132353934375a3051311b301906035504030c1254335731205472657a6f72205361666520373121301f06035504051318343732303930323235323232323232323232323232323232310f300d060355042e130654726f706963302a300506032b6570032100c92482676994f4e2dec7eb2bb6a9ce9a8a38d4536c5e16b26646015cd7034593a341303f300e0603551d0f0101ff040403020080300c0603551d130101ff04023000301f0603551d23041830168014cf35aa12a033c044ebc6c3c0c3aefea5ae5e7db4300506032b65700341003b0aa3ccdddfd2a473e3f36059d0da2e54428c8dca5050a5fabf845ca71365d8045cc4d15c4e6e37565cbd66cdb4ba8d7ca113941f596a9bbfc25c069cf91903';
+const SIGNATURE_TROPIC =
+    '9d6a7cfc1d9957a7eaa09f58ab385a4722dc621c6a58f0e281305f36c1447206ea6642f4e4ff36207bd57c3719101855e9c9a00a5db60cc84e20181d69f4fa00';
 const CHALLENGE = '29d0be0f3cb191c80d108359c64d22984a77ad8b99433814be31db0b6e9e7920';
 const CONFIG: DeviceAuthenticityConfig = {
     version: 1,
@@ -27,8 +35,27 @@ const CONFIG: DeviceAuthenticityConfig = {
         ],
     },
     T3W1: {
-        rootPubKeysOptiga: ['you shall not pass'], // TODO get T3W1 debug keys
-        rootPubKeysTropic: ['you shall not pass'], // TODO get T3W1 debug keys, currently the function always succeeds anyway
+        // TODO get T3W1 debug keys, see deviceAuthenticityConfig.ts
+        rootPubKeysOptiga: ['you shall not pass'],
+        rootPubKeysTropic: ['cd318dc8405ae4f4144e3284dcb7b0cb0f0c2195c2ca14a0f6fccd9104e32a4b'], // TODO this is STAGING key
+    },
+};
+
+const CONFIG_WITH_DEBUG_KEYS: DeviceAuthenticityConfig = {
+    ...CONFIG,
+    T2B1: {
+        rootPubKeysOptiga: [],
+        debug: {
+            rootPubKeysOptiga: CONFIG.T2B1.rootPubKeysOptiga,
+        },
+    },
+    T3W1: {
+        rootPubKeysOptiga: [],
+        rootPubKeysTropic: [],
+        debug: {
+            rootPubKeysOptiga: [],
+            rootPubKeysTropic: CONFIG.T3W1.rootPubKeysTropic,
+        },
     },
 };
 
@@ -40,56 +67,72 @@ const BLACKLIST_CONFIG: DeviceAuthenticityBlacklistConfig = {
     },
 };
 
+const defaultOptigaProps: VerifyAuthenticityProofParams = {
+    certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
+    signature: SIGNATURE_OPTIGA,
+    challenge: Buffer.from(CHALLENGE, 'hex'),
+    deviceModel: 'T2B1',
+    config: CONFIG,
+    blacklistConfig: BLACKLIST_CONFIG,
+};
+const defaultTropicProps: VerifyAuthenticityProofParams = {
+    ...defaultOptigaProps,
+    certificates: [DEVICE_CERT_TROPIC, CA_CERT_TROPIC],
+    signature: SIGNATURE_TROPIC,
+    deviceModel: 'T3W1',
+};
+
 describe(`firmware/${verifyAuthenticityProof.name}`, () => {
     it('verify success for optiga (with prod keys)', async () => {
-        const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
-            signature: SIGNATURE_OPTIGA,
-            challenge: Buffer.from(CHALLENGE, 'hex'),
-            deviceModel: 'T2B1',
-            config: CONFIG,
-            blacklistConfig: BLACKLIST_CONFIG,
-        });
+        const verify = await verifyAuthenticityProof(defaultOptigaProps);
+        expect(verify.valid).toBe(true);
+        expect(verify.caPubKey).toEqual(expect.any(String));
+    });
 
+    it('verify success for tropic (with prod keys)', async () => {
+        const verify = await verifyAuthenticityProof(defaultTropicProps);
         expect(verify.valid).toBe(true);
         expect(verify.caPubKey).toEqual(expect.any(String));
     });
 
     it('verify success for optiga (with debug keys)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
-            signature: SIGNATURE_OPTIGA,
-            challenge: Buffer.from(CHALLENGE, 'hex'),
-            deviceModel: 'T2B1',
-            config: {
-                ...CONFIG,
-                T2B1: {
-                    rootPubKeysOptiga: [],
-                    rootPubKeysTropic: [],
-                    debug: {
-                        rootPubKeysOptiga: CONFIG.T2B1.rootPubKeysOptiga,
-                        rootPubKeysTropic: [],
-                    },
-                },
-            },
-            blacklistConfig: BLACKLIST_CONFIG,
+            ...defaultOptigaProps,
+            config: CONFIG_WITH_DEBUG_KEYS,
             allowDebugKeys: true,
         });
-
         expect(verify.valid).toBe(true);
         expect(verify.caPubKey).toEqual(expect.any(String));
     });
 
-    it('verify failed for optiga (signature missmatch)', async () => {
+    it('verify success for tropic (with debug keys)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
+            ...defaultTropicProps,
+            config: CONFIG_WITH_DEBUG_KEYS,
+            allowDebugKeys: true,
+        });
+        expect(verify.valid).toBe(true);
+        expect(verify.caPubKey).toEqual(expect.any(String));
+    });
+
+    it('verify failed for optiga (signature mismatch)', async () => {
+        const verify = await verifyAuthenticityProof({
+            ...defaultOptigaProps,
             signature:
                 // invalid 2nd byte of signature
                 '3044022100c01793ffbe4f16d4efc84a4533d9bbfbbf1baa5349346678e07fdb6d848cca7902200df11b9d2850173d9c93993fca983c6d2a3f31ea69a0e19b69e18cc3b78424fe',
-            challenge: Buffer.from(CHALLENGE, 'hex'),
-            deviceModel: 'T2B1',
-            config: CONFIG,
-            blacklistConfig: BLACKLIST_CONFIG,
+        });
+
+        expect(verify.valid).toBe(false);
+        expect(verify.error).toBe('INVALID_DEVICE_SIGNATURE');
+    });
+
+    it('verify failed for tropic (signature mismatch)', async () => {
+        const verify = await verifyAuthenticityProof({
+            ...defaultTropicProps,
+            signature:
+                // invalid 2nd byte of signature
+                '3044022100c01793ffbe4f16d4efc84a4533d9bbfbbf1baa5349346678e07fdb6d848cca7902200df11b9d2850173d9c93993fca983c6d2a3f31ea69a0e19b69e18cc3b78424fe',
         });
 
         expect(verify.valid).toBe(false);
@@ -98,10 +141,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
 
     it('verify failed for optiga (missing rootPubKey)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
-            signature: SIGNATURE_OPTIGA,
-            challenge: Buffer.from(CHALLENGE, 'hex'),
-            deviceModel: 'T2B1',
+            ...defaultOptigaProps,
             config: {
                 ...CONFIG,
                 T2B1: {
@@ -112,46 +152,72 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
                     ],
                 },
             },
-            blacklistConfig: BLACKLIST_CONFIG,
         });
+        expect(verify.valid).toBe(false);
+        expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
+    });
 
+    it('verify failed for tropic (missing rootPubKey)', async () => {
+        const verify = await verifyAuthenticityProof({
+            ...defaultTropicProps,
+            config: {
+                ...CONFIG,
+                T3W1: {
+                    ...CONFIG.T3W1,
+                    rootPubKeysTropic: ['deadbeef'.repeat(8)],
+                },
+            },
+        });
+        expect(verify.valid).toBe(false);
+        expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
+    });
+
+    it('verify failed for tropic (no rootPubKeysTropic defined)', async () => {
+        const verify = await verifyAuthenticityProof({
+            ...defaultTropicProps,
+            config: { ...CONFIG, T3W1: { rootPubKeysOptiga: [] } },
+        });
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
     });
 
     it('verify failed for optiga (device model mismatch)', async () => {
         const verify = await verifyAuthenticityProof({
+            ...defaultOptigaProps,
             certificates: [
                 '3082019e30820145a00302010202044ee2a50f300a06082a8648ce3d040302304f310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3120301e06035504030c175472657a6f72204d616e75666163747572696e67204341301e170d3232303433303134313630315a170d3432303433303134313630315a301d311b301906035504030c1254324232205472657a6f72205361666520333059301306072a8648ce3d020106082a8648ce3d030107034200049bbf06dad9ab5905e05471ce16d5222c89c2caa39f26267ac0747129885fbd441bcc7fa84de120a36755daf30a6f47e8c0d4bddc15036ed2a3447dfa7a1d3e88a341303f300e0603551d0f0101ff040403020080300c0603551d130101ff04023000301f0603551d23041830168014176d8b9a403574f6a2b9ac353ef578682201a21a300a06082a8648ce3d04030203470030440220747c545e112df816173d3071f1ab25d399d8108550764ce1a3a428f1f18b506902200cda822c75b3da6e44e098014452f3fc324f29a79204c3fb4d5815afafc04b17',
                 CA_CERT_OPTIGA,
             ],
-            signature: SIGNATURE_OPTIGA,
-            challenge: Buffer.from(CHALLENGE, 'hex'),
-            deviceModel: 'T2B1',
-            config: CONFIG,
-            blacklistConfig: BLACKLIST_CONFIG,
         });
 
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('INVALID_DEVICE_MODEL');
     });
 
+    // device model mismatch case is not relevant for tropic (supported only by T3W1)
+
     it('verify failed for optiga (caPubKey on blacklist)', async () => {
         const verify = await verifyAuthenticityProof({
-            certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
-            signature: SIGNATURE_OPTIGA,
-            challenge: Buffer.from(CHALLENGE, 'hex'),
-            deviceModel: 'T2B1',
-            config: {
-                ...CONFIG,
-                T2B1: {
-                    ...CONFIG.T2B1,
-                },
-            },
+            ...defaultOptigaProps,
             blacklistConfig: {
                 ...BLACKLIST_CONFIG,
                 blacklistedCaPubKeys: [
                     '041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4',
+                ],
+            },
+        });
+
+        expect(verify.valid).toBe(false);
+        expect(verify.error).toBe('CA_PUBKEY_BLACKLISTED');
+    });
+
+    it('verify failed for tropic (caPubKey on blacklist)', async () => {
+        const verify = await verifyAuthenticityProof({
+            ...defaultTropicProps,
+            blacklistConfig: {
+                ...BLACKLIST_CONFIG,
+                blacklistedCaPubKeys: [
+                    '9603b4971f811ed2a1cdb9ec3e6d6d0e22facfd83892a30480460872a2003f45',
                 ],
             },
         });

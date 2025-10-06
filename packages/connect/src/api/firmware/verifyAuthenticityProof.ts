@@ -41,9 +41,22 @@ const verifySignatureP256: VerifySignature = async (rawKey, data, signature) => 
     return signer.verify({ key }, Buffer.from(signature));
 };
 
-// TODO implement real function to verify TS7 tropic signature via Ed25519
-const verifySignatureEd25519: VerifySignature = (_rawKey, _data, _signature) =>
-    Promise.resolve(true); // simulate success, so it doesn't block onboarding in the meantime
+// Verifies Ed25519 signature using SubtleCrypto (browser or Node.js)
+const verifySignatureEd25519: VerifySignature = async (rawKey, data, signature) => {
+    try {
+        const SubtleCrypto = getSubtleCrypto();
+        // get Ed25519 key from RAW key
+        const edPubKey = await SubtleCrypto.importKey('raw', rawKey, { name: 'Ed25519' }, true, [
+            'verify',
+        ]);
+
+        // Verify signature
+        return await SubtleCrypto.verify({ name: 'Ed25519' }, edPubKey, signature, data);
+    } catch {
+        // Consider invalid inputs an unsuccessful verification rather than throw
+        return false;
+    }
+};
 
 const getVerifyFn = (algorithmName: AlgorithmName): VerifySignature => {
     if (algorithmName === 'P-256') return verifySignatureP256;
