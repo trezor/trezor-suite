@@ -12,7 +12,6 @@ import {
     TitledSection,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { WalletConnectPairBottomSheet } from '@suite-native/module-connect-popup';
@@ -25,72 +24,52 @@ import {
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 
 export const ConnectionSettings = () => {
-    const isConnectPopupEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
-    const isWalletConnectEnabled = useFeatureFlag(FeatureFlag.IsWalletConnectEnabled);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
-    if (!isConnectPopupEnabled && !isWalletConnectEnabled) {
-        return null;
-    }
-
     return (
         <TitledSection title={<Translation id="moduleSettings.items.connections.title" />}>
             <Card noPadding>
-                {isWalletConnectEnabled && (
-                    <AppSettingsCardWithIconLayout
-                        icon="walletConnect"
-                        title={
-                            <Translation id="moduleSettings.items.connections.walletConnect.title" />
-                        }
-                        onPress={() => navigation.navigate(RootStackRoutes.WalletConnectPair)}
-                        testID="@settings/wallet-connect"
-                        borderColor={null}
-                        noShadow
-                    />
-                )}
-                {isWalletConnectEnabled && (
-                    <>
-                        <CardDivider />
-                        <Box paddingHorizontal="sp16" paddingVertical="sp12">
-                            <WalletConnectPairBottomSheet
-                                ref={bottomSheetRef}
-                                onClose={closeModal}
-                            />
-                            <TouchableOpacity
-                                onPress={openModal}
-                                testID="@settings/wallet-connect-add"
-                            >
-                                <HStack justifyContent="space-between" alignItems="center">
-                                    <HStack spacing="sp16" alignItems="center">
-                                        <RoundedIcon
-                                            name="qrCode"
-                                            color="iconPrimaryDefault"
-                                            backgroundColor="backgroundPrimarySubtleOnElevation0"
-                                            iconSize="mediumLarge"
-                                        />
-                                        <Text color="textPrimaryDefault">
-                                            <Translation id="moduleSettings.items.connections.walletConnect.add" />
-                                        </Text>
-                                    </HStack>
-                                    <Icon name="plus" color="textSecondaryHighlight" />
-                                </HStack>
-                            </TouchableOpacity>
-                        </Box>
-                    </>
-                )}
-            </Card>
-            {isConnectPopupEnabled && (
                 <AppSettingsCardWithIconLayout
-                    icon="trezorLogo"
+                    icon="walletConnect"
                     title={
-                        <Translation id="moduleSettings.items.connections.trezorConnect.title" />
+                        <Translation id="moduleSettings.items.connections.walletConnect.title" />
                     }
-                    onPress={() => navigation.navigate(RootStackRoutes.ConnectPermissions)}
-                    testID="@settings/connect-permissions"
+                    onPress={() => navigation.navigate(RootStackRoutes.WalletConnectPair)}
+                    testID="@settings/wallet-connect"
+                    borderColor={null}
+                    noShadow
                 />
-            )}
+
+                <CardDivider />
+                <Box paddingHorizontal="sp16" paddingVertical="sp12">
+                    <WalletConnectPairBottomSheet ref={bottomSheetRef} onClose={closeModal} />
+                    <TouchableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
+                        <HStack justifyContent="space-between" alignItems="center">
+                            <HStack spacing="sp16" alignItems="center">
+                                <RoundedIcon
+                                    name="qrCode"
+                                    color="iconPrimaryDefault"
+                                    backgroundColor="backgroundPrimarySubtleOnElevation0"
+                                    iconSize="mediumLarge"
+                                />
+                                <Text color="textPrimaryDefault">
+                                    <Translation id="moduleSettings.items.connections.walletConnect.add" />
+                                </Text>
+                            </HStack>
+                            <Icon name="plus" color="textSecondaryHighlight" />
+                        </HStack>
+                    </TouchableOpacity>
+                </Box>
+            </Card>
+
+            <AppSettingsCardWithIconLayout
+                icon="trezorLogo"
+                title={<Translation id="moduleSettings.items.connections.trezorConnect.title" />}
+                onPress={() => navigation.navigate(RootStackRoutes.ConnectPermissions)}
+                testID="@settings/connect-permissions"
+            />
         </TitledSection>
     );
 };

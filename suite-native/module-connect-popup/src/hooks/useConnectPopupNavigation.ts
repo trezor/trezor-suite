@@ -7,7 +7,6 @@ import * as Linking from 'expo-linking';
 import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectPendingProposal, walletConnectPairThunk } from '@suite-common/walletconnect';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -36,8 +35,6 @@ const isWalletConnectUrl = (url: string): boolean => url.startsWith('trezorsuite
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
 export const useConnectPopupNavigation = () => {
-    const featureFlagEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
-    const featureFlagWalletConnectEnabled = useFeatureFlag(FeatureFlag.IsWalletConnectEnabled);
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
     const connectPopupCall = useSelector(selectConnectPopupCall);
@@ -48,9 +45,9 @@ export const useConnectPopupNavigation = () => {
     const url = Linking.useURL();
 
     useEffect(() => {
-        if (featureFlagEnabled && url && isConnectPopupUrl(url)) {
+        if (url && isConnectPopupUrl(url)) {
             dispatch(connectPopupDeeplinkThunk({ url }));
-        } else if (featureFlagWalletConnectEnabled && url && isWalletConnectUrl(url)) {
+        } else if (url && isWalletConnectUrl(url)) {
             try {
                 const parsedUrl = new URL(url);
                 const wcUri = parsedUrl?.searchParams?.get('uri');
@@ -59,7 +56,7 @@ export const useConnectPopupNavigation = () => {
                 // Malformed url, ignore
             }
         }
-    }, [url, featureFlagEnabled, featureFlagWalletConnectEnabled, dispatch]);
+    }, [url, dispatch]);
 
     useEffect(() => {
         if (connectPopupCall?.state === 'deeplink-callback') {
