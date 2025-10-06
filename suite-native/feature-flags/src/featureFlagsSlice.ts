@@ -7,9 +7,7 @@ export const FeatureFlag = {
     IsBluetoothEnabled: 'isBluetoothEnabled',
     AreDebugOnlyNetworksEnabled: 'areDebugOnlyNetworksEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
-    IsConnectPopupEnabled: 'isConnectPopupEnabled_v2', // v2: after changing default value for Android
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
-    IsWalletConnectEnabled: 'isWalletConnectEnabled_v2', // v2: after changing default value for Android
     IsTradingBuyEnabled: 'isTradingBuyEnabled',
     IsTradingExchangeEnabled: 'isTradingExchangeEnabled',
     IsTradingSellEnabled: 'isTradingSellEnabled',
@@ -35,13 +33,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_ARE_DEBUG_ONLY_NETWORKS_ENABLED === 'true',
     [FeatureFlag.IsCardanoSendEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
-    [FeatureFlag.IsConnectPopupEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true' ||
-        (isAndroid() && process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED !== 'false'),
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
-    [FeatureFlag.IsWalletConnectEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true' ||
-        (isAndroid() && process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED !== 'false'),
     [FeatureFlag.IsTradingBuyEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_BUY_ENABLED === 'true',
     [FeatureFlag.IsTradingExchangeEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_SWAP_ENABLED === 'true',
@@ -60,8 +52,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsBluetoothEnabled,
     FeatureFlag.AreDebugOnlyNetworksEnabled,
     FeatureFlag.IsCardanoSendEnabled,
-    FeatureFlag.IsConnectPopupEnabled,
-    FeatureFlag.IsWalletConnectEnabled,
     FeatureFlag.IsTradingBuyEnabled,
     FeatureFlag.IsTradingExchangeEnabled,
     FeatureFlag.IsTradingSellEnabled,

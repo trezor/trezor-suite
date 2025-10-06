@@ -12,7 +12,6 @@ import {
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-storage';
 import { setIsAppReady } from '@suite-native/state/src/appSlice';
 
@@ -56,9 +55,7 @@ export const postOnboardingInit = createThunk(
         // Create Portfolio Tracker device if it doesn't exist
         dispatch(createImportedDeviceThunk());
 
-        if (selectIsFeatureFlagEnabled(getState(), FeatureFlag.IsWalletConnectEnabled)) {
-            dispatch(walletConnectInitThunk());
-        }
+        dispatch(walletConnectInitThunk());
 
         dispatch(initNativeLocalFirstStorageThunk());
     },
