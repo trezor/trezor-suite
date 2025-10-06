@@ -13,7 +13,6 @@ import { isBluetoothDeviceConnected } from 'src/actions/bluetooth/isBluetoothDev
 import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
 import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import {
     UseBluetoothConnectionReturn,
@@ -68,15 +67,12 @@ const useConnectionGlobalModal = () => {
     const [shouldPairAgain, setShouldPairAgain] = useState(false);
     const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);
 
-    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
-
     const defaultConnectionMode = useSelector(selectDeviceDefaultConnectionMode);
 
     const nearbyDevices = useSelector(selectNearbyDevices);
     const knownDevices = useSelector(selectKnownDevices);
 
-    const isBluetoothMode =
-        defaultConnectionMode === 'bluetooth' && isBluetoothEnabled && isDesktop();
+    const isBluetoothMode = defaultConnectionMode === 'bluetooth' && isDesktop();
 
     const toggleBluetoothMode = () => {
         dispatch(setConnectionMode(isBluetoothMode ? 'cable' : 'bluetooth'));

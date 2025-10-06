@@ -15,8 +15,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
-
 import {
     DesktopBluetoothDevice,
     fromBluetoothDevice,
@@ -30,12 +28,6 @@ import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinux
 export const initBluetoothThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,
     async (_, { getState, dispatch, extra }) => {
-        const { isBluetoothEnabled } = selectSuiteFlags(getState());
-
-        if (!isBluetoothEnabled) {
-            return;
-        }
-
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
         const result = await bluetoothIpc.init({
             knownDevices: knownDevices.map(toBluetoothDevice),
