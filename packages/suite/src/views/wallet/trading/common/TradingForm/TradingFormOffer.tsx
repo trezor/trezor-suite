@@ -162,7 +162,7 @@ export const TradingFormOffer = () => {
 
         initConfirmTrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quote, requiresTokenApproval]);
+    }, [quote, requiresTokenApproval, tradingReceiveAddress?.receiveAddress]);
 
     const onSelectQuote = async () => {
         if (!quote) {
