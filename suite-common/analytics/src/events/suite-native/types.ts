@@ -185,6 +185,7 @@ export type SuiteNativeAnalyticsEvent =
               deviceModel: DeviceModelInternal | null;
               isBitcoinOnly: boolean;
               deviceLanguage: string | null;
+              connectionType: 'cable' | 'bluetooth';
           };
       }
     | {
