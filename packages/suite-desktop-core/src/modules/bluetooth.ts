@@ -6,6 +6,7 @@ import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy
 import { getFreePort } from '@trezor/node-utils';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
+import { createLazy, throwError } from '@trezor/utils';
 
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
@@ -26,24 +27,6 @@ export const bluetoothModuleState: BluetoothModuleState = {
 export const init: ModuleInit = () => {
     const { logger } = global;
 
-    let bluetoothProcess: BluetoothProcess | undefined;
-
-    const getBluetoothProcess = async () => {
-        if (!bluetoothProcess) {
-            const [port] = await getFreePort();
-            bluetoothProcess = new BluetoothProcess(port);
-        }
-
-        return bluetoothProcess;
-    };
-
-    const killBluetoothProcess = () => {
-        if (bluetoothProcess) {
-            bluetoothProcess.stop();
-            bluetoothProcess = undefined;
-        }
-    };
-
     const desktopLogger: ConstructorParameters<typeof BluetoothTransport>[0]['logger'] = {
         info: (...args) => logger.info(SERVICE_NAME, args),
         debug: (...args) => logger.debug(SERVICE_NAME, args),
@@ -52,44 +35,54 @@ export const init: ModuleInit = () => {
         error: (...args) => logger.error(SERVICE_NAME, args),
     };
 
-    const initBluetoothIpc = async () => {
-        const btProcess = await getBluetoothProcess();
-        await btProcess.start();
+    const lazyBluetooth = createLazy(
+        async () => {
+            const [port] = await getFreePort();
+            const process = new BluetoothProcess(port);
+            await process.start();
 
-        return new BluetoothIpc({
-            url: btProcess.getUrl(),
-            logger: desktopLogger,
-        });
-    };
+            const client = new BluetoothIpc({
+                url: process.getUrl(),
+                logger: desktopLogger,
+            });
 
-    const getBluetoothTransport = () =>
-        bluetoothProcess
+            return { process, client };
+        },
+        ({ process, client }) => {
+            process.stop();
+            client.dispose();
+        },
+    );
+
+    const getClient = () =>
+        (lazyBluetooth.get() ?? throwError('BluetoothIpc api not initialized')).client;
+
+    const getBluetoothTransport = () => {
+        const api = lazyBluetooth.get();
+
+        return api
             ? new BluetoothTransport({
                   id: 'BluetoothTransport',
-                  url: bluetoothProcess.getUrl(),
+                  url: api.process.getUrl(),
                   logger: desktopLogger,
                   messages: {}, // will be added by @trezor/connect transport initialization
                   // writeWithResponse: isMacOs(),
                   // writeWithDelay: isWindows(),
               })
             : undefined;
+    };
 
     const proxyOptions: IpcProxyHandlerOptions<BluetoothIpcApi> = {
         onCreateInstance() {
-            let api: BluetoothIpc | undefined;
-            const apiError = new Error('BluetoothIpc api not initialized');
-
             return {
                 onRequest: async (method, params) => {
                     logger.debug(SERVICE_NAME, `call ${method}`);
                     if (method === 'init') {
-                        api = await initBluetoothIpc();
+                        await lazyBluetooth.getOrInit();
                     }
 
-                    if (!api) throw apiError;
-
                     if (method === 'dispose') {
-                        killBluetoothProcess();
+                        lazyBluetooth.dispose();
                     }
 
                     // Workaround for MacOS pairing flow:
@@ -100,7 +93,7 @@ export const init: ModuleInit = () => {
                     // The process will be automatically restarted by MacOS if needed and doesn't seem to cause any issues with Find My functionality.
                     if (method === 'connectDevice' && isMacOs()) {
                         try {
-                            const devices = await api.enumerateDevices();
+                            const devices = await getClient().enumerateDevices();
                             const isPaired = devices.find(d => d.id === params[0])?.paired;
                             if (!isPaired) {
                                 await new Promise<InvokeResult>(resolve => {
@@ -118,19 +111,17 @@ export const init: ModuleInit = () => {
                         }
                     }
 
-                    return (api[method] as any)(...params);
+                    return (getClient()[method] as any)(...params);
                 },
                 onAddListener: (eventName, listener) => {
                     logger.debug(SERVICE_NAME, `add listener ${eventName}`);
-                    if (!api) throw apiError;
 
-                    return api.on(eventName, listener);
+                    return getClient().on(eventName, listener);
                 },
                 onRemoveListener: (eventName: any) => {
                     logger.debug(SERVICE_NAME, `remove listener ${eventName}`);
-                    if (!api) throw apiError;
 
-                    return api.removeAllListeners(eventName);
+                    return getClient().removeAllListeners(eventName);
                 },
             };
         },
@@ -144,7 +135,7 @@ export const init: ModuleInit = () => {
     const onQuit = () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
         unregisterProxy();
-        killBluetoothProcess();
+        lazyBluetooth.dispose();
         bluetoothModuleState.getTransport = () => undefined;
     };
 
