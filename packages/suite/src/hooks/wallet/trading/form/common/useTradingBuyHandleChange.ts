@@ -9,6 +9,7 @@ import {
 } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -57,6 +58,14 @@ export const useTradingBuyHandleChange = ({
 
         try {
             const quotes = await promise.unwrap();
+
+            analytics.report({
+                type: EventType.TradingReceivedQuotes,
+                payload: {
+                    type: 'buy',
+                    count: quotes?.length ?? 0,
+                },
+            });
 
             if (quotes) {
                 const bestQuote = quotes?.[0];
