@@ -16,11 +16,6 @@ on:
     types: [labeled]
   workflow_dispatch:
     inputs:
-      bluetooth:
-        description: "include bluetooth rust websocket server build"
-        required: false
-        type: boolean
-        default: false
 
 env:
   DESKTOP_APP_NAME: "Trezor-Suite"
@@ -66,7 +61,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          BLUETOOTH=${{ github.event.inputs.bluetooth }} yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
+          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
           mv packages/suite-desktop/build-electron/* .
 
@@ -123,7 +118,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          BLUETOOTH=${{ github.event.inputs.bluetooth }} yarn workspace @trezor/suite-desktop build:${{env.platform}}
+          yarn workspace @trezor/suite-desktop build:${{env.platform}}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
           mv packages/suite-desktop/build-electron/* .
 
