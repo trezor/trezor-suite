@@ -4,6 +4,7 @@ import {
     prepareInitialState,
 } from '@suite-common/bluetooth';
 import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { deviceActions } from '@suite-common/wallet-core';
 
 import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
@@ -56,9 +57,24 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     extraReducers: (builder, extra) => {
         const commonReducer = prepareBluetoothReducerCreator<DesktopBluetoothDevice>()(extra);
 
-        builder.addDefaultCase((state, action) => {
-            commonReducer(state, action as AnyAction);
-        });
+        builder
+            .addCase(deviceActions.deviceDisconnect, (state, action) => {
+                commonReducer(state, action as AnyAction);
+
+                state.knownDevices = state.knownDevices.map(device => {
+                    if (device.deviceId === action.payload.id) {
+                        device.connected = false;
+                        device.connectionStatus = {
+                            type: 'disconnected',
+                        };
+                    }
+
+                    return device;
+                });
+            })
+            .addDefaultCase((state, action) => {
+                commonReducer(state, action as AnyAction);
+            });
     },
 });
 
