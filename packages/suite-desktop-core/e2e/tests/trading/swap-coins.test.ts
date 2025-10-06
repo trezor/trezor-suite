@@ -23,12 +23,12 @@ const transactionStates = [
 
 // Expected values based on our mocked responses
 const sendAmount = swapQuotesSolanaBTC[1].sendStringAmount;
+const receiveAmount = localizeNumber(swapQuotesSolanaBTC[1].receiveStringAmount);
 const provider = getCompanyNameFromList(swapQuotesSolanaBTC[1].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
-const formattedReceiveAmount = `${localizeNumber(swapQuotesSolanaBTC[1].receiveStringAmount)} BTC`;
+const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
 const formattedSendAddress = formatAddress(sendAddress);
-const toastText = `Swap transaction of ${formattedSendAmount} (Solana #1) to ${formattedReceiveAmount} (Bitcoin #1) was broadcasted`;
 
 test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -62,7 +62,6 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 receiveCurrency: 'Bitcoin',
                 receiveSymbol: 'btc',
                 receiveNetwork: 'bitcoin',
-
                 receiveAccount: 'Bitcoin #1',
                 receiveAddress,
             });
@@ -112,7 +111,19 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
             await page.clock.install();
             await devicePrompt.sendButton.click();
             await expect(tradingPage.transactionDetailStatus).toHaveText('Pending');
-            await expect(page.getByTestId('@toast/tx-exchange')).toContainText(toastText);
+            await expect(page.getByTestId('@toast/tx-exchange')).toHaveTranslation(
+                'TOAST_TX_EXCHANGE_BROADCASTED',
+                {
+                    placeholderValues: [
+                        sendAmount,
+                        'SOL',
+                        'Solana #1',
+                        receiveAmount,
+                        'BTC',
+                        'Bitcoin #1',
+                    ],
+                },
+            );
         });
 
         await test.step('Verify button opens provider support page in new tab', async () => {

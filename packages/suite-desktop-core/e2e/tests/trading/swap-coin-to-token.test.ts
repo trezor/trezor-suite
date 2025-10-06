@@ -11,12 +11,12 @@ import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
 const sendAmount = swapQuotesSolanaUSDC[0].sendStringAmount;
+const receiveAmount = localizeNumber(swapQuotesSolanaUSDC[0].receiveStringAmount);
 const provider = getCompanyNameFromList(swapQuotesSolanaUSDC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
-const formattedReceiveAmount = `${localizeNumber(swapQuotesSolanaUSDC[0].receiveStringAmount)} USDC`;
+const formattedReceiveAmount = `${receiveAmount} USDC`;
 const { sendAddress, receiveAddress, receive: usdcMint } = swapTradeSolanaUSDC;
 const formattedSendAddress = formatAddress(sendAddress);
-const toastText = `Swap transaction of ${formattedSendAmount} (Solana #1) to ${formattedReceiveAmount} (Ethereum #1) was broadcasted`;
 
 test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -49,7 +49,6 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnl
                 receiveCurrency: 'USDC',
                 receiveSymbol: 'eth',
                 receiveNetwork: usdcMint,
-
                 receiveAccount: 'Ethereum #1',
                 receiveAddress,
             });
@@ -74,7 +73,19 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnl
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
-            await expect(page.getByTestId('@toast/tx-exchange')).toContainText(toastText);
+            await expect(page.getByTestId('@toast/tx-exchange')).toHaveTranslation(
+                'TOAST_TX_EXCHANGE_BROADCASTED',
+                {
+                    placeholderValues: [
+                        sendAmount,
+                        'SOL',
+                        'Solana #1',
+                        receiveAmount,
+                        'USDC',
+                        'Ethereum #1',
+                    ],
+                },
+            );
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
             );
