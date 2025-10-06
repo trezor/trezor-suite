@@ -61,7 +61,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             });
 
             await test.step('After reloading inactive suite session does not take Bridge session back', async () => {
-                await expect(page.getByTestId('@deviceStatus-disconnected').first()).toBeVisible({
+                await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE', {
                     timeout: 30_000,
                 });
             });
