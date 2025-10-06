@@ -165,9 +165,6 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceSta
 
 export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
 
-export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
-    !!device?.connected && !!device?.bluetoothProps;
-
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
     !!device?.features;
 
@@ -513,5 +510,8 @@ export const getIsDeviceConnectedAndAuthorized = ({
     deviceFeatures?: PROTO.Features;
 }) => !!deviceState && !!deviceFeatures;
 
-export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device) =>
+export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDevice) =>
     device.descriptor.apiType === 'bluetooth';
+
+export const getIsDeviceConnectedViaBluetooth = (device?: TrezorDevice): boolean =>
+    !!device?.connected && getIsDeviceDescriptorApiTypeBluetooth(device);

@@ -1,6 +1,5 @@
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
@@ -64,27 +63,22 @@ const getIsDeviceConnectedViaBluetooth = [
     {
         description: 'device is connected via bluetooth',
         device: getSuiteDevice({
-            bluetoothProps: { id: asBluetoothDeviceId('21') },
+            descriptor: { apiType: 'bluetooth' },
             connected: true,
-        }),
+        }) as TrezorDevice,
         result: true,
     },
     {
-        description: 'device is not connected but bluetooth props are present',
+        description: 'device is not connected and api type is bluetooth',
         device: getSuiteDevice({
-            bluetoothProps: { id: asBluetoothDeviceId('21') },
+            descriptor: { apiType: 'bluetooth' },
             connected: false,
-        }),
+        }) as TrezorDevice,
         result: false,
     },
     {
-        description: 'device is not connected via bluetooth',
-        device: SUITE_DEVICE,
-        result: false,
-    },
-    {
-        description: "device is connected but doesn't have bluetooth props",
-        device: getSuiteDevice({ connected: true }),
+        description: 'device is connected via usb',
+        device: { ...SUITE_DEVICE, descriptor: { apiType: 'usb' } } as TrezorDevice,
         result: false,
     },
     {
