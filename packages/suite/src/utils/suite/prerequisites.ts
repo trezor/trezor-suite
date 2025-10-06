@@ -29,11 +29,13 @@ export const prerequisiteTypes = [
     'device-bootloader',
     'firmware-missing',
     'firmware-required',
+    'firmware-corrupted',
     'device-busy',
     'device-rebooting',
     'device-bootloader-locked',
     'device-hard-locked',
 ] as const;
+
 export type PrerequisiteType = (typeof prerequisiteTypes)[number];
 
 export const getPrerequisiteName = ({
@@ -95,8 +97,13 @@ export const getPrerequisiteName = ({
     if (device.mode === 'initialize') return 'device-initialize';
 
     // device is in bootloader mode
-    if (device.mode === 'bootloader')
+    if (device.mode === 'bootloader') {
+        if (device.features.firmware_corrupted) {
+            return 'firmware-corrupted';
+        }
+
         return device.features.firmware_present ? 'device-bootloader' : 'firmware-missing';
+    }
 
     // device firmware update required
     if (device.firmware === 'required') return 'firmware-required';

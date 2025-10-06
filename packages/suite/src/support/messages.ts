@@ -2247,6 +2247,10 @@ export default defineMessages({
         defaultMessage: 'Firmware update required.',
         id: 'TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED',
     },
+    TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED: {
+        defaultMessage: 'Firmware is corrupted. Install new firmware to continue.',
+        id: 'TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED',
+    },
     TR_NEEDS_ATTENTION_UNAVAILABLE: {
         defaultMessage: 'Trezor is not available.',
         id: 'TR_NEEDS_ATTENTION_UNAVAILABLE',
@@ -2278,6 +2282,14 @@ export default defineMessages({
     TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING: {
         defaultMessage: 'Trezor Safe 7 detected',
         id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
+    },
+    TR_FIRMWARE_CORRUPTED_CONNECT_TITLE: {
+        defaultMessage: 'Trezor firmware is corrupted',
+        id: 'TR_FIRMWARE_CORRUPTED_CONNECT_TITLE',
+    },
+    TR_FIRMWARE_CORRUPTED_CONNECT_DESCRIPTION: {
+        defaultMessage: 'Firmware installation likely failed, reinstall the firmware',
+        id: 'TR_FIRMWARE_CORRUPTED_CONNECT_DESCRIPTION',
     },
     TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION: {
         defaultMessage: 'Continue to THP pairing',

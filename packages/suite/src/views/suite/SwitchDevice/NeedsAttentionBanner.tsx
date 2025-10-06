@@ -30,6 +30,8 @@ const getDeviceNeedsAttentionMessage = (
             return 'TR_NEEDS_ATTENTION_UNACQUIRED';
         case 'firmware-required':
             return 'TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED';
+        case 'firmware-corrupted':
+            return 'TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED';
         case 'unavailable':
             return 'TR_NEEDS_ATTENTION_UNAVAILABLE';
         case 'unreadable':
@@ -70,6 +72,7 @@ const getDeviceStatusWarningVariant = (
         case 'device-thp-locked':
             return 'info';
         case 'firmware-required':
+        case 'firmware-corrupted':
             return 'destructive';
         default:
             return 'warning';
@@ -112,6 +115,7 @@ export const NeedsAttentionBanner = ({
 
             case 'seedless':
             case 'firmware-required':
+            case 'firmware-corrupted':
             case 'unavailable':
             case 'unreadable':
             case 'connected':

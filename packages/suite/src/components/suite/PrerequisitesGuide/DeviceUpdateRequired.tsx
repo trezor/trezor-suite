@@ -20,7 +20,7 @@ export const DeviceUpdateRequired = () => {
             label={<Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />}
             cta={
                 <Banner.Button onClick={handleClick}>
-                    <Translation id="TR_SEE_DETAILS" />
+                    <Translation id="TR_JUST_INSTALL" />
                 </Banner.Button>
             }
             variant="warning"
