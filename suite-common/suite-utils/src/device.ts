@@ -71,6 +71,9 @@ export const getStatus = (device: TrezorDevice) => {
         if (!device.available) {
             return 'unavailable';
         }
+        if (device.features?.firmware_corrupted) {
+            return 'firmware-corrupted';
+        }
         if (device.mode === 'bootloader') {
             return 'bootloader';
         }
@@ -149,6 +152,7 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boole
         case 'was-used-in-other-window':
         case 'unacquired':
         case 'firmware-required':
+        case 'firmware-corrupted':
         case 'unreadable':
         case 'device-busy':
         case 'device-bootloader-locked':

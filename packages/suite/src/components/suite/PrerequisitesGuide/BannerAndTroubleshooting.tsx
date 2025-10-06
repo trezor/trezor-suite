@@ -50,6 +50,7 @@ const getComponent = (prerequisite: PrerequisiteType | null) => {
         case 'firmware-missing':
             return <DeviceNoFirmware />;
         case 'firmware-required':
+        case 'firmware-corrupted':
             return <DeviceUpdateRequired />;
         case 'multi-share-backup-in-progress':
             return <MultiShareBackupInProgress />;

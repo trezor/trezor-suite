@@ -527,7 +527,7 @@ describe(`${Preloader.name} component`, () => {
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId(/FW_CAPABILITY_UPDATE_REQUIRED/)).not.toBeNull();
-        expect(findByTestId('TR_SEE_DETAILS')).not.toBeNull();
+        expect(findByTestId('TR_JUST_INSTALL')).not.toBeNull();
 
         unmount();
     });

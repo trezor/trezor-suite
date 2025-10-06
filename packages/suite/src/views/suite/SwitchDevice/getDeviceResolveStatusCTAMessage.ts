@@ -12,6 +12,7 @@ export const getDeviceResolveStatusCTAMessage = (
         case 'device-thp-locked':
             return 'TR_TRY_AGAIN';
         case 'firmware-required':
+        case 'firmware-corrupted':
             return 'TR_JUST_INSTALL';
         case 'was-used-in-other-window':
         case 'used-in-other-window':
