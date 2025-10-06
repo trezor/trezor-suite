@@ -10,7 +10,7 @@ import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { Translation } from 'src/components/suite/Translation';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectHasActiveTransport, selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';
 import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
 import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
@@ -65,7 +65,6 @@ export const SettingsDevice = () => {
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
     const isPassphraseProtectionOn = Boolean(device?.features?.passphrase_protection);
-    const flags = useSelector(selectSuiteFlags);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
@@ -184,7 +183,7 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
                 {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
-                {flags.isBluetoothEnabled && isDeviceConnectedViaBluetooth && (
+                {isDeviceConnectedViaBluetooth && (
                     <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
                 )}
                 <ForgetDevice />

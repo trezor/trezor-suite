@@ -9,7 +9,6 @@ import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { Backends } from './Backends';
-import { BluetoothEnabledCheckbox } from './BluetoothEnabledCheckbox';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
 import { ConnectPopup } from './ConnectPopup';
@@ -94,7 +93,6 @@ export const SettingsDebug = () => {
             </SettingsSection>
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
-                    <BluetoothEnabledCheckbox />
                     <ShowBluetoothDebugInfo />
                     <ForgetAllDevicesButton />
                 </SettingsSection>

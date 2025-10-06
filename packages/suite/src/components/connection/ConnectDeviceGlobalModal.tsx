@@ -7,7 +7,6 @@ import { borders } from '@trezor/theme';
 import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
@@ -79,7 +78,6 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     const wasBluetoothDeviceWiped = useSelector(selectIsDeviceOsUnpairingRequired);
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
-    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
 
     if (wasBluetoothDeviceWiped || isUnpairingDevice) return null;
@@ -152,16 +150,14 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <DontSeeTrezorPill onClick={toggleShowHints} />
             <Modal.ModalBase size="tiny" onCancel={onCancel}>
                 <ConnectModalContent isBluetoothMode={false}>
-                    {isBluetoothEnabled && (
-                        <Button
-                            icon="bluetooth"
-                            onClick={toggleBluetoothMode}
-                            variant="info"
-                            size="medium"
-                        >
-                            <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
-                        </Button>
-                    )}
+                    <Button
+                        icon="bluetooth"
+                        onClick={toggleBluetoothMode}
+                        variant="info"
+                        size="medium"
+                    >
+                        <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
+                    </Button>
                 </ConnectModalContent>
             </Modal.ModalBase>
         </Modal.Backdrop>
