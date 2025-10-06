@@ -18,8 +18,8 @@ export const useBluetoothPlatformSpecificAlerts = () => {
 
     const showBluetoothAdapterDisabledAlert = useCallback(() => {
         showAlert({
-            title: translate('bluetooth.alerts.adapterDisabled.title'),
             type: 'bluetoothAdapter',
+            title: translate('bluetooth.alerts.adapterDisabled.title'),
             description: translate('bluetooth.alerts.adapterDisabled.description.ios'),
             primaryButtonTitle: translate('generic.buttons.gotIt'),
         });
