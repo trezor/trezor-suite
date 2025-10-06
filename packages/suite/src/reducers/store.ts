@@ -138,6 +138,7 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
         preloadedState: patchedState,
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
+                immutableCheck: false,
                 serializableCheck: {
                     ignoredActions: [OPEN_USER_CONTEXT],
                     ignoredPaths: [
