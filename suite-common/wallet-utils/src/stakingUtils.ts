@@ -32,9 +32,7 @@ import {
 export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
 export const getAccountTotalStakingBalance = (account: Account) => {
-    if (!account) return null;
-
-    switch (account.networkType) {
+    switch (account?.networkType) {
         case 'ethereum':
             return getEthAccountTotalStakingBalance(account);
         case 'solana':

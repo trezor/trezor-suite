@@ -7876,6 +7876,11 @@ export default defineMessages({
         id: 'TR_DISCOVERY_WARNING_DESCRIPTION',
         defaultMessage: 'Just a moment.',
     },
+    TR_SOL_STAKING_REWARD_WARNING: {
+        id: 'TR_SOL_STAKING_REWARD_WARNING',
+        defaultMessage:
+            'Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.',
+    },
     TR_STAKING_REWARDS_TITLE: {
         id: 'TR_STAKING_REWARDS_TITLE',
         defaultMessage: 'Cardano staking is active',

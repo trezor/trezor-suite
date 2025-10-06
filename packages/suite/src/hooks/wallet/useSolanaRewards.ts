@@ -82,5 +82,7 @@ export const useSolanaRewards = (account: Account) => {
         showPagination,
         isLastPage,
         selectedAccountRewards,
-    };
+    } as const;
 };
+
+export type SolanaRewards = ReturnType<typeof useSolanaRewards>;

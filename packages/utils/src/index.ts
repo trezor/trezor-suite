@@ -62,3 +62,4 @@ export * from './removeTrailingSlashes';
 export * from './getIntegerInRangeFromString';
 export * from './safeBigIntStringify';
 export * from './union';
+export * from './isInt';

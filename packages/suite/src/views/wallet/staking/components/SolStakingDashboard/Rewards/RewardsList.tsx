@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Badge, Card, Column, Icon, Row, SkeletonStack, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -15,8 +14,7 @@ import {
 } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { Pagination } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-import { useSolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
+import { type SolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
 import { Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 import { ColDate } from 'src/views/wallet/transactions/TransactionList/TransactionsGroup/CommonComponents';
@@ -25,37 +23,22 @@ import { RewardsEmpty } from './RewardsEmpty';
 
 interface RewardsListProps {
     account: Account;
+    rewards: SolanaRewards;
 }
 
-export const RewardsList = ({ account }: RewardsListProps) => {
+export const RewardsList = ({ account, rewards }: RewardsListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
-
-    const {
-        slicedRewards,
-        isLoading,
-        currentPage,
-        setSelectedPage,
-        totalItems,
-        itemsPerPage,
-        showPagination,
-        isLastPage,
-        selectedAccountRewards,
-    } = useSolanaRewards(account);
-
     const isSolanaMainnet = !isTestnet(account.symbol);
 
     const onPageSelected = (page: number) => {
-        setSelectedPage(page);
+        rewards.setSelectedPage(page);
         if (sectionRef.current) {
             sectionRef.current.scrollIntoView();
         }
     };
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    if (!isStakingActive) return null;
-
-    const noRewards = !isSolanaMainnet || selectedAccountRewards?.length === 0;
-    if (noRewards && !isLoading) {
+    const noRewards = !isSolanaMainnet || rewards.selectedAccountRewards?.length === 0;
+    if (noRewards && !rewards.isLoading) {
         return <RewardsEmpty />;
     }
 
@@ -65,7 +48,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
             heading={<Translation id="TR_REWARDS" />}
             data-testid="@wallet/accounts/rewards-list"
         >
-            {isLoading || selectedAccountRewards === undefined ? (
+            {rewards.isLoading || rewards.selectedAccountRewards === undefined ? (
                 <SkeletonStack $col $childMargin="0px 0px 16px 0px">
                     <SkeletonTransactionItem />
                     <SkeletonTransactionItem />
@@ -73,7 +56,7 @@ export const RewardsList = ({ account }: RewardsListProps) => {
                 </SkeletonStack>
             ) : (
                 <>
-                    {slicedRewards?.map(reward => (
+                    {rewards.slicedRewards?.map(reward => (
                         <React.Fragment key={reward.epoch}>
                             <Row>
                                 <ColDate>
@@ -148,13 +131,13 @@ export const RewardsList = ({ account }: RewardsListProps) => {
                 </>
             )}
 
-            {showPagination && !isLoading && slicedRewards?.length && (
+            {rewards.showPagination && !rewards.isLoading && rewards.slicedRewards?.length && (
                 <Pagination
                     hasPages={true}
-                    currentPage={currentPage}
-                    isLastPage={isLastPage}
-                    perPage={itemsPerPage}
-                    totalItems={totalItems}
+                    currentPage={rewards.currentPage}
+                    isLastPage={rewards.isLastPage}
+                    perPage={rewards.itemsPerPage}
+                    totalItems={rewards.totalItems}
                     onPageSelected={onPageSelected}
                     explicitNavigation
                 />
