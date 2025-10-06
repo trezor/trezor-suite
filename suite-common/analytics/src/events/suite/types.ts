@@ -694,6 +694,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsGeneralMevProtection;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
           type: EventType.SettingsCoins;
           payload: {
               symbol: string;

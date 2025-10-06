@@ -3,6 +3,7 @@ import { FormattedList } from 'react-intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import { WALLET_SETTINGS, selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
@@ -18,12 +19,19 @@ export const MevProtection = () => {
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
 
-    const handleSubmit = () => {
+    function handleSwitchChange() {
+        const nextIsMevProtectionEnabled = !isMevProtectionEnabled;
+
         dispatch({
             type: WALLET_SETTINGS.SET_MEV_PROTECTION,
-            payload: !isMevProtectionEnabled,
+            payload: nextIsMevProtectionEnabled,
         });
-    };
+
+        analytics.report({
+            type: EventType.SettingsGeneralMevProtection,
+            payload: { value: nextIsMevProtectionEnabled },
+        });
+    }
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.MevProtection}>
@@ -47,7 +55,7 @@ export const MevProtection = () => {
             <ActionColumn>
                 <Switch
                     isChecked={isMevProtectionEnabled}
-                    onChange={handleSubmit}
+                    onChange={handleSwitchChange}
                     data-testid="@settings/auto-eject-switch"
                 />
             </ActionColumn>
