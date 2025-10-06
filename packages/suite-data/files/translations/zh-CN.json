@@ -291,7 +291,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "显示地址为连续格式（bc1wetes...v54d8d）或分隔格式（bc1w etes ... v54d 8d）。",
   "TR_ADDRESS_MODAL_CLIPBOARD": "复制地址",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} 网络接收地址",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkCurrencyName} 接收地址在 {networkName} 网络上",
   "TR_ADDRESS_PHISHING_WARNING": "为了防止网络钓鱼攻击，请在您的 Trezor 设备上验证接收地址。 {claim}",
   "TR_ADD_ACCOUNT": "添加账户",
   "TR_ADD_HIDDEN_WALLET": "隐藏钱包",

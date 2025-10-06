@@ -288,7 +288,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "アドレスを連続形式: bc1wetes...v54d8d またはチャンク形式: bc1w etes ... v54d 8d で表示。",
   "TR_ADDRESS_MODAL_CLIPBOARD": "アドレスをコピー",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} ネットワーク受信アドレス",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkName} ネットワークの {networkCurrencyName} 受信アドレス",
   "TR_ADDRESS_PHISHING_WARNING": "フィッシング攻撃を防ぐために、Trezorで受信アドレスを確認してください。 {claim}",
   "TR_ADD_ACCOUNT": "アカウントを追加",
   "TR_ADD_HIDDEN_WALLET": "パスフレーズ・ウォレット",

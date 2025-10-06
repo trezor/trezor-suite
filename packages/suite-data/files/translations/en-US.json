@@ -291,7 +291,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "Display address continuous (bc1wetes...v54d8d) or spaced (bc1w etes ... v54d 8d).",
   "TR_ADDRESS_MODAL_CLIPBOARD": "Copy address",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} network receive address",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkCurrencyName} receive address on {networkName} network",
   "TR_ADDRESS_PHISHING_WARNING": "To prevent phishing attacks, verify the receive address on your Trezor. {claim}",
   "TR_ADD_ACCOUNT": "Add account",
   "TR_ADD_HIDDEN_WALLET": "Passphrase wallet",
