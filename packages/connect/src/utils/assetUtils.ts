@@ -32,12 +32,12 @@ export const getReleasesAssetByDeviceModelAndFirmwareType = (
     const firmwareTypeInFileName =
         firmwareType === FirmwareType.BitcoinOnly ? 'bitcoinonly' : 'universal';
 
-    const availableRelesesRecord = (firmwareAssets as FirmwareAssetMap)[deviceModel.toLowerCase()][
-        firmwareTypeInFileName
-    ];
-    const availableFirmwaresReleases = Object.values(availableRelesesRecord);
+    const availableReleasesRecord =
+        (firmwareAssets as FirmwareAssetMap)?.[deviceModel.toLowerCase()]?.[
+            firmwareTypeInFileName
+        ] ?? {};
 
-    return availableFirmwaresReleases.sort((a, b) =>
+    return Object.values(availableReleasesRecord).sort((a, b) =>
         versionUtils.isNewer(b.version, a.version) ? 1 : -1,
     );
 };
