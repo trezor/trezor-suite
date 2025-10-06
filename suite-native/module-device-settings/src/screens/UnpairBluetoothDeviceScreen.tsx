@@ -46,6 +46,7 @@ export const UnpairBluetoothDeviceScreen = () => {
                 <DynamicScreenHeader
                     title={<Translation id="moduleDeviceSettings.bluetooth.title" />}
                     subtitle={<Translation id="moduleDeviceSettings.bluetooth.description" />}
+                    closeActionType="close"
                 />
             }
         >
