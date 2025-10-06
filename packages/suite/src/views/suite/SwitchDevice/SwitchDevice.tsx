@@ -7,7 +7,6 @@ import { spacings } from '@trezor/theme';
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
@@ -15,7 +14,6 @@ import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const dispatch = useDispatch();
-    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const devices = useSelector(selectDevices);
 
@@ -28,7 +26,7 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const openDeviceConnectionModal = () => {
         dispatch(toggleConnectionModal());
 
-        if (isBluetoothEnabled && bluetoothAdapterStatus === 'enabled') {
+        if (bluetoothAdapterStatus === 'enabled') {
             dispatch(bluetoothActions.enableAutoConnect());
             dispatch(setConnectionMode('bluetooth'));
         }
