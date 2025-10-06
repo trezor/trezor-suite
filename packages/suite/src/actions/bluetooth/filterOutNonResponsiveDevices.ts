@@ -7,6 +7,8 @@ export const NEARBY_DEVICES_LAST_UPDATED_LIMIT_LINUX = 5_000;
 /**
  * Filters out devices that have not been responsive for a certain period of time.
  * Linux (specifically T2 linux distro for Mac) needs more than 3 secs - tested with 5 sec, due to slow drivers.
+ *
+ * Devices in 'pairing' state are kept regardless of last updated timestamp, as they are actively being paired.
  */
 export const filterOutNonResponsiveDevices = <T extends BluetoothDeviceCommon>(devices: T[]) => {
     const now = Date.now();
@@ -14,5 +16,9 @@ export const filterOutNonResponsiveDevices = <T extends BluetoothDeviceCommon>(d
         ? NEARBY_DEVICES_LAST_UPDATED_LIMIT_LINUX
         : NEARBY_DEVICES_LAST_UPDATED_LIMIT;
 
-    return devices.filter(d => d.lastUpdatedTimestamp >= now - limit);
+    return devices.filter(
+        device =>
+            device.lastUpdatedTimestamp >= now - limit ||
+            device.connectionStatus.type === 'pairing',
+    );
 };
