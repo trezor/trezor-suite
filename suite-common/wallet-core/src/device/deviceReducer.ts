@@ -602,7 +602,7 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
         initialized: device.features.initialized,
         thp: device.thp,
         bluetoothProps: device.bluetoothProps,
-        lastConnectedBy: device.bluetoothProps ? 'bluetooth' : 'usb',
+        lastConnectedVia: device.bluetoothProps ? 'bluetooth' : 'usb',
         firmwareVersion: getFirmwareVersionArray(device),
     };
 
