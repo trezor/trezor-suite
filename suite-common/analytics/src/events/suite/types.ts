@@ -425,6 +425,13 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.TradingReceivedQuotes;
+          payload: {
+              type: 'buy' | 'sell' | 'exchange';
+              count: number;
+          };
+      }
+    | {
           type: EventType.StakingNavigate;
           payload: {
               action: 'navigate' | 'cancel';

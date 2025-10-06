@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -57,7 +58,15 @@ export const useTradingExchangeHandleChange = ({
         previousPromise.current = promise;
 
         try {
-            await promise.unwrap();
+            const quotes = await promise.unwrap();
+
+            analytics.report({
+                type: EventType.TradingReceivedQuotes,
+                payload: {
+                    type: 'exchange',
+                    count: quotes?.length ?? 0,
+                },
+            });
         } catch (error) {
             console.warn('Request was aborted:', error.message);
         }
