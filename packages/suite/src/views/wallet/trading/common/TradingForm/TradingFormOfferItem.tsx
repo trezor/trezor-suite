@@ -47,7 +47,7 @@ export const TradingFormOfferItem = ({
                     margin={{ vertical: spacings.xs }}
                     data-testid="trading-offer-found-none"
                 >
-                    <Translation id="TR_TRADING_OFFERS_EMPTY" />
+                    <Translation id="TR_BUY_SELL_OFFERS_EMPTY" />
                 </Paragraph>
             </Card>
         );
