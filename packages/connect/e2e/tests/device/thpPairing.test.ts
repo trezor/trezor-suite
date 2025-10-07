@@ -186,7 +186,7 @@ describe('THP pairing', () => {
     };
 
     // quarantined test. we are trying to fix it here https://github.com/trezor/trezor-suite/pull/22084
-    it.skip('ThpPairing cancel workflow', async () => {
+    it('ThpPairing cancel workflow', async () => {
         const device = await waitForDevice({
             pairingMethods: ['CodeEntry'],
             knownCredentials: [],
@@ -208,6 +208,9 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
         expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+
+        // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         // 3. reject pairing confirmation from Trezor
         TrezorConnect.removeAllListeners('ui-button');

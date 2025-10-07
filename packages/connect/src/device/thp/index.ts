@@ -15,11 +15,13 @@ export const getThpChannel = async (device: Device, withInteraction?: boolean) =
             try {
                 await thpHandshake(device);
             } catch (error) {
-                if (error.code === 'ThpDeviceLocked') {
-                    // Device is pin-locked, retry handshake with tryToUnlock param
+                const isPinLocked = error.message === 'ThpDeviceLocked';
+                const isTransportBusy = error.message === 'ThpTransportBusy';
+                if (isPinLocked || isTransportBusy) {
+                    // Device is pin-locked or busy, retry handshake (with tryToUnlock param)
                     thpState.resetState();
                     await createThpChannel(device);
-                    await thpHandshake(device, true);
+                    await thpHandshake(device, isPinLocked);
                 } else {
                     throw error;
                 }
