@@ -2,6 +2,7 @@ import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { BluetoothDeviceId, Device } from '@trezor/connect';
+import { isLinux } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
@@ -15,6 +16,11 @@ type BluetoothConnectDeviceThunkResult = {
     success: boolean;
     unpaired?: boolean;
 };
+
+// This is a terrible hotfix, should be removed. Problem is that even on Gnome or KDE, you get this error if you cancel BT pairing in OS dialog.
+// TODO #22272 shall be fixed in transport-bluetooth, or moving to Suite code so we can handle it better.
+const unsupportedLinuxEnvToast =
+    'Authentication failed. Try pairing the device manually via your system settings and restarting Trezor Suite.';
 
 export const bluetoothConnectDeviceThunk = createThunk<
     BluetoothConnectDeviceThunkResult,
@@ -43,12 +49,10 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: true }));
                 dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
             } else {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'error',
-                        error: result.error,
-                    }),
-                );
+                const isUnsupportedLinuxEnvError =
+                    isLinux() && result.error.includes('Authentication Failed');
+                const error = isUnsupportedLinuxEnvError ? unsupportedLinuxEnvToast : result.error;
+                dispatch(notificationsActions.addToast({ type: 'error', error }));
             }
 
             dispatch(stopConnectingBluetoothDevice({ deviceId }));
