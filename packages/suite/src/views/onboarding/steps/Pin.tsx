@@ -6,12 +6,8 @@ import TrezorConnect, { UI } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
-import {
-    OnboardingButtonCta,
-    OnboardingButtonSkip,
-    OnboardingStepBox,
-    SkipStepConfirmation,
-} from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PinMatrix } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
@@ -95,17 +91,17 @@ const SetPinStep = () => {
         // User entered 2 different PINs, show error and offer to try again
         // Used only on T1B1, T2T1 shows pins mismatch error on its display
         return (
-            <OnboardingStepBox
-                image="PIN"
+            <OnboardingCard
+                iconName="lockKey"
                 heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
                 data-testid="@pin-mismatch"
                 innerActions={
-                    <OnboardingButtonCta
+                    <OnboardingCard.Button
                         onClick={onTryAgain}
                         data-testid="@pin-mismatch/try-again-button"
                     >
                         <Translation id="TR_TRY_AGAIN" />
-                    </OnboardingButtonCta>
+                    </OnboardingCard.Button>
                 }
             />
         );
@@ -121,8 +117,8 @@ const SetPinStep = () => {
             {showSkipConfirmation && (
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
-            <OnboardingStepBox
-                image="PIN"
+            <OnboardingCard
+                iconName="lockKey"
                 heading={
                     <>
                         {status === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}
@@ -133,28 +129,29 @@ const SetPinStep = () => {
                 description={<Translation id="TR_PIN_SUBHEADING" />}
                 innerActions={
                     // "Create a pin" button to start the process, continue button after the pin is set (as outerAction), no primary CTA during the setup procedure on T2T1
-                    !showConfirmationPrompt ? (
-                        <OnboardingButtonCta
+                    !showConfirmationPrompt && (
+                        <OnboardingCard.Button
                             data-testid="@onboarding/set-pin-button"
                             onClick={createPin}
                         >
                             <Translation id="TR_SET_PIN" />
-                        </OnboardingButtonCta>
-                    ) : undefined
+                        </OnboardingCard.Button>
+                    )
                 }
                 outerActions={
                     // show skip button only if we are not done yet with setting up the pin (state is other than success state)
                     // and if confirmation prompt is not active (I guess there is no point showing back btn which can't be clicked because it is under the modal)
-                    !showConfirmationPrompt ? (
-                        <OnboardingButtonSkip
+                    !showConfirmationPrompt && (
+                        <OnboardingCard.SecondaryButton
                             data-testid="@onboarding/skip-button"
                             onClick={skipPin}
                         >
                             <Translation id="TR_SKIP" />
-                        </OnboardingButtonSkip>
-                    ) : undefined
+                        </OnboardingCard.SecondaryButton>
+                    )
                 }
-                device={showConfirmationPrompt ? device : undefined}
+                device={device}
+                isConfirmedOnDevice={!!showConfirmationPrompt}
                 isActionAbortable={status === 'initial' ? isActionAbortable : true}
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
@@ -166,7 +163,7 @@ const SetPinStep = () => {
                         </Button>
                     </Column>
                 )}
-            </OnboardingStepBox>
+            </OnboardingCard>
         </>
     );
 };

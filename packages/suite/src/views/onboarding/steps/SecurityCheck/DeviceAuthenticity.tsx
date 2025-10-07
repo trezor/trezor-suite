@@ -1,30 +1,21 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
-import { variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Card, Column, Grid, Icon, IconName, Paragraph } from '@trezor/components';
 
-import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
-import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
-import { DeviceAuthenticationExplainer } from 'src/components/suite';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-const StyledCard = styled(CollapsibleOnboardingCard)`
-    padding: ${spacingsPx.md};
-`;
-
-const StyledExplainer = styled(DeviceAuthenticationExplainer)`
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-template-columns: repeat(3, 1fr);
-    }
-`;
+const items: { icon: IconName; text: TranslationKey }[] = [
+    { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
+    { icon: 'cpu', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
+    { icon: 'listChecks', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
+];
 
 type DeviceAuthenticityProps = {
     goToNext: () => void;
@@ -37,6 +28,7 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const { isBelowTablet } = useLayoutSize();
 
     if (!device) return null;
 
@@ -96,7 +88,7 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
         const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';
 
         return (
-            <OnboardingButtonCta
+            <OnboardingCard.Button
                 onClick={handleClick}
                 isDisabled={isLoading}
                 isLoading={isLoading}
@@ -107,32 +99,48 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
                 }
             >
                 <Translation id={buttonText} />
-            </OnboardingButtonCta>
+            </OnboardingCard.Button>
         );
     };
 
     if (isCheckFailed) {
         return (
-            <StyledCard>
+            <Card paddingType="large">
                 <SecurityCheckFail
                     ctaSection={<AuthenticateDeviceSupportButton />}
                     text="TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT"
                 />
-            </StyledCard>
+            </Card>
         );
     }
 
     return (
-        <OnboardingStepBox
-            image="CHECK_SHIELD"
+        <OnboardingCard
+            iconName="shieldCheck"
             heading={<Translation id={getHeadingText()} />}
             description={getDescription()}
             innerActions={getInnerActions()}
             device={device}
-            disableConfirmWrapper={!isWaitingForConfirmation}
+            isConfirmedOnDevice={isWaitingForConfirmation}
             isActionAbortable
         >
-            {!isCheckSuccessful && <StyledExplainer horizontal />}
-        </OnboardingStepBox>
+            {!isCheckSuccessful && (
+                <Grid columns={isBelowTablet ? 1 : items.length} gap={48}>
+                    {items.map(({ icon, text }) => (
+                        <Column key={icon} gap={24} alignItems="center">
+                            <Icon name={icon} size={32} />
+                            <Paragraph
+                                variant="tertiary"
+                                typographyStyle="hint"
+                                align="center"
+                                textWrap="pretty"
+                            >
+                                <Translation id={text} />
+                            </Paragraph>
+                        </Column>
+                    ))}
+                </Grid>
+            )}
+        </OnboardingCard>
     );
 };

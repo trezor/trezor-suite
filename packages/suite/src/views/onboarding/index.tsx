@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { OnboardingLayout } from 'src/components/onboarding';
+import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';

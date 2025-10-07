@@ -1,22 +1,21 @@
-import {
-    OnboardingOption,
-    OnboardingStepBox,
-    OptionsDivider,
-    OptionsWrapper,
-} from 'src/components/onboarding';
+import { Flex } from '@trezor/components';
+
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
 import { Translation } from 'src/components/suite/Translation';
 import * as STEP from 'src/constants/onboarding/steps';
-import { useOnboarding } from 'src/hooks/suite';
+import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
 
 const CreateOrRecoverStep = () => {
     const { goToNextStep, addPath, updateAnalytics } = useOnboarding();
+    const { isBelowTablet } = useLayoutSize();
 
     return (
-        <OnboardingStepBox
-            image="WALLET"
+        <OnboardingCard
+            iconName="wallet"
             heading={<Translation id="TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION" />}
         >
-            <OptionsWrapper>
+            <Flex gap={24} direction={isBelowTablet ? 'column' : 'row'}>
                 <OnboardingOption
                     icon="plusCircle"
                     data-testid="@onboarding/path-create-button"
@@ -27,9 +26,8 @@ const CreateOrRecoverStep = () => {
                     }}
                     heading={<Translation id="TR_CREATE_WALLET" />}
                 />
-                <OptionsDivider />
                 <OnboardingOption
-                    icon="arrowCounterClockwise"
+                    icon="trezorBackup"
                     data-testid="@onboarding/path-recovery-button"
                     onClick={() => {
                         addPath(STEP.PATH_RECOVERY);
@@ -38,8 +36,8 @@ const CreateOrRecoverStep = () => {
                     }}
                     heading={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
                 />
-            </OptionsWrapper>
-        </OnboardingStepBox>
+            </Flex>
+        </OnboardingCard>
     );
 };
 

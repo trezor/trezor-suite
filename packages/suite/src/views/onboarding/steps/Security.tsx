@@ -1,11 +1,7 @@
 import { useState } from 'react';
 
-import {
-    OnboardingButtonCta,
-    OnboardingButtonSkip,
-    OnboardingStepBox,
-    SkipStepConfirmation,
-} from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding } from 'src/hooks/suite';
 
@@ -18,22 +14,22 @@ const SecurityStep = () => {
             {showSkipConfirmation && (
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
-            <OnboardingStepBox
-                image="FOLDER"
+            <OnboardingCard
+                iconName="check"
                 heading={<Translation id="TR_YOUR_WALLET_SUCCESSFULLY_CREATED" />}
                 description={<Translation id="TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION" />}
                 innerActions={
-                    <OnboardingButtonCta
+                    <OnboardingCard.Button
                         data-testid="@onboarding/create-backup-button"
                         onClick={() => {
                             goToNextStep();
                         }}
                     >
                         <Translation id="TR_CONTINUE_TO_BACKUP" />
-                    </OnboardingButtonCta>
+                    </OnboardingCard.Button>
                 }
                 outerActions={
-                    <OnboardingButtonSkip
+                    <OnboardingCard.SecondaryButton
                         data-testid="@onboarding/skip-backup"
                         onClick={() => {
                             setShowSkipConfirmation(true);
@@ -41,7 +37,7 @@ const SecurityStep = () => {
                         }}
                     >
                         <Translation id="TR_SKIP_BACKUP" />
-                    </OnboardingButtonSkip>
+                    </OnboardingCard.SecondaryButton>
                 }
             />
         </>

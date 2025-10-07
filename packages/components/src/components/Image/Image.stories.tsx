@@ -12,7 +12,7 @@ export default meta;
 
 export const Image: StoryObj<ImageProps> = {
     args: {
-        image: 'BACKUP',
+        image: 'TOUCH',
         imageSrc: undefined,
         ...getFramePropsStory(allowedImageFrameProps).args,
     },

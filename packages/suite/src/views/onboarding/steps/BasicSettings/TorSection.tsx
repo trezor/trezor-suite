@@ -1,6 +1,4 @@
-import styled from 'styled-components';
-
-import { Switch, variables } from '@trezor/components';
+import { Paragraph, Row, Switch } from '@trezor/components';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -9,30 +7,9 @@ import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { TorStatus } from 'src/types/suite';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
-const TorWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 16px;
-    margin-bottom: 12px;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-`;
-
-const Label = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-weight: 500;
-`;
-
-const SwitchWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-`;
-
-interface TorSectionProps {
+type TorSectionProps = {
     torStatus: TorStatus;
-}
+};
 
 export const TorSection = ({ torStatus }: TorSectionProps) => {
     const modalType = useSelector(selectModalType);
@@ -45,18 +22,16 @@ export const TorSection = ({ torStatus }: TorSectionProps) => {
     const handleChange = () => dispatch(toggleTor(!isTorEnabled, modalType));
 
     return (
-        <TorWrapper>
-            <Label>
-                <Translation id="TR_TOR_ENABLE_TITLE" />
-            </Label>
-            <SwitchWrapper>
-                <Switch
-                    data-testid="@onboarding/tor-switch"
-                    isChecked={isChecked}
-                    isDisabled={isTorLoading}
-                    onChange={handleChange}
-                />
-            </SwitchWrapper>
-        </TorWrapper>
+        <Row justifyContent="space-between" gap={48}>
+            <Paragraph variant="tertiary" typographyStyle="hint">
+                <Translation id="TR_TOR_DESCRIPTION" />
+            </Paragraph>
+            <Switch
+                data-testid="@onboarding/tor-switch"
+                isChecked={isChecked}
+                isDisabled={isTorLoading}
+                onChange={handleChange}
+            />
+        </Row>
     );
 };

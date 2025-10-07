@@ -1,4 +1,4 @@
-import { Button, Column, H3, Modal, Text } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { useDevice } from 'src/hooks/suite';
 
@@ -9,40 +9,30 @@ type LowBatteryModalProps = {
     onClose: () => void;
 };
 
-type LowBatteryModalHeadingProps = {
-    batteryLevel: number;
-};
-
-const LowBatteryModalHeading = ({ batteryLevel }: LowBatteryModalHeadingProps) => (
-    <Column>
-        <H3>
-            <Translation id="TR_CHARGE_TREZOR_BEFORE_CONTINUING" />
-        </H3>
-        <Text variant="tertiary" typographyStyle="hint">
-            <Translation
-                id="TR_BATTERY_LEVEL"
-                values={{
-                    level: batteryLevel,
-                }}
-            />
-        </Text>
-    </Column>
-);
-
 export const LowBatteryModal = ({ onClose, children }: LowBatteryModalProps) => {
     const { device } = useDevice();
+
     if (!device) return null;
 
-    const bateryLevel = typeof device?.features?.soc === 'number' ? device?.features.soc : 0;
+    const batteryLevel = typeof device?.features?.soc === 'number' ? device?.features.soc : 0;
 
     return (
         <Modal
-            heading={<LowBatteryModalHeading batteryLevel={bateryLevel} />}
+            heading={<Translation id="TR_CHARGE_TREZOR_BEFORE_CONTINUING" />}
+            description={
+                <Translation
+                    id="TR_BATTERY_LEVEL"
+                    values={{
+                        level: batteryLevel,
+                    }}
+                />
+            }
             onCancel={onClose}
+            variant="destructive"
             bottomContent={
-                <Button variant="destructive" onClick={onClose}>
+                <Modal.Button onClick={onClose}>
                     <Translation id="TR_GOT_IT" />
-                </Button>
+                </Modal.Button>
             }
         >
             {children}

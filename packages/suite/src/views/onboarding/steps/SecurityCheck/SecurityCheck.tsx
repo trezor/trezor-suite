@@ -14,6 +14,7 @@ import {
     Paragraph,
     Row,
     Text,
+    TextButton,
     Tooltip,
 } from '@trezor/components';
 import { models } from '@trezor/device-utils';
@@ -27,7 +28,7 @@ import {
 
 import { goto } from 'src/actions/suite/routerActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
+import { Hologram } from 'src/components/onboarding/Hologram';
 import { TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
@@ -193,9 +194,9 @@ const SecurityCheckContent = ({
                     {device?.name}
                     {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
                 </Paragraph>
-                <OnboardingButtonSkip onClick={toggleView}>
+                <TextButton variant="tertiary" size="small" isUnderlined onClick={toggleView}>
                     <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
-                </OnboardingButtonSkip>
+                </TextButton>
             </Column>
             <Divider margin={{ vertical: spacings.xxl }} />
             <Column gap={spacings.md}>

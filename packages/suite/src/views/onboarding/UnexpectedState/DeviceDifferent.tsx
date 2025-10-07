@@ -1,6 +1,4 @@
-import { Button } from '@trezor/components';
-
-import { OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding } from 'src/hooks/suite';
 
@@ -8,8 +6,7 @@ export const DeviceDifferent = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
 
     return (
-        <OnboardingStepBox
-            disableConfirmWrapper
+        <OnboardingCard
             heading={<Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING" />}
             description={
                 <>
@@ -19,7 +16,7 @@ export const DeviceDifferent = () => {
                 </>
             }
             innerActions={
-                <Button
+                <OnboardingCard.Button
                     onClick={() => {
                         resetOnboarding();
                         enableOnboardingReducer(true);
@@ -28,7 +25,7 @@ export const DeviceDifferent = () => {
                     data-testid="@onboarding/unexpected-state/is-same/start-over-button"
                 >
                     <Translation id="TR_START_AGAIN" />
-                </Button>
+                </OnboardingCard.Button>
             }
         />
     );

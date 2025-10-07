@@ -1,49 +1,8 @@
-import styled from 'styled-components';
-
-import { variables } from '@trezor/components';
+import { Column, Grid, Icon, Paragraph, RadioCard } from '@trezor/components';
 
 import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { BackupSeedCard } from './BackupSeedCard';
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-`;
-
-const Instructions = styled.div`
-    text-align: center;
-    margin: 16px 0 26px;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const Items = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        grid-template-columns: 1fr;
-    }
-`;
-
-const StyledBackupSeedCard = styled(BackupSeedCard)`
-    width: 30%;
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        width: 100%;
-
-        & + & {
-            margin-top: 10px;
-        }
-    }
-`;
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
 const items = [
     {
@@ -65,29 +24,33 @@ const items = [
 
 export const BackupSeedCards = () => {
     const backup = useSelector(state => state.backup);
-
     const dispatch = useDispatch();
+    const { isBelowTablet } = useLayoutSize();
 
     const isChecked = (key: ConfirmKey) => backup.userConfirmed.includes(key);
 
     return (
-        <Wrapper>
-            <Instructions>
+        <Column gap={16}>
+            <Paragraph typographyStyle="hint" variant="tertiary" align="center">
                 <Translation id="TR_ONBOARDING_CLICK_TO_CONFIRM" />
-            </Instructions>
-            <Items>
+            </Paragraph>
+            <Grid columns={isBelowTablet ? 1 : 3} gap={16}>
                 {items.map(item => (
-                    <StyledBackupSeedCard
-                        // TODO: change data-test, checkbox keys to something more generic, independent of actual content
-                        data-testid={`@backup/check-item/${item.key}`}
+                    <RadioCard
                         key={item.key}
+                        isActive={isChecked(item.key)}
                         onClick={() => dispatch(toggleCheckboxByKey(item.key))}
-                        label={item.label}
-                        icon={item.icon}
-                        isChecked={isChecked(item.key)}
-                    />
+                        dataTestId={`@backup/check-item/${item.key}`}
+                    >
+                        <Column gap={16}>
+                            <Icon name={item.icon} />
+                            <Paragraph typographyStyle="hint" variant="tertiary" textWrap="pretty">
+                                {item.label}
+                            </Paragraph>
+                        </Column>
+                    </RadioCard>
                 ))}
-            </Items>
-        </Wrapper>
+            </Grid>
+        </Column>
     );
 };

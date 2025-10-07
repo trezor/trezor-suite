@@ -29,17 +29,17 @@ const Steps = styled.div`
 
 const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
     {
-        image: 'COINS',
+        iconName: 'coins',
         title: <Translation id="TR_COINJOIN_STEP_1_TITLE" />,
         description: <Translation id="TR_COINJOIN_STEP_1_DESCRIPTION" />,
     },
     {
-        image: 'BACKUP',
+        iconName: 'trezorBackup',
         title: <Translation id="TR_START_COINJOIN" />,
         description: <Translation id="TR_COINJOIN_STEP_2_DESCRIPTION" />,
     },
     {
-        image: 'CLOUDY',
+        iconName: 'arrowsIn',
         title: <Translation id="TR_COINJOIN_STEP_3_TITLE" />,
         description: <Translation id="TR_COINJOIN_STEP_3_DESCRIPTION" />,
     },
@@ -54,7 +54,7 @@ export const CoinjoinExplanation = () => (
 
         <Steps>
             {STEPS.map((step, index) => (
-                <CoinjoinProcessStep number={index + 1} key={step.image} {...step} />
+                <CoinjoinProcessStep number={index + 1} key={step.iconName} {...step} />
             ))}
         </Steps>
     </Card>

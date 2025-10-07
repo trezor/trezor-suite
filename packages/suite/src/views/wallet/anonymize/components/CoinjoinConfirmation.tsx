@@ -74,17 +74,17 @@ const tiles: TileProps[] = [
     {
         title: <Translation id="TR_COINJOIN_TILE_1_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_1_DESCRIPTION" />,
-        image: 'CLOCK',
+        iconName: 'clock',
     },
     {
         title: <Translation id="TR_COINJOIN_TILE_2_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_2_DESCRIPTION" />,
-        image: 'FIRMWARE',
+        iconName: 'circuitry',
     },
     {
         title: <Translation id="TR_COINJOIN_TILE_3_TITLE" />,
         description: <Translation id="TR_COINJOIN_TILE_3_DESCRIPTION" />,
-        image: 'PIN_LOCKED',
+        iconName: 'lockKey',
     },
 ];
 
@@ -138,7 +138,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                 </TopRow>
                 <Tiles>
                     {tiles.map(tile => (
-                        <Tile key={tile.image} {...tile} />
+                        <Tile key={tile.iconName} {...tile} />
                     ))}
                 </Tiles>
                 <FeeWrapper>

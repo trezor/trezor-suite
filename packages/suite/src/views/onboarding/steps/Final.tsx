@@ -1,103 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import useMeasure from 'react-use/lib/useMeasure';
-import styled, { css } from 'styled-components';
-
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
-import { Button, Menu, Popover, PopoverRef, Tooltip, variables } from '@trezor/components';
+import {
+    Box,
+    Button,
+    Column,
+    Divider,
+    Flex,
+    H2,
+    Menu,
+    Popover,
+    PopoverRef,
+    Row,
+    Tooltip,
+} from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacingsPx, typography } from '@trezor/theme';
 
-import { OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { HomescreenGallery } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
 import { Translation } from 'src/components/suite/Translation';
 import { getHomescreens } from 'src/constants/suite/homescreens';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
-
-const Content = styled.div`
-    flex-direction: column;
-    flex: 1;
-    display: flex;
-`;
-
-const DeviceImageWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 400px;
-    height: 400px;
-    margin: 0 ${spacingsPx.lg} 0 -60px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin: 0;
-        width: 200px;
-        height: 320px;
-    }
-`;
-
-const Heading = styled.div`
-    ${typography.titleLarge}
-    margin-bottom: ${spacingsPx.xxl};
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        ${typography.titleMedium}
-    }
-`;
-
-const SetupActions = styled.div`
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: ${spacingsPx.xxl};
-    padding-bottom: ${spacingsPx.xxl};
-    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    width: fit-content;
-    gap: ${spacingsPx.md};
-    flex-flow: row wrap;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const EnterSuiteButton = styled(Button)`
-    height: 64px;
-    min-width: 280px;
-    align-self: flex-start;
-    justify-content: space-between;
-    padding-left: ${spacingsPx.xl};
-    padding-right: ${spacingsPx.xl};
-`;
-
-const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
-    display: flex;
-    width: 100%;
-    align-items: center;
-
-    ${({ $shouldWrap }) =>
-        $shouldWrap &&
-        css`
-            padding: 0;
-            margin: 0;
-            flex-direction: column;
-
-            ${DeviceImageWrapper} {
-                margin: 0 0 ${spacingsPx.lg};
-            }
-
-            ${Heading} {
-                text-align: center;
-            }
-        `}
-`;
 
 export const FinalStep = () => {
     const { goToSuite } = useOnboarding();
     const popoverRef = useRef<PopoverRef>(undefined);
     const dispatch = useDispatch();
+    const { isBelowTablet } = useLayoutSize();
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
@@ -111,8 +48,6 @@ export const FinalStep = () => {
     const isWaitingForConfirm = modalContext === '@modal/context-device';
 
     const { form, handleSubmit } = useChangeDeviceLabel();
-
-    const [wrapperRef, { width }] = useMeasure<HTMLDivElement>();
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -162,26 +97,28 @@ export const FinalStep = () => {
     const hasGallery = getHomescreens(isBitcoinOnlyFirmware)[deviceModelInternal].length > 0;
 
     return (
-        <OnboardingStepBox
+        <OnboardingCard
             data-testid="@onboarding/final"
-            device={isWaitingForConfirm ? device : undefined}
+            device={device}
+            isConfirmedOnDevice={isWaitingForConfirm}
             isActionAbortable={isActionAbortable}
+            padding={{ horizontal: 24, top: 16, bottom: 0 }}
         >
-            <Wrapper ref={wrapperRef} $shouldWrap={width < 650}>
-                <DeviceImageWrapper>
+            <Flex gap={24} alignItems="center" direction={isBelowTablet ? 'column' : 'row'}>
+                <Box>
                     <DeviceAnimation
                         type="SUCCESS"
                         height="400px"
                         width="400px"
                         deviceModelInternal={deviceModelInternal}
                     />
-                </DeviceImageWrapper>
-                <Content>
-                    <Heading>
+                </Box>
+                <Column gap={32} alignItems={isBelowTablet ? 'center' : 'flex-start'}>
+                    <H2>
                         <Translation id="TR_FINAL_HEADING" />
-                    </Heading>
+                    </H2>
                     {!state && (
-                        <SetupActions>
+                        <Row gap={12}>
                             <Button
                                 variant="tertiary"
                                 size="small"
@@ -231,20 +168,18 @@ export const FinalStep = () => {
                                     </Popover>
                                 </Tooltip>
                             )}
-                        </SetupActions>
+                        </Row>
                     )}
                     {state === 'rename' && (
-                        <SetupActions>
-                            <FormProvider {...form}>
-                                <ChangeDeviceLabelForm
-                                    isDeviceLocked={isDeviceLocked}
-                                    onClick={handleRename}
-                                />
-                            </FormProvider>
-                        </SetupActions>
+                        <FormProvider {...form}>
+                            <ChangeDeviceLabelForm
+                                isDeviceLocked={isDeviceLocked}
+                                onClick={handleRename}
+                            />
+                        </FormProvider>
                     )}
-
-                    <EnterSuiteButton
+                    <Divider />
+                    <Button
                         variant="primary"
                         data-testid="@onboarding/exit-app-button"
                         onClick={handleGoToSuite}
@@ -252,11 +187,12 @@ export const FinalStep = () => {
                         iconAlignment="end"
                         isDisabled={isWaitingForConfirm}
                         size="large"
+                        minWidth={180}
                     >
                         <Translation id="TR_GO_TO_SUITE" />
-                    </EnterSuiteButton>
-                </Content>
-            </Wrapper>
-        </OnboardingStepBox>
+                    </Button>
+                </Column>
+            </Flex>
+        </OnboardingCard>
     );
 };

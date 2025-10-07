@@ -5,37 +5,22 @@ import styled from 'styled-components';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
-import { Column, Note, variables } from '@trezor/components';
+import { ButtonProps, Column, Note, Row, Tooltip, variables } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
-import {
-    FirmwareInstallButton,
-    FirmwareOffer,
-    FirmwareWarningsList,
-} from 'src/components/firmware';
-import {
-    OnboardingButtonSkip,
-    OnboardingStepBox,
-    SkipStepConfirmation,
-} from 'src/components/onboarding';
+import { FirmwareOffer, FirmwareWarningsList } from 'src/components/firmware';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useOnboarding, useSelector, useTranslation } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { PrerequisitesGuide } from '../suite';
-import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareLowBatteryModal } from './FirmwareLowBatteryModal';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
-
-const Description = styled.div`
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-`;
 
 const TextButton = styled.button`
     background: none;
@@ -68,12 +53,31 @@ const EmphasizedText = styled.b`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-interface GetDescriptionProps {
+const InstallButton = ({ isDisabled, onClick, variant, children }: ButtonProps) => (
+    <Tooltip
+        cursor="default"
+        isActive={isDisabled}
+        maxWidth={200}
+        placement="bottom"
+        content={<Translation id="TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES" />}
+    >
+        <OnboardingCard.Button
+            variant={variant}
+            onClick={onClick}
+            isDisabled={isDisabled}
+            data-testid="@firmware/install-button"
+        >
+            {children}
+        </OnboardingCard.Button>
+    </Tooltip>
+);
+
+type GetDescriptionProps = {
     required: boolean;
     targetType: FirmwareType;
     shouldSwitchFirmwareType?: boolean;
     isBitcoinOnlyAvailable?: boolean;
-}
+};
 
 const getDescription = ({
     required,
@@ -119,6 +123,7 @@ type FirmwareInitialProps = {
     onClose?: () => void;
 };
 
+// TODO: consolidate with FirmwareInitialStandalone
 export const FirmwareInitial = ({
     shouldSwitchFirmwareType = false,
     onClose,
@@ -188,25 +193,25 @@ export const FirmwareInitial = ({
                 />
             ),
             description: (
-                <Description>
+                <Column alignItems="center" gap={12}>
                     <Translation id="TR_FIRMWARE_SUBHEADING_BITCOIN" />
                     <Note>
                         <Translation id="TR_CHANGE_FIRMWARE_TYPE_ANYTIME" />
                     </Note>
-                </Description>
+                </Column>
             ),
             body: (
-                <Column gap={32}>
+                <Column gap={32} alignItems="center">
                     <FirmwareOffer targetFirmwareType={FirmwareType.BitcoinOnly} />
                     <FirmwareWarningsList />
                 </Column>
             ),
             innerActions: (
-                <FirmwareButtonsRow>
-                    <FirmwareInstallButton
+                <Row gap={16}>
+                    <InstallButton
                         variant="tertiary"
                         onClick={() => installFirmware(FirmwareType.Universal)}
-                        multipleDevicesConnected={multipleDevicesConnected}
+                        isDisabled={multipleDevicesConnected}
                     >
                         <Translation
                             id="TR_INSTALL_REGULAR"
@@ -214,11 +219,10 @@ export const FirmwareInitial = ({
                                 regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
                             }}
                         />
-                    </FirmwareInstallButton>
-
-                    <FirmwareInstallButton
+                    </InstallButton>
+                    <InstallButton
                         onClick={() => installFirmware(targetType)}
-                        multipleDevicesConnected={multipleDevicesConnected}
+                        isDisabled={multipleDevicesConnected}
                     >
                         <Translation
                             id="TR_INSTALL_BITCOIN_ONLY"
@@ -226,8 +230,8 @@ export const FirmwareInitial = ({
                                 bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
                             }}
                         />
-                    </FirmwareInstallButton>
-                </FirmwareButtonsRow>
+                    </InstallButton>
+                </Row>
             ),
         };
     } else if (['none', 'unknown'].includes(device.firmware)) {
@@ -252,16 +256,18 @@ export const FirmwareInitial = ({
                 />
             ),
             body: (
-                <Column gap={32}>
+                <Column gap={32} alignItems="center">
                     <FirmwareOffer targetFirmwareType={targetType} />
                     <FirmwareWarningsList />
                 </Column>
             ),
             innerActions: (
-                <FirmwareInstallButton
+                <InstallButton
                     onClick={() => installFirmware(targetType)}
-                    multipleDevicesConnected={multipleDevicesConnected}
-                />
+                    isDisabled={multipleDevicesConnected}
+                >
+                    <Translation id="TR_INSTALL" />
+                </InstallButton>
             ),
         };
     } else if (device.mode === 'bootloader') {
@@ -320,7 +326,7 @@ export const FirmwareInitial = ({
                 />
             ),
             body: (
-                <Column gap={32}>
+                <Column gap={32} alignItems="center">
                     {deviceWillBeWiped && (
                         <WarningListWrapper>
                             <Important>
@@ -345,20 +351,25 @@ export const FirmwareInitial = ({
                 </Column>
             ),
             innerActions: (
-                <FirmwareButtonsRow withCancelButton={deviceWillBeWiped} onClose={onClose}>
-                    <FirmwareInstallButton
+                <Row gap={16}>
+                    <InstallButton
                         onClick={() =>
                             shouldCheckSeed ? setStatus('check-seed') : installFirmware(targetType)
                         }
-                        multipleDevicesConnected={multipleDevicesConnected}
+                        isDisabled={multipleDevicesConnected}
                     >
                         <Translation id={deviceWillBeWiped ? 'TR_CONTINUE' : 'TR_INSTALL'} />
-                    </FirmwareInstallButton>
-                </FirmwareButtonsRow>
+                    </InstallButton>
+                    {deviceWillBeWiped && onClose && (
+                        <OnboardingCard.Button onClick={onClose} variant="tertiary">
+                            <Translation id="TR_CLOSE" />
+                        </OnboardingCard.Button>
+                    )}
+                </Row>
             ),
             outerActions:
                 device.firmware === 'outdated' && !isFirmwareInstallationMandatory ? (
-                    <OnboardingButtonSkip
+                    <OnboardingCard.SecondaryButton
                         onClick={() => {
                             setShowSkipConfirmation(true);
                             updateAnalytics({ firmware: 'skip' });
@@ -366,7 +377,7 @@ export const FirmwareInitial = ({
                         data-testid="@firmware/skip-button"
                     >
                         <Translation id="TR_SKIP_UPDATE" />
-                    </OnboardingButtonSkip>
+                    </OnboardingCard.SecondaryButton>
                 ) : undefined,
         };
     }
@@ -377,8 +388,8 @@ export const FirmwareInitial = ({
                 {showSkipConfirmation && (
                     <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
                 )}
-                <OnboardingStepBox
-                    image="FIRMWARE"
+                <OnboardingCard
+                    iconName="circuitry"
                     heading={content.heading}
                     description={content.description}
                     innerActions={content.innerActions}
@@ -386,7 +397,7 @@ export const FirmwareInitial = ({
                     isActionAbortable={false}
                 >
                     {content.body}
-                </OnboardingStepBox>
+                </OnboardingCard>
             </>
         );
     }

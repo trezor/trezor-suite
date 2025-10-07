@@ -9,9 +9,9 @@ import { DeviceDifferent } from './DeviceDifferent';
 import { ShowPinMatrix } from './ShowPinMatrix';
 import { DeviceDisconnectedStep } from '../steps/DeviceDisconnectedStep';
 
-interface UnexpectedStateProps {
+type UnexpectedStateProps = {
     children: JSX.Element;
-}
+};
 
 /**
  * This component handles unexpected device states across various steps in the onboarding.

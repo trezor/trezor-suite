@@ -1,6 +1,6 @@
 import { HTMLAttributes, ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Icon, IconName, useElevation, variables } from '@trezor/components';
 import {
@@ -49,24 +49,6 @@ const Description = styled.span`
 
 const IconWrapper = styled.div`
     margin-right: 24px;
-`;
-
-export const OptionsWrapper = styled.div<{ $fullWidth?: boolean }>`
-    display: flex;
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-
-    ${props =>
-        props.$fullWidth !== false &&
-        css`
-            width: 100%;
-        `}
-`;
-
-export const OptionsDivider = styled.div`
-    flex: 0 0 24px;
 `;
 
 interface OnboardingOptionProps extends HTMLAttributes<HTMLDivElement> {

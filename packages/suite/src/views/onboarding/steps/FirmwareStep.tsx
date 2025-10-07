@@ -9,12 +9,10 @@ import { exhaustive } from '@trezor/type-utils';
 import { MODAL } from 'src/actions/suite/constants';
 import {
     Fingerprint,
-    FirmwareContinueButton,
     FirmwareInitial,
     FirmwareInstallationProgressCheck,
-    FirmwareRetryButton,
 } from 'src/components/firmware';
-import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
@@ -63,26 +61,35 @@ export const FirmwareStep = () => {
     if (showFingerprintCheck && device) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
         return (
-            <OnboardingStepBox
-                image="FIRMWARE"
+            <OnboardingCard
+                iconName="circuitry"
                 heading={<Translation id="TR_CHECK_FINGERPRINT" />}
                 device={device}
                 isActionAbortable={false}
+                isConfirmedOnDevice
             >
                 <Fingerprint device={device} />
-            </OnboardingStepBox>
+            </OnboardingCard>
         );
     }
 
     // edge case 1 - Installation failed
     if (status === 'error') {
         return (
-            <OnboardingStepBox
-                image="FIRMWARE"
+            <OnboardingCard
+                iconName="circuitry"
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                innerActions={<FirmwareRetryButton onClick={install} />}
-                outerActions={<OnboardingButtonBack onClick={() => resetReducer()} />}
+                innerActions={
+                    <OnboardingCard.Button onClick={install} data-testid="@firmware/retry-button">
+                        <Translation id="TR_RETRY" />
+                    </OnboardingCard.Button>
+                }
+                outerActions={
+                    <OnboardingCard.SecondaryButton onClick={() => resetReducer()}>
+                        <Translation id="TR_BACK" />
+                    </OnboardingCard.SecondaryButton>
+                }
             />
         );
     }
@@ -98,8 +105,8 @@ export const FirmwareStep = () => {
         const firmwareType = getSuiteFirmwareTypeString(device.firmwareType);
 
         return (
-            <OnboardingStepBox
-                image="FIRMWARE"
+            <OnboardingCard
+                iconName="circuitry"
                 heading={<Translation id="TR_FIRMWARE_IS_UP_TO_DATE" />}
                 description={
                     <Translation
@@ -118,12 +125,15 @@ export const FirmwareStep = () => {
                     />
                 }
                 innerActions={
-                    <FirmwareContinueButton
+                    <OnboardingCard.Button
+                        data-testid="@firmware/continue-button"
                         onClick={() => {
                             goToNextStep();
                             updateAnalytics({ firmware: 'up-to-date' });
                         }}
-                    />
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </OnboardingCard.Button>
                 }
             />
         );
@@ -172,7 +182,7 @@ export const FirmwareStep = () => {
         case 'done': // This is shown only for NON-THP devices, THP device goes directly to the next step after successful THP pairing
             if (isProgressCheckDisplayed) {
                 return (
-                    <Card>
+                    <Card paddingType="large">
                         <FirmwareInstallationProgressCheck
                             handleDismiss={handleDismissProgressCheck}
                         />

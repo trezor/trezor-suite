@@ -8,7 +8,7 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { GuideButton, GuideRouter } from 'src/components/guide';
-import { OnboardingProgressBar } from 'src/components/onboarding';
+import { OnboardingProgressBar } from 'src/components/onboarding/OnboardingProgressBar';
 import { Translation } from 'src/components/suite/Translation';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
@@ -37,7 +37,7 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
     const { onCancelHandler } = useOnboardingCancelButtonContext();
 
     return (
-        <Column gap={24}>
+        <Column gap={60}>
             <Column gap={48}>
                 <Row justifyContent="space-between">
                     <SmallDeviceItem />

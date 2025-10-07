@@ -33,6 +33,7 @@ export const allowedTextFrameProps = [
     'margin',
     'maxWidth',
     'minWidth',
+    'width',
     'flex',
     'position',
     'zIndex',

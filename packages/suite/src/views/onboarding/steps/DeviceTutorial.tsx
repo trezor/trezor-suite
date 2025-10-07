@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column } from '@trezor/components';
+import { IconName } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingActions';
-import { OnboardingStepBox } from 'src/components/onboarding';
-import { DeviceConfirmImage } from 'src/components/suite';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
@@ -26,28 +27,26 @@ export const DeviceTutorial = () => {
     const handleSkipClick = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     return (
-        <OnboardingStepBox
-            heading={
-                <Column justifyContent="center" alignItems="center" gap={40}>
-                    <DeviceConfirmImage device={device} height={200} />
-                    <Translation id="TR_TREZOR_DEVICE_TUTORIAL_HEADING" />
-                </Column>
-            }
+        <OnboardingCard
+            heading={<Translation id="TR_TREZOR_DEVICE_TUTORIAL_HEADING" />}
             description={<Translation id="TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION" />}
             device={device}
+            iconName={
+                `${mapTrezorModelToIcon[device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL]}Filled` as IconName
+            }
             innerActions={
                 isActionAbortable && (
-                    <Button
+                    <OnboardingCard.Button
                         data-testid="@tutorial/skip-button"
                         variant="tertiary"
-                        size="small"
                         onClick={handleSkipClick}
                     >
                         <Translation id="TR_SKIP" />
-                    </Button>
+                    </OnboardingCard.Button>
                 )
             }
-            devicePromptTitle={<Translation id="TR_CONTINUE_ON_TREZOR" />}
+            devicePrompt={<Translation id="TR_CONTINUE_ON_TREZOR" />}
+            isConfirmedOnDevice
         />
     );
 };

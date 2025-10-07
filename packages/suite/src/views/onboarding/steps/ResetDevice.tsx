@@ -1,32 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import styled from 'styled-components';
-
 import { BackupType } from '@suite-common/suite-types';
 import { selectDeviceDefaultBackupType, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Divider, Text, Tooltip } from '@trezor/components';
+import { Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
-import { OnboardingButtonBack, OnboardingStepBox, OptionsWrapper } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 import { SelectBackupType, isShamirBackupType } from './SelectBackupType/SelectBackupType';
-
-const SelectWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-`;
-
-const ButtonWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-`;
 
 const canChooseBackupType = (device: DeviceModelInternal) => device !== DeviceModelInternal.T1B1;
 
@@ -121,8 +107,8 @@ export const ResetDeviceStep = () => {
     };
 
     return (
-        <OnboardingStepBox
-            image="KEY"
+        <OnboardingCard
+            iconName="wallet"
             heading={<Translation id="TR_ONBOARDING_CREATE_NEW_WALLET" />}
             description={
                 canChoseBackupType ? (
@@ -137,59 +123,38 @@ export const ResetDeviceStep = () => {
                     <Translation id="TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE" />
                 )
             }
-            device={isWaitingForConfirmation ? device : undefined}
+            device={device}
             isActionAbortable={isActionAbortable}
+            isConfirmedOnDevice={isWaitingForConfirmation}
+            innerActions={
+                !isWaitingOnDevice && (
+                    <OnboardingCard.Button
+                        isDisabled={isDeviceLocked}
+                        onClick={() => handleSubmit(backupType)}
+                        data-testid="@onboarding/select-seed-type-confirm"
+                    >
+                        <Translation id="TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM" />
+                    </OnboardingCard.Button>
+                )
+            }
             outerActions={
-                isWaitingOnDevice && (
+                !isWaitingOnDevice && (
                     // There is no point to show back button if user can't click it because confirmOnDevice bubble is active
-                    <OnboardingButtonBack onClick={() => goToPreviousStep()} />
+                    <OnboardingCard.SecondaryButton onClick={() => goToPreviousStep()}>
+                        <Translation id="TR_BACK" />
+                    </OnboardingCard.SecondaryButton>
                 )
             }
         >
-            {!isWaitingOnDevice ? (
-                <OptionsWrapper $fullWidth={true}>
-                    <SelectWrapper>
-                        {canChoseBackupType && (
-                            <>
-                                <Tooltip
-                                    isActive={isDeviceLocked}
-                                    content={
-                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                    }
-                                >
-                                    <SelectBackupType
-                                        selected={backupType}
-                                        onOpen={() =>
-                                            updateAnalytics({ wasSelectTypeOpened: true })
-                                        }
-                                        onSelect={setBackupType}
-                                        isDisabled={isDeviceLocked}
-                                        data-testid="@onboarding/select-seed-type-open-dialog"
-                                    />
-                                </Tooltip>
-                                <Divider />
-                            </>
-                        )}
-                        <ButtonWrapper>
-                            <Tooltip
-                                isActive={isDeviceLocked}
-                                content={
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                }
-                            >
-                                <Button
-                                    variant="primary"
-                                    isDisabled={isDeviceLocked}
-                                    onClick={() => handleSubmit(backupType)}
-                                    data-testid="@onboarding/select-seed-type-confirm"
-                                >
-                                    <Translation id="TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM" />
-                                </Button>
-                            </Tooltip>
-                        </ButtonWrapper>
-                    </SelectWrapper>
-                </OptionsWrapper>
-            ) : undefined}
-        </OnboardingStepBox>
+            {!isWaitingOnDevice && canChoseBackupType && (
+                <SelectBackupType
+                    selected={backupType}
+                    onOpen={() => updateAnalytics({ wasSelectTypeOpened: true })}
+                    onSelect={setBackupType}
+                    isDisabled={isDeviceLocked}
+                    data-testid="@onboarding/select-seed-type-open-dialog"
+                />
+            )}
+        </OnboardingCard>
     );
 };
