@@ -1056,6 +1056,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "Tor external port",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "Use Tor daemon running in an external process instead of the one bundled with Trezor Suite.",
   "TR_EXPLORER": "Explorer",
+  "TR_EXPLORER_ACCOUNT": "Account",
   "TR_EXPLORER_ADDRESS": "Address",
   "TR_EXPLORER_BASE_URL": "Root URL",
   "TR_EXPLORER_CUSTOM": "Custom explorer",
