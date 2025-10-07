@@ -288,7 +288,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "Adresse fortlaufend (bc1wetes...v54d8d) oder mit Leerzeichen (bc1w etes ... v54d 8d) anzeigen.",
   "TR_ADDRESS_MODAL_CLIPBOARD": "Adresse kopieren",
   "TR_ADDRESS_MODAL_TITLE": "Empfängeradresse auf {networkName} Netzwerk",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkCurrencyName} Empfängeradresse auf dem {networkName} Netzwerk",
   "TR_ADDRESS_PHISHING_WARNING": "Um Phishing-Angriffe zu verhindern, verifiziere die Empfängeradresse auf deinem Trezor. {claim}",
   "TR_ADD_ACCOUNT": "Konto hinzufügen",
   "TR_ADD_HIDDEN_WALLET": "Passphrase Wallet",
