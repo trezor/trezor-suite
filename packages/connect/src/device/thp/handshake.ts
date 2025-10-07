@@ -127,6 +127,17 @@ export const thpHandshake = async (device: Device, unlockPin = false) => {
         encryptedPayload: handshakeCredentials.encryptedPayload,
     });
 
+    if (!handshakeCompletion.message.state && handshakeCredentials.credentials) {
+        // Known credentials was used but not accepted by device -> throw them away
+        thpState.removePairingCredential(handshakeCredentials.credentials);
+
+        const { credential } = handshakeCredentials.credentials;
+        const index = settings?.knownCredentials?.findIndex(c => c.credential === credential) ?? -1;
+        if (index >= 0) {
+            settings?.knownCredentials?.splice(index, 1);
+        }
+    }
+
     thpState.setIsPaired(!!handshakeCompletion.message.state);
     thpState.setPhase('pairing');
 
