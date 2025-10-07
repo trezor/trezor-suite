@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
+import { BrowserContext, Page, TestInfo, test as base, mergeTests } from '@playwright/test';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
@@ -12,6 +12,7 @@ import {
     mockRemoteMessageSystem,
 } from '../common';
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
+import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
 import { getModelFromEnv } from '../helpers/modelFromEnv';
@@ -137,10 +138,12 @@ const trezorEnvSetup = async (
     }
 };
 
+// We first add currents fixtures to ensure current initialize first and quarantine works even for fails in beforeEach
+const baseWithCurrents = mergeTests(base, currentsTest);
 // This is the base Suite text fixture containing all the necessary setup and core page object
 // Depending on the project type (desktop or web) it will launch the appropriate environment
 // and provide the necessary page object which is either electron window or web page
-const suiteBaseTest = base.extend<suiteBaseFixture>({
+const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
     emulatorStartConf: { model: getModelFromEnv(), wipe: true },
