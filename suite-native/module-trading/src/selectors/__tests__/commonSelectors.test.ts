@@ -162,8 +162,14 @@ describe('commonSelectors', () => {
             );
         });
 
-        it('should correctly select that exchange is not enabled if remote feature is not enabled', () => {
-            expect(selectIsTradingExchangeEnabled(getPreloadedState({}))).toBe(false);
+        it('should correctly select that exchange is disabled if remote feature is disabled', () => {
+            expect(selectIsTradingExchangeEnabled(getPreloadedState({ exchange: false }))).toBe(
+                false,
+            );
+        });
+
+        it('should correctly select that exchange is enabled if remote feature is not set', () => {
+            expect(selectIsTradingExchangeEnabled(getPreloadedState({}))).toBe(true);
         });
     });
 
@@ -186,8 +192,10 @@ describe('commonSelectors', () => {
             expect(selectIsTradingEnabled(getPreloadedState({}))).toBe(true);
         });
 
-        it('should correctly select that trading is not enabled when buy is disabled (and other flags are not set)', () => {
-            expect(selectIsTradingEnabled(getPreloadedState({ buy: false }))).toBe(false);
+        it('should correctly select that trading is not enabled when buy and exchange are disabled (and sell is not set)', () => {
+            expect(selectIsTradingEnabled(getPreloadedState({ buy: false, exchange: false }))).toBe(
+                false,
+            );
         });
     });
 

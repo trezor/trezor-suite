@@ -1,4 +1,3 @@
-import { FeatureFlag } from '@suite-native/feature-flags';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { ExchangeTab } from '../ExchangeTab';
@@ -6,6 +5,7 @@ import { ExchangeTab } from '../ExchangeTab';
 let mockIsDeviceInViewOnlyMode = false;
 let mockIsPortfolioTrackerDevice = false;
 let mockHasBitcoinOnlyFirmware = false;
+let mockIsTradingExchangeEnabled = true;
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -22,6 +22,11 @@ jest.mock('../../../hooks/exchange/useExchangeData', () => ({
     }),
 }));
 
+jest.mock('../../../selectors/commonSelectors', () => ({
+    ...jest.requireActual('../../../selectors/commonSelectors'),
+    selectIsTradingExchangeEnabled: () => mockIsTradingExchangeEnabled,
+}));
+
 describe('ExchangeTab', () => {
     const renderExchangeTab = (preloadedState: PreloadedState = {}) =>
         renderWithStoreProviderAsync(<ExchangeTab />, { preloadedState });
@@ -30,37 +35,27 @@ describe('ExchangeTab', () => {
         mockIsDeviceInViewOnlyMode = false;
         mockIsPortfolioTrackerDevice = false;
         mockHasBitcoinOnlyFirmware = false;
+        mockIsTradingExchangeEnabled = true;
     });
 
     it('should render exchange form', async () => {
-        const { getByText } = await renderExchangeTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingExchangeEnabled]: true,
-            },
-        });
+        const { getByText } = await renderExchangeTab();
 
         expect(getByText('You pay')).toBeOnTheScreen();
         expect(getByText('You get')).toBeOnTheScreen();
     });
 
     it('should render disabled info when exchange FF is not enabled', async () => {
-        const { getByText, queryByText } = await renderExchangeTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingExchangeEnabled]: false,
-            },
-        });
+        mockIsTradingExchangeEnabled = false;
+        const { getByText, queryByText } = await renderExchangeTab();
 
-        expect(queryByText('Exchange Tab placeholder')).toBeNull();
         expect(getByText('Swap disabled')).toBeOnTheScreen();
+        expect(queryByText('You pay')).toBeNull();
     });
 
     it('should display BTC only firmware info with BTC only wallet connected', async () => {
         mockHasBitcoinOnlyFirmware = true;
-        const { getByText } = await renderExchangeTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingExchangeEnabled]: true,
-            },
-        });
+        const { getByText } = await renderExchangeTab();
 
         expect(getByText('Bitcoin-only firmware')).toBeOnTheScreen();
     });
@@ -69,11 +64,7 @@ describe('ExchangeTab', () => {
         // Portfolio Tracker sets both selectors to true
         mockIsPortfolioTrackerDevice = true;
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText, queryByText } = await renderExchangeTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingExchangeEnabled]: true,
-            },
-        });
+        const { getByText, queryByText } = await renderExchangeTab();
 
         expect(getByText('Portfolio Tracker')).toBeOnTheScreen();
         expect(queryByText('View-only wallet')).toBeNull();
@@ -81,11 +72,7 @@ describe('ExchangeTab', () => {
 
     it('should display View-only info with view-only wallet', async () => {
         mockIsDeviceInViewOnlyMode = true;
-        const { getByText } = await renderExchangeTab({
-            featureFlags: {
-                [FeatureFlag.IsTradingExchangeEnabled]: true,
-            },
-        });
+        const { getByText } = await renderExchangeTab();
 
         expect(getByText('View-only wallet')).toBeOnTheScreen();
     });

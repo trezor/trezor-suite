@@ -83,7 +83,7 @@ export const selectIsTradingExchangeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
 ) =>
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingExchangeEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.exchange, false);
+    selectIsFeatureEnabled(state, Feature.trading.exchange, true);
 
 export const selectIsTradingSellEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||

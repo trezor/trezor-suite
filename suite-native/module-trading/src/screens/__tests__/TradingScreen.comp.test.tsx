@@ -70,6 +70,10 @@ const stateWithDisabledTrading = {
                                 domain: 'trading.buy',
                                 flag: false,
                             },
+                            {
+                                domain: 'trading.exchange',
+                                flag: false,
+                            },
                         ],
                     },
                 },
