@@ -3,7 +3,7 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
+test.describe('T2T1 - Device settings', { tag: ['@group=settings', '@specificModel'] }, () => {
     test.use({ emulatorStartConf: { wipe: true, model: 'T2T1' } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
