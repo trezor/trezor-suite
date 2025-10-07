@@ -580,11 +580,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                 if (this.protocol.name === 'v2') {
                     const withInteraction = !!fn;
-                    await getThpChannel(this, withInteraction);
-                    if (this.getThpState()?.isAutoconnectPaired || withInteraction) {
+                    this.busy = await getThpChannel(this, withInteraction);
+                    if (!this.busy) {
                         await this.getFeatures();
-                    } else {
-                        this.busy = 'thp-locked';
                     }
                 } else if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
