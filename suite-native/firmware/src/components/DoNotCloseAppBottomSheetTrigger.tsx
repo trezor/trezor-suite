@@ -1,6 +1,8 @@
+import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+
 import {
+    AnimatedBox,
     BottomSheetModal,
-    Box,
     Button,
     InlineAlertBox,
     Text,
@@ -8,20 +10,35 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type DoNotCloseAppBottomSheetTriggerProps = {
     isTriggerDisplayed: boolean;
 };
 
+const triggerStyle = prepareNativeStyle(utils => ({
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: utils.spacings.sp32,
+}));
+
 export const DoNotCloseAppBottomSheetTrigger = ({
     isTriggerDisplayed,
 }: DoNotCloseAppBottomSheetTriggerProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const { applyStyle } = useNativeStyles();
 
     return (
         <>
             {isTriggerDisplayed && (
-                <Box marginBottom="sp32" alignItems="center" justifyContent="center">
+                <AnimatedBox
+                    entering={FadeInDown}
+                    exiting={FadeOutDown}
+                    style={applyStyle(triggerStyle)}
+                >
                     <InlineAlertBox
                         variant="info"
                         title={
@@ -32,7 +49,7 @@ export const DoNotCloseAppBottomSheetTrigger = ({
                         }
                         onButtonPress={openModal}
                     />
-                </Box>
+                </AnimatedBox>
             )}
             <BottomSheetModal ref={bottomSheetRef} paddingHorizontal="sp24">
                 <VStack spacing="sp24" paddingBottom="sp24">
