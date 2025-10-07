@@ -1,4 +1,6 @@
-import { Box, Column, H3, Modal, Paragraph } from '@trezor/components';
+import styled from 'styled-components';
+
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
@@ -7,6 +9,10 @@ import { Metadata } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayout } from 'src/hooks/suite';
+
+const LinkWrapper = styled.span`
+    display: inline-block;
+`;
 
 /**
  * modal that should show users basic information how to uninstall old standalone bridge
@@ -23,7 +29,6 @@ export const BridgeDeprecated = () => {
             bottomContent={
                 <>
                     <Modal.Button
-                        icon="caretLeft"
                         variant="tertiary"
                         onClick={() => goToWallet()}
                         data-testid="@bridge/goto/wallet-index"
@@ -46,11 +51,11 @@ export const BridgeDeprecated = () => {
                         id="TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION"
                         values={{
                             a: chunks => (
-                                <Box margin={{ top: spacings.xs }}>
+                                <LinkWrapper>
                                     <LearnMoreButton url={UNINSTALL_BRIDGE_URL}>
                                         {chunks}
                                     </LearnMoreButton>
-                                </Box>
+                                </LinkWrapper>
                             ),
                         }}
                     />
