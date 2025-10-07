@@ -48,7 +48,7 @@ export type ThpHandshakeCompletionRequest = {
 };
 
 export type ThpHandshakeCompletionResponse = {
-    state: 0 | 1;
+    state: 0 | 1 | 2;
 };
 
 export type ThpMessageType = ThpProtobufMessageType & {
