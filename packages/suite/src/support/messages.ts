@@ -36,10 +36,10 @@ export default defineMessages({
     TR_HIDDEN_WALLET_TOOLTIP: {
         id: 'TR_HIDDEN_WALLET_TOOLTIP',
         defaultMessage:
-            'A passphrase adds a custom phrase (like a word, sentence, or string of characters) to your existing wallet backup, creating a hidden wallet. Each hidden wallet has its own passphrase. Your standard wallet remains accessible without a passphrase.',
+            'A passphrase adds a custom phrase (like a word, sentence, or string of characters) to your existing wallet backup, creating a hidden wallet. Each hidden wallet has its own passphrase. Your Standard wallet remains accessible without a passphrase.',
     },
     TR_ACCESS_STANDARD_WALLET: {
-        defaultMessage: 'Access standard wallet',
+        defaultMessage: 'Access Standard wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
     },
     TR_ACCOUNT_ENABLE_PASSPHRASE: {
@@ -242,7 +242,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_SWAP_MODAL_CONFIRM: {
-        defaultMessage: 'I am ready to swap',
+        defaultMessage: 'I’m ready to swap',
         id: 'TR_TRADING_SWAP_MODAL_CONFIRM',
         dynamic: true,
     },
@@ -375,7 +375,7 @@ export default defineMessages({
         id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
     },
     TR_TRADING_INCORRECT_SERIALIZED_DATA: {
-        defaultMessage: 'Unable to send transaction, incorrect serialized data',
+        defaultMessage: "Unable to send transaction—the serialized data isn't valid.",
         id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA',
     },
     TR_TRADING_NO_RESPONSE: {
@@ -1550,7 +1550,7 @@ export default defineMessages({
         id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE',
     },
     TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT: {
-        defaultMessage: "It seems that you don't have any account matching selected asset.",
+        defaultMessage: 'We couldn’t find an account that matches this asset.',
         id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT',
     },
     TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE: {
@@ -1558,7 +1558,7 @@ export default defineMessages({
         id: 'TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE',
     },
     TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT: {
-        defaultMessage: 'Check the spelling or browse the list to select an option.',
+        defaultMessage: 'Check the address or browse the list to select an option.',
         id: 'TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT',
     },
     TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT: {
@@ -2359,7 +2359,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_PASSPHRASE_DESC: {
         defaultMessage:
-            "A passphrase adds a custom phrase (like a word, sentence, or string of characters) to your existing wallet backup, creating a Passphrase wallet. Each Passphrase wallet has its own passphrase. Your standard wallet remains accessible without a passphrase.\n\nDon't forget your passphrase. Unlike regular passwords, passphrases can't be recovered. If you lose it, your funds will be permanently lost.",
+            "A passphrase adds a custom phrase (like a word, sentence, or string of characters) to your existing wallet backup, creating a Passphrase wallet. Each Passphrase wallet has its own passphrase. Your Standard wallet remains accessible without a passphrase.\n\nDon't forget your passphrase. Unlike regular passwords, passphrases can't be recovered. If you lose it, your funds will be permanently lost.",
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_DESC',
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE: {
@@ -2573,7 +2573,7 @@ export default defineMessages({
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
-        defaultMessage: 'Setup complete',
+        defaultMessage: 'Setup complete!',
         id: 'TR_FINAL_HEADING',
     },
     TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
@@ -2833,7 +2833,7 @@ export default defineMessages({
     TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION: {
         id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION',
         defaultMessage:
-            'Stores just the essential device info locally to power features like anti-counterfeit checks and secure pairing.',
+            'Store essential device info locally to power features like anti-counterfeit checks and secure device pairing.',
     },
     TR_STORE_DEVICE_DATA_MODAL_TITLE: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_TITLE',
@@ -5974,7 +5974,7 @@ export default defineMessages({
     },
     TR_CONNECT_TREZOR_TO_SEND_BUTTON: {
         id: 'TR_CONNECT_TREZOR_TO_SEND_BUTTON',
-        defaultMessage: 'Connect Trezor to send',
+        defaultMessage: 'Connect your Trezor to send',
     },
     SEND_RAW: {
         id: 'SEND_RAW',
@@ -9014,7 +9014,7 @@ export default defineMessages({
     },
     TR_AMOUNT_SENT: {
         id: 'TR_AMOUNT_SENT',
-        defaultMessage: 'Amount sent',
+        defaultMessage: 'Amount to send',
     },
     TR_SIGNING_WITH: {
         id: 'TR_SIGNING_WITH',
@@ -10126,7 +10126,7 @@ export default defineMessages({
     TR_BRIDGE_TIP_AUTOSTART: {
         id: 'TR_BRIDGE_TIP_AUTOSTART',
         defaultMessage:
-            'Tip: Enable the auto-start and allow Trezor Suite running in the background to enable smooth interaction with 3rd party apps.',
+            'Tip: Enable Trezor Suite to start automatically and run in the background for smoother interaction with third-party apps.',
     },
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
@@ -10487,12 +10487,12 @@ export default defineMessages({
     },
     TR_STANDALONE_BRIDGE_DEPRECATED: {
         id: 'TR_STANDALONE_BRIDGE_DEPRECATED',
-        defaultMessage: 'Standalone Trezor Bridge is deprecated',
+        defaultMessage: 'Trezor Bridge has been deprecated',
     },
     TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION: {
         id: 'TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION',
         defaultMessage:
-            'We recommend <a>uninstalling</a> standalone Trezor Bridge as explained in this article. Having standalone Trezor Bridge installed on your computer may interfere with using your Trezor device in future releases.',
+            'We recommend <a>uninstalling</a> Trezor Bridge as described in this article. Keeping it installed may cause issues with your Trezor device in future releases.',
     },
     TR_REQUESTED_NETWORKS: {
         id: 'TR_REQUESTED_NETWORKS',
@@ -10687,7 +10687,7 @@ export default defineMessages({
     TR_DYK_ITEM_4: {
         id: 'TR_DYK_ITEM_4',
         defaultMessage:
-            'Trezor, which means ‘vault’ in Czech, is designed with security at its core.',
+            'Trezor, which means "vault" in Czech, is designed with security at its core.',
     },
     TR_DYK_ITEM_5: {
         id: 'TR_DYK_ITEM_5',
@@ -10706,7 +10706,7 @@ export default defineMessages({
     TR_DYK_ITEM_8: {
         id: 'TR_DYK_ITEM_8',
         defaultMessage:
-            'Trezor co-founder Marek ‘Slush’ Palatinus also launched the very first Bitcoin mining pool.',
+            'Trezor co-founder Marek "Slush" Palatinus also launched the very first Bitcoin mining pool.',
     },
     TR_DYK_ITEM_9: {
         id: 'TR_DYK_ITEM_9',
@@ -10733,7 +10733,7 @@ export default defineMessages({
     },
     TR_FIRMWARE_UPDATE_TIME_WARNING: {
         id: 'TR_FIRMWARE_UPDATE_TIME_WARNING',
-        defaultMessage: 'This update may take some time to complete.',
+        defaultMessage: 'This firmware update may take some time to complete.',
     },
     TR_FIRMWARE_DONT_CLOSE_APP: {
         id: 'TR_FIRMWARE_DONT_CLOSE_APP',
@@ -10762,6 +10762,6 @@ export default defineMessages({
     },
     TR_THP_LOADING: {
         id: 'TR_THP_LOADING',
-        defaultMessage: 'Securing connection',
+        defaultMessage: 'Securing connection...',
     },
 } as const);
