@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { Button, Menu, Popover, PopoverRef, Tooltip, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -15,6 +15,7 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { HomescreenGallery } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
 import { Translation } from 'src/components/suite/Translation';
+import { getHomescreens } from 'src/constants/suite/homescreens';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
@@ -105,8 +106,6 @@ export const FinalStep = () => {
     const onboardingAnalytics = useSelector(state => state.onboarding.onboardingAnalytics);
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
-    const deviceModelInternal = device?.features?.internal_model;
-
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
 
     const isWaitingForConfirm = modalContext === '@modal/context-device';
@@ -127,7 +126,11 @@ export const FinalStep = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
-    if (!device?.features) return null;
+    if (device?.features === undefined) {
+        return null;
+    }
+
+    const deviceModelInternal = device.features.internal_model;
 
     const shouldOfferChangeHomescreen = isHomescreenSupportedOnDevice(device);
 
@@ -154,6 +157,9 @@ export const FinalStep = () => {
         goToSuite();
         dispatch(startDiscoveryThunk({ device }));
     };
+
+    const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
+    const hasGallery = getHomescreens(isBitcoinOnlyFirmware)[deviceModelInternal].length > 0;
 
     return (
         <OnboardingStepBox
@@ -186,7 +192,7 @@ export const FinalStep = () => {
                                 <Translation id="TR_ONBOARDING_DEVICE_EDIT_LABEL" />
                             </Button>
 
-                            {deviceModelInternal !== DeviceModelInternal.T3W1 && (
+                            {hasGallery && (
                                 <Tooltip
                                     maxWidth={285}
                                     content={
