@@ -155,10 +155,12 @@ export const PinInput = ({
 
         if (e.key === 'Backspace') {
             e.preventDefault();
-            setSymbols(setSymbolAtPosition(symbols, EMPTY_SYMBOL, index));
 
             if (index - 1 >= 0 && symbols[index] === EMPTY_SYMBOL) {
                 refs.current[index - 1].focus();
+                setSymbols(setSymbolAtPosition(symbols, EMPTY_SYMBOL, index - 1));
+            } else {
+                setSymbols(setSymbolAtPosition(symbols, EMPTY_SYMBOL, index));
             }
         }
 
