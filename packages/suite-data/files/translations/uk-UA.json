@@ -235,7 +235,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "Показувати адресу без пропусків (bc1wetes...v54d8d) або через пропуск (bc1w etes...v54d 8d).",
   "TR_ADDRESS_MODAL_CLIPBOARD": "Копіювати адресу",
   "TR_ADDRESS_MODAL_TITLE": "Адреса отримання {networkName}",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkCurrencyName} отримати адресу в мережі {networkName}",
   "TR_ADDRESS_PHISHING_WARNING": "Щоб уникнути фішингових атак, завжди перевіряйте адреса на Вашому Trezor. {claim}",
   "TR_ADD_ACCOUNT": "Додати аккаунт",
   "TR_ADD_HIDDEN_WALLET": "Додати прихований гаманець",
