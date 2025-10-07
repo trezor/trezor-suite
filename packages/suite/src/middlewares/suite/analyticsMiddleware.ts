@@ -157,7 +157,7 @@ const analyticsMiddleware =
                 if (action.payload.status.status !== 'complete') return;
 
                 const accumulateAccountCountBySymbolAndType = (
-                    acc: { [key: string]: number },
+                    acc: Record<string, number>,
                     { symbol, accountType }: Account,
                 ) => {
                     // change coinjoin accounts to taproot for analytics
@@ -202,6 +202,12 @@ const analyticsMiddleware =
                         return acc;
                     }, {});
 
+                const accountsWithStaking = state.wallet.accounts
+                    .filter(account =>
+                        new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
+                    )
+                    .reduce(accumulateAccountCountBySymbolAndType, {});
+
                 analytics.report({
                     type: EventType.AccountsStatus,
                     payload: { ...accountsWithTransactions },
@@ -216,6 +222,12 @@ const analyticsMiddleware =
                     type: EventType.AccountsTokensStatus,
                     payload: { ...accountsWithTokens },
                 });
+
+                analytics.report({
+                    type: EventType.AccountsActiveStaking,
+                    payload: { ...accountsWithStaking },
+                });
+
                 break;
             }
             case ROUTER.LOCATION_CHANGE:
