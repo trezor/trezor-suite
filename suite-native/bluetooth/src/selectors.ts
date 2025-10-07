@@ -4,7 +4,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 import { NativeBluetoothRootState } from './bluetoothSlice';
 
@@ -38,22 +38,26 @@ export const selectNearbyBluetoothDevices = createMemoizedSelector(
 export const selectNearbyPairableBluetoothDevices = createMemoizedSelector(
     [selectNearbyBluetoothDevices, selectKnownBluetoothDevices],
     (nearbyBluetoothDevices, knownBluetoothDevices) =>
-        nearbyBluetoothDevices.filter(
-            ({ id, manufacturerData }) =>
-                knownBluetoothDevices.every(knownDevice => knownDevice.id !== id) &&
-                manufacturerData.filterPolicy?.pairing === true,
+        returnStableArrayIfEmpty(
+            nearbyBluetoothDevices.filter(
+                ({ id, manufacturerData }) =>
+                    knownBluetoothDevices.every(knownDevice => knownDevice.id !== id) &&
+                    manufacturerData.filterPolicy?.pairing === true,
+            ),
         ),
 );
 
 export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
     [selectNearbyBluetoothDevices, selectKnownBluetoothDevices, selectBluetoothAutoConnectPolicy],
     (nearbyBluetoothDevices, knownBluetoothDevices, autoConnectPolicy) =>
-        nearbyBluetoothDevices.filter(
-            ({ id, manufacturerData, connectionStatus }) =>
-                knownBluetoothDevices.some(knownDevice => knownDevice.id === id) &&
-                autoConnectPolicy[id]?.type !== 'autoconnect-disabled' &&
-                manufacturerData.filterPolicy?.pairing !== true &&
-                manufacturerData.filterPolicy?.user_disconnected !== true &&
-                connectionStatus.type === 'disconnected',
+        returnStableArrayIfEmpty(
+            nearbyBluetoothDevices.filter(
+                ({ id, manufacturerData, connectionStatus }) =>
+                    knownBluetoothDevices.some(knownDevice => knownDevice.id === id) &&
+                    autoConnectPolicy[id]?.type !== 'autoconnect-disabled' &&
+                    manufacturerData.filterPolicy?.pairing !== true &&
+                    manufacturerData.filterPolicy?.user_disconnected !== true &&
+                    connectionStatus.type === 'disconnected',
+            ),
         ),
 );
