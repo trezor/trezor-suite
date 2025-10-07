@@ -60,8 +60,8 @@ export const clearTradingStateThunk = createThunk(
         dispatch(transactionManagementActions.clearFeeLevels());
 
         // Clear form draft with selected fees
-        dispatch(formDraftActions.removeDraft({ key: 'trading-sell' }));
-        dispatch(formDraftActions.removeDraft({ key: 'trading-exchange' }));
+        dispatch(formDraftActions.removeDraft({ key: getFormDraftKey('trading-sell', '') }));
+        dispatch(formDraftActions.removeDraft({ key: getFormDraftKey('trading-exchange', '') }));
     },
 );
 
