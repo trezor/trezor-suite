@@ -34,7 +34,7 @@ describe('ExchangeReceiveCard', () => {
         const { getByText, getByLabelText } = await renderExchangeBuyCard();
 
         expect(getByText('You get')).toBeOnTheScreen();
-        expect(getByLabelText('Select coin')).toHaveTextContent(/USDC/);
+        expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You get')).toHaveDisplayValue('0.00083554');
         expect(getByText('Balance:')).toBeOnTheScreen();

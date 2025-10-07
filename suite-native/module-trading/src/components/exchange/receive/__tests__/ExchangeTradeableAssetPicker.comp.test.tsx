@@ -42,10 +42,10 @@ describe('ExchangeTradeableAssetPicker', () => {
         form = await renderFormHook();
     });
 
-    it('should render "Select coin" button with caret', async () => {
+    it('should render "Select asset" button with caret', async () => {
         const { getByLabelText } = await renderTradeableAssetPicker();
 
-        expect(getByLabelText('Select coin')).toHaveTextContent(/^Select coin.$/);
+        expect(getByLabelText('Select asset')).toHaveTextContent(/^Select asset.$/);
     });
 
     it('should render bottom sheet with all assets', async () => {

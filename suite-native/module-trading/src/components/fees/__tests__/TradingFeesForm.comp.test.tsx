@@ -80,7 +80,7 @@ describe('TradingFeesForm', () => {
 
         expect(getByText('Transaction fee')).toBeTruthy();
         expect(
-            getByText('Fees are paid directly to network miners for processing your transactions.'),
+            getByText('Fees are paid directly to validators for processing your transactions.'),
         ).toBeTruthy();
     });
 

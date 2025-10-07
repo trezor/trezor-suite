@@ -4,20 +4,20 @@ import { adaAsset } from '../../../__fixtures__/tradeableAssets';
 import { SelectTradeableAssetButton } from '../SelectTradeableAssetButton';
 
 describe('SelectTradeableAssetButton', () => {
-    it('should render "Select coin" when no network is selected', () => {
+    it('should render "Select asset" when no network is selected', () => {
         const { getByLabelText } = renderWithBasicProvider(
             <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={undefined} caret />,
         );
 
-        const button = getByLabelText('Select coin');
-        expect(button).toHaveTextContent(/^Select coin.$/);
+        const button = getByLabelText('Select asset');
+        expect(button).toHaveTextContent(/^Select asset.$/);
     });
 
     it('should render TradeableAssetButton when network is selected', () => {
         const { getByLabelText } = renderWithBasicProvider(
             <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} caret />,
         );
-        const button = getByLabelText('Select coin');
+        const button = getByLabelText('Select asset');
         expect(button).toHaveTextContent(/^ADA.$/);
     });
 
@@ -25,7 +25,7 @@ describe('SelectTradeableAssetButton', () => {
         const { getByLabelText } = renderWithBasicProvider(
             <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} />,
         );
-        const button = getByLabelText('Select coin');
+        const button = getByLabelText('Select asset');
         expect(button).toHaveTextContent('ADA');
     });
 });

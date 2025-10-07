@@ -329,7 +329,7 @@ export const messages = {
             description:
                 '<type></type> is the default address type. <moreLink>Learn more</moreLink>',
             buttons: {
-                select: 'Change account type',
+                select: 'Change address type',
                 confirm: 'Continue with <type></type>',
             },
         },
@@ -2242,12 +2242,12 @@ export const messages = {
         },
         selectCoinToSell: {
             title: 'You pay',
-            buttonTitle: 'Select coin',
+            buttonTitle: 'Select asset',
             amountLabel: 'You pay',
         },
         selectCoin: {
             title: 'You get',
-            buttonTitle: 'Select coin',
+            buttonTitle: 'Select asset',
             amountLabel: 'You get',
         },
         selectRate: {
@@ -2400,7 +2400,8 @@ export const messages = {
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
-            subtitle: 'Set how much {symbol} to approve for this swap.',
+            subtitle:
+                'Set the {symbol} amount to approve so {companyName} can access it. This is required to continue with your swap.',
             revokeSuccessAlert: 'Revoke successful. Set a higher limit.',
             lowLimitInfoAlert:
                 'You’ve approved this token, but the limit is too low. Increase it to continue.',
@@ -2427,7 +2428,7 @@ export const messages = {
             title: 'Fee picker',
             description: {
                 title: 'Transaction fee',
-                body: 'Fees are paid directly to network miners for processing your transactions.',
+                body: 'Fees are paid directly to validators for processing your transactions.',
             },
         },
         tradingReviewOutputs: {
@@ -2438,11 +2439,11 @@ export const messages = {
             title: 'Set limit',
             unlimitedCard: {
                 description:
-                    "Skip future approval requests and save on fees by approving unlimited {symbol}. {companyName} will have full access to your {symbol}, and your funds may be at risk if they're ever compromised.",
+                    'Approve unlimited {symbol} to skip future approval requests and reduce fees. Only use this option if you trust {companyName}, as it will have access to all your {symbol}.',
             },
             limitedCard: {
                 description:
-                    "Approve only the amount needed for this swap. You'll need to approve again (and pay a fee) for future swaps, but this reduces risk by keeping you in full control of your {symbol}.",
+                    "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
             },
         },
         exchangeTradePreviewCard: {

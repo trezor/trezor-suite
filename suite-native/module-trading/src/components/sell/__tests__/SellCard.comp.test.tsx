@@ -45,7 +45,7 @@ describe('SellCard', () => {
 
         expect(getByText('You pay')).toBeOnTheScreen();
         expect(getByText('$99.00')).toBeOnTheScreen();
-        expect(getByLabelText('Select coin')).toHaveTextContent(/USDC/);
+        expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
         expect(getByLabelText('You pay')).toHaveDisplayValue('100');
         expect(getByText('Balance:')).toBeOnTheScreen();

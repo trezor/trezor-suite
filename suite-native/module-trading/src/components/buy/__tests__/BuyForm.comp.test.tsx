@@ -31,7 +31,7 @@ describe('BuyForm', () => {
         const { queryByText, getByText, getByLabelText } = await renderBuyForm({}, result.current);
 
         expect(getByText('You pay')).toBeTruthy();
-        expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
+        expect(getByLabelText('Select asset')).toHaveTextContent(/Select asset/);
         expect(queryByText('Receive account')).toBeNull();
         expect(queryByText('Payment method')).toBeNull();
         expect(queryByText('Country of residence')).toBeTruthy();
@@ -59,7 +59,7 @@ describe('BuyForm', () => {
             expect(getByText('You pay')).toBeTruthy();
 
             expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
-            expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
+            expect(getByLabelText('Select asset')).toHaveTextContent(/Select asset/);
 
             expect(queryByText('Receive account')).toBeNull();
 
