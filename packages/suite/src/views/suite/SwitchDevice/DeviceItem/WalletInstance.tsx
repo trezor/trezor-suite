@@ -53,7 +53,6 @@ export const WalletInstance = ({
     ...rest
 }: WalletInstanceProps) => {
     const [isEjecting, setIsEjecting] = useState(false);
-    const [isEjectVisible, setIsEjectVisible] = useState(false);
     const accounts = useSelector(state => state.wallet.accounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -137,8 +136,6 @@ export const WalletInstance = ({
                 tabIndex={0}
                 data-testid={dataTestBase}
                 variant={isSelected ? 'primary' : undefined}
-                onMouseEnter={() => setIsEjectVisible(true)}
-                onMouseLeave={() => setIsEjectVisible(false)}
                 {...rest}
             >
                 <Collapsible isOpen={isEjecting}>
@@ -192,7 +189,7 @@ export const WalletInstance = ({
                                     )}
                                 </Row>
 
-                                {isEjectVisible && !isEjecting && (
+                                {!isEjecting && (
                                     <Box
                                         position={{
                                             type: 'absolute',
