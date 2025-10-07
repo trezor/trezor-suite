@@ -385,7 +385,9 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
                         device,
                     }),
                 );
-                dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
+                if (getIsThpDevice(device)) {
+                    dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
+                }
                 dispatch(selectNewlyConnectedDeviceThunk({ device }));
                 break;
             default:

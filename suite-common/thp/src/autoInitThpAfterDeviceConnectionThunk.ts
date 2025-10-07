@@ -1,6 +1,5 @@
 import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware/src/firmwareReducer';
 import { createThunk } from '@suite-common/redux-utils';
-import { getIsThpDevice } from '@suite-common/suite-utils';
 import { acquireDevice, selectDevices } from '@suite-common/wallet-core';
 import { Device } from '@trezor/connect';
 
@@ -15,8 +14,6 @@ export const autoInitThpAfterDeviceConnectionThunk = createThunk<
     AutoInitThpAfterDeviceConnectionThunkParams,
     void
 >(`${THP_PREFIX}/autoInitThpAfterDeviceConnectionThunk`, ({ device }, { dispatch, getState }) => {
-    if (!getIsThpDevice(device)) return;
-
     // This needs to be re-selected to convert Device to TrezorDevice.
     // This TrezorDevice will be there ready after the reducer fills data in.
     const reselectedTrezorDevice = selectDevices(getState())?.find(
