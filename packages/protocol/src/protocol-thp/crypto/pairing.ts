@@ -118,7 +118,7 @@ export const handleHandshakeInit = ({
         trezorEphemeralPubkey,
     );
     // and use first from the list (could be undefined)
-    const credentials: ThpCredentialResponse | undefined = allCredentials[0];
+    const credentials = allCredentials.length ? allCredentials[0] : undefined;
 
     // 11.1 If found set (temp_host_static_privkey, temp_host_static_pubkey) = (host_static_privkey, host_static_pubkey).
     // 11.2 If not found set (temp_host_static_privkey, temp_host_static_pubkey) = (X25519(0, B), 0).
