@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import Animated, {
-    FadeInDown,
-    FadeInUp,
-    FadeOutDown,
-    LinearTransition,
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
 import { firmwareActions } from '@suite-common/firmware';
-import { Box, Button, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     setTemporaryRememberedDeviceThunk,
@@ -25,7 +20,9 @@ import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DoNotCloseAppBottomSheetTrigger } from './DoNotCloseAppBottomSheetTrigger';
+import { FirmwareInstallationProgressTitles } from './FirmwareInstallationProgressTitles';
 import { MayBeStuckedBottomSheet } from './MayBeStuckedBottomSheet';
+import { TrezorFacts } from './TrezorFacts';
 import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
@@ -286,22 +283,14 @@ export const FirmwareInstallationScreenContent = ({
                         status={indicatorStatus}
                         progress={indicatorProgress}
                     />
-                    <Animated.View
-                        entering={FadeInUp}
-                        exiting={FadeOutDown}
-                        key={translatedText.title}
-                    >
-                        <Box marginTop="sp12" alignItems="center">
-                            <Text variant="titleSmall" textAlign="center">
-                                {translatedText.title}
-                            </Text>
-                        </Box>
-                        <Box marginTop="sp8" alignItems="center">
-                            <Text variant="body" color="textSubdued" textAlign="center">
-                                {translatedText.subtitle ?? ' '}
-                            </Text>
-                        </Box>
-                    </Animated.View>
+                    {operation === 'installing' ? (
+                        <TrezorFacts />
+                    ) : (
+                        <FirmwareInstallationProgressTitles
+                            title={translatedText.title}
+                            subtitle={translatedText.subtitle}
+                        />
+                    )}
                 </VStack>
                 {isError && (
                     <VStack spacing="sp12" style={buttonStyle}>

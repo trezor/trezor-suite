@@ -8,7 +8,6 @@ import {
 } from '@suite-common/firmware';
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { setPriorityMode } from '@trezor/react-native-usb';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';
@@ -109,8 +108,6 @@ export const useFirmware = (
         // This is needed for firmware reinstall to show Confirm on device correctly
         firmwareInstallation.buttonEvent?.code === 'ButtonRequest_Other';
 
-    const originalFirmwareVersion = getFirmwareVersion(firmwareInstallation.originalDevice);
-
     const translatedText = useMemo(() => {
         let text: { title: TxKeyPath; subtitle?: TxKeyPath } = {
             title: 'firmware.firmwareUpdateProgress.initializing.title',
@@ -143,20 +140,13 @@ export const useFirmware = (
                 title: 'firmware.firmwareUpdateProgress.completed.title',
                 subtitle: 'firmware.firmwareUpdateProgress.completed.subtitle',
             };
-        } else if (operation === 'installing') {
-            text = {
-                title: originalFirmwareVersion
-                    ? 'firmware.firmwareUpdateProgress.installing.title'
-                    : 'firmware.firmwareUpdateProgress.installing.title',
-                subtitle: 'firmware.firmwareUpdateProgress.generalSubtitle',
-            };
         }
 
         return {
             title: translate(text.title),
             subtitle: text.subtitle ? translate(text.subtitle) : error,
         };
-    }, [status, operation, confirmOnDevice, translate, error, originalFirmwareVersion]);
+    }, [status, operation, confirmOnDevice, translate, error]);
 
     return {
         ...firmwareInstallation,

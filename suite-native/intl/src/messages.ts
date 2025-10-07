@@ -2655,12 +2655,6 @@ export const messages = {
             confirming: {
                 title: 'Confirm firmware update on your Trezor.',
             },
-            updating: {
-                title: 'Updating your firmware',
-            },
-            installing: {
-                title: 'Installing firmware',
-            },
             restarting: {
                 title: 'Restarting Trezor',
             },
@@ -2680,6 +2674,21 @@ export const messages = {
                     title: 'Leaving the app would corrupt the firmware and you’d need to start the installation over.',
                     button: 'Okay, got it',
                 },
+            },
+            trezorFacts: {
+                title: 'Did you know?',
+                1: 'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
+                2: 'Trezor launched the world’s first hardware wallet in 2014.',
+                3: 'Founders Stick & Slush started Trezor as a side project in 2011.',
+                4: 'Trezor means “vault” in Czech, reflecting its focus on security.',
+                5: 'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
+                6: 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
+                7: 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
+                8: 'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
+                9: 'Trezor began controlling its own chip supply chain in 2023 for better security.',
+                10: 'Trezor has sold wallets in over 150 countries.',
+                11: 'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
+                12: 'Trezor wallets can store and manage over 9,000+ cryptocurrencies securely in one place.',
             },
             confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
             retryButton: 'Retry',
