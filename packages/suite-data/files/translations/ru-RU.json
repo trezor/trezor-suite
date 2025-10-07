@@ -248,7 +248,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "Отображать адрес с пробелами (bc1w etes ... v54d 8d) или без (bc1wetes...v54d8d).",
   "TR_ADDRESS_MODAL_CLIPBOARD": "Копировать адрес",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} адрес для получения",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkCurrencyName} получает адрес в сети {networkName} ",
   "TR_ADDRESS_PHISHING_WARNING": "Чтобы предотвратить фишинговые атаки, Вам следует проверить адрес, указанный на Вашем Trezor. {claim}",
   "TR_ADD_ACCOUNT": "Добавить счёт",
   "TR_ADD_HIDDEN_WALLET": "Добавить скрытый кошелёк",
