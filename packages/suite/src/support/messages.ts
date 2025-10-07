@@ -1174,8 +1174,12 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
     TR_TRADING_OFFERS_EMPTY: {
-        defaultMessage: 'No offers available for your request. Change country or amount.',
+        defaultMessage: 'Select your from/to assets and amount to search for your best offer.',
         id: 'TR_TRADING_OFFERS_EMPTY',
+    },
+    TR_BUY_SELL_OFFERS_EMPTY: {
+        defaultMessage: 'Select your assets and amount to search for your best offer.',
+        id: 'TR_BUY_SELL_OFFERS_EMPTY',
     },
     TR_TRADING_UNKNOWN_PROVIDER: {
         defaultMessage: 'Unknown provider',
