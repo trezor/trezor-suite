@@ -20,7 +20,7 @@ const storeDraft = createAction(
 
 const removeDraft = createAction(
     `${SEND_MODULE_PREFIX}/remove-draft`,
-    (payload: { accountKey: AccountKey }) => ({
+    (payload: { accountKey: AccountKey; tokenContract?: TokenAddress }) => ({
         payload,
     }),
 );
