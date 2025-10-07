@@ -3,11 +3,11 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { selectDeviceName } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
-import { setShouldShowSystemUnpairingAlert } from '../bluetoothSlice';
 import { SystemUnpairingAlertIosInstructions } from '../components/SystemUnpairingAlertIosInstructions';
 
 export const useBluetoothPlatformSpecificAlerts = () => {
@@ -47,7 +47,7 @@ export const useBluetoothPlatformSpecificAlerts = () => {
             ),
             primaryButtonTitle: translate('generic.buttons.gotIt'),
             onPressPrimaryButton: () => {
-                dispatch(setShouldShowSystemUnpairingAlert(false));
+                dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
             },
         });
     }, [showAlert, dispatch, translate, deviceName]);

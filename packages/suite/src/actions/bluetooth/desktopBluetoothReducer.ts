@@ -9,10 +9,6 @@ import { deviceActions } from '@suite-common/wallet-core';
 import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 export type DesktopBluetoothState = BluetoothState<DesktopBluetoothDevice> & {
-    // Flag to display some extra info (Modal) to instruct the user to remove
-    // the device from the OS settings manually
-    unpairedDeviceNeedsManualOsRemoval: boolean;
-
     // When we get an update that KnownDevice appeared, we start auto-connecting to it.
     // But there may be other updates before the connection is done, and we want to skip them
     // during the connection process.
@@ -36,14 +32,10 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     name: 'bluetooth',
     initialState: {
         ...prepareInitialState<DesktopBluetoothDevice>(),
-        unpairedDeviceNeedsManualOsRemoval: false,
         connectingDeviceIds: [] as string[],
         isUnpairingDevice: false,
     } satisfies DesktopBluetoothState,
     reducers: {
-        setBluetoothDeviceNeedsManualOsRemoval: (state, { payload: { needsManualRemoval } }) => {
-            state.unpairedDeviceNeedsManualOsRemoval = needsManualRemoval;
-        },
         startConnectingBluetoothDevice: (state, { payload: { deviceId } }) => {
             state.connectingDeviceIds.push(deviceId);
         },
@@ -79,7 +71,6 @@ export const bluetoothSlice = createSliceWithExtraDeps({
 });
 
 export const {
-    setBluetoothDeviceNeedsManualOsRemoval,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
     setIsUnpairingDevice,

@@ -7,7 +7,7 @@ import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, SuiteNativeAnalyticsEvent, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
-import { selectShouldShowSystemUnpairingAlert } from '@suite-native/bluetooth';
+import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
 import {
     selectHasAutoEjectAlertBeenDisplayed,
@@ -26,7 +26,9 @@ export const useShowAutoEjectAlert = () => {
     const { showToast } = useToast();
 
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
-    const shouldShowSystemUnpairingAlert = useSelector(selectShouldShowSystemUnpairingAlert);
+    const isBluetoothDeviceOsUnpairingRequired = useSelector(
+        selectIsBluetoothDeviceOsUnpairingRequired,
+    );
     const hasAutoEjectAlertBeenDisplayed = useSelector(selectHasAutoEjectAlertBeenDisplayed);
 
     const reportAutoEjectToAnalytics = useCallback(
@@ -41,7 +43,7 @@ export const useShowAutoEjectAlert = () => {
 
     useFocusEffect(
         useCallback(() => {
-            if (shouldShowSystemUnpairingAlert) {
+            if (isBluetoothDeviceOsUnpairingRequired) {
                 // The alert regarding system unpairing has a higher priority.
                 return;
             }
@@ -93,7 +95,7 @@ export const useShowAutoEjectAlert = () => {
             hideAlert,
             reportAutoEjectToAnalytics,
             shouldShowAutoEjectAlert,
-            shouldShowSystemUnpairingAlert,
+            isBluetoothDeviceOsUnpairingRequired,
             showAlert,
             showToast,
         ]),

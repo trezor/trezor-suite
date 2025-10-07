@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -7,7 +8,6 @@ import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSetting
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
 
-import { setBluetoothDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothReducer';
 import { selectIsUnpairingDevice } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
@@ -32,7 +32,7 @@ export const UnpairBluetoothDeviceFromOsModal = ({
     };
 
     const onCancel = () => {
-        dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: false }));
+        dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
         dispatch(toggleConnectionModal());
         onFinish?.();
     };

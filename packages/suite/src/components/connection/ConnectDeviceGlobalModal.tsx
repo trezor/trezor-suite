@@ -1,13 +1,10 @@
 import { useTheme } from 'styled-components';
 
-import { selectAdapterStatus } from '@suite-common/bluetooth';
+import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
-import {
-    selectIsUnpairingDevice,
-    selectUnpairedDeviceNeedsManualOsRemoval,
-} from 'src/actions/bluetooth/desktopBluetoothSelectors';
+import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
@@ -79,7 +76,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         selectedDevice,
     } = useConnectionGlobalModalContext();
 
-    const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
+    const wasBluetoothDeviceWiped = useSelector(selectIsDeviceOsUnpairingRequired);
     const isUnpairingDevice = useSelector(selectIsUnpairingDevice);
 
     const { isBluetoothEnabled } = useSelector(selectSuiteFlags);

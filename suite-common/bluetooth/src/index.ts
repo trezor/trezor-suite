@@ -4,6 +4,7 @@ export type {
     BluetoothFilterPolicy,
     BluetoothAutoConnectPolicy,
     DeviceBluetoothConnectionStatusType,
+    ForgetBluetoothDeviceThunkParams,
 } from './types';
 export type { BluetoothState } from './bluetoothReducer';
 export type { WithBluetoothState } from './bluetoothSelectors';
@@ -17,6 +18,7 @@ export {
     selectScanStatus,
     selectNearbyDevices,
     selectAutoConnectPolicy,
+    selectIsDeviceOsUnpairingRequired,
 } from './bluetoothSelectors';
 
 export { filterOutOldDuplicates } from './filterOutOldDuplicates';

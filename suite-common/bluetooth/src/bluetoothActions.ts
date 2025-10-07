@@ -78,6 +78,11 @@ const setAutoConnectPolicyAction = createAction(
     }),
 );
 
+const setIsDeviceOsUnpairingRequired = createAction(
+    `${BLUETOOTH_PREFIX}/set-is-device-os-unpairing-required`,
+    (isDeviceOsUnpairingRequired: boolean) => ({ payload: isDeviceOsUnpairingRequired }),
+);
+
 export const bluetoothActions = {
     adapterEventAction,
     nearbyDevicesUpdateAction,
@@ -87,4 +92,5 @@ export const bluetoothActions = {
     removeKnownDeviceAction,
     updateDeviceConnectionStatus,
     setAutoConnectPolicyAction,
+    setIsDeviceOsUnpairingRequired,
 };

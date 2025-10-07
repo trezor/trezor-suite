@@ -1,6 +1,7 @@
 import {
     selectAdapterStatus,
     selectAutoConnectPolicy,
+    selectIsDeviceOsUnpairingRequired,
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
@@ -15,9 +16,6 @@ export const selectBluetoothAutoConnectPolicy = (state: NativeBluetoothRootState
 
 export const selectBluetoothPermissionStatus = (state: NativeBluetoothRootState) =>
     state.bluetooth.permissionStatus;
-
-export const selectShouldShowSystemUnpairingAlert = (state: NativeBluetoothRootState) =>
-    state.bluetooth.shouldShowSystemUnpairingAlert;
 
 export const selectBluetoothAdapterStatus = (state: NativeBluetoothRootState) =>
     selectAdapterStatus(state);
@@ -61,3 +59,6 @@ export const selectKnownConnectableBluetoothDevices = createMemoizedSelector(
             ),
         ),
 );
+
+export const selectIsBluetoothDeviceOsUnpairingRequired = (state: NativeBluetoothRootState) =>
+    selectIsDeviceOsUnpairingRequired(state);

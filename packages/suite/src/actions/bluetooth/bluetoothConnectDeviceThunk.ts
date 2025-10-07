@@ -6,7 +6,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
-    setBluetoothDeviceNeedsManualOsRemoval,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
 } from './desktopBluetoothReducer';
@@ -40,7 +39,7 @@ export const bluetoothConnectDeviceThunk = createThunk<
                 result.error.includes('Operation already in progress') ||
                 result.error.includes('Peer removed pairing information');
             if (isUnpaired) {
-                dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: true }));
+                dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
                 dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceId }));
             } else {
                 dispatch(

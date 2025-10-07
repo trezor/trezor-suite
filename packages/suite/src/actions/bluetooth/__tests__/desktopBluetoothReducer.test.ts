@@ -23,7 +23,6 @@ const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependenciesMock);
 
 const initialState: DesktopBluetoothState = {
     ...prepareInitialState(),
-    unpairedDeviceNeedsManualOsRemoval: false,
     connectingDeviceIds: [],
     isUnpairingDevice: false,
 };

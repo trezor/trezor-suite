@@ -18,7 +18,6 @@ export const initialAppState: AppState = {
     suite: suiteInitialState,
     device: initialState,
     bluetooth: {
-        unpairedDeviceNeedsManualOsRemoval: false,
         connectingDeviceIds: [],
         isUnpairingDevice: false,
         adapterStatus: 'unknown',
@@ -27,6 +26,7 @@ export const initialAppState: AppState = {
         knownDevices: [],
         ignoredDeviceIds: [],
         autoConnectPolicy: {},
+        isDeviceOsUnpairingRequired: false,
     },
     thp: {
         step: null,

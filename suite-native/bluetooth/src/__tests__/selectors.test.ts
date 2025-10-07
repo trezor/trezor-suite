@@ -17,7 +17,6 @@ const initialState: NativeBluetoothState = {
         '1ec77690-be29-43c6-8859-dfeca15c7c0f': { type: 'autoconnect-disabled' },
     },
     permissionStatus: 'granted',
-    shouldShowSystemUnpairingAlert: false,
 };
 
 const unknownDevice: BluetoothDevice = {

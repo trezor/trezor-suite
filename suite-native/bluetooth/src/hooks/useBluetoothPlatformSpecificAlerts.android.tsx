@@ -5,10 +5,10 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
-import { setShouldShowSystemUnpairingAlert } from '../bluetoothSlice';
 import { useBluetoothSettings } from './useBluetoothSettings';
 
 export const useBluetoothPlatformSpecificAlerts = () => {
@@ -47,12 +47,12 @@ export const useBluetoothPlatformSpecificAlerts = () => {
             description: translate('bluetooth.alerts.systemUnpairing.description.android'),
             primaryButtonTitle: translate('bluetooth.alerts.systemUnpairing.primaryButton'),
             onPressPrimaryButton: () => {
-                dispatch(setShouldShowSystemUnpairingAlert(false));
+                dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
                 openBluetoothSettings();
             },
             secondaryButtonTitle: translate('bluetooth.alerts.systemUnpairing.secondaryButton'),
             onPressSecondaryButton: () => {
-                dispatch(setShouldShowSystemUnpairingAlert(false));
+                dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
             },
         });
     }, [showAlert, dispatch, openBluetoothSettings, translate]);
