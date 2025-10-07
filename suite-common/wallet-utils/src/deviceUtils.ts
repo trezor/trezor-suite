@@ -13,11 +13,11 @@ export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionI
 };
 
 export const shouldDeviceBeRemembered = ({
-    isDeviceAutoEjectEnabled,
     device,
+    isDeviceAutoEjectEnabled = false,
 }: {
-    isDeviceAutoEjectEnabled: boolean;
     device: TrezorDevice | Device;
+    isDeviceAutoEjectEnabled?: boolean;
 }) => {
     if (!isNative()) return true;
 

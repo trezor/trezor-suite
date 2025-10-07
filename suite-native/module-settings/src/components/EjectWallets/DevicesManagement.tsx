@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectPhysicalDevicesGrouppedById } from '@suite-common/wallet-core';
+import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
 import { Box, Card, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { ConnectionDot } from '@suite-native/device-manager';
 import { DeviceModelIcon } from '@suite-native/icons';
@@ -17,6 +18,9 @@ export const DevicesManagement = () => {
             <AutoEjectSwitch />
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
+
+                if (!shouldDeviceBeRemembered({ device: firstDevice })) return null;
+
                 const deviceModel = firstDevice.features?.internal_model;
 
                 return (

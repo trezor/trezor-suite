@@ -24,7 +24,6 @@ export const WalletRow = ({ device }: WalletRowProps) => {
     const { applyStyle } = useNativeStyles();
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
 
-    // todo: only makes sense if device is already authorized (has state)
     const walletNameLabel = device.useEmptyPassphrase ? (
         <Translation id="moduleSettings.viewOnly.wallet.standard" />
     ) : (
@@ -39,7 +38,6 @@ export const WalletRow = ({ device }: WalletRowProps) => {
     return (
         <HStack key={device.instance} style={applyStyle(walletRowStyle)}>
             <HStack spacing="sp12" alignItems="center">
-                {/* // todo: only makes sense if device is already authorized (has state) */}
                 <Icon name={device.useEmptyPassphrase ? 'wallet' : 'password'} size="mediumLarge" />
                 <Text variant="callout">{walletNameLabel}</Text>
             </HStack>
