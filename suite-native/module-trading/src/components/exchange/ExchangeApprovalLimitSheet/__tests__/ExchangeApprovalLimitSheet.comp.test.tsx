@@ -62,7 +62,7 @@ describe('ExchangeApprovalLimitSheet', () => {
         expect(getByText('Unlimited')).toBeTruthy();
         expect(
             getByText(
-                "Skip future approval requests and save on fees by approving unlimited USDC. Mercuryo will have full access to your USDC, and your funds may be at risk if they're ever compromised.",
+                'Approve unlimited USDC to skip future approval requests and reduce fees. Only use this option if you trust Mercuryo, as it will have access to all your USDC.',
             ),
         ).toBeTruthy();
     });
@@ -73,7 +73,7 @@ describe('ExchangeApprovalLimitSheet', () => {
         expect(getByText('200.32 USDC')).toBeTruthy();
         expect(
             getByText(
-                "Approve only the amount needed for this swap. You'll need to approve again (and pay a fee) for future swaps, but this reduces risk by keeping you in full control of your USDC.",
+                "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
             ),
         ).toBeTruthy();
     });
@@ -90,7 +90,7 @@ describe('ExchangeApprovalLimitSheet', () => {
 
         expect(
             getByText(
-                "Skip future approval requests and save on fees by approving unlimited USDC. Mercuryo will have full access to your USDC, and your funds may be at risk if they're ever compromised.",
+                'Approve unlimited USDC to skip future approval requests and reduce fees. Only use this option if you trust Mercuryo, as it will have access to all your USDC.',
             ),
         ).toBeTruthy();
     });

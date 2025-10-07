@@ -34,7 +34,7 @@ describe('SellForm', () => {
 
         expect(getByText('You pay')).toBeOnTheScreen();
         expect(getByText('You get')).toBeOnTheScreen();
-        expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
+        expect(getByLabelText('Select asset')).toHaveTextContent(/Select asset/);
     });
 
     describe('with preloaded sell data', () => {
@@ -61,7 +61,7 @@ describe('SellForm', () => {
 
             expect(getByText('You pay')).toBeOnTheScreen();
             expect(getByLabelText('Select fiat currency')).toBeOnTheScreen();
-            expect(getByLabelText('Select coin')).toHaveTextContent(/BTC/);
+            expect(getByLabelText('Select asset')).toHaveTextContent(/BTC/);
             expect(getByText('Country of residence')).toBeOnTheScreen();
             expect(getByText('Provider')).toBeOnTheScreen();
         });

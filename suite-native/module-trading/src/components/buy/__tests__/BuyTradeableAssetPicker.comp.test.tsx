@@ -46,10 +46,10 @@ describe('BuyTradeableAssetPicker', () => {
             form = await renderFormHook();
         });
 
-        it('should render "Select coin" button with caret', async () => {
+        it('should render "Select asset" button with caret', async () => {
             const { getByLabelText } = await renderTradeableAssetPicker();
 
-            expect(getByLabelText('Select coin')).toHaveTextContent(/^Select coin.$/);
+            expect(getByLabelText('Select asset')).toHaveTextContent(/^Select asset.$/);
         });
 
         it('should render bottom sheet with all assets', async () => {
@@ -69,7 +69,7 @@ describe('BuyTradeableAssetPicker', () => {
         it('should preselect BTC and do not render caret', async () => {
             const { getByLabelText } = await renderTradeableAssetPicker();
 
-            expect(getByLabelText('Select coin')).toHaveTextContent('BTC');
+            expect(getByLabelText('Select asset')).toHaveTextContent('BTC');
         });
 
         it('should not render bottom sheet at all', async () => {
@@ -82,10 +82,10 @@ describe('BuyTradeableAssetPicker', () => {
             const { getByLabelText } = await renderTradeableAssetPicker();
 
             // no need to act as there should be no action
-            fireEvent.press(getByLabelText('Select coin'));
+            fireEvent.press(getByLabelText('Select asset'));
             fireEvent.press(getByLabelText('You get'));
 
-            expect(getByLabelText('Select coin')).toHaveTextContent('BTC');
+            expect(getByLabelText('Select asset')).toHaveTextContent('BTC');
         });
     });
 });

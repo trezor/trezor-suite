@@ -60,7 +60,7 @@ export const TradingExchangeApprovalScreen = () => {
                     subtitle={
                         <Translation
                             id="moduleTrading.tradingExchangeApprovalScreen.subtitle"
-                            values={{ symbol: coinSymbol }}
+                            values={{ symbol: coinSymbol, companyName: providerInfo?.companyName }}
                         />
                     }
                     closeActionType="close"
