@@ -10,6 +10,7 @@ import {
     UiRequestConfirmation,
     UiRequestThpPairing,
 } from '@trezor/connect';
+import type { ThpCredentials } from '@trezor/protocol';
 
 import { thpActions } from './thpActions';
 
@@ -51,6 +52,11 @@ export const initialThpState: ThpState = {
     credentials: [] as ThpSuiteCredentials[],
 };
 
+const addCredential = (credentials: ThpSuiteCredentials[], credential: ThpCredentials) =>
+    credentials
+        .filter(c => c.trezor_static_public_key !== credential.trezor_static_public_key)
+        .concat([{ ...credential, connectionCounter: 0 }]);
+
 export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
     initialThpState,
     (builder, extra) =>
@@ -74,7 +80,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 }
             })
             .addCase(thpActions.addCredential, (state, { payload }) => {
-                state.credentials.push({ ...payload.credential, connectionCounter: 0 });
+                state.credentials = addCredential(state.credentials, payload.credential);
             })
             .addCase(thpActions.removeCredentials, (state, { payload }) => {
                 state.credentials = state.credentials.filter(
@@ -102,10 +108,7 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                 (state, action: DeviceThpCredentialsChanged) => {
                     const { credentials, staticKey } = action.payload;
 
-                    state.credentials.push({
-                        ...credentials,
-                        connectionCounter: 0,
-                    });
+                    state.credentials = addCredential(state.credentials, credentials);
                     state.staticKey = staticKey;
                 },
             )
