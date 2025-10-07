@@ -63,6 +63,14 @@ export const isAccountFailed = (account: Account): account is FailedAccount => !
 export const isAccountDiscoverable = ({ accountType }: Account) =>
     accountType !== 'imported' && accountType !== 'placeholder' && accountType !== 'coinjoin';
 
+export const isEvmLedger = (networkType: NetworkType, accountType: AccountType) =>
+    networkType === 'ethereum' && accountType === 'ledger';
+
+export const getAccountIndexOffset = (
+    networkType: NetworkType,
+    accountType: AccountType,
+): number => (isEvmLedger(networkType, accountType) ? 1 : 0);
+
 export const getFirstFreshAddress = (
     account: Account,
     receiveAddresses: ReceiveInfo[],
@@ -1252,10 +1260,11 @@ export const prepareNewAccountPayload = async ({
     accountTypes?: NetworkAccount[];
     device: TrezorDevice;
 }) => {
+    const network = getNetwork(networkSymbol);
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);
 
-    const accountIndex = index + (accountType === 'ledger' ? 1 : 0);
+    const accountIndex = index + getAccountIndexOffset(network.networkType, accountType);
 
     const newPath = networkAccount?.bip43Path.replace('i', String(accountIndex));
 

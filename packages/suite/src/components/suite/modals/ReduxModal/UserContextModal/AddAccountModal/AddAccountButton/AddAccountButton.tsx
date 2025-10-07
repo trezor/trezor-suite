@@ -108,7 +108,7 @@ const AddDefaultAccountButton = ({
         : undefined;
 
     const disabledMessage = verifyAvailability({
-        emptyAccounts: scopedAccounts.filter(account => account.empty),
+        emptyAccounts: scopedAccounts.filter(account => account.empty && !account.visible),
         account: defaultAccount,
         unavailableCapability,
     });
