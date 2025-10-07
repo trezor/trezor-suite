@@ -199,21 +199,19 @@ export type SuiteAnalyticsEvent =
       }
     | {
           type: EventType.AccountsStatus;
-          payload: {
-              [key: string]: number;
-          };
+          payload: Record<string, number>;
       }
     | {
           type: EventType.AccountsNonZeroBalance;
-          payload: {
-              [key: string]: number;
-          };
+          payload: Record<string, number>;
+      }
+    | {
+          type: EventType.AccountsActiveStaking;
+          payload: Record<string, number>;
       }
     | {
           type: EventType.AccountsTokensStatus;
-          payload: {
-              [key: string]: number;
-          };
+          payload: Record<string, number>;
       }
     | {
           type: EventType.AccountsNewAccount;
