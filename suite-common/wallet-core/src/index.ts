@@ -20,6 +20,7 @@ export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
 export * from './device/initEvoluKeysThunk';
 export * from './device/publicKeyActions';
+export * from './device/preparePushNotificationMiddleware';
 export * from './device/usePinHook';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
