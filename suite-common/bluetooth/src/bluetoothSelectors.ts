@@ -51,6 +51,10 @@ export const selectAutoConnectPolicy = <T extends BluetoothDeviceCommon>(
     state: WithBluetoothState<T>,
 ) => state.bluetooth.autoConnectPolicy;
 
+export const selectIsDeviceOsUnpairingRequired = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+) => state.bluetooth.isDeviceOsUnpairingRequired;
+
 export const selectKnownDeviceByDeviceId = <T extends BluetoothDeviceCommon>(
     state: WithBluetoothState<T>,
     deviceId?: string,

@@ -7,7 +7,7 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
 import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
-import { setShouldShowSystemUnpairingAlert } from '../bluetoothSlice';
+import { forgetBluetoothDeviceThunk } from '../bluetoothThunks';
 import { BluetoothDevice } from '../types';
 
 type UnpairDeviceProps = {
@@ -49,8 +49,7 @@ export const useBluetoothDevice = () => {
 
             const { success, payload } = result.payload;
             if (success || payload.code === 'Device_Disconnected') {
-                dispatch(bluetoothActions.removeKnownDeviceAction({ id: deviceBluetoothId }));
-                dispatch(setShouldShowSystemUnpairingAlert(true));
+                dispatch(forgetBluetoothDeviceThunk({ bluetoothId: deviceBluetoothId }));
                 onSuccess();
             } else if (
                 payload.code === 'Failure_ActionCancelled' ||

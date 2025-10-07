@@ -24,6 +24,7 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     knownDevices: T[];
     ignoredDeviceIds: string[];
     autoConnectPolicy: Record<string, BluetoothAutoConnectPolicy | undefined>;
+    isDeviceOsUnpairingRequired: boolean;
 };
 
 export const prepareInitialState = <T extends BluetoothDeviceCommon>(): BluetoothState<T> => ({
@@ -33,6 +34,7 @@ export const prepareInitialState = <T extends BluetoothDeviceCommon>(): Bluetoot
     knownDevices: [] as T[],
     ignoredDeviceIds: [],
     autoConnectPolicy: {},
+    isDeviceOsUnpairingRequired: false,
 });
 
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() =>
@@ -117,6 +119,9 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             })
             .addCase(bluetoothActions.setAutoConnectPolicyAction, (state, { payload }) => {
                 state.autoConnectPolicy[payload.id] = payload.policy;
+            })
+            .addCase(bluetoothActions.setIsDeviceOsUnpairingRequired, (state, { payload }) => {
+                state.isDeviceOsUnpairingRequired = payload;
             })
 
             .addMatcher(

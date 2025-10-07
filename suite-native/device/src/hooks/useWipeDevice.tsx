@@ -4,12 +4,7 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import {
-    selectIsDeviceConnectedViaBluetooth,
-    selectSelectedDevice,
-    wipeDeviceThunk,
-} from '@suite-common/wallet-core';
-import { setShouldShowSystemUnpairingAlert } from '@suite-native/bluetooth';
+import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
@@ -34,7 +29,6 @@ export const useWipeDevice = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
 
     const wipeDevice = async () => {
         if (!device) return;
@@ -55,9 +49,6 @@ export const useWipeDevice = () => {
         });
 
         if (response.success && isFulfilled(response.payload)) {
-            if (isDeviceConnectedViaBluetooth) {
-                dispatch(setShouldShowSystemUnpairingAlert(true));
-            }
             navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
                 screen: DeviceSettingsStackRoutes.WipeDeviceStack,
                 params: {

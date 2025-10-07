@@ -1,9 +1,10 @@
+import { selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
+
 import { UnpairBluetoothDeviceFromOsModal } from './UnpairBluetoothDeviceFromOsModal';
-import { selectUnpairedDeviceNeedsManualOsRemoval } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from '../../../hooks/suite';
 
 export const WipedBleDeviceNeedsManualOsRemovalModalManager = () => {
-    const wasBluetoothDeviceWiped = useSelector(selectUnpairedDeviceNeedsManualOsRemoval);
+    const wasBluetoothDeviceWiped = useSelector(selectIsDeviceOsUnpairingRequired);
 
     if (!wasBluetoothDeviceWiped) {
         return null;

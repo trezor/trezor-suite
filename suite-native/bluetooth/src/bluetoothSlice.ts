@@ -13,7 +13,6 @@ import { BluetoothDevice, BluetoothPermissionStatus } from './types';
 
 export type NativeBluetoothState = BluetoothState<BluetoothDevice> & {
     permissionStatus: BluetoothPermissionStatus;
-    shouldShowSystemUnpairingAlert: boolean;
 };
 
 export type NativeBluetoothRootState = {
@@ -35,9 +34,6 @@ export const bluetoothSlice = createSliceWithExtraDeps({
                 state.permissionStatus = payload;
             }
         },
-        setShouldShowSystemUnpairingAlert: (state, { payload }: PayloadAction<boolean>) => {
-            state.shouldShowSystemUnpairingAlert = payload;
-        },
     },
     extraReducers: (builder, extra) => {
         const commonReducer = prepareBluetoothReducerCreator<BluetoothDevice>()(extra);
@@ -54,4 +50,4 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     },
 });
 
-export const { updatePermissionStatus, setShouldShowSystemUnpairingAlert } = bluetoothSlice.actions;
+export const { updatePermissionStatus } = bluetoothSlice.actions;

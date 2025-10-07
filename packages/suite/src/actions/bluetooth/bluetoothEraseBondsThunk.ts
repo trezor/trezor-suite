@@ -1,4 +1,8 @@
-import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
+import {
+    BLUETOOTH_PREFIX,
+    ForgetBluetoothDeviceThunkParams,
+    bluetoothActions,
+} from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -10,16 +14,7 @@ import TrezorConnect, { BluetoothDeviceId } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
-import {
-    setBluetoothDeviceNeedsManualOsRemoval,
-    setIsUnpairingDevice,
-} from './desktopBluetoothReducer';
-
-type ForgetBluetoothDeviceThunkParams = {
-    // This thunk must rely on `bluetoothId` directly. When this thunk is called,
-    // the device may already be disconnected, and therefore, it cannot be selected from the state.
-    bluetoothId: BluetoothDeviceId;
-};
+import { setIsUnpairingDevice } from './desktopBluetoothReducer';
 
 export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDeviceThunkParams, void>(
     `${BLUETOOTH_PREFIX}/forgetBluetoothDevice`,
@@ -29,7 +24,7 @@ export const forgetBluetoothDeviceThunk = createThunk<void, ForgetBluetoothDevic
         const resultForget = await bluetoothIpc.forgetDevice(bluetoothId);
         dispatch(setIsUnpairingDevice({ isUnpairing: false }));
         if (!resultForget.success) {
-            dispatch(setBluetoothDeviceNeedsManualOsRemoval({ needsManualRemoval: true }));
+            dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(true));
         }
         dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
     },

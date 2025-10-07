@@ -9,7 +9,10 @@ import {
     selectIsDeviceUnlocked,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
-import { selectShouldShowSystemUnpairingAlert, useBluetoothAlerts } from '@suite-native/bluetooth';
+import {
+    selectIsBluetoothDeviceOsUnpairingRequired,
+    useBluetoothAlerts,
+} from '@suite-native/bluetooth';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
 
@@ -26,7 +29,9 @@ export const HomeScreen = () => {
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
-    const shouldShowSystemUnpairingAlert = useSelector(selectShouldShowSystemUnpairingAlert);
+    const isBluetoothDeviceOsUnpairingRequired = useSelector(
+        selectIsBluetoothDeviceOsUnpairingRequired,
+    );
 
     const isEmptyHomeRendererShown =
         (isDiscoveredDeviceAccountless && // There has to be no accounts and discovery not active.
@@ -42,10 +47,10 @@ export const HomeScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            if (shouldShowSystemUnpairingAlert) {
+            if (isBluetoothDeviceOsUnpairingRequired) {
                 showSystemUnpairingAlert();
             }
-        }, [shouldShowSystemUnpairingAlert, showSystemUnpairingAlert]),
+        }, [isBluetoothDeviceOsUnpairingRequired, showSystemUnpairingAlert]),
     );
 
     useShowAutoEjectAlert();
