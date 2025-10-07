@@ -8,17 +8,15 @@ import { useDeviceLowBatteryAlert } from '@suite-native/device';
 import { FirmwareInfoScreenContent, FirmwareInfoScreenFooter } from '@suite-native/firmware';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
+import { useExitAlert } from '../hooks/useExitAlert';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
@@ -30,6 +28,7 @@ export const FirmwareInfoScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const { showLowBatteryAlertIfNecessary } = useDeviceLowBatteryAlert();
+    const { handleExitButtonPress } = useExitAlert();
 
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
@@ -43,15 +42,6 @@ export const FirmwareInfoScreen = () => {
         navigation.replace(DeviceOnboardingStackRoutes.FirmwareInstallation);
     };
 
-    const handleCancel = () => {
-        navigation.popTo(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
-    };
-
     const screenTitleTranslationId: TxKeyPath = hasDeviceFirmwareInstalled
         ? 'firmware.firmwareInfoScreen.title.update'
         : 'firmware.firmwareInfoScreen.title.install';
@@ -63,7 +53,7 @@ export const FirmwareInfoScreen = () => {
             footer={
                 <FirmwareInfoScreenFooter
                     onUpdateConfirmation={handleUpdateConfirmation}
-                    onCancel={handleCancel}
+                    onCancel={handleExitButtonPress}
                 />
             }
         >
