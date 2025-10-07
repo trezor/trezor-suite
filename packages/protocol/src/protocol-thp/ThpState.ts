@@ -102,6 +102,11 @@ export class ThpState {
         }
     }
 
+    removePairingCredential({ credential }: ThpCredentials) {
+        const index = this._pairingCredentials.findIndex(c => c.credential === credential);
+        if (index >= 0) this._pairingCredentials.splice(index, 1);
+    }
+
     setNfcSecret(secret: Buffer) {
         this._nfcSecret = secret;
     }
