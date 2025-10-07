@@ -2573,7 +2573,7 @@ export default defineMessages({
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
-        defaultMessage: 'Setup complete!',
+        defaultMessage: 'Setup complete',
         id: 'TR_FINAL_HEADING',
     },
     TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
