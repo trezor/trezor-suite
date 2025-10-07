@@ -288,7 +288,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "選擇要以連續方式 (bc1wetes...v54d8d) 或是間隔方式 (bc1w etes ... v54d 8d) 顯示位址。",
   "TR_ADDRESS_MODAL_CLIPBOARD": "複製位址",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} 網路接收位址",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkName} 網路上的 {networkCurrencyName} 接收位址",
   "TR_ADDRESS_PHISHING_WARNING": "為了防止釣魚式詐騙，請在你的 Trezor 上驗證接收位址。{claim}",
   "TR_ADD_ACCOUNT": "新增帳戶",
   "TR_ADD_HIDDEN_WALLET": "密碼錢包",

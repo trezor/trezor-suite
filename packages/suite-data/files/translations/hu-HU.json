@@ -270,7 +270,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "Cím megjelenítése listában egyben (bc1wetes...v54d8d) vagy tagoltan: (bc1w etes ... v54d 8d).",
   "TR_ADDRESS_MODAL_CLIPBOARD": "Cím másolása",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} fogadó cím",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkName} hálózat {networkCurrencyName} fogadó címe",
   "TR_ADDRESS_PHISHING_WARNING": "Az adathalász támadások elkerülése végett érdemes a címet a Trezoron is ellenőrizni. {claim}",
   "TR_ADD_ACCOUNT": "Fiók hozzáadása",
   "TR_ADD_HIDDEN_WALLET": "Rejtett tárca hozzáadása",

@@ -290,7 +290,6 @@
   "TR_ADDRESS_DISPLAY_DESCRIPTION": "Visualizzazione dell'indirizzo continua (bc1wetes...v54d8d) o con spaziatura (bc1w etes ... v54d 8d).",
   "TR_ADDRESS_MODAL_CLIPBOARD": "Copia indirizzo",
   "TR_ADDRESS_MODAL_TITLE": "{networkName} indirizzo di ricezione della rete",
-  "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "Indirizzo di ricezione {networkCurrencyName} sulla rete {networkName}",
   "TR_ADDRESS_PHISHING_WARNING": "Per evitare attacchi di phishing, verifica l'indirizzo di ricezione su Trezor. {claim}",
   "TR_ADD_ACCOUNT": "Aggiungi conto",
   "TR_ADD_HIDDEN_WALLET": "Wallet con passphrase",
