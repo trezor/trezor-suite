@@ -48,14 +48,14 @@ export const NewCardanoStakingDashboard = ({
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, account.key));
-    const isPendingTx = stakeTxs.some(tx => isPending(tx));
+    const hasPendingTx = stakeTxs.some(tx => isPending(tx));
 
     return (
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
                 <Column alignItems="normal" gap={spacings.xxxxl}>
-                    {isStakingActive || isPendingTx ? (
+                    {isStakingActive || hasPendingTx ? (
                         <DashboardSection
                             heading={
                                 <Translation

@@ -102,8 +102,8 @@ export const StakingCard = ({
     const selectedAccount = useSelector(selectSelectedAccount);
     const { isBelowLaptop } = useLayoutSize();
 
-    const isEthereumNetwork = selectedAccount?.networkType === 'ethereum';
-    const isCardanoNetwork = selectedAccount?.networkType === 'cardano';
+    const isEthereumNetworkType = selectedAccount?.networkType === 'ethereum';
+    const isCardanoNetworkType = selectedAccount?.networkType === 'cardano';
 
     const selectedStakingTotalRewards = useSelector((state: StakeRootState) =>
         selectStakingTotalRewards(state, selectedAccount?.symbol, selectedAccount?.descriptor),
@@ -131,6 +131,7 @@ export const StakingCard = ({
 
     const canUnstake = new BigNumber(autocompoundBalance).gt(0);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
+    const hasDepositedBalance = new BigNumber(depositedBalance).gt(0);
 
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
 
@@ -148,7 +149,7 @@ export const StakingCard = ({
         selectAccountStakeTypeTransactions(state, selectedAccount?.key || ''),
     );
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
-    const hasCardanoPendingTx = isCardanoNetwork && isStakeConfirming;
+    const hasCardanoPendingTx = isCardanoNetworkType && isStakeConfirming;
 
     const solStakingAccountStatus = getStakingAccountCurrentStatus(selectedAccount);
 
@@ -215,12 +216,12 @@ export const StakingCard = ({
                             data-testid="@account/staking/pending"
                         />
                     )}
-                    {depositedBalance && (
+                    {hasDepositedBalance && (
                         <Item
                             label={
                                 <Translation
                                     id={
-                                        isCardanoNetwork
+                                        isCardanoNetworkType
                                             ? 'TR_STAKE_ACTIVE_STAKE'
                                             : 'TR_STAKE_STAKE'
                                     }
@@ -251,7 +252,7 @@ export const StakingCard = ({
                                         />
                                     }
                                 >
-                                    {!isCardanoNetwork && (
+                                    {!isCardanoNetworkType && (
                                         <Badge variant="primary" size="small">
                                             <Row gap={spacings.xxs} alignItems="center">
                                                 <Translation id="TR_STAKE_RESTAKED_BADGE" />
@@ -280,7 +281,7 @@ export const StakingCard = ({
                                             (
                                             <Translation
                                                 id={
-                                                    isEthereumNetwork
+                                                    isEthereumNetworkType
                                                         ? 'TR_STAKE_APPROXIMATE_DAYS'
                                                         : 'TR_UP_TO_DAYS'
                                                 }
@@ -301,7 +302,7 @@ export const StakingCard = ({
                 </Grid>
 
                 <Row margin={{ top: 'auto' }} gap={spacings.xs}>
-                    {!isCardanoNetwork && (
+                    {!isCardanoNetworkType && (
                         <Tooltip content={stakingMessageContent}>
                             <Button
                                 onClick={openStakeModal}
@@ -324,7 +325,7 @@ export const StakingCard = ({
                         >
                             <Translation
                                 id={
-                                    isCardanoNetwork
+                                    isCardanoNetworkType
                                         ? 'TR_STAKE_UNSTAKE'
                                         : 'TR_STAKE_UNSTAKE_TO_CLAIM'
                                 }

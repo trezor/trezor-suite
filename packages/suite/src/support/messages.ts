@@ -9330,10 +9330,20 @@ export default defineMessages({
         defaultMessage:
             'Stake your full balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
     },
+    TR_STAKING_CARD_TEXT_FUNDS_STAY: {
+        id: 'TR_STAKING_CARD_TEXT_FUNDS_STAY',
+        defaultMessage:
+            'Stake your full balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY. Your {displaySymbol} stay in your account, ready to use anytime—while helping secure the network.',
+    },
     TR_STAKING_CARD_TEXT_EMPTY: {
         id: 'TR_STAKING_CARD_TEXT_EMPTY',
         defaultMessage:
             'Stake your full balance and start earning rewards. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
+    },
+    TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY: {
+        id: 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY',
+        defaultMessage:
+            'Stake your full balance and start earning rewards. Your {displaySymbol} stay in your account, ready to use anytime—while helping secure the network.',
     },
     TR_STAKING_CARD_START_STAKING: {
         id: 'TR_STAKING_CARD_START_STAKING',
@@ -9392,14 +9402,6 @@ export default defineMessages({
     TR_STAKE_SEND_SWAP_SPEND_ANYTIME: {
         id: 'TR_STAKE_SEND_SWAP_SPEND_ANYTIME',
         defaultMessage: 'Send, swap, or spend your {symbol} whenever you want—even while staking.',
-    },
-    TR_STAKE_GET_MORE: {
-        id: 'TR_STAKE_GET_MORE',
-        defaultMessage: 'Get more',
-    },
-    TR_STAKE_CLAIM_REWARDS_TO_GROW: {
-        id: 'TR_STAKE_CLAIM_REWARDS_TO_GROW',
-        defaultMessage: 'Claim rewards to grow your stake and earn even more.',
     },
     TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE: {
         id: 'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',

@@ -165,7 +165,7 @@ export const prepareTxPlan = async (
     return { txPlan: response.payload[0], certificates, withdrawals };
 };
 
-const getTransactionData = async (
+const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
     trezorDRep?: DRepResponse,
@@ -178,16 +178,13 @@ const getTransactionData = async (
 
     const { account } = selectedAccount;
 
-    let txData;
     if (stakeType === 'stake') {
-        txData = await prepareTxPlan(account, 'delegate', trezorDRep);
+        return prepareTxPlan(account, 'delegate', trezorDRep);
     }
 
     if (stakeType === 'unstake') {
-        txData = await prepareTxPlan(account, 'deregister', trezorDRep);
+        return prepareTxPlan(account, 'deregister', trezorDRep);
     }
-
-    return txData;
 };
 
 export const composeTransaction =
@@ -224,18 +221,17 @@ export const composeTransaction =
             outputs: [outputExtended],
         };
 
-        let estimatedFee;
-
-        if (txData?.txPlan.type === 'final') {
-            estimatedFee = {
-                success: true,
-                payload: {
-                    feePerTx: txData.txPlan.fee,
-                    feePerUnit: '',
-                    feeLimit: '',
-                },
-            };
-        }
+        const estimatedFee =
+            txData?.txPlan.type === 'final'
+                ? {
+                      success: true,
+                      payload: {
+                          feePerTx: txData.txPlan.fee,
+                          feePerUnit: '',
+                          feeLimit: '',
+                      },
+                  }
+                : undefined;
 
         const { feeInfo } = formState;
         if (!feeInfo) return;
