@@ -89,6 +89,10 @@ export const TREZOR_SUPPORT_MULTIPLE_ACCOUNTS: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/multiple-accounts-in-trezor-suite',
 );
 
+export const TREZOR_SUPPORT_TRADING_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/sending-receiving-staking-funds/trading-crypto-in-trezor-suite',
+);
+
 // =====================
 // 📚 HELP CENTER
 // =====================

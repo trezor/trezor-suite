@@ -4,11 +4,11 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
@@ -35,6 +35,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/module-connect-popup": "workspace:*",
+        "@suite-native/module-trading": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
@@ -52,5 +53,8 @@
         "react-native": "0.79.3",
         "react-native-reanimated": "^3.18.0",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }
