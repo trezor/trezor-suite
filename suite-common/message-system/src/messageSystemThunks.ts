@@ -52,7 +52,7 @@ const getConfigJws = async (forceLocalJws: boolean) => {
             isRemote: true,
         };
     } catch (error) {
-        console.error(`Fetching of remote JWS config failed: ${error}`);
+        console.warn(`Fetching of remote JWS config failed: ${error}`);
 
         return {
             configJws: configJwsLocal,
