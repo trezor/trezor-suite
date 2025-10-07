@@ -1055,6 +1055,7 @@
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT": "外部 Tor 守护进程端口",
   "TR_EXPERIMENTAL_TOR_EXTERNAL_PORT_DESCRIPTION": "使用在外部进程中运行的 Tor 守护进程，而不是 Trezor Suite 内置的。",
   "TR_EXPLORER": "浏览器",
+  "TR_EXPLORER_ACCOUNT": "账户",
   "TR_EXPLORER_ADDRESS": "地址",
   "TR_EXPLORER_BASE_URL": "根域名",
   "TR_EXPLORER_CUSTOM": "自定义浏览器",
