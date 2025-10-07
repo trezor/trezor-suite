@@ -11,6 +11,7 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { WithThpState } from '@suite-common/thp';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -73,7 +74,8 @@ export type NativeDeviceRootState = DeviceRootState &
     FeatureFlagsRootState &
     NativeFirmwareRootState &
     MessageSystemRootState &
-    DeviceOnboardingSliceRootState;
+    DeviceOnboardingSliceRootState &
+    WithThpState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 

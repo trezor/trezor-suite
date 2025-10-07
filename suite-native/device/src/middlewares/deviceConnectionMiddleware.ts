@@ -10,7 +10,7 @@ import {
     getIsDeviceConnectedViaBluetooth,
     getIsDeviceInitialized,
 } from '@suite-common/suite-utils';
-import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
+import { isThpPairingUIRequestButtonAction, thpActions } from '@suite-common/thp';
 import {
     deviceActions,
     selectDevices,
@@ -222,7 +222,8 @@ deviceConnectionMiddleware.startListening({
 });
 
 deviceConnectionMiddleware.startListening({
-    predicate: (action: UnknownAction) => isThpPairingUIRequestButtonAction(action),
+    predicate: (action: UnknownAction) =>
+        isThpPairingUIRequestButtonAction(action) || thpActions.showAutoconnectInfo.match(action),
     effect: (_action: UnknownAction, { getState }) => {
         if (selectIsFirmwareInstallationRunning(getState())) return;
 
