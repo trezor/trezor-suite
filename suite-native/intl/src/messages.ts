@@ -1133,6 +1133,10 @@ export const messages = {
                     answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
                 },
             },
+            trading: {
+                question: 'What trading features are available?',
+                answer: 'With a connected Trezor you’re able to carry out key trade features in Trezor Suite on mobile. Learn more about trading crypto on the <link>Trezor knowledge base</link>.',
+            },
         },
         preferences: {
             title: 'Preferences',

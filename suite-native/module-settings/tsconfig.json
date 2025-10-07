@@ -31,6 +31,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-connect-popup" },
+        { "path": "../module-trading" },
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../storage" },
@@ -44,7 +45,8 @@
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]
 }
