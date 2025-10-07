@@ -14,6 +14,7 @@ import { accountsActions } from '../accounts/accountsActions';
 
 export type SendState = {
     drafts: {
+        // Note: suite-native store drafts per tokens, desktop and web store drafts per accountKey only
         [key: SendFormDraftKey]: FormState;
     };
     sendRaw?: boolean;
@@ -50,9 +51,14 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
                 state.drafts[draftKey] = cloneObject(formState);
             },
         )
-        .addCase(sendFormActions.removeDraft, (state, { payload: { accountKey } }) => {
-            delete state.drafts[accountKey];
-        })
+        .addCase(
+            sendFormActions.removeDraft,
+            (state, { payload: { accountKey, tokenContract } }) => {
+                const draftKey = getSendFormDraftKey(accountKey, tokenContract);
+
+                delete state.drafts[draftKey];
+            },
+        )
         .addCase(
             sendFormActions.storePrecomposedTransaction,
             (state, { payload: { precomposedTransaction, formState } }) => {

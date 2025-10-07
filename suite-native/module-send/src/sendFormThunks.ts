@@ -105,15 +105,16 @@ export const cleanupSendFormThunk = createThunk(
     (
         {
             accountKey,
+            tokenContract,
             shouldDeleteDraft = true,
-        }: { accountKey: AccountKey; shouldDeleteDraft?: boolean },
+        }: { accountKey: AccountKey; tokenContract?: TokenAddress; shouldDeleteDraft?: boolean },
         { dispatch, getState },
     ) => {
         const device = selectSelectedDevice(getState());
 
         dispatch(sendFormActions.dispose());
 
-        if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey }));
+        if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey, tokenContract }));
 
         // todo: maybe not needed anymore
         dispatch(deviceActions.removeButtonRequests({ device }));
@@ -124,6 +125,7 @@ export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk(
     `${SEND_MODULE_PREFIX}/removeSendFormDraftsSupportingAmountUnitThunk`,
     (_, { dispatch, getState }) => {
         const sendFormDrafts = selectSendFormDrafts(getState());
+        // Draft keys may include tokenContract, but no token networks use amount-unit, so it's fine (for now).
         const accountKeys = Object.keys(sendFormDrafts);
 
         accountKeys.forEach(accountKey => {

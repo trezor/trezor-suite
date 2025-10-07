@@ -115,7 +115,7 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                 }),
             );
 
-            dispatch(cleanupSendFormThunk({ accountKey }));
+            dispatch(cleanupSendFormThunk({ accountKey, tokenContract }));
         }
     }, [isTransactionProcessedByBackend, accountKey, tokenContract, txid, navigation, dispatch]);
 
@@ -167,7 +167,9 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
             primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
             primaryButtonVariant: 'redBold',
             onPressPrimaryButton: () => {
-                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
+                dispatch(
+                    cleanupSendFormThunk({ accountKey, tokenContract, shouldDeleteDraft: false }),
+                );
                 navigation.navigate(SendStackRoutes.SendOutputs, {
                     accountKey,
                     tokenContract,
@@ -177,7 +179,9 @@ export const OutputsReviewFooter = ({ accountKey, tokenContract }: OutputsReview
                 <Translation id="moduleSend.review.outputs.errorAlert.secondaryButtonTitle" />
             ),
             onPressSecondaryButton: () => {
-                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: true }));
+                dispatch(
+                    cleanupSendFormThunk({ accountKey, tokenContract, shouldDeleteDraft: true }),
+                );
                 navigation.dispatch(
                     navigateOutOfSendFlowAction({
                         accountKey,
