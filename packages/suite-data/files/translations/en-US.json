@@ -1098,7 +1098,7 @@
   "TR_FEE_ROUNDING_DEFAULT_WARNING": "The fee rate has been adjusted to {feeRate} to prevent unusable amounts.",
   "TR_FIAT_RATES_NOT_AVAILABLE": "Rate not available",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "The 7d change rate is currently not available.",
-  "TR_FINAL_HEADING": "Setup complete!",
+  "TR_FINAL_HEADING": "Setup complete",
   "TR_FINGERPRINT_ADDRESS": "Fingerprint:",
   "TR_FIRMWARE": "Firmware",
   "TR_FIRMWARE_DONT_CLOSE_APP": "<highlight>Don't close the app</highlight> during installation. Doing so will corrupt the firmware.",

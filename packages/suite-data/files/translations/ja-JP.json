@@ -1083,7 +1083,7 @@
   "TR_FEE_ROUNDING_DEFAULT_WARNING": "使用不能な金額を防ぐために、手数料率が {feeRate} に調整されました。",
   "TR_FIAT_RATES_NOT_AVAILABLE": "価格情報が利用できません",
   "TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP": "現在、7日間変化率情報が利用できません。",
-  "TR_FINAL_HEADING": "セットアップ完了",
+  "TR_FINAL_HEADING": "セットアップ完了！",
   "TR_FINGERPRINT_ADDRESS": "フィンガープリント:",
   "TR_FIRMWARE": "ファームウェア",
   "TR_FIRMWARE_DONT_CLOSE_APP": "インストール中は <highlight>アプリを閉じないでください</highlight>。閉じるとファームウェアが破損する可能性があります。",

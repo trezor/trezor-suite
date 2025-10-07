@@ -325,7 +325,7 @@
   "TR_ALL_NETWORKS_TOOLTIP": "Zobrazit tokeny ze všech {networkCount} sítí. Filtrovat podle nejoblíbenějších sítí.",
   "TR_ALL_TRANSACTIONS": "Transakce",
   "TR_AMOUNT_REDUCED_TXS": "Snížená částka",
-  "TR_AMOUNT_SENT": "Odeslaná částka",
+  "TR_AMOUNT_SENT": "Částka k odeslání",
   "TR_AMOUNT_TOO_BIG_FOR_COINJOIN": "Nevhodné pro coinjoin – příliš vysoká částka",
   "TR_AMOUNT_TOO_SMALL_FOR_COINJOIN": "Nevhodné pro coinjoin – příliš nízká částka",
   "TR_ANALYZE_IN_EXPLORER": "Analyzovat v blockchain exploreru",
