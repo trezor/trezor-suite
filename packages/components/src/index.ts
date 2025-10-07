@@ -98,6 +98,7 @@ export { List, type ListProps } from './components/List/List';
 export { StoryColumn, StoryWrapper } from './support/Story';
 export {
     type Margin,
+    type Padding,
     type FrameProps,
     type FramePropsKeys,
     pickAndPrepareFrameProps,

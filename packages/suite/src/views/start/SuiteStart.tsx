@@ -16,7 +16,7 @@ export const SuiteStart = () => (
      * that we do not have the ModalProvider in layout, and therefore it is
      * handled in a custom way in the onboarding.
      *
-     * Go to `OnboardingStepBox` search for `ConfirmOnDevice`.
+     * Go to `OnboardingCard` search for `ConfirmOnDevice`.
      */
     <WelcomeLayoutWithoutModalSwitcher>
         <Content data-testid="@onboarding/welcome">

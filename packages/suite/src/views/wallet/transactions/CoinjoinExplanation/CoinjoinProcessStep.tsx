@@ -2,12 +2,11 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { H3, Image, ImageKey, Paragraph, variables } from '@trezor/components';
+import { H3, IconCircle, IconName, Paragraph, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
+const Image = styled.div`
     margin: -8px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -95,19 +94,21 @@ const Container = styled.div`
 
 export interface CoinjoinProcessStepProps {
     number: number;
-    image: ImageKey;
+    iconName: IconName;
     title: ReactNode;
     description: ReactNode;
 }
 
 export const CoinjoinProcessStep = ({
     number,
-    image,
+    iconName,
     title,
     description,
 }: CoinjoinProcessStepProps) => (
     <Container>
-        <StyledImage image={image} width={80} />
+        <Image>
+            <IconCircle name={iconName} size={80} />
+        </Image>
         <StepNumber typographyStyle="hint">
             <Translation id="TR_STEP" values={{ number }} />
         </StepNumber>

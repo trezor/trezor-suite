@@ -1,11 +1,10 @@
 import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column } from '@trezor/components';
+import { Column } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 
-import { OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { PinMatrix } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
@@ -24,18 +23,24 @@ export const ShowPinMatrix = () => {
     // (which could happen on Final step where we set device name and homescreen)
     if (device?.features && activeStepId !== 'set-pin' && showPinMatrix) {
         return (
-            <OnboardingStepBox
+            <OnboardingCard
                 heading={<Translation id="TR_ENTER_PIN" />}
                 device={device}
+                isConfirmedOnDevice
                 isActionAbortable={false}
-            >
-                <Column gap={spacings.md}>
-                    <PinMatrix pin={pin} setPin={setPin} onSubmit={handlePinSubmit} />
-                    <Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                innerActions={
+                    <OnboardingCard.Button
+                        onClick={handlePinSubmit}
+                        data-testid="@pin/submit-button"
+                    >
                         <Translation id="TR_CONFIRM" />
-                    </Button>
+                    </OnboardingCard.Button>
+                }
+            >
+                <Column alignItems="center">
+                    <PinMatrix pin={pin} setPin={setPin} onSubmit={handlePinSubmit} />
                 </Column>
-            </OnboardingStepBox>
+            </OnboardingCard>
         );
     }
 };

@@ -1,31 +1,28 @@
 import { useEffect } from 'react';
 
-import styled from 'styled-components';
-
 import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-core';
-import { CollapsibleBox } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Badge, CollapsibleBox, Column, Row, Tooltip } from '@trezor/components';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 
-import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
-import { CoinGroup, TooltipSymbol } from 'src/components/suite';
+import {
+    OnboardingCard,
+    type OnboardingCardProps,
+} from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { CoinGroup } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { getIsTorEnabled } from 'src/utils/suite/tor';
 
-const Separator = styled.hr`
-    height: 1px;
-    width: 100%;
-    background: none;
-    border: 0;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    margin-bottom: 30px;
-`;
+import { TorSection } from './TorSection';
 
-export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
+export const BasicSettingsStepBox = (props: OnboardingCardProps) => {
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
         useNetworkSupport();
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const torStatus = useSelector(state => state.suite.torStatus);
     const dispatch = useDispatch();
+    const isTorEnabled = getIsTorEnabled(torStatus);
 
     // BTC should be enabled by default
     useEffect(() => {
@@ -33,39 +30,53 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     }, [dispatch]);
 
     return (
-        <OnboardingStepBox image="COINS" {...props}>
-            <Separator />
-            <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
-            <CollapsibleBox
-                margin={{ top: spacings.xl }}
-                heading={
-                    <>
-                        <Translation id="TR_TESTNET_COINS" />
-                        <TooltipSymbol
-                            content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
-                        />
-                    </>
-                }
-                paddingType="large"
-            >
-                <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
-            </CollapsibleBox>
-            {showUnsupportedCoins && (
+        <OnboardingCard iconName="coins" {...props}>
+            <Column gap={32}>
+                <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
                 <CollapsibleBox
-                    margin={{ top: spacings.xl }}
                     heading={
-                        <>
-                            <Translation id="TR_UNSUPPORTED_COINS" />
-                            <TooltipSymbol
-                                content={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
-                            />
-                        </>
+                        <Tooltip
+                            content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                            hasIcon
+                        >
+                            <Translation id="TR_TESTNET_COINS" />
+                        </Tooltip>
                     }
-                    paddingType="large"
                 >
-                    <CoinGroup networks={unsupportedMainnets} enabledNetworks={enabledNetworks} />
+                    <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
                 </CollapsibleBox>
-            )}
-        </OnboardingStepBox>
+                {showUnsupportedCoins && (
+                    <CollapsibleBox
+                        heading={
+                            <Tooltip
+                                content={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
+                                hasIcon
+                            >
+                                <Translation id="TR_UNSUPPORTED_COINS" />
+                            </Tooltip>
+                        }
+                    >
+                        <CoinGroup
+                            networks={unsupportedMainnets}
+                            enabledNetworks={enabledNetworks}
+                        />
+                    </CollapsibleBox>
+                )}
+                {(isDesktop() || (isWeb() && isTorEnabled)) && (
+                    <CollapsibleBox
+                        heading={
+                            <Row gap={12}>
+                                <Translation id="TR_TOR" />
+                                <Badge variant="tertiary" inline size="tiny">
+                                    <Translation id="TR_ONBOARDING_ADVANCED" />
+                                </Badge>
+                            </Row>
+                        }
+                    >
+                        <TorSection torStatus={torStatus} />
+                    </CollapsibleBox>
+                )}
+            </Column>
+        </OnboardingCard>
     );
 };

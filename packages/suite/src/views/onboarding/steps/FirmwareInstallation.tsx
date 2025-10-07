@@ -1,7 +1,4 @@
-import styled from 'styled-components';
-
-import { Button, Column } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Column, Paragraph } from '@trezor/components';
 
 import {
     FirmwareOffer,
@@ -9,7 +6,7 @@ import {
     ReconnectDevicePrompt,
     RotatingPhrases,
 } from 'src/components/firmware';
-import { OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { WebUsbButton } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
@@ -19,20 +16,12 @@ import {
     selectIsActionAbortable,
 } from 'src/selectors/suite/suiteSelectors';
 
-const SelectDevice = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: ${spacingsPx.lg};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-interface FirmwareInstallationProps {
+type FirmwareInstallationProps = {
     install: () => void;
     onSuccess: () => void;
-}
+};
 
+// TODO: consolidate with FirmwareInstallationStandalone
 export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallationProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
     const isActionAbortable = useSelector(selectIsActionAbortable);
@@ -51,21 +40,19 @@ export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallatio
             // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time paired as a bootloader device).
             // Suite won't detect such a restarted device, which will be now in normal mode, till it is paired again.
             return (
-                <SelectDevice>
-                    <Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />
+                <Column alignItems="center" gap={12}>
+                    <Paragraph typographyStyle="hint" variant="tertiary">
+                        <Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />
+                    </Paragraph>
                     <WebUsbButton translationId="TR_SELECT_TREZOR" size="medium" icon={false} />
-                </SelectDevice>
+                </Column>
             );
         }
         if (status === 'done') {
             return (
-                <Button
-                    variant="primary"
-                    onClick={onSuccess}
-                    data-testid="@firmware/continue-button"
-                >
+                <OnboardingCard.Button onClick={onSuccess} data-testid="@firmware/continue-button">
                     <Translation id="TR_CONTINUE" />
-                </Button>
+                </OnboardingCard.Button>
             );
         }
     };
@@ -73,19 +60,18 @@ export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallatio
     return (
         <>
             {showReconnectPrompt && <ReconnectDevicePrompt onSuccess={install} />}
-            <OnboardingStepBox
-                image="FIRMWARE"
+            <OnboardingCard
+                iconName="circuitry"
                 heading={<Translation id="TR_INSTALL_FIRMWARE" />}
-                device={undefined}
                 isActionAbortable={isActionAbortable}
                 innerActions={getInnerActionComponent()}
             >
-                <Column gap={24} width="100%">
+                <Column gap={24}>
                     <FirmwareOffer isCustomFirmware={false} targetFirmwareType={targetType} />
                     <FirmwareProgressBar />
                     <RotatingPhrases />
                 </Column>
-            </OnboardingStepBox>
+            </OnboardingCard>
         </>
     );
 };

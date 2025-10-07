@@ -3,13 +3,13 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 import { setStatus } from 'src/actions/recovery/recoveryActions';
 import {
-    OnboardingButtonBack,
-    OnboardingStepBox,
-    OnboardingStepBoxProps,
-} from 'src/components/onboarding';
+    OnboardingCard,
+    type OnboardingCardProps,
+} from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
-const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
+const RecoveryStepBox = (props: OnboardingCardProps) => {
     const recovery = useSelector(state => state.recovery);
     const dispatch = useDispatch();
 
@@ -49,14 +49,16 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
     };
 
     return (
-        <OnboardingStepBox
-            image="RECOVERY"
+        <OnboardingCard
+            iconName="trezorBackup"
             outerActions={
                 isBackButtonVisible() ? (
-                    <OnboardingButtonBack
+                    <OnboardingCard.SecondaryButton
                         onClick={() => handleBack()}
                         data-testid="@onboarding/recovery/back-button"
-                    />
+                    >
+                        <Translation id="TR_BACK" />
+                    </OnboardingCard.SecondaryButton>
                 ) : undefined
             }
             {...props}

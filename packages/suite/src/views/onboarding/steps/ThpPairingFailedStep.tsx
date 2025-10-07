@@ -1,9 +1,8 @@
 import { useState } from 'react';
 
-import { Button, Column, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, Paragraph } from '@trezor/components';
 
-import { OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
@@ -22,27 +21,22 @@ export const ThpPairingFailedStep = () => {
     };
 
     return (
-        <OnboardingStepBox
-            image="CHECK_SHIELD"
+        <OnboardingCard
+            iconName="bluetooth"
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
-            description={
-                <Text variant="tertiary" typographyStyle="body">
-                    <Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />
-                </Text>
-            }
-            device={undefined}
-        >
-            <Column gap={spacings.xxxxl} flex="1" justifyContent="center" alignItems="center">
-                <Column gap={spacings.xl} flex="1" justifyContent="center" alignItems="center">
-                    <ThpPairingFailedForFirmwareInstallation />
-                    <Text variant="destructive">
-                        <Translation id="TR_THP_INCORRECT_SECURITY_CODE" />
-                    </Text>
-                </Column>
-                <Button variant="primary" onClick={handleRetry} isLoading={isLoading}>
+            description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
+            innerActions={
+                <OnboardingCard.Button onClick={handleRetry} isLoading={isLoading}>
                     <Translation id="TR_THP_GET_NEW_CODE" />
-                </Button>
+                </OnboardingCard.Button>
+            }
+        >
+            <Column gap={24} alignItems="center">
+                <ThpPairingFailedForFirmwareInstallation />
+                <Paragraph variant="destructive">
+                    <Translation id="TR_THP_INCORRECT_SECURITY_CODE" />
+                </Paragraph>
             </Column>
-        </OnboardingStepBox>
+        </OnboardingCard>
     );
 };

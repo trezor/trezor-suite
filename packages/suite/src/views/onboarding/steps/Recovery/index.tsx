@@ -1,11 +1,9 @@
-import styled from 'styled-components';
-
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import { OnboardingButtonCta } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
@@ -13,13 +11,6 @@ import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { pickByDeviceModel } from 'src/utils/device/modelUtils';
 
 import RecoveryStepBox from './RecoveryStepBox';
-
-const InProgressRecoveryStepBox = styled(RecoveryStepBox)<{
-    $deviceModelInternal: DeviceModelInternal;
-}>`
-    ${({ $deviceModelInternal }) =>
-        $deviceModelInternal === DeviceModelInternal.T1B1 ? 'min-height: 475px' : ''};
-`;
 
 export const RecoveryStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
@@ -75,12 +66,12 @@ export const RecoveryStep = () => {
                     />
                 }
                 innerActions={
-                    <OnboardingButtonCta
+                    <OnboardingCard.Button
                         data-testid="@onboarding/recovery/start-button"
                         onClick={recoverDevice}
                     >
                         <Translation id="TR_START_RECOVERY" />
-                    </OnboardingButtonCta>
+                    </OnboardingCard.Button>
                 }
             />
         );
@@ -117,6 +108,7 @@ export const RecoveryStep = () => {
                 })}
                 device={device}
                 isActionAbortable={isActionAbortable}
+                isConfirmedOnDevice
             />
         );
     }
@@ -138,9 +130,8 @@ export const RecoveryStep = () => {
         };
 
         return (
-            <InProgressRecoveryStepBox
+            <RecoveryStepBox
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                $deviceModelInternal={deviceModelInternal}
                 device={device}
                 description={pickByDeviceModel(deviceModelInternal, {
                     default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
@@ -149,9 +140,10 @@ export const RecoveryStep = () => {
                     [DeviceModelInternal.T3B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 isActionAbortable
+                isConfirmedOnDevice
             >
-                <SelectRecoveryWord />
-            </InProgressRecoveryStepBox>
+                {deviceModelInternal === DeviceModelInternal.T1B1 && <SelectRecoveryWord />}
+            </RecoveryStepBox>
         );
     }
 
@@ -163,12 +155,12 @@ export const RecoveryStep = () => {
             <RecoveryStepBox
                 heading={<Translation id="TR_WALLET_RECOVERED_FROM_SEED" />}
                 innerActions={
-                    <OnboardingButtonCta
+                    <OnboardingCard.Button
                         data-testid="@onboarding/recovery/continue-button"
                         onClick={handleClick}
                     >
                         <Translation id="TR_CONTINUE" />
-                    </OnboardingButtonCta>
+                    </OnboardingCard.Button>
                 }
             />
         );
@@ -180,7 +172,7 @@ export const RecoveryStep = () => {
                 heading={<Translation id="TR_RECOVERY_FAILED" />}
                 description={<Translation id="TR_RECOVERY_ERROR" values={{ error }} />}
                 innerActions={
-                    <OnboardingButtonCta
+                    <OnboardingCard.Button
                         data-testid="@onboarding/recovery/retry-button"
                         onClick={
                             deviceModelInternal === DeviceModelInternal.T1B1
@@ -189,7 +181,7 @@ export const RecoveryStep = () => {
                         }
                     >
                         <Translation id="TR_RETRY" />
-                    </OnboardingButtonCta>
+                    </OnboardingCard.Button>
                 }
             />
         );

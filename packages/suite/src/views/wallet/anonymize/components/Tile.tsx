@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Card, Image, PngImage, variables } from '@trezor/components';
+import { Card, IconCircle, IconName, variables } from '@trezor/components';
 
 const containerGridStyle = css`
     display: grid;
@@ -32,8 +32,7 @@ const imageGridStyle = css`
     grid-row: 1/3;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
+const Image = styled.div`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${imageGridStyle}
     }
@@ -105,13 +104,15 @@ const Description = styled.p`
 
 export interface TileProps {
     description: ReactNode;
-    image: PngImage;
+    iconName: IconName;
     title: ReactNode;
 }
 
-export const Tile = ({ description, image, title }: TileProps) => (
+export const Tile = ({ description, iconName, title }: TileProps) => (
     <Container>
-        <StyledImage image={image} height={72} />
+        <Image>
+            <IconCircle name={iconName} size={72} />
+        </Image>
         <Title>{title}</Title>
         <Description>{description}</Description>
     </Container>

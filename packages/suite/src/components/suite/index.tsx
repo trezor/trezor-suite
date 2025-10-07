@@ -44,7 +44,6 @@ import { TorLoader } from './TorLoader/TorLoader';
 import { CountdownTimer } from './CountdownTimer';
 import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
-import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
 import { Preloader } from './Preloader/Preloader';
 import { TrafficLightDraggableWindowHeader } from './TrafficLightOffset';
 import { PinMatrix } from './PinMatrix/PinMatrix';
@@ -96,7 +95,6 @@ export {
     CountdownTimer,
     QrCode,
     CoinBalance,
-    DeviceAuthenticationExplainer,
     Preloader,
     TrafficLightDraggableWindowHeader,
     PinMatrix,

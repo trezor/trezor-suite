@@ -97,7 +97,7 @@ const DeviceCompromisedContent = () => {
 
 export const DeviceCompromised = () => (
     <WelcomeLayout showAccounts={false}>
-        <Card data-testid="@device-compromised">
+        <Card data-testid="@device-compromised" paddingType="large">
             <DeviceCompromisedContent />
         </Card>
     </WelcomeLayout>

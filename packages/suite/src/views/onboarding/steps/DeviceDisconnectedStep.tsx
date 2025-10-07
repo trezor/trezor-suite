@@ -1,11 +1,11 @@
-import { OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { PrerequisitesGuide } from 'src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
 
 export const DeviceDisconnectedStep = () => (
-    <OnboardingStepBox image="CONNECT_DEVICE" device={undefined}>
+    <OnboardingCard iconName="plugsConnected" device={undefined}>
         <PrerequisitesGuide
             // Onboarding is small (vertically) so we hide the image to make it fit
             showDeviceImage={false}
         />
-    </OnboardingStepBox>
+    </OnboardingCard>
 );

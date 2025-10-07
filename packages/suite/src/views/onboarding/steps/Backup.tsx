@@ -1,33 +1,21 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Image } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { backupDevice } from 'src/actions/backup/backupActions';
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { BackupSeedCards } from 'src/components/backup';
-import {
-    OnboardingButtonCta,
-    OnboardingButtonSkip,
-    OnboardingStepBox,
-    OptionsWrapper,
-    SkipStepConfirmation,
-} from 'src/components/onboarding';
+import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
+import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectBackup, selectBackupStatus } from 'src/reducers/backup/backupReducer';
 import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { canContinue } from 'src/utils/backup';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    flex: 1;
-`;
 
 export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -64,83 +52,89 @@ export const BackupStep = () => {
         dispatch(goto('settings-device', { anchor: SettingsAnchor.WipeDevice }));
     };
 
+    const getContent = () => {
+        switch (backupStatus) {
+            case 'initial':
+                return (
+                    <OnboardingCard
+                        iconName="trezorBackup"
+                        heading={<Translation id="TR_CREATE_BACKUP" />}
+                        description={<Translation id="TR_ONBOARDING_BACKUP_SUBHEADING" />}
+                        innerActions={
+                            <OnboardingCard.Button
+                                data-testid="@backup/start-button"
+                                onClick={handleBackup}
+                                isDisabled={!canContinue(backup.userConfirmed, isDeviceLocked)}
+                            >
+                                <Translation id="TR_START_BACKUP" />
+                            </OnboardingCard.Button>
+                        }
+                        outerActions={
+                            <OnboardingCard.SecondaryButton
+                                data-testid="@onboarding/exit-app-button"
+                                onClick={handleSkip}
+                            >
+                                <Translation id="TR_SKIP_BACKUP" />
+                            </OnboardingCard.SecondaryButton>
+                        }
+                    >
+                        <BackupSeedCards />
+                    </OnboardingCard>
+                );
+            case 'in-progress':
+                return (
+                    <OnboardingCard
+                        iconName="trezorBackup"
+                        heading={<Translation id="TR_CREATE_BACKUP" />}
+                        description={<Translation id="TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP" />}
+                        device={device}
+                        isConfirmedOnDevice
+                        isActionAbortable={isActionAbortable}
+                    />
+                );
+            case 'finished':
+                return (
+                    <OnboardingCard
+                        iconName="check"
+                        heading={<Translation id="TR_BACKUP_CREATED" />}
+                        description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
+                        innerActions={
+                            <OnboardingCard.Button
+                                data-testid="@backup/close-button"
+                                onClick={() => dispatch(goToNextStep())}
+                                isDisabled={!canContinue(backup.userConfirmed)}
+                            >
+                                <Translation id="TR_BACKUP_FINISHED_BUTTON" />
+                            </OnboardingCard.Button>
+                        }
+                    />
+                );
+            case 'error':
+                return (
+                    <OnboardingCard
+                        iconName="trezorBackup"
+                        heading={<Translation id="TOAST_BACKUP_FAILED" />}
+                        description={
+                            <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
+                        }
+                        innerActions={
+                            <OnboardingCard.Button onClick={handleResetOnboarding}>
+                                <Translation id="TR_GO_TO_SETTINGS" />
+                            </OnboardingCard.Button>
+                        }
+                    />
+                );
+            default:
+                return exhaustive(backupStatus);
+        }
+    };
+
     return (
         <>
             {showSkipConfirmation && (
                 <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
-            {backupStatus === 'initial' && (
-                <OnboardingStepBox
-                    image="BACKUP"
-                    heading={<Translation id="TR_CREATE_BACKUP" />}
-                    description={<Translation id="TR_ONBOARDING_BACKUP_SUBHEADING" />}
-                    innerActions={
-                        <OnboardingButtonCta
-                            data-testid="@backup/start-button"
-                            onClick={handleBackup}
-                            isDisabled={!canContinue(backup.userConfirmed, isDeviceLocked)}
-                        >
-                            <Translation id="TR_START_BACKUP" />
-                        </OnboardingButtonCta>
-                    }
-                    outerActions={
-                        <OnboardingButtonSkip
-                            data-testid="@onboarding/exit-app-button"
-                            onClick={handleSkip}
-                        >
-                            <Translation id="TR_SKIP_BACKUP" />
-                        </OnboardingButtonSkip>
-                    }
-                >
-                    <OptionsWrapper>
-                        <BackupSeedCards />
-                    </OptionsWrapper>
-                </OnboardingStepBox>
-            )}
-            {backupStatus === 'in-progress' && (
-                <OnboardingStepBox
-                    image="BACKUP"
-                    heading={<Translation id="TR_CREATE_BACKUP" />}
-                    description={<Translation id="TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP" />}
-                    device={device}
-                    isActionAbortable={isActionAbortable}
-                />
-            )}
-
-            {backupStatus === 'finished' && (
-                <OnboardingStepBox
-                    image="BACKUP"
-                    heading={<Translation id="TR_BACKUP_CREATED" />}
-                    description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
-                    innerActions={
-                        <OnboardingButtonCta
-                            data-testid="@backup/close-button"
-                            onClick={() => dispatch(goToNextStep())}
-                            isDisabled={!canContinue(backup.userConfirmed)}
-                        >
-                            <Translation id="TR_BACKUP_FINISHED_BUTTON" />
-                        </OnboardingButtonCta>
-                    }
-                />
-            )}
-            {backupStatus === 'error' && (
-                <OnboardingStepBox
-                    image="BACKUP"
-                    heading={<Translation id="TOAST_BACKUP_FAILED" />}
-                    description={
-                        <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
-                    }
-                    innerActions={
-                        <OnboardingButtonCta onClick={handleResetOnboarding}>
-                            <Translation id="TR_GO_TO_SETTINGS" />
-                        </OnboardingButtonCta>
-                    }
-                >
-                    <OptionsWrapper $fullWidth={false}>
-                        <StyledImage image="UNI_ERROR" />
-                    </OptionsWrapper>
-                </OnboardingStepBox>
-            )}
+            {getContent()}
         </>
     );
 };
