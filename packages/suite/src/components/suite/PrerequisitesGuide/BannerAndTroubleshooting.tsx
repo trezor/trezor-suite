@@ -30,7 +30,6 @@ const getComponent = (prerequisite: PrerequisiteType | null) => {
         case 'device-disconnected':
             return <DeviceConnect />;
         case 'device-unacquired':
-        case 'device-busy':
             return <DeviceAcquire />;
         case 'device-thp-locked':
             return <DeviceTrezorHostProtocolPair />;
