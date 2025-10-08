@@ -2,6 +2,7 @@ import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
 import { exchangeThunks, tradingThunks } from '../';
@@ -102,7 +103,8 @@ export const sendDexTransactionThunk = createThunk<
                 amount: selectedQuote.dexTx.value,
                 destinationTag: selectedQuote.partnerPaymentExtraId,
                 recalculateCustomLimit: true,
-                ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
+                ethereumAdjustGasLimit:
+                    selectedQuote.status === 'CONFIRM' ? ETHEREUM_ADJUST_GAS_LIMIT : undefined,
                 setMaxOutputId,
                 signAndPushSendFormTransaction,
                 tradingFormState,
