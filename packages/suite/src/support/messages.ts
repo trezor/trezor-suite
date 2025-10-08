@@ -3035,6 +3035,10 @@ export default defineMessages({
         defaultMessage: 'Tokens',
         id: 'TR_NAV_TOKENS',
     },
+    TR_NAV_INACTIVE_TOKENS: {
+        defaultMessage: 'Inactive tokens',
+        id: 'TR_NAV_INACTIVE_TOKENS',
+    },
     TR_NAV_COLLECTIONS: {
         defaultMessage: 'Collections',
         id: 'TR_NAV_COLLECTIONS',
@@ -4544,6 +4548,23 @@ export default defineMessages({
         id: 'TR_INACTIVE_COINS',
         defaultMessage: 'Available assets to activate',
     },
+    TR_ACTIVATE: {
+        id: 'TR_ACTIVATE',
+        defaultMessage: 'Activate',
+    },
+    TR_ACTIVATE_TOKEN: {
+        id: 'TR_ACTIVATE_TOKEN',
+        defaultMessage: 'Activate {token}',
+    },
+    TR_TOKEN_ACTIVATION_DESCRIPTION: {
+        id: 'TR_TOKEN_ACTIVATION_DESCRIPTION',
+        defaultMessage:
+            'To receive {token} on the {network} network, you must first activate the asset. Doing so will increase your reserved balance by {reserve}.',
+    },
+    TR_INACTIVE_TOKENS_EMPTY: {
+        id: 'TR_INACTIVE_TOKENS_EMPTY',
+        defaultMessage: 'No inactive tokens',
+    },
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Activate assets',
@@ -5626,6 +5647,14 @@ export default defineMessages({
     TR_TOKEN: {
         id: 'TR_TOKEN',
         defaultMessage: 'Token',
+    },
+    TR_ISSUER: {
+        id: 'TR_ISSUER',
+        defaultMessage: 'Issuer',
+    },
+    TR_ISSUER_ADDRESS: {
+        id: 'TR_ISSUER_ADDRESS',
+        defaultMessage: 'Issuer address',
     },
     TR_TOKENS: {
         id: 'TR_TOKENS',
@@ -10942,5 +10971,9 @@ export default defineMessages({
     TR_PUBLIC_KEYS: {
         id: 'TR_PUBLIC_KEYS',
         defaultMessage: 'Public keys',
+    },
+    TR_ERROR_LOADING_TOKENS: {
+        id: 'TR_ERROR_LOADING_TOKENS',
+        defaultMessage: 'Failed to load tokens',
     },
 } as const);
