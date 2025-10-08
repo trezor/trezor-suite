@@ -1,4 +1,4 @@
-import { isDeviceWithButtons } from '@suite-common/suite-utils';
+import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -58,7 +58,7 @@ export const RecoveryStep = () => {
                 description={
                     <Translation
                         id={
-                            isDeviceWithButtons(deviceModelInternal)
+                            isDeviceWithButtonOnlyNoTouchscreen(deviceModelInternal)
                                 ? 'TR_RECOVER_SUBHEADING_BUTTONS'
                                 : 'TR_RECOVER_SUBHEADING_TOUCH'
                         }
