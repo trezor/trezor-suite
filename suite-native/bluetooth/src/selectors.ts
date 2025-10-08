@@ -28,10 +28,8 @@ export const selectHasKnownBluetoothDevices = createMemoizedSelector(
     knownBluetoothDevices => knownBluetoothDevices.length > 0,
 );
 
-export const selectNearbyBluetoothDevices = createMemoizedSelector(
-    [selectNearbyDevices],
-    nearbyDevices => nearbyDevices ?? [],
-);
+export const selectNearbyBluetoothDevices = (state: NativeBluetoothRootState) =>
+    selectNearbyDevices(state);
 
 export const selectNearbyPairableBluetoothDevices = createMemoizedSelector(
     [selectNearbyBluetoothDevices, selectKnownBluetoothDevices],
