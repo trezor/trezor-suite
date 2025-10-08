@@ -45,10 +45,3 @@ export const ConnectDeviceReceivePromo = () => (
         description={<Translation id="TR_CONNECT_DEVICE_RECEIVE_PROMO_DESCRIPTION" />}
     />
 );
-
-export const ConnectDeviceSendPromo = () => (
-    <ConnectDevicePromo
-        title={<Translation id="TR_CONNECT_DEVICE_SEND_PROMO_TITLE" />}
-        description={<Translation id="TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION" />}
-    />
-);

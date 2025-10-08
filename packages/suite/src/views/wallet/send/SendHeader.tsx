@@ -8,9 +8,8 @@ import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { Translation } from 'src/components/suite/Translation';
 import { WalletSubpageHeading } from 'src/components/wallet';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { ConnectDeviceSendPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const ClearButton = styled(Button)`
@@ -19,7 +18,6 @@ const ClearButton = styled(Button)`
 
 export const SendHeader = () => {
     const dispatch = useDispatch();
-    const { device } = useDevice();
     const {
         outputs,
         control,
@@ -98,7 +96,6 @@ export const SendHeader = () => {
             label: <Translation id="SEND_RAW" />,
         },
     ];
-    const isDeviceConnected = device?.connected && device?.available;
 
     return (
         <>
@@ -120,7 +117,6 @@ export const SendHeader = () => {
                     items={options}
                 />
             </WalletSubpageHeading>
-            {!isDeviceConnected && <ConnectDeviceSendPromo />}
         </>
     );
 };
