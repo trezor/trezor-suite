@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal, ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,
@@ -199,7 +199,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     return (
         <Modal.Backdrop onClick={isDeviceStep ? undefined : handleCancel}>
             {isDeviceStep && (
-                <ConfirmOnDevice
+                <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={device.features?.internal_model}
                     deviceUnitColor={device?.features?.unit_color}

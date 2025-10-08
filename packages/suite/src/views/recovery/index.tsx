@@ -6,7 +6,7 @@ import { usePin } from '@suite-common/wallet-core';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import {
@@ -259,7 +259,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     return (
         <Modal.Backdrop>
             {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) && (
-                <ConfirmOnDevice
+                <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={device.features.internal_model}
                     deviceUnitColor={device.features.unit_color}

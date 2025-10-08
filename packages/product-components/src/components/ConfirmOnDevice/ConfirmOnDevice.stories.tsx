@@ -4,7 +4,7 @@ import { StoryColumn } from '@trezor/components';
 // todo: product-components should not depend on protobuf
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
+import { ConfirmOnDevicePill as ConfirmOnDeviceComponent } from './ConfirmOnDevicePill';
 
 const meta: Meta = {
     title: 'ConfirmOnDevice',

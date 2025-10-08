@@ -5,7 +5,7 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Column, H2, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { DeviceConfirmImage } from 'src/components/suite';
@@ -39,7 +39,7 @@ export const ConfirmActionModal = ({
             data-testid="@suite/modal/confirm-action-on-device"
             canSwitchDevice
         >
-            <ConfirmOnDevice
+            <ConfirmOnDevicePill
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={getDeviceInternalModel(device)}
                 deviceUnitColor={getDeviceColorVariant(device)}

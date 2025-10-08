@@ -1,7 +1,7 @@
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Card, Modal } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { Fingerprint } from 'src/components/firmware';
 import { Translation } from 'src/components/suite/Translation';
@@ -13,7 +13,7 @@ type ConfirmFingerprintProps = {
 
 export const ConfirmFingerprintModal = ({ device }: ConfirmFingerprintProps) => (
     <Modal.Backdrop>
-        <ConfirmOnDevice
+        <ConfirmOnDevicePill
             title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
             deviceModelInternal={getDeviceInternalModel(device)}
             deviceUnitColor={getDeviceColorVariant(device)}

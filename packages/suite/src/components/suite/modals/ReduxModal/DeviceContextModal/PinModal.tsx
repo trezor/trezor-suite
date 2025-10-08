@@ -1,6 +1,6 @@
 import { usePin } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { PinMatrix } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -42,7 +42,7 @@ export const PinModal = ({ device }: PinModalProps) => {
 
     return (
         <Modal.Backdrop>
-            <ConfirmOnDevice
+            <ConfirmOnDevicePill
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}

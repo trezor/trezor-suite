@@ -24,7 +24,7 @@ import {
 } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
+import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -112,7 +112,7 @@ export const ConfirmValueModal = ({
     return (
         <Modal.Backdrop onClick={isCancelable ? onCancel : undefined}>
             {canConfirmOnDevice && (
-                <ConfirmOnDevice
+                <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={getDeviceInternalModel(device)}
                     deviceUnitColor={getDeviceColorVariant(device)}

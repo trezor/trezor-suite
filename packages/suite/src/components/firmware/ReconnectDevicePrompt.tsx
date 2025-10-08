@@ -6,7 +6,7 @@ import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, H2, Modal, Paragraph } from '@trezor/components';
 import { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
-import { ConfirmOnDevice, DeviceAnimation } from '@trezor/product-components';
+import { ConfirmOnDevicePill, DeviceAnimation } from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -143,7 +143,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     return (
         <Modal.Backdrop onClick={isAbortable ? onClose : undefined}>
             {!isManualRebootRequired && !isRebootDone && (
-                <ConfirmOnDevice
+                <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={deviceModelInternal}
                     deviceUnitColor={device?.features?.unit_color}

@@ -10,7 +10,7 @@ import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { ConfirmOnDevice, mapTrezorModelToIcon } from '@trezor/product-components';
+import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -63,7 +63,7 @@ export const ConnectAddressConfirmation = () => {
 
     return (
         <ConnectModalBackdrop onClick={onFinish} canSwitchDevice={!popupCall.exported}>
-            <ConfirmOnDevice
+            <ConfirmOnDevicePill
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device?.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
