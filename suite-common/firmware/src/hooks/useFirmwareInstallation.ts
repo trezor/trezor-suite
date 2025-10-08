@@ -143,6 +143,9 @@ export const useFirmwareInstallation = (
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
     const deviceIsWaitingForConfirmationToConnectToHost =
         reconnectEvent?.method === 'auto' && reconnectEvent.target === 'bootloader';
+    const pinRequested = Boolean(
+        buttonEvent?.code && ['ButtonRequest_PinEntry'].includes(buttonEvent.code),
+    );
 
     const showReconnectPrompt =
         shouldShowReconnectPrompt({
@@ -151,7 +154,8 @@ export const useFirmwareInstallation = (
             originalDevice,
         }) ||
         showManualReconnectPrompt ||
-        deviceIsWaitingForConfirmationToConnectToHost;
+        deviceIsWaitingForConfirmationToConnectToHost ||
+        pinRequested;
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
         originalDevice,
@@ -164,10 +168,8 @@ export const useFirmwareInstallation = (
         // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
         // after ReconnectDevicePrompt is closed and user selects the option to install firmware while in bootloader.
         // Also, in case the device is PIN-locked at the start of the process.
-        (buttonEvent?.code &&
-            ['ButtonRequest_FirmwareUpdate', 'ButtonRequest_PinEntry'].includes(
-                buttonEvent.code,
-            )) ||
+        (buttonEvent?.code && ['ButtonRequest_FirmwareUpdate'].includes(buttonEvent.code)) ||
+        pinRequested ||
         // Show the confirmation pill right after ReconnectDevicePrompt is closed while using the "wait" or "manual" method,
         // before the user selects the option to install firmware while in bootloader
         // When a PIN-protected device reconnects to normal mode after installation, PIN is requested and the pill is shown.
@@ -214,7 +216,7 @@ export const useFirmwareInstallation = (
         }
 
         return { operation: null, progress: 0 };
-    }, [isThpInProgress, firmware.status, reconnectEvent, progressEvent]);
+    }, [isThpInProgress, firmware.status, progressEvent, reconnectEvent?.method]);
 
     const targetFirmwareType = useMemo(() => {
         const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
