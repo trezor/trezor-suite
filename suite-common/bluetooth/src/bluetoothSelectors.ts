@@ -1,4 +1,4 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 import { BluetoothState } from './bluetoothReducer';
 import { BluetoothDeviceCommon } from './types';
@@ -16,7 +16,7 @@ export const selectKnownDevices = <T extends BluetoothDeviceCommon>(state: WithB
 
 export const selectNearbyDevices = <T extends BluetoothDeviceCommon>(
     state: WithBluetoothState<T>,
-) => state.bluetooth.nearbyDevices ?? [];
+) => returnStableArrayIfEmpty(state.bluetooth.nearbyDevices ?? []);
 
 /**
  * We need to have generic `createWeakMapSelector.withTypes` so we need to wrap it into Higher Order Function,
