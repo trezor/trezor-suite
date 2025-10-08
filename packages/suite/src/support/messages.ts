@@ -5059,6 +5059,15 @@ export default defineMessages({
         defaultMessage:
             'Your device has firmware that is no longer supported. You will need to update it.',
     },
+    FW_CORRUPTED_REINSTALL_REQUIRED: {
+        id: 'FW_CORRUPTED_REINSTALL_REQUIRED',
+        defaultMessage: 'Firmware installation is corrupted',
+    },
+    TR_FIRMWARE_CORRUPTED_REQUIRED_EXPLAINED: {
+        id: 'TR_FIRMWARE_CORRUPTED_REQUIRED_EXPLAINED',
+        defaultMessage:
+            'The firmware installation was probably abruptly stopped. Reinstall the firmware to fix the issue.',
+    },
     TR_DEVICE_IN_BOOTLOADER: {
         id: 'TR_DEVICE_IN_BOOTLOADER',
         defaultMessage: 'The device is in bootloader mode.',
