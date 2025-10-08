@@ -4,6 +4,7 @@ import { DeviceAcquire } from './DeviceAcquire';
 import { DeviceBootloader } from './DeviceBootloader';
 import { DeviceConnect } from './DeviceConnect';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
+import { DeviceFirmwareCorrupted } from './DeviceFirmwareCorrupted';
 import { DeviceInitialize } from './DeviceInitialize';
 import { DeviceNoFirmware } from './DeviceNoFirmware';
 import { DeviceRecoveryMode } from './DeviceRecoveryMode';
@@ -49,8 +50,9 @@ const getComponent = (prerequisite: PrerequisiteType | null) => {
             return <DeviceBootloader />;
         case 'firmware-missing':
             return <DeviceNoFirmware />;
-        case 'firmware-required':
         case 'firmware-corrupted':
+            return <DeviceFirmwareCorrupted />;
+        case 'firmware-required':
             return <DeviceUpdateRequired />;
         case 'multi-share-backup-in-progress':
             return <MultiShareBackupInProgress />;
