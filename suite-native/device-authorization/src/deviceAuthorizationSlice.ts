@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import { isPinButtonRequestCode } from './utils';
+import { isPinButtonRequestCode, isPinRequestAction } from './utils';
 
 export type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
@@ -48,17 +48,15 @@ export const deviceAuthorizationSlice = createSlice({
                 state.hasDeviceRequestedPassphrase = true;
             })
             .addCase(UI.REQUEST_BUTTON, (state, action) => {
-                if (isPinButtonRequestCode(action)) {
-                    state.hasDeviceRequestedPin = true;
-                } else {
+                if (!isPinButtonRequestCode(action)) {
                     state.hasDeviceRequestedPin = false;
                 }
 
                 // @ts-expect-error Actions are not typed properly
-                if (action.payload.code !== 'ButtonRequest_Other') {
-                    state.hasDeviceRequestedPassphrase = false;
-                } else {
+                if (action.payload.code === 'ButtonRequest_Other') {
                     state.checkPassphraseOnDevice = true;
+                } else {
+                    state.hasDeviceRequestedPassphrase = false;
                 }
 
                 // @ts-expect-error Actions are not typed properly
@@ -74,6 +72,9 @@ export const deviceAuthorizationSlice = createSlice({
             })
             .addCase(UI.REQUEST_PASSPHRASE_ON_DEVICE, state => {
                 state.inputPassphraseOnDevice = true;
+            })
+            .addMatcher(isPinRequestAction, state => {
+                state.hasDeviceRequestedPin = true;
             });
     },
 });

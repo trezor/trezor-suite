@@ -230,7 +230,7 @@ deviceConnectionMiddleware.startListening({
 });
 
 deviceConnectionMiddleware.startListening({
-    predicate: (action: UnknownAction) => isThpPairingUIRequestButtonAction(action),
+    predicate: isThpPairingUIRequestButtonAction,
     effect: (_action: UnknownAction, { getState }) => {
         if (selectIsFirmwareInstallationRunning(getState())) return;
 

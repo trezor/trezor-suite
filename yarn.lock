@@ -11525,6 +11525,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-authorization@workspace:suite-native/device-authorization"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.17"
     "@reduxjs/toolkit": "npm:2.9.1"
     "@suite-common/bluetooth": "workspace:*"

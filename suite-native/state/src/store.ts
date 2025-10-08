@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { blockchainMiddleware } from '@suite-native/blockchain';
 import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
+import { deviceAuthorizationMiddleware } from '@suite-native/device-authorization';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
@@ -28,6 +29,7 @@ const middlewares: Middleware[] = [
     prepareDeviceMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
     sendFormMiddleware,
+    deviceAuthorizationMiddleware,
     prepareTradingMiddleware(extraDependencies),
     preparePushNotificationMiddleware(extraDependencies),
 ];
