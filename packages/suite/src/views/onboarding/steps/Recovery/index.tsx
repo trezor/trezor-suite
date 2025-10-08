@@ -1,3 +1,4 @@
+import { TranslationKey } from '@suite-common/intl-types';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -32,6 +33,9 @@ export const RecoveryStep = () => {
     }
 
     const deviceModelInternal = device.features.internal_model;
+    const subheadingKey: TranslationKey = isDeviceWithButtonOnlyNoTouchscreen(deviceModelInternal)
+        ? 'TR_RECOVER_SUBHEADING_BUTTONS'
+        : 'TR_RECOVER_SUBHEADING_TOUCH';
 
     if (status === 'initial') {
         // 1. step where users chooses number of words in case of T1B1.
@@ -55,15 +59,7 @@ export const RecoveryStep = () => {
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                description={
-                    <Translation
-                        id={
-                            isDeviceWithButtonOnlyNoTouchscreen(deviceModelInternal)
-                                ? 'TR_RECOVER_SUBHEADING_BUTTONS'
-                                : 'TR_RECOVER_SUBHEADING_TOUCH'
-                        }
-                    />
-                }
+                description={<Translation id={subheadingKey} />}
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/start-button"
@@ -94,26 +90,16 @@ export const RecoveryStep = () => {
         );
     }
 
-    const subheadingTouch = <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />;
-    const subheadingButtons = <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />;
-
     if (status === 'waiting-for-confirmation') {
-        // Todo: replace some feature/capability to signal, if device is button/touch
-        const descriptionMap: Record<DeviceModelInternal, ReactNode> = {
-            T1B1: null,
-            T2B1: subheadingButtons,
-            T2T1: subheadingTouch,
-            T3B1: subheadingButtons,
-            T3T1: subheadingTouch,
-            T3W1: subheadingTouch,
-            UNKNOWN: subheadingTouch,
-        };
-
         // On T1B1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                description={descriptionMap[deviceModelInternal]}
+                description={
+                    deviceModelInternal === DeviceModelInternal.T1B1 ? null : (
+                        <Translation id={subheadingKey} />
+                    )
+                }
                 device={device}
                 isActionAbortable={isActionAbortable}
                 isConfirmedOnDevice
@@ -137,22 +123,17 @@ export const RecoveryStep = () => {
             }
         };
 
-        const descriptionMap: Record<DeviceModelInternal, ReactNode> = {
-            // Todo: replace some feature/capability to signal, if device is button/touch
-            T1B1: getModel1Description(),
-            T2B1: subheadingButtons,
-            T2T1: subheadingTouch,
-            T3B1: subheadingButtons,
-            T3T1: subheadingTouch,
-            T3W1: subheadingTouch,
-            UNKNOWN: subheadingTouch,
-        };
-
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 device={device}
-                description={descriptionMap[deviceModelInternal]}
+                description={
+                    deviceModelInternal === DeviceModelInternal.T1B1 ? (
+                        getModel1Description()
+                    ) : (
+                        <Translation id={subheadingKey} />
+                    )
+                }
                 isActionAbortable
                 isConfirmedOnDevice
             >
