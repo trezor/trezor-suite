@@ -69,7 +69,7 @@ export const AccountItemsGroup = ({
         ? BASE_CURRENCY_ZERO
         : getAccountTokensFiatBalance(account, baseCurrencyCode, rates, tokens);
 
-    const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden'];
+    const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden', 'wallet-tokens-inactive'];
 
     return (
         <Section $selected={selected} $isSidebarCollapsed={isSidebarCollapsed}>

@@ -14,6 +14,7 @@ import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { TokensNavigation } from './TokensNavigation';
 import { CoinsTable } from './coins/CoinsTable';
 import { HiddenTokensTable } from './hidden-tokens/HiddenTokensTable';
+import { InactiveTokensTable } from './inactive-tokens/InactiveTokensTable';
 
 export const Tokens = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -45,13 +46,17 @@ export const Tokens = () => {
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
                 />
-                <Route
-                    name="wallet-tokens-hidden"
-                    fallback={
-                        <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
-                    }
-                >
+                <Route name="wallet-tokens">
+                    <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
+                </Route>
+                <Route name="wallet-tokens-hidden">
                     <HiddenTokensTable
+                        selectedAccount={selectedAccount}
+                        searchQuery={searchQuery}
+                    />
+                </Route>
+                <Route name="wallet-tokens-inactive">
+                    <InactiveTokensTable
                         selectedAccount={selectedAccount}
                         searchQuery={searchQuery}
                     />
