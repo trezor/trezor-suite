@@ -9,6 +9,7 @@ import {
     FormStateTradingFiatCurrency,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { AssetLogo, Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
 import { mapPaddingTypeToPadding } from '@trezor/components/src/components/Card/utils';
 import { CoinLogo } from '@trezor/product-components';
@@ -61,9 +62,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
                         <AssetLogo
                             size={20}
                             coingeckoId={network.coingeckoId}
-                            contractAddress={
-                                symbol && contractAddress ? contractAddress : undefined
-                            }
+                            contractAddress={getAssetLogoContractAddresses(symbol, contractAddress)}
                             placeholder={displaySymbol ?? ''}
                         />
                     ) : (

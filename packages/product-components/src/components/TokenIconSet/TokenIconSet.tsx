@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetLogo, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
@@ -41,27 +43,30 @@ export const TokenIconSet = ({ symbol, tokens }: TokenIconSetProps) => {
     const { elevation } = useElevation();
     const { length } = tokens;
 
+    const visibleTokensContent = useMemo(() => {
+        const visibleTokens = tokens.slice(0, 3).reverse();
+        const coingeckoId = getCoingeckoId(symbol);
+
+        return visibleTokens?.map(token => (
+            <AssetLogo
+                key={token.contract}
+                size={20}
+                coingeckoId={coingeckoId ?? ''}
+                contractAddress={getAssetLogoContractAddresses(symbol, token.contract)}
+                placeholder={token.symbol?.toUpperCase() ?? ''}
+                placeholderWithTooltip={false}
+            />
+        ));
+    }, [symbol, tokens]);
+
     if (length === 0) {
         return null;
     }
 
-    const visibleTokens = tokens.slice(0, 3).reverse();
-
-    const coingeckoId = getCoingeckoId(symbol);
-
     return (
         <IconContainer $length={length}>
             {length > 3 && <TokenIconPlaceholder $elevation={elevation} />}
-            {visibleTokens.map(token => (
-                <AssetLogo
-                    key={token.contract}
-                    size={20}
-                    coingeckoId={coingeckoId ?? ''}
-                    contractAddress={getContractAddressForNetworkSymbol(symbol, token.contract)}
-                    placeholder={token.symbol?.toUpperCase() ?? ''}
-                    placeholderWithTooltip={false}
-                />
-            ))}
+            {visibleTokensContent}
         </IconContainer>
     );
 };

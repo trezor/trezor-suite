@@ -32,6 +32,21 @@ export const getContractAddressForNetworkSymbol = (
     }
 };
 
+export const getAssetLogoContractAddresses = (
+    symbol: NetworkSymbolExtended | undefined,
+    contract: string | null | undefined,
+) => {
+    if (!contract || !symbol) return undefined;
+
+    if (symbol === 'ada') {
+        const policyId = getContractAddressForNetworkSymbol(symbol, contract);
+
+        return [policyId, contract];
+    }
+
+    return [getContractAddressForNetworkSymbol(symbol, contract)];
+};
+
 export const getTokenExplorerUrl = (
     explorer: Explorer,
     networkType: NetworkType,
