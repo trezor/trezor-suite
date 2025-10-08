@@ -8,7 +8,6 @@ import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/com
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
-import { pickByDeviceModel } from 'src/utils/device/modelUtils';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
@@ -95,17 +94,26 @@ export const RecoveryStep = () => {
         );
     }
 
+    const subheadingTouch = <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />;
+    const subheadingButtons = <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />;
+
     if (status === 'waiting-for-confirmation') {
+        // Todo: replace some feature/capability to signal, if device is button/touch
+        const descriptionMap: Record<DeviceModelInternal, ReactNode> = {
+            T1B1: null,
+            T2B1: subheadingButtons,
+            T2T1: subheadingTouch,
+            T3B1: subheadingButtons,
+            T3T1: subheadingTouch,
+            T3W1: subheadingTouch,
+            UNKNOWN: subheadingTouch,
+        };
+
         // On T1B1 we show confirm bubble only while we wait for confirmation that users wants to start the process
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                description={pickByDeviceModel(deviceModelInternal, {
-                    default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
-                    [DeviceModelInternal.T1B1]: null,
-                    [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
-                    [DeviceModelInternal.T3B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
-                })}
+                description={descriptionMap[deviceModelInternal]}
                 device={device}
                 isActionAbortable={isActionAbortable}
                 isConfirmedOnDevice
@@ -129,16 +137,22 @@ export const RecoveryStep = () => {
             }
         };
 
+        const descriptionMap: Record<DeviceModelInternal, ReactNode> = {
+            // Todo: replace some feature/capability to signal, if device is button/touch
+            T1B1: getModel1Description(),
+            T2B1: subheadingButtons,
+            T2T1: subheadingTouch,
+            T3B1: subheadingButtons,
+            T3T1: subheadingTouch,
+            T3W1: subheadingTouch,
+            UNKNOWN: subheadingTouch,
+        };
+
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 device={device}
-                description={pickByDeviceModel(deviceModelInternal, {
-                    default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
-                    [DeviceModelInternal.T1B1]: getModel1Description(),
-                    [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
-                    [DeviceModelInternal.T3B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
-                })}
+                description={descriptionMap[deviceModelInternal]}
                 isActionAbortable
                 isConfirmedOnDevice
             >
