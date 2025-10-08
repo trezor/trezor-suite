@@ -16,7 +16,7 @@ import {
 } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -72,7 +72,7 @@ export const OnboardingCard = ({
                         zIndex={zIndices.modal}
                         position={{ type: 'absolute', bottom: 'calc(100% + 20px)' }}
                     >
-                        <ConfirmOnDevice
+                        <ConfirmOnDevicePill
                             title={devicePrompt || <Translation id="TR_CONFIRM_ON_TREZOR" />}
                             deviceModelInternal={deviceModelInternal}
                             deviceUnitColor={getDeviceColorVariant(device)}

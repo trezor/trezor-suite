@@ -6,7 +6,7 @@ export {
 } from './components/SelectAssetModal/SelectAssetModal';
 export { SearchAsset } from './components/SelectAssetModal/SearchAsset';
 export { PassphraseTypeCard } from './components/PassphraseTypeCard/PassphraseTypeCard';
-export { ConfirmOnDevice } from './components/ConfirmOnDevice/ConfirmOnDevice';
+export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
 export { mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
 export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';

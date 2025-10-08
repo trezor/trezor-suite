@@ -7,7 +7,7 @@ import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
@@ -172,7 +172,7 @@ export const FirmwareModal = ({
     return (
         <Modal.Backdrop onClick={isCancelable ? handleClose : undefined}>
             {showConfirmationPill && (
-                <ConfirmOnDevice
+                <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={
                         uiEventDevice !== undefined

@@ -6,7 +6,7 @@ import { ElevationUp } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { ConfirmOnDeviceContent } from './ConfirmOnDeviceContent';
+import { ConfirmOnDevicePillContent } from './ConfirmOnDevicePillContent';
 
 enum AnimationDirection {
     Up,
@@ -37,7 +37,7 @@ const Wrapper = styled.div<{ $animation?: AnimationDirection; $isCancelable?: bo
     padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xxl};
     border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
 
     ${({ $isCancelable }) => !$isCancelable && `padding-right: ${spacingsPx.xxl};`}
 
@@ -65,7 +65,7 @@ export interface ConfirmOnDeviceProps {
     deviceUnitColor?: number;
 }
 
-export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) => (
+export const ConfirmOnDevicePill = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) => (
     <Wrapper
         $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
         $isCancelable={!!rest.onCancel}
@@ -73,7 +73,7 @@ export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) 
         onClick={e => e.stopPropagation()}
     >
         <ElevationUp>
-            <ConfirmOnDeviceContent {...rest} />
+            <ConfirmOnDevicePillContent {...rest} />
         </ElevationUp>
     </Wrapper>
 );

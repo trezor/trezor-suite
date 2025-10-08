@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { SerializedTx, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ReviewOutput } from '@suite-common/wallet-types';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -27,7 +27,7 @@ export const TransactionReviewModalConfirmOnDevice = ({
     const offsetReviewStep = reviewStep + 1; // adjust for 0-based index
 
     return (
-        <ConfirmOnDevice
+        <ConfirmOnDevicePill
             title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
             steps={outputs.length + 1}
             activeStep={serializedTx ? outputs.length + 2 : offsetReviewStep}

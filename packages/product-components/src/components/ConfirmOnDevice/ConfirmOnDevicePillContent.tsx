@@ -43,7 +43,7 @@ export interface ConfirmOnDeviceProps {
     deviceUnitColor?: number;
 }
 
-export const ConfirmOnDeviceContent = ({
+export const ConfirmOnDevicePillContent = ({
     title,
     steps = 3,
     activeStep,

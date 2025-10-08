@@ -10,7 +10,7 @@ import {
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
+import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
@@ -81,7 +81,7 @@ export const SignMessageModal = ({
 
     return (
         <ConnectModalBackdrop onClick={onCancel} canSwitchDevice>
-            <ConfirmOnDevice
+            <ConfirmOnDevicePill
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={deviceModelInternal}
                 deviceUnitColor={device?.features?.unit_color}

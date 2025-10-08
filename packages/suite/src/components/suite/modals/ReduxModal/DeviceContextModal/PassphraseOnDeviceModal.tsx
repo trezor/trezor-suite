@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
@@ -39,7 +39,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
 
     return (
         <Modal.Backdrop onClick={onCancel}>
-            <ConfirmOnDevice
+            <ConfirmOnDevicePill
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device?.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
