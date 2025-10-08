@@ -2,7 +2,7 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
-import { regtestDiscoveryFinishedState } from '../fixtures/regtestDiscoveryFinishedState';
+import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onSettings } from '../pageObjects/settingsActions';
@@ -19,7 +19,7 @@ import {
 
 const preloadedState = mergePreloadedReduxState(
     onboardingCompletedState,
-    regtestDiscoveryFinishedState,
+    regtestDiscoveryFinishedStateT3T1,
 );
 
 const navigateToEjectWallets = async () => {

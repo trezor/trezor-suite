@@ -2,9 +2,9 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { PreloadedState } from '@suite-native/state';
 
 /**
- *  reflects state after REGTEST discovery of connected device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.
+ *  reflects state after REGTEST discovery of connected T3T1 device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.
  */
-export const regtestDiscoveryFinishedState: PreloadedState = {
+export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
     appSettings: {
         isCoinEnablingInitFinished: true,
         areTestnetsEnabled: true,
