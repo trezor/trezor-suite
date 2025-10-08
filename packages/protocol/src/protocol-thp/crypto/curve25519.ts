@@ -245,7 +245,8 @@ export function elligator2(point: Uint8Array): Uint8Array {
 
 // https://cr.yp.to/ecdh.html
 // Computing secret keys
-export const getCurve25519KeyPair = (randomPriv: Buffer) => {
+export const getCurve25519KeyPair = (randomBytes: Buffer) => {
+    const randomPriv = Buffer.from(randomBytes);
     randomPriv[0] &= 248;
     randomPriv[31] &= 127;
     randomPriv[31] |= 64;
