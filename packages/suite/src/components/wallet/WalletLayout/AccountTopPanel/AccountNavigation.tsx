@@ -43,7 +43,7 @@ export const AccountNavigation = () => {
                 'solana',
                 ...(isDebugModeActive ? ['stellar'] : []),
             ].includes(networkType),
-            activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden'],
+            activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden', 'wallet-tokens-inactive'],
             'data-testid': '@wallet/menu/wallet-tokens',
         },
         {

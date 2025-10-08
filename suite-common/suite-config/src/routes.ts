@@ -292,6 +292,13 @@ export const routes = [
         isNestedRoute: true,
     },
     {
+        name: 'wallet-tokens-inactive',
+        pattern: '/accounts/tokens/inactive',
+        app: 'wallet',
+        params: walletParams,
+        isNestedRoute: true,
+    },
+    {
         name: 'wallet-nfts',
         pattern: '/accounts/nfts',
         app: 'wallet',
