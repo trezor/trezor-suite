@@ -10899,7 +10899,6 @@ __metadata:
   resolution: "@suite-native/app@workspace:suite-native/app"
   dependencies:
     "@babel/core": "npm:^7.28.0"
-    "@babel/plugin-transform-export-namespace-from": "npm:^7.25.9"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:^1.9.4"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
@@ -10907,7 +10906,6 @@ __metadata:
     "@gorhom/bottom-sheet": "npm:5.1.5"
     "@jest/globals": "npm:^29.7.0"
     "@jest/reporters": "npm:^29.7.0"
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-native-async-storage/async-storage": "npm:2.2.0"
     "@react-native-community/cli": "npm:^15.1.2"
     "@react-native-community/netinfo": "npm:^11.4.1"
@@ -10925,7 +10923,6 @@ __metadata:
     "@sentry/react-native": "npm:6.20.0"
     "@shopify/flash-list": "npm:1.7.6"
     "@shopify/react-native-skia": "npm:2.2.3"
-    "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -10938,18 +10935,15 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
-    "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"
-    "@suite-native/coin-enabling": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/connection-status": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
-    "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -10972,7 +10966,6 @@ __metadata:
     "@suite-native/module-staking-management": "workspace:*"
     "@suite-native/module-trading": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/notifications": "workspace:*"
     "@suite-native/receive": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
@@ -10992,17 +10985,13 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/fast-text-encoding": "npm:^1"
-    "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:22.13.10"
     "@types/react-native-get-random-values": "npm:1.8.2"
     "@walletconnect/react-native-compat": "npm:^2.20.3"
     "@whatwg-node/events": "npm:0.1.2"
     abortcontroller-polyfill: "npm:1.7.8"
     babel-jest: "npm:29.7.0"
-    babel-plugin-transform-inline-environment-variables: "npm:^0.4.4"
     babel-plugin-transform-remove-console: "npm:^6.9.4"
-    buffer: "npm:^6.0.3"
     detox: "npm:^20.40.2"
     dotenv: "npm:^17.2.1"
     event-target-shim: "npm:6.0.2"
@@ -11025,12 +11014,10 @@ __metadata:
     expo-system-ui: "npm:5.0.10"
     expo-updates: "npm:0.28.17"
     expo-video: "npm:2.2.2"
-    fast-text-encoding: "npm:^1.0.6"
     jest: "npm:29.7.0"
     jest-junit: "npm:^16.0.0"
     jotai: "npm:2.13.1"
     lottie-react-native: "npm:7.3.2"
-    metro: "npm:^0.82.0"
     node-libs-browser: "npm:^2.2.1"
     react: "npm:19.0.0"
     react-intl: "npm:^7.1.11"
@@ -12372,7 +12359,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/notifications@workspace:*, @suite-native/notifications@workspace:suite-native/notifications":
+"@suite-native/notifications@workspace:suite-native/notifications":
   version: 0.0.0-use.local
   resolution: "@suite-native/notifications@workspace:suite-native/notifications"
   dependencies:
@@ -15030,13 +15017,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/fast-text-encoding@npm:^1":
-  version: 1.0.3
-  resolution: "@types/fast-text-encoding@npm:1.0.3"
-  checksum: 10/34ec2bbaf3e3ee36b7b74375293becc735378f77e9cd93b810ad988b42991ee80d30fb942e6ba03adfc1f0cb0e2024a0aeee84475847563ed6782e21c4c0f5f0
-  languageName: node
-  linkType: hard
-
 "@types/file-saver@npm:^2.0.6":
   version: 2.0.7
   resolution: "@types/file-saver@npm:2.0.7"
@@ -15241,16 +15221,6 @@ __metadata:
     expect: "npm:^29.0.0"
     pretty-format: "npm:^29.0.0"
   checksum: 10/312e8dcf92cdd5a5847d6426f0940829bca6fe6b5a917248f3d7f7ef5d85c9ce78ef05e47d2bbabc40d41a930e0e36db2d443d2610a9e3db9062da2d5c904211
-  languageName: node
-  linkType: hard
-
-"@types/jest@npm:^29.5.12":
-  version: 29.5.14
-  resolution: "@types/jest@npm:29.5.14"
-  dependencies:
-    expect: "npm:^29.0.0"
-    pretty-format: "npm:^29.0.0"
-  checksum: 10/59ec7a9c4688aae8ee529316c43853468b6034f453d08a2e1064b281af9c81234cec986be796288f1bbb29efe943bc950e70c8fa8faae1e460d50e3cf9760f9b
   languageName: node
   linkType: hard
 
@@ -18202,13 +18172,6 @@ __metadata:
   dependencies:
     "@babel/plugin-syntax-flow": "npm:^7.12.1"
   checksum: 10/fd52aef54448e01948a9d1cca0c8f87d064970c8682458962b7a222c372704bc2ce26ae8109e0ab2566e7ea5106856460f04c1a5ed794ab3bcd2f42cae1d9845
-  languageName: node
-  linkType: hard
-
-"babel-plugin-transform-inline-environment-variables@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "babel-plugin-transform-inline-environment-variables@npm:0.4.4"
-  checksum: 10/fa361287411301237fd8ce332aff4f8e8ccb8db30e87a2ddc7224c8bf7cd792eda47aca24dc2e09e70bce4c027bc8cbe22f4999056be37a25d2472945df21ef5
   languageName: node
   linkType: hard
 
@@ -21725,9 +21688,9 @@ __metadata:
   linkType: hard
 
 "dayjs@npm:^1.11.7, dayjs@npm:^1.8.15":
-  version: 1.11.13
-  resolution: "dayjs@npm:1.11.13"
-  checksum: 10/7374d63ab179b8d909a95e74790def25c8986e329ae989840bacb8b1888be116d20e1c4eee75a69ea0dfbae13172efc50ef85619d304ee7ca3c01d5878b704f5
+  version: 1.11.18
+  resolution: "dayjs@npm:1.11.18"
+  checksum: 10/7d29a90834cf4da2feb437c2f34b8235c3f94493a06d2f1bf9f506f1fa49eadf796f26e1d685b9fe8cb5e75ce6ee067825115e196f1af3d07b3552ff857bfc39
   languageName: node
   linkType: hard
 
@@ -23056,11 +23019,11 @@ __metadata:
   linkType: hard
 
 "envinfo@npm:^7.13.0, envinfo@npm:^7.14.0":
-  version: 7.14.0
-  resolution: "envinfo@npm:7.14.0"
+  version: 7.17.0
+  resolution: "envinfo@npm:7.17.0"
   bin:
     envinfo: dist/cli.js
-  checksum: 10/0d9d711f2b6ae02dec89dd768a3390acbcb99ac50d07f20e635a8d2db68447703476db535483592d1ed4656c3d36eee4883032d71a5118c917b4973e2d4fa027
+  checksum: 10/2a4c264df40a62ac6ce57867a00d6b4cafba02149403eb751b6e46264bba85938fa55bb176693db355fbc502fff77873c2062c4403172f9581883d1ace555e74
   languageName: node
   linkType: hard
 
@@ -25304,7 +25267,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-text-encoding@npm:1.0.6, fast-text-encoding@npm:^1.0.6":
+"fast-text-encoding@npm:1.0.6":
   version: 1.0.6
   resolution: "fast-text-encoding@npm:1.0.6"
   checksum: 10/f7b9e2e7a21e4ae5f4b8d3729850be83fb45052b28c9c38c09b8366463a291d6dc5448359238bdaf87f6a9e907d5895a94319a2c5e0e9f0786859ad6312d1d06
