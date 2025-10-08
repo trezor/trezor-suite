@@ -184,10 +184,6 @@ export const sessionRequestThunk = createThunk<
                 },
             },
         });
-        analytics.report({
-            type: EventType.WalletConnectError,
-            payload: { error: error.message },
-        });
     }
 });
 
@@ -324,16 +320,10 @@ export const sessionProposalApproveThunk = createThunk<
                     origin: pendingProposal.origin,
                 },
             });
-        } catch (error) {
-            console.error(error);
-
+        } catch {
             await walletKit.rejectSession({
                 id: eventId,
                 reason: getSdkError('USER_REJECTED'),
-            });
-            analytics.report({
-                type: EventType.WalletConnectError,
-                payload: { error: error.message },
             });
         }
     },
@@ -430,15 +420,8 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
             analytics.report({
                 type: EventType.WalletConnectPaired,
             });
-        } catch (error) {
-            console.error('WalletKit.pair:', error);
-
-            analytics.report({
-                type: EventType.WalletConnectError,
-                payload: { error: error.message },
-            });
-
-            throw error;
+        } catch {
+            throw new Error('Invalid WalletConnect URI');
         }
     },
 );
