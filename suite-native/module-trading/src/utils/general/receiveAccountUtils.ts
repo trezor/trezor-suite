@@ -32,7 +32,7 @@ export const getReceiveAccountFromAccountAndAddressString = (
         return { account };
     }
 
-    invariant(account.addresses, `Account ${account.key} has no addresses`);
+    invariant(account.addresses, `Account has no addresses`);
 
     const addressPredicate = ({ address }: NonNullable<ReceiveAccount['address']>) =>
         address === receiveAddress;
@@ -41,7 +41,7 @@ export const getReceiveAccountFromAccountAndAddressString = (
         used.find(addressPredicate) ??
         unused.find(addressPredicate) ??
         change.find(addressPredicate);
-    invariant(address, `Address ${receiveAddress} not found in the account ${account.key}`);
+    invariant(address, `Address not found in the account`);
 
     return { account, address };
 };
