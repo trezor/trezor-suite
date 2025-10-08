@@ -24,6 +24,11 @@ export const toStroops = (value: string) => {
     return amount;
 };
 
+export const BASE_INFO = {
+    BASE_RESERVE: toStroops('0.5'), // 0.5 XLM, https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/accounts#base-reserves
+    MINIMUM_RESERVE: toStroops('1'), // 1 XLM
+};
+
 const isoToTimestamp = (isoDate: string): number => {
     const timestamp = Date.parse(isoDate);
 
@@ -203,6 +208,40 @@ export const transformTransaction = (
     return baseTx;
 };
 
+const createTransactionBuilder = (
+    descriptor: string,
+    sequence: string,
+    fee: string,
+    isTestnet = false,
+) => {
+    const source = new Account(descriptor, sequence);
+
+    return new TransactionBuilder(source, {
+        fee,
+        networkPassphrase: isTestnet ? Networks.TESTNET : Networks.PUBLIC,
+    }).setTimebounds(0, 0);
+};
+
+const buildTrustlineTransaction = (
+    descriptor: string,
+    sequence: string,
+    fee: string,
+    asset: StellarAsset,
+    limit?: string,
+    isTestnet = false,
+) => {
+    const txBuilder = createTransactionBuilder(descriptor, sequence, fee, isTestnet);
+
+    txBuilder.addOperation(
+        Operation.changeTrust({
+            asset: new Asset(asset.code!, asset.issuer),
+            limit, // If limit is '0', it removes the trustline
+        }),
+    );
+
+    return txBuilder.build();
+};
+
 export const buildSendTransaction = (
     descriptor: string,
     sequence: string,
@@ -214,12 +253,7 @@ export const buildSendTransaction = (
     destinationTag?: string,
     isTestnet = false,
 ) => {
-    const source = new Account(descriptor, sequence);
-
-    const txBuilder = new TransactionBuilder(source, {
-        fee,
-        networkPassphrase: isTestnet ? Networks.TESTNET : Networks.PUBLIC,
-    }).setTimebounds(0, 0);
+    const txBuilder = createTransactionBuilder(descriptor, sequence, fee, isTestnet);
 
     if (destinationTag) {
         txBuilder.addMemo(Memo.text(destinationTag));
@@ -244,6 +278,22 @@ export const buildSendTransaction = (
 
     return txBuilder.build();
 };
+
+export const buildAddTrustlineTransaction = (
+    descriptor: string,
+    sequence: string,
+    fee: string,
+    asset: StellarAsset,
+    isTestnet = false,
+) => buildTrustlineTransaction(descriptor, sequence, fee, asset, undefined, isTestnet);
+
+export const buildRemoveTrustlineTransaction = (
+    descriptor: string,
+    sequence: string,
+    fee: string,
+    asset: StellarAsset,
+    isTestnet = false,
+) => buildTrustlineTransaction(descriptor, sequence, fee, asset, '0', isTestnet);
 
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     const env = isCodesignBuild() ? 'stable' : 'develop';
