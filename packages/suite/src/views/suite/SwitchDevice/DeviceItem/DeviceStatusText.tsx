@@ -2,11 +2,9 @@ import React from 'react';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { acquireDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite/Translation';
 
-import { useDispatch } from '../../../../hooks/suite';
 import { getDeviceResolveStatusCTAMessage } from '../getDeviceResolveStatusCTAMessage';
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceStatusTextThp } from './DeviceStatusTextThp';
@@ -23,7 +21,6 @@ export const DeviceStatusText = ({
     deviceNeedsRefresh,
 }: DeviceStatusTextProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
-    const dispatch = useDispatch();
     if (deviceNeedsRefresh) {
         return (
             <DeviceConnectionText
@@ -32,15 +29,6 @@ export const DeviceStatusText = ({
                 data-testid="@deviceStatus-connected"
                 data-testid-alt="@deviceStatus"
                 isAction
-                onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-
-                    dispatch(
-                        acquireDevice({
-                            requestedDevice: device,
-                        }),
-                    );
-                }}
             >
                 <Translation id={getDeviceResolveStatusCTAMessage(deviceStatus)} />
             </DeviceConnectionText>
