@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -31,6 +33,7 @@ const BadgeWrapper = styled.div`
 interface AssetItemProps extends AssetOptionBaseProps {
     handleClick: (selectedAsset: AssetOptionBaseProps) => void;
     'data-testid'?: string;
+    balance?: ReactNode;
 }
 
 export const AssetItem = ({
@@ -42,6 +45,7 @@ export const AssetItem = ({
     shouldTryToFetch,
     contractAddress,
     handleClick,
+    balance,
     'data-testid': dataTestId,
 }: AssetItemProps) => {
     const getCoinLogo = () =>
@@ -62,39 +66,44 @@ export const AssetItem = ({
                 })
             }
         >
-            <Row data-testid={dataTestId} gap={spacings.sm}>
-                {coingeckoId ? (
-                    <AssetLogo
-                        size={24}
-                        coingeckoId={coingeckoId}
-                        contractAddress={
-                            symbol && contractAddress
-                                ? getContractAddressForNetworkSymbol(symbol, contractAddress)
-                                : undefined
-                        }
-                        placeholder={displaySymbol}
-                        shouldTryToFetch={shouldTryToFetch}
-                    />
-                ) : (
-                    getCoinLogo()
-                )}
-                <Column flex="1">
-                    <Row gap={spacings.xs} alignItems="center">
-                        <TextWrapper>
-                            <Text typographyStyle="body" textWrap="nowrap">
-                                {cryptoName}
-                            </Text>
-                        </TextWrapper>
-                        {badge && (
-                            <BadgeWrapper>
-                                <Badge>{badge}</Badge>
-                            </BadgeWrapper>
-                        )}
-                    </Row>
-                    <Text typographyStyle="hint" variant="tertiary">
-                        {displaySymbol}
-                    </Text>
-                </Column>
+            <Row justifyContent="space-between" gap={spacings.sm}>
+                <Row data-testid={dataTestId} gap={spacings.sm}>
+                    {coingeckoId ? (
+                        <AssetLogo
+                            size={24}
+                            coingeckoId={coingeckoId}
+                            contractAddress={
+                                symbol && contractAddress
+                                    ? getContractAddressForNetworkSymbol(symbol, contractAddress)
+                                    : undefined
+                            }
+                            placeholder={displaySymbol}
+                            shouldTryToFetch={shouldTryToFetch}
+                        />
+                    ) : (
+                        getCoinLogo()
+                    )}
+
+                    <Column flex="1">
+                        <Row gap={spacings.xs} alignItems="center">
+                            <TextWrapper>
+                                <Text typographyStyle="body" textWrap="nowrap">
+                                    {cryptoName}
+                                </Text>
+                            </TextWrapper>
+                            {badge && (
+                                <BadgeWrapper>
+                                    <Badge>{badge}</Badge>
+                                </BadgeWrapper>
+                            )}
+                        </Row>
+                        <Text typographyStyle="hint" variant="tertiary">
+                            {displaySymbol}
+                        </Text>
+                    </Column>
+                </Row>
+
+                {balance}
             </Row>
         </ClickableContainer>
     );

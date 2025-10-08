@@ -13,6 +13,7 @@
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @metamask/eth-sig-util
+@noble/hashes
 @pmmmwh/react-refresh-webpack-plugin
 @reduxjs/toolkit
 @solana-program/compute-budget

@@ -20,7 +20,7 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputAccount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccount';
-import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect';
+import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect/TradingFormInputCryptoSelect';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 import { TradingFormSwitcherExchangeRates } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherExchangeRates';
 
@@ -132,6 +132,7 @@ export const TradingExchangeFormInputs = () => {
                         cryptoSelectName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                         supportedCryptoCurrencies={supportedCryptoCurrencies}
                         methods={{ ...context }}
+                        sortTokensByFiatBalanceInDesc={true}
                     />
                 </Column>
 

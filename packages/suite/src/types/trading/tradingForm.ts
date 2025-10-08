@@ -273,6 +273,7 @@ export interface TradingFormInputCryptoSelectProps<TFieldValues extends FieldVal
     supportedCryptoCurrencies: Set<CryptoId> | undefined;
     methods: UseFormReturn<TFieldValues>;
     isDisabled?: boolean;
+    sortTokensByFiatBalanceInDesc?: boolean;
 }
 
 export interface TradingFormInputFiatCryptoProps<TFieldValues extends FieldValues> {

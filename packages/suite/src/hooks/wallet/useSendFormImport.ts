@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { FiatRates, FiatRatesResult, Output, Rate, Timestamp } from '@suite-common/wallet-types';
+import { FiatRatesResult, Output, Rate, RatesByKey, Timestamp } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -23,7 +23,7 @@ type useSendFormImportProps = {
     tokens: UseSendFormState['account']['tokens'];
     localCurrencyOption: UseSendFormState['localCurrencyOption'];
     fiatRate?: Rate;
-    currentRates?: FiatRates;
+    currentRates?: RatesByKey;
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`

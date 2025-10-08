@@ -1,0 +1,107 @@
+import { useMemo } from 'react';
+
+import { TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
+import {
+    NetworkSymbol,
+    getCoingeckoId,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
+import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { AssetProps, ITEM_HEIGHT, TokenTab } from '@trezor/product-components';
+
+import { Translation } from 'src/components/suite/Translation';
+import { useSelector } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
+import {
+    EnahncedTokenInfoWithFiat,
+    enhanceTokensWithRates,
+    getTokens,
+    sortTokensWithRates,
+} from 'src/utils/wallet/tokenUtils';
+
+const createTokenOption = (
+    token: EnahncedTokenInfoWithFiat,
+    symbol: NetworkSymbol,
+    verified: boolean,
+): AssetProps => ({
+    ticker: token.symbol ?? '',
+    symbol,
+    cryptoName: token.name,
+    badge: verified ? undefined : <Translation id="TR_UNRECOGNIZED" />,
+    coingeckoId: getCoingeckoId(symbol) ?? '',
+    contractAddress: token.contract,
+    shouldTryToFetch: verified,
+    height: ITEM_HEIGHT,
+    tokenBalance:
+        token.balance && verified
+            ? {
+                  baseAmount: token.balance,
+                  fiatAmount: toFiatCurrency({ amount: token.balance, rate: token.fiatRate?.rate }),
+              }
+            : undefined,
+});
+
+type TokensOptionsForAllTabs = Record<TokenTab['tab'], AssetProps[]>;
+
+const buildTokenOptions = (
+    accountTokens: EnahncedTokenInfoWithFiat[],
+    symbol: NetworkSymbol,
+    coinDefinitions: TokenDefinitions['coin'],
+): TokensOptionsForAllTabs => {
+    const tokens = getTokens<EnahncedTokenInfoWithFiat>({
+        tokens: accountTokens,
+        symbol,
+        tokenDefinitions: coinDefinitions,
+    });
+
+    const result: TokensOptionsForAllTabs = {
+        hidden: [],
+        tokens: [],
+    };
+
+    tokens.shownWithBalance.forEach(token =>
+        result.tokens.push(createTokenOption(token, symbol, true)),
+    );
+
+    // this represents native currency
+    result.tokens.push({
+        ticker: symbol,
+        symbol,
+        cryptoName: getNetworkDisplaySymbolName(symbol),
+        badge: undefined,
+        contractAddress: null,
+        height: ITEM_HEIGHT,
+    });
+
+    tokens.hiddenWithBalance.forEach(token =>
+        result.hidden.push(createTokenOption(token, symbol, true)),
+    );
+
+    tokens.unverifiedWithBalance.forEach(token =>
+        result.hidden.push(createTokenOption(token, symbol, false)),
+    );
+
+    return result;
+};
+
+export function useBuildOptionsForTabs(account: Account): TokensOptionsForAllTabs {
+    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const fiatRates = useSelector(selectCurrentFiatRates);
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
+
+    const tabsOptions = useMemo(() => {
+        const tokensWithRates = enhanceTokensWithRates(
+            account.tokens,
+            baseCurrencyCode,
+            account.symbol,
+            fiatRates,
+        );
+
+        const sortedTokensWithRates = tokensWithRates.sort(sortTokensWithRates);
+
+        return buildTokenOptions(sortedTokensWithRates, account.symbol, coinDefinitions);
+    }, [account.tokens, account.symbol, baseCurrencyCode, fiatRates, coinDefinitions]);
+
+    return tabsOptions;
+}

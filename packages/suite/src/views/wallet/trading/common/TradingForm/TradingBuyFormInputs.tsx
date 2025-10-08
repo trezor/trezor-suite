@@ -18,7 +18,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
-import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect';
+import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect/TradingFormInputCryptoSelect';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
 
@@ -97,6 +97,7 @@ export const TradingBuyFormInputs = () => {
                             supportedCryptoCurrencies={supportedCryptoCurrencies}
                             methods={{ ...context }}
                             isDisabled={hasBitcoinOnlyFirmware(device)}
+                            sortTokensByFiatBalanceInDesc={false}
                         />
                     </Column>
 

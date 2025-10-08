@@ -16,6 +16,7 @@ describe('VirtualizedList', () => {
             <VirtualizedList
                 // @ts-expect-error: correct error here, 'height' property not passed
                 items={mockItems}
+                itemsFingerprint="mocked-fingerprint"
                 listHeight={400}
                 listMinHeight={400}
                 // @ts-expect-error: correct error here, 'height' property not passed
@@ -34,6 +35,7 @@ describe('VirtualizedList', () => {
 
             <VirtualizedList
                 items={mockItems}
+                itemsFingerprint="mocked-fingerprint"
                 listHeight={400}
                 listMinHeight={400}
                 renderItem={(item: MockItemWithHeight) => (
@@ -55,6 +57,7 @@ describe('VirtualizedList', () => {
 
             <VirtualizedList
                 items={mockItems}
+                itemsFingerprint="mocked-fingerprint"
                 listHeight={400}
                 listMinHeight={400}
                 renderItem={item => {
@@ -82,6 +85,7 @@ describe('VirtualizedList', () => {
             render(
                 <VirtualizedList
                     items={mockItems}
+                    itemsFingerprint="mocked-fingerprint"
                     listHeight={200}
                     listMinHeight={200}
                     renderItem={item => (
@@ -102,6 +106,7 @@ describe('VirtualizedList', () => {
             const { container } = render(
                 <VirtualizedList
                     items={[]}
+                    itemsFingerprint="mocked-fingerprint"
                     listHeight={200}
                     listMinHeight={200}
                     renderItem={() => null}
@@ -128,6 +133,7 @@ describe('VirtualizedList', () => {
                 <VirtualizedList
                     ref={ref}
                     items={mockItems}
+                    itemsFingerprint="mocked-fingerprint"
                     listHeight={200}
                     listMinHeight={200}
                     renderItem={item => (
