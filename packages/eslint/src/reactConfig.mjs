@@ -23,10 +23,10 @@ export const reactConfig = [
     },
 
     // React Hooks
+    ...pluginReactHooks.configs.recommended,
     {
         plugins: { 'react-hooks': pluginReactHooks },
         rules: {
-            ...pluginReactHooks.configs.recommended.rules,
             'react-hooks/rules-of-hooks': 'error',
             'react-hooks/exhaustive-deps': 'error',
         },
