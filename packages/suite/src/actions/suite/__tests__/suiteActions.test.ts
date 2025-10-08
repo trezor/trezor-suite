@@ -165,8 +165,9 @@ describe('Suite Actions', () => {
 
             const device = f.newlyConnectedDevice;
             await store.dispatch(markDeviceAsRecentlyConnectedThunk(device));
-            // a lot of actions may get called, and the one we are interested in may not be the last one
-            expect(store.getActions().some(a => a?.type === f.expectedNextActionType)).toBe(true);
+            expect(
+                store.getActions().some(a => a?.type === SUITE.SET_RECENTLY_CONNECTED_DEVICE),
+            ).toBe(f.isSetAsRecentlyConnected);
         });
     });
 
