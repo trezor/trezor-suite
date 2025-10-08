@@ -64,6 +64,8 @@ export const enhanceTokensWithRates = (
     return tokensWithRates;
 };
 
+export type EnahncedTokenInfoWithFiat = ReturnType<typeof enhanceTokensWithRates>[number];
+
 export const formatTokenSymbol = (symbol: string) => {
     const upperCasedSymbol = symbol.toUpperCase();
     const isTokenSymbolLong = upperCasedSymbol.length > 7;
@@ -71,30 +73,34 @@ export const formatTokenSymbol = (symbol: string) => {
     return isTokenSymbolLong ? `${upperCasedSymbol.slice(0, 7)}...` : upperCasedSymbol;
 };
 
-type GetTokens = {
-    tokens: EnhancedTokenInfo[] | TokenInfo[];
+type GetTokens<T extends EnhancedTokenInfo | TokenInfo | EnahncedTokenInfoWithFiat> = {
+    tokens: T[];
     symbol: NetworkSymbol;
     tokenDefinitions?: TokenDefinition;
     searchQuery?: string;
     isNft?: boolean;
 };
 
-export type GetTokensOutputType = {
-    shownWithBalance: EnhancedTokenInfo[];
-    shownWithoutBalance: EnhancedTokenInfo[];
-    hiddenWithBalance: EnhancedTokenInfo[];
-    hiddenWithoutBalance: EnhancedTokenInfo[];
-    unverifiedWithBalance: EnhancedTokenInfo[];
-    unverifiedWithoutBalance: EnhancedTokenInfo[];
+export type GetTokensOutputType<
+    T extends EnhancedTokenInfo | TokenInfo | EnahncedTokenInfoWithFiat = EnhancedTokenInfo,
+> = {
+    shownWithBalance: T[];
+    shownWithoutBalance: T[];
+    hiddenWithBalance: T[];
+    hiddenWithoutBalance: T[];
+    unverifiedWithBalance: T[];
+    unverifiedWithoutBalance: T[];
 };
 
-export const getTokens = ({
+export const getTokens = <
+    T extends EnhancedTokenInfo | TokenInfo | EnahncedTokenInfoWithFiat = EnhancedTokenInfo,
+>({
     tokens = [],
     symbol,
     tokenDefinitions,
     searchQuery,
     isNft = false,
-}: GetTokens): GetTokensOutputType => {
+}: GetTokens<T>): GetTokensOutputType<T> => {
     const filteredTokens = isNft
         ? tokens.filter(token => isNftToken(token))
         : tokens.filter(token => !isNftToken(token));
@@ -103,12 +109,12 @@ export const getTokens = ({
         isNft ? 'nft-definitions' : 'coin-definitions',
     );
 
-    const shownWithBalance: EnhancedTokenInfo[] = [];
-    const shownWithoutBalance: EnhancedTokenInfo[] = [];
-    const hiddenWithBalance: EnhancedTokenInfo[] = [];
-    const hiddenWithoutBalance: EnhancedTokenInfo[] = [];
-    const unverifiedWithBalance: EnhancedTokenInfo[] = [];
-    const unverifiedWithoutBalance: EnhancedTokenInfo[] = [];
+    const shownWithBalance: T[] = [];
+    const shownWithoutBalance: T[] = [];
+    const hiddenWithBalance: T[] = [];
+    const hiddenWithoutBalance: T[] = [];
+    const unverifiedWithBalance: T[] = [];
+    const unverifiedWithoutBalance: T[] = [];
 
     filteredTokens.forEach(token => {
         const isKnown = isTokenDefinitionKnown(tokenDefinitions?.data, symbol, token.contract);
@@ -127,10 +133,7 @@ export const getTokens = ({
             new BigNumber(token?.balance || '0').gt(0) ||
             (isNft && (token?.multiTokenValues?.length || token?.ids?.length || 0) > 0);
 
-        const pushToArray = (
-            arrayWithBalance: EnhancedTokenInfo[],
-            arrayWithoutBalance: EnhancedTokenInfo[],
-        ) => {
+        const pushToArray = (arrayWithBalance: T[], arrayWithoutBalance: T[]) => {
             if (hasBalance) {
                 arrayWithBalance.push(token);
             } else {

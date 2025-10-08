@@ -24,6 +24,7 @@
         "@formatjs/intl": "3.1.6",
         "@hookform/resolvers": "^5.2.1",
         "@mobily/ts-belt": "^3.13.1",
+        "@noble/hashes": "^2.0.1",
         "@reduxjs/toolkit": "2.8.2",
         "@sentry/core": "8.55.0",
         "@solana/kit": "^2.3.0",

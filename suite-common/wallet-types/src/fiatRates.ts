@@ -51,6 +51,5 @@ export type TickerResult = {
     rates: FiatRatesResult[];
 };
 
-export type FiatRates = Record<CryptoBaseCurrencyPair, Rate>;
 export type RatesByKey = Record<CryptoBaseCurrencyPair, Rate>;
 export type RatesByTimestamps = Record<CryptoBaseCurrencyPair, Record<Timestamp, number>>;

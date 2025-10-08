@@ -6072,6 +6072,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/hashes@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@noble/hashes@npm:2.0.1"
+  checksum: 10/f4d00e7564eb4ff4e6d16be151dd0e404aede35f91e4372b0a8a6ec888379c1dd1e02c721b480af8e7853bea9637185b5cb9533970c5b77d60c254ead0cfd8f7
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -14056,6 +14063,7 @@ __metadata:
     "@formatjs/intl": "npm:3.1.6"
     "@hookform/resolvers": "npm:^5.2.1"
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@noble/hashes": "npm:^2.0.1"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@sentry/core": "npm:8.55.0"
     "@solana/kit": "npm:^2.3.0"

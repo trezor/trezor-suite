@@ -3,7 +3,6 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import styled from 'styled-components';
 
 import { TimerId } from '@trezor/type-utils';
-import { isChanged } from '@trezor/utils';
 
 function debounce<T extends (...args: unknown[]) => void>(
     func: T,
@@ -107,6 +106,7 @@ const ListContainer = memo(ListContainerComponent) as typeof ListContainerCompon
 
 type VirtualizedListProps<T extends BaseItemProps> = {
     items: Array<T>;
+    itemsFingerprint: string;
     onScroll?: (e: Event) => void;
     onScrollEnd: () => void;
     listHeight: number | string;
@@ -117,6 +117,7 @@ type VirtualizedListProps<T extends BaseItemProps> = {
 
 export function VirtualizedListComponent<T extends BaseItemProps>({
     items: initialItems,
+    itemsFingerprint: initialItemsFingerprint,
     onScroll,
     onScrollEnd,
     listHeight,
@@ -127,6 +128,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     const newRef = useRef<HTMLDivElement>(null);
     const containerRef = (ref as React.RefObject<HTMLDivElement>) || newRef;
     const [items, setItems] = useState(initialItems);
+    const [itemsFingerprint, setItemsFingerprint] = useState(initialItemsFingerprint);
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(DEFAULT_VISIBLE_ITEMS_COUNT);
     const debouncedOnScrollEnd = useMemo(() => debounce(onScrollEnd, 1000), [onScrollEnd]);
@@ -138,11 +140,13 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     }, [containerRef]);
 
     useEffect(() => {
-        if (isChanged(items, initialItems)) {
+        if (itemsFingerprint !== initialItemsFingerprint) {
             setItems(initialItems);
+            setItemsFingerprint(initialItemsFingerprint);
             resetScroll();
         }
-    }, [initialItems, items, resetScroll]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialItemsFingerprint, itemsFingerprint, resetScroll]);
 
     const itemHeights = useMemo(() => items.map(item => calculateItemHeight(item)), [items]);
     const totalHeight = useMemo(

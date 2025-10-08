@@ -1,43 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import {
-    TokenDefinitions,
-    selectCoinDefinitions,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
+import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     Explorer,
-    type NetworkSymbol,
     getCoingeckoId,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
-import {
-    selectBaseCurrency,
-    selectCurrentFiatRates,
-    selectExplorer,
-    updateFiatRatesThunk,
-} from '@suite-common/wallet-core';
-import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { selectExplorer } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     hasNetworkFeatures,
     isNftToken,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetLogo, Card, Column, IconButton, Row, Text } from '@trezor/components';
-import {
-    AssetOptionBaseProps,
-    AssetProps,
-    CoinLogo,
-    ITEM_HEIGHT,
-    SearchAsset,
-    SelectAssetModal,
-    TokenTab,
-    TokenTabs,
-} from '@trezor/product-components';
+import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -45,115 +24,33 @@ import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { AddressRow } from 'src/components/suite/copy/AddressRow';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import {
     selectIsCopyAddressModalShown,
     selectIsDebugModeActive,
 } from 'src/selectors/suite/suiteSelectors';
-import {
-    enhanceTokensWithRates,
-    getTokenAddressTranslationId,
-    getTokens,
-    sortTokensWithRates,
-} from 'src/utils/wallet/tokenUtils';
+import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
-const createTokenOption = (token: TokenInfo, symbol: NetworkSymbol, shouldTryToFetch: boolean) => ({
-    ticker: token.symbol ?? '',
-    symbol,
-    cryptoName: token.name,
-    badge: shouldTryToFetch ? undefined : <Translation id="TR_UNRECOGNIZED" />,
-    coingeckoId: getCoingeckoId(symbol) ?? '',
-    contractAddress: token.contract,
-    shouldTryToFetch,
-    height: ITEM_HEIGHT,
-});
-
-const buildTokenOptions = (
-    accountTokens: Account['tokens'],
-    symbol: NetworkSymbol,
-    coinDefinitions: TokenDefinitions['coin'],
-    activeTokenTab: TokenTab['tab'],
-) => {
-    const result: AssetProps[] = [];
-
-    if (activeTokenTab === 'tokens') {
-        // this represents native currency
-        result.push({
-            ticker: symbol,
-            symbol,
-            cryptoName: getNetworkDisplaySymbolName(symbol),
-            badge: undefined,
-            contractAddress: null,
-            height: ITEM_HEIGHT,
-        });
-    }
-
-    if (accountTokens) {
-        const tokens = getTokens({
-            tokens: accountTokens,
-            symbol,
-            tokenDefinitions: coinDefinitions,
-        });
-
-        if (accountTokens && activeTokenTab === 'tokens') {
-            tokens.shownWithBalance.forEach(token =>
-                result.push(createTokenOption(token, symbol, true)),
-            );
-        }
-
-        if (accountTokens && activeTokenTab === 'hidden') {
-            tokens.hiddenWithBalance.forEach(token =>
-                result.push(createTokenOption(token, symbol, true)),
-            );
-
-            tokens.unverifiedWithBalance.forEach(token =>
-                result.push(createTokenOption(token, symbol, false)),
-            );
-        }
-    }
-
-    return result;
-};
+import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
 
 type TokenSelectProps = {
     outputId: number;
 };
 
 export const TokenSelect = ({ outputId }: TokenSelectProps) => {
-    const {
-        account,
-        clearErrors,
-        setAmount,
-        getValues,
-        getDefaultValue,
-        toggleOption,
-        composeTransaction,
-        watch,
-        setValue,
-        setDraftSaveRequest,
-        resetDraft,
-        setMax,
-    } = useSendFormContext();
+    const { account, setAmount, getValues, getDefaultValue, watch, setValue, setDraftSaveRequest } =
+        useSendFormContext();
 
     const dispatch = useDispatch();
-    const { translationString } = useTranslation();
 
-    const [search, setSearch] = useState('');
-    const [activeTokenTab, setActiveTokenTab] = useState<TokenTab['tab']>('tokens');
     const [isTokensModalActive, setIsTokensModalActive] = useState(false);
 
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
-
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const fiatRates = useSelector(selectCurrentFiatRates);
-    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
-    const amountInputName = `outputs.${outputId}.amount` as const;
-    const currencyInputName = `outputs.${outputId}.currency` as const;
     const tokenContractAddress = watch(tokenInputName);
 
     const isTokenKnown = useSelector(state =>
@@ -165,14 +62,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     );
 
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
-    const dataEnabled = getDefaultValue('options', []).includes('transactionData');
 
     // Amount needs to be re-validated again AFTER token change propagation (decimal places, available balance)
     // watch token change and use "useSendFormFields.setAmount" util for validation (if amount is set)
     // if Amount is not valid 'react-hook-form' will set an error to it, and composeTransaction will be prevented
     // N0TE: do this conditionally only for networks with tokens and when set-max is not enabled
     const tokenWatch = watch(tokenInputName, null);
-    const currencyValue = watch(currencyInputName);
 
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
@@ -197,83 +92,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         }
     }, [sendFormPrefill, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
-    const tokensWithRates = enhanceTokensWithRates(
-        account.tokens,
-        baseCurrencyCode,
-        account.symbol,
-        fiatRates,
+    const selectedToken = useMemo(
+        () => account.tokens?.find(token => token.contract === tokenContractAddress),
+        [account.tokens, tokenContractAddress],
     );
-    const sortedTokens = useMemo(
-        () => tokensWithRates.sort(sortTokensWithRates),
-        [tokensWithRates],
-    );
-    const options = buildTokenOptions(
-        sortedTokens,
-        account.symbol,
-        coinDefinitions,
-        activeTokenTab,
-    );
-    const filteredOptionsBySearch = options.filter(item => {
-        if (!search) {
-            return true;
-        }
-
-        const contractAddress = item.contractAddress || undefined;
-        const searchFor = (property: string | undefined) =>
-            property?.toLocaleLowerCase().includes(search.toLocaleLowerCase());
-
-        return searchFor(item.cryptoName) || searchFor(item.ticker) || searchFor(contractAddress);
-    });
-
-    const selectedToken = account.tokens?.find(token => token.contract === tokenContractAddress);
-
-    const handleSelectChange = async (selectedAsset: AssetOptionBaseProps) => {
-        const newlySelectedToken = account.tokens?.find(
-            token => token.contract === selectedAsset.contractAddress,
-        );
-
-        resetDraft();
-
-        setValue(tokenInputName, newlySelectedToken?.contract || account.symbol, {
-            shouldDirty: true,
-        });
-        setValue(amountInputName, '', {
-            shouldDirty: true,
-        });
-
-        const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
-
-        if (isSetMaxActive) {
-            setMax(outputId, isSetMaxActive);
-        }
-
-        setIsTokensModalActive(false);
-
-        await dispatch(
-            updateFiatRatesThunk({
-                tickers: [
-                    {
-                        symbol: account.symbol,
-                        tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
-                    },
-                ],
-                baseCurrencyCode: currencyValue.value as BaseCurrencyCode,
-                rateType: 'current',
-                fetchAttemptTimestamp: Date.now() as Timestamp,
-            }),
-        );
-        // clear errors in Amount input
-        clearErrors(amountInputName);
-        // remove Amount if isSetMaxActive or ETH data options are enabled
-        if (isSetMaxActive || dataEnabled) setAmount(outputId, '');
-        // remove ETH data option
-        if (dataEnabled) toggleOption('transactionData');
-        // compose (could be prevented because of Amount error from re-validation above)
-        composeTransaction(amountInputName);
-    };
 
     const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
-    const onCloseSelectAssetModal = () => setIsTokensModalActive(false);
     const onOpenSelectAssetModal = !hasNoStandardTokens
         ? () => setIsTokensModalActive(true)
         : undefined;
@@ -284,41 +108,10 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     return (
         <>
             {isTokensModalActive && (
-                <SelectAssetModal
-                    options={filteredOptionsBySearch}
-                    onSelectAsset={handleSelectChange}
-                    onClose={onCloseSelectAssetModal}
-                    searchInput={
-                        <SearchAsset
-                            searchPlaceholder={translationString(
-                                'TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL',
-                            )}
-                            search={search}
-                            setSearch={setSearch}
-                        />
-                    }
-                    noItemsAvailablePlaceholder={{
-                        heading: <Translation id="TR_TOKEN_NOT_FOUND" />,
-                        body: search ? (
-                            <Translation id="TR_TOKEN_TRY_DIFFERENT_SEARCH" />
-                        ) : undefined,
-                    }}
-                    filterTabs={
-                        <TokenTabs
-                            tabs={[
-                                {
-                                    tab: 'tokens',
-                                    label: <Translation id="TR_TOKENS" />,
-                                },
-                                {
-                                    tab: 'hidden',
-                                    label: <Translation id="TR_HIDDEN" />,
-                                },
-                            ]}
-                            activeTokenTab={activeTokenTab}
-                            setActiveTokenTab={setActiveTokenTab}
-                        />
-                    }
+                <SelectTokenAssetModal
+                    onModalClose={() => setIsTokensModalActive(false)}
+                    outputId={outputId}
+                    tokenInputName={tokenInputName}
                 />
             )}
 
