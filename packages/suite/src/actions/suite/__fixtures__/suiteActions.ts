@@ -335,17 +335,32 @@ const selectNewlyConnectedDevice = [
     },
 ];
 
-type HandleDeviceConnectFixture = {
+type MarkDeviceAsRecentlyConnectedFixture = {
     description: string;
     state: {
         suite: Partial<AppState['suite']>;
         device: Partial<AppState['device']>;
     };
     newlyConnectedDevice: Device;
-    expectedNextActionType: string;
+    isSetAsRecentlyConnected: boolean;
 };
 
-const markDeviceAsRecentlyConnected: HandleDeviceConnectFixture[] = [
+const markDeviceAsRecentlyConnected: MarkDeviceAsRecentlyConnectedFixture[] = [
+    {
+        description: `does not mark device as recently connected if there are none`,
+        state: { device: {}, suite: {} },
+        newlyConnectedDevice: CONNECT_DEVICE,
+        isSetAsRecentlyConnected: false,
+    },
+    {
+        description: `does not mark a newly connected physical device corresponding to selected remembered wallet `,
+        state: {
+            device: { devices: [SUITE_DEVICE_REMEMBERED], selectedDevice: SUITE_DEVICE_REMEMBERED },
+            suite: {},
+        },
+        newlyConnectedDevice: CONNECT_DEVICE,
+        isSetAsRecentlyConnected: false,
+    },
     {
         description: `marks device as recently connected if not seen before`,
         state: {
@@ -353,7 +368,7 @@ const markDeviceAsRecentlyConnected: HandleDeviceConnectFixture[] = [
             suite: {},
         },
         newlyConnectedDevice: { ...CONNECT_DEVICE, id: 'a-different-id' } as Device,
-        expectedNextActionType: SUITE.SET_RECENTLY_CONNECTED_DEVICE,
+        isSetAsRecentlyConnected: true,
     },
 ];
 
