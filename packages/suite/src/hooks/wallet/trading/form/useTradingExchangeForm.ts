@@ -35,6 +35,7 @@ import {
 } from '@suite-common/trading';
 import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
+    ETHEREUM_ADJUST_GAS_LIMIT,
     fetchAndUpdateAccountThunk,
     selectAccountByKey,
     updateFeeInfoThunk,
@@ -182,8 +183,17 @@ export const useTradingExchangeForm = ({
 
     const { reset, register, getValues, setValue, formState, control } = methods;
     const values = useWatch<TradingExchangeFormProps>({ control });
-    const { rateType, exchangeType, sendCryptoSelect, receiveCryptoSelect } = getValues();
+    const {
+        rateType,
+        exchangeType,
+        sendCryptoSelect,
+        receiveCryptoSelect,
+        transactionData,
+        ethereumAdjustGasLimit,
+    } = getValues();
     const output = values.outputs?.[0];
+    const outputAddress = output?.address;
+
     const fiatValues = useTradingFiatValues({
         cryptoId: sendCryptoSelect?.value,
         amount: sendCryptoSelect?.balance,
@@ -778,6 +788,10 @@ export const useTradingExchangeForm = ({
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
+        if (pageType !== 'form') {
+            return;
+        }
+
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
             setValue('transactionData', '');
         }
@@ -788,7 +802,7 @@ export const useTradingExchangeForm = ({
 
         const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect?.value);
 
-        const quote = isEvmNativeToken ? dexQuotes[0] : selectedQuote;
+        const quote = preselectedQuote ?? (isEvmNativeToken ? dexQuotes[0] : selectedQuote);
 
         if (!quote || !quote.dexTx) {
             return setValue('transactionData', '');
@@ -798,10 +812,12 @@ export const useTradingExchangeForm = ({
 
         setValue('transactionData', dexTx.data);
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
+        setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         dexQuotes,
         selectedQuote,
+        preselectedQuote,
         exchangeType,
         isApproval,
         sendCryptoSelect,
@@ -811,9 +827,11 @@ export const useTradingExchangeForm = ({
 
     // fetch fees when transactionData changes
     useEffect(() => {
+        if (pageType !== 'form') return;
+
         fetchFeesAndCompose();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [values.transactionData, values.outputs?.[0]?.address]);
+    }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType]);
 
     useEffect(() => {
         setValue('receiveAddress', receiveAddress);
