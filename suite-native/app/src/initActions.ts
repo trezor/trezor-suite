@@ -13,7 +13,7 @@ import {
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-storage';
-import { setIsAppReady } from '@suite-native/state/src/appSlice';
+import { setIsAppReady } from '@suite-native/state';
 
 const ACTION_PREFIX = '@suite-native/app';
 
