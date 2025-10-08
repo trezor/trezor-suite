@@ -1,9 +1,7 @@
-import { UnknownAction } from '@reduxjs/toolkit';
-
 import { configureMockStore } from '@suite-common/test-utils';
 import { navigationContainerRef } from '@suite-native/navigation';
 
-import { connectDeviceFixtures, getInitialState } from './deviceConnectionFixtures';
+import { invalidThpPairingFixtures, validThpPairingFixtures } from './deviceConnectionFixtures';
 import { deviceConnectionMiddleware } from '../middlewares/deviceConnectionMiddleware';
 
 jest.mock('@suite-native/navigation', () => {
@@ -13,67 +11,45 @@ jest.mock('@suite-native/navigation', () => {
         ...navigation,
         navigationContainerRef: {
             navigate: jest.fn(),
-            reset: jest.fn(),
-            getState: jest.fn(),
         },
-        checkIsActiveRouteAnyOf: jest.fn().mockReturnValue(false),
-        checkIsDeviceOnboardingFocused: jest.fn().mockReturnValue(false),
-        checkIsHomeStackFocused: jest.fn().mockReturnValue(false),
     };
 });
 
-type State = ReturnType<typeof getInitialState>;
-
-describe('DEVICE.CONNECT', () => {
+describe('Ignored UI button request redirects', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    connectDeviceFixtures.forEach(
-        ({
-            action,
-            initialState,
-            redirectTarget,
-            description,
-            isReset = false,
-            expectNoNavigation = false,
-        }: {
-            action: UnknownAction;
-            initialState: ReturnType<typeof getInitialState>;
-            redirectTarget: any;
-            description: string;
-            isReset?: boolean;
-            expectNoNavigation?: boolean;
-        }) => {
-            it(description, () => {
-                const mockStore = configureMockStore<State>({
-                    middleware: [deviceConnectionMiddleware.middleware],
-                    preloadedState: initialState,
-                });
-                mockStore.dispatch(action);
-
-                if (expectNoNavigation) {
-                    expect(navigationContainerRef.reset).toHaveBeenCalledTimes(0);
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(0);
-
-                    return;
-                }
-
-                if (isReset) {
-                    expect(navigationContainerRef.reset).toHaveBeenCalledWith(redirectTarget);
-                } else {
-                    if (redirectTarget.params) {
-                        expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                            redirectTarget.route,
-                            redirectTarget.params,
-                        );
-                    } else {
-                        expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                            redirectTarget.route,
-                        );
-                    }
-                }
+    invalidThpPairingFixtures.forEach(({ description, action, initialState }) => {
+        it(description, () => {
+            const mockStore = configureMockStore({
+                middleware: [deviceConnectionMiddleware.middleware],
+                preloadedState: initialState,
             });
-        },
-    );
+            mockStore.dispatch(action);
+
+            expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(0);
+        });
+    });
+});
+
+describe('THP confirmation redirect upon button request', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    validThpPairingFixtures.forEach(({ description, action, redirectTarget, initialState }) => {
+        it(description, () => {
+            const mockStore = configureMockStore({
+                middleware: [deviceConnectionMiddleware.middleware],
+                preloadedState: initialState,
+            });
+            mockStore.dispatch(action);
+
+            expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
+                redirectTarget.route,
+                redirectTarget.params,
+            );
+        });
+    });
 });
