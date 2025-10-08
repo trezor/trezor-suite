@@ -1,4 +1,4 @@
-import { getCheckBackupUrl, isDeviceWithButtons } from '@suite-common/suite-utils';
+import { getCheckBackupUrl, isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { BulletList, Card, Paragraph } from '@trezor/components';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -33,7 +33,7 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
 
     const isShamirBackupAvailable = device?.features?.capabilities?.includes('Capability_Shamir');
     const learnMoreUrl = getCheckBackupUrl(device);
-    const descriptionSuffix = isDeviceWithButtons(deviceModelInternal)
+    const descriptionSuffix = isDeviceWithButtonOnlyNoTouchscreen(deviceModelInternal)
         ? getNarrowedDeviceModelInternal(deviceModelInternal)
         : 'TOUCHSCREEN';
 

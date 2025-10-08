@@ -498,10 +498,22 @@ export const getSortedDevicesWithoutInstances = (
             return 0;
         });
 
-export const isDeviceWithButtons = (
-    deviceModel: DeviceModelInternal,
-): deviceModel is DeviceModelInternal.T1B1 | DeviceModelInternal.T2B1 | DeviceModelInternal.T3B1 =>
-    deviceModel.at(2) === 'B';
+export const isDeviceWithButtonOnlyNoTouchscreen = (deviceModel: DeviceModelInternal): boolean => {
+    // Technically, the `B` in the DeviceModelInternal means buttons, but let's not rely on this.
+    // As it may be nor reliable in the future
+
+    const map: Record<DeviceModelInternal, boolean> = {
+        T1B1: true,
+        T2B1: true,
+        T2T1: false,
+        T3B1: true,
+        T3T1: false,
+        T3W1: false,
+        UNKNOWN: false,
+    };
+
+    return map[deviceModel];
+};
 
 export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
     isArrayMember(action.type, Object.values(DEVICE));
