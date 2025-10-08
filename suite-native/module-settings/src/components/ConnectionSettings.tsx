@@ -1,7 +1,9 @@
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
+import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 import {
     Box,
     Card,
@@ -12,6 +14,7 @@ import {
     TitledSection,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { WalletConnectPairBottomSheet } from '@suite-native/module-connect-popup';
@@ -27,6 +30,14 @@ export const ConnectionSettings = () => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
+
+    // show only for real devices that are ready to be used
+    if (isPortfolioTrackerDevice || !isDeviceReadyToUseAndAuthorized) {
+        return null;
+    }
 
     return (
         <TitledSection title={<Translation id="moduleSettings.items.connections.title" />}>
