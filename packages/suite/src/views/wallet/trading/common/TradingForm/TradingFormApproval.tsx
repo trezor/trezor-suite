@@ -3,7 +3,11 @@ import { usePrevious } from 'react-use';
 
 import styled, { DefaultTheme, keyframes } from 'styled-components';
 
-import { TradingExchangeType, useTradingInfo } from '@suite-common/trading';
+import {
+    TradingExchangeType,
+    tokenSupportsIncreasingAllowance,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -16,7 +20,6 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useTradingExchangeWatchApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchApproval';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
-import { tokenSupportsIncreasingAllowance } from 'src/utils/wallet/trading/tradingUtils';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
     color: ${({ theme, $disabled }) =>

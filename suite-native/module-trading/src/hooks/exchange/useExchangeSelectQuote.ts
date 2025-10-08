@@ -8,6 +8,7 @@ import {
     parseCryptoId,
     selectTradingExchangeIsLoading,
     selectTradingMaxSlippagePercentage,
+    tokenSupportsIncreasingAllowance,
 } from '@suite-common/trading';
 import {
     RootStackParamList,
@@ -24,10 +25,7 @@ import {
     selectExchangeSelectedSendAccount,
 } from '../../selectors/exchangeSelectors';
 import { ExchangeFormType } from '../../types/exchange';
-import {
-    getApprovalStatus,
-    tokenSupportsIncreasingAllowance,
-} from '../../utils/general/approvalStatusUtils';
+import { getApprovalStatus } from '../../utils/general/approvalStatusUtils';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConsent } from '../general/useConsent';

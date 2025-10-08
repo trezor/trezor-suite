@@ -24,13 +24,3 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
 
     return 'needs_approval';
 };
-
-export const tokenSupportsIncreasingAllowance = (contractAddress?: string): boolean => {
-    const ethereumUsdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
-
-    if (!contractAddress) {
-        return false;
-    }
-
-    return contractAddress.trim().toLowerCase() !== ethereumUsdtContractAddress.toLowerCase();
-};
