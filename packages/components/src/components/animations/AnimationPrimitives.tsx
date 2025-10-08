@@ -2,14 +2,29 @@ import styled, { CSSProperties, css } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+
+export const allowedAnimationPrimitivesFrameProps = [
+    'margin',
+    'maxWidth',
+    'maxHeight',
+] as const satisfies FramePropsKeys[];
+export type AllowedAnimationPrimitiveFrameProps = Pick<
+    FrameProps,
+    (typeof allowedAnimationPrimitivesFrameProps)[number]
+>;
+
 export const shapes = ['CIRCLE', 'ROUNDED', 'ROUNDED-SMALL'] as const;
 export type Shape = (typeof shapes)[number];
 
-export const AnimationWrapper = styled.div<{
-    height?: CSSProperties['height'];
-    width?: CSSProperties['width'];
-    shape?: Shape;
-}>`
+export const AnimationWrapper = styled.div<
+    TransientProps<AllowedAnimationPrimitiveFrameProps> & {
+        height?: CSSProperties['height'];
+        width?: CSSProperties['width'];
+        shape?: Shape;
+    }
+>`
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -17,6 +32,8 @@ export const AnimationWrapper = styled.div<{
 
     width: ${({ width }) => width};
     height: ${({ height }) => height};
+
+    ${withFrameProps}
 
     ${({ shape }) =>
         shape === 'CIRCLE' &&
