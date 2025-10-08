@@ -1,0 +1,225 @@
+import { useEffect, useMemo, useState } from 'react';
+
+import styled from 'styled-components';
+
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { getCoingeckoId } from '@suite-common/wallet-config';
+import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
+import type { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
+import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import { AssetLogo, Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
+import { Loading } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
+import { ActivateTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ActivateTokenModal';
+import { useDispatch } from 'src/hooks/suite';
+
+import { NoTokens } from '../common/NoTokens';
+import { NoSearchResultsWrapped } from '../common/TokensTable/TokensTable';
+
+const DashedTextWrapper = styled.div`
+    border-bottom: 1px dashed;
+    border-color: ${({ theme }) => `${theme.textSubdued}50`}; /* 50 is hex for ~30% opacity */
+    cursor: pointer;
+    display: inline-block;
+`;
+
+const DashedText = ({ children, ...props }: React.ComponentProps<typeof Text>) => (
+    <DashedTextWrapper>
+        <Text {...props}>{children}</Text>
+    </DashedTextWrapper>
+);
+
+/**
+ * Get the list of inactive Stellar tokens for the user account
+ */
+const getInactiveStellarTokens = async (account: Account): Promise<TokenInfo[]> => {
+    if (account.symbol !== 'xlm') return [];
+
+    // TODO(stellar): add issuer domain to the token metadata
+    const allTokens: TokenDetailByMint = await getTokenMetadata();
+
+    // Get the currently active token contract addresses for the user
+    const activeTokenContracts = new Set(account.tokens?.map(token => token.contract) || []);
+
+    // Return tokens that the user has not activated yet
+    const inactiveTokens = Object.entries(allTokens)
+        .filter(([contractAddress]) => !activeTokenContracts.has(contractAddress))
+        .map(([contract]) => ({
+            type: 'STELLAR-CLASSIC',
+            standard: 'STELLAR-CLASSIC',
+            contract,
+            name: allTokens[contract]?.name,
+            symbol: contract.split('-')[0],
+            decimals: STELLAR_DECIMALS,
+        }));
+
+    return inactiveTokens;
+};
+
+interface InactiveTokensTableProps {
+    selectedAccount: SelectedAccountLoaded;
+    searchQuery: string;
+}
+
+export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTokensTableProps) => {
+    const dispatch = useDispatch();
+    const { account } = selectedAccount;
+    const coingeckoId = getCoingeckoId(account.symbol);
+    const [allInactiveTokens, setAllInactiveTokens] = useState<TokenInfo[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
+    const [tokenToActivate, setTokenToActivate] = useState<TokenInfo | null>(null);
+
+    useEffect(() => {
+        if (account.symbol === 'xlm') {
+            setIsLoading(true);
+            setHasError(false);
+            getInactiveStellarTokens(account)
+                .then(tokens => {
+                    setAllInactiveTokens(tokens);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    console.error('Failed to load inactive tokens:', error);
+                    setAllInactiveTokens([]);
+                    setIsLoading(false);
+                    setHasError(true);
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: 'Failed to load inactive tokens. Please try again later.',
+                        }),
+                    );
+                });
+        } else {
+            setAllInactiveTokens([]);
+            setIsLoading(false);
+        }
+    }, [account, dispatch]);
+
+    const filteredTokens = useMemo(() => {
+        if (!searchQuery) {
+            return allInactiveTokens;
+        }
+
+        const lowerCaseQuery = searchQuery.toLowerCase();
+
+        return allInactiveTokens.filter(
+            token =>
+                token.name?.toLowerCase().includes(lowerCaseQuery) ||
+                token.contract.toLowerCase().includes(lowerCaseQuery),
+        );
+    }, [searchQuery, allInactiveTokens]);
+
+    const handleActivateToken = (token: TokenInfo) => {
+        setTokenToActivate(token);
+    };
+
+    const closeActivateModal = () => setTokenToActivate(null);
+
+    // Only show for Stellar network
+    if (account.symbol !== 'xlm') {
+        return <NoTokens title={<Translation id="TR_INACTIVE_TOKENS_EMPTY" />} />;
+    }
+
+    if (isLoading) {
+        return <Loading />;
+    }
+
+    if (hasError) {
+        return <NoTokens title={<Translation id="TR_ERROR_LOADING_TOKENS" />} />;
+    }
+
+    if (filteredTokens.length === 0 && searchQuery) {
+        return <NoSearchResultsWrapped />;
+    }
+
+    if (filteredTokens.length === 0) {
+        return <NoTokens title={<Translation id="TR_INACTIVE_TOKENS_EMPTY" />} />;
+    }
+
+    return (
+        <Card paddingType="none" overflow="hidden">
+            <Table
+                margin={{ top: spacings.xs }}
+                colWidths={[
+                    { minWidth: '200px', maxWidth: '250px' },
+                    { minWidth: '140px', maxWidth: '250px' },
+                ]}
+                isRowHighlightedOnHover
+            >
+                <Table.Header>
+                    <Table.Row>
+                        <Table.Cell>
+                            <Translation id="TR_TOKEN" />
+                        </Table.Cell>
+                        <Table.Cell>
+                            <Translation id="TR_ISSUER" />
+                        </Table.Cell>
+                        <Table.Cell />
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {filteredTokens.map(token => (
+                        <Table.Row key={token.contract}>
+                            <Table.Cell>
+                                <Row gap={spacings.xs}>
+                                    <AssetLogo
+                                        coingeckoId={coingeckoId || ''}
+                                        placeholder={token.name || token.symbol || ''}
+                                        contractAddress={getAssetLogoContractAddresses(
+                                            account.symbol,
+                                            token.contract,
+                                        )}
+                                        size={24}
+                                        shouldTryToFetch={true}
+                                    />
+                                    <Row gap={spacings.xs}>
+                                        <Text typographyStyle="body">{token.name}</Text>
+                                        <Text typographyStyle="body" variant="tertiary">
+                                            {token.symbol}
+                                        </Text>
+                                    </Row>
+                                </Row>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Tooltip
+                                    content={
+                                        <Text wordBreak="break-all">
+                                            <Translation id="TR_ISSUER_ADDRESS" />:<br />
+                                            {token.contract.split('-')[1]}
+                                        </Text>
+                                    }
+                                >
+                                    <DashedText variant="tertiary" typographyStyle="hint">
+                                        example.com
+                                    </DashedText>
+                                </Tooltip>
+                            </Table.Cell>
+                            <Table.Cell align="end">
+                                <Button
+                                    size="small"
+                                    onClick={() => handleActivateToken(token)}
+                                    data-testid={`@token/activate-${token.symbol}`}
+                                >
+                                    <Translation id="TR_ACTIVATE" />
+                                </Button>
+                            </Table.Cell>
+                        </Table.Row>
+                    ))}
+                </Table.Body>
+            </Table>
+
+            {tokenToActivate && (
+                <ActivateTokenModal
+                    symbol={account.symbol}
+                    contractAddress={tokenToActivate.contract}
+                    onCancel={closeActivateModal}
+                />
+            )}
+        </Card>
+    );
+};

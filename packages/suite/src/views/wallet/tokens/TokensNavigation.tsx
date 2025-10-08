@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
+import { NetworkType } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { IconButton, IconName, InputButton, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -21,18 +22,19 @@ type SubTabConfig = {
     isNft: boolean;
     tokens: GetTokensOutputType;
     goToRoute: (route: Route['name']) => () => void;
+    networkType: NetworkType;
 };
 
 type SubTabItem = {
     id: string;
     iconName: IconName;
     onClick: () => void;
-    count: number;
+    count?: number;
     labelId: TranslationKey;
 };
 
-const getSubTabConfig = ({ isNft, tokens, goToRoute }: SubTabConfig) =>
-    [
+const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig) => {
+    const baseConfig: SubTabItem[] = [
         {
             id: isNft ? 'wallet-nfts' : 'wallet-tokens',
             iconName: isNft ? 'pictureFrame' : 'coins',
@@ -47,7 +49,20 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute }: SubTabConfig) =>
             count: tokens.hiddenWithBalance.length,
             labelId: 'TR_HIDDEN',
         },
-    ] satisfies SubTabItem[];
+    ];
+
+    // Add inactive tokens tab for Stellar network only
+    if (networkType === 'stellar' && !isNft) {
+        baseConfig.push({
+            id: 'wallet-tokens-inactive',
+            iconName: 'coinSlash',
+            onClick: goToRoute('wallet-tokens-inactive'),
+            labelId: 'TR_NAV_INACTIVE_TOKENS',
+        });
+    }
+
+    return baseConfig;
+};
 
 interface TokensNavigationProps {
     selectedAccount: SelectedAccountLoaded;
@@ -80,7 +95,8 @@ export const TokensNavigation = ({
         tokenDefinitions,
         isNft,
     });
-    const showAddToken = ['ethereum'].includes(account.networkType) && isDebug && !isNft;
+    const { networkType } = account;
+    const showAddToken = ['ethereum'].includes(networkType) && isDebug && !isNft;
 
     const handleAddToken = () => {
         if (account.symbol) {
@@ -104,7 +120,7 @@ export const TokensNavigation = ({
     return (
         <Row alignItems="center" justifyContent="space-between">
             <SubTabs activeItemId={routeName} size="medium">
-                {getSubTabConfig({ isNft, tokens, goToRoute }).map(tab => (
+                {getSubTabConfig({ isNft, tokens, goToRoute, networkType }).map(tab => (
                     <SubTabs.Item
                         key={tab.id}
                         id={tab.id}
