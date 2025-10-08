@@ -152,13 +152,13 @@ describe('receiveAccountUtils', () => {
         it('should throw when invalid address string is specified', () => {
             expect(() =>
                 getReceiveAccountFromAccountAndAddressString(account, 'NONEXISTING'),
-            ).toThrow('Address NONEXISTING not found in the account btc-account-2');
+            ).toThrow('Address not found in the account');
         });
 
         it('should throw when address is specified for account without addresses', () => {
             expect(() =>
                 getReceiveAccountFromAccountAndAddressString(getEthAccount(), 'ANYADDRESS'),
-            ).toThrow('Account eth-account-1 has no addresses');
+            ).toThrow('Account has no addresses');
         });
     });
 });
