@@ -26,24 +26,23 @@ export const useRenderDeviceDangerBanner = () => {
     const setBannerVariant = useSetAtom(deviceDangerBannerAtom);
     const navigation = useNavigation();
     const lastRoute = navigation.getState()?.routes.at(-1)?.name;
-    const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
-
-    const isRouteExcluded =
-        useNavigationRouteMatch([
-            RootStackRoutes.DeviceCompromisedModal,
-            RootStackRoutes.BackupFailedModal,
-        ]) || isDeviceOnboardingStackFocused;
-
-    const isBannerExtended = useNavigationRouteMatch([
-        AppTabsRoutes.HomeStack,
-        HomeStackRoutes.Home,
-    ]);
-
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const isSkippedRevisionCheckError = useSelector(selectIsSkippedRevisionCheckError);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
+
+    const isBannerExtended = useNavigationRouteMatch([
+        HomeStackRoutes.Home,
+        AppTabsRoutes.HomeStack,
+    ]);
+
+    const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
+    const isRouteExcluded =
+        useNavigationRouteMatch([
+            RootStackRoutes.DeviceCompromisedModal,
+            RootStackRoutes.BackupFailedModal,
+        ]) || isDeviceOnboardingStackFocused;
 
     useEffect(() => {
         let dangerCause: DeviceDangerBannerCause | undefined;
@@ -75,13 +74,15 @@ export const useRenderDeviceDangerBanner = () => {
 
         return setBannerVariant({ variant, cause: dangerCause });
     }, [
-        isRouteExcluded,
-        isBannerExtended,
         revisionCheckError,
         isSkippedRevisionCheckError,
         isDeviceBackupUnfinished,
         isDeviceBackupRequired,
         isOnboardingFinished,
         setBannerVariant,
+        navigation,
+        lastRoute,
+        isBannerExtended,
+        isRouteExcluded,
     ]);
 };

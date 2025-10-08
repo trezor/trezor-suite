@@ -4,7 +4,7 @@ import { G } from '@mobily/ts-belt';
 
 import { AnalyticsSendFlowStep, EventType, analytics } from '@suite-native/analytics';
 
-import { RootStackRoutes, SendStackRoutes } from './routes';
+import { RootStackRoutes, SendStackRoutes } from '../routes';
 
 type AnalyticsRelevantSendRoute = Exclude<`${SendStackRoutes}`, `${SendStackRoutes.SendAccounts}`>;
 

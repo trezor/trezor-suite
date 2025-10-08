@@ -12,8 +12,8 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useNativeStyles } from '@trezor/styles';
 
+import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
 import { RootStackParamList } from '../navigators';
-import { useReportSendFlowExitToAnalytics } from '../useReportSendFlowExitToAnalytics';
 
 export const IsNavigationReadyContext = createContext(false);
 
