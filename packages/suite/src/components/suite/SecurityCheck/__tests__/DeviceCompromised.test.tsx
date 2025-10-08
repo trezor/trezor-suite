@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
-import { AcquiredDevice } from '@suite-common/suite-types';
+import * as deviceUtils from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
@@ -34,8 +34,10 @@ const getInitialState = (device: DeviceReducerState): AppState =>
         },
     }) as AppState;
 
-// TODO fix the mocks. The device actually is acquired, but the function casts it to TrezorDevice, why???
-const defaultDevice = testMocks.getSuiteDevice() as AcquiredDevice;
+const defaultDevice = testMocks.getSuiteDevice();
+if (!deviceUtils.isDeviceAcquired(defaultDevice)) {
+    throw 'testMocks.getSuiteDevice() must return an AcquiredDevice here.';
+}
 
 const deviceCompromisedFixtures: Array<{
     description: string;
