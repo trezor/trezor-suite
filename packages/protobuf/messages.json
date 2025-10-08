@@ -5689,6 +5689,39 @@
                 }
             }
         },
+        "MoneroGetWatchKey": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "network_type": {
+                    "type": "MoneroNetworkType",
+                    "id": 2,
+                    "options": {
+                        "default": "MAINNET"
+                    }
+                }
+            }
+        },
+        "MoneroWatchKey": {
+            "fields": {
+                "watch_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
         "RippleGetAddress": {
             "fields": {
                 "address_n": {
@@ -7073,6 +7106,8 @@
                 "CardanoMessageSignature": 341,
                 "MoneroGetAddress": 540,
                 "MoneroAddress": 541,
+                "MoneroGetWatchKey": 542,
+                "MoneroWatchKey": 543,
                 "RippleGetAddress": 400,
                 "RippleAddress": 401,
                 "RippleSignTx": 402,

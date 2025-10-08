@@ -3012,6 +3012,24 @@ export const MoneroAddress = Type.Object(
     { $id: 'MoneroAddress' },
 );
 
+export type MoneroGetWatchKey = Static<typeof MoneroGetWatchKey>;
+export const MoneroGetWatchKey = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        network_type: Type.Optional(EnumMoneroNetworkType),
+    },
+    { $id: 'MoneroGetWatchKey' },
+);
+
+export type MoneroWatchKey = Static<typeof MoneroWatchKey>;
+export const MoneroWatchKey = Type.Object(
+    {
+        watch_key: Type.String(),
+        address: Type.String(),
+    },
+    { $id: 'MoneroWatchKey' },
+);
+
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -3833,6 +3851,8 @@ export const MessageType = Type.Object(
         NEMDecryptedMessage,
         MoneroGetAddress,
         MoneroAddress,
+        MoneroGetWatchKey,
+        MoneroWatchKey,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,

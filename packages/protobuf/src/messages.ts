@@ -1960,6 +1960,16 @@ export type MoneroAddress = {
     address: string;
 };
 
+export type MoneroGetWatchKey = {
+    address_n: number[];
+    network_type?: MoneroNetworkType;
+};
+
+export type MoneroWatchKey = {
+    watch_key: string;
+    address: string;
+};
+
 export type RippleGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2569,6 +2579,8 @@ export type MessageType = {
     NEMDecryptedMessage: NEMDecryptedMessage;
     MoneroGetAddress: MoneroGetAddress;
     MoneroAddress: MoneroAddress;
+    MoneroGetWatchKey: MoneroGetWatchKey;
+    MoneroWatchKey: MoneroWatchKey;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;

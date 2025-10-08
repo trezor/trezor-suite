@@ -18,8 +18,22 @@ export interface MoneroGetAddress {
 
 type MoneroAddress = AddressShared;
 
+export interface MoneroGetWatchKey {
+    path: string | number[];
+    networkType?: MoneroNetworkType;
+}
+
+export interface MoneroWatchKey {
+    watch_key: string;
+    address: string;
+}
+
 // Request/Response types
 export declare function moneroGetAddress(params: Params<MoneroGetAddress>): Response<MoneroAddress>;
 export declare function moneroGetAddress(
     params: BundledParams<MoneroGetAddress>,
 ): Response<MoneroAddress[]>;
+
+export declare function moneroGetWatchKey(
+    params: Params<MoneroGetWatchKey>,
+): Response<MoneroWatchKey>;

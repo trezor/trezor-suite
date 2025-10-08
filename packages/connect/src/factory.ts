@@ -168,6 +168,12 @@ export const factory = <
             useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
         }),
 
+    moneroGetWatchKey: params =>
+        call({
+            ...params,
+            method: 'moneroGetWatchKey',
+        }),
+
     nemGetAddress: params =>
         call({
             ...params,

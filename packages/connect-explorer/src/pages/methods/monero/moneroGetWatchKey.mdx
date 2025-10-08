@@ -1,0 +1,82 @@
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import getWatchKey from '../../../data/methods/monero/getWatchKey.ts';
+
+<ApiPlayground
+    options={[{ title: 'Export watch-only credentials', legacyConfig: getWatchKey[0] }]}
+/>
+
+# moneroGetWatchKey
+
+Export Monero watch-only credentials (private view key and address) for a given BIP32 path.
+The private view key allows external wallet software to scan the Monero blockchain for incoming transactions and calculate balances without exposing spending keys.
+
+User is presented with a description of the requested key and asked to confirm the export on Trezor.
+
+```javascript
+const result = await TrezorConnect.moneroGetWatchKey(params);
+```
+
+## Params
+
+Optional common params
+
+<CommonParamsLink />
+
+- `path` — _required_ `string | Array<number>` - minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`). [read more](/details/path)
+- `networkType` — _optional_ `number` - Monero network type: `0` = MAINNET (default), `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN
+
+## Example
+
+Export watch-only credentials for first Monero account on mainnet:
+
+```javascript
+TrezorConnect.moneroGetWatchKey({
+    path: "m/44'/128'/0'",
+});
+```
+
+Export watch-only credentials for testnet:
+
+```javascript
+TrezorConnect.moneroGetWatchKey({
+    path: "m/44'/128'/0'",
+    networkType: 1, // TESTNET
+});
+```
+
+## Result
+
+[MoneroWatchKey type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        watch_key: string,   // Private view key (hex-encoded)
+        address: string,     // Monero address (human-readable string)
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
+
+## Use Case
+
+The exported watch-only credentials can be imported into external Monero wallet software (such as the official Monero CLI or GUI wallets) to:
+
+1. Scan the blockchain for incoming transactions to your addresses
+2. Calculate your wallet balance
+3. Monitor transaction history
+4. Generate new receiving addresses
+
+This is done without exposing your private spend key, maintaining security while enabling balance checking and transaction monitoring.

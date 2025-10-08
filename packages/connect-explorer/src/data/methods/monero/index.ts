@@ -1,3 +1,4 @@
 import getAddress from './getAddress';
+import getWatchKey from './getWatchKey';
 
-export default [...getAddress];
+export default [...getAddress, ...getWatchKey];
