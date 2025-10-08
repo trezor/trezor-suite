@@ -444,7 +444,8 @@ describe('useExchangeFlow', () => {
     });
 
     describe('getCommonFunctions', () => {
-        it('should return undefined when no trade is provided and no selectedQuote', async () => {
+        it('should return false when no trade is provided and no selectedQuote', async () => {
+            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
             // Mock the selector to return undefined for selectedQuote
             const modifiedStore = await getInitializedStore();
             modifiedStore.getState().wallet.trading.exchange.selectedQuote = undefined;
@@ -465,6 +466,9 @@ describe('useExchangeFlow', () => {
             );
 
             expect(resultValue).toBe(false);
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                'Trade, send account and common functions are required to confirm trade',
+            );
         });
     });
 
