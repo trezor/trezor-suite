@@ -1,5 +1,7 @@
+import type { NavigationState } from '@react-navigation/routers';
+
 import { navigationContainerRef } from './components/NavigationContainerWithAnalytics';
-import { AppNavigationState, getActiveRouteName } from './hooks/useNavigationRoute';
+import { AppTabsParamList } from './navigators';
 import {
     AppTabsRoutes,
     DeviceOnboardingStackRoutes,
@@ -7,16 +9,32 @@ import {
     RootStackRoutes,
 } from './routes';
 
-type RouteType = RootStackRoutes | DeviceOnboardingStackRoutes | HomeStackRoutes;
-export type Routes = RouteType[];
+export type AppNavigationState = NavigationState<AppTabsParamList>;
 
-export const checkIsActiveRouteAnyOf = (routeList: string[]): boolean => {
-    const activeRoute = getActiveRouteName(navigationContainerRef.getState() as AppNavigationState);
+/**
+ * Recursively get the most specific active route name from the hierarchy of navigation states.
+ */
+export const getActiveRouteName = (state: AppNavigationState): string | undefined => {
+    if (!state || !state.routes || state.index == null) return undefined;
 
-    if (!activeRoute) return false;
+    const route = state.routes[state.index];
 
-    return routeList.includes(activeRoute);
+    if (route.state) return getActiveRouteName(route.state as AppNavigationState);
+
+    return route.params?.screen ?? route.name;
 };
+
+export const checkIsRouteAnyOf = (routeList: string[], route?: string): boolean => {
+    if (!route) return false;
+
+    return routeList.includes(route);
+};
+
+export const checkIsActiveRouteAnyOf = (routeList: string[]): boolean =>
+    checkIsRouteAnyOf(
+        routeList,
+        getActiveRouteName(navigationContainerRef.getState() as AppNavigationState),
+    );
 
 export const checkIsDeviceOnboardingFocused = () => {
     const DEVICE_ONBOARDING_ROUTES = [

@@ -3,7 +3,7 @@ import { BackHandler } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useDisableIOSGesture } from './hooks/useDisableIOSGesture';
+import { useDisableIOSGesture } from './useDisableIOSGesture';
 
 type Props = {
     onPress?: () => void;
