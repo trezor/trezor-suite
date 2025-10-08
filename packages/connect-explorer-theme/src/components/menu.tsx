@@ -119,6 +119,7 @@ export function Menu({
         eos: 'eos',
         ethereum: 'eth',
         litecoin: 'ltc',
+        monero: 'xmr',
         nem: 'nem',
         ripple: 'xrp',
         solana: 'sol',

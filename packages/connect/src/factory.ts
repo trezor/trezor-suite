@@ -161,6 +161,13 @@ export const factory = <
 
     getNonce: params => call({ ...params, method: 'getNonce' }),
 
+    moneroGetAddress: params =>
+        call({
+            ...params,
+            method: 'moneroGetAddress',
+            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
+        }),
+
     nemGetAddress: params =>
         call({
             ...params,

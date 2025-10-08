@@ -1939,6 +1939,27 @@ export type NEMDecryptedMessage = {
     payload: string;
 };
 
+export enum MoneroNetworkType {
+    MAINNET = 0,
+    TESTNET = 1,
+    STAGENET = 2,
+    FAKECHAIN = 3,
+}
+
+export type MoneroGetAddress = {
+    address_n: number[];
+    show_display?: boolean;
+    network_type?: MoneroNetworkType;
+    account?: number;
+    minor?: number;
+    payment_id?: string;
+    chunkify?: boolean;
+};
+
+export type MoneroAddress = {
+    address: string;
+};
+
 export type RippleGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2546,6 +2567,8 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
+    MoneroGetAddress: MoneroGetAddress;
+    MoneroAddress: MoneroAddress;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;

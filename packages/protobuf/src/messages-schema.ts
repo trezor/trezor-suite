@@ -2980,6 +2980,38 @@ export const NEMDecryptedMessage = Type.Object(
     { $id: 'NEMDecryptedMessage' },
 );
 
+export enum MoneroNetworkType {
+    MAINNET = 0,
+    TESTNET = 1,
+    STAGENET = 2,
+    FAKECHAIN = 3,
+}
+
+export type EnumMoneroNetworkType = Static<typeof EnumMoneroNetworkType>;
+export const EnumMoneroNetworkType = Type.Enum(MoneroNetworkType);
+
+export type MoneroGetAddress = Static<typeof MoneroGetAddress>;
+export const MoneroGetAddress = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        show_display: Type.Optional(Type.Boolean()),
+        network_type: Type.Optional(EnumMoneroNetworkType),
+        account: Type.Optional(Type.Number()),
+        minor: Type.Optional(Type.Number()),
+        payment_id: Type.Optional(Type.String()),
+        chunkify: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'MoneroGetAddress' },
+);
+
+export type MoneroAddress = Static<typeof MoneroAddress>;
+export const MoneroAddress = Type.Object(
+    {
+        address: Type.String(),
+    },
+    { $id: 'MoneroAddress' },
+);
+
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -3799,6 +3831,8 @@ export const MessageType = Type.Object(
         NEMSignedTx,
         NEMDecryptMessage,
         NEMDecryptedMessage,
+        MoneroGetAddress,
+        MoneroAddress,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,

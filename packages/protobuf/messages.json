@@ -5633,6 +5633,62 @@
                 }
             }
         },
+        "MoneroNetworkType": {
+            "values": {
+                "MAINNET": 0,
+                "TESTNET": 1,
+                "STAGENET": 2,
+                "FAKECHAIN": 3
+            }
+        },
+        "MoneroGetAddress": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                },
+                "network_type": {
+                    "type": "MoneroNetworkType",
+                    "id": 3,
+                    "options": {
+                        "default": "MAINNET"
+                    }
+                },
+                "account": {
+                    "type": "uint32",
+                    "id": 4
+                },
+                "minor": {
+                    "type": "uint32",
+                    "id": 5
+                },
+                "payment_id": {
+                    "type": "bytes",
+                    "id": 6
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 7
+                }
+            }
+        },
+        "MoneroAddress": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
         "RippleGetAddress": {
             "fields": {
                 "address_n": {
@@ -7015,6 +7071,8 @@
                 "CardanoMessageDataRequest": 339,
                 "CardanoMessageDataResponse": 340,
                 "CardanoMessageSignature": 341,
+                "MoneroGetAddress": 540,
+                "MoneroAddress": 541,
                 "RippleGetAddress": 400,
                 "RippleAddress": 401,
                 "RippleSignTx": 402,
