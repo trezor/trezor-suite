@@ -1,0 +1,290 @@
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import keyImageSync from '../../../data/methods/monero/keyImageSync.ts';
+
+<ApiPlayground options={[{ title: 'Sync key images', legacyConfig: keyImageSync[0] }]} />
+
+# moneroKeyImageSync
+
+Export Monero key images for transaction outputs (UTXOs) to enable spent output tracking.
+
+Key images are cryptographic proofs that allow external wallet software to determine which outputs have been spent without revealing which specific transaction spent them. This is essential for:
+
+- Tracking spent vs unspent outputs
+- Calculating accurate available balance
+- Preventing double-spending
+
+The device returns **encrypted** key images that must be decrypted by your wallet software using the provided encryption key. The key images are encrypted using ChaCha20-Poly1305 for security.
+
+## Protocol Overview
+
+MoneroKeyImageSync uses a multi-step protocol:
+
+1. **Init**: Send commitment hash (Keccak) of all UTXOs to device
+2. **Step**: Send UTXO details, receive encrypted key images
+3. **Final**: Receive encryption key after successful verification
+
+```javascript
+const result = await TrezorConnect.moneroKeyImageSync(params);
+```
+
+## Params
+
+Optional common params
+
+<CommonParamsLink />
+
+- `path` — _required_ `string | Array<number>` - minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`). [read more](/details/path)
+- `networkType` — _optional_ `number` - Monero network type: `0` = MAINNET (default), `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN
+- `subs` — _optional_ `Array<MoneroSubAddressIndicesList>` - Subaddress indices to sync
+- `tdis` — _required_ `Array<MoneroTransferDetails>` - Transfer details (UTXOs) to export key images for
+
+### MoneroSubAddressIndicesList
+
+- `account` — _required_ `number` - Major subaddress index
+- `minor_indices` — _required_ `Array<number>` - Minor subaddress indices
+
+### MoneroTransferDetails
+
+Each transfer detail represents a UTXO to sync:
+
+- `out_key` — _required_ `string` - Output public key (64 hex chars = 32 bytes)
+- `tx_pub_key` — _required_ `string` - Transaction public key (64 hex chars = 32 bytes)
+- `additional_tx_pub_keys` — _optional_ `Array<string>` - Additional transaction public keys for multi-output transactions (each 64 hex chars)
+- `internal_output_index` — _required_ `string | number` - Output index within the transaction (used in hash computation)
+- `sub_addr_major` — _optional_ `number` - Major subaddress index (default: 0)
+- `sub_addr_minor` — _optional_ `number` - Minor subaddress index (default: 0)
+
+**Important Notes:**
+
+- All keys must be exactly 64 hexadecimal characters (32 bytes)
+- The `internal_output_index` is included in the cryptographic hash commitment
+- `additional_tx_pub_keys` should only be provided for multi-output transactions (typically empty for 2-output transactions)
+
+## Example
+
+Export key images for UTXOs from a Monero testnet transaction:
+
+```javascript
+TrezorConnect.moneroKeyImageSync({
+    path: "m/44'/128'/0'", // All components must be hardened
+    networkType: 1, // 0=MAINNET, 1=TESTNET, 2=STAGENET
+    tdis: [
+        {
+            out_key: '0a09ab658fca97610a38b8a5c206a0709db435341c31a9d40150df7e52440ac6',
+            tx_pub_key: 'da13cd8f4cc2c4f769d88b734d71cfdc0e43d01a20eb7bff6553fd67cb2ed37e',
+            additional_tx_pub_keys: [],
+            internal_output_index: 1,
+            sub_addr_major: 0,
+            sub_addr_minor: 0,
+        },
+    ],
+});
+```
+
+### Example with Multiple Outputs
+
+```javascript
+TrezorConnect.moneroKeyImageSync({
+    path: "m/44'/128'/0'",
+    tdis: [
+        {
+            out_key: 'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+            tx_pub_key: 'fedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321',
+            internal_output_index: 0,
+            sub_addr_major: 0,
+            sub_addr_minor: 0,
+        },
+        {
+            out_key: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+            tx_pub_key: '0987654321fedcba0987654321fedcba0987654321fedcba0987654321fedcba',
+            additional_tx_pub_keys: [
+                'aabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccdd',
+            ],
+            internal_output_index: 1,
+            sub_addr_major: 0,
+            sub_addr_minor: 1,
+        },
+    ],
+});
+```
+
+## Result
+
+[MoneroKeyImageSyncResult type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+
+The result contains encrypted key images. Each key image is encrypted using ChaCha20-Poly1305 AEAD.
+
+```javascript
+{
+    success: true,
+    payload: {
+        key_images: [
+            {
+                iv: string,         // 12-byte initialization vector/nonce (24 hex chars)
+                key_image: string,  // Encrypted blob: ciphertext + auth tag (112 hex chars)
+                signature: string,  // 32-byte encryption key for decryption (64 hex chars)
+            },
+            // ... more key images
+        ]
+    }
+}
+```
+
+### Encrypted Format Details
+
+- **`iv`** (12 bytes): ChaCha20-Poly1305 nonce/initialization vector
+- **`key_image`** (112 bytes): Encrypted data containing:
+    - 96 bytes plaintext: 32-byte key image + 32-byte signature.c + 32-byte signature.r
+    - 16 bytes: Poly1305 authentication tag
+- **`signature`** (32 bytes): Encryption key (actually the `enc_key` from Final step)
+
+### Decryption
+
+To use the key images, decrypt them with ChaCha20-Poly1305:
+
+```javascript
+// Pseudocode for decryption
+const decrypted = chacha20poly1305_decrypt(
+    key_image, // ciphertext + tag
+    signature, // encryption key
+    iv, // nonce
+);
+
+// Decrypted contains (96 bytes):
+// - bytes 0-31:  Key image (I = x * Hp(P))
+// - bytes 32-63: Signature c component
+// - bytes 64-95: Signature r component
+```
+
+The decrypted key image and signature can then be imported into Monero wallet software.
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
+
+## Use Case
+
+The MoneroKeyImageSync protocol is a secure multi-step process:
+
+### Protocol Steps
+
+1. **Initialization (Init)**
+    - Device receives UTXO count and cryptographic commitment (Keccak hash)
+    - Hash is computed as: `keccak(hash1 + hash2 + ... + hashN)` where each `hashN = keccak(out_key + tx_pub_key + additional_keys + varint(internal_output_index))`
+    - User confirms key image sync on device
+    - Device generates random encryption key
+
+2. **Step Processing**
+    - UTXOs are sent to device (can be batched)
+    - For each UTXO, device:
+        - Derives the spend secret key: `x = Hs(recv_derivation || output_index) + spend_key`
+        - Computes key image: `I = x * Hp(P)` where P is the output public key
+        - Generates ring signature proving knowledge of x
+        - Encrypts the result with ChaCha20-Poly1305
+    - Returns encrypted key images
+
+3. **Finalization (Final)**
+    - Device verifies hash commitment matches processed UTXOs
+    - If verification succeeds, returns encryption key
+    - If verification fails, returns error (prevents tampering)
+
+### Security Features
+
+- **Encryption**: Key images are encrypted until all UTXOs are processed
+- **Commitment**: Hash prevents UTXO reordering, tampering, or omission
+- **Ring Signature**: Proves output ownership without revealing spend key
+- **Device Confirmation**: User must approve on device screen
+
+### Wallet Integration
+
+External Monero wallet software uses the exported key images to:
+
+- **Scan the blockchain** and identify which outputs have been spent
+- **Calculate true balance**: total outputs - spent outputs
+- **Maintain accurate wallet state** without exposing the private spend key
+- **Prevent double-spending** by tracking used outputs
+
+### Decryption Example
+
+```javascript
+// After receiving the response
+const encryptedKI = result.payload.key_images[0];
+
+// Decrypt using ChaCha20-Poly1305 (requires crypto library)
+const plaintext = decrypt_chacha20poly1305(
+    hexToBytes(encryptedKI.key_image),
+    hexToBytes(encryptedKI.signature), // encryption key
+    hexToBytes(encryptedKI.iv), // nonce
+);
+
+// Extract components
+const keyImage = plaintext.slice(0, 32);
+const signatureC = plaintext.slice(32, 64);
+const signatureR = plaintext.slice(64, 96);
+
+// Import into Monero wallet
+monero_wallet.import_key_images([
+    {
+        key_image: bytesToHex(keyImage),
+        signature: bytesToHex(signatureC) + bytesToHex(signatureR),
+    },
+]);
+```
+
+### Verification with monero-wallet-cli
+
+```bash
+# Create export file
+echo '[{"key_image":"...","signature":"..."}]' > exported_key_images
+
+# Import into wallet
+monero-wallet-cli --wallet-file your-wallet --testnet
+[wallet]: import_key_images exported_key_images
+[wallet]: balance  # Should show updated balance
+```
+
+**Important**: The key images are returned in encrypted form for security. Your wallet software must decrypt them using ChaCha20-Poly1305 before importing into Monero wallet software.
+
+## Troubleshooting
+
+### Common Errors
+
+**"Invalid number of outputs"**
+
+- The hash commitment doesn't match the processed UTXOs
+- Ensure all UTXO fields are correct (out_key, tx_pub_key, internal_output_index)
+- Check that `internal_output_index` is correct (0-based index within transaction)
+
+**"Invalid key length"**
+
+- All keys must be exactly 64 hex characters (32 bytes)
+- Check `out_key` and `tx_pub_key` format
+- Each `additional_tx_pub_keys` entry must also be 64 hex chars
+
+**"Monero requires all path components to be hardened"**
+
+- All path components must use hardened derivation (e.g., `m/44'/128'/0'`)
+- Use apostrophe (') or add 0x80000000 to each component
+
+### Hash Computation Details
+
+The commitment hash uses Keccak-256 (not SHA-256):
+
+1. For each transfer detail, compute: `hash = keccak(out_key + tx_pub_key + additional_tx_pub_keys + varint(internal_output_index))`
+2. Final commitment: `keccak(hash1 + hash2 + ... + hashN)`
+
+The `internal_output_index` is encoded as varint (LEB128 format) before hashing.
+
+### Additional Resources
+
+- [Monero Key Images Documentation](https://www.getmonero.org/resources/moneropedia/keyimage.html)
+- [Trezor Firmware Implementation](https://github.com/trezor/trezor-firmware/blob/main/core/src/apps/monero/key_image_sync.py)
+- [Monero Device Integration](https://github.com/monero-project/monero/tree/master/src/device_trezor)

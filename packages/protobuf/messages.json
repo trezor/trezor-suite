@@ -5722,6 +5722,130 @@
                 }
             }
         },
+        "MoneroSubAddressIndicesList": {
+            "fields": {
+                "account": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 1
+                },
+                "minor_indices": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 2
+                }
+            }
+        },
+        "MoneroTransferDetails": {
+            "fields": {
+                "out_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "tx_pub_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "additional_tx_pub_keys": {
+                    "rule": "repeated",
+                    "type": "bytes",
+                    "id": 3
+                },
+                "internal_output_index": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 4
+                },
+                "sub_addr_major": {
+                    "type": "uint32",
+                    "id": 5
+                },
+                "sub_addr_minor": {
+                    "type": "uint32",
+                    "id": 6
+                }
+            }
+        },
+        "MoneroExportedKeyImage": {
+            "fields": {
+                "iv": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "blob": {
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
+        "MoneroKeyImageExportInitRequest": {
+            "fields": {
+                "num": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 1
+                },
+                "hash": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 3,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "network_type": {
+                    "type": "MoneroNetworkType",
+                    "id": 4,
+                    "options": {
+                        "default": "MAINNET"
+                    }
+                },
+                "subs": {
+                    "rule": "repeated",
+                    "type": "MoneroSubAddressIndicesList",
+                    "id": 5
+                }
+            }
+        },
+        "MoneroKeyImageExportInitAck": {
+            "fields": {}
+        },
+        "MoneroKeyImageSyncStepRequest": {
+            "fields": {
+                "tdis": {
+                    "rule": "repeated",
+                    "type": "MoneroTransferDetails",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroKeyImageSyncStepAck": {
+            "fields": {
+                "kis": {
+                    "rule": "repeated",
+                    "type": "MoneroExportedKeyImage",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroKeyImageSyncFinalRequest": {
+            "fields": {}
+        },
+        "MoneroKeyImageSyncFinalAck": {
+            "fields": {
+                "enc_key": {
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
         "RippleGetAddress": {
             "fields": {
                 "address_n": {
@@ -7108,6 +7232,12 @@
                 "MoneroAddress": 541,
                 "MoneroGetWatchKey": 542,
                 "MoneroWatchKey": 543,
+                "MoneroKeyImageExportInitRequest": 530,
+                "MoneroKeyImageExportInitAck": 531,
+                "MoneroKeyImageSyncStepRequest": 532,
+                "MoneroKeyImageSyncStepAck": 533,
+                "MoneroKeyImageSyncFinalRequest": 534,
+                "MoneroKeyImageSyncFinalAck": 535,
                 "RippleGetAddress": 400,
                 "RippleAddress": 401,
                 "RippleSignTx": 402,

@@ -1970,6 +1970,49 @@ export type MoneroWatchKey = {
     address: string;
 };
 
+export type MoneroSubAddressIndicesList = {
+    account: number;
+    minor_indices: number[];
+};
+
+export type MoneroKeyImageExportInitRequest = {
+    num: UintType;
+    hash: Uint8Array;
+    address_n: number[];
+    network_type?: MoneroNetworkType;
+    subs: MoneroSubAddressIndicesList[];
+};
+
+export type MoneroKeyImageExportInitAck = Record<string, never>;
+
+export type MoneroTransferDetails = {
+    out_key: Uint8Array;
+    tx_pub_key: Uint8Array;
+    additional_tx_pub_keys: Uint8Array[];
+    internal_output_index: UintType;
+    sub_addr_major?: number;
+    sub_addr_minor?: number;
+};
+
+export type MoneroKeyImageSyncStepRequest = {
+    tdis: MoneroTransferDetails[];
+};
+
+export type MoneroExportedKeyImage = {
+    iv?: string;
+    blob?: string;
+};
+
+export type MoneroKeyImageSyncStepAck = {
+    kis: MoneroExportedKeyImage[];
+};
+
+export type MoneroKeyImageSyncFinalRequest = Record<string, never>;
+
+export type MoneroKeyImageSyncFinalAck = {
+    enc_key?: string;
+};
+
 export type RippleGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2581,6 +2624,12 @@ export type MessageType = {
     MoneroAddress: MoneroAddress;
     MoneroGetWatchKey: MoneroGetWatchKey;
     MoneroWatchKey: MoneroWatchKey;
+    MoneroKeyImageExportInitRequest: MoneroKeyImageExportInitRequest;
+    MoneroKeyImageExportInitAck: MoneroKeyImageExportInitAck;
+    MoneroKeyImageSyncStepRequest: MoneroKeyImageSyncStepRequest;
+    MoneroKeyImageSyncStepAck: MoneroKeyImageSyncStepAck;
+    MoneroKeyImageSyncFinalRequest: MoneroKeyImageSyncFinalRequest;
+    MoneroKeyImageSyncFinalAck: MoneroKeyImageSyncFinalAck;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;

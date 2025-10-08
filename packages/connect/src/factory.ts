@@ -174,6 +174,12 @@ export const factory = <
             method: 'moneroGetWatchKey',
         }),
 
+    moneroKeyImageSync: params =>
+        call({
+            ...params,
+            method: 'moneroKeyImageSync',
+        }),
+
     nemGetAddress: params =>
         call({
             ...params,

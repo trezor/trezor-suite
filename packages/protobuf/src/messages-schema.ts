@@ -3030,6 +3030,82 @@ export const MoneroWatchKey = Type.Object(
     { $id: 'MoneroWatchKey' },
 );
 
+export type MoneroSubAddressIndicesList = Static<typeof MoneroSubAddressIndicesList>;
+export const MoneroSubAddressIndicesList = Type.Object(
+    {
+        account: Type.Number(),
+        minor_indices: Type.Array(Type.Number()),
+    },
+    { $id: 'MoneroSubAddressIndicesList' },
+);
+
+export type MoneroKeyImageExportInitRequest = Static<typeof MoneroKeyImageExportInitRequest>;
+export const MoneroKeyImageExportInitRequest = Type.Object(
+    {
+        num: Type.Uint(),
+        hash: Type.Uint8Array(),
+        address_n: Type.Array(Type.Number()),
+        network_type: Type.Optional(EnumMoneroNetworkType),
+        subs: Type.Array(MoneroSubAddressIndicesList),
+    },
+    { $id: 'MoneroKeyImageExportInitRequest' },
+);
+
+export type MoneroKeyImageExportInitAck = Static<typeof MoneroKeyImageExportInitAck>;
+export const MoneroKeyImageExportInitAck = Type.Object({}, { $id: 'MoneroKeyImageExportInitAck' });
+
+export type MoneroTransferDetails = Static<typeof MoneroTransferDetails>;
+export const MoneroTransferDetails = Type.Object(
+    {
+        out_key: Type.Uint8Array(),
+        tx_pub_key: Type.Uint8Array(),
+        additional_tx_pub_keys: Type.Array(Type.Uint8Array()),
+        internal_output_index: Type.Uint(),
+        sub_addr_major: Type.Optional(Type.Number()),
+        sub_addr_minor: Type.Optional(Type.Number()),
+    },
+    { $id: 'MoneroTransferDetails' },
+);
+
+export type MoneroKeyImageSyncStepRequest = Static<typeof MoneroKeyImageSyncStepRequest>;
+export const MoneroKeyImageSyncStepRequest = Type.Object(
+    {
+        tdis: Type.Array(MoneroTransferDetails),
+    },
+    { $id: 'MoneroKeyImageSyncStepRequest' },
+);
+
+export type MoneroExportedKeyImage = Static<typeof MoneroExportedKeyImage>;
+export const MoneroExportedKeyImage = Type.Object(
+    {
+        iv: Type.Optional(Type.String()),
+        blob: Type.Optional(Type.String()),
+    },
+    { $id: 'MoneroExportedKeyImage' },
+);
+
+export type MoneroKeyImageSyncStepAck = Static<typeof MoneroKeyImageSyncStepAck>;
+export const MoneroKeyImageSyncStepAck = Type.Object(
+    {
+        kis: Type.Array(MoneroExportedKeyImage),
+    },
+    { $id: 'MoneroKeyImageSyncStepAck' },
+);
+
+export type MoneroKeyImageSyncFinalRequest = Static<typeof MoneroKeyImageSyncFinalRequest>;
+export const MoneroKeyImageSyncFinalRequest = Type.Object(
+    {},
+    { $id: 'MoneroKeyImageSyncFinalRequest' },
+);
+
+export type MoneroKeyImageSyncFinalAck = Static<typeof MoneroKeyImageSyncFinalAck>;
+export const MoneroKeyImageSyncFinalAck = Type.Object(
+    {
+        enc_key: Type.Optional(Type.String()),
+    },
+    { $id: 'MoneroKeyImageSyncFinalAck' },
+);
+
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -3853,6 +3929,15 @@ export const MessageType = Type.Object(
         MoneroAddress,
         MoneroGetWatchKey,
         MoneroWatchKey,
+        MoneroSubAddressIndicesList,
+        MoneroKeyImageExportInitRequest,
+        MoneroKeyImageExportInitAck,
+        MoneroTransferDetails,
+        MoneroKeyImageSyncStepRequest,
+        MoneroExportedKeyImage,
+        MoneroKeyImageSyncStepAck,
+        MoneroKeyImageSyncFinalRequest,
+        MoneroKeyImageSyncFinalAck,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,
