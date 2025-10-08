@@ -14,7 +14,9 @@ import { BluetoothDevice } from '../types';
 const initialState: NativeBluetoothState = {
     ...prepareInitialState<BluetoothDevice>(),
     autoConnectPolicy: {
-        '1ec77690-be29-43c6-8859-dfeca15c7c0f': { type: 'autoconnect-disabled' },
+        [asBluetoothDeviceId('1ec77690-be29-43c6-8859-dfeca15c7c0f')]: {
+            type: 'autoconnect-disabled',
+        },
     },
     permissionStatus: 'granted',
 };
@@ -180,7 +182,7 @@ describe('selectKnownConnectableBluetoothDevices', () => {
                 knownPairableDevice,
                 knownUserDisconnectedDevice,
             ],
-            [knownDevice],
+            [knownDevice, knownUserDisconnectedDevice],
         ],
     ])('returns correct value for %s', (_, nearbyDevices, knownDevices, expectedDevices) => {
         expect(

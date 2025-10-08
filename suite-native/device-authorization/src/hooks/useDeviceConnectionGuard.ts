@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { bluetoothActions } from '@suite-common/bluetooth';
+import { selectDeviceBluetoothId, selectIsDeviceConnected } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceSettingsStackRoutes,
@@ -20,11 +21,16 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useDeviceConnectionGuard = () => {
+    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const deviceBluetoothId = useSelector(selectDeviceBluetoothId);
 
-    const redirectToConnectAndUnlockScreen = useCallback(() => {
+    const navigateToDeviceConnectionGuardScreen = useCallback(() => {
+        if (deviceBluetoothId) {
+            dispatch(bluetoothActions.enableAutoConnect({ deviceId: deviceBluetoothId }));
+        }
         navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
             params: {
@@ -34,14 +40,14 @@ export const useDeviceConnectionGuard = () => {
                 },
             },
         });
-    }, [navigation]);
+    }, [deviceBluetoothId, dispatch, navigation]);
 
     useFocusEffect(
         useCallback(() => {
             if (!isDeviceConnected) {
-                redirectToConnectAndUnlockScreen();
+                navigateToDeviceConnectionGuardScreen();
             }
-        }, [isDeviceConnected, redirectToConnectAndUnlockScreen]),
+        }, [isDeviceConnected, navigateToDeviceConnectionGuardScreen]),
     );
 
     return { isDeviceConnected };

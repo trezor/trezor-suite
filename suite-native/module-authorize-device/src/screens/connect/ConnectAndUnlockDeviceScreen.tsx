@@ -1,8 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useIsFocused } from '@react-navigation/native';
 
+import { bluetoothActions } from '@suite-common/bluetooth';
 import {
     selectIsBluetoothSupportedByDevice,
     selectIsDeviceAuthorized,
@@ -27,6 +28,8 @@ export const ConnectAndUnlockDeviceScreen = ({
     AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
     RootStackParamList
 >) => {
+    const dispatch = useDispatch();
+
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
 
@@ -44,6 +47,8 @@ export const ConnectAndUnlockDeviceScreen = ({
     }, [navigation]);
 
     const navigateToTurnOnAndUnlockDeviceScreen = () => {
+        // Make sure auto-connect is enabled in case some device was manually disconnected.
+        dispatch(bluetoothActions.enableAutoConnect());
         navigation.replace(AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice);
     };
 
