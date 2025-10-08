@@ -36,7 +36,7 @@ export const SecurityCheckLayout = ({
                 <DeviceWithScene
                     deviceModel={deviceModelInternal!}
                     scene="ghost"
-                    width={200}
+                    width={150}
                     unitColor={device?.features?.unit_color}
                 />
             );

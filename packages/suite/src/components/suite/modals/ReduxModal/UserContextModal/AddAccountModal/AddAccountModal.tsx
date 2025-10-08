@@ -375,7 +375,7 @@ export const AddAccountModal = ({
     return (
         <Modal
             onCancel={onCancel}
-            size="small"
+            size="medium"
             bottomContent={
                 selectedNetwork &&
                 (isSelectedNetworkEnabled ? (
