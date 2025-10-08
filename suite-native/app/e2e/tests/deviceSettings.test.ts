@@ -2,7 +2,8 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
-import { regtestDiscoveryFinishedState } from '../fixtures/regtestDiscoveryFinishedState';
+import { regtestDiscoveryFinishedStateT1B1 } from '../fixtures/regtestDiscoveryFinishedStateT1B1';
+import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySuccess';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
@@ -17,14 +18,14 @@ import {
     wipeAppData,
 } from '../utils';
 
-const preloadedState = mergePreloadedReduxState(
+const preloadedStateT3T1 = mergePreloadedReduxState(
     onboardingCompletedState,
-    regtestDiscoveryFinishedState,
+    regtestDiscoveryFinishedStateT3T1,
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState } });
+        await openApp({ newInstance: true, args: { preloadedState: preloadedStateT3T1 } });
         await appIsFullyLoaded();
     });
 
@@ -143,6 +144,11 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
     });
 });
 
+const preloadedStateT1B1 = mergePreloadedReduxState(
+    onboardingCompletedState,
+    regtestDiscoveryFinishedStateT1B1,
+);
+
 conditionalDescribe(
     device.getPlatform() === 'android',
     'Device Settings - Tests with T1B1 device model [@specificModel]',
@@ -154,7 +160,9 @@ conditionalDescribe(
 
             await openApp({
                 newInstance: true,
-                args: { preloadedState },
+                args: {
+                    preloadedState: preloadedStateT1B1,
+                },
             });
             await appIsFullyLoaded();
 
