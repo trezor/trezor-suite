@@ -26,7 +26,7 @@ test.describe(
                     priority: TestPriority.Critical,
                 }),
             },
-            async ({ analyticsSection, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
+            async ({ analyticsSection, onboardingPage, devicePrompt, trezorUserEnvLink, page }) => {
                 await test.step('Pass through analytics and firmware steps', async () => {
                     await analyticsSection.passThroughAnalytics();
                     await onboardingPage.firmware.continueThroughFirmware();
@@ -54,10 +54,11 @@ test.describe(
                     await onboardingPage.backup.madeNoDigitalCopyCheckbox.click();
                     await onboardingPage.backup.willHideSeedCheckbox.click();
                     await devicePrompt.confirmOnDevicePromptIsHidden();
-
                     await onboardingPage.backup.startButton.click();
                     await devicePrompt.confirmOnDevicePromptIsShown();
 
+                    // Emulator needs to initialize the seed first
+                    await page.waitForTimeout(500);
                     for (let i = 0; i < 48; i++) {
                         await trezorUserEnvLink.pressYes();
                     }
