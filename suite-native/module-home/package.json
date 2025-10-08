@@ -37,6 +37,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "2.13.1",
         "react": "19.0.0",
@@ -46,7 +47,6 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*",
-        "@trezor/device-utils": "workspace:*"
+        "@suite-native/test-utils": "workspace:*"
     }
 }

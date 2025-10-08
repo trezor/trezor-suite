@@ -11807,6 +11807,7 @@ __metadata:
   dependencies:
     "@react-navigation/core": "npm:7.12.4"
     "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
@@ -12353,6 +12354,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
