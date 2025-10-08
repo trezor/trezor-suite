@@ -2,7 +2,7 @@ import { AnyAction, Draft } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { DeviceConnectActionPayload, deviceActions } from '@suite-common/wallet-core';
-import { TrezorPushNotificationType } from '@trezor/connect';
+import { BluetoothDeviceId, TrezorPushNotificationType } from '@trezor/connect';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
@@ -23,7 +23,7 @@ export type BluetoothState<T extends BluetoothDeviceCommon> = {
     // (because we already successfully paired them in the Suite) in the Operating System
     knownDevices: T[];
     ignoredDeviceIds: string[];
-    autoConnectPolicy: Record<string, BluetoothAutoConnectPolicy | undefined>;
+    autoConnectPolicy: Record<BluetoothDeviceId, BluetoothAutoConnectPolicy | undefined>;
     isDeviceOsUnpairingRequired: boolean;
 };
 
@@ -117,8 +117,12 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     }
                 }
             })
-            .addCase(bluetoothActions.setAutoConnectPolicyAction, (state, { payload }) => {
-                state.autoConnectPolicy[payload.id] = payload.policy;
+            .addCase(bluetoothActions.enableAutoConnect, (state, { payload }) => {
+                if (payload) {
+                    delete state.autoConnectPolicy[payload.deviceId];
+                } else {
+                    state.autoConnectPolicy = {};
+                }
             })
             .addCase(bluetoothActions.setIsDeviceOsUnpairingRequired, (state, { payload }) => {
                 state.isDeviceOsUnpairingRequired = payload;
