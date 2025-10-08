@@ -155,10 +155,9 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => {
 type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path: string };
 
 /**
- * simplified Device from '@trezor/connect'
- * @param {Partial<Device>} [dev]
- * @param {Partial<Features>} [feat]
- * @returns {Device}
+ * Create a simplified mocked Device as emitted from '@trezor/connect'.
+ * Note that type inferrence for KnownDevice | UnknownDevice | UnreadableDevice cannot work here because of Partial<>.
+ * If you want tighter types in a test, do narrowing with type guards (e.g. throw if not known).
  */
 const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Features>): Device => {
     const path = asDeviceUniquePath(dev?.path ?? '1');
@@ -220,10 +219,9 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
 };
 
 /**
- * Extended device from suite reducer
- * @param {Partial<TrezorDevice>} [dev]
- * @param {Partial<Features>} [feat]
- * @returns {TrezorDevice}
+ * Create a mocked extended device, as processed by wallet-core deviceReducer.
+ * Note that type inferrence for AcquiredDevice | UnknownDevice | UnreadableDevice cannot work here because of Partial<>.
+ * If you want tighter types in a test, do narrowing with type guards (e.g. throw if not acquired).
  */
 const getSuiteDevice = (
     dev?: Partial<

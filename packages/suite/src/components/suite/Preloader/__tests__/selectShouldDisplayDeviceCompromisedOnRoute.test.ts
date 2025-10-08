@@ -1,4 +1,5 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
+import * as deviceUtils from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
@@ -23,8 +24,10 @@ const authenticityChecksFail: AcquiredDevice['authenticityChecks'] = {
     firmwareHash: { success: false, error: 'hash-mismatch' },
 };
 
-// TODO fix the mocks. The device actually is acquired, but the function casts it to TrezorDevice, why???
-const defaultDevice = testMocks.getSuiteDevice() as AcquiredDevice;
+const defaultDevice = testMocks.getSuiteDevice();
+if (!deviceUtils.isDeviceAcquired(defaultDevice)) {
+    throw 'testMocks.getSuiteDevice() must return an AcquiredDevice here.';
+}
 
 const fixtures: Fixture[] = [
     {
