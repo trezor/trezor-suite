@@ -77,8 +77,10 @@ describe('useSellQuotes', () => {
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', true);
         });
-        act(() => {
+        await act(async () => {
             result.current.setValue('cryptoStringAmount', '1');
+            // allow validations to run
+            await Promise.resolve();
         });
 
         expect(dispatchSpy).toHaveBeenCalledWith(
@@ -99,8 +101,10 @@ describe('useSellQuotes', () => {
                 result.current.setValue('sendAsset', bnbAsset);
                 result.current.setValue('fiatCurrency', 'usd');
             });
-            act(() => {
+            await act(async () => {
                 result.current.setValue('cryptoStringAmount', amount);
+                // allow validations to run
+                await Promise.resolve();
             });
 
             expect(dispatchSpy).not.toHaveBeenCalledWith(
@@ -121,8 +125,10 @@ describe('useSellQuotes', () => {
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', false);
         });
-        act(() => {
+        await act(async () => {
             result.current.setValue('fiatStringAmount', '100');
+            // allow validations to run
+            await Promise.resolve();
         });
 
         expect(dispatchSpy).toHaveBeenCalledWith(
@@ -160,8 +166,10 @@ describe('useSellQuotes', () => {
                 result.current.setValue('sendAsset', usdcAsset);
                 result.current.setValue('fiatCurrency', 'usd');
             });
-            act(() => {
+            await act(async () => {
                 result.current.setValue('fiatStringAmount', '100');
+                // allow validations to run
+                await Promise.resolve();
             });
 
             dispatchSpy.mockClear();
@@ -187,8 +195,10 @@ describe('useSellQuotes', () => {
             result.current.setValue('fiatCurrency', 'usd');
         });
 
-        act(() => {
+        await act(async () => {
             result.current.setValue('fiatStringAmount', '100');
+            // allow validations to run
+            await Promise.resolve();
         });
 
         dispatchSpy.mockClear();
@@ -230,8 +240,10 @@ describe('useSellQuotes', () => {
             result.current.setValue('fiatStringAmount', '100');
         });
         // handleRequestThunk is mocked, add quotes manually
-        act(() => {
+        await act(async () => {
             store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+            // allow validations to run
+            await Promise.resolve();
         });
 
         dispatchSpy.mockClear();
@@ -253,15 +265,23 @@ describe('useSellQuotes', () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result } = await renderUseSellQuotes(store);
 
-        act(() => {
+        await act(async () => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', true);
             result.current.setValue('cryptoStringAmount', '1');
+            // allow validations to run
+            await Promise.resolve();
+        });
+
+        dispatchSpy.mockClear();
+        await act(async () => {
             result.current.setError('cryptoStringAmount', {
                 type: 'manual',
                 message: 'Some error',
             });
+            // allow validations to run
+            await Promise.resolve();
         });
 
         expect(dispatchSpy).not.toHaveBeenCalledWith(
