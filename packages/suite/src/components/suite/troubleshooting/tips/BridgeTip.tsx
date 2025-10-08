@@ -24,7 +24,7 @@ export const SuiteDesktopTip = () => {
                 id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION"
                 values={{
                     a: chunks => (
-                        <TrezorLink variant="underline" onClick={handleClick}>
+                        <TrezorLink icon="arrowUpRight" variant="underline" onClick={handleClick}>
                             {chunks}
                         </TrezorLink>
                     ),
@@ -40,7 +40,11 @@ export const BridgeStatus = () => (
             id="TR_TROUBLESHOOTING_TIP_TRANSPORT_STATUS_DESCRIPTION"
             values={{
                 a: chunks => (
-                    <TrezorLink variant="underline" href="http://127.0.0.1:21325/status/">
+                    <TrezorLink
+                        icon="arrowUpRight"
+                        variant="underline"
+                        href="http://127.0.0.1:21325/status/"
+                    >
                         {chunks}
                     </TrezorLink>
                 ),

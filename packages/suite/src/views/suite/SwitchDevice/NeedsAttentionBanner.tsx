@@ -1,7 +1,7 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
-import { Banner, BannerVariant, Icon, IconName, Row } from '@trezor/components';
+import { Banner, BannerVariant } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -76,19 +76,6 @@ const getDeviceStatusWarningVariant = (
     }
 };
 
-const getDeviceStatusBannerIcon = (
-    deviceStatusVariant: ReturnType<typeof getDeviceStatusWarningVariant>,
-): IconName => {
-    switch (deviceStatusVariant) {
-        case 'warning':
-            return 'warning';
-        case 'destructive':
-            return 'warningCircle';
-        default:
-            return 'info';
-    }
-};
-
 export type NeedsAttentionBannerProps = {
     device: TrezorDevice;
     deviceStatus: ConnectedDeviceStatus;
@@ -102,7 +89,6 @@ export const NeedsAttentionBanner = ({
 }: NeedsAttentionBannerProps) => {
     const deviceResolveIssueCTAMessage = getDeviceResolveStatusCTAMessage(deviceStatus);
     const deviceStatusBannerVariant = getDeviceStatusWarningVariant(deviceStatus);
-    const deviceStatusBannerIcon = getDeviceStatusBannerIcon(deviceStatusBannerVariant);
     const deviceStatusMessage = getDeviceNeedsAttentionMessage(deviceStatus);
     const isLocked = useDevice().isLocked(true);
     const dispatch = useDispatch();
@@ -173,12 +159,7 @@ export const NeedsAttentionBanner = ({
                 )
             }
         >
-            {deviceStatusMessage && (
-                <Row gap={8}>
-                    <Icon size="medium" name={deviceStatusBannerIcon} />
-                    <Translation id={deviceStatusMessage} />
-                </Row>
-            )}
+            {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
         </Banner>
     );
 };

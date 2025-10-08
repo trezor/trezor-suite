@@ -47,7 +47,7 @@ export const ConfirmActionModal = ({
             />
             <Modal.ModalBase size="tiny">
                 <Column alignItems="center" gap={16}>
-                    <DeviceConfirmImage device={device} />
+                    <DeviceConfirmImage device={device} margin={20} />
                     <H2
                         align="center"
                         margin={{ left: spacings.md, right: spacings.md, bottom: spacings.md }}
