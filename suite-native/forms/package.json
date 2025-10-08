@@ -10,12 +10,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "^5.2.1",
+        "@hookform/resolvers": "^5.2.2",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "react": "19.0.0",
-        "react-hook-form": "^7.62.0",
+        "react-hook-form": "^7.64.0",
         "react-native": "0.79.3",
         "react-native-reanimated": "^3.18.0",
         "type-fest": "4.24.0",
