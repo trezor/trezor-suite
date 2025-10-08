@@ -65,8 +65,6 @@ export const DeviceHeader = ({
                     data-testid={
                         isDefaultCancelVisible ? undefined : '@switch-device/cancel-button'
                     }
-                    onClick={isDefaultCancelVisible ? undefined : () => onCancel?.()}
-                    cursor={isDefaultCancelVisible ? 'default' : 'pointer'}
                 >
                     <DeviceStatus
                         deviceModel={deviceModelInternal}
