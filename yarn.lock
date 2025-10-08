@@ -14172,7 +14172,7 @@ __metadata:
     react-hook-form: "npm:^7.62.0"
     react-intl: "npm:^7.1.11"
     react-redux: "npm:9.2.0"
-    react-router: "npm:^7.8.2"
+    react-router: "npm:^7.9.3"
     react-select: "npm:^5.10.2"
     react-toastify: "npm:^10.0.4"
     react-use: "npm:^17.6.0"
@@ -38043,9 +38043,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:^7.8.2":
-  version: 7.8.2
-  resolution: "react-router@npm:7.8.2"
+"react-router@npm:^7.9.3":
+  version: 7.9.3
+  resolution: "react-router@npm:7.9.3"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -38055,7 +38055,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10/d1af3980cdfe8b915f6a8b219d57f18f9e3c4c062fa33bbb0946d4ff18c4c09fbf2f5c3616f5953f576c1d3be31616e4578773794cbb6eacf7812050997e04a2
+  checksum: 10/62066f09214c5b026b0d400af946aa0b16ef5be7f5120a4400e1b1fc487249220c2d735d9f6a2afa505a136bc8ef4cd7657b1ff8126871068cbf7ec773febce3
   languageName: node
   linkType: hard
 
