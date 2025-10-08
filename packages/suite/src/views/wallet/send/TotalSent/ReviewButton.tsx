@@ -7,8 +7,9 @@ import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import { Banner, Button, Checkbox, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const Container = styled.div`
@@ -64,6 +65,7 @@ const SecondLine = styled.p`
 
 export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
+    const dispatch = useDispatch();
     const {
         account: { networkType, symbol },
         control,
@@ -85,6 +87,8 @@ export const ReviewButton = () => {
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
     const isLoading = isSendFormLoading || areFeesLoading;
 
+    const isDeviceConnected = device?.connected && device?.available;
+
     const options = useWatch({
         name: 'options',
         defaultValue: getDefaultValue('options', []),
@@ -99,17 +103,17 @@ export const ReviewButton = () => {
         options.includes('destinationTag') &&
         values.destinationTag === '';
 
-    const isDeviceConnected = device?.connected && device?.available;
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
     const isLowAnonymity =
         Array.isArray(errors.outputs) &&
         errors.outputs.some(output => isLowAnonymityWarning(output));
+
     const possibleToSubmit =
         composedTx?.type === 'final' &&
-        !isLocked() &&
-        device?.available &&
         online &&
-        !isLowAnonymity;
+        !isLowAnonymity &&
+        (isDeviceConnected ? !isLocked() : true);
+
     const confirmationRequired =
         possibleToSubmit && isLowAnonymityUtxoSelected && !anonymityWarningChecked;
     const isDisabled = requireDestinationTag || !possibleToSubmit || confirmationRequired;
@@ -121,10 +125,6 @@ export const ReviewButton = () => {
 
     const toggleUtxoSelection = () => toggleOption('utxoSelection');
     const getPrimaryText = () => {
-        if (!isDeviceConnected) {
-            return 'TR_CONNECT_TREZOR_TO_SEND_BUTTON';
-        }
-
         if (showCoinControlWarning) {
             return broadcastEnabled
                 ? 'TR_SEND_NOT_ANONYMIZED_COINS'
@@ -132,6 +132,18 @@ export const ReviewButton = () => {
         }
 
         return broadcastEnabled ? 'REVIEW_AND_SEND_TRANSACTION' : 'SIGN_TRANSACTION';
+    };
+
+    const handleButtonReviewClick = () => {
+        if (!isDeviceConnected) {
+            if (device?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
+        signTransaction();
     };
 
     const tooltipContent =
@@ -185,7 +197,7 @@ export const ReviewButton = () => {
                     $isRed={anonymityWarningChecked}
                     data-testid="@send/review-button"
                     isDisabled={isDisabled || isLoading}
-                    onClick={signTransaction}
+                    onClick={handleButtonReviewClick}
                 >
                     <Translation id={getPrimaryText()} />
                     {buttonHasTwoLines && (

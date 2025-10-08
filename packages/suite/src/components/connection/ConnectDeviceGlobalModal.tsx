@@ -132,7 +132,12 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return (
             <Modal.Backdrop onClick={onCancel}>
                 <DontSeeTrezorPill onClick={toggleShowHints} />
-                <Modal.ModalBase size="tiny" onCancel={onCancel} onBackClick={toggleBluetoothMode}>
+                <Modal.ModalBase
+                    data-testid="@suite/connection-modal"
+                    size="tiny"
+                    onCancel={onCancel}
+                    onBackClick={toggleBluetoothMode}
+                >
                     <ConnectModalContent isBluetoothMode={true}>
                         <Row gap={8} alignItems="center" justifyContent="center" height={50}>
                             <Spinner size={16} bodyColor={theme.iconAlertBlue} isGrey={false} />
@@ -150,7 +155,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     return (
         <Modal.Backdrop onClick={onCancel}>
             <DontSeeTrezorPill onClick={toggleShowHints} />
-            <Modal.ModalBase size="tiny" onCancel={onCancel}>
+            <Modal.ModalBase data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
                 <ConnectModalContent isBluetoothMode={false}>
                     {isBluetoothEnabled && (
                         <Button
