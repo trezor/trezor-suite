@@ -122,21 +122,20 @@ export const handleHandshakeInit = ({
 
     // 11.1 If found set (temp_host_static_privkey, temp_host_static_pubkey) = (host_static_privkey, host_static_pubkey).
     // 11.2 If not found set (temp_host_static_privkey, temp_host_static_pubkey) = (X25519(0, B), 0).
-    const hostTempKeys = credentials
-        ? hostStaticKeys
-        : getCurve25519KeyPair(Buffer.alloc(32).fill(0));
+    // NOTE: This logic is deprecated and zero keypair should never be used, source:
+    // https://satoshilabs.slack.com/archives/C078GRAK58U/p1740132971826629?thread_ts=1739181741.870599&cid=C078GRAK58Us
 
     // 12. Set encrypted_host_static_pubkey = AES-GCM-ENCRYPT(key=k, IV=0^95 || 1, ad=h, plaintext=temp_host_static_pubkey).
     aes = aesgcm(k, iv1);
     aes.auth(h);
     const hostEncryptedStaticPubkey = Buffer.concat([
-        aes.encrypt(hostTempKeys.publicKey),
+        aes.encrypt(hostStaticKeys.publicKey),
         aes.finish(),
     ]);
     // 13. Set h = SHA-256(h || encrypted_host_static_pubkey).
     h = hashOfTwo(h, hostEncryptedStaticPubkey);
     // 14. Set ck, k = HKDF(ck, X25519(temp_host_static_privkey, trezor_ephemeral_pubkey)).
-    point = curve25519(hostTempKeys.privateKey, trezorEphemeralPubkey);
+    point = curve25519(hostStaticKeys.privateKey, trezorEphemeralPubkey);
     [ck, k] = hkdf(ck, point);
     // 15. Set payload_binary = PROTOBUF-ENCODE(type=HandshakeCompletionReqNoisePayload, host_pairing_credential).
     const { message } = protobufEncoder('ThpHandshakeCompletionReqNoisePayload', {
