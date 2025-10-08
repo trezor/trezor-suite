@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Icon } from '@trezor/components';
+import { AllowedAnimationPrimitiveFrameProps, Icon } from '@trezor/components';
 import { DeviceModelInternal, normalizeDeviceColorVariant } from '@trezor/device-utils';
 
 import { mapTrezorModelToIcon } from '../../utils/mapTrezorModelToIcon';
 import { DeviceAnimation } from '../DeviceAnimation/DeviceAnimation';
 
-export type RotateDeviceImageProps = {
+export type RotateDeviceImageProps = AllowedAnimationPrimitiveFrameProps & {
     deviceModel?: DeviceModelInternal;
     deviceColor?: number;
     className?: string;
@@ -22,6 +22,7 @@ export const RotateDeviceImage = ({
     loop,
     animationHeight,
     animationWidth,
+    ...rest
 }: RotateDeviceImageProps) => {
     if (!deviceModel) {
         return null;
@@ -40,6 +41,7 @@ export const RotateDeviceImage = ({
             deviceUnitColor={normalizeDeviceColorVariant(deviceColor)}
             height={animationHeight}
             width={animationWidth}
+            {...rest}
         />
     );
 };

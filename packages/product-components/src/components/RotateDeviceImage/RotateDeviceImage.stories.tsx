@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { allowedAnimationPrimitivesFrameProps, getFramePropsStory } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
@@ -19,6 +20,7 @@ export const RotateDeviceImage: StoryObj<RotateDeviceImageProps> = {
         deviceColor: undefined,
         animationHeight: undefined,
         animationWidth: undefined,
+        ...getFramePropsStory(allowedAnimationPrimitivesFrameProps).args,
     },
     argTypes: {
         deviceModel: {
@@ -31,5 +33,6 @@ export const RotateDeviceImage: StoryObj<RotateDeviceImageProps> = {
         deviceColor: {
             type: 'string',
         },
+        ...getFramePropsStory(allowedAnimationPrimitivesFrameProps).argTypes,
     },
 };

@@ -4,7 +4,13 @@ import { useTheme } from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { AnimationWrapper, Shape } from '@trezor/components';
+import {
+    AllowedAnimationPrimitiveFrameProps,
+    AnimationWrapper,
+    Shape,
+    allowedAnimationPrimitivesFrameProps,
+    pickAndPrepareFrameProps,
+} from '@trezor/components';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 
 import { ConnectBtAnimation } from './ConnectBtAnimation';
@@ -23,7 +29,7 @@ export const animationDeviceTypes = [
 ] as const;
 export type AnimationDeviceType = (typeof animationDeviceTypes)[number];
 
-type DeviceAnimationProps = {
+export type DeviceAnimationProps = AllowedAnimationPrimitiveFrameProps & {
     height?: CSSProperties['height'];
     width?: CSSProperties['width'];
     type: AnimationDeviceType;
@@ -49,7 +55,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             deviceUnitColor,
             sizeVariant,
             onVideoMouseOver: onMouseOver,
-            ...props
+            ...rest
         },
         videoRef,
     ) => {
@@ -80,9 +86,10 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         };
 
         if (deviceModelInternal === DeviceModelInternal.UNKNOWN) return null;
+        const frameProps = pickAndPrepareFrameProps(rest, allowedAnimationPrimitivesFrameProps);
 
         return (
-            <AnimationWrapper height={height} width={width} shape={shape} {...props}>
+            <AnimationWrapper height={height} width={width} shape={shape} {...frameProps}>
                 {['BOOTLOADER'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`}
