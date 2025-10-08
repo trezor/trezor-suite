@@ -116,6 +116,16 @@ export const getStatusMessage = (status: ExchangeTradeStatus) => {
     }
 };
 
+export const tokenSupportsIncreasingAllowance = (contractAddress?: string): boolean => {
+    const ethereumUsdtContractAddress = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+
+    if (!contractAddress) {
+        return false;
+    }
+
+    return contractAddress.trim().toLowerCase() !== ethereumUsdtContractAddress.toLowerCase();
+};
+
 export const exchangeUtils = {
     getAmountLimits,
     isQuoteError,
@@ -124,4 +134,5 @@ export const exchangeUtils = {
     getCexQuotesByRateType,
     getSuccessQuotesOrdered,
     getStatusMessage,
+    tokenSupportsIncreasingAllowance,
 };

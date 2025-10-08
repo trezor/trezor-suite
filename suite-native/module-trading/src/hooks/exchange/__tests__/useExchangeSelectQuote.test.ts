@@ -28,6 +28,8 @@ jest.mock('@trezor/react-utils', () => ({
     useTimer: () => mockTimerReturn,
 }));
 
+const mockTokenSupportsIncreasingAllowance = jest.fn();
+
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     exchangeThunks: {
@@ -36,6 +38,8 @@ jest.mock('@suite-common/trading', () => ({
             payload,
         }),
     },
+    tokenSupportsIncreasingAllowance: (contractAddress?: string) =>
+        mockTokenSupportsIncreasingAllowance(contractAddress),
 }));
 
 const mockNavigation = {
@@ -393,9 +397,7 @@ describe('useExchangeSelectQuote', () => {
 
         it('should navigate to TradingExchangeApproval with shouldIncreaseLimit when approval status is "needs_increase" and token supports increasing allowance', async () => {
             jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
-            jest.spyOn(approvalStatusUtils, 'tokenSupportsIncreasingAllowance').mockReturnValue(
-                true,
-            );
+            mockTokenSupportsIncreasingAllowance.mockReturnValue(true);
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);
@@ -423,9 +425,7 @@ describe('useExchangeSelectQuote', () => {
 
         it('should navigate to TradingExchangeRevoke when approval status is "needs_increase" and token does not support increasing allowance', async () => {
             jest.spyOn(approvalStatusUtils, 'getApprovalStatus').mockReturnValue('needs_increase');
-            jest.spyOn(approvalStatusUtils, 'tokenSupportsIncreasingAllowance').mockReturnValue(
-                false,
-            );
+            mockTokenSupportsIncreasingAllowance.mockReturnValue(false);
 
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[1]);

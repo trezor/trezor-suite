@@ -2,7 +2,12 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { TradingExchangeType, invityAPI, useTradingInfo } from '@suite-common/trading';
+import {
+    TradingExchangeType,
+    invityAPI,
+    tokenSupportsIncreasingAllowance,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Badge,
@@ -28,7 +33,6 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { tokenSupportsIncreasingAllowance } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 const BreakableValue = styled.span`
