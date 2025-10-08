@@ -2,12 +2,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     deviceActions,
     selectIsDeviceInitialized,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Button } from '@suite-native/atoms';
+import { selectIsDeviceSetupSupported } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
@@ -36,6 +38,7 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
+    const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const device = useSelector(selectSelectedDevice);
 
@@ -48,9 +51,12 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
     const handleClose = () => {
         dismissCheck();
 
-        if (!isDeviceInitialized) {
+        if (!isDeviceInitialized && isDeviceSetupSupported) {
             navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                params: {
+                    deviceModel: getDeviceInternalModel(device),
+                },
             });
         } else if (!isCoinEnablingInitFinished) {
             navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {

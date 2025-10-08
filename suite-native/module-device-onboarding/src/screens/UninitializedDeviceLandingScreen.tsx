@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { useSetAtom } from 'jotai';
 
 import {
-    selectDeviceModel,
     selectHasDeviceFirmwareInstalled,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
@@ -16,7 +15,8 @@ import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    RootStackParamList,
+    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
@@ -25,14 +25,13 @@ import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboar
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
 
-const UninitializedDeviceLandingScreenContent = () => {
-    const deviceModel = useSelector(selectDeviceModel) as SetupSupportingDeviceModel;
+const UninitializedDeviceLandingScreenContent = ({
+    deviceModel,
+}: {
+    deviceModel: SetupSupportingDeviceModel;
+}) => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const coinLabel = useCoinLabel();
-
-    if (!deviceModel) {
-        return null;
-    }
 
     return (
         <VStack spacing="sp32">
@@ -59,17 +58,22 @@ const UninitializedDeviceLandingScreenContent = () => {
 
 export const UninitializedDeviceLandingScreen = ({
     navigation,
-}: StackProps<
+    route: { params },
+}: StackToStackCompositeScreenProps<
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.UninitializedDeviceLanding
+    DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+    RootStackParamList
 >) => {
+    const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
-    const deviceModel = useSelector(selectDeviceModel);
+
     const resetOnboardingAnalytics = useSetAtom(resetOnboardingAnalyticsAtom);
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
+
     const { navigateToNextScreenAfterFirmwareInstallation } =
         useNavigateToNextScreenAfterFirmwareInstallation();
+
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
             if (shouldOfferUpdateFirmware) {
@@ -144,7 +148,7 @@ export const UninitializedDeviceLandingScreen = ({
         <DeviceOnboardingScreenWithExitButton {...screenHeaderProps}>
             <VStack justifyContent="space-between" flex={1}>
                 <VStack spacing="sp32">
-                    <UninitializedDeviceLandingScreenContent />
+                    <UninitializedDeviceLandingScreenContent deviceModel={deviceModel} />
                     <TextButton
                         isUnderlined
                         onPress={handleDeviceLooksDifferentButtonPress}

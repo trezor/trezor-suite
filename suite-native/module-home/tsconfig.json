@@ -31,9 +31,9 @@
         { "path": "../settings" },
         { "path": "../theme" },
         { "path": "../toasts" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },
-        { "path": "../test-utils" },
-        { "path": "../../packages/device-utils" }
+        { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]
 }
