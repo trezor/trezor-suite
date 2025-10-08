@@ -7,7 +7,7 @@ import {
 
 import {
     getDeviceInternalModel,
-    getIsDeviceConnectedViaBluetooth,
+    getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
 } from '@suite-common/suite-utils';
 import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
@@ -30,7 +30,7 @@ import {
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/settings';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import {
     DEVICE_CONNECTION_BLACKLISTED_ROUTES,
@@ -46,12 +46,14 @@ import { getIsDeviceSetupSupported } from '../utils';
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
 
 const handleDeviceConnectNavigation = ({
+    deviceModel,
     hasDeviceBitcoinOnlyFirmware,
     isCoinEnablingInitFinished,
     isDeviceInitialized,
     isDeviceSetupSupported,
     wasDeviceOnboardingCancelled,
 }: {
+    deviceModel: DeviceModelInternal;
     hasDeviceBitcoinOnlyFirmware: boolean;
     isCoinEnablingInitFinished: boolean;
     isDeviceInitialized: boolean;
@@ -97,6 +99,9 @@ const handleDeviceConnectNavigation = ({
                         name: RootStackRoutes.DeviceOnboardingStack,
                         params: {
                             screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                            params: {
+                                deviceModel,
+                            },
                         },
                     },
                 ],
@@ -166,6 +171,7 @@ deviceConnectionMiddleware.startListening({
         if (isDeviceRemembered && isCoinEnablingInitFinished) return;
 
         handleDeviceConnectNavigation({
+            deviceModel: getDeviceInternalModel(device),
             hasDeviceBitcoinOnlyFirmware: hasBitcoinOnlyFirmware(device),
             isDeviceInitialized: getIsDeviceInitialized({
                 deviceMode: device.mode,
@@ -188,7 +194,9 @@ deviceConnectionMiddleware.startListening({
         const isDeviceRemembered = selectIsDeviceRemembered(getState());
         const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(getState());
         const isFirmwareInstallationRunning = selectIsFirmwareInstallationRunning(getState());
-        const wasDeviceConnectedViaBluetooth = getIsDeviceConnectedViaBluetooth(action.payload);
+        const wasDeviceConnectedViaBluetooth = getIsDeviceDescriptorApiTypeBluetooth(
+            action.payload,
+        );
 
         if (
             checkIsActiveRouteAnyOf(

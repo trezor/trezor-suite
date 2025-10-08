@@ -11,6 +11,7 @@ import {
     XpubAddress,
 } from '@suite-common/wallet-types';
 import { AccountInfo } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
     AccountsImportStackRoutes,
@@ -137,7 +138,9 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceDisconnected]: {
         wasDeviceConnectedViaBluetooth: boolean;
     };
-    [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
+    [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: {
+        deviceModel: DeviceModelInternal;
+    };
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
     };

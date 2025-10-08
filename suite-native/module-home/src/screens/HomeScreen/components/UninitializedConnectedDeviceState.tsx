@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
+import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -9,6 +12,7 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -34,9 +38,14 @@ export const UninitializedConnectedDeviceState = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
 
+    const deviceModel = useSelector(selectDeviceModel);
+
     const handleAddAccount = () => {
         navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
             screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+            params: {
+                deviceModel: deviceModel ?? DeviceModelInternal.UNKNOWN,
+            },
         });
     };
 
