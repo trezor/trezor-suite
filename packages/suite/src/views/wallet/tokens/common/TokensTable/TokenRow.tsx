@@ -18,6 +18,7 @@ import { Explorer, Network, getCoingeckoId } from '@suite-common/wallet-config';
 import { selectExplorer, selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import {
+    getAssetLogoContractAddresses,
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
 } from '@suite-common/wallet-utils';
@@ -99,11 +100,6 @@ export const TokenRow = ({
     const { coins } = useSelector(selectTradingInfo);
     const isDeviceLocked = isLocked(true);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
-
-    const networkContractAddress = getContractAddressForNetworkSymbol(
-        account.symbol,
-        token.contract,
-    );
 
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
 
@@ -207,7 +203,10 @@ export const TokenRow = ({
                     <AssetLogo
                         coingeckoId={coingeckoId || ''}
                         placeholder={token.name || token.symbol || 'token'}
-                        contractAddress={networkContractAddress}
+                        contractAddress={getAssetLogoContractAddresses(
+                            account.symbol,
+                            token.contract,
+                        )}
                         size={24}
                         shouldTryToFetch={isTokenKnown}
                     />
