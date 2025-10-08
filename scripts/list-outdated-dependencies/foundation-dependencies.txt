@@ -62,7 +62,6 @@ react-hook-form
 react-router
 rimraf
 sort-package-json
-tar
 tiny-secp256k1
 typeforce
 typescript-eslint
