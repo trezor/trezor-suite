@@ -223,7 +223,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
  * Note that type inferrence for AcquiredDevice | UnknownDevice | UnreadableDevice cannot work here because of Partial<>.
  * If you want tighter types in a test, do narrowing with type guards (e.g. throw if not acquired).
  */
-export const getSuiteDevice = (
+const getSuiteDevice = (
     dev?: Partial<
         Omit<StringPath<TrezorDevice>, 'state'> & {
             state?: `${string}@${string}:${number}`;
