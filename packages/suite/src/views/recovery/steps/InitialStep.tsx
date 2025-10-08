@@ -1,6 +1,6 @@
-import { getCheckBackupUrl, isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
+import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { BulletList, Card, Paragraph } from '@trezor/components';
-import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
@@ -18,6 +18,16 @@ const enterSeedInstructionsMap: Record<DeviceModelInternal, TranslationKey> = {
     [DeviceModelInternal.UNKNOWN]: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
 };
 
+const checkRecoverySeedMap: Record<DeviceModelInternal, TranslationKey> = {
+    T1B1: 'TR_CHECK_RECOVERY_SEED_DESC_T1B1',
+    T2B1: 'TR_CHECK_RECOVERY_SEED_DESC_T3B1', // same as T3B1, same model, just different chip
+    T2T1: 'TR_CHECK_RECOVERY_SEED_DESC_TOUCHSCREEN',
+    T3B1: 'TR_CHECK_RECOVERY_SEED_DESC_T3B1',
+    T3T1: 'TR_CHECK_RECOVERY_SEED_DESC_TOUCHSCREEN',
+    T3W1: 'TR_CHECK_RECOVERY_SEED_DESC_TOUCHSCREEN',
+    UNKNOWN: 'TR_CHECK_RECOVERY_SEED_DESC_TOUCHSCREEN',
+};
+
 type InitialStepProps = {
     isUnderstood: boolean;
     setIsUnderstood: (isUnderstood: boolean) => void;
@@ -33,9 +43,6 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
 
     const isShamirBackupAvailable = device?.features?.capabilities?.includes('Capability_Shamir');
     const learnMoreUrl = getCheckBackupUrl(device);
-    const descriptionSuffix = isDeviceWithButtonOnlyNoTouchscreen(deviceModelInternal)
-        ? getNarrowedDeviceModelInternal(deviceModelInternal)
-        : 'TOUCHSCREEN';
 
     return (
         <>
@@ -43,7 +50,7 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                 <BulletList.Item
                     title={
                         <Paragraph typographyStyle="hint" textWrap="pretty">
-                            <Translation id={`TR_CHECK_RECOVERY_SEED_DESC_${descriptionSuffix}`} />
+                            <Translation id={checkRecoverySeedMap[deviceModelInternal]} />
                         </Paragraph>
                     }
                 >

@@ -500,7 +500,7 @@ export const getSortedDevicesWithoutInstances = (
 
 export const isDeviceWithButtonOnlyNoTouchscreen = (deviceModel: DeviceModelInternal): boolean => {
     // Technically, the `B` in the DeviceModelInternal means buttons, but let's not rely on this.
-    // As it may be nor reliable in the future
+    // As it may not be reliable in the future.
 
     const map: Record<DeviceModelInternal, boolean> = {
         T1B1: true,
