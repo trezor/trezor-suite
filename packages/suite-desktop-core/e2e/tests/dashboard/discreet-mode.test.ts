@@ -46,7 +46,7 @@ test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
                 await verifyHiddenAndRevealedValue({
                     locator: walletPage.balanceOfAccount('btc'),
                     hiddenValue: '###',
-                    revealedValue: '###',
+                    revealedValue: '0',
                 });
             });
 
