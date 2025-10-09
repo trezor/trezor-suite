@@ -9,8 +9,7 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { Status, TraySettings } from '@trezor/suite-desktop-api/src/messages';
 
 import { app, ipcMain } from '../typed-electron';
-
-import { ModuleInitBackground, mainThreadEmitter } from './index';
+import { ModuleInitBackground, mainThreadEmitter } from './module';
 
 export const SERVICE_NAME = 'tray';
 

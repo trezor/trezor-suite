@@ -13,8 +13,7 @@ import { TorStatus } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
 import { allowedDomains } from '../config';
-
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'request-interceptor';
 

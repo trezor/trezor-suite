@@ -12,11 +12,10 @@ import { getFreePort } from '@trezor/node-utils';
 import { InterceptedEvent } from '@trezor/request-manager';
 import { getSynchronize } from '@trezor/utils';
 
+import type { ModuleInit } from './module';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
-
-import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = '@trezor/coinjoin';
 

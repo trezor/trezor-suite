@@ -21,9 +21,10 @@ import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
-import { initBackgroundModules, initModules, mainThreadEmitter } from './modules';
+import { initBackgroundModules, initModules } from './modules';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
 import { initBioAuthModule } from './modules/bioAuthModule';
+import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
 import { ipcMain } from './typed-electron';
 

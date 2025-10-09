@@ -4,8 +4,7 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { Store } from '../libs/store';
 import { ipcMain } from '../typed-electron';
-
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 const setThemeManually = (theme: SuiteThemeVariant, store: Store) => {
     const { logger } = global;

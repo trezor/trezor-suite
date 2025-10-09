@@ -6,8 +6,7 @@ import {
 
 import { readDir, save } from '../libs/user-data';
 import { app } from '../typed-electron';
-
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = '@trezor/firmware';
 

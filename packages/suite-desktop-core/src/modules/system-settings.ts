@@ -4,8 +4,7 @@ import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 
 import { ipcMain } from '../typed-electron';
-
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'system-settings';
 

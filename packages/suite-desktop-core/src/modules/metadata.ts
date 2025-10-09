@@ -5,8 +5,7 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { read, readDir, rename, save } from '../libs/user-data';
 import { ipcMain } from '../typed-electron';
-
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 const DATA_DIR = '/metadata';
 

@@ -15,8 +15,7 @@ import { getSwitchValue, hasSwitch } from '../libs/process-switches';
 import { verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
 import { app, ipcMain } from '../typed-electron';
-
-import { type ModuleInit, mainThreadEmitter } from './index';
+import { ModuleInit, mainThreadEmitter } from './module';
 
 const defaultFeedURL = {
     // This should correspond with the value in electron-builder-config.js file.
