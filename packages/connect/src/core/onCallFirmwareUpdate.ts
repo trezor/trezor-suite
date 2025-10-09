@@ -181,15 +181,13 @@ const waitForReconnectedDevice = async (
     return reconnectedDevice;
 };
 
-const waitForBluetoothReboot = ({
-    device,
-    target,
-    postMessage,
-}: {
+type WaitForBluetoothRebootParams = {
     target: 'bootloader' | 'normal';
     device: Device;
     postMessage: PostMessage;
-}) =>
+};
+
+const waitForBluetoothReboot = ({ device, target, postMessage }: WaitForBluetoothRebootParams) =>
     new Promise<void>(resolve => {
         postMessage(
             createUiMessage(UI.FIRMWARE_RECONNECT, {
@@ -356,7 +354,7 @@ export const onCallFirmwareUpdate = async ({
     const { deviceList, registerEvents, postMessage, initDevice, log } = context;
     log.debug('onCallFirmwareUpdate with params: ', params);
 
-    // Firmware type can be determine by the device.firmwareType but in case of switching form one to other we use params.btcOnly.
+    // Firmware type can be determined by the device.firmwareType but in case of switching form one to other we use params.btcOnly.
     const firmwareType = params.btcOnly ? FirmwareType.BitcoinOnly : FirmwareType.Universal;
 
     const device = await initDevice(params?.device?.path);
@@ -437,7 +435,7 @@ export const onCallFirmwareUpdate = async ({
         }),
     );
 
-    const finalBinaryRelase = device?.firmwareReleaseConfigInfo?.release;
+    const finalBinaryRelease = device?.firmwareReleaseConfigInfo?.release;
 
     // We have completed binary download, and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
@@ -448,7 +446,7 @@ export const onCallFirmwareUpdate = async ({
             releaseVersion: finalBinaryInfo.releaseVersion,
             firmwareType: device.firmwareType,
             internalModel: device.features.internal_model,
-            release: finalBinaryRelase,
+            release: finalBinaryRelease,
         });
         postMessage(message);
     }
