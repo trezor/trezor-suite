@@ -98,7 +98,8 @@ export const FormattedCryptoAmount = ({
         return (
             <>
                 {/* NOTE: using here just RedactNumericalValueInner as we want just the value, it cannot be in HiddePlacerholder, as it ads <span> around */}
-                {displayedSignValue} <RedactNumericalValueInner value={formattedValue} />{' '}
+                {displayedSignValue}{' '}
+                <RedactNumericalValueInner strict={false} value={formattedValue} />{' '}
                 {formattedSymbol}
             </>
         );
