@@ -28,7 +28,7 @@ export const localeSlice = createSlice({
     },
 });
 
-export const selectLanguage = (state: LocaleSliceRootState) => state.locale.language;
+export const selectUserSelectedLocale = (state: LocaleSliceRootState) => state.locale.language;
 
 export const { setLanguage } = localeSlice.actions;
 export const localeReducer = localeSlice.reducer;
