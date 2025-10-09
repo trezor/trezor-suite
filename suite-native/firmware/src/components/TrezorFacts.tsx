@@ -21,7 +21,6 @@ const FACTS_TRANSLATION_KEYS: TxKeyPath[] = [
     'firmware.firmwareUpdateProgress.trezorFacts.9',
     'firmware.firmwareUpdateProgress.trezorFacts.10',
     'firmware.firmwareUpdateProgress.trezorFacts.11',
-    'firmware.firmwareUpdateProgress.trezorFacts.12',
 ];
 const FACTS_COUNT = FACTS_TRANSLATION_KEYS.length;
 
