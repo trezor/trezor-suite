@@ -33,7 +33,7 @@ import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
-const MIN_FEE_RATE = 1; // minimum fee rate in sat/vB, introduced because nodes lowered min relay tx fee, but not incremental fee
+const MIN_FEE_RATE_PER_VB = 1; // minimum fee rate in sat/vB, introduced because nodes lowered min relay tx fee, but not incremental fee
 
 export type UseRbfProps = {
     selectedAccount: SelectedAccountLoaded;
@@ -50,13 +50,19 @@ const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin
     });
     const levels = feeInfo.levels.map(level => ({
         ...level,
-        feePerUnit: new BigNumber(level.feePerUnit).plus(feeRate).toString(),
+        feePerUnit: Math.max(
+            new BigNumber(level.feePerUnit).plus(feeRate).toNumber(),
+            new BigNumber(feeRate).plus(MIN_FEE_RATE_PER_VB).toNumber(),
+        ).toString(),
     }));
 
     return {
         ...feeInfo,
         levels,
-        minFee: Math.max(new BigNumber(feeRate).plus(feeInfo.minFee).toNumber(), MIN_FEE_RATE),
+        minFee: Math.max(
+            new BigNumber(feeRate).plus(feeInfo.minFee).toNumber(),
+            new BigNumber(feeRate).plus(MIN_FEE_RATE_PER_VB).toNumber(),
+        ),
     };
 };
 
