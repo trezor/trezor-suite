@@ -2693,7 +2693,6 @@ export const messages = {
                 9: 'Trezor began controlling its own chip supply chain in 2023 for better security.',
                 10: 'Trezor has sold wallets in over 150 countries.',
                 11: 'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
-                12: 'Trezor wallets can store and manage over 9,000+ cryptocurrencies securely in one place.',
             },
             confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
             retryButton: 'Retry',
