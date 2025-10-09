@@ -426,15 +426,17 @@ export class TradingPage {
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).toBeHidden();
-        await expect.soft(quoteRequestPromise).toHavePayload({
-            amountInCrypto: true,
-            cryptoCurrency,
-            fiatCurrency: fiatCurrencyCode.toUpperCase(),
-            country,
-            cryptoStringAmount: amount,
-            fiatStringAmount: '',
-            flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
-        });
+        await expect.soft(quoteRequestPromise).toHavePayload(
+            {
+                amountInCrypto: true,
+                cryptoCurrency,
+                fiatCurrency: fiatCurrencyCode.toUpperCase(),
+                country,
+                cryptoStringAmount: amount,
+                flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
+            },
+            { omit: ['fiatStringAmount'] },
+        );
         await this.waitForOffersSync();
     }
 

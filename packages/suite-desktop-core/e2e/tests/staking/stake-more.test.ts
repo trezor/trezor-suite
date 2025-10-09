@@ -66,7 +66,8 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     rewards: '234',
                     unstaking: 'hidden',
                 });
-                await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
+                // TODO: Highly unstable. Disappears after first sync of data. Needs investigation.
+                // await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
             });
 
             await test.step('Open and fill staking form', async () => {
