@@ -1,4 +1,7 @@
+import { useMemo } from 'react';
+
 import { StakeAccountRewards } from '@suite-common/wallet-core';
+import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { isInt } from '@trezor/utils';
 
 import { Account } from 'src/types/wallet';
@@ -8,13 +11,20 @@ export function useRewardsNotAvailableYet(
     latestReward?: StakeAccountRewards,
 ): boolean {
     if (account.networkType !== 'solana') {
-        return false;
+        throw new Error('useRewardsNotAvailableYet can be used only with solana account');
     }
 
     const currentEpoch = account.misc?.solEpoch ?? null;
     const latestRewardEpoch = latestReward?.epoch ?? null;
+    const hasActiveStakingAccount = useMemo(
+        () =>
+            (account.misc?.solStakingAccounts ?? []).some(
+                stakingAccount => stakingAccount.status === StakeState.Active,
+            ),
+        [account.misc?.solStakingAccounts],
+    );
 
-    if (!isInt(currentEpoch) || !isInt(latestRewardEpoch)) {
+    if (!isInt(currentEpoch) || !isInt(latestRewardEpoch) || !hasActiveStakingAccount) {
         return false;
     }
 
