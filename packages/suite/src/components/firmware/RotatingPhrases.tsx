@@ -19,7 +19,6 @@ const PHRASES: TranslationKey[] = [
     'TR_DYK_ITEM_9',
     'TR_DYK_ITEM_10',
     'TR_DYK_ITEM_11',
-    'TR_DYK_ITEM_12',
 ];
 
 type RotatingPhrasesProps = {

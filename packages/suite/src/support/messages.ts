@@ -10726,11 +10726,6 @@ export default defineMessages({
         defaultMessage:
             'In January 2025, Trezor introduced the Trezor Safe 5 Freedom Edition, a limited release of just 2,100 units.',
     },
-    TR_DYK_ITEM_12: {
-        id: 'TR_DYK_ITEM_12',
-        defaultMessage:
-            'Trezor hardware wallets offer secure, all-in-one storage for over 9,000 cryptocurrencies.',
-    },
     TR_FIRMWARE_UPDATE_TIME_WARNING: {
         id: 'TR_FIRMWARE_UPDATE_TIME_WARNING',
         defaultMessage: 'This firmware update may take some time to complete.',
