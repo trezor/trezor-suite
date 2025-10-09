@@ -1,4 +1,11 @@
-import { Box, Button, Card, InlineAlertBoxProps, Text } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    InlineAlertBoxProps,
+    Text,
+    resetLetterSpacingOnAndroidStyle,
+} from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { models } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -57,7 +64,11 @@ export const BluetoothDeviceCard = ({
             </Box>
             <Box alignItems="center">
                 <Text variant="titleSmall">{device.name}</Text>
-                <Text variant="hint" color="textSubdued">
+                <Text
+                    variant="hint"
+                    color="textSubdued"
+                    style={applyStyle(resetLetterSpacingOnAndroidStyle)}
+                >
                     {modelConfig.name}
                     {' • '}
                     {modelConfig.colors[deviceColor] ?? (
