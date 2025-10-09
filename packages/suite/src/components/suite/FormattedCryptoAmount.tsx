@@ -37,6 +37,9 @@ export interface FormattedCryptoAmountProps {
     isBalance?: boolean;
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
+    /**
+     * If true, the `FormattedCryptoAmount` expects the `HiddenPlaceholder` upstream (it provides the `RedactNumbersContext`), else an error is thrown.
+     */
     isRawString?: boolean;
     isTabular?: boolean;
     'data-testid'?: string;
@@ -97,19 +100,28 @@ export const FormattedCryptoAmount = ({
 
         return (
             <>
-                {displayedSignValue} <RedactNumericalValue value={formattedValue} />{' '}
+                {displayedSignValue}
+                {disableHiddenPlaceholder ? (
+                    formattedValue
+                ) : (
+                    <RedactNumericalValue value={formattedValue} />
+                )}{' '}
                 {formattedSymbol}
             </>
         );
     }
 
+    const renderedValue = disableHiddenPlaceholder ? (
+        formattedValue
+    ) : (
+        <RedactNumericalValue value={formattedValue} />
+    );
+
     const content = (
         <Row gap={spacings.xxs} data-testid={`${dataTest}-with-symbol`}>
             <Row data-testid={dataTest}>
                 {!!signValue && <Sign value={signValue} />}
-                <Value $isTabular={isTabular}>
-                    <RedactNumericalValue value={formattedValue} />
-                </Value>
+                <Value $isTabular={isTabular}>{renderedValue}</Value>
             </Row>
             {formattedSymbol && (
                 <>

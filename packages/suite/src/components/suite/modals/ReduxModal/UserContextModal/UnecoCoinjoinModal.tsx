@@ -64,6 +64,7 @@ export const UnecoCoinjoinModal = () => {
                                     )}
                                     symbol={symbol}
                                     isRawString
+                                    disableHiddenPlaceholder
                                 />
                             ),
                             b: chunk => <strong>{chunk}</strong>,

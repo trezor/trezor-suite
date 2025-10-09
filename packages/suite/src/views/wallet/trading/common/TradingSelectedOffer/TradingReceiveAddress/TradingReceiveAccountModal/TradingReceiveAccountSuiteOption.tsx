@@ -9,7 +9,7 @@ import { Column, Icon, Row, Text, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { AccountLabeling, CoinBalance } from 'src/components/suite';
+import { AccountLabeling, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
@@ -99,10 +99,12 @@ export const TradingReceiveAccountSuiteOption = ({
                     <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
 
                     <Text typographyStyle="hint" variant="tertiary">
-                        <BaseCurrencyAmountFormatter
-                            value={fiatAmount ?? BASE_CURRENCY_ZERO}
-                            currency={baseCurrency}
-                        />
+                        <HiddenPlaceholder>
+                            <BaseCurrencyAmountFormatter
+                                value={fiatAmount ?? BASE_CURRENCY_ZERO}
+                                currency={baseCurrency}
+                            />
+                        </HiddenPlaceholder>
                     </Text>
                 </Column>
 
