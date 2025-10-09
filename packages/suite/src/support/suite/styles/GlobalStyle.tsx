@@ -56,6 +56,33 @@ const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     .floating {
         max-width: calc(100vw - 10px);
     }
+
+    mark.find-highlight {
+        position: relative;
+        background: yellow;
+        color: black;
+        border-radius: 2px;
+        transition: transform 0.16s ease, background 0.16s ease;
+    }
+
+    mark.find-highlight[data-active='true'] {
+        background: orange;
+        transform: scale(1.05);
+    }
+
+    mark.find-highlight .find-highlight-pulse {
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        width: calc(100% + 6px);
+        height: calc(100% + 6px);
+        border-radius: inherit;
+        background: orange;
+        opacity: 0.7;
+        transform: scale(1);
+        pointer-events: none;
+        z-index: -1;
+    }
 `;
 
 export default GlobalStyle;

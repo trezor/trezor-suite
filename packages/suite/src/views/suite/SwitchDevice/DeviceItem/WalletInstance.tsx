@@ -159,29 +159,32 @@ export const WalletInstance = ({
                                     )}
                                     {instance.state?.staticSessionId ? (
                                         <Column>
-                                            <MetadataLabeling
-                                                variant="text"
-                                                deviceStaticSessionId={
-                                                    instance.state.staticSessionId
-                                                }
-                                                defaultVisibleValue={valueLabel}
-                                                payload={{
-                                                    type: 'walletLabel',
-                                                    entityKey: instance.state.staticSessionId,
-                                                    defaultValue: instance.state.staticSessionId,
-                                                    value:
-                                                        // This is some legacy weird stuff I do not want to refacotr.
-                                                        // `payload.value` needs to be falsey for the `MetadataLabeling` component
-                                                        // to display `add` button, instead of `edit` button
-                                                        isLocalFirstStorageEnabled &&
-                                                        instance?.metadata[
-                                                            METADATA_LABELING.ENCRYPTION_VERSION
-                                                        ]
-                                                            ? oldWalletLabel
-                                                            : walletLabel,
-                                                }}
-                                                defaultEditableValue={valueLabel}
-                                            />
+                                            <span>
+                                                <MetadataLabeling
+                                                    variant="text"
+                                                    deviceStaticSessionId={
+                                                        instance.state.staticSessionId
+                                                    }
+                                                    defaultVisibleValue={valueLabel}
+                                                    payload={{
+                                                        type: 'walletLabel',
+                                                        entityKey: instance.state.staticSessionId,
+                                                        defaultValue:
+                                                            instance.state.staticSessionId,
+                                                        value:
+                                                            // This is some legacy weird stuff I do not want to refacotr.
+                                                            // `payload.value` needs to be falsey for the `MetadataLabeling` component
+                                                            // to display `add` button, instead of `edit` button
+                                                            isLocalFirstStorageEnabled &&
+                                                            instance?.metadata[
+                                                                METADATA_LABELING.ENCRYPTION_VERSION
+                                                            ]
+                                                                ? oldWalletLabel
+                                                                : walletLabel,
+                                                    }}
+                                                    defaultEditableValue={valueLabel}
+                                                />
+                                            </span>
                                             <LocalFirstStorageDebug device={instance} />
                                         </Column>
                                     ) : (

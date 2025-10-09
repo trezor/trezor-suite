@@ -34,6 +34,7 @@ export const allowedFlexFrameProps = [
     'cursor',
     'opacity',
     'position',
+    'pointerEvents',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
 

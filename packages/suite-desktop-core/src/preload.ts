@@ -20,3 +20,7 @@ contextBridge.exposeInMainWorld('desktopApi', desktopApi);
 contextBridge.exposeInMainWorld('desktopFlags', {
     exposeStore: hasSwitch('expose-store'),
 });
+
+contextBridge.exposeInMainWorld('electronFind', {
+    onShow: (callback: () => void) => ipcRenderer.on('find:show', callback),
+});

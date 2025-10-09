@@ -9,7 +9,7 @@ export const SERVICE_NAME = 'menu';
 export const init: ModuleInit = ({ mainWindowProxy }) => {
     const { logger } = global;
 
-    Menu.setApplicationMenu(buildMainMenu());
+    Menu.setApplicationMenu(buildMainMenu(mainWindowProxy));
     mainWindowProxy.on('init', mainWindow => {
         mainWindow.setMenuBarVisibility(false);
 
