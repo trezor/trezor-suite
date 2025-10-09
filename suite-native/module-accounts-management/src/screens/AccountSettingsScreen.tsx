@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -23,7 +24,13 @@ import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
-const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
+const AccountDetailSettingsRow = ({
+    title,
+    children,
+}: {
+    title: ReactNode;
+    children: ReactNode;
+}) => (
     <Box
         paddingVertical="sp8"
         flexDirection="row"
@@ -77,11 +84,19 @@ export const AccountSettingsScreen = ({
             <Box flex={1} justifyContent="space-between">
                 <Card>
                     <VStack spacing="sp4">
-                        <AccountDetailSettingsRow title="Coin">
+                        <AccountDetailSettingsRow
+                            title={
+                                <Translation id="moduleAccountManagement.accountSettingsScreen.coin" />
+                            }
+                        >
                             <CryptoNameWithIcon symbol={account.symbol} />
                         </AccountDetailSettingsRow>
                         {formattedAccountType && (
-                            <AccountDetailSettingsRow title="Account type">
+                            <AccountDetailSettingsRow
+                                title={
+                                    <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
+                                }
+                            >
                                 <Text variant="hint">{formattedAccountType}</Text>
                             </AccountDetailSettingsRow>
                         )}

@@ -49,22 +49,22 @@ const useWatchTimeframeChangeForAnalytics = (
             return;
         }
 
-        const timeframeLabel = timeSwitchItems.find(
+        const timeframeKey = timeSwitchItems.find(
             item => item.valueBackInHours === timeframeHours,
-        )?.label;
+        )?.key;
 
-        if (timeframeLabel) {
+        if (timeframeKey) {
             if (symbol) {
                 // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
                 // related to issue: https://github.com/trezor/trezor-suite/issues/7839
                 analytics.report({
                     type: EventType.AssetDetailTimeframeChange,
-                    payload: { timeframe: timeframeLabel, assetSymbol: symbol },
+                    payload: { timeframe: timeframeKey, assetSymbol: symbol },
                 });
             } else {
                 analytics.report({
                     type: EventType.WatchPortfolioTimeframeChange,
-                    payload: { timeframe: timeframeLabel },
+                    payload: { timeframe: timeframeKey },
                 });
             }
         }

@@ -980,7 +980,11 @@ export const messages = {
         },
         faq: {
             title: 'Get help',
-            legal: 'Legal',
+            legal: {
+                label: 'Legal',
+                termsAndConditions: 'Terms & conditions',
+                privacyPolicy: 'Privacy policy',
+            },
             supportCard: {
                 title: 'Need more help?',
                 contact: 'Contact support',
@@ -1143,10 +1147,12 @@ export const messages = {
             fiatCurrencyLabel: 'Currency',
             bitcoinUnitsLabel: 'Bitcoin units',
             languageLabel: 'Language',
-            theme: 'Theme',
-        },
-        customization: {
-            title: 'Customization',
+            theme: {
+                label: 'Theme',
+                standard: 'Standard',
+                dark: 'Dark',
+                system: 'System',
+            },
         },
         aboutUs: {
             title: '<grey>About</grey> <green>Trezor Suite</green>',
@@ -1658,7 +1664,12 @@ export const messages = {
         },
     },
     moduleAccountManagement: {
+        accountsScreen: {
+            title: 'My assets',
+        },
         accountSettingsScreen: {
+            coin: 'Coin',
+            accountType: 'Account type',
             xpubBottomSheet: {
                 xpub: {
                     title: 'Public key (XPUB)',
@@ -1763,6 +1774,7 @@ export const messages = {
             stakeDeregistration: 'Deregistration of a stake address',
         },
         TransactionDetailScreen: {
+            sheetSubtitle: 'Transaction #{transactionId}',
             inputsSheet: {
                 inputs: 'Inputs {inputsCount}',
                 outputs: 'Outputs {outputsCount}',
@@ -1784,6 +1796,10 @@ export const messages = {
                 broadcast: 'Broadcast',
                 transactionId: 'Transaction ID',
                 transactionIdCopied: 'Transaction ID copied',
+                values: {
+                    enabled: 'Enabled',
+                    disabled: 'Disabled',
+                },
             },
             addressesSheet: {
                 from: 'From {count}',
@@ -1867,6 +1883,14 @@ export const messages = {
         tryAgain: 'Try again',
         retrievengTakesLongerThanExpected:
             'Retrieving balances takes longer than usual. \n It may be caused by unstable internet connection.',
+        timeSwitch: {
+            day: '1d',
+            week: '1w',
+            month: '1m',
+            sixMonths: '6m',
+            year: '1y',
+            all: 'all',
+        },
     },
     modulePassphrase: {
         title: 'Passphrase',

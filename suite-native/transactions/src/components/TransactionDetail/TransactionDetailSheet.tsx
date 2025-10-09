@@ -78,7 +78,12 @@ export const TransactionDetailSheet = ({
             <BottomSheetModal
                 ref={bottomSheetRef}
                 title={title}
-                subtitle={`Transaction #${transactionId}`}
+                subtitle={
+                    <Translation
+                        id="transactions.TransactionDetailScreen.sheetSubtitle"
+                        values={{ transactionId }}
+                    />
+                }
                 isCloseDisplayed
             >
                 <Box paddingTop="sp24">

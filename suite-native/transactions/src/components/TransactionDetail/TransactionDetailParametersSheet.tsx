@@ -38,7 +38,10 @@ const networkTypeToDisplayedParametersMap: Record<NetworkType, TransactionParame
     stellar: [],
 };
 
-const getEnabledTitle = (enabled: boolean) => (enabled ? 'Enabled' : 'Disabled');
+const getEnabledTitleTranslationId = (enabled: boolean) =>
+    enabled
+        ? 'transactions.TransactionDetailScreen.parametersSheet.values.enabled'
+        : 'transactions.TransactionDetailScreen.parametersSheet.values.disabled';
 
 const EthereumParameters = ({ transaction }: EthereumParametersProps) => {
     if (!transaction.ethereumSpecific) return null;
@@ -150,7 +153,7 @@ export const TransactionDetailParametersSheet = ({
                                     'transactions.TransactionDetailScreen.parametersSheet.rbf',
                                 )}
                             >
-                                {getEnabledTitle(!!transaction.rbf)}
+                                {translate(getEnabledTitleTranslationId(!!transaction.rbf))}
                             </TransactionDetailRow>
                         )}
                         {displayedParameters.includes('broadcast') && (
@@ -159,7 +162,7 @@ export const TransactionDetailParametersSheet = ({
                                     'transactions.TransactionDetailScreen.parametersSheet.broadcast',
                                 )}
                             >
-                                {getEnabledTitle(!!transaction.blockHeight)}
+                                {translate(getEnabledTitleTranslationId(!!transaction.blockHeight))}
                             </TransactionDetailRow>
                         )}
                         {displayedParameters.includes('lockTime') && (
@@ -168,7 +171,7 @@ export const TransactionDetailParametersSheet = ({
                                     'transactions.TransactionDetailScreen.parametersSheet.lockTime',
                                 )}
                             >
-                                {getEnabledTitle(!!transaction.lockTime)}
+                                {translate(getEnabledTitleTranslationId(!!transaction.lockTime))}
                             </TransactionDetailRow>
                         )}
                     </Card>

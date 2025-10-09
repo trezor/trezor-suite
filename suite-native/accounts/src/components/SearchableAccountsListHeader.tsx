@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Animated, {
     EntryExitAnimationFunction,
     FadeOut,
@@ -15,7 +15,7 @@ import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsS
 import { AddAccountButton } from './AddAccountsButton';
 
 type SearchableAccountsListHeaderProps = {
-    title: string;
+    title: ReactNode;
     onSearchInputChange: (value: string) => void;
     flowType: AddCoinFlowType;
 };

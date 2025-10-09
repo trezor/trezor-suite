@@ -8,6 +8,7 @@ import {
     SearchableAccountsListHeader,
 } from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -43,7 +44,7 @@ export const AccountsScreen = () => {
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
             <SearchableAccountsListHeader
-                title="My assets"
+                title={<Translation id="moduleAccountManagement.accountsScreen.title" />}
                 onSearchInputChange={handleFilterChange}
                 flowType="accounts"
             />

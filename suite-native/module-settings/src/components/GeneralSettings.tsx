@@ -25,8 +25,9 @@ export const GeneralSettings = () => {
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacy)}
             />
             <AppSettingsCardWithIconLayout
-                title="Support"
-                subtitle="Troubleshooting, help"
+                title={<Translation id="moduleSettings.items.general.support.title" />}
+                subtitle={<Translation id="moduleSettings.items.general.support.subtitle" />}
+                testID="@settings/support"
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsSupport)}
                 icon="lifebuoy"
             />

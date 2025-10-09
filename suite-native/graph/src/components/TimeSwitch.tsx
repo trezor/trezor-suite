@@ -1,4 +1,5 @@
 import { Box } from '@suite-native/atoms';
+import { TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TimeSwitchItem, TimeSwitchValue } from './TimeSwitchItem';
@@ -10,16 +11,17 @@ type TimeSwitchProps = {
 
 type TimeSwitchItemType = {
     valueBackInHours: TimeSwitchValue;
-    label: string;
+    key: string;
+    translationId: TxKeyPath;
 };
 
 export const timeSwitchItems: TimeSwitchItemType[] = [
-    { label: '1d', valueBackInHours: 24 },
-    { label: '1w', valueBackInHours: 168 },
-    { label: '1m', valueBackInHours: 720 },
-    { label: '6m', valueBackInHours: 4320 },
-    { label: '1y', valueBackInHours: 8760 },
-    { label: 'all', valueBackInHours: null },
+    { key: '1d', valueBackInHours: 24, translationId: 'graph.timeSwitch.day' },
+    { key: '1w', valueBackInHours: 168, translationId: 'graph.timeSwitch.week' },
+    { key: '1m', valueBackInHours: 720, translationId: 'graph.timeSwitch.month' },
+    { key: '6m', valueBackInHours: 4320, translationId: 'graph.timeSwitch.sixMonths' },
+    { key: '1y', valueBackInHours: 8760, translationId: 'graph.timeSwitch.year' },
+    { key: 'all', valueBackInHours: null, translationId: 'graph.timeSwitch.all' },
 ];
 
 const timeSwitchStyle = prepareNativeStyle(utils => ({
@@ -35,8 +37,8 @@ export const TimeSwitch = ({ selectedTimeFrame = 24, onSelectTimeFrame }: TimeSw
         <Box style={applyStyle(timeSwitchStyle)}>
             {timeSwitchItems.map(item => (
                 <TimeSwitchItem
-                    key={item.label}
-                    shortcut={item.label}
+                    key={item.key}
+                    translationId={item.translationId}
                     value={item.valueBackInHours}
                     onSelectTimeFrame={onSelectTimeFrame}
                     selectedTimeFrame={selectedTimeFrame}
