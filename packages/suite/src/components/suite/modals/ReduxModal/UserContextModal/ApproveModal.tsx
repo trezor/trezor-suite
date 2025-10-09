@@ -48,11 +48,13 @@ const Icon = styled.img`
 
 type ApproveModalProps = {
     setApprovalType: (approvalType: TradingExchangeApprovalType) => void;
+    setIsWaitingForDevice: (value: boolean) => void;
     onCancel: (isSubmitting?: boolean) => void;
 };
 
 export const ApproveModal = ({
     setApprovalType: setParentApprovalType,
+    setIsWaitingForDevice,
     onCancel,
 }: ApproveModalProps) => {
     const dispatch = useDispatch();
@@ -165,9 +167,14 @@ export const ApproveModal = ({
         });
 
         setIsConfirmButtonLoading(true);
+        setIsWaitingForDevice(true);
+
         onCancel(true);
+
         await sendTransaction();
+
         setIsConfirmButtonLoading(false);
+        setIsWaitingForDevice(false);
     };
 
     const onClose = (isSubmitting?: boolean) => {

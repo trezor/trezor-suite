@@ -54,6 +54,7 @@ type ApprovalStep = 'REQUIRED' | 'APPROVED' | 'LOADING' | 'ERROR';
 interface TradingFormApprovalProps {
     openApproveModal: () => void;
     openRevokeModal: () => void;
+    isWaitingForDevice: boolean;
     approvalType: TradingExchangeApprovalType;
     setApprovalType: (approvalType: TradingExchangeApprovalType) => void;
     isManuallyApproved: boolean;
@@ -63,6 +64,7 @@ interface TradingFormApprovalProps {
 export const TradingFormApproval = ({
     openApproveModal,
     openRevokeModal,
+    isWaitingForDevice,
     approvalType,
     setApprovalType,
     setIsManuallyApproved,
@@ -280,21 +282,24 @@ export const TradingFormApproval = ({
         (approvalStep === 'LOADING' && approvalType === 'REVOKE') ||
         isFormLoading ||
         isScheduledQuotesRefresh ||
-        isDiscoveryRunning;
+        isDiscoveryRunning ||
+        isWaitingForDevice;
 
     const isSwapButtonDisabled =
         isSwapButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
         isFormLoading ||
         isScheduledQuotesRefresh ||
-        isDiscoveryRunning;
+        isDiscoveryRunning ||
+        isWaitingForDevice;
 
     const isRevokeButtonDisabled =
         isRevokeButtonLoading ||
         (approvalStep === 'LOADING' && approvalType === 'APPROVE') ||
         isFormLoading ||
         isScheduledQuotesRefresh ||
-        isDiscoveryRunning;
+        isDiscoveryRunning ||
+        isWaitingForDevice;
 
     const isRefreshButtonDisabled =
         isRefreshButtonLoading || isFormLoading || isScheduledQuotesRefresh || isDiscoveryRunning;
