@@ -11,8 +11,7 @@ import { createDeferred } from '@trezor/utils';
 
 import { Store } from '../libs/store';
 import { app, ipcMain } from '../typed-electron';
-
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'auto-start';
 

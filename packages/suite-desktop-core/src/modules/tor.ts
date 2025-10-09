@@ -15,8 +15,7 @@ import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
 import { TorProcess, TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
-
-import type { Dependencies } from './index';
+import type { Dependencies } from './module';
 
 const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies) => {
     const { logger } = global;

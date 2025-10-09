@@ -3,9 +3,8 @@
  */
 import { app } from 'electron';
 
+import type { ModuleInit } from './module';
 import { isValidProtocol } from '../libs/protocol';
-
-import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'custom-protocols';
 

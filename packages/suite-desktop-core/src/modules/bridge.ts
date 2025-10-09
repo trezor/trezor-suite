@@ -11,8 +11,7 @@ import { BridgeProcess } from '../libs/processes/BridgeProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
 import { b2t } from '../libs/utils';
 import { ipcMain } from '../typed-electron';
-
-import type { Dependencies } from './index';
+import type { Dependencies } from './module';
 
 const bridgeLegacy = hasSwitch('bridge-legacy');
 // bridge node is intended for internal testing

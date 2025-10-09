@@ -3,9 +3,8 @@
  */
 import { isDevEnv } from '@suite-common/suite-utils';
 
+import type { ModuleInit } from './module';
 import { hasSwitch } from '../libs/process-switches';
-
-import type { ModuleInit } from './index';
 
 const openDevToolsFlag = hasSwitch('open-devtools');
 

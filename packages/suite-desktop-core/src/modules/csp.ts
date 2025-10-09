@@ -5,8 +5,7 @@
 import { session } from 'electron';
 
 import * as config from '../config';
-
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'csp';
 

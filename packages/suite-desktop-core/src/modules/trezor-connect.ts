@@ -6,11 +6,10 @@ import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
+import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './module';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
-
-import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
 
 export const SERVICE_NAME = '@trezor/connect';
 

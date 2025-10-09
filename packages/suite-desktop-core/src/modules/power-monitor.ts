@@ -1,6 +1,6 @@
 import { powerMonitor } from 'electron';
 
-import type { ModuleInit } from './index';
+import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'power-monitor';
 

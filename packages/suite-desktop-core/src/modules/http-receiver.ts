@@ -7,8 +7,7 @@ import { restartApp } from '../libs/app-utils';
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
 import { app, ipcMain } from '../typed-electron';
-
-import type { ModuleInitBackground } from './index';
+import { ModuleInitBackground } from './module';
 
 export const SERVICE_NAME = 'http-receiver';
 

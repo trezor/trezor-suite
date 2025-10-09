@@ -8,9 +8,8 @@ import { InvokeResult } from '@trezor/suite-desktop-api';
 import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
 import { createLazy, throwError } from '@trezor/utils';
 
+import type { ModuleInit } from './module';
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
-
-import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
 

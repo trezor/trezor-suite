@@ -4,9 +4,8 @@
 import { session } from 'electron';
 import path from 'path';
 
+import type { ModuleInit } from './module';
 import { APP_SRC, FILE_PROTOCOL } from '../libs/constants';
-
-import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'file-protocol';
 

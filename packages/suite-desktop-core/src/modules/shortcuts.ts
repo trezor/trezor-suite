@@ -1,8 +1,7 @@
 import electronLocalshortcut from 'electron-localshortcut';
 
+import type { ModuleInit } from './module';
 import { restartApp } from '../libs/app-utils';
-
-import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = 'shortcuts';
 
