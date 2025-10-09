@@ -91,9 +91,9 @@ describe('THP pairing', () => {
             knownCredentials: [
                 {
                     trezor_static_public_key:
-                        'f60b84cdb80a2139f80489c811dc129937a4f4f75ca7710c7570c5085f1ffe68',
+                        '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
                     credential:
-                        '0a1c0a0974657374733a65326510001a0d5472657a6f72436f6e6e656374122098822d64a482198c9654295ee690f7bf0e8ecf1aac50473b0e805c5614a3bef9',
+                        '0a180a064368726f6d6510001a0c5472657a6f722053756974651220884364860fbccd18f6c14890ee4cf427c6a1e7e7a4cba91866474b4b7d73cb00',
                     autoconnect: false,
                 },
             ],
