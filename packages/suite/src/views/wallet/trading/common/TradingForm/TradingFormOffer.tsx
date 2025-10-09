@@ -133,6 +133,7 @@ export const TradingFormOffer = () => {
         );
 
     const [approvalType, setApprovalType] = useState<TradingExchangeApprovalType>('APPROVE');
+    const [isWaitingForDevice, setIsWaitingForDevice] = useState(false);
 
     const requiresTokenApproval =
         isTradingExchangeContext(context) &&
@@ -445,6 +446,7 @@ export const TradingFormOffer = () => {
                         <TradingFormApproval
                             openApproveModal={onOpenApproveModal}
                             openRevokeModal={onOpenRevokeModal}
+                            isWaitingForDevice={isWaitingForDevice}
                             approvalType={approvalType}
                             setApprovalType={setApprovalType}
                             isManuallyApproved={isManuallyApproved}
@@ -471,10 +473,19 @@ export const TradingFormOffer = () => {
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
 
             {isApproveModalOpen && (
-                <ApproveModal onCancel={onCloseApproveModal} setApprovalType={setApprovalType} />
+                <ApproveModal
+                    onCancel={onCloseApproveModal}
+                    setApprovalType={setApprovalType}
+                    setIsWaitingForDevice={setIsWaitingForDevice}
+                />
             )}
 
-            {isRevokeModalOpen && <RevokeModal onCancel={onCloseRevokeModal} />}
+            {isRevokeModalOpen && (
+                <RevokeModal
+                    onCancel={onCloseRevokeModal}
+                    setIsWaitingForDevice={setIsWaitingForDevice}
+                />
+            )}
         </Column>
     );
 };

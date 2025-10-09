@@ -42,10 +42,11 @@ const CustomIcon = styled.img`
 `;
 
 type RevokeModalProps = {
+    setIsWaitingForDevice: (value: boolean) => void;
     onCancel: (isSubmitting?: boolean) => void;
 };
 
-export const RevokeModal = ({ onCancel }: RevokeModalProps) => {
+export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProps) => {
     const context = useTradingFormContext<TradingExchangeType>();
     const {
         form: {
@@ -89,9 +90,14 @@ export const RevokeModal = ({ onCancel }: RevokeModalProps) => {
         });
 
         setIsConfirmButtonLoading(true);
+        setIsWaitingForDevice(true);
+
         onCancel(true);
+
         await sendTransaction();
+
         setIsConfirmButtonLoading(false);
+        setIsWaitingForDevice(false);
     };
 
     const onClose = (isSubmitting?: boolean) => {
