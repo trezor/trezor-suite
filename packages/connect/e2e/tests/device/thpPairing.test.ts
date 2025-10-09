@@ -177,13 +177,14 @@ describe('THP pairing', () => {
         await new Promise(resolve => setTimeout(resolve, 10));
         TrezorConnect.cancel(CANCEL_ERR);
     };
-    const buttonRequestHandler = (msg?: string) => (br: { name?: string }) => {
-        if (msg && msg === br.name) {
-            controller.send({ type: 'emulator-press-no' });
-        } else {
-            controller.send({ type: 'emulator-press-yes' });
-        }
-    };
+    const buttonRequestHandler =
+        (cancelOnButtonRequestName?: string) => (br: { name?: string }) => {
+            if (cancelOnButtonRequestName && cancelOnButtonRequestName === br.name) {
+                controller.send({ type: 'emulator-press-no' });
+            } else {
+                controller.send({ type: 'emulator-press-yes' });
+            }
+        };
 
     // quarantined test. we are trying to fix it here https://github.com/trezor/trezor-suite/pull/22084
     it.skip('ThpPairing cancel workflow', async () => {
@@ -246,7 +247,7 @@ describe('THP pairing', () => {
 
         const device = await waitForDevice({ pairingMethods: ['SkipPairing'] });
 
-        const passphraseHandler = (value: string) => () => {
+        const enterPassphraseOnHost = (value: string) => () => {
             TrezorConnect.uiResponse({
                 type: 'ui-receive_passphrase',
                 payload: {
@@ -263,7 +264,7 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getFeatures({ device });
         expect(result).toMatchObject({ success: true });
 
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler(''));
+        TrezorConnect.on('ui-request_passphrase', enterPassphraseOnHost(''));
 
         // 4. reject ButtonRequest from host
         TrezorConnect.removeAllListeners('ui-button');
@@ -308,7 +309,7 @@ describe('THP pairing', () => {
         // 6. reject passphrase from Trezor
         TrezorConnect.removeAllListeners('ui-request_passphrase');
         TrezorConnect.removeAllListeners('ui-button');
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        TrezorConnect.on('ui-request_passphrase', enterPassphraseOnHost('a'));
         TrezorConnect.on('ui-button', buttonRequestHandler('passphrase_host1')); // NOTE: .name may be changed in the future
         result = await TrezorConnect.getAddress({
             device: {
@@ -324,7 +325,7 @@ describe('THP pairing', () => {
         // and finally check if device is still responsive
         TrezorConnect.removeAllListeners('ui-button');
         TrezorConnect.removeAllListeners('ui-request_passphrase');
-        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        TrezorConnect.on('ui-request_passphrase', enterPassphraseOnHost('a'));
         TrezorConnect.on('ui-button', buttonRequestHandler());
         result = await TrezorConnect.getAddress({
             device: {
