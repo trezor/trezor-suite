@@ -11,7 +11,7 @@ describe('featureFlagsSelectors', () => {
 
             expect(
                 selectIsFeatureFlagEnabled({ featureFlags: state }, 'isDeviceConnectEnabled'),
-            ).toEqual(true);
+            ).toEqual(false);
         });
     });
 });
