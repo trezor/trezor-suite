@@ -22,7 +22,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
-import { RedactNumericalValue } from './RedactNumericalValue';
+import { RedactNumericalValue, RedactNumericalValueInner } from './RedactNumericalValue';
 
 const Value = styled.span<{ $isTabular: boolean }>`
     ${({ $isTabular }) => $isTabular && 'font-variant-numeric: tabular-nums;'}
@@ -97,7 +97,8 @@ export const FormattedCryptoAmount = ({
 
         return (
             <>
-                {displayedSignValue} <RedactNumericalValue value={formattedValue} />{' '}
+                {/* NOTE: using here just RedactNumericalValueInner as we want just the value, it cannot be in HiddePlacerholder, as it ads <span> around */}
+                {displayedSignValue} <RedactNumericalValueInner value={formattedValue} />{' '}
                 {formattedSymbol}
             </>
         );

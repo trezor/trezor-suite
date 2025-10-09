@@ -10,7 +10,7 @@ type RedactNumbersProps = {
  * Helper that redacts sensitive content, if it should be hidden in discreet mode.
  * It is effective only when wrapped by HiddenPlaceholder upstream.
  */
-const RedactNumericalValueInner = ({ value }: RedactNumbersProps) => {
+export const RedactNumericalValueInner = ({ value }: RedactNumbersProps) => {
     const shouldRedactNumbers = useShouldRedactNumbers();
 
     return shouldRedactNumbers ? redactNumericalSubstring(value) : value;
