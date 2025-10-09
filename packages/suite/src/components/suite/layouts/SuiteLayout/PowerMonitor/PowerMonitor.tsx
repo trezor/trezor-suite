@@ -5,6 +5,7 @@ import { isMacOs } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
+import { isBluetoothDeviceConnected } from 'src/actions/bluetooth/isBluetoothDeviceConnected';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const PowerMonitorManager = () => {
@@ -21,7 +22,8 @@ export const PowerMonitorManager = () => {
         const disconnectAllDevices = () => {
             dispatch(bluetoothActions.adapterEventAction({ status: 'power-suspending' }));
             knownDevices.forEach(device => {
-                if (device.connected) dispatch(bluetoothDisconnectDeviceThunk({ id: device.id }));
+                if (isBluetoothDeviceConnected(device))
+                    dispatch(bluetoothDisconnectDeviceThunk({ id: device.id }));
             });
         };
         desktopApi.on('power-monitor/suspend', disconnectAllDevices);

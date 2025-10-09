@@ -10,6 +10,7 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { NEARBY_DEVICES_LAST_UPDATED_LIMIT } from 'src/actions/bluetooth/filterOutNonResponsiveDevices';
+import { isBluetoothDeviceConnected } from 'src/actions/bluetooth/isBluetoothDeviceConnected';
 import { selectDeviceDefaultConnectionMode } from 'src/actions/device/deviceSelectors';
 import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -117,7 +118,7 @@ const useConnectionGlobalModal = () => {
         if (isDeviceUnresponsiveForTooLong) {
             // If the device is connected or paired (it may have been paired in the OS system directly)
             // => do not filter it based isDeviceUnresponsiveForTooLong
-            return it.connected;
+            return isBluetoothDeviceConnected(it);
         }
 
         return true;
