@@ -8,13 +8,15 @@ import { Box, Column, Row, Text } from '@trezor/components';
 import { TokenTransfer } from '@trezor/connect';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
-import { RedactNumericalValue, Sign } from 'src/components/suite';
+import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useTranslation } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
+
+import { RedactNumericalValue } from './RedactNumericalValue';
 
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
@@ -111,7 +113,9 @@ export const FormattedNftAmount = ({
                 >
                     <Row gap={spacings.zero}>
                         <Text maxWidth={145} ellipsisLineCount={1}>
-                            <RedactNumericalValue value={transfer.amount} />
+                            <HiddenPlaceholder>
+                                <RedactNumericalValue value={transfer.amount} />
+                            </HiddenPlaceholder>
                         </Text>
                         &nbsp;
                         {symbolComponent}
@@ -120,7 +124,9 @@ export const FormattedNftAmount = ({
             ) : (
                 <Row gap={spacings.xxs}>
                     <Text maxWidth={145} ellipsisLineCount={1}>
-                        <RedactNumericalValue value={transfer.amount} />
+                        <HiddenPlaceholder>
+                            <RedactNumericalValue value={transfer.amount} />
+                        </HiddenPlaceholder>
                     </Text>
                     {symbolComponent}
                 </Row>

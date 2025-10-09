@@ -41,6 +41,7 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
                         symbol={coinSymbol}
                         contractAddress={contractAddress}
                         isRawString
+                        disableHiddenPlaceholder
                         isBalance={false}
                     />
                 </Text>
