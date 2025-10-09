@@ -35,6 +35,7 @@ export const allowedBoxFrameProps = [
     'aspectRatio',
     'opacity',
     'userSelect',
+    'pointerEvents',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 
@@ -72,7 +73,7 @@ const Container = styled.div<
         $backgroundColor &&
         css`
             background: ${$backgroundColor};
-        `} 
+        `}
 
     ${withFrameProps};
 `;

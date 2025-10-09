@@ -516,6 +516,7 @@ export const MetadataLabeling = ({
             <LabelContainer
                 data-testid={labelContainerDataTest}
                 onClick={e => payload.value && !editActive && e.stopPropagation()}
+                data-no-highlight={editActive || undefined}
             >
                 <LabelContent
                     variant={variant}

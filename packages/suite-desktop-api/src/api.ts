@@ -83,6 +83,8 @@ export interface RendererChannels {
     'app/auto-start/popup-request': void;
 
     'power-monitor/suspend': void;
+
+    'find:show': void;
 }
 
 // Invocation from renderer process

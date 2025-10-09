@@ -40,4 +40,12 @@ declare module 'redux' {
     }
 }
 
+declare global {
+    interface Window {
+        electronFind: {
+            onShow: (callback: () => void) => void;
+        };
+    }
+}
+
 export {};

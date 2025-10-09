@@ -34,7 +34,7 @@ export const AccountLabel = ({
             {accountLabel ? (
                 <TabularNums>{accountLabel}</TabularNums>
             ) : (
-                getDefaultAccountLabel({ accountType, symbol, index })
+                <span>{getDefaultAccountLabel({ accountType, symbol, index })}</span>
             )}
             {showAccountTypeBadge && (
                 <AccountTypeBadge
