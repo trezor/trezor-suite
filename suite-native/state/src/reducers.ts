@@ -35,7 +35,11 @@ import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/b
 import { bluetoothSlice } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { deviceOnboardingReducer } from '@suite-native/device-onboarding';
-import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
+import {
+    FeatureFlag,
+    featureFlagsPersistedKeys,
+    featureFlagsReducer,
+} from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
 import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
@@ -228,7 +232,14 @@ export const prepareRootReducers = async () => {
         reducer: featureFlagsReducer,
         persistedKeys: featureFlagsPersistedKeys,
         key: 'featureFlags',
-        version: 1,
+        version: 2,
+        migrations: {
+            2: (oldState: any) => ({
+                ...oldState,
+                [FeatureFlag.IsDeviceConnectEnabled]: true,
+                [FeatureFlag.IsBluetoothEnabled]: true,
+            }),
+        },
     });
 
     const bannerFlagsPersistedReducer = await preparePersistReducer({

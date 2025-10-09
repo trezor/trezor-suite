@@ -5,44 +5,14 @@ describe('featureFlagsSlice', () => {
     });
 
     describe('initial state', () => {
-        it('should have correct initial state on android', () => {
-            jest.mock('@trezor/env-utils', () => ({
-                ...jest.requireActual('@trezor/env-utils'),
-                isAndroid: () => true,
-            }));
-
+        it('should have correct initial state', () => {
             const { featureFlagsReducer } = require('../featureFlagsSlice');
 
             const initialState = featureFlagsReducer(undefined, { type: 'undefined_action' });
 
             expect(initialState).toEqual({
                 isDeviceConnectEnabled: true,
-                isBluetoothEnabled: false,
-                areDebugOnlyNetworksEnabled: false,
-                isCardanoSendEnabled: false,
-                isDebugKeysAllowed: false,
-                isLocalFirstStorageEnabled: false,
-                isTradingBuyEnabled: false,
-                isTradingExchangeEnabled: false,
-                isTradingSellEnabled: false,
-                areTradingExchangeDexesEnabled: false,
-                isLocalizationEnabled: false,
-            });
-        });
-
-        it('should have correct initial state on iOS', () => {
-            jest.mock('@trezor/env-utils', () => ({
-                ...jest.requireActual('@trezor/env-utils'),
-                isAndroid: () => false,
-            }));
-
-            const { featureFlagsReducer } = require('../featureFlagsSlice');
-
-            const initialState = featureFlagsReducer(undefined, { type: 'undefined_action' });
-
-            expect(initialState).toEqual({
-                isDeviceConnectEnabled: false,
-                isBluetoothEnabled: false,
+                isBluetoothEnabled: true,
                 areDebugOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
@@ -62,7 +32,7 @@ describe('featureFlagsSlice', () => {
 
             const state = featureFlagsReducer(
                 undefined,
-                toggleFeatureFlag({ featureFlag: 'isDeviceConnectEnable' }),
+                toggleFeatureFlag({ featureFlag: 'isDeviceConnectEnabled' }),
             );
             expect(state.isDeviceConnectEnabled).toEqual(false);
 
