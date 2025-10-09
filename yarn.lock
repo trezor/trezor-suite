@@ -10649,6 +10649,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.17.1"
     jws: "npm:^4.0.0"
+    toml: "npm:^3.0.0"
   languageName: unknown
   linkType: soft
 

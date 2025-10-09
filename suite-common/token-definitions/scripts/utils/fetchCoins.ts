@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
+import * as toml from 'toml';
+
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
 import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/tokenDefinitionsTypes';
-import { COIN_LIST_URL } from '../constants';
+import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
 import { CoinData } from '../types';
 
 export const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {
@@ -36,6 +38,118 @@ export const getContractAddress = (assetPlatformId: string, platforms: CoinData[
     return undefined;
 };
 
+interface StellarCurrency {
+    code: string;
+    issuer: string;
+}
+
+interface StellarToml {
+    CURRENCIES?: StellarCurrency[];
+}
+
+/**
+ * Fetch Stellar home_domain from Horizon API
+ */
+const fetchStellarHomeDomain = async (issuer: string): Promise<string | null> => {
+    try {
+        const response = await fetch(`${STELLAR_HORIZON_URL}/accounts/${issuer}`);
+        if (!response.ok) {
+            console.warn(`Stellar Horizon API returned ${response.status} for issuer ${issuer}`);
+
+            return null;
+        }
+        const data = await response.json();
+
+        return data.home_domain || null;
+    } catch (error) {
+        console.warn(`Error fetching Stellar home_domain for ${issuer}:`, error);
+
+        return null;
+    }
+};
+
+/**
+ * Verify Stellar asset in stellar.toml file
+ *
+ * @see https://centre.io/.well-known/stellar.toml
+ * @see https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md
+ */
+const verifyStellarToml = async (
+    homeDomain: string,
+    code: string,
+    issuer: string,
+): Promise<boolean> => {
+    try {
+        const response = await fetch(`https://${homeDomain}/.well-known/stellar.toml`);
+        if (!response.ok) {
+            console.warn(`stellar.toml fetch returned ${response.status} for domain ${homeDomain}`);
+
+            return false;
+        }
+
+        const tomlContent = await response.text();
+        const parsed = toml.parse(tomlContent) as StellarToml;
+
+        if (!parsed.CURRENCIES || !Array.isArray(parsed.CURRENCIES)) {
+            return false;
+        }
+
+        const currency = parsed.CURRENCIES.find(c => c.code === code && c.issuer === issuer);
+
+        return !!currency;
+    } catch (error) {
+        console.warn(`Error verifying stellar.toml for ${homeDomain}:`, error);
+
+        return false;
+    }
+};
+
+/**
+ * Get and verify Stellar home_domain for a given asset
+ * Fetches home_domain from Horizon API and verifies it in stellar.toml
+ * This ensures the asset is officially published by the issuer
+ */
+const getStellarHomeDomain = async (contractAddress: string): Promise<string | undefined> => {
+    const [code, issuer] = contractAddress.split('-');
+
+    const homeDomain = await fetchStellarHomeDomain(issuer);
+    if (!homeDomain) {
+        return undefined;
+    }
+
+    const isValid = await verifyStellarToml(homeDomain, code, issuer);
+    if (!isValid) {
+        return undefined;
+    }
+
+    return homeDomain;
+};
+
+/**
+ * Fetch Stellar token rating from StellarExpert API
+ *
+ * @see https://stellar.expert/openapi.html#tag/Asset-Info-API/operation/getAssetRating
+ */
+const fetchStellarTokenRating = async (contractAddress: string): Promise<number | undefined> => {
+    try {
+        const response = await fetch(`${STELLAR_EXPERT_URL}/asset/${contractAddress}/rating`);
+        if (!response.ok) {
+            console.warn(
+                `StellarExpert API returned ${response.status} for asset ${contractAddress}`,
+            );
+
+            return undefined;
+        }
+        const data = await response.json();
+
+        return data.rating?.average || undefined;
+    } catch (error) {
+        console.warn(`Error fetching Stellar token rating for ${contractAddress}:`, error);
+
+        return undefined;
+    }
+};
+
 export const fetchCoinData = async (assetPlatformId: string, structure: string) => {
     console.log('Start fetching coin data for:', assetPlatformId, 'platform');
 
@@ -65,14 +179,29 @@ export const fetchCoinData = async (assetPlatformId: string, structure: string) 
     console.log('Number of coin records fetched:', data.length);
 
     if (structure === 'advanced') {
-        return data.reduce<AdvancedTokenStructure>((acc, { platforms, symbol, name }) => {
+        const result: AdvancedTokenStructure = {};
+
+        for (const { platforms, symbol, name } of data) {
             const contractAddress = getContractAddress(assetPlatformId, platforms);
             if (contractAddress) {
-                acc[contractAddress] = { symbol, name };
-            }
+                result[contractAddress] = { symbol, name };
 
-            return acc;
-        }, {});
+                // For Stellar, add `home_domain` and `rating` if available
+                if (assetPlatformId === 'stellar') {
+                    const homeDomain = await getStellarHomeDomain(contractAddress);
+                    if (homeDomain) {
+                        result[contractAddress].home_domain = homeDomain;
+                    }
+
+                    const rating = await fetchStellarTokenRating(contractAddress);
+                    if (rating !== undefined) {
+                        result[contractAddress].rating = rating;
+                    }
+                }
+            }
+        }
+
+        return result;
     } else {
         return [
             ...new Set(
