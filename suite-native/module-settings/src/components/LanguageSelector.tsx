@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NATIVE_LANGUAGES } from '@suite-common/suite-types';
 import { Select, SelectItemType } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { LanguageOption, Translation, selectLanguage, setLanguage } from '@suite-native/intl';
+import {
+    LanguageOption,
+    Translation,
+    selectUserSelectedLocale,
+    setLanguage,
+} from '@suite-native/intl';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 
@@ -22,7 +27,7 @@ languageItems.unshift({
 
 export const LanguageSelector = () => {
     const dispatch = useDispatch();
-    const language = useSelector(selectLanguage);
+    const language = useSelector(selectUserSelectedLocale);
     const isLocalizationEnabled = useFeatureFlag(FeatureFlag.IsLocalizationEnabled);
 
     const handleSelectLanguage = (localeCode: LanguageOption) => {
