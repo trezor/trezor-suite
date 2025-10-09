@@ -482,13 +482,16 @@ export class TradingPage {
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
         await expect(this.bestOfferAmount).toHaveText(/0 \w+/);
         await this.youPayCryptoInput.fill(params.amount);
-        await expect.soft(quotesRequestPromise).toHavePayload({
-            receive: params.receiveNetwork,
-            send: params.sendCurrency,
-            sendStringAmount: params.amount,
-            dex: 'enable',
-            receiveAddress: params.receiveAddress,
-        });
+        await expect.soft(quotesRequestPromise).toHavePayload(
+            {
+                receive: params.receiveNetwork,
+                send: params.sendCurrency,
+                sendStringAmount: params.amount,
+                dex: 'enable',
+                receiveAddress: params.receiveAddress,
+            },
+            { omit: ['fromAddress'] },
+        );
         await quotesResponsePromise;
         await this.waitForOffersSync();
     }

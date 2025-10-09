@@ -769,10 +769,6 @@ export const useTradingExchangeForm = ({
     };
 
     useEffect(() => {
-        if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
-            return setValue('fromAddress', undefined);
-        }
-
         const networkType = getNetworkType(account.symbol);
 
         switch (networkType) {
@@ -784,7 +780,7 @@ export const useTradingExchangeForm = ({
             default:
                 return setValue('fromAddress', undefined);
         }
-    }, [account, setValue, exchangeType]);
+    }, [account, setValue]);
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
