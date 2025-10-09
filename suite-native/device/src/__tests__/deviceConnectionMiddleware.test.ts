@@ -1,7 +1,21 @@
-import { configureMockStore } from '@suite-common/test-utils';
-import { navigationContainerRef } from '@suite-native/navigation';
+import { UnknownAction } from '@reduxjs/toolkit';
 
-import { invalidThpPairingFixtures, validThpPairingFixtures } from './deviceConnectionFixtures';
+import { configureMockStore } from '@suite-common/test-utils';
+import {
+    checkIsDeviceOnboardingFocused,
+    checkIsHomeStackFocused,
+    navigationContainerRef,
+} from '@suite-native/navigation';
+
+import {
+    deviceDisconnectBlockedFixtures,
+    deviceDisconnectDuringOnboardingFixtures,
+    deviceDisconnectHomeResetFixtures,
+    deviceDisconnectNotOnHomeFixtures,
+    deviceDisconnectOnHomeFixtures,
+    thpPairingBlockedFixtures,
+    thpPairingNavigationFixtures,
+} from './deviceConnectionFixtures';
 import { deviceConnectionMiddleware } from '../middlewares/deviceConnectionMiddleware';
 
 jest.mock('@suite-native/navigation', () => {
@@ -11,44 +25,133 @@ jest.mock('@suite-native/navigation', () => {
         ...navigation,
         navigationContainerRef: {
             navigate: jest.fn(),
+            reset: jest.fn(),
         },
+        checkIsActiveRouteAnyOf: jest.fn().mockReturnValue(false),
+        checkIsDeviceOnboardingFocused: jest.fn().mockReturnValue(false),
+        checkIsHomeStackFocused: jest.fn().mockReturnValue(false),
     };
 });
 
-describe('Ignored UI button request redirects', () => {
+const createMockStoreAndDispatch = (initialState: any, action: UnknownAction) => {
+    const mockStore = configureMockStore({
+        middleware: [deviceConnectionMiddleware.middleware],
+        preloadedState: initialState,
+    });
+    mockStore.dispatch(action);
+
+    return mockStore;
+};
+
+describe('deviceConnectionMiddleware', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    invalidThpPairingFixtures.forEach(({ description, action, initialState }) => {
-        it(description, () => {
-            const mockStore = configureMockStore({
-                middleware: [deviceConnectionMiddleware.middleware],
-                preloadedState: initialState,
-            });
-            mockStore.dispatch(action);
+    describe('THP pairing navigation', () => {
+        describe('when navigation should be blocked', () => {
+            thpPairingBlockedFixtures.forEach(({ description, action, initialState }) => {
+                it(description, () => {
+                    createMockStoreAndDispatch(initialState, action);
 
-            expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(0);
+                    expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
+                });
+            });
+        });
+
+        describe('when navigation should proceed', () => {
+            thpPairingNavigationFixtures.forEach(
+                ({ description, action, expectedNavigation, initialState }) => {
+                    it(description, () => {
+                        createMockStoreAndDispatch(initialState, action);
+
+                        expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
+                            expectedNavigation.route,
+                            expectedNavigation.params,
+                        );
+                        expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                    });
+                },
+            );
         });
     });
-});
 
-describe('THP confirmation redirect upon button request', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+    describe('Device disconnect handling', () => {
+        describe('when navigation should be blocked', () => {
+            deviceDisconnectBlockedFixtures.forEach(({ description, action, initialState }) => {
+                it(description, () => {
+                    createMockStoreAndDispatch(initialState, action);
 
-    validThpPairingFixtures.forEach(({ description, action, redirectTarget, initialState }) => {
-        it(description, () => {
-            const mockStore = configureMockStore({
-                middleware: [deviceConnectionMiddleware.middleware],
-                preloadedState: initialState,
+                    expect(navigationContainerRef.reset).not.toHaveBeenCalled();
+                    expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
+                });
             });
-            mockStore.dispatch(action);
+        });
 
-            expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                redirectTarget.route,
-                redirectTarget.params,
+        describe('when device disconnects during onboarding', () => {
+            deviceDisconnectDuringOnboardingFixtures.forEach(
+                ({ description, action, expectedNavigation, initialState }) => {
+                    it(description, () => {
+                        jest.mocked(checkIsDeviceOnboardingFocused).mockReturnValue(true);
+
+                        createMockStoreAndDispatch(initialState, action);
+
+                        expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
+                            expectedNavigation.route,
+                            {
+                                screen: expectedNavigation.params.screen,
+                                params: expectedNavigation.params.params,
+                            },
+                        );
+                        expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                    });
+                },
+            );
+        });
+
+        describe('when device disconnects while NOT on Home screen', () => {
+            deviceDisconnectNotOnHomeFixtures.forEach(
+                ({ description, action, expectedReset, initialState }) => {
+                    it(description, () => {
+                        jest.mocked(checkIsDeviceOnboardingFocused).mockReturnValue(false);
+                        jest.mocked(checkIsHomeStackFocused).mockReturnValue(false);
+
+                        createMockStoreAndDispatch(initialState, action);
+
+                        expect(navigationContainerRef.reset).toHaveBeenCalledWith(expectedReset);
+                        expect(navigationContainerRef.reset).toHaveBeenCalledTimes(1);
+                    });
+                },
+            );
+        });
+
+        describe('when device disconnects while ON Home screen', () => {
+            deviceDisconnectOnHomeFixtures.forEach(({ description, action, initialState }) => {
+                it(description, () => {
+                    jest.mocked(checkIsDeviceOnboardingFocused).mockReturnValue(false);
+                    jest.mocked(checkIsHomeStackFocused).mockReturnValue(true);
+
+                    createMockStoreAndDispatch(initialState, action);
+
+                    expect(navigationContainerRef.reset).not.toHaveBeenCalled();
+                    expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
+                });
+            });
+        });
+
+        describe('when device disconnects and should reset to Home', () => {
+            deviceDisconnectHomeResetFixtures.forEach(
+                ({ description, action, expectedReset, initialState }) => {
+                    it(description, () => {
+                        jest.mocked(checkIsDeviceOnboardingFocused).mockReturnValue(false);
+                        jest.mocked(checkIsHomeStackFocused).mockReturnValue(false);
+
+                        createMockStoreAndDispatch(initialState, action);
+
+                        expect(navigationContainerRef.reset).toHaveBeenCalledWith(expectedReset);
+                        expect(navigationContainerRef.reset).toHaveBeenCalledTimes(1);
+                    });
+                },
             );
         });
     });
