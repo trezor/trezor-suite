@@ -1,6 +1,6 @@
 import { ModalAlignment, ModalSize } from './types';
 import { UIAlignment } from '../../config/types';
-import { FlexAlignItems, FlexJustifyContent } from '../Flex/Flex';
+import { FlexAlignItems, FlexJustifyContent } from '../Flex/FlexProp';
 
 export const mapModalSizeToWidth = (size: ModalSize) => {
     const widthMap: Record<ModalSize, number> = {

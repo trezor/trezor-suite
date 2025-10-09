@@ -5,6 +5,14 @@ import styled, { DefaultTheme, css } from 'styled-components';
 import { Elevation, SpacingValues, SpacingValuesNew, mapElevationToBorder } from '@trezor/theme';
 
 import {
+    FlexAlignItems,
+    FlexAlignSelf,
+    FlexDirection,
+    FlexJustifyContent,
+    FlexType,
+    FlexWrap,
+} from './FlexProp';
+import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
@@ -28,63 +36,6 @@ export const allowedFlexFrameProps = [
     'position',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
-
-export const flexDirection = ['column', 'row'] as const;
-export const flexWrap = ['nowrap', 'wrap', 'wrap-reverse'] as const;
-
-export const flexJustifyContent = [
-    'center',
-    'end',
-    'flex-end',
-    'flex-start',
-    'left',
-    'right',
-    'space-around',
-    'space-between',
-    'space-evenly',
-    'start',
-    'stretch',
-] as const;
-
-export const flexAlignItems = [
-    'baseline',
-    'center',
-    'end',
-    'first baseline',
-    'flex-end',
-    'flex-start',
-    'last baseline',
-    'self-end',
-    'self-start',
-    'start',
-    'stretch',
-    'normal',
-] as const;
-
-export const flexAlignSelf = [
-    'auto',
-    'stretch',
-    'center',
-    'flex-start',
-    'flex-end',
-    'baseline',
-    'initial',
-    'inherit',
-] as const;
-
-export type FlexDirection = (typeof flexDirection)[number];
-export type FlexJustifyContent = (typeof flexJustifyContent)[number];
-export type FlexAlignItems = (typeof flexAlignItems)[number];
-export type FlexAlignSelf = (typeof flexAlignSelf)[number];
-export type Flex =
-    | 'none'
-    | 'auto'
-    | 'initial'
-    | 'inherit'
-    | `${number}`
-    | `${number} ${number}`
-    | `${number} ${number} ${string}`;
-export type FlexWrap = (typeof flexWrap)[number];
 
 export const withDivider = ({
     theme,
@@ -134,7 +85,7 @@ type ContainerProps = TransientProps<AllowedFrameProps> & {
     $alignItems: FlexAlignItems;
     $alignSelf: FlexAlignSelf;
     $direction: FlexDirection;
-    $flex: Flex;
+    $flex: FlexType;
     $flexWrap: FlexWrap;
     $order?: number;
     $isReversed: boolean;
@@ -178,7 +129,7 @@ export type FlexProps = AllowedFrameProps & {
     alignSelf?: FlexAlignSelf;
     children: React.ReactNode;
     direction?: FlexDirection;
-    flex?: Flex;
+    flex?: FlexType;
     flexWrap?: FlexWrap;
     order?: number;
     isReversed?: boolean;
@@ -201,7 +152,7 @@ export const Flex = ({
     children,
     direction = 'row',
     flex = 'initial',
-    // eslint-disable-next-line @typescript-eslint/no-shadow
+
     flexWrap = 'nowrap',
     order,
     isReversed = false,

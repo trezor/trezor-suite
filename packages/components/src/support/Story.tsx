@@ -2,7 +2,7 @@ import React, { ComponentProps, Fragment } from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
 
-import { intermediaryTheme } from '../index';
+import { intermediaryTheme } from '../config/colors';
 
 const Wrapper = styled.div`
     padding: 20px;

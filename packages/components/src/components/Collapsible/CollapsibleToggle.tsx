@@ -2,7 +2,7 @@ import { MouseEvent, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { useCollapsible } from './Collapsible';
+import { useCollapsible } from './CollapsibleContext';
 
 const Container = styled.div`
     display: contents;

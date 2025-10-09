@@ -10,7 +10,7 @@ import { UIAlignment } from '../../config/types';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { FlexJustifyContent } from '../Flex/Flex';
+import { FlexJustifyContent } from '../Flex/FlexProp';
 import { Text } from '../typography/Text/Text';
 
 export const allowedTableCellFrameProps = [

@@ -27,7 +27,8 @@ import {
 import { TransientProps } from '../../utils/transientProps';
 import { useMediaQuery } from '../../utils/useMediaQuery';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { Column, FlexAlignItems, Row } from '../Flex/Flex';
+import { Column, Row } from '../Flex/Flex';
+import { FlexAlignItems } from '../Flex/FlexProp';
 import { Icon, IconName, IconSize } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
 

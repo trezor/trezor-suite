@@ -2,7 +2,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { SpacingValuesNew, typography } from '@trezor/theme';
 
-import { useBulletList } from './BulletList';
+import { useBulletList } from './BulletListContext';
 import { BulletLineWidth, BulletListDirection, BulletListItemState, BulletSize } from './types';
 import { mapSizeToDimension, mapStateToColor } from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';

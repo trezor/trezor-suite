@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { useCollapsible } from './Collapsible';
+import { useCollapsible } from './CollapsibleContext';
 import { motionEasing } from '../../config/motion';
 import { Icon, IconName, IconProps } from '../Icon/Icon';
 
