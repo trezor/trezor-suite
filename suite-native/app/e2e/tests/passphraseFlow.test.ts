@@ -15,6 +15,7 @@ import {
     prepareTrezorEmulator,
     restartApp,
     wait,
+    waitForElementByTextToBeVisible,
     wipeAppData,
 } from '../utils';
 
@@ -163,9 +164,20 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
         it('close passphrase flow', async () => {
             await onPassphrase.openNewPassphraseFlow();
             await onPassphrase.closePassphraseFlow();
-
             await wait(5000);
             await detoxExpect(element(by.id('@screen/PassphraseForm'))).not.toExist();
         });
+
+        it('Passphrase mismatch', async () => {
+            const passphrase = 'Empty wallet';
+            const mismatchPassphrase = 'Wrong passphrase';
+            await onPassphrase.openNewPassphraseFlow();
+            await enterPassphraseFlow(passphrase);
+            await emptyPassphraseFlow(mismatchPassphrase);
+            await waitForElementByTextToBeVisible('Passphrase mismatch', 10000);
+            await element(by.text('Start over')).tap();
+            await onPassphrase.expectEnterPassphraseScreen();
+
+        })
     });
 });
