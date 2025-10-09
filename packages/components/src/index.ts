@@ -111,6 +111,7 @@ export {
     withFrameProps,
     getFramePropsStory,
 } from './utils/frameProps';
+export type { FlexDirection } from './components/Flex/FlexProp';
 
 export * from './constants/keyboardEvents';
 

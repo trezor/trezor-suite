@@ -18,7 +18,8 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { Flex, FlexDirection, Row } from '../Flex/Flex';
+import { Flex, Row } from '../Flex/Flex';
+import { FlexDirection } from '../Flex/FlexProp';
 import { Icon, IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 import { TextProps, TextPropsKeys } from '../typography/utils';

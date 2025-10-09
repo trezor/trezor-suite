@@ -4,13 +4,8 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { spacings } from '@trezor/theme';
 
-import {
-    List as ListComponent,
-    allowedListFrameProps,
-    allowedListTextProps,
-    bulletVerticalAlignments,
-    listVariants,
-} from './List';
+import { List as ListComponent, allowedListFrameProps, allowedListTextProps } from './List';
+import { bulletVerticalAlignments, listVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Icon, IconProps } from '../Icon/Icon';
 import { getTextPropsStory } from '../typography/utils';

@@ -8,10 +8,8 @@ import {
     FlexProps,
     Row as RowComponent,
     allowedFlexFrameProps,
-    flexAlignItems,
-    flexJustifyContent,
-    flexWrap,
 } from './Flex';
+import { flexAlignItems, flexJustifyContent, flexWrap } from './FlexProp';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Container = styled.div`

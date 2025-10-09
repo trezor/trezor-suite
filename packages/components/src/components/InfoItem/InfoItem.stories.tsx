@@ -12,7 +12,7 @@ import {
 import { infoItemVariants, infoItemVerticalAlignments } from './types';
 import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { flexDirection } from '../Flex/Flex';
+import { flexDirection } from '../Flex/FlexProp';
 import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta = {

@@ -3,7 +3,7 @@ import { css } from 'styled-components';
 import { BorderRadii, SpacingValues, SpacingValuesNew, borders } from '@trezor/theme';
 
 import { TransientProps, makePropsTransient } from './transientProps';
-import type { Flex } from '../components/Flex/Flex';
+import type { FlexType } from '../components/Flex/FlexProp';
 
 export type Margin =
     | {
@@ -78,7 +78,7 @@ export type FrameProps = {
     overflow?: Overflow;
     borderRadius?: BorderRadii;
     pointerEvents?: PointerEvent;
-    flex?: Flex;
+    flex?: FlexType;
     position?: Position;
     cursor?: Cursor;
     zIndex?: number;

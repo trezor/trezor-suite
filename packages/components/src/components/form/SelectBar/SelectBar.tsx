@@ -12,12 +12,14 @@ import {
 
 import { SelectBarOrientation, SelectBarSize } from './types';
 import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextVariant } from './utils';
-import { Box, Grid, useMediaQuery } from '../../../';
 import { variables } from '../../../config';
 import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { useMediaQuery } from '../../../utils/useMediaQuery';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { Box } from '../../Box/Box';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Column, Flex } from '../../Flex/Flex';
+import { Grid } from '../../Grid/Grid';
 import { Text } from '../../typography/Text/Text';
 
 export const allowedSelectBarFrameProps = ['margin'] as const satisfies FramePropsKeys[];

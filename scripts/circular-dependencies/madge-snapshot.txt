@@ -17,19 +17,11 @@ packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinB
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts > packages/coinjoin/src/types/index.ts
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinFilterController.ts
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
-packages/components/src/components/BulletList/BulletList.tsx > packages/components/src/components/BulletList/BulletListItem.tsx
-packages/components/src/components/Collapsible/Collapsible.tsx > packages/components/src/components/Collapsible/CollapsibleContent.tsx
-packages/components/src/components/Collapsible/Collapsible.tsx > packages/components/src/components/Collapsible/CollapsibleToggle.tsx
-packages/components/src/components/Collapsible/Collapsible.tsx > packages/components/src/components/Collapsible/CollapsibleToggleIcon.tsx
-packages/components/src/components/List/List.tsx > packages/components/src/components/List/ListItem.tsx
 packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx
 packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx > packages/components/src/components/Table/TableHeader.tsx
 packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableRow.tsx
 packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/customComponents.tsx
 packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/useOnKeyDown.ts
-packages/components/src/index.ts > packages/components/src/components/form/SelectBar/SelectBar.tsx
-packages/components/src/index.ts > packages/components/src/support/Story.tsx
-packages/components/src/utils/frameProps.tsx > packages/components/src/components/Flex/Flex.tsx
 packages/connect-explorer-theme/src/components/anchor.tsx > packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/navbar.tsx
 packages/connect-explorer-theme/src/components/anchor.tsx > packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/toc.tsx
 packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/nav-links.tsx > packages/connect-explorer-theme/src/index.tsx

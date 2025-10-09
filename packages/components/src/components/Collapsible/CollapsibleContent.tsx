@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { useCollapsible } from './Collapsible';
+import { useCollapsible } from './CollapsibleContext';
 import { motionEasing } from '../../config/motion';
 import { Box } from '../Box/Box';
 
