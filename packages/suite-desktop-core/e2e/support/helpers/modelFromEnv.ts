@@ -9,5 +9,5 @@ export function getModelFromEnv(): Model {
 export function getModelTag(): string {
     const model = getModelFromEnv();
 
-    return `@model=${model}`;
+    return `@${model}`;
 }

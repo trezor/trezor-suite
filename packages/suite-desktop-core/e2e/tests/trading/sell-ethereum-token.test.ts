@@ -9,7 +9,6 @@ import {
 } from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { getModelTag } from '../../support/helpers/modelFromEnv';
 
 // Expected values based on our mocked responses
 const fiatAmount = sellQuotesEthereumToken[0].fiatStringAmount;
@@ -21,81 +20,68 @@ const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeEthereumToken.trade;
 const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
 
-test.describe(
-    'Trading - Sell Ethereum',
-    { tag: ['@group=trading', '@webOnly', getModelTag()] },
-    () => {
-        test.use({
-            emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
-        });
-        test.beforeEach(
-            async ({
-                page,
-                tradingMock,
-                onboardingPage,
-                dashboardPage,
-                settingsPage,
-                walletPage,
-            }) => {
-                await test.step('Mocking responses', async () => {
-                    await page.route(invityEndpoint.sellQuotes, async route => {
-                        await route.fulfill({ json: sellQuotesEthereumToken });
-                    });
-                    await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereumToken);
-                    await page.route(invityEndpoint.sellWatch, async route => {
-                        await route.fulfill({ json: sellWatchEthereum });
-                    });
+test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
+    test.use({
+        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+    });
+    test.beforeEach(
+        async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {
+            await test.step('Mocking responses', async () => {
+                await page.route(invityEndpoint.sellQuotes, async route => {
+                    await route.fulfill({ json: sellQuotesEthereumToken });
                 });
-                await onboardingPage.completeOnboarding();
-
-                await test.step('Enable Ethereum and open its token sell trading', async () => {
-                    await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
-                    await dashboardPage.deviceSwitchingOpenButton.click();
-                    await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-                    await walletPage.openSellTradingOfToken('eth', 'USD Coin');
+                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereumToken);
+                await page.route(invityEndpoint.sellWatch, async route => {
+                    await route.fulfill({ json: sellWatchEthereum });
                 });
-            },
-        );
-
-        test('Sell Ethereum token USDC', async ({ tradingPage, devicePrompt }) => {
-            await test.step('Fill in a sell request', async () => {
-                await tradingPage.fillSellForm(
-                    cryptoAmount,
-                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                );
-                await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
-                await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
             });
+            await onboardingPage.completeOnboarding();
 
-            await test.step('Confirm sell', async () => {
-                await tradingPage.sellBestOfferButton.click();
-                await tradingPage.termsConfirmButton.click();
+            await test.step('Enable Ethereum and open its token sell trading', async () => {
+                await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+                await walletPage.openSellTradingOfToken('eth', 'USD Coin');
             });
+        },
+    );
 
-            await tradingPage.waitForRedirectCompletion();
-
-            await test.step('Verify all confirmation values', async () => {
-                await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-                await expect(tradingPage.confirmationCryptoAmount).toHaveText(
-                    formattedCryptoAmount,
-                );
-                await expect(tradingPage.confirmationProvider).toHaveText(provider);
-                await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-                await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
-                await expect(tradingPage.confirmationAccount).toHaveText('Ethereum #1');
-            });
-
-            await test.step('Initiate send', async () => {
-                await tradingPage.initiateSendConfirmation();
-                await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
-                await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
-                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
-                    formattedCryptoAmount,
-                );
-                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-            });
-
-            // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
+    test('Sell Ethereum token USDC', async ({ tradingPage, devicePrompt }) => {
+        await test.step('Fill in a sell request', async () => {
+            await tradingPage.fillSellForm(
+                cryptoAmount,
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            );
+            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });
-    },
-);
+
+        await test.step('Confirm sell', async () => {
+            await tradingPage.sellBestOfferButton.click();
+            await tradingPage.termsConfirmButton.click();
+        });
+
+        await tradingPage.waitForRedirectCompletion();
+
+        await test.step('Verify all confirmation values', async () => {
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
+            await expect(tradingPage.confirmationAccount).toHaveText('Ethereum #1');
+        });
+
+        await test.step('Initiate send', async () => {
+            await tradingPage.initiateSendConfirmation();
+            await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                formattedCryptoAmount,
+            );
+            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+        });
+
+        // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
+    });
+});

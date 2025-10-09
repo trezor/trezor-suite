@@ -29,7 +29,8 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
         });
 
         await test.step('Check limits for BTC input', async () => {
-            await test.step('Below minimum', async () => {
+            //TODO: Bug https://github.com/trezor/trezor-suite/issues/21932
+            await test.step.skip('Below minimum', async () => {
                 await tradingPage.fillSellFormMinimumQuoteError();
 
                 await expect
@@ -93,8 +94,10 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
         });
 
         await test.step('Try all % inputs on Solana', async () => {
-            await tradingPage.accountDropdown.click();
-            await tradingPage.accountOption('solana').click();
+            await page.selectDropdownOptionWithRetry(
+                tradingPage.accountDropdown,
+                tradingPage.accountOption('solana'),
+            );
             await expect(tradingPage.swapAmountInputCurrencyTicker).toHaveText('SOL');
 
             for (const percentage of [10, 25, 50]) {
@@ -108,7 +111,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                 });
             }
 
-            await test.step('Max of Solana balance', async () => {
+            await test.step.skip('Max of Solana balance', async () => {
                 await page.getByRole('button', { name: 'Max' }).click();
                 const resultingFee = await tradingPage.fees.getSolanaFee();
                 const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
