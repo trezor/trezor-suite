@@ -6,7 +6,12 @@ import type { PartialRecord } from '@trezor/type-utils';
 export type SimpleTokenStructure = string[];
 
 export interface AdvancedTokenStructure {
-    [contractAddress: string]: { symbol: string; name: string };
+    [contractAddress: string]: {
+        symbol: string;
+        name: string;
+        home_domain?: string;
+        rating?: number;
+    };
 }
 
 export type TokenStructure = SimpleTokenStructure | AdvancedTokenStructure;

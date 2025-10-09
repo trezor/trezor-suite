@@ -59,6 +59,7 @@ redux-logger
 redux-mock-store
 redux-thunk
 reselect
+toml
 web3-eth-abi
 web3-utils
 webpack
