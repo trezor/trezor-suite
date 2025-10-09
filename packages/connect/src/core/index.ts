@@ -1164,6 +1164,8 @@ export class Core extends EventEmitter {
                             this.sendCoreMessage(createResponseMessage(message.id, true, payload));
                         })
                         .catch(error => {
+                            console.log('______[onCallFirmwareUpdate]::error', error);
+
                             this.sendCoreMessage(
                                 createResponseMessage(message.id, false, { error }),
                             );

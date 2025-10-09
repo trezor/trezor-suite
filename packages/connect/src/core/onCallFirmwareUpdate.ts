@@ -12,7 +12,13 @@ import { ERRORS, PROTO } from '../constants';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
-import { CoreEventMessage, UI, UiPromiseCreator, createUiMessage } from '../events';
+import {
+    CoreEventMessage,
+    UI,
+    UiPromiseCreator,
+    UiPromiseResponse,
+    createUiMessage,
+} from '../events';
 import {
     BinaryInfo,
     CommonParams,
@@ -113,32 +119,66 @@ const waitForReconnectedDevice = async (
                 'onCallFirmwareUpdate',
                 'we were unable to read device.features on the first interaction after seeing it, retrying...',
             );
+            try {
+                let runFn;
+                if (reconnectedDevice.getThpState()?.properties) {
+                    // stop and wait for UI decision
+                    const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, reconnectedDevice);
 
-            let runFn;
-            if (reconnectedDevice.getThpState()?.properties) {
-                // stop and wait for UI decision
-                const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, reconnectedDevice);
-                postMessage(
-                    createUiMessage(UI.REQUEST_CONFIRMATION, {
-                        view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
-                    }),
-                );
-                const uiResp = await uiPromise.promise;
-                if (!uiResp.payload) {
-                    throw ERRORS.TypedError('Method_PermissionsNotGranted');
+                    console.log('_______waitForReconnectedDevice', UI.REQUEST_CONFIRMATION);
+
+                    postMessage(
+                        createUiMessage(UI.REQUEST_CONFIRMATION, {
+                            view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+                        }),
+                    );
+
+                    console.log('_______waitForReconnectedDevice::Promise.race');
+
+                    // TODO: HERE! After successfully reconnecting, this is awaited,
+                    //       but sending a UI_RESPONSE will NOT resume this.
+                    //       Connect does some type-based request/response matching
+                    //       and wont handle it.
+
+                    const uiResp = await Promise.race<
+                        Extract<UiPromiseResponse, { type: 'ui-receive_confirmation' }>
+                    >([
+                        uiPromise.promise,
+                        new Promise((_, reject) => {
+                            deviceList.once('device-disconnect', disconnectedDevice => {
+                                if (
+                                    disconnectedDevice.transportPath ===
+                                    reconnectedDevice?.transportPath
+                                ) {
+                                    reconnectedDevice = undefined;
+                                    reject('device-disconnect');
+                                }
+                            });
+                        }),
+                    ]);
+
+                    console.log('_______waitForReconnectedDevice::uiResp', uiResp);
+
+                    if (!uiResp.payload) {
+                        throw ERRORS.TypedError('Method_PermissionsNotGranted');
+                    }
+
+                    runFn = () => Promise.resolve(); // enforce pairing UI interaction
                 }
 
-                runFn = () => Promise.resolve(); // enforce pairing UI interaction
-            }
-
-            try {
                 registerEvents(reconnectedDevice);
                 // todo: it keeps printing warning "Previous call is still running" on reconnect from bl to normal
                 await reconnectedDevice.run(runFn, {
                     skipFirmwareChecks: true,
                     skipLanguageChecks: true,
                 });
+
+                console.log(
+                    '______________waitForReconnectedDevice ------- after reconnectedDevice.run(...)',
+                );
             } catch (error) {
+                console.log('______________waitForReconnectedDevice::error', error);
+
                 // error in THP pairing
                 if (error.code === 'Device_ThpPairingTagInvalid') {
                     thpPairingError = true;
@@ -166,6 +206,8 @@ const waitForReconnectedDevice = async (
                     ],
                 )))
     );
+
+    console.log('_______waitForReconnectedDevice:: => out of while ::abortSignal', abortSignal);
 
     if (!reconnectedDevice) {
         throw ERRORS.TypedError('Method_Interrupted');
@@ -556,10 +598,14 @@ export const onCallFirmwareUpdate = async ({
         method = 'auto';
     }
 
+    console.log('_____onCallFirmwareUpdate::waitForReconnectedDevice');
+
     reconnectedDevice = await waitForReconnectedDevice(
         { bootloader: false, method },
         { ...context, device: reconnectedDevice },
     );
+
+    console.log('_____onCallFirmwareUpdate::waitForReconnectedDevice', reconnectedDevice);
 
     const installedVersion = reconnectedDevice.getVersion();
     if (!bootloaderVersion || !installedVersion) {
