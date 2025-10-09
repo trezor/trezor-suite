@@ -241,7 +241,7 @@ describe('THP pairing', () => {
         expect(result).toMatchObject({ success: true });
     });
 
-    it.skip('ThpState cancel workflow', async () => {
+    it('ThpState cancel workflow', async () => {
         // enable passphrase
         await setup(controller, { mnemonic: 'mnemonic_all', passphrase_protection: true });
 
@@ -330,7 +330,7 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getAddress({
             device: {
                 ...device,
-                state: 'ms1TJk4b4s7aisyL3jfrkCqwznttWwiS4r@448CCE89D32A733A1632F345:1',
+                state: 'ms1TJk4b4s7aisyL3jfrkCqwznttWwiS4r@7ED4F891C5F1098B60B881DE:1',
                 instance: 1,
             },
             path: "m/44'/0'/0'/1/1",
