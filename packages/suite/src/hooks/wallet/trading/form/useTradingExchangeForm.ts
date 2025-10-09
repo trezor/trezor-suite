@@ -17,6 +17,7 @@ import {
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
+    cryptoIdToNetwork,
     exchangeThunks,
     getUnusedAddressFromAccount,
     invityAPI,
@@ -768,21 +769,19 @@ export const useTradingExchangeForm = ({
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
-        if (pageType !== 'form') {
-            return;
-        }
+        if (pageType !== 'form') return;
+        if (!sendCryptoSelect?.value) return;
+        if (isFormLoading || isLoadingQuote) return;
 
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
-            setValue('transactionData', '');
+            return setValue('transactionData', '');
         }
 
-        if (isFormLoading || isLoadingQuote) {
-            return;
-        }
+        const network = cryptoIdToNetwork(sendCryptoSelect.value);
+        const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect.value);
+        const requiresApproval = network?.networkType === 'ethereum' && !isEvmNativeToken;
 
-        const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect?.value);
-
-        const quote = preselectedQuote ?? (isEvmNativeToken ? dexQuotes[0] : selectedQuote);
+        const quote = preselectedQuote ?? (requiresApproval ? selectedQuote : dexQuotes[0]);
 
         if (!quote || !quote.dexTx) {
             return setValue('transactionData', '');
