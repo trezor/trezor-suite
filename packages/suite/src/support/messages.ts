@@ -2099,6 +2099,10 @@ export default defineMessages({
         description: 'Prompt to user to reconnect his device.',
         id: 'TR_RECONNECT_YOUR_DEVICE',
     },
+    TR_CONNECT_DEVICE: {
+        defaultMessage: 'Connect Trezor',
+        id: 'TR_CONNECT_DEVICE',
+    },
     TR_CONNECTED: {
         defaultMessage: 'Connected',
         description: 'Device status',

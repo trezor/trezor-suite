@@ -1,9 +1,11 @@
+import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { ForegroundAppProps } from 'src/types/suite';
@@ -12,9 +14,9 @@ import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
-
+    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
+    const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const devices = useSelector(selectDevices);
 
     // exclude selectedDevice from list, because other devices could have a higher priority,
@@ -24,8 +26,13 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     });
 
     const openDeviceConnectionModal = () => {
-        dispatch(setConnectionMode('bluetooth'));
         dispatch(toggleConnectionModal());
+
+        if (isBluetoothEnabled && bluetoothAdapterStatus === 'enabled') {
+            dispatch(bluetoothActions.enableAutoConnect());
+            dispatch(setConnectionMode('bluetooth'));
+        }
+
         onCancel();
     };
 
@@ -40,16 +47,14 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         onCancel={cancelable ? onCancel : undefined}
                     />
                 ))}
-                {isBluetoothEnabled && (
-                    <Button
-                        variant="tertiary"
-                        icon="bluetooth"
-                        isFullWidth
-                        onClick={openDeviceConnectionModal}
-                    >
-                        Pair Trezor Safe 7
-                    </Button>
-                )}
+                <Button
+                    variant="tertiary"
+                    icon="trezorDevices"
+                    isFullWidth
+                    onClick={openDeviceConnectionModal}
+                >
+                    <Translation id="TR_CONNECT_DEVICE" />
+                </Button>
             </Column>
         </SwitchDeviceModal>
     );
