@@ -30,14 +30,14 @@ export const SettingsSupportScreen = () => {
                     <SupportCard />
                 </VStack>
                 <AboutUsBanners />
-                <TitledSection title={<Translation id="moduleSettings.faq.legal" />}>
+                <TitledSection title={<Translation id="moduleSettings.faq.legal.label" />}>
                     <CompactCardWithIconLayout
-                        title="Terms & conditions"
+                        title={<Translation id="moduleSettings.faq.legal.termsAndConditions" />}
                         icon="filePdf"
                         onPress={handleOpenTermsAndConditions}
                     />
                     <CompactCardWithIconLayout
-                        title="Privacy policy"
+                        title={<Translation id="moduleSettings.faq.legal.privacyPolicy" />}
                         icon="filePdf"
                         onPress={handleOpenPrivacyPolicy}
                     />

@@ -1,12 +1,14 @@
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { AppColorScheme, useSystemColorScheme, useUserColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CSSColor, colorVariants } from '@trezor/theme';
 
 type ColorSchemePickerItemProps = {
     colorScheme: AppColorScheme;
+    translationId: TxKeyPath;
 };
 
 const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean }>(
@@ -48,10 +50,12 @@ const textStyle = prepareNativeStyle(utils => ({
     paddingTop: 23,
     paddingBottom: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp8,
-    textTransform: 'capitalize',
 }));
 
-export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProps) => {
+export const ColorSchemePickerItem = ({
+    colorScheme,
+    translationId,
+}: ColorSchemePickerItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { userColorScheme, setUserColorScheme } = useUserColorScheme();
@@ -93,7 +97,7 @@ export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProp
                 style={applyStyle(textStyle)}
                 color={isColorSchemeActive ? 'textSecondaryHighlight' : 'textSubdued'}
             >
-                {colorScheme}
+                <Translation id={translationId} />
             </Text>
         </TouchableOpacity>
     );

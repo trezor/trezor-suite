@@ -1,13 +1,14 @@
 import { TouchableOpacity } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type TimeSwitchValue = number | null;
 
 type TimeSwitchItemProps = {
     value: TimeSwitchValue;
-    shortcut: string;
+    translationId: TxKeyPath;
     selectedTimeFrame: TimeSwitchValue;
     onSelectTimeFrame: (valueBackInHours: TimeSwitchValue) => void;
 };
@@ -36,7 +37,7 @@ const switchItemStyle = prepareNativeStyle<ItemStyleProps>((utils, { isSelected 
 
 export const TimeSwitchItem = ({
     value,
-    shortcut,
+    translationId,
     onSelectTimeFrame,
     selectedTimeFrame,
 }: TimeSwitchItemProps) => {
@@ -51,7 +52,7 @@ export const TimeSwitchItem = ({
             style={applyStyle(switchItemStyle, { isSelected })}
         >
             <Text variant="hint" style={applyStyle(textStyle, { isSelected })}>
-                {shortcut}
+                <Translation id={translationId} />
             </Text>
         </TouchableOpacity>
     );
