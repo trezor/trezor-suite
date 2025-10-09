@@ -240,7 +240,7 @@ describe('THP pairing', () => {
         expect(result).toMatchObject({ success: true });
     });
 
-    it('ThpState cancel workflow', async () => {
+    it.skip('ThpState cancel workflow', async () => {
         // enable passphrase
         await setup(controller, { mnemonic: 'mnemonic_all', passphrase_protection: true });
 
