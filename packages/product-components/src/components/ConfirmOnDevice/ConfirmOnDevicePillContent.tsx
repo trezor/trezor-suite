@@ -60,6 +60,7 @@ export const ConfirmOnDevicePillContent = ({
                 deviceModel={deviceModelInternal}
                 deviceColor={deviceUnitColor}
                 animationHeight="34px"
+                maxWidth={30}
             />
 
             <Column alignItems="center">
