@@ -561,19 +561,13 @@ export const runDiscoveryThunk = createThunk(
 type StartDiscoveryThunkParams = {
     device?: TrezorDevice;
     isAddingHiddenWallet?: boolean;
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
     isAddingExistingWallet?: boolean;
 };
 
 export const startDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
-        {
-            device,
-            isAddingHiddenWallet,
-            isAddingHiddenWalletWithRespectToSettings,
-            isAddingExistingWallet,
-        }: StartDiscoveryThunkParams,
+        { device, isAddingHiddenWallet, isAddingExistingWallet }: StartDiscoveryThunkParams,
         { dispatch, getState },
     ): void => {
         const selectedDevice = selectSelectedDevice(getState());
@@ -599,7 +593,6 @@ export const startDiscoveryThunk = createThunk(
             discoveryActions.startDiscovery(actualDevice.path, {
                 isAddingHiddenWallet,
                 isAddingExistingWallet,
-                isAddingHiddenWalletWithRespectToSettings,
             }),
         );
 
@@ -632,7 +625,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
             discoveryActions.startDiscovery(device.path, {
                 isAddingHiddenWallet: false,
                 isAddingExistingWallet: false,
-                isAddingHiddenWalletWithRespectToSettings: false,
             }),
         );
 
@@ -788,7 +780,6 @@ export const startOrRestartDiscoveryThunk = createThunk(
                 device,
                 isAddingExistingWallet: true,
                 isAddingHiddenWallet: false,
-                isAddingHiddenWalletWithRespectToSettings: false,
             }),
         );
     },

@@ -34,9 +34,6 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
 
-    // Derive isAddingHiddenWalletWithRespectToSettings from whether onCancel is defined
-    // When onCancel is undefined, it means we're adding a hidden wallet with respect to settings
-    const isAddingHiddenWalletWithRespectToSettings = !onCancel;
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
     const isPassphraseProtectionEnabled = Boolean(device?.features?.passphrase_protection);
     const dispatch = useDispatch();
@@ -59,7 +56,6 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 device,
                 isAddingHiddenWallet: walletType === WalletType.PASSPHRASE,
                 isAddingExistingWallet: isExisting,
-                isAddingHiddenWalletWithRespectToSettings,
             }),
         );
         dispatch(goto('suite-index'));

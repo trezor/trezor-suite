@@ -16,7 +16,7 @@ type PassphraseWalletIsNotExistFlowProps = {
     discovery: DiscoveryStatus;
     device: TrezorDevice;
     offerPassphraseOnDevice: boolean;
-    onCancel?: () => void;
+    onCancel: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     onBackToInitial: () => void;
 };
@@ -67,8 +67,6 @@ export const PassphraseWalletIsNotExistFlow = ({
                             device,
                             isAddingHiddenWallet: true,
                             isAddingExistingWallet: false,
-                            isAddingHiddenWalletWithRespectToSettings:
-                                discovery.isAddingHiddenWalletWithRespectToSettings,
                         }),
                     );
                 }}

@@ -13,7 +13,7 @@ import { Translation } from '../../../Translation';
 type PassphraseWalletConfirmationProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     offerPassphraseOnDevice: boolean;
-    onCancel?: () => void;
+    onCancel: () => void;
     onBack?: () => void;
     device: TrezorDevice;
     isExistingWallet?: boolean;
