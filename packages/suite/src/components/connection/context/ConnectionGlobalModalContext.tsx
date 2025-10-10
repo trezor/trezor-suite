@@ -22,7 +22,7 @@ import {
 import { useBluetoothScanning, UseBluetoothScanningReturn } from '../hook/useBluetoothScanning';
 
 export type ConnectionGlobalModalContextProps = UseBluetoothScanningReturn &
-    Omit<UseBluetoothConnectionReturn, 'selectedDeviceId'> & {
+    UseBluetoothConnectionReturn & {
         isBluetoothMode: boolean;
         devices: DesktopBluetoothDevice[];
         shouldShowBluetoothUnPairDeviceList: boolean;
