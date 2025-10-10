@@ -1,7 +1,11 @@
+import { useSelector } from 'react-redux';
+
 import { TradingTradeMapProps, TradingTradeType, TradingType } from '@suite-common/trading';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { prepareNativeStyle } from '@trezor/styles';
 
 import { useProviderFilters } from '../../../hooks/general/useProviderFilters';
+import { TradingWithFeatureFlagsRootState } from '../../../selectors/exchangeSelectors';
 import { QuotesByCategories, QuotesCategory } from '../../../types/general';
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 import { NoProvidersPlaceholder } from './NoProvidersPlaceholder';
@@ -34,11 +38,15 @@ export const ProviderSheet = <
     selectedQuote,
     tradingType,
 }: ProviderSheetProps<K, T>) => {
-    const shouldShowFilters = tradingType === 'exchange';
+    const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
+        selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
+    );
+    const shouldShowFilters = tradingType === 'exchange' && areTradingExchangeDexesEnabled;
 
     const { filterItems, filteredSections, selectedFilter, setSelectedFilter } = useProviderFilters(
         quotes,
         shouldShowFilters,
+        areTradingExchangeDexesEnabled,
     );
 
     const onQuoteSelectCallback = (quote: T) => {
