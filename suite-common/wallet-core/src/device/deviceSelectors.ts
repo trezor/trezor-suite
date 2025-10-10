@@ -606,3 +606,8 @@ export const selectFirmwareHashCheckError = (state: DeviceRootState) => {
 
     return checkResult.error;
 };
+
+export const selectIsDevicePinLocked = createMemoizedSelector(
+    [selectSelectedDevice],
+    selectedDevice => selectedDevice && getStatus(selectedDevice) === 'device-pin-locked',
+);
