@@ -42,6 +42,7 @@ export class DashboardPage {
     readonly openUnusedWalletButton2: Locator;
     readonly buyButton = (networkSymbol: NetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/buy-button`);
+    readonly walletReady: Locator;
 
     constructor(
         private readonly page: Page,
@@ -80,6 +81,7 @@ export class DashboardPage {
         this.openUnusedWalletButton2 = this.page.getByTestId(
             '@passphrase-confirmation/step2-button',
         );
+        this.walletReady = this.page.getByTestId('@dashboard/wallet-ready');
     }
 
     @step()
