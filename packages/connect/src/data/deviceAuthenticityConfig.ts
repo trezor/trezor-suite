@@ -41,11 +41,13 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
         rootPubKeysOptiga: [
             '040dde0d3e0d4da593fac6fd02a461d0e7eef238aca55c7c50b4e9ec37f3873303b6429ef1c9b78b4411a7dcbbc5dde5225979c1c2da3b073e82b1ed3f5f9825bb',
         ],
-        rootPubKeysTropic: [],
+        rootPubKeysTropic: ['59237acd17134061d655b3f8d624573ca06ce8d862f38ba4e05140ce1d3d609d'],
         debug: {
             rootPubKeysOptiga: [
                 '04521192e173a9da4e3023f747d836563725372681eba3079c56ff11b2fc137ab189eb4155f371127651b5594f8c332fc1e9c0f3b80d4212822668b63189706578',
             ],
+            // TODO copy "Root debug keys for T3W1" from firmware repo when it is available (_pk_ed25519)
+            // https://github.com/trezor/trezor-firmware/blob/main/python/src/trezorlib/authentication.py
             rootPubKeysTropic: [],
         },
     },
