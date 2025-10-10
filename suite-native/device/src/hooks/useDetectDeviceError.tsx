@@ -8,6 +8,7 @@ import {
     deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
+    selectIsDevicePinLocked,
     selectIsDeviceThpRequired,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
@@ -68,6 +69,7 @@ export const useDetectDeviceError = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
+    const isDevicePinLocked = useSelector(selectIsDevicePinLocked);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -93,6 +95,7 @@ export const useDetectDeviceError = () => {
         if (
             isOnboardingFinished &&
             isUnacquiredDevice &&
+            !isDevicePinLocked &&
             !isDeviceThpRequired &&
             !isFirmwareInstallationRunning
         ) {
@@ -116,6 +119,7 @@ export const useDetectDeviceError = () => {
             hideAlert('deviceError');
         }
     }, [
+        isDevicePinLocked,
         isOnboardingFinished,
         isUnacquiredDevice,
         isDeviceThpRequired,
