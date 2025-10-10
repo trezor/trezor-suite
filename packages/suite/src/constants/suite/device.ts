@@ -1,7 +1,7 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 export const MAX_LABEL_LENGTH = 16;
-export const DEFAULT_PASSPHRASE_PROTECTION = true;
+export const DEFAULT_PASSPHRASE_PROTECTION = false;
 export const DEFAULT_SKIP_BACKUP = true;
 
 export const DEFAULT_STRENGTH: Record<DeviceModelInternal, number> = {
