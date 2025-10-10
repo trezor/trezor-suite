@@ -13290,7 +13290,7 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/web": "npm:^0.0.197"
     crypto-browserify: "npm:3.12.0"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     socks-proxy-agent: "npm:8.0.5"
     stream-browserify: "npm:^3.0.0"
     tiny-worker: "npm:^2.3.0"
@@ -13472,7 +13472,7 @@ __metadata:
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^13.0.1"
     eslint-plugin-mdx: "npm:^3.6.2"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     json5: "npm:^2.2.3"
     next: "npm:^15.2.4"
     next-themes: "npm:^0.3.0"
@@ -13515,7 +13515,7 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.1"
     crypto-browserify: "npm:3.12.0"
     es6-promise: "npm:^4.2.8"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     rimraf: "npm:^6.0.1"
     stream-browserify: "npm:^3.0.0"
     terser-webpack-plugin: "npm:^5.3.14"
@@ -13596,7 +13596,7 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.1"
     crypto-browserify: "npm:3.12.0"
     eth-phishing-detect: "npm:^1.2.0"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     react-dom: "npm:19.1.0"
     rimraf: "npm:^6.0.1"
     stream-browserify: "npm:^3.0.0"
@@ -13666,7 +13666,7 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.10"
     "@types/web": "npm:^0.0.197"
     babel-loader: "npm:^10.0.0"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     rimraf: "npm:^6.0.1"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.14"
@@ -14052,7 +14052,7 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.1"
     crypto-browserify: "npm:3.12.0"
     css-minimizer-webpack-plugin: "npm:^7.0.2"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     raw-loader: "npm:^4.0.2"
     react-refresh: "npm:^0.17.0"
     stream-browserify: "npm:^3.0.0"
@@ -14421,7 +14421,7 @@ __metadata:
     "@trezor/websocket-client": "workspace:*"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     webpack: "npm:5.102.1"
@@ -14442,7 +14442,7 @@ __metadata:
     "@types/json-stable-stringify": "npm:^1"
     esbuild: "npm:^0.25.2"
     html-inline-script-webpack-plugin: "npm:^3.2.1"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     json-stable-stringify: "npm:^1.2.1"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
@@ -14594,7 +14594,7 @@ __metadata:
     "@trezor/eslint": "workspace:^"
     "@types/chrome": "npm:^0.0.299"
     copy-webpack-plugin: "npm:^13.0.1"
-    html-webpack-plugin: "npm:^5.6.3"
+    html-webpack-plugin: "npm:5.6.4"
     webpack: "npm:5.102.1"
   languageName: unknown
   linkType: soft
@@ -19611,14 +19611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001702":
-  version: 1.0.30001751
-  resolution: "caniuse-lite@npm:1.0.30001751"
-  checksum: 10/608f7e1248b7023020382c7dbb0ef389693b3fc98193c3ccea2d44126306d6ac905a5061cf9e62bf640535a86e7a98e563b34c02f909296cfe228f41627a4dc7
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001726":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001702, caniuse-lite@npm:^1.0.30001726":
   version: 1.0.30001727
   resolution: "caniuse-lite@npm:1.0.30001727"
   checksum: 10/6155a4141332c337d6317325bea58a09036a65f45bd9bd834ec38978b40c27d214baa04d25b21a5661664f3fbd00cb830e2bdb7eee8df09970bdd98a71f4dabf
@@ -27769,7 +27762,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-webpack-plugin@npm:^5.5.0, html-webpack-plugin@npm:^5.6.3":
+"html-webpack-plugin@npm:5.6.4":
+  version: 5.6.4
+  resolution: "html-webpack-plugin@npm:5.6.4"
+  dependencies:
+    "@types/html-minifier-terser": "npm:^6.0.0"
+    html-minifier-terser: "npm:^6.0.2"
+    lodash: "npm:^4.17.21"
+    pretty-error: "npm:^4.0.0"
+    tapable: "npm:^2.0.0"
+  peerDependencies:
+    "@rspack/core": 0.x || 1.x
+    webpack: ^5.20.0
+  peerDependenciesMeta:
+    "@rspack/core":
+      optional: true
+    webpack:
+      optional: true
+  checksum: 10/781074dd8bacf48236911462201fa440c5f79525665ce5de0c35f262a323765e103caab32a7466db262c4af3d98e869ae6a9b484e967345d85aff80d25a4ca79
+  languageName: node
+  linkType: hard
+
+"html-webpack-plugin@npm:^5.5.0":
   version: 5.6.3
   resolution: "html-webpack-plugin@npm:5.6.3"
   dependencies:
