@@ -75,6 +75,33 @@ describe('TradeDetailTransactionInfo', () => {
         expect(getAllByText('SOL Account #1')).toHaveLength(2);
     });
 
+    it('should render exchange trade even when accounts are not found', async () => {
+        const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
+        const preloadedState = getPreloadedState([exchangeTrade]);
+        preloadedState!.wallet!.accounts = []; // remove all accounts
+
+        const { getByText, getAllByText } = await renderComponent(
+            exchangeTrade.data.orderId!,
+            preloadedState,
+        );
+
+        expect(getByText('10.1232 JTO')).toBeTruthy();
+        expect(getByText('0.462586 SOL')).toBeTruthy();
+        expect(getAllByText('Solana')).toHaveLength(2);
+    });
+
+    it('should render "Unknown" when asset network is not found', async () => {
+        const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
+        exchangeTrade.data.send = 'unknown-asset' as any;
+        exchangeTrade.data.receive = 'unknown-asset' as any;
+        const preloadedState = getPreloadedState([exchangeTrade]);
+        preloadedState!.wallet!.accounts = []; // remove all accounts
+
+        const { getAllByText } = await renderComponent(exchangeTrade.data.orderId!, preloadedState);
+
+        expect(getAllByText('Unknown')).toHaveLength(2);
+    });
+
     it('should render sell trade transaction info correctly', async () => {
         const sellTrade = getSellTrade({ status: 'SEND_CRYPTO' });
 
