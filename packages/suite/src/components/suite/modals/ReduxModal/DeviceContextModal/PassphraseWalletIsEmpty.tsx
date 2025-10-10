@@ -15,7 +15,7 @@ import { Translation } from '../../../Translation';
 
 type PassphraseWalletIsEmptyProps = {
     onRetry: () => void;
-    onCancel?: () => void;
+    onCancel: () => void;
     device: TrezorDevice;
     onNext: () => void;
     onBack: () => void;
@@ -24,7 +24,7 @@ type PassphraseWalletIsEmptyProps = {
 type PassphraseWalletIsEmptyContentProps = {
     onNext: () => void;
     onRetry: () => void;
-    onCancel?: () => void;
+    onCancel: () => void;
     'data-testid'?: string;
 };
 

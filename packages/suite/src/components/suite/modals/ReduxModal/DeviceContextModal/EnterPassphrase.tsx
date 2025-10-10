@@ -24,7 +24,7 @@ type EnterPassphraseProps = {
     submitting?: boolean;
     isExistingWallet?: boolean;
     onBack: () => void;
-    onCancel?: () => void;
+    onCancel: () => void;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
 };
 

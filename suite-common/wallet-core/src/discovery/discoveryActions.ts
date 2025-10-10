@@ -24,25 +24,21 @@ export const deleteDiscovery = createAction(
     }),
 );
 
+type StartDiscoveryParams = {
+    isAddingHiddenWallet?: boolean;
+    isAddingExistingWallet?: boolean;
+};
+
 export const startDiscovery = createAction(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
         path: DeviceUniquePath,
-        {
-            isAddingHiddenWallet,
-            isAddingExistingWallet,
-            isAddingHiddenWalletWithRespectToSettings,
-        }: {
-            isAddingHiddenWallet?: boolean;
-            isAddingExistingWallet?: boolean;
-            isAddingHiddenWalletWithRespectToSettings?: boolean;
-        } = {},
+        { isAddingHiddenWallet, isAddingExistingWallet }: StartDiscoveryParams = {},
     ) => ({
         payload: {
             path,
             isAddingHiddenWallet,
             isAddingExistingWallet,
-            isAddingHiddenWalletWithRespectToSettings,
         },
     }),
 );

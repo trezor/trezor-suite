@@ -4,7 +4,6 @@ import { BundleProgress, StaticSessionId } from '@trezor/connect';
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader
     isAddingExistingWallet?: boolean; // to control visibility of special loader
-    isAddingHiddenWalletWithRespectToSettings?: boolean;
     hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the discovery started loading actual accounts
     passphraseOnDevice?: boolean;
     startTimestamp?: number;

@@ -45,22 +45,13 @@ export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const onBackToInitial = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch({ type: UI.CLOSE_UI_WINDOW });
-        dispatch(
-            goto('suite-switch-device', {
-                params: {
-                    cancelable: discovery?.isAddingHiddenWalletWithRespectToSettings !== true,
-                },
-            }),
-        );
+        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
     };
 
-    const onCancel =
-        discovery?.isAddingHiddenWalletWithRespectToSettings === true
-            ? undefined
-            : () => {
-                  dispatch(cancelDiscoveryThunk(device));
-                  dispatch({ type: UI.CLOSE_UI_WINDOW });
-              };
+    const onCancel = () => {
+        dispatch(cancelDiscoveryThunk(device));
+        dispatch({ type: UI.CLOSE_UI_WINDOW });
+    };
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {

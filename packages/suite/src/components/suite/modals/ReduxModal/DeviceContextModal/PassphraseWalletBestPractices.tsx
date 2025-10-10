@@ -7,7 +7,7 @@ import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/Switc
 import { Translation } from '../../../Translation';
 
 type PassphraseWalletBestPracticesProps = {
-    onCancel?: () => void;
+    onCancel: () => void;
     onNext: () => void;
     onBack: () => void;
     device: TrezorDevice;
