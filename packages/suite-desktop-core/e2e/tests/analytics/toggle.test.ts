@@ -47,7 +47,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
                 await onboardingPage.enableAutoconnect();
             }
 
-            await onboardingPage.onboardingContinueButton.click();
+            await onboardingPage.onboardingExitButton.click();
             if (model.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
             }
@@ -130,7 +130,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
                 await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
             }
-            await onboardingPage.onboardingContinueButton.click();
+            await onboardingPage.onboardingExitButton.click();
             if (model.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();
             }

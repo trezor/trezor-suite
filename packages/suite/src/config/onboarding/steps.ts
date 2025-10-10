@@ -117,14 +117,4 @@ export const stepCategories: StepCategory[] = [
             },
         ],
     },
-    {
-        id: 'final',
-        labelTranslationId: 'TR_COMPLETE',
-        steps: [
-            {
-                id: STEP.ID_FINAL_STEP,
-                prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
-            },
-        ],
-    },
 ];

@@ -26,7 +26,7 @@ test.describe(
                 await onboardingPage.enterTHPPairingCode();
             }
 
-            await onboardingPage.onboardingContinueButton.click();
+            await onboardingPage.onboardingExitButton.click();
 
             if (model.isModelWithSecureElement()) {
                 await onboardingPage.passThroughAuthenticityCheck();

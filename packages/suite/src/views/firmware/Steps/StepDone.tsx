@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { Modal } from '@trezor/components';
 
-import { FirmwareInstallationStandalone } from '../../../components/firmware';
+import { FirmwareInstallation } from '../../../components/firmware';
 import { Translation } from '../../../components/suite/Translation';
 
 type StepDoneProps = {
@@ -31,7 +31,7 @@ export const StepDone = ({
                 </Modal.Button>
             }
         >
-            <FirmwareInstallationStandalone
+            <FirmwareInstallation
                 install={install}
                 onPromptClose={onClose}
                 isCustomFirmware={isCustomFirmware}

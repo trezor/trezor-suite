@@ -14,7 +14,6 @@ import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
 import CreateOrRecoverStep from 'src/views/onboarding/steps/CreateOrRecoverStep';
 import DeviceAuthenticityStep from 'src/views/onboarding/steps/DeviceAuthenticityStep';
 import DeviceTutorialStep from 'src/views/onboarding/steps/DeviceTutorialStep';
-import FinalStep from 'src/views/onboarding/steps/FinalStep';
 import FirmwareStep from 'src/views/onboarding/steps/Firmware';
 import PinStep from 'src/views/onboarding/steps/PinStep';
 import RecoveryStep from 'src/views/onboarding/steps/Recovery';
@@ -69,8 +68,6 @@ export const Onboarding = () => {
             case STEP.ID_COINS_STEP:
                 // Suite settings
                 return BasicSettingsStep;
-            case STEP.ID_FINAL_STEP:
-                return FinalStep;
             default:
                 return exhaustive(activeStepId);
         }
