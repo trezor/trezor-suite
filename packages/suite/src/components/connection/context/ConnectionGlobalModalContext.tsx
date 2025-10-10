@@ -5,7 +5,6 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { BluetoothDeviceId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
@@ -16,32 +15,27 @@ import { setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
-import { useBluetoothConnection } from '../hook/useBluetoothConnection';
-import { useBluetoothScanning } from '../hook/useBluetoothScanning';
+import {
+    useBluetoothConnection,
+    UseBluetoothConnectionReturn,
+} from '../hook/useBluetoothConnection';
+import { useBluetoothScanning, UseBluetoothScanningReturn } from '../hook/useBluetoothScanning';
 
-export type ConnectionGlobalModalContextProps = {
-    isBluetoothMode: boolean;
-
-    devices: DesktopBluetoothDevice[];
-    selectedDevice: DesktopBluetoothDevice | undefined;
-    notConnectedKnownDevices: DesktopBluetoothDevice[];
-    notConnectedNearbyDevices: DesktopBluetoothDevice[];
-    shouldShowBluetoothUnPairDeviceList: boolean;
-
-    showHints: boolean;
-    shouldPairAgain: boolean;
-    showRemoveFromOsBluetooth: boolean;
-
-    openShowRemoveFromOsBluetooth: () => void;
-    closeShowRemoveFromOsBluetooth: () => void;
-    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
-    handlePairingCancel: (deviceId: BluetoothDeviceId) => Promise<void>;
-    handleBluetoothConnectionCancel: () => void;
-    onReScanClick: () => void;
-    toggleBluetoothMode: () => void;
-    toggleShowHints: () => void;
-    toggleShouldPairAgain: () => void;
-};
+export type ConnectionGlobalModalContextProps = UseBluetoothScanningReturn &
+    Omit<UseBluetoothConnectionReturn, 'selectedDeviceId'> & {
+        isBluetoothMode: boolean;
+        devices: DesktopBluetoothDevice[];
+        shouldShowBluetoothUnPairDeviceList: boolean;
+        showHints: boolean;
+        shouldPairAgain: boolean;
+        showRemoveFromOsBluetooth: boolean;
+        openShowRemoveFromOsBluetooth: () => void;
+        closeShowRemoveFromOsBluetooth: () => void;
+        onReScanClick: () => void;
+        toggleBluetoothMode: () => void;
+        toggleShowHints: () => void;
+        toggleShouldPairAgain: () => void;
+    };
 
 const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalContextProps>({
     isBluetoothMode: false,
