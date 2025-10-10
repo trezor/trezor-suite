@@ -10,7 +10,12 @@ type DeviceConfirmImageProps = Omit<ImageProps, 'image'> & {
     height?: number;
 };
 
-export const DeviceConfirmImage = ({ device, height = 300, width }: DeviceConfirmImageProps) => {
+export const DeviceConfirmImage = ({
+    device,
+    height = 300,
+    width,
+    ...rest
+}: DeviceConfirmImageProps) => {
     const deviceModelInternal = getDeviceInternalModel(device);
 
     return (
@@ -20,6 +25,7 @@ export const DeviceConfirmImage = ({ device, height = 300, width }: DeviceConfir
             width={width}
             unitColor={device?.features?.unit_color}
             height={height}
+            {...rest}
         />
     );
 };
