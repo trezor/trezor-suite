@@ -75,7 +75,7 @@ const useConnectionGlobalModal = () => {
     const isBluetoothMode = defaultConnectionMode === 'bluetooth' && isDesktop();
 
     const toggleBluetoothMode = () => {
-        dispatch(setConnectionMode(isBluetoothMode ? 'cable' : 'bluetooth'));
+        dispatch(setConnectionMode(defaultConnectionMode === 'bluetooth' ? 'cable' : 'bluetooth'));
     };
 
     const toggleShowHints = () => {
