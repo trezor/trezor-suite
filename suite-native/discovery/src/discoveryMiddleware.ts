@@ -7,8 +7,8 @@ import {
     changeNetworks,
     deviceActions,
     discoveryActions,
+    selectIsAnyNetworkEnabled,
     selectIsBitcoinEnabled,
-    selectIsCoinEnablingFinished,
     selectSelectedDevice,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
@@ -35,7 +35,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         next(action);
 
         const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
-        const isCoinEnablingFinished = selectIsCoinEnablingFinished(getState());
+        const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
         const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
 
         // ensure that BTC is enabled when device with BTC-only firmware is connected
@@ -64,7 +64,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         ) {
             const device = selectSelectedDevice(getState());
             if (
-                isCoinEnablingFinished &&
+                isAnyNetworkEnabled &&
                 isDeviceFirmwareVersionSupported &&
                 device &&
                 device.connected &&

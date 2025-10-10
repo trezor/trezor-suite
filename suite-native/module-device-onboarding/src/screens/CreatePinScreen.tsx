@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/core';
 import {
     selectDeviceModel,
     selectHasBitcoinOnlyFirmware,
-    selectIsCoinEnablingFinished,
+    selectIsAnyNetworkEnabled,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, TitleHeader, VStack } from '@suite-native/atoms';
@@ -43,12 +43,12 @@ export const CreatePinScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const deviceModel = useSelector(selectDeviceModel);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const isCoinEnablingFinished = useSelector(selectIsCoinEnablingFinished);
+    const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const { showAlert } = useAlert();
     const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
     const handlePinCreated = useCallback(() => {
-        if (hasBitcoinOnlyFirmware || isCoinEnablingFinished) {
+        if (hasBitcoinOnlyFirmware || isAnyNetworkEnabled) {
             navigation.popTo(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
@@ -61,12 +61,7 @@ export const CreatePinScreen = () => {
             });
         }
         reportOnboardingSuccessAnalytics();
-    }, [
-        hasBitcoinOnlyFirmware,
-        isCoinEnablingFinished,
-        navigation,
-        reportOnboardingSuccessAnalytics,
-    ]);
+    }, [hasBitcoinOnlyFirmware, isAnyNetworkEnabled, navigation, reportOnboardingSuccessAnalytics]);
 
     const handlePinCanceled = useCallback(
         (_: TxKeyPath, tryAgainAction: () => void) => {

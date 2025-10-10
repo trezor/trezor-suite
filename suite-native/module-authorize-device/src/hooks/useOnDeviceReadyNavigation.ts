@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { selectIsCoinEnablingFinished } from '@suite-common/wallet-core';
+import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
@@ -34,7 +34,7 @@ export const useOnDeviceReadyNavigation = () => {
     const deviceEnabledDiscoveryNetworkSymbols = useSelector(
         selectDeviceEnabledDiscoveryNetworkSymbols,
     );
-    const isCoinEnablingFinished = useSelector(selectIsCoinEnablingFinished);
+    const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const isConnectPopupOpened = useIsConnectPopupOpened();
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
 
@@ -57,7 +57,7 @@ export const useOnDeviceReadyNavigation = () => {
 
             if (
                 (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
-                (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingFinished)
+                (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isAnyNetworkEnabled)
             ) {
                 if (navigation.canGoBack() && isConnectPopupOpened) {
                     // NOTE: we don't want to go back to the home screen if Connect Popup is opened
@@ -74,7 +74,7 @@ export const useOnDeviceReadyNavigation = () => {
             }
         }, [
             deviceEnabledDiscoveryNetworkSymbols.length,
-            isCoinEnablingFinished,
+            isAnyNetworkEnabled,
             isConnectPopupOpened,
             isDeviceReadyToUseAndAuthorized,
             isFirmwareInstallationRunning,

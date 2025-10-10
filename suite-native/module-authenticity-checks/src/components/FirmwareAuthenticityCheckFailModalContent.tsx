@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import {
     deviceActions,
-    selectIsCoinEnablingFinished,
+    selectIsAnyNetworkEnabled,
     selectIsDeviceInitialized,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -39,7 +39,7 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
 
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
-    const isCoinEnablingFinished = useSelector(selectIsCoinEnablingFinished);
+    const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const device = useSelector(selectSelectedDevice);
 
     const dismissCheck = () => {
@@ -58,7 +58,7 @@ export const FirmwareAuthenticityCheckFailModalContent = () => {
                     deviceModel: getDeviceInternalModel(device),
                 },
             });
-        } else if (!isCoinEnablingFinished) {
+        } else if (!isAnyNetworkEnabled) {
             navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
             });
