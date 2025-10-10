@@ -14,16 +14,18 @@ import { DeviceStatusTextThp } from './DeviceStatusTextThp';
 type DeviceStatusTextProps = {
     device: TrezorDevice;
     forceConnectionInfo: boolean;
+    deviceNeedsRefresh?: boolean;
 };
 
-export const DeviceStatusText = ({ device, forceConnectionInfo }: DeviceStatusTextProps) => {
+export const DeviceStatusText = ({
+    device,
+    forceConnectionInfo,
+    deviceNeedsRefresh,
+}: DeviceStatusTextProps) => {
     const { connected } = device;
     const deviceStatus = deviceUtils.getStatus(device);
     const dispatch = useDispatch();
-    if (
-        connected &&
-        ['unacquired', 'used-in-other-window', 'was-used-in-other-window'].includes(deviceStatus)
-    ) {
+    if (connected && deviceNeedsRefresh) {
         return (
             <DeviceConnectionText
                 variant="warning"
