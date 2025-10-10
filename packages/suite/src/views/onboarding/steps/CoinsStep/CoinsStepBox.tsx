@@ -16,7 +16,7 @@ import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 import { TorSection } from './TorSection';
 
-export const BasicSettingsStepBox = (props: OnboardingCardProps) => {
+export const CoinsStepBox = (props: OnboardingCardProps) => {
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
         useNetworkSupport();
     const enabledNetworks = useSelector(selectEnabledNetworks);

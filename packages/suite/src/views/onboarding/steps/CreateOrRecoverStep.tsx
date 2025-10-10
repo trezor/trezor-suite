@@ -6,7 +6,7 @@ import { Translation } from 'src/components/suite/Translation';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
 
-const CreateOrRecoverStep = () => {
+export const CreateOrRecoverStep = () => {
     const { goToNextStep, addPath, updateAnalytics } = useOnboarding();
     const { isBelowTablet } = useLayoutSize();
 
@@ -40,5 +40,3 @@ const CreateOrRecoverStep = () => {
         </OnboardingCard>
     );
 };
-
-export default CreateOrRecoverStep;

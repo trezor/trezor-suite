@@ -5,7 +5,7 @@ import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirma
 import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding } from 'src/hooks/suite';
 
-const SecurityStep = () => {
+export const SecurityStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const { goToNextStep, updateAnalytics } = useOnboarding();
 
@@ -43,5 +43,3 @@ const SecurityStep = () => {
         </>
     );
 };
-
-export default SecurityStep;

@@ -6,9 +6,9 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { getIsTorLoading } from 'src/utils/suite/tor';
 
-import { BasicSettingsStepBox } from './BasicSettingsStepBox';
+import { CoinsStepBox } from './CoinsStepBox';
 
-const BasicSettings = () => {
+export const CoinsStep = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const torStatus = useSelector(state => state.suite.torStatus);
     const onboardingAnalytics = useSelector(state => state.onboarding.onboardingAnalytics);
@@ -45,7 +45,7 @@ const BasicSettings = () => {
     };
 
     return (
-        <BasicSettingsStepBox
+        <CoinsStepBox
             heading={<Translation id="TR_ONBOARDING_COINS_STEP" />}
             description={<Translation id="TR_ONBOARDING_COINS_STEP_DESCRIPTION" />}
             innerActions={
@@ -63,5 +63,3 @@ const BasicSettings = () => {
         />
     );
 };
-
-export default BasicSettings;

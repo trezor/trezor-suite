@@ -16,7 +16,7 @@ import { SelectBackupType, isShamirBackupType } from './SelectBackupType/SelectB
 
 const canChooseBackupType = (device: DeviceModelInternal) => device !== DeviceModelInternal.T1B1;
 
-const ResetDeviceStep = () => {
+export const ResetDeviceStep = () => {
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
@@ -158,5 +158,3 @@ const ResetDeviceStep = () => {
         </OnboardingCard>
     );
 };
-
-export default ResetDeviceStep;

@@ -8,17 +8,17 @@ import { goto } from 'src/actions/suite/routerActions';
 import { OnboardingLayout } from 'src/components/onboarding/OnboardingLayout';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
-import UnexpectedState from 'src/views/onboarding/UnexpectedState';
-import BackupStep from 'src/views/onboarding/steps/BackupStep';
-import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
-import CreateOrRecoverStep from 'src/views/onboarding/steps/CreateOrRecoverStep';
-import DeviceAuthenticityStep from 'src/views/onboarding/steps/DeviceAuthenticityStep';
-import DeviceTutorialStep from 'src/views/onboarding/steps/DeviceTutorialStep';
-import FirmwareStep from 'src/views/onboarding/steps/Firmware';
-import PinStep from 'src/views/onboarding/steps/PinStep';
-import RecoveryStep from 'src/views/onboarding/steps/Recovery';
-import ResetDeviceStep from 'src/views/onboarding/steps/ResetDeviceStep';
-import SecurityStep from 'src/views/onboarding/steps/SecurityStep';
+import { UnexpectedState } from 'src/views/onboarding/UnexpectedState';
+import { BackupStep } from 'src/views/onboarding/steps/BackupStep';
+import { CoinsStep } from 'src/views/onboarding/steps/CoinsStep';
+import { CreateOrRecoverStep } from 'src/views/onboarding/steps/CreateOrRecoverStep';
+import { DeviceAuthenticityStep } from 'src/views/onboarding/steps/DeviceAuthenticityStep';
+import { DeviceTutorialStep } from 'src/views/onboarding/steps/DeviceTutorialStep';
+import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
+import { PinStep } from 'src/views/onboarding/steps/PinStep';
+import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
+import { ResetDeviceStep } from 'src/views/onboarding/steps/ResetDeviceStep';
+import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
     const dispatch = useDispatch();
@@ -67,7 +67,7 @@ export const Onboarding = () => {
                 return PinStep;
             case STEP.ID_COINS_STEP:
                 // Suite settings
-                return BasicSettingsStep;
+                return CoinsStep;
             default:
                 return exhaustive(activeStepId);
         }

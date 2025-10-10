@@ -12,7 +12,7 @@ import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
-const RecoveryStep = () => {
+export const RecoveryStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
@@ -186,5 +186,3 @@ const RecoveryStep = () => {
     // We shouldn't get there, but to keep typescript sane let's return null
     return null;
 };
-
-export default RecoveryStep;

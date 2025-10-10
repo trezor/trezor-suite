@@ -17,7 +17,7 @@ import { selectBackup, selectBackupStatus } from 'src/reducers/backup/backupRedu
 import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { canContinue } from 'src/utils/backup';
 
-const BackupStep = () => {
+export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const backup = useSelector(selectBackup);
     const backupStatus = useSelector(selectBackupStatus);
@@ -142,5 +142,3 @@ const BackupStep = () => {
         </>
     );
 };
-
-export default BackupStep;
