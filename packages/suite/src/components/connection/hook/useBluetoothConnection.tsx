@@ -9,7 +9,7 @@ import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothD
 import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-export type UseBluetoothConnectionProps = {
+type UseBluetoothConnectionProps = {
     devices: DesktopBluetoothDevice[];
     onReScanClick: () => void;
     toggleBluetoothMode: () => void;
