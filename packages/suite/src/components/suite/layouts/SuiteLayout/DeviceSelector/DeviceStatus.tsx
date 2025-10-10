@@ -40,7 +40,11 @@ export const DeviceStatus = ({
 
     const content = device && (
         <DeviceDetail label={deviceLabel}>
-            <DeviceStatusText device={device} forceConnectionInfo={forceConnectionInfo} />
+            <DeviceStatusText
+                device={device}
+                forceConnectionInfo={forceConnectionInfo}
+                deviceNeedsRefresh={deviceNeedsRefresh}
+            />
         </DeviceDetail>
     );
 
