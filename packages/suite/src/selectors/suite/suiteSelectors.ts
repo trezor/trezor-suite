@@ -89,7 +89,6 @@ export const selectIsCopyAddressModalShown = (state: SuiteRootState) =>
 export const selectIsInitialRun = (state: SuiteRootState) => state.suite.flags.initialRun;
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 export const selectSuiteSettings = (state: SuiteRootState) => ({
-    defaultWalletLoading: state.suite.settings.defaultWalletLoading,
     isLocalFirstStorageEnabled: state.suite.flags.isLocalFirstStorageEnabled,
     localFirstStorageRelayUrl: state.suite.settings.localFirstStorageRelayUrl,
 });

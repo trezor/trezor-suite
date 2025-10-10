@@ -12,7 +12,6 @@ import { useLayout, useSelector } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
 import { DashboardFooter } from './DashboardFooter';
-import { DashboardPassphraseBanner } from './DashboardPassphraseBanner';
 import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
 import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { StakingDashboard } from './StakingDashboard/StakingDashboard';
@@ -37,7 +36,6 @@ export const Dashboard = () => {
         <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
             <Container>
                 <ContextMessage context={Context.getGeneral('dashboard')} />
-                <DashboardPassphraseBanner />
                 <PortfolioCard />
             </Container>
             <DashboardPromoBanner />

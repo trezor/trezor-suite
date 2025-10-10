@@ -4,7 +4,7 @@ import type { CountryCode } from '@suite-common/geolocation';
 import { Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
@@ -65,7 +65,6 @@ export interface Flags {
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
     stakeSolBannerClosed: boolean; // banner in account view (Overview tab) presenting SOL staking feature
     showDashboardStakingPromoBanner: boolean;
-    isDashboardPassphraseBannerVisible: boolean;
     suspiciousTransactionsTooltipClosed: boolean;
     showUnhideTokenModal: boolean;
     showCopyAddressModal: boolean;
@@ -106,7 +105,6 @@ export interface SuiteSettings {
         firmwareHash: boolean;
     };
     addressDisplayType: AddressDisplayOptions;
-    defaultWalletLoading: WalletType;
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
@@ -164,7 +162,6 @@ const initialState: SuiteState = {
         stakeSolBannerClosed: false,
         showDashboardStakingPromoBanner: true,
         suspiciousTransactionsTooltipClosed: false,
-        isDashboardPassphraseBannerVisible: true,
         showCopyAddressModal: true,
         showUnhideTokenModal: true,
         enableAutoupdateOnNextRun: false,
@@ -212,7 +209,6 @@ const initialState: SuiteState = {
             theme: true,
         },
         addressDisplayType: AddressDisplayOptions.CHUNKED,
-        defaultWalletLoading: WalletType.STANDARD,
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
         localFirstStorageRelayUrl: null,
@@ -360,10 +356,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_ADDRESS_DISPLAY_TYPE:
                 draft.settings.addressDisplayType = action.option;
-                break;
-
-            case SUITE.SET_DEFAULT_WALLET_LOADING:
-                draft.settings.defaultWalletLoading = action.option;
                 break;
 
             case SUITE.SET_AUTODETECT:

@@ -291,7 +291,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.ONION_LINKS:
                 case SUITE.SET_THEME:
                 case SUITE.SET_ADDRESS_DISPLAY_TYPE:
-                case SUITE.SET_DEFAULT_WALLET_LOADING:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.SET_SIDEBAR_WIDTH:
                 case SUITE.SET_STAKING_DASHBOARD_COLLAPSED:
