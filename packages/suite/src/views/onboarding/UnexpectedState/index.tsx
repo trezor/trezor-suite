@@ -16,7 +16,7 @@ type UnexpectedStateProps = {
 /**
  * This component handles unexpected device states across various steps in the onboarding.
  */
-const UnexpectedState = ({ children }: UnexpectedStateProps) => {
+export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
@@ -43,5 +43,3 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
 
     return children;
 };
-
-export default UnexpectedState;

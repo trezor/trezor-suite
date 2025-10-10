@@ -41,7 +41,7 @@ import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityChecklistItem } from './types';
 
-import DeviceAuthenticityStep from './index';
+import { DeviceAuthenticityStep } from './index';
 
 const firmwareInstalledChecklist = [
     {

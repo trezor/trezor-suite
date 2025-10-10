@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import messages from 'src/support/messages';
 
-const DeviceTutorialStep = () => {
+export const DeviceTutorialStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
@@ -50,5 +50,3 @@ const DeviceTutorialStep = () => {
         />
     );
 };
-
-export default DeviceTutorialStep;

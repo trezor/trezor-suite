@@ -22,7 +22,7 @@ import { ThpPairingFailedStep } from '../ThpPairingFailedStep';
 import { ThpPairingStartStep } from '../ThpPairingStartStep';
 import { ThpPairingStep } from '../ThpPairingStep';
 
-const FirmwareStep = () => {
+export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
@@ -205,5 +205,3 @@ const FirmwareStep = () => {
             return exhaustive(status);
     }
 };
-
-export default FirmwareStep;
