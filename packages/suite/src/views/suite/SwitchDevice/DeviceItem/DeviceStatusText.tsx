@@ -21,7 +21,10 @@ export const DeviceStatusText = ({ device, forceConnectionInfo }: DeviceStatusTe
     const { connected } = device;
     const deviceStatus = deviceUtils.getStatus(device);
     const dispatch = useDispatch();
-    if (connected && ['was-used-in-other-window', 'used-in-other-window'].includes(deviceStatus)) {
+    if (
+        connected &&
+        ['was-used-in-other-window', 'used-in-other-window', 'unacquired'].includes(deviceStatus)
+    ) {
         return (
             <DeviceConnectionText
                 variant="warning"
