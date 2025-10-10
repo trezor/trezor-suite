@@ -29,6 +29,7 @@ export const messages = {
         },
         validateForm: 'Validate form',
         savedToClipboard: 'Saved to clipboard',
+        unknown: 'Unknown',
         unknownError: 'Something went wrong',
         default: 'Default',
         orSeparator: 'OR',
