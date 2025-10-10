@@ -2,8 +2,8 @@ import { ReactNode, forwardRef, useEffect, useState } from 'react';
 import {
     NativeSyntheticEvent,
     Platform,
+    TargetedEvent,
     TextInput,
-    TextInputFocusEventData,
     TextInputProps,
 } from 'react-native';
 import { TextInput as GHTextInput } from 'react-native-gesture-handler';
@@ -274,12 +274,12 @@ export const Input = forwardRef<TextInput, InputProps>(
         // BottomSheetTextInput allows to avoid keyboard by expanding BottomSheet
         const InputComponent = asBottomSheetInput ? BottomSheetTextInput : TextInput;
 
-        const handleOnFocus = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+        const handleOnFocus = (event: NativeSyntheticEvent<TargetedEvent>) => {
             setIsFocused(true);
             onFocus?.(event);
         };
 
-        const handleOnBlur = (event: NativeSyntheticEvent<TextInputFocusEventData>) => {
+        const handleOnBlur = (event: NativeSyntheticEvent<TargetedEvent>) => {
             setIsFocused(false);
             onBlur?.(event);
         };

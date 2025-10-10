@@ -11,13 +11,13 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "2.2.3",
+        "@shopify/react-native-skia": "2.2.12",
         "@trezor/utils": "workspace:*",
         "@types/react": "^19.0.0",
-        "react": "19.0.0",
-        "react-native": "0.79.3",
+        "react": "19.1.0",
+        "react-native": "0.81.4",
         "react-native-gesture-handler": "2.28.0",
-        "react-native-reanimated": "^3.18.0"
+        "react-native-reanimated": "~3.19.3"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"

@@ -13,6 +13,6 @@
         "@reduxjs/toolkit": "2.8.2",
         "@suite-native/config": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "react": "19.0.0"
+        "react": "19.1.0"
     }
 }

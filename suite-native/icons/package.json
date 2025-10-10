@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
-        "@shopify/react-native-skia": "2.2.3",
+        "@shopify/react-native-skia": "2.2.12",
         "@suite-common/icons": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -24,9 +24,9 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-image": "2.4.0",
-        "react": "19.0.0",
-        "react-native": "0.79.3",
-        "react-native-reanimated": "^3.18.0"
+        "expo-image": "~3.0.9",
+        "react": "19.1.0",
+        "react-native": "0.81.4",
+        "react-native-reanimated": "~3.19.3"
     }
 }

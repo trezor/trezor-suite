@@ -40,9 +40,9 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "expo": "^53.0.22",
-        "react": "19.0.0",
-        "react-native": "0.79.3",
+        "expo": "~54.0.13",
+        "react": "19.1.0",
+        "react-native": "0.81.4",
         "react-redux": "9.2.0"
     }
 }

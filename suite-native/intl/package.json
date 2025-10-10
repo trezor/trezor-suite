@@ -22,11 +22,11 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-localization": "16.1.6",
+        "expo-localization": "~17.0.7",
         "intl-pluralrules": "^2.0.1",
-        "react": "19.0.0",
+        "react": "19.1.0",
         "react-intl": "^7.1.11",
-        "react-native": "0.79.3",
+        "react-native": "0.81.4",
         "react-redux": "9.2.0"
     },
     "devDependencies": {
