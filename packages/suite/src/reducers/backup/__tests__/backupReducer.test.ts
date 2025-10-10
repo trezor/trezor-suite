@@ -41,17 +41,24 @@ describe('selectBackupStatus', () => {
         },
     });
 
-    it('returns "finished" if backup_availability is Available regardless of backup state', () => {
-        [baseBackup, errorBackup, inProgressBackup].forEach(backup => {
+    it('returns "finished" if backup_availability is Available and no error is set', () => {
+        [baseBackup, inProgressBackup].forEach(backup => {
             const state = getState(backup, 'Available');
             expect(selectBackupStatus(state)).toBe('finished');
         });
     });
 
-    it('returns "finished" if backup_availability is NotAvailable regardless of backup state', () => {
-        [baseBackup, errorBackup, inProgressBackup].forEach(backup => {
+    it('returns "finished" if backup_availability is NotAvailable and no error is set', () => {
+        [baseBackup, inProgressBackup].forEach(backup => {
             const state = getState(backup, 'NotAvailable');
             expect(selectBackupStatus(state)).toBe('finished');
+        });
+    });
+
+    it('returns "error" if backup.error is set even when availability indicates finished', () => {
+        ['Available', 'NotAvailable'].forEach(availability => {
+            const state = getState(errorBackup, availability as BackupAvailability);
+            expect(selectBackupStatus(state)).toBe('error');
         });
     });
 

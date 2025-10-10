@@ -24,6 +24,7 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
         dashboardPage,
         devicePrompt,
         trezorUserEnvLink,
+        settingsPage,
     }) => {
         await test.step('Start backup', async () => {
             await dashboardPage.notificationNoBackupButton.click();
@@ -55,7 +56,7 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
         });
 
         await test.step('Check backup failed setting in device settings', async () => {
-            await onboardingPage.backup.errorBannerContinueButton.click();
+            await settingsPage.navigateTo('device');
             await expect(onboardingPage.backup.failedBackupSetting).toBeVisible();
             await expect(onboardingPage.backup.failedBackupSetting).toContainTranslation(
                 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
