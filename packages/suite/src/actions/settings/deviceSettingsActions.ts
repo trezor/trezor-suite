@@ -10,7 +10,11 @@ import {
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import * as DEVICE from 'src/constants/suite/device';
+import {
+    DEFAULT_PASSPHRASE_PROTECTION,
+    DEFAULT_SKIP_BACKUP,
+    DEFAULT_STRENGTH,
+} from 'src/constants/suite/device';
 import { selectIsEntropyCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch, GetState } from 'src/types/suite';
 
@@ -142,9 +146,9 @@ export const resetDevice =
         }
 
         const defaults = {
-            strength: DEVICE.DEFAULT_STRENGTH[device.features.internal_model],
-            skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
-            passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
+            strength: DEFAULT_STRENGTH[device.features.internal_model],
+            skip_backup: DEFAULT_SKIP_BACKUP,
+            passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
         };
 
         const isEntropyCheckEnabled =
