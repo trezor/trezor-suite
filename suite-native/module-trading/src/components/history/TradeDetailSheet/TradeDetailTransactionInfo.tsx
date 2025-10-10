@@ -9,13 +9,14 @@ import {
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
 import { NetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { Card, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { selectAccountLabelWithNetworkFallback } from '../../../selectors/commonSelectors';
 
 export type TradeDetailTransactionInfoProps = {
     orderId: string;
@@ -39,6 +40,7 @@ const CryptoIdIcon = ({ cryptoId }: CryptoIdIconProps) => {
 };
 
 export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionInfoProps) => {
+    const { translate } = useTranslate();
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
@@ -46,16 +48,32 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
     const isSell = tradeType === 'sell';
     const isBuy = tradeType === 'buy';
 
-    const fromAccount = useSelector((state: AccountsRootState & DeviceRootState) =>
-        isBuy ? undefined : selectAccountByKey(state, trade?.sendAccountKey),
-    );
-
-    const toAccount = useSelector((state: AccountsRootState & DeviceRootState) =>
-        isSell ? undefined : selectAccountByKey(state, trade?.receiveAccountKey),
-    );
-
     const { fromStringValue, toStringValue, fromCurrency, toCurrency, isFromCrypto, isToCrypto } =
         useChangeStringsExtractor(trade?.data);
+
+    const fromAccountLabel = useSelector((state: AccountsRootState) => {
+        if (isBuy) {
+            return undefined;
+        }
+
+        return selectAccountLabelWithNetworkFallback(
+            state,
+            trade?.sendAccountKey,
+            fromCurrency as CryptoId | undefined,
+        );
+    });
+
+    const toAccountLabel = useSelector((state: AccountsRootState) => {
+        if (isSell) {
+            return undefined;
+        }
+
+        return selectAccountLabelWithNetworkFallback(
+            state,
+            trade?.receiveAccountKey,
+            toCurrency as CryptoId | undefined,
+        );
+    });
 
     if (!trade) {
         return null;
@@ -77,7 +95,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
             {!isBuy && (
                 <TradeDetailInfoRow
                     title={<Translation id="moduleTrading.tradeHistory.detail.fromAccount" />}
-                    content={fromAccount?.accountLabel}
+                    content={fromAccountLabel ?? translate('generic.unknown')}
                 />
             )}
             <TradeDetailInfoRow
@@ -92,7 +110,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
             {!isSell && (
                 <TradeDetailInfoRow
                     title={<Translation id="moduleTrading.tradeHistory.detail.toAccount" />}
-                    content={toAccount?.accountLabel}
+                    content={toAccountLabel ?? translate('generic.unknown')}
                     contentTestID={TRADE_DETAIL_TEST_ID + '/receive-account'}
                 />
             )}

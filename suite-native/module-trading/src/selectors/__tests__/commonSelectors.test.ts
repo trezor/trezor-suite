@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { Action, Feature, Message, TrezorDevice } from '@suite-common/suite-types';
 import {
     InvityServerEnvironment,
@@ -20,6 +22,7 @@ import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState, initialState } from '../../reducers';
 import { TradeableAsset } from '../../types/general';
 import {
+    selectAccountLabelWithNetworkFallback,
     selectAccountsWithTokensToSellSectionCondensedListByTradingType,
     selectAccountsWithTokensToSellSectionListByTradingType,
     selectActiveTradingType,
@@ -1199,6 +1202,45 @@ describe('commonSelectors', () => {
             expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
                 selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
             );
+        });
+    });
+
+    describe('selectAccountLabelWithNetworkFallback', () => {
+        it('should return account label if account exists', () => {
+            expect(
+                selectAccountLabelWithNetworkFallback(
+                    { wallet: { accounts: [getEthAccount()] } },
+                    'eth-account-1',
+                    'eth' as CryptoId,
+                ),
+            ).toBe('Ethereum #1');
+        });
+
+        it.each([
+            ['ethereum', 'Ethereum'],
+            ['ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7', 'Ethereum'],
+            ['base--0x0000000000000000000000000000000000000000', 'Base'],
+        ])(
+            'should return network name for %s when account is not found',
+            (asset, expectedLabel) => {
+                expect(
+                    selectAccountLabelWithNetworkFallback(
+                        { wallet: { accounts: [getEthAccount()] } },
+                        'eth-account-2',
+                        asset as CryptoId,
+                    ),
+                ).toBe(expectedLabel);
+            },
+        );
+
+        it('should return undefined when neither account nor asset are specified', () => {
+            expect(
+                selectAccountLabelWithNetworkFallback(
+                    { wallet: { accounts: [getEthAccount()] } },
+                    undefined,
+                    undefined,
+                ),
+            ).toBeUndefined();
         });
     });
 });

@@ -16,6 +16,7 @@ import {
     TradingRootStateWithDeviceAndAccounts,
     TradingTransaction,
     TradingType,
+    cryptoIdToSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
     selectTradingSupportedSymbols,
@@ -27,15 +28,17 @@ import {
     getNetworkType,
 } from '@suite-common/wallet-config';
 import {
+    AccountsRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
+    selectAccountByKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
-import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { Account, AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import {
@@ -351,3 +354,23 @@ export const selectVisibleDeviceAccountsByNetworkSymbolSorted =
             return returnStableArrayIfEmpty(sortedAccounts);
         },
     );
+
+export const selectAccountLabelWithNetworkFallback = (
+    state: AccountsRootState,
+    accountKey?: AccountKey,
+    cryptoId?: CryptoId,
+) => {
+    const label = selectAccountByKey(state, accountKey)?.accountLabel;
+    if (label) {
+        return label;
+    }
+
+    if (cryptoId) {
+        const networkSymbol = cryptoIdToSymbol(cryptoId);
+        if (networkSymbol) {
+            return getNetwork(networkSymbol).name;
+        }
+    }
+
+    return undefined;
+};
