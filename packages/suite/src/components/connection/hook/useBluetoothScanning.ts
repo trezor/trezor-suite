@@ -9,7 +9,7 @@ import { bluetoothStopScanningThunk } from 'src/actions/bluetooth/bluetoothStopS
 import { removeNonResponsiveNearbyDevicesThunk } from 'src/actions/bluetooth/removeNonResponsiveNearbyDevicesThunk';
 import { useDispatch } from 'src/hooks/suite';
 
-export type UseBluetoothScanningProps = {
+type UseBluetoothScanningProps = {
     bluetoothMode: boolean;
     devices: DesktopBluetoothDevice[];
     setShowHints: (value: boolean) => void;
