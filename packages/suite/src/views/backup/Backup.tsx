@@ -94,6 +94,6 @@ export const Backup = ({
         case 'finished':
             return <BackupStep3Finished onCancel={onCancel} backup={backup} />;
         case 'error':
-            return <BackupStepError onCancel={onCancel} backup={backup} />;
+            return <BackupStepError onCancel={onCancel} />;
     }
 };
