@@ -30,7 +30,7 @@ import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 
-export const FinalStep = () => {
+const FinalStep = () => {
     const { goToSuite } = useOnboarding();
     const popoverRef = useRef<PopoverRef>(undefined);
     const dispatch = useDispatch();
@@ -196,3 +196,5 @@ export const FinalStep = () => {
         </OnboardingCard>
     );
 };
+
+export default FinalStep;

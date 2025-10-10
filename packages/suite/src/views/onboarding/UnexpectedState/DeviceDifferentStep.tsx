@@ -1,20 +1,29 @@
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { IconName } from '@trezor/components';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
+
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
-import { useOnboarding } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 
-export const DeviceDifferent = () => {
+export const DeviceDifferentStep = () => {
     const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
+    const device = useSelector(selectSelectedDevice);
 
     return (
         <OnboardingCard
             heading={<Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING" />}
+            iconName={
+                `${mapTrezorModelToIcon[device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL]}Filled` as IconName
+            }
             description={
                 <>
-                    <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1" />
-                    &nbsp;
+                    <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1" />{' '}
                     <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2" />
                 </>
             }
+            variant="warning"
             innerActions={
                 <OnboardingCard.Button
                     onClick={() => {

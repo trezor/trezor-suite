@@ -17,7 +17,7 @@ import { selectBackup, selectBackupStatus } from 'src/reducers/backup/backupRedu
 import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { canContinue } from 'src/utils/backup';
 
-export const BackupStep = () => {
+const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const backup = useSelector(selectBackup);
     const backupStatus = useSelector(selectBackupStatus);
@@ -117,8 +117,12 @@ export const BackupStep = () => {
                         description={
                             <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
                         }
+                        variant="destructive"
                         innerActions={
-                            <OnboardingCard.Button onClick={handleResetOnboarding}>
+                            <OnboardingCard.Button
+                                variant="destructive"
+                                onClick={handleResetOnboarding}
+                            >
                                 <Translation id="TR_GO_TO_SETTINGS" />
                             </OnboardingCard.Button>
                         }
@@ -138,3 +142,5 @@ export const BackupStep = () => {
         </>
     );
 };
+
+export default BackupStep;

@@ -7,25 +7,22 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
-import {
-    Fingerprint,
-    FirmwareInitial,
-    FirmwareInstallationProgressCheck,
-} from 'src/components/firmware';
+import { Fingerprint, FirmwareInstallationProgressCheck } from 'src/components/firmware';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
-import { DeviceDisconnectedStep } from './DeviceDisconnectedStep';
-import { FirmwareInstallation } from './FirmwareInstallation';
-import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
-import { ThpPairingFailedStep } from './ThpPairingFailedStep';
-import { ThpPairingStartStep } from './ThpPairingStartStep';
-import { ThpPairingStep } from './ThpPairingStep';
+import { FirmwareInitialStep } from './FirmwareInitialStep';
+import { FirmwareInstallationStep } from './FirmwareInstallationStep';
+import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnectedStep';
+import { ThpPairingConfirmStep } from '../ThpPairingConfirmStep';
+import { ThpPairingFailedStep } from '../ThpPairingFailedStep';
+import { ThpPairingStartStep } from '../ThpPairingStartStep';
+import { ThpPairingStep } from '../ThpPairingStep';
 
-export const FirmwareStep = () => {
+const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
@@ -57,6 +54,8 @@ export const FirmwareStep = () => {
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
+
+    //return <FirmwareInitialStep />;
 
     if (showFingerprintCheck && device) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
@@ -177,7 +176,7 @@ export const FirmwareStep = () => {
     switch (status) {
         // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
         case 'initial':
-            return <FirmwareInitial />;
+            return <FirmwareInitialStep />;
         case 'started': // called from firmwareUpdate()
         case 'done': // This is shown only for NON-THP devices, THP device goes directly to the next step after successful THP pairing
             if (isProgressCheckDisplayed) {
@@ -191,7 +190,10 @@ export const FirmwareStep = () => {
             }
 
             return (
-                <FirmwareInstallation install={install} onSuccess={goToNextStepAndResetReducer} />
+                <FirmwareInstallationStep
+                    install={install}
+                    onSuccess={goToNextStepAndResetReducer}
+                />
             );
 
         // This step does not make sense in onboarding; when installing firmware
@@ -203,3 +205,5 @@ export const FirmwareStep = () => {
             return exhaustive(status);
     }
 };
+
+export default FirmwareStep;

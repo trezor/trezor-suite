@@ -1,6 +1,6 @@
 import { Icon } from '@trezor/components';
 
-import { SecurityChecklistItem } from 'src/views/onboarding/steps/SecurityCheck/types';
+import { SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
 
 import { Translation } from '../Translation';
 

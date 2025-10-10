@@ -6,7 +6,7 @@ import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 import { ModalSwitcher } from '../../components/suite/modals/ModalSwitcher/ModalSwitcher';
-import { SecurityCheck } from '../onboarding/steps/SecurityCheck/SecurityCheck';
+import { SecurityCheck } from '../onboarding/steps/DeviceAuthenticityStep/SecurityCheck';
 
 const startAppExcludedPrerequisites: PrerequisiteType[] = [
     'device-initialize',

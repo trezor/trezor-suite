@@ -1,4 +1,4 @@
-import { Column, Paragraph } from '@trezor/components';
+import { Card, Column, Paragraph } from '@trezor/components';
 
 import {
     FirmwareOffer,
@@ -16,13 +16,12 @@ import {
     selectIsActionAbortable,
 } from 'src/selectors/suite/suiteSelectors';
 
-type FirmwareInstallationProps = {
+type FirmwareInstallationStepProps = {
     install: () => void;
     onSuccess: () => void;
 };
 
-// TODO: consolidate with FirmwareInstallationStandalone
-export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallationProps) => {
+export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstallationStepProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
@@ -67,8 +66,15 @@ export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallatio
                 innerActions={getInnerActionComponent()}
             >
                 <Column gap={24}>
-                    <FirmwareOffer isCustomFirmware={false} targetFirmwareType={targetType} />
-                    <FirmwareProgressBar />
+                    <Card>
+                        <Column gap={8}>
+                            <FirmwareOffer
+                                isCustomFirmware={false}
+                                targetFirmwareType={targetType}
+                            />
+                            <FirmwareProgressBar />
+                        </Column>
+                    </Card>
                     <RotatingPhrases />
                 </Column>
             </OnboardingCard>

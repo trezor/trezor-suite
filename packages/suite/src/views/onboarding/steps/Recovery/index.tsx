@@ -12,7 +12,7 @@ import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
-export const RecoveryStep = () => {
+const RecoveryStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
@@ -161,11 +161,11 @@ export const RecoveryStep = () => {
         );
     }
     if (status === 'finished' && error) {
-        // Recovery finished with error, user is recommended to wipe the device and start over
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_RECOVERY_FAILED" />}
                 description={<Translation id="TR_RECOVERY_ERROR" values={{ error }} />}
+                variant="destructive"
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/retry-button"
@@ -174,6 +174,7 @@ export const RecoveryStep = () => {
                                 ? resetReducer
                                 : recoverDevice
                         }
+                        variant="destructive"
                     >
                         <Translation id="TR_RETRY" />
                     </OnboardingCard.Button>
@@ -185,3 +186,5 @@ export const RecoveryStep = () => {
     // We shouldn't get there, but to keep typescript sane let's return null
     return null;
 };
+
+export default RecoveryStep;

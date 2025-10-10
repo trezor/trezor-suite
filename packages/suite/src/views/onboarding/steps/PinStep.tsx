@@ -13,7 +13,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
-const SetPinStep = () => {
+const PinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
         'initial',
@@ -168,4 +168,4 @@ const SetPinStep = () => {
     );
 };
 
-export default SetPinStep;
+export default PinStep;

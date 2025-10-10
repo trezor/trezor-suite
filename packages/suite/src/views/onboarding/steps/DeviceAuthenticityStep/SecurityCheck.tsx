@@ -38,9 +38,10 @@ import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hook
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
-import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityChecklistItem } from './types';
+
+import DeviceAuthenticityStep from './index';
 
 const firmwareInstalledChecklist = [
     {
@@ -302,7 +303,7 @@ export const SecurityCheck = () => {
 
     if (isAuthenticityCheckStep) {
         return (
-            <DeviceAuthenticity
+            <DeviceAuthenticityStep
                 goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
             />
         );
