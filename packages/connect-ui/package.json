@@ -30,7 +30,7 @@
     },
     "peerDependencies": {
         "postcss-styled-syntax": "^0.7.1",
-        "react": "19.0.0",
+        "react": "19.1.0",
         "react-error-boundary": "^6.0.0",
         "styled-components": "^6.1.19",
         "stylelint": "^16.19.0",

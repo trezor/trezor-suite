@@ -13,7 +13,7 @@
     "dependencies": {
         "@evolu/react-native": "^12.0.1-preview.4",
         "@suite-common/local-first-storage": "workspace:*",
-        "expo": "^53.0.22",
+        "expo": "~54.0.13",
         "expo-sqlite": "^15.2.14"
     }
 }

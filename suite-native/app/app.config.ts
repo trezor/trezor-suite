@@ -125,7 +125,7 @@ const getPlugins = (): ExpoPlugins => {
                 android: {
                     minSdkVersion: 28,
                     // this fixes expo-updates build error
-                    kotlinVersion: '2.0.21',
+                    kotlinVersion: '2.1.20',
                 },
                 ios: {
                     deploymentTarget: '15.1',
@@ -164,6 +164,7 @@ const getPlugins = (): ExpoPlugins => {
                 iosPermissions: ['Bluetooth'],
             },
         ],
+        ['expo-localization'],
     ];
 
     return [
@@ -188,7 +189,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '40',
+        runtimeVersion: '41',
         ...(buildType === 'production'
             ? {}
             : {

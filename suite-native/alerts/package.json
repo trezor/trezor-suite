@@ -16,8 +16,8 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "2.13.1",
-        "react": "19.0.0",
-        "react-native": "0.79.3",
-        "react-native-reanimated": "^3.18.0"
+        "react": "19.1.0",
+        "react-native": "0.81.4",
+        "react-native-reanimated": "~3.19.3"
     }
 }

@@ -27,7 +27,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "eth-phishing-detect": "^1.2.0",
-        "react-dom": "19.0.0"
+        "react-dom": "19.1.0"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.27.1",
@@ -62,7 +62,7 @@
     },
     "peerDependencies": {
         "postcss-styled-syntax": "^0.7.1",
-        "react": "19.0.0",
+        "react": "19.1.0",
         "styled-components": "^6.1.19",
         "stylelint": "^16.19.0",
         "stylelint-config-standard": "^38.0.0"
