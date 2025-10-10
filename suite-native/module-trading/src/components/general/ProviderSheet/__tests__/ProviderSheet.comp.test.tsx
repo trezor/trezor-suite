@@ -1,4 +1,5 @@
 import { TradingTradeType, TradingType } from '@suite-common/trading';
+import { FeatureFlag } from '@suite-native/feature-flags';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import buyQuotes from '../../../../__fixtures__/buyQuotes.json';
@@ -34,6 +35,28 @@ describe('ProviderSheet', () => {
 
         expect(getByText('No offers available.')).toBeOnTheScreen();
         expect(getByText('Fixed-rate CEX')).toBeOnTheScreen();
+    });
+
+    it('should render all section headers for exchange', async () => {
+        const { getByText } = await renderProviderSheet(
+            { tradingType: 'exchange', quotes: { fixed: [], float: [], dex: [] } },
+            { featureFlags: { [FeatureFlag.AreTradingExchangeDexesEnabled]: true } },
+        );
+
+        expect(getByText('Fixed-rate CEX')).toBeOnTheScreen();
+        expect(getByText('Floating-rate CEX')).toBeOnTheScreen();
+        expect(getByText('DEX')).toBeOnTheScreen();
+    });
+
+    it('should not render DEX section header for exchange when DEXes are disabled', async () => {
+        const { queryByText, getByText } = await renderProviderSheet(
+            { tradingType: 'exchange', quotes: { fixed: [], float: [], dex: [] } },
+            { featureFlags: { [FeatureFlag.AreTradingExchangeDexesEnabled]: false } },
+        );
+
+        expect(getByText('Fixed-rate CEX')).toBeOnTheScreen();
+        expect(getByText('Floating-rate CEX')).toBeOnTheScreen();
+        expect(queryByText('DEX')).toBeNull();
     });
 
     it('should render provided quotes', async () => {
