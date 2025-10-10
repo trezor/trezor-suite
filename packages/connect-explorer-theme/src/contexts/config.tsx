@@ -1,23 +1,16 @@
 import type { ReactElement, ReactNode } from 'react';
-import { createContext, useContext, useState } from 'react';
+import { useState } from 'react';
 
-import type { FrontMatter, PageMapItem, PageOpts } from 'nextra';
+import type { PageMapItem } from 'nextra';
 import { metaSchema } from 'nextra/normalize-pages';
 import type { ZodError } from 'zod';
 
-import type { DocsThemeConfig } from '../constants';
-import { DEEP_OBJECT_KEYS, DEFAULT_THEME, themeSchema } from '../constants';
+import type { DocsThemeConfig } from '../schema';
+import { themeSchema } from '../schema';
+import { DEEP_OBJECT_KEYS, DEFAULT_THEME } from '../theme';
 import type { Context } from '../types';
 import { MenuProvider } from './menu';
-
-type Config<FrontMatterType = FrontMatter> = DocsThemeConfig &
-    Pick<PageOpts<FrontMatterType>, 'flexsearch' | 'newNextLinkBehavior' | 'title' | 'frontMatter'>;
-
-const ConfigContext = createContext<Config>({} as Config);
-
-export function useConfig<FrontMatterType = FrontMatter>() {
-    return useContext<Config<FrontMatterType>>(ConfigContext);
-}
+import { type Config, ConfigContext } from './useConfig';
 
 let theme: DocsThemeConfig;
 let isValidated = false;

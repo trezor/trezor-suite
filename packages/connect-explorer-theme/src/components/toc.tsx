@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 
 import { useActiveAnchor } from '../contexts/active-anchor';
-import { useConfig } from '../contexts/config';
+import { useConfig } from '../contexts/useConfig';
 import { renderComponent } from '../utils';
 import { Anchor } from './anchor';
 import { BackToTop } from './back-to-top';

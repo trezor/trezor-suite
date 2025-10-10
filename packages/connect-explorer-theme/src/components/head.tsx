@@ -6,7 +6,7 @@ import { NextSeo } from 'next-seo';
 import { useTheme } from 'next-themes';
 import { useMounted } from 'nextra/hooks';
 
-import { useConfig } from '../contexts/config';
+import { useConfig } from '../contexts/useConfig';
 
 export function Head(): ReactElement {
     const config = useConfig();

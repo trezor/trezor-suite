@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 
 import cn from 'clsx';
 
-import { useConfig } from '../contexts/config';
+import { useConfig } from '../contexts/useConfig';
 import { renderComponent } from '../utils';
 import { LocaleSwitch } from './locale-switch';
 
