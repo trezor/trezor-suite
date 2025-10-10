@@ -100,9 +100,14 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     ]);
 
     useEffect(() => {
+        // we don't support custom fee for solana
+        if (networkType === 'solana') {
+            return;
+        }
+
         setIsFeeLoading(true);
         debounce(handleValuesChange);
-    }, [watchedFeePerUnit, watchedFeeLimit, handleValuesChange, debounce]);
+    }, [watchedFeePerUnit, watchedFeeLimit, handleValuesChange, debounce, networkType]);
 
     // If the trezor-connect is unable to compose the transaction, we display rough estimate of the fee instead.
     const feeEstimate = useMemo(
