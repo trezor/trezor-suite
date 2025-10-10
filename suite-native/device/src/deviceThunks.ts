@@ -9,8 +9,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { RootStackRoutes, navigationContainerRef } from '@suite-native/navigation';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
@@ -63,9 +62,13 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
     }
 };
 
-export const createAndBackupWalletThunk = createThunk(
+export const createAndBackupWalletThunk = createThunk<
+    Unsuccessful | SuccessWithDevice<PROTO.Success>,
+    { walletBackupType: BackupType },
+    { rejectValue: string }
+>(
     `${NATIVE_DEVICE_MODULE_PREFIX}/createAndBackupWalletThunk`,
-    async ({ walletBackupType }: { walletBackupType: BackupType }, { getState, dispatch }) => {
+    async ({ walletBackupType }, { getState, dispatch, fulfillWithValue, rejectWithValue }) => {
         const device = selectSelectedDevice(getState());
         const devicePath = selectDevicePath(getState());
         const isDeviceInitialized = selectIsDeviceInitialized(getState());
@@ -76,7 +79,7 @@ export const createAndBackupWalletThunk = createThunk(
         );
 
         if (!device || !device.features || !devicePath) {
-            throw new Error('Device not found');
+            return rejectWithValue('Device not found');
         }
 
         // If the device already has a seed, backup is created.
@@ -95,17 +98,14 @@ export const createAndBackupWalletThunk = createThunk(
                 deviceCallback: () =>
                     TrezorConnect.backupDevice({
                         ...backupParams,
-                        device: {
-                            path: device.path,
-                        },
+                        device: { path: device.path },
                     }),
             });
+            // error from device-mutex
+            if (!deviceResponse.success) return rejectWithValue(deviceResponse.error);
 
-            if (!deviceResponse.success) {
-                throw new Error(deviceResponse.error);
-            }
-
-            return deviceResponse.payload;
+            // full response from connect, which is either success or error
+            return fulfillWithValue(deviceResponse.payload);
         }
 
         const deviceResponse = await requestPrioritizedDeviceAccess({
@@ -118,16 +118,14 @@ export const createAndBackupWalletThunk = createThunk(
                     entropy_check: isEntropyCheckEnabled,
                 }),
         });
+        // error from device-mutex
+        if (!deviceResponse.success) return rejectWithValue(deviceResponse.error);
 
-        if (!deviceResponse.success) {
-            throw new Error(deviceResponse.error);
-        }
-
+        // full response from connect, which is either success or error
         const result = deviceResponse.payload;
         if (isEntropyCheckEnabled) {
             if (!result.success && result.payload.code === 'Failure_EntropyCheck') {
                 dispatch(failEntropyCheckThunk({ device, error: result.payload }));
-                navigationContainerRef.navigate(RootStackRoutes.DeviceCompromisedModal);
             } else {
                 dispatch(
                     deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }),
@@ -135,7 +133,7 @@ export const createAndBackupWalletThunk = createThunk(
             }
         }
 
-        return result;
+        return fulfillWithValue(result);
     },
 );
 

@@ -11982,6 +11982,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.3.25"
     "@reduxjs/toolkit": "npm:2.8.2"
     "@shopify/react-native-skia": "npm:2.2.3"
+    "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/thp": "workspace:*"

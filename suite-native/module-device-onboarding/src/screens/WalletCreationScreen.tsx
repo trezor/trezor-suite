@@ -1,13 +1,21 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
 import { createAndBackupWalletThunk } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    RootStackParamList,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { ERRORS } from '@trezor/connect';
 
@@ -22,12 +30,26 @@ const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = [
     'Failure_EntropyCheck',
 ];
 
-export const WalletCreationScreen = ({
-    navigation,
-    route,
-}: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.WalletCreation>) => {
+type NavigationProp = StackToStackCompositeNavigationProps<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.WalletCreation,
+    RootStackParamList
+>;
+
+type RouteProps = RouteProp<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.WalletCreation
+>;
+
+export const WalletCreationScreen = () => {
+    const route = useRoute<RouteProps>();
     const { walletBackupType } = route.params;
     const dispatch = useDispatch();
+    const navigation = useNavigation<NavigationProp>();
+
+    const isEntropyCheckEnabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureEnabled(state, Feature.entropyCheckMobile, true),
+    );
 
     const handleCreateAndBackupWallet = useCallback(async () => {
         const response = await dispatch(createAndBackupWalletThunk({ walletBackupType }));
@@ -40,16 +62,18 @@ export const WalletCreationScreen = ({
                     flowType: 'create',
                 });
             }
-            if (
-                responsePayload.payload.code &&
-                DEFINITIVE_ERRORS.includes(responsePayload.payload.code)
-            ) {
+            const { code } = responsePayload.payload;
+            if (code && DEFINITIVE_ERRORS.includes(code)) {
+                if (isEntropyCheckEnabled && code === 'Failure_EntropyCheck') {
+                    navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+                }
+
                 return;
             }
         }
-
+        // repeat the attempt if error was not one of the DEFINITIVE_ERRORS
         handleCreateAndBackupWallet();
-    }, [dispatch, walletBackupType, navigation]);
+    }, [dispatch, walletBackupType, navigation, isEntropyCheckEnabled]);
 
     useEffect(() => {
         handleCreateAndBackupWallet();
