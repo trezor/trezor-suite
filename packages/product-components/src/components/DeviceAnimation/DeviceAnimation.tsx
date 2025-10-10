@@ -15,13 +15,11 @@ import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/dev
 
 import { ConnectBtAnimation } from './ConnectBtAnimation';
 import { Video } from './Video';
-import { getModelFrontColor } from '../../utils/getModelFrontColor';
 
 export const animationDeviceTypes = [
     'BOOTLOADER', // No longer available for T3T1
     'BOOTLOADER_TWO_BUTTONS', // Only available for T1B1 with old FW
     'NORMAL', // Only available for T1B1
-    'SUCCESS',
     'HOLOGRAM',
     'ROTATE',
     'CONNECT_BT',
@@ -93,12 +91,6 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 {['BOOTLOADER'].includes(type) && (
                     <Video
                         src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}${themeSuffix}.webm`}
-                        {...commonProps}
-                    />
-                )}
-                {['SUCCESS'].includes(type) && (
-                    <Video
-                        src={`videos/device/trezor_${deviceModelInFilename}_${type.toLowerCase()}_frontcolor_${getModelFrontColor(deviceModelInternal, deviceUnitColor)}.webm`}
                         {...commonProps}
                     />
                 )}
