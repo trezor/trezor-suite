@@ -52,9 +52,7 @@ test.describe(
                 // Finalize recovery, skip pin, and check success
                 await onboardingPage.continueRecoveryButton.click();
                 await onboardingPage.pin.skip();
-                await onboardingPage.continueCoinsButton.click();
-                await expect(onboardingPage.finalTitle).toBeVisible();
-                await expect(onboardingPage.finalTitle).toContainTranslation('TR_FINAL_HEADING');
+                await expect(onboardingPage.onboardingExitButton).toBeVisible();
             },
         );
     },

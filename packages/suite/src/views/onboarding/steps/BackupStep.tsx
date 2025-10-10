@@ -71,7 +71,7 @@ const BackupStep = () => {
                         }
                         outerActions={
                             <OnboardingCard.SecondaryButton
-                                data-testid="@onboarding/exit-app-button"
+                                data-testid="@onboarding/skip-backup"
                                 onClick={handleSkip}
                             >
                                 <Translation id="TR_SKIP_BACKUP" />

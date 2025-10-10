@@ -20,7 +20,7 @@ export class OnboardingPage {
     readonly tutorial: TutorialSection;
 
     readonly welcomeBody: Locator;
-    readonly onboardingContinueButton: Locator;
+    readonly onboardingExitButton: Locator;
     readonly connectDevicePrompt: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
@@ -29,8 +29,7 @@ export class OnboardingPage {
     readonly startRecoveryButton: Locator;
     readonly continueRecoveryButton: Locator;
     readonly retryRecoveryButton: Locator;
-    readonly continueCoinsButton: Locator;
-    readonly finalTitle: Locator;
+    readonly suiteLoadedIndicator: Locator;
     readonly createWalletButton: Locator;
     readonly selectSeedTypeCheckbox = (seedType: SeedType): Locator =>
         this.page.getByTestId(`@onboarding/select-seed-type-${seedType}`);
@@ -54,7 +53,7 @@ export class OnboardingPage {
         this.pin = new PinSection(page);
 
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
-        this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
+        this.onboardingExitButton = this.page.getByTestId('@onboarding/exit-app-button');
         this.connectDevicePrompt = this.page.getByTestId('@connect-device-prompt');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
@@ -66,8 +65,7 @@ export class OnboardingPage {
         this.continueRecoveryButton = this.page.getByTestId('@onboarding/recovery/continue-button');
         this.retryRecoveryButton = this.page.getByTestId('@onboarding/recovery/retry-button');
 
-        this.continueCoinsButton = this.page.getByTestId('@onboarding/coins/continue-button');
-        this.finalTitle = this.page.getByTestId('@onboarding/final');
+        this.suiteLoadedIndicator = this.page.getByTestId('@suite-layout/body');
 
         this.createWalletButton = this.page.getByTestId('@onboarding/path-create-button');
         this.selectSeedTypeOpenButton = this.page.getByTestId(
@@ -124,7 +122,7 @@ export class OnboardingPage {
             await this.enableAutoconnect();
         }
 
-        await this.onboardingContinueButton.click();
+        await this.onboardingExitButton.click();
         if (this.model.isModelWithSecureElement()) {
             await this.passThroughAuthenticityCheck();
         }

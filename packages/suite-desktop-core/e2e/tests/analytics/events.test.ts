@@ -165,7 +165,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
                 await devicePrompt.allowConnectToTrezor();
             }
 
-            await onboardingPage.onboardingContinueButton.click();
+            await onboardingPage.onboardingExitButton.click();
         });
 
         await test.step('Wait for analytics events and validate event types', async () => {

@@ -49,7 +49,7 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         await onboardingPage.verifySuiteIsLoaded();
         optionallyDismissFwHashCheckError(page);
         await expect(analyticsSection.toggleSwitch).toBeHidden();
-        await expect(onboardingPage.onboardingContinueButton).toBeVisible();
+        await expect(onboardingPage.onboardingExitButton).toBeVisible();
     });
 
     test('Once user passed trough, skips initial run and shows connect-device modal', async ({
