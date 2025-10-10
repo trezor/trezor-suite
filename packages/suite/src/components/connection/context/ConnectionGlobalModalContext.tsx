@@ -16,10 +16,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import {
-    useBluetoothConnection,
     UseBluetoothConnectionReturn,
+    useBluetoothConnection,
 } from '../hook/useBluetoothConnection';
-import { useBluetoothScanning, UseBluetoothScanningReturn } from '../hook/useBluetoothScanning';
+import { UseBluetoothScanningReturn, useBluetoothScanning } from '../hook/useBluetoothScanning';
 
 export type ConnectionGlobalModalContextProps = UseBluetoothScanningReturn &
     UseBluetoothConnectionReturn & {
@@ -52,7 +52,6 @@ const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalCon
 
     onConnect: async () => {},
     handlePairingCancel: async () => {},
-    handleBluetoothConnectionCancel: () => {},
     onReScanClick: () => {},
     openShowRemoveFromOsBluetooth: () => {},
     closeShowRemoveFromOsBluetooth: () => {},
@@ -130,11 +129,9 @@ const useConnectionGlobalModal = () => {
         notConnectedNearbyDevices,
         onConnect,
         handlePairingCancel,
-        handleBluetoothConnectionCancel,
     } = useBluetoothConnection({
         devices,
         onReScanClick,
-        toggleBluetoothMode,
     });
 
     // special state when user is prompted to unpair the device and then pair again
@@ -156,7 +153,6 @@ const useConnectionGlobalModal = () => {
         toggleShowHints,
         toggleShouldPairAgain,
         handlePairingCancel,
-        handleBluetoothConnectionCancel,
         onConnect,
         onReScanClick,
         openShowRemoveFromOsBluetooth,
