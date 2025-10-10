@@ -12,12 +12,12 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
-import { useConfig } from '../contexts/config';
 import { useMenu } from '../contexts/menu';
 import { renderComponent } from '../utils';
 import { Collapse } from './collapse';
 import { LocaleSwitch } from './locale-switch';
 import { Menu } from './menu';
+import { useConfig } from '../contexts/useConfig';
 
 export const FocusedItemContext = createContext<null | string>(null);
 export const OnFocusItemContext = createContext<null | ((item: string | null) => any)>(null);

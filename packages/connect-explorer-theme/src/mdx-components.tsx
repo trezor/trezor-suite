@@ -10,9 +10,9 @@ import { Card } from '@trezor/components';
 
 import { Anchor, Collapse } from './components';
 import type { AnchorProps } from './components/anchor';
-import type { DocsThemeConfig } from './constants';
-import { useIntersectionObserver , useSetActiveAnchor, useSlugs } from './contexts/active-anchor';
+import { useIntersectionObserver, useSetActiveAnchor, useSlugs } from './contexts/active-anchor';
 import { DetailsProvider, useDetails } from './contexts/details';
+import type { DocsThemeConfig } from './schema';
 
 // Anchor links
 function HeadingLink({

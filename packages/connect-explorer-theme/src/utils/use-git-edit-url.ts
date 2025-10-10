@@ -1,6 +1,6 @@
 import gitUrlParse from 'git-url-parse';
 
-import { useConfig } from '../contexts/config';
+import { useConfig } from '../contexts/useConfig';
 
 export function useGitEditUrl(filePath = ''): string {
     const config = useConfig();

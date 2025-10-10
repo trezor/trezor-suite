@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 import { useMounted } from 'nextra/hooks';
 
-import { useConfig } from '../contexts/config';
+import { useConfig } from '../contexts/useConfig';
 import { getGitIssueUrl, renderComponent } from '../utils';
 import { Anchor } from './anchor';
 
