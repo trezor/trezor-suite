@@ -55,8 +55,6 @@ export const FirmwareStep = () => {
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
-    //return <FirmwareInitialStep />;
-
     if (showFingerprintCheck && device) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
         return (
