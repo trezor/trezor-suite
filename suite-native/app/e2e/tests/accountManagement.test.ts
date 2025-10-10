@@ -10,7 +10,7 @@ import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsAct
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp, preparePreloadedReduxState, wipeAppData } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -19,16 +19,8 @@ const preloadedState = preparePreloadedReduxState(
 
 describe('Account management', () => {
     beforeEach(async () => {
-        await openApp({
-            newInstance: true,
-            args: { preloadedState },
-        });
+        await openApp({ args: { preloadedState }, wipeData: true });
         await onHome.assertIsPortfolioGraphVisible();
-    });
-
-    afterEach(async () => {
-        // state need to be wiped between the test runs
-        await wipeAppData();
     });
 
     it('Import account and rename it', async () => {

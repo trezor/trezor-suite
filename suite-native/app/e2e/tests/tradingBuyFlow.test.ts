@@ -12,20 +12,11 @@ const preloadedState = preparePreloadedReduxState(
 );
 
 describe('Trade Buy', () => {
-    beforeAll(async () => {
-        await openApp({
-            newInstance: true,
-            args: {
-                preloadedState,
-            },
-        });
+    beforeEach(async () => {
+        await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
         await onTabBar.navigateToTrade();
         await tradingBuyActions.waitForTradeDataToLoad();
-    });
-
-    afterAll(async () => {
-        await device.terminateApp();
     });
 
     it('Basic buy for 100 PLN flow', async () => {

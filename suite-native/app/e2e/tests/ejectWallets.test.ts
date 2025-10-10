@@ -9,12 +9,9 @@ import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
-    disconnectTrezorUserEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-    restartApp,
-    wipeAppData,
 } from '../utils';
 
 const preloadedState = preparePreloadedReduxState(
@@ -29,20 +26,9 @@ const navigateToEjectWallets = async () => {
 
 conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
     beforeEach(async () => {
-        await openApp({
-            newInstance: true,
-            args: {
-                preloadedState,
-            },
-        });
-        await appIsFullyLoaded();
+        await openApp({ wipeData: true, args: { preloadedState } });
         await prepareTrezorEmulator();
-        await restartApp();
-    });
-
-    afterEach(async () => {
-        await wipeAppData();
-        await disconnectTrezorUserEnv();
+        await appIsFullyLoaded();
     });
 
     it('Eject single wallet with disconnected device', async () => {

@@ -5,7 +5,7 @@ import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp, preparePreloadedReduxState, wipeAppData } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../utils';
 
 const goToBtcImportXpubScreen = async () => {
     await onTabBar.navigateToMyAssets();
@@ -17,22 +17,13 @@ const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
 describe('Import invalid accounts', () => {
     beforeEach(async () => {
-        await openApp({
-            newInstance: true,
-            args: {
-                preloadedState,
-            },
-        });
+        await openApp({ wipeData: true, args: { preloadedState } });
         await goToBtcImportXpubScreen();
-    });
-
-    afterEach(async () => {
-        await wipeAppData();
     });
 
     it('Import an already imported XPUB', async () => {
         // add first account
-        await onAccountImport.importAccount({
+        await onAccountImport.importAccountAndVerifyVisibility({
             networkSymbol: 'btc',
             xpub: xpubs.btc.legacySegwit,
             accountName: 'BTC Legacy SegWit',

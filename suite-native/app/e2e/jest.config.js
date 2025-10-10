@@ -30,7 +30,7 @@ module.exports = {
     testEnvironment: 'detox/runners/jest/testEnvironment',
     verbose: true,
     maxWorkers: 1,
-    setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts'],
+    setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts', '<rootDir>/e2e/jest.teardown.ts'],
     testMatch: ['<rootDir>/e2e/tests/**/*.test.ts'],
     testPathIgnorePatterns: ['/e2e/tests/manual/'],
     testNamePattern: process.env.JEST_TEST_NAME_PATTERN || undefined,

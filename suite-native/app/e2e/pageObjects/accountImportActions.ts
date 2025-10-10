@@ -4,7 +4,7 @@ import { inputTextToElement, scrollUntilVisible } from '../utils';
 import { onTabBar } from './tabBarActions';
 
 class AccountImportActions {
-    async importAccount({
+    async importAccountAndVerifyVisibility({
         networkSymbol,
         xpub,
         accountName,

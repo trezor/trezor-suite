@@ -80,19 +80,28 @@ const isDebugTestBuild = async () => {
     return isDebugBuild;
 };
 
-// Inspired by Expo E2E detox-tests guide:
-// See more: https://docs.expo.dev/build-reference/e2e-tests/#e2eutilsopenappjs-new-file
+const wipeAppData = async () => {
+    await device.uninstallApp();
+    await device.installApp();
+};
+
 export const openApp = async ({
-    newInstance,
+    newInstance = true,
+    wipeData = false,
     args = {},
 }: {
-    newInstance: boolean;
+    newInstance?: boolean;
+    wipeData?: boolean;
     args?: LaunchArguments;
 }) => {
     const launchArgs = {
         ...INITIAL_LAUNCH_ARGS,
         ...args,
     };
+
+    if (wipeData) {
+        await wipeAppData();
+    }
 
     if (await isDebugTestBuild()) {
         await openExpoDevClientApp({ newInstance, launchArgs });
@@ -107,23 +116,6 @@ export const openApp = async ({
         // wait for preloaded state to be applied
         await appIsFullyLoaded();
     }
-};
-
-type RestartAppProps = {
-    args?: LaunchArguments;
-};
-
-export const restartApp = async ({ args = {} }: RestartAppProps = {}) => {
-    await device.terminateApp();
-    await openApp({
-        newInstance: false,
-        args,
-    });
-};
-
-export const wipeAppData = async () => {
-    await device.uninstallApp();
-    await device.installApp();
 };
 
 export const scrollUntilVisible = async (
@@ -166,16 +158,19 @@ export const prepareTrezorEmulator = async ({
     seed = MNEMONICS.mnemonic_immune,
     passphrase_protection = false,
     model = getModelFromEnv(),
-}: PrepareTrezorEmulatorProps = {}) => {
+    args,
+}: PrepareTrezorEmulatorProps & { args?: LaunchArguments } = {}) => {
     if (platform === 'android') {
-        // Prepare Trezor device for test scenario
-        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+        // We need to restart the bridge and emulator to ensure a clean state
+        await TrezorUserEnvLink.stopEmu();
+        await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.disconnect();
+        await TrezorUserEnvLink.connect();
 
+        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
         const fwVersion =
             (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
             '2-latest';
-        await TrezorUserEnvLink.disconnect();
-        await TrezorUserEnvLink.connect();
         // start with latest officially released firmware (necessary to pass the firmware checks)
         await TrezorUserEnvLink.startEmu({ model, version: fwVersion, wipe: true });
 
@@ -188,13 +183,9 @@ export const prepareTrezorEmulator = async ({
         }
         await TrezorUserEnvLink.startBridge('node-bridge');
     }
-};
-
-export const disconnectTrezorUserEnv = async () => {
-    // Clear the connection to the Trezor emulator so the test does not synchronize with it when not necessary.
-    await TrezorUserEnvLink.stopEmu();
-    await TrezorUserEnvLink.stopBridge();
-    await TrezorUserEnvLink.disconnect();
+    // ATM we need to terminate app, start without new instance in order for the emulator to connect to the app
+    await device.terminateApp();
+    await openApp({ newInstance: false, args });
 };
 
 export const waitForElementByTextToBeVisible = (text: string, timeout = 30000) =>

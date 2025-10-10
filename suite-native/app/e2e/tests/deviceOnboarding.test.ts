@@ -6,14 +6,7 @@ import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
-import {
-    disconnectTrezorUserEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-    wait,
-    wipeAppData,
-} from '../utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator, wait } from '../utils';
 
 const proceedToCreateOrRecoverCrossroads = async () => {
     await onDeviceOnboarding.waitForUninitializedDeviceLanding();
@@ -48,19 +41,9 @@ const preloadedState = preparePreloadedReduxState(
 
 conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () => {
     beforeEach(async () => {
+        await openApp({ wipeData: true, args: { preloadedState } });
         await prepareTrezorEmulator({ seed: '' });
-        await openApp({
-            newInstance: true,
-            args: {
-                preloadedState,
-            },
-        });
         await proceedToCreateOrRecoverCrossroads();
-    });
-
-    afterEach(async () => {
-        await wipeAppData();
-        await disconnectTrezorUserEnv();
     });
 
     it('Create Wallet', async () => {
