@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { TradingTradeType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
+import { exhaustive } from '@trezor/type-utils';
 
 import { SectionListData, SectionListDataArray } from './useSectionList';
 import { FilterItem } from '../../components/general/FilterTabs';
@@ -12,6 +13,7 @@ export type FilterValue = 'all' | 'cex' | 'dex';
 export const useProviderFilters = <T extends TradingTradeType>(
     quotes: QuotesByCategories<T>,
     shouldShowFilters: boolean,
+    areTradingExchangeDexesEnabled: boolean,
 ) => {
     const { translate } = useTranslate();
     const [selectedFilter, setSelectedFilter] = useState<FilterValue>('all');
@@ -26,33 +28,36 @@ export const useProviderFilters = <T extends TradingTradeType>(
     );
 
     const filteredSections: SectionListData<T, QuotesCategory> = useMemo(() => {
-        const allSections = Object.entries(quotes).map(([category, items]) => {
-            const typedCategory = category as QuotesCategory;
+        const allSections = Object.entries(quotes)
+            .filter(([category]) => areTradingExchangeDexesEnabled || category !== 'dex')
+            .map(([category, items]) => {
+                const typedCategory = category as QuotesCategory;
 
-            return {
-                key: category,
-                data: items as SectionListDataArray<T>,
-                label: '',
-                sectionData: typedCategory,
-            };
-        });
+                return {
+                    key: category,
+                    data: items as SectionListDataArray<T>,
+                    label: '',
+                    sectionData: typedCategory,
+                };
+            });
 
-        if (!shouldShowFilters || selectedFilter === 'all') {
+        if (!areTradingExchangeDexesEnabled || !shouldShowFilters || selectedFilter === 'all') {
             return allSections;
         }
 
-        if (selectedFilter === 'cex') {
-            return allSections.filter(
-                section => section.key === 'fixed' || section.key === 'float',
-            );
-        }
+        switch (selectedFilter) {
+            case 'cex':
+                return allSections.filter(
+                    section => section.key === 'fixed' || section.key === 'float',
+                );
 
-        if (selectedFilter === 'dex') {
-            return allSections.filter(section => section.key === 'dex');
-        }
+            case 'dex':
+                return allSections.filter(section => section.key === 'dex');
 
-        return allSections;
-    }, [quotes, selectedFilter, shouldShowFilters]);
+            default:
+                return exhaustive(selectedFilter, 'Unexpected filter value');
+        }
+    }, [quotes, selectedFilter, shouldShowFilters, areTradingExchangeDexesEnabled]);
 
     return {
         selectedFilter,

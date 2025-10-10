@@ -8,12 +8,16 @@ import { useProviderFilters } from '../useProviderFilters';
 type UseProviderFilterProps = {
     quotes?: QuotesByCategories<ExchangeTrade>;
     shouldShowFilters?: boolean;
+    areTradingExchangeDexesEnabled?: boolean;
 };
 describe('useProviderFilters', () => {
     const renderUseProviderFilters = (initialProps: UseProviderFilterProps) =>
         renderHookWithBasicProvider(
-            ({ quotes = { fixed: [], float: [], dex: [] }, shouldShowFilters = true }) =>
-                useProviderFilters(quotes, shouldShowFilters),
+            ({
+                quotes = { fixed: [], float: [], dex: [] },
+                shouldShowFilters = true,
+                areTradingExchangeDexesEnabled = true,
+            }) => useProviderFilters(quotes, shouldShowFilters, areTradingExchangeDexesEnabled),
             {
                 initialProps,
             },
@@ -91,7 +95,7 @@ describe('useProviderFilters', () => {
         ]);
     });
 
-    it('should return all section when dex is selected but shouldShowFilters is false', () => {
+    it('should return all section when cex is selected but shouldShowFilters is false', () => {
         const { result } = renderUseProviderFilters({ shouldShowFilters: false });
 
         act(() => {
@@ -103,6 +107,18 @@ describe('useProviderFilters', () => {
             { key: 'fixed', data: [], label: '', sectionData: 'fixed' },
             { key: 'float', data: [], label: '', sectionData: 'float' },
             { key: 'dex', data: [], label: '', sectionData: 'dex' },
+        ]);
+    });
+
+    it('should return only CEX sections when DEX is disabled', () => {
+        const { result } = renderUseProviderFilters({
+            shouldShowFilters: false,
+            areTradingExchangeDexesEnabled: false,
+        });
+
+        expect(result.current.filteredSections).toEqual([
+            { key: 'fixed', data: [], label: '', sectionData: 'fixed' },
+            { key: 'float', data: [], label: '', sectionData: 'float' },
         ]);
     });
 });
