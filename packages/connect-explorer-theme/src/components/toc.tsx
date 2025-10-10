@@ -8,7 +8,8 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
-import { useActiveAnchor, useConfig } from '../contexts';
+import { useActiveAnchor } from '../contexts/active-anchor';
+import { useConfig } from '../contexts/config';
 import { renderComponent } from '../utils';
 import { Anchor } from './anchor';
 import { BackToTop } from './back-to-top';

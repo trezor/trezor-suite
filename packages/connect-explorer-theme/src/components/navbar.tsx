@@ -11,7 +11,8 @@ import { useElevation } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
-import { useConfig, useMenu } from '../contexts';
+import { useConfig } from '../contexts/config';
+import { useMenu } from '../contexts/menu';
 import { renderComponent } from '../utils';
 import { Anchor } from './anchor';
 

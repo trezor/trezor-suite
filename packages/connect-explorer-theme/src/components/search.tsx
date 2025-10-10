@@ -7,7 +7,8 @@ import { useRouter } from 'next/router';
 import { useMounted } from 'nextra/hooks';
 import { InformationCircleIcon, SpinnerIcon } from 'nextra/icons';
 
-import { useConfig, useMenu } from '../contexts';
+import { useConfig } from '../contexts/config';
+import { useMenu } from '../contexts/menu';
 import type { SearchResult } from '../types';
 import { renderComponent, renderString } from '../utils';
 import { Anchor } from './anchor';

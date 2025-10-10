@@ -13,7 +13,9 @@ import styled from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { useActiveAnchor, useConfig, useMenu } from '../contexts';
+import { useActiveAnchor } from '../contexts/active-anchor';
+import { useConfig } from '../contexts/config';
+import { useMenu } from '../contexts/menu';
 import { renderComponent } from '../utils';
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';

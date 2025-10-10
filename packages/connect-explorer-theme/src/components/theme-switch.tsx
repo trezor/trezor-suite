@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 import { Select } from '@trezor/components';
 
-import { useConfig } from '../contexts';
+import { useConfig } from '../contexts/config';
 
 type ThemeSwitchProps = {
     lite?: boolean;

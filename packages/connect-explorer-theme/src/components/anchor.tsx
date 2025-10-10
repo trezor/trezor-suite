@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 import NextLink from 'next/link';
 import next from 'next/package.json';
 
-import { useConfig } from '../contexts';
+import { useConfig } from '../contexts/config';
 
 export type AnchorProps = Omit<ComponentProps<'a'>, 'ref'> & {
     newWindow?: boolean;

@@ -12,7 +12,8 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
-import { useConfig, useMenu } from '../contexts';
+import { useConfig } from '../contexts/config';
+import { useMenu } from '../contexts/menu';
 import { renderComponent } from '../utils';
 import { Collapse } from './collapse';
 import { LocaleSwitch } from './locale-switch';

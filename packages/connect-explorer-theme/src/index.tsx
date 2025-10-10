@@ -16,7 +16,8 @@ import { Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { Banner, Breadcrumb, Head, NavLinks, Navbar, Sidebar, SkipNavContent } from './components';
 import { DEFAULT_LOCALE, PartialDocsThemeConfig } from './constants';
-import { ActiveAnchorProvider, ConfigProvider, useConfig } from './contexts';
+import { ActiveAnchorProvider } from './contexts/active-anchor';
+import { ConfigProvider, useConfig } from './contexts/config';
 import { getComponents } from './mdx-components';
 import { patchedNormalizePages, renderComponent } from './utils';
 
