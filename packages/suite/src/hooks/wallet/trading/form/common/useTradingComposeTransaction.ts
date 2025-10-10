@@ -93,7 +93,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             );
 
             if (values?.outputs?.[0] && typeof address === 'string') {
-                if (type !== 'exchange') {
+                if (!values.outputs[0].address) {
                     setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
                 }
                 setState(initState);

@@ -774,7 +774,10 @@ export const useTradingExchangeForm = ({
         if (isFormLoading || isLoadingQuote) return;
 
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
-            return setValue('transactionData', '');
+            setValue('transactionData', '');
+            setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+
+            return;
         }
 
         const network = cryptoIdToNetwork(sendCryptoSelect.value);
@@ -784,7 +787,10 @@ export const useTradingExchangeForm = ({
         const quote = preselectedQuote ?? (requiresApproval ? selectedQuote : dexQuotes[0]);
 
         if (!quote || !quote.dexTx) {
-            return setValue('transactionData', '');
+            setValue('transactionData', '');
+            setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+
+            return;
         }
 
         const { dexTx } = quote;
