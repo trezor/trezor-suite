@@ -14,7 +14,7 @@ import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
 import {
     deviceActions,
     selectDevices,
-    selectIsCoinEnablingFinished,
+    selectIsAnyNetworkEnabled,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
@@ -47,14 +47,14 @@ export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceR
 
 const handleDeviceConnectNavigation = ({
     deviceModel,
-    isCoinEnablingFinished,
+    isAnyNetworkEnabled,
     hasDeviceBitcoinOnlyFirmware,
     isDeviceInitialized,
     isDeviceSetupSupported,
     wasDeviceOnboardingCancelled,
 }: {
     deviceModel: DeviceModelInternal;
-    isCoinEnablingFinished: boolean;
+    isAnyNetworkEnabled: boolean;
     hasDeviceBitcoinOnlyFirmware: boolean;
     isDeviceInitialized: boolean;
     isDeviceSetupSupported: boolean;
@@ -111,7 +111,7 @@ const handleDeviceConnectNavigation = ({
         }
     }
 
-    if (isCoinEnablingFinished || hasDeviceBitcoinOnlyFirmware) {
+    if (isAnyNetworkEnabled || hasDeviceBitcoinOnlyFirmware) {
         // Bitcoin is enabled and coin enabling finished with btc-only FW in discoverMiddleware.
         navigationContainerRef.navigate(RootStackRoutes.AuthorizeDeviceStack, {
             screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
@@ -166,9 +166,9 @@ deviceConnectionMiddleware.startListening({
         const isDeviceRemembered =
             !!device.features && selectDevices(getOriginalState()).some(d => d.id === device.id);
 
-        const isCoinEnablingFinished = selectIsCoinEnablingFinished(getState());
+        const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
 
-        if (isDeviceRemembered && isCoinEnablingFinished) return;
+        if (isDeviceRemembered && isAnyNetworkEnabled) return;
 
         handleDeviceConnectNavigation({
             deviceModel: getDeviceInternalModel(device),
@@ -179,7 +179,7 @@ deviceConnectionMiddleware.startListening({
             }),
             isDeviceSetupSupported: getIsDeviceSetupSupported(getDeviceInternalModel(device)),
             wasDeviceOnboardingCancelled: selectWasDeviceOnboardingCancelled(getState()),
-            isCoinEnablingFinished,
+            isAnyNetworkEnabled,
         });
     },
 });
