@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { FirmwareOperationStatus } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
-import { Box, Column, Icon, ProgressBar, Row, Text } from '@trezor/components';
+import { Box, Column, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -32,12 +32,6 @@ export const FirmwareProgressBar = () => {
         completed: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
     };
 
-    if (uiEvent?.type === 'ui-firmware_reconnect') {
-        return null;
-    }
-
-    const isDone = progress === 100;
-
     return (
         <Box width="100%">
             <Column margin={{ vertical: spacings.md, horizontal: spacings.lg }}>
@@ -51,14 +45,10 @@ export const FirmwareProgressBar = () => {
                         backgroundColor={theme.backgroundNeutralSubtleOnElevationNegative}
                     />
                     <Percentage>
-                        {isDone ? (
-                            <Icon name="check" variant="primary" size={24} />
-                        ) : (
-                            <Text typographyStyle="highlight">
-                                {progress}
-                                {'\u00A0'}%
-                            </Text>
-                        )}
+                        <Text typographyStyle="highlight">
+                            {progress}
+                            {'\u00A0'}%
+                        </Text>
                     </Percentage>
                 </Row>
             </Column>
