@@ -21,7 +21,7 @@ type DeviceAuthenticityProps = {
     goToNext: () => void;
 };
 
-export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
+const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) => {
     const device = useSelector(selectSelectedDevice);
     const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
@@ -144,3 +144,5 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
         </OnboardingCard>
     );
 };
+
+export default DeviceAuthenticityStep;

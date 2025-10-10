@@ -1,11 +1,11 @@
 export { ReconnectDevicePrompt } from './ReconnectDevicePrompt';
 export { FirmwareOffer } from './FirmwareOffer';
-export { FirmwareInstallationStandalone } from './FirmwareInstallationStandalone';
+export { FirmwareInstallation } from './FirmwareInstallation';
 export { FirmwareInitial } from './FirmwareInitial';
-export { FirmwareInitialStandalone } from './FirmwareInitialStandalone';
 export { Fingerprint } from './Fingerprint';
 export { FirmwareProgressBar } from './FirmwareProgressBar';
 export { SelectCustomFirmware } from './SelectCustomFirmware';
 export { FirmwareInstallationProgressCheck } from './ProgressCheck/FirmwareInstallationProgressCheck';
 export { RotatingPhrases } from './RotatingPhrases';
 export { FirmwareWarningsList } from './FirmwareWarningsList';
+export { FirmwareWipeWarning } from './FirmwareWipeWarning';

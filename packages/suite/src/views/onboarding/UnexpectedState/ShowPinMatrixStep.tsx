@@ -9,7 +9,7 @@ import { PinMatrix } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 
-export const ShowPinMatrix = () => {
+export const ShowPinMatrixStep = () => {
     const [pin, setPin] = useState('');
     const device = useSelector(selectSelectedDevice);
     const { activeStepId, showPinMatrix } = useOnboarding();

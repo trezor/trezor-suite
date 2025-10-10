@@ -1,7 +1,6 @@
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
-import { spacings } from '@trezor/theme';
 
 import {
     FirmwareOffer,
@@ -14,18 +13,18 @@ import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpda
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
-type FirmwareInstallationStandaloneProps = {
+type FirmwareInstallationProps = {
     // If true, information about new version is not shown, because we don't know anything about it
     isCustomFirmware?: boolean;
     install: () => void;
     onPromptClose?: () => void;
 };
 
-export const FirmwareInstallationStandalone = ({
+export const FirmwareInstallation = ({
     isCustomFirmware,
     install,
     onPromptClose,
-}: FirmwareInstallationStandaloneProps) => {
+}: FirmwareInstallationProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
@@ -46,7 +45,7 @@ export const FirmwareInstallationStandalone = ({
             {showReconnectPrompt && (
                 <ReconnectDevicePrompt onClose={onPromptClose} onSuccess={install} />
             )}
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 {isDeviceNotSelected && (
                     <Banner
                         variant="info"
@@ -67,7 +66,7 @@ export const FirmwareInstallationStandalone = ({
                     </Banner>
                 )}
                 <Card>
-                    <Column gap={spacings.xs}>
+                    <Column gap={8}>
                         <FirmwareOffer
                             isCustomFirmware={isCustomFirmware}
                             targetFirmwareType={targetType}

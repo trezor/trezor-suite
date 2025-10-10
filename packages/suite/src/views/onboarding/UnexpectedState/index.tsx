@@ -5,9 +5,9 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
-import { DeviceDifferent } from './DeviceDifferent';
-import { ShowPinMatrix } from './ShowPinMatrix';
-import { DeviceDisconnectedStep } from '../steps/DeviceDisconnectedStep';
+import { DeviceDifferentStep } from './DeviceDifferentStep';
+import { DeviceDisconnectedStep } from './DeviceDisconnectedStep';
+import { ShowPinMatrixStep } from './ShowPinMatrixStep';
 
 type UnexpectedStateProps = {
     children: JSX.Element;
@@ -16,7 +16,7 @@ type UnexpectedStateProps = {
 /**
  * This component handles unexpected device states across various steps in the onboarding.
  */
-export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
+const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
@@ -26,14 +26,14 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.
     // (which could happen on Final step where we set device name and homescreen)
     if (activeStepId !== 'set-pin' && showPinMatrix) {
-        return <ShowPinMatrix />;
+        return <ShowPinMatrixStep />;
     }
 
     const isDeviceDifferent = prevDeviceId && device?.id && prevDeviceId !== device.id;
     // there may be specif onboarding prerequisites
     if (activeStep?.prerequisites?.includes('device-different') && isDeviceDifferent) {
         // in case we can 100% detect that user reconnected different device than he had previously connected
-        return <DeviceDifferent />;
+        return <DeviceDifferentStep />;
     }
 
     // otherwise handle common prerequisite which are determined and passed as prop from Preloader component
@@ -43,3 +43,5 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
 
     return children;
 };
+
+export default UnexpectedState;

@@ -1,6 +1,6 @@
 import { FirmwareType } from '@trezor/connect';
 
-import { FirmwareInitialStandalone } from 'src/components/firmware';
+import { FirmwareInitial } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
@@ -51,7 +51,7 @@ export const FirmwareUpdate = ({ shouldSwitchFirmwareType }: FirmwareUpdateProps
             heading={heading}
             install={installTargetFirmware}
         >
-            <FirmwareInitialStandalone shouldSwitchFirmwareType={shouldSwitchFirmwareType} />
+            <FirmwareInitial shouldSwitchFirmwareType={shouldSwitchFirmwareType} />
         </FirmwareModal>
     );
 };
