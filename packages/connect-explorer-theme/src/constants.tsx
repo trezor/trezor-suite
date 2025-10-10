@@ -10,7 +10,11 @@ import { z } from 'zod';
 
 import { Icon, IconName } from '@trezor/components';
 
-import { Anchor, Flexsearch, Footer, Navbar, TOC } from './components';
+import { Anchor } from './components/anchor';
+import { Flexsearch } from './components/flexsearch';
+import { Footer } from './components/footer';
+import { Navbar } from './components/navbar';
+import { TOC } from './components/toc';
 import { MatchSorterSearch } from './components/match-sorter-search';
 import type { NavBarProps } from './components/navbar';
 import { ThemeSwitch, themeOptionsSchema } from './components/theme-switch';
