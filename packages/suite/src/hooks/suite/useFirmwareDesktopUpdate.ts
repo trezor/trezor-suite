@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import {
+    type FirmwareOperationStatus,
     type FirmwareUpdateProps,
     type UseFirmwareInstallationParams,
     useFirmwareInstallation,
@@ -19,9 +20,10 @@ export const useFirmwareDesktopUpdate = (
         selectIsDeviceConnectedViaBluetoothLowOnBattery,
     );
 
-    const { firmwareUpdate, ...rest } = useFirmwareInstallation({
-        shouldSwitchFirmwareType,
-    });
+    const { firmwareUpdate, reconnectEvent, operation, progress, ...rest } =
+        useFirmwareInstallation({
+            shouldSwitchFirmwareType,
+        });
 
     const desktopFirmwareUpdate = (arg: FirmwareUpdateProps) => {
         if (isDeviceConnectedViaBluetoothLowOnBattery) {
@@ -32,10 +34,26 @@ export const useFirmwareDesktopUpdate = (
         firmwareUpdate(arg);
     };
 
+    const restartingToBootloader = reconnectEvent && reconnectEvent.target === 'bootloader';
+
+    const updateOperation: FirmwareOperationStatus =
+        operation === 'restarting'
+            ? {
+                  operation: 'restarting',
+                  progress: restartingToBootloader ? 0 : progress,
+              }
+            : {
+                  operation,
+                  progress,
+              };
+
     return {
         ...rest,
         firmwareUpdate: desktopFirmwareUpdate,
         toggleLowBatteryModal: useCallback(() => setShowLowBatteryModal(prev => !prev), []),
         showLowBatteryModal,
+        reconnectEvent,
+        // NOTE: on desktop, set the progress during restart to 0, when device is just going to the bootloader
+        ...updateOperation,
     };
 };
