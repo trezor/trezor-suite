@@ -102,9 +102,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     // handle Bluetooth adapter non ideal status cases
     if (
         isBluetoothMode &&
-        (bluetoothAdapterStatus === 'disabled' ||
-            bluetoothAdapterStatus === 'permission-denied' ||
-            bluetoothAdapterStatus === 'not-compatible')
+        ['disabled', 'permission-denied', 'not-compatible'].includes(bluetoothAdapterStatus)
     ) {
         return <BluetoothAdapterStatusModal onCancel={onCancel} />;
     }
