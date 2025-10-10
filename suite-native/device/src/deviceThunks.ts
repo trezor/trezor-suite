@@ -3,7 +3,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
 import {
     deviceActions,
-    failEntropyCheckThunk,
+    processEntropyCheckResultThunk,
     selectDevicePath,
     selectIsDeviceInitialized,
     selectSelectedDevice,
@@ -124,13 +124,7 @@ export const createAndBackupWalletThunk = createThunk<
         // full response from connect, which is either success or error
         const result = deviceResponse.payload;
         if (isEntropyCheckEnabled) {
-            if (!result.success && result.payload.code === 'Failure_EntropyCheck') {
-                dispatch(failEntropyCheckThunk({ device, error: result.payload }));
-            } else {
-                dispatch(
-                    deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }),
-                );
-            }
+            dispatch(processEntropyCheckResultThunk({ device, result }));
         }
 
         return fulfillWithValue(result);

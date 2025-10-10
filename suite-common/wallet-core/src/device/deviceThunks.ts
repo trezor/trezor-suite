@@ -557,7 +557,7 @@ type FailEntropyCheckParams = {
     error: { code?: string; error: string };
 };
 
-export const failEntropyCheckThunk = createThunk(
+const failEntropyCheckThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
     ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
         const contextData = {
@@ -583,6 +583,25 @@ export const failEntropyCheckThunk = createThunk(
         ];
         if (!temporarilySkippedErrorsToBeInvestigated.includes(error.error)) {
             dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
+        }
+    },
+);
+
+type ProcessEntropyCheckResultThunkParams = {
+    device: AcquiredDevice;
+    result: Awaited<ReturnType<typeof TrezorConnect.resetDevice>>;
+};
+
+export const processEntropyCheckResultThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/processEntropyCheckResultThunk`,
+    ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
+        if (result.success) {
+            dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }));
+        } else {
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
+            if (result.payload.code === 'Failure_EntropyCheck') {
+                dispatch(failEntropyCheckThunk({ device, error: result.payload }));
+            }
         }
     },
 );
