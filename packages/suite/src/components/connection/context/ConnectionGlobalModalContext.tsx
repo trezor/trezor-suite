@@ -88,7 +88,7 @@ const useConnectionGlobalModal = () => {
 
     const openShowRemoveFromOsBluetooth = () => {
         setShouldPairAgain(false);
-        setShowRemoveFromOsBluetooth(!showRemoveFromOsBluetooth);
+        setShowRemoveFromOsBluetooth(true);
     };
 
     const closeShowRemoveFromOsBluetooth = () => {
