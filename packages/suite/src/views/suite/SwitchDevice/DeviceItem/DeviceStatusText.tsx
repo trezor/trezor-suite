@@ -22,10 +22,9 @@ export const DeviceStatusText = ({
     forceConnectionInfo,
     deviceNeedsRefresh,
 }: DeviceStatusTextProps) => {
-    const { connected } = device;
     const deviceStatus = deviceUtils.getStatus(device);
     const dispatch = useDispatch();
-    if (connected && deviceNeedsRefresh) {
+    if (deviceNeedsRefresh) {
         return (
             <DeviceConnectionText
                 variant="warning"
