@@ -9,7 +9,7 @@ import { useSelector } from '../../../../../hooks/suite';
 import { useIsSidebarCollapsed } from '../Sidebar/utils';
 
 const needsRefresh = (device?: TrezorDevice) => {
-    if (!device) return false;
+    if (!device?.connected) return false;
 
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAcquire = [
