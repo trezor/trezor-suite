@@ -1,8 +1,8 @@
-import { Column, Grid, Icon, Paragraph, RadioCard } from '@trezor/components';
+import { Card, Checkbox, Column, Icon, Paragraph, Row } from '@trezor/components';
 
 import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const items = [
     {
@@ -25,7 +25,6 @@ const items = [
 export const BackupSeedCards = () => {
     const backup = useSelector(state => state.backup);
     const dispatch = useDispatch();
-    const { isBelowTablet } = useLayoutSize();
 
     const isChecked = (key: ConfirmKey) => backup.userConfirmed.includes(key);
 
@@ -34,23 +33,29 @@ export const BackupSeedCards = () => {
             <Paragraph typographyStyle="hint" variant="tertiary" align="center">
                 <Translation id="TR_ONBOARDING_CLICK_TO_CONFIRM" />
             </Paragraph>
-            <Grid columns={isBelowTablet ? 1 : 3} gap={16}>
+            <Column gap={16}>
                 {items.map(item => (
-                    <RadioCard
+                    <Card
+                        paddingType="large"
                         key={item.key}
-                        isActive={isChecked(item.key)}
                         onClick={() => dispatch(toggleCheckboxByKey(item.key))}
-                        dataTestId={`@backup/check-item/${item.key}`}
                     >
-                        <Column gap={16}>
-                            <Icon name={item.icon} />
-                            <Paragraph typographyStyle="hint" variant="tertiary" textWrap="pretty">
+                        <Checkbox
+                            isChecked={isChecked(item.key)}
+                            data-testid={`@backup/check-item/${item.key}`}
+                            labelAlignment="start"
+                            onClick={event => {
+                                event.preventDefault();
+                            }}
+                        >
+                            <Row gap={16}>
+                                <Icon name={item.icon} />
                                 {item.label}
-                            </Paragraph>
-                        </Column>
-                    </RadioCard>
+                            </Row>
+                        </Checkbox>
+                    </Card>
                 ))}
-            </Grid>
+            </Column>
         </Column>
     );
 };
