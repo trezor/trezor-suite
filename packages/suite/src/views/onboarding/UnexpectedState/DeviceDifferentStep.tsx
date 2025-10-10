@@ -30,7 +30,7 @@ export const DeviceDifferentStep = () => {
                         resetOnboarding();
                         enableOnboardingReducer(true);
                     }}
-                    variant="tertiary"
+                    variant="warning"
                     data-testid="@onboarding/unexpected-state/is-same/start-over-button"
                 >
                     <Translation id="TR_START_AGAIN" />
