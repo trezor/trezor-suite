@@ -57,7 +57,7 @@ export const useBluetoothScanning = ({
         }
     }, [dispatch, bluetoothMode]);
 
-    // stop scanning after 15s
+    // stop scanning (visually) after 30s
     useEffect(() => {
         if (bluetoothMode) {
             scannerTimerId.current = setTimeout(() => {
