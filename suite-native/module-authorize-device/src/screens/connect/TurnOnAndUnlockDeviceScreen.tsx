@@ -15,14 +15,13 @@ import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { TimerId } from '@trezor/type-utils';
 
 import { BluetoothPairingHelpButton } from '../../components/connect/BluetoothPairingHelpButton';
 import { BluetoothPairingHints } from '../../components/connect/BluetoothPairingHints';
-import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
+import { ConnectDeviceScreen } from '../../components/connect/ConnectDeviceScreen';
 
 type NavigationProps = StackNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -96,23 +95,15 @@ export const TurnOnAndUnlockDeviceScreen = () => {
     useBluetoothManager();
 
     return (
-        <Screen
-            header={
-                <ConnectDeviceScreenHeader
-                    helpButton={
-                        <BluetoothPairingHelpButton
-                            onShowAlert={clearBluetoothPairingAlertTimeout}
-                            onHideAlert={setBluetoothPairingAlertTimeout}
-                        />
-                    }
+        <ConnectDeviceScreen
+            helpButton={
+                <BluetoothPairingHelpButton
+                    onShowAlert={clearBluetoothPairingAlertTimeout}
+                    onHideAlert={setBluetoothPairingAlertTimeout}
                 />
             }
-            noHorizontalPadding
-            noBottomPadding
-            hasBottomInset={false}
-            isScrollable={false}
         >
             <TurnOnAndUnlockDeviceScreenContent />
-        </Screen>
+        </ConnectDeviceScreen>
     );
 };
