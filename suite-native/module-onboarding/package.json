@@ -12,7 +12,7 @@
     "dependencies": {
         "@react-navigation/core": "7.12.4",
         "@react-navigation/native-stack": "7.3.25",
-        "@reduxjs/toolkit": "2.8.2",
+        "@reduxjs/toolkit": "2.9.0",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/biometrics": "workspace:*",

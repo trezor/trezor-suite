@@ -25,7 +25,7 @@
         "@hookform/resolvers": "^5.2.2",
         "@mobily/ts-belt": "^3.13.1",
         "@noble/hashes": "^2.0.1",
-        "@reduxjs/toolkit": "2.8.2",
+        "@reduxjs/toolkit": "2.9.0",
         "@sentry/core": "8.55.0",
         "@solana/kit": "^2.3.0",
         "@suite-common/analytics": "workspace:*",
