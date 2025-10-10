@@ -17,7 +17,6 @@ type UseBluetoothConnectionProps = {
 
 export type UseBluetoothConnectionReturn = {
     selectedDevice: DesktopBluetoothDevice | undefined;
-    selectedDeviceId: string | null;
     notConnectedKnownDevices: DesktopBluetoothDevice[];
     notConnectedNearbyDevices: DesktopBluetoothDevice[];
     onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
@@ -86,7 +85,6 @@ export const useBluetoothConnection = ({
 
     return {
         selectedDevice,
-        selectedDeviceId,
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
         onConnect,
