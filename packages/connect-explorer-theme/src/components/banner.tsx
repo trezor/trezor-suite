@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import cn from 'clsx';
 import { XIcon } from 'nextra/icons';
 
-import { useConfig } from '../contexts';
+import { useConfig } from '../contexts/config';
 import { renderComponent } from '../utils';
 
 export function Banner(): ReactElement | null {

@@ -6,7 +6,7 @@ import { GlobeIcon } from 'nextra/icons';
 
 import { Select } from '@trezor/components';
 
-import { useConfig } from '../contexts';
+import { useConfig } from '../contexts/config';
 
 interface LocaleSwitchProps {
     lite?: boolean;
