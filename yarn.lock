@@ -13416,7 +13416,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     tsx: "npm:^4.20.3"
-    xrpl: "npm:^4.4.0"
+    xrpl: "npm:4.4.2"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -13452,7 +13452,7 @@ __metadata:
     tiny-worker: "npm:^2.3.0"
     tsx: "npm:^4.20.3"
     webpack: "npm:5.102.1"
-    xrpl: "npm:^4.4.0"
+    xrpl: "npm:4.4.2"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -46544,9 +46544,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xrpl@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "xrpl@npm:4.4.0"
+"xrpl@npm:4.4.2":
+  version: 4.4.2
+  resolution: "xrpl@npm:4.4.2"
   dependencies:
     "@scure/bip32": "npm:^1.3.1"
     "@scure/bip39": "npm:^1.2.1"
@@ -46557,7 +46557,7 @@ __metadata:
     ripple-address-codec: "npm:^5.0.0"
     ripple-binary-codec: "npm:^2.5.0"
     ripple-keypairs: "npm:^2.0.0"
-  checksum: 10/b3bc9e0299a43b7541a3e3c79e218e48dfce938c3bebc5c792cdd28ea01be37f49387b8ce763fcdb99ccef44d2d8c2c684eb1498b5a85b496b13429af1f501d9
+  checksum: 10/acc0962956559f3a5ac8551fe3ba1e0d9369702f1655c013b0c1829112aeb4a2d3ad36f353f02847c8e73d34b072707fe01002fafe4217dd9b19d664920e8e9b
   languageName: node
   linkType: hard
 
