@@ -5,10 +5,8 @@ type CableConnectionAnimationProps = {
     isBluetoothMode: boolean;
 };
 
-export const CableConnectionAnimation = ({
-    isBluetoothMode: isBluetooth,
-}: CableConnectionAnimationProps) => (
+export const CableConnectionAnimation = ({ isBluetoothMode }: CableConnectionAnimationProps) => (
     <Card paddingType="none" height={490}>
-        <DeviceAnimation type={isBluetooth ? 'CONNECT_BT' : 'CONNECT_CABLE'} />
+        <DeviceAnimation type={isBluetoothMode ? 'CONNECT_BT' : 'CONNECT_CABLE'} />
     </Card>
 );

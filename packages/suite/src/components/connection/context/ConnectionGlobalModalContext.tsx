@@ -114,7 +114,7 @@ const useConnectionGlobalModal = () => {
     });
 
     const { onReScanClick } = useBluetoothScanning({
-        bluetoothMode: isBluetoothMode,
+        isBluetoothMode,
         devices,
         setShowHints,
     });

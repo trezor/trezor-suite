@@ -10,7 +10,7 @@ import { removeNonResponsiveNearbyDevicesThunk } from 'src/actions/bluetooth/rem
 import { useDispatch } from 'src/hooks/suite';
 
 type UseBluetoothScanningProps = {
-    bluetoothMode: boolean;
+    isBluetoothMode: boolean;
     devices: DesktopBluetoothDevice[];
     setShowHints: (value: boolean) => void;
 };
@@ -22,7 +22,7 @@ export type UseBluetoothScanningReturn = {
 const SCAN_TIMEOUT = 30_000;
 
 export const useBluetoothScanning = ({
-    bluetoothMode,
+    isBluetoothMode,
     devices,
     setShowHints,
 }: UseBluetoothScanningProps): UseBluetoothScanningReturn => {
@@ -48,18 +48,18 @@ export const useBluetoothScanning = ({
 
     // starts to scan for devices when connection mode is bluetooth
     useEffect(() => {
-        if (bluetoothMode) {
+        if (isBluetoothMode) {
             dispatch(bluetoothStartScanningThunk());
 
             return () => {
                 dispatch(bluetoothStopScanningThunk());
             };
         }
-    }, [dispatch, bluetoothMode]);
+    }, [dispatch, isBluetoothMode]);
 
     // stop scanning (visually) after 30s
     useEffect(() => {
-        if (bluetoothMode) {
+        if (isBluetoothMode) {
             scannerTimerId.current = setTimeout(() => {
                 setShowHints(true);
                 dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
@@ -67,7 +67,7 @@ export const useBluetoothScanning = ({
         }
 
         return clearScanTimer;
-    }, [dispatch, clearScanTimer, bluetoothMode, setShowHints]);
+    }, [dispatch, clearScanTimer, isBluetoothMode, setShowHints]);
 
     // stop scanning when devices are found
     useEffect(() => {
@@ -92,12 +92,12 @@ export const useBluetoothScanning = ({
             dispatch(removeNonResponsiveNearbyDevicesThunk());
         }
 
-        if (bluetoothMode) {
+        if (isBluetoothMode) {
             const interval = setInterval(updateNonResponsiveDevices, 1_000);
 
             return () => clearInterval(interval);
         }
-    }, [dispatch, bluetoothMode]);
+    }, [dispatch, isBluetoothMode]);
 
     return {
         onReScanClick,
