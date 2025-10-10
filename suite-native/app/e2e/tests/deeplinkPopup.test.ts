@@ -11,11 +11,9 @@ import { deviceAutoEjectState } from '../fixtures/deviceAutoEjectState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import {
     appIsFullyLoaded,
-    disconnectTrezorUserEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-    restartApp,
 } from '../utils';
 
 const SERVER_PORT = 8080;
@@ -65,13 +63,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
         });
         await device.reverseTcpPort(SERVER_PORT);
 
+        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
-        await openApp({
-            newInstance: true,
-            args: {
-                preloadedState,
-            },
-        });
 
         // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
         await TrezorConnect.init({
@@ -86,16 +79,10 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
             deeplinkCallbackUrl: `${SERVER_URL}/connect/`,
             connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
         });
-
-        await prepareTrezorEmulator();
-        await restartApp();
-
         await appIsFullyLoaded();
     });
 
     afterAll(async () => {
-        await disconnectTrezorUserEnv();
-
         await new Promise(resolve => {
             if (server) {
                 server.close(() => {
@@ -103,7 +90,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
                 });
             }
         });
-        await device.terminateApp();
     });
 
     it('Handle deeplink', async () => {

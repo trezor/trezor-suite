@@ -5,7 +5,7 @@ import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtc
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp, preparePreloadedReduxState, wipeAppData } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../utils';
 
 const preloadedState = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
@@ -14,19 +14,8 @@ const preloadedState = preparePreloadedReduxState(
 
 describe('App Settings - without device interactions', () => {
     beforeEach(async () => {
-        await openApp({
-            newInstance: true,
-            args: { preloadedState },
-        });
+        await openApp({ wipeData: true, args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
-    });
-
-    afterEach(async () => {
-        await wipeAppData();
-    });
-
-    afterAll(async () => {
-        await device.terminateApp();
     });
 
     it('Localization - Currency', async () => {

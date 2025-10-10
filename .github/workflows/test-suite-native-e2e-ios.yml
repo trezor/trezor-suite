@@ -142,6 +142,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           GITHUB_REPORTER_VERBOSE: false
           RELEASE_BUILD: ${{ env.release_build }}
+          GITHUB_ACTION: true
         run: |
           npx detox clean-framework-cache && npx detox build-framework-cache
           yarn test:e2e ios.sim.release --headless --take-screenshots failing --record-videos failing

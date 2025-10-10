@@ -119,6 +119,7 @@ jobs:
           PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
           JEST_TEST_NAME_PATTERN: ${{ inputs.jest_test_name_pattern }}
           TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+          GITHUB_ACTION: true
         with:
           api-level: 31
           profile: pixel_3a

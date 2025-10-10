@@ -13,11 +13,9 @@ import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewAction
 import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
-    disconnectTrezorUserEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-    restartApp,
 } from '../utils';
 
 const SEND_FORM_ERROR_MESSAGES = {
@@ -71,8 +69,6 @@ const preloadedState = preparePreloadedReduxState(
 
 conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState } });
-
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',
             btc_amount: INITIAL_ACCOUNT_BALANCE,
@@ -80,8 +76,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
     });
 
     beforeEach(async () => {
+        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
-        await restartApp();
         await appIsFullyLoaded();
 
         await onHome.waitForScreen();
@@ -91,11 +87,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
 
         await onAccountDetail.openSend();
         await onSendOutputsForm.waitForScreen();
-    });
-
-    afterAll(async () => {
-        await disconnectTrezorUserEnv();
-        await device.terminateApp();
     });
 
     it('Compose and dispatch a regtest transaction.', async () => {

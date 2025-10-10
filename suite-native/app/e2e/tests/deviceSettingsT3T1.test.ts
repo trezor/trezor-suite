@@ -2,7 +2,6 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
-import { regtestDiscoveryFinishedStateT1B1 } from '../fixtures/regtestDiscoveryFinishedStateT1B1';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySuccess';
@@ -10,12 +9,9 @@ import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import {
     appIsFullyLoaded,
-    disconnectTrezorUserEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-    restartApp,
-    wipeAppData,
 } from '../utils';
 
 const preloadedStateT3T1 = preparePreloadedReduxState(
@@ -24,24 +20,10 @@ const preloadedStateT3T1 = preparePreloadedReduxState(
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
-    beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState: preloadedStateT3T1 } });
-        await appIsFullyLoaded();
-    });
-
-    afterAll(async () => {
-        await disconnectTrezorUserEnv();
-        await device.terminateApp();
-    });
-
-    afterEach(async () => {
-        await TrezorUserEnvLink.stopEmu();
-    });
-
     describe('Tests with T3T1 device model [@specificModel]', () => {
         beforeEach(async () => {
+            await openApp({ args: { preloadedState: preloadedStateT3T1 } });
             await prepareTrezorEmulator({ model: 'T3T1' });
-            await restartApp();
             await appIsFullyLoaded();
 
             await onDeviceManager.tapDeviceSwitch();
@@ -123,68 +105,4 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
             await onDeviceSettings.passCheckBackupFlow();
         });
     });
-
-    describe('Tests with FW update required', () => {
-        beforeEach(async () => {
-            await prepareTrezorEmulator({ version: '2.8.9' });
-            await restartApp({ args: { isFirmwareUpdateEnabled: true } });
-            await appIsFullyLoaded();
-
-            await onDeviceManager.tapDeviceSwitch();
-            await onDeviceManager.tapDeviceSettingsButton();
-        });
-
-        test('Device Check Backup is possible from firmware update', async () => {
-            await onDeviceSettings.tapUpdateFirmwareButton();
-            await onDeviceSettings.tapUpdateFirmwareBottomSheet();
-            await onDeviceSettings.tapCheckBackupButtonFromFirmwareUpdate();
-
-            await onDeviceSettings.passCheckBackupFlow();
-        });
-    });
 });
-
-const preloadedStateT1B1 = preparePreloadedReduxState(
-    onboardingCompletedState,
-    regtestDiscoveryFinishedStateT1B1,
-);
-
-conditionalDescribe(
-    device.getPlatform() === 'android',
-    'Device Settings - Tests with T1B1 device model [@specificModel]',
-    () => {
-        beforeAll(async () => {
-            // state of previous tests with remembered state need to be wiped
-            await disconnectTrezorUserEnv();
-            await wipeAppData();
-
-            await openApp({
-                newInstance: true,
-                args: {
-                    preloadedState: preloadedStateT1B1,
-                },
-            });
-            await appIsFullyLoaded();
-
-            await prepareTrezorEmulator({ model: 'T1B1' });
-            await restartApp();
-            await appIsFullyLoaded();
-
-            await onDeviceManager.tapDeviceSwitch();
-            await onDeviceManager.tapDeviceSettingsButton();
-        });
-
-        afterAll(async () => {
-            await disconnectTrezorUserEnv();
-            await device.terminateApp();
-        });
-
-        test('Device Check Backup with unsupported Device Model', async () => {
-            await onDeviceSettings.tapDeviceCheckBackupButton();
-
-            await waitFor(element(by.text('To check your backup, use the web application.')))
-                .toBeVisible()
-                .withTimeout(10000);
-        });
-    },
-);

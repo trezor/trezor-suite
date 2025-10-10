@@ -8,13 +8,7 @@ import { onAccountReceive } from '../pageObjects/accountReceiveActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import {
-    disconnectTrezorUserEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-    restartApp,
-} from '../utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -23,17 +17,8 @@ const preloadedState = preparePreloadedReduxState(
 
 conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
     beforeAll(async () => {
-        await openApp({
-            newInstance: true,
-            args: { preloadedState },
-        });
+        await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
-        await restartApp();
-    });
-
-    afterAll(async () => {
-        await disconnectTrezorUserEnv();
-        await device.terminateApp();
     });
 
     it('Generate device confirmed receive address.', async () => {

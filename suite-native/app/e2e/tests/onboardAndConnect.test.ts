@@ -2,21 +2,15 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
-import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
+import { openApp, prepareTrezorEmulator } from '../utils';
 
 conditionalDescribe(
     device.getPlatform() === 'android',
     'Go through onboarding and connect Trezor.',
     () => {
         beforeAll(async () => {
-            await prepareTrezorEmulator();
-
             await openApp({ newInstance: true });
-        });
-
-        afterAll(async () => {
-            await disconnectTrezorUserEnv();
-            await device.terminateApp();
+            await prepareTrezorEmulator();
         });
 
         it('Navigate to dashboard', async () => {

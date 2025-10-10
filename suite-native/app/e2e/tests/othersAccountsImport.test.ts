@@ -5,14 +5,11 @@ import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { openApp, preparePreloadedReduxState } from '../utils';
 
+const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
+
 describe('Import accounts of other networks.', () => {
     beforeAll(async () => {
-        await openApp({
-            newInstance: true,
-            args: {
-                preloadedState: preparePreloadedReduxState(onboardingCompletedState),
-            },
-        });
+        await openApp({ args: { preloadedState } });
         await onTabBar.navigateToMyAssets();
     });
 
@@ -21,7 +18,7 @@ describe('Import accounts of other networks.', () => {
     });
 
     it('Import LTC account', async () => {
-        await onAccountImport.importAccount({
+        await onAccountImport.importAccountAndVerifyVisibility({
             networkSymbol: 'ltc',
             xpub: xpubs.ltc,
             accountName: 'Litecoin SegWit',
@@ -29,7 +26,7 @@ describe('Import accounts of other networks.', () => {
     });
 
     it('Import ZCash account', async () => {
-        await onAccountImport.importAccount({
+        await onAccountImport.importAccountAndVerifyVisibility({
             networkSymbol: 'zec',
             xpub: xpubs.zec,
             accountName: 'Zcash #1',
@@ -37,7 +34,7 @@ describe('Import accounts of other networks.', () => {
     });
 
     it('Import DOGE account', async () => {
-        await onAccountImport.importAccount({
+        await onAccountImport.importAccountAndVerifyVisibility({
             networkSymbol: 'doge',
             xpub: xpubs.doge,
             accountName: 'Dogecoin #1',
@@ -45,14 +42,14 @@ describe('Import accounts of other networks.', () => {
     });
 
     it('Import Cardano account', async () => {
-        await onAccountImport.importAccount({
+        await onAccountImport.importAccountAndVerifyVisibility({
             networkSymbol: 'ada',
             xpub: xpubs.ada,
             accountName: 'Cardano #1',
         });
     });
     it('Import XRP account', async () => {
-        await onAccountImport.importAccount({
+        await onAccountImport.importAccountAndVerifyVisibility({
             networkSymbol: 'xrp',
             xpub: xpubs.xrp,
             accountName: 'Ripple #1',
@@ -60,7 +57,7 @@ describe('Import accounts of other networks.', () => {
     });
 
     it('Import ETH account', async () => {
-        await onAccountImport.importAccount({
+        await onAccountImport.importAccountAndVerifyVisibility({
             networkSymbol: 'eth',
             xpub: xpubs.eth,
             accountName: 'Ethereum #1',
