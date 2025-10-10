@@ -12,7 +12,6 @@ import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceStatusTextThp } from './DeviceStatusTextThp';
 
 type DeviceStatusTextProps = {
-    onRefreshClick?: (e: React.MouseEvent) => void;
     device: TrezorDevice;
     forceConnectionInfo: boolean;
 };
