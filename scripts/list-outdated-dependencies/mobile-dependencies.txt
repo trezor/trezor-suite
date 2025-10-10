@@ -30,6 +30,7 @@
 @whatwg-node/events
 abortcontroller-polyfill
 babel-plugin-transform-remove-console
+babel-preset-expo
 buffer
 detox
 event-target-shim
