@@ -161,6 +161,7 @@
         "@types/react-native-get-random-values": "1.8.2",
         "babel-jest": "29.7.0",
         "babel-plugin-transform-remove-console": "^6.9.4",
+        "babel-preset-expo": "~54.0.0",
         "detox": "^20.40.2",
         "dotenv": "^17.2.1",
         "expo-atlas": "0.4.3",
