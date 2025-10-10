@@ -13,7 +13,7 @@
     "dependencies": {
         "@evolu/common": "^6.0.1-preview.19",
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.8.2",
+        "@reduxjs/toolkit": "2.9.0",
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
