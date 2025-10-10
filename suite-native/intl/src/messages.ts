@@ -62,6 +62,7 @@ export const messages = {
             },
         },
         tokens: '+ Tokens',
+        trezorSuiteLite: 'Trezor Suite Lite',
     },
     icons: {
         networkIconHint: 'Network Icon',
@@ -70,7 +71,8 @@ export const messages = {
     messageSystem: {
         killswitch: {
             title: 'Update required',
-            content: 'Update to continue using Trezor Suite. Don’t worry, your funds are secure.',
+            content:
+                'Update to continue using Trezor Suite Lite. Don’t worry, your funds are secure.',
             cta: 'Download latest version',
         },
     },
@@ -79,9 +81,9 @@ export const messages = {
         addLabel: 'Add label',
     },
     moduleHome: {
-        graphIgnoredNetworks:
-            '{networksString} and all related tokens are reflected in the balance, but not in the graph.',
-
+        graphIgnoredNetworks: {
+            sol: 'Solana and all related tokens are reflected in the balance, but not in the graph.',
+        },
         emptyState: {
             emptyDevice: {
                 title: 'Your wallet is empty',
@@ -172,11 +174,8 @@ export const messages = {
             },
             adapterDisabled: {
                 title: 'Turn on Bluetooth',
-                description: {
-                    android:
-                        'Bluetooth is currently turned off on this phone. Go to phone settings and turn on Bluetooth.',
-                    ios: 'Bluetooth is currently turned off on this phone. Go to Control Center and turn on Bluetooth.',
-                },
+                description:
+                    'Bluetooth is currently turned off on this phone. Go to phone settings and turn on Bluetooth.',
                 primaryButton: 'Open system settings',
             },
             locationServicesDisabled: {
@@ -194,16 +193,9 @@ export const messages = {
                 deviceNamePlaceholder: 'your Trezor',
             },
             systemUnpairing: {
-                title: {
-                    android: 'Remove Trezor from system settings',
-                    ios: 'Remove Trezor from Bluetooth settings',
-                },
-                description: {
-                    android:
-                        'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
-                    ios: 'If not, you might have trouble pairing it again in the future.',
-                },
-
+                title: 'Remove Trezor from system settings',
+                description:
+                    'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
             },
@@ -329,7 +321,7 @@ export const messages = {
             description:
                 '<type></type> is the default address type. <moreLink>Learn more</moreLink>',
             buttons: {
-                select: 'Change address type',
+                select: 'Change account type',
                 confirm: 'Continue with <type></type>',
             },
         },
@@ -442,7 +434,7 @@ export const messages = {
             laterButton: 'I’ll do it later',
             step1: 'Go to Trezor Suite for Web using the button below.',
             step2: 'Complete check backup in your browser.',
-            step3: 'Start using your Trezor with\nTrezor Suite.',
+            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
         },
         checkBackupSupportScreen: {
             title: 'Don’t worry—we’ll figure this out',
@@ -473,6 +465,7 @@ export const messages = {
                 adapterDisabled: 'Bluetooth is turned off',
                 scanning: 'Scanning for nearby Trezors',
             },
+            connectViaCableButton: 'Connect via cable',
         },
         pinScreen: {
             title: 'Enter PIN\non your Trezor',
@@ -511,7 +504,7 @@ export const messages = {
                 step1: '1. Reconnect your Trezor',
                 step2: '2. Use a different USB data cable',
                 step3: '3. Use a different mobile device',
-                step4: '4. Enable connection for Trezor Suite via phone system message',
+                step4: '4. Enable connection for Trezor Suite Lite via phone system message',
             },
             pairing: {
                 title: 'Unable to pair your Trezor?',
@@ -653,7 +646,7 @@ export const messages = {
                 lines: {
                     '1': 'Go to Trezor Suite for Web using the button below.',
                     '2': 'Complete the device setup in your browser.',
-                    '3': 'Start using your Trezor with Trezor Suite.',
+                    '3': 'Start using your Trezor with Trezor Suite Lite.',
                 },
             },
         },
@@ -832,6 +825,11 @@ export const messages = {
             description:
                 'This removes your Trezor from the list of paired devices in Trezor Suite.',
             successMessage: 'Trezor has been unpaired.',
+            info: {
+                title: 'Unpair Trezor',
+                description:
+                    'This removes your Trezor from the list of paired devices in Trezor Suite.',
+            },
         },
         autoconnect: {
             settingsCard: {
@@ -845,16 +843,21 @@ export const messages = {
             enable: {
                 pictogramTitle: 'Auto connect enabled',
                 description:
-                    'Trezor will no longer connect automatically to Trezor Suite. You’ll confirm each connection on your device.',
+                    'Trezor will connect automatically to Trezor Suite. No need to confirm each time.',
                 turnOffButton: 'Turn off',
                 error: 'Turning on auto-connect failed.',
                 successToast: 'Auto-connect turned on',
+                title: 'Turn on Auto-connect',
+                subtitle: 'Confirm every connection on Trezor',
+                turnOnButton: 'Turn on Auto-connect',
             },
             disable: {
                 pictogramTitle: 'Auto connect disabled',
                 description:
-                    'Trezor will connect automatically to Trezor Suite. No need to confirm each time.',
-                turnOnButton: 'Turn on',
+                    'Trezor will no longer connect automatically to Trezor Suite. You’ll confirm each connection on your device.',
+                turnOnButton: 'Turn off Auto-connect',
+                title: 'Turn off Auto-connect',
+                subtitle: 'Allow Trezor to connect automatically',
             },
         },
         firmware: {
@@ -980,11 +983,7 @@ export const messages = {
         },
         faq: {
             title: 'Get help',
-            legal: {
-                label: 'Legal',
-                termsAndConditions: 'Terms & conditions',
-                privacyPolicy: 'Privacy policy',
-            },
+            legal: 'Legal',
             supportCard: {
                 title: 'Need more help?',
                 contact: 'Contact support',
@@ -999,7 +998,6 @@ export const messages = {
                                 title: 'For cabled connections:',
                             },
                             wireless: {
-                                title: 'For wireless connections:',
                                 '0': 'Check the devices are in close proximity',
                                 '1': 'Make sure bluetooth is enabled on both devices',
                                 '2': 'Remove old Trezor device Bluetooth connections',
@@ -1007,6 +1005,7 @@ export const messages = {
                                 '4': 'Turn Bluetooth on/off again on your mobile device',
                                 '5': 'Forget and re-pair the devices',
                                 '6': 'Update Trezor firmware and your mobile device OS',
+                                title: 'For wireless connections:',
                             },
                             footer: 'If you’re still having issues, contact <link>Trezor Support</link>.',
                         },
@@ -1034,8 +1033,6 @@ export const messages = {
                     '3': {
                         question: 'My Trezor device can’t connect',
                         answer: {
-                            subtitle:
-                                'If you’re having trouble connecting your Trezor and your mobile device, try the following:',
                             '0': 'Check the devices are in close proximity',
                             '1': 'Make sure bluetooth is enabled on both devices',
                             '2': 'Remove old Trezor device Bluetooth connections',
@@ -1043,6 +1040,8 @@ export const messages = {
                             '4': 'Turn Bluetooth on/off again on your mobile device',
                             '5': 'Forget and re-pair the devices',
                             '6': 'Update Trezor firmware and your mobile device OS',
+                            subtitle:
+                                'If you’re having trouble connecting your Trezor and your mobile device, try the following:',
                             footer: 'If you’re still having issues, contact <link>Trezor Support</link>.',
                         },
                     },
@@ -1067,7 +1066,7 @@ export const messages = {
             },
             usbEnabled: {
                 '0': {
-                    question: 'Can I connect my Trezor to Trezor Suite?',
+                    question: 'Can I connect my Trezor to Trezor Suite Lite?',
                     answer: 'Yes, you can connect your Trezor Hardware Wallet and use limited functionality. It is designed to work as a companion to the desktop/web version of Trezor Suite, but we will gradually add more features to make it a standalone application to manage your {coinLabel} funds with Trezor Hardware Wallet.',
                 },
                 '1': {
@@ -1085,11 +1084,11 @@ export const messages = {
                         '0': 'Reconnect your Trezor',
                         '1': 'Use a different USB data cable',
                         '2': 'Use a different mobile device',
-                        '3': 'Enable connection for Trezor Suite via phone system message',
+                        '3': 'Enable connection for Trezor Suite Lite via phone system message',
                     },
                 },
                 '4': {
-                    question: 'Which firmware versions are supported by Trezor Suite on mobile?',
+                    question: 'What version of Trezor device Firmware Trezor Suite Lite supports?',
                     answer: {
                         '0': 'Trezor One: from version 1.12.1',
                         '1': 'Trezor T: from version 2.6.3',
@@ -1099,15 +1098,15 @@ export const messages = {
                 },
                 '5': {
                     question: 'Why don’t I see my coin listed?',
-                    answer: 'Trezor Suite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
+                    answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
                 },
                 '6': {
                     question: 'What does the graph display?',
-                    answer: 'The graph in Trezor Suite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
+                    answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
                 '7': {
-                    question: 'What is the “Eject wallets” feature?',
-                    answer: 'Turn on this feature if you want to eject all wallets automatically after disconnecting your Trezor hardware wallet. With the auto-eject feature disabled, you can see your account balances even after disconnecting your Trezor. This lets you track your funds without compromising security. Remember if you want to move funds, you’ll always need to connect your Trezor.',
+                    question: 'What is View-only?',
+                    answer: 'Even when your Trezor device is disconnected, you can still keep track of your balances with the View-Only. This feature provides peace of mind by allowing you to monitor your funds without compromising security. Plus no more waiting for retrieving all the assets and balances while connecting your Trezor device.',
                 },
             },
             usbDisabled: {
@@ -1116,24 +1115,24 @@ export const messages = {
                     answer: 'An XPUB is a master public key for hierarchical deterministic wallets like bitcoin, generating multiple child keys and receive addresses for improved privacy. Ethereum uses a single, unchanging address for all transactions. For Ethereum, share only your address, while keeping your private key secure.',
                 },
                 '1': {
-                    question: 'Can I connect my Trezor to Trezor Suite?',
+                    question: 'Can I connect my Trezor to Trezor Suite Lite?',
                     answer: 'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
                 },
                 '2': {
-                    question: 'How do I send {coinLabel} in Trezor Suite?',
-                    answer: 'Trezor Suite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send {coinLabel} using Trezor Suite. To send {coinLabel}, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
+                    question: 'How do I send {coinLabel} in Trezor Suite Lite?',
+                    answer: 'Trezor Suite Lite is a watch-only portfolio tracker, which means it is designed to help you monitor your cryptocurrency holdings and transactions. Unfortunately, it is not currently possible to send {coinLabel} using Trezor Suite Lite. To send {coinLabel}, use the full version of Trezor Suite with your Trezor hardware wallet. This will provide you with the necessary security and functionality to manage and perform transactions with your cryptocurrencies.',
                 },
                 '3': {
                     question: 'Why don’t I see my coin listed?',
-                    answer: 'Trezor Suite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
+                    answer: 'Trezor Suite Lite currently supports a limited number of cryptocurrencies. If your coin is not listed, it may not be compatible with the app. However, Trezor regularly adds support for new coins, so check back periodically to see which coins have been added.',
                 },
                 '4': {
                     question: 'What does the graph display?',
-                    answer: 'The graph in Trezor Suite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
+                    answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
                 '5': {
                     question:
-                        'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite?',
+                        'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
                     answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
                 },
             },
@@ -1147,18 +1146,13 @@ export const messages = {
             fiatCurrencyLabel: 'Currency',
             bitcoinUnitsLabel: 'Bitcoin units',
             languageLabel: 'Language',
-            theme: {
-                label: 'Theme',
-                standard: 'Standard',
-                dark: 'Dark',
-                system: 'System',
-            },
+            theme: 'Theme',
         },
         aboutUs: {
-            title: '<grey>About</grey> <green>Trezor Suite</green>',
+            title: '<grey>About</grey> <green>Trezor Suite Lite</green>',
             followUs: 'Follow us',
             lastCommitHash: 'Last commit hash: {lastCommitHash}',
-            body: 'Trezor Suite is a safe and secure way to stay connected to the {coinLabel} on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
+            body: 'Trezor Suite Lite is a safe and secure way to stay connected to the {coinLabel} on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
         },
         privacyAndSecurity: {
             title: 'Privacy & Security',
@@ -1275,6 +1269,9 @@ export const messages = {
                     'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
             },
         },
+        customization: {
+            title: 'Customization',
+        },
     },
     moduleOnboarding: {
         welcomeScreen: {
@@ -1317,7 +1314,7 @@ export const messages = {
             laterButton: 'I’ll do it later',
             step1: 'Go to Trezor Suite for Web using the button below.',
             step2: 'Complete recovery in your browser.',
-            step3: 'Start using your Trezor with\nTrezor Suite.',
+            step3: 'Start using your Trezor with\nTrezor Suite Lite.',
         },
         createPinScreen: {
             title: 'Set your Trezor’s PIN',
@@ -1688,7 +1685,7 @@ export const messages = {
                 coinLabel: 'Coin label',
             },
             removeAccountAlert: {
-                title: 'Do you really want to remove this coin from {trezorSuiteHeader}?',
+                title: 'Do you really want to remove this coin from {trezorSuiteLiteHeader}?',
                 description:
                     'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
                 primaryButton: 'Remove coin',
@@ -2003,7 +2000,7 @@ export const messages = {
                 warning: 'Sending to a wrong network might result in loss of funds.',
             },
             recipients: {
-                title: 'Recipient & amount',
+                title: 'Amount & recipients',
                 addressLabel: 'Recipient address',
                 checksum: {
                     label: 'We’ve adjusted the casing of your address to match checksum format. <link>Learn more</link>',
@@ -2143,6 +2140,11 @@ export const messages = {
                             'Make sure you send the transaction within 1 minute from signing.',
                     },
                 },
+                successMessage: 'Everything is ready, you can send the transaction now.',
+            },
+            cancelAlert: {
+                title: 'Are you sure you’d like to cancel sending the transaction?',
+                continueButton: 'Continue editing',
             },
         },
     },
@@ -2185,7 +2187,7 @@ export const messages = {
         },
         stakingBottomSheet: {
             title: 'To manage your staked funds, please use Trezor Suite for desktop.',
-            description: 'We currently support staking as view-only in Trezor Suite.',
+            description: 'We currently support staking as view-only in Trezor Suite Lite.',
         },
     },
     moduleTrading: {
@@ -2270,12 +2272,12 @@ export const messages = {
         },
         selectCoinToSell: {
             title: 'You pay',
-            buttonTitle: 'Select asset',
+            buttonTitle: 'Select coin',
             amountLabel: 'You pay',
         },
         selectCoin: {
             title: 'You get',
-            buttonTitle: 'Select asset',
+            buttonTitle: 'Select coin',
             amountLabel: 'You get',
         },
         selectRate: {
@@ -2428,8 +2430,7 @@ export const messages = {
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
-            subtitle:
-                'Set the {symbol} amount to approve so {companyName} can access it. This is required to continue with your swap.',
+            subtitle: 'Set how much {symbol} to approve for this swap.',
             revokeSuccessAlert: 'Revoke successful. Set a higher limit.',
             lowLimitInfoAlert:
                 'You’ve approved this token, but the limit is too low. Increase it to continue.',
@@ -2456,7 +2457,7 @@ export const messages = {
             title: 'Fee picker',
             description: {
                 title: 'Transaction fee',
-                body: 'Fees are paid directly to validators for processing your transactions.',
+                body: 'Fees are paid directly to network miners for processing your transactions.',
             },
         },
         tradingReviewOutputs: {
@@ -2467,11 +2468,11 @@ export const messages = {
             title: 'Set limit',
             unlimitedCard: {
                 description:
-                    'Approve unlimited {symbol} to skip future approval requests and reduce fees. Only use this option if you trust {companyName}, as it will have access to all your {symbol}.',
+                    "Skip future approval requests and save on fees by approving unlimited {symbol}. {companyName} will have full access to your {symbol}, and your funds may be at risk if they're ever compromised.",
             },
             limitedCard: {
                 description:
-                    "Approve only the amount needed for this swap. This helps reduce risk, but you'll need to approve again (and pay a fee) for future swaps.",
+                    "Approve only the amount needed for this swap. You'll need to approve again (and pay a fee) for future swaps, but this reduces risk by keeping you in full control of your {symbol}.",
             },
         },
         exchangeTradePreviewCard: {
@@ -2631,10 +2632,10 @@ export const messages = {
         typeBitcoinOnly: 'Bitcoin-only',
         updateNotAvailable: 'Firmware update disabled',
         seedBottomSheet: {
-            title: 'It’s a good practice to check your backup before updating firmware.',
+            title: 'It’s a good practice to check your backup before installing new firmware.',
             description:
                 'Although unlikely, a firmware update might fail. If this were to happen, you would need to access your assets with your wallet backup.',
-            continueButton: 'I’ve checked it',
+            continueButton: 'Install firmware',
             checkBackupButton: 'Check backup',
         },
         updateCard: {
@@ -2643,9 +2644,11 @@ export const messages = {
             updateToVersionAvailable: 'Update to version {firmwareVersion} available',
             updateButton: 'Update',
         },
-
         firmwareInfoScreen: {
-            title: { update: 'Firmware update', install: 'Firmware installation' },
+            title: {
+                update: 'Firmware update',
+                install: 'Firmware installation',
+            },
             subtitle: "Firmware is your Trezor's operating system",
             list: {
                 item1: {
@@ -2705,23 +2708,30 @@ export const messages = {
                 },
             },
             trezorFacts: {
+                '1': 'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
+                '2': 'Trezor launched the world’s first hardware wallet in 2014.',
+                '3': 'Founders Stick & Slush started Trezor as a side project in 2011.',
+                '4': 'Trezor means “vault” in Czech, reflecting its focus on security.',
+                '5': 'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
+                '6': 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
+                '7': 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
+                '8': 'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
+                '9': 'Trezor began controlling its own chip supply chain in 2023 for better security.',
+                '10': 'Trezor has sold wallets in over 150 countries.',
+                '11': 'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
                 title: 'Did you know?',
-                1: 'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
-                2: 'Trezor launched the world’s first hardware wallet in 2014.',
-                3: 'Founders Stick & Slush started Trezor as a side project in 2011.',
-                4: 'Trezor means “vault” in Czech, reflecting its focus on security.',
-                5: 'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
-                6: 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
-                7: 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
-                8: 'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
-                9: 'Trezor began controlling its own chip supply chain in 2023 for better security.',
-                10: 'Trezor has sold wallets in over 150 countries.',
-                11: 'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
             },
             confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
             retryButton: 'Retry',
             contactSupportButton: 'Contact support',
             stuckButton: 'Feel like you’re stuck?',
+            updating: {
+                title: 'Updating your firmware',
+            },
+            installing: {
+                title: 'Installing firmware',
+            },
+            dontCloseAppMessage: 'Don’t close the app.',
         },
         stuckedBottomSheet: {
             part1: {
