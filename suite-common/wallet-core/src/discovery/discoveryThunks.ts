@@ -558,6 +558,13 @@ export const runDiscoveryThunk = createThunk(
     },
 );
 
+type StartDiscoveryThunkParams = {
+    device?: TrezorDevice;
+    isAddingHiddenWallet?: boolean;
+    isAddingHiddenWalletWithRespectToSettings?: boolean;
+    isAddingExistingWallet?: boolean;
+};
+
 export const startDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
@@ -566,12 +573,7 @@ export const startDiscoveryThunk = createThunk(
             isAddingHiddenWallet,
             isAddingHiddenWalletWithRespectToSettings,
             isAddingExistingWallet,
-        }: {
-            device?: TrezorDevice;
-            isAddingHiddenWallet?: boolean;
-            isAddingHiddenWalletWithRespectToSettings?: boolean;
-            isAddingExistingWallet?: boolean;
-        },
+        }: StartDiscoveryThunkParams,
         { dispatch, getState },
     ): void => {
         const selectedDevice = selectSelectedDevice(getState());
@@ -769,7 +771,7 @@ export const cancelDiscoveryThunk = createThunk(
  */
 export const startOrRestartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
-    (_, { dispatch, getState, extra }) => {
+    (_, { dispatch, getState }) => {
         const device = selectSelectedDevice(getState());
         if (!device) return;
         const staticSessionId = device.state?.staticSessionId;
@@ -780,18 +782,13 @@ export const startOrRestartDiscoveryThunk = createThunk(
             return;
         }
 
-        // Note: currently used only in Suite. If a Suite Mobile implementation is needed, create a new extra selector
-        // for this particular setting, and provide it for Suite Mobile.
-        const isAddingHiddenWallet =
-            extra.selectors.selectSuiteSettings(getState()).defaultWalletLoading === 'passphrase';
-
         // if no staticSessionId available yet it means we failed sooner, for example during pin input
         dispatch(
             startDiscoveryThunk({
                 device,
                 isAddingExistingWallet: true,
-                isAddingHiddenWallet,
-                isAddingHiddenWalletWithRespectToSettings: isAddingHiddenWallet,
+                isAddingHiddenWallet: false,
+                isAddingHiddenWalletWithRespectToSettings: false,
             }),
         );
     },

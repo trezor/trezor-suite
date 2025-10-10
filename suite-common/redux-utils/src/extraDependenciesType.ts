@@ -12,12 +12,7 @@ import {
     UserContextPayload,
 } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    Account,
-    AddressDisplayOptions,
-    SelectedAccountStatus,
-    WalletType,
-} from '@suite-common/wallet-types';
+import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     BlockchainBlock,
     BluetoothDeviceId,
@@ -83,7 +78,6 @@ export type ExtraDependencies = {
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectSuiteSettings: SuiteCompatibleSelector<{
-            defaultWalletLoading: WalletType;
             localFirstStorageRelayUrl: string | null;
             isLocalFirstStorageEnabled: boolean;
         }>;

@@ -182,7 +182,6 @@ const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = 
                 stakeSolBannerClosed: false,
                 suspiciousTransactionsTooltipClosed: false,
                 showDashboardStakingPromoBanner: true,
-                isDashboardPassphraseBannerVisible: true,
                 showCopyAddressModal: true,
                 showUnhideTokenModal: true,
                 enableAutoupdateOnNextRun: false,

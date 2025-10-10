@@ -9894,27 +9894,6 @@ export default defineMessages({
         id: 'TR_URL_IN_TOKEN',
         defaultMessage: "Never visit URLs in token names or symbols; they're usually scams.",
     },
-    TR_DEVICE_SETTINGS_WALLET_LOADING: {
-        id: 'TR_DEVICE_SETTINGS_WALLET_LOADING',
-        defaultMessage: 'Wallet default',
-    },
-    TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE: {
-        id: 'TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE',
-        defaultMessage: 'Wallet type to open on start',
-    },
-    TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_DESC: {
-        id: 'TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_DESC',
-        defaultMessage:
-            'Set "Standard" or "Passphrase" as your default wallet option when Trezor Suite starts. Selecting "Passphrase" displays the passphrase entry box when you open the app. ',
-    },
-    TR_DEFAULT_WALLET_LOADING_STANDARD: {
-        id: 'TR_DEFAULT_WALLET_LOADING_STANDARD',
-        defaultMessage: 'Standard',
-    },
-    TR_DEFAULT_WALLET_LOADING_PASSPHRASE: {
-        id: 'TR_DEFAULT_WALLET_LOADING_PASSPHRASE',
-        defaultMessage: 'Passphrase',
-    },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT',
         defaultMessage: 'Learn how a passphrase works',
@@ -10084,18 +10063,6 @@ export default defineMessages({
         id: 'TR_CONNECT_DEVICE_RECEIVE_PROMO_DESCRIPTION',
         defaultMessage:
             "Verify on your Trezor to confirm the receive address. It's not recommended to continue without confirming.",
-    },
-    TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE: {
-        id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE',
-        defaultMessage: 'Do you primarily use a Passphrase wallet?',
-    },
-    TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION: {
-        id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION',
-        defaultMessage: 'Enable the passphrase entry box to open when you start Trezor Suite.',
-    },
-    TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON: {
-        id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON',
-        defaultMessage: 'Manage',
     },
     TR_SELECT_TREZOR: {
         id: 'TR_SELECT_TREZOR',

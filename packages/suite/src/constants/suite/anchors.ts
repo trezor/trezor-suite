@@ -29,7 +29,6 @@ export const SettingsAnchor = {
 
     BackupFailed: '@device-settings/backup-failed',
     BackupRecoverySeed: '@device-settings/backup-recovery-seed',
-    DefaultWalletLoading: '@device-settings/default-wallet-loading',
     CheckRecoverySeed: '@device-settings/check-recovery-seed',
     FirmwareVersion: '@device-settings/firmware-version',
     FirmwareType: '@device-settings/firmware-type',

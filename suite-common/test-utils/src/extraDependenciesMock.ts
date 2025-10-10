@@ -99,7 +99,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         } as SelectedAccountLoaded),
         selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
         selectSuiteSettings: mockSelector('selectSuiteSettings', {
-            defaultWalletLoading: 'standard',
             localFirstStorageRelayUrl: null,
             isLocalFirstStorageEnabled: false,
         }),

@@ -25,7 +25,6 @@ import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
 import { CheckRecoverySeed } from './CheckRecoverySeed';
 import { CustomFirmware } from './CustomFirmware';
-import { DefaultWalletLoading } from './DefaultWalletLoading';
 import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 import { DeviceLabel } from './DeviceLabel';
 import { DisplayRotation } from './DisplayRotation';
@@ -64,7 +63,6 @@ export const SettingsDevice = () => {
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
-    const isPassphraseProtectionOn = Boolean(device?.features?.passphrase_protection);
     const flags = useSelector(selectSuiteFlags);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
@@ -136,15 +134,6 @@ export const SettingsDevice = () => {
                             <CheckRecoverySeed isDeviceLocked={isDeviceLocked} />
                         </>
                     )}
-                </SettingsSection>
-            )}
-
-            {isPassphraseProtectionOn && (
-                <SettingsSection
-                    title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
-                    icon="appWindow"
-                >
-                    <DefaultWalletLoading />
                 </SettingsSection>
             )}
 

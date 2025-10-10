@@ -613,12 +613,6 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.SettingsDeviceDefaultWalletLoading;
-          payload: {
-              defaultWalletLoading: 'standard' | 'passphrase';
-          };
-      }
-    | {
           type: EventType.SettingsGeneralChangeLanguage;
           payload: {
               previousLanguage: string;
