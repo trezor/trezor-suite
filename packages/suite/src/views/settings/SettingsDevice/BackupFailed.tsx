@@ -15,7 +15,7 @@ export const BackupFailed = () => (
         />
         <ActionColumn>
             <ActionButton isDisabled data-testid="@device-settings/backup-failed/disabled-button">
-                <Translation id="TR_BACKUP_FAILED" />
+                <Translation id="TR_CREATE_BACKUP" />
             </ActionButton>
         </ActionColumn>
     </SettingsSectionItem>

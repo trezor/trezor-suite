@@ -1,30 +1,39 @@
-import { Banner } from '@trezor/components';
+import { useState } from 'react';
 
-import { goto } from 'src/actions/suite/routerActions';
+import { Banner } from '@trezor/components';
+import { isDeviceInBootloaderMode } from '@trezor/device-utils';
+
 import { Translation } from 'src/components/suite/Translation';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDispatch } from 'src/hooks/suite';
+import { useDevice } from 'src/hooks/suite';
+import { WipeDeviceModal } from 'src/views/settings/SettingsDevice/WipeDevice/WipeDeviceModal';
 
 export const FailedBackup = () => {
-    const dispatch = useDispatch();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { device } = useDevice();
+    const isBootloaderMode = isDeviceInBootloaderMode(device);
+
+    const buttonTranslation = isBootloaderMode
+        ? 'TR_DEVICE_SETTINGS_FACTORY_RESET'
+        : 'TR_DEVICE_SETTINGS_WIPE_DEVICE';
 
     return (
-        <Banner
-            icon
-            variant="destructive"
-            data-testid="@notification/failed-backup"
-            rightContent={
-                <Banner.Button
-                    onClick={() =>
-                        dispatch(goto('settings-device', { anchor: SettingsAnchor.BackupFailed }))
-                    }
-                    data-testid="@notification/failed-backup/continue-button"
-                >
-                    <Translation id="TR_CONTINUE" />
-                </Banner.Button>
-            }
-        >
-            <Translation id="TR_FAILED_BACKUP" />
-        </Banner>
+        <>
+            {isModalOpen && <WipeDeviceModal onCancel={() => setIsModalOpen(false)} />}
+            <Banner
+                icon
+                variant="destructive"
+                data-testid="@notification/failed-backup"
+                rightContent={
+                    <Banner.Button
+                        onClick={() => setIsModalOpen(true)}
+                        data-testid="@notification/failed-backup/continue-button"
+                    >
+                        <Translation id={buttonTranslation} />
+                    </Banner.Button>
+                }
+            >
+                <Translation id="TR_FAILED_BACKUP" />
+            </Banner>
+        </>
     );
 };
