@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 type UseBluetoothConnectionProps = {
     devices: DesktopBluetoothDevice[];
     onReScanClick: () => void;
-    toggleBluetoothMode: () => void;
 };
 
 export type UseBluetoothConnectionReturn = {
@@ -21,13 +20,11 @@ export type UseBluetoothConnectionReturn = {
     notConnectedNearbyDevices: DesktopBluetoothDevice[];
     onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
     handlePairingCancel: (deviceId: BluetoothDeviceId) => Promise<void>;
-    handleBluetoothConnectionCancel: () => void;
 };
 
 export const useBluetoothConnection = ({
     devices,
     onReScanClick,
-    toggleBluetoothMode,
 }: UseBluetoothConnectionProps): UseBluetoothConnectionReturn => {
     const dispatch = useDispatch();
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
@@ -77,18 +74,11 @@ export const useBluetoothConnection = ({
         onReScanClick();
     };
 
-    const handleBluetoothConnectionCancel = (): void => {
-        setSelectedDeviceId(null);
-        onReScanClick();
-        toggleBluetoothMode();
-    };
-
     return {
         selectedDevice,
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
         onConnect,
         handlePairingCancel,
-        handleBluetoothConnectionCancel,
     };
 };
