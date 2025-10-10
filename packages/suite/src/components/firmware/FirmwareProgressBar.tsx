@@ -8,8 +8,6 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
-import { useSelector } from '../../hooks/suite';
-
 const Percentage = styled.div`
     font-variant-numeric: tabular-nums;
     width: 30px;
@@ -17,17 +15,14 @@ const Percentage = styled.div`
 
 export const FirmwareProgressBar = () => {
     const theme = useTheme();
-    const { operation, progress, uiEvent } = useFirmwareDesktopUpdate();
-    const isActiveOnboarding = useSelector(state => state.onboarding.isActive);
+    const { operation, progress } = useFirmwareDesktopUpdate();
 
     const mapOperationToTranslationId: Record<
         NonNullable<FirmwareOperationStatus['operation']>,
         TranslationKey
     > = {
         installing: 'TR_INSTALLING',
-        restarting: isActiveOnboarding
-            ? 'TR_RESTARTING_TREZOR'
-            : 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',
+        restarting: 'TR_RESTARTING_TREZOR',
         thp: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
         completed: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
     };

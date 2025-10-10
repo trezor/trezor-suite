@@ -3671,11 +3671,6 @@ export default defineMessages({
         description: 'Info what is happening with users device.',
         id: 'TR_RESTARTING_TREZOR',
     },
-    TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED: {
-        defaultMessage: 'Restarting Trezor. Enter PIN if prompted.',
-        description: 'Info what is happening with users device.',
-        id: 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',
-    },
     TR_WALLET_DUPLICATE_DESC: {
         defaultMessage: "The Passphrase wallet you're accessing has already been discovered.",
         id: 'TR_WALLET_DUPLICATE_DESC',
