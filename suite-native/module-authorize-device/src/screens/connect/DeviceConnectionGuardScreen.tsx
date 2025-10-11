@@ -57,7 +57,6 @@ export const DeviceConnectionGuardScreen = ({
             header={
                 <ConnectDeviceScreenHeader
                     onCancelNavigationTarget={params?.onCancelNavigationTarget}
-                    helpButton={null}
                 />
             }
             noHorizontalPadding
