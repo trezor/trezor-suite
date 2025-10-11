@@ -70,7 +70,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                 name={feePerUnitFieldName}
                 testID={`@transactionManagement/${feePerUnitFieldName}-input`}
                 accessibilityLabel="address input"
-                keyboardType="number-pad"
+                keyboardType={networkType === 'bitcoin' ? 'decimal-pad' : 'number-pad'}
                 rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
                 onChangeText={handleFieldChangeValue(feePerUnitFieldName, cryptoAmountTransformer)}
             />
