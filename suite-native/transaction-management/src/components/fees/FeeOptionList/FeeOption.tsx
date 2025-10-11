@@ -75,7 +75,9 @@ const getFeePerUnit = ({
     }
 
     if (networkType === 'bitcoin') {
-        return String(Math.round(Number(feeLevel.fee) / transactionBytes));
+        const feePerVb = Number(feeLevel.fee) / transactionBytes;
+
+        return Number.isInteger(Number(feePerVb)) ? String(feePerVb) : Number(feePerVb).toFixed(2);
     }
 
     return feeLevel.feePerByte;
