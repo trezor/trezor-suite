@@ -15,6 +15,7 @@ import {
 } from '@suite-native/navigation';
 
 import { ConnectDeviceScreen } from '../../components/connect/ConnectDeviceScreen';
+import { ConnectingTrezorHelp } from '../../components/connect/ConnectingTrezorHelp';
 
 export const ConnectAndUnlockDeviceScreen = ({
     navigation,
@@ -39,7 +40,7 @@ export const ConnectAndUnlockDeviceScreen = ({
     };
 
     return (
-        <ConnectDeviceScreen>
+        <ConnectDeviceScreen helpButton={<ConnectingTrezorHelp />}>
             <ConnectAndUnlockDeviceScreenContent
                 onConnectViaBluetooth={
                     isBluetoothButtonVisible ? navigateToTurnOnAndUnlockDeviceScreen : undefined

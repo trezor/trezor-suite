@@ -11,7 +11,7 @@ import { ConnectDeviceScreenHeader } from './ConnectDeviceScreenHeader';
 
 type ConnectDeviceScreenProps = {
     children: ReactNode;
-    helpButton?: ReactNode;
+    helpButton: ReactNode;
 };
 
 export const ConnectDeviceScreen = ({ children, helpButton }: ConnectDeviceScreenProps) => {

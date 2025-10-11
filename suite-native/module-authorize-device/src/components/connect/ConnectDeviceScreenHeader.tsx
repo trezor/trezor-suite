@@ -21,8 +21,6 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
-import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
-
 type ConnectDeviceScreenHeaderProps = {
     shouldDisplayCancelButton?: boolean;
     onCancelNavigationTarget?: NavigateParameters<RootStackParamList>;
@@ -38,7 +36,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
     onCancelNavigationTarget,
-    helpButton = <ConnectingTrezorHelp />,
+    helpButton,
 }: ConnectDeviceScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
