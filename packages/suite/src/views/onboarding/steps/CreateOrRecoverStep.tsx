@@ -1,4 +1,4 @@
-import { Flex } from '@trezor/components';
+import { Grid } from '@trezor/components';
 
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
@@ -15,28 +15,28 @@ export const CreateOrRecoverStep = () => {
             iconName="wallet"
             heading={<Translation id="TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION" />}
         >
-            <Flex gap={24} direction={isBelowTablet ? 'column' : 'row'}>
+            <Grid gap={24} columns={isBelowTablet ? 1 : 2}>
                 <OnboardingOption
-                    icon="plusCircle"
-                    data-testid="@onboarding/path-create-button"
                     onClick={() => {
                         addPath(STEP.PATH_CREATE);
                         goToNextStep();
                         updateAnalytics({ seed: 'create' });
                     }}
+                    data-testid="@onboarding/path-create-button"
+                    iconName="plusCircle"
                     heading={<Translation id="TR_CREATE_WALLET" />}
                 />
                 <OnboardingOption
-                    icon="trezorBackup"
-                    data-testid="@onboarding/path-recovery-button"
                     onClick={() => {
                         addPath(STEP.PATH_RECOVERY);
                         goToNextStep();
                         updateAnalytics({ seed: 'recovery' });
                     }}
+                    data-testid="@onboarding/path-recovery-button"
+                    iconName="trezorBackup"
                     heading={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
                 />
-            </Flex>
+            </Grid>
         </OnboardingCard>
     );
 };

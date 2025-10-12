@@ -15,14 +15,14 @@ export const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => {
         <Grid columns={isBelowTablet ? 1 : 2} gap={20}>
             <OnboardingOption
                 onClick={() => onSelect('standard')}
-                icon="recoverySeedFilled"
+                iconName="recoverySeedFilled"
                 heading={<Translation id="TR_BASIC_RECOVERY" />}
                 description={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
                 data-testid="@recovery/select-type/standard"
             />
             <OnboardingOption
                 onClick={() => onSelect('advanced')}
-                icon="trezorModelOneFilled"
+                iconName="trezorModelOneFilled"
                 heading={<Translation id="TR_ADVANCED_RECOVERY" />}
                 description={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
                 data-testid="@recovery/select-type/advanced"
