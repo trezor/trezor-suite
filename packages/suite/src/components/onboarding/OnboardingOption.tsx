@@ -1,81 +1,37 @@
-import { HTMLAttributes, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import styled from 'styled-components';
+import { Card, Column, H4, Icon, IconName, Paragraph, Row } from '@trezor/components';
 
-import { Icon, IconName, useElevation, variables } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
-
-const Wrapper = styled.div<{ $elevation: Elevation }>`
-    display: flex;
-    padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.xl};
-    border-radius: ${borders.radii.xs};
-    border: solid 1px ${mapElevationToBorder};
-    background: ${mapElevationToBackground};
-    align-items: center;
-    width: 100%;
-    cursor: pointer;
-    transition: all 0.3s;
-
-    &:hover {
-        box-shadow: 0 6px 40px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_OPTION_CARD};
-        border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY_ALT};
-    }
-`;
-
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-`;
-
-const Heading = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-`;
-
-const Description = styled.span`
-    margin-top: 5px;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-const IconWrapper = styled.div`
-    margin-right: 24px;
-`;
-
-interface OnboardingOptionProps extends HTMLAttributes<HTMLDivElement> {
+type OnboardingOptionProps = {
     heading: ReactNode;
+    onClick: () => void;
     description?: ReactNode;
-    icon?: IconName;
-}
+    iconName?: IconName;
+    'data-testid'?: string;
+};
 
 export const OnboardingOption = ({
-    icon,
+    iconName,
     heading,
     description,
-    ...rest
-}: OnboardingOptionProps) => {
-    const { elevation } = useElevation();
-
-    return (
-        <Wrapper $elevation={elevation} {...rest}>
-            {icon && (
-                <IconWrapper>
-                    <Icon name={icon} size={48} />
-                </IconWrapper>
-            )}
-            <Content>
-                <Heading>{heading}</Heading>
-                {description && <Description>{description}</Description>}
-            </Content>
-        </Wrapper>
-    );
-};
+    onClick,
+    'data-testid': dataTestId,
+}: OnboardingOptionProps) => (
+    <Card onClick={onClick} data-testid={dataTestId} paddingType="none">
+        <Row
+            gap={20}
+            justifyContent={iconName ? 'flex-start' : 'center'}
+            padding={{ vertical: 20, horizontal: 32 }}
+        >
+            {iconName && <Icon name={iconName} size={48} />}
+            <Column gap={2}>
+                <H4>{heading}</H4>
+                {description && (
+                    <Paragraph typographyStyle="hint" variant="tertiary" textWrap="pretty">
+                        {description}
+                    </Paragraph>
+                )}
+            </Column>
+        </Row>
+    </Card>
+);
