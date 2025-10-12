@@ -47,7 +47,10 @@ export const BluetoothDebugInfo = ({ device }: BluetoothDeviceProps) => {
                     />
                 )}
                 {isNearbyDevice && (
-                    <Icon name="cellSignalFull" size={iconSizes.medium} variant="primary" />
+                    <>
+                        <Icon name="cellSignalFull" size={iconSizes.medium} variant="primary" />
+                        {isNearbyDevice.rssi} dBm
+                    </>
                 )}
                 <TimeAgo timestamp={device.lastUpdatedTimestamp} />
             </InfoSegments>
