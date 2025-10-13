@@ -4790,7 +4790,7 @@ export default defineMessages({
     },
     TR_FW_INSTALL_MAY_TAKE_A_WHILE: {
         id: 'TR_FW_INSTALL_MAY_TAKE_A_WHILE',
-        defaultMessage: 'Firmware installation may take a some time to complete.',
+        defaultMessage: 'Firmware installation may take some time to complete.',
     },
     TR_CHARGE_BATTERY_TO_ATLEAST: {
         id: 'TR_CHARGE_BATTERY_TO_ATLEAST',

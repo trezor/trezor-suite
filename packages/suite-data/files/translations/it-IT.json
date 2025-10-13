@@ -374,6 +374,7 @@
   "TR_BACKUP_SEED_IS_ULTIMATE": "Se hai bisogno di ripristinare il wallet per accedere ai tuoi fondi, devi avere a portata di mano il back-up del wallet. Fai attenzione a non perderlo. Una volta smarrito, non è più recuperabile. Nessuno può aiutarti a recuperarlo, neanche l'Assistenza di Trezor. Sii responsabile e assicurati di conservarlo con la massima cura e attenzione.",
   "TR_BACKUP_SUBHEADING_1": "Il back-up del wallet consiste in una serie di parole generate casualmente dal tuo dispositivo Trezor. È importante annotare il back-up del tuo wallet e conservarlo al sicuro, poiché è l'unico modo per recuperare e accedere ai tuoi fondi.",
   "TR_BALANCE": "Saldo",
+  "TR_BASE_CURRENCY": "Valuta",
   "TR_BASE_FEE": "Tariffa di base",
   "TR_BASIC_RECOVERY": "Recupero standard",
   "TR_BASIC_RECOVERY_OPTION": "Immetti il back-up del wallet parola per parola sul tuo computer.",
