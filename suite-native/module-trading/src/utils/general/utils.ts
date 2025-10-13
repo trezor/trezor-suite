@@ -1,6 +1,8 @@
 import { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import {
+    TradingExchangeType,
+    TradingSellType,
     TradingTradeType,
     TradingTransaction,
     TradingType,
@@ -13,7 +15,7 @@ import {
     tradeFinalStatuses,
 } from '@suite-common/trading';
 import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils/';
+import { getContractAddressForNetworkSymbol, getFormDraftKey } from '@suite-common/wallet-utils/';
 import type { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
@@ -247,4 +249,15 @@ export const toCaseAwareCryptoId = (cryptoId: CryptoId): CryptoId => {
     const adjustedContractAddress = getContractAddressForNetworkSymbol(symbol, contractAddress);
 
     return toTokenCryptoId(symbol, adjustedContractAddress);
+};
+
+export const getFormDraftKeyByTradeType = (tradeType: TradingSellType | TradingExchangeType) => {
+    switch (tradeType) {
+        case 'exchange':
+            return getFormDraftKey('trading-exchange', '');
+        case 'sell':
+            return getFormDraftKey('trading-sell', '');
+        default:
+            return exhaustive(tradeType);
+    }
 };

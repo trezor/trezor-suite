@@ -26,10 +26,10 @@ import { useConsentDenier } from '../general/useConsentDenier';
 
 type SellFlowReturn = {
     canProceed: boolean;
-    isConsentRequested: boolean;
+    isLegalTermsConsentRequested: boolean;
     selectQuote: () => Promise<void>;
-    giveConsent: () => void;
-    cancelConsent: () => void;
+    giveLegalTermsConsent: () => void;
+    cancelLegalTermsConsent: () => void;
     doSellTrade: (trade: SellFiatTrade) => Promise<void>;
     confirmTrade: (bankAccount: BankAccount) => Promise<void>;
 };
@@ -42,22 +42,17 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
     const candidateQuote = watch('quote');
     const isLoading = useSelector(selectTradingSellIsLoading);
     const sellInfo = useSelector(selectTradingSellInfo);
-    const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
-    useConsentDenier(candidateQuote?.exchange, resolveConsent);
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
 
     const sendAccount = useSelector(selectSellSelectedSendAccount);
 
-    const canProceed = !!candidateQuote && !!sendAccount && !isLoading;
-
-    const giveConsent = useCallback(() => {
-        resolveConsent(true);
-    }, [resolveConsent]);
-
-    const cancelConsent = useCallback(() => {
-        resolveConsent(false);
-    }, [resolveConsent]);
+    const {
+        isConsentRequested: isLegalTermsConsentRequested,
+        waitForConsent: waitForLegalTermsConsent,
+        resolveConsent: resolveLegalTermsConsent,
+    } = useConsent();
+    useConsentDenier(candidateQuote?.exchange, resolveLegalTermsConsent);
 
     // whenever we get a form from the webview, we need to navigate to the webview screen
     const handleWebview = useCallback(
@@ -106,6 +101,16 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
         },
         [handleWebview, selectedQuote],
     );
+
+    const canProceed = !!candidateQuote && !!sendAccount && !isLoading;
+
+    const giveLegalTermsConsent = useCallback(() => {
+        resolveLegalTermsConsent(true);
+    }, [resolveLegalTermsConsent]);
+
+    const cancelLegalTermsConsent = useCallback(() => {
+        resolveLegalTermsConsent(false);
+    }, [resolveLegalTermsConsent]);
 
     const doSellTrade = useCallback(
         async (trade: SellFiatTrade) => {
@@ -180,18 +185,26 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
             sellThunks.selectQuoteThunk({
                 quote: candidateQuote,
                 timer,
-                userConsent: waitForConsent,
+                userConsent: waitForLegalTermsConsent,
                 nextStep,
                 onCancel: () => {},
             }),
         );
-    }, [candidateQuote, isLoading, sellInfo, doSellTrade, dispatch, timer, waitForConsent]);
+    }, [
+        candidateQuote,
+        isLoading,
+        sellInfo,
+        doSellTrade,
+        dispatch,
+        timer,
+        waitForLegalTermsConsent,
+    ]);
 
     return {
         canProceed,
-        isConsentRequested,
-        giveConsent,
-        cancelConsent,
+        isLegalTermsConsentRequested,
+        giveLegalTermsConsent,
+        cancelLegalTermsConsent,
         doSellTrade,
         confirmTrade,
         selectQuote,

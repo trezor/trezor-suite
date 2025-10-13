@@ -30,7 +30,7 @@ import {
     PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { getFormDraftKey, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import {
     NativeSupportedFeeLevel,
@@ -41,7 +41,10 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 import { createFormStateForSendForm } from './utils';
-import { getErrorStrFromThunkRejectedValue } from './utils/general/utils';
+import {
+    getErrorStrFromThunkRejectedValue,
+    getFormDraftKeyByTradeType,
+} from './utils/general/utils';
 
 const NATIVE_TRADING_EXCHANGE_THUNK_PREFIX = 'trading/native';
 
@@ -60,8 +63,8 @@ export const clearTradingStateThunk = createThunk(
         dispatch(transactionManagementActions.clearFeeLevels());
 
         // Clear form draft with selected fees
-        dispatch(formDraftActions.removeDraft({ key: getFormDraftKey('trading-sell', '') }));
-        dispatch(formDraftActions.removeDraft({ key: getFormDraftKey('trading-exchange', '') }));
+        dispatch(formDraftActions.removeDraft({ key: getFormDraftKeyByTradeType('sell') }));
+        dispatch(formDraftActions.removeDraft({ key: getFormDraftKeyByTradeType('exchange') }));
     },
 );
 
@@ -197,7 +200,8 @@ export const composeTradingTransactionThunk = createThunk(
                         }),
                     );
 
-                    const formDraftKey = getFormDraftKey('trading-exchange', '');
+                    const formDraftKey = getFormDraftKeyByTradeType(tradeType);
+
                     // Store the form state in trading draft so it's available for TradingFeesForm
                     dispatch(
                         formDraftActions.storeDraft({

@@ -14,8 +14,8 @@ import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsRevie
 
 const mockUseExchangeFlow = {
     signAndSendTransaction: jest.fn(() => Promise.resolve(true)),
-    isConsentRequested: false,
-    resolveConsent: jest.fn(),
+    isTransactionSendConsentRequested: false,
+    resolveTransactionSendConsent: jest.fn(),
 };
 
 const mockUseConfirmOnTrezorController = {
@@ -77,8 +77,12 @@ describe('useTradingOutputsReviewScreenControls', () => {
     it('should return values from useExchangeFlow', async () => {
         const { result } = await renderUseTradingOutputsReviewScreenControls();
 
-        expect(result.current.isConsentRequested).toBe(mockUseExchangeFlow.isConsentRequested);
-        expect(result.current.resolveConsent).toBe(mockUseExchangeFlow.resolveConsent);
+        expect(result.current.isConsentRequested).toBe(
+            mockUseExchangeFlow.isTransactionSendConsentRequested,
+        );
+        expect(result.current.resolveConsent).toBe(
+            mockUseExchangeFlow.resolveTransactionSendConsent,
+        );
     });
 
     it('should return confirmOnTrezorRef', async () => {

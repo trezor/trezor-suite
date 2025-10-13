@@ -84,7 +84,7 @@ describe('useSellFlow', () => {
                 result.current.selectQuote();
             });
 
-            expect(result.current.isConsentRequested).toEqual(false);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
         });
 
         it('should request consent', async () => {
@@ -115,7 +115,7 @@ describe('useSellFlow', () => {
                 });
             });
 
-            expect(result.current.isConsentRequested).toEqual(true);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
         });
     });
 
@@ -151,13 +151,13 @@ describe('useSellFlow', () => {
                 });
             });
 
-            expect(result.current.isConsentRequested).toEqual(true);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
 
             act(() => {
-                result.current.giveConsent();
+                result.current.giveLegalTermsConsent();
             });
 
-            expect(result.current.isConsentRequested).toEqual(false);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
         });
     });
 
@@ -193,13 +193,13 @@ describe('useSellFlow', () => {
                 });
             });
 
-            expect(result.current.isConsentRequested).toEqual(true);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
 
             act(() => {
-                result.current.cancelConsent();
+                result.current.cancelLegalTermsConsent();
             });
 
-            expect(result.current.isConsentRequested).toEqual(false);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
         });
 
         it('should reset consent when quote provider changes', async () => {
@@ -220,7 +220,7 @@ describe('useSellFlow', () => {
                 });
             });
 
-            expect(result.current.isConsentRequested).toEqual(true);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
 
             // Change quote to one with different provider
             act(() => {
@@ -228,7 +228,7 @@ describe('useSellFlow', () => {
             });
             rerender({});
 
-            expect(result.current.isConsentRequested).toEqual(false);
+            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
         });
     });
 });
