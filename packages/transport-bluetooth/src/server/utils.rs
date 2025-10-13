@@ -55,6 +55,12 @@ pub async fn dispatch_status(
 }
 
 pub async fn wait_for_characteristics(peripheral: &Peripheral) -> Result<(), PlatformError> {
+    // linux + macos: services are empty until `discover_services` is called (via btleplug/api/mod.rs)
+    // windows: `discover_services()` slows down the process but its not empty
+    if peripheral.services().is_empty() {
+        peripheral.discover_services().await?;
+    }
+
     let mut retries = 10;
     while retries > 0 && peripheral.characteristics().is_empty() {
         peripheral.discover_services().await?;
