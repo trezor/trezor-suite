@@ -130,6 +130,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                 >
                     {toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
                 </Button>
+
                 {isTroubleshootingModalVisible && (
                     <Modal
                         heading={toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
@@ -149,12 +150,15 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
 
     return cta ? (
         <Column gap={80} alignItems="center">
-            <ActionBanner />
-            <TroubleshootingButton />
+            {cta && <ActionBanner />}
+            {/* > 1 because there is some empty default passed from parent component */}
+            {/* @ts-expect-error */}
+            {items['default']['items'].length > 1 && <TroubleshootingButton />}
         </Column>
     ) : (
         <Box margin={{ top: 80 }}>
-            <TroubleshootingButton />
+            {/* @ts-expect-error */}
+            {items['default']['items'].length > 1 && <TroubleshootingButton />}
         </Box>
     );
 };
@@ -163,6 +167,7 @@ export const TroubleshootingTips = ({ items, ...props }: TroubleshootingTipsProp
     <TroubleshootingTipsWithSections
         {...props}
         // key is arbitrary, label won't be displayed with only one section
+        // todo: what is this good for? wrapping incoming items into object with default key?
         items={{ default: { items, label: '' } }}
     />
 );
