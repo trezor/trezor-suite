@@ -5,10 +5,6 @@ import { Banner } from '@trezor/components';
 
 import { TroubleshootingTips } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import {
-    TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
-    TROUBLESHOOTING_TIP_RECONNECT,
-} from 'src/components/suite/troubleshooting/tips';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const DeviceTrezorHostProtocolPair = () => {
@@ -31,14 +27,12 @@ export const DeviceTrezorHostProtocolPair = () => {
         </Banner.Button>
     );
 
-    const tips = [TROUBLESHOOTING_TIP_CLOSE_ALL_TABS, TROUBLESHOOTING_TIP_RECONNECT];
-
     return (
         <TroubleshootingTips
             label={<Translation id="TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION" />}
             cta={ctaButton}
             variant="info"
-            items={tips}
+            items={[]}
         />
     );
 };
