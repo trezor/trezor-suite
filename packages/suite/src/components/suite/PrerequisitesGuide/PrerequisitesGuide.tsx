@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { motion } from 'framer-motion';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
@@ -20,7 +18,6 @@ import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
 import { Translation } from '../Translation';
 import { BannerAndTroubleshooting } from './BannerAndTroubleshooting';
-import { DebugWelcomeScreenPicker } from './DebugWelcomeScreenPicker';
 
 type PrerequisitesGuideProps = {
     showDeviceImage?: boolean;
@@ -65,12 +62,8 @@ const DeviceImage = ({ selectedDevice }: { selectedDevice: TrezorDevice | undefi
 
 export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuideProps) => {
     const device = useSelector(selectSelectedDevice);
-    const [prerequisite, setPrerequisite] = useState<ReturnType<typeof selectPrerequisite>>(
-        useSelector(selectPrerequisite),
-    );
-    const [deviceStatus, setDeviceStatus] = useState<ReturnType<typeof getStatus> | null>(
-        (device && getStatus(device)) ?? null,
-    );
+    const deviceStatus = device ? getStatus(device) : null;
+    const prerequisite = useSelector(selectPrerequisite);
     const selectedDevice = useSelector(selectSelectedDevice);
 
     const showWarning =
@@ -103,12 +96,6 @@ export const PrerequisitesGuide = ({ showDeviceImage = true }: PrerequisitesGuid
             <BottomAnimation>
                 <BannerAndTroubleshooting prerequisite={prerequisite} />
             </BottomAnimation>
-            <DebugWelcomeScreenPicker
-                prerequisite={prerequisite}
-                setPrerequisite={setPrerequisite}
-                deviceStatus={deviceStatus}
-                setDeviceStatus={setDeviceStatus}
-            />
         </>
     );
 };
