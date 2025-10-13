@@ -7,7 +7,7 @@ Trezor Suite native application.
 Generally it's recommended to follow official [React Native environment setup](https://reactnative.dev/docs/set-up-your-environment) guide.
 
 1. [Android Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=android)
-    - If you have Linux, install `watchman` preferably using Homebrew (others methods seem to be unmaintained)
+    - If you have Linux, `watchman` can be installed via `apt` on debian/ubuntu. Alternatively you may install it via Homebrew for Linux - recommended by watchman, but may cause other issues on Linux.
 2. [iOS Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=ios)
     - Make sure you have the latest version of the Xcode command line tools installed: `xcode-select --install`
 
