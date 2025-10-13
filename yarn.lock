@@ -12687,6 +12687,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.8.2"
     "@suite-common/local-first-storage": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
