@@ -56,11 +56,12 @@ export const deviceStatuses = [
     'device-hard-locked',
     'device-pin-locked',
     'device-thp-locked',
+    'firmware-corrupted',
     'unknown',
 ] as const;
 export type DeviceStatus = (typeof deviceStatuses)[number];
 
-export const getStatus = (device: TrezorDevice) => {
+export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (device.status === 'busy') {
         return 'device-busy';
     }
