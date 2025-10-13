@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 
+# There is a similar script like this in trezor/data
+# https://github.com/trezor/data/blob/master/scripts/check-firmware-revisions.sh
+#
+# The difference is that in here we only have to check for new release JSONs but
+# in trezor/data repository we have to keep checking for legacy releases.json files.
+
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" || exit ; pwd -P )
 
-if [[ $# -ne 2 ]]
+if [[ $# -ne 1 ]]
     then
-        echo "must provide 2 argument. $# provided"
+        echo "must provide 1 argument. $# provided"
         exit 1
 fi
 
 DEVICE=$1
-IS_LEGACY=$2
 
 RELEASES_FOLDER="$PARENT_PATH"/../files/firmware
 
@@ -37,18 +42,10 @@ git fetch origin
 git checkout "$BRANCH"
 git reset "origin/$BRANCH" --hard
 
-DATA=""
 
-# When checking legacy "1" and "2" directories we do not check `bitcoinonly` and `universal` directories
-# with new format, we only check it for legacy `releases.json`. For the rest we check it for both formats.
-if [[ "$IS_LEGACY" == "true" ]]; then
-  DATA=$(jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$RELEASES_FOLDER/$DEVICE"/releases.json)
-else
-  DATA=$(
-    jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$RELEASES_FOLDER/$DEVICE"/releases.json
+DATA=$(
     jq -r '.version |= join(".") | .firmware_revision + "%" + .version' "$RELEASES_FOLDER/$DEVICE"/{bitcoinonly,universal}/*.json
-  )
-fi
+)
 
 for ROW in $DATA;
 do 
