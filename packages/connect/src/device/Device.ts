@@ -9,7 +9,6 @@ import {
 } from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
-import { OpenDeviceChannel } from '@trezor/transport/src/api/abstract';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
 import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 
@@ -146,11 +145,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
      */
     private unreadableError?: string;
 
-    private channels: Record<Exclude<OpenDeviceChannel, 'read'>, boolean> = {
-        'battery-level': false,
-        'trezor-push-notification': false,
-    };
-
     // @ts-expect-error: strictPropertyInitialization
     private _firmwareStatus: DeviceFirmwareStatus;
     public get firmwareStatus() {
@@ -265,6 +259,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
             case TRANSPORT.DEVICE_DISCONNECTED: {
                 return this.disconnect();
             }
+            case TRANSPORT.TREZOR_PUSH_NOTIFICATION: {
+                return trezorPushNotificationHandler({ device: this, message: event.payload.data });
+            }
+            case TRANSPORT.BATTERY_LEVEL: {
+                this._updateFeature('soc', event.payload.data[0]);
+                this.lifecycle.emit(DEVICE.CHANGED);
+            }
         }
     };
 
@@ -345,31 +346,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.busy = value;
     }
 
-    subscribe() {
+    private subscribe() {
         if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
             this.transport
                 .subscribe({
-                    path: this.descriptor.id,
-                    channels: ['battery-level', 'trezor-push-notification'],
+                    descriptor: {
+                        id: this.descriptor.id,
+                        path: this.descriptor.path,
+                    },
+                    channels: [TRANSPORT.BATTERY_LEVEL, TRANSPORT.TREZOR_PUSH_NOTIFICATION],
                 })
                 .then(result => {
                     if (result.success) {
-                        this.channels = result.payload;
+                        // now we are listening to notifications (see transportDeviceEvents)
                         this.lifecycle.emit(DEVICE.CHANGED);
-                    }
-
-                    if (this.channels['battery-level']) {
-                        this.transport.on('battery-level', event => {
-                            this._updateFeature('soc', event.data[0]);
-                            this.lifecycle.emit(DEVICE.CHANGED);
-                        });
-                    }
-                    if (this.channels['trezor-push-notification']) {
-                        this.transport.on('trezor-push-notification', ({ id, data }) => {
-                            if (id === this.descriptor.id) {
-                                trezorPushNotificationHandler({ device: this, message: data });
-                            }
-                        });
                     }
                 });
         }

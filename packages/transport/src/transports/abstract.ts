@@ -79,14 +79,14 @@ type TransportEvents = {
     [TRANSPORT.ERROR]: BridgeCommonErrors | typeof ERRORS.API_DISCONNECTED; // BluetoothApi disconnected
     [TRANSPORT.STOPPED]: void;
     [TRANSPORT.SEND_MESSAGE_PROGRESS]: number;
-    [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
-    [TRANSPORT.BATTERY_LEVEL]: { id: string; data: number[] };
 };
 
 export type TransportDeviceEvent =
     | { type: typeof TRANSPORT.DEVICE_DISCONNECTED }
     | { type: typeof TRANSPORT.DEVICE_REQUEST_RELEASE }
-    | { type: typeof TRANSPORT.DEVICE_SESSION_CHANGED; descriptor: Descriptor };
+    | { type: typeof TRANSPORT.DEVICE_SESSION_CHANGED; descriptor: Descriptor }
+    | { type: typeof TRANSPORT.TREZOR_PUSH_NOTIFICATION; payload: { id: string; data: number[] } }
+    | { type: typeof TRANSPORT.BATTERY_LEVEL; payload: { id: string; data: number[] } };
 
 export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
     public abstract readonly name:
@@ -293,7 +293,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
      * Subscribe to push notification
      */
     subscribe(_params: {
-        path: any;
+        descriptor: Required<Pick<Descriptor, 'path' | 'id'>>;
         channels: OpenDeviceChannel[];
         signal?: AbortSignal;
     }): AsyncResultWithTypedError<Record<OpenDeviceChannel, boolean>, ReadWriteError> {

@@ -12,7 +12,7 @@ import { SessionsBackground } from '../sessions/background';
 import { SessionsClient } from '../sessions/client';
 import { SessionsBackgroundInterface } from '../sessions/types';
 import { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from '../thp';
-import { Session } from '../types';
+import { Descriptor, Session } from '../types';
 import { receiveAndParse } from '../utils/receive';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
 
@@ -144,12 +144,12 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }
 
     public subscribe({
-        path,
+        descriptor,
         channels,
         signal,
     }: {
-        path: any;
-        channels: OpenDeviceChannel[];
+        descriptor: Required<Pick<Descriptor, 'path' | 'id'>>;
+        channels: Exclude<OpenDeviceChannel, 'read'>[];
         signal?: AbortSignal;
     }) {
         return this.scheduleAction(
@@ -157,11 +157,21 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const entries = await Promise.all(
                     channels.map(async channel => {
                         try {
-                            const res = await this.api.openDevice(path, {
+                            // @ts-expect-error todo: a bug to solve with types, PathInternal vs descriptor.id
+                            const res = await this.api.openDevice(descriptor.id, {
                                 reset: false,
                                 signal,
                                 channel,
                             });
+
+                            if (res.success) {
+                                this.api.on(channel, payload => {
+                                    this.deviceEvents.emit(descriptor.path, {
+                                        type: channel,
+                                        payload,
+                                    });
+                                });
+                            }
 
                             return [channel, res.success];
                         } catch {
