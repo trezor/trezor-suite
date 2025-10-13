@@ -39,7 +39,7 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@stellar/stellar-sdk": "^13.3.0",
+        "@stellar/stellar-sdk": "14.2.0",
         "@trezor/eslint": "workspace:*"
     },
     "dependencies": {
