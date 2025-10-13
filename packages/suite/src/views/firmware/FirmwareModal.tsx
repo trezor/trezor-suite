@@ -1,20 +1,13 @@
 import { ReactNode, useState } from 'react';
-import { useIntl } from 'react-intl';
 
-import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectThpStep } from '@suite-common/thp';
 import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
-import { getDeviceColorVariant } from '@trezor/device-utils';
-import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useFirmwareInstallationProgressCheck, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
-import messages from 'src/support/messages';
 
 import { StepCheckSeed } from './Steps/StepCheckSeed';
 import { StepDone } from './Steps/StepDone';
@@ -43,32 +36,21 @@ export const FirmwareModal = ({
     isCustomFirmwareUploaded,
     shouldSwitchFirmwareType,
 }: FirmwareModalProps) => {
-    const {
-        resetReducer,
-        status,
-        setStatus,
-        deviceWillBeWiped,
-        error,
-        buttonEvent,
-        confirmOnDevice,
-        showConfirmationPill,
-    } = useFirmwareDesktopUpdate({ shouldSwitchFirmwareType });
+    const { resetReducer, status, setStatus, deviceWillBeWiped, error } = useFirmwareDesktopUpdate({
+        shouldSwitchFirmwareType,
+    });
     const device = useSelector(selectSelectedDevice);
 
     const thpStep = useSelector(selectThpStep);
 
     const dispatch = useDispatch();
-    const intl = useIntl();
     const [isChecked, setIsChecked] = useState(false);
-    const uiEventDevice = buttonEvent?.device;
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
         useFirmwareInstallationProgressCheck();
 
     // The 'started' is NOT cancellable as the FW is streamed into the device.
     // It can be canceled only via `trezorCancel`
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
-
-    const isAwaitingPinEntry = buttonEvent?.code === 'ButtonRequest_PinEntry';
 
     const handleClose = () => {
         if (device?.status !== 'available') {
@@ -78,8 +60,6 @@ export const FirmwareModal = ({
         dispatch(closeModalApp());
         resetReducer();
     };
-
-    const trezorCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     const getContent = () => {
         if (thpStep !== null) {
@@ -171,23 +151,6 @@ export const FirmwareModal = ({
 
     return (
         <Modal.Backdrop onClick={isCancelable ? handleClose : undefined}>
-            {showConfirmationPill && (
-                <ConfirmOnDevicePill
-                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                    deviceModelInternal={
-                        uiEventDevice !== undefined
-                            ? getDeviceInternalModel(uiEventDevice)
-                            : undefined
-                    }
-                    deviceUnitColor={
-                        uiEventDevice !== undefined
-                            ? getDeviceColorVariant(uiEventDevice)
-                            : undefined
-                    }
-                    isConfirmed={!confirmOnDevice}
-                    onCancel={isAwaitingPinEntry ? trezorCancel : undefined}
-                />
-            )}
             {getContent()}
         </Modal.Backdrop>
     );
