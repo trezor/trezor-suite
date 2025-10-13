@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { AssetProps } from '@trezor/product-components';
-
-import { NetworkTab } from './useNetworksTabs';
+import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 
 function createSearchFilter(search: string) {
     return function searchFor(property?: string) {
@@ -10,20 +8,12 @@ function createSearchFilter(search: string) {
     };
 }
 
-export function useOptionsSearch(allOptions: AssetProps[], activeTab: NetworkTab) {
+export function useOptionsSearch(activeTabOptions: SelectAssetOptionCurrencyProps[]) {
     const [search, setSearch] = useState('');
 
-    const filteredOptions = useMemo(
+    const filteredOptions = useMemo<SelectAssetOptionCurrencyProps[]>(
         () =>
-            allOptions.filter(item => {
-                if (
-                    activeTab &&
-                    item.coingeckoId !== activeTab.coingeckoId &&
-                    item.symbol !== activeTab.symbol
-                ) {
-                    return false;
-                }
-
+            activeTabOptions.filter(item => {
                 const contractAddress = item.contractAddress || undefined;
                 const searchFor = createSearchFilter(search);
 
@@ -35,7 +25,7 @@ export function useOptionsSearch(allOptions: AssetProps[], activeTab: NetworkTab
                     searchFor(item.symbol)
                 );
             }),
-        [activeTab, allOptions, search],
+        [activeTabOptions, search],
     );
 
     return {

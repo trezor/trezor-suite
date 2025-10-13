@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
     TOKEN_SELECT_SELECTABLE_NETWORKS,
@@ -7,10 +7,11 @@ import {
 import { Network } from '@suite-common/wallet-config';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 
 export type NetworkTab = Network | null;
 
-export function useNetworksTabs() {
+export function useNetworksTabs(options: SelectAssetOptionCurrencyProps[]) {
     const [activeTab, setActiveTab] = useState<NetworkTab>(null);
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
 
@@ -24,8 +25,23 @@ export function useNetworksTabs() {
         }
     }, [context.network]);
 
+    const activeTabOptions = useMemo(() => {
+        if (!activeTab) {
+            return options;
+        }
+
+        return options.filter(
+            option =>
+                option.coingeckoId === activeTab.coingeckoId &&
+                option.symbol === activeTab.symbol &&
+                // E.g. Don't show Solana network in Solana tab
+                option.ticker !== activeTab.displaySymbol,
+        );
+    }, [activeTab, options]);
+
     return {
         activeTab,
         setActiveTab,
+        activeTabOptions,
     } as const;
 }
