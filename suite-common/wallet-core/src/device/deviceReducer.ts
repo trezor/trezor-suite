@@ -282,8 +282,8 @@ const changeDevice = (
     const affectedDevices = draft.devices.filter(
         d =>
             d.features &&
-            ((d.connected &&
-                (d.id === device.id || (d.path.length > 0 && d.path === device.path))) ||
+            (d.id === device.id ||
+                (d.path.length > 0 && d.path === device.path) ||
                 // update "disconnected" remembered devices if in bootloader mode
                 (d.mode === 'bootloader' && d.remember && d.id === device.id)),
     ) as AcquiredDevice[];
