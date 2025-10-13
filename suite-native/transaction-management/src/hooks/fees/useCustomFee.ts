@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { invariant } from '@suite-common/suite-utils';
 import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import { AccountKey, FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
@@ -57,7 +58,11 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
 
     const handleValuesChange = useCallback(async () => {
         trigger();
+
+        invariant(networkType !== 'solana', 'Custom fee is not supported for solana');
+
         if (!customFeePerUnit || !formState) {
+            console.warn('Cannot calculate custom fee because of missing values');
             setIsFeeLoading(false);
 
             return;
@@ -100,11 +105,6 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     ]);
 
     useEffect(() => {
-        // we don't support custom fee for solana
-        if (networkType === 'solana') {
-            return;
-        }
-
         setIsFeeLoading(true);
         debounce(handleValuesChange);
     }, [watchedFeePerUnit, watchedFeeLimit, handleValuesChange, debounce, networkType]);

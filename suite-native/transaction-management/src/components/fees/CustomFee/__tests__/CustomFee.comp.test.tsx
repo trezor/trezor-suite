@@ -12,7 +12,15 @@ import {
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';
 import { useFeesForm } from '../../../../hooks';
+import { useCustomFee } from '../../../../hooks/fees/useCustomFee';
 import { CustomFee } from '../CustomFee';
+
+// Mock the useCustomFee hook
+jest.mock('../../../../hooks/fees/useCustomFee', () => ({
+    useCustomFee: jest.fn(),
+}));
+
+const mockUseCustomFee = jest.mocked(useCustomFee);
 
 type CustomFeeProps = {
     accountKey: AccountKey;
@@ -85,6 +93,16 @@ describe('CustomFee', () => {
         });
     };
 
+    beforeEach(() => {
+        // Default mock implementation for useCustomFee
+        mockUseCustomFee.mockReturnValue({
+            feeValue: '1000',
+            isFeeLoading: false,
+            isErrorBoxVisible: false,
+            isSubmittable: true,
+        });
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -126,6 +144,43 @@ describe('CustomFee', () => {
         });
 
         expect(toJSON()).toBeNull();
+    });
+
+    it('should not call useCustomFee hook for solana network', async () => {
+        const form = await renderUseFeesForm();
+
+        // Clear any previous calls
+        mockUseCustomFee.mockClear();
+
+        await renderCustomFee({
+            form,
+            props: {
+                symbol: 'sol' as NetworkSymbol,
+            },
+        });
+
+        // Verify that useCustomFee was not called for Solana
+        expect(mockUseCustomFee).not.toHaveBeenCalled();
+    });
+
+    it('should call useCustomFee hook for ethereum network', async () => {
+        const form = await renderUseFeesForm();
+
+        // Clear any previous calls
+        mockUseCustomFee.mockClear();
+
+        await renderCustomFee({
+            form,
+            props: {
+                symbol: 'eth' as NetworkSymbol,
+            },
+        });
+
+        // Verify that useCustomFee was called for Ethereum
+        expect(mockUseCustomFee).toHaveBeenCalledWith({
+            accountKey: 'eth-account-1',
+            formState: expect.any(Object),
+        });
     });
 
     it('should render for bitcoin network', async () => {

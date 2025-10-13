@@ -41,7 +41,7 @@ export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
     </Animated.View>
 );
 
-export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: CustomFeeProps) => {
+const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: CustomFeeProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const [previousSelectedFeeLevelLabel, setPreviousSelectedFeeLevelLabel] =
@@ -69,11 +69,6 @@ export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: Cus
         closeModal();
     };
 
-    // custom fees are not allowed for solana
-    if (getNetworkType(symbol) === 'solana') {
-        return null;
-    }
-
     return (
         <Box flex={1}>
             {isCustomFeeSelected ? (
@@ -97,5 +92,22 @@ export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: Cus
                 isErrorBoxVisible={isErrorBoxVisible}
             />
         </Box>
+    );
+};
+
+export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: CustomFeeProps) => {
+    // custom fees are not allowed for solana
+    // we return null here so we don't need to mount the hooks there
+    if (getNetworkType(symbol) === 'solana') {
+        return null;
+    }
+
+    return (
+        <CustomFeeContentWrapper
+            accountKey={accountKey}
+            symbol={symbol}
+            formDraft={formDraft}
+            onCustomFeeSet={onCustomFeeSet}
+        />
     );
 };
