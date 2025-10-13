@@ -20,6 +20,7 @@ import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
@@ -58,6 +59,13 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
 
     const tokenAddress = getValues('sendCryptoSelect')?.contractAddress as TokenAddress | undefined;
 
+    const { fiatAmount } = useFiatFromCryptoValue({
+        amount: account.formattedBalance || '',
+        symbol: account.symbol,
+        tokenAddress,
+        rateType: 'current',
+    });
+
     const { areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
 
     const rates = useSelector(selectCurrentFiatRates);
@@ -80,6 +88,14 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
                   validate: {
                       min: validateMin(translationString),
                       decimals: validateDecimals(translationString, { decimals: 2 }),
+                      balance: (value: string) => {
+                          if (
+                              fiatAmount &&
+                              new BigNumber(value).isGreaterThan(new BigNumber(fiatAmount))
+                          ) {
+                              return translationString('AMOUNT_IS_NOT_ENOUGH');
+                          }
+                      },
                       minFiat: () => {
                           if (
                               cryptoAmount &&
