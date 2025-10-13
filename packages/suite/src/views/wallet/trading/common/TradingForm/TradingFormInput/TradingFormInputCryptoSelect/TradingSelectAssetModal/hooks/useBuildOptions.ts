@@ -12,7 +12,7 @@ import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { SelectAssetOptionCurrencyProps, SelectAssetOptionProps } from 'src/types/trading/trading';
+import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 import { Account } from 'src/types/wallet';
 
 type MinimalTokenInfo = Pick<TokenInfo, 'contract' | 'balance'>;
@@ -150,7 +150,7 @@ function orderAssetOptionsByFiatBalanceInDesc(
 export function useBuildOptions(
     rawOptions: TradingCryptoSelectOptionProps[],
     sortTokensByFiatBalanceInDesc: boolean,
-): SelectAssetOptionProps[] {
+): SelectAssetOptionCurrencyProps[] {
     const currentRates = useSelector(selectCurrentFiatRates);
     const accounts = useSelector(selectAllAccountsToList);
     const accountsWithTokensGroupedByNetworkSymbol = useMemo(

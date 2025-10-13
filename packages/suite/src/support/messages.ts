@@ -403,9 +403,13 @@ export default defineMessages({
         defaultMessage: 'Select asset',
         id: 'TR_SELECT_TOKEN',
     },
-    TR_SELECT_NAME_OR_ADDRESS: {
+    TR_SELECT_ASSET_OF_NETWORKS_PLACEHOLDER: {
         defaultMessage: 'Search by name, symbol, network, or contract address',
-        id: 'TR_SELECT_NAME_OR_ADDRESS',
+        id: 'TR_SELECT_ASSET_OF_NETWORKS_PLACEHOLDER',
+    },
+    TR_SELECT_ASSET_OF_NETWORK_PLACEHOLDER: {
+        defaultMessage: 'Search by name, symbol, or contract address',
+        id: 'TR_SELECT_ASSET_OF_NETWORK_PLACEHOLDER',
     },
     TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL: {
         defaultMessage: 'Search by name, symbol, or contract address',

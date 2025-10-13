@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 
-import { SelectAssetOptionProps } from 'src/types/trading/trading';
+import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 
-const getNetworkCount = (options: SelectAssetOptionProps[]) => {
+const getNetworkCount = (options: SelectAssetOptionCurrencyProps[]) => {
     const networkNetworkGroups = options
-        .filter(item => item.type === 'group' && item.networkName && item.coingeckoId)
+        .filter(item => item.networkName && item.coingeckoId)
         .map(networkGroup => ({
             ...networkGroup,
             tradeCryptoId: getNetworkByCoingeckoId(networkGroup.coingeckoId!)?.tradeCryptoId,
@@ -27,7 +27,6 @@ const getNetworkCount = (options: SelectAssetOptionProps[]) => {
 
     const networkCurrencies = options.filter(
         item =>
-            item.type === 'currency' &&
             !item.contractAddress &&
             !networkNetworkGroups.coingeckoIds.has(item.coingeckoId) &&
             !networkNetworkGroups.tradeCryptoIds.has(item.coingeckoId),
@@ -36,6 +35,6 @@ const getNetworkCount = (options: SelectAssetOptionProps[]) => {
     return networkNetworkGroups.coingeckoIds.size + networkCurrencies.length;
 };
 
-export function useNetworksCount(options: SelectAssetOptionProps[]): number {
+export function useNetworksCount(options: SelectAssetOptionCurrencyProps[]): number {
     return useMemo(() => getNetworkCount(options), [options]);
 }

@@ -25,7 +25,10 @@ import { Translation } from 'src/components/suite/Translation';
 import { TokenBalance } from 'src/components/wallet/TokenBalance';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { SelectAssetOptionProps, TradingTradeBuyExchangeType } from 'src/types/trading/trading';
+import {
+    SelectAssetOptionCurrencyProps,
+    TradingTradeBuyExchangeType,
+} from 'src/types/trading/trading';
 import { getFingerprint } from 'src/utils/wallet/getFingerprint';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
@@ -34,19 +37,19 @@ import { useNetworksCount } from './hooks/useNetworksCount';
 import { useNetworksTabs } from './hooks/useNetworksTabs';
 import { useOptionsSearch } from './hooks/useOptionsSearch';
 
-const getCurrencyOptionsMappedToAssetProps = (options: SelectAssetOptionProps[]): AssetProps[] =>
-    options
-        .filter(item => item.type === 'currency')
-        .map(item => ({
-            ticker: item.label ?? item.ticker,
-            symbol: item.symbol,
-            cryptoName: item.cryptoName ?? item.ticker,
-            badge: item.badge ?? item.networkName,
-            coingeckoId: item.coingeckoId,
-            contractAddress: item.contractAddress,
-            height: ITEM_HEIGHT,
-            tokenBalance: item.tokenBalance,
-        }));
+const getCurrencyOptionsMappedToAssetProps = (
+    options: SelectAssetOptionCurrencyProps[],
+): AssetProps[] =>
+    options.map(item => ({
+        ticker: item.label ?? item.ticker,
+        symbol: item.symbol,
+        cryptoName: item.cryptoName ?? item.ticker,
+        badge: item.badge ?? item.networkName,
+        coingeckoId: item.coingeckoId,
+        contractAddress: item.contractAddress,
+        height: ITEM_HEIGHT,
+        tokenBalance: item.tokenBalance,
+    }));
 
 export interface TradingSelectAssetModalProps {
     onModalClose: () => void;
@@ -66,7 +69,16 @@ export function TradingSelectAssetModal({
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
 
     const options = useBuildOptions(rawOptions, sortTokensByFiatBalanceInDesc);
-    const allOptions = useMemo(() => getCurrencyOptionsMappedToAssetProps(options), [options]);
+    const networkCount = useNetworksCount(options);
+
+    const { activeTab, setActiveTab, activeTabOptions } = useNetworksTabs(options);
+    const { filteredOptions, setSearch, search } = useOptionsSearch(activeTabOptions);
+
+    const assetOptions = useMemo(
+        () => getCurrencyOptionsMappedToAssetProps(filteredOptions),
+        [filteredOptions],
+    );
+    const optionsFingerprint = useMemo(() => getFingerprint(assetOptions), [assetOptions]);
 
     const handleSelectChange = useCallback(
         (selectedAsset: AssetOptionBaseProps) => {
@@ -103,22 +115,21 @@ export function TradingSelectAssetModal({
         [context, dispatch, onModalClose, rawOptions],
     );
 
-    const networkCount = useNetworksCount(options);
-    const { activeTab, setActiveTab } = useNetworksTabs();
-    const { filteredOptions, setSearch, search } = useOptionsSearch(allOptions, activeTab);
-    const optionsFingerprint = useMemo(() => getFingerprint(filteredOptions), [filteredOptions]);
-
     return (
         <SelectAssetModal
             data-testid={dataTestId ?? '@trading/form/select-crypto'}
-            options={filteredOptions}
+            options={assetOptions}
             optionsFingerprint={optionsFingerprint}
             onSelectAsset={handleSelectChange}
             onClose={onModalClose}
             searchInput={
                 <SearchAsset
                     data-testid="@trading/form/select-crypto/search-input"
-                    searchPlaceholder={translationString('TR_SELECT_NAME_OR_ADDRESS')}
+                    searchPlaceholder={
+                        activeTab
+                            ? translationString('TR_SELECT_ASSET_OF_NETWORK_PLACEHOLDER')
+                            : translationString('TR_SELECT_ASSET_OF_NETWORKS_PLACEHOLDER')
+                    }
                     search={search}
                     setSearch={setSearch}
                 />
