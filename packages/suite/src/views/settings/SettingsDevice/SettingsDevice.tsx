@@ -137,6 +137,10 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
+            <SettingsSection title={<Translation id="TR_PASSPHRASE" />} icon="password">
+                <Passphrase isDeviceLocked={isDeviceLocked} />
+            </SettingsSection>
+
             <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="puzzlePiece">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
                 {(!bootloaderMode || bitcoinOnlyDevice) && (
@@ -153,7 +157,6 @@ export const SettingsDevice = () => {
                     >
                         <PinProtection isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
-                        <Passphrase isDeviceLocked={isDeviceLocked} />
                         {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
                         {supportsDeviceAuthentication && (
                             <AuthenticateDevice isDeviceLocked={isDeviceLocked} />

@@ -2057,6 +2057,10 @@ export default defineMessages({
         defaultMessage: 'Confirm passphrase',
         id: 'TR_CONFIRM_PASSPHRASE',
     },
+    TR_PASSPHRASE: {
+        defaultMessage: 'Passphrase',
+        id: 'TR_PASSPHRASE',
+    },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
         defaultMessage:
             'Use only  <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code>, and <code>these special characters</code>.',
@@ -2375,7 +2379,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_PASSPHRASE_DESC: {
         defaultMessage:
-            "A passphrase adds a custom phrase (like a word, sentence, or string of characters) to your existing wallet backup, creating a Passphrase wallet. Each Passphrase wallet has its own passphrase. Your Standard wallet remains accessible without a passphrase.\n\nDon't forget your passphrase. Unlike regular passwords, passphrases can't be recovered. If you lose it, your funds will be permanently lost.",
+            'Add a passphrase to create a separate, extra-secure wallet. Each Passphrase wallet is unique and only accessible with its own passphrase.',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_DESC',
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE: {
@@ -2425,7 +2429,7 @@ export default defineMessages({
         id: 'TR_SAFETY_CHECKS_BANNER_CHANGE',
     },
     TR_DEVICE_SETTINGS_PASSPHRASE_TITLE: {
-        defaultMessage: 'Passphrase',
+        defaultMessage: 'Use Passphrase wallets',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_TITLE',
     },
     TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC: {
