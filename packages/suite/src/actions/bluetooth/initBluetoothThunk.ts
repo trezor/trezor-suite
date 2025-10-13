@@ -27,7 +27,7 @@ import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinux
 
 export const initBluetoothThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,
-    async (_, { getState, dispatch }) => {
+    async (_, { getState, dispatch, extra }) => {
         const { isBluetoothEnabled } = selectSuiteFlags(getState());
 
         if (!isBluetoothEnabled) {
@@ -49,6 +49,9 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
             return;
         }
+
+        // Reset transports so Connect can add BluetoothTransport; TODO move to Connect somehow
+        TrezorConnect.setTransports(extra.selectors.selectDebugSettings(getState()).transports);
 
         // NOTE: getInfo when adapter is disabled adapter may return different result in adapter_info field
         const apiInfo = await bluetoothIpc.getInfo();
