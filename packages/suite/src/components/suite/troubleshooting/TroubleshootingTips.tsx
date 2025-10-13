@@ -70,6 +70,9 @@ export const TroubleshootingTips = ({
         );
     };
 
+    // todo: this filter is duplicated with TroubleshootingTipsList
+    const visibleTips = items.filter(item => !item.hide);
+
     const TroubleshootingButton = () => {
         const [isTroubleshootingModalVisible, setIsTroubleshootingModalVisible] = useState(false);
         const onOpen = () => {
@@ -104,7 +107,7 @@ export const TroubleshootingTips = ({
                         data-testid="@onboarding/troubleshooting-tips/modal"
                     >
                         <Card header={labelRow}>
-                            <TroubleshootingTipsList items={items} />
+                            <TroubleshootingTipsList items={visibleTips} />
                         </Card>
                     </Modal>
                 )}
@@ -115,9 +118,9 @@ export const TroubleshootingTips = ({
     return cta ? (
         <Column gap={80} alignItems="center">
             <ActionBanner />
-            {items.length > 0 && <TroubleshootingButton />}
+            {visibleTips.length > 0 && <TroubleshootingButton />}
         </Column>
     ) : (
-        <Box margin={{ top: 80 }}>{items.length > 0 && <TroubleshootingButton />}</Box>
+        <Box margin={{ top: 80 }}>{visibleTips.length > 0 && <TroubleshootingButton />}</Box>
     );
 };
