@@ -10,11 +10,9 @@ import {
     IconName,
     Modal,
     Row,
-    SelectBar,
     Text,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { typedObjectKeys } from '@trezor/utils';
 
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
 import { useLayoutSize } from '../../../hooks/suite';
@@ -29,8 +27,6 @@ export type TroubleshootingTipsItem = {
     icon?: IconName;
 };
 
-type SectionDefinition = { label: ReactNode; items: TroubleshootingTipsItem[] };
-
 type TroubleshootingTipsBaseProps = {
     label?: ReactNode;
     ctaLabel?: ReactNode;
@@ -39,60 +35,28 @@ type TroubleshootingTipsBaseProps = {
     'data-testid'?: string;
     toggleText?: ReactNode;
     variant?: BannerVariant;
-};
-
-type TroubleshootingTipsProps = TroubleshootingTipsBaseProps & {
     items: TroubleshootingTipsItem[];
 };
 
-type TroubleshootingTipsWithSectionsProps<
-    K extends string,
-    T extends K,
-> = TroubleshootingTipsBaseProps & {
-    items: Record<K, SectionDefinition>;
-    defaultSection?: T;
-};
-
-export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
+export const TroubleshootingTips = ({
     label,
     items,
     cta,
     ctaLabel,
     initiallyIsOpen,
-    defaultSection,
     toggleText,
     variant = 'warning',
     'data-testid': dataTest,
-}: TroubleshootingTipsWithSectionsProps<K, T>) => {
-    const itemsKeys = typedObjectKeys(items);
-    const firstSectionKey = itemsKeys[0];
-    const [selectedSection, setSelectedSection] = useState<K>(defaultSection ?? firstSectionKey);
-
-    const hasMultipleSections = itemsKeys.length > 1;
-
+}: TroubleshootingTipsBaseProps) => {
     // @TODO isn't `labelRow` duplicate information? If not, where to show it?
     const labelRow =
-        label !== undefined || hasMultipleSections ? (
+        label !== undefined ? (
             <Row
                 justifyContent="space-between"
                 alignItems="center"
                 margin={{ horizontal: spacings.sm }}
             >
                 <Text typographyStyle="body">{label}</Text>
-
-                {hasMultipleSections ? (
-                    <Row>
-                        <SelectBar<K>
-                            onChange={setSelectedSection}
-                            options={itemsKeys.map(key => ({
-                                label: items[key].label,
-                                value: key,
-                            }))}
-                            selectedOption={selectedSection}
-                            size="small"
-                        />
-                    </Row>
-                ) : undefined}
             </Row>
         ) : null;
 
@@ -140,7 +104,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                         data-testid="@onboarding/troubleshooting-tips/modal"
                     >
                         <Card header={labelRow}>
-                            <TroubleshootingTipsList items={items[selectedSection].items} />
+                            <TroubleshootingTipsList items={items} />
                         </Card>
                     </Modal>
                 )}
@@ -150,24 +114,10 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
 
     return cta ? (
         <Column gap={80} alignItems="center">
-            {cta && <ActionBanner />}
-            {/* > 1 because there is some empty default passed from parent component */}
-            {/* @ts-expect-error */}
-            {items['default']['items'].length > 1 && <TroubleshootingButton />}
+            <ActionBanner />
+            {items.length > 0 && <TroubleshootingButton />}
         </Column>
     ) : (
-        <Box margin={{ top: 80 }}>
-            {/* @ts-expect-error */}
-            {items['default']['items'].length > 1 && <TroubleshootingButton />}
-        </Box>
+        <Box margin={{ top: 80 }}>{items.length > 0 && <TroubleshootingButton />}</Box>
     );
 };
-
-export const TroubleshootingTips = ({ items, ...props }: TroubleshootingTipsProps) => (
-    <TroubleshootingTipsWithSections
-        {...props}
-        // key is arbitrary, label won't be displayed with only one section
-        // todo: what is this good for? wrapping incoming items into object with default key?
-        items={{ default: { items, label: '' } }}
-    />
-);
