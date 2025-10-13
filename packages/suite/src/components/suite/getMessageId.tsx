@@ -1,4 +1,4 @@
-import { ConnectedDeviceStatus } from '@suite-common/suite-utils';
+import { DeviceStatus as ConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { isDesktop } from '@trezor/env-utils';
 
 import type { PrerequisiteType } from 'src/types/suite';

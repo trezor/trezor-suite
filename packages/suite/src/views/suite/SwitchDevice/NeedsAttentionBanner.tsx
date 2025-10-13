@@ -1,5 +1,5 @@
 import { TranslationKey } from '@suite-common/intl-types';
-import { ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
+import { DeviceStatus as ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { Banner, BannerVariant } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -53,6 +53,7 @@ const getDeviceNeedsAttentionMessage = (
         case 'disconnected':
         case 'firmware-recommended':
         case 'unknown':
+        case 'acquired':
             return null;
 
         default:
@@ -139,6 +140,7 @@ export const NeedsAttentionBanner = ({
             case 'device-bootloader-locked':
             case 'device-hard-locked':
             case 'device-pin-locked':
+            case 'acquired':
                 return null;
 
             default:

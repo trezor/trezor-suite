@@ -131,8 +131,6 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
     return 'unknown';
 };
 
-export type ConnectedDeviceStatus = ReturnType<typeof getStatus>;
-
 export const isDevicePerceivedAsNew = (device: TrezorDevice | null | undefined) => {
     if (!device) {
         return false;
@@ -144,7 +142,7 @@ export const isDevicePerceivedAsNew = (device: TrezorDevice | null | undefined) 
     return deviceStatus === 'bootloader' || deviceStatus === 'initialize';
 };
 
-export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boolean => {
+export const deviceNeedsAttention = (deviceStatus: DeviceStatus): boolean => {
     switch (deviceStatus) {
         case 'bootloader': // note: this is also state when the device is completely new
         case 'initialize':
@@ -168,6 +166,7 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boole
         case 'connected':
         case 'device-rebooting':
         case 'unknown':
+        case 'acquired':
             return false;
 
         default:
@@ -175,7 +174,7 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus): boole
     }
 };
 
-export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceStatus | null) => {
+export const shouldDisplayInitialWarningIcon = (deviceStatus: DeviceStatus | null) => {
     if (!deviceStatus) {
         return false;
     }
