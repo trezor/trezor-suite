@@ -78,7 +78,12 @@ export function TradingSelectAssetModal({
         () => getCurrencyOptionsMappedToAssetProps(filteredOptions),
         [filteredOptions],
     );
-    const optionsFingerprint = useMemo(() => getFingerprint(assetOptions), [assetOptions]);
+    const optionsFingerprint = useMemo(
+        () =>
+            // Ignore `tokenBalance` to prevent unwanted scroll resets, we don't actually need realtime updates for these two fields.
+            getFingerprint(assetOptions.map(({ tokenBalance, ...rest }) => rest)),
+        [assetOptions],
+    );
 
     const handleSelectChange = useCallback(
         (selectedAsset: AssetOptionBaseProps) => {
