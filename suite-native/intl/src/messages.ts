@@ -1826,11 +1826,7 @@ export const messages = {
             addHiddenWallet: 'Open passphrase',
             devices: 'Change',
         },
-        connectButton: {
-            another: 'Connect a different Trezor',
-            first: 'Connect Trezor',
-            bluetooth: 'Connect via Bluetooth',
-        },
+        connectButton: 'Connect Trezor',
         portfolioTracker: {
             explore: 'Explore Trezor',
             learnBasics: 'Learn the basics',
