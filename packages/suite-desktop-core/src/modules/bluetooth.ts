@@ -47,9 +47,8 @@ export const init: ModuleInit = () => {
 
             return { process, client };
         },
-        ({ process, client }) => {
+        ({ process }) => {
             process.stop();
-            client.dispose();
         },
     );
 
@@ -80,6 +79,8 @@ export const init: ModuleInit = () => {
                         await lazyBluetooth.getOrInit();
                     }
 
+                    const client = getClient();
+
                     if (method === 'dispose') {
                         lazyBluetooth.dispose();
                     }
@@ -92,7 +93,7 @@ export const init: ModuleInit = () => {
                     // The process will be automatically restarted by MacOS if needed and doesn't seem to cause any issues with Find My functionality.
                     if (method === 'connectDevice' && isMacOs()) {
                         try {
-                            const devices = await getClient().enumerateDevices();
+                            const devices = await client.enumerateDevices();
                             const isPaired = devices.find(d => d.id === params[0])?.paired;
                             if (!isPaired) {
                                 await new Promise<InvokeResult>(resolve => {
@@ -110,7 +111,7 @@ export const init: ModuleInit = () => {
                         }
                     }
 
-                    return (getClient()[method] as any)(...params);
+                    return (client[method] as any)(...params);
                 },
                 onAddListener: (eventName, listener) => {
                     logger.debug(SERVICE_NAME, `add listener ${eventName}`);
