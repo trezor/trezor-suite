@@ -31,6 +31,7 @@ import {
     selectDeviceTradingTradesOrderedByDate,
     selectTrading,
     selectTradingAccountAccordingActiveSection,
+    selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
     selectTradingBuy,
     selectTradingBuyInfo,
@@ -1443,6 +1444,51 @@ describe('tradingSelectors', () => {
 
         it('should return supported symbols for exchange', () => {
             expect(selectTradingSupportedSymbols(state, 'exchange')).toEqual(supportedSymbols);
+        });
+    });
+
+    describe(selectTradingAccountKeyByTradeType.name, () => {
+        it('should return exchange account key for exchange trade type', () => {
+            const result = selectTradingAccountKeyByTradeType(state, 'exchange');
+            expect(result).toBe('eth-descriptor-eth');
+        });
+
+        it('should return sell account key for sell trade type', () => {
+            const result = selectTradingAccountKeyByTradeType(state, 'sell');
+            expect(result).toBe('btc-descriptor-btc');
+        });
+
+        it('should return buy account key for buy trade type', () => {
+            const result = selectTradingAccountKeyByTradeType(state, 'buy');
+            expect(result).toBe('btc-descriptor-btc');
+        });
+
+        it('should return undefined when exchange account key is not set', () => {
+            state.wallet.trading.exchange.tradingAccountKey = undefined;
+
+            const result = selectTradingAccountKeyByTradeType(state, 'exchange');
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined when sell account key is not set', () => {
+            state.wallet.trading.sell.tradingAccountKey = undefined;
+
+            const result = selectTradingAccountKeyByTradeType(state, 'sell');
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined when buy account key is not set', () => {
+            state.wallet.trading.buy.tradingAccountKey = undefined;
+
+            const result = selectTradingAccountKeyByTradeType(state, 'buy');
+            expect(result).toBeUndefined();
+        });
+
+        it('should be stable for same trade type', () => {
+            const first = selectTradingAccountKeyByTradeType(state, 'exchange');
+            const second = selectTradingAccountKeyByTradeType(state, 'exchange');
+
+            expect(first).toBe(second);
         });
     });
 });

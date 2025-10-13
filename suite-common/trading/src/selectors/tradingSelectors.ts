@@ -592,6 +592,27 @@ export const selectTradingExchangeReceiveAddress = (state: TradingRootState) =>
 export const selectTradingSellAccountKey = (state: TradingRootState) =>
     state.wallet.trading.sell.tradingAccountKey;
 
+export const selectTradingAccountKeyByTradeType = createMemoizedSelector(
+    [
+        selectTradingExchangeAccountKey,
+        selectTradingSellAccountKey,
+        selectTradingBuyReceiveAccountKey,
+        (_: TradingRootState, tradeType: TradingType) => tradeType,
+    ],
+    (exchangeAccountKey, sellAccountKey, buyAccountKey, tradeType) => {
+        switch (tradeType) {
+            case 'exchange':
+                return exchangeAccountKey;
+            case 'sell':
+                return sellAccountKey;
+            case 'buy':
+                return buyAccountKey;
+            default:
+                exhaustive(tradeType, 'Unexpected trade type');
+        }
+    },
+);
+
 export const selectTradingModalAccountKey = (state: TradingRootState) =>
     state.wallet.trading.modalAccountKey;
 

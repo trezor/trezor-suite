@@ -38,7 +38,11 @@ export const useTradingOutputsReviewScreenControls = (orderId: string, accountKe
 
     const navigation = useNavigation<TradingOutputsReviewScreenNavigationProp>();
     const dispatch = useDispatch();
-    const { signAndSendTransaction, isConsentRequested, resolveConsent } = useExchangeFlow();
+    const {
+        signAndSendTransaction,
+        isTransactionSendConsentRequested: isConsentRequested,
+        resolveTransactionSendConsent: resolveConsent,
+    } = useExchangeFlow();
     const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
     const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert(accountKey);
 

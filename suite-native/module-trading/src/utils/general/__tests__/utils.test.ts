@@ -10,6 +10,7 @@ import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from '../for
 import {
     doesUrlContainCloseCallbackUrl,
     getErrorStrFromThunkRejectedValue,
+    getFormDraftKeyByTradeType,
     getFormDraftKeyPrefixFromTradingType,
     getRandomAccountDescriptor,
     getTradeOperationData,
@@ -221,6 +222,18 @@ describe('utils', () => {
             ],
         ])('should return %s for %s', (expectedValue, cryptoId) => {
             expect(toCaseAwareCryptoId(cryptoId)).toBe(expectedValue);
+        });
+    });
+
+    describe('getFormDraftKeyByTradeType', () => {
+        it('should return correct form draft key for exchange trade type', () => {
+            const result = getFormDraftKeyByTradeType('exchange');
+            expect(result).toBe('trading-exchange/');
+        });
+
+        it('should return correct form draft key for sell trade type', () => {
+            const result = getFormDraftKeyByTradeType('sell');
+            expect(result).toBe('trading-sell/');
         });
     });
 });

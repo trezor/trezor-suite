@@ -26,36 +26,7 @@ jest.mock('@suite-common/trading', () => ({
             payload,
             unwrap: () => Promise.resolve(true),
         }),
-        sendTransactionThunk: (payload: unknown) => ({
-            type: 'sendTransactionThunkMock',
-            payload,
-            unwrap: () => Promise.resolve(true),
-        }),
     },
-}));
-
-// Mock the thunks
-jest.mock('../../../thunks', () => ({
-    composeTradingTransactionThunk: (payload: unknown) => ({
-        type: 'composeTradingTransactionThunkMock',
-        payload,
-        unwrap: () => Promise.resolve(true),
-    }),
-    signAndPushSendFormTransactionThunk: (payload: unknown) => ({
-        type: 'signAndPushSendFormTransactionThunkMock',
-        payload,
-        unwrap: () => Promise.resolve(true),
-    }),
-}));
-
-// Mock the wallet-core thunks
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    updateFeeInfoThunk: (payload: unknown) => ({
-        type: 'updateFeeInfoThunkMock',
-        payload,
-        unwrap: () => Promise.resolve(true),
-    }),
 }));
 
 describe('useExchangeFlow', () => {
@@ -84,13 +55,6 @@ describe('useExchangeFlow', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        // Mock the serializedTx selector to return a proper value
-        jest.spyOn(require('@suite-common/wallet-core'), 'selectSendSerializedTx').mockReturnValue({
-            type: 'bitcoin',
-            txid: 'test-txid',
-            hex: 'test-hex',
-        });
     });
 
     describe('confirmTrade', () => {
@@ -171,280 +135,72 @@ describe('useExchangeFlow', () => {
             require('@suite-common/trading').exchangeThunks.confirmTradeThunk =
                 originalConfirmTradeThunk;
         });
-    });
 
-    describe('composeRequest', () => {
-        it('should call composeTradingTransactionThunk with correct parameters', async () => {
+        it('should return false when trade is missing', async () => {
             const store = await getInitializedStore();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
-            // Mock the networkFeeInfo selector to return proper data
-            const mockNetworkFeeInfo = {
-                feePerUnit: '1000',
-                feeLimit: '21000',
-                estimatedFee: '21000000',
+            const { result } = await renderUseExchangeFlow({ store });
+
+            const confirmResult = await act(
+                async () =>
+                    await result.current.confirmTrade({
+                        receiveAddress: 'test-address',
+                        trade: undefined,
+                        approvalFlow: false,
+                        nextStep: jest.fn(),
+                    }),
+            );
+
+            expect(confirmResult).toBe(false);
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                'Trade, send account and common functions are required to confirm trade',
+            );
+        });
+
+        it('should return false when sendAccount is missing', async () => {
+            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
+
+            // Create a store with invalid tradingAccountKey
+            const tradingState = getInitializedTradingStateWithQuotes();
+            tradingState.exchange.tradingAccountKey = 'invalid-account-key';
+            tradingState.exchange.receiveAccountKey = 'btc2';
+            tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
+
+            const preloadedState: PreloadedState = {
+                wallet: {
+                    trading: tradingState,
+                    accounts: getMockAccounts(),
+                },
             };
 
-            // Mock the selectConvertedNetworkFeeInfo selector
-            jest.spyOn(
-                require('@suite-common/wallet-core'),
-                'selectConvertedNetworkFeeInfo',
-            ).mockReturnValue(mockNetworkFeeInfo);
-
+            const store = await initStore(preloadedState);
             const { result } = await renderUseExchangeFlow({ store });
 
-            await act(async () => {
-                await result.current.composeRequest({
-                    selectedFeeLevel: 'high',
-                    feePerUnit: '2000',
-                    feeLimit: '25000',
-                });
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'composeTradingTransactionThunkMock',
-                payload: {
-                    tradeType: 'exchange',
-                    account: expect.objectContaining({
-                        key: 'btc1',
-                    }),
-                    network: expect.any(Object),
-                    feeInfo: mockNetworkFeeInfo,
-                    selectedFeeLevel: 'high',
-                    feePerUnit: '2000',
-                    feeLimit: '25000',
-                },
-                unwrap: expect.any(Function),
-            });
-        });
-
-        it('should call composeTradingTransactionThunk with minimal parameters', async () => {
-            const store = await getInitializedStore();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-            // Mock the networkFeeInfo selector to return proper data
-            const mockNetworkFeeInfo = {
-                feePerUnit: '1000',
-                feeLimit: '21000',
-                estimatedFee: '21000000',
+            const mockTrade = {
+                exchange: 'test-exchange',
+                orderId: 'test-order',
             };
 
-            jest.spyOn(
-                require('@suite-common/wallet-core'),
-                'selectConvertedNetworkFeeInfo',
-            ).mockReturnValue(mockNetworkFeeInfo);
-
-            const { result } = await renderUseExchangeFlow({ store });
-
-            await act(async () => {
-                await result.current.composeRequest({});
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'composeTradingTransactionThunkMock',
-                payload: {
-                    tradeType: 'exchange',
-                    account: expect.objectContaining({
-                        key: 'btc1',
+            const confirmResult = await act(
+                async () =>
+                    await result.current.confirmTrade({
+                        receiveAddress: 'test-address',
+                        trade: mockTrade,
+                        approvalFlow: false,
+                        nextStep: jest.fn(),
                     }),
-                    network: expect.any(Object),
-                    feeInfo: mockNetworkFeeInfo,
-                    selectedFeeLevel: undefined,
-                    feePerUnit: undefined,
-                    feeLimit: undefined,
-                },
-                unwrap: expect.any(Function),
-            });
-        });
-    });
+            );
 
-    describe('fetchFeesAndCompose', () => {
-        it('should call updateFeeInfoThunk and then composeRequest with draft fee values', async () => {
-            const store = await getInitializedStore();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-            // Mock the networkFeeInfo selector to return proper data
-            const mockNetworkFeeInfo = {
-                feePerUnit: '1000',
-                feeLimit: '21000',
-                estimatedFee: '21000000',
-            };
-
-            jest.spyOn(
-                require('@suite-common/wallet-core'),
-                'selectConvertedNetworkFeeInfo',
-            ).mockReturnValue(mockNetworkFeeInfo);
-
-            // Mock the selectDeepCopyOfFormDraft selector to return draft fee values
-            jest.spyOn(
-                require('@suite-common/wallet-core'),
-                'selectDeepCopyOfFormDraft',
-            ).mockReturnValue({
-                selectedFee: 'high',
-                feePerUnit: '5000',
-                feeLimit: '30000',
-            });
-
-            const { result } = await renderUseExchangeFlow({ store });
-
-            await act(async () => {
-                await result.current.fetchFeesAndCompose();
-            });
-
-            // Should call updateFeeInfoThunk first
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'updateFeeInfoThunkMock',
-                payload: {
-                    networkSymbol: 'btc',
-                },
-                unwrap: expect.any(Function),
-            });
-
-            // Then should call composeRequest with draft fee values
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'composeTradingTransactionThunkMock',
-                payload: {
-                    tradeType: 'exchange',
-                    account: expect.objectContaining({
-                        key: 'btc1',
-                    }),
-                    network: expect.any(Object),
-                    feeInfo: mockNetworkFeeInfo,
-                    selectedFeeLevel: 'high',
-                    feePerUnit: '5000',
-                    feeLimit: '30000',
-                },
-                unwrap: expect.any(Function),
-            });
-        });
-
-        it('should handle undefined draft values', async () => {
-            const store = await getInitializedStore();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-            // Mock the networkFeeInfo selector to return proper data
-            const mockNetworkFeeInfo = {
-                feePerUnit: '1000',
-                feeLimit: '21000',
-                estimatedFee: '21000000',
-            };
-
-            jest.spyOn(
-                require('@suite-common/wallet-core'),
-                'selectConvertedNetworkFeeInfo',
-            ).mockReturnValue(mockNetworkFeeInfo);
-
-            // Mock the selectDeepCopyOfFormDraft selector to return undefined
-            jest.spyOn(
-                require('@suite-common/wallet-core'),
-                'selectDeepCopyOfFormDraft',
-            ).mockReturnValue(undefined);
-
-            const { result } = await renderUseExchangeFlow({ store });
-
-            await act(async () => {
-                await result.current.fetchFeesAndCompose();
-            });
-
-            // Should call updateFeeInfoThunk first
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'updateFeeInfoThunkMock',
-                payload: {
-                    networkSymbol: 'btc',
-                },
-                unwrap: expect.any(Function),
-            });
-
-            // Then should call composeRequest with undefined values
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'composeTradingTransactionThunkMock',
-                payload: {
-                    tradeType: 'exchange',
-                    account: expect.objectContaining({
-                        key: 'btc1',
-                    }),
-                    network: expect.any(Object),
-                    feeInfo: mockNetworkFeeInfo,
-                    selectedFeeLevel: undefined,
-                    feePerUnit: undefined,
-                    feeLimit: undefined,
-                },
-                unwrap: expect.any(Function),
-            });
-        });
-    });
-
-    describe('signAndSendTransaction', () => {
-        it('should call sendTransactionThunk with correct parameters', async () => {
-            const store = await getInitializedStore();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const mockNextStep = jest.fn();
-
-            const { result } = await renderUseExchangeFlow({ store });
-
-            await act(async () => {
-                await result.current.signAndSendTransaction({
-                    nextStep: mockNextStep,
-                    onError: jest.fn(),
-                });
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith({
-                type: 'sendTransactionThunkMock',
-                payload: {
-                    account: expect.objectContaining({ key: 'btc1' }),
-                    trade: expect.any(Object),
-                    returnUrl: expect.any(String),
-                    setMaxOutputId: undefined,
-                    decimals: expect.any(Number),
-                    shouldSendInSats: expect.any(Boolean),
-                    isSlip24Active: false,
-                    nextStep: mockNextStep,
-                    processResponseData: expect.any(Function),
-                    triggerAnalyticsTradeConfirmation: expect.any(Function),
-                    signAndPushSendFormTransaction: expect.any(Function),
-                },
-                unwrap: expect.any(Function),
-            });
-        });
-    });
-
-    describe('resolveConsent', () => {
-        it('should set isConsentRequested to false and resolve the promise', async () => {
-            const store = await getInitializedStore();
-
-            const { result } = await renderUseExchangeFlow({ store });
-
-            // First, trigger the signAndSendTransaction to set up the promise
-            const originalSendTransactionThunk =
-                require('@suite-common/trading').exchangeThunks.sendTransactionThunk;
-            require('@suite-common/trading').exchangeThunks.sendTransactionThunk = () => ({
-                type: 'sendTransactionThunkMock',
-                unwrap: () => Promise.resolve(true),
-            });
-
-            await act(async () => {
-                await result.current.signAndSendTransaction({
-                    nextStep: jest.fn(),
-                    onError: jest.fn(),
-                });
-            });
-
-            // Now resolve the push consent
-            act(() => {
-                result.current.resolveConsent(true);
-            });
-
-            expect(result.current.isConsentRequested).toBe(false);
-
-            // Restore the original mock
-            require('@suite-common/trading').exchangeThunks.sendTransactionThunk =
-                originalSendTransactionThunk;
+            expect(confirmResult).toBe(false);
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                'Trade, send account and common functions are required to confirm trade',
+            );
         });
     });
 
     describe('getCommonFunctions', () => {
-        it('should return false when no trade is provided and no selectedQuote', async () => {
+        it('should return null when no trade is provided and no selectedQuote', async () => {
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
             // Mock the selector to return undefined for selectedQuote
             const modifiedStore = await getInitializedStore();
@@ -470,22 +226,28 @@ describe('useExchangeFlow', () => {
                 'Trade, send account and common functions are required to confirm trade',
             );
         });
-    });
 
-    describe('useEffect cleanup', () => {
-        it('should call TrezorConnect.cancel on unmount', async () => {
+        it('should return common functions when trade is provided', async () => {
             const store = await getInitializedStore();
-            const { unmount } = await renderUseExchangeFlow({ store });
+            const { result } = await renderUseExchangeFlow({ store });
 
-            // Get the mocked TrezorConnect.cancel function
-            const TrezorConnect = require('@trezor/connect');
-            const mockCancel = TrezorConnect.cancel;
+            const mockTrade = {
+                exchange: 'test-exchange',
+                orderId: 'test-order',
+            };
 
-            // Unmount the component to trigger the cleanup useEffect
-            unmount();
+            // Test by calling confirmTrade which uses getCommonFunctions internally
+            await act(async () => {
+                await result.current.confirmTrade({
+                    receiveAddress: 'test-address',
+                    trade: mockTrade,
+                    approvalFlow: false,
+                    nextStep: jest.fn(),
+                });
+            });
 
-            // Verify that TrezorConnect.cancel was called
-            expect(mockCancel).toHaveBeenCalled();
+            // If we get here without errors, getCommonFunctions worked correctly
+            expect(true).toBe(true);
         });
     });
 

@@ -15,8 +15,13 @@ const CONFIRMATION_TEST_ID = '@trading/sell/continue-button';
 
 export const SellConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const form = useSellFormContext();
-    const { canProceed, isConsentRequested, cancelConsent, giveConsent, selectQuote } =
-        useSellFlow(form);
+    const {
+        canProceed,
+        isLegalTermsConsentRequested,
+        cancelLegalTermsConsent,
+        giveLegalTermsConsent,
+        selectQuote,
+    } = useSellFlow(form);
 
     const [quote, sendAsset] = form.watch(['quote', 'sendAsset']);
 
@@ -30,9 +35,9 @@ export const SellConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
                 </AnimatedBox>
             )}
             <SellLegalSheet
-                isVisible={isConsentRequested}
-                onConsent={giveConsent}
-                onDismiss={cancelConsent}
+                isVisible={isLegalTermsConsentRequested}
+                onConsent={giveLegalTermsConsent}
+                onDismiss={cancelLegalTermsConsent}
                 tradeProvider={quote?.exchange ?? ''}
                 sendSymbol={sendAsset?.symbol ?? ''}
             />
