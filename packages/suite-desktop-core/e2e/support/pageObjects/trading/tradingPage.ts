@@ -14,17 +14,6 @@ import { Fees } from './fees';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 
-const accountTabFilters = [
-    'all-networks',
-    'eth',
-    'pol',
-    'bsc',
-    'arb',
-    'base',
-    'op',
-    'sol',
-] as const;
-
 const paymentMethodNameMap: Record<string, PaymentMethods> = {
     'Credit/Debit Card': 'creditCard',
     'Bank Transfer': 'bankTransfer',
@@ -34,11 +23,7 @@ const paymentMethodNameMap: Record<string, PaymentMethods> = {
     'Revolut Pay': 'revolutPay',
 };
 
-type AccountTabFilter = (typeof accountTabFilters)[number];
-
-function isAccountTabFilter(network: string): network is AccountTabFilter {
-    return accountTabFilters.includes(network as AccountTabFilter);
-}
+type AccountTabFilter = 'all-networks' | 'eth' | 'pol' | 'bsc' | 'arb' | 'base' | 'op' | 'sol';
 
 export class TradingPage {
     readonly fees: Fees;
@@ -304,11 +289,7 @@ export class TradingPage {
     @step()
     async selectAccount(cryptoName: string, symbol: NetworkSymbol) {
         await this.accountDropdown.click();
-        if (isAccountTabFilter(symbol)) {
-            await this.accountTabFilter(symbol).click();
-        } else {
-            await this.accountTabFilter('all-networks').click();
-        }
+        await this.accountTabFilter('all-networks').click();
         await this.accountSearchInput.fill(cryptoName);
         await this.accountOption(cryptoName, symbol).click();
     }

@@ -145,8 +145,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
             setItemsFingerprint(initialItemsFingerprint);
             resetScroll();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialItemsFingerprint, itemsFingerprint, resetScroll]);
+    }, [initialItems, initialItemsFingerprint, itemsFingerprint, resetScroll]);
 
     const itemHeights = useMemo(() => items.map(item => calculateItemHeight(item)), [items]);
     const totalHeight = useMemo(
