@@ -3,9 +3,10 @@ import type { ReactElement } from 'react';
 import { useRouter } from 'next/router';
 import { useMounted } from 'nextra/hooks';
 
-import { useConfig } from '../contexts/useConfig';
-import { getGitIssueUrl, renderComponent } from '../utils';
 import { Anchor } from './anchor';
+import { useConfig } from '../contexts/useConfig';
+import { getGitIssueUrl } from '../utils/get-git-issue-url';
+import { renderComponent } from '../utils/render';
 
 export function ServerSideErrorPage(): ReactElement | null {
     const config = useConfig();

@@ -22,14 +22,10 @@ packages/components/src/components/Table/Table.tsx > packages/components/src/com
 packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableRow.tsx
 packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/customComponents.tsx
 packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/useOnKeyDown.ts
-packages/connect-explorer-theme/src/components/anchor.tsx > packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/navbar.tsx
 packages/connect-explorer-theme/src/components/anchor.tsx > packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/toc.tsx
 packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/nav-links.tsx > packages/connect-explorer-theme/src/index.tsx
 packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/nav-links.tsx > packages/connect-explorer-theme/src/index.tsx > packages/connect-explorer-theme/src/mdx-components.tsx
 packages/connect-explorer-theme/src/components/sidebar.tsx > packages/connect-explorer-theme/src/components/menu.tsx
-packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/navbar.tsx
-packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/navbar.tsx > packages/connect-explorer-theme/src/utils/index.ts > packages/connect-explorer-theme/src/utils/use-git-edit-url.ts
-packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/theme-switch.tsx
 packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/toc.tsx
 packages/connect-explorer/src/actions/index.ts > packages/connect-explorer/src/actions/methodActions.ts > packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/actions/trezorConnectActions.ts
 packages/connect-explorer/src/actions/index.ts > packages/connect-explorer/src/actions/methodActions.ts > packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/reducers/index.ts > packages/connect-explorer/src/reducers/trezorConnectReducer.ts

@@ -21,7 +21,8 @@ import { ConfigProvider } from './contexts/config';
 import { useConfig } from './contexts/useConfig';
 import { getComponents } from './mdx-components';
 import { PartialDocsThemeConfig } from './schema';
-import { patchedNormalizePages, renderComponent } from './utils';
+import { patchedNormalizePages } from './utils/patch-normalize-pages';
+import { renderComponent } from './utils/render';
 
 const GlobalStyle = createGlobalStyle<{ $elevation: Elevation }>`
     body, .bg-page {
