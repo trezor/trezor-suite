@@ -4,7 +4,6 @@ import {
     selectAdapterStatus,
     selectAutoConnectPolicy,
     selectKnownDevices,
-    selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { selectFirmware } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
@@ -162,18 +161,13 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             dispatch(bluetoothActions.deviceUpdateAction({ device }));
         });
 
-        bluetoothIpc.on('open-bluetooth-settings', async () => {
+        bluetoothIpc.on('open-bluetooth-settings', async ({ id }) => {
             const result = await desktopApi.openSystemSettings('bluetooth');
             if (!result.success) {
                 // stop here and disconnect the device (abort pairing before it starts)
+                // this should throw BluetoothSettingsMissing error in current connection process
                 // device needs to be paired manually via system settings
-                const connectingDevices = selectConnectingDevices(getState());
-                const nearbyDevices = selectNearbyDevices(getState());
-                nearbyDevices.forEach(({ id }) => {
-                    if (connectingDevices.includes(id)) {
-                        bluetoothIpc.disconnectDevice(id);
-                    }
-                });
+                bluetoothIpc.disconnectDevice(id);
             }
         });
 
