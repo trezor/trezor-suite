@@ -6,7 +6,7 @@ import styled from 'styled-components';
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
@@ -16,7 +16,7 @@ const StyledLottie = styled(Lottie)`
     height: 100%;
 `;
 
-export type LottieType = 'CONNECT' | 'BLOCK' | 'MEMPOOL';
+export type LottieType = 'BLOCK' | 'MEMPOOL';
 
 type LottieAnimationProps = {
     size?: number;
@@ -54,11 +54,7 @@ export const LottieAnimation = ({
             }
         };
 
-        if (type === 'CONNECT') {
-            loadAnimation(
-                `trezor_${getNarrowedDeviceModelInternal(deviceModelInternal).toLowerCase()}_connect`,
-            );
-        } else if (type === 'BLOCK') {
+        if (type === 'BLOCK') {
             loadAnimation('cubes_line');
         } else if (type === 'MEMPOOL') {
             loadAnimation('square_stack');
