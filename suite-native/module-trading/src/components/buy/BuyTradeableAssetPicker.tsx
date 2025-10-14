@@ -13,7 +13,7 @@ import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
 import { TradeableAsset } from '../../types/general';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
-const ASSET_PICKER_TEST_ID = '@trading/buy/asset-button';
+const ASSET_PICKER_TEST_ID = '@trading/buy/asset-receive-button';
 
 const noop = () => {};
 
