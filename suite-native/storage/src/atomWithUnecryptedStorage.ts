@@ -8,7 +8,7 @@ export const unecryptedJotaiStorage = createMMKV({
     id: UNECRYPTED_STORAGE_ID,
 });
 
-function getItem<T>(key: string): T | null {
+export function getItem<T>(key: string): T | null {
     const value = unecryptedJotaiStorage.getString(key);
 
     return value ? JSON.parse(value) : null;
