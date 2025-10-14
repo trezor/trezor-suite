@@ -56,8 +56,7 @@ export interface NotificationEvent {
     device_connection_status: { device: BluetoothDevice };
     device_disconnected: { id: string; devices: BluetoothDevice[] };
     device_read: { id: string; characteristic: NotificationCharacteristic; data: number[] };
-
-    device_settings_ui: undefined; // dispatched by linux pairing process
+    open_bluetooth_settings: { id: string }; // see linux.rs/pair_with_timeout()
     device_removed: { id: string };
 }
 
@@ -86,7 +85,7 @@ export interface BluetoothIpcEvents {
     'adapter-event': BluetoothAdapterState;
     'device-list-update': BluetoothDevice[];
     'device-update': BluetoothDevice;
-    'open-bluetooth-settings': undefined;
+    'open-bluetooth-settings': { id: string };
 }
 
 type TypedManagerEvents = TypedEmitter<BluetoothIpcEvents>;

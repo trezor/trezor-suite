@@ -76,8 +76,8 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
             }
         });
 
-        this.api.on('device_settings_ui', () => {
-            this.emit('open-bluetooth-settings');
+        this.api.on('open_bluetooth_settings', event => {
+            this.emit('open-bluetooth-settings', event);
         });
 
         return this.result();

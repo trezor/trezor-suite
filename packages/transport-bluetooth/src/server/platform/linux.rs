@@ -133,10 +133,17 @@ async fn disconnect_device(id: String) {
 }
 
 /// watch abort by DeviceDisconnected event
-fn watch_abort(current_id: String, broadcast: ConnectionBroadcast) -> tokio::task::JoinHandle<()> {
+fn watch_abort(
+    current_id: String,
+    broadcast: ConnectionBroadcast,
+) -> (
+    tokio::task::JoinHandle<()>,
+    tokio::sync::oneshot::Receiver<()>,
+) {
     let mut receiver = broadcast.subscribe();
+    let (tx, rx) = tokio::sync::oneshot::channel();
 
-    tokio::spawn(async move {
+    let handler = tokio::spawn(async move {
         while let Ok(event) = receiver.recv().await {
             // TODO: if websocket client connection is related to this device
             // AbortProcess::ClientDisconnected
@@ -147,7 +154,12 @@ fn watch_abort(current_id: String, broadcast: ConnectionBroadcast) -> tokio::tas
                 }
             }
         }
-    })
+
+        // task was finished
+        let _ = tx.send(());
+    });
+
+    (handler, rx)
 }
 
 /// watch timeout event
@@ -158,25 +170,6 @@ fn watch_timeout(id: String, timeout: u32) -> tokio::task::JoinHandle<()> {
         info!("Connection timeout. disconnecting device");
         disconnect_device(id).await;
     })
-}
-
-fn open_bluetooth_ui() -> Option<std::process::Child> {
-    let desktop_env = std::env::var("XDG_CURRENT_DESKTOP").unwrap_or_default();
-    if desktop_env.contains("GNOME") {
-        return std::process::Command::new("gnome-control-center")
-            .arg("bluetooth")
-            .spawn()
-            .ok();
-    } else if desktop_env.contains("KDE") {
-        return std::process::Command::new("systemsettings5")
-            .arg("bluetooth")
-            .spawn()
-            .ok();
-    } else {
-        info!("Unsupported desktop environment: {desktop_env:?}");
-    }
-
-    None
 }
 
 async fn connect_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformError> {
@@ -197,7 +190,7 @@ async fn connect_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformE
     .await;
 
     // watch cancellation
-    let cancel_task = watch_abort(device.get_id(), broadcast);
+    let (cancel_task, _) = watch_abort(device.get_id(), broadcast);
     let timeout_task = watch_timeout(device.get_id(), params.timeout);
 
     // start connection
@@ -238,19 +231,27 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
     )
     .await;
 
-    let cancel_task = watch_abort(device.get_id(), broadcast.clone());
+    let (cancel_task, mut is_cancel_finished) = watch_abort(device.get_id(), broadcast.clone());
 
     // if system bluetooth UI window is closed/unavailable
     // Pairing Request capability is set to `NoInputNoOutput`. Trezor expects `DisplayYesNo`
     // this leads to org.bluez.Error.AuthenticationFailed error
     // try to open system UI. consider moving this to suite (UI)
     manager
-        .dispatch_notification(NotificationEvent::DeviceSettingsUi)
+        .dispatch_notification(NotificationEvent::OpenBluetoothSettings {
+            id: device.get_id(),
+        })
         .await;
 
-    let _ui_process = open_bluetooth_ui();
-    // TODO: some loader, only if ui_process is some?
     sleep(Duration::from_millis(1000)).await;
+
+    if is_cancel_finished.try_recv().is_ok() {
+        // task was aborted
+        // DeviceDisconnected was called by the host as response to OpenBluetoothSettings event
+        dispatch_status(manager, device, DeviceConnectionStatus::Disconnected).await;
+
+        return Err("BluetoothSettingsMissing".to_string())?;
+    }
 
     // watch "Paired" props
     let device_id = device.get_id();
