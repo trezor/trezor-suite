@@ -64,7 +64,7 @@ test.describe(
                     await devicePrompt.confirmOnDevicePromptIsShown();
 
                     // Emulator needs to initialize the seed first
-                    await page.waitForTimeout(500);
+                    await page.waitForTimeout(1_000);
                     for (let i = 0; i < 48; i++) {
                         await trezorUserEnvLink.pressYes();
                     }
@@ -84,16 +84,15 @@ test.describe(
                     await trezorInput.enterPinOnBlindMatrix(pin);
                 });
 
-                await test.step('Activate assets & continue setup', async () => {
+                await test.step('Activate assets', async () => {
                     await expect(settingsPage.coins.networkButton('btc')).toBeEnabledCoin();
                     await expect(settingsPage.coins.networkButton('eth')).toBeDisabledCoin();
                     await settingsPage.coins.enableNetwork('eth');
-                    await onboardingPage.continueCoinsButton.click();
                 });
 
                 await test.step('Finish wallet creation', async () => {
-                    await expect(onboardingPage.finalTitle).toBeVisible();
-                    await onboardingPage.onboardingContinueButton.click();
+                    await onboardingPage.onboardingExitButton.click();
+                    await expect(onboardingPage.suiteLoadedIndicator).toBeVisible();
                     await expect(dashboardPage.walletReady).toBeVisible();
                 });
             },
