@@ -1,0 +1,39 @@
+{
+    "name": "@trezor/analytics-testing-server",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Simple server for testing Trezor Suite analytics events",
+    "license": "See LICENSE.md in repo root",
+    "main": "server/index.js",
+    "scripts": {
+        "build": "vite build --config vite.config.ts",
+        "start": "node server/index.js",
+        "dev": "concurrently \"nodemon server/index.js\" \"vite dev --config vite.config.ts\"",
+        "type-check": "tsc --noEmit --project tsconfig.json"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.21.2",
+        "react": "19.1.0",
+        "react-dom": "19.1.0"
+    },
+    "devDependencies": {
+        "@trezor/eslint": "workspace:*",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "@types/node": "^20.10.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.2.1",
+        "concurrently": "^8.2.2",
+        "nodemon": "^3.0.2",
+        "tsx": "^4.6.2",
+        "typescript": "^5.3.3",
+        "vite": "^5.0.8"
+    },
+    "files": [
+        "server/",
+        "dist/",
+        "README.md"
+    ]
+}

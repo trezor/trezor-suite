@@ -1,0 +1,198 @@
+/* Unified styling aligned with @trezor/connect-explorer-theme */
+
+:root {
+    /* Primary color derived from nextra variables if present */
+    --primary-500: hsl(var(--nextra-primary-hue, 161) var(--nextra-primary-saturation, 100%) 35%);
+    --primary-600: hsl(var(--nextra-primary-hue, 161) var(--nextra-primary-saturation, 100%) 32%);
+    --ring: rgba(0, 0, 0, 0.08);
+
+    --text: #0f172a; /* slate-900 */
+    --text-muted: #475569; /* slate-600 */
+    --bg-page: #f8fafc; /* slate-50 */
+    --bg-surface: #ffffff;
+    --bg-muted: #f1f5f9; /* slate-100 */
+    --border: #e2e8f0; /* slate-200 */
+    --code-bg: #f8fafc;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #e2e8f0; /* slate-200 */
+        --text-muted: #94a3b8; /* slate-400 */
+        --bg-page: #0b0f16; /* near theme dark */
+        --bg-surface: #0f172a; /* slate-900 */
+        --bg-muted: #111827; /* gray-900 */
+        --border: #1f2937; /* gray-800 */
+        --code-bg: #0b1220;
+        --ring: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.app {
+    min-height: 100vh;
+    background: var(--bg-page);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'rlig' 1, 'calt' 1, 'ss01' 1;
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+        'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-surface);
+    backdrop-filter: saturate(180%) blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+}
+
+.app-header h1 {
+    margin: 0 0 0.75rem 0;
+    color: var(--text);
+    font-size: 1.5rem;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+}
+
+.status-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.status-indicator {
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--bg-muted);
+    color: var(--text-muted);
+}
+
+.status-indicator.connected {
+    background: color-mix(in oklab, var(--primary-500) 15%, white);
+    border-color: color-mix(in oklab, var(--primary-500) 35%, white);
+    color: var(--primary-600);
+}
+
+.status-indicator.disconnected {
+    background: color-mix(in oklab, #ef4444 12%, white);
+    border-color: color-mix(in oklab, #ef4444 30%, white);
+    color: #b91c1c;
+}
+
+.event-count {
+    background: var(--bg-muted);
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.button {
+    appearance: none;
+    border: 1px solid transparent;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring), 0 0 0 4px color-mix(in oklab, var(--primary-500), transparent);
+}
+
+.button--primary {
+    background: var(--primary-500);
+    color: #fff;
+}
+
+.button--primary:hover {
+    background: var(--primary-600);
+}
+
+.button--neutral {
+    background: var(--bg-muted);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.button--neutral:hover {
+    background: color-mix(in oklab, var(--bg-muted), #000 4%);
+}
+
+.clear-button {
+    appearance: none;
+    border: 1px solid transparent;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    background: var(--primary-500);
+    color: #fff;
+}
+
+.clear-button:hover {
+    background: var(--primary-600);
+}
+
+.toggle-types-button {
+    appearance: none;
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    background: var(--bg-muted);
+    color: var(--text);
+}
+
+.toggle-types-button:hover {
+    background: color-mix(in oklab, var(--bg-muted), #000 4%);
+}
+
+.app-main {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.app-footer {
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    padding: 1rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.app-footer p {
+    margin: 0.25rem 0;
+}
+
+.app-footer code {
+    background: var(--code-bg);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.375rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+}

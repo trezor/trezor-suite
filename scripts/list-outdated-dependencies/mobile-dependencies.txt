@@ -3,7 +3,6 @@
 @expo/config-plugins
 @gorhom/bottom-sheet
 @mobily/ts-belt
-@types/react-native-get-random-values
 @react-native-async-storage/async-storage
 @react-native-community/cli
 @react-native-community/netinfo
@@ -18,14 +17,17 @@
 @rozenite/mmkv-plugin
 @rozenite/network-activity-plugin
 @rozenite/performance-monitor-plugin
-@rozenite/redux-devtools-plugin
 @rozenite/react-navigation-plugin
+@rozenite/redux-devtools-plugin
 @sentry/react-native
 @shopify/flash-list
 @shopify/react-native-skia
 @testing-library/react-native
+types/cors
+@types/express
 @types/node
 @types/react
+@types/react-native-get-random-values
 @whatwg-node/events
 abortcontroller-polyfill
 babel-plugin-transform-remove-console
@@ -54,8 +56,8 @@ expo-secure-store
 expo-splash-screen
 expo-sqlite
 expo-status-bar
-expo-system-ui
 expo-store-review
+expo-system-ui
 expo-updates
 expo-video
 fantasticon
@@ -75,6 +77,7 @@ lottie-react-native
 metro-config
 node-gyp
 node-libs-browser
+nodemon
 react
 react-dom
 react-fela
