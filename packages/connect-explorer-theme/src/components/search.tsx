@@ -10,9 +10,9 @@ import { InformationCircleIcon, SpinnerIcon } from 'nextra/icons';
 import { useMenu } from '../contexts/menu';
 import { useConfig } from '../contexts/useConfig';
 import type { SearchResult } from '../types';
-import { renderComponent, renderString } from '../utils';
 import { Anchor } from './anchor';
 import { Input } from './input';
+import { renderComponent, renderString } from '../utils/render';
 
 type SearchProps = {
     className?: string;
