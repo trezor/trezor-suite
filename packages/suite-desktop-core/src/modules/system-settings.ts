@@ -11,23 +11,11 @@ export const SERVICE_NAME = 'system-settings';
 const getOSErrorDescription = (reason: string) =>
     `Cannot open system settings (${reason}). Please open the settings manually.`;
 
-// If opening system settings was attempted but failed, try to guess the reason of failure.
-const detectFailureReason = (error: Error) => {
-    const flatpakId = process.env.FLATPAK_ID ?? process.env.FLATPAK_APP_ID;
-    if (flatpakId !== undefined && flatpakId !== '') {
-        return getOSErrorDescription('running in Flatpak sandbox');
-    }
-
-    // cannot detect reason, return original error
-    return error.toString();
-};
-
 const openSettings = (cmd: string, env?: Record<string, string>) =>
     new Promise<InvokeResult>(resolve => {
         exec(cmd, { env: { ...process.env, ...env } }, error => {
             if (error) {
-                const errorMessage = detectFailureReason(error);
-                resolve({ success: false, error: errorMessage });
+                resolve({ success: false, error: getOSErrorDescription('unsupported system') });
             } else {
                 resolve({ success: true });
             }
@@ -39,20 +27,35 @@ const openSettings = (cmd: string, env?: Record<string, string>) =>
  * or a particular desktop environment in case of Linux (Gnome or KDE supported).
  * In case of other systems, fail right away without attempting it.
  */
-const openBluetoothSettings = () => {
+const openBluetoothSettings = async () => {
     if (isLinux()) {
         // https://github.com/electron/electron/blob/ab2a4fd836d539194bc5cde5f0d665eddeb6a134/docs/api/environment-variables.md?plain=1#L190
         // Electron modifies the value of XDG_CURRENT_DESKTOP
-        const xdg = process.env.ORIGINAL_XDG_CURRENT_DESKTOP || process.env.XDG_CURRENT_DESKTOP;
-        if (xdg?.includes('GNOME')) {
-            return openSettings('gnome-control-center bluetooth', {
-                XDG_CURRENT_DESKTOP: xdg,
-            });
-        } else if (xdg?.includes('KDE')) {
-            return openSettings('systemsettings5', {
-                XDG_CURRENT_DESKTOP: xdg,
-            });
+        const xdg =
+            process.env.ORIGINAL_XDG_CURRENT_DESKTOP || process.env.XDG_CURRENT_DESKTOP || '';
+        const flatpak = process.env.FLATPAK_ID ?? process.env.FLATPAK_APP_ID;
+        const flatpakPrefix = flatpak ? 'flatpak-spawn --host ' : '';
+        const commands = {
+            GNOME: 'gnome-control-center bluetooth',
+            KDE: 'systemsettings5 bluetooth',
+            PANTHEON: 'switchboard bluetooth',
+            BLUEMAN: 'blueman-manager',
+        };
+
+        const xdgMatch = xdg
+            ? Object.entries(commands).find(([key]) => xdg.includes(key))
+            : undefined;
+        const cmd = xdgMatch?.[1];
+        const env = { XDG_CURRENT_DESKTOP: xdg };
+        if (cmd) {
+            const result = await openSettings(`${flatpakPrefix}${cmd}`, env);
+            if (result.success) {
+                return result;
+            }
         }
+
+        // fallback to blueman
+        return openSettings(`${flatpakPrefix}${commands.BLUEMAN}`, env);
     }
 
     if (isMacOs()) {
