@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { acquireDevice, selectIsDeviceThpRequired } from '@suite-common/wallet-core';
+import {
+    acquireDevice,
+    selectIsAnyPhysicalDeviceConnectedViaUsb,
+    selectIsDeviceThpRequired,
+} from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
     HomeStackParamList,
@@ -26,11 +30,14 @@ export const useConnectDeviceHandler = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
+    const isAnyPhysicalDeviceConnectedViaUsb = useSelector(
+        selectIsAnyPhysicalDeviceConnectedViaUsb,
+    );
 
     const onConnectDevicePress = useCallback(() => {
         if (isDeviceThpRequired) {
             dispatch(acquireDevice({}));
-        } else if (Platform.OS === 'ios') {
+        } else if (isAnyPhysicalDeviceConnectedViaUsb || Platform.OS === 'ios') {
             // Make sure auto-connect is enabled in case some device was manually disconnected.
             dispatch(bluetoothActions.enableAutoConnect());
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
@@ -41,7 +48,7 @@ export const useConnectDeviceHandler = () => {
                 screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
             });
         }
-    }, [dispatch, isDeviceThpRequired, navigation]);
+    }, [dispatch, isDeviceThpRequired, isAnyPhysicalDeviceConnectedViaUsb, navigation]);
 
     return { onConnectDevicePress };
 };

@@ -409,6 +409,11 @@ export const selectIsNoPhysicalDeviceConnected = createMemoizedSelector(
     devices => devices.every(device => !device.connected),
 );
 
+export const selectIsAnyPhysicalDeviceConnectedViaUsb = createMemoizedSelector(
+    [selectPhysicalDeviceWallets],
+    devices => devices.some(device => device.connected && device.descriptor.apiType === 'usb'),
+);
+
 export const selectHasOnlyPortfolioDevice = createMemoizedSelector(
     [selectDevices],
     devices => devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID,
