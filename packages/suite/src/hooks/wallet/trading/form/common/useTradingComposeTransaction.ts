@@ -60,6 +60,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
     const outputAddress = values?.outputs?.[0].address;
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
+    const [shouldUpdateMaxAmount, setShouldUpdateMaxAmount] = useState(true);
 
     // sub-hook, Composing transaction
     const {
@@ -150,12 +151,16 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
 
         if (composed.type === 'final' || composed.type === 'nonfinal') {
-            if (typeof setMaxOutputId === 'number' && composed.max) {
+            if (typeof setMaxOutputId === 'number' && composed.max && shouldUpdateMaxAmount) {
+                setShouldUpdateMaxAmount(false);
+
                 setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
                     shouldValidate: true,
                     shouldDirty: true,
                 });
                 clearErrors(TRADING_FORM_OUTPUT_AMOUNT);
+            } else {
+                setShouldUpdateMaxAmount(true);
             }
 
             dispatch(
@@ -167,6 +172,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         account.symbol,
         composedLevels,
