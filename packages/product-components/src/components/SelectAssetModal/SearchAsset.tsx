@@ -20,8 +20,7 @@ export const SearchAsset = ({
         onChange={event => setSearch(event.target.value)}
         onClear={() => setSearch('')}
         showClearButton="always"
-        innerAddon={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
-        innerAddonAlign="start"
+        leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
         // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus
     />

@@ -36,7 +36,7 @@ export const AccountSearchBox = () => {
             onChange={e => {
                 setSearchString(e.target.value);
             }}
-            innerAddon={
+            leftContent={
                 <Icon
                     name="magnifyingGlass"
                     size={16}
@@ -47,7 +47,6 @@ export const AccountSearchBox = () => {
                     cursor="pointer"
                 />
             }
-            innerAddonAlign="start"
             size="small"
             placeholder={translationString('TR_WALLET')}
             showClearButton="always"

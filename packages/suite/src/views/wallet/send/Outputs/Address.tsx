@@ -452,7 +452,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     return (
         <Input
             inputState={getInputState()}
-            innerAddon={<Icon name="qrCode" onClick={handleQrClick} />}
+            rightContent={<Icon name="qrCode" onClick={handleQrClick} />}
             label={<Translation id="RECIPIENT_ADDRESS" />}
             labelLeft={
                 <p>

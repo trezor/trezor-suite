@@ -117,9 +117,9 @@ export const Locktime = ({ close }: LocktimeProps) => {
                 <IconButton icon="x" size="small" variant="tertiary" onClick={close} />
             </Row>
             {locktimeOption == 'block' ? (
-                <LocktimeBlockHeight innerAddon={locktimeOptionSelect} />
+                <LocktimeBlockHeight rightContent={locktimeOptionSelect} />
             ) : (
-                <LocktimeDatetime innerAddon={locktimeOptionSelect} />
+                <LocktimeDatetime rightContent={locktimeOptionSelect} />
             )}
         </Card>
     );

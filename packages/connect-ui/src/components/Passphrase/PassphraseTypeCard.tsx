@@ -361,7 +361,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                 inputState={isTooLong ? 'error' : undefined}
                                 // eslint-disable-next-line jsx-a11y/no-autofocus
                                 autoFocus={!isAndroid()}
-                                innerAddon={
+                                rightContent={
                                     <Icon
                                         size={18}
                                         color={theme.iconSubdued}

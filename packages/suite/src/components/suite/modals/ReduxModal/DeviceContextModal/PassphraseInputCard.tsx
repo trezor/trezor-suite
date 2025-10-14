@@ -118,7 +118,7 @@ export const PassphraseInputCard = ({
                             value={value}
                             bottomText={errorMessage}
                             inputState={errorMessage ? 'error' : undefined}
-                            innerAddon={
+                            rightContent={
                                 <Icon
                                     size={18}
                                     variant="tertiary"
