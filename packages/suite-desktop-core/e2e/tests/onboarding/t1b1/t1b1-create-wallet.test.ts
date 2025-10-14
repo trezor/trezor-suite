@@ -26,16 +26,7 @@ test.describe(
                     priority: TestPriority.Critical,
                 }),
             },
-            async ({
-                page,
-                analyticsSection,
-                onboardingPage,
-                settingsPage,
-                dashboardPage,
-                devicePrompt,
-                trezorInput,
-                trezorUserEnvLink,
-            }) => {
+            async ({ analyticsSection, onboardingPage, devicePrompt, trezorUserEnvLink, page }) => {
                 await test.step('Pass through analytics and firmware steps', async () => {
                     await analyticsSection.passThroughAnalytics();
                     await onboardingPage.firmware.continueThroughFirmware();
@@ -50,6 +41,10 @@ test.describe(
                     await trezorUserEnvLink.pressYes();
                 });
 
+                await test.step('Skip backup, It is possible to leave onboarding now', async () => {
+                    await expect(onboardingPage.backup.skipBackupButton).toBeVisible();
+                });
+
                 await test.step('Start backup process', async () => {
                     await onboardingPage.createBackupButton.click();
                 });
@@ -59,7 +54,6 @@ test.describe(
                     await onboardingPage.backup.madeNoDigitalCopyCheckbox.click();
                     await onboardingPage.backup.willHideSeedCheckbox.click();
                     await devicePrompt.confirmOnDevicePromptIsHidden();
-
                     await onboardingPage.backup.startButton.click();
                     await devicePrompt.confirmOnDevicePromptIsShown();
 
@@ -72,29 +66,33 @@ test.describe(
                     await onboardingPage.backup.closeButton.click();
                 });
 
-                await test.step('Lets set PIN', async () => {
-                    const pin = '12345';
+                await test.step('Proceed to PIN setup, Now we are in PIN step, skip button is available', async () => {
+                    await expect(onboardingPage.pin.skipButton).toBeVisible();
+                });
 
+                await test.step('Lets set PIN', async () => {
                     await onboardingPage.pin.setPinButton.click();
                     await devicePrompt.confirmOnDevicePromptIsShown();
                     await trezorUserEnvLink.pressYes();
-                    // enter the PIN
-                    await trezorInput.enterPinOnBlindMatrix(pin);
-                    // re-enter the PIN
-                    await trezorInput.enterPinOnBlindMatrix(pin);
                 });
 
-                await test.step('Activate assets & continue setup', async () => {
-                    await expect(settingsPage.coins.networkButton('btc')).toBeEnabledCoin();
-                    await expect(settingsPage.coins.networkButton('eth')).toBeDisabledCoin();
-                    await settingsPage.coins.enableNetwork('eth');
-                    await onboardingPage.continueCoinsButton.click();
+                await test.step('Simulate PIN mismatch', async () => {
+                    await onboardingPage.pin.pinButton(1).click();
+                    await onboardingPage.pin.submitButton.click();
+                    await onboardingPage.pin.pinButton(1).click();
+                    await onboardingPage.pin.pinButton(1).click();
+                    await onboardingPage.pin.submitButton.click();
+                    await expect(onboardingPage.pin.pinMismatch).toBeVisible();
+                    await onboardingPage.pin.tryAgainButton.click();
                 });
 
-                await test.step('Finish wallet creation', async () => {
-                    await expect(onboardingPage.finalTitle).toBeVisible();
-                    await onboardingPage.onboardingContinueButton.click();
-                    await expect(dashboardPage.walletReady).toBeVisible();
+                await test.step('Retry PIN setup', async () => {
+                    await devicePrompt.confirmOnDevicePromptIsShown();
+                    await trezorUserEnvLink.pressYes();
+                });
+
+                await test.step('Pin matrix appears again', async () => {
+                    await expect(onboardingPage.pin.pinButton(1)).toBeVisible();
                 });
             },
         );

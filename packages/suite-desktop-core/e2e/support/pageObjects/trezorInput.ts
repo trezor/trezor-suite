@@ -52,14 +52,10 @@ export class TrezorInput {
     @step()
     async enterPinOnBlindMatrix(pinEntryNumber: string) {
         await test.step('Find number on blind matrix and click it', async () => {
-            // try to prevent race condition, that happens with t1b1 with node bridge
-            await this.page.waitForTimeout(500);
-
+            await this.page.waitForTimeout(500); // try to prevent race condition, that happens with t1b1 with node bridge
             const state = await TrezorUserEnvLinkProxy.getDebugState();
-            for (const number of pinEntryNumber) {
-                const index = state.matrix.indexOf(number) + 1;
-                await this.pinInput(index).click();
-            }
+            const index = state.matrix.indexOf(pinEntryNumber) + 1;
+            await this.pinInput(index).click();
             await this.pinSubmitButton.click();
         });
     }
