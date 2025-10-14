@@ -1,8 +1,14 @@
 import { expect as detoxExpect } from 'detox';
 
-class TradingHistoryActions {
+import { TradingActions } from './TradingActions';
+
+class TradingHistoryActions extends TradingActions {
+    constructor() {
+        super('history');
+    }
+
     async openTradeHistory() {
-        await element(by.id('@trading/history/button')).tap();
+        await this.getElementById('button').tap();
         await detoxExpect(element(by.id('@screen/TradingHistory'))).toBeVisible();
     }
 
@@ -13,10 +19,8 @@ class TradingHistoryActions {
 
     async assertTradeDetail(title: string, paid: string, receiveAccount: string) {
         await detoxExpect(element(by.text(title))).toBeVisible();
-        await detoxExpect(element(by.id('@trading/history/detail/paid'))).toHaveText(paid);
-        await detoxExpect(element(by.id('@trading/history/detail/receive-account'))).toHaveText(
-            receiveAccount,
-        );
+        await detoxExpect(this.getElementById('detail/paid')).toHaveText(paid);
+        await detoxExpect(this.getElementById('detail/receive-account')).toHaveText(receiveAccount);
         // currently we are unable to proceed payment in E2E
         // therefore state should be "waiting for payment"
         await detoxExpect(element(by.text('Waiting for your payment ...'))).toBeVisible();
