@@ -10,11 +10,10 @@ import {
     AssetProps,
     ITEM_HEIGHT,
     SelectAssetModal as SelectAssetModalComponent,
-    SelectAssetModalProps,
 } from './SelectAssetModal';
 import { selectAssetModalOptions } from './SelectAssetModal.storiesData';
 
-const meta: Meta = {
+const meta = {
     title: 'SelectAssetModal',
     component: SelectAssetModalComponent,
     decorators: [
@@ -28,7 +27,8 @@ const meta: Meta = {
             </ThemeProvider>
         ),
     ],
-} as Meta;
+} satisfies Meta<typeof SelectAssetModalComponent>;
+
 export default meta;
 
 const getData = (options: typeof selectAssetModalOptions): AssetProps[] =>
@@ -44,11 +44,17 @@ const getData = (options: typeof selectAssetModalOptions): AssetProps[] =>
             height: ITEM_HEIGHT,
         }));
 
-export const SelectAssetModal: StoryObj<SelectAssetModalProps> = {
+export const SelectAssetModal: StoryObj<typeof meta> = {
     args: {
         onSelectAsset: action('onSelectAsset'),
         onClose: action('onClose'),
         options: getData(selectAssetModalOptions),
+        optionsFingerprint: 'mocked-fingerprint',
+        renderOptionBalance: () => null,
+        noItemsAvailablePlaceholder: {
+            heading: 'No items available',
+            body: 'No items available',
+        },
     },
     argTypes: {},
 };

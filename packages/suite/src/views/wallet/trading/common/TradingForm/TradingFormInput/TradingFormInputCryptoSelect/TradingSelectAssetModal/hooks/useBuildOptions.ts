@@ -10,12 +10,14 @@ import {
 import { RatesByKey, TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
+import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
+import { AssetTokenBalance } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 import { Account } from 'src/types/wallet';
 
-type MinimalTokenInfo = Pick<TokenInfo, 'contract' | 'balance'>;
+type MinimalTokenInfo = Pick<TokenInfo, 'contract' | 'balance' | 'symbol'>;
 type TokensInfoByContract = Record<Lowercase<TokenInfo['contract']>, MinimalTokenInfo>;
 
 function groupAccountsWithTokensByNetworkSymbol(
@@ -31,11 +33,12 @@ function groupAccountsWithTokensByNetworkSymbol(
 
                 if (account.tokens?.length) {
                     const tokensByContract = Object.fromEntries(
-                        account.tokens.map(({ contract, balance }) => [
+                        account.tokens.map(({ contract, balance, symbol }) => [
                             contract.toLowerCase(),
                             {
                                 contract,
                                 balance,
+                                symbol,
                             },
                         ]),
                     ) as TokensInfoByContract;
@@ -107,7 +110,7 @@ function getTokenBalance({
     symbol,
     currentRates,
     fiatCurrency,
-}: GetTokenBalanceProps) {
+}: GetTokenBalanceProps): AssetTokenBalance | undefined {
     const tokenInfo = findTokenInNetworkAccounts(
         accountsWithTokensGroupedByNetworkSymbol,
         symbol,
@@ -121,7 +124,8 @@ function getTokenBalance({
     const tokenBalanceInFiat = getTokenBalanceInFiat(symbol, tokenInfo, currentRates, fiatCurrency);
 
     return {
-        baseAmount: tokenInfo.balance,
+        baseAmount: tokenInfo.balance!,
+        baseSymbol: formatTokenSymbol(tokenInfo.symbol ?? ''),
         fiatAmount: tokenBalanceInFiat,
     };
 }
