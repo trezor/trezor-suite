@@ -1,33 +1,32 @@
-import * as semver from 'semver';
+import { parseIdbVersion } from './parseIdbVersion';
 
-export const semverToIDBVersion = (rawVersion: string | undefined): number => {
-    const version = semver.parse(rawVersion);
+export const encodeIDBVersion = (rawVersion: string): number => {
+    const { semver, revision } = parseIdbVersion(rawVersion);
 
-    if (!version) {
-        throw new Error(`Invalid version: ${rawVersion}`);
-    }
+    const { major, minor, patch } = semver;
 
-    if (version.prerelease.length > 0) {
-        throw new Error(`Prerelease versions are not supported: ${rawVersion}`);
-    }
-
-    const { major, minor, patch } = version;
-
-    if ([major, minor, patch].some(v => v > 255)) {
-        throw new Error(`Version ${rawVersion} is too large to be encoded`);
-    }
-
-    return (major << 16) | (minor << 8) | patch;
+    return ((major << 24) | (minor << 16) | (patch << 8) | revision) >>> 0;
 };
 
-export const idbVersionToSemver = (version: number): semver.SemVer => {
-    if (version < 0 || version > 0xffffff) {
-        throw new RangeError(`Value is out of 24-bit range: ${version}`);
+export const idbVersionToString = (version: number): string => {
+    if (!Number.isInteger(version) || version < 0 || version > 0xffffffff) {
+        throw new RangeError(`Invalid IDB version: ${version} (must be an integer 0–0xFFFFFFFF)`);
     }
 
-    const patch = version & 0xff;
-    const minor = (version >>> 8) & 0xff;
-    const major = (version >>> 16) & 0xff;
+    const unsignedIntVersion = version >>> 0;
 
-    return new semver.SemVer(`${major}.${minor}.${patch}`);
+    if (unsignedIntVersion < 0x01000000) {
+        const major = (unsignedIntVersion >>> 16) & 0xff;
+        const minor = (unsignedIntVersion >>> 8) & 0xff;
+        const patch = unsignedIntVersion & 0xff;
+
+        return `${major}.${minor}.${patch}`;
+    }
+
+    const major = (unsignedIntVersion >>> 24) & 0xff;
+    const minor = (unsignedIntVersion >>> 16) & 0xff;
+    const patch = (unsignedIntVersion >>> 8) & 0xff;
+    const rev = unsignedIntVersion & 0xff;
+
+    return rev ? `${major}.${minor}.${patch}.${rev}` : `${major}.${minor}.${patch}`;
 };

@@ -1,19 +1,20 @@
 import type { DBSchema } from 'idb';
-import * as semver from 'semver';
 
-import { semverToIDBVersion } from './encode';
+import { encodeIDBVersion } from './encode';
+import { parseIdbVersion } from './parseIdbVersion';
 import { DBMigration } from './types';
 
+type BaseSemver = `${number}.${number}.${number}`;
+type IdbVersionString = `${BaseSemver}` | `${BaseSemver}.${number}`;
+
 export const createMigration = <Schema extends DBSchema>(
-    version: `${number}.${number}.${number}`,
+    version: IdbVersionString,
     migrate: DBMigration<Schema>['migrate'],
 ): DBMigration<Schema> => {
-    if (!semver.valid(version)) {
-        throw new Error(`createMigration: Invalid version format: ${version}`);
-    }
+    const { versionString: threshold } = parseIdbVersion(version);
 
     return {
-        threshold: semverToIDBVersion(version),
+        threshold: encodeIDBVersion(threshold),
         migrate,
     };
 };
