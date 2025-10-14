@@ -139,6 +139,9 @@ const modalReducer = (state: State = initialState, action: Action): State => {
         case MODAL.PRESERVE:
             return { ...state, preserve: true };
 
+        case MODAL.REMOVE_PRESERVE:
+            return { ...state, preserve: false };
+
         default:
             return state;
     }
