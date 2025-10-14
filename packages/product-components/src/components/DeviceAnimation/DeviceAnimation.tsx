@@ -117,7 +117,10 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     />
                 )}
                 {type === 'CONNECT_CABLE' && (
-                    <Video src="videos/device/trezor_t3w1_connect_cable.webm" {...commonProps} />
+                    <Video
+                        src={`videos/device/trezor_${DEFAULT_FLAGSHIP_MODEL === DeviceModelInternal.T3T1 ? 't3t1' : 't3w1'}_connect_cable.webm`}
+                        {...commonProps}
+                    />
                 )}
                 {type === 'CONNECT_BT' && (
                     <ConnectBtAnimation
