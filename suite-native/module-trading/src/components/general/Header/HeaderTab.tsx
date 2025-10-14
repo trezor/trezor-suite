@@ -8,9 +8,10 @@ type HeaderTabProps = {
     children: ReactNode;
     active: boolean;
     onPress: () => void;
+    testID?: string;
 };
 
-export const HeaderTab = ({ icon, children, onPress, active }: HeaderTabProps) => {
+export const HeaderTab = ({ icon, children, onPress, active, testID }: HeaderTabProps) => {
     const colorScheme = active ? 'tertiaryElevation0' : 'backgroundSurfaceElevation0';
 
     return (
@@ -21,6 +22,7 @@ export const HeaderTab = ({ icon, children, onPress, active }: HeaderTabProps) =
             onPress={onPress}
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
+            testID={testID}
         >
             {children}
         </Button>

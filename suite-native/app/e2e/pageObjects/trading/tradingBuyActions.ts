@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { TradingFormActions } from './TradingFormActions';
-import { waitForElementByIdToBeVisible } from '../../utils';
+import { wait, waitForElementByIdToBeVisible } from '../../utils';
 
 class TradingBuyActions extends TradingFormActions {
     constructor() {
@@ -18,8 +18,10 @@ class TradingBuyActions extends TradingFormActions {
 
     async viewPaymentMethods() {
         await this.getElementById('payment-method-picker').tap();
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         await this.expectSheetHeaderTitle('Payment method');
         await element(by.label('Close')).tap();
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         await waitForElementByIdToBeVisible(
             this.getTestId('payment-method-picker'),
             this.SHORT_TIMEOUT,

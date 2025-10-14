@@ -6,6 +6,8 @@ import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormC
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
+const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-receive-button';
+
 export const ExchangeTradeableAssetPicker = () => {
     const form = useExchangeFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
@@ -19,6 +21,7 @@ export const ExchangeTradeableAssetPicker = () => {
                     selectedAsset={selectedValue}
                     colorScheme="tertiaryElevation0"
                     caret
+                    testID={ASSET_PICKER_TEST_ID}
                 />
                 <ExchangeReceiveAmountInput showAssetsSheet={showSheet} />
             </HStack>

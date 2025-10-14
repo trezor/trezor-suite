@@ -20,6 +20,7 @@ export type TradeableAssetsSheetProps = {
     onFilterChange: (value: string) => void;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
     flashListKey: string;
+    testID?: string;
 };
 
 const keyExtractor = ({ cryptoId }: TradeableAsset) => `asset_${cryptoId}`;
@@ -39,6 +40,7 @@ export const TradeableAssetSheet = memo(
         onFilterChange,
         onSelectedNetworkFilter,
         flashListKey,
+        testID,
     }: TradeableAssetsSheetProps) => {
         const onAssetSelectCallback = (asset: TradeableAsset) => {
             onAssetSelect(asset);
@@ -47,6 +49,8 @@ export const TradeableAssetSheet = memo(
 
         const listData = useFavouriteAssetsSectionList(assets);
 
+        const headerTestID = testID ? `${testID}/header` : undefined;
+
         // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
             () => (
@@ -54,9 +58,10 @@ export const TradeableAssetSheet = memo(
                     onClose={onClose}
                     onFilterChange={onFilterChange}
                     onSelectedNetworkFilter={onSelectedNetworkFilter}
+                    testID={headerTestID}
                 />
             ),
-            [onClose, onFilterChange, onSelectedNetworkFilter],
+            [onClose, onFilterChange, onSelectedNetworkFilter, headerTestID],
         );
 
         return (
@@ -71,6 +76,7 @@ export const TradeableAssetSheet = memo(
                 renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
                 flashListKey={flashListKey}
                 noSingletonSectionHeader
+                testID={testID}
             />
         );
     },

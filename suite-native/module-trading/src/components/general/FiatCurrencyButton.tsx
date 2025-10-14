@@ -33,6 +33,7 @@ export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyBu
     const { translate } = useTranslate();
 
     const displayCurrency = (currency ?? '').toUpperCase();
+    const tickerTestID = testID ? `${testID}/ticker` : undefined;
 
     return (
         <Pressable
@@ -44,7 +45,7 @@ export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyBu
             testID={testID}
         >
             <FiatCurrencyIcon size="small" />
-            <Text variant="callout" color="textSubdued" testID={testID + '/ticker'}>
+            <Text variant="callout" color="textSubdued" testID={tickerTestID}>
                 {displayCurrency}
             </Text>
             <Icon name="caretDown" color="textSubdued" size="medium" />

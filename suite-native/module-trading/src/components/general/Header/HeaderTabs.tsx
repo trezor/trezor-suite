@@ -44,18 +44,21 @@ const useTabsData = () => {
                 key: 'buy',
                 label: translate('moduleTrading.tradingScreen.tabs.buy'),
                 icon: 'plus',
+                testID: '@trading/buy/header-tab',
             },
             isSellEnabled && {
                 key: 'sell',
                 label: translate('moduleTrading.tradingScreen.tabs.sell'),
                 icon: 'minus',
+                testID: '@trading/sell/header-tab',
             },
             {
                 key: 'exchange',
                 label: translate('moduleTrading.tradingScreen.tabs.exchange'),
                 icon: 'arrowsLeftRight',
+                testID: '@trading/exchange/header-tab',
             },
-        ] as { key: TradingType; label: string; icon: IconName }[];
+        ] as { key: TradingType; label: string; icon: IconName; testID: string }[];
 
         return tabs.filter(Boolean);
     }, [translate, isSellEnabled]);
@@ -104,6 +107,7 @@ export const HeaderTabs = () => {
                             icon={item.icon}
                             active={item.key === activeTab}
                             onPress={() => onTabPress(item.key)}
+                            testID={item.testID}
                         >
                             {item.label}
                         </HeaderTab>
@@ -117,7 +121,7 @@ export const HeaderTabs = () => {
                         size="small"
                         colorScheme="tertiaryElevation0"
                         accessibilityLabel={translate('moduleTrading.tradingScreen.tabs.settings')}
-                        onPress={() => openModal()}
+                        onPress={openModal}
                     />
                 )}
             </HStack>
