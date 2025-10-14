@@ -3,7 +3,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { Device } from '@trezor/connect';
 
 import { THP_PREFIX, thpActions } from './thpActions';
-import { selectThpCredentials } from './thpSelectors';
+import { selectIsThpInProgress, selectThpCredentials } from './thpSelectors';
 
 const NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT = 3;
 
@@ -16,29 +16,23 @@ export const connectThpDeviceThunk = createThunk<void, ConnectThpDeviceThinkPara
     ({ device }, { dispatch, getState }) => {
         const credentials = selectThpCredentials(getState());
         const isFwInstall = selectFirmware(getState()).status !== 'initial';
+        const isThpInProgress = selectIsThpInProgress(getState());
 
-        const credential = credentials.find(
-            stateCredential =>
-                device.thp?.credentials.find(
-                    deviceCredential => deviceCredential.credential === stateCredential.credential,
-                ) !== undefined,
+        const credential = credentials.find(stateCredential =>
+            device.thp?.credentials.some(
+                deviceCredential => deviceCredential.credential === stateCredential.credential,
+            ),
         );
 
-        if (credential !== undefined) {
-            // We do not want to offer Autoconnect after reconnection dues to Firmware installation.
-            // Autoconnect will be offered on the next reconnection.
-            if (!isFwInstall) {
-                dispatch(thpActions.incrementCredentialConnectionCounter({ credential }));
-            }
+        if (credential !== undefined && !isFwInstall && isThpInProgress) {
+            // Increment the counter only after FW installation and during a THP confirmation.
+            dispatch(thpActions.incrementCredentialConnectionCounter({ credential }));
 
-            const hasAutoconnectCredential =
-                device?.thp?.credentials?.find(it => it?.autoconnect) !== undefined;
-
+            const hasAutoConnectCredential = device?.thp?.credentials?.some(c => c?.autoconnect);
             const shallShowAutoConnectDialog =
-                // -1 because it was just about incremented
+                // subtract 1 because the counter has just been incremented
                 credential.connectionCounter === NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT - 1 &&
-                !hasAutoconnectCredential &&
-                !isFwInstall;
+                !hasAutoConnectCredential;
 
             dispatch(
                 shallShowAutoConnectDialog
