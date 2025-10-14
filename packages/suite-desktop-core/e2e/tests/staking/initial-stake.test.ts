@@ -149,7 +149,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
                     pending: '0.100204158497493752',
-                    staked: '0',
+                    staked: 'hidden',
                     rewards: '0',
                     unstaking: 'hidden',
                 });
@@ -178,7 +178,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
                 await stakingSection.expectStakingAmounts({
                     pending: '0.100204158497493752',
-                    staked: '0',
+                    staked: 'hidden',
                     rewards: '0',
                     unstaking: 'hidden',
                 });
