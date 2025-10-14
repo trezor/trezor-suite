@@ -143,7 +143,7 @@ export const appIsFullyLoaded = async () => {
         .withTimeout(35000);
 };
 
-function getModelFromEnv(): Model {
+export function getModelFromEnv(): Model {
     const envValue = process.env.EMULATOR_MODEL as Model;
 
     return MODELS.includes(envValue) ? envValue : 'T3T1';
@@ -156,6 +156,16 @@ export type PrepareTrezorEmulatorProps = {
     version?: string;
 };
 
+const getFwVersion = (model: Model, version: string | undefined) => {
+    if (model === 'T3W1') {
+        return '2-main'; // At this time only this firmware works with T3W1
+    } else {
+        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+
+        return (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) || '2-latest';
+    }
+};
+
 export const prepareTrezorEmulator = async ({
     version,
     seed = MNEMONICS.mnemonic_immune,
@@ -164,11 +174,8 @@ export const prepareTrezorEmulator = async ({
 }: PrepareTrezorEmulatorProps = {}) => {
     if (platform === 'android') {
         // Prepare Trezor device for test scenario
-        const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+        const fwVersion = getFwVersion(model, version);
 
-        const fwVersion =
-            (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
-            '2-latest';
         await TrezorUserEnvLink.disconnect();
         await TrezorUserEnvLink.connect();
         // start with latest officially released firmware (necessary to pass the firmware checks)

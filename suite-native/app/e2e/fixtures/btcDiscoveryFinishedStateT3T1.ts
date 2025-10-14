@@ -4,7 +4,7 @@ import { PreloadedState } from '@suite-native/state';
 /**
  *  reflects state after BTC discovery of connected device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.
  */
-export const btcDiscoveryFinishedState: PreloadedState = {
+export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
     wallet: {
         accounts: [
             {

@@ -1,9 +1,14 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
+import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
+import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onSendAddressReview } from '../pageObjects/send/sendAddressReviewActions';
@@ -14,10 +19,12 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
+    getModelFromEnv,
     mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
     restartApp,
+    wipeAppData,
 } from '../utils';
 
 const SEND_FORM_ERROR_MESSAGES = {
@@ -66,13 +73,12 @@ const signTransactionAndSendIt = async () => {
 
 const preloadedState = mergePreloadedReduxState(
     onboardingCompletedState,
-    regtestDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === 'T3T1' ? regtestDiscoveryFinishedStateT3T1 : regtestDiscoveryFinishedStateT3W1,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.', () => {
     beforeAll(async () => {
-        await openApp({ newInstance: true, args: { preloadedState } });
-
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',
             btc_amount: INITIAL_ACCOUNT_BALANCE,
@@ -80,8 +86,13 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
     });
 
     beforeEach(async () => {
+        await openApp({ newInstance: true, args: { preloadedState } });
         await prepareTrezorEmulator();
         await restartApp();
+        if (getModelFromEnv() === 'T3W1') {
+            await onDevicePrompt.allowConnectToTrezor();
+            await onDeviceOnboarding.enterTHPPairingCode();
+        }
         await appIsFullyLoaded();
 
         await onHome.waitForScreen();
@@ -91,6 +102,10 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
 
         await onAccountDetail.openSend();
         await onSendOutputsForm.waitForScreen();
+    });
+    
+    afterEach(async () => {
+        await wipeAppData();
     });
 
     afterAll(async () => {

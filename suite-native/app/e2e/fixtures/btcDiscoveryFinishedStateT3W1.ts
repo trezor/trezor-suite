@@ -1,0 +1,228 @@
+import { TrezorDevice } from '@suite-common/suite-types';
+import { PreloadedState } from '@suite-native/state';
+
+/**
+ *  reflects state after BTC discovery of connected device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.
+ */
+export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
+    appSettings: {
+        isCoinEnablingInitFinished: true,
+    },
+    wallet: {
+        accounts: [
+            {
+                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1',
+                symbol: 'btc',
+                index: 0,
+                accountType: 'segwit',
+                path: 'm/49\'/0\'/0\'',
+                backendType: 'blockbook',
+                visible: true,
+                descriptor: 'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL',
+                empty: true,
+                balance: '0',
+                availableBalance: '0',
+                history: {
+                    total: 0,
+                    unconfirmed: 0
+                },
+                key: 'ypub6X4Sd4gegPV8ZwEhuq8rUCHwWb2Re8u7TtEaRNugmWSxor2w2PAQnx7qyqHqLDw7s9JWK7u6TvP5nYFF92jmM7Z6U42bYhHTNhQijYTLHAL-btc-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1',
+                formattedBalance: '0',
+                tokens: [],
+                addresses: {
+                    change: [],
+                    used: [],
+                    unused: []
+                },
+                utxo: [],
+                metadata: {
+                    key: 'xpub6CEBKQ1jXhweie3b5UMEG7CSLcsyhWucYmiMdz1oPW55kkDhmizrAtThxdLFLKHCTWBhZeJY1G2XuFdgRLKkYssVbiLAxnTy6yM5Lzt5YMc'
+                },
+                ts: 1760446304591,
+                networkType: 'bitcoin',
+                page: {
+                    index: 1,
+                    size: 25,
+                    total: 1
+                },
+                accountLabel: 'Bitcoin #1'
+            },
+        ],
+        settings: {
+            enabledNetworks: ['btc'],
+        },
+    },
+    device: {
+        devices: [
+            {
+                path: 'e2c6cc1b',
+                name: 'Trezor Safe 7',
+                descriptor: {
+                    apiType: 'usb',
+                    id: '127.0.0.1:21324'
+                },
+                type: 'acquired',
+                id: '7ED4F891C5F1098B60B881DE',
+                label: 'Hello!',
+                state: {
+                    sessionId: '01',
+                    deriveCardano: false,
+                    staticSessionId: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@7ED4F891C5F1098B60B881DE:1'
+                },
+                status: 'available',
+                mode: 'normal',
+                firmware: 'custom',
+                firmwareType: 'universal',
+                features: {
+                    vendor: 'trezor.io',
+                    major_version: 2,
+                    minor_version: 9,
+                    patch_version: 3,
+                    bootloader_mode: null,
+                    device_id: '7ED4F891C5F1098B60B881DE',
+                    pin_protection: false,
+                    passphrase_protection: true,
+                    language: 'en-US',
+                    label: 'Hello!',
+                    initialized: true,
+                    revision: 'f24354b914d6b5cacb43dbb1c00ea6dbfc13ea37',
+                    bootloader_hash: null,
+                    imported: null,
+                    unlocked: true,
+                    _passphrase_cached: null,
+                    firmware_present: null,
+                    backup_availability: 'NotAvailable',
+                    flags: 0,
+                    model: 'Safe 7',
+                    fw_major: null,
+                    fw_minor: null,
+                    fw_patch: null,
+                    fw_vendor: 'EMULATOR',
+                    unfinished_backup: false,
+                    no_backup: false,
+                    recovery_status: 'Nothing',
+                    capabilities: [
+                        'Capability_Bitcoin',
+                        'Capability_Bitcoin_like',
+                        'Capability_Binance',
+                        'Capability_Cardano',
+                        'Capability_Crypto',
+                        'Capability_Ethereum',
+                        'Capability_Monero',
+                        'Capability_Ripple',
+                        'Capability_Stellar',
+                        'Capability_Tezos',
+                        'Capability_U2F',
+                        'Capability_Shamir',
+                        'Capability_ShamirGroups',
+                        'Capability_PassphraseEntry',
+                        'Capability_Solana',
+                        'Capability_Translations',
+                        'Capability_Brightness',
+                        'Capability_BLE',
+                        'Capability_NFC'
+                    ],
+                    backup_type: 'Bip39',
+                    sd_card_present: false,
+                    sd_protection: false,
+                    wipe_code_protection: false,
+                    session_id: null,
+                    passphrase_always_on_device: false,
+                    safety_checks: 'Strict',
+                    auto_lock_delay_ms: 600000,
+                    display_rotation: 'North',
+                    experimental_features: false,
+                    busy: false,
+                    homescreen_format: 'Jpeg',
+                    hide_passphrase_from_host: false,
+                    internal_model: 'T3W1',
+                    unit_color: null,
+                    unit_btconly: null,
+                    homescreen_width: 380,
+                    homescreen_height: 520,
+                    bootloader_locked: true,
+                    language_version_matches: true,
+                    unit_packaging: null,
+                    haptic_feedback: null,
+                    optiga_sec: 0,
+                    soc: 100,
+                    firmware_corrupted: null
+                },
+                unavailableCapabilities: {
+                    btg: 'no-support',
+                    tbtg: 'no-support',
+                    dash: 'no-support',
+                    tdash: 'no-support',
+                    dcr: 'no-support',
+                    tdcr: 'no-support',
+                    dgb: 'no-support',
+                    nmc: 'no-support',
+                    vtc: 'no-support',
+                    eos: 'no-support',
+                    xem: 'no-support',
+                    dim: 'no-support',
+                    dimtok: 'no-support',
+                    breeze: 'no-support',
+                    'pac:hrt': 'no-support',
+                    'pac:chs': 'no-support',
+                    maid: 'no-capability',
+                    omni: 'no-capability',
+                    usdt: 'no-capability'
+                },
+                availableTranslations: {},
+                authenticityChecks: {
+                    firmwareRevision: {
+                        success: false,
+                        error: 'firmware-version-unknown'
+                    },
+                    firmwareHash: {
+                        success: false,
+                        error: 'check-skipped',
+                        attemptCount: 1
+                    }
+                },
+                thp: {
+                    properties: {
+                        internal_model: 'T3W1',
+                        model_variant: 0,
+                        protocol_version_major: 2,
+                        protocol_version_minor: 0,
+                        pairing_methods: [
+                            'CodeEntry',
+                            'QrCode',
+                            'NFC',
+                            'SkipPairing'
+                        ]
+                    },
+                    channel: '81fa',
+                    sendBit: 0,
+                    recvBit: 0,
+                    sendNonce: 2,
+                    recvNonce: 3,
+                    expectedResponses: [],
+                    credentials: [
+                        {
+                            trezor_static_public_key: '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
+                            credential: '0a240a1273646b5f6770686f6e6536345f61726d363410001a0c5472657a6f722053756974651220bca002b28c2c5f5495d1857b930d4a4253bf378deb3f0841c06f6da5c8c20f40',
+                            autoconnect: false,
+                            connectionCounter: 1
+                        }
+                    ]
+                },
+                connected: true,
+                buttonRequests: [],
+                metadata: {},
+                passwords: {},
+                firstConnectedTimestamp: 1760443407224,
+                ts: 1760446306237,
+                useEmptyPassphrase: true,
+                remember: true,
+                temporaryRemember: false,
+                available: true,
+                instance: 1,
+                walletNumber: 1,
+                discovered: true
+            } as unknown as TrezorDevice,
+        ],
+    },
+};

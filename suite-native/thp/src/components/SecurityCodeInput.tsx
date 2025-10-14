@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, TextInput } from 'react-native';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
+import { isDetoxTestBuild } from '@suite-native/config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type DigitBoxProps = {
@@ -97,7 +98,16 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 onKeyPress={e => onKeyPress(e.nativeEvent.key)}
-                style={applyStyle(textInputStyle)}
+                onChangeText={text => {
+                    if (!isDetoxTestBuild()) {
+                        return;
+                    }
+                    const digits = text.replace(/\D/g, '').slice(0, length);
+                    setCode(digits);
+                    onSubmit(digits);
+                }}
+                style={isDetoxTestBuild() ? applyStyle(prepareNativeStyle(_ => ({}))) : applyStyle(textInputStyle)}
+                testID="@thpSecurityCode/Input"
             />
             <HStack justifyContent="center" alignItems="center">
                 {Array.from({ length }).map((_, i) => (
@@ -105,7 +115,6 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
                         key={i}
                         value={code.at(i)}
                         isFocused={isFocused && i === code.length}
-                        testID={`@thpSecurityCode/Input/${i}`}
                     />
                 ))}
             </HStack>

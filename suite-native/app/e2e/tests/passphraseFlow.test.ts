@@ -4,12 +4,18 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
+import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
+import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
+import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
+    getModelFromEnv,
     mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
@@ -57,7 +63,8 @@ const expectNonEmptyWallet = async () => {
 
 const preloadedState = mergePreloadedReduxState(
     onboardingCompletedState,
-    regtestDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === 'T3T1' ? regtestDiscoveryFinishedStateT3T1 : regtestDiscoveryFinishedStateT3W1,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () => {
@@ -138,6 +145,10 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
         beforeEach(async () => {
             await prepareTrezorEmulator({ passphrase_protection: true });
             await restartApp();
+            if (getModelFromEnv() === 'T3W1') {
+                await onDevicePrompt.allowConnectToTrezor();
+                await onDeviceOnboarding.enterTHPPairingCode();
+            }
             await appIsFullyLoaded();
         });
 

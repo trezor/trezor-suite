@@ -2,12 +2,15 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcCoinEnabled } from '../fixtures/btcCoinEnabled';
+import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
+import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 import { onHome } from '../pageObjects/homeActions';
 import {
     disconnectTrezorUserEnv,
+    getModelFromEnv,
     mergePreloadedReduxState,
     openApp,
     prepareTrezorEmulator,
@@ -16,14 +19,21 @@ import {
 } from '../utils';
 
 const proceedToCreateOrRecoverCrossroads = async () => {
+    if (getModelFromEnv() === 'T3W1') {
+        await onDevicePrompt.allowConnectToTrezor();
+        await onDeviceOnboarding.enterTHPPairingCode();
+    }
+
     await onDeviceOnboarding.waitForUninitializedDeviceLanding();
     await onDeviceOnboarding.dismissTheUninitializedDeviceLanding();
     await onDeviceOnboarding.skipFirmwareUpdate();
 
     await TrezorUserEnvLink.pressYes();
 
-    await onDeviceOnboarding.waitForDeviceAuthenticitySuccess();
-    await onDeviceOnboarding.dismissDeviceAuthenticitySuccess();
+    if (getModelFromEnv() !== 'T3W1') { // skip device authenticity check on T3W1 because we are using 2-main FW
+        await onDeviceOnboarding.waitForDeviceAuthenticitySuccess();
+        await onDeviceOnboarding.dismissDeviceAuthenticitySuccess();
+    }
 
     await TrezorUserEnvLink.pressYes();
 
@@ -42,7 +52,7 @@ const finishOnboardingFlow = async () => {
 
 const preloadedState = mergePreloadedReduxState(
     onboardingCompletedState,
-    deviceChecksEnabledState,
+    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
     btcCoinEnabled,
 );
 

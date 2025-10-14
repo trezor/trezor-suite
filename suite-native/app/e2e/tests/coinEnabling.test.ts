@@ -3,15 +3,22 @@ import { conditionalDescribe } from '@suite-common/test-utils';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
+import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
+import { disconnectTrezorUserEnv, getModelFromEnv, openApp, prepareTrezorEmulator } from '../utils';
 
 conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling', () => {
     beforeAll(async () => {
         await prepareTrezorEmulator();
         await openApp({ newInstance: true, args: { preloadedState: onboardingCompletedState } });
+        
+        if (getModelFromEnv() === 'T3W1') {
+            await onDevicePrompt.allowConnectToTrezor();
+            await onDeviceOnboarding.enterTHPPairingCode();
+        }
     });
 
     afterAll(async () => {
