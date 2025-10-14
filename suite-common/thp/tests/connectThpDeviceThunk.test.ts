@@ -11,7 +11,7 @@ import { ThpState, prepareThpReducer } from '../src/thpReducer';
 const thpReduce = prepareThpReducer(extraDependenciesMock);
 const firmwareReduce = prepareFirmwareReducer(extraDependenciesMock);
 
-const thpCredential1 = createCredential({ credential: 'credential-1' });
+const thpCredential1 = createCredential({ credential: 'credential-1', connectionCounter: 2 });
 const thpCredential2 = createCredential({ credential: 'credential-2' });
 
 const initialThpState: ThpState = {
@@ -35,7 +35,37 @@ const device: Pick<Device, 'thp'> = {
 };
 
 describe(connectThpDeviceThunk.name, () => {
-    it('updates the connection counter for credential', () => {
+    it.each([
+        [1, 2, null],
+        [2, 3, 'AutoconnectInfo'],
+        [3, 4, null],
+    ])(
+        'updates the connection counter with initial value %d',
+        (initialCounter, expectedCounter, expectedStep) => {
+            const store = configureMockStore({
+                extra: {},
+                reducer: combineReducers({ thp: thpReduce, firmware: firmwareReduce }),
+                preloadedState: {
+                    thp: {
+                        ...initialThpState,
+                        step: 'ConfirmOnlyConnection',
+                        credentials: [
+                            { ...thpCredential1, connectionCounter: initialCounter },
+                            thpCredential2,
+                        ],
+                    },
+                    firmware: initialFirmwareState,
+                },
+            });
+
+            store.dispatch(connectThpDeviceThunk({ device }));
+            expect(store.getState().thp.credentials[0].connectionCounter).toEqual(expectedCounter);
+            expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
+            expect(store.getState().thp.step).toEqual(expectedStep);
+        },
+    );
+
+    it('does not update the connection counter without THP confirmation', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ thp: thpReduce, firmware: firmwareReduce }),
@@ -43,38 +73,23 @@ describe(connectThpDeviceThunk.name, () => {
         });
 
         store.dispatch(connectThpDeviceThunk({ device }));
-        expect(store.getState().thp.credentials[0].connectionCounter).toEqual(1);
-        expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
-        expect(store.getState().thp.step).toEqual(null);
-
-        store.dispatch(connectThpDeviceThunk({ device }));
         expect(store.getState().thp.credentials[0].connectionCounter).toEqual(2);
-        expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
-        expect(store.getState().thp.step).toEqual(null);
-
-        store.dispatch(connectThpDeviceThunk({ device }));
-        expect(store.getState().thp.credentials[0].connectionCounter).toEqual(3);
-        expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
-        expect(store.getState().thp.step).toEqual('AutoconnectInfo');
-
-        store.dispatch(connectThpDeviceThunk({ device }));
-        expect(store.getState().thp.credentials[0].connectionCounter).toEqual(4);
         expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
         expect(store.getState().thp.step).toEqual(null);
     });
 
-    it("won't update the connection counter for credential during Firmware Installation", () => {
+    it('does not update the connection counter during firmware installation', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ thp: thpReduce, firmware: firmwareReduce }),
             preloadedState: {
-                thp: initialThpState,
+                thp: { ...initialThpState, step: 'ConfirmOnlyConnection' },
                 firmware: { ...initialFirmwareState, status: 'done' },
             },
         });
 
         store.dispatch(connectThpDeviceThunk({ device }));
-        expect(store.getState().thp.credentials[0].connectionCounter).toEqual(0);
+        expect(store.getState().thp.credentials[0].connectionCounter).toEqual(2);
         expect(store.getState().thp.credentials[1].connectionCounter).toEqual(0);
         expect(store.getState().thp.step).toEqual(null);
     });
