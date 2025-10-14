@@ -295,12 +295,17 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const formValues = values as TradingExchangeFormProps | null;
         const prevFormValues = previousValues.current as TradingExchangeFormProps | null;
 
+        const receiveCryptoChanged = isChanged(
+            formValues?.receiveCryptoSelect,
+            prevFormValues?.receiveCryptoSelect,
+        );
+
         const receiveAddressChanged = isChanged(
             formValues?.receiveAddress,
             prevFormValues?.receiveAddress,
         );
 
-        if (receiveAddressChanged) {
+        if (receiveCryptoChanged || receiveAddressChanged) {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
             handleSubmit(() => {
