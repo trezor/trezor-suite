@@ -126,6 +126,9 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
 
 export const selectMetadata = (state: MetadataRootState) => state.metadata;
 
+export const selectIsMetadataEnabled = (state: MetadataRootState) =>
+    state.metadata.enabled && !state.metadata.initiating;
+
 /**
  * Select currently selected provider for metadata of type 'labels'
  */

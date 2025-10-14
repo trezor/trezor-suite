@@ -4,7 +4,7 @@ import { selectAddressLabels } from '@suite-common/local-first-storage';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     Banner,
@@ -33,8 +33,11 @@ import { AccountLabel, Address, MetadataLabeling } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
 import { Translation } from 'src/components/suite/Translation';
 import { useGuideOpenNode } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import {
+    selectIsMetadataEnabled,
+    selectLabelingDataForSelectedAccount,
+} from 'src/reducers/suite/metadataReducer';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
@@ -61,13 +64,17 @@ export const ConfirmValueModal = ({
     value,
 }: ConfirmValueModalProps) => {
     const [isCopied, setIsCopied] = useState(false);
-    const device = useSelector(selectSelectedDevice);
+    const { device, isLocked } = useDevice();
+    const isDeviceLocked = isLocked();
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
+    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
+    // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
+    const isMetadataBlockedByDeviceCall = isDeviceLocked && !isMetadataEnabled;
 
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const localFirstAddressLabels = useSelector(state =>
@@ -203,6 +210,7 @@ export const ConfirmValueModal = ({
                                                     )?.label ?? addressLabels[value],
                                             }}
                                             visible
+                                            isDisabled={isMetadataBlockedByDeviceCall}
                                         />
                                     )}
                                 </Column>

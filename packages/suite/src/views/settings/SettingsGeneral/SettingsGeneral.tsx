@@ -11,7 +11,10 @@ import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { Translation } from 'src/components/suite/Translation';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
+import {
+    selectIsMetadataEnabled,
+    selectSelectedProviderForLabels,
+} from 'src/reducers/suite/metadataReducer';
 import {
     selectHasExperimentalFeature,
     selectIsSettingsDesktopAppPromoBannerShown,
@@ -54,7 +57,7 @@ export const SettingsGeneral = () => {
     const torStatus = useSelector(state => state.suite.torStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
-    const metadata = useSelector(state => state.metadata);
+    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const { isBelowTablet } = useLayoutSize();
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
@@ -67,7 +70,6 @@ export const SettingsGeneral = () => {
         selectHasExperimentalFeature('tor-external'),
     );
 
-    const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
 
