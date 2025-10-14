@@ -1,27 +1,15 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
-
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Card, Column, LottieAnimation, Paragraph, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Banner, Column, H4, Paragraph, Row } from '@trezor/components';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { AcquireDeviceButton } from '../suite/AcquireDeviceButton';
-
-const StyledAcquireDeviceButton = styled(AcquireDeviceButton)`
-    margin-left: auto;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLottieAnimation = styled(LottieAnimation)`
-    margin: 8px 16px 8px 0;
-    min-width: 64px;
-    background: ${({ theme }) => theme.legacy.BG_GREY};
-`;
 
 type DeviceBannerProps = {
     title: ReactNode;
@@ -32,31 +20,27 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const deviceConnectedButNotAcquired = device && !isDeviceAcquired(device);
+    const selectedDeviceModelInternal = device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 
     return (
-        <Card
+        <Banner
             data-testid="@settings/device/disconnected-device-banner"
-            margin={{ bottom: spacings.lg }}
+            variant="warning"
+            icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
+            iconSize="extraLarge"
+            rightContent={
+                <Row gap={12}>
+                    {deviceConnectedButNotAcquired && <AcquireDeviceButton />}
+                    {isWebUsbTransport && !device?.connected && (
+                        <WebUsbButton variant="warning" size="small" />
+                    )}
+                </Row>
+            }
         >
-            <Row>
-                <StyledLottieAnimation
-                    type="CONNECT"
-                    shape="CIRCLE"
-                    size={64}
-                    deviceModelInternal={device?.features?.internal_model}
-                    loop
-                />
-                <Column>
-                    <Row gap={spacings.sm} flexWrap="wrap">
-                        <Paragraph typographyStyle="highlight">{title}</Paragraph>
-                        {!description && isWebUsbTransport && !device?.connected && (
-                            <WebUsbButton />
-                        )}
-                    </Row>
-                    {description && <Text color="textSubdued">{description}</Text>}
-                </Column>
-                {deviceConnectedButNotAcquired && <StyledAcquireDeviceButton />}{' '}
-            </Row>
-        </Card>
+            <Column>
+                <H4>{title}</H4>
+                {description && <Paragraph>{description}</Paragraph>}
+            </Column>
+        </Banner>
     );
 };

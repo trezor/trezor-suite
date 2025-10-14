@@ -8,7 +8,7 @@ import {
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Button, Tooltip, motionEasing } from '@trezor/components';
+import { Button, Column, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -114,15 +114,17 @@ export const SettingsCoins = () => {
         <SettingsLayout>
             <ContextMessage context={Context.getSettings('networks')} />
 
-            {showDeviceBanner && (
-                <DeviceBanner
-                    title={
-                        <Translation id="TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED" />
-                    }
-                />
-            )}
+            <Column gap={16}>
+                {showDeviceBanner && (
+                    <DeviceBanner
+                        title={
+                            <Translation id="TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED" />
+                        }
+                    />
+                )}
 
-            {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
+                {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
+            </Column>
 
             <SettingsSection title={<Translation id="TR_COINS" />} icon="coin">
                 <SettingsSectionItem anchorId={SettingsAnchor.Crypto}>

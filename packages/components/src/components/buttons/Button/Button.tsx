@@ -50,7 +50,7 @@ type ButtonContainerProps = TransientProps<AllowedButtonFrameProps> & {
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
     -webkit-app-region: no-drag;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'end' && 'row-reverse'};
