@@ -13,6 +13,8 @@ import { TradeableAsset } from '../../../types/general';
 import { MyAssetSheet } from '../../general/MyAssetSheet/MyAssetSheet';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
+const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-send-button';
+
 export const ExchangeSendAssetPicker = () => {
     const dispatch = useDispatch();
     const inputRef = useRef<TextInput>(null);
@@ -49,6 +51,7 @@ export const ExchangeSendAssetPicker = () => {
                     selectedAsset={selectedValue}
                     colorScheme="tertiaryElevation0"
                     caret
+                    testID={ASSET_PICKER_TEST_ID}
                 />
                 <ExchangeSendAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />
             </HStack>

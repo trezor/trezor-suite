@@ -8,17 +8,20 @@ describe('ReviewOutputsFooter', () => {
         preloadedState: PreloadedState = {},
     ) =>
         renderWithStoreProviderAsync(
-            <ReviewOutputsFooter resolveConsent={jest.fn()} isConsentRequested={true} {...props} />,
+            <ReviewOutputsFooter
+                resolveConsent={jest.fn()}
+                isConsentRequested={true}
+                testID="TEST_ID"
+                {...props}
+            />,
             { preloadedState },
         );
 
     it('should display "Send transaction" button', async () => {
         const { getByTestId } = await renderReviewOutputsFooter({});
 
-        expect(getByTestId('@trading/send-transaction-button')).toHaveTextContent(
-            'Send transaction',
-        );
-        expect(getByTestId('@trading/send-transaction-button')).toBeEnabled();
+        expect(getByTestId('TEST_ID/submit-button')).toHaveTextContent('Send transaction');
+        expect(getByTestId('TEST_ID/submit-button')).toBeEnabled();
     });
 
     it('should be disabled when isConsentRequested is false', async () => {
@@ -51,20 +54,18 @@ describe('ReviewOutputsFooter', () => {
         const resolveConsent = jest.fn();
         const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
 
-        await userEvent.press(getByTestId('@trading/send-transaction-button'));
+        await userEvent.press(getByTestId('TEST_ID/submit-button'));
 
         expect(resolveConsent).toHaveBeenCalledWith(true);
-        expect(getByTestId('@trading/send-transaction-button')).not.toHaveTextContent(
-            'Send transaction',
-        );
+        expect(getByTestId('TEST_ID/submit-button')).not.toHaveTextContent('Send transaction');
     });
 
     it('should resolveConsent only once', async () => {
         const resolveConsent = jest.fn();
         const { getByTestId } = await renderReviewOutputsFooter({ resolveConsent });
 
-        await userEvent.press(getByTestId('@trading/send-transaction-button'));
-        await userEvent.press(getByTestId('@trading/send-transaction-button'));
+        await userEvent.press(getByTestId('TEST_ID/submit-button'));
+        await userEvent.press(getByTestId('TEST_ID/submit-button'));
 
         expect(resolveConsent).toHaveBeenCalledTimes(1);
     });

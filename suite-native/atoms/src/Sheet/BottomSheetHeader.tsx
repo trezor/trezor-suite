@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
+import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { IconButton } from '../Button/IconButton';
@@ -40,6 +41,7 @@ export const BottomSheetHeader = ({
     scrollDivider,
 }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
 
     const isHeaderDisplayed = !!(title || subtitle || isCloseDisplayed);
 
@@ -65,7 +67,8 @@ export const BottomSheetHeader = ({
                             colorScheme="tertiaryElevation0"
                             size="medium"
                             accessibilityRole="button"
-                            accessibilityLabel="Close"
+                            accessibilityLabel={translate('generic.buttons.close')}
+                            testID="@bottom-sheet/header/close-button"
                         />
                     )}
                 </View>

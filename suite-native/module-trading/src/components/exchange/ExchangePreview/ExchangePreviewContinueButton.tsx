@@ -30,6 +30,8 @@ type NavigationProp = StackToTabCompositeNavigationProp<
     AppTabsParamList
 >;
 
+const EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID = '@trading/exchange-preview/continue-button';
+
 export const ExchangePreviewContinueButton = memo(
     ({ isDisabled, quote, onSignTransactionNavigation }: ExchangePreviewContinueButtonProps) => {
         const navigation = useNavigation<NavigationProp>();
@@ -68,7 +70,11 @@ export const ExchangePreviewContinueButton = memo(
         };
 
         return (
-            <Button onPress={handleSignTransaction} isDisabled={isDisabled}>
+            <Button
+                onPress={handleSignTransaction}
+                isDisabled={isDisabled}
+                testID={EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID}
+            >
                 <Translation id="generic.buttons.continue" />
             </Button>
         );

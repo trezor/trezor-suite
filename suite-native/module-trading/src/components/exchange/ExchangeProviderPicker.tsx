@@ -23,6 +23,8 @@ export type ExchangeProviderPickerProps = ExchangeProviderPickerRightProps & {
     handleProviderPress: () => void;
 };
 
+const PROVIDER_PICKER_TEST_ID = '@trading/exchange/provider-picker';
+
 const ExchangeProviderPickerRight = ({
     isLoading,
     selectedValue,
@@ -79,6 +81,7 @@ export const ExchangeProviderPicker = ({
                 onPress={handleProviderPress}
                 noCaret={isLoading}
                 warning={warning}
+                testID={PROVIDER_PICKER_TEST_ID}
             >
                 <ExchangeProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
             </OverviewRow>

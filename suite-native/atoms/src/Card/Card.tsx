@@ -22,6 +22,7 @@ export type CardProps = {
     borderColor?: Color;
     alertProps?: InlineAlertBoxProps;
     alertPosition?: AlertPosition;
+    testID?: string;
 };
 
 const cardOuterContainerStyle = prepareNativeStyle<{
@@ -110,6 +111,7 @@ export const Card = React.forwardRef<View, CardProps>(
             borderColor,
             noPadding = false,
             noShadow = false,
+            testID,
         }: CardProps,
         ref,
     ) => {
@@ -119,7 +121,10 @@ export const Card = React.forwardRef<View, CardProps>(
         const alertPosition = isAlertDisplayed ? (alertPositionProp ?? 'top') : undefined;
 
         return (
-            <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}>
+            <View
+                style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}
+                testID={testID}
+            >
                 {isAlertDisplayed && alertPosition === 'top' && (
                     <View
                         style={applyStyle(alertBoxWrapperStyle, {

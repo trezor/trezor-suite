@@ -9,6 +9,8 @@ export type BuyTradeableAssetsSheetProps = Omit<
     'assets' | 'onFilterChange' | 'onSelectedNetworkFilter' | 'flashListKey'
 >;
 
+const SHEET_TEST_ID = '@trading/buy/receive-asset-sheet';
+
 export const BuyTradeableAssetsSheet = (props: BuyTradeableAssetsSheetProps) => {
     const { filteredData, filterValue, setFilterValue, setFilterSymbol } =
         useBuyTradeableAssetsFilteredData();
@@ -23,6 +25,7 @@ export const BuyTradeableAssetsSheet = (props: BuyTradeableAssetsSheetProps) => 
             {...props}
             onSelectedNetworkFilter={setFilterSymbol}
             flashListKey={flashListKey}
+            testID={SHEET_TEST_ID}
         />
     );
 };

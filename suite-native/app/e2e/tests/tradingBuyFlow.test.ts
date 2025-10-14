@@ -29,7 +29,10 @@ describe('Trade Buy', () => {
         await tradingBuyActions.scrollScreenToBottom();
         await tradingBuyActions.viewPaymentMethods();
         await tradingBuyActions.viewProviders();
+        await tradingBuyActions.expectValidBuyForm();
 
+        await tradingBuyActions.openLegalSheet();
+        await tradingBuyActions.closeBottomSheet();
         await tradingBuyActions.expectValidBuyForm();
         await tradingBuyActions.confirmTradingForm();
         await tradingBuyActions.closePaymentWebview();

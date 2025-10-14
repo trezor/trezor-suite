@@ -68,6 +68,8 @@ export const TradeableAssetButton = ({
         ? networkSymbol
         : (getDisplaySymbol(networkSymbol) as NetworkDisplaySymbol);
 
+    const symbolTestID = testID ? `${testID}/symbol` : undefined;
+
     return (
         <LinearGradient
             colors={gradientColors}
@@ -91,7 +93,7 @@ export const TradeableAssetButton = ({
                 <NetworkSymbolExtendedFormatter
                     symbol={symbol}
                     variant="callout"
-                    testID={testID + '/symbol'}
+                    testID={symbolTestID}
                 />
                 {caret ? <Icon name="caretDown" color="textSubdued" size="medium" /> : <Box />}
             </Pressable>

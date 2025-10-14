@@ -57,6 +57,7 @@ export const TradingOutputsReviewScreen = ({
                     <ReviewOutputsFooter
                         isConsentRequested={isConsentRequested}
                         resolveConsent={resolveConsent}
+                        testID="@trading/outputs-review/footer"
                     />
                 ) : (
                     <Box style={applyStyle(spacerStyle)} />

@@ -48,6 +48,8 @@ export const CountryOfResidencePicker = <Form extends BuyFormType | SellFormType
         [selectedValue, setSelectedValue, tradingType],
     );
 
+    const valueTestID = testID ? `${testID}/value` : undefined;
+
     return (
         <>
             <OverviewRow
@@ -63,7 +65,7 @@ export const CountryOfResidencePicker = <Form extends BuyFormType | SellFormType
                             accessibilityLabel={translate(
                                 'moduleTrading.tradingScreen.selectedCountryOfResidence',
                             )}
-                            testID={testID + '/value'}
+                            testID={valueTestID}
                         >
                             {selectedValue.label}
                         </Text>
@@ -75,7 +77,7 @@ export const CountryOfResidencePicker = <Form extends BuyFormType | SellFormType
                         accessibilityLabel={translate(
                             'moduleTrading.tradingScreen.noCountryOfResidence',
                         )}
-                        testID={testID + '/value'}
+                        testID={valueTestID}
                     >
                         <Translation id="moduleTrading.notSelected" />
                     </Text>

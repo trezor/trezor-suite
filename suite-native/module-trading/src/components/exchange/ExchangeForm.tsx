@@ -23,14 +23,17 @@ type ExchangeFormMemoizedProps = {
     shouldAnimateEntering?: boolean;
 };
 
+const EXCHANGE_FORM_TEST_ID = '@trading/exchange/form';
+const AMOUNT_EDITING_DONE_BUTTON_TEST_ID = '@trading/exchange/amount-editing-done-button';
+
 const ExchangeFormMemoized = memo(({ isAmountInputActive }: ExchangeFormMemoizedProps) => (
     <AnimatedBox layout={LinearTransition}>
-        <VStack spacing="sp16">
+        <VStack spacing="sp16" testID={EXCHANGE_FORM_TEST_ID}>
             <ExchangeAlert />
             <ExchangeSendCard isAmountInputActive={isAmountInputActive} />
             <ExchangeReceiveCard />
             {isAmountInputActive ? (
-                <AmountEditingDoneButton />
+                <AmountEditingDoneButton testID={AMOUNT_EDITING_DONE_BUTTON_TEST_ID} />
             ) : (
                 <>
                     <Card noPadding>

@@ -66,6 +66,28 @@ class PassphraseModule {
         await waitForElementByIdToBeVisible(subheaderTestID);
         await detoxExpect(element(by.id(subheaderTestID))).toHaveText(expectedText);
     }
+
+    public async openPassphraseWallet(passphrase: string) {
+        await this.openNewPassphraseFlow();
+
+        await this.expectEnablePassphraseOnDeviceRequest();
+        await this.allowPassphraseOnEmu();
+
+        await this.expectEnterPassphraseScreen();
+        await this.enterPassphrase(passphrase);
+
+        await this.expectConfirmPassphraseOnDeviceRequest();
+        await this.confirmPassphraseOnEmu();
+
+        try {
+            // If trying to open an already open passphrase wallet, just confirm the alert.
+            await waitForElementByTextToBeVisible('Passphrase duplicate', 5000);
+            await element(by.id('@alert-sheet/primary-button')).tap();
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            // Newly opened wallet, do nothing.
+        }
+    }
 }
 
 export const onPassphrase = new PassphraseModule();

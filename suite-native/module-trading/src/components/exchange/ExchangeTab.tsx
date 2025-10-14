@@ -21,7 +21,7 @@ const ExchangeTabEnabled = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     if (isPortfolioTrackerDevice) {
-        return <PortfolioTrackerInfo />;
+        return <PortfolioTrackerInfo testID="@trading/exchange/portfolio-tracker-info" />;
     }
 
     if (hasBitcoinOnlyFirmware) {

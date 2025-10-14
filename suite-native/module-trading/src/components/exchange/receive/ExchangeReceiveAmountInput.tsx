@@ -14,6 +14,8 @@ export type ExchangeReceiveAmountInputProps = {
     showAssetsSheet: () => void;
 };
 
+const EXCHANGE_RECEIVE_INPUT_TEST_ID = '@trading/exchange/receive-amount-input';
+
 const noop = () => {};
 
 export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveAmountInputProps>(
@@ -38,6 +40,7 @@ export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveA
                 )}
                 onChangeText={noop}
                 isLoading={isLoading}
+                testID={EXCHANGE_RECEIVE_INPUT_TEST_ID}
             />
         );
     },

@@ -14,6 +14,8 @@ export type ExchangeSendAmountInputProps = {
     showAssetsSheet: () => void;
 };
 
+const EXCHANGE_SEND_INPUT_TEST_ID = '@trading/exchange/send-amount-input';
+
 export const ExchangeSendAmountInput = forwardRef<TextInput, ExchangeSendAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
@@ -38,6 +40,7 @@ export const ExchangeSendAmountInput = forwardRef<TextInput, ExchangeSendAmountI
                 loadingAccessibilityLabel={translate(
                     'moduleTrading.tradingScreen.quotesLoadingLabel',
                 )}
+                testID={EXCHANGE_SEND_INPUT_TEST_ID}
             />
         );
     },
