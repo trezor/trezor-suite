@@ -88,6 +88,9 @@ export const showAddress =
             confirmAddressOnDeviceThunk({ accountKey: account.key, addressPath: path, chunkify }),
         ).unwrap();
 
+        // After confirming address on the modal, it does not have to be persistent anymore
+        dispatch(modalActions.removePreserve());
+
         if (response.success) {
             // show second part of the "confirm address" modal
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));

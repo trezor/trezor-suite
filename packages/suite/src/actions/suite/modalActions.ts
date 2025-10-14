@@ -10,6 +10,7 @@ import { Dispatch } from 'src/types/suite';
 export type ModalAction =
     | { type: typeof MODAL.CLOSE }
     | { type: typeof MODAL.PRESERVE }
+    | { type: typeof MODAL.REMOVE_PRESERVE }
     | {
           type: typeof MODAL.OPEN_USER_CONTEXT;
           payload: UserContextPayload;
@@ -18,9 +19,16 @@ export type ModalAction =
 export const onCancel = createAction(MODAL.CLOSE);
 
 /**
- * Don't close modals on UI.CLOSE_UI.WINDOW event but wait for explicit closing instead
+ * Don't close modals on UI.CLOSE_UI.WINDOW event (closing via modal US), but wait for explicit closing instead
+ * (usually coming from a redux action from device, or other sources not directly controlled by Suite UI)
  */
 export const preserve = createAction(MODAL.PRESERVE);
+
+/**
+ * Remove preserve lock from modal; usually those modals are closed, but this is useful when the modal
+ * is only replaced by another one, and that one must no longer be preserved.
+ */
+export const removePreserve = createAction(MODAL.REMOVE_PRESERVE);
 
 export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
     TrezorConnect.uiResponse({
