@@ -4,12 +4,14 @@ import {
     selectAdapterStatus,
     selectAutoConnectPolicy,
     selectKnownDevices,
+    selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { selectFirmware } from '@suite-common/firmware';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
@@ -158,6 +160,21 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             const device = fromBluetoothDevice(deviceIpc);
 
             dispatch(bluetoothActions.deviceUpdateAction({ device }));
+        });
+
+        bluetoothIpc.on('open-bluetooth-settings', async () => {
+            const result = await desktopApi.openSystemSettings('bluetooth');
+            if (!result.success) {
+                // stop here and disconnect the device (abort pairing before it starts)
+                // device needs to be paired manually via system settings
+                const connectingDevices = selectConnectingDevices(getState());
+                const nearbyDevices = selectNearbyDevices(getState());
+                nearbyDevices.forEach(({ id }) => {
+                    if (connectingDevices.includes(id)) {
+                        bluetoothIpc.disconnectDevice(id);
+                    }
+                });
+            }
         });
 
         // Wait for 3 seconds or earlier if a connected device is detected.

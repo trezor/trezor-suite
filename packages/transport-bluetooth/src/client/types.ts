@@ -86,6 +86,7 @@ export interface BluetoothIpcEvents {
     'adapter-event': BluetoothAdapterState;
     'device-list-update': BluetoothDevice[];
     'device-update': BluetoothDevice;
+    'open-bluetooth-settings': undefined;
 }
 
 type TypedManagerEvents = TypedEmitter<BluetoothIpcEvents>;
