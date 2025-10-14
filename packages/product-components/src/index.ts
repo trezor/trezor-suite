@@ -3,6 +3,7 @@ export {
     SelectAssetModal,
     type AssetProps,
     type AssetOptionBaseProps,
+    type AssetTokenBalance,
 } from './components/SelectAssetModal/SelectAssetModal';
 export { SearchAsset } from './components/SelectAssetModal/SearchAsset';
 export { PassphraseTypeCard } from './components/PassphraseTypeCard/PassphraseTypeCard';

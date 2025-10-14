@@ -162,7 +162,6 @@ export function TradingSelectAssetModal({
             renderOptionBalance={option =>
                 option.tokenBalance && option.contractAddress ? (
                     <TokenBalance
-                        symbol={option.symbol}
                         contractAddress={option.contractAddress}
                         tokenBalance={option.tokenBalance}
                     />
