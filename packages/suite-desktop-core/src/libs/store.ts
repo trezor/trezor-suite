@@ -6,10 +6,15 @@ import { getInitialWindowSize } from './screen';
 
 type OnDidChangeCallback<T> = (newValue?: T, oldValue?: T) => void;
 
+export type WinBoundsCoords = WinBounds & {
+    x?: number;
+    y?: number;
+};
+
 export class Store {
     private static instance: Store;
     private readonly store: ElectronStore<{
-        winBounds: WinBounds;
+        winBounds: WinBoundsCoords;
         updateSettings: UpdateSettings;
         themeSettings: SuiteThemeVariant;
         torSettings: TorSettings;
@@ -34,7 +39,7 @@ export class Store {
         return this.store.get('winBounds', getInitialWindowSize());
     }
 
-    public setWinBounds(winBounds: WinBounds) {
+    public setWinBounds(winBounds: WinBoundsCoords) {
         // save only non zero dimensions
         if (winBounds.width > 0 && winBounds.height > 0) {
             this.store.set('winBounds', winBounds);
