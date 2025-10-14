@@ -83,6 +83,14 @@ export class SettingsPage {
     readonly btcUnitsInput: Locator;
     readonly btcUnitsInputOption = (unit: 'Bitcoin' | 'Satoshis') =>
         this.page.getByTestId(`@settings/btc-units-select/option/${unit}`);
+    readonly safetyChecksButton: Locator;
+    readonly safetyChecksConfirmButton: Locator;
+    readonly safetyChecksRadioButton = (level?: 'strict' | 'prompt'): Locator =>
+        level === undefined
+            ? this.page.locator('[data-testid*="@radio-button"]')
+            : this.page.getByTestId(`@radio-button-${level}`);
+    readonly safetyChecksRadioButtonCheck = (check: boolean): Locator =>
+        this.page.locator(`[data-testid*="@radio-button"][data-checked="${check}"]`);
 
     constructor(private readonly page: Page) {
         this.coins = new CoinsTab(page);
@@ -122,6 +130,8 @@ export class SettingsPage {
         this.showLogButton = this.page.getByTestId('@settings/show-log-button');
         this.fiatCurrencyInput = this.page.getByTestId('@settings/fiat-select/input');
         this.btcUnitsInput = this.page.getByTestId('@settings/btc-units-select/input');
+        this.safetyChecksButton = this.page.getByTestId('@settings/device/safety-checks-button');
+        this.safetyChecksConfirmButton = this.page.getByTestId('@safety-checks-apply');
     }
 
     @step()
@@ -213,9 +223,9 @@ export class SettingsPage {
     @step()
     async changeSafetyChecksLevel(level: 'strict' | 'prompt') {
         await this.navigateTo('device');
-        await this.page.getByTestId('@settings/device/safety-checks-button').click();
-        await this.page.getByTestId(`@radio-button-${level}`).click();
-        await this.page.getByTestId('@safety-checks-apply').click();
+        await this.safetyChecksButton.click();
+        await this.safetyChecksRadioButton(level).click();
+        await this.safetyChecksConfirmButton.click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
         await TrezorUserEnvLinkProxy.pressYes();
     }
