@@ -1,4 +1,5 @@
 import { BrowserWindow, app, nativeTheme } from 'electron';
+import debounce from 'lodash/debounce';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
@@ -6,7 +7,6 @@ import { isMacOs } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { colorVariants } from '@trezor/theme';
-import { TimerId } from '@trezor/type-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { hangDetect } from './hang-detect';
@@ -19,7 +19,7 @@ import { hasSwitch } from './libs/process-switches';
 import { createInterceptor } from './libs/request-interceptor';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
-import { Store } from './libs/store';
+import { Store, WinBoundsCoords } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
@@ -45,7 +45,7 @@ const parseRemoveUserDataSwitch = () => {
 };
 parseRemoveUserDataSwitch();
 
-const createMainWindow = (winBounds: WinBounds, store: Store) => {
+const createMainWindow = (winBounds: WinBoundsCoords, store: Store) => {
     const darkTheme =
         store.getThemeSettings() === 'dark' ||
         (store.getThemeSettings() === 'system' && nativeTheme.shouldUseDarkColors);
@@ -56,6 +56,8 @@ const createMainWindow = (winBounds: WinBounds, store: Store) => {
         height: winBounds.height,
         minWidth: MIN_WIDTH,
         minHeight: MIN_HEIGHT,
+        x: winBounds.x,
+        y: winBounds.y,
         ...(isMacOs()
             ? {
                   titleBarStyle: 'hidden',
@@ -75,23 +77,22 @@ const createMainWindow = (winBounds: WinBounds, store: Store) => {
     // Ensure all network requests from the renderer report a custom user-agent identifying Suite and its version.
     mainWindow.webContents.setUserAgent(`Trezor Suite ${app.getVersion()}`);
 
-    let resizeDebounce: TimerId | null = null;
+    const debouncedStoreWinBounds = debounce(() => {
+        if (!mainWindow) return;
+        const winBound = mainWindow.getBounds();
+        Store.getStore().setWinBounds(winBound);
+        logger.debug('app', 'new winBounds saved');
+    }, 500);
 
-    mainWindow.on('resize', () => {
-        if (resizeDebounce) return;
-        resizeDebounce = setTimeout(() => {
-            resizeDebounce = null;
-            if (!mainWindow) return;
-            const winBound = mainWindow.getBounds() as WinBounds;
-            Store.getStore().setWinBounds(winBound);
-            logger.debug('app', 'new winBounds saved');
-        }, 1000);
-    });
+    mainWindow.on('resize', debouncedStoreWinBounds);
+    mainWindow.on('maximize', debouncedStoreWinBounds);
+    mainWindow.on('move', debouncedStoreWinBounds);
 
     mainWindow.on('closed', () => {
-        if (resizeDebounce) {
-            clearTimeout(resizeDebounce);
-        }
+        debouncedStoreWinBounds.cancel();
+        mainWindow.off('resize', debouncedStoreWinBounds);
+        mainWindow.off('maximize', debouncedStoreWinBounds);
+        mainWindow.off('move', debouncedStoreWinBounds);
     });
 
     return mainWindow;
@@ -216,9 +217,12 @@ const init = async () => {
 
     const widthArg = parseInt(app.commandLine.getSwitchValue('width'), 10);
     const heightArg = parseInt(app.commandLine.getSwitchValue('height'), 10);
+    const storedBounds = store.getWinBounds();
     const winBounds = {
-        width: !isNaN(widthArg) ? Math.max(widthArg, MIN_WIDTH) : store.getWinBounds().width,
-        height: !isNaN(heightArg) ? Math.max(heightArg, MIN_HEIGHT) : store.getWinBounds().height,
+        width: !isNaN(widthArg) ? Math.max(widthArg, MIN_WIDTH) : storedBounds.width,
+        height: !isNaN(heightArg) ? Math.max(heightArg, MIN_HEIGHT) : storedBounds.height,
+        x: storedBounds.x,
+        y: storedBounds.y,
     };
     logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
