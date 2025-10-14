@@ -66,7 +66,7 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
                 locale={locale}
                 control={control}
                 inputState={getInputState(feePerUnitError)}
-                innerAddon={
+                rightContent={
                     <Text variant="tertiary" typographyStyle="label">
                         {feeUnits}
                     </Text>

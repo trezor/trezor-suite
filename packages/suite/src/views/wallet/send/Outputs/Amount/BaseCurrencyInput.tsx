@@ -243,7 +243,7 @@ export const BaseCurrencyInput = ({
             maxLength={formInputsMaxLength.fiat}
             rules={rules}
             bottomText={bottomText || null}
-            innerAddon={
+            rightContent={
                 <Controller
                     control={control}
                     name={currencyInputName}

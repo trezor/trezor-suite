@@ -74,7 +74,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
                     innerRef={input.fields.base.ref}
                     inputState={input.fields.base.error ? 'error' : undefined}
                     bottomText={input.fields.base.error}
-                    innerAddon={
+                    rightContent={
                         <Button
                             variant="tertiary"
                             size="small"

@@ -11,6 +11,7 @@ import {
 import styled from 'styled-components';
 
 import { Input, InputProps, variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 const LevelContainer = styled.div`
     width: 64px;
@@ -21,27 +22,26 @@ const Level = styled(Input)`
     input {
         background: none;
         height: 42px;
-        padding: ${({ innerAddon }) => !innerAddon && '1px 12px 0 12px'};
+        padding: ${({ rightContent }) => !rightContent && '1px 12px 0 12px'};
         border: 1.5px solid ${({ theme }) => theme.legacy.STROKE_GREY};
         color: ${({ theme }) => theme.legacy.TYPE_GREEN};
         font-size: ${variables.FONT_SIZE.H3};
         text-align: center;
 
         &:disabled {
-            color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+            color: ${({ theme }) => theme.textSubdued};
         }
     }
 `;
 
 const InnerAddon = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const MAX_ALLOWED_INTEGER = 1000000;
 
-export interface SliderInputProps extends Pick<InputProps, 'isDisabled' | 'innerAddonAlign'> {
+export interface SliderInputProps extends Pick<InputProps, 'isDisabled'> {
     value: number | '';
     onChange: (number: number) => void;
     min: number;
@@ -130,7 +130,7 @@ export const SliderInput = forwardRef<
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
-                innerAddon={<InnerAddon onClick={focusInput}>{unit}</InnerAddon>}
+                rightContent={<InnerAddon onClick={focusInput}>{unit}</InnerAddon>}
                 innerRef={inputRef}
                 {...props}
             />

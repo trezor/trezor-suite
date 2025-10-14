@@ -42,7 +42,7 @@ export const AllForms: StoryObj = {
                 <Input
                     value="Input with select"
                     data-testid="input-select"
-                    innerAddon={
+                    rightContent={
                         <Select
                             isClean
                             value={{ label: 'BTC', value: 'BTC' }}

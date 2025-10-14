@@ -131,7 +131,7 @@ export const StakeInputs = () => {
                     control,
                     rules: cryptoInputRules,
                     maxLength: formInputsMaxLength.amount,
-                    innerAddon: <Text variant="tertiary">{networkDisplaySymbol}</Text>,
+                    rightContent: <Text variant="tertiary">{networkDisplaySymbol}</Text>,
                     bottomText: errors[CRYPTO_INPUT]?.message ?? null,
                     inputState: getInputState(cryptoError || fiatError),
                     onChange: onCryptoAmountChange,
@@ -145,7 +145,7 @@ export const StakeInputs = () => {
                               control,
                               rules: fiatInputRules,
                               maxLength: formInputsMaxLength.fiat,
-                              innerAddon: (
+                              rightContent: (
                                   <Text variant="tertiary">{baseCurrencyCode.toUpperCase()}</Text>
                               ),
                               bottomText: errors[FIAT_INPUT]?.message ?? null,

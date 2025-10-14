@@ -15,10 +15,10 @@ import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 export const inputName = 'bitcoinLocktimeBlockHeight';
 
 type LocktimeBlockHeightProps = {
-    innerAddon?: ReactElement;
+    rightContent?: ReactElement;
 };
 
-export const LocktimeBlockHeight = ({ innerAddon }: LocktimeBlockHeightProps) => {
+export const LocktimeBlockHeight = ({ rightContent }: LocktimeBlockHeightProps) => {
     const {
         control,
         formState: { errors },
@@ -73,7 +73,7 @@ export const LocktimeBlockHeight = ({ innerAddon }: LocktimeBlockHeightProps) =>
                     </Text>
                 </Row>
             }
-            innerAddon={innerAddon}
+            rightContent={rightContent}
             data-testid="locktime-blockheight-input"
         />
     );

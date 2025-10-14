@@ -20,7 +20,6 @@ const meta: Meta = {
         isDisabled: false,
         size: 'large',
         inputState: null,
-        innerAddonAlign: 'right',
         ...getFramePropsStory(allowedInputFrameProps).args,
         ...getTextPropsStory(allowedInputTextProps).args,
     },
@@ -29,7 +28,8 @@ const meta: Meta = {
         labelHoverRight: { control: 'text' },
         labelLeft: { control: 'text' },
         labelRight: { control: 'text' },
-        innerAddon: { control: 'text' },
+        leftContent: { control: 'text' },
+        rightContent: { control: 'text' },
         placeholder: { control: 'text' },
         size: {
             control: {
@@ -38,12 +38,6 @@ const meta: Meta = {
             options: ['large', 'small'],
         },
         inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
-        innerAddonAlign: {
-            control: {
-                type: 'radio',
-            },
-            options: ['right', 'left'],
-        },
         showClearButton: {
             control: {
                 type: 'radio',

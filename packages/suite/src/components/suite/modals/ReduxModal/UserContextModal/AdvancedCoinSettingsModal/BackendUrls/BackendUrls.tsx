@@ -74,7 +74,7 @@ export function BackendUrls({
                         bottomText={input.error?.message || null}
                         innerRef={inputRef}
                         maxLength={2048}
-                        innerAddon={
+                        rightContent={
                             <Button
                                 variant="primary"
                                 size="tiny"

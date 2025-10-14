@@ -185,7 +185,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         maxLength={formInputsMaxLength.amount}
                         rules={cryptoAmountRules}
                         control={control}
-                        innerAddon={
+                        rightContent={
                             <Text variant="tertiary">
                                 {withTokens && token ? token?.symbol?.toUpperCase() : displayTicker}
                             </Text>

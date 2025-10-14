@@ -182,7 +182,7 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={fiatInputError?.message ?? cryptoInputError?.message ?? null}
-            innerAddon={<TradingFormInputCurrency width={100} />}
+            rightContent={<TradingFormInputCurrency width={100} />}
             data-testid="@trading/form/fiat-input"
         />
     );

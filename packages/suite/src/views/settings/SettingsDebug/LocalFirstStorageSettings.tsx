@@ -94,7 +94,7 @@ export const LocalFirstStorageSettings = () => {
                                     isDisabled={isLoading}
                                     value={relayUrl}
                                     onChange={e => setRelayUrl(e.target.value)}
-                                    innerAddon={
+                                    rightContent={
                                         <Button
                                             isLoading={isLoading}
                                             onClick={onRelayUrlSave}

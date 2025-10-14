@@ -14,10 +14,10 @@ import { useSendFormContext } from 'src/hooks/wallet';
 export const inputName = 'bitcoinLocktimeDatetime';
 
 type LocktimeDatetimeProps = {
-    innerAddon?: ReactElement;
+    rightContent?: ReactElement;
 };
 
-export const LocktimeDatetime = ({ innerAddon }: LocktimeDatetimeProps) => {
+export const LocktimeDatetime = ({ rightContent }: LocktimeDatetimeProps) => {
     const {
         composeTransaction,
         formState: { errors },
@@ -72,7 +72,7 @@ export const LocktimeDatetime = ({ innerAddon }: LocktimeDatetimeProps) => {
                 </Row>
             }
             placeholder="DD/MM/YYYY HH:MM"
-            innerAddon={innerAddon}
+            rightContent={rightContent}
             innerRef={inputRef}
             data-testid="locktime-datetime-input"
             {...inputField}

@@ -262,7 +262,7 @@ const SignVerify = () => {
                                     placeholder={translationString(
                                         'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                     )}
-                                    innerAddon={
+                                    rightContent={
                                         canCopy ? (
                                             <Button
                                                 type="button"
@@ -291,7 +291,7 @@ const SignVerify = () => {
                                         placeholder={translationString(
                                             'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
                                         )}
-                                        innerAddon={
+                                        rightContent={
                                             canCopy ? (
                                                 <Button
                                                     type="button"

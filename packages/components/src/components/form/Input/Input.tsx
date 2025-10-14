@@ -101,10 +101,10 @@ export type InputProps = InputHTMLProps &
         value?: string;
         innerRef?: Ref<HTMLInputElement>;
         label?: ReactElement | string;
-        innerAddon?: ReactElement;
+        leftContent?: ReactElement;
+        rightContent?: ReactElement;
         size?: InputSize;
         'data-testid'?: string;
-        innerAddonAlign?: InnerAddonAlignment;
         /**
          * @description the clear button replaces the addon on the right side
          */
@@ -117,8 +117,8 @@ const Input = ({
     value,
     innerRef,
     label,
-    innerAddon,
-    innerAddonAlign = 'end',
+    leftContent,
+    rightContent,
     size = 'large',
     'data-testid': dataTest,
     showClearButton,
@@ -154,25 +154,25 @@ const Input = ({
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {innerAddon && innerAddonAlign === 'start' && (
+                {leftContent && (
                     <InputAddon
                         data-testid={`${dataTest}/input-addon`}
                         $align="start"
                         ref={measureLeftAddon}
                         $size={size}
                     >
-                        {innerAddon}
+                        {leftContent}
                     </InputAddon>
                 )}
 
-                {((innerAddon && innerAddonAlign === 'end') || hasShowClearButton) && (
+                {(rightContent || hasShowClearButton) && (
                     <InputAddon
                         data-testid={`${dataTest}/input-addon`}
                         $align="end"
                         ref={measureRightAddon}
                         $size={size}
                     >
-                        {!hasShowClearButton && innerAddon}
+                        {!hasShowClearButton && rightContent}
 
                         {hasShowClearButton && <Icon name="xCircle" size={16} onClick={onClear} />}
                     </InputAddon>

@@ -142,7 +142,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={cryptoInputError?.message || null}
-            innerAddon={<>{displaySymbol}</>}
+            rightContent={<>{displaySymbol}</>}
             data-testid="@trading/form/crypto-input"
         />
     );
