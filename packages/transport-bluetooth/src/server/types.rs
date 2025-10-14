@@ -205,7 +205,9 @@ pub enum NotificationEvent {
         device: TrezorDevice,
     },
     #[allow(dead_code)]
-    DeviceSettingsUi, // only on linux
+    OpenBluetoothSettings {
+        id: String,
+    }, // see linux.rs/pair_with_timeout()
     DeviceRead {
         id: String,
         characteristic: NotificationCharacteristic,
