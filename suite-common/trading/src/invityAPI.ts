@@ -55,8 +55,8 @@ type SignalType = AbortSignal | null | undefined;
 class InvityAPI {
     readonly SERVERS: InvityServers = {
         production: 'https://exchange.trezor.io',
-        staging: 'https://staging-exchange.invity.io',
-        dev: 'https://dev-exchange.invity.io',
+        staging: 'https://staging-exchange.trezor.io',
+        dev: 'https://dev-exchange.trezor.io',
         localhost: 'http://localhost:3330',
     };
 
