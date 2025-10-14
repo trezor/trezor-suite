@@ -785,9 +785,19 @@ export const messages = {
                 removePin: 'Remove PIN',
             },
         },
+        backupAndPassphrase: {
+            title: 'Backup & passphrase',
+            description: 'Check wallet backup, passphrase',
+        },
+        passphrase: {
+            title: 'Passphrase wallets',
+            description:
+                'Passphrase wallets are separate, extra-secure wallets. Each passphrase wallet is unique and only accessible with its own passphrase.',
+        },
         checkBackup: {
             title: 'Check wallet backup',
-            subtitle: 'Check the validity of your backup',
+            subtitle:
+                'A valid backup is necessary to recover a lost, stolen, or damaged Trezor. We recommended to check your backup regularly.',
         },
         authenticity: {
             title: 'Device authenticity',

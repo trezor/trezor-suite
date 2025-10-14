@@ -100,6 +100,13 @@ class DeviceSettingsActions {
     }
 
     async tapDeviceCheckBackupButton() {
+        const backupAndPassphrase = element(
+            by.id('@device-backupAndPassphrase/redirectToBackupAndPassphraseScreen'),
+        );
+
+        await scrollUntilVisible(backupAndPassphrase);
+        await backupAndPassphrase.tap();
+
         const deviceCheckBackup = element(
             by.id('@device-check-backup/redirectToDeviceCheckBackupScreen'),
         );

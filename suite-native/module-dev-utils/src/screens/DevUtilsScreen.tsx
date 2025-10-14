@@ -18,7 +18,6 @@ import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
-import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { FirmwareUpdateEnvironmentSelect } from '../components/FirmwareUpdateEnvironmentSelect';
 import { LocalFirstRelaySettings } from '../components/LocalFirstRelaySettings';
@@ -71,7 +70,6 @@ export const DevUtilsScreen = () => {
                         {isDevelopOrDebugEnv() && (
                             <>
                                 <RenderingUtils />
-                                <DevicePassphraseSwitch />
                             </>
                         )}
                         <Button

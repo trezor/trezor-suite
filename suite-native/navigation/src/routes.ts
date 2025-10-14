@@ -77,6 +77,7 @@ export enum AccountsImportStackRoutes {
 export enum DeviceSettingsStackRoutes {
     DeviceSettings = 'DeviceSettings',
     PinProtection = 'PinProtection',
+    BackupAndPassphraseStack = 'BackupAndPassphraseStack',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     FirmwareUpdateStack = 'FirmwareUpdateStack',
     DeviceAuthenticity = 'DeviceAuthenticity',
@@ -129,6 +130,11 @@ export enum DeviceNameStackRoutes {
     DeviceName = 'DeviceName',
     ContinueOnTrezor = 'ContinueOnTrezor',
     DeviceNameLoadingScreen = 'DeviceNameLoadingScreen',
+}
+
+export enum BackupAndPassphraseStackRoutes {
+    BackupAndPassphrase = 'BackupAndPassphrase',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum AuthorizeDeviceStackRoutes {
