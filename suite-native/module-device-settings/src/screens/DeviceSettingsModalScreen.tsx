@@ -5,7 +5,6 @@ import {
     selectDeviceLabel,
     selectDeviceModel,
     selectDeviceName,
-    selectIsDeviceBackupUnfinished,
     selectIsDeviceConnectedViaBluetooth,
     selectIsDeviceInitialized,
     selectIsThpDevice,
@@ -14,9 +13,9 @@ import { TitledSection, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 
+import { BackupAndPassphraseCard } from '../components/BackupAndPassphraseCard';
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceAutoConnectCard } from '../components/DeviceAutoConnectCard';
-import { DeviceCheckBackupCard } from '../components/DeviceCheckBackupCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DeviceInfo } from '../components/DeviceInfo';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
@@ -32,10 +31,8 @@ export const DeviceSettingsModalScreen = () => {
     const deviceLabel = useSelector(selectDeviceLabel);
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
-    const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isThpDevice = useSelector(selectIsThpDevice);
-    const isCheckBackupAvailable = isDeviceInitialized && !isDeviceBackupUnfinished;
 
     if (!deviceModel || !deviceName) {
         return null;
@@ -58,7 +55,7 @@ export const DeviceSettingsModalScreen = () => {
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
                 >
-                    {isCheckBackupAvailable && <DeviceCheckBackupCard />}
+                    {isDeviceInitialized && <BackupAndPassphraseCard />}
                     {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
                 </TitledSection>
                 <TitledSection

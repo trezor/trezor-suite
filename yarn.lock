@@ -12234,7 +12234,6 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/validators": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"

@@ -9,6 +9,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { BackupAndPassphraseStackNavigator } from './BackupAndPassphraseStackNavigator';
 import { DeviceAuthenticityStackNavigator } from './DeviceAuthenticityStackNavigator';
 import { DeviceNameStackNavigator } from './DeviceNameStackNavigator';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
@@ -63,6 +64,10 @@ export const DeviceSettingsStackNavigator = () => (
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceNameStack}
             component={DeviceNameStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.BackupAndPassphraseStack}
+            component={BackupAndPassphraseStackNavigator}
         />
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceCheckBackupStack}
