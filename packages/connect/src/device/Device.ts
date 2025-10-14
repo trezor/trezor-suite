@@ -256,12 +256,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 return this.updateDescriptor(event.descriptor);
             case TRANSPORT.DEVICE_REQUEST_RELEASE:
                 return this.usedElsewhere();
-            case TRANSPORT.DEVICE_DISCONNECTED: {
+            case TRANSPORT.DEVICE_DISCONNECTED:
                 return this.disconnect();
-            }
-            case TRANSPORT.TREZOR_PUSH_NOTIFICATION: {
+            case TRANSPORT.TREZOR_PUSH_NOTIFICATION:
                 return trezorPushNotificationHandler({ device: this, message: event.payload.data });
-            }
             case TRANSPORT.BATTERY_LEVEL: {
                 this._updateFeature('soc', event.payload.data[0]);
                 this.lifecycle.emit(DEVICE.CHANGED);
@@ -346,25 +344,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.busy = value;
     }
 
-    private subscribe() {
-        if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
-            this.transport
-                .subscribe({
-                    descriptor: {
-                        id: this.descriptor.id,
-                        path: this.descriptor.path,
-                    },
-                    channels: [TRANSPORT.BATTERY_LEVEL, TRANSPORT.TREZOR_PUSH_NOTIFICATION],
-                })
-                .then(result => {
-                    if (result.success) {
-                        // now we are listening to notifications (see transportDeviceEvents)
-                        this.lifecycle.emit(DEVICE.CHANGED);
-                    }
-                });
-        }
-    }
-
     release() {
         if (!this.sessionAcquired || this.keepTransportSession || this.releasePromise) {
             return;
@@ -444,7 +423,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         // We subscribe now that we have completed handshake with device.
-        this.subscribe();
+        if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
+            this.transport.subscribe({
+                // @ts-expect-error todo: a bug to solve with types, PathInternal vs descriptor.id
+                id: this.descriptor.id,
+                path: this.descriptor.path,
+                channels: [TRANSPORT.BATTERY_LEVEL, TRANSPORT.TREZOR_PUSH_NOTIFICATION],
+            });
+        }
 
         return true;
     }

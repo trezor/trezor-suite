@@ -4,6 +4,7 @@ import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { MessageResponse, Session, TRANSPORT, Transport } from '@trezor/transport';
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
+import type { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
@@ -72,6 +73,9 @@ export interface TypedCallProvider {
     receive: DeviceCurrentSession['receive'];
 }
 
+const isInterruptingEvent = (e: TransportDeviceEvent) =>
+    e.type !== TRANSPORT.TREZOR_PUSH_NOTIFICATION && e.type !== TRANSPORT.BATTERY_LEVEL;
+
 export class DeviceCurrentSession implements TypedCallProvider {
     private readonly device: Device;
     private readonly transport: Transport;
@@ -86,8 +90,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
         this.transport = transport;
         this.session = session;
 
-        transport.deviceEvents.once(device.transportPath, e => {
-            if (!this.disposed) {
+        const onTransportDeviceEvent = (e: TransportDeviceEvent) => {
+            if (!this.disposed && isInterruptingEvent(e)) {
+                transport.deviceEvents.off(device.transportPath, onTransportDeviceEvent);
                 this.disposed = ERRORS.TypedError(
                     e.type === TRANSPORT.DEVICE_DISCONNECTED
                         ? 'Device_Disconnected'
@@ -95,7 +100,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 );
                 this.abortController?.abort(this.disposed);
             }
-        });
+        };
+
+        transport.deviceEvents.on(device.transportPath, onTransportDeviceEvent);
     }
 
     isDisposed() {

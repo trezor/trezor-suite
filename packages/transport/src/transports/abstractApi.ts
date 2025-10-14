@@ -12,13 +12,19 @@ import { SessionsBackground } from '../sessions/background';
 import { SessionsClient } from '../sessions/client';
 import { SessionsBackgroundInterface } from '../sessions/types';
 import { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from '../thp';
-import { Descriptor, Session } from '../types';
+import { PathInternal, PathPublic, Session } from '../types';
 import { receiveAndParse } from '../utils/receive';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
 }
+
+type Subscription = {
+    id: PathInternal;
+    path: PathPublic;
+    channel: Exclude<OpenDeviceChannel, 'read'>;
+};
 
 /**
  * Abstract class for transports with abstract api (webusb, nodeusb, udp, react-native).
@@ -31,11 +37,22 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     protected api: AbstractApi;
 
+    private readonly subscribed: Subscription[] = [];
+
     constructor({ api, ...rest }: ConstructorParams) {
         super(rest);
         this.api = api;
         this.sessionsBackground = new SessionsBackground();
         this.sessionsClient = new SessionsClient(this.sessionsBackground);
+
+        [TRANSPORT.TREZOR_PUSH_NOTIFICATION, TRANSPORT.BATTERY_LEVEL].forEach(type =>
+            api.on(type, payload => {
+                const sub = this.subscribed.find(s => s.id === payload.id && s.channel === type);
+                if (sub) {
+                    this.deviceEvents.emit(sub.path, { type, payload });
+                }
+            }),
+        );
     }
 
     get apiType() {
@@ -143,46 +160,22 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
-    public subscribe({
-        descriptor,
-        channels,
-        signal,
-    }: {
-        descriptor: Required<Pick<Descriptor, 'path' | 'id'>>;
-        channels: Exclude<OpenDeviceChannel, 'read'>[];
-        signal?: AbortSignal;
-    }) {
+    public subscribe({ path, id, channels, signal }: AbstractTransportMethodParams<'subscribe'>) {
         return this.scheduleAction(
             async signal => {
-                const entries = await Promise.all(
+                await Promise.all(
                     channels.map(async channel => {
-                        try {
-                            // @ts-expect-error todo: a bug to solve with types, PathInternal vs descriptor.id
-                            const res = await this.api.openDevice(descriptor.id, {
-                                reset: false,
-                                signal,
-                                channel,
-                            });
+                        const res = await this.api
+                            .openDevice(id, { reset: false, signal, channel })
+                            .catch(error => this.error({ error }));
 
-                            if (res.success) {
-                                this.api.on(channel, payload => {
-                                    this.deviceEvents.emit(descriptor.path, {
-                                        type: channel,
-                                        payload,
-                                    });
-                                });
-                            }
-
-                            return [channel, res.success];
-                        } catch {
-                            return [channel, false];
+                        if (res.success) {
+                            this.subscribed.push({ id, path, channel });
                         }
                     }),
                 );
 
-                const map = Object.fromEntries(entries);
-
-                return this.success(map as Record<OpenDeviceChannel, boolean>);
+                return this.success(undefined);
             },
             { signal },
         );
@@ -476,5 +469,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         // not disposing sessionClient on purpose. on window reload, transport.stop is called. we do not want to clear sessions background data in this case because
         // there might be another client connected to it. When the last client disconnects, the background disposes itself.
         this.api.dispose();
+        this.subscribed.splice(0);
     }
 }

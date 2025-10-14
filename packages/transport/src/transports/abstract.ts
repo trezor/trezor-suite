@@ -13,6 +13,7 @@ import {
     Descriptor,
     Logger,
     MessageResponse,
+    PathInternal,
     PathPublic,
     ResultWithTypedError,
     Session,
@@ -293,10 +294,11 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
      * Subscribe to push notification
      */
     subscribe(_params: {
-        descriptor: Required<Pick<Descriptor, 'path' | 'id'>>;
-        channels: OpenDeviceChannel[];
+        path: PathPublic;
+        id: PathInternal;
+        channels: Exclude<OpenDeviceChannel, 'read'>[];
         signal?: AbortSignal;
-    }): AsyncResultWithTypedError<Record<OpenDeviceChannel, boolean>, ReadWriteError> {
+    }): AsyncResultWithTypedError<undefined, ReadWriteError> {
         // Return a rejected promise to indicate this feature is not supported by this transport by default.
         return Promise.reject(new Error(`${this.name} does not support the 'subscribe' method.`));
     }

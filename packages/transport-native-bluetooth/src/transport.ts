@@ -14,12 +14,6 @@ export class NativeBluetoothTransport extends AbstractApiTransport {
                     ? console
                     : logger,
         });
-        api.on('trezor-push-notification', event => {
-            this.emit('trezor-push-notification', event);
-        });
-        api.on('battery-level', event => {
-            this.emit('battery-level', event);
-        });
 
         super({ api, ...rest });
     }
