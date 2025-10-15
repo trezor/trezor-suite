@@ -311,17 +311,17 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 };
             }
 
-            const transaction = buildSendTransaction(
-                selectedAccount.descriptor,
-                selectedAccount.misc.stellarSequence,
-                precomposedTransaction.feePerByte,
+            const transaction = buildSendTransaction({
+                descriptor: selectedAccount.descriptor,
+                sequence: selectedAccount.misc.stellarSequence,
+                fee: precomposedTransaction.feePerByte,
                 destinationActivated,
-                formState.outputs[0].address,
-                formState.outputs[0].amount,
+                destination: formState.outputs[0].address,
+                amount: formState.outputs[0].amount,
                 asset,
-                formState.destinationTag,
-                isTestnet(selectedAccount.symbol),
-            );
+                destinationTag: formState.destinationTag,
+                isTestnet: isTestnet(selectedAccount.symbol),
+            });
 
             // It would be better if we could use `@trezor/connect-plugin-stellar`.
             // const transformedTransaction = transformTransaction(selectedAccount.path, transaction);

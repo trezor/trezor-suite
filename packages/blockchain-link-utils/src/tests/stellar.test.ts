@@ -33,17 +33,17 @@ describe('stellar/utils', () => {
     describe('buildSendTransactoin', () => {
         fixtures.buildSendTransactoin.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
-                const result = buildSendTransaction(
-                    input.descriptor,
-                    input.sequence,
-                    input.fee,
-                    input.destinationActivated,
-                    input.destination,
-                    input.amount,
-                    input.asset as StellarAsset,
-                    input.destinationTag,
-                    input.isTestnet,
-                );
+                const result = buildSendTransaction({
+                    descriptor: input.descriptor,
+                    sequence: input.sequence,
+                    fee: input.fee,
+                    destinationActivated: input.destinationActivated,
+                    destination: input.destination,
+                    amount: input.amount,
+                    asset: input.asset as StellarAsset,
+                    destinationTag: input.destinationTag,
+                    isTestnet: input.isTestnet,
+                });
                 expect(result).toEqual(expectedOutput);
             });
         });
