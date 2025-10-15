@@ -257,7 +257,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (
                 !isAutoForgetEnabled &&
                 (deviceActions.setThpCredentials.match(action) ||
-                    deviceActions.connectDevice.match(action) || // To save the `connectionCounter`
+                    thpActions.incrementCredentialConnectionCounter.match(action) ||
                     thpActions.removeCredentials.match(action) ||
                     action.type === 'device-thp_credentials_changed')
             ) {
