@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { selectFirmwareUpdateSource } from '@suite-common/firmware';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { FIRMWARE } from '@trezor/connect';
@@ -16,10 +17,11 @@ const useCommonData = () => {
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
     const vendor = device?.features?.fw_vendor;
+    const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
     return useMemo(
-        () => ({ model, revision, version, vendor }),
-        [model, revision, version, vendor],
+        () => ({ model, revision, version, vendor, firmwareSource }),
+        [model, revision, version, vendor, firmwareSource],
     );
 };
 
