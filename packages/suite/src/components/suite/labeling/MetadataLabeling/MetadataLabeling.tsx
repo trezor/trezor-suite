@@ -20,8 +20,8 @@ import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } from './definitions';
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
+import { NO_HIGHLIGHT_ATTRIBUTE } from '../../../../../../suite-desktop-ui/src/support/FindBar/consts';
 import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
-import { NO_HIGHLIGHT_ATTRIBUTE } from '../../../../support/suite/FindBar/consts';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 
 const LabelValue = styled.div`

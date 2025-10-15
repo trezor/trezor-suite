@@ -16,13 +16,14 @@ import {
 } from '@trezor/components';
 import { borders, zIndices } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite/Translation';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
+
 import { useFindBarShortcuts } from './useFindBarShortcuts';
 import { useFindInPage } from './useFindInPage';
-import { Translation } from '../../../components/suite/Translation';
-import { useTranslation } from '../../../hooks/suite';
 
 const Wrapper = styled.div`
-    position: absolute;
+    position: fixed;
     -webkit-app-region: no-drag;
     top: 10px;
     right: 16px;

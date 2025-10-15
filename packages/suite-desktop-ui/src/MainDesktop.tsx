@@ -35,6 +35,7 @@ import { desktopComponents } from './support/desktopComponents';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { type History, createMemoryHistory } from 'history';
 import { createRouterServices } from 'src/support/extraDependencies';
+import { FindBar } from './support/FindBar/FindBar';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();
@@ -49,6 +50,9 @@ const MainDesktop = ({ history }: { history: History }) => {
                 <BioAuthGuard>
                     <Preloader>
                         <AppRouter components={desktopComponents} />
+                        <ConnectedIntlProvider>
+                            <FindBar />
+                        </ConnectedIntlProvider>
                     </Preloader>
                 </BioAuthGuard>
             </DesktopUpdater>
