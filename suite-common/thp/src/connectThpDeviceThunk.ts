@@ -3,9 +3,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { Device } from '@trezor/connect';
 
 import { THP_PREFIX, thpActions } from './thpActions';
+import { NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT } from './thpConstants';
 import { selectIsThpInProgress, selectThpCredentials } from './thpSelectors';
-
-export const NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT = 3;
 
 type ConnectThpDeviceThinkParams = {
     device: Pick<Device, 'thp'>;

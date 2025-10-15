@@ -4,10 +4,7 @@ import { FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmw
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Device } from '@trezor/connect';
 
-import {
-    NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT,
-    connectThpDeviceThunk,
-} from '../src/connectThpDeviceThunk';
+import { connectThpDeviceThunk } from '../src/connectThpDeviceThunk';
 import { createCredential, createDeviceThp } from '../src/support/mocks';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
 
