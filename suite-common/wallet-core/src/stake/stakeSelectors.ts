@@ -10,6 +10,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 
+import { VotingDelegationOption } from './stakeActions';
 import { StakeRootState } from './stakeReducer';
 
 export const selectEverstakeData = (
@@ -93,3 +94,6 @@ export const selectStakingTotalRewards = (
 
     return { ...stakingRewards, ...{ data: totalRewards } };
 };
+
+export const selectVotingDelegationOption = (state: StakeRootState): VotingDelegationOption =>
+    state.wallet.stake.votingDelegation;

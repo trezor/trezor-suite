@@ -32,6 +32,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "bech32": "2.0.0",
         "date-fns": "^4.1.0",
         "react": "19.1.0",
         "react-hook-form": "^7.64.0",

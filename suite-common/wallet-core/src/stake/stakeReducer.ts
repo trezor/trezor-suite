@@ -3,7 +3,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 
-import { stakeActions } from './stakeActions';
+import { VotingDelegationOption, stakeActions } from './stakeActions';
 import {
     fetchEverstakeData,
     fetchEverstakeRewards,
@@ -16,6 +16,7 @@ export interface StakeState {
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: StakeFormState;
     serializedTx?: SerializedTx; // payload for TrezorConnect.pushTransaction
+    votingDelegation: VotingDelegationOption;
     data: {
         [key in NetworkSymbol]?: {
             poolStats?: {
@@ -59,6 +60,7 @@ export const stakeInitialState: StakeState = {
     precomposedTx: undefined,
     serializedTx: undefined,
     data: {},
+    votingDelegation: { type: 'everstake' },
 };
 
 export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState, builder => {
@@ -85,6 +87,9 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             } else {
                 delete state.serializedTx;
             }
+        })
+        .addCase(stakeActions.setVotingDelegationOption, (state, action) => {
+            state.votingDelegation = action.payload;
         })
         .addCase(stakeActions.dispose, state => {
             delete state.precomposedTx;

@@ -10,11 +10,14 @@ import {
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
-import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    ComposeActionContext,
+    VotingDelegationOption,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import {
     Account,
     CardanoAction,
-    DRepResponse,
     EstimatedFee,
     ExternalOutput,
     PrecomposedTransaction,
@@ -24,11 +27,11 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
+    drepBech32ToKeyHashHex,
     getAddressParameters,
     getDelegationCertificates,
     getDerivationType,
     getNetworkId,
-    getNetworkName,
     getProtocolMagic,
     getStakingPath,
     getUnusedChangeAddress,
@@ -36,6 +39,7 @@ import {
     isTestnet,
     networkAmountToSmallestUnit,
     subunitsToUnits,
+    validateCardanoDrep,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, PROTO } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -85,7 +89,7 @@ const calculateTransaction = (
 export const prepareTxPlan = async (
     account: Account,
     action: CardanoAction,
-    trezorDRep?: DRepResponse,
+    votingDelegation?: VotingDelegationOption,
 ) => {
     if (!account || account.networkType !== 'cardano') return;
 
@@ -110,29 +114,35 @@ export const prepareTxPlan = async (
 
     const pool = CARDANO_EVERSTAKE_STAKING_POOL.hex;
 
-    let certificates =
-        action === 'delegate' ? getDelegationCertificates(stakingPath, pool, !isStakingActive) : [];
+    const certificates = [];
+
+    if (action === 'delegate' || action === 'voteDelegate') {
+        certificates.push(...getDelegationCertificates(stakingPath, pool, !isStakingActive));
+    }
 
     if (action === 'voteAbstain') {
         const dRep = { type: PROTO.CardanoDRepType.ABSTAIN };
-        certificates = getVotingCertificates(stakingPath, dRep);
+        certificates.push(...getVotingCertificates(stakingPath, dRep));
     }
 
-    if (action === 'voteDelegate') {
+    if (
+        action === 'voteDelegate' &&
+        votingDelegation?.type === 'another_drep' &&
+        validateCardanoDrep(votingDelegation.drepId)
+    ) {
+        const hex = drepBech32ToKeyHashHex(votingDelegation.drepId);
         const dRep = {
             type: PROTO.CardanoDRepType.KEY_HASH,
-            hex: trezorDRep?.drep?.hex,
+            hex,
         };
-        certificates = getVotingCertificates(stakingPath, dRep);
+        certificates.push(...getVotingCertificates(stakingPath, dRep));
     }
 
     if (action === 'deregister') {
-        certificates = [
-            {
-                type: PROTO.CardanoCertificateType.STAKE_DEREGISTRATION,
-                path: stakingPath,
-            },
-        ];
+        certificates.push({
+            type: PROTO.CardanoCertificateType.STAKE_DEREGISTRATION,
+            path: stakingPath,
+        });
     }
 
     const isDeregisterWithRewards = action === 'deregister' && new BigNumber(rewardsAmount).gt(0);
@@ -168,7 +178,7 @@ export const prepareTxPlan = async (
 const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
-    trezorDRep?: DRepResponse,
+    votingDelegation?: VotingDelegationOption,
 ) => {
     const { stakeType } = formValues;
 
@@ -178,29 +188,33 @@ const getTransactionData = (
 
     const { account } = selectedAccount;
 
+    const action = votingDelegation ? 'voteDelegate' : 'delegate';
+
     if (stakeType === 'stake') {
-        return prepareTxPlan(account, 'delegate', trezorDRep);
+        return prepareTxPlan(account, action, votingDelegation);
     }
 
     if (stakeType === 'unstake') {
-        return prepareTxPlan(account, 'deregister', trezorDRep);
+        return prepareTxPlan(account, 'deregister', votingDelegation);
     }
 };
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch, getState: GetState) => {
-        const { selectedAccount, cardanoStaking } = getState().wallet;
-        if (!selectedAccount || !selectedAccount.account) return;
+        const { selectedAccount, stake } = getState().wallet;
 
-        const cardanoNetwork = getNetworkName(selectedAccount?.account?.symbol);
-        const { trezorDRep } = cardanoStaking[cardanoNetwork] || {};
+        if (!selectedAccount.account) return;
 
         if (selectedAccount.status !== 'loaded') return;
 
-        const txData = await getTransactionData(formValues, selectedAccount, trezorDRep);
+        const txData = await getTransactionData(
+            formValues,
+            selectedAccount,
+            stake.votingDelegation,
+        );
         const { txPlan } = txData || {};
-        if (!txPlan || txPlan.type !== 'final') return;
+        if (txPlan?.type !== 'final') return;
 
         const stakedBalance = new BigNumber(selectedAccount?.account.balance ?? '0').minus(
             txPlan?.totalSpent ?? '0',
@@ -252,11 +266,8 @@ export const composeTransaction =
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount, cardanoStaking } = getState().wallet;
+        const { selectedAccount, stake } = getState().wallet;
         if (!selectedAccount || !selectedAccount.account) return;
-
-        const cardanoNetwork = getNetworkName(selectedAccount?.account?.symbol);
-        const { trezorDRep } = cardanoStaking[cardanoNetwork] || {};
 
         const device = selectSelectedDevice(getState());
         if (
@@ -273,7 +284,11 @@ export const signTransaction =
             return;
         }
 
-        const txData = await getTransactionData(formValues, selectedAccount, trezorDRep);
+        const txData = await getTransactionData(
+            formValues,
+            selectedAccount,
+            stake.votingDelegation,
+        );
 
         if (!txData) {
             dispatch(

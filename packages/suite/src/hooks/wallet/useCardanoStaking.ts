@@ -50,7 +50,7 @@ export const getReasonForDisabledAction = (reason: ActionAvailability['reason'])
         case 'POOL_ID_FETCH_FAIL':
             return 'TR_STAKING_TREZOR_POOL_FAIL';
         case 'UTXO_BALANCE_INSUFFICIENT':
-            return 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING';
+            return 'TR_STAKING_NOT_ENOUGH_FUNDS';
         default:
             return null;
     }
