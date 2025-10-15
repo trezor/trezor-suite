@@ -65,7 +65,11 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
     test('Sell Solana', async ({ page, tradingPage, tradingMock, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
             const solanaFeePromise = tradingPage.fees.promiseForResponseSolanaFeeCalls();
-            await tradingPage.fillSellForm(cryptoAmount, 'solana');
+            await tradingPage.fillSellForm({
+                cryptoAmount,
+                networkSymbolOrTokenId: 'sol',
+                cryptoCurrency: 'solana',
+            });
             // Automation is too fast, we need to wait for Fees to be resolved
             await solanaFeePromise;
             await expect(tradingPage.fees.miscAmount).toBeVisible();
@@ -132,7 +136,11 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
     test('Sell Solana for compared offer', async ({ page, tradingPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
             const solanaFeePromise = tradingPage.fees.promiseForResponseSolanaFeeCalls();
-            await tradingPage.fillSellForm(cryptoAmount, 'solana');
+            await tradingPage.fillSellForm({
+                cryptoAmount,
+                cryptoCurrency: 'solana',
+                networkSymbolOrTokenId: 'sol',
+            });
             // Automation is too fast, we need to wait for Fees to be resolved
             await solanaFeePromise;
             await expect(tradingPage.fees.miscAmount).toBeVisible();

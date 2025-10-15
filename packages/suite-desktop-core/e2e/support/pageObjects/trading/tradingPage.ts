@@ -393,16 +393,25 @@ export class TradingPage {
     }
 
     @step()
-    async fillSellForm(
-        amount: string,
-        cryptoCurrency: string = 'bitcoin',
-        fiatCurrencyCode: BaseCurrencyCode = 'eur',
-        country: TradingCountryCode = 'CZ',
-    ) {
+    async fillSellForm({
+        cryptoAmount,
+        networkSymbolOrTokenId = 'btc',
+        cryptoCurrency = 'bitcoin',
+        fiatCurrencyCode = 'eur',
+        country = 'CZ',
+    }: {
+        cryptoAmount: string;
+        networkSymbolOrTokenId?: string;
+        cryptoCurrency?: string;
+        fiatCurrencyCode?: BaseCurrencyCode;
+        country?: TradingCountryCode;
+    }) {
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(fiatCurrencyCode);
+        const isFiatRateLoadingFlag = `wallet.fiat.current.${networkSymbolOrTokenId}-${fiatCurrencyCode}.isLoading`;
+        await this.page.expectReduxObjectToEqual(isFiatRateLoadingFlag, false);
         const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
-        await this.youPayCryptoInput.fill(amount);
+        await this.youPayCryptoInput.fill(cryptoAmount);
         await expect(
             this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
@@ -413,7 +422,7 @@ export class TradingPage {
                 cryptoCurrency,
                 fiatCurrency: fiatCurrencyCode.toUpperCase(),
                 country,
-                cryptoStringAmount: amount,
+                cryptoStringAmount: cryptoAmount,
                 flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
             },
             { omit: ['fiatStringAmount'] },

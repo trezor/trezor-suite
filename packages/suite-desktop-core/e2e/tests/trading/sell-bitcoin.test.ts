@@ -52,7 +52,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
         });
 
         await test.step('Fill in a sell request', async () => {
-            await tradingPage.fillSellForm(cryptoAmount);
+            await tradingPage.fillSellForm({ cryptoAmount });
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
             await tradingPage.fees.expectBitcoinFeeCalculated();
@@ -131,7 +131,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
 
                 await test.step(`Fill in a sell form with ${feeType} fee`, async () => {
                     await feeSwitchFunction();
-                    await tradingPage.fillSellForm(cryptoAmount);
+                    await tradingPage.fillSellForm({ cryptoAmount });
                     feeRate = await tradingPage.fees.getBitcoinFeeRate(feeType);
                 });
 
