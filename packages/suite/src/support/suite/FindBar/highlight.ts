@@ -1,7 +1,9 @@
+import { MARK_HIGHLIGHT_SELECTOR } from './consts';
+
 const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export const removeHighlights = (root: HTMLElement) => {
-    root.querySelectorAll('mark.find-highlight').forEach(mark => {
+    root.querySelectorAll(MARK_HIGHLIGHT_SELECTOR).forEach(mark => {
         const parent = mark.parentNode;
         if (!parent) return;
         parent.replaceChild(document.createTextNode(mark.textContent || ''), mark);

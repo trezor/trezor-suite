@@ -33,18 +33,20 @@ const Wrapper = styled.div`
     z-index: ${zIndices.windowControls};
 `;
 
-export const FindBar = () => {
+type FindBarFormProps = {
+    setIsVisible: (isVisible: boolean) => void;
+};
+
+export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const theme = useTheme();
-    const [isVisible, setIsVisible] = useState(false);
 
     const { translationString } = useTranslation();
     const { query, count, position, updateHighlights, clearHighlights, next, prev } = useFindInPage(
-        { isActive: isVisible },
+        { isActive: true },
     );
 
     useFindBarShortcuts({
-        visible: isVisible,
         setVisible: setIsVisible,
         inputRef,
         clearHighlights,
@@ -66,22 +68,8 @@ export const FindBar = () => {
     };
 
     useEffect(() => {
-        const handler = () => {
-            setIsVisible(true);
-        };
-
-        window.electronFind?.onShow(handler);
-
-        return () => {
-            window.electronFind?.offShow?.(handler);
-        };
+        focusInput();
     }, []);
-
-    useEffect(() => {
-        if (isVisible) focusInput();
-    }, [isVisible]);
-
-    if (!isVisible) return null;
 
     return (
         <FocusLock>
@@ -171,4 +159,24 @@ export const FindBar = () => {
             </Wrapper>
         </FocusLock>
     );
+};
+
+export const FindBar = () => {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const handler = () => {
+            setIsVisible(true);
+        };
+
+        window.electronFind?.onShow(handler);
+
+        return () => {
+            window.electronFind?.offShow?.(handler);
+        };
+    }, [setIsVisible]);
+
+    if (!isVisible) return null;
+
+    return <FindBarForm setIsVisible={setIsVisible} />;
 };
