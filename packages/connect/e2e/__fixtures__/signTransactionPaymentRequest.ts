@@ -13,7 +13,7 @@ export default {
     tests: [
         {
             description: 'Testnet (Bech32/P2WPKH): Payment request success',
-            skip: ['1', '<2.4.4'], // payment requests are not implemented in T1B1 and < 2.4.4
+            skip: ['1', '<2.9.3'], // payment requests are not implemented in T1B1 and EC used for signing was changed in 2.9.3
             params: {
                 coin: 'Testnet',
                 inputs: [
@@ -52,7 +52,7 @@ export default {
                         recipient_name: 'trezor.io',
                         amount: 7000000,
                         signature:
-                            'e55cca054e19dd52b12a7dc4ad363665b2f85a9b578446d7398cc5cfd43df1913868c444e683fd2b1802cd01c0e8ddd7cb88360836919dba5e3d65531f3aee89',
+                            '6cc47e87150a0f3d4889b97ef45f9adfbdc2d8aa30b5dca07f964296059db2d4e1baf107a09b6bb45b0655edf729fd7e29f2f807a50da8919dc6a0376b2ce66e',
                     },
                 ],
                 refTxs: TX_CACHE(['b223a7'], true),
