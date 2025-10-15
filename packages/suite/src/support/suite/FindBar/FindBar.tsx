@@ -3,7 +3,7 @@ import FocusLock from 'react-focus-lock';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Box, ButtonGroup, IconButton, Input, Paragraph, Row } from '@trezor/components';
+import { Box, ButtonGroup, Icon, IconButton, Input, Paragraph, Row } from '@trezor/components';
 import { borders, zIndices } from '@trezor/theme';
 
 import { useFindBarShortcuts } from './useFindBarShortcuts';
@@ -68,7 +68,8 @@ export const FindBar = () => {
                         value={query}
                         placeholder={translationString('TR_THP_FIND_IN_PAGE')}
                         data-testid="find-bar/input"
-                        innerAddon={
+                        leftContent={<Icon name="magnifyingGlass" size="small" />}
+                        rightContent={
                             <Box minWidth={95}>
                                 {query && count > 0 && (
                                     <Row gap={8} justifyContent="flex-end">
