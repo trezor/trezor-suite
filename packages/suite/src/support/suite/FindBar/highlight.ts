@@ -18,6 +18,17 @@ const isVisible = (el: HTMLElement): boolean => {
     return !el.hasAttribute('hidden');
 };
 
+const collectTextNodes = (root: HTMLElement): Text[] => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes: Text[] = [];
+
+    while (walker.nextNode()) {
+        nodes.push(walker.currentNode as Text);
+    }
+
+    return nodes;
+};
+
 export const highlightText = (root: HTMLElement, query: string): number => {
     removeHighlights(root);
     if (!query.trim()) return 0;
@@ -26,55 +37,52 @@ export const highlightText = (root: HTMLElement, query: string): number => {
     let count = 0;
     let ordinal = 0;
 
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-    const nodes: Text[] = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+    const textNodes = collectTextNodes(root);
 
-    for (const textNode of nodes) {
-        try {
-            const text = textNode.textContent;
-            const parent = textNode.parentElement;
+    const validNodes = textNodes.filter(textNode => {
+        const text = textNode.textContent;
+        const parent = textNode.parentElement;
 
-            if (
-                !text ||
-                !parent ||
-                parent.closest('[data-no-highlight], [contenteditable="true"]') ||
-                !isVisible(parent)
-            ) {
-                continue;
+        return (
+            text &&
+            parent &&
+            !parent.closest('[data-no-highlight], [contenteditable="true"]') &&
+            isVisible(parent)
+        );
+    });
+
+    validNodes.forEach(textNode => {
+        const text = textNode.textContent!;
+        const matches = Array.from(text.matchAll(regex));
+        if (matches.length === 0) return;
+
+        const frag = document.createDocumentFragment();
+        let lastIndex = 0;
+
+        matches.forEach(match => {
+            const start = match.index ?? 0;
+            const end = start + match[0].length;
+
+            if (start > lastIndex) {
+                frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
             }
 
-            const matches = [...text.matchAll(regex)];
-            if (matches.length === 0) continue;
+            const mark = document.createElement('mark');
+            mark.textContent = text.slice(start, end);
+            mark.className = 'find-highlight';
+            mark.dataset.findOrdinal = String(ordinal++);
+            frag.appendChild(mark);
 
-            const frag = document.createDocumentFragment();
-            let lastIndex = 0;
+            count++;
+            lastIndex = end;
+        });
 
-            for (const match of matches) {
-                const start = match.index ?? 0;
-                const end = start + match[0].length;
-
-                if (start > lastIndex) {
-                    frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
-                }
-
-                const mark = document.createElement('mark');
-                mark.textContent = text.slice(start, end);
-                mark.className = 'find-highlight';
-                mark.setAttribute('data-find-ordinal', String(ordinal++));
-                frag.appendChild(mark);
-                count++;
-                lastIndex = end;
-            }
-
-            if (lastIndex < text.length) {
-                frag.appendChild(document.createTextNode(text.slice(lastIndex)));
-            }
-            textNode.replaceWith(frag);
-        } catch (e) {
-            console.warn('Skipped find highlight', e);
+        if (lastIndex < text.length) {
+            frag.appendChild(document.createTextNode(text.slice(lastIndex)));
         }
-    }
+
+        textNode.replaceWith(frag);
+    });
 
     return count;
 };

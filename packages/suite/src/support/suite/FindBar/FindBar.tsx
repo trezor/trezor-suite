@@ -3,7 +3,17 @@ import FocusLock from 'react-focus-lock';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Box, ButtonGroup, Icon, IconButton, Input, Paragraph, Row } from '@trezor/components';
+import {
+    Box,
+    ButtonGroup,
+    Icon,
+    IconButton,
+    Input,
+    Paragraph,
+    Row,
+    TOOLTIP_DELAY_LONG,
+    Tooltip,
+} from '@trezor/components';
 import { borders, zIndices } from '@trezor/theme';
 
 import { useFindBarShortcuts } from './useFindBarShortcuts';
@@ -42,12 +52,9 @@ export const FindBar = () => {
         prev,
     });
 
-    useEffect(() => {
-        window.electronFind?.onShow(() => {
-            setIsVisible(true);
-            setTimeout(() => inputRef.current?.select(), 100);
-        });
-    }, []);
+    const focusInput = () => {
+        setTimeout(() => inputRef.current?.select(), 100);
+    };
 
     const handleCloseFindBar = () => {
         clearHighlights();
@@ -58,7 +65,25 @@ export const FindBar = () => {
         updateHighlights(e.target.value);
     };
 
-    return isVisible ? (
+    useEffect(() => {
+        const handler = () => {
+            setIsVisible(true);
+        };
+
+        window.electronFind?.onShow(handler);
+
+        return () => {
+            window.electronFind?.offShow?.(handler);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (isVisible) focusInput();
+    }, [isVisible]);
+
+    if (!isVisible) return null;
+
+    return (
         <FocusLock>
             <Wrapper theme={theme} data-find-ignore>
                 <Row gap={8} alignItems="center" margin={4}>
@@ -66,36 +91,31 @@ export const FindBar = () => {
                         innerRef={inputRef}
                         size="small"
                         value={query}
-                        placeholder={translationString('TR_THP_FIND_IN_PAGE')}
+                        placeholder={translationString('TR_FIND_PLACEHOLDER')}
                         data-testid="find-bar/input"
-                        leftContent={<Icon name="magnifyingGlass" size="small" />}
+                        leftContent={
+                            <Row
+                                onClick={focusInput}
+                                justifyContent="center"
+                                alignItems="center"
+                                width="100%"
+                                height="100%"
+                                cursor="pointer"
+                            >
+                                <Icon name="magnifyingGlass" size="small" />
+                            </Row>
+                        }
                         rightContent={
-                            <Box minWidth={95}>
+                            <Box minWidth={60} onClick={focusInput}>
                                 {query && count > 0 && (
-                                    <Row gap={8} justifyContent="flex-end">
-                                        <ButtonGroup variant="tertiary" size="small">
-                                            <IconButton
-                                                icon="arrowUp"
-                                                variant="tertiary"
-                                                size="tiny"
-                                                onClick={prev}
-                                            />
-                                            <IconButton
-                                                icon="arrowDown"
-                                                variant="tertiary"
-                                                size="tiny"
-                                                onClick={next}
-                                            />
-                                        </ButtonGroup>
-                                        <Paragraph
-                                            typographyStyle="label"
-                                            variant="tertiary"
-                                            minWidth={30}
-                                            align="end"
-                                        >
-                                            {position}/{count}
-                                        </Paragraph>
-                                    </Row>
+                                    <Paragraph
+                                        typographyStyle="label"
+                                        variant="tertiary"
+                                        minWidth={30}
+                                        align="end"
+                                    >
+                                        {position}/{count}
+                                    </Paragraph>
                                 )}
                                 {query && count === 0 && (
                                     <Paragraph
@@ -103,21 +123,52 @@ export const FindBar = () => {
                                         variant="destructive"
                                         align="end"
                                     >
-                                        <Translation id="TR_NOT_FOUND" />
+                                        <Translation id="TR_FIND_NOT_FOUND" />
                                     </Paragraph>
                                 )}
                             </Box>
                         }
                         onChange={handleInputChange}
                     />
-                    <IconButton
-                        icon="x"
-                        variant="tertiary"
-                        size="tiny"
-                        onClick={handleCloseFindBar}
-                    />
+                    <Row gap={8} justifyContent="flex-end">
+                        <ButtonGroup variant="tertiary" size="small">
+                            <Tooltip
+                                content={<Translation id="TR_FIND_PREV" />}
+                                delayShow={TOOLTIP_DELAY_LONG}
+                            >
+                                <IconButton
+                                    icon="arrowUp"
+                                    variant="tertiary"
+                                    size="tiny"
+                                    onClick={prev}
+                                />
+                            </Tooltip>
+                            <Tooltip
+                                content={<Translation id="TR_FIND_NEXT" />}
+                                delayShow={TOOLTIP_DELAY_LONG}
+                            >
+                                <IconButton
+                                    icon="arrowDown"
+                                    variant="tertiary"
+                                    size="tiny"
+                                    onClick={next}
+                                />
+                            </Tooltip>
+                        </ButtonGroup>
+                        <Tooltip
+                            content={<Translation id="TR_FIND_CLOSE" />}
+                            delayShow={TOOLTIP_DELAY_LONG}
+                        >
+                            <IconButton
+                                icon="x"
+                                variant="tertiary"
+                                size="tiny"
+                                onClick={handleCloseFindBar}
+                            />
+                        </Tooltip>
+                    </Row>
                 </Row>
             </Wrapper>
         </FocusLock>
-    ) : null;
+    );
 };

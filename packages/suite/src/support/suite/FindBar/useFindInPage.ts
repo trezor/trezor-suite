@@ -11,7 +11,7 @@ type UseFindInPageProps = {
 
 export const useFindInPage = ({
     isActive,
-    debounceMs = 150,
+    debounceMs = 100,
     root,
     ignoreSelector = '[data-find-ignore]',
 }: UseFindInPageProps) => {
