@@ -2,7 +2,7 @@ import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { filterOutOldDuplicates } from '../src/filterOutOldDuplicates';
-import { createBluetoothDevice } from '../src/support/mocks';
+import { createBluetoothDeviceCommon } from '../src/support/mocks';
 import { BluetoothDeviceCommon } from '../src/types';
 import type { BluetoothManufacturerData } from '../src/types';
 
@@ -26,19 +26,19 @@ const mockedManufacturerDataWithFilterPolicy: BluetoothManufacturerData = {
 describe(filterOutOldDuplicates.name, () => {
     it('returns all devices if names and props are unique', () => {
         const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 100,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 200,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceC',
                 lastUpdatedTimestamp: 300,
@@ -52,19 +52,19 @@ describe(filterOutOldDuplicates.name, () => {
 
     it('keeps only the latest device for duplicate names and props', () => {
         const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 100,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 200,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 150,
@@ -74,13 +74,13 @@ describe(filterOutOldDuplicates.name, () => {
         const result = filterOutOldDuplicates(devices);
         expect(result).toHaveLength(2);
         expect(result).toEqual([
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 200,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 150,
@@ -91,31 +91,31 @@ describe(filterOutOldDuplicates.name, () => {
 
     it('handles multiple sets of duplicates', () => {
         const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 100,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 200,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 150,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('4'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 250,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('5'),
                 name: 'DeviceC',
                 lastUpdatedTimestamp: 300,
@@ -125,19 +125,19 @@ describe(filterOutOldDuplicates.name, () => {
         const result = filterOutOldDuplicates(devices);
         expect(result).toHaveLength(3);
         expect(result).toEqual([
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 200,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('4'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 250,
                 manufacturerData: mockedManufacturerDataWithFilterPolicy,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('5'),
                 name: 'DeviceC',
                 lastUpdatedTimestamp: 300,
@@ -148,7 +148,7 @@ describe(filterOutOldDuplicates.name, () => {
 
     it('keeps the duplicated devices if filterPolicy.pairing is false or undefined', () => {
         const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 100,
@@ -162,12 +162,12 @@ describe(filterOutOldDuplicates.name, () => {
                     },
                 },
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 200,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 150,
@@ -180,19 +180,19 @@ describe(filterOutOldDuplicates.name, () => {
 
     it('keeps the duplicated devices if filterPolicy is undefined', () => {
         const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 100,
                 manufacturerData: mockedManufacturerData,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
                 lastUpdatedTimestamp: 200,
                 manufacturerData: mockedManufacturerData,
             }),
-            createBluetoothDevice({
+            createBluetoothDeviceCommon({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceB',
                 lastUpdatedTimestamp: 150,

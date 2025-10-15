@@ -1,5 +1,5 @@
 import { BluetoothState, prepareInitialState } from '@suite-common/bluetooth';
-import { createBluetoothDevice } from '@suite-common/bluetooth/src/support/mocks';
+import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/src/support/mocks';
 import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
 import { ThpState, initialThpState } from '@suite-common/thp';
 import { createCredential, createDeviceThp } from '@suite-common/thp/src/support/mocks';
@@ -14,9 +14,9 @@ type ForgetPersistentDataPreloadedState = {
     thp: ThpState;
 };
 
-const BTDevice1 = createBluetoothDevice({ id: asBluetoothDeviceId('bt-id-1') });
-const BTDevice3 = createBluetoothDevice({ id: asBluetoothDeviceId('bt-id-3') });
-const orphanedBTDevice = createBluetoothDevice({ id: asBluetoothDeviceId('bt-id-4') });
+const BTDevice1 = createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-1') });
+const BTDevice3 = createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-3') });
+const orphanedBTDevice = createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-4') });
 
 const credential1A = createCredential({ credential: '1A' });
 const credential1B = createCredential({ credential: '1B' });
