@@ -15,6 +15,17 @@ type RequestPushTransactionPayload = {
     symbol: NetworkSymbol;
 };
 
+export type VotingDelegationOption =
+    | { type: 'everstake' }
+    | { type: 'another_drep'; drepId: string };
+
+const setVotingDelegationOption = createAction(
+    `${STAKE_MODULE_PREFIX}/setVotingDelegationOption`,
+    (payload: VotingDelegationOption) => ({
+        payload,
+    }),
+);
+
 const requestSignTransaction = createAction(
     `${STAKE_MODULE_PREFIX}/requestSignTransaction`,
     (payload?: RequestSignTransactionPayload) => ({
@@ -34,5 +45,6 @@ const dispose = createAction(`${STAKE_MODULE_PREFIX}/dispose`);
 export const stakeActions = {
     requestSignTransaction,
     requestPushTransaction,
+    setVotingDelegationOption,
     dispose,
 };

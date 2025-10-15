@@ -1,4 +1,5 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { StakingLimits, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Grid, Modal } from '@trezor/components';
@@ -29,6 +30,9 @@ export const StakeModalLoaded = ({
     const stakeContextValues = useStakeForm({ selectedAccount, stakingLimits });
     const { isBelowTablet } = useLayoutSize();
 
+    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
+
     const onCancelClick = () => {
         onCancel?.();
 
@@ -48,7 +52,11 @@ export const StakeModalLoaded = ({
                 size="huge"
                 heading={
                     <Translation
-                        id="TR_STAKE_STAKE_TOKEN"
+                        id={
+                            isUpdateProviderFlow
+                                ? 'TR_STAKING_UPDATE_PROVIDER'
+                                : 'TR_STAKE_STAKE_TOKEN'
+                        }
                         values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                     />
                 }
