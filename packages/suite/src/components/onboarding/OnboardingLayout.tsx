@@ -90,23 +90,25 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
         <>
             <ConnectionGlobalModalManager />
             {allowedModal !== null ? <ReduxModal {...allowedModal} /> : null}
-            <Column width="100%" height="100%" overflow="auto" alignItems="center">
-                {isMac && isDesktopApp && <OnboardingSpacer />}
-                <Column
-                    data-testid="@onboarding-layout/body"
-                    gap={20}
-                    maxWidth={MAX_ONBOARDING_WIDTH}
-                    width="100%"
-                    padding={{ horizontal: 20, top: 32, bottom: 48 }}
-                >
-                    <SuiteBanners isOnboarding />
-                    <OnboardingCancelButtonContext>
-                        <OnboardingContent>{children}</OnboardingContent>
-                    </OnboardingCancelButtonContext>
+            <Row width="100%" height="100%">
+                <Column width="100%" height="100%" overflow="auto" alignItems="center">
+                    {isMac && isDesktopApp && <OnboardingSpacer />}
+                    <Column
+                        data-testid="@onboarding-layout/body"
+                        gap={20}
+                        maxWidth={MAX_ONBOARDING_WIDTH}
+                        width="100%"
+                        padding={{ horizontal: 20, top: 32, bottom: 48 }}
+                    >
+                        <SuiteBanners isOnboarding />
+                        <OnboardingCancelButtonContext>
+                            <OnboardingContent>{children}</OnboardingContent>
+                        </OnboardingCancelButtonContext>
+                    </Column>
                 </Column>
-            </Column>
-            <GuideButton />
-            <GuideRouter />
+                <GuideButton />
+                <GuideRouter />
+            </Row>
             {theme.variant === 'debug' && <DebugLegend layout={OnboardingLayout.name} />}
         </>
     );
