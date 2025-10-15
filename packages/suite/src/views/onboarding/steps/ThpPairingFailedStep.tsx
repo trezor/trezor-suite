@@ -2,12 +2,11 @@ import { useState } from 'react';
 
 import { Column, Paragraph } from '@trezor/components';
 
+import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
+import { ThpPairingFailedForFirmwareInstallation } from 'src/components/connection/thp/ThpPairingFailedForFirmwareInstallation';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
-
-import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
-import { ThpPairingFailedForFirmwareInstallation } from '../../../components/connection/thp/ThpPairingFailedForFirmwareInstallation';
-import { useDispatch } from '../../../hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const ThpPairingFailedStep = () => {
     const dispatch = useDispatch();
@@ -22,7 +21,7 @@ export const ThpPairingFailedStep = () => {
 
     return (
         <OnboardingCard
-            iconName="bluetooth"
+            iconName="plugsConnected"
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             innerActions={

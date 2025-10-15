@@ -4,11 +4,10 @@ import { useIntl } from 'react-intl';
 import { Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
+import { ThpPairingCodeEntry } from 'src/components/connection/thp/ThpPairingCodeEntry';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
-
-import { ThpPairingCodeEntry } from '../../../components/connection/thp/ThpPairingCodeEntry';
-import messages from '../../../support/messages';
+import messages from 'src/support/messages';
 
 export const ThpPairingStep = () => {
     const intl = useIntl();
@@ -20,7 +19,7 @@ export const ThpPairingStep = () => {
 
     return (
         <OnboardingCard
-            iconName="bluetooth"
+            iconName="plugsConnected"
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             innerActions={
