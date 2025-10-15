@@ -42,9 +42,8 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
     const theme = useTheme();
 
     const { translationString } = useTranslation();
-    const { query, count, position, updateHighlights, clearHighlights, next, prev } = useFindInPage(
-        { isActive: true },
-    );
+    const { query, count, position, updateHighlights, clearHighlights, next, prev } =
+        useFindInPage();
 
     useFindBarShortcuts({
         setVisible: setIsVisible,
