@@ -184,9 +184,9 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               mode: DeviceMode | null;
               firmwareVersion: VersionArray | null;
-              pinProtection: boolean;
+              pinProtection: boolean | null;
               deviceModel: DeviceModelInternal | null;
-              isBitcoinOnly: boolean;
+              isBitcoinOnly: boolean | null;
               deviceLanguage: string | null;
               connectionType: 'cable' | 'bluetooth';
           };

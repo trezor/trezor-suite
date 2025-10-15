@@ -1,10 +1,7 @@
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import {
-    getIsDeviceDescriptorApiTypeBluetooth,
-    isAnyDeviceEventAction,
-} from '@suite-common/suite-utils';
+import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
     accountsActions,
     deviceActions,
@@ -15,18 +12,12 @@ import {
     selectDiscoveryByDevicePath,
     selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { DEVICE } from '@trezor/connect';
-import {
-    getFirmwareVersionArray,
-    hasBitcoinOnlyFirmware,
-    isDeviceInBootloaderMode,
-} from '@trezor/device-utils';
 
-import { isDeviceEventAction } from '../utils';
+import { isDeviceEventAction, reportDeviceConnectionAnalytics } from '../utils';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -76,24 +67,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
         switch (action.type) {
             case DEVICE.CONNECT: {
-                const { device } = action.payload;
-                const { features, mode } = device;
-
-                analytics.report({
-                    type: EventType.ConnectDevice,
-                    payload: {
-                        mode: isDeviceInBootloaderMode(device) ? 'bootloader' : mode,
-                        firmwareVersion: getFirmwareVersionArray(device),
-                        pinProtection: features.pin_protection,
-                        isBitcoinOnly: hasBitcoinOnlyFirmware(device),
-                        deviceLanguage: features.language,
-                        deviceModel: features.internal_model,
-                        connectionType: getIsDeviceDescriptorApiTypeBluetooth(device)
-                            ? 'bluetooth'
-                            : 'cable',
-                    },
-                });
-
+                reportDeviceConnectionAnalytics(action.payload.device);
                 break;
             }
             case DEVICE.DISCONNECT:
