@@ -12,14 +12,11 @@ import {
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
 
-import { NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT } from './connectThpDeviceThunk';
 import { thpActions } from './thpActions';
-
-export const THP_BUTTON_REQUESTS_NAMES = [
-    'thp_pairing_request',
-    'thp_connection_request',
-    'thp_autoconnect_credential_request',
-] as const;
+import {
+    NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT,
+    THP_BUTTON_REQUESTS_NAMES,
+} from './thpConstants';
 
 export type THPButtonRequestName = (typeof THP_BUTTON_REQUESTS_NAMES)[number];
 
