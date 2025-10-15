@@ -1,5 +1,6 @@
 import * as crypto from 'crypto';
 
+import { getSubtleCrypto } from '@trezor/crypto-utils';
 import { bufferUtils } from '@trezor/utils';
 
 import { fixSignature, parseCertificate } from './x509certificate';
@@ -15,13 +16,7 @@ const verifySignature = async (rawKey: Buffer, data: Uint8Array, signature: Uint
     const signer = crypto.createVerify('sha256');
     signer.update(Buffer.from(data));
 
-    // use native SubtleCrypto api.
-    // Unfortunately `crypto-browserify`.subtle polyfill is missing so needs to be referenced directly from window object (if exists)
-    // https://github.com/browserify/crypto-browserify/issues/221
-    const SubtleCrypto = typeof window !== 'undefined' ? window.crypto.subtle : crypto.subtle;
-    if (!SubtleCrypto) {
-        throw new Error('SubtleCrypto not supported');
-    }
+    const SubtleCrypto = getSubtleCrypto();
 
     // get ECDSA P-256 (secp256r1) key from RAW key
     const ecPubKey = await SubtleCrypto.importKey(
