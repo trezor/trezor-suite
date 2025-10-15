@@ -75,11 +75,12 @@ export const checkFirmwareHash = async ({
     }
 
     const strippedBinary = stripFwHeaders(firmwareBinary.binary);
-    const { hash: expectedHash, challenge } = calculateFirmwareHash(
-        device.features.internal_model,
-        strippedBinary,
-        randomBytes(32),
-    );
+    const { hash: expectedHash, challenge } = calculateFirmwareHash({
+        internal_model: device.features.internal_model,
+        firmwareVersion,
+        fw: strippedBinary,
+        key: randomBytes(32),
+    });
 
     // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
     // so device can't be used, but it's preferable to display proper message about counterfeit device
