@@ -200,6 +200,9 @@ describe('THP pairing', () => {
         if (result.success) throw ERR;
         expect(result.payload.error).toMatch(CANCEL_ERR);
 
+        // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         // 2. reject pairing tag request from Trezor
         TrezorConnect.removeAllListeners('ui-request_thp_pairing');
         TrezorConnect.on('ui-request_thp_pairing', () => {
