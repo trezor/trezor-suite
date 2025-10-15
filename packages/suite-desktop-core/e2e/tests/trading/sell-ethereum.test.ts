@@ -74,7 +74,11 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
                 maxFeePerGas,
                 maxPriorityFeePerGas,
             });
-            await tradingPage.fillSellForm(cryptoAmount, 'ethereum');
+            await tradingPage.fillSellForm({
+                cryptoAmount,
+                networkSymbolOrTokenId: 'eth',
+                cryptoCurrency: 'ethereum',
+            });
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });

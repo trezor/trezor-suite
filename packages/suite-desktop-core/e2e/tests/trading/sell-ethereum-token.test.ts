@@ -48,10 +48,11 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
 
     test('Sell Ethereum token USDC', async ({ tradingPage, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
-            await tradingPage.fillSellForm(
+            await tradingPage.fillSellForm({
                 cryptoAmount,
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            );
+                networkSymbolOrTokenId: 'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                cryptoCurrency: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            });
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });

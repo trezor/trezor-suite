@@ -1,5 +1,7 @@
 import { Locator, Page, expect, test } from '@playwright/test';
+import { writeFileSync } from 'fs';
 import { get } from 'lodash';
+import { join } from 'path';
 
 declare module '@playwright/test' {
     interface Page {
@@ -17,6 +19,10 @@ declare module '@playwright/test' {
             objectPath: string,
             expectedValue: any,
             options?: { timeout?: number },
+        ): Promise<void>;
+        runWithReduxDump<T>(
+            action: () => Promise<T>,
+            options?: { slice?: string; filePrefix?: string },
         ): Promise<void>;
     }
 }
@@ -83,6 +89,31 @@ export const enhancePage = (page: Page): Page => {
                 expect(testedObject).toStrictEqual(expectedValue);
             }).toPass({ timeout: options.timeout });
         });
+    };
+
+    page.runWithReduxDump = async function <T>(
+        action: () => Promise<T>,
+        options?: { slice?: string; filePrefix?: string },
+    ): Promise<void> {
+        const slice = options?.slice ?? 'wallet';
+        const prefix = options?.filePrefix ?? slice;
+        const ts = new Date().toISOString().replace(/[:.]/g, '-');
+
+        const beforeRaw = await page.getReduxObject(slice);
+        const beforePath = join(process.cwd(), `${prefix}_before_${ts}.json`);
+        writeFileSync(beforePath, JSON.stringify(beforeRaw, null, 2), 'utf-8');
+
+        await action();
+
+        const afterRaw = await page.getReduxObject(slice);
+        const afterPath = join(process.cwd(), `${prefix}_after_${ts}.json`);
+        writeFileSync(afterPath, JSON.stringify(afterRaw, null, 2), 'utf-8');
+
+        throw new Error(`Redux dumps written to:
+- ${beforePath}
+- ${afterPath}
+You can use a diff tool to compare the state before and after the action.
+        `);
     };
 
     return page;
