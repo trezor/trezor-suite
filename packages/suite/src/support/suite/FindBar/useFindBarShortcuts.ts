@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
 type UseFindBarShortcutsProps = {
-    visible: boolean;
     setVisible: (visible: boolean) => void;
     inputRef: React.RefObject<HTMLInputElement | null>;
     clearHighlights: () => void;
@@ -10,7 +9,6 @@ type UseFindBarShortcutsProps = {
 };
 
 export const useFindBarShortcuts = ({
-    visible,
     setVisible,
     inputRef,
     clearHighlights,
@@ -51,7 +49,7 @@ export const useFindBarShortcuts = ({
                 return;
             }
 
-            if (key === 'escape' && visible) {
+            if (key === 'escape') {
                 e.preventDefault();
                 clearHighlights();
                 setVisible(false);
@@ -59,7 +57,7 @@ export const useFindBarShortcuts = ({
                 return;
             }
         },
-        [visible, setVisible, inputRef, clearHighlights, next, prev],
+        [setVisible, inputRef, clearHighlights, next, prev],
     );
 
     useEffect(() => {

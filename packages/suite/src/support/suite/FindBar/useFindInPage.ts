@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import {
+    MARK_HIGHLIGHT_PULSE_CLASSNAME,
+    MARK_HIGHLIGHT_PULSE_SELECTOR,
+    MARK_HIGHLIGHT_SELECTOR,
+} from './consts';
 import { highlightText, removeHighlights } from './highlight';
 
 type UseFindInPageProps = {
@@ -23,8 +28,10 @@ export const useFindInPage = ({
     const observerRef = useRef<MutationObserver | null>(null);
     const debounceTimer = useRef<number | null>(null);
     const isMutatingRef = useRef(false);
-
     const activeOrdinalRef = useRef<number | null>(null);
+
+    const seqRef = useRef(0);
+    const queryRef = useRef('');
 
     const getRoot = useCallback((): HTMLElement => {
         if (rootRef.current) return rootRef.current;
@@ -38,14 +45,21 @@ export const useFindInPage = ({
     }, [root]);
 
     const observeRoot = useCallback(() => {
-        const root = getRoot();
-        observerRef.current?.observe(root, {
+        const rootEl = getRoot();
+        observerRef.current?.observe(rootEl, {
             childList: true,
             subtree: true,
             characterData: true,
             attributes: false,
         });
     }, [getRoot]);
+
+    const cancelScheduled = useCallback(() => {
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+            debounceTimer.current = null;
+        }
+    }, []);
 
     const withObserverPaused = useCallback(
         (fn: () => void) => {
@@ -66,13 +80,13 @@ export const useFindInPage = ({
     );
 
     const queryMarkByOrdinal = (ord: number) =>
-        document.querySelector<HTMLElement>(`mark.find-highlight[data-find-ordinal="${ord}"]`);
+        document.querySelector<HTMLElement>(
+            `${MARK_HIGHLIGHT_SELECTOR}[data-find-ordinal="${ord}"]`,
+        );
 
     const applyActiveOrdinal = useCallback((ord: number | null, scrollIntoView = false) => {
-        const marks = Array.from(document.querySelectorAll<HTMLElement>('mark.find-highlight'));
-        marks.forEach(m => {
-            if (m.getAttribute('data-active') === 'true') m.setAttribute('data-active', 'false');
-        });
+        const marks = Array.from(document.querySelectorAll<HTMLElement>(MARK_HIGHLIGHT_SELECTOR));
+        marks.forEach(m => m.setAttribute('data-active', 'false'));
 
         if (ord == null) {
             activeOrdinalRef.current = null;
@@ -100,11 +114,11 @@ export const useFindInPage = ({
         const el = queryMarkByOrdinal(ord);
         if (!el) return;
 
-        const old = el.querySelector('.find-highlight-pulse');
+        const old = el.querySelector(MARK_HIGHLIGHT_PULSE_SELECTOR);
         if (old) old.remove();
 
         const pulse = document.createElement('span');
-        pulse.className = 'find-highlight-pulse';
+        pulse.className = MARK_HIGHLIGHT_PULSE_CLASSNAME;
         el.appendChild(pulse);
 
         pulse.animate(
@@ -130,17 +144,37 @@ export const useFindInPage = ({
         return ord;
     };
 
+    const removeAllMarks = useCallback(() => {
+        const rootEl = getRoot();
+        withObserverPaused(() => removeHighlights(rootEl));
+    }, [getRoot, withObserverPaused]);
+
     const runHighlight = useCallback(
         (q: string, opts?: { keepActive?: boolean }) => {
+            const raw = q;
+            const trimmed = raw.trim();
+
+            setQuery(raw);
+            queryRef.current = raw;
+
+            if (!isActive) return 0;
+
+            if (!trimmed) {
+                removeAllMarks();
+                setCount(0);
+                applyActiveOrdinal(null);
+
+                return 0;
+            }
+
             const { keepActive = false } = opts || {};
-            const root = getRoot();
+            const rootEl = getRoot();
             let total = 0;
 
             withObserverPaused(() => {
-                total = highlightText(root, q);
+                total = highlightText(rootEl, trimmed);
             });
 
-            setQuery(q);
             setCount(total);
 
             if (keepActive && activeOrdinalRef.current != null) {
@@ -152,22 +186,27 @@ export const useFindInPage = ({
 
             return total;
         },
-        [getRoot, withObserverPaused, applyActiveOrdinal],
+        [isActive, getRoot, withObserverPaused, applyActiveOrdinal, removeAllMarks],
     );
 
     const updateHighlights = useCallback(
-        (q: string) => runHighlight(q, { keepActive: false }),
+        (q: string) => {
+            seqRef.current += 1;
+
+            return runHighlight(q, { keepActive: false });
+        },
         [runHighlight],
     );
 
     const clearHighlights = useCallback(() => {
-        const root = getRoot();
+        seqRef.current += 1;
+        cancelScheduled();
         setQuery('');
+        queryRef.current = '';
         setCount(0);
         applyActiveOrdinal(null);
-
-        withObserverPaused(() => removeHighlights(root));
-    }, [getRoot, withObserverPaused, applyActiveOrdinal]);
+        removeAllMarks();
+    }, [cancelScheduled, removeAllMarks, applyActiveOrdinal]);
 
     const next = useCallback(() => {
         if (count <= 0) return;
@@ -185,26 +224,39 @@ export const useFindInPage = ({
         animateActivePulse(ord);
     }, [count, applyActiveOrdinal, animateActivePulse]);
 
-    const schedule = useCallback(
-        (fn: () => void) => {
-            if (debounceTimer.current) clearTimeout(debounceTimer.current);
-            debounceTimer.current = window.setTimeout(fn, debounceMs);
+    const scheduleRehighlight = useCallback(
+        (q: string, keepActive: boolean) => {
+            cancelScheduled();
+            const scheduledSeq = ++seqRef.current;
+
+            debounceTimer.current = window.setTimeout(() => {
+                if (scheduledSeq !== seqRef.current) return;
+                if (!isActive) return;
+                if (!q.trim()) return;
+
+                runHighlight(q, { keepActive });
+            }, debounceMs);
         },
-        [debounceMs],
+        [debounceMs, isActive, runHighlight, cancelScheduled],
     );
 
     useEffect(() => {
-        if (!isActive) return;
+        if (!isActive || !query.trim()) return;
 
         const obs = new MutationObserver(muts => {
-            if (!query) return;
             if (isMutatingRef.current) return;
 
             const relevant = muts.some(m => {
-                const t = m.target as Node;
-                if (t instanceof HTMLElement) {
-                    if (ignoreSelector && t.closest(ignoreSelector)) return false;
-                    if (t.closest('mark.find-highlight')) return false;
+                const node = m.target as Node;
+
+                const getParentElement = () =>
+                    node.parentElement instanceof HTMLElement ? node.parentElement : null;
+
+                const el = node instanceof HTMLElement ? node : getParentElement();
+
+                if (el) {
+                    if (ignoreSelector && el.closest(ignoreSelector)) return false;
+                    if (el.closest(MARK_HIGHLIGHT_SELECTOR)) return false;
                 }
 
                 return m.type === 'characterData' || m.type === 'childList';
@@ -212,17 +264,18 @@ export const useFindInPage = ({
 
             if (!relevant) return;
 
-            schedule(() => runHighlight(query, { keepActive: true }));
+            scheduleRehighlight(queryRef.current, true);
         });
 
         observerRef.current = obs;
         observeRoot();
 
         return () => {
+            observerRef.current = null;
             obs.disconnect();
-            if (debounceTimer.current) clearTimeout(debounceTimer.current);
+            cancelScheduled();
         };
-    }, [isActive, getRoot, observeRoot, schedule, query, ignoreSelector, runHighlight]);
+    }, [isActive, observeRoot, ignoreSelector, scheduleRehighlight, cancelScheduled, query]);
 
     useEffect(() => () => clearHighlights(), [clearHighlights]);
 
