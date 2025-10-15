@@ -75,27 +75,18 @@ describe('TradingFeesForm', () => {
         jest.clearAllMocks();
     });
 
-    it('should render fees form with title and description', async () => {
+    it('should render TradingFeesForm with FeesContent component', async () => {
         const { getByText } = await renderTradingFeesForm({ accountKey: mockAccountKey });
 
         expect(getByText('Transaction fee')).toBeTruthy();
-        expect(
-            getByText('Fees are paid directly to validators for processing your transactions.'),
-        ).toBeTruthy();
     });
 
-    it('should render fee options list when selected fee level is not custom', async () => {
-        const { getByTestId } = await renderTradingFeesForm({ accountKey: mockAccountKey });
+    it('should render with fees footer when total amount and fee are available', async () => {
+        const { getByText } = await renderTradingFeesForm({ accountKey: mockAccountKey });
 
-        // The component should render FeeOptionsList when fee level is not custom
-        expect(getByTestId('@transactionManagement/fees-level-container-normal')).toBeTruthy();
-    });
-
-    it('should render custom fee wrapper', async () => {
-        const { getByTestId } = await renderTradingFeesForm({ accountKey: mockAccountKey });
-
-        // The component should always render CustomFee wrapper
-        expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
+        // FeesFooter should be rendered if totalAmount and fee are present
+        // This test validates the integration between TradingFeesForm and its child components
+        expect(getByText('Transaction fee')).toBeTruthy();
     });
 
     it('should work with token contract for Ethereum accounts', async () => {

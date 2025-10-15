@@ -6,9 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { Text, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
@@ -18,8 +17,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
-    CustomFee,
-    FeeOptionsList,
+    FeesContent,
     FeesFooter,
     NativeSendRootState,
     NativeSupportedFeeLevel,
@@ -146,32 +144,16 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                         />
                     )}
                     <VStack flex={1} justifyContent="space-between" spacing="sp24">
-                        <VStack spacing="sp16">
-                            <VStack spacing="sp4">
-                                <Text variant="titleSmall">
-                                    <Translation id="moduleSend.fees.description.title" />
-                                </Text>
-                                <Text>
-                                    <Translation id="moduleSend.fees.description.body" />
-                                </Text>
-                            </VStack>
-                            <VStack spacing="sp24">
-                                {selectedFeeLevel !== 'custom' && (
-                                    <FeeOptionsList
-                                        feeLevels={feeLevels}
-                                        symbol={symbol}
-                                        isLoading={areFeesLoading}
-                                        onSelectedFeeLevel={handleFeeLevelChange}
-                                    />
-                                )}
-                                <CustomFee
-                                    symbol={symbol}
-                                    accountKey={accountKey}
-                                    onCustomFeeSet={handleCustomFeeSet}
-                                    formDraft={formDraft}
-                                />
-                            </VStack>
-                        </VStack>
+                        <FeesContent
+                            selectedFeeLevel={selectedFeeLevel}
+                            feeLevels={feeLevels}
+                            symbol={symbol}
+                            accountKey={accountKey}
+                            areFeesLoading={areFeesLoading}
+                            onSelectedFeeLevel={handleFeeLevelChange}
+                            onCustomFeeSet={handleCustomFeeSet}
+                            formDraft={formDraft}
+                        />
                         {!!totalAmount && !!fee && (
                             <FeesFooter
                                 accountKey={accountKey}
