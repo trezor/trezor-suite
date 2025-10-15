@@ -70,13 +70,13 @@ export const activateTokenThunk = createThunk<
 
             // Build the trustline transaction
             const misc = account.misc as { stellarSequence: string };
-            const transaction = buildAddTrustlineTransaction(
-                account.descriptor,
-                misc.stellarSequence,
-                feePerUnit,
+            const transaction = buildAddTrustlineTransaction({
+                descriptor: account.descriptor,
+                sequence: misc.stellarSequence,
+                fee: feePerUnit,
                 asset,
-                isTestnet(account.symbol),
-            );
+                isTestnet: isTestnet(account.symbol),
+            });
 
             // Sign the transaction using TrezorConnect
             const response = await TrezorConnect.stellarSignTransaction({
