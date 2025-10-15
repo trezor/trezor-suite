@@ -49,6 +49,12 @@ To test the app in the release mode, you need to build the app with the release 
 
 Some tests use Trezor-user-env to simulate the Trezor device. To make these tests work locally, make sure that the trezor-user-env is up and running. To do so, follow the [trezor-user-env documentation](https://github.com/trezor/trezor-user-env/blob/master/README.md).
 
+### Running trading tests locally
+
+To run trading tests, you need to have passphrase wallet on `mnemonic_academic` with some ETH for fees and at least 10 USDC on Ethereum.
+
+Specify passphrase in the `suite-native/app/e2e/.env` as `TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE` env variable.
+
 ## Test tagging
 
 Since Detox/Jest doesn't natively support test tagging, we are using a common convention to achieve this goal. Tags are added as part of the test describe or test name. Tags are to be prefixed with @ and and wrapped in [] parentheses.
