@@ -35,7 +35,8 @@ import { desktopComponents } from './support/desktopComponents';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { type History, createMemoryHistory } from 'history';
 import { createRouterServices } from 'src/support/extraDependencies';
-import { FindBar } from './support/FindBar/FindBar';
+import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
+import { GlobalStyle } from './GlobalStyle';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();
@@ -44,6 +45,7 @@ const MainDesktop = ({ history }: { history: History }) => {
 
     return (
         <Main history={history} trafficLightOffset={<TrafficLightDraggableWindowHeader />}>
+            <GlobalStyle />
             <DesktopUpdater>
                 <Metadata />
                 <ToastContainer />
