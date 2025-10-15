@@ -45,9 +45,9 @@ export const RotatingPhrases = ({ interval = 10000 }: RotatingPhrasesProps) => {
                 <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                         key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
                         transition={{ duration: 0.3, ease: motionEasing.enter }}
                     >
                         <Paragraph align="center">
