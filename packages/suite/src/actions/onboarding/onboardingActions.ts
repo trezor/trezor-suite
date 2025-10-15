@@ -1,7 +1,7 @@
 import { BackupType } from '@suite-common/suite-types';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { OnboardingAnalytics } from '@trezor/suite-analytics';
+import { EventType, OnboardingAnalytics, analytics } from '@trezor/suite-analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
@@ -9,6 +9,10 @@ import * as STEP from 'src/constants/onboarding/steps';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 import { Dispatch, GetState } from 'src/types/suite';
 import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
+
+import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
+import * as routerActions from '../suite/routerActions';
+import * as suiteActions from '../suite/suiteActions';
 
 export type OnboardingAction =
     | {
@@ -67,15 +71,6 @@ const getAllStepsInPath = (getState: GetState) => {
     return allSteps.filter(step => isStepUsed(step, isStepUsedProps));
 };
 
-const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
-    if (stepId) {
-        return dispatch(goToStep(stepId));
-    }
-    const stepsInPath = getAllStepsInPath(getState);
-    const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath);
-    dispatch(goToStep(nextStep.id));
-};
-
 const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (stepId) {
         return dispatch(goToStep(stepId));
@@ -101,6 +96,50 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
 const resetOnboarding = (): OnboardingAction => ({
     type: ONBOARDING.RESET_ONBOARDING,
 });
+
+const goToSuite = () => (dispatch: Dispatch, getState: GetState) => {
+    const device = selectSelectedDevice(getState());
+    const onboardingAnalytics = selectOnboardingAnalytics(getState());
+
+    dispatch(suiteActions.initialRunCompleted());
+    dispatch(resetOnboarding());
+    dispatch(routerActions.closeModalApp(true));
+
+    dispatch(startDiscoveryThunk({ device }));
+
+    // only to satisfy typescript, there must be a device to progress with onboarding
+    if (device?.features === undefined) return;
+    const reportAnalytics = () => {
+        const payload = {
+            ...onboardingAnalytics,
+            duration: Date.now() - onboardingAnalytics.startTime!,
+            device: device.features.internal_model,
+            unitPackaging: device.features.unit_packaging ?? 0,
+        };
+        delete payload.startTime;
+
+        analytics.report({
+            type: EventType.DeviceSetupCompleted,
+            payload,
+        });
+    };
+    reportAnalytics();
+};
+
+const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
+    if (stepId) {
+        return dispatch(goToStep(stepId));
+    }
+    const stepsInPath = getAllStepsInPath(getState);
+    const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath);
+    // we are at last step, so go to Suite
+    if (nextStep === null) {
+        dispatch(goToSuite());
+
+        return;
+    }
+    dispatch(goToStep(nextStep.id));
+};
 
 /**
  * Make onboarding reducer listen to actions.
@@ -138,6 +177,7 @@ export {
     addPath,
     removePath,
     resetOnboarding,
+    goToSuite,
     updateAnalytics,
     beginOnboardingTutorial,
     updateBackupType,

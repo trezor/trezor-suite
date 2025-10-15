@@ -57,8 +57,8 @@ describe('steps', () => {
             expect(findNextStep(firmwareStep.id, stepsMock)).toEqual(backupStep);
         });
 
-        it('should throw on improper use (no more step exists)', () => {
-            expect(() => findNextStep(backupStep.id, stepsMock)).toThrow('no next step exists');
+        it('should return null in no next step exists', () => {
+            expect(findNextStep(backupStep.id, stepsMock)).toBe(null);
         });
     });
 

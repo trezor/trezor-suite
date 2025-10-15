@@ -1,9 +1,8 @@
-import { selectEnabledNetworks, startDiscoveryThunk } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
-import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { getIsTorLoading } from 'src/utils/suite/tor';
 
 import { CoinsStepBox } from './CoinsStepBox';
@@ -11,38 +10,10 @@ import { CoinsStepBox } from './CoinsStepBox';
 export const CoinsStep = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const torStatus = useSelector(state => state.suite.torStatus);
-    const onboardingAnalytics = useSelector(state => state.onboarding.onboardingAnalytics);
     const { goToSuite } = useOnboarding();
-    const { device } = useDevice();
-    const dispatch = useDispatch();
 
     const noNetworkEnabled = !enabledNetworks.length;
     const isTorLoading = getIsTorLoading(torStatus);
-
-    if (device?.features === undefined) {
-        return null;
-    }
-
-    const reportAnalytics = () => {
-        const payload = {
-            ...onboardingAnalytics,
-            duration: Date.now() - onboardingAnalytics.startTime!,
-            device: device.features.internal_model,
-            unitPackaging: device.features.unit_packaging ?? 0,
-        };
-        delete payload.startTime;
-
-        analytics.report({
-            type: EventType.DeviceSetupCompleted,
-            payload,
-        });
-    };
-
-    const handleGoToSuite = () => {
-        reportAnalytics();
-        goToSuite();
-        dispatch(startDiscoveryThunk({ device }));
-    };
 
     return (
         <CoinsStepBox
@@ -51,9 +22,7 @@ export const CoinsStep = () => {
             innerActions={
                 <OnboardingCard.Button
                     data-testid="@onboarding/exit-app-button"
-                    onClick={() => {
-                        handleGoToSuite();
-                    }}
+                    onClick={goToSuite}
                     isLoading={isTorLoading}
                     isDisabled={noNetworkEnabled}
                 >
