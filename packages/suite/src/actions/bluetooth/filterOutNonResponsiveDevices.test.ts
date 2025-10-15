@@ -1,13 +1,13 @@
-import { createBluetoothDevice } from '@suite-common/bluetooth/src/support/mocks';
-import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
 
+import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import { createMockedBluetoothDevice } from './__tests__/createMockedBluetoothDevice';
 import { filterOutNonResponsiveDevices } from './filterOutNonResponsiveDevices';
 
 describe(filterOutNonResponsiveDevices.name, () => {
     beforeAll(() => {
-        jest.spyOn(Date, 'now').mockReturnValue(5_000);
+        jest.spyOn(Date, 'now').mockReturnValue(8_000);
         jest.spyOn(envUtils, 'isLinux').mockReturnValue(false);
     });
 
@@ -16,17 +16,17 @@ describe(filterOutNonResponsiveDevices.name, () => {
     });
 
     it('keeps devices that are in pairing mode regardless of lastUpdatedTimestamp', () => {
-        const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+        const devices: DesktopBluetoothDevice[] = [
+            createMockedBluetoothDevice({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
-                lastUpdatedTimestamp: 1_000,
+                lastUpdatedTimestamp: 4_000,
                 connectionStatus: { type: 'pairing' },
             }),
-            createBluetoothDevice({
+            createMockedBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
-                lastUpdatedTimestamp: 1_000,
+                lastUpdatedTimestamp: 4_000,
                 connectionStatus: { type: 'pairing' },
             }),
         ];
@@ -36,21 +36,21 @@ describe(filterOutNonResponsiveDevices.name, () => {
     });
 
     it('filters non responsive devices', () => {
-        const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+        const devices: DesktopBluetoothDevice[] = [
+            createMockedBluetoothDevice({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
-                lastUpdatedTimestamp: 1_000,
+                lastUpdatedTimestamp: 4_000,
             }),
-            createBluetoothDevice({
+            createMockedBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
-                lastUpdatedTimestamp: 1_000,
+                lastUpdatedTimestamp: 4_000,
             }),
-            createBluetoothDevice({
+            createMockedBluetoothDevice({
                 id: asBluetoothDeviceId('3'),
                 name: 'DeviceA',
-                lastUpdatedTimestamp: 5_000,
+                lastUpdatedTimestamp: 9_000,
             }),
         ];
 
@@ -59,20 +59,45 @@ describe(filterOutNonResponsiveDevices.name, () => {
     });
 
     it('keeps responsive devices', () => {
-        const devices: BluetoothDeviceCommon[] = [
-            createBluetoothDevice({
+        const devices: DesktopBluetoothDevice[] = [
+            createMockedBluetoothDevice({
                 id: asBluetoothDeviceId('1'),
                 name: 'DeviceA',
-                lastUpdatedTimestamp: 3_500,
+                lastUpdatedTimestamp: 7_500,
             }),
-            createBluetoothDevice({
+            createMockedBluetoothDevice({
                 id: asBluetoothDeviceId('2'),
                 name: 'DeviceA',
-                lastUpdatedTimestamp: 4_000,
+                lastUpdatedTimestamp: 7_000,
             }),
         ];
 
         const result = filterOutNonResponsiveDevices(devices);
+        expect(result).toHaveLength(2);
+    });
+
+    it('progressively increases the unresponsive device timeout', () => {
+        const weakSignalDevices: DesktopBluetoothDevice[] = [
+            createMockedBluetoothDevice({
+                id: asBluetoothDeviceId('1'),
+                name: 'DeviceA',
+                lastUpdatedTimestamp: 6_000,
+                rssi: -90,
+            }),
+            createMockedBluetoothDevice({
+                id: asBluetoothDeviceId('2'),
+                name: 'DeviceB',
+                lastUpdatedTimestamp: 5_000,
+                rssi: -100,
+            }),
+            createMockedBluetoothDevice({
+                id: asBluetoothDeviceId('3'),
+                name: 'DeviceC',
+                lastUpdatedTimestamp: 1_000,
+            }),
+        ];
+
+        const result = filterOutNonResponsiveDevices(weakSignalDevices);
         expect(result).toHaveLength(2);
     });
 });
