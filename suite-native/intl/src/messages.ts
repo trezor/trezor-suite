@@ -1987,10 +1987,6 @@ export const messages = {
             recipient: {
                 singular: 'Recipient',
             },
-            description: {
-                title: 'Transaction fee',
-                body: 'Fees are paid directly to network miners for processing your transactions.',
-            },
             custom: {
                 addButton: 'Add custom fee',
                 bottomSheet: {
@@ -2418,10 +2414,6 @@ export const messages = {
         },
         tradingFeesScreen: {
             title: 'Fee picker',
-            description: {
-                title: 'Transaction fee',
-                body: 'Fees are paid directly to validators for processing your transactions.',
-            },
         },
         tradingReviewOutputs: {
             title: 'Review with Trezor',
@@ -2713,6 +2705,10 @@ export const messages = {
                 low: 'Low',
                 normal: 'Normal',
                 high: 'High',
+            },
+            description: {
+                title: 'Transaction fee',
+                body: 'Fees are paid directly to validators for processing your transactions.',
             },
             custom: {
                 addButton: 'Add custom fee',
