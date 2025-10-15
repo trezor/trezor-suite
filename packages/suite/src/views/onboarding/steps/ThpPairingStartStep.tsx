@@ -16,7 +16,7 @@ export const ThpPairingStartStep = () => {
 
     return (
         <OnboardingCard
-            iconName="bluetooth"
+            iconName="plugsConnected"
             description={<Translation id="TR_THP_CREATE_SECURE_CONNECTION_DESCRIPTION" />}
             heading={<Translation id="TR_THP_CREATE_SECURE_CONNECTION" />}
             innerActions={
