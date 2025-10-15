@@ -208,12 +208,19 @@ export const transformTransaction = (
     return baseTx;
 };
 
-const createTransactionBuilder = (
-    descriptor: string,
-    sequence: string,
-    fee: string,
+type CreateTransactionBuilderParams = {
+    descriptor: string;
+    sequence: string;
+    fee: string;
+    isTestnet?: boolean;
+};
+
+const createTransactionBuilder = ({
+    descriptor,
+    sequence,
+    fee,
     isTestnet = false,
-) => {
+}: CreateTransactionBuilderParams) => {
     const source = new Account(descriptor, sequence);
 
     return new TransactionBuilder(source, {
@@ -222,15 +229,20 @@ const createTransactionBuilder = (
     }).setTimebounds(0, 0);
 };
 
-const buildTrustlineTransaction = (
-    descriptor: string,
-    sequence: string,
-    fee: string,
-    asset: StellarAsset,
-    limit?: string,
-    isTestnet = false,
-) => {
-    const txBuilder = createTransactionBuilder(descriptor, sequence, fee, isTestnet);
+type BuildTrustlineTransactionParams = CreateTransactionBuilderParams & {
+    asset: StellarAsset;
+    limit?: string;
+};
+
+const buildTrustlineTransaction = ({
+    descriptor,
+    sequence,
+    fee,
+    asset,
+    limit,
+    isTestnet,
+}: BuildTrustlineTransactionParams) => {
+    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, isTestnet });
 
     txBuilder.addOperation(
         Operation.changeTrust({
@@ -242,18 +254,26 @@ const buildTrustlineTransaction = (
     return txBuilder.build();
 };
 
-export const buildSendTransaction = (
-    descriptor: string,
-    sequence: string,
-    fee: string,
-    destinationActivated: boolean,
-    destination: string,
-    amount: string,
-    asset: StellarAsset,
-    destinationTag?: string,
-    isTestnet = false,
-) => {
-    const txBuilder = createTransactionBuilder(descriptor, sequence, fee, isTestnet);
+type BuildSendTransactionParams = CreateTransactionBuilderParams & {
+    destinationActivated: boolean;
+    destination: string;
+    amount: string;
+    asset: StellarAsset;
+    destinationTag?: string;
+};
+
+export const buildSendTransaction = ({
+    descriptor,
+    sequence,
+    fee,
+    destinationActivated,
+    destination,
+    amount,
+    asset,
+    destinationTag,
+    isTestnet,
+}: BuildSendTransactionParams) => {
+    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, isTestnet });
 
     if (destinationTag) {
         txBuilder.addMemo(Memo.text(destinationTag));
@@ -279,21 +299,25 @@ export const buildSendTransaction = (
     return txBuilder.build();
 };
 
-export const buildAddTrustlineTransaction = (
-    descriptor: string,
-    sequence: string,
-    fee: string,
-    asset: StellarAsset,
-    isTestnet = false,
-) => buildTrustlineTransaction(descriptor, sequence, fee, asset, undefined, isTestnet);
+type BuildTrustlineParams = Omit<BuildTrustlineTransactionParams, 'limit'>;
 
-export const buildRemoveTrustlineTransaction = (
-    descriptor: string,
-    sequence: string,
-    fee: string,
-    asset: StellarAsset,
-    isTestnet = false,
-) => buildTrustlineTransaction(descriptor, sequence, fee, asset, '0', isTestnet);
+export const buildAddTrustlineTransaction = ({
+    descriptor,
+    sequence,
+    fee,
+    asset,
+    isTestnet,
+}: BuildTrustlineParams) =>
+    buildTrustlineTransaction({ descriptor, sequence, fee, asset, isTestnet });
+
+export const buildRemoveTrustlineTransaction = ({
+    descriptor,
+    sequence,
+    fee,
+    asset,
+    isTestnet,
+}: BuildTrustlineParams) =>
+    buildTrustlineTransaction({ descriptor, sequence, fee, asset, limit: '0', isTestnet });
 
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     const env = isCodesignBuild() ? 'stable' : 'develop';
