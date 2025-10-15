@@ -40,6 +40,7 @@ export const SwitchDeviceModal = ({
     return (
         <Modal.Backdrop
             onClick={onCancel}
+            data-testid={`${dataTest}/backdrop`}
             alignment={{ x: 'start', y: 'start' }}
             padding={spacings.xs}
         >

@@ -20,6 +20,7 @@ export type ModalBackdropProps = {
     padding?: Padding;
     zIndex?: ZIndexValues;
     opaque?: boolean;
+    'data-testid'?: string;
 };
 
 const Backdrop = styled.div<{ $opaque?: boolean }>`
@@ -46,6 +47,7 @@ export const ModalBackdrop = ({
     padding = spacings.xs,
     zIndex = zIndices.modal,
     opaque = false,
+    'data-testid': dataTest,
 }: ModalBackdropProps) => {
     const modalTarget = useModalTarget();
 
@@ -53,7 +55,7 @@ export const ModalBackdrop = ({
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
             <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndex}>
-                <Backdrop onClick={onClick} $opaque={opaque}>
+                <Backdrop onClick={onClick} $opaque={opaque} data-testid={dataTest}>
                     <Box padding={padding} height="100%">
                         <Column
                             alignItems={mapAlignmentToAlignItems(alignment)}
