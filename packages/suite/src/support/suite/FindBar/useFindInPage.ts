@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
+    FIND_HIGHLIGHT_SELECTOR,
     MARK_HIGHLIGHT_PULSE_CLASSNAME,
     MARK_HIGHLIGHT_PULSE_SELECTOR,
-    MARK_HIGHLIGHT_SELECTOR,
 } from './consts';
 import { highlightText, removeHighlights } from './highlight';
 
@@ -63,11 +63,11 @@ export const useFindInPage = () => {
 
     const queryMarkByOrdinal = (ord: number) =>
         document.querySelector<HTMLElement>(
-            `${MARK_HIGHLIGHT_SELECTOR}[data-find-ordinal="${ord}"]`,
+            `${FIND_HIGHLIGHT_SELECTOR}[data-find-ordinal="${ord}"]`,
         );
 
     const applyActiveOrdinal = useCallback((ord: number | null, scrollIntoView = false) => {
-        const marks = Array.from(document.querySelectorAll<HTMLElement>(MARK_HIGHLIGHT_SELECTOR));
+        const marks = Array.from(document.querySelectorAll<HTMLElement>(FIND_HIGHLIGHT_SELECTOR));
         marks.forEach(m => m.setAttribute('data-active', 'false'));
 
         if (ord == null) {
@@ -130,6 +130,8 @@ export const useFindInPage = () => {
         withObserverPaused(() => removeHighlights(rootElement));
     }, [rootElement, withObserverPaused]);
 
+    // Main function that runs highlighting logic.
+    // Temporarily pauses the MutationObserver to avoid feedback loops, re-highlights matches for the current query and optionally keeps the active match focused when keepActive=true.
     const runHighlight = useCallback(
         (q: string, opts?: { keepActive?: boolean }) => {
             const raw = q;
@@ -233,7 +235,7 @@ export const useFindInPage = () => {
 
                 if (el) {
                     if (IGNORE_SELECTOR && el.closest(IGNORE_SELECTOR)) return false;
-                    if (el.closest(MARK_HIGHLIGHT_SELECTOR)) return false;
+                    if (el.closest(FIND_HIGHLIGHT_SELECTOR)) return false;
                 }
 
                 return m.type === 'characterData' || m.type === 'childList';

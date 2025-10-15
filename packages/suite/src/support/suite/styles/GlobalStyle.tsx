@@ -3,7 +3,7 @@ import { DefaultTheme, createGlobalStyle } from 'styled-components';
 import { typography } from '@trezor/theme';
 
 import animations from './animations';
-import { MARK_HIGHLIGHT_PULSE_SELECTOR, MARK_HIGHLIGHT_SELECTOR } from '../FindBar/consts';
+import { FIND_HIGHLIGHT_SELECTOR, MARK_HIGHLIGHT_PULSE_SELECTOR } from '../FindBar/consts';
 
 const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     #app {
@@ -58,7 +58,7 @@ const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
         max-width: calc(100vw - 10px);
     }
 
-    ${MARK_HIGHLIGHT_SELECTOR} {
+    ${FIND_HIGHLIGHT_SELECTOR} {
         position: relative;
         background: yellow;
         color: black;
@@ -66,17 +66,14 @@ const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
         transition: transform 0.16s ease, background 0.16s ease;
     }
 
-    ${MARK_HIGHLIGHT_SELECTOR}[data-active='true'] {
+    ${FIND_HIGHLIGHT_SELECTOR}[data-active='true'] {
         background: orange;
         transform: scale(1.05);
     }
 
-    ${MARK_HIGHLIGHT_SELECTOR} ${MARK_HIGHLIGHT_PULSE_SELECTOR} {
+    ${FIND_HIGHLIGHT_SELECTOR} ${MARK_HIGHLIGHT_PULSE_SELECTOR} {
         position: absolute;
-        top: -3px;
-        left: -3px;
-        width: calc(100% + 6px);
-        height: calc(100% + 6px);
+        inset: -3px;
         border-radius: inherit;
         background: orange;
         opacity: 0.7;
