@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Box, IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { WebUsbButton } from 'src/components/suite';
@@ -59,19 +59,11 @@ export const DeviceHeader = ({
             )}
 
             {deviceModelInternal && isDeviceStatusVisible && (
-                // In case the cancel button is not visible (e.g. in device switcher),
-                // we need to have an alternative, mostly for testing purposes.
-                <Box
-                    data-testid={
-                        isDefaultCancelVisible ? undefined : '@switch-device/cancel-button'
-                    }
-                >
-                    <DeviceStatus
-                        deviceModel={deviceModelInternal}
-                        device={device}
-                        forceConnectionInfo={true}
-                    />
-                </Box>
+                <DeviceStatus
+                    deviceModel={deviceModelInternal}
+                    device={device}
+                    forceConnectionInfo={true}
+                />
             )}
 
             <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
@@ -89,7 +81,6 @@ export const DeviceHeader = ({
                             size="small"
                             variant="tertiary"
                             onClick={() => onCancel()}
-                            data-testid="@switch-device/cancel-button"
                         />
                     </Tooltip>
                 )}
