@@ -21,6 +21,7 @@ import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
+import { useLayoutSize } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 
 import { OnboardingCardButton } from './OnboardingCardButton';
@@ -56,13 +57,16 @@ export const OnboardingCard = ({
     isConfirmedOnDevice = false,
     devicePrompt,
     children,
-    padding = 80,
+    padding,
     variant = 'primary',
     'data-testid': dataTestId,
 }: OnboardingCardProps) => {
     const intl = useIntl();
     const deviceModelInternal = device?.features?.internal_model;
     const isBackDropVisible = !!deviceModelInternal && isConfirmedOnDevice;
+    const { isBelowTablet } = useLayoutSize();
+
+    const defaultPadding = isBelowTablet ? 40 : 80;
 
     return (
         <>
@@ -98,7 +102,11 @@ export const OnboardingCard = ({
                     paddingType="none"
                     data-testid={dataTestId}
                 >
-                    <Column gap={48} padding={padding} margin={iconName ? { top: 40 } : undefined}>
+                    <Column
+                        gap={48}
+                        padding={padding ?? defaultPadding}
+                        margin={iconName ? { top: 40 } : undefined}
+                    >
                         {(heading || description) && (
                             <Column gap={16} alignItems="center" width="100%">
                                 {heading && <H2 align="center">{heading}</H2>}
