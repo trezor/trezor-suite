@@ -7,19 +7,10 @@ import {
 } from './consts';
 import { highlightText, removeHighlights } from './highlight';
 
-type UseFindInPageProps = {
-    root?: HTMLElement | string;
-    ignoreSelector?: string;
-    debounceMs?: number;
-    isActive: boolean;
-};
+const DEBOUNCE_TIME = 100;
+const IGNORE_SELECTOR = '[data-find-ignore]';
 
-export const useFindInPage = ({
-    isActive,
-    debounceMs = 100,
-    root,
-    ignoreSelector = '[data-find-ignore]',
-}: UseFindInPageProps) => {
+export const useFindInPage = () => {
     const [query, setQuery] = useState('');
     const [count, setCount] = useState(0);
     const [position, setPosition] = useState(0);
@@ -33,26 +24,17 @@ export const useFindInPage = ({
     const seqRef = useRef(0);
     const queryRef = useRef('');
 
-    const getRoot = useCallback((): HTMLElement => {
-        if (rootRef.current) return rootRef.current;
-        if (root instanceof HTMLElement) rootRef.current = root;
-        else if (typeof root === 'string')
-            rootRef.current = document.querySelector(root) as HTMLElement | null;
-        if (!rootRef.current)
-            rootRef.current = (document.getElementById('root') || document.body) as HTMLElement;
-
-        return rootRef.current;
-    }, [root]);
+    const rootElement = (rootRef.current = (document.getElementById('root') ||
+        document.body) as HTMLElement);
 
     const observeRoot = useCallback(() => {
-        const rootEl = getRoot();
-        observerRef.current?.observe(rootEl, {
+        observerRef.current?.observe(rootElement, {
             childList: true,
             subtree: true,
             characterData: true,
             attributes: false,
         });
-    }, [getRoot]);
+    }, [rootElement]);
 
     const cancelScheduled = useCallback(() => {
         if (debounceTimer.current) {
@@ -145,9 +127,8 @@ export const useFindInPage = ({
     };
 
     const removeAllMarks = useCallback(() => {
-        const rootEl = getRoot();
-        withObserverPaused(() => removeHighlights(rootEl));
-    }, [getRoot, withObserverPaused]);
+        withObserverPaused(() => removeHighlights(rootElement));
+    }, [rootElement, withObserverPaused]);
 
     const runHighlight = useCallback(
         (q: string, opts?: { keepActive?: boolean }) => {
@@ -156,8 +137,6 @@ export const useFindInPage = ({
 
             setQuery(raw);
             queryRef.current = raw;
-
-            if (!isActive) return 0;
 
             if (!trimmed) {
                 removeAllMarks();
@@ -168,11 +147,10 @@ export const useFindInPage = ({
             }
 
             const { keepActive = false } = opts || {};
-            const rootEl = getRoot();
             let total = 0;
 
             withObserverPaused(() => {
-                total = highlightText(rootEl, trimmed);
+                total = highlightText(rootElement, trimmed);
             });
 
             setCount(total);
@@ -186,7 +164,7 @@ export const useFindInPage = ({
 
             return total;
         },
-        [isActive, getRoot, withObserverPaused, applyActiveOrdinal, removeAllMarks],
+        [rootElement, withObserverPaused, applyActiveOrdinal, removeAllMarks],
     );
 
     const updateHighlights = useCallback(
@@ -231,17 +209,16 @@ export const useFindInPage = ({
 
             debounceTimer.current = window.setTimeout(() => {
                 if (scheduledSeq !== seqRef.current) return;
-                if (!isActive) return;
                 if (!q.trim()) return;
 
                 runHighlight(q, { keepActive });
-            }, debounceMs);
+            }, DEBOUNCE_TIME);
         },
-        [debounceMs, isActive, runHighlight, cancelScheduled],
+        [runHighlight, cancelScheduled],
     );
 
     useEffect(() => {
-        if (!isActive || !query.trim()) return;
+        if (!query.trim()) return;
 
         const obs = new MutationObserver(muts => {
             if (isMutatingRef.current) return;
@@ -255,7 +232,7 @@ export const useFindInPage = ({
                 const el = node instanceof HTMLElement ? node : getParentElement();
 
                 if (el) {
-                    if (ignoreSelector && el.closest(ignoreSelector)) return false;
+                    if (IGNORE_SELECTOR && el.closest(IGNORE_SELECTOR)) return false;
                     if (el.closest(MARK_HIGHLIGHT_SELECTOR)) return false;
                 }
 
@@ -275,7 +252,7 @@ export const useFindInPage = ({
             obs.disconnect();
             cancelScheduled();
         };
-    }, [isActive, observeRoot, ignoreSelector, scheduleRehighlight, cancelScheduled, query]);
+    }, [observeRoot, scheduleRehighlight, cancelScheduled, query]);
 
     useEffect(() => () => clearHighlights(), [clearHighlights]);
 
