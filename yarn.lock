@@ -13981,6 +13981,7 @@ __metadata:
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
+    react-focus-lock: "npm:^2.13.6"
     react-redux: "npm:9.2.0"
     styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"

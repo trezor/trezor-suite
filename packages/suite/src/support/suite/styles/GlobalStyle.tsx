@@ -3,7 +3,10 @@ import { DefaultTheme, createGlobalStyle } from 'styled-components';
 import { typography } from '@trezor/theme';
 
 import animations from './animations';
-import { FIND_HIGHLIGHT_SELECTOR, MARK_HIGHLIGHT_PULSE_SELECTOR } from '../FindBar/consts';
+import {
+    FIND_HIGHLIGHT_SELECTOR,
+    MARK_HIGHLIGHT_PULSE_SELECTOR,
+} from '../../../../../suite-desktop-ui/src/support/FindBar/consts';
 
 const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     #app {
