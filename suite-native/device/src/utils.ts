@@ -2,8 +2,21 @@ import { G } from '@mobily/ts-belt';
 import * as semver from 'semver';
 
 import { AnyAction } from '@suite-common/redux-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
+import {
+    getDeviceInternalModel,
+    getDeviceLanguage,
+    getDeviceMode,
+    getIsDeviceDescriptorApiTypeBluetooth,
+    getIsDevicePinProtected,
+} from '@suite-common/suite-utils';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    getFirmwareVersionArray,
+    hasBitcoinOnlyFirmware,
+} from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 export const minimalSupportedFirmwareVersion = {
@@ -53,4 +66,19 @@ export const getIsDeviceSetupSupported = (model: DeviceModelInternal) => {
         default:
             return exhaustive(model);
     }
+};
+
+export const reportDeviceConnectionAnalytics = (device: TrezorDevice) => {
+    analytics.report({
+        type: EventType.ConnectDevice,
+        payload: {
+            mode: getDeviceMode(device),
+            firmwareVersion: getFirmwareVersionArray(device),
+            pinProtection: getIsDevicePinProtected(device),
+            isBitcoinOnly: hasBitcoinOnlyFirmware(device),
+            deviceLanguage: getDeviceLanguage(device),
+            deviceModel: getDeviceInternalModel(device),
+            connectionType: getIsDeviceDescriptorApiTypeBluetooth(device) ? 'bluetooth' : 'cable',
+        },
+    });
 };
