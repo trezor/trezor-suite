@@ -1,32 +1,17 @@
-import { useNavigation } from '@react-navigation/native';
-
 import { HoldToConfirmButton, SwipeableWalkthroughStep } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
 
 import {
     WALLET_RECOVERY_RECAP_STEPS,
     WalletBackupTutorialNumberedStepProps,
 } from './WalletRecoveryRecapStep1';
+import { useOnWalletRecapFinishedNavigation } from '../../../hooks/useOnWalletRecapFinishedNavigation';
 import { WalletRecapStepContent } from '../../WalletBackupRecap/WalletRecapStepContent';
-
-type NavigationProps = StackNavigationProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.WalletRecoveryRecap
->;
 
 export const WalletRecoveryRecapStep2 = ({
     currentStepIndex,
 }: WalletBackupTutorialNumberedStepProps) => {
-    const navigation = useNavigation<NavigationProps>();
-
-    const handleHoldToStartSuccess = () => {
-        navigation.navigate(DeviceOnboardingStackRoutes.CreatePin);
-    };
+    const { onWalletRecapFinishedNavigation } = useOnWalletRecapFinishedNavigation();
 
     return (
         <SwipeableWalkthroughStep
@@ -35,7 +20,7 @@ export const WalletRecoveryRecapStep2 = ({
             currentStepIndex={currentStepIndex}
             continueButton={
                 <HoldToConfirmButton
-                    onSuccess={handleHoldToStartSuccess}
+                    onSuccess={onWalletRecapFinishedNavigation}
                     buttonLabelId="moduleDeviceOnboarding.walletBackupRecapScreen.step4.holdToConfirmButton"
                 />
             }
