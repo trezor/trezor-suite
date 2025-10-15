@@ -8,7 +8,7 @@ import { BluetoothDeviceCommon } from '../types';
 /**
  * Generate a mock bluetooth known or nearby device.
  */
-export const createBluetoothDevice = (
+export const createBluetoothDeviceCommon = (
     partialBluetoothDevice?: Partial<BluetoothDeviceCommon>,
 ): BluetoothDeviceCommon => ({
     id: asBluetoothDeviceId('bt-device-1'),
