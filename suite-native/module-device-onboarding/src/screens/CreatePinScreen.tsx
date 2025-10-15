@@ -1,67 +1,34 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/core';
-
-import {
-    selectDeviceModel,
-    selectHasBitcoinOnlyFirmware,
-    selectIsAnyNetworkEnabled,
-} from '@suite-common/wallet-core';
+import { selectDeviceModel } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Box, TitleHeader, VStack } from '@suite-native/atoms';
 import { ConnectorImage, usePinAction } from '@suite-native/device';
 import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation, TxKeyPath } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
-    AuthorizeDeviceStackRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 
+import { useOnDeviceOnboardingFinishedNavigation } from '../hooks/useOnDeviceOnboardingFinishedNavigation';
 import { useReportOnboardingSuccessAnalytics } from '../hooks/useReportOnboardingSuccessAnalytics';
 
 const SCREEN_HEIGHT = getScreenHeight();
 
-type NavigationProps = StackToStackCompositeNavigationProps<
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes.CreatePin,
-    RootStackParamList
->;
-
 export const CreatePinScreen = () => {
-    const navigation = useNavigation<NavigationProps>();
     const deviceModel = useSelector(selectDeviceModel);
-    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
-    const { showAlert } = useAlert();
+
     const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
+    const { showAlert } = useAlert();
+    const { onDeviceOnboardingFinishedNavigation } = useOnDeviceOnboardingFinishedNavigation();
+
     const handlePinCreated = useCallback(() => {
-        if (hasBitcoinOnlyFirmware || isAnyNetworkEnabled) {
-            navigation.popTo(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-        } else {
-            navigation.popTo(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
-            });
-        }
+        onDeviceOnboardingFinishedNavigation();
         reportOnboardingSuccessAnalytics();
-    }, [hasBitcoinOnlyFirmware, isAnyNetworkEnabled, navigation, reportOnboardingSuccessAnalytics]);
+    }, [onDeviceOnboardingFinishedNavigation, reportOnboardingSuccessAnalytics]);
 
     const handlePinCanceled = useCallback(
         (_: TxKeyPath, tryAgainAction: () => void) => {
