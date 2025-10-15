@@ -76,13 +76,14 @@ export const HoldToConfirmButton = ({
     );
 
     const tapGesture = Gesture.LongPress()
+        .minDuration(0)
         .hitSlop({
             top: GESTURE_HIT_SLOP,
             bottom: GESTURE_HIT_SLOP,
             left: GESTURE_HIT_SLOP,
             right: GESTURE_HIT_SLOP,
         })
-        .onBegin(() => {
+        .onStart(() => {
             runOnJS(startOnHoldVibration)();
             animationProgress.value = withTiming(1, { duration: BUTTON_ANIMATION_DURATION });
         })
