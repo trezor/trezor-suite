@@ -1,0 +1,373 @@
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import signTransaction from '../../../data/methods/monero/signTransaction.ts';
+
+<ApiPlayground options={[{ title: 'Sign Monero Transaction', legacyConfig: signTransaction[0] }]} />
+
+# moneroSignTransaction
+
+Sign a Monero transaction using RingCT protocol with CLSAG signatures.
+
+This method implements the complete Monero transaction signing protocol, which creates confidential transactions with ring signatures to hide:
+
+- **Transaction amounts** (using Pedersen commitments and range proofs)
+- **Sender identity** (using ring signatures - mixing with decoy outputs)
+- **Receiver identity** (using stealth addresses)
+
+The device performs all cryptographic operations securely and returns the signed transaction data that can be broadcast to the Monero network.
+
+## Protocol Overview
+
+MoneroSignTransaction uses an 8-step protocol:
+
+1. **Init**: Send transaction data → receive HMACs for verification
+2. **SetInput**: For each UTXO → receive vini, pseudo_out, spend_key
+3. **InputVini**: Submit all TxinToKey structures in order
+4. **AllInputsSet**: Finalize inputs phase → device prepares for outputs
+5. **SetOutput**: For each output → receive encrypted tx_out and range proofs
+6. **AllOutSet**: Get tx_prefix_hash and RCT signature fields (rv)
+7. **SignInput**: For each input → generate CLSAG signature
+8. **Final**: Get encryption keys (cout_key, tx_enc_keys, opening_key)
+
+```javascript
+const result = await TrezorConnect.moneroSignTransaction(params);
+```
+
+## Params
+
+Optional common params
+
+<CommonParamsLink />
+
+- `path` — _required_ `string | Array<number>` - minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`). [read more](/details/path)
+- `networkType` — _required_ `MoneroNetworkType` - Monero network type: `0` = MAINNET, `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN
+- `tsx_data` — _required_ `MoneroTransactionData` - Transaction metadata and outputs
+- `inputs` — _required_ `Array<MoneroTransactionSourceEntry>` - UTXOs being spent (with ring members)
+
+### MoneroTransactionData
+
+Transaction-level parameters:
+
+- `version` — _required_ `number` - Transaction version (typically 2)
+- `unlock_time` — _required_ `number` - Block height or timestamp when outputs become spendable (0 = immediately)
+- `mixin` — _required_ `number` - Number of decoy outputs per input (ring size - 1). Monero network typically requires 10+
+- `fee` — _required_ `number` - Transaction fee in atomic units (1 XMR = 1e12 atomic units)
+- `account` — _required_ `number` - Account index (default: 0)
+- `num_inputs` — _required_ `number` - Number of inputs in the transaction
+- `client_version` — _required_ `number` - Client version identifier
+- `hard_fork` — _required_ `number` - Hard fork version
+- `outputs` — _required_ `Array<MoneroTransactionDestinationEntry>` - Destination outputs
+- `rsig_data` — _required_ `MoneroTransactionRsigData` - Range proof data for Bulletproofs
+- `payment_id` — _optional_ `string` - Payment ID (hex string, 16 or 64 chars)
+- `minor_indices` — _optional_ `Array<number>` - Subaddress minor indices used
+- `integrated_indices` — _optional_ `Array<number>` - Indices of integrated address outputs
+- `change_dts` — _optional_ `MoneroTransactionDestinationEntry` - Change output (return to sender)
+- `monero_version` — _optional_ `string` - Monero version string
+- `chunkify` — _optional_ `boolean` - Enable chunked processing
+
+### MoneroTransactionDestinationEntry
+
+Output/destination details:
+
+- `amount` — _required_ `number` - Amount in atomic units (1 XMR = 1e12)
+- `addr` — _required_ `MoneroAccountPublicAddress` - Destination address
+- `is_subaddress` — _required_ `boolean` - Whether destination is a subaddress
+- `original` — _required_ `string` - Original address string
+- `is_integrated` — _required_ `boolean` - Whether this is an integrated address
+
+### MoneroAccountPublicAddress
+
+- `spend_public_key` — _required_ `string` - Spend public key (64 hex chars)
+- `view_public_key` — _required_ `string` - View public key (64 hex chars)
+
+### MoneroTransactionSourceEntry
+
+Input/UTXO with ring members:
+
+- `outputs` — _required_ `Array<MoneroOutputEntry>` - Ring members (mixin + 1 outputs)
+- `real_output` — _required_ `number` - Index of the real output within the ring
+- `real_out_tx_key` — _required_ `string` - Transaction public key for real output (64 hex chars)
+- `real_out_additional_tx_keys` — _required_ `Array<string>` - Additional TX public keys (each 64 hex chars)
+- `real_output_in_tx_index` — _required_ `number` - Output index within its transaction
+- `amount` — _required_ `number` - Output amount in atomic units
+- `rct` — _required_ `boolean` - Whether this is a RingCT output (true for modern transactions)
+- `mask` — _required_ `string` - Amount blinding factor/mask (64 hex chars)
+- `subaddr_minor` — _required_ `number` - Subaddress minor index
+- `multisig_kLRki` — _optional_ `MoneroMultisigKLRki` - Multisig data (advanced)
+
+### MoneroOutputEntry
+
+Ring member (decoy or real output):
+
+- `idx` — _required_ `number` - Global output index on blockchain
+- `key` — _required_ `object` - Output public key data
+    - `dest` — _required_ `string` - Destination/stealth public key (64 hex chars)
+    - `commitment` — _required_ `string` - Pedersen commitment (64 hex chars)
+
+### MoneroTransactionRsigData
+
+Range proof data (Bulletproofs):
+
+- `rsig_type` — _required_ `number` - Range signature type
+- `bp_version` — _required_ `number` - Bulletproof version
+- `grouping` — _required_ `Array<number>` - Output grouping for batched range proofs
+- `offload_type` — _optional_ `number` - Offload computation type
+- `mask` — _optional_ `string` - Mask value (hex)
+- `rsig` — _optional_ `string` - Range signature data (hex)
+- `rsig_parts` — _optional_ `Array<string>` - Range signature parts (hex strings)
+
+### MoneroMultisigKLRki
+
+Multisig key data (advanced usage):
+
+- `K` — _optional_ `string` - K value (hex)
+- `L` — _optional_ `string` - L value (hex)
+- `R` — _optional_ `string` - R value (hex)
+- `ki` — _optional_ `string` - Key image (hex)
+
+## Example
+
+### Minimal Example (Only Required Fields)
+
+```javascript
+TrezorConnect.moneroSignTransaction({
+    // REQUIRED: Hardened Monero account path (minimum 3 components)
+    path: "m/44'/128'/0'",
+
+    // REQUIRED: Network type
+    networkType: 0, // 0=MAINNET, 1=TESTNET, 2=STAGENET, 3=FAKECHAIN
+
+    // REQUIRED: Transaction data with outputs
+    tsx_data: {
+        version: 1,
+        unlock_time: 0,
+        mixin: 15,
+        fee: 10000000,
+        account: 0,
+        num_inputs: 1,
+        client_version: 3,
+        hard_fork: 16,
+        outputs: [
+            {
+                amount: 1000000000000, // 1.0 XMR in atomic units
+                addr: {
+                    spend_public_key:
+                        'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+                    view_public_key:
+                        'fedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321',
+                },
+                is_subaddress: false,
+                original: 'address_string_here',
+                is_integrated: false,
+            },
+        ],
+        rsig_data: {
+            rsig_type: 1,
+            bp_version: 4,
+            grouping: [],
+        },
+    },
+
+    // REQUIRED: At least one input with ring members
+    inputs: [
+        {
+            outputs: [
+                // Ring member 1 (real output)
+                {
+                    idx: 12345,
+                    key: {
+                        dest: '1111111111111111111111111111111111111111111111111111111111111111',
+                        commitment:
+                            '2222222222222222222222222222222222222222222222222222222222222222',
+                    },
+                },
+                // Ring member 2 (decoy)
+                {
+                    idx: 12346,
+                    key: {
+                        dest: '3333333333333333333333333333333333333333333333333333333333333333',
+                        commitment:
+                            '4444444444444444444444444444444444444444444444444444444444444444',
+                    },
+                },
+                // ... add more ring members (typically 11 total for mixin=10)
+            ],
+            real_output: 0,
+            real_out_tx_key: 'tx_public_key_64_chars',
+            real_out_additional_tx_keys: [],
+            real_output_in_tx_index: 1,
+            amount: 1010000000,
+            rct: true,
+            mask: 'amount_mask_64_chars',
+            subaddr_minor: 0,
+        },
+    ],
+});
+```
+
+## Result
+
+[MoneroSignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+
+The result contains the complete signed transaction data ready for broadcast:
+
+```javascript
+{
+    success: true,
+    payload: {
+        signatures: [
+            'signature_hex_1...',
+            'signature_hex_2...',
+            // ... one signature per input
+        ],
+        tx_prefix_hash: 'prefix_hash_hex...',
+        rv: {
+            txn_fee: '10000000000',
+            message: 'message_hex...',
+            rv_type: 5, // RCT type (e.g., CLSAGBulletproofPlus)
+        },
+        cout_key: 'cout_key_hex...',
+        salt: 'salt_hex...',
+        rand_mult: 'rand_mult_hex...',
+        tx_enc_keys: 'encrypted_keys_hex...',
+        opening_key: 'opening_key_hex...',
+        pseudo_outs: [
+            'pseudo_out_hex_1...',
+            'pseudo_out_hex_2...',
+            // ... one pseudo_out per input
+        ],
+    }
+}
+```
+
+### Response Fields
+
+- **`signatures`** — Array of CLSAG signatures (one per input)
+- **`tx_prefix_hash`** — Keccak hash of transaction prefix
+- **`rv`** — RingCT signature data:
+    - `txn_fee` — Transaction fee
+    - `message` — Commitment to fee
+    - `rv_type` — RCT signature type (5 = CLSAG with Bulletproof+)
+- **`cout_key`** — Encrypted output key
+- **`salt`** — Encryption salt
+- **`rand_mult`** — Random multiplier
+- **`tx_enc_keys`** — Encrypted transaction keys
+- **`opening_key`** — Key for decrypting transaction data
+- **`pseudo_outs`** — Array of pseudo output commitments (one per input, used in RingCT balance proof)
+
+### Transaction Construction
+
+Use the response to construct a complete Monero transaction:
+
+```javascript
+const signedTx = result.payload;
+
+// Construct transaction for broadcast
+const moneroTx = {
+    version: 2,
+    unlock_time: 0,
+    vin: constructInputs(signedTx), // Build TxinToKey structures
+    vout: constructOutputs(signedTx), // Build outputs with range proofs
+    extra: constructExtra(signedTx), // Transaction extra data
+    rct_signatures: {
+        type: signedTx.rv.rv_type,
+        txnFee: signedTx.rv.txn_fee,
+        ecdhInfo: constructEcdhInfo(signedTx),
+        outPk: constructOutPk(signedTx),
+        p: {
+            bulletproofs: constructBulletproofs(signedTx),
+            CLSAGs: signedTx.signatures.map(sig => decodeCLSAG(sig)),
+            pseudoOuts: constructPseudoOuts(signedTx),
+        },
+    },
+};
+
+// Serialize and broadcast
+const txHex = serializeMoneroTransaction(moneroTx);
+broadcastToNetwork(txHex);
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
+
+### Monero Transaction Signing Process
+
+The 8-step protocol ensures secure transaction construction:
+
+#### 1. **Init Phase**
+
+- Device receives complete transaction metadata
+- Validates ring size (mixin + 1 = outputs per input)
+- Generates HMACs for state verification
+- User confirms transaction details on device
+
+#### 2. **SetInput Phase**
+
+- For each UTXO:
+    - Derives spend key from derivation data
+    - Computes pseudo_out commitment
+    - Returns vini (TxinToKey) structure with key offsets
+    - Returns spend_key and pseudo_out with HMAC protection
+
+#### 3. **InputVini Phase**
+
+- Device receives all vini structures in order
+- Validates HMAC integrity
+- Prepares for output processing
+
+#### 4. **AllInputsSet**
+
+- Finalizes input processing
+- Prepares commitment to zero (sum of inputs = sum of outputs + fee)
+
+#### 5. **SetOutput Phase**
+
+- For each output:
+    - Creates one-time stealth address
+    - Generates Pedersen commitment
+    - Creates range proof (Bulletproof) to prove amount is valid
+    - Encrypts amount with ECDH
+
+#### 6. **AllOutSet Phase**
+
+- Computes tx_prefix_hash (Keccak)
+- Returns RCT signature fields (rv)
+- Prepares for signature generation
+
+#### 7. **SignInput Phase**
+
+- For each input:
+    - Generates CLSAG ring signature
+    - Proves knowledge of spend key
+    - Links to key image (prevents double-spending)
+    - Signature covers entire transaction
+
+#### 8. **Final Phase**
+
+- Returns encryption keys for transaction data
+- Includes opening_key for revealing amounts (view key)
+- Transaction is now complete and ready to broadcast
+
+### Wallet Integration
+
+After signing, the wallet must:
+
+1. **Construct transaction** from signed components
+2. **Serialize** transaction to binary format
+3. **Broadcast** to Monero network via RPC
+
+### Additional Resources
+
+- [Monero RingCT Specification](https://www.getmonero.org/resources/research-lab/pubs/MRL-0005.pdf)
+- [CLSAG Signatures](https://eprint.iacr.org/2019/654.pdf)
+- [Bulletproofs](https://eprint.iacr.org/2017/1066.pdf)
+- [Trezor Firmware Implementation](https://github.com/trezor/trezor-firmware/tree/main/core/src/apps/monero)
+- [Monero Device Integration](https://github.com/monero-project/monero/tree/master/src/device_trezor)

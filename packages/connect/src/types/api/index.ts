@@ -60,6 +60,7 @@ import { manifest } from './manifest';
 import { moneroGetAddress } from './moneroGetAddress';
 import { moneroGetWatchKey } from './moneroGetWatchKey';
 import { moneroKeyImageSync } from './moneroKeyImageSync';
+import { moneroSignTransaction } from './moneroSignTransaction';
 import { nemGetAddress } from './nemGetAddress';
 import { nemSignTransaction } from './nemSignTransaction';
 import { off } from './off';
@@ -283,6 +284,8 @@ export interface TrezorConnect {
     moneroGetWatchKey: typeof moneroGetWatchKey;
     // https://connect.trezor.io/9/methods/monero/moneroKeyImageSync/
     moneroKeyImageSync: typeof moneroKeyImageSync;
+    // https://connect.trezor.io/9/methods/monero/moneroSignTransaction/
+    moneroSignTransaction: typeof moneroSignTransaction;
 
     // https://connect.trezor.io/9/methods/nem/nemGetAddress/
     nemGetAddress: typeof nemGetAddress;

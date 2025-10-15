@@ -41,7 +41,7 @@ Display Monero address of first account:
 
 ```javascript
 TrezorConnect.moneroGetAddress({
-    path: "m/44'/128'/0'/0/0",
+    path: "m/44'/128'/0'",
 });
 ```
 
@@ -50,9 +50,9 @@ Return a bundle of Monero addresses without displaying them on device:
 ```javascript
 TrezorConnect.moneroGetAddress({
     bundle: [
-        { path: "m/44'/128'/0'/0/0", showOnTrezor: false }, // account 1, address 0
-        { path: "m/44'/128'/0'/0/1", showOnTrezor: false }, // account 1, address 1
-        { path: "m/44'/128'/1'/0/0", showOnTrezor: false }, // account 2, address 0
+        { path: "m/44'/128'/0'", showOnTrezor: false }, // account 1
+        { path: "m/44'/128'/1'", showOnTrezor: false }, // account 2
+        { path: "m/44'/128'/2'", showOnTrezor: false }, // account 3
     ],
 });
 ```
@@ -61,7 +61,7 @@ Validate address using custom UI inside the web application:
 
 ```javascript
 TrezorConnect.moneroGetAddress({
-    path: "m/44'/128'/0'/0/0",
+    path: "m/44'/128'/0'",
     address: '4AxYyVr...',
 });
 ```
@@ -87,9 +87,9 @@ Result with bundle of addresses
 {
     success: true,
     payload: [
-        { address: string, path: Array<number>, serializedPath: string }, // account 1, address 0
-        { address: string, path: Array<number>, serializedPath: string }, // account 1, address 1
-        { address: string, path: Array<number>, serializedPath: string }  // account 2, address 0
+        { address: string, path: Array<number>, serializedPath: string }, // account 1
+        { address: string, path: Array<number>, serializedPath: string }, // account 2
+        { address: string, path: Array<number>, serializedPath: string }  // account 3
     ]
 }
 ```

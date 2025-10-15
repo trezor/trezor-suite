@@ -180,6 +180,12 @@ export const factory = <
             method: 'moneroKeyImageSync',
         }),
 
+    moneroSignTransaction: params =>
+        call({
+            ...params,
+            method: 'moneroSignTransaction',
+        }),
+
     nemGetAddress: params =>
         call({
             ...params,

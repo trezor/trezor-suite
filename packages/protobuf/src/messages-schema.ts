@@ -3106,6 +3106,280 @@ export const MoneroKeyImageSyncFinalAck = Type.Object(
     { $id: 'MoneroKeyImageSyncFinalAck' },
 );
 
+export type MoneroRctKeyPublic = Static<typeof MoneroRctKeyPublic>;
+export const MoneroRctKeyPublic = Type.Object(
+    {
+        dest: Type.String(),
+        commitment: Type.String(),
+    },
+    { $id: 'MoneroRctKeyPublic' },
+);
+
+export type MoneroOutputEntry = Static<typeof MoneroOutputEntry>;
+export const MoneroOutputEntry = Type.Object(
+    {
+        idx: Type.Number(),
+        key: MoneroRctKeyPublic,
+    },
+    { $id: 'MoneroOutputEntry' },
+);
+
+export type MoneroMultisigKLRki = Static<typeof MoneroMultisigKLRki>;
+export const MoneroMultisigKLRki = Type.Object(
+    {
+        K: Type.Optional(Type.String()),
+        L: Type.Optional(Type.String()),
+        R: Type.Optional(Type.String()),
+        ki: Type.Optional(Type.String()),
+    },
+    { $id: 'MoneroMultisigKLRki' },
+);
+
+export type MoneroTransactionSourceEntry = Static<typeof MoneroTransactionSourceEntry>;
+export const MoneroTransactionSourceEntry = Type.Object(
+    {
+        outputs: Type.Array(MoneroOutputEntry),
+        real_output: Type.Number(),
+        real_out_tx_key: Type.String(),
+        real_out_additional_tx_keys: Type.Array(Type.String()),
+        real_output_in_tx_index: Type.Number(),
+        amount: Type.Number(),
+        rct: Type.Boolean(),
+        mask: Type.String(),
+        multisig_kLRki: Type.Optional(MoneroMultisigKLRki),
+        subaddr_minor: Type.Number(),
+    },
+    { $id: 'MoneroTransactionSourceEntry' },
+);
+
+export type MoneroAccountPublicAddress = Static<typeof MoneroAccountPublicAddress>;
+export const MoneroAccountPublicAddress = Type.Object(
+    {
+        spend_public_key: Type.String(),
+        view_public_key: Type.String(),
+    },
+    { $id: 'MoneroAccountPublicAddress' },
+);
+
+export type MoneroTransactionDestinationEntry = Static<typeof MoneroTransactionDestinationEntry>;
+export const MoneroTransactionDestinationEntry = Type.Object(
+    {
+        amount: Type.Number(),
+        addr: MoneroAccountPublicAddress,
+        is_subaddress: Type.Boolean(),
+        original: Type.String(),
+        is_integrated: Type.Boolean(),
+    },
+    { $id: 'MoneroTransactionDestinationEntry' },
+);
+
+export type MoneroTransactionRsigData = Static<typeof MoneroTransactionRsigData>;
+export const MoneroTransactionRsigData = Type.Object(
+    {
+        rsig_type: Type.Number(),
+        offload_type: Type.Optional(Type.Number()),
+        grouping: Type.Array(Type.Number()),
+        mask: Type.Optional(Type.String()),
+        rsig: Type.Optional(Type.String()),
+        rsig_parts: Type.Array(Type.String()),
+        bp_version: Type.Number(),
+    },
+    { $id: 'MoneroTransactionRsigData' },
+);
+
+export type MoneroTransactionData = Static<typeof MoneroTransactionData>;
+export const MoneroTransactionData = Type.Object(
+    {
+        version: Type.Number(),
+        payment_id: Type.Optional(Type.String()),
+        unlock_time: Type.Number(),
+        outputs: Type.Array(MoneroTransactionDestinationEntry),
+        change_dts: Type.Optional(MoneroTransactionDestinationEntry),
+        num_inputs: Type.Number(),
+        mixin: Type.Number(),
+        fee: Type.Number(),
+        account: Type.Number(),
+        minor_indices: Type.Array(Type.Number()),
+        rsig_data: MoneroTransactionRsigData,
+        integrated_indices: Type.Array(Type.Number()),
+        client_version: Type.Number(),
+        hard_fork: Type.Number(),
+        monero_version: Type.Optional(Type.String()),
+        chunkify: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'MoneroTransactionData' },
+);
+
+export type MoneroRingCtSig = Static<typeof MoneroRingCtSig>;
+export const MoneroRingCtSig = Type.Object(
+    {
+        txn_fee: Type.Number(),
+        message: Type.String(),
+        rv_type: Type.Number(),
+    },
+    { $id: 'MoneroRingCtSig' },
+);
+
+export type MoneroTransactionSignInputRequest = Static<typeof MoneroTransactionSignInputRequest>;
+export const MoneroTransactionSignInputRequest = Type.Object(
+    {
+        src_entr: MoneroTransactionSourceEntry,
+        vini: Type.String(),
+        vini_hmac: Type.String(),
+        pseudo_out: Type.String(),
+        pseudo_out_hmac: Type.String(),
+        pseudo_out_alpha: Type.String(),
+        spend_key: Type.String(),
+        orig_idx: Type.Number(),
+    },
+    { $id: 'MoneroTransactionSignInputRequest' },
+);
+
+export type MoneroTransactionSignInputAck = Static<typeof MoneroTransactionSignInputAck>;
+export const MoneroTransactionSignInputAck = Type.Object(
+    {
+        signature: Type.String(),
+        pseudo_out: Type.String(),
+    },
+    { $id: 'MoneroTransactionSignInputAck' },
+);
+
+export type MoneroTransactionFinalRequest = Static<typeof MoneroTransactionFinalRequest>;
+export const MoneroTransactionFinalRequest = Type.Object(
+    {},
+    { $id: 'MoneroTransactionFinalRequest' },
+);
+
+export type MoneroTransactionFinalAck = Static<typeof MoneroTransactionFinalAck>;
+export const MoneroTransactionFinalAck = Type.Object(
+    {
+        cout_key: Type.String(),
+        salt: Type.String(),
+        rand_mult: Type.String(),
+        tx_enc_keys: Type.String(),
+        opening_key: Type.String(),
+    },
+    { $id: 'MoneroTransactionFinalAck' },
+);
+
+export type MoneroTransactionInitRequest = Static<typeof MoneroTransactionInitRequest>;
+export const MoneroTransactionInitRequest = Type.Object(
+    {
+        version: Type.Number(),
+        address_n: Type.Array(Type.Number()),
+        network_type: Type.Optional(EnumMoneroNetworkType),
+        tsx_data: Type.Optional(MoneroTransactionData),
+    },
+    { $id: 'MoneroTransactionInitRequest' },
+);
+
+export type MoneroTransactionInitAck = Static<typeof MoneroTransactionInitAck>;
+export const MoneroTransactionInitAck = Type.Object(
+    {
+        hmacs: Type.Array(Type.String()),
+        rsig_data: Type.Optional(MoneroTransactionRsigData),
+    },
+    { $id: 'MoneroTransactionInitAck' },
+);
+
+export type MoneroTransactionSetInputRequest = Static<typeof MoneroTransactionSetInputRequest>;
+export const MoneroTransactionSetInputRequest = Type.Object(
+    {
+        src_entr: Type.Optional(MoneroTransactionSourceEntry),
+    },
+    { $id: 'MoneroTransactionSetInputRequest' },
+);
+
+export type MoneroTransactionSetInputAck = Static<typeof MoneroTransactionSetInputAck>;
+export const MoneroTransactionSetInputAck = Type.Object(
+    {
+        vini: Type.String(),
+        vini_hmac: Type.String(),
+        pseudo_out: Type.String(),
+        pseudo_out_hmac: Type.String(),
+        pseudo_out_alpha: Type.String(),
+        spend_key: Type.String(),
+    },
+    { $id: 'MoneroTransactionSetInputAck' },
+);
+
+export type MoneroTransactionInputViniRequest = Static<typeof MoneroTransactionInputViniRequest>;
+export const MoneroTransactionInputViniRequest = Type.Object(
+    {
+        src_entr: MoneroTransactionSourceEntry,
+        vini: Type.String(),
+        vini_hmac: Type.String(),
+        pseudo_out: Type.String(),
+        pseudo_out_hmac: Type.String(),
+        orig_idx: Type.Number(),
+    },
+    { $id: 'MoneroTransactionInputViniRequest' },
+);
+
+export type MoneroTransactionInputViniAck = Static<typeof MoneroTransactionInputViniAck>;
+export const MoneroTransactionInputViniAck = Type.Object(
+    {},
+    { $id: 'MoneroTransactionInputViniAck' },
+);
+
+export type MoneroTransactionAllInputsSetRequest = Static<
+    typeof MoneroTransactionAllInputsSetRequest
+>;
+export const MoneroTransactionAllInputsSetRequest = Type.Object(
+    {},
+    { $id: 'MoneroTransactionAllInputsSetRequest' },
+);
+
+export type MoneroTransactionAllInputsSetAck = Static<typeof MoneroTransactionAllInputsSetAck>;
+export const MoneroTransactionAllInputsSetAck = Type.Object(
+    {
+        rsig_data: Type.Optional(MoneroTransactionRsigData),
+    },
+    { $id: 'MoneroTransactionAllInputsSetAck' },
+);
+
+export type MoneroTransactionSetOutputRequest = Static<typeof MoneroTransactionSetOutputRequest>;
+export const MoneroTransactionSetOutputRequest = Type.Object(
+    {
+        dst_entr: MoneroTransactionDestinationEntry,
+        dst_entr_hmac: Type.String(),
+        rsig_data: Type.Optional(MoneroTransactionRsigData),
+        is_offloaded_bp: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'MoneroTransactionSetOutputRequest' },
+);
+
+export type MoneroTransactionSetOutputAck = Static<typeof MoneroTransactionSetOutputAck>;
+export const MoneroTransactionSetOutputAck = Type.Object(
+    {
+        tx_out: Type.Optional(Type.String()),
+        vouti_hmac: Type.Optional(Type.String()),
+        rsig_data: Type.Optional(MoneroTransactionRsigData),
+        out_pk: Type.Optional(Type.String()),
+        ecdh_info: Type.Optional(Type.String()),
+    },
+    { $id: 'MoneroTransactionSetOutputAck' },
+);
+
+export type MoneroTransactionAllOutSetRequest = Static<typeof MoneroTransactionAllOutSetRequest>;
+export const MoneroTransactionAllOutSetRequest = Type.Object(
+    {
+        rsig_data: Type.Optional(MoneroTransactionRsigData),
+    },
+    { $id: 'MoneroTransactionAllOutSetRequest' },
+);
+
+export type MoneroTransactionAllOutSetAck = Static<typeof MoneroTransactionAllOutSetAck>;
+export const MoneroTransactionAllOutSetAck = Type.Object(
+    {
+        extra: Type.String(),
+        tx_prefix_hash: Type.String(),
+        rv: MoneroRingCtSig,
+        full_message_hash: Type.String(),
+    },
+    { $id: 'MoneroTransactionAllOutSetAck' },
+);
+
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -3938,6 +4212,22 @@ export const MessageType = Type.Object(
         MoneroKeyImageSyncStepAck,
         MoneroKeyImageSyncFinalRequest,
         MoneroKeyImageSyncFinalAck,
+        MoneroTransactionInitRequest,
+        MoneroTransactionInitAck,
+        MoneroTransactionSetInputRequest,
+        MoneroTransactionSetInputAck,
+        MoneroTransactionInputViniRequest,
+        MoneroTransactionInputViniAck,
+        MoneroTransactionAllInputsSetRequest,
+        MoneroTransactionAllInputsSetAck,
+        MoneroTransactionSetOutputRequest,
+        MoneroTransactionSetOutputAck,
+        MoneroTransactionAllOutSetRequest,
+        MoneroTransactionAllOutSetAck,
+        MoneroTransactionSignInputRequest,
+        MoneroTransactionSignInputAck,
+        MoneroTransactionFinalRequest,
+        MoneroTransactionFinalAck,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,
