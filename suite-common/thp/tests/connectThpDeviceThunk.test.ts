@@ -4,7 +4,10 @@ import { FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmw
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Device } from '@trezor/connect';
 
-import { connectThpDeviceThunk } from '../src/connectThpDeviceThunk';
+import {
+    NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT,
+    connectThpDeviceThunk,
+} from '../src/connectThpDeviceThunk';
 import { createCredential, createDeviceThp } from '../src/support/mocks';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
 
@@ -38,9 +41,9 @@ describe(connectThpDeviceThunk.name, () => {
     it.each([
         [1, 2, null],
         [2, 3, 'AutoconnectInfo'],
-        [3, 4, null],
+        [3, 3, null],
     ])(
-        'updates the connection counter with initial value %d',
+        'updates the connection counter, unless the threshold has already been reached',
         (initialCounter, expectedCounter, expectedStep) => {
             const store = configureMockStore({
                 extra: {},

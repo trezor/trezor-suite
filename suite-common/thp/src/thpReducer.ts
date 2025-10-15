@@ -12,6 +12,7 @@ import {
 } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
 
+import { NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT } from './connectThpDeviceThunk';
 import { thpActions } from './thpActions';
 
 export const THP_BUTTON_REQUESTS_NAMES = [
@@ -75,7 +76,11 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
                     it => it.credential == payload.credential.credential,
                 );
 
-                if (credentialToUpdate !== undefined) {
+                if (
+                    credentialToUpdate !== undefined &&
+                    credentialToUpdate.connectionCounter <
+                        NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT
+                ) {
                     credentialToUpdate.connectionCounter = credentialToUpdate.connectionCounter + 1;
                 }
             })

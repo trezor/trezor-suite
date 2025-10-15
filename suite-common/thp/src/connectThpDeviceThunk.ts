@@ -5,7 +5,7 @@ import { Device } from '@trezor/connect';
 import { THP_PREFIX, thpActions } from './thpActions';
 import { selectIsThpInProgress, selectThpCredentials } from './thpSelectors';
 
-const NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT = 3;
+export const NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT = 3;
 
 type ConnectThpDeviceThinkParams = {
     device: Pick<Device, 'thp'>;
