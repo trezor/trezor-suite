@@ -65,7 +65,7 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
                 isActionAbortable={isActionAbortable}
                 innerActions={getInnerActionComponent()}
             >
-                <Column gap={24}>
+                <Column gap={60}>
                     <Card>
                         <Column gap={8}>
                             <FirmwareOffer
