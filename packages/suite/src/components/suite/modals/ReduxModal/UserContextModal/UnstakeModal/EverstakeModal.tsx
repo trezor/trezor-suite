@@ -1,6 +1,11 @@
-import { JSX, useState } from 'react';
+import { JSX, useMemo, useState } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    selectAccountIsStakingActive,
+    selectVotingDelegationOption,
+} from '@suite-common/wallet-core';
+import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Banner, Card, Checkbox, Column, IconName, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -10,6 +15,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
+import { VotingDelegations } from './VotingDelegations';
+
 interface EverstakeModalProps {
     onCancel: () => void;
 }
@@ -18,6 +25,20 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
+    const isStakingActive = useSelector(state =>
+        selectAccountIsStakingActive(state, account?.key ?? ''),
+    );
+    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+    const isCardanoNetworkType = account?.networkType === 'cardano';
+    const isUpdateProviderFlow = isStakingActive && isCardanoNetworkType;
+
+    const isDrepValid = useMemo(() => {
+        if (!isCardanoNetworkType || selectedVotingDelegation.type !== 'another_drep') {
+            return true;
+        }
+
+        return validateCardanoDrep(selectedVotingDelegation.drepId);
+    }, [selectedVotingDelegation, isCardanoNetworkType]);
 
     const proceedToStaking = () => {
         onCancel();
@@ -89,7 +110,14 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
 
     return (
         <Modal
-            heading={<Translation id="TR_STAKE_STAKE_TOKEN" values={{ symbol: displaySymbol }} />}
+            heading={
+                <Translation
+                    id={
+                        isUpdateProviderFlow ? 'TR_STAKING_UPDATE_PROVIDER' : 'TR_STAKE_STAKE_TOKEN'
+                    }
+                    values={{ symbol: displaySymbol }}
+                />
+            }
             description={
                 <Translation
                     id="TR_STAKE_YOUR_FUNDS_MAINTAINED"
@@ -101,7 +129,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
             bottomContent={
                 <>
                     <Modal.Button
-                        isDisabled={!hasAgreed}
+                        isDisabled={!hasAgreed || !isDrepValid}
                         onClick={proceedToStaking}
                         data-testid="@modal/staking/confirm-button"
                     >
@@ -120,16 +148,19 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                     </Banner>
                 ))}
             </Column>
-            <Card>
-                <Checkbox
-                    data-testid="@staking/everstake-acknowledge-checkbox"
-                    verticalAlignment="center"
-                    onClick={() => setHasAgreed(!hasAgreed)}
-                    isChecked={hasAgreed}
-                >
-                    <Translation id="TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE" />
-                </Checkbox>
-            </Card>
+            <Column gap={spacings.sm}>
+                <VotingDelegations />
+                <Card>
+                    <Checkbox
+                        data-testid="@staking/everstake-acknowledge-checkbox"
+                        verticalAlignment="center"
+                        onClick={() => setHasAgreed(!hasAgreed)}
+                        isChecked={hasAgreed}
+                    >
+                        <Translation id="TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE" />
+                    </Checkbox>
+                </Card>
+            </Column>
         </Modal>
     );
 };

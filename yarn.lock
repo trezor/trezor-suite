@@ -10803,6 +10803,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
+    bech32: "npm:2.0.0"
     date-fns: "npm:^4.1.0"
     react: "npm:19.0.0"
     react-hook-form: "npm:^7.64.0"
@@ -18431,7 +18432,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bech32@npm:^2.0.0":
+"bech32@npm:2.0.0, bech32@npm:^2.0.0":
   version: 2.0.0
   resolution: "bech32@npm:2.0.0"
   checksum: 10/fa15acb270b59aa496734a01f9155677b478987b773bf701f465858bf1606c6a970085babd43d71ce61895f1baa594cb41a2cd1394bd2c6698f03cc2d811300e

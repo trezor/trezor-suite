@@ -8,7 +8,11 @@ import {
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
+import {
+    getStakingDataForNetwork,
+    isCardanoStakedWithEverstake,
+    isPending,
+} from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -22,6 +26,7 @@ import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
+import { NewProviderCard } from '../StakingDashboard/components/NewProviderCard';
 import { PayoutCard } from '../StakingDashboard/components/PayoutCard';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
 
@@ -49,13 +54,20 @@ export const NewCardanoStakingDashboard = ({
 
     const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, account.key));
     const hasPendingTx = stakeTxs.some(tx => isPending(tx));
+    const isStakedWithEverstake = isCardanoStakedWithEverstake(account);
+
+    const isStakeActivated = isStakingActive || hasPendingTx;
+    const isStakeInactive = !isStakedWithEverstake && !isStakeActivated;
+    const shouldShowStakingDashboard = (isStakedWithEverstake && isStakingActive) || hasPendingTx;
+
+    const stakingCard = isStakeInactive ? <EmptyStakingCard /> : <NewProviderCard />;
 
     return (
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
                 <Column alignItems="normal" gap={spacings.xxxxl}>
-                    {isStakingActive || hasPendingTx ? (
+                    {shouldShowStakingDashboard ? (
                         <DashboardSection
                             heading={
                                 <Translation
@@ -90,7 +102,7 @@ export const NewCardanoStakingDashboard = ({
                             </Column>
                         </DashboardSection>
                     ) : (
-                        <EmptyStakingCard />
+                        stakingCard
                     )}
                 </Column>
             }
