@@ -6,8 +6,6 @@ import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 
@@ -36,20 +34,10 @@ export const useOnboarding = () => {
             addPath: (payload: AnyPath) => dispatch(onboardingActions.addPath(payload)),
             updateBackupType: (payload: BackupType) =>
                 dispatch(onboardingActions.updateBackupType(payload)),
+            goToSuite: () => dispatch(onboardingActions.goToSuite()),
         }),
         [dispatch],
     );
-
-    const goToSuite = (initialRedirection = false) => {
-        dispatch(suiteActions.initialRunCompleted());
-        dispatch(onboardingActions.resetOnboarding());
-        dispatch(routerActions.closeModalApp(true));
-
-        // fixes a bug that user ends up in settings after initialization of a new device because he navigated to settings before
-        if (initialRedirection) {
-            dispatch(routerActions.goto('suite-index'));
-        }
-    };
 
     const { activeStepId } = onboarding;
     const { activeStep, activeStepCategory } = useMemo(
@@ -63,6 +51,5 @@ export const useOnboarding = () => {
         activeStep,
         activeStepCategory,
         showPinMatrix,
-        goToSuite,
     };
 };

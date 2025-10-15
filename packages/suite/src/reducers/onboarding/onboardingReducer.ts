@@ -91,4 +91,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
 
 export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
 
+export const selectOnboardingAnalytics = (state: OnboardingRootState) =>
+    state.onboarding.onboardingAnalytics;
+
 export default onboarding;

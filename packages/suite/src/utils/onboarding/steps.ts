@@ -87,10 +87,10 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
 export const isStepCategoryUsed = (stepCategory: StepCategory, props: IsStepUsedProps): boolean =>
     stepCategory.steps.some(step => isStepUsed(step, props));
 
-export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
+export const findNextStep = (currentStepId: AnyStepId, steps: Step[]): Step | null => {
     const currentIndex = steps.findIndex((step: Step) => step.id === currentStepId);
     if (!steps[currentIndex + 1]) {
-        throw new Error('no next step exists');
+        return null;
     }
 
     return steps[currentIndex + 1];
