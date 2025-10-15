@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Platform, Vibration } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
@@ -120,6 +121,12 @@ export const HoldToConfirmButton = ({
                 }),
             ),
         };
+    });
+
+    useEffect(() => () => {
+        // If the animation finished succesfully but unmounts (by .popTo in navigation for example),
+        // it will keep vibrating until app restart so we need to cancel the animation in this case.
+        Vibration.cancel();
     });
 
     return (
