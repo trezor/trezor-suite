@@ -21,6 +21,7 @@ import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } fro
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
 import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
+import { NO_HIGHLIGHT_ATTRIBUTE } from '../../../../support/suite/FindBar/consts';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 
 const LabelValue = styled.div`
@@ -516,7 +517,7 @@ export const MetadataLabeling = ({
             <LabelContainer
                 data-testid={labelContainerDataTest}
                 onClick={e => payload.value && !editActive && e.stopPropagation()}
-                data-no-highlight={editActive || undefined}
+                {...{ [NO_HIGHLIGHT_ATTRIBUTE]: editActive || undefined }}
             >
                 <LabelContent
                     variant={variant}

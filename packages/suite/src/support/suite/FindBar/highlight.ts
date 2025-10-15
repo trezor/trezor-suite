@@ -1,9 +1,14 @@
-import { MARK_HIGHLIGHT_SELECTOR } from './consts';
+import {
+    FIND_HIGHLIGHT_CLASSNAME,
+    FIND_HIGHLIGHT_SELECTOR,
+    MARK_ELEMENT,
+    NO_HIGHLIGHT_ATTRIBUTE,
+} from './consts';
 
 const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export const removeHighlights = (root: HTMLElement) => {
-    root.querySelectorAll(MARK_HIGHLIGHT_SELECTOR).forEach(mark => {
+    root.querySelectorAll(FIND_HIGHLIGHT_SELECTOR).forEach(mark => {
         const parent = mark.parentNode;
         if (!parent) return;
         parent.replaceChild(document.createTextNode(mark.textContent || ''), mark);
@@ -48,7 +53,7 @@ export const highlightText = (root: HTMLElement, query: string): number => {
         return (
             text &&
             parent &&
-            !parent.closest('[data-no-highlight], [contenteditable="true"]') &&
+            !parent.closest(`[${NO_HIGHLIGHT_ATTRIBUTE}], [contenteditable="true"]`) &&
             isVisible(parent)
         );
     });
@@ -69,9 +74,9 @@ export const highlightText = (root: HTMLElement, query: string): number => {
                 frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
             }
 
-            const mark = document.createElement('mark');
+            const mark = document.createElement(MARK_ELEMENT);
             mark.textContent = text.slice(start, end);
-            mark.className = 'find-highlight';
+            mark.className = FIND_HIGHLIGHT_CLASSNAME;
             mark.dataset.findOrdinal = String(ordinal++);
             frag.appendChild(mark);
 
