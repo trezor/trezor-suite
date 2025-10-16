@@ -320,7 +320,7 @@ describe('sendForm utils', () => {
             ),
         ).toEqual({
             decimals: 18,
-            output: { type: 'send-max', address: 'A' },
+            output: { type: 'send-max', address: 'A', amount: '1' },
             tokenInfo: undefined,
         });
 

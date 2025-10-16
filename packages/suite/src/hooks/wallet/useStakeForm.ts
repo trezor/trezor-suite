@@ -18,10 +18,10 @@ import {
     StakeFormState,
 } from '@suite-common/wallet-types';
 import {
-    StakingLimits,
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
+    getStakingLimitsByNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { isChanged } from '@trezor/utils';
@@ -41,13 +41,9 @@ StakeFormContext.displayName = 'StakeFormContext';
 
 type UseStakeFormsProps = {
     selectedAccount: SelectedAccountLoaded;
-    stakingLimits: StakingLimits;
 };
 
-export const useStakeForm = ({
-    selectedAccount,
-    stakingLimits,
-}: UseStakeFormsProps): StakeContextValues => {
+export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
     const dispatch = useDispatch();
 
     const { account, network } = selectedAccount;
@@ -65,21 +61,10 @@ export const useStakeForm = ({
         ),
     );
 
-    const amountLimits: AmountLimitProps = {
-        currency: account.symbol,
-        minCrypto: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
-        maxCrypto: account.formattedBalance,
-        minFiat:
-            toFiatCurrency({
-                amount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
-                rate: currentRate?.rate,
-            })?.toFixed(2) ?? undefined,
-        maxFiat:
-            toFiatCurrency({
-                amount: account.formattedBalance,
-                rate: currentRate?.rate,
-            })?.toFixed(2) ?? undefined,
-    };
+    const stakingLimits = useMemo(
+        () => getStakingLimitsByNetworkSymbol(account.symbol),
+        [account.symbol],
+    );
 
     const defaultValues = useMemo(() => {
         const stakingContractAddress = getStakingContractAddress(account, 'stake');
@@ -184,13 +169,6 @@ export const useStakeForm = ({
         ],
     );
 
-    const [isAmountForWithdrawalWarningShown, setIsAmountForWithdrawalWarningShown] =
-        useState(false);
-    const [isLessAmountForWithdrawalWarningShown, setIsLessAmountForWithdrawalWarningShown] =
-        useState(false);
-    const [isAdviceForWithdrawalWarningShown, setIsAdviceForWithdrawalWarningShown] =
-        useState(false);
-
     const composedFee = useMemo(() => {
         const transactionInfo = composedLevels?.[selectedFee];
 
@@ -199,33 +177,65 @@ export const useStakeForm = ({
             : new BigNumber('0');
     }, [composedLevels, selectedFee]);
 
-    const clearWithdrawalWarnings = useCallback(() => {
-        setIsAmountForWithdrawalWarningShown(false);
-        setIsLessAmountForWithdrawalWarningShown(false);
-        setIsAdviceForWithdrawalWarningShown(false);
-    }, []);
+    const amountLimits: AmountLimitProps | undefined = useMemo(() => {
+        if (stakingLimits === null) {
+            return;
+        }
 
-    const shouldShowAdvice = useCallback(
-        (amount: string, formattedBalance: string) => {
-            const cryptoValue = new BigNumber(amount);
-            const balance = new BigNumber(formattedBalance);
-            const balanceMinusFee = balance.minus(composedFee);
+        const maxCrypto = new BigNumber(account.formattedBalance)
+            .minus(stakingLimits.MIN_BALANCE_FOR_FEE_BUFFER)
+            .toString();
 
-            if (
-                cryptoValue.gt(balanceMinusFee.minus(stakingLimits.MIN_FOR_WITHDRAWALS)) &&
-                cryptoValue.lt(balanceMinusFee) &&
-                cryptoValue.gte(stakingLimits.MIN_AMOUNT_FOR_STAKING)
-            ) {
-                setIsAdviceForWithdrawalWarningShown(true);
+        return {
+            currency: account.symbol,
+            minCrypto: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
+            maxCrypto,
+            minFiat:
+                toFiatCurrency({
+                    amount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
+                    rate: currentRate?.rate,
+                })?.toFixed(2) ?? undefined,
+            maxFiat:
+                toFiatCurrency({ amount: maxCrypto, rate: currentRate?.rate })?.toFixed(2) ??
+                undefined,
+        };
+    }, [stakingLimits, account.symbol, account.formattedBalance, currentRate?.rate]);
+
+    const showAdviceBanner = useMemo(() => {
+        const amount = new BigNumber(values.cryptoInput || '0');
+        const balance = new BigNumber(account.formattedBalance || '0');
+        const balanceMinusFee = balance.minus(composedFee);
+
+        return (
+            stakingLimits != null &&
+            amount.gt(balanceMinusFee.minus(stakingLimits.MIN_FOR_WITHDRAWALS)) &&
+            amount.lt(balanceMinusFee) &&
+            amount.gte(stakingLimits.MIN_AMOUNT_FOR_STAKING)
+        );
+    }, [stakingLimits, values.cryptoInput, account.formattedBalance, composedFee]);
+
+    const { isAmountForWithdrawalWarningShown, isLessAmountForWithdrawalWarningShown } =
+        useMemo(() => {
+            const isSetMax = values.setMaxOutputId != undefined;
+            if (!isSetMax || !stakingLimits) {
+                return {
+                    isAmountForWithdrawalWarningShown: false,
+                    isLessAmountForWithdrawalWarningShown: false,
+                };
             }
-        },
-        [composedFee, stakingLimits.MIN_FOR_WITHDRAWALS, stakingLimits.MIN_AMOUNT_FOR_STAKING],
-    );
+
+            const balance = new BigNumber(account.formattedBalance || '0');
+            const amount = new BigNumber(values.cryptoInput || '0');
+            const diff = balance.minus(amount);
+
+            return {
+                isAmountForWithdrawalWarningShown: diff.gte(stakingLimits.MIN_FOR_WITHDRAWALS),
+                isLessAmountForWithdrawalWarningShown: diff.lt(stakingLimits.MIN_FOR_WITHDRAWALS),
+            };
+        }, [values.setMaxOutputId, values.cryptoInput, stakingLimits, account.formattedBalance]);
 
     const onCryptoAmountChange = useCallback(
-        async (amount: string) => {
-            clearWithdrawalWarnings();
-
+        async (amount: string, source: 'input' | 'max' = 'input') => {
             if (currentRate) {
                 const fiatValue =
                     toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(2) || '';
@@ -233,26 +243,19 @@ export const useStakeForm = ({
                 setValue(FIAT_INPUT, fiatValue, { shouldValidate: true });
             }
 
-            setValue('setMaxOutputId', undefined, { shouldDirty: true });
+            if (source != 'max') {
+                setValue('setMaxOutputId', undefined, { shouldDirty: true });
+            }
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
             await composeRequest(CRYPTO_INPUT);
-
-            shouldShowAdvice(amount, account.formattedBalance);
         },
-        [
-            account.formattedBalance,
-            composeRequest,
-            currentRate,
-            setValue,
-            shouldShowAdvice,
-            clearWithdrawalWarnings,
-        ],
+        [composeRequest, currentRate, setValue],
     );
 
     const onFiatAmountChange = useCallback(
         async (amount: string) => {
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
-            clearWithdrawalWarnings();
+
             if (!currentRate) return;
 
             const cryptoValue =
@@ -266,25 +269,14 @@ export const useStakeForm = ({
                 shouldDirty: true,
             });
             await composeRequest(FIAT_INPUT);
-
-            shouldShowAdvice(cryptoValue, account.formattedBalance);
         },
-        [
-            account.formattedBalance,
-            composeRequest,
-            currentRate,
-            network.decimals,
-            setValue,
-            shouldShowAdvice,
-            clearWithdrawalWarnings,
-        ],
+        [composeRequest, currentRate, network.decimals, setValue],
     );
 
     const setRatioAmount = useCallback(
         async (divisor: number) => {
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
-            clearWithdrawalWarnings();
 
             const amount = new BigNumber(account.formattedBalance)
                 .dividedBy(divisor)
@@ -294,59 +286,42 @@ export const useStakeForm = ({
             setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
             await onCryptoAmountChange(amount);
         },
-        [
-            account.formattedBalance,
-            clearErrors,
-            network.decimals,
-            onCryptoAmountChange,
-            setValue,
-            clearWithdrawalWarnings,
-        ],
+        [account.formattedBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
     );
 
     const setMax = useCallback(async () => {
-        setIsAdviceForWithdrawalWarningShown(false);
+        if (amountLimits == null || stakingLimits == null) {
+            return;
+        }
+
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
 
-        const amount = new BigNumber(account.formattedBalance).toString();
+        let amount = new BigNumber(amountLimits.maxCrypto ?? '');
 
-        if (amount < stakingLimits.MIN_BALANCE_FOR_STAKING.toString()) {
-            setIsLessAmountForWithdrawalWarningShown(true);
+        if (amount.gt(stakingLimits.MIN_BALANCE_FOR_STAKING)) {
+            amount = new BigNumber(account.formattedBalance).minus(
+                stakingLimits.MIN_FOR_WITHDRAWALS,
+            );
         }
 
-        setValue(
-            OUTPUT_AMOUNT,
-            new BigNumber(amount).minus(stakingLimits.MIN_FOR_WITHDRAWALS).toString() || '',
-            {
-                shouldDirty: true,
-            },
-        );
+        setValue(CRYPTO_INPUT, amount.toString(), { shouldDirty: true, shouldValidate: true });
 
-        await composeRequest(CRYPTO_INPUT);
-        setIsAmountForWithdrawalWarningShown(true);
+        await onCryptoAmountChange(amount.toString(), 'max');
     }, [
         account.formattedBalance,
+        amountLimits,
         clearErrors,
-        composeRequest,
+        onCryptoAmountChange,
         setValue,
-        stakingLimits.MIN_BALANCE_FOR_STAKING,
-        stakingLimits.MIN_FOR_WITHDRAWALS,
+        stakingLimits,
     ]);
-
-    useEffect(() => {
-        if (formState.errors[CRYPTO_INPUT]) {
-            setIsAmountForWithdrawalWarningShown(false);
-            setIsLessAmountForWithdrawalWarningShown(false);
-        }
-    }, [formState]);
 
     const clearForm = useCallback(async () => {
         removeDraft();
         reset(defaultValues);
         await composeRequest(CRYPTO_INPUT);
-        clearWithdrawalWarnings();
-    }, [composeRequest, defaultValues, removeDraft, reset, clearWithdrawalWarnings]);
+    }, [composeRequest, defaultValues, removeDraft, reset]);
 
     useEffect(() => {
         if (!composedLevels) return;
@@ -424,11 +399,12 @@ export const useStakeForm = ({
         baseCurrencyCode,
         composedLevels,
         isComposing,
+        stakingLimits,
         setMax,
         setRatioAmount,
         isAmountForWithdrawalWarningShown,
         isLessAmountForWithdrawalWarningShown,
-        isAdviceForWithdrawalWarningShown,
+        showAdviceBanner,
         selectedFee,
         feeInfo,
         changeFeeLevel,

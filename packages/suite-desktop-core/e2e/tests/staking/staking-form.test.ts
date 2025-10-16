@@ -118,7 +118,7 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
                         .minus(WITHDRAWAL_BUFFER)
                         .minus(MOCKED_FEE_AMOUNT);
                     const formattedExpectedMax = localizeNumber(
-                        expectedMax.decimalPlaces(18, BigNumber.ROUND_UP),
+                        expectedMax.decimalPlaces(2, BigNumber.ROUND_UP),
                     );
                     await expect.soft(stakingSection.cryptoInput).toHaveValue(formattedExpectedMax);
                 });

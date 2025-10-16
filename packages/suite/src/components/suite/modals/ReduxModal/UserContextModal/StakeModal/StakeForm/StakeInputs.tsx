@@ -40,7 +40,7 @@ export const StakeInputs = () => {
         baseCurrencyCode,
         isAmountForWithdrawalWarningShown,
         isLessAmountForWithdrawalWarningShown,
-        isAdviceForWithdrawalWarningShown,
+        showAdviceBanner,
         currentRate,
         setRatioAmount,
         setMax,
@@ -116,7 +116,7 @@ export const StakeInputs = () => {
     );
 
     const isBalanceBelowMinStake = new BigNumber(account.formattedBalance || '0').lt(
-        stakingLimits.MIN_AMOUNT_FOR_STAKING,
+        stakingLimits.MIN_AMOUNT_FOR_STAKING.plus(stakingLimits.MIN_BALANCE_FOR_FEE_BUFFER),
     );
 
     return (
@@ -229,8 +229,8 @@ export const StakeInputs = () => {
                     />
                 </Banner>
             )}
-            {isAdviceForWithdrawalWarningShown && (
-                <Banner variant="info" width="100%">
+            {showAdviceBanner && !isAmountForWithdrawalWarningShown && (
+                <Banner data-testid="@staking/form/withdrawal-warning" variant="info" width="100%">
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{

@@ -1,15 +1,16 @@
-import { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
+import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 
 import type { Network } from '@suite-common/wallet-config';
-import {
+import type {
     Account,
     FeeInfo,
     PrecomposedLevels,
     Rate,
     StakeFormState,
 } from '@suite-common/wallet-types';
+import type { StakingLimits } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { FeeLevel } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
 
 export enum EverstakeEndpointType {
     PoolStats = 'poolStats',
@@ -49,6 +50,9 @@ export interface AmountLimitsString {
     currency: string;
     minCrypto?: string;
     maxCrypto?: string;
+
+    minFiat?: string;
+    maxFiat?: string;
 }
 
 export interface BaseStakeContextValues {
@@ -70,11 +74,12 @@ export type StakeContextValues = UseFormReturn<StakeFormState> &
         formState: ReactHookFormState<StakeFormState>;
         removeDraft: (key: string) => void;
         isDraft: boolean;
-        amountLimits: AmountLimitsString;
+        amountLimits?: AmountLimitsString;
         isAmountForWithdrawalWarningShown: boolean;
         isLessAmountForWithdrawalWarningShown: boolean;
-        isAdviceForWithdrawalWarningShown: boolean;
+        showAdviceBanner: boolean;
         isConfirmModalOpen: boolean;
+        stakingLimits: StakingLimits | null;
         onCryptoAmountChange: (amount: string) => void;
         onFiatAmountChange: (amount: string) => void;
         setMax: () => void;

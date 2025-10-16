@@ -32,7 +32,7 @@ export interface ComposeOutputPaymentNoAddress {
 export interface ComposeOutputSendMax {
     type: 'send-max'; // only one in TX request
     address: string;
-    amount?: typeof undefined;
+    amount?: string;
 }
 
 export interface ComposeOutputSendMaxNoAddress {

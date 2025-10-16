@@ -42,7 +42,11 @@ export const calculate = (
     let amount: string;
     let max: string | undefined;
 
-    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
+    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
+
+    if (output.amount !== undefined) {
+        amount = output.amount;
+    } else if (isSendMax) {
         const minAmountWithFeeInBaseUnits = new BigNumber(minBalanceForStakingInBaseUnits).plus(
             feeInBaseUnits,
         );
@@ -57,7 +61,7 @@ export const calculate = (
 
         amount = max;
     } else {
-        amount = output.amount;
+        throw new Error('Missing amount for non send-max output');
     }
 
     const totalSpent = new BigNumber(calculateTotal(amount, feeInBaseUnits));
