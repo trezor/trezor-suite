@@ -26,6 +26,8 @@ export const selectTorState = (state: SuiteRootState) => {
     };
 };
 
+export const selectTorOnionLinks = (state: SuiteRootState) => state.suite.settings.torOnionLinks;
+
 export const selectLocalFirstStorageRelayUrl = (state: SuiteRootState) =>
     state.suite.settings.localFirstStorageRelayUrl;
 

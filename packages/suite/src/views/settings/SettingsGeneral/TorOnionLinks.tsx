@@ -7,11 +7,12 @@ import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectTorOnionLinks } from 'src/selectors/suite/suiteSelectors';
 
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */
 export const TorOnionLinks = () => {
-    const torOnionLinks = useSelector(state => state.suite.settings.torOnionLinks);
+    const torOnionLinks = useSelector(selectTorOnionLinks);
     const dispatch = useDispatch();
 
     const handleChange = () => {
