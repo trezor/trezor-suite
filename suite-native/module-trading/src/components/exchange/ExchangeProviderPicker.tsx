@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {

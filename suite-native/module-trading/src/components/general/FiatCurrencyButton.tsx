@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 
-import { FiatCurrencyCode } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

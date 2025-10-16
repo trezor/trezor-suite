@@ -1,4 +1,4 @@
-import { BuyTrade, CoinInfo } from 'invity-api';
+import type { BuyTrade, CoinInfo } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {

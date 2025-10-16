@@ -1,4 +1,4 @@
-import { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import type { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import type { TradingTransaction, TradingType } from '@suite-common/trading';
 import { FormDraftKeyPrefix } from '@suite-common/wallet-types';

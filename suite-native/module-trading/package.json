@@ -75,6 +75,7 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
-        "@trezor/theme": "workspace:*"
+        "@trezor/theme": "workspace:*",
+        "@types/invity-api": "^1.1.11"
     }
 }

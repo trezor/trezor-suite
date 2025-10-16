@@ -1,4 +1,4 @@
-import { CryptoId, SellProviderInfo } from 'invity-api';
+import type { CryptoId, SellProviderInfo } from 'invity-api';
 
 export const sellInvity = {
     name: 'invity',

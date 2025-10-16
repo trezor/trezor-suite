@@ -1,4 +1,0 @@
-{
-    "ignore-patterns": ["libDev", "lib"],
-    "ignores": ["invity-api"]
-}

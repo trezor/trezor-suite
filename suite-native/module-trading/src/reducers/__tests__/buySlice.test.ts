@@ -1,4 +1,4 @@
-import { BuyTrade, CryptoId } from 'invity-api';
+import type { BuyTrade, CryptoId } from 'invity-api';
 
 import quotes from '../../__fixtures__/buyQuotes.json';
 import { TradingBuyState, buyActions, buyInitialState, buyReducer } from '../buySlice';

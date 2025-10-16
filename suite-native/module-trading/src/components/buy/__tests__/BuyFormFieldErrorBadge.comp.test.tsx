@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { Form } from '@suite-native/forms';
 import {

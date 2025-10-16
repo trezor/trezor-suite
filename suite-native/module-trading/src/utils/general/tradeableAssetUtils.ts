@@ -1,4 +1,4 @@
-import { CoinInfo, CryptoId } from 'invity-api';
+import type { CoinInfo, CryptoId } from 'invity-api';
 
 import { cryptoIdToSymbol, isCryptoIdForNativeToken, parseCryptoId } from '@suite-common/trading';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';

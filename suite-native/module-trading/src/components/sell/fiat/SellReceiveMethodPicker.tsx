@@ -1,7 +1,7 @@
 import { StretchInY, StretchOutY } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { SellFiatTrade } from 'invity-api';
+import type { SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';

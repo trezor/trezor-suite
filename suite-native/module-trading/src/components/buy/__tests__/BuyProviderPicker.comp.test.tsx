@@ -1,4 +1,4 @@
-import { BuyTrade } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';

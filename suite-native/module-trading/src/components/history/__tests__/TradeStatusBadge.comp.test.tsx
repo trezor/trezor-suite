@@ -1,4 +1,4 @@
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { BadgeVariant } from '@suite-native/atoms';

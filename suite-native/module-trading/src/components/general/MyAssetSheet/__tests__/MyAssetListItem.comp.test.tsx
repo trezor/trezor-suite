@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';

@@ -1,4 +1,4 @@
-import { FormResponse } from 'invity-api';
+import type { FormResponse } from 'invity-api';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';

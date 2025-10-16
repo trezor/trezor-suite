@@ -1,4 +1,4 @@
-import { CoinInfo, CryptoId } from 'invity-api';
+import type { CoinInfo, CryptoId } from 'invity-api';
 
 import coins from '../../../__fixtures__/coins.json';
 import {

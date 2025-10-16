@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Form } from '@suite-native/forms';

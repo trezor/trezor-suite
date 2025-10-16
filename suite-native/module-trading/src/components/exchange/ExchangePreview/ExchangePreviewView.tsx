@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import Animated from 'react-native-reanimated';
 
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

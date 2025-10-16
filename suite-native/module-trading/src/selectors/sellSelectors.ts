@@ -1,4 +1,4 @@
-import { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'invity-api';
+import type { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {

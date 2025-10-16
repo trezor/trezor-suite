@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import {
     TradingRootState,

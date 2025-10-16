@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { BuyCryptoPaymentMethod, BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
+import type { BuyCryptoPaymentMethod, BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
     TradingAmountLimitProps,

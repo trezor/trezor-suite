@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { sellQuotes } from '../../__fixtures__/sellQuotes';
 import { TradingSellState, sellActions, sellInitialState, sellReducer } from '../sellSlice';

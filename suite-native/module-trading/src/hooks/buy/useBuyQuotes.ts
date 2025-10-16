@@ -2,7 +2,7 @@ import { RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
-import { BuyTrade } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {

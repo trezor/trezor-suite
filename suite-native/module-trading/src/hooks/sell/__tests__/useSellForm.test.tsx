@@ -1,4 +1,4 @@
-import { SellFiatTrade } from 'invity-api';
+import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';

@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
 import {

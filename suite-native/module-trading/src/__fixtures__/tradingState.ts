@@ -1,4 +1,4 @@
-import { Coins, CryptoId, FiatCurrenciesProps, FiatCurrencyCode, Platforms } from 'invity-api';
+import type { Coins, CryptoId, FiatCurrenciesProps, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import {
     TradingBuyState,

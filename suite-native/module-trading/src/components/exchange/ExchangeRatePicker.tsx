@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import type { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
 import {
     TradingRootState as CommonTradingRootState,
