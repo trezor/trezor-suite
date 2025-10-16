@@ -7,10 +7,10 @@ import { Translation } from '@suite-native/intl';
 const pictogramContent = {
     portfolioTracker: {
         title: (
-            <Text>
+            <Text textAlign="center">
                 <TrezorSuiteHeader />
                 {'\n'}
-                <Text variant="titleSmall">
+                <Text variant="titleSmall" textAlign="center">
                     <Translation id="moduleReceive.receiveAddressCard.unverifiedWarning.portfolioTracker.title" />
                 </Text>
             </Text>
@@ -21,7 +21,7 @@ const pictogramContent = {
     },
     viewOnly: {
         title: (
-            <Text variant="titleSmall">
+            <Text variant="titleSmall" textAlign="center">
                 <Translation id="moduleReceive.receiveAddressCard.unverifiedWarning.viewOnly.title" />
             </Text>
         ),
