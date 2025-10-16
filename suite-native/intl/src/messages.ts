@@ -1928,7 +1928,7 @@ export const messages = {
         passphraseMismatch: {
             title: 'Passphrase duplicate',
             subtitle: 'You’re trying to enter a passphrase wallet that’s already been opened.',
-            button: 'Proceed to passphrase wallet ',
+            button: 'Proceed to passphrase wallet',
         },
         enablePassphrase: {
             title: 'Enable passphrase on your Trezor.',
