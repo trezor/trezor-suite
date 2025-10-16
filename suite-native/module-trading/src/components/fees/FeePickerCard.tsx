@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { TradingType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';

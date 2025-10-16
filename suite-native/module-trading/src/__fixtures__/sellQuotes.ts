@@ -1,4 +1,4 @@
-import { SellFiatTrade } from 'invity-api';
+import type { SellFiatTrade } from 'invity-api';
 
 export const sellQuotes = [
     {

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';

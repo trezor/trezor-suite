@@ -1,4 +1,4 @@
-import { BuyTrade, CryptoId } from 'invity-api';
+import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';

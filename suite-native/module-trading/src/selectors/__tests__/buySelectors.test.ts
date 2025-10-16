@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { BuyTrade, CryptoId } from 'invity-api';
+import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';

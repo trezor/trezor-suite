@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { BuyTrade } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 
 import {
     TradingRootState,

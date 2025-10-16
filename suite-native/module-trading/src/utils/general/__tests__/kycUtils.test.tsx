@@ -1,4 +1,4 @@
-import { ExchangeKYCType } from 'invity-api';
+import type { ExchangeKYCType } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';

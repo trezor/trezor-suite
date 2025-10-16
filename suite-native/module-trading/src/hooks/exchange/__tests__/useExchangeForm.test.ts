@@ -1,4 +1,4 @@
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';

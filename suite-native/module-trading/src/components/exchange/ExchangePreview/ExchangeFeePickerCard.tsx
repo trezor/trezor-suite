@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { selectExchangeSelectedSendAccount } from '../../../selectors/exchangeSelectors';
 import { FeePickerCard } from '../../fees/FeePickerCard';

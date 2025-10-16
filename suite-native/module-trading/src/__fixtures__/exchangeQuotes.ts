@@ -1,4 +1,4 @@
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 export const exchangeQuotes = [
     {

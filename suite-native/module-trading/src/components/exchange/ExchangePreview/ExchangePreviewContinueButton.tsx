@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { parseCryptoId } from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';

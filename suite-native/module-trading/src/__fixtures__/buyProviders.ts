@@ -1,4 +1,4 @@
-import { BuyProviderInfo } from 'invity-api';
+import type { BuyProviderInfo } from 'invity-api';
 
 export const buyInvity = {
     name: 'invity',

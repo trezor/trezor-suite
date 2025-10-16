@@ -1,7 +1,7 @@
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import {
     TradingRootState,

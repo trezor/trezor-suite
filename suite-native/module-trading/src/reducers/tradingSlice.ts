@@ -1,5 +1,5 @@
 import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {

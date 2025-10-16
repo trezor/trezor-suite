@@ -1,4 +1,4 @@
-import { BuyTrade } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 

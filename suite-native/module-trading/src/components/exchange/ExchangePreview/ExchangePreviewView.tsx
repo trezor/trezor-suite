@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { InlineAlertBox, VStack } from '@suite-native/atoms';
 

@@ -1,7 +1,7 @@
 import { ReactNode, memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import {
     TradingRootState as CommonTradingRootState,

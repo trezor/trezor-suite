@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 

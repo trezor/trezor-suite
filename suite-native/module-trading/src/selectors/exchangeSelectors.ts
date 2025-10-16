@@ -1,4 +1,4 @@
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {

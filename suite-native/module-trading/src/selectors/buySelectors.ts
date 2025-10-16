@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
+import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';

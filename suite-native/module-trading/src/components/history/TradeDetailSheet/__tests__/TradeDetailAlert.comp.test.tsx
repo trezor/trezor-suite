@@ -1,4 +1,4 @@
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import { TradingTransaction } from '@suite-common/trading';
 import {

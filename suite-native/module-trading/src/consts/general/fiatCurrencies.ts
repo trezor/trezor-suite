@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
 export const supportedFiatCurrenciesMap: Readonly<Record<FiatCurrencyCode, string>> = {
     aed: 'United Arab Emirates Dirham',

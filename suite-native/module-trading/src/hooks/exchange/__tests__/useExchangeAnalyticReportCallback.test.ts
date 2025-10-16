@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
+import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import {
     TradingAmountLimitProps,

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {

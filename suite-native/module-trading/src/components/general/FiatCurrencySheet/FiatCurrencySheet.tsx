@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 
-import { FiatCurrencyCode } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
 import { Translation, useTranslate } from '@suite-native/intl';
 

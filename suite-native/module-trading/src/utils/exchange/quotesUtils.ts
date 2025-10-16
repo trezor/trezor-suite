@@ -1,4 +1,4 @@
-import { CoinInfo, ExchangeTrade } from 'invity-api';
+import type { CoinInfo, ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import { MinimalExchangeFormProps } from '@suite-common/trading';

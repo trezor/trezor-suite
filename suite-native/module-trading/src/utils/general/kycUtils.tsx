@@ -1,4 +1,4 @@
-import { ExchangeKYCType } from 'invity-api';
+import type { ExchangeKYCType } from 'invity-api';
 
 import { Translation } from '@suite-native/intl';
 
