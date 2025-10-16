@@ -105,7 +105,6 @@ export const getMessageId = ({
             description: 'TR_INITIAL_RECONNECT_DEVICE_DESCRIPTION',
         },
         'device-hard-locked': { heading: 'TR_DEVICE_HARD_LOCKED' },
-        'device-pin-locked': { heading: 'TR_DEVICE_PIN_LOCKED' },
         'device-disconnected': defaultKey,
         'device-initialize': defaultKey,
         'device-recovery-mode': defaultKey,

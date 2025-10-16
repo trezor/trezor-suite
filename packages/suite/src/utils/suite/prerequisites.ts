@@ -32,7 +32,6 @@ export const prerequisiteTypes = [
     'firmware-corrupted',
     'device-busy',
     'device-bootloader-locked',
-    'device-pin-locked',
     'device-hard-locked',
 ] as const;
 
@@ -60,7 +59,6 @@ export const getPrerequisiteName = ({
     if (device.status === 'busy') return 'device-busy';
     if (device.status === 'bootloader-locked') return 'device-bootloader-locked';
     if (device.status === 'hard-locked') return 'device-hard-locked';
-    if (device.status === 'pin-locked') return 'device-pin-locked';
 
     // Unacquired device with Trezor Host Protocol properties means
     // that the user must perform the Trezor Host Protocol paring
