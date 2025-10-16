@@ -8,12 +8,13 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest",
+        "test:unit": "yarn g:jest --coverage",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.8.2",
         "@suite-common/trading": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
         "react": "19.0.0",
         "react-redux": "9.2.0"
     }

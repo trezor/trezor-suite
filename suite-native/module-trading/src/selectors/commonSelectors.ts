@@ -47,6 +47,7 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { TokensRootState } from '@suite-native/tokens';
+import { selectIsTradingEnabledForCountry } from '@suite-native/trading-residence';
 
 import { SectionListData } from '../hooks/general/useSectionList';
 import { TradingRootState } from '../reducers';
@@ -92,10 +93,19 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
     selectIsFeatureEnabled(state, Feature.trading.sell, false);
 
-export const selectIsTradingEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsTradingBuyEnabled(state) ||
-    selectIsTradingExchangeEnabled(state) ||
-    selectIsTradingSellEnabled(state);
+export const selectIsTradingEnabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
+) => {
+    if (!selectIsTradingEnabledForCountry(state)) {
+        return false;
+    }
+
+    return (
+        selectIsTradingBuyEnabled(state) ||
+        selectIsTradingExchangeEnabled(state) ||
+        selectIsTradingSellEnabled(state)
+    );
+};
 
 export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
     [selectIsTradingBuyEnabled, selectIsTradingExchangeEnabled, selectIsTradingSellEnabled],
