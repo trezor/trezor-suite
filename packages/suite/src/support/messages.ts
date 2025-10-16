@@ -2308,7 +2308,7 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
     },
     TR_DEVICE_HARD_LOCKED: {
-        defaultMessage: 'Trezor device hard locked, unlock it.',
+        defaultMessage: 'Trezor device hard locked, unlock your Trezor.',
         id: 'TR_DEVICE_HARD_LOCKED',
     },
     TR_DEVICE_PIN_LOCKED: {
