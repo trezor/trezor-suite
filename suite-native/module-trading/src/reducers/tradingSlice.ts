@@ -10,6 +10,12 @@ import {
     prepareTradingReducer,
 } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
+import {
+    TRADING_RESIDENCE,
+    TradingResidenceState,
+    tradingResidenceInitialState,
+    tradingResidenceReducer,
+} from '@suite-native/trading-residence';
 
 import { TRADING_BUY, TradingBuyState, buyActions, buyInitialState, buyReducer } from './buySlice';
 import {
@@ -31,6 +37,7 @@ export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
     exchange: TradingExchangeState;
     sell: TradingSellState;
+    residence: TradingResidenceState;
     favouriteAssets: Record<CryptoId, true>;
     tradingEnvironment: InvityServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
@@ -49,6 +56,7 @@ export const initialState: TradingState = {
     buy: buyInitialState,
     exchange: exchangeInitialState,
     sell: sellInitialState,
+    residence: tradingResidenceInitialState,
     favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
@@ -122,6 +130,12 @@ export const tradingSlice = createSliceWithExtraDeps({
                 action => action.type.startsWith(TRADING_SELL),
                 (state, action) => {
                     sellReducer(state.sell, action);
+                },
+            )
+            .addMatcher(
+                action => action.type.startsWith(TRADING_RESIDENCE),
+                (state, action) => {
+                    tradingResidenceReducer(state.residence, action);
                 },
             )
             // In case that this reducer does not match the action, try to handle it by suite-common tradingReducer.

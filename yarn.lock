@@ -12311,6 +12311,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
+    "@suite-native/trading-residence": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -12681,6 +12682,17 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-residence@workspace:*, @suite-native/trading-residence@workspace:suite-native/trading-residence":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-residence@workspace:suite-native/trading-residence"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/trading": "workspace:*"
+    react: "npm:19.0.0"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
