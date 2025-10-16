@@ -58,6 +58,7 @@ export const Feature = {
         restrictions: {
             blacklist: 'trading.restrictions.blacklist',
         },
+        survey: 'trading.survey',
     },
     dashboardPromoBanner: 'dashboard.promoBanner',
     mevProtection: 'settings.mevProtection',
