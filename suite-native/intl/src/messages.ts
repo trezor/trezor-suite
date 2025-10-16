@@ -1529,26 +1529,6 @@ export const messages = {
                 holdToConfirmButton: 'Hold to start',
             },
         },
-        walletCreationScreen: {
-            title: 'Continue on your Trezor',
-            backupWarning:
-                'Never store your wallet backup anywhere digital—no photos, clouds, USBs, or emails.',
-            accordion1: {
-                title: 'Understand your wallet backup',
-                content:
-                    'A wallet backup is a list of words (called a share) which allows you to recover access to your assets if your Trezor hardware wallet is lost, stolen, or damaged.\n\nYou can also use it to move your assets to a new hardware wallet.',
-            },
-            accordion2: {
-                title: 'Write down your words',
-                content:
-                    'Get a good pen and your wallet backup card from your Trezor’s packaging.\n\nWrite down the words in the exact order shown on your Trezor. The sequence of words is important to get right.\n\nVerify each word before proceeding to the next.',
-            },
-            accordion3: {
-                title: 'Check & confirm',
-                content:
-                    "After writing your wallet backup, you'll verify it's correct. Your Trezor will display a random selection of words along with their correct positions.\n\nCompare them to your wallet backup card and select the matching word for each position.",
-            },
-        },
         walletCreatedSuccessScreen: {
             successLabel: 'All good!',
         },
@@ -1601,26 +1581,6 @@ export const messages = {
                         '3': 'Use the receive address to transfer funds from the exchange account to your Trezor',
                     },
                     cta: 'Set up my new Trezor',
-                },
-            },
-        },
-        walletRecoveryScreen: {
-            accordion1: {
-                title: 'Get your wallet backup',
-                content:
-                    'Your wallet backup is the list of words you wrote down when you first set up your Trezor.',
-            },
-            accordion2: {
-                title: 'Enter your words',
-                paragraph1: {
-                    header: 'Single-share & Legacy Backups',
-                    content:
-                        'Your Trezor will ask how many words are in your wallet backup. Select the correct number. Enter each word in order.',
-                },
-                paragraph2: {
-                    header: 'Multi-share Backup',
-                    content:
-                        'Your Trezor will ask how many words are in your wallet backup—select 20. Pick one share and enter all 20 words in order. Repeat with additional shares until you reach your threshold.',
                 },
             },
         },
