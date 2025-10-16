@@ -55,7 +55,6 @@ export const bluetoothSlice = createSliceWithExtraDeps({
 
                 state.knownDevices = state.knownDevices.map(device => {
                     if (device.deviceId === action.payload.id) {
-                        device.connected = false;
                         device.connectionStatus = {
                             type: 'disconnected',
                         };

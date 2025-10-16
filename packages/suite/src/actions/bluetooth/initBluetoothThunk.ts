@@ -23,14 +23,19 @@ import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
+import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinuxAndWindows';
 
 export const initBluetoothThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,
     async (_, { getState, dispatch, extra }) => {
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
+
         const result = await bluetoothIpc.init({
-            knownDevices: knownDevices.map(toBluetoothDevice),
+            knownDevices: knownDevices.map(device => ({
+                ...toBluetoothDevice(device),
+                ...{ connected: isBluetoothDeviceReachable(device) },
+            })),
         });
 
         if (!result.success) {
