@@ -1,6 +1,9 @@
 import { pipe } from '@mobily/ts-belt';
+import { getStoredState } from 'redux-persist';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { initMmkvStorage } from '../../storage';
 
 type NetworkSymbolOld = Exclude<NetworkSymbol, 'bsc'> | 'bnb';
 
@@ -26,7 +29,7 @@ const migrateDiscoveryDeprecateNetworks = (
  * to the walletSettings reducer shared in suite-common.
  * All migrations that were done on discoveryConfig are moved here
  */
-export const migrateDiscoveryConfigToWalletSettings = (
+const migrateDiscoveryConfigToWalletSettings = (
     oldEnabledDiscoveryNetworkSymbols: NetworkSymbol[],
 ): NetworkSymbol[] =>
     pipe(
@@ -34,3 +37,30 @@ export const migrateDiscoveryConfigToWalletSettings = (
         migrateEnabledDiscoveryNetworkSymbols,
         migrateDiscoveryDeprecateNetworks,
     );
+
+export const migrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: any) => {
+    const storage = await initMmkvStorage();
+    const appSettings = (await getStoredState({
+        key: 'appSettings',
+        storage,
+    })) as any;
+    const discoveryConfig = (await getStoredState({
+        key: 'discoveryConfig',
+        storage,
+    })) as any;
+
+    if (appSettings && discoveryConfig) {
+        const enabledNetworks = migrateDiscoveryConfigToWalletSettings(
+            discoveryConfig.enabledDiscoveryNetworkSymbols,
+        );
+
+        return {
+            ...walletSettingsState,
+            localCurrency: appSettings.fiatCurrencyCode,
+            enabledNetworks,
+            bitcoinAmountUnit: appSettings.bitcoinUnits,
+        };
+    }
+
+    return walletSettingsState;
+};

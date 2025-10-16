@@ -1,22 +1,77 @@
+import { getStoredState } from 'redux-persist';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { migrateDiscoveryConfigToWalletSettings } from '../../migrations/walletSettings/v1';
+jest.mock('../../storage', () => ({
+    initMmkvStorage: jest.fn().mockResolvedValue({}),
+}));
 
-describe(migrateDiscoveryConfigToWalletSettings.name, () => {
-    it('should migrate enabled network symbols by changing bnb to bsc and removing deprecated coins', () => {
-        const oldEnabledDiscoveryNetworkSymbols = [
-            'btc',
-            'eth',
-            'nmc',
-            'bnb',
-            'test',
-            'dash',
-        ] as NetworkSymbol[];
+jest.mock('redux-persist', () => ({
+    getStoredState: jest.fn(),
+}));
 
-        const migratedAccounts = migrateDiscoveryConfigToWalletSettings(
-            oldEnabledDiscoveryNetworkSymbols,
-        );
+import { migrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
 
-        expect(migratedAccounts).toEqual(['btc', 'eth', 'bsc', 'test']);
+const mockGetStoredState = getStoredState as jest.MockedFunction<typeof getStoredState>;
+
+describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should migrate enabled network symbols by changing bnb to bsc and removing deprecated coins', async () => {
+        mockGetStoredState.mockImplementation(({ key }) => {
+            if (key === 'appSettings') {
+                return Promise.resolve({
+                    fiatCurrencyCode: 'usd',
+                    bitcoinUnits: 'btc',
+                });
+            }
+            if (key === 'discoveryConfig') {
+                return Promise.resolve({
+                    enabledDiscoveryNetworkSymbols: [
+                        'btc',
+                        'eth',
+                        'nmc',
+                        'bnb',
+                        'test',
+                        'dash',
+                    ] as NetworkSymbol[],
+                });
+            }
+
+            return Promise.resolve(undefined);
+        });
+
+        const walletSettingsState = {};
+
+        const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
+
+        expect(migratedState).toEqual({
+            localCurrency: 'usd',
+            enabledNetworks: ['btc', 'eth', 'bsc', 'test'],
+            bitcoinAmountUnit: 'btc',
+        });
+    });
+
+    it('should return original state when appSettings or discoveryConfig is missing', async () => {
+        mockGetStoredState.mockImplementation(({ key }) => {
+            if (key === 'appSettings') {
+                return Promise.resolve(undefined);
+            }
+            if (key === 'discoveryConfig') {
+                return Promise.resolve({
+                    enabledDiscoveryNetworkSymbols: ['btc', 'eth'],
+                });
+            }
+
+            return Promise.resolve(undefined);
+        });
+
+        const walletSettingsState = { someProperty: 'value' };
+
+        const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
+
+        expect(migratedState).toEqual(walletSettingsState);
     });
 });

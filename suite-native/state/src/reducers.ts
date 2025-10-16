@@ -1,5 +1,4 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { getStoredState } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
@@ -46,12 +45,11 @@ import {
     bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
-    initMmkvStorage,
     migrateAccountBnbToBsc,
     migrateAccountLabel,
     migrateAccountsDeprecateNetworks,
+    migrateAppSettingsAndDiscoveryConfig,
     migrateDeviceState,
-    migrateDiscoveryConfigToWalletSettings,
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
@@ -94,7 +92,11 @@ export const prepareRootReducers = async () => {
         // `areTestnetsEnabled` is a developer-only option and does not require migration.
         version: 3,
         migrations: {
-            2: (oldState: any) => ({ ...oldState, fiatCurrencyCode: oldState.fiatCurrency.label }),
+            2: oldState => {
+                if (!oldState?.fiatCurrency?.label) return oldState;
+
+                return { ...oldState, fiatCurrencyCode: oldState?.fiatCurrency?.label };
+            },
         },
     });
 
@@ -116,26 +118,8 @@ export const prepareRootReducers = async () => {
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
         version: 1,
-        initialMigration: async () => {
-            const appSettings = (await getStoredState({
-                key: 'appSettings',
-                storage: await initMmkvStorage(),
-            })) as any;
-            const discoveryConfig = (await getStoredState({
-                key: 'discoveryConfig',
-                storage: await initMmkvStorage(),
-            })) as any;
-            if (appSettings && discoveryConfig) {
-                const enabledNetworks = migrateDiscoveryConfigToWalletSettings(
-                    discoveryConfig.enabledDiscoveryNetworkSymbols,
-                );
-
-                return {
-                    localCurrency: appSettings.fiatCurrencyCode,
-                    enabledNetworks,
-                    bitcoinAmountUnit: appSettings.bitcoinUnits,
-                };
-            }
+        migrations: {
+            1: migrateAppSettingsAndDiscoveryConfig,
         },
     });
 
@@ -160,19 +144,19 @@ export const prepareRootReducers = async () => {
         key: 'wallet',
         version: 3,
         migrations: {
-            2: (oldState: any) => {
-                if (!oldState.accounts) return oldState;
+            2: oldState => {
+                if (!oldState?.accounts) return oldState;
 
-                const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
+                const oldAccountsState = { accounts: oldState.accounts };
                 const migratedAccounts = migrateAccountLabel(oldAccountsState.accounts);
                 const migratedState = { ...oldState, accounts: migratedAccounts };
 
                 return migratedState;
             },
             3: oldState => {
-                if (!oldState.accounts) return oldState;
+                if (!oldState?.accounts) return oldState;
 
-                const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
+                const oldAccountsState = { accounts: oldState.accounts };
                 const migratedAccounts = deriveAccountTypeFromPaymentType(
                     oldAccountsState.accounts,
                 );
@@ -202,7 +186,7 @@ export const prepareRootReducers = async () => {
         transforms: [devicePersistTransform],
         migrations: {
             2: oldState => {
-                if (!oldState.devices) return oldState;
+                if (!oldState?.devices) return oldState;
 
                 const oldDevicesState: { devices: any } = { devices: oldState.devices };
                 const migratedDevices = migrateDeviceState(oldDevicesState.devices);
@@ -211,7 +195,7 @@ export const prepareRootReducers = async () => {
                 return migratedState;
             },
             3: oldState => {
-                if (!oldState.devices) return oldState;
+                if (!oldState?.devices) return oldState;
                 const migratedDevices = backfillDeviceAuthenticityChecks(oldState.devices);
 
                 return { ...oldState, devices: migratedDevices };
@@ -311,12 +295,9 @@ export const prepareRootReducers = async () => {
         key: 'root',
         version: 3,
         migrations: {
-            2: (oldState: {
-                wallet: {
-                    accounts: any;
-                    transactions: { transactions: any; fetchStatusDetail: any };
-                };
-            }) => {
+            2: oldState => {
+                if (!oldState?.wallet) return oldState;
+
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountBnbToBsc(oldStateWallet.accounts);
 
@@ -338,12 +319,9 @@ export const prepareRootReducers = async () => {
 
                 return migratedState;
             },
-            3: (oldState: {
-                wallet: {
-                    accounts: any;
-                    transactions: { transactions: any; fetchStatusDetail: any };
-                };
-            }) => {
+            3: oldState => {
+                if (!oldState?.wallet) return oldState;
+
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountsDeprecateNetworks(oldStateWallet.accounts);
                 const migratedTransactions = migrateTransactionsDeprecateNetworks(
