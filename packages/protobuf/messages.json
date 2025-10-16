@@ -2484,8 +2484,8 @@
                     "id": 3
                 },
                 "amount": {
-                    "type": "uint64",
-                    "id": 4
+                    "type": "bytes",
+                    "id": 6
                 },
                 "signature": {
                     "rule": "required",
