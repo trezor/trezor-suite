@@ -1,15 +1,14 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { recoverWalletThunk } from '@suite-native/device';
+import { ContinueOnTrezorScreenContent, recoverWalletThunk } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
 
-import { WalletInitScreenWrapper } from '../components/WalletInitScreenWrapper';
-import { WalletRecoveryAccordionHint } from '../components/WalletRecoveryAccordionHint';
+import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 
 export const WalletRecoveryScreen = ({
     navigation,
@@ -35,8 +34,8 @@ export const WalletRecoveryScreen = ({
     }, [handleRecoverWallet]);
 
     return (
-        <WalletInitScreenWrapper>
-            <WalletRecoveryAccordionHint />
-        </WalletInitScreenWrapper>
+        <DeviceOnboardingScreenWithExitButton>
+            <ContinueOnTrezorScreenContent />
+        </DeviceOnboardingScreenWithExitButton>
     );
 };

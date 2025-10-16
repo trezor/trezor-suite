@@ -9,7 +9,7 @@ import {
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { createAndBackupWalletThunk } from '@suite-native/device';
+import { ContinueOnTrezorScreenContent, createAndBackupWalletThunk } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -19,9 +19,7 @@ import {
 } from '@suite-native/navigation';
 import { ERRORS } from '@trezor/connect';
 
-import { WalletCreationAccordionHint } from '../components/WalletCreationAccordionHint';
-import { WalletCreationBackupWarningCard } from '../components/WalletCreationBackupWarningCard';
-import { WalletInitScreenWrapper } from '../components/WalletInitScreenWrapper';
+import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 
 // Do not retry if user cancelled the flow via the app UI, or the Entropy check has failed
 const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = [
@@ -80,9 +78,8 @@ export const WalletCreationScreen = () => {
     }, [handleCreateAndBackupWallet]);
 
     return (
-        <WalletInitScreenWrapper>
-            <WalletCreationAccordionHint />
-            <WalletCreationBackupWarningCard />
-        </WalletInitScreenWrapper>
+        <DeviceOnboardingScreenWithExitButton>
+            <ContinueOnTrezorScreenContent />
+        </DeviceOnboardingScreenWithExitButton>
     );
 };
