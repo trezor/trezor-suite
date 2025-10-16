@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { getStoredState } from 'redux-persist';
+import { DEFAULT_VERSION } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
@@ -28,7 +28,6 @@ import {
     prepareWalletSettingsReducer,
     walletSettingsPersistedWhitelist,
 } from '@suite-common/wallet-core';
-import { WalletSettings } from '@suite-common/wallet-types';
 // Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
@@ -47,13 +46,12 @@ import {
     bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
-    initMmkvStorage,
     migrateAccountBnbToBsc,
     migrateAccountLabel,
     migrateAccountsDeprecateNetworks,
+    migrateAppSettingsAndDiscoveryConfig,
     migrateAutoEjectToWalletSettings,
     migrateDeviceState,
-    migrateDiscoveryConfigToWalletSettings,
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
@@ -112,36 +110,34 @@ export const prepareRootReducers = async () => {
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
         version: 2,
-        initialMigration: async () => {
-            const appSettings = (await getStoredState({
-                key: 'appSettings',
-                storage: await initMmkvStorage(),
-            })) as any;
-            const discoveryConfig = (await getStoredState({
-                key: 'discoveryConfig',
-                storage: await initMmkvStorage(),
-            })) as any;
-            if (appSettings && discoveryConfig) {
-                const enabledNetworks = migrateDiscoveryConfigToWalletSettings(
-                    discoveryConfig.enabledDiscoveryNetworkSymbols,
-                );
+        asyncMigrate: async (oldState: any, currentVersion: number) => {
+            let migratedState = { ...oldState };
 
-                return {
-                    localCurrency: appSettings.fiatCurrencyCode,
-                    enabledNetworks,
-                    bitcoinAmountUnit: appSettings.bitcoinUnits,
-                };
+            const inboundVersion: number =
+                oldState._persist && oldState._persist.version !== undefined
+                    ? oldState._persist.version
+                    : DEFAULT_VERSION;
+
+            if (inboundVersion === currentVersion) {
+                return Promise.resolve(oldState);
             }
-        },
-        migrations: {
-            2: async (oldState: WalletSettings) => {
-                const devicesState = await getStoredState({
-                    key: 'devices',
-                    storage: await initMmkvStorage(),
-                });
 
-                return migrateAutoEjectToWalletSettings(devicesState, oldState);
-            },
+            if (inboundVersion > currentVersion) {
+                if (process.env.NODE_ENV !== 'production')
+                    console.error('redux-persist: downgrading version is not supported');
+
+                return Promise.resolve(oldState);
+            }
+
+            if (inboundVersion < 1) {
+                migratedState = await migrateAppSettingsAndDiscoveryConfig(migratedState);
+            }
+
+            if (inboundVersion < 2) {
+                migratedState = await migrateAutoEjectToWalletSettings(migratedState);
+            }
+
+            return Promise.resolve(migratedState);
         },
     });
 
