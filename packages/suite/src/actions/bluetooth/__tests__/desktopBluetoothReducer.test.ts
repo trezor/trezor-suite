@@ -29,7 +29,6 @@ const initialState: DesktopBluetoothState = {
 
 const disconnectedDeviceB: DesktopBluetoothDevice = {
     id: asBluetoothDeviceId('B'),
-    connected: false,
     macAddress: '',
     manufacturerData,
     name: 'Trezor B',

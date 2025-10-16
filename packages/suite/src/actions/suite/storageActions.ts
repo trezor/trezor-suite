@@ -149,7 +149,6 @@ export const saveKnownDevices = () => (_dispatch: Dispatch, getState: GetState) 
                     deviceId: it.deviceId,
 
                     // Those fields are reset to prevent some state-inconsistency and UI flickering
-                    connected: false,
                     connectionStatus: { type: 'disconnected' },
                 }),
             ),

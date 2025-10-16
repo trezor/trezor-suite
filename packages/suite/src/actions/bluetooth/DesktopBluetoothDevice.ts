@@ -6,18 +6,20 @@ import {
 import { BluetoothDeviceId, asBluetoothDeviceId } from '@trezor/connect';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
-export type DesktopBluetoothDevice = Omit<BluetoothDevice, 'data' | 'id'> & {
+// ignore 'connected' as it is abstraction of connectionStatus
+export type DesktopBluetoothDevice = Omit<BluetoothDevice, 'data' | 'id' | 'connected'> & {
     manufacturerData: BluetoothManufacturerData;
     id: BluetoothDeviceId;
     deviceId?: string; // Trezor device id (not known for unacquired devices)
 };
 
-export const toBluetoothDevice = (device: DesktopBluetoothDevice): BluetoothDevice => ({
+export const toBluetoothDevice = (
+    device: DesktopBluetoothDevice,
+): Omit<BluetoothDevice, 'connected'> => ({
     id: device.id,
     name: device.name,
     macAddress: device.macAddress,
     data: serializeManufacturerData(device.manufacturerData),
-    connected: device.connected,
     connectionStatus: device.connectionStatus,
     lastUpdatedTimestamp: device.lastUpdatedTimestamp,
     paired: device.paired,
@@ -29,7 +31,6 @@ export const fromBluetoothDevice = (device: BluetoothDevice): DesktopBluetoothDe
     name: device.name,
     macAddress: device.macAddress,
     manufacturerData: parseManufacturerData(device.data),
-    connected: device.connected,
     connectionStatus: device.connectionStatus,
     lastUpdatedTimestamp: device.lastUpdatedTimestamp,
     paired: device.paired,
