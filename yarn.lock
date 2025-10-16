@@ -12531,6 +12531,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
+    "@suite-native/trading-residence": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -12924,6 +12925,17 @@ __metadata:
     react-native-gesture-handler: "npm:2.29.0"
     react-native-reanimated: "npm:~3.19.3"
     type-fest: "npm:4.24.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-residence@workspace:*, @suite-native/trading-residence@workspace:suite-native/trading-residence":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-residence@workspace:suite-native/trading-residence"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.9.1"
+    "@suite-common/trading": "workspace:*"
+    react: "npm:19.1.0"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

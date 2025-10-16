@@ -1,0 +1,20 @@
+{
+    "name": "@suite-native/trading-residence",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.9.1",
+        "@suite-common/trading": "workspace:*",
+        "react": "19.1.0",
+        "react-redux": "9.2.0"
+    }
+}
