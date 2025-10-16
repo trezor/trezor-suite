@@ -309,6 +309,7 @@ export const useRbf = (props: UseRbfProps) => {
 
     return {
         ...state,
+        methods: useFormMethods,
         isLoading,
         showDecreasedOutputs,
         register,

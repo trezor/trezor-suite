@@ -1,3 +1,5 @@
+import { FormProvider } from 'react-hook-form';
+
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -27,6 +29,7 @@ export const StakeForm = () => {
         composedLevels,
         trigger,
         isStakingDisabled,
+        methods,
     } = useStakeFormContext();
 
     const { formattedBalance, symbol, networkType } = account;
@@ -34,7 +37,7 @@ export const StakeForm = () => {
     const isCardanoNetwork = networkType === 'cardano';
 
     return (
-        <>
+        <FormProvider {...methods}>
             {isConfirmModalOpen && (
                 <ConfirmStakeModal
                     isLoading={isLoading}
@@ -78,6 +81,6 @@ export const StakeForm = () => {
                     />
                 )}
             </Column>
-        </>
+        </FormProvider>
     );
 };

@@ -146,6 +146,7 @@ export interface TradingBuyFormContextProps
     verifyAddress: TradingVerifyAccountProps;
     removeDraft: (key: string) => void;
     setAmountLimits: (limits?: AmountLimitProps) => void;
+    methods: UseFormReturn<TradingBuyFormProps>;
 }
 
 export interface TradingSellFormContextProps
@@ -178,6 +179,7 @@ export interface TradingSellFormContextProps
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => Promise<boolean>;
     selectQuote: (quote: SellFiatTrade) => void;
+    methods: UseFormReturn<TradingSellFormProps>;
 }
 
 export type TradingExchangeConfirmTradeProps = {
@@ -249,6 +251,7 @@ export interface TradingExchangeFormContextProps
     setIsLoadingQuote: (isLoadingQuote: boolean) => void;
     isApproval: boolean;
     setIsApproval: (isApproval: boolean) => void;
+    methods: UseFormReturn<TradingExchangeFormProps>;
 }
 
 export type TradingExchangeApprovalType = 'APPROVE' | 'REVOKE';

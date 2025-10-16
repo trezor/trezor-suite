@@ -397,6 +397,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     return {
         ...state,
         ...useFormMethods,
+        methods: useFormMethods,
         feeInfo,
         isLoading,
         register,

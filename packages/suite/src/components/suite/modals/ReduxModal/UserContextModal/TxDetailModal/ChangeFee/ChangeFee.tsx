@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { FormProvider } from 'react-hook-form';
 
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -50,12 +51,13 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     const {
         account: { networkType },
         chainedTxs,
+        methods,
     } = useRbfContext();
 
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
     return (
-        <>
+        <FormProvider {...methods}>
             <Card
                 fillType="flat"
                 paddingType="small"
@@ -106,7 +108,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
             <DecreasedOutputs />
 
             <AffectedTransactions chainedTxs={chainedTxs} showChained={showChained} />
-        </>
+        </FormProvider>
     );
 };
 

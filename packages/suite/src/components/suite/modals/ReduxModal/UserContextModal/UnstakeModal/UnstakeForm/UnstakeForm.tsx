@@ -1,3 +1,5 @@
+import { FormProvider } from 'react-hook-form';
+
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, Tooltip } from '@trezor/components';
@@ -33,6 +35,7 @@ export const UnstakeForm = () => {
         feeInfo,
         composedLevels,
         trigger,
+        methods,
     } = useUnstakeFormContext();
 
     const { symbol, networkType } = account;
@@ -51,85 +54,87 @@ export const UnstakeForm = () => {
         approximatedInstantEthAmount && BigNumber(approximatedInstantEthAmount).gt(0);
 
     return (
-        <form onSubmit={handleSubmit(signTx)}>
-            <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
-                <Column gap={spacings.md}>
-                    {canClaim && (
-                        <Banner variant="info">
-                            <Translation
-                                id="TR_STAKE_CAN_CLAIM_WARNING"
-                                values={{
-                                    amount: claimableAmount,
-                                    symbol: getDisplaySymbol(account.symbol),
-                                    br: <br />,
-                                }}
-                            />
-                        </Banner>
-                    )}
-                    <SolanaStakingLimitBanner
-                        account={account}
-                        composedLevels={composedLevels}
-                        type="unstake"
-                    />
-                </Column>
-                {!isCardanoNetwork && (
-                    <>
-                        <StakeAvailableBalance
-                            formattedBalance={autocompoundBalance}
-                            symbol={symbol}
-                        />
-
-                        <Column gap={spacings.lg}>
-                            <UnstakeInputs />
-                            {showError && (
-                                <Banner variant="destructive">{inputError?.message}</Banner>
-                            )}
-                        </Column>
-                    </>
-                )}
-
-                <Fees
-                    control={control}
-                    errors={errors}
-                    isDirty={isDirty}
-                    register={register}
-                    feeInfo={feeInfo}
-                    setValue={setValue}
-                    getValues={getValues}
-                    account={account}
-                    composedLevels={composedLevels}
-                    changeFeeLevel={changeFeeLevel}
-                    trigger={trigger}
-                />
-
-                {shouldShowInstantUnstakeEthAmount && (
-                    <InfoItem
-                        label={
-                            <Tooltip
-                                maxWidth={328}
-                                content={
-                                    <Translation id="TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION" />
-                                }
-                                hasIcon
-                            >
+        <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(signTx)}>
+                <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
+                    <Column gap={spacings.md}>
+                        {canClaim && (
+                            <Banner variant="info">
                                 <Translation
-                                    id="TR_STAKE_UNSTAKING_APPROXIMATE"
+                                    id="TR_STAKE_CAN_CLAIM_WARNING"
                                     values={{
+                                        amount: claimableAmount,
                                         symbol: getDisplaySymbol(account.symbol),
+                                        br: <br />,
                                     }}
                                 />
-                            </Tooltip>
-                        }
-                        typographyStyle="body"
-                        direction="row"
-                    >
-                        <ApproximateInstantEthAmount
-                            value={approximatedInstantEthAmount}
-                            symbol={account.symbol}
+                            </Banner>
+                        )}
+                        <SolanaStakingLimitBanner
+                            account={account}
+                            composedLevels={composedLevels}
+                            type="unstake"
                         />
-                    </InfoItem>
-                )}
-            </Column>
-        </form>
+                    </Column>
+                    {!isCardanoNetwork && (
+                        <>
+                            <StakeAvailableBalance
+                                formattedBalance={autocompoundBalance}
+                                symbol={symbol}
+                            />
+
+                            <Column gap={spacings.lg}>
+                                <UnstakeInputs />
+                                {showError && (
+                                    <Banner variant="destructive">{inputError?.message}</Banner>
+                                )}
+                            </Column>
+                        </>
+                    )}
+
+                    <Fees
+                        control={control}
+                        errors={errors}
+                        isDirty={isDirty}
+                        register={register}
+                        feeInfo={feeInfo}
+                        setValue={setValue}
+                        getValues={getValues}
+                        account={account}
+                        composedLevels={composedLevels}
+                        changeFeeLevel={changeFeeLevel}
+                        trigger={trigger}
+                    />
+
+                    {shouldShowInstantUnstakeEthAmount && (
+                        <InfoItem
+                            label={
+                                <Tooltip
+                                    maxWidth={328}
+                                    content={
+                                        <Translation id="TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION" />
+                                    }
+                                    hasIcon
+                                >
+                                    <Translation
+                                        id="TR_STAKE_UNSTAKING_APPROXIMATE"
+                                        values={{
+                                            symbol: getDisplaySymbol(account.symbol),
+                                        }}
+                                    />
+                                </Tooltip>
+                            }
+                            typographyStyle="body"
+                            direction="row"
+                        >
+                            <ApproximateInstantEthAmount
+                                value={approximatedInstantEthAmount}
+                                symbol={account.symbol}
+                            />
+                        </InfoItem>
+                    )}
+                </Column>
+            </form>
+        </FormProvider>
     );
 };

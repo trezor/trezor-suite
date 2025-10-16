@@ -279,6 +279,7 @@ export const useUnstakeForm = ({ selectedAccount }: UseUnstakeFormsProps): Unsta
 
     return {
         ...methods,
+        methods,
         account,
         network,
         formState,

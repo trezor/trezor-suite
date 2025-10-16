@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import { numberToHex, toWei } from 'web3-utils';
 
@@ -354,235 +354,238 @@ export const TxSimulationModal = () => {
                     </>
                 }
             >
-                <Column gap={spacings.xs}>
-                    {isLoading && <Spinner size={50} />}
+                <FormProvider {...methods}>
+                    <Column gap={spacings.xs}>
+                        {isLoading && <Spinner size={50} />}
 
-                    {simulationResult && (
-                        <>
-                            {simulationResult.simulation?.status === 'Success' && (
-                                <>
-                                    <Card
-                                        header={
-                                            <H4
-                                                margin={{ left: spacings.xxs }}
-                                                typographyStyle="callout"
-                                            >
-                                                <Translation id="TR_SIMULATION" />
-                                            </H4>
-                                        }
-                                        paddingType="small"
-                                    >
-                                        <Column
-                                            margin={{
-                                                // @ts-expect-error - negative margins to align with card
-                                                horizontal: -spacings.md,
-                                                // @ts-expect-error - negative margins to align with card
-                                                vertical: -spacings.sm,
-                                            }}
-                                            hasDivider
-                                        >
-                                            {simulationResult.simulation.account_summary.assets_diffs.map(
-                                                (assetDiff, index) => (
-                                                    <TxSimulationAsset
-                                                        key={index}
-                                                        assetDiff={assetDiff}
-                                                        network={network}
-                                                    />
-                                                ),
-                                            )}
-                                            {simulationResult.simulation.account_summary.exposures.map(
-                                                (assetExposure, index) => (
-                                                    <TxSimulationAsset
-                                                        key={index}
-                                                        assetExposure={assetExposure}
-                                                        network={network}
-                                                    />
-                                                ),
-                                            )}
-                                            {simulationResult.simulation.account_summary
-                                                .assets_diffs.length === 0 &&
-                                                simulationResult.simulation.account_summary
-                                                    .exposures.length === 0 && (
-                                                    <Row
-                                                        padding={{
-                                                            horizontal: spacings.md,
-                                                            vertical: spacings.sm,
-                                                        }}
-                                                        justifyContent="center"
-                                                    >
-                                                        <Text variant="tertiary">
-                                                            <Translation id="TR_SIMULATION_NO_ASSETS" />
-                                                        </Text>
-                                                    </Row>
-                                                )}
-                                        </Column>
-                                    </Card>
-
-                                    <CollapsibleBox
-                                        heading={
-                                            <Row
-                                                gap={spacings.xs}
-                                                alignItems="center"
-                                                justifyContent="space-between"
-                                                flex="1"
-                                            >
-                                                <H4 typographyStyle="callout" flex="1">
-                                                    <Translation id="TR_CONTRACT_INFO" />
+                        {simulationResult && (
+                            <>
+                                {simulationResult.simulation?.status === 'Success' && (
+                                    <>
+                                        <Card
+                                            header={
+                                                <H4
+                                                    margin={{ left: spacings.xxs }}
+                                                    typographyStyle="callout"
+                                                >
+                                                    <Translation id="TR_SIMULATION" />
                                                 </H4>
-                                            </Row>
-                                        }
-                                    >
-                                        {targetContract && (
+                                            }
+                                            paddingType="small"
+                                        >
                                             <Column
-                                                hasDivider
                                                 margin={{
-                                                    // @ts-expect-error - negative margins to align with collapsible box
+                                                    // @ts-expect-error - negative margins to align with card
                                                     horizontal: -spacings.md,
-                                                    // @ts-expect-error - negative margins to align with collapsible box
-                                                    vertical: -spacings.lg,
+                                                    // @ts-expect-error - negative margins to align with card
+                                                    vertical: -spacings.sm,
                                                 }}
+                                                hasDivider
                                             >
-                                                {[
-                                                    {
-                                                        label: <Translation id="TR_PROTOCOL" />,
-                                                        value: Object.entries(
-                                                            simulationResult.simulation
-                                                                .address_details,
-                                                        ).find(
-                                                            ([address]) =>
-                                                                address.toLowerCase() ===
-                                                                targetContract.toLowerCase(),
-                                                        )?.[1]?.name_tag,
-                                                    },
-                                                    {
-                                                        label: (
-                                                            <Translation
-                                                                id={getTokenAddressTranslationId(
-                                                                    network.networkType,
-                                                                )}
-                                                            />
-                                                        ),
-                                                        value: (
-                                                            <TxAddress
-                                                                txAddress={targetContract}
-                                                                explorerUrl={getExplorerUrl(
-                                                                    explorer,
-                                                                    'address',
-                                                                )}
-                                                                explorerUrlQueryString={
-                                                                    explorer?.queryString
-                                                                }
-                                                                shouldAllowCopy
-                                                                typographyStyle="label"
-                                                            />
-                                                        ),
-                                                    },
-                                                    {
-                                                        label: (
-                                                            <Translation id="TR_CONTRACT_FUNCTION" />
-                                                        ),
-                                                        value: simulationResult.simulation.params
-                                                            ?.calldata?.function_signature,
-                                                    },
-                                                ].map((item, index) =>
-                                                    item.value ? (
-                                                        <Row
+                                                {simulationResult.simulation.account_summary.assets_diffs.map(
+                                                    (assetDiff, index) => (
+                                                        <TxSimulationAsset
                                                             key={index}
-                                                            gap={spacings.xs}
+                                                            assetDiff={assetDiff}
+                                                            network={network}
+                                                        />
+                                                    ),
+                                                )}
+                                                {simulationResult.simulation.account_summary.exposures.map(
+                                                    (assetExposure, index) => (
+                                                        <TxSimulationAsset
+                                                            key={index}
+                                                            assetExposure={assetExposure}
+                                                            network={network}
+                                                        />
+                                                    ),
+                                                )}
+                                                {simulationResult.simulation.account_summary
+                                                    .assets_diffs.length === 0 &&
+                                                    simulationResult.simulation.account_summary
+                                                        .exposures.length === 0 && (
+                                                        <Row
                                                             padding={{
                                                                 horizontal: spacings.md,
                                                                 vertical: spacings.sm,
                                                             }}
-                                                            alignItems="center"
-                                                            justifyContent="flex-start"
+                                                            justifyContent="center"
                                                         >
-                                                            <Text flex="1">{item.label}</Text>
-                                                            <Text
-                                                                flex="2"
-                                                                wordBreak="break-all"
-                                                                typographyStyle="label"
-                                                            >
-                                                                {item.value}
+                                                            <Text variant="tertiary">
+                                                                <Translation id="TR_SIMULATION_NO_ASSETS" />
                                                             </Text>
                                                         </Row>
-                                                    ) : null,
-                                                )}
+                                                    )}
                                             </Column>
+                                        </Card>
+
+                                        <CollapsibleBox
+                                            heading={
+                                                <Row
+                                                    gap={spacings.xs}
+                                                    alignItems="center"
+                                                    justifyContent="space-between"
+                                                    flex="1"
+                                                >
+                                                    <H4 typographyStyle="callout" flex="1">
+                                                        <Translation id="TR_CONTRACT_INFO" />
+                                                    </H4>
+                                                </Row>
+                                            }
+                                        >
+                                            {targetContract && (
+                                                <Column
+                                                    hasDivider
+                                                    margin={{
+                                                        // @ts-expect-error - negative margins to align with collapsible box
+                                                        horizontal: -spacings.md,
+                                                        // @ts-expect-error - negative margins to align with collapsible box
+                                                        vertical: -spacings.lg,
+                                                    }}
+                                                >
+                                                    {[
+                                                        {
+                                                            label: <Translation id="TR_PROTOCOL" />,
+                                                            value: Object.entries(
+                                                                simulationResult.simulation
+                                                                    .address_details,
+                                                            ).find(
+                                                                ([address]) =>
+                                                                    address.toLowerCase() ===
+                                                                    targetContract.toLowerCase(),
+                                                            )?.[1]?.name_tag,
+                                                        },
+                                                        {
+                                                            label: (
+                                                                <Translation
+                                                                    id={getTokenAddressTranslationId(
+                                                                        network.networkType,
+                                                                    )}
+                                                                />
+                                                            ),
+                                                            value: (
+                                                                <TxAddress
+                                                                    txAddress={targetContract}
+                                                                    explorerUrl={getExplorerUrl(
+                                                                        explorer,
+                                                                        'address',
+                                                                    )}
+                                                                    explorerUrlQueryString={
+                                                                        explorer?.queryString
+                                                                    }
+                                                                    shouldAllowCopy
+                                                                    typographyStyle="label"
+                                                                />
+                                                            ),
+                                                        },
+                                                        {
+                                                            label: (
+                                                                <Translation id="TR_CONTRACT_FUNCTION" />
+                                                            ),
+                                                            value: simulationResult.simulation
+                                                                .params?.calldata
+                                                                ?.function_signature,
+                                                        },
+                                                    ].map((item, index) =>
+                                                        item.value ? (
+                                                            <Row
+                                                                key={index}
+                                                                gap={spacings.xs}
+                                                                padding={{
+                                                                    horizontal: spacings.md,
+                                                                    vertical: spacings.sm,
+                                                                }}
+                                                                alignItems="center"
+                                                                justifyContent="flex-start"
+                                                            >
+                                                                <Text flex="1">{item.label}</Text>
+                                                                <Text
+                                                                    flex="2"
+                                                                    wordBreak="break-all"
+                                                                    typographyStyle="label"
+                                                                >
+                                                                    {item.value}
+                                                                </Text>
+                                                            </Row>
+                                                        ) : null,
+                                                    )}
+                                                </Column>
+                                            )}
+                                        </CollapsibleBox>
+                                    </>
+                                )}
+
+                                {simulationResult.validation?.result_type === 'Malicious' && (
+                                    <TxSimulationBanner
+                                        type="error"
+                                        title={<Translation id="TR_SIMULATION_MALICIOUS" />}
+                                        description={simulationResult.validation?.description}
+                                        disclaimerAccepted={disclaimerAccepted}
+                                        setDisclaimerAccepted={setDisclaimerAccepted}
+                                    />
+                                )}
+
+                                {simulationResult.validation?.result_type === 'Warning' && (
+                                    <TxSimulationBanner
+                                        type="warning"
+                                        title={<Translation id="TR_SIMULATION_WARNING" />}
+                                        description={simulationResult.validation?.description}
+                                        disclaimerAccepted={disclaimerAccepted}
+                                        setDisclaimerAccepted={setDisclaimerAccepted}
+                                    />
+                                )}
+
+                                {simulationResult.simulation?.status === 'Error' && (
+                                    <TxSimulationBanner
+                                        type={getSimulationErrorRiskLevel(
+                                            simulationResult.simulation.error,
                                         )}
-                                    </CollapsibleBox>
-                                </>
-                            )}
+                                        title={<Translation id="TR_SIMULATION_ERROR" />}
+                                        description={simulationResult.simulation.error}
+                                        disclaimerAccepted={disclaimerAccepted}
+                                        setDisclaimerAccepted={setDisclaimerAccepted}
+                                    />
+                                )}
+                            </>
+                        )}
 
-                            {simulationResult.validation?.result_type === 'Malicious' && (
-                                <TxSimulationBanner
-                                    type="error"
-                                    title={<Translation id="TR_SIMULATION_MALICIOUS" />}
-                                    description={simulationResult.validation?.description}
-                                    disclaimerAccepted={disclaimerAccepted}
-                                    setDisclaimerAccepted={setDisclaimerAccepted}
-                                />
-                            )}
-
-                            {simulationResult.validation?.result_type === 'Warning' && (
-                                <TxSimulationBanner
-                                    type="warning"
-                                    title={<Translation id="TR_SIMULATION_WARNING" />}
-                                    description={simulationResult.validation?.description}
-                                    disclaimerAccepted={disclaimerAccepted}
-                                    setDisclaimerAccepted={setDisclaimerAccepted}
-                                />
-                            )}
-
-                            {simulationResult.simulation?.status === 'Error' && (
-                                <TxSimulationBanner
-                                    type={getSimulationErrorRiskLevel(
-                                        simulationResult.simulation.error,
-                                    )}
-                                    title={<Translation id="TR_SIMULATION_ERROR" />}
-                                    description={simulationResult.simulation.error}
-                                    disclaimerAccepted={disclaimerAccepted}
-                                    setDisclaimerAccepted={setDisclaimerAccepted}
-                                />
-                            )}
-                        </>
-                    )}
-
-                    {error && (
-                        <TxSimulationBanner
-                            type="error"
-                            title={<Translation id="TR_SIMULATION_ERROR" />}
-                            description={error.message}
-                            disclaimerAccepted={disclaimerAccepted}
-                            setDisclaimerAccepted={setDisclaimerAccepted}
-                        />
-                    )}
-
-                    <Column margin={{ left: spacings.xs }} gap={spacings.md}>
-                        <Text variant="tertiary">
-                            <Translation
-                                id="TR_SIMULATION_POWERED_BY"
-                                values={{
-                                    provider: <Link href="https://blockaid.io">Blockaid</Link>,
-                                }}
-                            />
-                        </Text>
-
-                        {isSigningTransaction && account && (
-                            <Fees
-                                account={account}
-                                feeInfo={feeInfo}
-                                control={control}
-                                register={register}
-                                setValue={setValue}
-                                getValues={getValues}
-                                errors={errors}
-                                isDirty={isDirty}
-                                changeFeeLevel={changeFeeLevel}
-                                trigger={trigger}
+                        {error && (
+                            <TxSimulationBanner
+                                type="error"
+                                title={<Translation id="TR_SIMULATION_ERROR" />}
+                                description={error.message}
+                                disclaimerAccepted={disclaimerAccepted}
+                                setDisclaimerAccepted={setDisclaimerAccepted}
                             />
                         )}
+
+                        <Column margin={{ left: spacings.xs }} gap={spacings.md}>
+                            <Text variant="tertiary">
+                                <Translation
+                                    id="TR_SIMULATION_POWERED_BY"
+                                    values={{
+                                        provider: <Link href="https://blockaid.io">Blockaid</Link>,
+                                    }}
+                                />
+                            </Text>
+
+                            {isSigningTransaction && account && (
+                                <Fees
+                                    account={account}
+                                    feeInfo={feeInfo}
+                                    control={control}
+                                    register={register}
+                                    setValue={setValue}
+                                    getValues={getValues}
+                                    errors={errors}
+                                    isDirty={isDirty}
+                                    changeFeeLevel={changeFeeLevel}
+                                    trigger={trigger}
+                                />
+                            )}
+                        </Column>
                     </Column>
-                </Column>
+                </FormProvider>
             </Modal.ModalBase>
         </ConnectModalBackdrop>
     );

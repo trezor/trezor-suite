@@ -67,6 +67,7 @@ export interface GetDefaultValue {
 export type SendContextValues<TFormValues extends FormState = FormState> =
     UseFormReturn<TFormValues> &
         UseSendFormState & {
+            methods: UseFormReturn<TFormValues>;
             isLoading: boolean;
             feeInfo: FeeInfo;
             // additional fields
