@@ -1,32 +1,37 @@
 import { TradingCountryCode } from '@suite-common/trading';
 
-import {
-    tradingResidenceActions,
-    tradingResidenceInitialState,
-    tradingResidenceReducer,
-} from '../residenceSlice';
+import { tradingResidenceActions, tradingResidenceReducer } from '../residenceSlice';
 
 describe('residenceSlice', () => {
+    it('should return the initial state', () => {
+        const state = tradingResidenceReducer(undefined, { type: 'unknown-action' });
+        expect(state).toEqual({
+            country: undefined,
+            wasOnboardingVisited: false,
+        });
+    });
+
     describe('setResidenceCountry', () => {
         it('should set the residence country', () => {
-            const prevState = { ...tradingResidenceInitialState };
             const country: TradingCountryCode = 'CZ';
+
             const state = tradingResidenceReducer(
-                prevState,
+                undefined,
                 tradingResidenceActions.setResidenceCountry(country),
             );
+
             expect(state.country).toBe(country);
         });
     });
 
     describe('setOnboardingVisited', () => {
         it('should set onboardingCompleted to true', () => {
-            const prevState = { ...tradingResidenceInitialState };
             const state = tradingResidenceReducer(
-                prevState,
+                undefined,
                 tradingResidenceActions.setOnboardingVisited(),
             );
-            expect(state.onboardingCompleted).toBe(true);
+
+            expect(state.wasOnboardingVisited).toBe(true);
         });
     });
 });

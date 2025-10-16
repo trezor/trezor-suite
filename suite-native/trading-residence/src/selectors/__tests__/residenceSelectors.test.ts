@@ -1,6 +1,7 @@
-import type {
+import {
     TradingResidenceRootState,
     TradingResidenceState,
+    tradingResidenceInitialState,
 } from '../../reducers/residenceSlice';
 import {
     selectTradingResidenceCountry,
@@ -8,13 +9,9 @@ import {
 } from '../residenceSelectors';
 
 describe('residenceSelectors', () => {
-    const initialState: TradingResidenceState = {
-        country: 'unknown',
-        onboardingCompleted: false,
-    };
     const visitedState: TradingResidenceState = {
         country: 'US',
-        onboardingCompleted: true,
+        wasOnboardingVisited: true,
     };
 
     const rootState = (residence: TradingResidenceState): TradingResidenceRootState => ({
@@ -23,14 +20,18 @@ describe('residenceSelectors', () => {
 
     describe('selectTradingResidenceCountry', () => {
         it(' should select the country', () => {
-            expect(selectTradingResidenceCountry(rootState(initialState))).toBe('unknown');
+            expect(selectTradingResidenceCountry(rootState(tradingResidenceInitialState))).toBe(
+                undefined,
+            );
             expect(selectTradingResidenceCountry(rootState(visitedState))).toBe('US');
         });
     });
 
     describe('selectWasTradingResidenceOnboardingVisited', () => {
-        it('should select onboardingCompleted', () => {
-            expect(selectWasTradingResidenceOnboardingVisited(rootState(initialState))).toBe(false);
+        it('should select wasOnboardingVisited', () => {
+            expect(
+                selectWasTradingResidenceOnboardingVisited(rootState(tradingResidenceInitialState)),
+            ).toBe(false);
             expect(selectWasTradingResidenceOnboardingVisited(rootState(visitedState))).toBe(true);
         });
     });

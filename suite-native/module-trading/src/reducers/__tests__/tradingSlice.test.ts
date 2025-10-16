@@ -420,7 +420,7 @@ describe('tradingSlice', () => {
                 expect.objectContaining({
                     residence: {
                         country: 'PL',
-                        onboardingCompleted: true,
+                        wasOnboardingVisited: true,
                     },
                 }),
             );

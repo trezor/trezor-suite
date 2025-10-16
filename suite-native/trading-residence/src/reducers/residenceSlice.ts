@@ -3,8 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { TradingCountryCode } from '@suite-common/trading';
 
 export type TradingResidenceState = {
-    country: TradingCountryCode;
-    onboardingCompleted: boolean;
+    country: TradingCountryCode | undefined;
+    wasOnboardingVisited: boolean;
 };
 export type TradingResidenceRootState = {
     wallet: {
@@ -15,8 +15,8 @@ export type TradingResidenceRootState = {
 };
 
 export const tradingResidenceInitialState: TradingResidenceState = {
-    country: 'unknown',
-    onboardingCompleted: false,
+    country: undefined,
+    wasOnboardingVisited: false,
 };
 
 export const TRADING_RESIDENCE = 'tradingResidence';
@@ -29,7 +29,7 @@ const residenceSlice = createSlice({
             state.country = action.payload;
         },
         setOnboardingVisited(state) {
-            state.onboardingCompleted = true;
+            state.wasOnboardingVisited = true;
         },
     },
 });
