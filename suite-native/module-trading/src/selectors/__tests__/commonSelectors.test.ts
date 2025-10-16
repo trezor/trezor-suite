@@ -3,6 +3,7 @@ import type { CryptoId } from 'invity-api';
 import { Action, Feature, Message, TrezorDevice } from '@suite-common/suite-types';
 import {
     InvityServerEnvironment,
+    TradingCountryCode,
     TradingRootStateWithDeviceAndAccounts,
 } from '@suite-common/trading';
 import {
@@ -48,11 +49,15 @@ const getPreloadedState = ({
     sell,
     exchange,
     blacklist,
+    residence,
+    countryCode,
 }: {
     buy?: boolean;
     sell?: boolean;
     exchange?: boolean;
     blacklist?: boolean;
+    residence?: boolean;
+    countryCode?: TradingCountryCode | undefined;
 }) => {
     const features: Feature[] = [];
     if (buy !== undefined) {
@@ -81,7 +86,10 @@ const getPreloadedState = ({
     }
 
     return {
-        featureFlags: featureFlagsInitialState,
+        featureFlags: {
+            ...featureFlagsInitialState,
+            [FeatureFlag.IsTradingResidenceCheckEnabled]: residence ?? false,
+        },
         messageSystem: {
             config: {
                 version: 1,
@@ -128,6 +136,15 @@ const getPreloadedState = ({
             configSource: 'local' as const,
             manuallyAddedMessageIds: {},
             manuallyAddedExperimentIds: {},
+        },
+        wallet: {
+            trading: {
+                ...initialState,
+                residence: {
+                    ...initialState.residence,
+                    country: countryCode,
+                },
+            },
         },
     };
 };
@@ -187,18 +204,36 @@ describe('commonSelectors', () => {
     });
 
     describe('selectIsTradingEnabled', () => {
-        it('should correctly select that trading is enabled if one of remote features is enabled', () => {
-            expect(selectIsTradingEnabled(getPreloadedState({ sell: true }))).toBe(true);
+        describe('when residence check is disabled', () => {
+            it('should correctly select that trading is enabled if one of remote features is enabled', () => {
+                expect(selectIsTradingEnabled(getPreloadedState({ sell: true }))).toBe(true);
+            });
+
+            it('should correctly select that trading is enabled if no remote feature is set', () => {
+                expect(selectIsTradingEnabled(getPreloadedState({}))).toBe(true);
+            });
+
+            it('should correctly select that trading is not enabled when buy and exchange are disabled (and sell is not set)', () => {
+                expect(
+                    selectIsTradingEnabled(getPreloadedState({ buy: false, exchange: false })),
+                ).toBe(false);
+            });
         });
 
-        it('should correctly select that trading is enabled if no remote feature is set', () => {
-            expect(selectIsTradingEnabled(getPreloadedState({}))).toBe(true);
-        });
+        describe('when residence check is enabled', () => {
+            it('should correctly select that trading is not enabled when country is not set', () => {
+                expect(
+                    selectIsTradingEnabled(getPreloadedState({ residence: true, buy: true })),
+                ).toBe(false);
+            });
 
-        it('should correctly select that trading is not enabled when buy and exchange are disabled (and sell is not set)', () => {
-            expect(selectIsTradingEnabled(getPreloadedState({ buy: false, exchange: false }))).toBe(
-                false,
-            );
+            it('should correctly select that trading is enabled when country is whitelisted', () => {
+                expect(
+                    selectIsTradingEnabled(
+                        getPreloadedState({ residence: true, buy: true, countryCode: 'US' }),
+                    ),
+                ).toBe(true);
+            });
         });
     });
 
