@@ -2307,9 +2307,17 @@ export default defineMessages({
         defaultMessage: 'Failed to communicate with your Trezor',
         id: 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT',
     },
-    TR_NEEDS_ATTENTION_DEVICE_BUSY: {
-        defaultMessage: 'Trezor detected in incorrect state. Restart it to reconnect.',
-        id: 'TR_NEEDS_ATTENTION_DEVICE_BUSY',
+    TR_DEVICE_HARD_LOCKED: {
+        defaultMessage: 'Trezor device hard locked, unlock it.',
+        id: 'TR_DEVICE_HARD_LOCKED',
+    },
+    TR_DEVICE_PIN_LOCKED: {
+        defaultMessage: 'Unlock Trezor with PIN',
+        id: 'TR_DEVICE_PIN_LOCKED',
+    },
+    TR_DEVICE_IS_REBOOTING: {
+        defaultMessage: 'Device is rebooting',
+        id: 'TR_DEVICE_IS_REBOOTING',
     },
     TR_DEVICE_CONNECTED_BUSY_BOOTLOADER: {
         defaultMessage: 'Trezor is already in use',
