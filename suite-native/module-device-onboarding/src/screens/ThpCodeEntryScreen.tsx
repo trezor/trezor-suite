@@ -20,7 +20,9 @@ export const ThpCodeEntryScreen = ({
     const thpStep = useSelector(selectThpStep);
 
     useEffect(() => {
-        if (thpStep === null) {
+        if (thpStep === 'BeforeConnectionInfo') {
+            navigation.replace(DeviceOnboardingStackRoutes.ThpPairingInfo);
+        } else if (thpStep === null) {
             navigation.replace(DeviceOnboardingStackRoutes.ThpPairingSuccess);
         }
     }, [thpStep, navigation]);
