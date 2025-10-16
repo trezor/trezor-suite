@@ -32,6 +32,8 @@ import {
 } from '@floating-ui/react';
 import type { Placement, ShiftOptions, UseFloatingReturn } from '@floating-ui/react';
 
+import { spacings } from '@trezor/theme';
+
 /**
  * Based on https://floating-ui.com/docs/tooltip but heavily modified
  */
@@ -85,7 +87,7 @@ export const useTooltip = ({
         const middlewareArray = [
             offset(offsetValue),
             ...(!disableFlip ? [flip()] : []),
-            shiftFloatingUI(shift),
+            shiftFloatingUI(shift || { padding: spacings.xs }),
             arrow({ element: arrowRef }),
         ];
 
