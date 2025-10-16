@@ -2315,10 +2315,6 @@ export default defineMessages({
         defaultMessage: 'Unlock Trezor with PIN',
         id: 'TR_DEVICE_PIN_LOCKED',
     },
-    TR_DEVICE_IS_REBOOTING: {
-        defaultMessage: 'Device is rebooting',
-        id: 'TR_DEVICE_IS_REBOOTING',
-    },
     TR_DEVICE_CONNECTED_BUSY_BOOTLOADER: {
         defaultMessage: 'Trezor is already in use',
         id: 'TR_DEVICE_CONNECTED_BUSY_BOOTLOADER',

@@ -46,9 +46,8 @@ const getDeviceNeedsAttentionMessage = (
             return 'TR_DEVICE_HARD_LOCKED';
         case 'device-pin-locked':
             return 'TR_DEVICE_PIN_LOCKED';
-        case 'device-rebooting':
-            return 'TR_DEVICE_IS_REBOOTING';
 
+        case 'device-rebooting':
         case 'connected':
         case 'disconnected':
         case 'firmware-recommended':
