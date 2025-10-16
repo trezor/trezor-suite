@@ -15,6 +15,7 @@ export type LaunchArguments = {
     isLocalizationEnabled?: boolean;
     isLocalFirstStorageEnabled?: boolean;
     areTradingExchangeDexesEnabled?: boolean;
+    isTradingResidenceCheckEnabled?: boolean;
 };
 
 export const launchArguments = LaunchArguments.value<LaunchArguments>();

@@ -12934,6 +12934,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.9.1"
     "@suite-common/trading": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     react: "npm:19.1.0"
     react-redux: "npm:9.2.0"
   languageName: unknown

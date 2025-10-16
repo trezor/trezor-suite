@@ -20,6 +20,7 @@ describe('featureFlagsSlice', () => {
                 isTradingExchangeEnabled: false,
                 isTradingSellEnabled: false,
                 areTradingExchangeDexesEnabled: false,
+                isTradingResidenceCheckEnabled: false,
                 isLocalizationEnabled: false,
             });
         });
