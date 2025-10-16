@@ -2009,6 +2009,55 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": "25.10.1",
+                        "mobile": "25.10.1",
+                        "web": "25.10.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "35860e8f-88c6-40c2-bb51-725dec2c5e67",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "security.firmware.hashCheck",
+                        "flag": false
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": ">=25.8.0 <25.9.2",
                         "mobile": "!",
                         "web": ">=25.8.0 <25.9.2"
