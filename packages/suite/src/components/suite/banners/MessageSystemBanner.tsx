@@ -4,10 +4,10 @@ import { messageSystemActions, resolveMessageContent } from '@suite-common/messa
 import { Message } from '@suite-common/suite-types';
 import { Banner, BannerProps, Row, Banner as WarningComponent } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage, selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
+import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+
+import { MessageSystemButton } from './MessageSystemButton';
 
 type MessageSystemBannerProps = {
     message: Message;
@@ -16,36 +16,11 @@ type MessageSystemBannerProps = {
 };
 
 export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBannerProps) => {
-    const { cta, variant, id, content, dismissible } = message;
+    const { variant, id, content, dismissible, cta } = message;
 
-    const { isTorEnabled } = useSelector(selectTorState);
     const language = useSelector(selectLanguage);
-    const torOnionLinks = useSelector(state => state.suite.settings.torOnionLinks);
+
     const dispatch = useDispatch();
-
-    const actionConfig = useMemo(() => {
-        if (!cta) return undefined;
-
-        const { action, label, link, anchor } = cta;
-
-        let onClick: () => Window | Promise<void> | null;
-        if (action === 'internal-link') {
-            // @ts-expect-error: impossible to add all href options to the message system config json schema
-            onClick = () => dispatch(goto(link, { anchor, preserveParams: true }));
-        } else if (action === 'external-link') {
-            onClick = () =>
-                window.open(
-                    isTorEnabled && torOnionLinks ? getTorUrlIfAvailable(link) : link,
-                    '_blank',
-                );
-        }
-
-        return {
-            label: resolveMessageContent(label, language) || label.en,
-            onClick: onClick!,
-            'data-testid': `@message-system/${id}/cta`,
-        };
-    }, [id, cta, dispatch, language, isTorEnabled, torOnionLinks]);
 
     const dismissalConfig = useMemo(() => {
         if (!dismissible) return undefined;
@@ -63,14 +38,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
             variant={variant === 'critical' ? 'destructive' : variant}
             rightContent={
                 <Row gap={8}>
-                    {actionConfig && (
-                        <Banner.Button
-                            onClick={actionConfig.onClick}
-                            data-testid={actionConfig['data-testid']}
-                        >
-                            {actionConfig.label}
-                        </Banner.Button>
-                    )}
+                    <MessageSystemButton cta={cta} id={id} />
                     {dismissalConfig && (
                         <WarningComponent.IconButton
                             icon="x"

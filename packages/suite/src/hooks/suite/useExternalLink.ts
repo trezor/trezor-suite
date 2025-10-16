@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/selectors/suite/suiteSelectors';
+import { selectTorOnionLinks, selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 /**
@@ -9,7 +9,7 @@ import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
  */
 export const useExternalLink = (originalUrl?: string) => {
     const { isTorEnabled } = useSelector(selectTorState);
-    const torOnionLinks = useSelector(state => state.suite.settings.torOnionLinks);
+    const torOnionLinks = useSelector(selectTorOnionLinks);
 
     const url = useMemo(() => {
         if (originalUrl && isTorEnabled && torOnionLinks) {

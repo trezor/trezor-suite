@@ -4,6 +4,7 @@ import { usePrevious } from 'react-use';
 import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
+import { Feature, selectFeatureConfig } from '@suite-common/message-system';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
@@ -29,6 +30,8 @@ import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading
 import { TradingDetailFeedback } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
+
+import { TradingDetailSurvey } from '../TradingDetailSurvey';
 
 const Wrapper = styled.div`
     ${TradingWrapper}
@@ -57,6 +60,9 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
 export const TradingDetailExchange = () => {
     const accounts = useSelector(selectAccounts);
     const { account, trade, info } = useTradingDetailContext<TradingExchangeType>();
+    const tradingSurveyFeature = useSelector(state =>
+        selectFeatureConfig(state, Feature.trading.survey),
+    );
     const dispatch = useDispatch();
 
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
@@ -151,13 +157,17 @@ export const TradingDetailExchange = () => {
                         <TradingDetailExchangePaymentSending supportUrl={supportUrl} />
                     )}
                 </Card>
-                <TradingDetailFeedback
-                    status={tradeStatus}
-                    type={trade.tradeType}
-                    provider={provider?.name}
-                    id={trade.data.id}
-                    quoteAmounts={quoteAmounts}
-                />
+                {tradingSurveyFeature ? (
+                    <TradingDetailSurvey />
+                ) : (
+                    <TradingDetailFeedback
+                        status={tradeStatus}
+                        type={trade.tradeType}
+                        provider={provider?.name}
+                        id={trade.data.id}
+                        quoteAmounts={quoteAmounts}
+                    />
+                )}
             </Column>
             <Card>
                 <TradingSelectedOfferInfo

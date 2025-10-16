@@ -9,7 +9,11 @@ import { Banner, Row } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectLanguage, selectTorState } from 'src/selectors/suite/suiteSelectors';
+import {
+    selectLanguage,
+    selectTorOnionLinks,
+    selectTorState,
+} from 'src/selectors/suite/suiteSelectors';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 type ContextMessageProps = {
@@ -20,7 +24,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
     const language = useSelector(selectLanguage);
     const message = useSelector(state => selectContextMessageContent(state, context, language));
     const { isTorEnabled } = useSelector(selectTorState);
-    const torOnionLinks = useSelector(state => state.suite.settings.torOnionLinks);
+    const torOnionLinks = useSelector(selectTorOnionLinks);
     const dispatch = useDispatch();
 
     const dismissalConfig = useMemo(() => {
