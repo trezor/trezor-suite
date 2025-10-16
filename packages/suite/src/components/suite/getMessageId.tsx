@@ -100,11 +100,12 @@ export const getMessageId = ({
         },
         'device-busy': defaultKey, // TODO: device returned Busy error - we don't know exactly why it depends on the workflow
         'device-bootloader-locked': { heading: 'TR_CONFIRM_CONNECTION' },
-        'device-hard-locked': defaultKey, // TODO: device is hard locked and will not respond to messages, unlock it
         'device-disconnect-required': {
             heading: 'TR_INITIAL_RECONNECT_DEVICE_TITLE',
             description: 'TR_INITIAL_RECONNECT_DEVICE_DESCRIPTION',
         },
+        'device-hard-locked': { heading: 'TR_DEVICE_HARD_LOCKED' },
+        'device-pin-locked': { heading: 'TR_DEVICE_PIN_LOCKED' },
         'device-disconnected': defaultKey,
         'device-initialize': defaultKey,
         'device-recovery-mode': defaultKey,
