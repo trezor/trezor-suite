@@ -166,11 +166,11 @@ export const composeTransaction =
         const { account } = selectedAccount;
         const txData = await getTransactionData(formValues, selectedAccount, blockchain);
 
-        let estimatedFee;
-        // it is not needed to estimate fee for empty input
-        if (formValues.cryptoInput) {
-            estimatedFee = await estimateFee(account, txData);
-        }
+        const { amount } = formValues.outputs[0];
+
+        if (!amount || amount === '0') return;
+
+        const estimatedFee = await estimateFee(account, txData);
 
         const { feeInfo } = formState;
         if (!feeInfo) return;

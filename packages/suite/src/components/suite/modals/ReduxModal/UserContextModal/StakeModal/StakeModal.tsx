@@ -1,7 +1,6 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { StakingLimits, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Grid, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -17,17 +16,12 @@ import { StakeInfoCards } from './StakeInfoCards/StakeInfoCards';
 interface StakeModalModalProps {
     onCancel?: () => void;
     selectedAccount: SelectedAccountLoaded;
-    stakingLimits: StakingLimits;
 }
 
-export const StakeModalLoaded = ({
-    onCancel,
-    selectedAccount,
-    stakingLimits,
-}: StakeModalModalProps) => {
+export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalProps) => {
     const { account } = selectedAccount;
 
-    const stakeContextValues = useStakeForm({ selectedAccount, stakingLimits });
+    const stakeContextValues = useStakeForm({ selectedAccount });
     const { isBelowTablet } = useLayoutSize();
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
@@ -45,6 +39,10 @@ export const StakeModalLoaded = ({
             },
         });
     };
+
+    if (!stakeContextValues.stakingLimits) {
+        return null;
+    }
 
     return (
         <StakeFormContext.Provider value={stakeContextValues}>
@@ -81,17 +79,10 @@ export const StakeModal = ({ onCancel }: Pick<StakeModalModalProps, 'onCancel'>)
         return null;
     }
 
-    const stakingLimits = getStakingLimitsByNetworkSymbol(selectedAccount.account.symbol);
-
-    if (!stakingLimits) {
-        return null;
-    }
-
     return (
         <StakeModalLoaded
             onCancel={onCancel}
             selectedAccount={selectedAccount as SelectedAccountLoaded}
-            stakingLimits={stakingLimits}
         />
     );
 };
