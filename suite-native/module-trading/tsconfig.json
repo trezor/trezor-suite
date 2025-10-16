@@ -62,6 +62,7 @@
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../trading-atoms" },
+        { "path": "../trading-residence" },
         { "path": "../transaction-management" },
         {
             "path": "../../packages/blockchain-link-types"

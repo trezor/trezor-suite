@@ -39,7 +39,7 @@ import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/fe
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
 import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
-import { tradingSlice } from '@suite-native/module-trading';
+import { tradingInitialState, tradingSlice } from '@suite-native/module-trading';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
     backfillDeviceAuthenticityChecks,
@@ -100,9 +100,15 @@ export const prepareRootReducers = async () => {
 
     const tradingPersistedReducer = await preparePersistReducer({
         reducer: tradingReducer,
-        persistedKeys: ['favouriteAssets', 'trades', 'settings'],
+        persistedKeys: ['favouriteAssets', 'trades', 'settings', 'residence'],
         key: 'trading',
-        version: 1,
+        version: 2,
+        migrations: {
+            2: (oldState: any) => ({
+                ...oldState,
+                residence: tradingInitialState.residence,
+            }),
+        },
     });
 
     const walletSettingsPersistedReducer = await preparePersistReducer({

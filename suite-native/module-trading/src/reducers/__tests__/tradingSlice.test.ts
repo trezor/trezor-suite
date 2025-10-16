@@ -8,6 +8,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
+import { tradingResidenceActions } from '@suite-native/trading-residence';
 
 import quotes from '../../__fixtures__/buyQuotes.json';
 import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
@@ -403,6 +404,26 @@ describe('tradingSlice', () => {
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
             expect(state.activeTradingType).toBe(undefined);
+        });
+    });
+
+    describe('residence slice', () => {
+        it('should handle residence actions', () => {
+            const actions = [
+                tradingResidenceActions.setResidenceCountry('PL'),
+                tradingResidenceActions.setOnboardingVisited(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state).toEqual(
+                expect.objectContaining({
+                    residence: {
+                        country: 'PL',
+                        wasOnboardingVisited: true,
+                    },
+                }),
+            );
         });
     });
 });
