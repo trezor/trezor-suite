@@ -76,6 +76,7 @@ export const OnboardingCard = ({
                 gap={20}
                 position={{ type: 'relative' }}
                 padding={{ top: iconName ? 48 : 0 }}
+                width="100%"
             >
                 {isBackDropVisible && (
                     <Box
