@@ -1,12 +1,16 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
-import { Button, Icon } from '@trezor/components';
+import { Icon, NewButton } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
-import { NotificationRenderer, NotificationViewProps } from 'src/components/suite';
+import {
+    NotificationRenderer,
+    NotificationViewProps,
+    mapActionVariantToIntent,
+} from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
@@ -34,22 +38,6 @@ const BodyWrapper = styled.div<{ $isTall: boolean }>`
 const Message = styled.div`
     font-weight: ${typography.callout};
     color: ${({ theme }) => theme.textDefault};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }>`
-    ${({ $action }) =>
-        (!$action?.position || $action.position === 'right') &&
-        css`
-            margin-left: 16px;
-        `};
-
-    ${({ $action }) =>
-        $action?.position === 'bottom' &&
-        css`
-            margin-top: 12px;
-            height: 32px;
-        `};
 `;
 
 interface ToastNotificationProps extends NotificationViewProps {
@@ -90,15 +78,22 @@ const ToastNotification = ({
     };
 
     const actionButton = action && (
-        <StyledButton
-            variant={action.variant || 'tertiary'}
+        <NewButton
+            intent={mapActionVariantToIntent(action.variant)}
             onClick={action.onClick}
-            isFullWidth={action.position === 'bottom'}
-            $action={action}
-            size="tiny"
+            size="small"
+            width={action.position === 'bottom' ? '100%' : undefined}
+            margin={
+                // eslint-disable-next-line no-nested-ternary
+                !action.position || action.position === 'right'
+                    ? { left: 16 }
+                    : action.position === 'bottom'
+                      ? { top: 12 }
+                      : undefined
+            }
         >
             <Translation id={action.label} />
-        </StyledButton>
+        </NewButton>
     );
 
     return (

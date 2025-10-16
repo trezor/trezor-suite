@@ -37,7 +37,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                     <Modal.Button onClick={allowPrerelease}>
                         <Translation id="TR_EARLY_ACCESS_DISABLE" />
                     </Modal.Button>
-                    <Modal.Button onClick={hideWindow} variant="tertiary">
+                    <Modal.Button onClick={hideWindow} intent="neutral" priority="secondary">
                         <Translation id="TR_EARLY_ACCESS_STAY_IN" />
                     </Modal.Button>
                 </>
@@ -62,11 +62,11 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
             bottomContent={
                 <>
                     <TrezorLink variant="nostyle" href={SUITE_URL}>
-                        <Modal.Button icon="arrowUpRight" iconAlignment="end">
+                        <Modal.Button iconRight="arrowUpRight">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
                         </Modal.Button>
                     </TrezorLink>
-                    <Modal.Button onClick={hideWindow} variant="tertiary">
+                    <Modal.Button onClick={hideWindow} intent="neutral" priority="secondary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
                     </Modal.Button>
                 </>

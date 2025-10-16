@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Button, ButtonProps } from '@trezor/components';
+import { NewButton, NewButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -39,10 +39,11 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
     const dispatch = useDispatch();
     const openChangelog = () => dispatch(openJustUpdatedChangelog());
     const url = useExternalLink(getReleaseUrl(appVersion));
-    const commonButtonProps: Partial<ButtonProps> = {
+    const commonButtonProps: Partial<NewButtonProps> = {
         'data-testid': '@settings/suite-version',
-        variant: 'tertiary',
-        size: 'tiny',
+        intent: 'neutral',
+        priority: 'secondary',
+        size: 'small',
     } as const;
     const buttonLabel = (
         <>
@@ -59,23 +60,22 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                     version: (
                         <Container>
                             {isDesktop() ? (
-                                <Button
+                                <NewButton
                                     onClick={() => {
                                         openChangelog();
                                     }}
                                     {...commonButtonProps}
                                 >
                                     {buttonLabel}
-                                </Button>
+                                </NewButton>
                             ) : (
-                                <Button
+                                <NewButton
                                     href={url}
-                                    icon="arrowUpRight"
-                                    iconAlignment="end"
+                                    iconRight="arrowUpRight"
                                     {...commonButtonProps}
                                 >
                                     {buttonLabel}
-                                </Button>
+                                </NewButton>
                             )}
                         </Container>
                     ),
@@ -95,14 +95,13 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                                         href={getReleaseUrl(desktopUpdateState.latest.version)}
                                         variant="nostyle"
                                     >
-                                        <Button
-                                            variant="destructive"
-                                            size="tiny"
-                                            icon="arrowUpRight"
-                                            iconAlignment="end"
+                                        <NewButton
+                                            intent="critical"
+                                            size="small"
+                                            iconRight="arrowUpRight"
                                         >
                                             {desktopUpdateState.latest.version}
-                                        </Button>
+                                        </NewButton>
                                     </TrezorLink>
                                 ),
                             }}
@@ -130,28 +129,28 @@ export const VersionWithUpdate = () => {
             {desktopUpdateState.enabled && (
                 <ActionColumn>
                     {desktopUpdateState.state === UpdateState.Checking && (
-                        <ActionButton isDisabled variant="primary">
+                        <ActionButton isDisabled intent="brand">
                             <Translation id="SETTINGS_UPDATE_CHECKING" />
                         </ActionButton>
                     )}
                     {(desktopUpdateState.state === UpdateState.NotAvailable ||
                         desktopUpdateState.state === UpdateState.EarlyAccessDisable) && (
-                        <ActionButton onClick={checkForUpdates} variant="primary">
+                        <ActionButton onClick={checkForUpdates} intent="brand">
                             <Translation id="SETTINGS_UPDATE_CHECK" />
                         </ActionButton>
                     )}
                     {desktopUpdateState.state === UpdateState.Available && (
-                        <ActionButton onClick={maximizeUpdateModal} variant="primary">
+                        <ActionButton onClick={maximizeUpdateModal} intent="brand">
                             <Translation id="SETTINGS_UPDATE_AVAILABLE" />
                         </ActionButton>
                     )}
                     {desktopUpdateState.state === UpdateState.Downloading && (
-                        <ActionButton onClick={maximizeUpdateModal} variant="primary">
+                        <ActionButton onClick={maximizeUpdateModal} intent="brand">
                             <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
                         </ActionButton>
                     )}
                     {desktopUpdateState.state === UpdateState.Ready && (
-                        <ActionButton onClick={installAndRestart} variant="primary">
+                        <ActionButton onClick={installAndRestart} intent="brand">
                             <Translation id="SETTINGS_UPDATE_READY" />
                         </ActionButton>
                     )}

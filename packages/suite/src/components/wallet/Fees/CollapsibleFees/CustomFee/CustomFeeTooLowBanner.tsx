@@ -26,11 +26,7 @@ export const CustomFeeTooLowBanner = memo(function CustomFeeTooLowBannerInner() 
                     icon
                     variant="warning"
                     rightContent={
-                        <LearnMoreButton
-                            textWrap={false}
-                            url={HELP_CENTER_TRANSACTION_FEES_URL}
-                            variant="warning"
-                        />
+                        <LearnMoreButton url={HELP_CENTER_TRANSACTION_FEES_URL} intent="warning" />
                     }
                 >
                     <Translation id="TR_CUSTOM_FEE_WARNING" />

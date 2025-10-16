@@ -176,7 +176,12 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
                         </Modal.Button>
                     )}
 
-                    <Modal.Button size="medium" variant="tertiary" onClick={() => onClose()}>
+                    <Modal.Button
+                        size="medium"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={() => onClose()}
+                    >
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

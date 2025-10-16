@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -40,15 +40,15 @@ const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
     return (
         <CoordinatorVersionContainer>
             Build{' '}
-            <Button
-                variant="tertiary"
-                icon="arrowUpRight"
-                iconAlignment="end"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
+                iconRight="arrowUpRight"
                 href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}
                 margin={{ left: spacings.xxs }}
             >
                 {version.commitHash}
-            </Button>
+            </NewButton>
         </CoordinatorVersionContainer>
     );
 };

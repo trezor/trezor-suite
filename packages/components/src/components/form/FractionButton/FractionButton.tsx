@@ -1,16 +1,11 @@
 import { Tooltip } from '../../Tooltip/Tooltip';
-import { Button } from '../../buttons/Button/Button';
-import { ButtonVariant } from '../../buttons/buttonStyleUtils';
-
-const DEFAULT_VARIANT = 'tertiary';
+import { NewButton } from '../../buttons/NewButton/NewButton';
 
 export type FractionButtonProps = {
     id: string;
     children: React.ReactNode;
     tooltip?: React.ReactNode;
     isDisabled?: boolean;
-    isSubtle?: boolean;
-    variant?: ButtonVariant;
     onClick: () => void;
 };
 
@@ -19,20 +14,18 @@ export const FractionButton = ({
     children,
     tooltip,
     isDisabled,
-    isSubtle,
-    variant,
     onClick,
 }: FractionButtonProps) => (
     <Tooltip key={id} content={tooltip} cursor="pointer">
-        <Button
-            variant={variant ?? DEFAULT_VARIANT}
+        <NewButton
+            intent="neutral"
             type="button"
-            size="tiny"
+            size="small"
             isDisabled={isDisabled}
-            isSubtle={isSubtle}
+            priority="secondary"
             onClick={onClick}
         >
             {children}
-        </Button>
+        </NewButton>
     </Tooltip>
 );

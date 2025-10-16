@@ -110,7 +110,8 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                     {!isDisabling && (
                         <Modal.Button
                             data-testid="@tor-loading-screen/disable-button"
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             onClick={disableTor}
                         >
                             <Translation id="TR_TOR_DISABLE" />
@@ -119,9 +120,10 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                     {isTorError && (
                         <Modal.Button
                             data-testid="@tor-loading-screen/try-again-button"
-                            icon="repeat"
+                            iconLeft="repeat"
                             onClick={tryAgain}
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                         >
                             <Translation id="TR_TRY_AGAIN" />
                         </Modal.Button>

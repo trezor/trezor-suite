@@ -4,7 +4,7 @@ import { BuyTrade, BuyTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { invityAPI } from '@suite-common/trading';
-import { Button, Image, variables } from '@trezor/components';
+import { Image, NewButton, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -86,14 +86,14 @@ export const TradingDetailBuyPaymentWaitingForUser = ({
             <Description>
                 <Translation id={translations.descriptionTranslationId} values={{ providerName }} />
             </Description>
-            <Button
+            <NewButton
                 onClick={goToPayment}
                 isLoading={isWorking}
                 isDisabled={isWorking}
                 margin={{ top: spacings.xxl }}
             >
                 <Translation id={translations.buttonTextTranslationId} />
-            </Button>
+            </NewButton>
             {/* TODO add a possibility in the future to cancel the transaction by the user */}
         </Wrapper>
     );

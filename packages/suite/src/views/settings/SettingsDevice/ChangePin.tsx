@@ -31,7 +31,7 @@ export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
                 <ActionButton
                     onClick={handleClick}
                     isDisabled={isDeviceLocked}
-                    variant="primary"
+                    intent="brand"
                     isTooltipActive={isDeviceLocked}
                     tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >

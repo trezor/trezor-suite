@@ -45,7 +45,8 @@ export const BluetoothEraseBonds = ({ isDeviceLocked }: BluetoothEraseBondsProps
                     onClick={onEraseClick}
                     isLoading={inProgress}
                     isDisabled={inProgress || isDeviceLocked}
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                 >
                     <Translation id="TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR" />
                 </ActionButton>

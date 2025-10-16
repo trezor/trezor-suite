@@ -38,7 +38,8 @@ export const DeviceTutorialStep = () => {
                 isActionAbortable && (
                     <OnboardingCard.Button
                         data-testid="@tutorial/skip-button"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         onClick={handleSkipClick}
                     >
                         <Translation id="TR_SKIP" />

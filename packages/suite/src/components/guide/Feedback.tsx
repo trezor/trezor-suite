@@ -9,7 +9,7 @@ import {
     buildUserFeedbackData,
     sendFeedbackAction,
 } from '@suite-common/feedback';
-import { Button, CollapsibleBox, Select, Textarea, variables } from '@trezor/components';
+import { CollapsibleBox, NewButton, Select, Textarea, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx } from '@trezor/theme';
 
@@ -217,9 +217,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     maxLength={MESSAGE_CHARACTER_LIMIT}
                 />
 
-                <Button
-                    isFullWidth
-                    margin={{ bottom: 20 }}
+                <NewButton
                     onClick={onSubmit}
                     isDisabled={
                         description.length === 0 ||
@@ -227,9 +225,11 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         (type === 'BUG' && category === undefined)
                     }
                     data-testid="@guide/feedback/submit-button"
+                    width="100%"
+                    margin={{ bottom: 20 }}
                 >
                     <Translation id="TR_GUIDE_FEEDBACK_SEND_REPORT" />
-                </Button>
+                </NewButton>
 
                 <CollapsibleBox heading={<Translation id="TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE" />}>
                     <AnonymousDataList>

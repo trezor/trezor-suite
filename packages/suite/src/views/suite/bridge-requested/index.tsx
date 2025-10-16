@@ -53,7 +53,8 @@ export const BridgeRequested = () => {
                             <Translation id="TR_YES_CONTINUE" />
                         </Modal.Button>
                         <Modal.Button
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             onClick={() => setConfirmGoToWallet(false)}
                         >
                             <Translation id="TR_CANCEL" />
@@ -77,8 +78,9 @@ export const BridgeRequested = () => {
             bottomContent={
                 <>
                     <Modal.Button
-                        icon="caretLeft"
-                        variant="tertiary"
+                        iconLeft="caretLeft"
+                        intent="neutral"
+                        priority="secondary"
                         onClick={() => setConfirmGoToWallet(true)}
                         data-testid="@bridge/goto/wallet-index"
                     >

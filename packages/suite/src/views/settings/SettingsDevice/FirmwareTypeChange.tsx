@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { firmwareActions } from '@suite-common/firmware';
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 import {
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
@@ -64,14 +64,14 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                 values={{
                                     version: (
                                         <TrezorLink href={HELP_FIRMWARE_TYPE} variant="nostyle">
-                                            <Button
-                                                variant="tertiary"
-                                                size="tiny"
-                                                icon="arrowUpRight"
-                                                iconAlignment="end"
+                                            <NewButton
+                                                intent="neutral"
+                                                priority="secondary"
+                                                size="small"
+                                                iconRight="arrowUpRight"
                                             >
                                                 <Translation id={currentFwType} />
-                                            </Button>
+                                            </NewButton>
                                         </TrezorLink>
                                     ),
                                 }}
@@ -85,7 +85,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
             {!bitcoinOnlyDevice && (
                 <ActionColumn>
                     <ActionButton
-                        variant="primary"
+                        intent="brand"
                         onClick={handleAction}
                         data-testid="@settings/device/switch-fw-type-button"
                         isDisabled={isDeviceLocked}

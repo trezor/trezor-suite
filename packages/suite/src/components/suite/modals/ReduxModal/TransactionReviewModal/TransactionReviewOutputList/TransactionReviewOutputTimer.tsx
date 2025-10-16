@@ -2,7 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { Badge, Banner, Button, Text } from '@trezor/components';
+import { Badge, Banner, NewButton, Text } from '@trezor/components';
 import { useClickCooldown } from '@trezor/react-utils';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
@@ -30,16 +30,17 @@ export const TransactionReviewOutputTimer = ({
     if (isMinimal) {
         return (
             <>
-                <Button
-                    icon="repeat"
-                    variant="tertiary"
+                <NewButton
+                    iconLeft="repeat"
+                    intent="neutral"
+                    priority="secondary"
                     type="button"
-                    size="tiny"
+                    size="small"
                     isDisabled={isSending || disabled}
                     onClick={() => handleClick(() => onTryAgain(true))}
                 >
                     <Translation id="TR_RETRY" />
-                </Button>
+                </NewButton>
                 <Badge variant="warning">
                     <TimerBox>
                         {isSending ? (

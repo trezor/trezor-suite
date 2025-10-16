@@ -1,4 +1,4 @@
-import { Button, Column } from '@trezor/components';
+import { Column, NewButton } from '@trezor/components';
 
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
@@ -9,9 +9,13 @@ export const DeviceConnect = () => {
 
     return (
         <Column alignItems="center" margin={{ bottom: 40 }}>
-            <Button minWidth={240} size="large" onClick={() => dispatch(toggleConnectionModal())}>
+            <NewButton
+                minWidth={240}
+                size="large"
+                onClick={() => dispatch(toggleConnectionModal())}
+            >
                 <Translation id="TR_CONNECT" />
-            </Button>
+            </NewButton>
         </Column>
     );
 };

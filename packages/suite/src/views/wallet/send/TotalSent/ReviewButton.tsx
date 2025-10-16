@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
-import { Banner, Button, Checkbox, Tooltip, variables } from '@trezor/components';
+import { Banner, Checkbox, Column, NewButton, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -18,23 +18,6 @@ const Container = styled.div`
     grid-column: 1 / 3;
     gap: ${spacingsPx.md};
 `;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ButtonReview = styled(Button)<{ $isRed: boolean }>`
-    background: ${({ $isRed, theme }) => $isRed && theme.legacy.BUTTON_RED};
-    display: flex;
-    flex-direction: column;
-    min-width: 200px;
-
-    &:disabled {
-        background: ${({ theme }) => theme.legacy.STROKE_GREY};
-    }
-
-    &:hover {
-        background: ${({ $isRed, theme }) => $isRed && theme.legacy.BUTTON_RED_HOVER};
-    }
-`;
-
 const TooltipHeading = styled.p`
     opacity: 0.6;
 `;
@@ -188,19 +171,22 @@ export const ReviewButton = () => {
             )}
 
             <Tooltip content={tooltipContent}>
-                <ButtonReview
-                    $isRed={anonymityWarningChecked}
+                <NewButton
+                    intent={anonymityWarningChecked ? 'critical' : 'brand'}
                     data-testid="@send/review-button"
                     isDisabled={isDisabled || isLoading}
                     onClick={handleButtonReviewClick}
+                    minWidth={200}
                 >
-                    <Translation id={getPrimaryText()} />
-                    {buttonHasTwoLines && (
-                        <SecondLine>
-                            <Translation id={secondaryText} />
-                        </SecondLine>
-                    )}
-                </ButtonReview>
+                    <Column alignItems="center" gap={4}>
+                        <Translation id={getPrimaryText()} />
+                        {buttonHasTwoLines && (
+                            <SecondLine>
+                                <Translation id={secondaryText} />
+                            </SecondLine>
+                        )}
+                    </Column>
+                </NewButton>
             </Tooltip>
         </Container>
     );

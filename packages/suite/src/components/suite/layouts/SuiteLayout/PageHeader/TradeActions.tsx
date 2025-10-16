@@ -3,7 +3,7 @@ import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { breakpoints, spacings } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
@@ -77,15 +77,15 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
 
     return (
-        <Row gap={spacings.xxs}>
+        <Row gap={8}>
             <AppNavigationTooltip>
                 <ConditionalRender container="content" minWidth={breakpoints.laptop}>
                     <HeaderActionButton
                         icon="currencyCircleDollar"
                         onClick={onBuyAndSellClick}
                         data-testid="@wallet/menu/wallet-trading-buy"
-                        variant="tertiary"
-                        size="small"
+                        intent="neutral"
+                        priority="secondary"
                         isDisabled={isAccountLoading}
                     >
                         <Translation id="TR_TRADING_BUY_AND_SELL" />
@@ -97,8 +97,8 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                             icon="arrowsLeftRight"
                             onClick={onSwapClick}
                             data-testid="@wallet/menu/wallet-trading-exchange"
-                            variant="tertiary"
-                            size="small"
+                            intent="neutral"
+                            priority="secondary"
                             isDisabled={isAccountLoading}
                         >
                             <Translation id="TR_TRADING_SWAP" />

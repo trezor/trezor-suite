@@ -35,7 +35,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
                     >
                         <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

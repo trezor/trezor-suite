@@ -42,7 +42,12 @@ export const ThpAutoconnectInfoModal = ({ device }: ThpAutoconnectInfoModalParam
                     >
                         <Translation id="TR_THP_TURN_ON_AUTO_CONNECT" />
                     </Modal.Button>
-                    <Modal.Button onClick={onCancel} variant="tertiary" isDisabled={isLoading}>
+                    <Modal.Button
+                        onClick={onCancel}
+                        intent="neutral"
+                        priority="secondary"
+                        isDisabled={isLoading}
+                    >
                         <Translation id="TR_THP_TURN_ON_AUTO_CONNECT_NO_THANKS" />
                     </Modal.Button>
                 </>

@@ -4,18 +4,15 @@ import { useDispatch } from 'react-redux';
 import { selectDeviceThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import {
-    Button,
     Card,
     Column,
     ElevationUp,
-    HotkeyBadge,
-    Icon,
     IconButton,
+    NewButton,
     Row,
     Text,
     Tooltip,
 } from '@trezor/components';
-import { CardButton } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
@@ -79,8 +76,13 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         />
                     </Row>
                     <Column gap={spacings.xs}>
-                        <CardButton
+                        <NewButton
                             data-testid="@switch-device/add-new-hidden-wallet-button"
+                            intent="brand"
+                            priority="secondary"
+                            size="large"
+                            iconLeft="plusCircleFilled"
+                            width="100%"
                             isDisabled={isLocked}
                             onClick={() =>
                                 onAddWallet({
@@ -88,15 +90,15 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                                 })
                             }
                         >
-                            <Row gap={spacings.md} alignItems="center">
-                                <Icon name="plusCircleFilled" variant="primary" />
-                                <Text variant="primary" typographyStyle="highlight">
-                                    <Translation id="TR_NEW_PASSPHRASE_WALLET" />
-                                </Text>
-                            </Row>
-                        </CardButton>
-                        <CardButton
+                            <Translation id="TR_NEW_PASSPHRASE_WALLET" />
+                        </NewButton>
+                        <NewButton
                             data-testid="@switch-device/add-existing-hidden-wallet-button"
+                            intent="neutral"
+                            priority="secondary"
+                            size="large"
+                            iconLeft="folderOpen"
+                            width="100%"
                             isDisabled={isLocked}
                             onClick={() =>
                                 onAddWallet({
@@ -104,21 +106,10 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                                     isExisting: true,
                                 })
                             }
+                            shortcut={!isLocked ? ['⌥', 'P'] : undefined}
                         >
-                            <Row
-                                gap={spacings.md}
-                                alignItems="center"
-                                justifyContent="space-between"
-                            >
-                                <Row gap={spacings.md} alignItems="center">
-                                    <Icon name="folderOpen" variant="tertiary" />
-                                    <Text variant="tertiary">
-                                        <Translation id="TR_OPEN_PREVIOUSLY_USED_WALLET" />
-                                    </Text>
-                                </Row>
-                                {!isLocked && <HotkeyBadge hotkey={['ALT', 'KEY_P']} />}
-                            </Row>
-                        </CardButton>
+                            <Translation id="TR_OPEN_PREVIOUSLY_USED_WALLET" />
+                        </NewButton>
                     </Column>
                 </Column>
             </ElevationUp>
@@ -133,32 +124,36 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         >
             <Column flex="1" gap={spacings.xs} alignItems="center">
                 {!emptyPassphraseWalletExists && (
-                    <Button
+                    <NewButton
                         data-testid="@switch-device/add-wallet-button"
-                        variant="tertiary"
-                        isFullWidth
-                        icon="plus"
+                        intent="neutral"
+                        priority="secondary"
+                        width="100%"
+                        size="large"
+                        iconLeft="plus"
                         isDisabled={isLocked}
                         onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
                     >
                         <Translation id="TR_ADD_WALLET" />
-                    </Button>
+                    </NewButton>
                 )}
 
                 {isPassphraseProtectionEnabled &&
                     (isPassphraseExpanded ? (
                         <ExpandedPassphraseContainer />
                     ) : (
-                        <Button
+                        <NewButton
                             data-testid="@switch-device/add-hidden-wallet-button"
-                            variant="tertiary"
-                            isFullWidth
-                            icon="plus"
+                            intent="neutral"
+                            priority="secondary"
+                            width="100%"
+                            size="large"
+                            iconLeft="plus"
                             isDisabled={isLocked}
                             onClick={() => setIsPassphraseExpanded(true)}
                         >
                             <Translation id="TR_ADD_HIDDEN_WALLET" />
-                        </Button>
+                        </NewButton>
                     ))}
             </Column>
         </Tooltip>

@@ -1,6 +1,6 @@
 import { resolveMessageContent } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
-import { Banner, ButtonProps } from '@trezor/components';
+import { Banner, NewButtonProps } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -14,7 +14,7 @@ import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 type MessageSystemButtonProps = {
     cta?: Message['cta'];
     id?: Message['id'];
-} & Pick<ButtonProps, 'icon' | 'iconAlignment' | 'iconSize' | 'size'>;
+} & Pick<NewButtonProps, 'iconLeft' | 'iconRight' | 'size'>;
 
 export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonProps) => {
     const { isTorEnabled } = useSelector(selectTorState);

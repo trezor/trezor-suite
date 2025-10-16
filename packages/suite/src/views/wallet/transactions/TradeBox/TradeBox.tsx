@@ -2,7 +2,7 @@ import { Route } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
+import { Card, Flex, InfoItem, NewButton, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { CoinLogo } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -43,8 +43,9 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
         const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
 
         return (
-            <Button
-                variant="tertiary"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
                 size="small"
                 onClick={() => {
                     dispatch(goto(gotoRouteName, { preserveParams: true }));
@@ -85,7 +86,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 isDisabled={isDisabled}
             >
                 {children}
-            </Button>
+            </NewButton>
         );
     };
 

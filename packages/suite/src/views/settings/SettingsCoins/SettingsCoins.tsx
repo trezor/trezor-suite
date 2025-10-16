@@ -8,7 +8,7 @@ import {
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Button, Column, Tooltip, motionEasing } from '@trezor/components';
+import { Column, NewButton, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -165,13 +165,13 @@ export const SettingsCoins = () => {
                                 isActive={isDeviceLocked}
                                 content={<Translation id="TR_CONNECT_YOUR_DEVICE" />}
                             >
-                                <Button
+                                <NewButton
                                     data-testid="@settings-coins/discovery-button"
                                     onClick={startDiscovery}
                                     isDisabled={isDeviceLocked}
                                 >
                                     <Translation id="TR_DISCOVERY_NEW_COINS" />
-                                </Button>
+                                </NewButton>
                             </Tooltip>
                         </DiscoveryButtonWrapper>
                     </motion.div>

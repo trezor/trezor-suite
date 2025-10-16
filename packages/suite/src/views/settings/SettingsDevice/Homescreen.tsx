@@ -95,7 +95,8 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const cancelButton = (
         <ActionButton
-            variant="tertiary"
+            intent="neutral"
+            priority="secondary"
             onClick={resetUpload}
             isDisabled={isDeviceLocked}
             isTooltipActive={isDeviceLocked}

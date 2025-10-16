@@ -133,7 +133,7 @@ export const TransactionReviewModalBottomContent = ({
 
     if (isRbfConfirmedError) {
         return (
-            <Modal.Button variant="tertiary" onClick={onCancel}>
+            <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                 <Translation id="TR_CLOSE" />
             </Modal.Button>
         );
@@ -142,10 +142,10 @@ export const TransactionReviewModalBottomContent = ({
     if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
         return (
             <>
-                <Modal.Button variant="primary" onClick={() => handleTryAgain(false)}>
+                <Modal.Button onClick={() => handleTryAgain(false)}>
                     <Translation id="TR_TRY_AGAIN" />
                 </Modal.Button>
-                <Modal.Button variant="tertiary" onClick={onCancel}>
+                <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                     <Translation id="TR_CLOSE" />
                 </Modal.Button>
             </>
@@ -166,7 +166,7 @@ export const TransactionReviewModalBottomContent = ({
                 data-testid="@modal/send"
                 isDisabled={!serializedTx || hasTxExpired}
                 isLoading={isSending}
-                variant={isCancelRbfAction ? 'destructive' : 'primary'}
+                intent={isCancelRbfAction ? 'critical' : 'brand'}
                 onClick={handleSend}
             >
                 <Translation {...actionTranslation} />
@@ -183,7 +183,12 @@ export const TransactionReviewModalBottomContent = ({
             >
                 <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
             </Modal.Button>
-            <Modal.Button variant="tertiary" isDisabled={!serializedTx} onClick={handleDownload}>
+            <Modal.Button
+                intent="neutral"
+                priority="secondary"
+                isDisabled={!serializedTx}
+                onClick={handleDownload}
+            >
                 <Translation id="DOWNLOAD_TRANSACTION" />
             </Modal.Button>
         </>

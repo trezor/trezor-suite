@@ -14,7 +14,7 @@ export const MoreRoundsNeededModal = () => {
         <Modal
             onCancel={close}
             bottomContent={
-                <Modal.Button variant="tertiary" onClick={close}>
+                <Modal.Button intent="neutral" priority="secondary" onClick={close}>
                     <Translation id="TR_CLOSE" />
                 </Modal.Button>
             }

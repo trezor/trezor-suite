@@ -67,7 +67,7 @@ export const WalletConnectSwitchAccountModal = ({
         <Modal
             bottomContent={
                 <>
-                    <Modal.Button variant="primary" onClick={handleSwitch}>
+                    <Modal.Button intent="brand" onClick={handleSwitch}>
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
                 </>

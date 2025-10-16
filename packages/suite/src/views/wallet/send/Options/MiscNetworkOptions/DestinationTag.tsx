@@ -2,7 +2,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { Banner, Button, Column, Input, Note, Row, Switch } from '@trezor/components';
+import { Banner, Column, Input, NewButton, Note, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -81,9 +81,15 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
                     onChange={handleToggleOption}
                     label={<Translation id="DESTINATION_TAG_SWITCH" />}
                 />
-                <Button variant="tertiary" type="button" size="tiny" onClick={handleOpenGuide}>
+                <NewButton
+                    intent="neutral"
+                    priority="secondary"
+                    type="button"
+                    size="small"
+                    onClick={handleOpenGuide}
+                >
                     <Translation id="DESTINATION_TAG_GUIDE_LINK" />
-                </Button>
+                </NewButton>
             </Row>
             {destinationEnabled ? (
                 <>

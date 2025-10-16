@@ -27,7 +27,7 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
                     <Modal.Button onClick={install}>
                         <Translation id="TR_UPDATE_MODAL_INSTALL_AND_RESTART" />
                     </Modal.Button>
-                    <Modal.Button onClick={installOnQuit} variant="tertiary">
+                    <Modal.Button onClick={installOnQuit} intent="neutral" priority="secondary">
                         <Translation id="TR_UPDATE_MODAL_UPDATE_ON_QUIT" />
                     </Modal.Button>
                 </>

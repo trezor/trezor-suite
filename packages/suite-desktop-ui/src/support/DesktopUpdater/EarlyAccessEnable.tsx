@@ -41,7 +41,8 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     </Modal.Button>
                     <Modal.Button
                         onClick={hideWindow}
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         data-testid="@settings/early-access-skip-button"
                     >
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
@@ -81,7 +82,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                             <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
                         </Modal.Button>
                     </Tooltip>
-                    <Modal.Button variant="tertiary" onClick={hideWindow}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={hideWindow}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

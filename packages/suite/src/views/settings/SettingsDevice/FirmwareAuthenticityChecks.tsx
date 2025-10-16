@@ -53,7 +53,7 @@ export const FirmwareAuthenticityChecks = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={handleClick}
-                    variant={areAllFirmwareChecksEnabled ? 'destructive' : 'primary'}
+                    intent={areAllFirmwareChecksEnabled ? 'critical' : 'brand'}
                     data-testid="@settings/device/open-firmware-revision-check-modal-button"
                 >
                     <Translation

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, NewButton, Paragraph } from '@trezor/components';
 import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -120,7 +120,11 @@ export const PasswordEntry = ({
                             >
                                 <Translation id="TR_CONFIRM" />
                             </Modal.Button>
-                            <Modal.Button onClick={() => setConfirmRemove(null)} variant="tertiary">
+                            <Modal.Button
+                                onClick={() => setConfirmRemove(null)}
+                                intent="neutral"
+                                priority="secondary"
+                            >
                                 <Translation id="TR_CANCEL" />
                             </Modal.Button>
                         </>
@@ -144,37 +148,44 @@ export const PasswordEntry = ({
                 </PasswordEntryCol>
                 <PasswordEntryCol>
                     {decryptedPassword === null && (
-                        <Button size="tiny" onClick={decrypt} type="button" variant="tertiary">
+                        <NewButton
+                            size="small"
+                            onClick={decrypt}
+                            type="button"
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             {inProgress ? '....' : 'decrypt'}
-                        </Button>
+                        </NewButton>
                     )}
                     {decryptedPassword !== null && (
                         <>
                             {formActive === index && (
                                 <Row>
-                                    <Button
-                                        size="tiny"
+                                    <NewButton
+                                        size="small"
                                         onClick={() => {
                                             setConfirmRemove(index);
                                         }}
                                         type="button"
-                                        variant="destructive"
+                                        intent="critical"
                                     >
                                         Remove
-                                    </Button>
+                                    </NewButton>
                                 </Row>
                             )}
                             {formActive === null && (
                                 <Row>
-                                    <Button
-                                        size="tiny"
+                                    <NewButton
+                                        size="small"
                                         onClick={() => setFormActive(index)}
                                         type="button"
-                                        variant="tertiary"
-                                        icon="pencil"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        iconLeft="pencil"
                                     >
                                         Edit
-                                    </Button>
+                                    </NewButton>
                                 </Row>
                             )}
                         </>

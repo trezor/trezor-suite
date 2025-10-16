@@ -84,7 +84,7 @@ export const CancelTransactionModal = ({
                 heading={<Translation id="TR_TRANSACTION_DETAILS" />}
                 bottomContent={
                     isTxConfirmed ? (
-                        <Modal.Button variant="tertiary" onClick={onCancel}>
+                        <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                             <Translation id="TR_CLOSE_WINDOW" />
                         </Modal.Button>
                     ) : (

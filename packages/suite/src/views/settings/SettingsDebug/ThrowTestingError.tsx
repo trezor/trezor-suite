@@ -10,7 +10,7 @@ export const ThrowTestingError = () => (
         />
         <ActionColumn>
             <ActionButton
-                variant="destructive"
+                intent="critical"
                 onClick={() => {
                     throw new Error(`TESTING ERROR ${Date.now()}`);
                 }}

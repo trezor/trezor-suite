@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
-import { Button, variables } from '@trezor/components';
+import { NewButton, variables } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
@@ -117,9 +117,14 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                 {allFailed ? (
                     <ErrorMessage>
                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                        <Button onClick={onRefresh} icon="repeat" variant="tertiary">
+                        <NewButton
+                            onClick={onRefresh}
+                            iconLeft="repeat"
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             <Translation id="TR_RETRY" />
-                        </Button>
+                        </NewButton>
                     </ErrorMessage>
                 ) : (
                     <TransactionsGraph

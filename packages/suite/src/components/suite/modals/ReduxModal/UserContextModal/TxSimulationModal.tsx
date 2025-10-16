@@ -330,7 +330,6 @@ export const TxSimulationModal = () => {
                 bottomContent={
                     <>
                         <Modal.Button
-                            variant="primary"
                             onClick={onConfirm}
                             data-testid="@tx-simulation-modal/confirm-button"
                             isDisabled={isLoading || (needsDisclaimer && !disclaimerAccepted)}
@@ -338,7 +337,8 @@ export const TxSimulationModal = () => {
                             <Translation id="TR_CONFIRM" />
                         </Modal.Button>
                         <Modal.Button
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             onClick={onCancel}
                             data-testid="@tx-simulation-modal/cancel-button"
                         >

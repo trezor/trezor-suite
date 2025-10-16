@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
+import { Column, DotIndicator, Input, List, NewButton, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -51,14 +51,15 @@ export function BackendUrls({
                                     {url}
                                 </Text>
                                 {isEditable && (
-                                    <Button
-                                        variant="tertiary"
-                                        size="tiny"
-                                        icon="trash"
+                                    <NewButton
+                                        intent="neutral"
+                                        priority="secondary"
+                                        size="small"
+                                        iconLeft="trash"
                                         onClick={() => removeUrl(url)}
                                     >
                                         <Translation id="TR_REMOVE" />
-                                    </Button>
+                                    </NewButton>
                                 )}
                             </Row>
                         </List.Item>
@@ -75,10 +76,10 @@ export function BackendUrls({
                         innerRef={inputRef}
                         maxLength={2048}
                         rightContent={
-                            <Button
-                                variant="primary"
-                                size="tiny"
-                                icon="plus"
+                            <NewButton
+                                intent="brand"
+                                size="small"
+                                iconLeft="plus"
                                 data-testid="@settings/advance/button/add"
                                 onClick={() => {
                                     addUrl(input.value);
@@ -87,7 +88,7 @@ export function BackendUrls({
                                 isDisabled={!!input.error || input.value === ''}
                             >
                                 <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
-                            </Button>
+                            </NewButton>
                         }
                         {...inputField}
                     />

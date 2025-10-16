@@ -8,13 +8,13 @@ import { Network, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import {
-    Button,
     Column,
     Divider,
     Icon,
     InfoSegments,
     List,
     Modal,
+    NewButton,
     Paragraph,
     Row,
     Select,
@@ -309,7 +309,7 @@ export const TradingDCAModal = ({ device, onCancel }: TradingDCAModalProps) => {
                             network={network}
                             addressLabels={accountMetadata.addressLabels}
                         />
-                        <Button
+                        <NewButton
                             isDisabled={!selectedAddress}
                             onClick={handleConfirmAddressClick}
                             isLoading={isDeviceLocked}
@@ -317,7 +317,7 @@ export const TradingDCAModal = ({ device, onCancel }: TradingDCAModalProps) => {
                             <Text>
                                 <Translation id="TR_CONFIRM_ON_TREZOR" />
                             </Text>
-                        </Button>
+                        </NewButton>
                     </Column>
                 </>
             ) : null,

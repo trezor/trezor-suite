@@ -38,8 +38,8 @@ export const FirmwareTypeSuggestion = () => {
                         button: chunks => (
                             <Banner.Button
                                 margin={{ horizontal: 2 }}
-                                variant="info"
-                                size="tiny"
+                                intent="info"
+                                size="small"
                                 onClick={goToFirmwareType}
                             >
                                 {chunks}

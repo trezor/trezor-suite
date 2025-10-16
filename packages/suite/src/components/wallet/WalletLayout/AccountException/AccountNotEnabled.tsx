@@ -32,7 +32,7 @@ export const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
             iconVariant="warning"
             actions={[
                 {
-                    icon: 'plus',
+                    iconLeft: 'plus',
                     key: '1',
                     isLoading: isLocked(),
                     onClick: handleClick,

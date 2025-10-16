@@ -26,7 +26,7 @@ export const ConnectLabelingProvider = () => {
                     }
                 >
                     <ActionButton
-                        variant="primary"
+                        intent="brand"
                         onClick={handleClick}
                         isDisabled={!isDeviceConnected}
                         data-testid="@settings/metadata/connect-provider-button"

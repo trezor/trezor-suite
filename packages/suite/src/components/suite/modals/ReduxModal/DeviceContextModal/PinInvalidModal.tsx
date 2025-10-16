@@ -16,7 +16,7 @@ export const PinInvalidModal = ({ onCancel }: { onCancel: () => void }) => {
                 size="tiny"
                 bottomContent={
                     <>
-                        <Modal.Button onClick={onCancel} variant="tertiary">
+                        <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">
                             <Translation id="TR_CANCEL" />
                         </Modal.Button>
                     </>

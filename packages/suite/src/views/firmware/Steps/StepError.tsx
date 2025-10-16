@@ -12,7 +12,7 @@ export const StepError = ({ onClose, error }: StepErrorProps) => (
         onCancel={onClose}
         data-testid="@firmware-modal"
         bottomContent={
-            <Modal.Button variant="tertiary" onClick={onClose}>
+            <Modal.Button intent="neutral" priority="secondary" onClick={onClose}>
                 <Translation id="TR_CLOSE" />
             </Modal.Button>
         }

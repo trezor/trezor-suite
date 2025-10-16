@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Box, Button, Column, Row } from '@trezor/components';
+import { Box, Column, NewButton, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
@@ -42,25 +42,25 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
                 <Row justifyContent="space-between">
                     <SmallDeviceItem />
                     <Row gap={12}>
-                        <Button
-                            variant="tertiary"
-                            icon="arrowUpRight"
-                            iconAlignment="end"
+                        <NewButton
+                            intent="neutral"
+                            priority="secondary"
+                            iconRight="arrowUpRight"
                             size="small"
                             href={TREZOR_SUPPORT_URL}
                         >
                             <Translation id="TR_HELP" />
-                        </Button>
+                        </NewButton>
                         {onCancelHandler !== null ? (
-                            <Button
-                                variant="tertiary"
-                                icon="x"
-                                iconAlignment="end"
+                            <NewButton
+                                intent="neutral"
+                                priority="secondary"
+                                iconRight="x"
                                 size="small"
                                 onClick={onCancelHandler}
                             >
                                 <Translation id="TR_CANCEL" />
-                            </Button>
+                            </NewButton>
                         ) : null}
                     </Row>
                 </Row>

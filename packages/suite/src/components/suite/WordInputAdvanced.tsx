@@ -2,11 +2,11 @@ import { useCallback, useEffect } from 'react';
 
 import {
     Banner,
-    Button,
     Card,
     Column,
     Grid,
     KEYBOARD_CODE,
+    NewButton,
     Paragraph,
     PinButton,
 } from '@trezor/components';
@@ -101,12 +101,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                 variant="info"
                 icon="question"
                 rightContent={
-                    <Banner.Button
-                        href={learnMoreUrl}
-                        icon="arrowUpRight"
-                        iconAlignment="end"
-                        size="tiny"
-                    >
+                    <Banner.Button href={learnMoreUrl} iconRight="arrowUpRight" size="small">
                         <Translation id="TR_LEARN_MORE" />
                     </Banner.Button>
                 }
@@ -149,9 +144,15 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                             </>
                         )}
                     </Grid>
-                    <Button variant="tertiary" onClick={backspace} size="small" icon="caretLeft">
+                    <NewButton
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={backspace}
+                        size="small"
+                        iconLeft="caretLeft"
+                    >
                         <Translation id="TR_BACKSPACE" />
-                    </Button>
+                    </NewButton>
                 </Column>
             </Card>
         </Column>

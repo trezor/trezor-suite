@@ -1,8 +1,7 @@
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
-import { Button, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, NewButton } from '@trezor/components';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
@@ -35,7 +34,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
     };
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={12}>
             {sortedDevices.map(device => (
                 <DeviceItem
                     key={`${device.path}-${device.id}-${device.instance}`}
@@ -44,14 +43,15 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
                     onCancel={cancelable ? onCancel : undefined}
                 />
             ))}
-            <Button
-                variant="tertiary"
-                icon="trezorDevices"
-                isFullWidth
+            <NewButton
+                intent="neutral"
+                iconLeft="trezorDevices"
+                width="100%"
+                size="large"
                 onClick={openDeviceConnectionModal}
             >
                 <Translation id="TR_CONNECT_DEVICE" />
-            </Button>
+            </NewButton>
         </Column>
     );
 };

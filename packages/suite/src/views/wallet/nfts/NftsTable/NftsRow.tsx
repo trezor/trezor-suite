@@ -12,7 +12,6 @@ import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import {
     Badge,
-    Button,
     Card,
     Column,
     Dropdown,
@@ -20,6 +19,7 @@ import {
     IconButton,
     IconCircle,
     InfoItem,
+    NewButton,
     Row,
     Table,
     Text,
@@ -180,8 +180,8 @@ const NftsRow = ({
                             ]}
                         />
                         {!isShown && (
-                            <Button
-                                icon="eye"
+                            <NewButton
+                                iconLeft="eye"
                                 onClick={() => {
                                     dispatch(
                                         tokenDefinitionsActions.setTokenStatus({
@@ -192,11 +192,12 @@ const NftsRow = ({
                                         }),
                                     );
                                 }}
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 size="small"
                             >
                                 <Translation id="TR_UNHIDE" />
-                            </Button>
+                            </NewButton>
                         )}
                     </Row>
                 </Table.Cell>

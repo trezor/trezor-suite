@@ -6,7 +6,7 @@ import {
     processMetadataMessageThunk,
     selectShouldOfferSecureSync,
 } from '@suite-common/local-first-storage';
-import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
+import { DropdownMenuItemProps, NewButton, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
@@ -65,18 +65,18 @@ const Label = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const LabelButton = styled(Button)`
+const LabelButton = styled(NewButton)`
     overflow: hidden;
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(Button)<{ $isVisible?: boolean }>`
+const ActionButton = styled(NewButton)<{ $isVisible?: boolean }>`
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 `;
 
-// @TODO this shouldn't be Button
+// @TODO this shouldn't be NewButton
 // eslint-disable-next-line local-rules/no-override-ds-component
-const SuccessButton = styled(Button)`
+const SuccessButton = styled(NewButton)`
     cursor: wait;
     width: auto;
     background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
@@ -113,7 +113,7 @@ const LabelContainer = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const RelativeButton = styled(Button)`
+const RelativeButton = styled(NewButton)`
     padding-bottom: 4px;
     padding-top: 4px;
     position: relative;
@@ -160,10 +160,11 @@ const ButtonLikeLabel = ({
     if (payload.value) {
         return (
             <LabelButton
-                variant="tertiary"
-                icon="tag"
+                intent="neutral"
+                priority="secondary"
+                iconLeft="tag"
                 data-testid={dataTest}
-                size="tiny"
+                size="small"
                 onClick={onClick}
             >
                 <Inline>
@@ -508,7 +509,7 @@ export const MetadataLabeling = ({
         return (
             <LabelContainer data-testid={labelContainerDataTest}>
                 {defaultVisibleValue}
-                <ActionButton variant="tertiary" isDisabled isLoading size="tiny">
+                <ActionButton intent="neutral" isDisabled isLoading size="small">
                     <Translation id="TR_LOADING" />
                 </ActionButton>
             </LabelContainer>
@@ -556,12 +557,12 @@ export const MetadataLabeling = ({
                                 ? `${dataTestBase}/edit-label-button`
                                 : `${dataTestBase}/add-label-button`
                         }
-                        variant="tertiary"
-                        icon={!actionButtonsDisabled ? 'tag' : undefined}
+                        intent="neutral"
+                        iconLeft={!actionButtonsDisabled ? 'tag' : undefined}
                         isLoading={actionButtonsDisabled}
                         isDisabled={actionButtonsDisabled}
                         $isVisible={isVisible}
-                        size="tiny"
+                        size="small"
                         onClick={e => {
                             e.stopPropagation();
                             activateEdit();
@@ -573,10 +574,11 @@ export const MetadataLabeling = ({
 
                 {showSuccess && !editActive && (
                     <SuccessButton
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         data-testid={`${dataTestBase}/success`}
-                        icon="check"
-                        size="tiny"
+                        iconLeft="check"
+                        size="small"
                     >
                         {l10nLabelling.edited}
                     </SuccessButton>

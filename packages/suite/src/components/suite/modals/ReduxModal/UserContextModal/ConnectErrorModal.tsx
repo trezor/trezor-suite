@@ -128,11 +128,14 @@ export const ConnectErrorModal = () => {
             <Modal.ModalBase
                 variant="primary"
                 bottomContent={
-                    <>
-                        <Modal.Button variant="tertiary" onClick={onFinish} size="medium">
-                            <Translation id="TR_CLOSE" />
-                        </Modal.Button>
-                    </>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onFinish}
+                        size="medium"
+                    >
+                        <Translation id="TR_CLOSE" />
+                    </Modal.Button>
                 }
             >
                 <Column gap={spacings.xs}>

@@ -1,8 +1,6 @@
 import React, { ReactNode } from 'react';
 
 import {
-    Button,
-    ButtonProps,
     Card,
     Column,
     Divider,
@@ -10,6 +8,8 @@ import {
     IconCircle,
     IconCircleVariant,
     IconName,
+    NewButton,
+    NewButtonProps,
     Paragraph,
     Row,
 } from '@trezor/components';
@@ -20,7 +20,7 @@ interface AccountExceptionLayoutProps {
     description?: ReactNode;
     iconName?: IconName;
     iconVariant?: IconCircleVariant;
-    actions?: ({ key: string } & ButtonProps)[];
+    actions?: ({ key: string } & NewButtonProps)[];
     'data-testid'?: string;
 }
 
@@ -44,7 +44,7 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
                     <Divider margin={{ top: spacings.xxl, bottom: spacings.xxl }} />
                     <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
                         {props.actions?.map(action => (
-                            <Button minWidth={160} {...action} key={action.key} />
+                            <NewButton size="large" minWidth={160} {...action} key={action.key} />
                         ))}
                     </Row>
                 </>

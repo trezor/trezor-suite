@@ -10,7 +10,7 @@ import {
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { Button, Column, H4, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { Column, H4, Icon, NewButton, Paragraph, Row, Table } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils';
 
@@ -200,9 +200,14 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     </Table.Cell>
 
                     <Table.Cell align="end">
-                        <Button variant="tertiary" size="small" onClick={navigateToTradingBuy}>
+                        <NewButton
+                            intent="neutral"
+                            priority="secondary"
+                            size="small"
+                            onClick={navigateToTradingBuy}
+                        >
                             <Translation id="TR_BUY" />
-                        </Button>
+                        </NewButton>
                     </Table.Cell>
                 </>
             )}
@@ -213,7 +218,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     <PotentialRewardsCell />
 
                     <Table.Cell align="end">
-                        <Button variant="primary" size="small" onClick={navigateToStaking}>
+                        <NewButton intent="brand" size="small" onClick={navigateToStaking}>
                             <Translation
                                 id={
                                     state === 'staking-active'
@@ -221,7 +226,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                                         : 'TR_STAKING_DASHBOARD_STAKE_NOW'
                                 }
                             />
-                        </Button>
+                        </NewButton>
                     </Table.Cell>
                 </>
             )}
@@ -237,9 +242,14 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     </Table.Cell>
 
                     <Table.Cell align="end">
-                        <Button variant="tertiary" size="small" onClick={navigateToTradingBuy}>
+                        <NewButton
+                            intent="neutral"
+                            priority="secondary"
+                            size="small"
+                            onClick={navigateToTradingBuy}
+                        >
                             <Translation id="TR_BUY" />
-                        </Button>
+                        </NewButton>
                     </Table.Cell>
                 </>
             )}

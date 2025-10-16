@@ -39,7 +39,7 @@ export const UnecoCoinjoinModal = () => {
                     <Modal.Button onClick={handleContinue}>
                         <Translation id="TR_UNECO_COINJOIN_AGREE" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={handleCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={handleCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

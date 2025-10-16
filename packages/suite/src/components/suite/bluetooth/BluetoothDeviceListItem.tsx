@@ -6,7 +6,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { Button, Row } from '@trezor/components';
+import { NewButton, Row } from '@trezor/components';
 import { BluetoothDeviceId } from '@trezor/connect';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
@@ -53,9 +53,14 @@ const GhostDeviceActionButton = ({
     const isDisabled = isLoading || isConnectingDevice;
 
     return (
-        <Button size="small" isDisabled={isDisabled} isLoading={isLoading} onClick={handleDelete}>
+        <NewButton
+            size="small"
+            isDisabled={isDisabled}
+            isLoading={isLoading}
+            onClick={handleDelete}
+        >
             <Translation id="TR_PAIR_AGAIN" />
-        </Button>
+        </NewButton>
     );
 };
 
@@ -107,9 +112,9 @@ const ActionButton = ({
 
     if (isClickable) {
         return (
-            <Button variant="primary" size="small" onClick={handleOnClick}>
+            <NewButton intent="brand" size="small" onClick={handleOnClick}>
                 <Translation id={connectionStatus.text} />
-            </Button>
+            </NewButton>
         );
     }
 

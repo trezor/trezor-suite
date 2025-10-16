@@ -27,7 +27,7 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
                 />
                 <ActionColumn>
                     <ActionButton
-                        variant="primary"
+                        intent="brand"
                         onClick={handleClick}
                         isDisabled={isDeviceLocked}
                         isTooltipActive={isDeviceLocked}

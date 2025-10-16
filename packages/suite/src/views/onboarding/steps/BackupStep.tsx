@@ -120,7 +120,7 @@ export const BackupStep = () => {
                         variant="destructive"
                         innerActions={
                             <OnboardingCard.Button
-                                variant="destructive"
+                                intent="critical"
                                 onClick={handleResetOnboarding}
                             >
                                 <Translation id="TR_GO_TO_SETTINGS" />

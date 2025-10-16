@@ -7,7 +7,17 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
+import {
+    Badge,
+    Card,
+    Column,
+    H3,
+    Icon,
+    Modal,
+    NewButton,
+    Paragraph,
+    Row,
+} from '@trezor/components';
 import { TypedError } from '@trezor/connect/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
@@ -78,7 +88,6 @@ export const ConnectAddressConfirmation = () => {
                     <>
                         {!popupCall.exported && (
                             <Modal.Button
-                                variant="primary"
                                 onClick={onConfirm}
                                 size="medium"
                                 data-testid="@connect-address-confirmation/confirm-button"
@@ -87,7 +96,8 @@ export const ConnectAddressConfirmation = () => {
                             </Modal.Button>
                         )}
                         <Modal.Button
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             onClick={onFinish}
                             size="medium"
                             data-testid="@connect-address-confirmation/close-button"
@@ -179,11 +189,12 @@ export const ConnectAddressConfirmation = () => {
                                             </Badge>
                                         )}
                                     </Row>
-                                    <Button
+                                    <NewButton
                                         data-testid={`@connect-address-confirmation/verify-button/${index}`}
-                                        variant="tertiary"
+                                        intent="neutral"
+                                        priority="secondary"
                                         onClick={() => onVerify(index)}
-                                        icon={
+                                        iconLeft={
                                             mapTrezorModelToIcon[
                                                 device?.features?.internal_model ||
                                                     DeviceModelInternal.UNKNOWN
@@ -198,7 +209,7 @@ export const ConnectAddressConfirmation = () => {
                                         ) : (
                                             <Translation id="TR_VERIFY" />
                                         )}
-                                    </Button>
+                                    </NewButton>
                                 </Row>
                             ))}
                         </Column>

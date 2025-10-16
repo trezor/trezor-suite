@@ -2,6 +2,10 @@ export { NotificationRenderer } from './NotificationRenderer/NotificationRendere
 export { Notifications } from './Notifications/Notifications';
 export { ToastContainer } from './ToastContainer';
 export { renderToast } from './ToastNotification';
+export {
+    mapActionVariantToIntent,
+    type NotificationActionVariant,
+} from './Notifications/NotificationGroup/NotificationList/NotificationView';
 
 export type { NotificationRendererProps } from './NotificationRenderer/NotificationRenderer';
 export type { NotificationViewProps } from './Notifications/NotificationGroup/NotificationList/NotificationView';

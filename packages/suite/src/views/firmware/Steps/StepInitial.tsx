@@ -69,7 +69,7 @@ export const StepInitial = ({
                             <Translation id={shouldCheckSeed ? 'TR_CONTINUE' : 'TR_INSTALL'} />
                         </Modal.Button>
                     </Tooltip>
-                    <Modal.Button variant="tertiary" onClick={onClose}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onClose}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

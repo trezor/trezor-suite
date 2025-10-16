@@ -6,7 +6,7 @@ import {
     labelingActions,
 } from '@suite-common/local-first-storage';
 import { selectLocalFirstStorageRelayUrl } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
-import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { Checkbox, Code, Column, Input, NewButton, Text } from '@trezor/components';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
@@ -82,13 +82,13 @@ export const LocalFirstStorageSettings = () => {
                                     value={relayUrl}
                                     onChange={e => setRelayUrl(e.target.value)}
                                     rightContent={
-                                        <Button
+                                        <NewButton
                                             isLoading={isLoading}
                                             onClick={onRelayUrlSave}
                                             size="small"
                                         >
                                             Save
-                                        </Button>
+                                        </NewButton>
                                     }
                                 />
                                 <Text typographyStyle="hint" variant="tertiary">

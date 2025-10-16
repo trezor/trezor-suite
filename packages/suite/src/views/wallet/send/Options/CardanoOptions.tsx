@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, variables } from '@trezor/components';
+import { NewButton, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const AddRecipientButton = styled(Button)`
+const AddRecipientButton = styled(NewButton)`
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
         width: 100%;
     }
@@ -29,9 +29,10 @@ export const CardanoOptions = () => {
     return (
         <Wrapper>
             <AddRecipientButton
-                variant="tertiary"
+                intent="neutral"
+                priority="secondary"
                 size="small"
-                icon="plus"
+                iconLeft="plus"
                 data-testid="add-output"
                 onClick={addOutput}
             >

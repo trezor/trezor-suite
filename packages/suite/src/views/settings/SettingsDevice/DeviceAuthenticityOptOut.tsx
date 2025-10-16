@@ -44,7 +44,7 @@ export const DeviceAuthenticityOptOut = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={handleClick}
-                    variant={isDeviceAuthenticityCheckEnabled ? 'destructive' : 'primary'}
+                    intent={isDeviceAuthenticityCheckEnabled ? 'critical' : 'brand'}
                     data-testid="@settings/device/open-device-authenticity-check-opt-out-modal-button"
                 >
                     <Translation

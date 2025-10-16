@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Icon, Paragraph, Row, useElevation } from '@trezor/components';
+import { Icon, NewButton, Paragraph, Row, useElevation } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
 import {
     Elevation,
@@ -88,9 +88,9 @@ const BioAuthOverlay = () => {
                                             <Translation id="TR_BIO_AUTH_LOCKED_TEXT_WIN" />
                                         )}
                                     </Paragraph>
-                                    <Button
-                                        isFullWidth
-                                        variant="primary"
+                                    <NewButton
+                                        width="100%"
+                                        intent="brand"
                                         onClick={() =>
                                             dispatch(
                                                 requestBioAuthValidationThunk({
@@ -100,7 +100,7 @@ const BioAuthOverlay = () => {
                                         }
                                     >
                                         <Translation id="TR_BIO_AUTH_UNLOCK" />
-                                    </Button>
+                                    </NewButton>
                                 </Container>
                             </Row>
                         </MainContent>

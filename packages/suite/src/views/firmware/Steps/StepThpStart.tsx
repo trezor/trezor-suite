@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import { Button, Card, Column, Modal, Text } from '@trezor/components';
+import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
@@ -26,9 +26,9 @@ export const StepThpStart = ({ modalHeading }: StepThpStartProps) => {
             data-testid="@firmware-modal"
             heading={modalHeading}
             bottomContent={
-                <Button variant="primary" onClick={onClick} isLoading={isLoading}>
+                <Modal.Button onClick={onClick} isLoading={isLoading}>
                     <Translation id="TR_CONTINUE" />
-                </Button>
+                </Modal.Button>
             }
         >
             <Card>

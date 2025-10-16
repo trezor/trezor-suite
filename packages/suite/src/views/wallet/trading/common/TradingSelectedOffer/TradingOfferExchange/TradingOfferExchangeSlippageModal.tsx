@@ -9,7 +9,7 @@ import {
     getTradingNetworkDecimals,
     useTradingInfo,
 } from '@suite-common/trading';
-import { Button, Column, InfoItem, Input, Modal, Row, SelectBar, Text } from '@trezor/components';
+import { Column, InfoItem, Input, Modal, Row, SelectBar, Text } from '@trezor/components';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -194,13 +194,13 @@ export const TradingOfferExchangeSlippageModal = ({
             onCancel={onCloseModal}
             size="small"
             bottomContent={
-                <Button
+                <Modal.Button
                     isLoading={isFormLoading}
                     isDisabled={!!customSlippageError}
                     onClick={onCloseModal}
                 >
                     <Translation id="TR_CLOSE" />
-                </Button>
+                </Modal.Button>
             }
         >
             <Column gap={spacings.md}>

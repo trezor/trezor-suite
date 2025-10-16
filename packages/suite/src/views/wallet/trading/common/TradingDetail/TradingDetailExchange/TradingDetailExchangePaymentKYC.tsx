@@ -1,7 +1,7 @@
 import { ExchangeProviderInfo } from 'invity-api';
 import styled from 'styled-components';
 
-import { Button, H4, Image } from '@trezor/components';
+import { H4, Image, NewButton } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -66,23 +66,29 @@ export const TradingDetailExchangePaymentKYC = ({
             </Description>
             {transactionId && <TradingTransactionId transactionId={transactionId} />}
             {supportUrl && (
-                <Button
-                    variant="tertiary"
+                <NewButton
+                    intent="neutral"
+                    priority="secondary"
                     href={supportUrl}
                     target="_blank"
                     margin={{ top: spacings.xxs, bottom: spacings.lg }}
                 >
                     <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
-                </Button>
+                </NewButton>
             )}
             {provider?.kycUrl && (
-                <Button variant="tertiary" href={provider?.kycUrl} target="_blank">
+                <NewButton
+                    intent="neutral"
+                    priority="secondary"
+                    href={provider?.kycUrl}
+                    target="_blank"
+                >
                     <Translation id="TR_EXCHANGE_DETAIL_KYC_INFO_LINK" />
-                </Button>
+                </NewButton>
             )}
-            <Button onClick={goToExchange}>
+            <NewButton onClick={goToExchange}>
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_BUTTON" />
-            </Button>
+            </NewButton>
         </Wrapper>
     );
 };

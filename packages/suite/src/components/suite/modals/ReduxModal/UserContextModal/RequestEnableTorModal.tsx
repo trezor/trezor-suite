@@ -53,7 +53,7 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
                             <Translation id="TR_TOR_ENABLE" />
                         )}
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

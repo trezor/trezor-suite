@@ -1,7 +1,7 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
+import { Column, H3, NewButton, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -50,15 +50,15 @@ export const PassphraseMismatchModal = ({
                     isActive={isDeviceLocked}
                     content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
-                    <Button
-                        variant="primary"
+                    <NewButton
+                        intent="brand"
                         onClick={onStartOver}
                         isDisabled={isDeviceLocked}
-                        isFullWidth
+                        width="100%"
                         data-testid="@passphrase-mismatch/start-over"
                     >
                         <Translation id="TR_PASSPHRASE_MISMATCH_START_OVER" />
-                    </Button>
+                    </NewButton>
                 </Tooltip>
             </CardWithDevice>
         </SwitchDeviceModal>

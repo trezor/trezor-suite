@@ -174,7 +174,7 @@ export const RecoveryStep = () => {
                                 ? resetReducer
                                 : recoverDevice
                         }
-                        variant="destructive"
+                        intent="critical"
                     >
                         <Translation id="TR_RETRY" />
                     </OnboardingCard.Button>

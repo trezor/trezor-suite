@@ -68,7 +68,7 @@ export const StakeButton = () => {
                 isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isLoading}
                 onClick={onStakeClick}
-                icon={isStakingDisabled ? 'info' : undefined}
+                iconLeft={isStakingDisabled ? 'info' : undefined}
                 data-testid="@modal/staking/continue-button"
             >
                 <Translation id="TR_CONTINUE" />

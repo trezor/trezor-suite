@@ -6,7 +6,7 @@ import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isStakeTypeTx, isTxFeePaid } from '@suite-common/wallet-utils';
-import { Button, Card, Column, Link, Row, Tooltip } from '@trezor/components';
+import { Card, Column, Link, NewButton, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
@@ -38,9 +38,7 @@ const Wrapper = styled.div<{
     scroll-margin-top: calc(${SUBPAGE_NAV_HEIGHT} + 115px);
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ExpandButton = styled(Button)`
-    justify-content: flex-start;
+const ExpandButtonWrapper = styled.div`
     align-self: flex-start;
     margin-top: 8px;
 `;
@@ -172,26 +170,28 @@ export const TransactionItem = memo(
         }`;
 
         const BumpFeeButton = ({ isDisabled }: { isDisabled: boolean }) => (
-            <Button
-                variant="tertiary"
-                icon="gauge"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
+                iconLeft="gauge"
                 onClick={() => openTxDetailsModal({ flow: 'bump-fee' })}
                 isDisabled={isDisabled}
                 data-testid="@transaction-item/bump-fee-button"
             >
                 <Translation id="TR_BUMP_FEE" />
-            </Button>
+            </NewButton>
         );
 
         const CancelTransactionButton = ({ isDisabled }: { isDisabled: boolean }) => (
-            <Button
-                variant="tertiary"
-                icon="x"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
+                iconLeft="x"
                 onClick={() => openTxDetailsModal({ flow: 'cancel-transaction' })}
                 isDisabled={isDisabled}
             >
                 <Translation id="TR_CANCEL_TX" />
-            </Button>
+            </NewButton>
         );
 
         const DisabledBumpFeeButtonWithTooltip = () => (
@@ -326,25 +326,29 @@ export const TransactionItem = memo(
                                         )}
 
                                         {isExpandable && (
-                                            <ExpandButton
-                                                variant="tertiary"
-                                                icon={toExpand > 0 ? 'caretDown' : 'caretUp'}
-                                                iconAlignment="end"
-                                                onClick={e => {
-                                                    setLimit(toExpand > 0 ? limit + 20 : 0);
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                }}
-                                            >
-                                                <Translation
-                                                    id={
-                                                        toExpand > 0
-                                                            ? 'TR_SHOW_MORE_ADDRESSES'
-                                                            : 'TR_SHOW_LESS'
+                                            <ExpandButtonWrapper>
+                                                <NewButton
+                                                    intent="neutral"
+                                                    priority="secondary"
+                                                    iconRight={
+                                                        toExpand > 0 ? 'caretDown' : 'caretUp'
                                                     }
-                                                    values={{ count: toExpand }}
-                                                />
-                                            </ExpandButton>
+                                                    onClick={e => {
+                                                        setLimit(toExpand > 0 ? limit + 20 : 0);
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                    }}
+                                                >
+                                                    <Translation
+                                                        id={
+                                                            toExpand > 0
+                                                                ? 'TR_SHOW_MORE_ADDRESSES'
+                                                                : 'TR_SHOW_LESS'
+                                                        }
+                                                        values={{ count: toExpand }}
+                                                    />
+                                                </NewButton>
+                                            </ExpandButtonWrapper>
                                         )}
                                     </Column>
                                 </Row>

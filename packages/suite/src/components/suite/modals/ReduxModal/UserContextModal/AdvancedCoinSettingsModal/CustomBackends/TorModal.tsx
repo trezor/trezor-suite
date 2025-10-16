@@ -26,7 +26,11 @@ export const TorModal = ({ onResult }: TorModalProps) => {
                             <Translation id="TR_TOR_ENABLE_AND_CONFIRM" />
                         </Modal.Button>
                     )}
-                    <Modal.Button variant="tertiary" onClick={() => onResult('use-defaults')}>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={() => onResult('use-defaults')}
+                    >
                         <Translation id="TR_USE_DEFAULT_BACKENDS" />
                     </Modal.Button>
                 </>

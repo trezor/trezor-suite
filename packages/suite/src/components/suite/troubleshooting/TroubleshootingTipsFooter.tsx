@@ -1,4 +1,4 @@
-import { Button, Flex, Text, useMediaQuery, variables } from '@trezor/components';
+import { Flex, NewButton, Text, useMediaQuery, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
@@ -21,9 +21,9 @@ export const TroubleshootingTipsFooter = () => {
                 <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
             </Text>
 
-            <Button variant="tertiary" size="small" href={href}>
+            <NewButton intent="neutral" priority="secondary" size="small" href={href}>
                 <Translation id="TR_CONTACT_SUPPORT" />
-            </Button>
+            </NewButton>
         </Flex>
     );
 };

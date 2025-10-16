@@ -16,7 +16,7 @@ export const GithubIssue = () => {
                 description="Open issue on Github with pre-filled details. Do not use with sensitive data!"
             />
             <ActionColumn>
-                <ActionButton variant="primary" onClick={handleClick}>
+                <ActionButton intent="brand" onClick={handleClick}>
                     Open issue
                 </ActionButton>
             </ActionColumn>

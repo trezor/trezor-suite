@@ -19,7 +19,7 @@ export const MessageSystemManagerInfo = ({
             <Icon
                 name="circleFilled"
                 variant={
-                    allValidMessages.some(message => message.id === message.id)
+                    allValidMessages.some(validMessage => validMessage.id === message.id)
                         ? 'primary'
                         : 'destructive'
                 }

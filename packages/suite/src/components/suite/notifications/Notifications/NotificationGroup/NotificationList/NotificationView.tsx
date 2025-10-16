@@ -1,7 +1,15 @@
 import { JSX } from 'react';
 
 import type { NotificationEntry } from '@suite-common/toast-notifications';
-import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
+import {
+    Column,
+    Icon,
+    IconName,
+    NewButton,
+    NewButtonProps,
+    Paragraph,
+    Row,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDateWithBullet } from 'src/components/suite';
@@ -9,6 +17,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite';
 import type { ExtendedMessageDescriptor, ToastNotificationVariant } from 'src/types/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
+
+export type NotificationActionVariant = 'primary' | 'info' | 'warning' | 'destructive' | 'tertiary';
 
 export interface NotificationViewProps {
     notification: NotificationEntry;
@@ -20,9 +30,27 @@ export interface NotificationViewProps {
         onClick: () => void;
         label: ExtendedMessageDescriptor['id'];
         position?: 'bottom' | 'right';
-        variant?: ButtonProps['variant'];
+        variant?: NotificationActionVariant;
     };
 }
+
+export const mapActionVariantToIntent = (
+    variant: NotificationActionVariant = 'tertiary',
+): NewButtonProps['intent'] => {
+    switch (variant) {
+        case 'primary':
+            return 'brand';
+        case 'info':
+            return 'info';
+        case 'warning':
+            return 'warning';
+        case 'destructive':
+            return 'critical';
+        case 'tertiary':
+        default:
+            return 'neutral';
+    }
+};
 
 export const NotificationView = ({
     message,
@@ -56,9 +84,14 @@ export const NotificationView = ({
                 (isBelowTablet ? (
                     <Icon name="caretRight" onClick={action.onClick} size={18} />
                 ) : (
-                    <Button variant="tertiary" size="tiny" onClick={action.onClick} minWidth={80}>
+                    <NewButton
+                        intent={mapActionVariantToIntent(action.variant)}
+                        size="small"
+                        onClick={action.onClick}
+                        minWidth={80}
+                    >
                         <Translation id={action.label} />
-                    </Button>
+                    </NewButton>
                 ))}
         </Row>
     );

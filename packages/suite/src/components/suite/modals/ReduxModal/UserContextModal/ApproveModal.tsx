@@ -229,7 +229,6 @@ export const ApproveModal = ({
                 <>
                     {selectedQuote.status === 'APPROVAL_REQ' && (
                         <Modal.Button
-                            size="medium"
                             isLoading={isFormLoading || isConfirmButtonLoading}
                             isDisabled={!device?.connected}
                             onClick={confirmAndSend}
@@ -240,7 +239,6 @@ export const ApproveModal = ({
 
                     {selectedQuote.status === 'ERROR' && (
                         <Modal.Button
-                            size="medium"
                             isLoading={isFormLoading}
                             isDisabled={!device?.connected || isFormLoading}
                             onClick={onRefreshClick}
@@ -249,7 +247,7 @@ export const ApproveModal = ({
                         </Modal.Button>
                     )}
 
-                    <Modal.Button size="medium" variant="tertiary" onClick={() => onClose()}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={() => onClose()}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

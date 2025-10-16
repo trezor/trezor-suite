@@ -64,7 +64,6 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             bottomContent={
                 <>
                     <Modal.Button
-                        variant="destructive"
                         onClick={handleWipeDevice}
                         isLoading={isLoading}
                         isDisabled={isLocked() || !checkbox1 || !checkbox2}
@@ -72,7 +71,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                     >
                         <Translation id={headingTranslation} />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={handleCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={handleCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

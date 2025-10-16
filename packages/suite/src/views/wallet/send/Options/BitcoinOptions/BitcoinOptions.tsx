@@ -2,7 +2,7 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Button, Tooltip, variables } from '@trezor/components';
+import { NewButton, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -40,7 +40,7 @@ const Left = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const AddRecipientButton = styled(Button)`
+const AddRecipientButton = styled(NewButton)`
     align-self: center;
 `;
 
@@ -97,11 +97,12 @@ export const BitcoinOptions = () => {
                             content={<Translation id="TR_COIN_CONTROL_TOOLTIP" />}
                             cursor="pointer"
                         >
-                            <Button
+                            <NewButton
                                 margin={{ top: 4, right: 8, bottom: 4 }}
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 size="small"
-                                icon="circleDashed"
+                                iconLeft="circleDashed"
                                 onClick={toggleUtxoSelection}
                                 data-testid="coin-control-button"
                             >
@@ -109,19 +110,20 @@ export const BitcoinOptions = () => {
                                     <Translation id="TR_COIN_CONTROL" />
                                     {isCoinControlEnabled && <OnOffSwitcher isOn />}
                                 </Inline>
-                            </Button>
+                            </NewButton>
                         </Tooltip>
                     )}
                 </Left>
 
                 <Right>
                     <AddRecipientButton
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         size="small"
-                        icon="plus"
+                        iconLeft="plus"
                         data-testid="add-output"
                         onClick={addOutput}
-                        isFullWidth
+                        width="100%"
                     >
                         <Translation id="RECIPIENT_ADD" />
                     </AddRecipientButton>

@@ -1,7 +1,7 @@
-import { Button, ButtonProps } from '@trezor/components';
+import { NewButton, NewButtonProps } from '@trezor/components';
 
-export const OnboardingCardSecondaryButton = (props: ButtonProps) => (
-    <Button size="small" variant="tertiary" {...props}>
-        {props.children}
-    </Button>
+export const OnboardingCardSecondaryButton = ({ children, ...rest }: NewButtonProps) => (
+    <NewButton size="small" intent="neutral" priority="secondary" {...rest}>
+        {children}
+    </NewButton>
 );

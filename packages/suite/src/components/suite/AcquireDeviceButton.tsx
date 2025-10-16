@@ -8,11 +8,10 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from './Translation';
 
 type AcquireButtonProps = {
-    className?: string;
     onClick?: MouseEventHandler;
 };
 
-export const AcquireDeviceButton = ({ className, onClick }: AcquireButtonProps) => {
+export const AcquireDeviceButton = ({ onClick }: AcquireButtonProps) => {
     const { isLocked } = useDevice();
     const dispatch = useDispatch();
 
@@ -24,12 +23,7 @@ export const AcquireDeviceButton = ({ className, onClick }: AcquireButtonProps) 
     };
 
     return (
-        <Banner.Button
-            isLoading={isDeviceLocked}
-            textWrap={false}
-            onClick={handleClick}
-            className={className}
-        >
+        <Banner.Button isLoading={isDeviceLocked} onClick={handleClick}>
             <Translation id="TR_ACQUIRE_DEVICE" />
         </Banner.Button>
     );

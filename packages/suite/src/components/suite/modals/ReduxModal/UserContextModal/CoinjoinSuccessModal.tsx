@@ -59,7 +59,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
                             <Translation id="TR_VIEW_ACCOUNT" />
                         </Modal.Button>
                     )}
-                    <Modal.Button variant="tertiary" onClick={close}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={close}>
                         <Translation id="TR_CLOSE" />
                     </Modal.Button>
                 </>

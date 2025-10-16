@@ -13,7 +13,7 @@ import {
     selectAllValidExperiments,
 } from '@suite-common/message-system';
 import { Experiments } from '@suite-common/suite-types';
-import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
+import { Banner, Column, Divider, Modal, NewButton } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
@@ -118,10 +118,10 @@ export const MessageSystemExperiments = ({
                                     inclusionOverride={inclusionOverride}
                                 />
                                 <Column alignItems="flex-end" gap={spacings.xs}>
-                                    <Button
-                                        size="tiny"
-                                        icon="copy"
-                                        variant="primary"
+                                    <NewButton
+                                        size="small"
+                                        iconLeft="copy"
+                                        intent="brand"
                                         onClick={() =>
                                             copyToClipboard(
                                                 JSON.stringify({ conditions, experiment }, null, 2),
@@ -129,16 +129,16 @@ export const MessageSystemExperiments = ({
                                         }
                                     >
                                         Copy to clipboard
-                                    </Button>
+                                    </NewButton>
                                     {!!allManuallyAddedExperimentIds?.[experiment.id] && (
-                                        <Button
-                                            size="tiny"
-                                            icon="trash"
-                                            variant="destructive"
+                                        <NewButton
+                                            size="small"
+                                            iconLeft="trash"
+                                            intent="critical"
                                             onClick={() => removeExperiment(experiment.id)}
                                         >
                                             Remove
-                                        </Button>
+                                        </NewButton>
                                     )}
                                 </Column>
                             </Column>

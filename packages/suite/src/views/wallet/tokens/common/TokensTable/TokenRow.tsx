@@ -23,13 +23,13 @@ import {
 } from '@suite-common/wallet-utils';
 import {
     AssetLogo,
-    Button,
-    ButtonGroup,
     Card,
     Column,
     Dropdown,
     IconButton,
     InfoItem,
+    NewButton,
+    NewButtonGroup,
     Row,
     Table,
     Text,
@@ -414,8 +414,8 @@ export const TokenRow = ({
                     )}
                     {!isBelowTablet &&
                         (tokenStatusType === TokenManagementAction.SHOW ? (
-                            <Button
-                                icon="eye"
+                            <NewButton
+                                iconLeft="eye"
                                 onClick={() =>
                                     isUnverifiedTable && shouldShowUnhideTokenModal
                                         ? dispatch(
@@ -433,13 +433,14 @@ export const TokenRow = ({
                                               }),
                                           )
                                 }
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 size="small"
                             >
                                 <Translation id="TR_UNHIDE" />
-                            </Button>
+                            </NewButton>
                         ) : (
-                            <ButtonGroup size="small" variant="tertiary">
+                            <NewButtonGroup size="small" intent="neutral" priority="secondary">
                                 <IconButton
                                     label={<Translation id="TR_NAV_SEND" />}
                                     isDisabled={token.balance === '0'}
@@ -481,7 +482,7 @@ export const TokenRow = ({
                                     isDisabled={!canReceiveToken}
                                     onClick={onReceive}
                                 />
-                            </ButtonGroup>
+                            </NewButtonGroup>
                         ))}
                 </Row>
             </Table.Cell>

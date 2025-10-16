@@ -23,7 +23,7 @@ export const ThpPairingStep = () => {
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             innerActions={
-                <OnboardingCard.Button onClick={abort} variant="tertiary">
+                <OnboardingCard.Button onClick={abort} intent="neutral" priority="secondary">
                     <Translation id="TR_CANCEL" />
                 </OnboardingCard.Button>
             }

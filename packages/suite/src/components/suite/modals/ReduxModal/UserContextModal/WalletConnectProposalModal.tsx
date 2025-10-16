@@ -116,7 +116,6 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
             bottomContent={
                 <>
                     <Modal.Button
-                        variant="primary"
                         onClick={handleAccept}
                         isDisabled={
                             pendingProposal.expired ||
@@ -127,7 +126,12 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={handleReject}>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={handleReject}
+                        data-testid="@walletconnect-proposal/cancel-button"
+                    >
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
@@ -258,8 +262,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         rightContent={
                             <BannerButton
                                 onClick={() => handleGoToCoinSettings()}
-                                icon="arrowRight"
-                                iconAlignment="end"
+                                iconRight="arrowRight"
                             >
                                 <Translation id="TR_COIN_SETTINGS" />
                             </BannerButton>

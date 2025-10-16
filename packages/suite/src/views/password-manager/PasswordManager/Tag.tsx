@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 
 interface TagProps {
     isSelected: boolean;
@@ -9,12 +9,13 @@ interface TagProps {
 }
 
 export const Tag = ({ isSelected, onClick, title }: TagProps) => (
-    <Button
-        variant="tertiary"
-        size="tiny"
-        icon={isSelected ? 'checkCircleFilled' : undefined}
+    <NewButton
+        intent="neutral"
+        priority="secondary"
+        size="small"
+        iconLeft={isSelected ? 'checkCircleFilled' : undefined}
         onClick={onClick}
     >
         {title}
-    </Button>
+    </NewButton>
 );

@@ -9,13 +9,13 @@ import {
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import {
-    Button,
     Card,
     Column,
     Grid,
     H3,
     H4,
     IconCircle,
+    NewButton,
     Paragraph,
     Row,
     Tooltip,
@@ -194,14 +194,14 @@ export const EmptyStakingCard = () => {
                     </Grid>
 
                     <Tooltip content={stakingMessageContent}>
-                        <Button
+                        <NewButton
                             onClick={openStakeInANutshellModal}
                             isDisabled={isStakingDisabled}
-                            icon={isStakingDisabled ? 'info' : undefined}
+                            iconLeft={isStakingDisabled ? 'info' : undefined}
                             data-testid="@wallet/staking/empty-card/start-staking-button"
                         >
                             <Translation id="TR_STAKING_CARD_START_STAKING" />
-                        </Button>
+                        </NewButton>
                     </Tooltip>
                 </Column>
             </Card>

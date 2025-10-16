@@ -16,7 +16,7 @@ export const Tor = () => {
                 />
                 <ActionColumn>
                     <ActionButton
-                        variant="destructive"
+                        intent="critical"
                         onClick={() => {
                             dispatch(toggleTor(false, modalType));
                         }}

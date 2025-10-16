@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Button, Card } from '@trezor/components';
-import { typography } from '@trezor/theme';
+import { Card, NewButton } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -31,17 +31,6 @@ const Container = styled(Card)<{ $isWide?: boolean }>`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StopButton = styled(Button)`
-    /* 23px button height + 7 margin = 30 height of StatusMessage */
-    margin-top: 7px;
-    background: none;
-
-    path {
-        fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    }
-`;
-
 interface CoinjoinStatusWheelProps {
     accountKey: string;
 }
@@ -62,15 +51,16 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
             )}
 
             {isPaused && !isLoading && (
-                <StopButton
-                    variant="tertiary"
-                    icon="stop"
-                    iconAlignment="end"
-                    iconSize={10}
+                <NewButton
+                    intent="neutral"
+                    priority="secondary"
+                    iconRight="stop"
                     onClick={() => dispatch(stopCoinjoinSession(accountKey))}
+                    size="small"
+                    margin={{ top: spacings.xs }}
                 >
                     <Translation id="TR_STOP" />
-                </StopButton>
+                </NewButton>
             )}
         </Container>
     );

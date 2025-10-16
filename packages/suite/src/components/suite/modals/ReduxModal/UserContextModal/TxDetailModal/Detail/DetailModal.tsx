@@ -51,11 +51,21 @@ export const DetailModal = ({
             bottomContent={
                 canReplaceTransaction ? (
                     <>
-                        <Modal.Button icon="gauge" variant="tertiary" onClick={onChangeFeeClick}>
+                        <Modal.Button
+                            iconLeft="gauge"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={onChangeFeeClick}
+                        >
                             <Translation id="TR_BUMP_FEE" />
                         </Modal.Button>
                         {canCancelTransaction && (
-                            <Modal.Button icon="x" variant="tertiary" onClick={onCancelTxClick}>
+                            <Modal.Button
+                                iconLeft="x"
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={onCancelTxClick}
+                            >
                                 <Translation id="TR_CANCEL_TX" />
                             </Modal.Button>
                         )}

@@ -9,7 +9,7 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components';
+import { Banner, Column, Icon, NewButton, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -321,15 +321,15 @@ export const TradingFormApproval = ({
                         <>
                             {!isIncreasingAllowanceSupported ? (
                                 <>
-                                    <Button
+                                    <NewButton
                                         onClick={onRevokeApprovalClick}
-                                        variant="primary"
-                                        isFullWidth
+                                        intent="brand"
+                                        width="100%"
                                         isLoading={isRevokeButtonLoading}
                                         isDisabled={isRevokeButtonDisabled}
                                     >
                                         <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON" />
-                                    </Button>
+                                    </NewButton>
 
                                     <Banner variant="warning" icon="warning">
                                         <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />
@@ -337,10 +337,10 @@ export const TradingFormApproval = ({
                                 </>
                             ) : (
                                 <>
-                                    <Button
+                                    <NewButton
                                         onClick={onApproveTransactionClick}
-                                        variant="primary"
-                                        isFullWidth
+                                        intent="brand"
+                                        width="100%"
                                         isLoading={
                                             isApproveButtonLoading ||
                                             isRevokeButtonLoading ||
@@ -351,7 +351,7 @@ export const TradingFormApproval = ({
                                         }
                                     >
                                         <Translation id="TR_EXCHANGE_APPROVAL_FORM_INCREASE_BUTTON" />
-                                    </Button>
+                                    </NewButton>
 
                                     <TextButton
                                         onClick={() =>
@@ -372,25 +372,25 @@ export const TradingFormApproval = ({
                             )}
                         </>
                     ) : (
-                        <Button
+                        <NewButton
                             onClick={onApproveTransactionClick}
-                            variant="primary"
-                            isFullWidth
+                            intent="brand"
+                            width="100%"
                             isLoading={isApproveButtonLoading}
                             isDisabled={isApproveButtonDisabled}
                         >
                             <Translation id="TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON" />
-                        </Button>
+                        </NewButton>
                     )}
                 </>
             )}
 
             {approvalStep === 'APPROVED' && (
                 <>
-                    <Button
+                    <NewButton
                         onClick={onProceedToSwapClick}
-                        variant="primary"
-                        isFullWidth
+                        intent="brand"
+                        width="100%"
                         isLoading={
                             isSwapButtonLoading ||
                             isRevokeButtonLoading ||
@@ -399,7 +399,7 @@ export const TradingFormApproval = ({
                         isDisabled={isSwapButtonDisabled || isRevokeButtonDisabled}
                     >
                         <Translation id="TR_TRADING_SWAP" />
-                    </Button>
+                    </NewButton>
 
                     <TextButton
                         onClick={() =>
@@ -418,21 +418,21 @@ export const TradingFormApproval = ({
             )}
 
             {approvalStep === 'LOADING' && (
-                <Button variant="primary" isFullWidth isDisabled={true}>
+                <NewButton intent="brand" width="100%" isDisabled={true}>
                     <Translation id="TR_TRADING_SWAP" />
-                </Button>
+                </NewButton>
             )}
 
             {(!approvalStep || approvalStep === 'ERROR') && (
-                <Button
+                <NewButton
                     onClick={onRefreshClick}
-                    variant="primary"
-                    isFullWidth
+                    intent="brand"
+                    width="100%"
                     isLoading={isRefreshButtonLoading}
                     isDisabled={isRefreshButtonDisabled}
                 >
                     <Translation id="TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON" />
-                </Button>
+                </NewButton>
             )}
 
             {approvalStep === 'LOADING' && (

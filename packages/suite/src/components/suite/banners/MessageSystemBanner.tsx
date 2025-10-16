@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
-import { Banner, BannerProps, Row, Banner as WarningComponent } from '@trezor/components';
+import { Banner, BannerProps, Row } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
@@ -40,7 +40,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
                 <Row gap={8}>
                     <MessageSystemButton cta={cta} id={id} />
                     {dismissalConfig && (
-                        <WarningComponent.IconButton
+                        <Banner.IconButton
                             icon="x"
                             onClick={dismissalConfig.onClick}
                             isSubtle

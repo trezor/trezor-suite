@@ -83,6 +83,7 @@ export type NewButtonProps = SelectedHTMLButtonProps &
         intent?: NewButtonIntent;
         priority?: NewButtonPriority;
         shortcut?: string[];
+        className?: string;
     };
 
 export const NewButton = ({
@@ -102,6 +103,7 @@ export const NewButton = ({
     target,
     type = 'button',
     priority = 'primary',
+    className,
     ...rest
 }: NewButtonProps) => {
     const theme = useTheme();
@@ -128,6 +130,7 @@ export const NewButton = ({
             $priority={priority}
             $intent={intent}
             $isInverse={isInverse}
+            className={className}
             {...frameProps}
         >
             <Row
@@ -135,6 +138,7 @@ export const NewButton = ({
                 padding={mapSizeToPadding(size)}
                 justifyContent="center"
                 overflow="hidden"
+                width="100%"
             >
                 {isLoading && (
                     <Spinner

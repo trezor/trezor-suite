@@ -34,7 +34,7 @@ export const DisableTorStopCoinjoinModal = ({
                     <Modal.Button onClick={onStopRunningTor}>
                         <Translation id="TR_TOR_STOP" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onKeepRunningTor}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onKeepRunningTor}>
                         <Translation id="TR_TOR_KEEP_RUNNING" />
                     </Modal.Button>
                 </>

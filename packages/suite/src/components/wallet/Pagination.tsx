@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import styled, { css } from 'styled-components';
 
-import { Button, Row } from '@trezor/components';
+import { NewButton, Row } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
@@ -133,24 +133,24 @@ export const Pagination = ({
         return (
             <Wrapper $hasPages={hasPages} {...rest}>
                 <Actions $isActive={showPrev}>
-                    <Button
+                    <NewButton
                         onClick={() => onPageSelected(currentPage - 1)}
-                        icon="caretLeft"
-                        iconAlignment="start"
-                        variant="tertiary"
+                        iconLeft="caretLeft"
+                        intent="neutral"
+                        priority="secondary"
                     >
                         <Translation id="TR_PAGINATION_NEWER" />
-                    </Button>
+                    </NewButton>
                 </Actions>
                 <Actions $isActive={!isLastPage}>
-                    <Button
+                    <NewButton
                         onClick={() => onPageSelected(currentPage + 1)}
-                        icon="caretRight"
-                        iconAlignment="end"
-                        variant="tertiary"
+                        iconRight="caretRight"
+                        intent="neutral"
+                        priority="secondary"
                     >
                         <Translation id="TR_PAGINATION_OLDER" />
-                    </Button>
+                    </NewButton>
                 </Actions>
             </Wrapper>
         );
@@ -185,14 +185,15 @@ export const Pagination = ({
             {explicitNavigation && (
                 <Row alignItems="center" gap={spacings.sm} maxWidth="140px">
                     <NumberInput name="pageInput" control={control} locale={locale} size="small" />
-                    <Button
-                        variant="tertiary"
+                    <NewButton
+                        intent="neutral"
+                        priority="secondary"
                         onClick={goToPage}
                         size="small"
                         isDisabled={isPageInputInvalid}
                     >
                         <Translation id="TR_PAGINATION_GO" />
-                    </Button>
+                    </NewButton>
                 </Row>
             )}
         </Wrapper>

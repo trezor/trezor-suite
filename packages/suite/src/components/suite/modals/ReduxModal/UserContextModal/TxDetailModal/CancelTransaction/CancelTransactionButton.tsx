@@ -55,7 +55,7 @@ export const CancelTransactionButton = ({ account }: CancelTransactionButtonProp
             data-testid="@send/cancel-tx-button"
             isDisabled={isDisabled}
             onClick={handleCancelTx}
-            variant="destructive"
+            intent="critical"
         >
             <Translation id="TR_CANCEL_TX_BUTTON" />
         </Modal.Button>
