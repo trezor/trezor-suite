@@ -405,8 +405,50 @@ export interface Modal {
 export interface Feature {
     domain: string;
     flag: boolean;
+    /**
+     * Optional payload with arbitrary properties
+     */
+    payload?: {
+        [k: string]: unknown;
+    };
+    /**
+     * Legacy field for 'dashboard.promoBanner'
+     */
     visibleBanner?: string;
-    [k: string]: unknown;
+    /**
+     * Legacy field for 'security.firmware.hashCheck.timeout'
+     */
+    timeoutThresholdsPerModel?: {
+        [k: string]: unknown;
+    } | null;
+    /**
+     * Legacy field for 'coinjoin'
+     */
+    averageAnonymityGainPerRound?: number;
+    /**
+     * Legacy field for 'coinjoin'
+     */
+    roundsFailRateBuffer?: number;
+    /**
+     * Legacy field for 'coinjoin'
+     */
+    roundsDurationInHours?: number;
+    /**
+     * Legacy field for 'coinjoin'
+     */
+    maxMiningFeeModifier?: number;
+    /**
+     * Legacy field for 'coinjoin'
+     */
+    maxFeePerVbyte?: number;
+    /**
+     * Legacy field for 'coinjoin'
+     */
+    legalDocumentsVersion?: number;
+    /**
+     * Legacy field for 'coinjoin'
+     */
+    isPublic?: boolean;
 }
 /**
  * Only used for 'context' category.

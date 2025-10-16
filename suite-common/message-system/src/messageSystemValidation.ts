@@ -21,6 +21,22 @@ import {
     VENDOR_ENUM,
 } from './messageSystemConstants';
 
+const onlyForDomain = <T extends yup.Schema<any>>(
+    allowed: string | string[],
+    schema: T,
+    fieldLabel: string,
+) =>
+    yup.mixed().when('domain', {
+        is: (d: string) => (Array.isArray(allowed) ? allowed.includes(d) : d === allowed),
+        then: () => schema,
+        otherwise: s =>
+            s.test({
+                name: 'forbidden-field',
+                message: `${fieldLabel} is only allowed when domain is ${Array.isArray(allowed) ? allowed.join(' | ') : allowed}.`,
+                test: v => v === undefined,
+            }),
+    }) as unknown as T;
+
 export type ValidateError = { field?: string; message: string };
 
 export const stripFieldFromMessage = (errors: ValidateError[]) =>
@@ -63,6 +79,22 @@ const modalSchema = yup
     })
     .noUnknown(true);
 
+const surveyPayloadSchema = yup
+    .object({
+        title: localizationSchema.required(),
+        description: localizationSchema.required(),
+        cta: ctaSchema.required(),
+    })
+    .noUnknown(false);
+
+export type TradingSurveyPayload = yup.InferType<typeof surveyPayloadSchema>;
+
+export const validateTradingSurvey = (parsed: unknown) =>
+    surveyPayloadSchema.validateSync(parsed, {
+        abortEarly: false,
+        strict: true,
+    });
+
 const featureItemSchema = yup
     .object({
         domain: yup
@@ -70,7 +102,54 @@ const featureItemSchema = yup
             .oneOf(FEATURE_LIST, 'Select a valid feature from the list.')
             .required(),
         flag: yup.boolean().required(),
-        visibleBanner: yup.string().optional(),
+        payload: yup.lazy((_value, { parent }) => {
+            if (parent.domain === 'trading.survey') {
+                return surveyPayloadSchema;
+            }
+
+            return yup.object().optional().noUnknown(false);
+        }),
+
+        // legacy fields
+        visibleBanner: onlyForDomain(
+            'dashboard.promoBanner',
+            yup.string().optional(),
+            'visibleBanner',
+        ),
+
+        timeoutThresholdsPerModel: onlyForDomain(
+            'security.firmware.hashCheck.timeout',
+            yup.object().nullable().optional().noUnknown(false),
+            'timeoutThresholdsPerModel',
+        ),
+
+        averageAnonymityGainPerRound: onlyForDomain(
+            'coinjoin',
+            yup.number().optional(),
+            'averageAnonymityGainPerRound',
+        ),
+        roundsFailRateBuffer: onlyForDomain(
+            'coinjoin',
+            yup.number().optional(),
+            'roundsFailRateBuffer',
+        ),
+        roundsDurationInHours: onlyForDomain(
+            'coinjoin',
+            yup.number().optional(),
+            'roundsDurationInHours',
+        ),
+        maxMiningFeeModifier: onlyForDomain(
+            'coinjoin',
+            yup.number().optional(),
+            'maxMiningFeeModifier',
+        ),
+        maxFeePerVbyte: onlyForDomain('coinjoin', yup.number().optional(), 'maxFeePerVbyte'),
+        legalDocumentsVersion: onlyForDomain(
+            'coinjoin',
+            yup.number().optional(),
+            'legalDocumentsVersion',
+        ),
+        isPublic: onlyForDomain('coinjoin', yup.number().optional(), 'isPublic'),
     })
     .noUnknown(true);
 

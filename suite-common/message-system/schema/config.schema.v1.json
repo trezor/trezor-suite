@@ -132,11 +132,49 @@
                                         "flag": {
                                             "type": "boolean"
                                         },
+                                        "payload": {
+                                            "type": "object",
+                                            "description": "Optional payload with arbitrary properties",
+                                            "additionalProperties": true
+                                        },
                                         "visibleBanner": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "Legacy field for 'dashboard.promoBanner'"
+                                        },
+                                        "timeoutThresholdsPerModel": {
+                                            "type": ["object", "null"],
+                                            "description": "Legacy field for 'security.firmware.hashCheck.timeout'"
+                                        },
+                                        "averageAnonymityGainPerRound": {
+                                            "type": "number",
+                                            "description": "Legacy field for 'coinjoin'"
+                                        },
+                                        "roundsFailRateBuffer": {
+                                            "type": "number",
+                                            "description": "Legacy field for 'coinjoin'"
+                                        },
+                                        "roundsDurationInHours": {
+                                            "type": "number",
+                                            "description": "Legacy field for 'coinjoin'"
+                                        },
+                                        "maxMiningFeeModifier": {
+                                            "type": "number",
+                                            "description": "Legacy field for 'coinjoin'"
+                                        },
+                                        "maxFeePerVbyte": {
+                                            "type": "number",
+                                            "description": "Legacy field for 'coinjoin'"
+                                        },
+                                        "legalDocumentsVersion": {
+                                            "type": "number",
+                                            "description": "Legacy field for 'coinjoin'"
+                                        },
+                                        "isPublic": {
+                                            "type": "boolean",
+                                            "description": "Legacy field for 'coinjoin'"
                                         }
                                     },
-                                    "additionalProperties": true
+                                    "additionalProperties": false
                                 }
                             },
                             "context": {
