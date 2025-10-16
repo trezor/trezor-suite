@@ -1,3 +1,5 @@
+import { FormProvider } from 'react-hook-form';
+
 import { Context } from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
 
@@ -19,7 +21,9 @@ const TradingBuyFormContent = ({ selectedAccount }: UseTradingProps) => {
 
     return (
         <TradingFormContext.Provider value={tradingBuyContextValues}>
-            <TradingFormLayout />
+            <FormProvider {...tradingBuyContextValues.methods}>
+                <TradingFormLayout />
+            </FormProvider>
         </TradingFormContext.Provider>
     );
 };

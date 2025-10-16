@@ -11,4 +11,6 @@ export type ClaimFormState = Omit<
 export type ClaimContextValues = UseFormReturn<ClaimFormState> &
     BaseStakeContextValues & {
         onClaimChange: (amount: string) => Promise<void>;
+    } & {
+        methods: UseFormReturn<ClaimFormState>;
     };

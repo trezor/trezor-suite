@@ -1,3 +1,5 @@
+import { FormProvider } from 'react-hook-form';
+
 import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { UseTradingProps } from 'src/types/trading/trading';
@@ -12,7 +14,9 @@ const TradingBuyConfirmComponent = ({ selectedAccount }: UseTradingProps) => {
 
     return (
         <TradingFormContext.Provider value={tradingBuyContextValues}>
-            <TradingSelectedOffer />
+            <FormProvider {...tradingBuyContextValues.methods}>
+                <TradingSelectedOffer />
+            </FormProvider>
         </TradingFormContext.Provider>
     );
 };

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { FormProvider } from 'react-hook-form';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -45,6 +46,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         onClaimChange,
         signTx,
         trigger,
+        methods,
     } = useClaimForm({ selectedAccount });
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
 
@@ -126,57 +128,59 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                 </>
             }
         >
-            <form onSubmit={onClaimClick}>
-                <Column gap={spacings.lg}>
-                    <SolanaStakingLimitBanner
-                        account={account}
-                        composedLevels={composedLevels}
-                        type="claim"
-                    />
+            <FormProvider {...methods}>
+                <form onSubmit={onClaimClick}>
+                    <Column gap={spacings.lg}>
+                        <SolanaStakingLimitBanner
+                            account={account}
+                            composedLevels={composedLevels}
+                            type="claim"
+                        />
 
-                    <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
-                        <Paragraph typographyStyle="titleSmall">
-                            <FormattedCryptoAmount
-                                data-testid="@staking/claim-modal/amount"
-                                value={claimableAmount}
-                                symbol={account.symbol}
-                            />
-                        </Paragraph>
-                        <Paragraph typographyStyle="label" variant="tertiary">
-                            <BaseCurrencyValue
-                                showApproximationIndicator
-                                amount={claimableAmount}
-                                symbol={account.symbol}
-                            />
-                        </Paragraph>
-                    </InfoItem>
+                        <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
+                            <Paragraph typographyStyle="titleSmall">
+                                <FormattedCryptoAmount
+                                    data-testid="@staking/claim-modal/amount"
+                                    value={claimableAmount}
+                                    symbol={account.symbol}
+                                />
+                            </Paragraph>
+                            <Paragraph typographyStyle="label" variant="tertiary">
+                                <BaseCurrencyValue
+                                    showApproximationIndicator
+                                    amount={claimableAmount}
+                                    symbol={account.symbol}
+                                />
+                            </Paragraph>
+                        </InfoItem>
 
-                    <InfoItem
-                        direction="column"
-                        label={<Translation id="TR_STAKE_CLAIMING_PERIOD" />}
-                    >
-                        <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
-                    </InfoItem>
+                        <InfoItem
+                            direction="column"
+                            label={<Translation id="TR_STAKE_CLAIMING_PERIOD" />}
+                        >
+                            <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
+                        </InfoItem>
 
-                    <Fees
-                        control={control}
-                        errors={errors}
-                        isDirty={isDirty}
-                        register={register}
-                        feeInfo={feeInfo}
-                        setValue={setValue}
-                        getValues={getValues}
-                        account={account}
-                        composedLevels={composedLevels}
-                        changeFeeLevel={changeFeeLevel}
-                        trigger={trigger}
-                    />
+                        <Fees
+                            control={control}
+                            errors={errors}
+                            isDirty={isDirty}
+                            register={register}
+                            feeInfo={feeInfo}
+                            setValue={setValue}
+                            getValues={getValues}
+                            account={account}
+                            composedLevels={composedLevels}
+                            changeFeeLevel={changeFeeLevel}
+                            trigger={trigger}
+                        />
 
-                    {errors[CRYPTO_INPUT] && (
-                        <Banner variant="destructive">{errors[CRYPTO_INPUT]?.message}</Banner>
-                    )}
-                </Column>
-            </form>
+                        {errors[CRYPTO_INPUT] && (
+                            <Banner variant="destructive">{errors[CRYPTO_INPUT]?.message}</Banner>
+                        )}
+                    </Column>
+                </form>
+            </FormProvider>
         </Modal>
     );
 };

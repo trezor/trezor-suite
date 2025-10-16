@@ -133,6 +133,7 @@ export const useClaimForm = ({ selectedAccount }: UseClaimFormsProps): ClaimCont
 
     return {
         ...methods,
+        methods,
         account,
         network,
         formState,

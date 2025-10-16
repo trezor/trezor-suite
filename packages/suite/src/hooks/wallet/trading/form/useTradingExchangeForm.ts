@@ -933,7 +933,7 @@ export const useTradingExchangeForm = ({
             },
             helpers,
         },
-
+        methods,
         device,
         timer,
         exchangeInfo,

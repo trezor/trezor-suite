@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
@@ -180,23 +180,25 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                     </>
                 }
             >
-                <Column gap={spacings.md}>
-                    {popupCall?.state === 'ongoing' && popupCall?.payload?.outputs && (
-                        <OutputsSummary account={account} outputs={popupCall.payload.outputs} />
-                    )}
-                    <Fees
-                        account={account}
-                        feeInfo={feeInfo}
-                        control={control}
-                        register={register}
-                        setValue={setValue}
-                        getValues={getValues}
-                        errors={errors}
-                        isDirty={isDirty}
-                        changeFeeLevel={changeFeeLevel}
-                        trigger={trigger}
-                    />
-                </Column>
+                <FormProvider {...methods}>
+                    <Column gap={spacings.md}>
+                        {popupCall?.state === 'ongoing' && popupCall?.payload?.outputs && (
+                            <OutputsSummary account={account} outputs={popupCall.payload.outputs} />
+                        )}
+                        <Fees
+                            account={account}
+                            feeInfo={feeInfo}
+                            control={control}
+                            register={register}
+                            setValue={setValue}
+                            getValues={getValues}
+                            errors={errors}
+                            isDirty={isDirty}
+                            changeFeeLevel={changeFeeLevel}
+                            trigger={trigger}
+                        />
+                    </Column>
+                </FormProvider>
             </Modal.ModalBase>
         </ConnectModalBackdrop>
     );

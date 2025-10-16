@@ -410,6 +410,7 @@ export const useStakeForm = ({
 
     return {
         ...methods,
+        methods,
         onSubmit,
         account,
         network,

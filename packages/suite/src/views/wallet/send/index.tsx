@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
 
@@ -86,25 +87,27 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     return (
         <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
-                <Column gap={spacings.xl}>
-                    <SendHeader />
+                <FormProvider {...sendContextValues.methods}>
+                    <Column gap={spacings.xl}>
+                        <SendHeader />
 
-                    <FormGrid data-testid="@wallet/send/outputs-and-options">
-                        <Outputs disableAnim={!!children} />
-                        <Options />
-                        <SendFees />
+                        <FormGrid data-testid="@wallet/send/outputs-and-options">
+                            <Outputs disableAnim={!!children} />
+                            <Options />
+                            <SendFees />
 
-                        {symbol === 'dsol' && (
-                            <Banner icon>
-                                <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
-                            </Banner>
-                        )}
+                            {symbol === 'dsol' && (
+                                <Banner icon>
+                                    <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
+                                </Banner>
+                            )}
 
-                        <TotalSent />
-                    </FormGrid>
-                </Column>
+                            <TotalSent />
+                        </FormGrid>
+                    </Column>
 
-                {children}
+                    {children}
+                </FormProvider>
             </SendContext.Provider>
 
             <ConfirmEvmExplanationModal account={selectedAccount.account} route="wallet-send" />

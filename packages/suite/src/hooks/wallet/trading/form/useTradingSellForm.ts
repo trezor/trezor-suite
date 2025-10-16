@@ -590,6 +590,7 @@ export const useTradingSellForm = ({
             helpers,
         },
         ...methods,
+        methods,
         account,
         defaultCountry,
         defaultCurrency,

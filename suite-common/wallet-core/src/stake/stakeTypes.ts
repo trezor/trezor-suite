@@ -66,6 +66,7 @@ export interface BaseStakeContextValues {
 
 export type StakeContextValues = UseFormReturn<StakeFormState> &
     BaseStakeContextValues & {
+        methods: UseFormReturn<StakeFormState>;
         formState: ReactHookFormState<StakeFormState>;
         removeDraft: (key: string) => void;
         isDraft: boolean;
@@ -91,6 +92,7 @@ export type UnstakeFormState = Omit<StakeFormState, 'setMaxOutputId'>;
 
 export type UnstakeContextValues = UseFormReturn<UnstakeFormState> &
     BaseStakeContextValues & {
+        methods: UseFormReturn<UnstakeFormState>;
         formState: ReactHookFormState<StakeFormState>;
         onCryptoAmountChange: (amount: string) => Promise<void>;
         onFiatAmountChange: (amount: string) => void;
