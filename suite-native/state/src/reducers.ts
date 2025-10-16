@@ -89,23 +89,12 @@ export const prepareRootReducers = async () => {
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
         key: 'appSettings',
+        // Note: Migration to version 3 has been removed.
+        // The `isCoinEnablingInitFinished` property was deleted, and
+        // `areTestnetsEnabled` is a developer-only option and does not require migration.
         version: 3,
         migrations: {
             2: (oldState: any) => ({ ...oldState, fiatCurrencyCode: oldState.fiatCurrency.label }),
-            3: async (oldState: any) => {
-                const discoveryConfig = (await getStoredState({
-                    key: 'discoveryConfig',
-                    storage: await initMmkvStorage(),
-                })) as any;
-                if (discoveryConfig)
-                    return {
-                        ...oldState,
-                        areTestnetsEnabled: discoveryConfig.areTestnetsEnabled,
-                        isCoinEnablingInitFinished: discoveryConfig.isCoinEnablingInitFinished,
-                    };
-
-                return oldState;
-            },
         },
     });
 
