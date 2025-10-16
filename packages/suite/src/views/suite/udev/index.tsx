@@ -42,11 +42,11 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
                         <Translation id="TR_DOWNLOAD" />
                     </Modal.Button>
                     <Modal.Button
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         href={udevManualUrl}
-                        icon="arrowUpRight"
-                        iconAlignment="end"
-                        iconSize={20}
+                        iconRight="arrowUpRight"
+                        size="small"
                     >
                         <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
                     </Modal.Button>

@@ -44,7 +44,7 @@ export const EarlyAccess = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={setupEarlyAccess}
-                    variant="primary"
+                    intent="brand"
                     data-testid="@settings/early-access-join-button"
                 >
                     <Translation

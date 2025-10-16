@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import type { PasswordEntry, PasswordEntryDecoded } from '@suite-common/metadata-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Checkbox, Input } from '@trezor/components';
+import { Checkbox, Input, NewButton } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { isUrl } from '@trezor/utils';
@@ -158,17 +158,17 @@ export const EntryForm = ({ onEncrypted, entry, cancel }: Props) => {
                     })}
             </TagsSelection>
 
-            <Button size="small" variant="tertiary" onClick={() => cancel()}>
+            <NewButton size="small" intent="neutral" priority="secondary" onClick={() => cancel()}>
                 Cancel
-            </Button>
-            <Button
+            </NewButton>
+            <NewButton
                 size="small"
                 onClick={encrypt}
                 // note is a required field
                 isDisabled={!note}
             >
                 Submit
-            </Button>
+            </NewButton>
         </FormWrapper>
     );
 };

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 
 import { exportMetadataToLocalFile } from 'src/actions/suite/metadataActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
@@ -24,9 +24,9 @@ export const Metadata = () => {
                 description="Export labeling files to your computer. You may use this to transfer your labeling files from your Google drive account to your Dropbox account."
             />
             <ActionColumn>
-                <Button onClick={onClick} isDisabled={exporting} isLoading={exporting}>
+                <NewButton onClick={onClick} isDisabled={exporting} isLoading={exporting}>
                     Export
-                </Button>
+                </NewButton>
             </ActionColumn>
         </SectionItem>
     );

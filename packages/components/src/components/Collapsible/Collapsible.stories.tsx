@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { spacings } from '@trezor/theme';
 
 import { Collapsible as CollapsibleComponent } from './Collapsible';
-import { Button } from '../buttons/Button/Button';
+import { NewButton } from '../buttons/NewButton/NewButton';
 
 const meta: Meta<typeof CollapsibleComponent> = {
     title: 'Collapsible',
@@ -15,7 +15,7 @@ export const Collapsible: StoryObj<typeof CollapsibleComponent> = {
     render: args => (
         <CollapsibleComponent {...args}>
             <CollapsibleComponent.Toggle>
-                <Button>Toggle</Button>
+                <NewButton>Toggle</NewButton>
             </CollapsibleComponent.Toggle>
             <CollapsibleComponent.Content>
                 <p>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { Button, Modal, Paragraph, Row } from '@trezor/components';
+import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import type { Deferred } from '@trezor/utils';
 
@@ -9,9 +9,6 @@ import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { MetadataProviderType } from 'src/types/suite/metadata';
-
-import { DropboxLogo } from './DropboxLogo';
-import { GoogleDriveLogo } from './GoogleDriveLogo';
 
 type MetadataProviderModalProps = {
     onCancel: () => void;
@@ -57,43 +54,45 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-testid="@modal/metadata-provider"
             bottomContent={
-                <Row gap={spacings.sm} flexWrap="wrap">
-                    <Button
-                        variant="tertiary"
+                <>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
                         onClick={() => connect('dropbox')}
                         isLoading={isLoading === 'dropbox'}
                         isDisabled={!!isLoading}
                         data-testid="@modal/metadata-provider/dropbox-button"
-                        icon={<DropboxLogo size={20} />}
-                        textWrap={false}
+                        iconLeft="dropboxLogoFilled"
                     >
                         <Translation id="TR_DROPBOX" />
-                    </Button>
+                    </Modal.Button>
 
-                    <Button
-                        variant="tertiary"
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
                         onClick={() => connect('google')}
                         isLoading={isLoading === 'google'}
                         isDisabled={!!isLoading}
                         data-testid="@modal/metadata-provider/google-button"
-                        icon={<GoogleDriveLogo size={20} />}
+                        iconLeft="googleDriveLogoFilled"
                     >
                         <Translation id="TR_GOOGLE_DRIVE" />
-                    </Button>
+                    </Modal.Button>
 
                     {/* desktop only */}
                     {isFeatureFlagEnabled('FILE_SYSTEM_SYNC') && (
-                        <Button
-                            variant="tertiary"
+                        <Modal.Button
+                            intent="neutral"
+                            priority="secondary"
                             onClick={() => connect('fileSystem')}
                             isLoading={isLoading === 'fileSystem'}
                             isDisabled={!!isLoading}
                             data-testid="@modal/metadata-provider/file-system-button"
                         >
                             <Translation id="TR_LOCAL_FILE_SYSTEM" />
-                        </Button>
+                        </Modal.Button>
                     )}
-                </Row>
+                </>
             }
         >
             <Paragraph typographyStyle="hint">

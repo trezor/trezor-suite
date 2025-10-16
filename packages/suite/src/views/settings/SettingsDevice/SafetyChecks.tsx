@@ -22,7 +22,7 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
             />
             <ActionColumn>
                 <ActionButton
-                    variant="primary"
+                    intent="brand"
                     onClick={handleClick}
                     data-testid="@settings/device/safety-checks-button"
                     isDisabled={isDeviceLocked}

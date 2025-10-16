@@ -17,7 +17,8 @@ export const GlobalSendReceive = () => {
     const { device } = useDevice();
 
     const goToWithAnalytics = useGoToWithAnalytics();
-    const buttonVariant = device?.connected && device?.available ? 'primary' : 'tertiary';
+    const buttonIntent = device?.connected && device?.available ? 'brand' : 'neutral';
+    const buttonPriority = device?.connected && device?.available ? 'primary' : 'secondary';
     const [isSendModalOpen, setIsSendModalOpen] = useState(false);
     const [isReceiveModalOpen, setIsReceiveModalOpen] = useState(false);
 
@@ -94,7 +95,8 @@ export const GlobalSendReceive = () => {
             <GlobalSendReceiveButtons
                 setIsSendModalOpen={setIsSendModalOpen}
                 setIsReceiveModalOpen={setIsReceiveModalOpen}
-                variant={buttonVariant}
+                intent={buttonIntent}
+                priority={buttonPriority}
             />
             {isSendModalOpen && (
                 <LocalAccountSearchProvider>

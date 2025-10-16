@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { ConnectionStatus } from '@suite-common/wallet-types';
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
@@ -103,14 +103,15 @@ const BackendItem = ({
             </div>
             <div>
                 {!connected && (
-                    <Button
-                        size="tiny"
-                        variant="tertiary"
+                    <NewButton
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
                         isLoading={isReconnecting}
                         onClick={reconnect}
                     >
                         <Translation id="TR_CONNECT" />
-                    </Button>
+                    </NewButton>
                 )}
             </div>
         </BackendRow>
@@ -141,9 +142,14 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
                         <CoinLogo symbol={symbol} />
                         <Title>{getNetwork(symbol).name}</Title>
                     </CoinCell>
-                    <Button size="tiny" variant="tertiary" onClick={onSettings}>
+                    <NewButton
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onSettings}
+                    >
                         <Translation id="TR_SETTINGS" />
-                    </Button>
+                    </NewButton>
                 </div>
                 <div>
                     <BackendItem

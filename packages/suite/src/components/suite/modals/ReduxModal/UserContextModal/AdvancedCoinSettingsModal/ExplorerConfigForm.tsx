@@ -2,7 +2,7 @@ import { ReactNode, useMemo } from 'react';
 import { RefCallBack } from 'react-hook-form';
 
 import { Explorer } from '@suite-common/wallet-config';
-import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
+import { Column, InfoItem, Input, NewButton, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -75,15 +75,16 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
                     inputState={input.fields.base.error ? 'error' : undefined}
                     bottomText={input.fields.base.error}
                     rightContent={
-                        <Button
-                            variant="tertiary"
+                        <NewButton
+                            intent="neutral"
+                            priority="secondary"
                             size="small"
-                            icon="change"
+                            iconLeft="change"
                             isDisabled={usesDefaultExplorer}
                             onClick={setDefaultValues}
                         >
                             <Translation id="TR_EXPLORER_SET_DEFAULT" />
-                        </Button>
+                        </NewButton>
                     }
                     {...input.fields.base.field}
                 />

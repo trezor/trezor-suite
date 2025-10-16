@@ -8,7 +8,7 @@ import {
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
+import { IconButton, NewButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -81,14 +81,15 @@ export const RefreshAfterDiscoveryNeeded = () => {
                                 <Translation id="TR_DISCOVERY_NEW_COINS_TEXT" isNested={false} />
                             </AccountsMenuNotice>
 
-                            <Button
-                                variant="tertiary"
-                                size="tiny"
-                                icon="repeat"
+                            <NewButton
+                                intent="neutral"
+                                priority="secondary"
+                                size="small"
+                                iconLeft="repeat"
                                 onClick={restartDiscovery}
                             >
                                 <Translation id="REFRESH" />
-                            </Button>
+                            </NewButton>
                         </DiscoveryButtonContainer>
                     )}
                 </>

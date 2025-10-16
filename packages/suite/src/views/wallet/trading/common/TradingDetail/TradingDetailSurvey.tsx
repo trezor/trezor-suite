@@ -45,7 +45,7 @@ export const TradingDetailSurvey = () => {
                     <Text typographyStyle="titleSmall">{title}</Text>
                     <Paragraph maxWidth={400}>{description}</Paragraph>
                 </Column>
-                <MessageSystemButton cta={survey.cta} icon="arrowSquareOut" iconAlignment="end" />
+                <MessageSystemButton cta={survey.cta} iconRight="arrowSquareOut" />
             </Column>
         </Card>
     );

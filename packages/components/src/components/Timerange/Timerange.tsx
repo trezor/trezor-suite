@@ -7,7 +7,7 @@ import styled, { css } from 'styled-components';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 import { DROPDOWN_MENU } from '../Menu/menuStyle';
-import { Button } from '../buttons/Button/Button';
+import { NewButton } from '../buttons/NewButton/NewButton';
 
 type Selection = {
     key: string;
@@ -648,17 +648,17 @@ const Timerange = (props: TimerangeProps) => {
                 />
             </Calendar>
             <Buttons>
-                <Button variant="tertiary" onClick={onCancel} isFullWidth>
+                <NewButton intent="neutral" priority="secondary" onClick={onCancel} width="100%">
                     {props.ctaCancel}
-                </Button>
-                <Button
-                    variant="primary"
+                </NewButton>
+                <NewButton
+                    intent="brand"
                     isDisabled={!(state.startDate && state.endDate)}
                     onClick={onSubmit}
-                    isFullWidth
+                    width="100%"
                 >
                     {props.ctaSubmit}
-                </Button>
+                </NewButton>
             </Buttons>
         </StyledTimerange>
     );

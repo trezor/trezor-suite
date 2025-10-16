@@ -6,7 +6,7 @@ import {
     tradingActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -113,9 +113,9 @@ export const TradingTransactionSell = ({
                 />
             }
             TradeButton={
-                <Button variant="tertiary" onClick={viewDetail}>
+                <NewButton intent="neutral" priority="secondary" onClick={viewDetail}>
                     <Translation id="TR_TRADING_VIEW_DETAILS" />
-                </Button>
+                </NewButton>
             }
         />
     );

@@ -135,7 +135,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancelClick}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancelClick}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Route } from '@suite-common/suite-types';
 import { Row } from '@trezor/components';
-import { spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -54,10 +54,9 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
             <PageName backRoute={backRoute} />
 
             {routeName === 'suite-index' && (
-                <Row gap={spacings.xxs}>
+                <Row gap={8}>
                     <HeaderDropdown />
                     <TradeActions />
-
                     <GlobalSendReceive />
                 </Row>
             )}

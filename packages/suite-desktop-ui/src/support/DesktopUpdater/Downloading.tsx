@@ -26,7 +26,7 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
     return (
         <Modal
             bottomContent={
-                <Modal.Button variant="tertiary" onClick={hideWindow}>
+                <Modal.Button intent="neutral" priority="secondary" onClick={hideWindow}>
                     <Translation id="TR_BACKGROUND_DOWNLOAD" />
                 </Modal.Button>
             }

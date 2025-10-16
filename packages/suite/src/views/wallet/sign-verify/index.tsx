@@ -3,11 +3,11 @@ import { FieldError } from 'react-hook-form';
 
 import { getInputState } from '@suite-common/wallet-utils';
 import {
-    Button,
     Card,
     Column,
     Divider,
     Input,
+    NewButton,
     Row,
     SelectBar,
     Switch,
@@ -134,9 +134,15 @@ const SignVerify = () => {
         >
             <WalletSubpageHeading title={canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE'}>
                 {isFormDirty && (
-                    <Button type="button" size="small" variant="tertiary" onClick={resetForm}>
+                    <NewButton
+                        type="button"
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={resetForm}
+                    >
                         <Translation id="TR_CLEAR_ALL" />
-                    </Button>
+                    </NewButton>
                 )}
             </WalletSubpageHeading>
 
@@ -264,12 +270,13 @@ const SignVerify = () => {
                                     )}
                                     rightContent={
                                         canCopy ? (
-                                            <Button
+                                            <NewButton
                                                 type="button"
-                                                variant="tertiary"
+                                                intent="neutral"
+                                                priority="secondary"
                                                 onClick={copy}
-                                                icon="copy"
-                                                size="tiny"
+                                                iconLeft="copy"
+                                                size="small"
                                             >
                                                 <Translation
                                                     id={
@@ -278,7 +285,7 @@ const SignVerify = () => {
                                                             : 'TR_COPY_SIGNED_MESSAGE'
                                                     }
                                                 />
-                                            </Button>
+                                            </NewButton>
                                         ) : undefined
                                     }
                                     {...signatureProps}
@@ -293,17 +300,18 @@ const SignVerify = () => {
                                         )}
                                         rightContent={
                                             canCopy ? (
-                                                <Button
+                                                <NewButton
                                                     type="button"
-                                                    variant="tertiary"
+                                                    intent="neutral"
+                                                    priority="secondary"
                                                     onClick={() =>
                                                         copyToClipboard(formValues.pubKey || '')
                                                     }
-                                                    icon="copy"
-                                                    size="tiny"
+                                                    iconLeft="copy"
+                                                    size="small"
                                                 >
                                                     <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                                </Button>
+                                                </NewButton>
                                             ) : undefined
                                         }
                                         {...pubKeyProps}
@@ -333,11 +341,11 @@ const SignVerify = () => {
                             </>
                         )}
                     </Column>
-                    <Button
+                    <NewButton
                         type="submit"
-                        variant="primary"
-                        icon={isCompleted ? 'check' : undefined}
-                        isSubtle={isCompleted}
+                        intent="brand"
+                        iconLeft={isCompleted ? 'check' : undefined}
+                        priority={isCompleted ? 'secondary' : 'primary'}
                         isDisabled={isLocked()}
                         isLoading={isSubmitting}
                         data-testid="@sign-verify/submit"
@@ -348,7 +356,7 @@ const SignVerify = () => {
                         ) : (
                             <Translation id={isCompleted ? 'TR_VERIFIED' : 'TR_VERIFY'} />
                         )}
-                    </Button>
+                    </NewButton>
                 </form>
             </Card>
         </WalletLayout>

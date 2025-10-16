@@ -76,7 +76,7 @@ export const InstantStakeBanner = ({
                 <Banner.Button
                     data-testid="@staking/instant-stake-banner/got-it-button"
                     onClick={closeBanner}
-                    variant="primary"
+                    intent="brand"
                 >
                     <Translation id="TR_GOT_IT" />
                 </Banner.Button>

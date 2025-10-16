@@ -25,7 +25,8 @@ export const BridgeDeprecated = () => {
             bottomContent={
                 <>
                     <Modal.Button
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         onClick={onClose}
                         data-testid="@bridge/goto/wallet-index"
                     >

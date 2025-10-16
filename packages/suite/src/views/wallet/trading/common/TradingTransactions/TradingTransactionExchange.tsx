@@ -2,7 +2,7 @@ import { ExchangeProviderInfo } from 'invity-api';
 
 import type { TradingTransactionExchange as TradingTxExchange } from '@suite-common/trading';
 import { tradingExchangeActions } from '@suite-common/trading';
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -52,9 +52,9 @@ export const TradingTransactionExchange = ({
                 <TradingTransactionProvider exchange={trade.data.exchange} providers={providers} />
             }
             TradeButton={
-                <Button size="small" variant="tertiary" onClick={viewDetail}>
+                <NewButton size="small" intent="neutral" priority="secondary" onClick={viewDetail}>
                     <Translation id="TR_TRADING_VIEW_DETAILS" />
-                </Button>
+                </NewButton>
             }
         />
     );

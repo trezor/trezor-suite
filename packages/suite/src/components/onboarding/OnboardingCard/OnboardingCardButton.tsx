@@ -1,3 +1,5 @@
-import { Button, ButtonProps } from '@trezor/components';
+import { NewButton, NewButtonProps } from '@trezor/components';
 
-export const OnboardingCardButton = (props: ButtonProps) => <Button minWidth={180} {...props} />;
+export const OnboardingCardButton = (props: NewButtonProps) => (
+    <NewButton size="large" minWidth={180} {...props} />
+);

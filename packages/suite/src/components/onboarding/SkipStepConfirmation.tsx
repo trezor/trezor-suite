@@ -66,7 +66,8 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
                         <Translation id="TR_DONT_SKIP" />
                     </Modal.Button>
                     <Modal.Button
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         data-testid="@onboarding/skip-button-confirm"
                         onClick={handleSkipStepConfirm}
                     >

@@ -26,7 +26,7 @@ export const CustomFirmware = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={openModal}
-                    variant="destructive"
+                    intent="critical"
                     isDisabled={isDeviceLocked}
                     data-testid="@settings/device/custom-firmware-modal-button"
                     isTooltipActive={isDeviceLocked}

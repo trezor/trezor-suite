@@ -54,7 +54,8 @@ export const AutoStartBeforeQuitModal = () => {
                     <Modal.Button
                         onClick={() => handleQuit()}
                         data-testid="@auto-start-before-quit/button-quit"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                     >
                         <Translation id="TR_QUIT_NOW" />
                     </Modal.Button>

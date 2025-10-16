@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
-import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
+import { Banner, Card, Column, H3, Modal, NewButton, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -59,7 +59,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                             }
                         />
                     </Modal.Button>
-                    <Modal.Button onClick={onCancel} variant="tertiary">
+                    <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
@@ -86,15 +86,16 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                             {urls.join(', ')}
                                         </Paragraph>
                                     </Column>
-                                    <Button
-                                        variant="tertiary"
+                                    <NewButton
+                                        intent="neutral"
+                                        priority="secondary"
                                         onClick={() => setSymbol(symbol)}
-                                        icon="gear"
+                                        iconLeft="gear"
                                         size="small"
                                         margin={{ left: 'auto' }}
                                     >
                                         <Translation id="TR_GO_TO_SETTINGS" />
-                                    </Button>
+                                    </NewButton>
                                 </Row>
                             ))}
                         </Column>

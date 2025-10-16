@@ -28,7 +28,7 @@ export const NoBackupModal = () => {
                     <Modal.Button onClick={confirm} data-testid="@no-backup/take-risk-button">
                         <Translation id="TR_CONTINUE_ANYWAY" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={goToSettings}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={goToSettings}>
                         <Translation id="TR_CREATE_BACKUP" />
                     </Modal.Button>
                 </>

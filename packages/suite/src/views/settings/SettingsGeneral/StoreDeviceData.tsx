@@ -60,7 +60,7 @@ export const StoreDeviceDataModal = ({ onCancel }: ModalProps) => {
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
@@ -133,7 +133,7 @@ export const StoreDeviceData = () => {
                 />
                 <ActionColumn>
                     <ActionButton
-                        variant="primary"
+                        intent="brand"
                         onClick={handleClick}
                         data-testid="@settings/device/store-device-data-button"
                     >

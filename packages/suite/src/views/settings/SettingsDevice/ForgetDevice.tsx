@@ -52,7 +52,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
                     <Modal.Button onClick={handleConfirmClick}>
                         <Translation id="TR_FORGET" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
@@ -115,7 +115,7 @@ export const ForgetDevice = () => {
                     description={<Translation id="TR_FORGET_DEVICE_DESCRIPTION" />}
                 />
                 <ActionColumn>
-                    <ActionButton onClick={handleClick} variant="tertiary">
+                    <ActionButton onClick={handleClick} intent="neutral" priority="secondary">
                         <Translation id="TR_FORGET" />
                     </ActionButton>
                 </ActionColumn>

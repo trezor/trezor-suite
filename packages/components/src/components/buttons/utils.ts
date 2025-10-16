@@ -11,7 +11,8 @@ export const commonButtonStyles = css`
     border: 0;
     padding: 0;
     cursor: pointer;
-    display: block;
+    display: inline-flex;
+    width: fit-content;
     overflow: hidden;
     -webkit-app-region: no-drag;
     transition: 0.1s ease-in-out;

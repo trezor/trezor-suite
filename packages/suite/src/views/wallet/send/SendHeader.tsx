@@ -3,7 +3,7 @@ import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { sendFormActions } from '@suite-common/wallet-core';
-import { Button, Dropdown, DropdownMenuItemProps, Switch, Text } from '@trezor/components';
+import { Dropdown, DropdownMenuItemProps, NewButton, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -11,8 +11,8 @@ import { WalletSubpageHeading } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ClearButton = styled(Button)`
+const ClearButtonWrapper = styled.div`
+    display: inline-flex;
     animation: ${FADE_IN} 0.16s;
 `;
 
@@ -101,14 +101,17 @@ export const SendHeader = () => {
         <>
             <WalletSubpageHeading title="TR_NAV_SEND">
                 {isDirty && (
-                    <ClearButton
-                        size="small"
-                        variant="tertiary"
-                        onClick={resetContext}
-                        data-testid="clear-form"
-                    >
-                        <Translation id="TR_CLEAR_ALL" />
-                    </ClearButton>
+                    <ClearButtonWrapper>
+                        <NewButton
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={resetContext}
+                            data-testid="clear-form"
+                        >
+                            <Translation id="TR_CLEAR_ALL" />
+                        </NewButton>
+                    </ClearButtonWrapper>
                 )}
 
                 <Dropdown

@@ -52,7 +52,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
                     <Modal.Button onClick={onUnhide}>
                         <Translation id="TR_UNHIDE" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

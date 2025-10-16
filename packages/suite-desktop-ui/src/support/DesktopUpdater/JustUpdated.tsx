@@ -39,7 +39,7 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
             onCancel={onCancel}
             bottomContent={
                 <>
-                    <Modal.Button onClick={onCancel} variant="primary">
+                    <Modal.Button onClick={onCancel}>
                         <Translation id="TR_GOT_IT" />
                     </Modal.Button>
                 </>

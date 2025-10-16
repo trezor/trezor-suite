@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { CONTEXT_PATTERNS, FEATURE_LIST } from '@suite-common/message-system';
 import { Category, Condition } from '@suite-common/suite-types';
 import {
-    Button,
-    ButtonGroup,
     Card,
     IconButton,
     Menu,
+    NewButton,
+    NewButtonGroup,
     Popover,
     PopoverRef,
     Row,
@@ -46,13 +46,13 @@ export const MessageSystemManagerToolbar = ({
         <Row justifyContent="space-between" alignItems="center">
             <Row alignItems="center" gap={spacings.xs}>
                 <Text>Preset:</Text>
-                <ButtonGroup variant="tertiary" size="small">
+                <NewButtonGroup intent="neutral" priority="secondary" size="small">
                     {categories.map(c => (
-                        <Button key={c.value} onClick={() => onPreset(c.value)}>
+                        <NewButton key={c.value} onClick={() => onPreset(c.value)}>
                             {c.label}
-                        </Button>
+                        </NewButton>
                     ))}
-                </ButtonGroup>
+                </NewButtonGroup>
 
                 <Popover
                     ref={popoverRef}
@@ -69,14 +69,15 @@ export const MessageSystemManagerToolbar = ({
                         />
                     }
                 >
-                    <Button
+                    <NewButton
                         size="small"
-                        icon="plus"
-                        variant="tertiary"
+                        iconLeft="plus"
+                        intent="neutral"
+                        priority="secondary"
                         isDisabled={!canAddCondition}
                     >
                         Condition
-                    </Button>
+                    </NewButton>
                 </Popover>
             </Row>
             <Row gap={spacings.xs}>
@@ -91,9 +92,14 @@ export const MessageSystemManagerToolbar = ({
                         </div>
                     }
                 >
-                    <Button size="small" icon="codeBlockFilled" variant="tertiary">
+                    <NewButton
+                        size="small"
+                        iconLeft="codeBlockFilled"
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         Context patterns
-                    </Button>
+                    </NewButton>
                 </Tooltip>
 
                 <Tooltip
@@ -105,9 +111,14 @@ export const MessageSystemManagerToolbar = ({
                         </div>
                     }
                 >
-                    <Button size="small" icon="checkFat" variant="tertiary">
+                    <NewButton
+                        size="small"
+                        iconLeft="checkFat"
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         Feature list
-                    </Button>
+                    </NewButton>
                 </Tooltip>
 
                 <Popover

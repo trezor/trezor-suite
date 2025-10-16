@@ -54,7 +54,7 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
                     <Modal.Button onClick={onCopyAddress}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

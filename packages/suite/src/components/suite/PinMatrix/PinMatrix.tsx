@@ -3,12 +3,12 @@ import { useCallback, useEffect } from 'react';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Banner,
-    Button,
     Card,
     Column,
     Grid,
     Input,
     KEYBOARD_CODE,
+    NewButton,
     Paragraph,
     PinButton,
     Row,
@@ -118,12 +118,7 @@ export const PinMatrix = ({
                     variant="info"
                     icon="password"
                     rightContent={
-                        <Banner.Button
-                            href={learnMoreUrl}
-                            icon="arrowUpRight"
-                            iconAlignment="end"
-                            size="tiny"
-                        >
+                        <Banner.Button href={learnMoreUrl} iconRight="arrowUpRight" size="small">
                             <Translation id="TR_LEARN_MORE" />
                         </Banner.Button>
                     }
@@ -154,15 +149,16 @@ export const PinMatrix = ({
                     </Grid>
                     <Row gap={spacings.md}>
                         <Input disabled value={pin.replace(/[0-9]/g, '●')} size="small" />
-                        <Button
-                            variant="tertiary"
+                        <NewButton
+                            intent="neutral"
+                            priority="secondary"
                             onClick={onPinBackspace}
                             size="small"
-                            icon="caretLeft"
+                            iconLeft="caretLeft"
                             isDisabled={isDisabled}
                         >
                             <Translation id="TR_BACKSPACE" />
-                        </Button>
+                        </NewButton>
                     </Row>
                 </Column>
             </Card>

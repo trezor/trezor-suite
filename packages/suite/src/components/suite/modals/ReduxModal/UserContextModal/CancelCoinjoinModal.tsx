@@ -36,7 +36,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                     >
                         <Translation id="TR_CANCEL_COINJOIN_YES" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onClose}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onClose}>
                         <Translation id="TR_CANCEL_COINJOIN_NO" />
                     </Modal.Button>
                 </>

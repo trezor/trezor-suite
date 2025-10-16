@@ -5,12 +5,12 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
-    Button,
     Card,
     Column,
     Divider,
     H3,
     Icon,
+    NewButton,
     Paragraph,
     Row,
     Text,
@@ -176,9 +176,14 @@ const SecurityCheckContent = ({
         <SecurityCheckFail
             ctaSection={
                 <>
-                    <Button variant="tertiary" onClick={toggleView} size="large">
+                    <NewButton
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={toggleView}
+                        size="large"
+                    >
                         <Translation id="TR_BACK" />
-                    </Button>
+                    </NewButton>
                     <ContactSupport supportUrl={supportUrl} />
                 </>
             }
@@ -209,32 +214,36 @@ const SecurityCheckContent = ({
             <Row
                 alignItems="stretch"
                 flexWrap="wrap"
-                gap={spacings.xl}
+                gap={20}
                 width="100%"
                 margin={{ top: spacings.xxxxl }}
             >
-                <Button variant="tertiary" onClick={toggleView} size="large">
+                <NewButton
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={toggleView}
+                    size="large"
+                    minWidth={240}
+                >
                     <Translation id={secondaryButtonText} />
-                </Button>
+                </NewButton>
                 {initialized ? (
-                    <Button
+                    <NewButton
                         data-testid="@onboarding/exit-app-button"
                         onClick={handleContinueButtonClick}
-                        isFullWidth
                         size="large"
-                        variant="primary"
-                        flex="1"
+                        intent="brand"
+                        minWidth={240}
                     >
                         <Translation id="TR_YES_CONTINUE" />
-                    </Button>
+                    </NewButton>
                 ) : (
-                    <Button
+                    <NewButton
                         onClick={handleSetupButtonClick}
                         data-testid="@analytics/continue-button"
-                        isFullWidth
                         size="large"
-                        variant="primary"
-                        flex="1"
+                        intent="brand"
+                        minWidth={240}
                     >
                         <Column alignItems="center">
                             <Translation id={primaryButtonTopText} />
@@ -245,7 +254,7 @@ const SecurityCheckContent = ({
                                 </Row>
                             </Text>
                         </Column>
-                    </Button>
+                    </NewButton>
                 )}
             </Row>
         </SecurityCheckLayout>

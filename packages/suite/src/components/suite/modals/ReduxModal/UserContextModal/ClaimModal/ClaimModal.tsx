@@ -121,13 +121,13 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                             isDisabled={isDisabled || isClaimingDisabled}
                             isLoading={isLoading}
                             onClick={onClaimClick}
-                            icon={isClaimingDisabled ? 'info' : undefined}
+                            iconLeft={isClaimingDisabled ? 'info' : undefined}
                             data-testid="@staking/claim-modal/continue-button"
                         >
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>
                     </Tooltip>
-                    <Modal.Button variant="tertiary" onClick={onCancelClick}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancelClick}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

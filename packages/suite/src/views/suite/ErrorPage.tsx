@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, H2, Image, Link, Paragraph } from '@trezor/components';
+import { H2, Image, Link, NewButton, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -26,9 +26,9 @@ export const ErrorPage = () => {
             </Paragraph>
             <Image image="ERROR_404" />
             <Link variant="nostyle" target="_self" href={link}>
-                <Button>
+                <NewButton>
                     <Translation id="TR_404_GO_TO_DASHBOARD" />
-                </Button>
+                </NewButton>
             </Link>
         </Wrapper>
     );

@@ -55,7 +55,8 @@ export const BackupStep1Initial = ({
                     <Modal.Button
                         onClick={() => onCancel()}
                         data-testid="@backup/close-button"
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                     >
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>

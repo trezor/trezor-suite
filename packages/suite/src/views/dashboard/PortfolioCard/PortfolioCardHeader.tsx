@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Button, Row, SkeletonRectangle } from '@trezor/components';
+import { NewButton, Row, SkeletonRectangle } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector } from 'src/components/suite';
@@ -47,13 +47,14 @@ export const PortfolioCardHeader = ({
     if (!isWalletLoading && !isWalletError) {
         if (isWalletEmpty) {
             actions = (
-                <Button
+                <NewButton
                     onClick={receiveClickHandler}
                     data-testid="@dashboard/receive-button"
                     minWidth={120}
+                    size="large"
                 >
                     <Translation id="TR_RECEIVE" />
-                </Button>
+                </NewButton>
             );
         } else if (showGraphControls) {
             actions = (

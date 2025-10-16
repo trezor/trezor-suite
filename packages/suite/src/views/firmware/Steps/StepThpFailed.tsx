@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import { Button, Card, Column, Modal, Text } from '@trezor/components';
+import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
@@ -29,9 +29,14 @@ export const StepThpFailed = ({ modalHeading }: StepThpFailedProps) => {
             data-testid="@firmware-modal"
             heading={modalHeading}
             bottomContent={
-                <Button variant="primary" onClick={handleRetry} isLoading={isLoading}>
+                <Modal.Button
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={handleRetry}
+                    isLoading={isLoading}
+                >
                     <Translation id="TR_THP_GET_NEW_CODE" />
-                </Button>
+                </Modal.Button>
             }
         >
             <Card>
@@ -44,7 +49,7 @@ export const StepThpFailed = ({ modalHeading }: StepThpFailedProps) => {
                             <Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />
                         </Text>
                         <ThpPairingFailedForFirmwareInstallation />
-                        <Text variant="destructive">
+                        <Text variant="tertiary">
                             <Translation id="TR_THP_INCORRECT_SECURITY_CODE" />
                         </Text>
                     </Column>

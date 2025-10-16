@@ -10,7 +10,7 @@ import {
 import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { ExperimentId } from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
-import { Button, Card, Column, IconCircle, Row, Text, Textarea } from '@trezor/components';
+import { Card, Column, IconCircle, NewButton, Row, Text, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { EmojiRatingSelector } from 'src/components/suite/EmojiRatingSelector';
@@ -106,15 +106,15 @@ export const TradingDetailFeedback = ({
                 maxLength={1000}
             />
 
-            <Button
+            <NewButton
                 isDisabled={!isFormValid}
-                variant="primary"
+                intent="brand"
                 type="button"
                 size="small"
                 onClick={submitFeedback}
             >
                 <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON" />
-            </Button>
+            </NewButton>
         </>
     );
 

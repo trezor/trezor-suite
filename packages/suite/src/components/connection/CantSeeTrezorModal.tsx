@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { Box, IconButton, Modal } from '@trezor/components';
+import { Box, Card, NewIconButton, Modal } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { DeviceAnimation } from '@trezor/product-components';
@@ -137,10 +137,14 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                 size="tiny"
                 bottomContent={
                     <>
-                        <Modal.Button onClick={handlePrimaryCta} variant="info">
+                        <Modal.Button onClick={handlePrimaryCta}>
                             <Translation id="TR_BLUETOOTH_SCAN_AGAIN" />
                         </Modal.Button>
-                        <Modal.Button variant="tertiary" onClick={handleTertiaryCta}>
+                        <Modal.Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={handleTertiaryCta}
+                        >
                             <Translation id={tertiaryButtonTranslation} />
                         </Modal.Button>
                     </>
@@ -156,11 +160,12 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                         shape="ROUNDED"
                     />
                     <Box position={{ type: 'absolute', bottom: '8px', left: '8px' }}>
-                        <IconButton
+                        <NewIconButton
                             icon="arrowClockwiseFilled"
-                            variant="tertiary"
+                            intent="neutral"
                             size="small"
                             onClick={handleReplayClick}
+                            priority="secondary"
                         />
                     </Box>
                 </AnimationContainer>
@@ -171,14 +176,17 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
     return (
         <Modal
             bottomContent={
-                <Modal.Button variant="tertiary" onClick={handleTertiaryCta}>
+                <Modal.Button intent="neutral" priority="secondary" onClick={handleTertiaryCta}>
                     <Translation id={tertiaryButtonTranslation} />
                 </Modal.Button>
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             onCancel={handlePrimaryCta}
+            variant="info"
         >
-            <TroubleshootingTipsList items={tipItems} />
+            <Card paddingType="large">
+                <TroubleshootingTipsList items={tipItems} />
+            </Card>
         </Modal>
     );
 };

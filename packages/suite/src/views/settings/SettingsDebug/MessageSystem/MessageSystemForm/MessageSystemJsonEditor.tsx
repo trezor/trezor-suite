@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { ValidateError } from '@suite-common/message-system';
-import { Button, Column, Icon, Row, Text, Textarea } from '@trezor/components';
+import { Column, Icon, NewButton, Row, Text, Textarea } from '@trezor/components';
 import { useTextareaCursorPosition } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -43,14 +43,15 @@ export const MessageSystemJsonEditor = ({
                         <Text>
                             Line {position.line}, Column {position.column}
                         </Text>
-                        <Button
+                        <NewButton
                             isDisabled={!canFormat}
-                            size="tiny"
-                            variant="tertiary"
+                            size="small"
+                            intent="neutral"
+                            priority="secondary"
                             onClick={onFormat}
                         >
                             Format JSON
-                        </Button>
+                        </NewButton>
                     </Row>
                 }
             />

@@ -6,7 +6,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
 import { Account, FormState } from '@suite-common/wallet-types';
-import { Button, Column, Modal } from '@trezor/components';
+import { Column, Modal, NewButton } from '@trezor/components';
 import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
@@ -166,12 +166,12 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                 }
                 bottomContent={
                     <>
-                        <Button onClick={onSend} isDisabled={!errors} variant="primary">
+                        <NewButton onClick={onSend} isDisabled={!errors} intent="brand">
                             <Translation id="TR_CONTINUE" />
-                        </Button>
-                        <Button onClick={onClose} variant="tertiary">
+                        </NewButton>
+                        <NewButton onClick={onClose} intent="neutral" priority="secondary">
                             <Translation id="TR_CANCEL" />
-                        </Button>
+                        </NewButton>
                     </>
                 }
             >

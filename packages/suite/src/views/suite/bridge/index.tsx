@@ -41,8 +41,9 @@ export const BridgeUnavailable = () => {
                     </Modal.Button>
                     {hasTransport && (
                         <Modal.Button
-                            icon="caretLeft"
-                            variant="tertiary"
+                            iconLeft="caretLeft"
+                            intent="neutral"
+                            priority="secondary"
                             onClick={goToWallet}
                             data-testid="@bridge/goto/wallet-index"
                         >

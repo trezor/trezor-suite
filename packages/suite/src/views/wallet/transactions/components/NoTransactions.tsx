@@ -27,7 +27,7 @@ export const NoTransactions = ({ account }: NoTransactionsProps) => {
                     ? [
                           {
                               key: '1',
-                              icon: 'arrowUpRight',
+                              iconLeft: 'arrowUpRight',
                               children: (
                                   <TrezorLink variant="nostyle" href={explorerUrl}>
                                       <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />

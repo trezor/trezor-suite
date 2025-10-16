@@ -6,7 +6,7 @@ import {
     getInclusionFromInstanceId,
     messageSystemActions,
 } from '@suite-common/message-system';
-import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
+import { Column, Icon, InfoItem, NewButton, Range } from '@trezor/components';
 import { useDebounce } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -84,15 +84,15 @@ export const MessageSystemExperimentInfo = ({
             />
 
             <Column alignItems="flex-end">
-                <Button
-                    size="tiny"
-                    variant="warning"
-                    icon="arrowCounterClockwise"
+                <NewButton
+                    size="small"
+                    intent="warning"
+                    iconLeft="arrowCounterClockwise"
                     isDisabled={localInclusion === inclusion}
                     onClick={onResetInclusion}
                 >
                     Reset inclusion
-                </Button>
+                </NewButton>
             </Column>
         </Column>
     );

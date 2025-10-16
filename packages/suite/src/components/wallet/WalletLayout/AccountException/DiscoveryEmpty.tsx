@@ -21,7 +21,7 @@ export const DiscoveryEmpty = () => {
             actions={[
                 {
                     key: '1',
-                    icon: 'gear',
+                    iconLeft: 'gear',
                     onClick: goToCoinsSettings,
                     children: <Translation id="TR_COIN_SETTINGS" />,
                 },

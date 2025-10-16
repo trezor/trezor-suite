@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
-import { ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
+import { Card, Column, Link, NewButtonProps, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
@@ -16,20 +16,15 @@ import { useDevice, useOnboarding, useSelector, useTranslation } from 'src/hooks
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-const InstallButton = ({ isDisabled, onClick, variant, children }: ButtonProps) => (
+const InstallButton = ({ children, ...rest }: NewButtonProps) => (
     <Tooltip
         cursor="default"
-        isActive={isDisabled}
+        isActive={rest.isDisabled}
         maxWidth={200}
         placement="bottom"
         content={<Translation id="TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES" />}
     >
-        <OnboardingCard.Button
-            variant={variant}
-            onClick={onClick}
-            isDisabled={isDisabled}
-            data-testid="@firmware/install-button"
-        >
+        <OnboardingCard.Button data-testid="@firmware/install-button" {...rest}>
             {children}
         </OnboardingCard.Button>
     </Tooltip>
@@ -171,7 +166,8 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                         />
                     </InstallButton>
                     <InstallButton
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         onClick={() => installFirmware(FirmwareType.Universal)}
                         isDisabled={multipleDevicesConnected}
                     >
@@ -275,7 +271,11 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                         <Translation id={deviceWillBeWiped ? 'TR_CONTINUE' : 'TR_INSTALL'} />
                     </InstallButton>
                     {deviceWillBeWiped && onClose && (
-                        <OnboardingCard.Button onClick={onClose} variant="tertiary">
+                        <OnboardingCard.Button
+                            onClick={onClose}
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             <Translation id="TR_CLOSE" />
                         </OnboardingCard.Button>
                     )}

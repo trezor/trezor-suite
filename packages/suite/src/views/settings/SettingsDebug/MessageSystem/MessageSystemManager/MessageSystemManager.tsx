@@ -11,10 +11,10 @@ import { Action } from '@suite-common/suite-types';
 import {
     Banner,
     BannerVariant,
-    Button,
     Column,
     Divider,
     Modal,
+    NewButton,
     useElevation,
 } from '@trezor/components';
 import { mapVariantToBackgroundColor } from '@trezor/components/src/components/Banner/utils';
@@ -113,10 +113,10 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                 isInApp={!!allManuallyAddedMessageIds?.[message.id]}
                             />
                             <Column alignItems="flex-end" gap={spacings.xs}>
-                                <Button
-                                    size="tiny"
-                                    icon="copy"
-                                    variant="primary"
+                                <NewButton
+                                    size="small"
+                                    iconLeft="copy"
+                                    intent="brand"
                                     onClick={() =>
                                         copyToClipboard(
                                             JSON.stringify({ conditions, message }, null, 2),
@@ -124,16 +124,16 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                     }
                                 >
                                     Copy to clipboard
-                                </Button>
+                                </NewButton>
                                 {!!allManuallyAddedMessageIds?.[message.id] && (
-                                    <Button
-                                        size="tiny"
-                                        icon="trash"
-                                        variant="destructive"
+                                    <NewButton
+                                        size="small"
+                                        iconLeft="trash"
+                                        intent="critical"
                                         onClick={() => removeMessage(message.id)}
                                     >
                                         Remove
-                                    </Button>
+                                    </NewButton>
                                 )}
                             </Column>
                         </Column>

@@ -6,7 +6,7 @@ import { selectAddressLabels } from '@suite-common/local-first-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Button, Card, Column, GradientOverlay, Row, Table, Text } from '@trezor/components';
+import { Card, Column, GradientOverlay, NewButton, Row, Table, Text } from '@trezor/components';
 import { AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
@@ -76,16 +76,17 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
             <Table.Cell align="end">
                 <AddressActions $isVisible={isHovered}>
                     <ReceiveDisabledWrapper>
-                        <Button
+                        <NewButton
                             data-testid={`@wallet/receive/reveal-address-button/${index}`}
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             isDisabled={isDisabled}
                             isLoading={locked}
                             onClick={onClick}
-                            size="tiny"
+                            size="small"
                         >
                             <Translation id="TR_REVEAL_ADDRESS" />
-                        </Button>
+                        </NewButton>
                     </ReceiveDisabledWrapper>
                 </AddressActions>
             </Table.Cell>
@@ -199,25 +200,26 @@ export const UsedAddresses = ({
                 {actionButtonsVisible && (
                     <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
                         {actionShowVisible && (
-                            <Button
-                                variant="tertiary"
-                                icon="caretDown"
-                                iconAlignment="end"
+                            <NewButton
+                                intent="neutral"
+                                priority="secondary"
+                                iconRight="caretDown"
                                 onClick={() => setLimit(limit + 20)}
                                 data-testid="@wallet/receive/used-address/show-more"
                             >
                                 <Translation id="TR_SHOW_MORE" />
-                            </Button>
+                            </NewButton>
                         )}
 
                         {actionHideVisible && (
-                            <Button
-                                variant="tertiary"
-                                icon="caretUp"
+                            <NewButton
+                                intent="neutral"
+                                priority="secondary"
+                                iconLeft="caretUp"
                                 onClick={() => setLimit(DEFAULT_LIMIT)}
                             >
                                 <Translation id="TR_SHOW_LESS" />
-                            </Button>
+                            </NewButton>
                         )}
                     </Row>
                 )}

@@ -6,7 +6,7 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
-import { Box, Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
+import { Box, Column, Divider, Image, NewButton, Row, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { paletteV2, spacings } from '@trezor/theme';
@@ -157,12 +157,12 @@ const ReferralButton = () => {
     );
 
     return (
-        <Button
+        <NewButton
             href={SUITE_REFERRAL}
-            variant="tertiary"
-            icon="usersFilled"
+            intent="neutral"
+            priority="secondary"
+            iconLeft="usersFilled"
             size="small"
-            textWrap={false}
             onClick={() => {
                 analytics.report({
                     type: EventType.ReferralButton,
@@ -171,7 +171,7 @@ const ReferralButton = () => {
             }}
         >
             <Translation id="TR_DASHBOARD_REFERRAL_BUTTON" />
-        </Button>
+        </NewButton>
     );
 };
 
@@ -203,11 +203,11 @@ export const DashboardFooter = () => {
                 >
                     <ReferralButton />
                     {isWeb() && !isBelowTablet && (
-                        <Button
+                        <NewButton
                             href={SUITE_URL}
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             size="small"
-                            textWrap={false}
                             onClick={() =>
                                 analytics.report({
                                     type: EventType.GetDesktopApp,
@@ -215,7 +215,7 @@ export const DashboardFooter = () => {
                             }
                         >
                             <Translation id="TR_DESKTOP_APP_PROMO_GET" />
-                        </Button>
+                        </NewButton>
                     )}
                 </Row>
                 {!isVerticalLayout && <Divider orientation="vertical" />}

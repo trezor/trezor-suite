@@ -17,7 +17,7 @@ import {
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
-import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
+import { Column, NewButton, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -428,18 +428,18 @@ export const TradingFormOffer = () => {
             </Column>
 
             {!isTradingSellContext(context) && !isReceiveAddressSelected && quote ? (
-                <Button
+                <NewButton
                     onClick={onContinueClick}
-                    variant="primary"
+                    intent="brand"
                     margin={{
                         top: spacings.md,
                     }}
-                    isFullWidth
+                    width="100%"
                     isDisabled={isButtonDisabled || isLoading}
                     isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
                 >
                     <Translation id="TR_CONTINUE" />
-                </Button>
+                </NewButton>
             ) : (
                 <>
                     {requiresTokenApproval && bestScoredQuote && !isLoading ? (
@@ -453,19 +453,19 @@ export const TradingFormOffer = () => {
                             setIsManuallyApproved={setIsManuallyApproved}
                         />
                     ) : (
-                        <Button
+                        <NewButton
                             onClick={onSelectQuote}
-                            variant="primary"
+                            intent="brand"
                             margin={{
                                 top: spacings.md,
                             }}
-                            isFullWidth
+                            width="100%"
                             isDisabled={isButtonDisabled || isLoading}
                             isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
                             data-testid={`@trading/form/${type}-button`}
                         >
                             <Translation id={tradingGetSectionActionLabel(type)} />
-                        </Button>
+                        </NewButton>
                     )}
                 </>
             )}

@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
+import { Box, Column, IMAGES, IMAGES_PATH, NewButton, Row, Text } from '@trezor/components';
 import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
@@ -78,9 +78,9 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
     const href = useExternalLink(DASHBOARD_BANNER_TEX_URL);
 
     return (
-        <Button variant="primary" size="small" onClick={onClick} href={href}>
+        <NewButton intent="brand" size="small" onClick={onClick} href={href}>
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON" />
-        </Button>
+        </NewButton>
     );
 };
 

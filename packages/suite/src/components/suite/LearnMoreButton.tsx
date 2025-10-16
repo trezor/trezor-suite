@@ -1,36 +1,31 @@
 import { ReactNode } from 'react';
 
-import { Button, ButtonProps } from '@trezor/components';
+import { NewButton, NewButtonProps } from '@trezor/components';
 import { Url } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
 
 import { useExternalLink } from '../../hooks/suite';
 
-interface LearnMoreButtonProps extends Omit<ButtonProps, 'children'> {
+interface LearnMoreButtonProps extends Omit<NewButtonProps, 'children'> {
     url: Url;
     children?: ReactNode;
-    textWrap?: boolean;
 }
 
 export const LearnMoreButton = ({
     children,
-    className,
-    size = 'tiny',
+    size = 'small',
     url,
-    textWrap,
     ...buttonProps
 }: LearnMoreButtonProps) => (
-    <Button
+    <NewButton
         href={useExternalLink(url)}
-        textWrap={textWrap}
-        variant="tertiary"
+        intent="neutral"
+        priority="secondary"
         size={size}
-        icon="arrowUpRight"
-        iconAlignment="end"
-        className={className}
+        iconRight="arrowUpRight"
         {...buttonProps}
     >
         {children || <Translation id="TR_LEARN_MORE" />}
-    </Button>
+    </NewButton>
 );

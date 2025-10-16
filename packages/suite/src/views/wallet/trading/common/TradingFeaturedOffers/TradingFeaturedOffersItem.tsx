@@ -7,7 +7,7 @@ import {
     getTagAndInfoNote,
     sellUtils,
 } from '@suite-common/trading';
-import { Badge, Button, Card, Text } from '@trezor/components';
+import { Badge, Card, NewButton, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -144,20 +144,26 @@ export const TradingFeaturedOffersItem = ({ context, quote }: TradingOffersItemP
                 </OfferColumn2>
                 <OfferColumn3>
                     {quote.status === 'LOGIN_REQUEST' ? (
-                        <Button variant="tertiary" isFullWidth onClick={() => selectQuote(quote)}>
+                        <NewButton
+                            intent="neutral"
+                            priority="secondary"
+                            width="100%"
+                            onClick={() => selectQuote(quote)}
+                        >
                             <Translation id="TR_LOGIN_PROCEED" />
-                        </Button>
+                        </NewButton>
                     ) : (
-                        <Button
-                            variant="tertiary"
-                            isFullWidth
+                        <NewButton
+                            intent="neutral"
+                            priority="secondary"
+                            width="100%"
                             isLoading={isFormLoading}
                             isDisabled={!!quote.error || isFormLoading}
                             onClick={() => selectQuote(quote)}
                             data-testid="@trading/featured-offers/get-this-deal-button"
                         >
                             {actionButtonText(context, quote)}
-                        </Button>
+                        </NewButton>
                     )}
                 </OfferColumn3>
             </Offer>

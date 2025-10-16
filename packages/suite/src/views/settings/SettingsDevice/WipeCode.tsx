@@ -47,7 +47,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
                 <ActionButton
                     onClick={enableWipeCode}
                     isDisabled={isDeviceLocked}
-                    variant="destructive"
+                    intent="critical"
                     isTooltipActive={isDeviceLocked}
                     tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
@@ -64,7 +64,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
                     <ActionButton
                         onClick={disableWipeCode}
                         isDisabled={isDeviceLocked}
-                        variant="destructive"
+                        intent="critical"
                         isTooltipActive={isDeviceLocked}
                         tooltipContent={
                             <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />

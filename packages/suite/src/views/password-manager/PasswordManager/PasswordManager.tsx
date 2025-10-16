@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Tooltip } from '@trezor/components';
+import { NewButton, Tooltip } from '@trezor/components';
 
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -65,9 +65,9 @@ export const PasswordManager = () => {
                         isActive={isDeviceLocked}
                         content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                     >
-                        <Button onClick={connect} isDisabled={isDeviceLocked}>
+                        <NewButton onClick={connect} isDisabled={isDeviceLocked}>
                             Connect to Dropbox
-                        </Button>
+                        </NewButton>
                     </Tooltip>
                     {/* TODO: connect to drive */}
                 </ActionColumn>
@@ -83,7 +83,7 @@ export const PasswordManager = () => {
                     description={`type: ${selectedProvider.type}, clientId: ${selectedProvider.clientId}, connected user: ${selectedProvider.user}`}
                 />
                 <ActionColumn>
-                    <Button onClick={disconnect}>Disconnect</Button>
+                    <NewButton onClick={disconnect}>Disconnect</NewButton>
                 </ActionColumn>
             </Section>
             <Section>
@@ -111,15 +111,16 @@ export const PasswordManager = () => {
                         {formActive !== 0 && (
                             <>
                                 <div>There are no passwords yet </div>
-                                <Button
-                                    size="tiny"
+                                <NewButton
+                                    size="small"
                                     onClick={() => setFormActive(0)}
                                     type="button"
-                                    variant="tertiary"
-                                    icon="pencil"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    iconLeft="pencil"
                                 >
                                     Add the first one!
-                                </Button>
+                                </NewButton>
                             </>
                         )}
                         {formActive === 0 && (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column } from '@trezor/components';
+import { Column, NewButton } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
@@ -153,9 +153,9 @@ export const PinStep = () => {
                 {(showPinMatrix || status === 'repeat-pin') && (
                     <Column gap={spacings.md}>
                         <PinMatrix pin={pin} setPin={setPin} onSubmit={handlePinSubmit} />
-                        <Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                        <NewButton onClick={handlePinSubmit} data-testid="@pin/submit-button">
                             <Translation id="TR_CONFIRM" />
-                        </Button>
+                        </NewButton>
                     </Column>
                 )}
             </OnboardingCard>

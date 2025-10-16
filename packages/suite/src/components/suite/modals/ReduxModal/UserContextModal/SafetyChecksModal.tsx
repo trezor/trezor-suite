@@ -45,7 +45,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={onCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

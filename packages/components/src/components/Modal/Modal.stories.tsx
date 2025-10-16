@@ -17,7 +17,9 @@ import { getFramePropsStory } from '../../utils/frameProps';
 const Buttons = () => (
     <>
         <ModalComponent.Button>Primary Action</ModalComponent.Button>
-        <ModalComponent.Button variant="tertiary">Secondary Action</ModalComponent.Button>
+        <ModalComponent.Button intent="neutral" priority="secondary">
+            Secondary Action
+        </ModalComponent.Button>
     </>
 );
 

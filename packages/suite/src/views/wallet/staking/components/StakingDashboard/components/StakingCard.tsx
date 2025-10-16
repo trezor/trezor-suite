@@ -12,13 +12,13 @@ import {
 } from '@suite-common/wallet-utils';
 import {
     Badge,
-    Button,
     Card,
     Column,
     Grid,
     Icon,
     IconName,
     InfoItem,
+    NewButton,
     Paragraph,
     Row,
     SkeletonRectangle,
@@ -356,15 +356,16 @@ export const StakingCard = ({
                 <Row margin={{ top: 'auto' }} gap={spacings.xs}>
                     {!isCardanoNetworkType ? (
                         <Tooltip content={stakingMessageContent}>
-                            <Button
+                            <NewButton
                                 onClick={openStakeModal}
                                 isDisabled={isStakingDisabled}
-                                icon={isStakingDisabled ? 'info' : undefined}
-                                variant="tertiary"
+                                iconLeft={isStakingDisabled ? 'info' : undefined}
+                                intent="neutral"
+                                priority="secondary"
                                 data-testid="@account/staking/stake-more-button"
                             >
                                 <Translation id="TR_STAKE_STAKE_MORE" />
-                            </Button>
+                            </NewButton>
                         </Tooltip>
                     ) : (
                         <Button
@@ -376,11 +377,12 @@ export const StakingCard = ({
                         </Button>
                     )}
                     <Tooltip content={unstakingMessageContent}>
-                        <Button
+                        <NewButton
                             isDisabled={!canUnstake || isUnstakingDisabled || hasCardanoPendingTx}
                             onClick={openUnstakeModal}
-                            icon={isUnstakingDisabled ? 'info' : undefined}
-                            variant="tertiary"
+                            iconLeft={isUnstakingDisabled ? 'info' : undefined}
+                            intent="neutral"
+                            priority="secondary"
                             data-testid="@account/staking/unstake-button"
                         >
                             <Translation
@@ -390,7 +392,7 @@ export const StakingCard = ({
                                         : 'TR_STAKE_UNSTAKE_TO_CLAIM'
                                 }
                             />
-                        </Button>
+                        </NewButton>
                     </Tooltip>
                 </Row>
             </Column>

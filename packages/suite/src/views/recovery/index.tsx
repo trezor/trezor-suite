@@ -283,7 +283,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     <>
                         {getBottomContentPrimaryButton()}
                         <Modal.Button
-                            variant={hasFinished ? undefined : 'tertiary'}
+                            intent={hasFinished ? undefined : 'neutral'}
+                            priority={hasFinished ? 'primary' : 'secondary'}
                             onClick={handleClose}
                         >
                             <Translation id={hasFinished ? 'TR_CLOSE' : 'TR_CANCEL'} />

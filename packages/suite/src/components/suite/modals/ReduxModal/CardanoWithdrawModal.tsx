@@ -30,7 +30,11 @@ export const CardanoWithdrawModal = ({ onCancel }: { onCancel: () => void }) => 
                     <Modal.Button onClick={() => voteDelegate()}>
                         <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE" />
                     </Modal.Button>
-                    <Modal.Button onClick={() => voteAbstain()} variant="tertiary">
+                    <Modal.Button
+                        onClick={() => voteAbstain()}
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         <Translation id="TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN" />
                     </Modal.Button>
                 </>

@@ -23,13 +23,14 @@ export const ForgetAllDevicesButton = () => {
                 description="Forgets devices persisted in Suite. In order to fully remove, go to system settings and manually remove the device there."
             />
             <ActionColumn>
-                <ActionButton onClick={handleForgetButtonClick} size="small" variant="destructive">
+                <ActionButton onClick={handleForgetButtonClick} size="small" intent="critical">
                     Forget in Suite
                 </ActionButton>
                 <ActionButton
                     onClick={handleOpenSettingsButtonClick}
                     size="small"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                 >
                     Open system settings
                 </ActionButton>

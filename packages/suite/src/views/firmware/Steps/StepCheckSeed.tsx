@@ -113,14 +113,15 @@ export const StepCheckSeed = ({
                         onClick={install}
                         data-testid="@firmware/confirm-seed-button"
                         isDisabled={!device?.connected || !isChecked}
-                        variant={deviceWillBeWiped ? 'destructive' : 'primary'}
+                        intent={deviceWillBeWiped ? 'critical' : 'brand'}
                     >
                         <Translation
                             id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_INSTALL'}
                         />
                     </Modal.Button>
                     <Modal.Button
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         onClick={() => {
                             resetReducer();
                             dispatch(goto(isDeviceBackedUp ? 'recovery-index' : 'backup-index'));

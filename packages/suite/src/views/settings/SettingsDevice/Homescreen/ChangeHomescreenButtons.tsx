@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Tooltip } from '@trezor/components';
+import { NewButton, NewButtonGroup, Tooltip } from '@trezor/components';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -24,53 +24,37 @@ export const ChangeHomescreenButtons = ({
     const { device } = useDevice();
     const openGallery = () => dispatch(openModal({ type: 'device-background-gallery' }));
 
-    const UploadButton = () => (
-        <Tooltip
-            isActive={isDeviceLocked}
-            content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
-        >
-            <Button
-                onClick={onImageUploadClick}
-                isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                variant="primary"
-                size="small"
-                data-testid="@settings/device/homescreen-upload"
-                key="@settings/device/homescreen-upload"
-            >
-                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-            </Button>
-        </Tooltip>
-    );
-
-    const GalleryButton = () => (
-        <Tooltip
-            isActive={isDeviceLocked}
-            content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
-        >
-            <Button
-                onClick={openGallery}
-                isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                data-testid="@settings/device/homescreen-gallery"
-                key="@settings/device/homescreen-gallery"
-                variant="primary"
-                size="small"
-            >
-                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
-            </Button>
-        </Tooltip>
-    );
-
     const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
     const hasGallery = getHomescreens(isBitcoinOnlyFirmware)[deviceModelInternal].length > 0;
 
-    if (hasGallery) {
-        return (
-            <ButtonGroup size="small">
-                <UploadButton />
-                <GalleryButton />
-            </ButtonGroup>
-        );
-    }
-
-    return <UploadButton />;
+    return (
+        <NewButtonGroup isDisabled={isDeviceLocked || !isSupportedHomescreen}>
+            <Tooltip
+                isActive={isDeviceLocked}
+                content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+            >
+                <NewButton
+                    onClick={onImageUploadClick}
+                    data-testid="@settings/device/homescreen-upload"
+                    key="@settings/device/homescreen-upload"
+                >
+                    <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
+                </NewButton>
+            </Tooltip>
+            {hasGallery ? (
+                <Tooltip
+                    isActive={isDeviceLocked}
+                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+                >
+                    <NewButton
+                        onClick={openGallery}
+                        data-testid="@settings/device/homescreen-gallery"
+                        key="@settings/device/homescreen-gallery"
+                    >
+                        <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
+                    </NewButton>
+                </Tooltip>
+            ) : null}
+        </NewButtonGroup>
+    );
 };

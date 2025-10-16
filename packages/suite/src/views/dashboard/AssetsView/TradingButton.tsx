@@ -2,7 +2,7 @@ import { MouseEvent, ReactNode } from 'react';
 
 import { Route } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch } from 'src/hooks/suite';
@@ -46,8 +46,14 @@ export const TradingButton = ({
     };
 
     return (
-        <Button onClick={onClick} variant="tertiary" data-testid={dataTest} size="small">
+        <NewButton
+            onClick={onClick}
+            intent="neutral"
+            priority="secondary"
+            data-testid={dataTest}
+            size="small"
+        >
             {children}
-        </Button>
+        </NewButton>
     );
 };

@@ -1,4 +1,4 @@
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -24,9 +24,9 @@ export const FirmwareInstallationProgressCheckFail = ({
         checklistItems={hardFailureChecklistItems}
         ctaSection={
             <>
-                <Button variant="tertiary" onClick={toggleView} size="large">
+                <NewButton intent="neutral" priority="secondary" onClick={toggleView} size="large">
                     <Translation id="TR_BACK" />
-                </Button>
+                </NewButton>
                 <ContactSupport supportUrl={supportUrl} />
             </>
         }

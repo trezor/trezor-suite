@@ -62,14 +62,14 @@ export const ConnectPermissionsModal = () => {
                 bottomContent={
                     <>
                         <Modal.Button
-                            variant="primary"
                             onClick={onConfirm}
                             data-testid="@connect-permissions-modal/confirm-button"
                         >
                             {confirmLabel || <Translation id="TR_CONFIRM" />}
                         </Modal.Button>
                         <Modal.Button
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             onClick={onCancel}
                             data-testid="@connect-permissions-modal/cancel-button"
                         >

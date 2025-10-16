@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Box, Button, Card, Column, H3, Row, Text } from '@trezor/components';
+import { Box, Card, Column, H3, NewButton, Row, Text } from '@trezor/components';
 
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
@@ -27,9 +27,9 @@ export const BluetoothTips = ({ onReScanClick, header, device }: BluetoothTipsPr
                             </Text>
                         )}
                 </Column>
-                <Button variant="info" size="small" onClick={onReScanClick}>
+                <NewButton intent="info" size="small" onClick={onReScanClick}>
                     <Translation id="TR_BLUETOOTH_SCAN_AGAIN" />
-                </Button>
+                </NewButton>
             </Row>
         }
     >

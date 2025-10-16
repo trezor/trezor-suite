@@ -1,21 +1,34 @@
 import { BannerContext, useBannerContext } from './BannerContext';
-import { DEFAULT_VARIANT } from './consts';
-import { Button, ButtonProps } from '../buttons/Button/Button';
+import { BannerVariant } from './types';
+import { NewButton, NewButtonProps } from '../buttons/NewButton/NewButton';
 
-export const BannerButton = ({ children, ...rest }: ButtonProps) => {
-    const { variant } = useBannerContext();
-    const value = { variant: DEFAULT_VARIANT };
+const mapVariantToIntent = (
+    variant: BannerVariant | undefined,
+): NonNullable<NewButtonProps['intent']> => {
+    switch (variant) {
+        case 'info':
+            return 'info';
+        case 'warning':
+            return 'warning';
+        case 'destructive':
+            return 'critical';
+        case 'tertiary':
+            return 'neutral';
+        case 'primary':
+        default:
+            return 'brand';
+    }
+};
+
+export const BannerButton = ({ children, intent, size = 'small', ...rest }: NewButtonProps) => {
+    const { variant: bannerVariant } = useBannerContext();
+    const resolvedIntent = intent ?? mapVariantToIntent(bannerVariant);
 
     return (
-        <BannerContext.Provider value={value}>
-            <Button
-                {...rest}
-                textWrap={rest.textWrap ?? false}
-                variant={rest.variant ?? variant}
-                size={rest.size ?? 'small'}
-            >
+        <BannerContext.Provider value={{ variant: bannerVariant }}>
+            <NewButton intent={resolvedIntent} size={size} {...rest}>
                 {children}
-            </Button>
+            </NewButton>
         </BannerContext.Provider>
     );
 };

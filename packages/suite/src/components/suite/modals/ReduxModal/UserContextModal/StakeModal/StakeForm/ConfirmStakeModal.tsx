@@ -92,7 +92,7 @@ export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmSta
                     >
                         <Translation id="TR_STAKE_CONFIRM_AND_STAKE" />
                     </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={handleOnCancel}>
+                    <Modal.Button intent="neutral" priority="secondary" onClick={handleOnCancel}>
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

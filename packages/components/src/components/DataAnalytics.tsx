@@ -7,7 +7,7 @@ import { Card } from './Card/Card';
 import { Center, Column, Row } from './Flex/Flex';
 import { Icon } from './Icon/Icon';
 import { List } from './List/List';
-import { Button } from './buttons/Button/Button';
+import { NewButton } from './buttons/NewButton/NewButton';
 import { Switch } from './form/Switch/Switch';
 import { Text } from './typography/Text/Text';
 
@@ -114,13 +114,14 @@ export const DataAnalytics = ({
                 </Column>
 
                 <Center>
-                    <Button
+                    <NewButton
                         data-testid="@analytics/continue-button"
                         onClick={() => onConfirm(trackingEnabled)}
                         minWidth={180}
+                        size="large"
                     >
                         <FormattedMessage id="TR_CONFIRM" defaultMessage="Confirm" />
-                    </Button>
+                    </NewButton>
                 </Center>
             </Column>
         </Card>

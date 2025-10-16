@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { selectMessageSystemConfig } from '@suite-common/message-system';
-import { Box, Button, ButtonGroup, Paragraph, Row } from '@trezor/components';
+import { Box, NewButton, NewButtonGroup, Paragraph, Row } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { SectionItem } from 'src/components/suite';
@@ -30,11 +30,13 @@ export const MessageSystemDebug = () => {
                     <Paragraph>Sequence: {config?.sequence}</Paragraph>
                     <Paragraph>Timestamp: {config?.timestamp}</Paragraph>
                 </Box>
-                <ButtonGroup size="small">
-                    <Button onClick={handleCopyConfig}>Copy full config</Button>
-                    <Button onClick={() => toggleOpenMessageManager(true)}>Message Manager</Button>
-                    <Button onClick={() => toggleOpenExperiments(true)}>Experiments</Button>
-                </ButtonGroup>
+                <NewButtonGroup size="small">
+                    <NewButton onClick={handleCopyConfig}>Copy full config</NewButton>
+                    <NewButton onClick={() => toggleOpenMessageManager(true)}>
+                        Message Manager
+                    </NewButton>
+                    <NewButton onClick={() => toggleOpenExperiments(true)}>Experiments</NewButton>
+                </NewButtonGroup>
             </Row>
             {isMessageManagerModalOpen && config?.actions && (
                 <MessageSystemManager

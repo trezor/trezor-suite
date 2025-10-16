@@ -3,8 +3,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Card, H3, NewButton, Note, Paragraph, Tooltip, variables } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
 import { Error } from 'src/components/suite/Error';
@@ -53,15 +53,6 @@ const Tiles = styled.div`
 
     ${variables.SCREEN_QUERY.MOBILE} {
         grid-template-columns: none;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin: ${spacingsPx.xl} auto 0;
-
-    &:disabled {
-        background: ${({ theme }) => theme.legacy.STROKE_GREY};
     }
 `;
 
@@ -152,9 +143,14 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
             </Card>
 
             <Tooltip content={getButtonTooltipMessage()}>
-                <StyledButton onClick={anonymize} isDisabled={isDisabled} isLoading={isLoading}>
+                <NewButton
+                    onClick={anonymize}
+                    isDisabled={isDisabled}
+                    isLoading={isLoading}
+                    margin={{ top: spacings.xl }}
+                >
                     <Translation id="TR_START_COINJOIN" />
-                </StyledButton>
+                </NewButton>
             </Tooltip>
         </>
     );

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { FormOptions } from '@suite-common/wallet-types';
-import { Button, Tooltip } from '@trezor/components';
+import { NewButton, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -22,7 +22,7 @@ const Left = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
+const StyledButton = styled(NewButton)`
     margin-right: 8px;
 
     & > div {
@@ -51,9 +51,10 @@ export const EthereumOptions = () => {
                 {!dataEnabled && !tokenValue && (
                     <Tooltip content={<Translation id="DATA_ETH_ADD_TOOLTIP" />} cursor="pointer">
                         <StyledButton
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             size="small"
-                            icon="database"
+                            iconLeft="database"
                             data-testid="send/open-ethereum-data"
                             onClick={toggleData}
                         >
@@ -64,9 +65,10 @@ export const EthereumOptions = () => {
 
                 <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                     <StyledButton
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         size="small"
-                        icon="broadcast"
+                        iconLeft="broadcast"
                         data-testid="send/broadcast"
                         onClick={toggleBroadcast}
                     >

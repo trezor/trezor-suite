@@ -6,13 +6,13 @@ import styled from 'styled-components';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     BulletList,
-    Button,
     Card,
     Column,
     H2,
     Icon,
     IconName,
     Image,
+    NewButton,
     Paragraph,
     Row,
     Text,
@@ -139,7 +139,7 @@ interface GetButtonProps {
 const getButton = ({ networkType, onClick }: GetButtonProps) => {
     if (networkType !== 'bitcoin') {
         return (
-            <Button onClick={onClick} isDisabled>
+            <NewButton onClick={onClick} isDisabled>
                 <Tooltip
                     content={
                         <FormattedMessage
@@ -153,16 +153,16 @@ const getButton = ({ networkType, onClick }: GetButtonProps) => {
                         <Translation id="TR_TRADING_DCA_STEP_CARD_SELECT_ADDRESS" />
                     </Text>
                 </Tooltip>
-            </Button>
+            </NewButton>
         );
     }
 
     return (
-        <Button onClick={onClick}>
+        <NewButton onClick={onClick}>
             <Text>
                 <Translation id="TR_TRADING_DCA_STEP_CARD_SELECT_ADDRESS" />
             </Text>
-        </Button>
+        </NewButton>
     );
 };
 

@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
+import { Banner, Column, H3, Icon, List, NewButton, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
@@ -48,9 +48,13 @@ const PassphraseWalletBestPracticesContent = ({
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
             </Text>
         </Banner>
-        <Button isFullWidth onClick={onNext} data-testid="@passphrase-confirmation/step2-button">
+        <NewButton
+            width="100%"
+            onClick={onNext}
+            data-testid="@passphrase-confirmation/step2-button"
+        >
             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON" />
-        </Button>
+        </NewButton>
     </Column>
 );
 

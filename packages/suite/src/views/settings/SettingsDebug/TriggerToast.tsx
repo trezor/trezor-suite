@@ -12,7 +12,7 @@ export const TriggerToast = () => {
             <TextColumn title="Trigger toast" />
             <ActionColumn>
                 <ActionButton
-                    variant="primary"
+                    intent="brand"
                     onClick={() => {
                         dispatch(notificationsActions.addToast({ type: 'auto-eject-settings' }));
                     }}

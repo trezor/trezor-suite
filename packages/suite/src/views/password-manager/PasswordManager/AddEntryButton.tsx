@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 
 interface AddEntryButtonProps {
     onClick: () => void;
 }
 
 export const AddEntryButton = ({ onClick }: AddEntryButtonProps) => (
-    <Button variant="tertiary" size="small" icon="plus" onClick={onClick}>
+    <NewButton intent="neutral" priority="secondary" size="small" iconLeft="plus" onClick={onClick}>
         Add Entry
-    </Button>
+    </NewButton>
 );

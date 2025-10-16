@@ -1,5 +1,5 @@
-import { ButtonGroup, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Row } from '@trezor/components';
+import { NewButtonGroup } from '@trezor/components/src/components/buttons/NewButtonGroup/NewButtonGroup';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { Translation } from 'src/components/suite/Translation';
@@ -23,16 +23,19 @@ export const HeaderActions = () => {
     const isTradingAvailable = !['coinjoin'].includes(accountType);
     const isAccountLoading = selectedAccount.status === 'loading';
     const isDeviceConnected = device?.connected && device?.available;
-    const buttonVariant = isDeviceConnected ? 'primary' : 'tertiary';
 
     return (
-        <Row gap={spacings.xxs} alignItems="center">
+        <Row gap={8} alignItems="center">
             <HeaderDropdown isDisabled={isAccountLoading} showSignAndVerify />
 
             {isTradingAvailable && <TradeActions selectedAccount={selectedAccount} />}
 
             <AppNavigationTooltip>
-                <ButtonGroup size="small" isDisabled={isAccountLoading}>
+                <NewButtonGroup
+                    isDisabled={isAccountLoading}
+                    intent={isDeviceConnected ? 'brand' : 'neutral'}
+                    priority={isDeviceConnected ? 'primary' : 'secondary'}
+                >
                     <HeaderActionButton
                         key="wallet-send"
                         icon="arrowUp"
@@ -40,7 +43,6 @@ export const HeaderActions = () => {
                             goToWithAnalytics('wallet-send', { preserveParams: true });
                         }}
                         data-testid="@wallet/menu/wallet-send"
-                        variant={buttonVariant}
                     >
                         <Translation id="TR_NAV_SEND" />
                     </HeaderActionButton>
@@ -52,11 +54,10 @@ export const HeaderActions = () => {
                             goToWithAnalytics('wallet-receive', { preserveParams: true });
                         }}
                         data-testid="@wallet/menu/wallet-receive"
-                        variant={buttonVariant}
                     >
                         <Translation id="TR_NAV_RECEIVE" />
                     </HeaderActionButton>
-                </ButtonGroup>
+                </NewButtonGroup>
             </AppNavigationTooltip>
         </Row>
     );

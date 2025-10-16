@@ -27,7 +27,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
-import { Button, Card, Icon, LoadingContent, Row } from '@trezor/components';
+import { Card, Icon, LoadingContent, NewButton, Row } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { PartialRecord } from '@trezor/type-utils';
 import { typedObjectKeys } from '@trezor/utils';
@@ -195,15 +195,16 @@ export const AssetsView = () => {
                 ) : (
                     <Row justifyContent="space-around" gap={spacings.sm}>
                         {hasMainnetNetworksToEnable && (
-                            <Button
-                                variant="tertiary"
-                                icon="plus"
+                            <NewButton
+                                intent="neutral"
+                                priority="secondary"
+                                iconLeft="plus"
                                 size="small"
                                 onClick={goToCoinsSettings}
                                 data-testid="@dashboard/assets/enable-more-coins"
                             >
                                 <Translation id="TR_ENABLE_MORE_COINS" />
-                            </Button>
+                            </NewButton>
                         )}
                         <Row gap={spacings.xxxs}>
                             <Icon

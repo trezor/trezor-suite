@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, Tooltip } from '@trezor/components';
+import { NewButton, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -33,10 +33,11 @@ export const MiscNetworkOptions = () => {
         <Wrapper>
             <Left>
                 <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
-                    <Button
-                        variant="tertiary"
+                    <NewButton
+                        intent="neutral"
+                        priority="secondary"
                         size="small"
-                        icon="broadcast"
+                        iconLeft="broadcast"
                         onClick={() => {
                             toggleOption('broadcast');
                             composeTransaction();
@@ -46,7 +47,7 @@ export const MiscNetworkOptions = () => {
                             <Translation id="BROADCAST" />
                             <OnOffSwitcher isOn={broadcastEnabled} />
                         </Inline>
-                    </Button>
+                    </NewButton>
                 </Tooltip>
             </Left>
         </Wrapper>

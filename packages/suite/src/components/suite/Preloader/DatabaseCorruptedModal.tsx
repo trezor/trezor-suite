@@ -20,7 +20,7 @@ export const DatabaseCorruptedModal = () => {
             iconName="database"
             variant="destructive"
             bottomContent={
-                <Modal.Button onClick={handleClick} isLoading={isLoading} variant="primary">
+                <Modal.Button onClick={handleClick} isLoading={isLoading} intent="brand">
                     <Translation id="TR_CLEAR_STORAGE" />
                 </Modal.Button>
             }
