@@ -70,6 +70,10 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
         return 'device-bootloader-locked';
     }
 
+    if (device.status === 'pin-locked') {
+        return 'device-pin-locked';
+    }
+
     if (device.type === 'acquired') {
         if (!device.connected) {
             return 'disconnected';
@@ -111,10 +115,6 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
 
     if (device.status === 'hard-locked') {
         return 'device-hard-locked';
-    }
-
-    if (device.status === 'pin-locked') {
-        return 'device-pin-locked';
     }
 
     if (device.status === 'thp-locked') {
