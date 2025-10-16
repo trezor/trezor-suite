@@ -4,6 +4,7 @@
 
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { Route } from '@suite-common/suite-types';
+import { Branded } from '@trezor/type-utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import * as suiteActions from 'src/actions/suite/suiteActions';
@@ -21,6 +22,10 @@ import {
     getRoute,
 } from 'src/utils/suite/router';
 
+export type NonLeadingHashString = string & Branded<'NonLeadingHashString'>;
+const sanitizeForNonLeadingHashString = (s: string): NonLeadingHashString =>
+    (s.startsWith('#') ? s.slice(1) : s) as NonLeadingHashString;
+
 export type RouterAction =
     | {
           type: typeof ROUTER.LOCATION_CHANGE;
@@ -28,7 +33,7 @@ export type RouterAction =
               url: string;
               pathname: string;
               search?: string;
-              hash?: string;
+              hash?: NonLeadingHashString;
               settingsBackRoute?: SettingsBackRoute;
               anchor?: AnchorType;
           } & RouterAppWithParams;
@@ -73,7 +78,7 @@ export const onLocationChange =
                 url,
                 pathname,
                 search,
-                hash: hash?.replace('#', ''),
+                hash: sanitizeForNonLeadingHashString(hash),
                 anchor,
                 ...appWithParams,
             },

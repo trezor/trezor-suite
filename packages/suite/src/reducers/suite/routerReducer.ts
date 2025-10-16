@@ -1,6 +1,7 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
+import { type NonLeadingHashString } from 'src/actions/suite/routerActions';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { Action } from 'src/types/suite';
@@ -20,7 +21,7 @@ export type RouterState = {
     url: string;
     pathname: string;
     search?: string;
-    hash?: string;
+    hash?: NonLeadingHashString;
     settingsBackRoute: SettingsBackRoute; // TODO: Probably not needed with the new router
     anchor?: AnchorType;
 } & RouterAppWithParams;
