@@ -8,27 +8,29 @@ import { Translation } from 'src/components/suite/Translation';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
-import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
-import { DustPreventionNotice } from '../DustPreventionNotice';
-import { FeeOptionType, getFeeLevelTranslationId } from '../Fees';
+import { FeeCardsWrapper } from './StandardFee.styles';
+import { feeLevelTranslationMap } from './constants';
+import { DustPreventionNotice } from '../../DustPreventionNotice';
+import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
+import { useFeesContext } from '../../context/FeesContext';
 
-export const BitcoinFeeCards = ({
-    networkType,
-    feeInfo,
-    transactionInfo,
-    feeOptions,
-    selectedLevel,
-    changeFeeLevel,
-    symbol,
-    getValues,
-}: StandardFeeProps) => {
+type BitcoinFeeCardsProps = {
+    feeOptions: FeeOptionType[];
+};
+
+export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
+    const {
+        feeInfo,
+        networkType,
+        networkSymbol,
+        changeFeeLevel,
+        composedLevels,
+        selectedFeeLevel,
+    } = useFeesContext();
     const locale = useLocales();
-    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
-    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
-
-    if (!feeOptions.length) {
-        return null;
-    }
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(networkSymbol);
+    const transactionInfo = composedLevels?.[selectedFeeLevel.label];
 
     const getTimeEstimate = (fee: FeeOptionType) => {
         if (fee.blocks) {
@@ -46,12 +48,12 @@ export const BitcoinFeeCards = ({
                         data-testid={`@fee-card/${fee.value}-card`}
                         key={fee.value}
                         value={fee.value}
-                        isSelected={selectedLevel.label === fee.value}
+                        isSelected={selectedFeeLevel.label === fee.value}
                         changeFeeLevel={changeFeeLevel}
                         isLoading={areFeesLoading}
                         topLeftChild={
                             <span data-testid={`@fee-card/${fee.value}`}>
-                                <Translation id={getFeeLevelTranslationId(fee.value)} />
+                                <Translation id={feeLevelTranslationMap[fee.value]} />
                             </span>
                         }
                         topRightChild={getTimeEstimate(fee)}
@@ -61,7 +63,7 @@ export const BitcoinFeeCards = ({
                                     <BaseCurrencyValue
                                         disableHiddenPlaceholder
                                         amount={fee?.networkAmount ?? ''}
-                                        symbol={symbol}
+                                        symbol={networkSymbol}
                                         showApproximationIndicator
                                     />
                                 </span>
@@ -72,7 +74,7 @@ export const BitcoinFeeCards = ({
                                 <FeeRate
                                     feeRate={fee.feePerUnit}
                                     networkType={networkType}
-                                    symbol={symbol}
+                                    symbol={networkSymbol}
                                 />
                             </span>
                         }
@@ -80,12 +82,10 @@ export const BitcoinFeeCards = ({
                 ))}
             </FeeCardsWrapper>
             <DustPreventionNotice
-                symbol={symbol}
-                chosenFeePerByte={selectedLevel.feePerUnit}
+                chosenFeePerByte={selectedFeeLevel.feePerUnit}
                 composedFeePerByte={
                     transactionInfo?.type === 'final' ? transactionInfo.feePerByte : undefined
                 }
-                baseFee={getValues('baseFee')}
                 feeUnits={getFeeUnits(networkType)}
             />
         </>

@@ -33,11 +33,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
 
     const {
         account,
-        formState: { errors, isSubmitting, isDirty },
-        register,
-        control,
-        setValue,
-        getValues,
+        formState: { errors, isSubmitting },
         changeFeeLevel,
         feeInfo,
         composedLevels,
@@ -46,7 +42,6 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         handleSubmit,
         onClaimChange,
         signTx,
-        trigger,
         methods,
         isClaimingDisabled: isCardanoClaimingDisabled,
     } = useClaimForm({ selectedAccount });
@@ -137,6 +132,8 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                     </Modal.Button>
                 </>
             }
+            // Disable shadow bottom to make `Fees` component fully visible
+            shadowBottom={false}
         >
             <FormProvider {...methods}>
                 <form onSubmit={onClaimClick}>
@@ -178,17 +175,11 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                         )}
 
                         <Fees
-                            control={control}
-                            errors={errors}
-                            isDirty={isDirty}
-                            register={register}
                             feeInfo={feeInfo}
-                            setValue={setValue}
-                            getValues={getValues}
                             account={account}
                             composedLevels={composedLevels}
                             changeFeeLevel={changeFeeLevel}
-                            trigger={trigger}
+                            headerTypographyStyle="hint"
                         />
 
                         {errors[CRYPTO_INPUT] && (

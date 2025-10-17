@@ -78,7 +78,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                 await page.getByRole('button', { name: 'Max' }).click();
                 await expect
                     .soft(async () => {
-                        const resultingFee = await tradingPage.fees.customAmount.textContent();
+                        const resultingFee = await tradingPage.fees.maxFee.textContent();
                         if (!resultingFee) {
                             throw new Error('Custom Fee amount is undefined or null');
                         }

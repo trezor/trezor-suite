@@ -114,6 +114,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             : account.addresses.change;
 
         const params: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
+            // needs to be present in order to correct resolve of @trezor/connect params overload
             account: {
                 path: account.path,
                 addresses: {
@@ -130,10 +131,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             coin: account.symbol,
         };
 
-        const response = await TrezorConnect.composeTransaction({
-            ...params,
-            account: params.account, // needs to be present in order to correct resolve of @trezor/connect params overload
-        });
+        const response = await TrezorConnect.composeTransaction(params);
 
         if (!response.success) {
             dispatch(

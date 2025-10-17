@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useFormState } from 'react-hook-form';
 
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import { FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Badge, Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
@@ -12,25 +14,32 @@ import { Translation } from 'src/components/suite/Translation';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-import { FeeOptionType, getFeeLevelTranslationId } from '../Fees';
 import { FeeCard } from './FeeCard';
-import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
+import { FeeCardsWrapper } from './StandardFee.styles';
+import { feeLevelTranslationMap } from './constants';
+import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
+import { useFeesContext } from '../../context/FeesContext';
 
-export const EthereumFeeCards = ({
-    feeOptions,
-    selectedLevel,
-    changeFeeLevel,
-    symbol,
-    networkType,
-    isDirty,
-    transactionInfo,
-    feeInfo,
-}: StandardFeeProps) => {
+type EthereumFeeCardsProps = {
+    feeOptions: FeeOptionType[];
+};
+
+export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
+    const { isDirty } = useFormState<FormState>();
+    const {
+        feeInfo,
+        networkType,
+        networkSymbol: symbol,
+        changeFeeLevel,
+        selectedFeeLevel,
+        composedLevels,
+    } = useFeesContext();
     const locale = useLocales();
     const isDebug = useSelector(selectIsDebugModeActive);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
 
     const [cachedGasLimit, setCachedGasLimit] = useState<string | undefined>(undefined);
+    const transactionInfo = composedLevels?.[selectedFeeLevel.label];
 
     useEffect(() => {
         if (transactionInfo && transactionInfo.type !== 'error' && transactionInfo.feeLimit) {
@@ -40,10 +49,6 @@ export const EthereumFeeCards = ({
             setCachedGasLimit(undefined);
         }
     }, [transactionInfo, isDirty]);
-
-    if (!feeOptions.length) {
-        return null;
-    }
 
     const getTimeEstimate = (fee: FeeOptionType) => {
         if (fee.blocks && fee.blocks > 0 && feeInfo.blockTime) {
@@ -61,12 +66,12 @@ export const EthereumFeeCards = ({
                         data-testid={`@fee-card/${fee.value}-card`}
                         value={fee.value}
                         key={fee.value}
-                        isSelected={selectedLevel.label === fee.value}
+                        isSelected={selectedFeeLevel.label === fee.value}
                         changeFeeLevel={changeFeeLevel}
                         isLoading={areFeesLoading}
                         topLeftChild={
                             <span data-testid={`@fee-card/${fee.value}`}>
-                                <Translation id={getFeeLevelTranslationId(fee.value)} />
+                                <Translation id={feeLevelTranslationMap[fee.value]} />
                             </span>
                         }
                         topRightChild={getTimeEstimate(fee)}

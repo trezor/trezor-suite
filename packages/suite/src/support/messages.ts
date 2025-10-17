@@ -6007,17 +6007,24 @@ export default defineMessages({
         description: 'Label in Send form for Ethereum network type',
         id: 'MAX_FEE',
     },
+    TO_BE_CALCULATED: {
+        defaultMessage: 'To be calculated',
+        description: 'Placeholder for (maximum) fee when it could not have been calculated yet',
+        id: 'TO_BE_CALCULATED',
+    },
     EXPECTED_FEE: {
         defaultMessage: 'Expected fee',
         description: 'Label in Send form for Solana network type',
         id: 'EXPECTED_FEE',
     },
     FEE_LEVEL_STANDARD: {
-        defaultMessage: 'Standard',
+        defaultMessage: 'Select standard fee',
+        description: 'A button to switch to standard, pre-defined network fee',
         id: 'FEE_LEVEL_STANDARD',
     },
     FEE_LEVEL_ADVANCED: {
         defaultMessage: 'Customize fee',
+        description: 'A button to enable custom network fee inputs',
         id: 'FEE_LEVEL_ADVANCED',
     },
     FEE_LEVEL_HIGH: {

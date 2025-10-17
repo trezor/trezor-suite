@@ -1,28 +1,29 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { useWatch } from 'react-hook-form';
+
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 import { Note } from '@trezor/components';
 import { isApproximatelyEqual } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite/Translation';
 
+import { useFeesContext } from './context/FeesContext';
 import { useSelector } from '../../../hooks/suite';
 
 type DustPreventionNoticeProps = {
-    symbol: NetworkSymbol;
     chosenFeePerByte: string | undefined;
     composedFeePerByte: string | undefined;
-    baseFee: number | undefined;
     feeUnits: string;
 };
 
 export const DustPreventionNotice = ({
-    symbol,
     chosenFeePerByte,
     composedFeePerByte,
-    baseFee,
     feeUnits,
 }: DustPreventionNoticeProps) => {
-    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
+    const { networkSymbol } = useFeesContext();
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
+    const baseFee = useWatch<FormState, 'baseFee'>({ name: 'baseFee' });
 
     const relativeTolerance = 1e-3;
     const isComposedFeeRateDifferent =

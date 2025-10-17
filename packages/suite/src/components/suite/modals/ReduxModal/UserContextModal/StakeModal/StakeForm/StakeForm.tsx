@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
-import { Column } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -19,15 +19,9 @@ export const StakeForm = () => {
         closeConfirmModal,
         signTx,
         isLoading,
-        formState: { errors, isDirty },
-        register,
-        control,
-        setValue,
-        getValues,
         changeFeeLevel,
         feeInfo,
         composedLevels,
-        trigger,
         isStakingDisabled,
         methods,
     } = useStakeFormContext();
@@ -60,19 +54,15 @@ export const StakeForm = () => {
                     </>
                 )}
 
-                <Fees
-                    control={control}
-                    errors={errors}
-                    isDirty={isDirty}
-                    register={register}
-                    feeInfo={feeInfo}
-                    setValue={setValue}
-                    getValues={getValues}
-                    trigger={trigger}
-                    account={account}
-                    composedLevels={composedLevels}
-                    changeFeeLevel={changeFeeLevel}
-                />
+                <Card fillType="default" paddingType="small">
+                    <Fees
+                        feeInfo={feeInfo}
+                        account={account}
+                        composedLevels={composedLevels}
+                        changeFeeLevel={changeFeeLevel}
+                        headerTypographyStyle="hint"
+                    />
+                </Card>
 
                 {isCardanoNetwork && (
                     <CardanoStakeWarningBanner

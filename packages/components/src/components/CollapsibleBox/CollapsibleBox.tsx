@@ -7,22 +7,17 @@ import {
     borders,
     mapElevationToBackground,
     mapElevationToBorder,
-    spacings,
     spacingsPx,
 } from '@trezor/theme';
 
-import { FillType, HeadingSize, PaddingType } from './types';
+import { CollapsibleHeader } from './CollapsibleHeader';
 import {
-    mapPaddingTypeToContentPadding,
-    mapPaddingTypeToHeaderPadding,
-    mapSizeToHeadingTypography,
-    mapSizeToIconSize,
-    mapSizeToSubheadingTypography,
-} from './utils';
+    CollapsibleHeaderContent,
+    CollapsibleHeaderContentProps,
+} from './CollapsibleHeaderContent';
+import { FillType, PaddingType } from './types';
+import { mapPaddingTypeToContentPadding } from './utils';
 import { Collapsible } from '../Collapsible/Collapsible';
-import { Column, Row } from '../Flex/Flex';
-import { IconName, IconProps, IconSize } from '../Icon/Icon';
-import { Text } from '../typography/Text/Text';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
     FrameProps,
@@ -44,10 +39,6 @@ type ContainerProps = {
     $fillType: FillType;
 };
 
-type HeaderProps = {
-    $paddingType: PaddingType;
-};
-
 type ContentProps = {
     $paddingType: PaddingType;
     $elevation: Elevation;
@@ -55,21 +46,25 @@ type ContentProps = {
 };
 
 export type CollapsibleBoxProps = AllowedFrameProps & {
-    heading: ReactNode;
-    subHeading?: ReactNode;
-    headingSize?: HeadingSize;
     paddingType?: PaddingType;
     fillType?: FillType;
-    toggleLabel?: ReactNode;
-    toggleIconName?: IconName;
-    toggleIconSize?: IconSize;
-    toggleIconVariant?: IconProps['variant'];
     children?: ReactNode;
     hasDivider?: boolean;
     onAnimationComplete?: (isOpen: boolean) => void;
     'data-testid'?: string;
     defaultIsOpen?: boolean;
-};
+    collapsible?: boolean;
+} & Pick<
+        CollapsibleHeaderContentProps,
+        | 'heading'
+        | 'subHeading'
+        | 'headingSize'
+        | 'toggleLabel'
+        | 'toggleComponent'
+        | 'toggleIconName'
+        | 'toggleIconSize'
+        | 'toggleIconVariant'
+    >;
 
 const Container = styled.section<TransientProps<AllowedFrameProps> & ContainerProps>`
     width: 100%;
@@ -96,21 +91,6 @@ const Container = styled.section<TransientProps<AllowedFrameProps> & ContainerPr
     ${withFrameProps}
 `;
 
-const Toggle = styled.div`
-    transition: opacity 0.15s;
-`;
-
-const Header = styled.header<HeaderProps>`
-    padding: ${mapPaddingTypeToHeaderPadding};
-    cursor: pointer;
-
-    &:hover {
-        ${Toggle} {
-            opacity: 0.5;
-        }
-    }
-`;
-
 const Content = styled.div<ContentProps>`
     display: flex;
     flex-direction: column;
@@ -130,65 +110,26 @@ const Content = styled.div<ContentProps>`
 
 export const CollapsibleBox = ({
     defaultIsOpen = false,
-    toggleLabel,
-    toggleIconName = 'caretCircleDown',
     paddingType = 'normal',
     heading,
     subHeading,
-    headingSize = 'large',
-    toggleIconSize = headingSize,
+    headingSize,
+    toggleLabel,
+    toggleIconName,
+    toggleIconSize,
     toggleIconVariant,
+    toggleComponent,
     fillType = 'default',
     hasDivider = true,
     children,
     onAnimationComplete,
     'data-testid': dataTest,
+    collapsible = true,
     ...rest
 }: CollapsibleBoxProps) => {
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
     const frameProps = pickAndPrepareFrameProps(rest, allowedCollapsibleBoxFrameProps);
-
-    const headerContent = (
-        <Row gap={spacings.xs} justifyContent="space-between">
-            <Column alignItems="flex-start">
-                <Text
-                    as="div"
-                    typographyStyle={mapSizeToHeadingTypography({
-                        $headingSize: headingSize,
-                    })}
-                >
-                    {heading}
-                </Text>
-                {subHeading && (
-                    <Text
-                        as="div"
-                        typographyStyle={mapSizeToSubheadingTypography({
-                            $headingSize: headingSize,
-                        })}
-                        variant="tertiary"
-                    >
-                        {subHeading}
-                    </Text>
-                )}
-            </Column>
-            <Toggle>
-                <Row gap={spacings.sm}>
-                    {toggleLabel && (
-                        <Text typographyStyle="hint" variant="tertiary">
-                            {toggleLabel}
-                        </Text>
-                    )}
-                    <Collapsible.ToggleIcon
-                        iconName={toggleIconName}
-                        size={toggleIconSize ?? mapSizeToIconSize({ $headingSize: headingSize })}
-                        data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
-                        variant={toggleIconVariant}
-                    />
-                </Row>
-            </Toggle>
-        </Row>
-    );
 
     return (
         <Container
@@ -198,15 +139,32 @@ export const CollapsibleBox = ({
             $fillType={fillType}
             data-testid={dataTest}
         >
-            <Collapsible isOpen={isOpen}>
-                <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
-                    <Header $paddingType={paddingType}>
-                        {fillType === 'none' ? (
-                            headerContent
-                        ) : (
-                            <ElevationUp>{headerContent}</ElevationUp>
-                        )}
-                    </Header>
+            <Collapsible isOpen={isOpen && collapsible}>
+                <Collapsible.Toggle
+                    data-testid="@collapsible-box/toggle"
+                    onClick={() => {
+                        if (collapsible) {
+                            setIsOpen(!isOpen);
+                        }
+                    }}
+                >
+                    <CollapsibleHeader
+                        paddingType={paddingType}
+                        fillType={fillType}
+                        collapsible={collapsible}
+                    >
+                        <CollapsibleHeaderContent
+                            isOpen={isOpen}
+                            heading={heading}
+                            subHeading={subHeading}
+                            toggleLabel={toggleLabel}
+                            toggleComponent={toggleComponent}
+                            toggleIconName={toggleIconName}
+                            toggleIconSize={toggleIconSize}
+                            toggleIconVariant={toggleIconVariant}
+                            collapsible={collapsible}
+                        />
+                    </CollapsibleHeader>
                 </Collapsible.Toggle>
                 <Collapsible.Content
                     data-testid="@collapsible-box/body"

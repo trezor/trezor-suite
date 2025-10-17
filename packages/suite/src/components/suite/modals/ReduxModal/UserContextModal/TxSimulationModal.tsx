@@ -235,14 +235,7 @@ export const TxSimulationModal = () => {
         feeInfo,
         composeRequest: () => {},
     });
-    const {
-        control,
-        register,
-        setValue,
-        getValues,
-        formState: { isDirty, errors },
-        trigger,
-    } = methods;
+    const { setValue } = methods;
     const isSigningTransaction =
         popupCall?.state === 'tx-simulation' && popupCall?.method === 'ethereumSignTransaction';
 
@@ -353,6 +346,8 @@ export const TxSimulationModal = () => {
                         </Modal.Button>
                     </>
                 }
+                // Disable shadow bottom to make `Fees` component fully visible
+                shadowBottom={false}
             >
                 <FormProvider {...methods}>
                     <Column gap={spacings.xs}>
@@ -573,14 +568,8 @@ export const TxSimulationModal = () => {
                                 <Fees
                                     account={account}
                                     feeInfo={feeInfo}
-                                    control={control}
-                                    register={register}
-                                    setValue={setValue}
-                                    getValues={getValues}
-                                    errors={errors}
-                                    isDirty={isDirty}
                                     changeFeeLevel={changeFeeLevel}
-                                    trigger={trigger}
+                                    composedLevels={null}
                                 />
                             )}
                         </Column>

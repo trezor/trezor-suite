@@ -120,13 +120,8 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
         composeRequest: () => {},
     });
     const {
-        control,
-        register,
-        setValue,
-        getValues,
         handleSubmit,
-        formState: { isDirty, errors },
-        trigger,
+        formState: { errors },
     } = methods;
 
     const onSend = handleSubmit(data => {
@@ -185,18 +180,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                         {popupCall?.state === 'ongoing' && popupCall?.payload?.outputs && (
                             <OutputsSummary account={account} outputs={popupCall.payload.outputs} />
                         )}
-                        <Fees
-                            account={account}
-                            feeInfo={feeInfo}
-                            control={control}
-                            register={register}
-                            setValue={setValue}
-                            getValues={getValues}
-                            errors={errors}
-                            isDirty={isDirty}
-                            changeFeeLevel={changeFeeLevel}
-                            trigger={trigger}
-                        />
+                        <Fees account={account} feeInfo={feeInfo} changeFeeLevel={changeFeeLevel} />
                     </Column>
                 </FormProvider>
             </Modal.ModalBase>

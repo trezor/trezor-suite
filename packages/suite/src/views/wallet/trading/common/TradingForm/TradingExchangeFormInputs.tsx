@@ -10,7 +10,7 @@ import {
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { Card, Column, FractionButton, Row } from '@trezor/components';
+import { Card, Column, Divider, FractionButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
@@ -34,19 +34,15 @@ export const TradingExchangeFormInputs = () => {
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
     const {
-        control,
         feeInfo,
         account,
         composedLevels,
-        formState: { errors, isDirty },
         form: { helpers },
         exchangeInfo,
-        register,
-        setValue,
         getValues,
+        setValue,
         changeFeeLevel,
         shouldSendInSats,
-        trigger,
     } = context;
     const { rateType, sendCryptoSelect, receiveCryptoSelect, outputs, amountInCrypto } =
         getValues();
@@ -66,98 +62,87 @@ export const TradingExchangeFormInputs = () => {
 
     return (
         <Card paddingType="none">
-            <Column gap={spacings.lg}>
-                <Column
-                    gap={spacings.lg}
-                    padding={{ vertical: spacings.md, horizontal: spacings.lg, bottom: 0 }}
-                >
-                    <TradingFormInputAccount<TradingExchangeFormProps>
-                        accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        label="TR_FROM"
-                        data-testid="@trading/form/trade-from/select-crypto"
+            <Column gap={spacings.lg} padding={{ vertical: spacings.lg, horizontal: spacings.lg }}>
+                <TradingFormInputAccount<TradingExchangeFormProps>
+                    accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                    label="TR_FROM"
+                    data-testid="@trading/form/trade-from/select-crypto"
+                    methods={{ ...context }}
+                />
+                <Column gap={spacings.xs}>
+                    <TradingFormInputFiatCrypto<TradingExchangeFormProps>
+                        cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                        fiatInputName={TRADING_FORM_OUTPUT_FIAT}
+                        cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                        currencySelectLabel={currencySelect.label}
+                        cryptoCurrencyLabel={sendCryptoSelect?.value}
                         methods={{ ...context }}
                     />
-                    <Column gap={spacings.xs}>
-                        <TradingFormInputFiatCrypto<TradingExchangeFormProps>
-                            cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
-                            fiatInputName={TRADING_FORM_OUTPUT_FIAT}
-                            cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect.label}
-                            cryptoCurrencyLabel={sendCryptoSelect?.value}
-                            methods={{ ...context }}
-                        />
-                        {amountInCrypto && (
-                            <Row justifyContent="space-between" alignItems="flex-start">
-                                <Row gap={spacings.xs}>
-                                    {generateFractionButtons(helpers).map(button => (
-                                        <FractionButton
-                                            key={button.id}
-                                            {...button}
-                                            onClick={() => {
-                                                button.onClick();
-                                                context.resetSelectedOffer();
-                                            }}
-                                        />
-                                    ))}
-                                </Row>
-                                <ExperimentWrapper
-                                    id={ExperimentId.tradingFiatValues}
-                                    components={[
-                                        {
-                                            variant: 'A',
-                                            element: <></>,
-                                        },
-                                        {
-                                            variant: 'B',
-                                            element: (
-                                                <TradingBalance
-                                                    balance={outputAmount}
-                                                    displaySymbol={sendCryptoSelect?.value}
-                                                    symbol={account.symbol}
-                                                    tokenAddress={tokenAddress}
-                                                    showOnlyAmount
-                                                    amountInCrypto={amountInCrypto}
-                                                    sendCryptoSelect={sendCryptoSelect}
-                                                />
-                                            ),
-                                        },
-                                    ]}
-                                />
+                    {amountInCrypto && (
+                        <Row justifyContent="space-between" alignItems="flex-start">
+                            <Row gap={spacings.xs}>
+                                {generateFractionButtons(helpers).map(button => (
+                                    <FractionButton
+                                        key={button.id}
+                                        {...button}
+                                        onClick={() => {
+                                            button.onClick();
+                                            context.resetSelectedOffer();
+                                        }}
+                                    />
+                                ))}
                             </Row>
-                        )}
-                    </Column>
-                    <TradingFormInputCryptoSelect<TradingExchangeFormProps>
-                        placeholder="TR_SELECT_TOKEN"
-                        label="TR_TO"
-                        cryptoSelectName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
-                        supportedCryptoCurrencies={supportedCryptoCurrencies}
-                        methods={{ ...context }}
-                        sortTokensByFiatBalanceInDesc={true}
-                    />
+                            <ExperimentWrapper
+                                id={ExperimentId.tradingFiatValues}
+                                components={[
+                                    {
+                                        variant: 'A',
+                                        element: <></>,
+                                    },
+                                    {
+                                        variant: 'B',
+                                        element: (
+                                            <TradingBalance
+                                                balance={outputAmount}
+                                                displaySymbol={sendCryptoSelect?.value}
+                                                symbol={account.symbol}
+                                                tokenAddress={tokenAddress}
+                                                showOnlyAmount
+                                                amountInCrypto={amountInCrypto}
+                                                sendCryptoSelect={sendCryptoSelect}
+                                            />
+                                        ),
+                                    },
+                                ]}
+                            />
+                        </Row>
+                    )}
                 </Column>
+                <TradingFormInputCryptoSelect<TradingExchangeFormProps>
+                    placeholder="TR_SELECT_TOKEN"
+                    label="TR_TO"
+                    cryptoSelectName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
+                    supportedCryptoCurrencies={supportedCryptoCurrencies}
+                    methods={{ ...context }}
+                    sortTokensByFiatBalanceInDesc={true}
+                />
+            </Column>
 
-                {receiveCryptoId && !isLoading && <TradingReceiveAddress type="exchange" />}
+            {receiveCryptoId && !isLoading && <TradingReceiveAddress />}
 
-                <Column
-                    gap={spacings.lg}
-                    padding={{ vertical: spacings.md, horizontal: spacings.lg, top: 0 }}
-                >
-                    <Fees
-                        control={control}
-                        feeInfo={feeInfo}
-                        account={account}
-                        composedLevels={composedLevels}
-                        errors={errors}
-                        isDirty={isDirty}
-                        register={register}
-                        setValue={setValue}
-                        getValues={getValues}
-                        changeFeeLevel={changeFeeLevel}
-                        trigger={trigger}
-                    />
-                    <TradingFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
-                    <TradingFormFeesDisclamer />
-                </Column>
+            <Divider margin={0} />
+            <Fees
+                feeInfo={feeInfo}
+                account={account}
+                composedLevels={composedLevels}
+                changeFeeLevel={changeFeeLevel}
+                padding={{ vertical: spacings.sm, horizontal: spacings.lg }}
+            />
+            <Divider margin={0} />
+
+            <Column gap={spacings.lg} padding={{ vertical: spacings.lg, horizontal: spacings.lg }}>
+                <TradingFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
+                <TradingFormFeesDisclamer />
             </Column>
         </Card>
     );

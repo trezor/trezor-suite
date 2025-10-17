@@ -5,28 +5,11 @@ import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 // wrapper for shareable Fees component
 export const RbfFees = () => {
-    const {
-        formState: { errors, isDirty },
-        register,
-        control,
-        setValue,
-        getValues,
-        changeFeeLevel,
-        account,
-        feeInfo,
-        composedLevels,
-        trigger,
-    } = useRbfContext();
+    const { changeFeeLevel, account, feeInfo, composedLevels } = useRbfContext();
 
     return (
         <Fees
-            control={control}
-            errors={errors}
-            isDirty={isDirty}
-            register={register}
             feeInfo={feeInfo}
-            setValue={setValue}
-            getValues={getValues}
             account={account}
             composedLevels={composedLevels}
             changeFeeLevel={changeFeeLevel}
@@ -36,7 +19,6 @@ export const RbfFees = () => {
                     : 'TR_NEW_FEE'
             }
             rbfForm
-            trigger={trigger}
         />
     );
 };
