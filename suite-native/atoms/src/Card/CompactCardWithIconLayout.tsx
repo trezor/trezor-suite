@@ -13,7 +13,8 @@ import { RoundedIcon } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 
-type CardVariant = 'normal' | 'danger';
+type CardVariant = 'normal' | 'danger' | 'primary';
+
 export type CompactCardWithIconLayoutProps = {
     icon: IconName;
     title: ReactNode;
@@ -31,6 +32,7 @@ type CardColorScheme = {
     iconColor: Color;
     titleColor: Color;
     subtitleColor: Color;
+    caretColor: Color;
 };
 
 export const cardVariantToColorsMap = {
@@ -39,12 +41,21 @@ export const cardVariantToColorsMap = {
         iconColor: 'iconDefault',
         titleColor: 'textDefault',
         subtitleColor: 'textSubdued',
+        caretColor: 'iconSubdued',
     },
     danger: {
         iconWrapperBackgroundColor: 'backgroundAlertRedSubtleOnElevation1',
         iconColor: 'iconAlertRed',
         titleColor: 'textAlertRed',
         subtitleColor: 'textAlertRed',
+        caretColor: 'iconSubdued',
+    },
+    primary: {
+        iconWrapperBackgroundColor: 'backgroundPrimarySubtleOnElevation0',
+        iconColor: 'iconPrimaryDefault',
+        titleColor: 'textSecondaryHighlight',
+        subtitleColor: 'textSecondaryHighlight',
+        caretColor: 'iconPrimaryDefault',
     },
 } as const satisfies Record<CardVariant, CardColorScheme>;
 
@@ -73,6 +84,9 @@ export const CompactCardWithIconLayout = ({
 }: CompactCardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
 
+    const { caretColor, iconColor, titleColor, subtitleColor, iconWrapperBackgroundColor } =
+        cardVariantToColorsMap[variant];
+
     return (
         <TouchableOpacity
             style={applyStyle(touchableOpacityStyle, { noShadow })}
@@ -88,17 +102,14 @@ export const CompactCardWithIconLayout = ({
                     alignItems="center"
                 >
                     <RoundedIcon
-                        backgroundColor={cardVariantToColorsMap[variant].iconWrapperBackgroundColor}
-                        color={cardVariantToColorsMap[variant].iconColor}
+                        backgroundColor={iconWrapperBackgroundColor}
+                        color={iconColor}
                         name={icon}
                     />
                     <VStack spacing="sp2" style={applyStyle(contentStyle)}>
-                        <Text color={cardVariantToColorsMap[variant].titleColor}>{title}</Text>
+                        <Text color={titleColor}>{title}</Text>
                         {subtitle && (
-                            <Text
-                                color={cardVariantToColorsMap[variant].subtitleColor}
-                                variant="hint"
-                            >
+                            <Text color={subtitleColor} variant="hint">
                                 {subtitle}
                             </Text>
                         )}
@@ -106,7 +117,7 @@ export const CompactCardWithIconLayout = ({
                     {isDisabled ? (
                         <Loader />
                     ) : (
-                        <Icon name="caretRight" size="mediumLarge" color="iconSubdued" />
+                        <Icon name="caretRight" size="mediumLarge" color={caretColor} />
                     )}
                 </HStack>
                 {alertBoxProps && (

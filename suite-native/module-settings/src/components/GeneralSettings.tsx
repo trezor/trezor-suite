@@ -3,6 +3,7 @@ import { Translation } from '@suite-native/intl';
 import { SettingsStackRoutes } from '@suite-native/navigation';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
+import { TradingSettingsCard } from './TradingSettingsCard';
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const GeneralSettings = () => {
@@ -25,10 +26,14 @@ export const GeneralSettings = () => {
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsPrivacy)}
             />
             <AppSettingsCardWithIconLayout
-                title="Support"
-                subtitle="Troubleshooting, help"
+                title={<Translation id="moduleSettings.items.general.support.title" />}
+                subtitle={<Translation id="moduleSettings.items.general.support.subtitle" />}
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsSupport)}
                 icon="lifebuoy"
+            />
+            <TradingSettingsCard
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsTradingLocation)}
+                testID="@settings/trading"
             />
         </TitledSection>
     );

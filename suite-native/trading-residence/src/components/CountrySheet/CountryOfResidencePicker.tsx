@@ -1,24 +1,20 @@
 import { useCallback } from 'react';
 
-import { TradingType } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { CountryChangeContext, EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
-import type { UseFormReturn } from '@suite-native/forms';
+import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { OverviewRow } from '@suite-native/trading-atoms';
+import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
 
 import { CountrySheet } from './CountrySheet';
-import { useSheetControls } from '../../../hooks/general/useSheetControls';
-import { BuyFormType, BuyFormValues } from '../../../types/buy';
-import { SellFormType, SellFormValues } from '../../../types/sell';
+import { TradingLocationFormValues } from '../../types/tradingLocationForm';
 
-export type CountryOfResidencePickerProps<Form extends BuyFormType | SellFormType> = {
+export type CountryOfResidencePickerProps = {
     testID: string;
-    form: Form;
-    tradingType: TradingType;
+    context: CountryChangeContext;
 };
 
-const reportCountryChange = (type: TradingType) => {
+const reportCountryChange = (type: CountryChangeContext) => {
     analytics.report({
         type: EventType.TradingParameterChanged,
         payload: {
@@ -28,30 +24,33 @@ const reportCountryChange = (type: TradingType) => {
     });
 };
 
-export const CountryOfResidencePicker = <Form extends BuyFormType | SellFormType>({
-    form,
-    testID,
-    tradingType,
-}: CountryOfResidencePickerProps<Form>) => {
+export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidencePickerProps) => {
     const { translate } = useTranslate();
-    const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useSheetControls(form as UseFormReturn<BuyFormValues | SellFormValues>, 'country');
+    const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
+
+    const { watch, setValue } = useFormContext<TradingLocationFormValues>();
+    const selectedValue = watch('country');
+
+    const setSelectedValue = useCallback(
+        (value: typeof selectedValue) => setValue('country', value),
+        [setValue],
+    );
 
     const handleCountrySelect = useCallback(
         (country: typeof selectedValue) => {
             setSelectedValue(country);
 
             if (selectedValue?.value !== country?.value) {
-                reportCountryChange(tradingType);
+                reportCountryChange(context);
             }
         },
-        [selectedValue, setSelectedValue, tradingType],
+        [selectedValue, setSelectedValue, context],
     );
 
     return (
         <>
             <OverviewRow
-                title={translate('moduleTrading.tradingScreen.countryOfResidence')}
+                title={translate('tradingResidence.locationSettings.countryOfResidence')}
                 onPress={showSheet}
                 testID={testID}
             >
@@ -61,7 +60,7 @@ export const CountryOfResidencePicker = <Form extends BuyFormType | SellFormType
                             color="textSubdued"
                             variant="body"
                             accessibilityLabel={translate(
-                                'moduleTrading.tradingScreen.selectedCountryOfResidence',
+                                'tradingResidence.locationSettings.selectedCountryOfResidence',
                             )}
                             testID={testID + '/value'}
                         >
@@ -73,11 +72,11 @@ export const CountryOfResidencePicker = <Form extends BuyFormType | SellFormType
                         color="textDisabled"
                         variant="body"
                         accessibilityLabel={translate(
-                            'moduleTrading.tradingScreen.noCountryOfResidence',
+                            'tradingResidence.locationSettings.noCountryOfResidence',
                         )}
                         testID={testID + '/value'}
                     >
-                        <Translation id="moduleTrading.notSelected" />
+                        <Translation id="tradingResidence.locationSettings.notSelected" />
                     </Text>
                 )}
             </OverviewRow>

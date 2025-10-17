@@ -18,6 +18,9 @@ import {
     TradingNavigateFrom,
 } from './definitions';
 
+export type CountryChangeContextIOS = 'settings' | 'onboarding';
+export type CountryChangeContext = TradingType | CountryChangeContextIOS;
+
 export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.AppReady;
@@ -500,13 +503,15 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.TradingParameterChanged;
           payload: {
               type: TradingType;
-              parameter:
-                  | 'fiat'
-                  | 'cryptoFrom'
-                  | 'cryptoTo'
-                  | 'paymentMethod'
-                  | 'country'
-                  | 'provider';
+              parameter: 'fiat' | 'cryptoFrom' | 'cryptoTo' | 'paymentMethod' | 'provider';
+          };
+      }
+    // TODO 22469 add to notion!
+    | {
+          type: EventType.TradingParameterChanged;
+          payload: {
+              type: CountryChangeContext;
+              parameter: 'country';
           };
       }
     | {
