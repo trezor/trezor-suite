@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Column } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
@@ -35,12 +35,28 @@ export const TradingSelectedOffer = () => {
     const quoteAmounts = getCryptoQuoteAmountProps(selectedTrade, context);
     const paymentMethod = getPaymentMethod(selectedTrade, context);
 
-    return (
-        <Column gap={spacings.md}>
-            {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
+    if (isTradingExchangeContext(context)) {
+        return (
+            <Column width="100%" alignItems="center">
+                <Card width="100%" maxWidth="520px" data-testid="@trading/selected-offer">
+                    <TradingOfferExchange
+                        account={account}
+                        selectedQuote={selectedTrade as TradingOfferExchangeProps['selectedQuote']}
+                        providers={providers}
+                        type={context.type}
+                        quoteAmounts={quoteAmounts}
+                    />
+                </Card>
+            </Column>
+        );
+    }
 
-            <Wrapper data-testid="@trading/selected-offer">
-                {isTradingSellContext(context) && (
+    if (isTradingSellContext(context)) {
+        return (
+            <Column gap={spacings.md}>
+                {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
+
+                <Wrapper data-testid="@trading/selected-offer">
                     <TradingOfferSell
                         account={account}
                         selectedQuote={selectedTrade as TradingOfferSellProps['selectedQuote']}
@@ -49,17 +65,10 @@ export const TradingSelectedOffer = () => {
                         quoteAmounts={quoteAmounts}
                         {...paymentMethod}
                     />
-                )}
-                {isTradingExchangeContext(context) && (
-                    <TradingOfferExchange
-                        account={account}
-                        selectedQuote={selectedTrade as TradingOfferExchangeProps['selectedQuote']}
-                        providers={providers}
-                        type={context.type}
-                        quoteAmounts={quoteAmounts}
-                    />
-                )}
-            </Wrapper>
-        </Column>
-    );
+                </Wrapper>
+            </Column>
+        );
+    }
+
+    return null;
 };

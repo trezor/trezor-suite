@@ -94,7 +94,7 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
             await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
                 formattedReceiveAmount,
             );
-            await expect(tradingPage.confirmationExchangeType).toHaveText('Fixed-rate offer');
+            await expect(tradingPage.confirmationExchangeType).toHaveText('Fixed');
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });
     });

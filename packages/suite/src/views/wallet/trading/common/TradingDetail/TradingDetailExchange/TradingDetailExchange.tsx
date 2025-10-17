@@ -8,7 +8,6 @@ import { Feature, selectFeatureConfig } from '@suite-common/message-system';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
-    selectTradingExchangeFormStep,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, InfoItem } from '@trezor/components';
@@ -68,7 +67,6 @@ export const TradingDetailExchange = () => {
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
     const previousTradeStatus = usePrevious(tradeStatus);
     const tradeStatusStep = getTradeStatusStep(tradeStatus);
-    const formStep = useSelector(selectTradingExchangeFormStep);
     const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
 
     const exchange = trade?.data?.exchange;
@@ -122,7 +120,7 @@ export const TradingDetailExchange = () => {
 
     return (
         <Wrapper>
-            <Column gap={spacings.lg}>
+            <Column gap={spacings.lg} flex="1">
                 <Card>
                     {trade.data.receiveTxHash && (
                         <InfoItem label={<Translation id="TR_TXID" />}>
@@ -171,7 +169,6 @@ export const TradingDetailExchange = () => {
             </Column>
             <Card>
                 <TradingSelectedOfferInfo
-                    formStep={formStep}
                     account={sendAccount}
                     selectedAccount={receiveAccount}
                     selectedQuote={trade.data}

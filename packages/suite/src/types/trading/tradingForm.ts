@@ -21,14 +21,12 @@ import type {
     TradingCountryOption,
     TradingExchangeFormProps,
     TradingExchangeInfoSelector,
-    TradingExchangeStepType,
     TradingExchangeType,
     TradingFiatCurrencyOption,
     TradingPaymentMethodListProps,
     TradingPaymentMethodType,
     TradingSellFormProps,
     TradingSellInfoSelector,
-    TradingSellStepType,
     TradingSellType,
     TradingTradeType,
     TradingTransactionBuy,
@@ -386,5 +384,4 @@ export interface TradingOfferExchangeProps
 export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {
     selectedAccount?: Account;
     transactionId?: string;
-    formStep?: TradingExchangeStepType | TradingSellStepType;
 }

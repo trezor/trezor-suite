@@ -4,11 +4,7 @@ import { usePrevious } from 'react-use';
 import { SellTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import {
-    type TradingSellType,
-    selectTradingComposedTransactionInfo,
-    selectTradingSellFormStep,
-} from '@suite-common/trading';
+import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -48,7 +44,6 @@ export const TradingDetailSell = () => {
     const tradeStatus = trade?.data?.status || 'PENDING';
     const previousTradeStatus = usePrevious(tradeStatus);
     const tradeStatusStep = getTradeStatusStep(tradeStatus);
-    const formStep = useSelector(selectTradingSellFormStep);
     const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
 
     const exchange = trade?.data?.exchange;
@@ -135,7 +130,8 @@ export const TradingDetailSell = () => {
                     transactionId={trade.key}
                     type="sell"
                     quoteAmounts={quoteAmounts}
-                    formStep={formStep}
+                    paymentMethod={trade.data.paymentMethod}
+                    paymentMethodName={trade.data.paymentMethodName}
                 />
             </Card>
         </Wrapper>

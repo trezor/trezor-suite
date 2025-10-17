@@ -634,12 +634,12 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM: {
-        defaultMessage: 'Minimum received amount',
+        defaultMessage: 'Minimum you get',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_INFO: {
         defaultMessage:
-            "Exchange rates can change quickly, so the final amount you receive may differ from the offer—this is called slippage. Slippage tolerance sets the maximum difference you're willing to accept. A higher tolerance means your transaction is more likely to go through but you might get less than expected. A lower tolerance gives you a better rate but may cause the transaction to fail, and you'll still pay the transaction fee.",
+            'Prices can change during the swap. Maximum slippage sets how much difference you’ll accept in the final amount. A higher tolerance makes the transaction more likely to go through, but you may receive less than expected.',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_INFO',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM: {
@@ -711,16 +711,28 @@ export default defineMessages({
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
-        defaultMessage: 'Fixed-rate offer',
+        defaultMessage: 'Fixed',
         id: 'TR_EXCHANGE_FIXED',
     },
     TR_EXCHANGE_FLOAT: {
-        defaultMessage: 'Floating-rate offer',
+        defaultMessage: 'Floating',
         id: 'TR_EXCHANGE_FLOAT',
     },
     TR_EXCHANGE_DEX: {
-        defaultMessage: 'Decentralized exchange offer',
+        defaultMessage: 'DEX',
         id: 'TR_EXCHANGE_DEX',
+    },
+    TR_EXCHANGE_DECENTRALIZED_EXCHANGE: {
+        defaultMessage: 'Decentralized exchange offer',
+        id: 'TR_EXCHANGE_DECENTRALIZED_EXCHANGE',
+    },
+    TR_EXCHANGE_CEX: {
+        defaultMessage: 'CEX',
+        id: 'TR_EXCHANGE_CEX',
+    },
+    TR_EXCHANGE_CENTRALIZED_EXCHANGE: {
+        defaultMessage: 'Centralized exchange offer',
+        id: 'TR_EXCHANGE_CENTRALIZED_EXCHANGE',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
         defaultMessage: 'Fixed-rate CEX',
