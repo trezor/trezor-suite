@@ -5,6 +5,7 @@
         "@react-native-community/netinfo",
         "@react-navigation/native",
         "@react-native-community/cli",
+        "@react-native/metro-config",
         "@trezor/react-native-usb",
         "@walletconnect/react-native-compat",
         "expo-build-properties",
