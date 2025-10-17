@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-10-16T00:00:00+00:00",
-    "sequence": 115,
+    "timestamp": "2025-10-17T00:00:00+00:00",
+    "sequence": 116,
     "actions": [
         {
             "conditions": [
@@ -1709,6 +1709,65 @@
                     "tr": "INPUT HERE ağı ile senkronizasyon sorunları yaşıyoruz. Bu, geçici olarak INPUT HERE'da hatalara veya yavaş yanıt sürelerine neden olabilir. Bu sorun, INPUT HERE fonlarınızın güvenliğini hiçbir şekilde etkilemez. Rahatsızlık için özür dileriz.",
                     "pt": "Estamos enfrentando problemas de sincronização com a rede INPUT HERE. Isso pode resultar temporariamente em erros ou tempos de respuesta lentos na INPUT HERE. Este problema não afeta de forma alguma a segurança dos seus fundos INPUT HERE. Pedimos desculpas pelo inconveniente.",
                     "uk": "У нас виникли проблеми з синхронізацією мережі INPUT HERE. Це може тимчасово призвести до помилок або повільних часів відповіді на INPUT HERE. Ця проблема ніяк не впливає на безпеку ваших коштів INPUT HERE. Приносимо вибачення за незручності."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "os": {
+                        "macos": ">=11.0.0 <12.0.0",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "!",
+                        "chromeos": "!"
+                    },
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "0b5a5270-7480-4983-95f6-da4a2a2f0ffb",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Do not update Trezor Suite, the latest version no longer supports your version of operating system.",
+                    "en": "Do not update Trezor Suite, the latest version no longer supports your version of operating system.",
+                    "es": "No actualices Trezor Suite, la última versión ya no es compatible con tu versión del sistema operativo.",
+                    "cs": "Neaktualizujte Trezor Suite, nejnovější verze již nepodporuje vaši verzi operačního systému.",
+                    "ru": "Не обновляйте Trezor Suite, последняя версия больше не поддерживает вашу версию операционной системы.",
+                    "ja": "Trezor Suite を更新しないでください。最新版はお客様のオペレーティングシステムバージョンをサポートしていません。",
+                    "hu": "Ne frissítse a Trezor Suite-ot, mert a legújabb verzió már nem támogatja az Ön operációs rendszerét.",
+                    "it": "Non aggiornare Trezor Suite, l'ultima versione non supporta più la tua versione del sistema operativo.",
+                    "fr": "Ne mettez pas à jour Trezor Suite, la dernière version n'est plus compatible avec votre version du système d'exploitation.",
+                    "de": "Aktualisieren Sie Trezor Suite nicht, da die neueste Version Ihr Betriebssystem nicht mehr unterstützt.",
+                    "tr": "Trezor Suite'i güncellemeyin, en son sürüm işletim sisteminizin sürümünü artık desteklemiyor.",
+                    "pt": "Não atualize o Trezor Suite, pois a versão mais recente não é compatível com a sua versão do sistema operacional.",
+                    "uk": "Не оновлюйте Trezor Suite, оскільки остання версія більше не підтримує вашу версію операційної системи."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://suite.trezor.io/web/",
+                    "label": {
+                        "en": "Go to web version",
+                        "es": "Ir a la versión web",
+                        "cs": "Přejít na webovou verzi",
+                        "ru": "Перейти к веб-версии",
+                        "ja": "ウェブ版へ移動",
+                        "hu": "Webes verzióhoz lépés",
+                        "it": "Vai alla versione web",
+                        "fr": "Aller à la version web",
+                        "de": "Zur Webversion gehen",
+                        "tr": "Web sürümüne git",
+                        "pt": "Ir para a versão web",
+                        "uk": "Перейти до веб-версії"
+                    }
                 }
             }
         },
