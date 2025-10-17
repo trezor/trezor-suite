@@ -2383,6 +2383,12 @@ export const messages = {
             providerReceiveAddressLabel: "{providerName}'s receive address",
             confirmationAlertTitle: 'Failed to confirm offer.',
             approvalSuccessAlert: 'Spending approval confirmed.',
+            fusionPlusInfo: {
+                title: 'You are swapping with 1Inch Fusion+',
+                bullet1: 'Simply sign the order - no need to send transactions manually',
+                bullet2: 'No gas fees - the smart contract handles everything for you',
+                bullet3: 'Your swap might be partially filled based on the market conditions',
+            },
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',

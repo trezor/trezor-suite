@@ -8,6 +8,7 @@ import { Translation } from '@suite-native/intl';
 
 import { ExchangeFeePickerCard } from './ExchangeFeePickerCard';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
+import { ExchangeFusionPlusInfo } from './ExchangeFusionPlusInfo';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 
@@ -21,6 +22,7 @@ export const ExchangePreviewView = memo(
     ({ quote, txnErrorString, isApproved }: ExchangePreviewViewProps) => {
         const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
         const isTxnError = !!txnErrorString;
+        const isFusionPlus = quote?.exchange === '1inchfusionplus';
 
         return (
             <VStack spacing="sp20" paddingVertical="sp20">
@@ -43,6 +45,7 @@ export const ExchangePreviewView = memo(
                 />
                 <ExchangeToAccountTradePreviewCard quote={quote} toStringValue={toStringValue} />
                 <ExchangeFeePickerCard quote={quote} isTxnError={isTxnError} />
+                {isFusionPlus && <ExchangeFusionPlusInfo />}
             </VStack>
         );
     },

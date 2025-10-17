@@ -190,6 +190,9 @@ describe('exchangeSelectors', () => {
                     expect.objectContaining({
                         quoteId: 'mercuryo-dex',
                     }),
+                    expect.objectContaining({
+                        quoteId: '1inch-fusion-plus',
+                    }),
                 ],
             });
         });

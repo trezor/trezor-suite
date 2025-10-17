@@ -37,4 +37,22 @@ describe('ExchangePreviewView', () => {
         expect(getByText('txnErrorString')).toBeOnTheScreen();
         expect(queryByText('Fee')).toBeNull();
     });
+
+    it('should render 1Inch Fusion+ info when exchange is 1inchfusionplus', async () => {
+        const fusionQuote = exchangeQuotes.find(q => q.exchange === '1inchfusionplus');
+        const { getByText } = await renderExchangePreviewView({
+            quote: fusionQuote,
+        });
+
+        expect(getByText('You are swapping with 1Inch Fusion+')).toBeOnTheScreen();
+    });
+
+    it('should not render 1Inch Fusion+ info when exchange is not 1inchfusionplus', async () => {
+        const nonFusionQuote = exchangeQuotes.find(q => q.exchange === 'mercuryo');
+        const { queryByText } = await renderExchangePreviewView({
+            quote: nonFusionQuote,
+        });
+
+        expect(queryByText('You are swapping with 1Inch Fusion+')).toBeNull();
+    });
 });
