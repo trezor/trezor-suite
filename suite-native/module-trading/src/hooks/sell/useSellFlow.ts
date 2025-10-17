@@ -15,6 +15,9 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
+    StackToStackCompositeNavigationProps,
+    TradingStackParamList,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useTimer } from '@trezor/react-utils';
 
@@ -23,6 +26,12 @@ import { SellFormType } from '../../types/sell';
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
 import { useConsent } from '../general/useConsent';
 import { useConsentDenier } from '../general/useConsentDenier';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    TradingStackParamList,
+    TradingStackRoutes.TradingSellPreview,
+    RootStackParamList
+>;
 
 type SellFlowReturn = {
     canProceed: boolean;
@@ -38,6 +47,7 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
     const dispatch = useDispatch();
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+    const navigation = useNavigation<NavigationProps>();
     const timer = useTimer();
     const candidateQuote = watch('quote');
     const isLoading = useSelector(selectTradingSellIsLoading);
@@ -179,6 +189,7 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
             ) {
                 doSellTrade(candidateQuote);
             }
+            navigation.navigate(TradingStackRoutes.TradingSellPreview);
         };
 
         await dispatch(
@@ -193,11 +204,12 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
     }, [
         candidateQuote,
         isLoading,
-        sellInfo,
-        doSellTrade,
+        navigation,
         dispatch,
         timer,
         waitForLegalTermsConsent,
+        sellInfo,
+        doSellTrade,
     ]);
 
     return {

@@ -2390,6 +2390,15 @@ export const messages = {
                 bullet3: 'Your swap might be partially filled based on the market conditions',
             },
         },
+        tradingSellPreviewScreen: {
+            title: 'Sell',
+            fromAccount: 'From',
+            toFiat: 'To',
+            paymentMethods: {
+                bankTransfer: 'Bank Transfer',
+                creditCard: 'Credit/Debit Card',
+            },
+        },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
             subtitle:

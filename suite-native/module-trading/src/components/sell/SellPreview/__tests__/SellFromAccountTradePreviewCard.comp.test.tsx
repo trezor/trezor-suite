@@ -1,0 +1,52 @@
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+
+import { sellQuotes } from '../../../../__fixtures__/sellQuotes';
+import { getWalletState } from '../../../../__fixtures__/walletState';
+import {
+    SellFromAccountTradePreviewCard,
+    SellFromAccountTradePreviewCardProps,
+} from '../SellFromAccountTradePreviewCard';
+
+describe('SellFromAccountTradePreviewCard', () => {
+    const renderSellFromAccountTradePreviewCard = (
+        props: Partial<SellFromAccountTradePreviewCardProps> = {},
+        tradingAccountKey = 'eth-account-1',
+    ) => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
+
+        return renderWithStoreProviderAsync(
+            <SellFromAccountTradePreviewCard fromStringValue="0.0233" {...props} />,
+            {
+                preloadedState,
+            },
+        );
+    };
+
+    it('should render nothing when there is no quote', async () => {
+        const { toJSON } = await renderSellFromAccountTradePreviewCard({});
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render nothing when account is not found', async () => {
+        const { toJSON } = await renderSellFromAccountTradePreviewCard(
+            { quote: sellQuotes[0] },
+            'unknown-account-key',
+        );
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render TradeSideCard otherwise', async () => {
+        const { getByText } = await renderSellFromAccountTradePreviewCard({
+            quote: sellQuotes[0],
+        });
+
+        expect(getByText('From')).toBeOnTheScreen();
+        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('-0.0233')).toBeOnTheScreen();
+    });
+});

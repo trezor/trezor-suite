@@ -357,6 +357,7 @@ export type TradingStackParamList = {
         quote: ExchangeTrade;
         shouldIncreaseLimit?: boolean;
     };
+    [TradingStackRoutes.TradingSellPreview]: undefined;
     [TradingStackRoutes.TradingFees]: {
         accountKey: AccountKey;
         tradingType: TradingType;

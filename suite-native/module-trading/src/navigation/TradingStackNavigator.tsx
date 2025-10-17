@@ -14,6 +14,7 @@ import { TradingHistoryScreen } from '../screens/TradingHistoryScreen';
 import { TradingOutputsReviewScreen } from '../screens/TradingOutputsReviewScreen';
 import { TradingReceiveAccountsPickerScreen } from '../screens/TradingReceiveAccountsPickerScreen';
 import { TradingScreen } from '../screens/TradingScreen';
+import { TradingSellPreviewScreen } from '../screens/TradingSellPreviewScreen';
 
 const TradingStack = createNativeStackNavigator<TradingStackParamList>();
 
@@ -51,6 +52,11 @@ export const TradingStackNavigator = () => (
             options={{ title: TradingStackRoutes.TradingExchangeRevoke }}
             name={TradingStackRoutes.TradingExchangeRevoke}
             component={TradingExchangeRevokeScreen}
+        />
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingSellPreview }}
+            name={TradingStackRoutes.TradingSellPreview}
+            component={TradingSellPreviewScreen}
         />
         <TradingStack.Screen
             options={{ title: TradingStackRoutes.TradingFees }}

@@ -5,8 +5,8 @@ import type { ExchangeTrade } from 'invity-api';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { ExchangeTradePreviewCard } from './ExchangeTradePreviewCard';
 import { selectExchangeSelectedReceiveAccount } from '../../../selectors/exchangeSelectors';
+import { TradeSideCard } from '../../general/TradeSideCard';
 
 export type ExchangeToAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
@@ -24,13 +24,15 @@ export const ExchangeToAccountTradePreviewCard = ({
     }
 
     return (
-        <ExchangeTradePreviewCard
+        <TradeSideCard
             account={toAccount.account}
             cryptoId={quote.receive}
             amount={
-                <Text variant="hint" color="textSecondaryHighlight">
-                    +{toStringValue}
-                </Text>
+                !!toStringValue && (
+                    <Text variant="hint" color="textSecondaryHighlight">
+                        +{toStringValue}
+                    </Text>
+                )
             }
             title={<Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />}
         />
