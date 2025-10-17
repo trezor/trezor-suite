@@ -8,7 +8,7 @@ import { SearchableSheetHeader } from '@suite-native/trading-atoms';
 
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
-import { useCountryFilteredData } from '../../../hooks/general/useCountryFilteredData';
+import { useCountryFilteredData } from '../../hooks/useCountryFilteredData';
 
 export type CountrySheetProps = {
     isVisible: boolean;
@@ -29,11 +29,11 @@ export const CountrySheet = memo(
             () => (
                 <SearchableSheetHeader
                     onClose={onClose}
-                    title={<Translation id="moduleTrading.countrySheet.title" />}
+                    title={<Translation id="tradingResidence.countrySheet.title" />}
                     onFilterChange={setFilterValue}
                     searchInputTestId="@trading/buy/country-search-input"
                     searchInputPlaceholder={translate(
-                        'moduleTrading.countrySheet.searchInputPlaceholder',
+                        'tradingResidence.countrySheet.searchInputPlaceholder',
                     )}
                 />
             ),

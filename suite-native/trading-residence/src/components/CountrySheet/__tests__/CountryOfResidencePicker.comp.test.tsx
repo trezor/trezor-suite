@@ -1,13 +1,16 @@
-import { analytics } from '@suite-common/analytics';
+import { analytics } from '@suite-native/analytics';
+import { Form, useForm } from '@suite-native/forms';
 import {
+    renderHookWithBasicProvider,
     renderHookWithStoreProviderAsync,
     renderWithBasicProvider,
     userEvent,
 } from '@suite-native/test-utils';
 import { useListDataFilter } from '@suite-native/trading-atoms';
 
-import { useBuyForm } from '../../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../../types/buy';
+import { useLocationForm } from '../../../hooks/useLocationForm';
+import { TradingLocationFormValues } from '../../../types/tradingLocationForm';
+import { locationFormValidationSchema } from '../../../utils/locationFormValidationSchema';
 import {
     CountryOfResidencePicker,
     CountryOfResidencePickerProps,
@@ -27,26 +30,22 @@ describe('CountryOfResidencePicker', () => {
     });
 
     const renderCountryOfResidencePicker = async (
-        props: Partial<CountryOfResidencePickerProps<BuyFormType>> = {},
+        props: Partial<CountryOfResidencePickerProps> = {},
     ) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useBuyForm());
+        const { result } = await renderHookWithStoreProviderAsync(() => useLocationForm());
 
         return renderWithBasicProvider(
-            <CountryOfResidencePicker
-                form={result.current}
-                testID="TEST_ID"
-                tradingType="buy"
-                {...props}
-            />,
+            <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,
+            {
+                wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
+            },
         );
     };
 
-    it('should display "Not selected" when in default state', async () => {
+    it('should display value from expo-localization (Poland) when in default state', async () => {
         const { getByLabelText } = await renderCountryOfResidencePicker();
 
-        expect(getByLabelText('No country of residence selected')).toHaveTextContent(
-            'Not selected',
-        );
+        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇵🇱 Poland');
     });
 
     it('should allow to select country', async () => {
@@ -96,5 +95,24 @@ describe('CountryOfResidencePicker', () => {
         await userEvent.press(getAllByText(/Algeria/)[1]);
 
         expect(reportSpy).not.toHaveBeenCalled();
+    });
+
+    it('should render even when no value is selected', () => {
+        const formWithoutCountrySet = renderHookWithBasicProvider(() =>
+            useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
+        );
+
+        const { getByLabelText } = renderWithBasicProvider(
+            <CountryOfResidencePicker testID="TEST_ID" context="settings" />,
+            {
+                wrapper: ({ children }) => (
+                    <Form form={formWithoutCountrySet.result.current}>{children}</Form>
+                ),
+            },
+        );
+
+        expect(getByLabelText('No country of residence selected')).toHaveTextContent(
+            'Not selected',
+        );
     });
 });

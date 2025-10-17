@@ -4,8 +4,8 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 
-import { tradingCountriesWhitelistSet } from '../consts/countriesWhitelist';
 import type { TradingResidenceRootState } from '../reducers/residenceSlice';
+import { tradingCountriesWhitelistSet } from '../utils/countriesWhitelist';
 
 export const selectTradingResidenceCountry = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.country;
@@ -31,3 +31,6 @@ export const selectIsTradingEnabledForCountry = (
 
     return tradingCountriesWhitelistSet.has(country);
 };
+
+export const selectIsTradingCountrySet = (state: TradingResidenceRootState) =>
+    selectTradingResidenceCountry(state) !== undefined;
