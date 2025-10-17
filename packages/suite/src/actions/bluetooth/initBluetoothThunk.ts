@@ -90,7 +90,8 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             // if FW update is in progress, only connect if it's the same device
             const fwUpdatingDifferentDevice =
                 firmwareStatus.status === 'started' &&
-                firmwareStatus.cachedDevice?.bluetoothProps?.id !== device.id;
+                (firmwareStatus.cachedDevice?.descriptor?.id !== device.id ||
+                    firmwareStatus.cachedDevice?.descriptor?.apiType !== 'bluetooth');
 
             if (hasUnacquiredDevice || hasSameUsbDevice || fwUpdatingDifferentDevice) {
                 return;

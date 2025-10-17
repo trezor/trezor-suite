@@ -1,13 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { selectNearbyDevices } from '@suite-common/bluetooth';
 import {
     type FirmwareUpdateProps,
     selectFirmware,
     useFirmwareInstallation,
 } from '@suite-common/firmware';
-import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceConnectedViaBluetooth,
+    selectIsDeviceConnectedViaBluetoothLowOnBattery,
+} from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
+import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
+
+import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
 
 const INTERVAL_CHECK_SLOW_INSTALLATION_MS = 1_000;
@@ -20,6 +27,9 @@ export const useFirmwareDesktopUpdate = () => {
     const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(
         selectIsDeviceConnectedViaBluetoothLowOnBattery,
     );
+    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
+    const bluetoothDevices = useSelector(selectNearbyDevices);
+    const dispatch = useDispatch();
 
     const { firmwareUpdate, originalDevice, reconnectEvent, pinRequested, ...rest } =
         useFirmwareInstallation();
@@ -59,11 +69,19 @@ export const useFirmwareDesktopUpdate = () => {
         return () => clearInterval(interval);
     }, [startTime, isSlow, firmware.uiEvent]);
 
-    const desktopFirmwareUpdate = (arg: FirmwareUpdateProps) => {
+    const desktopFirmwareUpdate = async (arg: FirmwareUpdateProps) => {
         if (isDeviceConnectedViaBluetoothLowOnBattery) {
             setShowLowBatteryModal(true);
 
             return;
+        }
+        if (!isDeviceConnectedViaBluetooth) {
+            // Not using Bluetooth - preventively disconnect any connected Bluetooth devices
+            await Promise.all(
+                bluetoothDevices
+                    .filter(device => device.connectionStatus.type === 'connected')
+                    .map(device => dispatch(bluetoothDisconnectDeviceThunk({ id: device.id }))),
+            );
         }
         firmwareUpdate(arg);
     };
