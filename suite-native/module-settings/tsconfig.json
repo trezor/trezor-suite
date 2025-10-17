@@ -37,6 +37,7 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../toasts" },
+        { "path": "../trading-residence" },
         {
             "path": "../../packages/blockchain-link-types"
         },

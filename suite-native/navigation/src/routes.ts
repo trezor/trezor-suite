@@ -198,6 +198,7 @@ export enum SettingsStackRoutes {
     SettingsDeviceChecks = 'SettingsDeviceChecks',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
+    SettingsTradingLocation = 'SettingsTradingLocation',
 }
 
 export enum TradingStackRoutes {

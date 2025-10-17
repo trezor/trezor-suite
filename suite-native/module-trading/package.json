@@ -72,7 +72,6 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@suite-common/analytics": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",

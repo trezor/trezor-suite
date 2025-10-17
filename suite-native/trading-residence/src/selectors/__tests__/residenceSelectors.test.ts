@@ -11,6 +11,7 @@ import {
     tradingResidenceInitialState,
 } from '../../reducers/residenceSlice';
 import {
+    selectIsTradingCountrySet,
     selectIsTradingEnabledForCountry,
     selectIsTradingResidenceCheckEnabled,
     selectTradingResidenceCountry,
@@ -108,5 +109,19 @@ describe('residenceSelectors', () => {
                 expect(selectIsTradingEnabledForCountry(state)).toBe(false);
             },
         );
+    });
+
+    describe('selectIsTradingCountrySet', () => {
+        it('should be false when selected country is undefined', () => {
+            const state = getRootResidenceState({ country: undefined });
+
+            expect(selectIsTradingCountrySet(state)).toBe(false);
+        });
+
+        it('should be true when selected country is defined', () => {
+            const state = getRootResidenceState({ country: 'US' });
+
+            expect(selectIsTradingCountrySet(state)).toBe(true);
+        });
     });
 });

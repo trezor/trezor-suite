@@ -1,4 +1,4 @@
-import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { CountryListItem, CountryListItemProps } from '../CountryListItem';
 
@@ -23,9 +23,7 @@ describe('CountryListItem', () => {
         const onPress = jest.fn();
         const { getByText } = renderCountryListItem({ onPress });
 
-        act(() => {
-            fireEvent.press(getByText('🇺🇸 United States of America'));
-        });
+        fireEvent.press(getByText('🇺🇸 United States of America'));
 
         expect(onPress).toHaveBeenCalledTimes(1);
     });
