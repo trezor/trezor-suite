@@ -1,19 +1,10 @@
 import { Reducer } from '@reduxjs/toolkit';
-import { Transform, createMigrate, persistReducer } from 'redux-persist';
+import { Transform, persistReducer } from 'redux-persist';
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
+import { MigrationsManifest, createAsyncMigrate } from './createAsyncMigrate';
 import { initMmkvStorage } from './storage';
-
-type ExclusiveMigrationsOrAsyncMigrate =
-    | {
-          migrations?: { [key: number]: (state: any) => any };
-          asyncMigrate?: undefined;
-      }
-    | {
-          migrations?: undefined;
-          asyncMigrate?: (state: any, currentVersion: number) => Promise<any>;
-      };
 
 export const preparePersistReducer = async <TReducerInitialState>({
     reducer,
@@ -21,7 +12,6 @@ export const preparePersistReducer = async <TReducerInitialState>({
     key,
     version,
     migrations,
-    asyncMigrate,
     transforms,
     mergeLevel = 1,
 }: {
@@ -29,18 +19,18 @@ export const preparePersistReducer = async <TReducerInitialState>({
     persistedKeys: Array<keyof TReducerInitialState>;
     key: string;
     version: number;
+    migrations?: MigrationsManifest;
     transforms?: Array<Transform<any, any>>;
     mergeLevel?: 1 | 2;
-} & ExclusiveMigrationsOrAsyncMigrate) => {
+}) => {
     const storage = await initMmkvStorage();
-    const defaultMigrate = createMigrate(migrations ?? {}, { debug: false });
 
     const persistConfig = {
         key,
         storage,
         whitelist: persistedKeys as string[],
         version,
-        migrate: asyncMigrate ?? defaultMigrate,
+        migrate: createAsyncMigrate(migrations ?? {}),
         transforms,
         stateReconciler: (mergeLevel === 2 ? autoMergeLevel2 : autoMergeLevel1) as any,
     };

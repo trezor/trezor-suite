@@ -2,7 +2,6 @@ import { pipe } from '@mobily/ts-belt';
 import { getStoredState } from 'redux-persist';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { WalletSettings } from '@suite-common/wallet-types';
 
 import { initMmkvStorage } from '../../storage';
 
@@ -39,9 +38,7 @@ const migrateDiscoveryConfigToWalletSettings = (
         migrateDiscoveryDeprecateNetworks,
     );
 
-export const migrateAppSettingsAndDiscoveryConfig = async (
-    walletSettingsState: WalletSettings,
-): Promise<WalletSettings> => {
+export const migrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: any) => {
     const storage = await initMmkvStorage();
     const appSettings = (await getStoredState({
         key: 'appSettings',

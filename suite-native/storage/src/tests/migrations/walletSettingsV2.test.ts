@@ -1,16 +1,67 @@
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { getStoredState } from 'redux-persist';
+
+jest.mock('../../storage', () => ({
+    initMmkvStorage: jest.fn().mockResolvedValue({}),
+}));
+
+jest.mock('redux-persist', () => ({
+    getStoredState: jest.fn(),
+}));
 
 import { migrateAutoEjectToWalletSettings } from '../../migrations/walletSettings/v2';
 
+const mockGetStoredState = getStoredState as jest.MockedFunction<typeof getStoredState>;
+
 describe(migrateAutoEjectToWalletSettings.name, () => {
-    it('migrates value from devices.isDeviceAutoEjectEnabled to walletSettings.autoEject', () => {
-        const devicesState = { isDeviceAutoEjectEnabled: true };
-        const oldWalletSettings = initialWalletSettingsState;
-        // simulate old state without isAutoEjectEnabled
-        delete (oldWalletSettings as any).autoEject;
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
-        const migrated = migrateAutoEjectToWalletSettings(devicesState, oldWalletSettings);
+    it('migrates value from devices.isDeviceAutoEjectEnabled to walletSettings.isAutoEjectEnabled', async () => {
+        mockGetStoredState.mockImplementation(({ key }) => {
+            if (key === 'devices') {
+                return Promise.resolve({
+                    isDeviceAutoEjectEnabled: true,
+                });
+            }
 
-        expect(migrated.isAutoEjectEnabled).toBe(true);
+            return Promise.resolve(undefined);
+        });
+
+        const walletSettingsState = { someOtherProperty: 'value' };
+
+        const migratedState = await migrateAutoEjectToWalletSettings(walletSettingsState);
+
+        expect(migratedState).toEqual({
+            someOtherProperty: 'value',
+            isAutoEjectEnabled: true,
+            isAutoForgetDeviceDataEnabled: false,
+        });
+    });
+
+    it('uses initial state value when devices.isDeviceAutoEjectEnabled is not present', async () => {
+        mockGetStoredState.mockImplementation(({ key }) => {
+            if (key === 'devices') {
+                return Promise.resolve({});
+            }
+
+            return Promise.resolve(undefined);
+        });
+
+        const walletSettingsState = { someOtherProperty: 'value' };
+
+        const migratedState = await migrateAutoEjectToWalletSettings(walletSettingsState);
+
+        expect(migratedState).toEqual({
+            someOtherProperty: 'value',
+            isAutoEjectEnabled: false,
+            isAutoForgetDeviceDataEnabled: false,
+        });
+    });
+
+    it('returns original state when walletSettingsState is null/undefined', async () => {
+        const migratedState = await migrateAutoEjectToWalletSettings(null);
+
+        expect(migratedState).toBeNull();
     });
 });
