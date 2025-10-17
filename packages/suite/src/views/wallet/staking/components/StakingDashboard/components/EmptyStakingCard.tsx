@@ -67,8 +67,8 @@ export const EmptyStakingCard = () => {
             symbol: account?.symbol,
             isBalance: true,
             withSymbol: false,
-            maxDisplayedDecimals: 8,
             isEllipsisAppended: false,
+            maxDisplayedDecimals: 8,
         });
     }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
 

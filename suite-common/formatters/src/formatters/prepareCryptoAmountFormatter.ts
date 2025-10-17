@@ -1,4 +1,4 @@
-import { A } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import {
     NetworkSymbol,
@@ -6,6 +6,7 @@ import {
     isNetworkSymbol,
     networks,
 } from '@suite-common/wallet-config';
+import { TokenSymbol } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -20,7 +21,7 @@ import { prepareDisplaySymbolFormatter } from './prepareDisplaySymbolFormatter';
 export type CryptoAmountFormatterInputValue = string;
 
 export type CryptoAmountFormatterDataContext = {
-    symbol: NetworkSymbol;
+    symbol: NetworkSymbol | TokenSymbol;
     withSymbol?: boolean;
     isBalance?: boolean; // This enables the display in Sats if selected in settings // Todo: fix WTF naming
     maxDisplayedDecimals?: number;
@@ -30,26 +31,56 @@ export type CryptoAmountFormatterDataContext = {
 
 export const BASE_CRYPTO_MAX_DISPLAYED_DECIMALS = 8;
 
-const truncateDecimals = (value: string, maxDecimals: number, isEllipsisAppended: boolean) => {
-    const parts = value.split('.');
-    const [integerPart, fractionalPart] = parts;
+const appendEllipsis = ({
+    value,
+    wasResultRounded,
+    formatterContext,
+}: {
+    value: string;
+    wasResultRounded: boolean;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+}) => {
+    const { isEllipsisAppended = true } = formatterContext;
 
-    if (fractionalPart && fractionalPart.length > maxDecimals) {
-        return `${integerPart}.${fractionalPart.slice(0, maxDecimals)}${
-            isEllipsisAppended ? '…' : ''
-        }`;
+    if (wasResultRounded && isEllipsisAppended) {
+        return `${value}…`;
     }
 
     return value;
 };
 
-const convertToUnit = (
-    value: string,
-    isBalance: boolean, // This enables the display in Sats if selected in settings // Todo: fix WTF naming
-    config: FormatterConfig,
-    symbol?: NetworkSymbol,
-    smallestUnitsOverride?: boolean,
-) => {
+const localizedNumber = ({
+    value,
+    config,
+    formatterContext,
+}: {
+    value: string;
+    config: FormatterConfig;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+}) => {
+    const { intl } = config;
+    const { maxDisplayedDecimals = BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } = formatterContext;
+
+    const formattedValue = intl.formatNumber(Number(value), {
+        maximumFractionDigits: maxDisplayedDecimals,
+    });
+
+    const [_, unformattedDecimalsPart] = value.split('.');
+    const wasResultRounded = unformattedDecimalsPart?.length > maxDisplayedDecimals;
+
+    return { formattedValue, wasResultRounded };
+};
+
+const convertToSubunits = ({
+    value,
+    config,
+    formatterContext,
+}: {
+    value: string;
+    config: FormatterConfig;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+}) => {
+    const { symbol, isBalance = false, smallestUnitsOverride } = formatterContext;
     const { bitcoinAmountUnit } = config;
     const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
 
@@ -80,54 +111,46 @@ const convertToUnit = (
     return value;
 };
 
-const appendSymbol = (
-    value: string,
-    config: FormatterConfig,
-    symbol: NetworkSymbol,
-    areAmountUnitsEnabled?: boolean,
-) => {
-    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
+const appendSymbol = ({
+    value,
+    config,
+    formatterContext,
+}: {
+    value: string;
+    config: FormatterConfig;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+}) => {
+    const { symbol, smallestUnitsOverride, withSymbol = true } = formatterContext;
 
-    return `${value} ${DisplaySymbolFormatter.format(symbol, { areAmountUnitsEnabled })}`;
+    if (!withSymbol) {
+        return value;
+    }
+
+    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
+    const formattedSymbol =
+        symbol && isNetworkSymbol(symbol)
+            ? DisplaySymbolFormatter.format(symbol, {
+                  areAmountUnitsEnabled: smallestUnitsOverride,
+              })
+            : symbol;
+
+    return `${value} ${formattedSymbol}`;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
-        (
-            value,
-            {
-                symbol,
-                isBalance = false,
-                withSymbol = true,
-                maxDisplayedDecimals = BASE_CRYPTO_MAX_DISPLAYED_DECIMALS,
-                isEllipsisAppended = true,
-                smallestUnitsOverride,
-            },
-            shouldRedactNumbers,
-        ) => {
-            const convertedValue = convertToUnit(
-                value,
-                isBalance,
-                config,
-                symbol,
-                smallestUnitsOverride,
-            );
-            const truncatedValue = maxDisplayedDecimals
-                ? truncateDecimals(convertedValue, maxDisplayedDecimals, isEllipsisAppended)
-                : convertedValue;
-
-            const withoutLeadingZeros = truncatedValue.replace(/^0+(\d)/, '$1');
-
-            const withTrimmedZeros = withoutLeadingZeros.match(/\.\d*$/)
-                ? withoutLeadingZeros.replace(/\.?0+$/, '')
-                : withoutLeadingZeros;
-
-            const formattedValue =
-                withSymbol && symbol && isNetworkSymbol(symbol)
-                    ? appendSymbol(withTrimmedZeros, config, symbol, smallestUnitsOverride)
-                    : withTrimmedZeros;
-
-            return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
-        },
+        (value, formatterContext, shouldRedactNumbers) =>
+            pipe(
+                convertToSubunits({ value, config, formatterContext }),
+                unitValue => localizedNumber({ value: unitValue, config, formatterContext }),
+                ({ formattedValue, wasResultRounded }) =>
+                    appendEllipsis({ value: formattedValue, wasResultRounded, formatterContext }),
+                ellipsizedNumber =>
+                    appendSymbol({ value: ellipsizedNumber, config, formatterContext }),
+                valueWithSymbol =>
+                    shouldRedactNumbers
+                        ? redactNumericalSubstring(valueWithSymbol)
+                        : valueWithSymbol,
+            ),
         'CryptoAmountFormatter',
     );

@@ -15,4 +15,5 @@ export { SignValueFormatter } from './components/SignValueFormatter';
 export { FeeFormatter } from './components/FeeFormatter';
 export { useFiatFromCryptoValue } from './hooks/useFiatFromCryptoValue';
 export { useCryptoFiatConverters } from './hooks/useCryptoFiatConverters';
-export { formatNumberWithThousandCommas, convertTokenValueToDecimal } from './utils';
+export { useFormattersConfig } from './hooks/useFormattersConfig';
+export { convertTokenValueToDecimal } from './utils';

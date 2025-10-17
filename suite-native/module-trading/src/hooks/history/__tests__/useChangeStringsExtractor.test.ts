@@ -45,7 +45,7 @@ describe('useChangeStringsExtractor', () => {
             toValue: '100',
             isFromCrypto: true,
             isToCrypto: false,
-            formattedRate: '0.01219999 BTC / $1.00',
+            formattedRate: '0.0122 BTC / $1.00',
         });
     });
 

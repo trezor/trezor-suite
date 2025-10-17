@@ -13,7 +13,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount, asAmountUnit } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
 import { CryptoAmountLargeFormatter } from '@suite-native/formatters';
 import { GraphBaseCurrencyBalance } from '@suite-native/graph';
@@ -23,7 +23,6 @@ import {
     selectAccountTokenBalance,
     selectAccountTokenSymbol,
 } from '@suite-native/tokens';
-import { BigNumber } from '@trezor/utils';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import {
@@ -100,11 +99,7 @@ export const AccountDetailHeader = ({
             ) : (
                 <DiscreetTextTrigger>
                     <CryptoAmountLargeFormatter
-                        value={
-                            totalCryptoBalance !== null
-                                ? asAmountUnit(new BigNumber(totalCryptoBalance))
-                                : null
-                        }
+                        value={totalCryptoBalance}
                         symbol={account.symbol}
                     />
                 </DiscreetTextTrigger>

@@ -1,5 +1,5 @@
+import { useFormatters } from '@suite-common/formatters';
 import { TokenSymbol } from '@suite-common/wallet-types';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
@@ -24,8 +24,11 @@ export const TokenAmountFormatter = ({
     ...rest
 }: TokenAmountFormatterProps) => {
     const decimalValue = convertTokenValueToDecimal(value, decimals);
+    const { CryptoAmountFormatter: formatter } = useFormatters();
 
-    const formattedValue = `${localizeNumber(decimalValue)} ${tokenSymbol}`;
+    const formattedValue = formatter.format(decimalValue.toString(), {
+        symbol: tokenSymbol ?? undefined,
+    });
 
     return (
         <AmountText

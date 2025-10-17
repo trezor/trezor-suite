@@ -2,15 +2,15 @@ import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AmountUnit, getAccountDecimals } from '@suite-common/wallet-utils';
+import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountText } from './EmptyAmountText';
-import { formatNumberWithThousandCommas, parseBalanceAmount } from '../utils';
+import { parseBalanceAmount } from '../utils';
 
-type BalanceFormatterProps = FormatterProps<AmountUnit | null> & {
+type BalanceFormatterProps = FormatterProps<string | null> & {
     symbol: NetworkSymbol;
     isForcedDiscreetMode?: boolean;
     testID?: string;
@@ -30,25 +30,11 @@ export const CryptoAmountLargeFormatter = ({
 
     const maxDisplayedDecimals = getAccountDecimals(symbol);
 
-    let formattedValue = formatter.format(value.toFixed(maxDisplayedDecimals), {
+    const formattedValue = formatter.format(value, {
         isBalance,
         maxDisplayedDecimals,
         symbol,
-        isEllipsisAppended: false,
     });
-
-    // Todo: refactor this madness, it shall be handled by localisation!
-    //       same for CryptoAmountFormatter
-
-    // due to possible sat <-> btc conversion in previous formatter,
-    // we need to format the number after the currency was added (e.g. '123903 sat')
-    // split value and currency, format value with thousands' commas
-    const splitValue = formattedValue.split(' ');
-    if (splitValue.length > 1) {
-        formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue.slice(1).join(' ')}`;
-    } else if (splitValue.length > 0) {
-        formattedValue = formatNumberWithThousandCommas(splitValue[0]);
-    }
 
     if (!formattedValue) return <EmptyAmountText />;
 

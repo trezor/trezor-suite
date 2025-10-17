@@ -2,19 +2,13 @@ import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
 import { TradingTradeType, useTradingInfo } from '@suite-common/trading';
-import { getNetwork, isNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    BaseCurrencyAmount,
-    asBaseCurrencyAmount,
-    localizeNumber,
-} from '@suite-common/wallet-utils';
-import {
-    convertTokenValueToDecimal,
-    formatNumberWithThousandCommas,
-} from '@suite-native/formatters';
+import { NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TradeOperationData, getTradeOperationData } from '../../utils/general/utils';
+
+const TOKEN_DECIMALS_LENGTH = 16;
 
 export const useChangeStringsExtractor = (
     trade: TradingTradeType | undefined,
@@ -24,7 +18,7 @@ export const useChangeStringsExtractor = (
     formattedRate?: string | undefined;
 } => {
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToCoinSymbol } = useTradingInfo();
 
     const tradeOperationData = getTradeOperationData(trade);
     const { fromValue, fromCurrency, toValue, toCurrency, isFromCrypto, isToCrypto } =
@@ -38,32 +32,16 @@ export const useChangeStringsExtractor = (
         if (value === undefined || cryptoId === undefined) {
             return undefined;
         }
-        const { coinSymbol } = cryptoIdToSymbolAndContractAddress(cryptoId);
+        const coinSymbol = cryptoIdToCoinSymbol(cryptoId);
+        const networkDecimals = coinSymbol ? getNetworkDecimals(coinSymbol) : undefined;
 
-        let formattedValue;
-        if (coinSymbol && isNetworkSymbol(coinSymbol)) {
-            const { decimals } = getNetwork(coinSymbol);
-
-            formattedValue = CryptoAmountFormatter.format(value, {
-                maxDisplayedDecimals: decimals,
-                isBalance: true,
-                symbol: coinSymbol,
-                isEllipsisAppended: false,
-                smallestUnitsOverride,
-            });
-
-            const splitValue = formattedValue.split(' ');
-            if (splitValue.length > 1) {
-                formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue.slice(1).join(' ')}`;
-            } else if (splitValue.length > 0) {
-                formattedValue = formatNumberWithThousandCommas(splitValue[0]);
-            }
-        } else {
-            const decimalValue = convertTokenValueToDecimal(value, 0);
-            formattedValue = `${localizeNumber(decimalValue)} ${coinSymbol?.toLocaleUpperCase() || ''}`;
-        }
-
-        return formattedValue;
+        return CryptoAmountFormatter.format(value, {
+            maxDisplayedDecimals: networkDecimals ?? TOKEN_DECIMALS_LENGTH,
+            isBalance: true,
+            symbol: coinSymbol as NetworkSymbol,
+            isEllipsisAppended: false,
+            smallestUnitsOverride,
+        });
     };
 
     const formatFiatValue = (
