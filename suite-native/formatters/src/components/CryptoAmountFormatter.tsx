@@ -9,7 +9,6 @@ import { TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
-import { formatNumberWithThousandCommas } from '../utils';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
@@ -44,25 +43,12 @@ export const CryptoAmountFormatter = React.memo(
 
         const stringValue = G.isNumber(value) ? value.toString() : value;
 
-        let formattedValue = formatter.format(stringValue, {
+        const formattedValue = formatter.format(stringValue, {
             isBalance,
             maxDisplayedDecimals,
             symbol,
             isEllipsisAppended: false,
         });
-
-        // Todo: refactor this madness, it shall be handled by localisation!
-        //       same for CryptoAmountLargeFormatter
-
-        // due to possible sat <-> btc conversion in previous formatter,
-        // we need to format the number after the currency was added (e.g. '123903 sat')
-        // split value and currency, format value with thousands' commas
-        const splitValue = formattedValue.split(' ');
-        if (splitValue.length > 1) {
-            formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue.slice(1).join(' ')}`;
-        } else if (splitValue.length > 0) {
-            formattedValue = formatNumberWithThousandCommas(splitValue[0]);
-        }
 
         return (
             <AmountText
