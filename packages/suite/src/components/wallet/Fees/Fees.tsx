@@ -1,271 +1,46 @@
-import { useMemo } from 'react';
-import {
-    Control,
-    FieldErrors,
-    UseFormGetValues,
-    UseFormRegister,
-    UseFormReturn,
-    UseFormSetValue,
-    UseFormTrigger,
-} from 'react-hook-form';
-
-import { useTheme } from 'styled-components';
-
-import { TranslationKey } from '@suite-common/intl-types';
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { useFetchFeesOnce, useRefetchFees } from '@suite-common/wallet-core';
-import {
-    FeeInfo,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-} from '@suite-common/wallet-types';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Banner, Column, Icon, Link, Row, SelectBar, Tooltip } from '@trezor/components';
-import { FeeLevel } from '@trezor/connect';
+import { Column, FlexProps } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
-import { MODAL } from 'src/actions/suite/constants';
-import { REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES } from 'src/actions/suite/constants/modalConstants';
-import { Translation } from 'src/components/suite/Translation';
-import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
-import { CustomFee } from './CustomFee/CustomFee';
-import { StandardFee } from './StandardFee/StandardFee';
+import { CollapsibleFees, CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
+import { useFetchFees } from './CollapsibleFees/hooks/useFetchFees';
+import { FieldErrorBanner } from './FieldErrorBanner';
 
-export const getFeeLevelTranslationId = (label: FeeLevel['label']): TranslationKey =>
-    (
-        ({
-            custom: 'FEE_LEVEL_ADVANCED',
-            high: 'FEE_LEVEL_HIGH',
-            normal: 'FEE_LEVEL_NORMAL',
-            economy: 'FEE_LEVEL_LOW',
-            low: 'FEE_LEVEL_LOW',
-        }) as const
-    )[label];
-
-export type FeeOptionType = {
-    value: FeeLevel['label'];
-    blocks?: number;
-    feePerUnit?: string;
-    networkAmount?: string | null;
-    feePerTx?: string; // Solana specific
-    // EIP-1559
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
-    baseFeePerGas?: string;
-};
-
-export interface FeesProps<TFieldValues extends FormState> {
+export type FeesProps = {
     account: Pick<Account, 'symbol' | 'networkType'>;
-    feeInfo: FeeInfo;
-    register: UseFormRegister<TFieldValues>;
-    control: Control<any>;
-    setValue: UseFormSetValue<TFieldValues>;
-    getValues: UseFormGetValues<TFieldValues>;
-    errors: FieldErrors<TFieldValues>;
-    isDirty: boolean;
-    trigger: UseFormTrigger<TFieldValues>;
-    changeFeeLevel: (level: FeeLevel['label']) => void;
-    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
-    label?: TranslationKey;
-    rbfForm?: boolean;
-}
+    padding?: FlexProps['padding'];
+} & Pick<
+    CollapsibleFeesProps,
+    'label' | 'rbfForm' | 'feeInfo' | 'changeFeeLevel' | 'composedLevels' | 'headerTypographyStyle'
+>;
 
-const buildFeeOptions = (
-    levels: FeeLevel[],
-    networkType: NetworkType,
-    symbol: NetworkSymbol,
-    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano,
-): FeeOptionType[] => {
-    const filteredLevels = levels.filter(level => level.label !== 'custom');
-
-    const getNetworkAmount = (level: FeeLevel) => {
-        const transactionInfo = composedLevels?.[level.label];
-        const hasTransactionInfo =
-            transactionInfo !== undefined && transactionInfo.type !== 'error';
-        const networkAmount = hasTransactionInfo
-            ? formatNetworkAmount(transactionInfo.fee, symbol)
-            : null;
-        // Needed only for Solana because of fee estimation on compose Tx
-        const fee = hasTransactionInfo ? transactionInfo.fee : level.feePerTx;
-
-        return { networkAmount, fee };
-    };
-
-    const buildBasicFeeOptions = (level: FeeLevel) => {
-        const { networkAmount } = getNetworkAmount(level);
-
-        return {
-            ...level,
-            value: level.label,
-            networkAmount,
-        };
-    };
-
-    switch (networkType) {
-        case 'solana':
-            return filteredLevels.map(level => {
-                const { fee } = getNetworkAmount(level);
-                const basicFeeOption = buildBasicFeeOptions(level);
-
-                return {
-                    ...basicFeeOption,
-                    feePerTx: fee,
-                };
-            });
-        case 'ethereum':
-            return filteredLevels.map(level => buildBasicFeeOptions(level));
-        case 'bitcoin':
-            return filteredLevels.map(level => {
-                const basicFeeOption = buildBasicFeeOptions(level);
-
-                return {
-                    ...basicFeeOption,
-                    blocks: level.blocks,
-                };
-            });
-        default:
-            return filteredLevels.map(level => buildBasicFeeOptions(level));
-    }
-};
-
-export const Fees = <TFieldValues extends FormState>({
-    account: { symbol, networkType },
+export const Fees = ({
+    account: { symbol: networkSymbol, networkType },
     feeInfo,
-    control,
     changeFeeLevel,
     composedLevels,
     label,
     rbfForm,
-    isDirty,
-    ...props
-}: FeesProps<TFieldValues>) => {
-    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { getValues, register, setValue, trigger } = props as unknown as UseFormReturn<FormState>;
-    const theme = useTheme();
-
-    const modal = useSelector(state => state.modal);
-    const selectedOption = getValues('selectedFee') || 'normal';
-    const isCustomFee = selectedOption === 'custom';
-    const errors = props.errors as unknown as FieldErrors<FormState>;
-
-    const error = errors.selectedFee;
-    const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption);
-    const transactionInfo = composedLevels?.[selectedOption];
-
-    const feeOptions = buildFeeOptions(feeInfo.levels, networkType, symbol, composedLevels);
-
-    // when fees are loading, feeInfo.levels = [], but CustomFee requires at least the 'normal' level to have some default
-    const hasNormalFeeLevel = feeInfo.levels.some(level => level.label === 'normal');
-
-    const supportsCustomFee = networkType !== 'solana';
-
-    useFetchFeesOnce({ networkSymbol: symbol });
-    // this component is used under different contexts & form states, but `setMaxOutputId` will be compatible (see `FormState` type)
-    const isRefetchDisabled =
-        getValues().setMaxOutputId !== undefined ||
-        (modal.context === MODAL.CONTEXT_DEVICE &&
-            modal.windowType !== undefined &&
-            REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES.includes(modal.windowType));
-
-    useRefetchFees({ networkSymbol: symbol, isDisabled: isRefetchDisabled });
-
-    const feeLabelId = useMemo(() => {
-        switch (networkType) {
-            case 'ethereum':
-                return 'MAX_FEE';
-            case 'solana':
-                return 'TR_TX_FEE_INCLUDING_RENT';
-            default:
-                return 'FEE';
-        }
-    }, [networkType]);
-
-    const feeTooltipTextId = useMemo(() => {
-        switch (networkType) {
-            case 'ethereum':
-                return 'TR_EVM_MAX_FEE_DESC';
-            case 'stellar':
-                return 'TR_STELLAR_FEE_DESC';
-            case 'solana':
-                return 'TR_SOL_FEE_DESC';
-            default:
-                return 'TR_TRANSACTION_FEE_DESC';
-        }
-    }, [networkType]);
+    headerTypographyStyle,
+    padding,
+}: FeesProps) => {
+    useFetchFees({ networkSymbol });
 
     return (
-        <Column gap={spacings.md}>
-            <Row flexWrap="wrap" justifyContent="space-between" gap={spacings.sm}>
-                <Tooltip
-                    addon={
-                        networkType === 'ethereum' && (
-                            <Link href={HELP_CENTER_TRANSACTION_FEES_URL} target="_blank">
-                                <Icon size={12} color={theme.iconAlertYellow} name="lightbulb" />
-                                <Translation id="TR_LEARN" />
-                            </Link>
-                        )
-                    }
-                    hasIcon
-                    maxWidth={328}
-                    content={<Translation id={feeTooltipTextId} values={{ br: <br /> }} />}
-                >
-                    <Translation id={label ?? feeLabelId} />
-                </Tooltip>
-                {supportsCustomFee && (
-                    <SelectBar
-                        isDisabled={!hasNormalFeeLevel}
-                        orientation="horizontal"
-                        selectedOption={isCustomFee ? 'custom' : 'normal'}
-                        size="small"
-                        options={[
-                            {
-                                label: <Translation id="FEE_LEVEL_STANDARD" />,
-                                value: 'normal',
-                            },
-                            { label: <Translation id="FEE_LEVEL_ADVANCED" />, value: 'custom' },
-                        ]}
-                        onChange={() => changeFeeLevel(isCustomFee ? 'normal' : 'custom')}
-                    />
-                )}
-            </Row>
+        <Column gap={spacings.md} padding={padding} overflow="unset">
+            <CollapsibleFees
+                networkType={networkType}
+                networkSymbol={networkSymbol}
+                label={label}
+                feeInfo={feeInfo}
+                composedLevels={composedLevels}
+                changeFeeLevel={changeFeeLevel}
+                rbfForm={rbfForm}
+                headerTypographyStyle={headerTypographyStyle}
+            />
 
-            {!isCustomFee && selectedLevel && (
-                <StandardFee
-                    networkType={networkType}
-                    feeInfo={feeInfo}
-                    isDirty={isDirty}
-                    selectedLevel={selectedLevel}
-                    transactionInfo={transactionInfo}
-                    feeOptions={feeOptions}
-                    symbol={symbol}
-                    changeFeeLevel={changeFeeLevel}
-                    getValues={getValues}
-                />
-            )}
-            {isCustomFee && (
-                <CustomFee
-                    symbol={symbol}
-                    control={control}
-                    networkType={networkType}
-                    feeInfo={feeInfo}
-                    errors={errors}
-                    register={register}
-                    getValues={getValues}
-                    setValue={setValue}
-                    transactionInfo={transactionInfo}
-                    trigger={trigger}
-                    showCurrentFee={!rbfForm}
-                />
-            )}
-            {error && (
-                <Banner icon variant="destructive">
-                    {error.message}
-                </Banner>
-            )}
+            <FieldErrorBanner fieldName="selectedFee" />
         </Column>
     );
 };

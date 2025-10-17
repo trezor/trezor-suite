@@ -2,7 +2,7 @@ import { FormProvider } from 'react-hook-form';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Banner, Column, InfoItem, Tooltip } from '@trezor/components';
+import { Banner, Card, Column, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -23,18 +23,13 @@ export const UnstakeForm = () => {
 
     const {
         account,
-        formState: { errors, isDirty },
+        formState: { errors },
         handleSubmit,
         signTx,
         approximatedInstantEthAmount,
-        register,
-        control,
-        setValue,
-        getValues,
         changeFeeLevel,
         feeInfo,
         composedLevels,
-        trigger,
         methods,
     } = useUnstakeFormContext();
 
@@ -92,19 +87,15 @@ export const UnstakeForm = () => {
                         </>
                     )}
 
-                    <Fees
-                        control={control}
-                        errors={errors}
-                        isDirty={isDirty}
-                        register={register}
-                        feeInfo={feeInfo}
-                        setValue={setValue}
-                        getValues={getValues}
-                        account={account}
-                        composedLevels={composedLevels}
-                        changeFeeLevel={changeFeeLevel}
-                        trigger={trigger}
-                    />
+                    <Card fillType="default" paddingType="small">
+                        <Fees
+                            feeInfo={feeInfo}
+                            account={account}
+                            composedLevels={composedLevels}
+                            changeFeeLevel={changeFeeLevel}
+                            headerTypographyStyle="hint"
+                        />
+                    </Card>
 
                     {shouldShowInstantUnstakeEthAmount && (
                         <InfoItem

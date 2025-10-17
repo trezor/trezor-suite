@@ -7,15 +7,17 @@ import { expect } from '../../testExtends/customMatchers';
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
 
 export class Fees {
-    readonly switchModeButton = (feeMode: 'normal' | 'custom') =>
-        this.page.getByTestId(`select-bar/${feeMode}`);
+    readonly switchModeButton = (feeMode: 'standard' | 'custom') =>
+        this.page.getByTestId(`@wallet/fees/select-${feeMode}-fee`);
     readonly card = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-card`);
     readonly valueOnCard = (feeType: FeeTypes) =>
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
+    readonly collapsibleFees: Locator;
+    readonly collapsibleFeesToggle: string;
     readonly customInput: Locator;
-    readonly customAmount: Locator;
-    readonly customFiatAmount: Locator;
+    readonly maxFee: Locator;
+    readonly maxFeeFiat: Locator;
     readonly miscAmount: Locator;
     readonly swapDetails: Locator;
     readonly dustPreventionNotice: Locator;
@@ -24,9 +26,14 @@ export class Fees {
     readonly ethereumMaxPriorityFeePerGas: Locator;
 
     constructor(private readonly page: Page) {
+        this.collapsibleFees = this.page.getByTestId('@wallet/fees/collapsible-fees');
+        this.collapsibleFeesToggle = '@collapsible-box/toggle';
+
         this.customInput = this.page.getByTestId('feePerUnit');
-        this.customAmount = this.page.getByTestId('@trading/quote/custom-fee-amount');
-        this.customFiatAmount = this.page.getByTestId('@trading/quote/custom-fee-fiat-amount');
+        // TODO: add more tests
+        this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
+        this.maxFeeFiat = this.page.getByTestId('@trading/quote/maximum-fee-fiat-amount');
+        // TODO: add e2e test for misc amount
         this.miscAmount = this.page.getByTestId('@wallet/misc-fee-amount');
         this.swapDetails = this.page.getByTestId('@wallet/fee-details');
         this.dustPreventionNotice = this.page.getByTestId('@wallet/fees/dust-prevention-notice');
@@ -62,10 +69,24 @@ export class Fees {
     }
 
     @step()
+    async openCollapsibleFees() {
+        const collapsibleFeesToggle = this.collapsibleFees.getByTestId(this.collapsibleFeesToggle);
+
+        const isExpanded = await collapsibleFeesToggle.getAttribute('aria-expanded');
+
+        if (isExpanded === 'true') {
+            return;
+        }
+
+        await expect(collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'false');
+        await collapsibleFeesToggle.click();
+        await expect(collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'true');
+    }
+
+    @step()
     async getSolanaFee() {
-        const lamportsToSolanaRatio = 1_000_000_000;
-        await expect(this.miscAmount).toBeVisible();
-        const feeWithSymbol = await this.miscAmount.textContent();
+        await expect(this.maxFee).toBeVisible();
+        const feeWithSymbol = await this.maxFee.textContent();
         if (!feeWithSymbol) {
             throw new Error('Fee amount is undefined or null');
         }
@@ -75,11 +96,13 @@ export class Fees {
             throw new Error('Fee amount is invalid');
         }
 
-        return parseFloat(feeParts[0]) / lamportsToSolanaRatio;
+        return parseFloat(feeParts[0]);
     }
 
     @step()
     async expectBitcoinFeeCalculated() {
+        this.openCollapsibleFees();
+
         const feePattern = /[≈~]\s*\$\s*\d+\.\d+/;
         await expect(this.valueOnCard('economy')).toHaveText(feePattern);
         await expect(this.valueOnCard('normal')).toHaveText(feePattern);
@@ -88,6 +111,8 @@ export class Fees {
 
     @step()
     async expectEthereumFeeCalculated() {
+        this.openCollapsibleFees();
+
         const feePattern = /\d+\.\d+\s*Gwei/;
         await expect(this.rateOnCard('low')).toHaveText(feePattern);
         await expect(this.rateOnCard('normal')).toHaveText(feePattern);
@@ -166,7 +191,7 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
     @step()
     async switchToCustom() {
-        await expect(this.switchModeButton('custom')).toHaveAttribute('data-isdisabled', 'false');
+        await this.openCollapsibleFees();
         await this.switchModeButton('custom').click();
     }
 

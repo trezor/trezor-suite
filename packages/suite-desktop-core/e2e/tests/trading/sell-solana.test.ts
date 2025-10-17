@@ -72,7 +72,8 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
             });
             // Automation is too fast, we need to wait for Fees to be resolved
             await solanaFeePromise;
-            await expect(tradingPage.fees.miscAmount).toBeVisible();
+            await expect(tradingPage.fees.maxFee).toBeVisible();
+            await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });
@@ -143,7 +144,8 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
             });
             // Automation is too fast, we need to wait for Fees to be resolved
             await solanaFeePromise;
-            await expect(tradingPage.fees.miscAmount).toBeVisible();
+            await expect(tradingPage.fees.maxFee).toBeVisible();
+            await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await tradingPage.compareButton.click();
         });
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { FieldErrors, UseFormReturn } from 'react-hook-form';
+import { useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { FormState } from '@suite-common/wallet-types';
@@ -13,25 +13,23 @@ import { InputError } from 'src/components/wallet';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from './CustomFee';
+import { CustomFeeBasicProps } from './CustomFee';
+import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
+import { useFeesContext } from '../../context/FeesContext';
 
 const MAX_FEE_PER_GAS = 'maxFeePerGas';
 const MAX_PRIORITY_FEE_PER_GAS = 'maxPriorityFeePerGas';
 
-export const CustomFeeEthereum = <TFieldValues extends FormState>({
-    networkType,
-    feeInfo,
-    control,
+export const CustomFeeEthereum = ({
     translationString,
     feeUnits,
     sharedRules,
-    ...props
-}: Omit<CustomFeeBasicProps<TFieldValues>, 'composedFeePerByte'>) => {
+}: Omit<CustomFeeBasicProps, 'composedFeePerByte'>) => {
+    const { feeInfo, networkType } = useFeesContext();
     const locale = useSelector(selectLanguage);
 
-    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { getValues, setValue, trigger } = props as unknown as UseFormReturn<FormState>;
-    const errors = props.errors as unknown as FieldErrors<FormState>;
+    const { control, getValues, setValue, trigger } = useFormContext<FormState>();
+    const { errors } = useFormState<FormState>();
 
     const { maxFee, minFee, levels, minPriorityFee } = feeInfo;
 

@@ -56,6 +56,8 @@ export const TxDetailModalBase = ({
             size="large"
             bottomContent={bottomContent}
             onBackClick={onBackClick}
+            // Disable shadow bottom to make `Fees` component fully visible
+            shadowBottom={false}
         >
             <Column gap={spacings.md}>
                 <BasicTxDetails

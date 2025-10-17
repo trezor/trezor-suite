@@ -7,7 +7,7 @@ import {
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { Card, Column, FractionButton, Row } from '@trezor/components';
+import { Card, Column, Divider, FractionButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -26,18 +26,13 @@ export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
 
     const {
-        control,
         feeInfo,
         account,
         composedLevels,
-        formState: { errors, isDirty },
         form: { helpers },
         shouldSendInSats,
-        register,
-        setValue,
         getValues,
         changeFeeLevel,
-        trigger,
     } = context;
     const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
     const output = outputs[0];
@@ -87,19 +82,17 @@ export const TradingSellFormInputs = () => {
                         </Row>
                     )}
                 </Column>
-                <Fees
-                    control={control}
-                    feeInfo={feeInfo}
-                    account={account}
-                    composedLevels={composedLevels}
-                    errors={errors}
-                    isDirty={isDirty}
-                    register={register}
-                    setValue={setValue}
-                    getValues={getValues}
-                    changeFeeLevel={changeFeeLevel}
-                    trigger={trigger}
-                />
+            </Column>
+            <Divider margin={0} />
+            <Fees
+                feeInfo={feeInfo}
+                account={account}
+                composedLevels={composedLevels}
+                changeFeeLevel={changeFeeLevel}
+                padding={{ vertical: spacings.sm, horizontal: spacings.lg }}
+            />
+            <Divider margin={0} />
+            <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
                 <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
                 <TradingFormFeesDisclamer />

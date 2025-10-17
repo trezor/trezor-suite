@@ -7,21 +7,21 @@ import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
-import { FeeCardsWrapper, StandardFeeProps } from './StandardFee';
-import { getFeeLevelTranslationId } from '../Fees';
+import { FeeCardsWrapper } from './StandardFee.styles';
+import { feeLevelTranslationMap } from './constants';
+import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
+import { useFeesContext } from '../../context/FeesContext';
+
+type MiscFeeCardsProps = {
+    feeOptions: FeeOptionType[];
+};
 
 // Solana, Ripple, Cardano and other networks with only one option
-export const MiscFeeCards = ({
-    networkType,
-    feeOptions,
-    symbol,
-    changeFeeLevel,
-}: StandardFeeProps) => {
-    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
-    if (!feeOptions.length) return null;
+export const MiscFeeCards = ({ feeOptions }: MiscFeeCardsProps) => {
+    const { networkType, networkSymbol, changeFeeLevel } = useFeesContext();
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
 
     const isSolanaNetwork = networkType === 'solana';
-
     const fee = feeOptions[0];
     const shouldShowCurrentFee = !isSolanaNetwork || fee.networkAmount;
     const feeAmount = isSolanaNetwork ? fee.feePerTx : fee.feePerUnit;
@@ -35,14 +35,14 @@ export const MiscFeeCards = ({
                 isLoading={areFeesLoading}
                 topLeftChild={
                     <span data-testid={`@fee-card/${fee.value}`}>
-                        <Translation id={getFeeLevelTranslationId(fee.value)} />
+                        <Translation id={feeLevelTranslationMap[fee.value]} />
                     </span>
                 }
                 bottomLeftChild={
                     <BaseCurrencyValue
                         disableHiddenPlaceholder
                         amount={fee.networkAmount || ''}
-                        symbol={symbol}
+                        symbol={networkSymbol}
                         showApproximationIndicator
                     />
                 }

@@ -65,6 +65,7 @@ type ModalProps = AllowedFrameProps & {
     iconName?: IconName;
     'data-testid'?: string;
     padding?: Padding;
+    shadowBottom?: boolean;
 };
 
 const InnerModalBase = ({
@@ -81,6 +82,7 @@ const InnerModalBase = ({
     height,
     'data-testid': dataTest = '@modal',
     padding,
+    shadowBottom = true,
 }: ModalProps) => {
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom } = useScrollShadow();
     const { elevation } = useElevation();
@@ -163,7 +165,7 @@ const InnerModalBase = ({
                                 <ElevationUp>{children}</ElevationUp>
                             </Column>
                         </ScrollContainer>
-                        <ShadowBottom />
+                        {shadowBottom && <ShadowBottom />}
                     </Box>
                     {bottomContent && (
                         <>

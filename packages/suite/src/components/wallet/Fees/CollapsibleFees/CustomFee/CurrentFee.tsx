@@ -1,4 +1,3 @@
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { FeeInfo } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
@@ -7,11 +6,7 @@ import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
-type CurrentFeeProps = {
-    networkType: NetworkType;
-    feeInfo: FeeInfo;
-    networkSymbol: NetworkSymbol;
-};
+import { useFeesContext } from '../../context/FeesContext';
 
 const getCurrentFeeRate = (feeInfo: FeeInfo) => {
     const { levels } = feeInfo;
@@ -35,7 +30,8 @@ const getCurrentFeeRateLabel = (feeInfo: FeeInfo) => {
     return 'TR_CURRENT_FEE_CUSTOM_FEES';
 };
 
-export const CurrentFee = ({ networkType, feeInfo, networkSymbol }: CurrentFeeProps) => {
+export const CurrentFee = () => {
+    const { feeInfo, networkType, networkSymbol } = useFeesContext();
     const currentFeeRate = getCurrentFeeRate(feeInfo);
     const currentFeeRateLabel = getCurrentFeeRateLabel(feeInfo);
 

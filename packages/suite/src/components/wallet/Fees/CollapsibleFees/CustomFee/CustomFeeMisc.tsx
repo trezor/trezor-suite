@@ -1,4 +1,4 @@
-import { FieldErrors, FieldPath, UseFormReturn } from 'react-hook-form';
+import { FieldPath, useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { FormState } from '@suite-common/wallet-types';
@@ -10,34 +10,29 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from './CustomFee';
-import { DustPreventionNotice } from '../DustPreventionNotice';
+import { type CustomFeeBasicProps } from './CustomFee';
+import { FEE_LIMIT, FEE_PER_UNIT } from './constants';
+import { DustPreventionNotice } from '../../DustPreventionNotice';
+import { useFeesContext } from '../../context/FeesContext';
 
-export const CustomFeeMisc = <TFieldValues extends FormState>({
-    networkType,
-    symbol,
-    feeInfo,
-    register,
-    control,
+export const CustomFeeMisc = ({
     composedFeePerByte,
     translationString,
     feeUnits,
     sharedRules,
-    ...props
-}: CustomFeeBasicProps<TFieldValues>) => {
+}: CustomFeeBasicProps) => {
+    const { networkType, feeInfo } = useFeesContext();
     const locale = useSelector(selectLanguage);
 
-    // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { getValues } = props as unknown as UseFormReturn<FormState>;
-    const errors = props.errors as unknown as FieldErrors<FormState>;
-
-    const { maxFee, minFee } = feeInfo;
+    const { control, getValues, register } = useFormContext<FormState>();
+    const { errors } = useFormState<FormState>();
 
     const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feePerUnitError = errors.feePerUnit;
 
     const isDustPreventionRelevant = feePerUnitError === undefined && networkType === 'bitcoin';
 
+    const { maxFee, minFee } = feeInfo;
     const feeRules = {
         ...sharedRules,
         validate: {
@@ -61,7 +56,7 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
 
     return (
         <>
-            <input type="hidden" {...register(FEE_LIMIT as FieldPath<TFieldValues>)} />
+            <input type="hidden" {...register(FEE_LIMIT satisfies FieldPath<FormState>)} />
             <NumberInput
                 locale={locale}
                 control={control}
@@ -78,10 +73,8 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
             />
             {isDustPreventionRelevant && (
                 <DustPreventionNotice
-                    symbol={symbol}
                     chosenFeePerByte={feePerUnitValue}
                     composedFeePerByte={composedFeePerByte}
-                    baseFee={getValues('baseFee')}
                     feeUnits={feeUnits}
                 />
             )}

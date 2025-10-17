@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 
-import { TradingTradeBuyExchangeType } from '@suite-common/trading';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -25,11 +24,7 @@ export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddres
     </Column>
 );
 
-interface TradingReceiveAddressProps {
-    type: TradingTradeBuyExchangeType;
-}
-
-export const TradingReceiveAddress = ({ type }: TradingReceiveAddressProps) => {
+export const TradingReceiveAddress = () => {
     const { tradingReceiveAddress } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
 
@@ -104,8 +99,6 @@ export const TradingReceiveAddress = ({ type }: TradingReceiveAddressProps) => {
                     <Icon name="caretRight" size={20} variant="tertiary" />
                 </Row>
             </Row>
-
-            {type === 'exchange' && <Divider margin={0} />}
         </Column>
     );
 };

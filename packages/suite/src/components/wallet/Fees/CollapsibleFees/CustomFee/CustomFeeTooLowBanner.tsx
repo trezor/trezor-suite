@@ -1,4 +1,3 @@
-import { FeeInfo } from '@suite-common/wallet-types';
 import { getLowestFeeFromLevels } from '@suite-common/wallet-utils';
 import { Banner, Collapsible } from '@trezor/components';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
@@ -7,12 +6,14 @@ import { BigNumber } from '@trezor/utils';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { Translation } from 'src/components/suite/Translation';
 
+import { useFeesContext } from '../../context/FeesContext';
+
 type CustomFeeTooLowBannerProps = {
     feePerUnitValue: string;
-    feeInfo: FeeInfo;
 };
 
-export const CustomFeeTooLowBanner = ({ feePerUnitValue, feeInfo }: CustomFeeTooLowBannerProps) => {
+export const CustomFeeTooLowBanner = ({ feePerUnitValue }: CustomFeeTooLowBannerProps) => {
+    const { feeInfo } = useFeesContext();
     const lowestFeeLevel = getLowestFeeFromLevels(feeInfo.levels);
     const isCustomFeeBelowLowest = BigNumber(feePerUnitValue).isLessThan(lowestFeeLevel);
 
