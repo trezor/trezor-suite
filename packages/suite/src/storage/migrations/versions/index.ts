@@ -11,3 +11,4 @@ export { default as m25_11_0 } from './25.11.0';
 export { default as m25_11_0_1 } from './25.11.0.1';
 export { default as m25_11_3 } from './25.11.3';
 export { default as m25_12_0 } from './25.12.0';
+export { default as m26_1_0 } from './26.1.0';

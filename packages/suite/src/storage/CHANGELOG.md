@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.1.0
+
+- remove TADA network
+
 ## 25.11.3
 
 - remove Cardano graph data
@@ -13,6 +17,7 @@
 - create `persistentDeviceData` object store
 - migrate data from `security` to `persistentDeviceData` object store
 - remove `security` object store
+- remove `thol` network
 
 ## 25.9.2
 
