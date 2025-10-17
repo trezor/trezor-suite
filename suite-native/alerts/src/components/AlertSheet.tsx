@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { ReduceMotion, ReducedMotionConfig } from 'react-native-reanimated';
 
 import {
     Box,
@@ -100,6 +100,8 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
     return (
         <Modal transparent visible={!!alert} testID={testID}>
+            {/* Since Reanimated 3.19+, Reduced Motion is enabled by default, causing AlertSheet to not display properly. This disables it to fix the issue */}
+            <ReducedMotionConfig mode={ReduceMotion.Never} />
             <Animated.View style={[applyStyle(sheetOverlayStyle), animatedSheetWithOverlayStyle]} />
             <AnimatedPressable
                 onPress={runShakeAnimation}
