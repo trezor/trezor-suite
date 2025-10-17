@@ -7,6 +7,7 @@ import { Button, Card, Column, InfoItem, Paragraph, Row, variables } from '@trez
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
 
+import { exportMetadataToBip329File } from 'src/actions/suite/metadataActions';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
@@ -81,7 +82,11 @@ const Details = () => {
     const shouldDisplayXpubSection =
         account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
+    const shouldDisplayExportBip329Labels = account.networkType === 'bitcoin';
+
     const handleXpubClick = () => dispatch(showXpub());
+
+    const handleExportBip329 = () => dispatch(exportMetadataToBip329File());
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
@@ -149,6 +154,25 @@ const Details = () => {
                         )
                     ) : (
                         <RescanAccount account={account} />
+                    )}
+                    {shouldDisplayExportBip329Labels && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER"
+                            description={
+                                <Translation id="TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION" />
+                            }
+                        >
+                            <Button
+                                variant="tertiary"
+                                data-testid="@wallets/details/export-label-bip329"
+                                onClick={handleExportBip329}
+                                isLoading={locked}
+                                size="small"
+                                minWidth={140}
+                            >
+                                <Translation id="TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON" />
+                            </Button>
+                        </DetailsRow>
                     )}
                 </Column>
             </Card>

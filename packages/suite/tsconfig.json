@@ -56,6 +56,9 @@
             "path": "../../suite-common/metadata-types"
         },
         {
+            "path": "../../suite-common/metadata-utils"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/sentry" },

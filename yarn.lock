@@ -10695,6 +10695,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/metadata-utils@workspace:^, @suite-common/metadata-utils@workspace:suite-common/metadata-utils":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/metadata-utils@workspace:suite-common/metadata-utils"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/redux-utils@workspace:*, @suite-common/redux-utils@workspace:suite-common/redux-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
@@ -14320,6 +14326,7 @@ __metadata:
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/metadata-utils": "workspace:^"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"

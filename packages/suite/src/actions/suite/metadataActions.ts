@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { downloadAsJsonL, transformToBip329 } from '@suite-common/metadata-utils';
+import { Slip15LikeInput } from '@suite-common/metadata-utils/src/slip15ToBip329';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -7,7 +9,10 @@ import { StaticSessionId } from '@trezor/connect';
 import { createZip } from '@trezor/utils';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
-import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
+import {
+    selectLabelingDataForSelectedAccount,
+    selectSelectedProviderForLabels,
+} from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     AccountLabels,
@@ -168,6 +173,22 @@ export const encryptAndSaveMetadata = async ({
     );
 
     return providerInstance.setFileContent(fileName, encrypted);
+};
+
+export const exportMetadataToBip329File = () => (dispatch: Dispatch, getState: GetState) => {
+    const labelForSelectedAccount = selectLabelingDataForSelectedAccount(getState());
+    const labelsToExport = transformToBip329(labelForSelectedAccount as Slip15LikeInput);
+
+    try {
+        downloadAsJsonL(labelsToExport, 'suite_labels_export.jsonl');
+    } catch {
+        dispatch(
+            notificationsActions.addToast({
+                type: 'error',
+                error: 'Exporting labels BIP 329 failed',
+            }),
+        );
+    }
 };
 
 export const exportMetadataToLocalFile = () => async (dispatch: Dispatch, getState: GetState) => {
