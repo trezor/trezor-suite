@@ -18,6 +18,9 @@ import {
     TradingNavigateFrom,
 } from './definitions';
 
+export type CountryChangeContextCheck = 'settings' | 'onboarding';
+export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
+
 export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.AppReady;
@@ -500,13 +503,14 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.TradingParameterChanged;
           payload: {
               type: TradingType;
-              parameter:
-                  | 'fiat'
-                  | 'cryptoFrom'
-                  | 'cryptoTo'
-                  | 'paymentMethod'
-                  | 'country'
-                  | 'provider';
+              parameter: 'fiat' | 'cryptoFrom' | 'cryptoTo' | 'paymentMethod' | 'provider';
+          };
+      }
+    | {
+          type: EventType.TradingParameterChanged;
+          payload: {
+              type: CountryChangeContext;
+              parameter: 'country';
           };
       }
     | {

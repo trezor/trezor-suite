@@ -12,6 +12,7 @@ import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScree
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
 import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
+import { SettingsTradingLocationScreen } from '../screens/SettingsTradingLocationScreen';
 import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
 import { TurnOffFirmwareAuthenticityCheckScreen } from '../screens/TurnOffFirmwareAuthenticityCheckScreen';
 
@@ -57,6 +58,10 @@ export const SettingsStackNavigator = () => (
         <SettingsStack.Screen
             name={SettingsStackRoutes.TurnOffDeviceAuthenticityCheck}
             component={TurnOffDeviceAuthenticityCheckScreen}
+        />
+        <SettingsStack.Screen
+            name={SettingsStackRoutes.SettingsTradingLocation}
+            component={SettingsTradingLocationScreen}
         />
     </SettingsStack.Navigator>
 );

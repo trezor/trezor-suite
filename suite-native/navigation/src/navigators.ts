@@ -79,6 +79,7 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsDeviceChecks]: undefined;
     [SettingsStackRoutes.TurnOffDeviceAuthenticityCheck]: undefined;
     [SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck]: undefined;
+    [SettingsStackRoutes.SettingsTradingLocation]: undefined;
 };
 
 export type ReceiveStackParamList = {
