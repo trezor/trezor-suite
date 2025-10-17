@@ -3,7 +3,7 @@ import { EmptyComponent } from '@suite-native/trading-atoms';
 
 export const CountryListEmptyComponent = () => (
     <EmptyComponent
-        title={<Translation id="moduleTrading.countrySheet.emptyTitle" />}
-        description={<Translation id="moduleTrading.countrySheet.emptyDescription" />}
+        title={<Translation id="tradingResidence.countrySheet.emptyTitle" />}
+        description={<Translation id="tradingResidence.countrySheet.emptyDescription" />}
     />
 );

@@ -1,12 +1,8 @@
-import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
-import { CountryOfResidencePicker } from '../general/CountrySheet/CountryOfResidencePicker';
+import { CountryOfResidencePicker } from '@suite-native/trading-residence';
 
 const COUNTRY_PICKER_TEST_ID = '@trading/buy/country';
 
-export const BuyCountryOfResidencePicker = () => {
-    const form = useBuyFormContext();
-
-    return (
-        <CountryOfResidencePicker testID={COUNTRY_PICKER_TEST_ID} form={form} tradingType="buy" />
-    );
-};
+export const BuyCountryOfResidencePicker = () => 
+    // TODO 22469 FF switch
+     <CountryOfResidencePicker testID={COUNTRY_PICKER_TEST_ID} context="buy" />
+;

@@ -42,6 +42,7 @@
         "@suite-native/storage": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@suite-native/trading-residence": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",

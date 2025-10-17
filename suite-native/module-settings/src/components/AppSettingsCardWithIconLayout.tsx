@@ -8,6 +8,7 @@ export const AppSettingsCardWithIconLayout = ({
     subtitle,
     noShadow,
     borderColor,
+    variant,
 }: CompactCardWithIconLayoutProps) => (
     <CompactCardWithIconLayout
         icon={icon}
@@ -17,5 +18,6 @@ export const AppSettingsCardWithIconLayout = ({
         testID={testID}
         subtitle={subtitle}
         borderColor={borderColor}
+        variant={variant}
     />
 );

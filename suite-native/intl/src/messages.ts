@@ -944,6 +944,12 @@ export const messages = {
                     title: 'Support',
                     subtitle: 'Troubleshooting, help',
                 },
+                trading: {
+                    titleInactive: 'Enable trading',
+                    subtitleInactive: 'Confirm your country of residence',
+                    title: 'Trading',
+                    subtitle: 'Country of residence',
+                },
             },
             features: {
                 title: 'Features',
@@ -2174,9 +2180,6 @@ export const messages = {
             noProvider: 'No provider selected',
             selectedPaymentMethod: 'Selected payment method',
             selectedReceiveMethod: 'Selected receive method',
-            countryOfResidence: 'Country of residence',
-            noCountryOfResidence: 'No country of residence selected',
-            selectedCountryOfResidence: 'Selected country of residence',
             provider: 'Provider',
             quotesLoadingLabel: 'Fetching offers...',
             rate: 'Rate',
@@ -2241,12 +2244,6 @@ export const messages = {
             emptyTitle: 'Coin not found',
             emptyDescription: 'Check the spelling or browse the list to select an option.',
             searchInputPlaceholder: 'Search tokens or address',
-        },
-        countrySheet: {
-            title: 'Country of residence',
-            emptyTitle: 'Country not found',
-            emptyDescription: 'Check the spelling or browse the list to select an option.',
-            searchInputPlaceholder: 'Search country',
         },
         accountScreen: {
             accountEmpty: {
@@ -2815,5 +2812,26 @@ export const messages = {
         providerLogo: 'Provider logo',
         quotesLoadingLabel: 'Fetching offers...',
         networkName: 'Network name',
+    },
+    tradingResidence: {
+        locationSettings: {
+            title: 'Confirm your location to enable trading',
+            description:
+                'We need to confirm that trading is available in your region. You can change this later in settings.',
+            tradingAvailable: 'Trading is available',
+            tradingUnavailable: "Trading isn't available",
+            confirmButton: 'Confirm location',
+            skipButton: 'Not now',
+            countryOfResidence: 'Country of residence',
+            noCountryOfResidence: 'No country of residence selected',
+            selectedCountryOfResidence: 'Selected country of residence',
+            notSelected: 'Not selected',
+        },
+        countrySheet: {
+            title: 'Country of residence',
+            emptyTitle: 'Country not found',
+            emptyDescription: 'Check the spelling or browse the list to select an option.',
+            searchInputPlaceholder: 'Search country',
+        },
     },
 };

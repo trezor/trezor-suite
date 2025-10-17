@@ -12,10 +12,27 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@react-navigation/native": "7.1.18",
         "@reduxjs/toolkit": "2.9.1",
         "@suite-common/trading": "workspace:*",
+        "@suite-common/validators": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/forms": "workspace:*",
+        "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/trading-atoms": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "expo-localization": "~17.0.7",
         "react": "19.1.0",
+        "react-native": "0.81.4",
+        "react-native-reanimated": "~3.19.3",
+        "react-native-svg": "15.14.0",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }
