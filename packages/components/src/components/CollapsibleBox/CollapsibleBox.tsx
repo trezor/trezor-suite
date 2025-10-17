@@ -21,7 +21,7 @@ import {
 } from './utils';
 import { Collapsible } from '../Collapsible/Collapsible';
 import { Column, Row } from '../Flex/Flex';
-import { IconName } from '../Icon/Icon';
+import { IconName, IconProps, IconSize } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
@@ -32,7 +32,10 @@ import {
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
-export const allowedCollapsibleBoxFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedCollapsibleBoxFrameProps = [
+    'margin',
+    'overflow',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProps)[number]>;
 
 type ContainerProps = {
@@ -58,8 +61,9 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     paddingType?: PaddingType;
     fillType?: FillType;
     toggleLabel?: ReactNode;
-    toggleComponent?: ReactNode;
     toggleIconName?: IconName;
+    toggleIconSize?: IconSize;
+    toggleIconVariant?: IconProps['variant'];
     children?: ReactNode;
     hasDivider?: boolean;
     onAnimationComplete?: (isOpen: boolean) => void;
@@ -132,6 +136,8 @@ export const CollapsibleBox = ({
     heading,
     subHeading,
     headingSize = 'large',
+    toggleIconSize = headingSize,
+    toggleIconVariant,
     fillType = 'default',
     hasDivider = true,
     children,
@@ -175,8 +181,9 @@ export const CollapsibleBox = ({
                     )}
                     <Collapsible.ToggleIcon
                         iconName={toggleIconName}
-                        size={mapSizeToIconSize({ $headingSize: headingSize })}
+                        size={toggleIconSize ?? mapSizeToIconSize({ $headingSize: headingSize })}
                         data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
+                        variant={toggleIconVariant}
                     />
                 </Row>
             </Toggle>
@@ -204,6 +211,7 @@ export const CollapsibleBox = ({
                 <Collapsible.Content
                     data-testid="@collapsible-box/body"
                     onAnimationComplete={onAnimationComplete}
+                    overflow={frameProps.$overflow}
                 >
                     <Content
                         $elevation={elevation}

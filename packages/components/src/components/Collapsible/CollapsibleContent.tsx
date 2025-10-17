@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
 
 import { useCollapsible } from './CollapsibleContext';
 import { motionEasing } from '../../config/motion';
@@ -9,20 +9,22 @@ import { Box } from '../Box/Box';
 
 const ANIMATION_DURATION = 0.4;
 
-const Container = styled(motion.div)`
-    overflow: hidden;
+const Container = styled(motion.div)<{ $overflow?: CSSProperties['overflow'] }>`
+    overflow: ${({ $overflow = 'hidden' }) => $overflow};
 `;
 
 type CollapsibleContentProps = {
     children: ReactNode;
     'data-testid'?: string;
     onAnimationComplete?: (isOpen: boolean) => void;
+    overflow?: CSSProperties['overflow'];
 };
 
 export const CollapsibleContent = ({
     children,
     onAnimationComplete,
     'data-testid': dataTestId,
+    overflow,
 }: CollapsibleContentProps) => {
     const { isOpen, contentId, gap } = useCollapsible();
 
@@ -44,6 +46,7 @@ export const CollapsibleContent = ({
                     data-testid={dataTestId}
                     aria-expanded={isOpen}
                     id={contentId}
+                    $overflow={overflow}
                 >
                     <Box padding={{ top: gap }}>{children}</Box>
                 </Container>
