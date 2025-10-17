@@ -826,7 +826,17 @@ export class Device extends TypedEmitter<DeviceEvents> {
             throw ERRORS.TypedError('Runtime', 'changeLanguage: translation not found');
         }
 
-        return this._uploadTranslationData(downloadedBinary);
+        // This is mostly to satisfy Types, since `downloadedBinary` could be ArrayBuffer or Buffer<ArrayBufferLike>
+        // but `_uploadTranslationData` takes only ArrayBuffer or null.
+        let dataToSend: ArrayBuffer;
+        if (Buffer.isBuffer(downloadedBinary)) {
+            // Creates a "copy" if given a Buffer/Uint8Array in order to guarantee dataToSend is ArrayBuffer.
+            dataToSend = new Uint8Array(downloadedBinary).buffer;
+        } else {
+            dataToSend = downloadedBinary;
+        }
+
+        return this._uploadTranslationData(dataToSend);
     }
 
     private async _uploadTranslationData(payload: ArrayBuffer | null) {
