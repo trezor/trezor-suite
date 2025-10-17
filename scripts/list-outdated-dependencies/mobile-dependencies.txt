@@ -9,6 +9,7 @@
 @react-native-community/cli
 @react-native-community/netinfo
 @react-native/babel-preset
+@react-native/metro-config
 @react-navigation/bottom-tabs
 @react-navigation/core
 @react-navigation/native

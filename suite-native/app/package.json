@@ -150,6 +150,7 @@
         "@jest/globals": "^29.7.0",
         "@react-native-community/cli": "^15.1.2",
         "@react-native/babel-preset": "0.81.0",
+        "@react-native/metro-config": "~0.82.0",
         "@rozenite/metro": "1.0.0-alpha.12",
         "@rozenite/mmkv-plugin": "1.0.0-alpha.12",
         "@rozenite/network-activity-plugin": "1.0.0-alpha.12",
