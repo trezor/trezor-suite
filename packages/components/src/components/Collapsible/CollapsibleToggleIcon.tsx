@@ -16,18 +16,20 @@ type ToggleProps = {
     size?: IconProps['size'];
     iconName?: IconName;
     'data-testid'?: string;
+    variant?: IconProps['variant'];
 };
 
 export const CollapsibleToggleIcon = ({
     size,
     iconName = 'caretDown',
     'data-testid': dataTestId,
+    variant = 'tertiary',
 }: ToggleProps) => {
     const { isOpen } = useCollapsible();
 
     return (
         <IconWrapper $isCollapsed={!isOpen}>
-            <Icon name={iconName} size={size} data-testid={dataTestId} variant="tertiary" />
+            <Icon name={iconName} size={size} data-testid={dataTestId} variant={variant} />
         </IconWrapper>
     );
 };
