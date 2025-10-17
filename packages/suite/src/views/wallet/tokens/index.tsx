@@ -5,6 +5,7 @@ import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
+import { Route } from 'src/components/suite/Route';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
@@ -36,8 +37,6 @@ export const Tokens = () => {
         return <WalletLayout title="TR_TOKENS" account={selectedAccount} />;
     }
 
-    const isHidden = routeName === 'wallet-tokens-hidden';
-
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount}>
             <Column gap={spacings.lg}>
@@ -46,14 +45,17 @@ export const Tokens = () => {
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
                 />
-                {isHidden ? (
+                <Route
+                    name="wallet-tokens-hidden"
+                    fallback={
+                        <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
+                    }
+                >
                     <HiddenTokensTable
                         selectedAccount={selectedAccount}
                         searchQuery={searchQuery}
                     />
-                ) : (
-                    <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
-                )}
+                </Route>
             </Column>
         </WalletLayout>
     );

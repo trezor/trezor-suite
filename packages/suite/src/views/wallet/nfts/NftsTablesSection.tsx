@@ -14,7 +14,7 @@ import { NoSearchResultsWrapped } from '../tokens/common/TokensTable/TokensTable
 type EvmNftsTablesProps = {
     selectedAccount: SelectedAccountLoaded;
     searchQuery: string;
-    isShown: boolean;
+    isShown?: boolean;
 };
 
 export const NftsTablesSection = ({
