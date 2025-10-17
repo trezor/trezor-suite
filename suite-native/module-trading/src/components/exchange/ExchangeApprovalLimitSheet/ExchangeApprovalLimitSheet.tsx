@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DexApprovalType, ExchangeTrade } from 'invity-api';
+import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
 import {
     TradingRootState,
