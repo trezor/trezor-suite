@@ -1,28 +1,17 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
 
-import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
-import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../utils';
-
-const preloadedState = preparePreloadedReduxState(
-    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
-);
+import { getModelFromEnv, openApp, prepareTrezorEmulator } from '../utils';
 
 conditionalDescribe(
     device.getPlatform() === 'android',
-    'Go through onboarding and connect Trezor.',
+    'Go through onboarding and connect Trezor. [@fixT3W1]',
     () => {
         beforeAll(async () => {
-            await openApp({ args: { preloadedState } });
+            await openApp({});
             await prepareTrezorEmulator();
         });
 

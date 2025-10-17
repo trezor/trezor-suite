@@ -49,7 +49,7 @@ const preloadedState = preparePreloadedReduxState(
     btcCoinEnabled,
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding [@fixT3W1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator({ seed: '' });

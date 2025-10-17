@@ -17,10 +17,13 @@ const preloadedStateT3T1 = preparePreloadedReduxState(
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
-    describe('Tests with FW update required', () => {
+    describe('Tests with FW update required [@specificModel]', () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateT3T1 } });
-            await prepareTrezorEmulator({ version: '2.8.9' });
+            await prepareTrezorEmulator({
+                version: '2.8.9',
+                args: { isFirmwareUpdateEnabled: true },
+            });
             await appIsFullyLoaded();
         });
 

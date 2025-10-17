@@ -65,7 +65,7 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3W1]', () => {
     beforeAll(async () => {
         // wallet without passphrase
         await TrezorUserEnvLink.sendToAddressAndMineBlock({

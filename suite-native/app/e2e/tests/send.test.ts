@@ -74,7 +74,7 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow. [@fixT3W1]', () => {
     beforeAll(async () => {
         await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1q34up3cga3fkmph47t22mpk5d0xxj3ppghph9da',

@@ -198,7 +198,7 @@ export const prepareTrezorEmulator = async ({
     }
     // ATM we need to terminate app, start without new instance in order for the emulator to connect to the app
     await device.terminateApp();
-    await openApp({ newInstance: false, args });
+    await openApp({ newInstance: false, wipeData: false, args });
 
     if (getModelFromEnv() === 'T3W1') {
         await onDevicePrompt.allowConnectToTrezor();

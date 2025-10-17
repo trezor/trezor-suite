@@ -177,7 +177,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: failed-android-tests-${{ matrix.TEST_GROUP }}
+          name: failed-android-tests-${{ github.job }}-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
 
   notify_scheduled_failure_to_slack:

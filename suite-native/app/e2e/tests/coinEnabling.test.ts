@@ -20,7 +20,7 @@ const preloadedState = preparePreloadedReduxState(
     getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling [@fixT3W1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();

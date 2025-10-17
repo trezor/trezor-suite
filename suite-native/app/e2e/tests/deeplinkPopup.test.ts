@@ -47,84 +47,88 @@ const preloadedState = preparePreloadedReduxState(
     deviceAutoEjectState,
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.', () => {
-    beforeAll(async () => {
-        await new Promise(resolve => {
-            server = http.createServer((req, res) => {
-                if (req.url) {
-                    const url = new URL(req.url, SERVER_URL);
-                    TrezorConnect.handleDeeplink(url.href);
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'text/plain');
-                    res.end('Callback URL received successfully!\n');
-                }
-            });
+conditionalDescribe(
+    device.getPlatform() === 'android',
+    'Deeplink connect popup. [@fixT3W1]',
+    () => {
+        beforeAll(async () => {
+            await new Promise(resolve => {
+                server = http.createServer((req, res) => {
+                    if (req.url) {
+                        const url = new URL(req.url, SERVER_URL);
+                        TrezorConnect.handleDeeplink(url.href);
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'text/plain');
+                        res.end('Callback URL received successfully!\n');
+                    }
+                });
 
-            server.listen(SERVER_PORT, 'localhost', () => {
-                // eslint-disable-next-line no-console
-                console.info(`Server running at ${SERVER_URL}`);
-                resolve(null);
-            });
-        });
-        await device.reverseTcpPort(SERVER_PORT);
-
-        await openApp({ args: { preloadedState } });
-        await prepareTrezorEmulator();
-
-        // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
-        await TrezorConnect.init({
-            manifest: {
-                email: 'developer@xyz.com',
-                appName: 'Trezor Connect Tests',
-                appUrl: 'http://your.application.com',
-            },
-            deeplinkOpen: url => {
-                openUriScheme(url, 'android');
-            },
-            deeplinkCallbackUrl: `${SERVER_URL}/connect/`,
-            connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
-        });
-        await appIsFullyLoaded();
-    });
-
-    afterAll(async () => {
-        await new Promise(resolve => {
-            if (server) {
-                server.close(() => {
+                server.listen(SERVER_PORT, 'localhost', () => {
+                    // eslint-disable-next-line no-console
+                    console.info(`Server running at ${SERVER_URL}`);
                     resolve(null);
                 });
-            }
+            });
+            await device.reverseTcpPort(SERVER_PORT);
+
+            await openApp({ args: { preloadedState } });
+            await prepareTrezorEmulator();
+
+            // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
+            await TrezorConnect.init({
+                manifest: {
+                    email: 'developer@xyz.com',
+                    appName: 'Trezor Connect Tests',
+                    appUrl: 'http://your.application.com',
+                },
+                deeplinkOpen: url => {
+                    openUriScheme(url, 'android');
+                },
+                deeplinkCallbackUrl: `${SERVER_URL}/connect/`,
+                connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
+            });
+            await appIsFullyLoaded();
         });
-    });
 
-    it('Handle deeplink', async () => {
-        const promise = TrezorConnect.getAddress({
-            path: "m/49'/0'/0'/0/0",
-            coin: 'btc',
+        afterAll(async () => {
+            await new Promise(resolve => {
+                if (server) {
+                    server.close(() => {
+                        resolve(null);
+                    });
+                }
+            });
         });
 
-        await element(by.id('@popup/deeplink-info'));
+        it('Handle deeplink', async () => {
+            const promise = TrezorConnect.getAddress({
+                path: "m/49'/0'/0'/0/0",
+                coin: 'btc',
+            });
 
-        const permissionButton = element(by.id('@popup/call-device'));
-        await waitFor(permissionButton).toBeVisible().withTimeout(30000);
-        await permissionButton.tap();
+            await element(by.id('@popup/deeplink-info'));
 
-        const confirmButton = element(by.id('@popup/confirm-addresses'));
-        await waitFor(confirmButton).toBeVisible().withTimeout(10000);
-        await confirmButton.tap();
+            const permissionButton = element(by.id('@popup/call-device'));
+            await waitFor(permissionButton).toBeVisible().withTimeout(30000);
+            await permissionButton.tap();
 
-        await TrezorUserEnvLink.pressYes();
+            const confirmButton = element(by.id('@popup/confirm-addresses'));
+            await waitFor(confirmButton).toBeVisible().withTimeout(10000);
+            await confirmButton.tap();
 
-        const response = await promise;
+            await TrezorUserEnvLink.pressYes();
 
-        jestExpect(response).toEqual({
-            success: true,
-            id: jestExpect.any(Number),
-            payload: jestExpect.objectContaining({
-                path: [2147483697, 2147483648, 2147483648, 0, 0],
-                serializedPath: "m/49'/0'/0'/0/0",
-                address: jestExpect.any(String),
-            }),
+            const response = await promise;
+
+            jestExpect(response).toEqual({
+                success: true,
+                id: jestExpect.any(Number),
+                payload: jestExpect.objectContaining({
+                    path: [2147483697, 2147483648, 2147483648, 0, 0],
+                    serializedPath: "m/49'/0'/0'/0/0",
+                    address: jestExpect.any(String),
+                }),
+            });
         });
-    });
-});
+    },
+);
