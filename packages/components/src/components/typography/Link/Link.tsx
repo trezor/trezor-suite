@@ -26,6 +26,8 @@ type AProps = TransientProps<AllowedLinkTextProps> & {
 };
 
 const A = styled.a<AProps>`
+    background-color: unset;
+    border: unset;
     text-decoration: none;
     cursor: pointer;
     color: ${({ $color, theme }) => $color || theme.textDefault};
@@ -71,6 +73,7 @@ type LinkProps = AllowedLinkTextProps & {
     icon?: IconName;
     color?: string;
     'data-testid'?: string;
+    as?: 'a' | 'button';
 };
 
 const Link = ({
@@ -84,6 +87,7 @@ const Link = ({
     className,
     variant,
     typographyStyle = 'inherit',
+    as = 'a',
     ...rest
 }: LinkProps) => {
     const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);
@@ -92,6 +96,7 @@ const Link = ({
 
     return (
         <A
+            as={as}
             href={href}
             target={target || '_blank'}
             rel="noreferrer noopener"
