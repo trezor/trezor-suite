@@ -4642,7 +4642,7 @@ export default defineMessages({
     },
     TR_FORGET_DEVICE_DESCRIPTION: {
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
-        defaultMessage: 'Removes all device-related data from Trezor Suite.',
+        defaultMessage: 'Remove all device-related data from Trezor Suite.',
     },
     TR_DEVICE_CONNECTION: {
         id: 'TR_DEVICE_CONNECTION',
@@ -5073,7 +5073,7 @@ export default defineMessages({
     TR_LABEL_REQUIREMENTS: {
         id: 'TR_LABEL_REQUIREMENTS',
         defaultMessage:
-            'Use names up to {length} characters, containing only letters from the English alphabet.',
+            'Select a name up to {length} characters, containing letters only from the English alphabet.',
         description: 'How many characters may be in device label and of what type.',
     },
     TR_LABEL_ERROR_LENGTH: {

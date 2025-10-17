@@ -2315,7 +2315,7 @@
   "TR_WIPE_DEVICE_DESCRIPTION": "La rimozione del dispositivo comporta la cancellazione permanente di tutti i dati memorizzati, inclusi il PIN e il back-up del wallet. Senza un back-up del wallet, gli eventuali fondi presenti sul dispositivo saranno irrecuperabili. Assicurati di avere eseguito il back-up del wallet prima di rimuovere il dispositivo, poiché è essenziale per ripristinare l'accesso ai tuoi fondi. Procedi con cautela.",
   "TR_WIPE_DEVICE_MODAL_DESCRIPTION": "Se rimuovi il tuo dispositivo, tutti i dati verranno cancellati. Assicurati di avere eseguito il back-up del wallet prima di rimuovere il dispositivo, per poter ripristinare l'accesso ai tuoi fondi.",
   "TR_WIPE_OR_UPDATE": "Ripristina il dispositivo o aggiorna il firmware",
-  "TR_WIPE_OR_UPDATE_DESCRIPTION": "Vai alle impostazioni del dispositivo.",
+  "TR_WIPE_OR_UPDATE_DESCRIPTION": "Vai alle <a>impostazioni del dispositivo</a>.",
   "TR_WORDS": "{count} parole",
   "TR_WORD_DOES_NOT_EXIST": "La parola \"{word}\" non esiste nell'elenco di parole BIP39.",
   "TR_XPUB": "Chiave pubblica (XPUB)",

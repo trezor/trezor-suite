@@ -850,7 +850,7 @@
   "TR_DEVICE_SETTINGS_HOMESCREEN_TITLE": "Domovská obrazovka",
   "TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE": "Nahrát",
   "TR_DEVICE_SETTINGS_PASSPHRASE_DESC": "Přidejte si passphrase pro vytvoření oddělené extra-zabezpečené peněženky. Každá passphrase peněženka je jedinečná, přístupná pouze skrz svou vlastní passphrase.",
-  "TR_DEVICE_SETTINGS_PASSPHRASE_TITLE": "Passphrase",
+  "TR_DEVICE_SETTINGS_PASSPHRASE_TITLE": "Používat passphrase peněženky",
   "TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC": "Nastavení silného PIN kódu je nejlepší způsob, jak můžete zabezpečit zařízení před neoprávněným fyzickým přístupem a ochránit své prostředky.",
   "TR_DEVICE_SETTINGS_PIN_PROTECTION_TITLE": "PIN",
   "TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON": "Změnit",
