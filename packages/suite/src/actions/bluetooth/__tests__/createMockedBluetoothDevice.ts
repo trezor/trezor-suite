@@ -9,11 +9,11 @@ export const createMockedBluetoothDevice = (
 
     return {
         ...bluetoothDeviceCommon,
-        rssi: partialDevice.rssi ?? -35, // -35 dBm is a good strong signal
-        macAddress: partialDevice.macAddress ?? '00:11:22:33:44:55',
-        paired: partialDevice.paired ?? false,
-        connected: partialDevice.connected ?? false,
-        connectionStatus: partialDevice.connectionStatus ?? { type: 'connected' },
-        lastUpdatedTimestamp: partialDevice.lastUpdatedTimestamp ?? Date.now(),
+        rssi: -35, // -35 dBm is a good strong signal
+        macAddress: '00:11:22:33:44:55',
+        paired: false,
+        connected: false,
+        connectionStatus: { type: 'connected' },
+        ...partialDevice,
     };
 };
