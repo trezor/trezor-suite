@@ -11,29 +11,27 @@ interface TradingInfoExchangeTypeProps {
     providers: TradingExchangeProvidersInfoProps;
 }
 
-export const TradingInfoExchangeType = ({
-    selectedQuote,
-    providers,
-}: TradingInfoExchangeTypeProps) => {
+export const TradingInfoExchangeType = ({ selectedQuote }: TradingInfoExchangeTypeProps) => {
     const exchangeQuote = selectedQuote as ExchangeTrade;
-
-    const provider =
-        providers && exchangeQuote.exchange ? providers[exchangeQuote.exchange] : undefined;
 
     return (
         <InfoItem label={<Translation id="TR_TRADING_EXCHANGE_TYPE" />} direction="row">
-            <Text data-testid="@trading/offer/info/exchange-type">
-                {provider?.isFixedRate && !exchangeQuote.isDex && (
-                    <Tooltip content={<Translation id="TR_EXCHANGE_FIXED_OFFERS_INFO" />} hasIcon>
-                        <Translation id="TR_EXCHANGE_FIXED" />
+            <Text typographyStyle="hint">
+                {exchangeQuote.isDex ? (
+                    <Tooltip
+                        content={<Translation id="TR_EXCHANGE_DECENTRALIZED_EXCHANGE" />}
+                        hasIcon
+                    >
+                        <Translation id="TR_EXCHANGE_DEX" />
+                    </Tooltip>
+                ) : (
+                    <Tooltip
+                        content={<Translation id="TR_EXCHANGE_CENTRALIZED_EXCHANGE" />}
+                        hasIcon
+                    >
+                        <Translation id="TR_EXCHANGE_CEX" />
                     </Tooltip>
                 )}
-                {!provider?.isFixedRate && !exchangeQuote.isDex && (
-                    <Tooltip content={<Translation id="TR_EXCHANGE_FLOAT_OFFERS_INFO" />} hasIcon>
-                        <Translation id="TR_EXCHANGE_FLOAT" />
-                    </Tooltip>
-                )}
-                {exchangeQuote.isDex && <Translation id="TR_EXCHANGE_DEX" />}
             </Text>
         </InfoItem>
     );

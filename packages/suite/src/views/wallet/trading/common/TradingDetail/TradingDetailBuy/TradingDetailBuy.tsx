@@ -138,6 +138,8 @@ export const TradingDetailBuy = () => {
                     providers={info?.providerInfos}
                     quoteAmounts={quoteAmounts}
                     type="buy"
+                    paymentMethod={trade.data.paymentMethod}
+                    paymentMethodName={trade.data.paymentMethodName}
                 />
             </Card>
         </Wrapper>
