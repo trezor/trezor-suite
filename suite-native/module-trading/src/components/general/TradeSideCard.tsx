@@ -15,22 +15,17 @@ import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { TradeInfoHeader } from '../../TradeInfo/TradeInfoHeader';
-import { TradeInfoRow } from '../../TradeInfo/TradeInfoRow';
+import { TradeInfoHeader } from '../TradeInfo/TradeInfoHeader';
+import { TradeInfoRow } from '../TradeInfo/TradeInfoRow';
 
-type ExchangeTradePreviewProps = {
+type TradeSideCardProps = {
     account: Account;
     cryptoId?: CryptoId;
     amount: ReactNode;
     title: ReactNode;
 };
 
-export const ExchangeTradePreviewCard = ({
-    account,
-    cryptoId,
-    amount,
-    title,
-}: ExchangeTradePreviewProps) => {
+export const TradeSideCard = ({ account, cryptoId, amount, title }: TradeSideCardProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>
         account ? selectAccountLabel(state, account.key) : null,
     );

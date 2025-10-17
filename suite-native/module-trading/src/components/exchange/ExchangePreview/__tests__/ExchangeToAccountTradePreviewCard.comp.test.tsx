@@ -39,7 +39,7 @@ describe('ExchangeToAccountTradePreviewCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should ExchangeTradePreviewCard otherwise', async () => {
+    it('should render TradeSideCard otherwise', async () => {
         const { getByText } = await renderExchangeToAccountTradePreviewCard({
             quote: exchangeQuotes[0],
         });
