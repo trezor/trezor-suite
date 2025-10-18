@@ -5,7 +5,7 @@ import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { openApp, preparePreloadedReduxState } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const goToBtcImportXpubScreen = async () => {
     await onTabBar.navigateToMyAssets();

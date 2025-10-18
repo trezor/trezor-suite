@@ -1,6 +1,6 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { waitForElementByIdToBeVisible } from '../utils';
+import { waitForElementByIdToBeVisible } from '../support/utils';
 
 class DevicePromptActions {
     async allowConnectToTrezor() {

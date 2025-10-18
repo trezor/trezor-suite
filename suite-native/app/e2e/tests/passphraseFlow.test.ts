@@ -12,13 +12,12 @@ import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryF
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
-    appIsFullyLoaded,
     getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-    wait,
-} from '../utils';
+} from '../support/setup';
+import { appIsFullyLoaded, wait } from '../support/utils';
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 

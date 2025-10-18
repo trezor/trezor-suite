@@ -1,6 +1,10 @@
 import { expect as detoxExpect } from 'detox';
 
-import { wait, waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../utils';
+import {
+    wait,
+    waitForElementByIdToBeVisible,
+    waitForElementByTextToBeVisible,
+} from '../support/utils';
 
 const LONG_TIMEOUT = 30000;
 const SHORT_TIMEOUT = 5000;

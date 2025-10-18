@@ -4,7 +4,7 @@ import { onHome } from '../pageObjects/homeActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/tradingHistoryActions';
-import { openApp, preparePreloadedReduxState } from '../utils';
+import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,

@@ -11,12 +11,12 @@ import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import {
-    appIsFullyLoaded,
     getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-} from '../utils';
+} from '../support/setup';
+import { appIsFullyLoaded } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,

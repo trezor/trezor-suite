@@ -12,8 +12,8 @@ import {
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-    wait,
-} from '../utils';
+} from '../support/setup';
+import { wait } from '../support/utils';
 
 const proceedToCreateOrRecoverCrossroads = async () => {
     await onDeviceOnboarding.waitForUninitializedDeviceLanding();

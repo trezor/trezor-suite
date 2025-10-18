@@ -15,12 +15,12 @@ import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
 import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import {
-    appIsFullyLoaded,
     getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-} from '../utils';
+} from '../support/setup';
+import { appIsFullyLoaded } from '../support/utils';
 
 const SEND_FORM_ERROR_MESSAGES = {
     invalidAddress: 'The address format is incorrect.',

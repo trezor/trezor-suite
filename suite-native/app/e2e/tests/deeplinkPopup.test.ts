@@ -13,12 +13,12 @@ import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import {
-    appIsFullyLoaded,
     getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-} from '../utils';
+} from '../support/setup';
+import { appIsFullyLoaded } from '../support/utils';
 
 const SERVER_PORT = 8080;
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;

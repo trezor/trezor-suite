@@ -4,7 +4,7 @@ import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
-import { getModelFromEnv, openApp, prepareTrezorEmulator } from '../utils';
+import { getModelFromEnv, openApp, prepareTrezorEmulator } from '../support/setup';
 
 conditionalDescribe(
     device.getPlatform() === 'android',

@@ -1,7 +1,7 @@
 import { BackupType } from '@suite-common/suite-types';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../utils';
+import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../support/utils';
 
 class DeviceOnboardingActions {
     async selectCreateWalletOption() {

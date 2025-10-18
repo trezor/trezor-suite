@@ -16,7 +16,7 @@ import {
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
-} from '../utils';
+} from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,

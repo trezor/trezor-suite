@@ -4,12 +4,8 @@ import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
-import {
-    appIsFullyLoaded,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { appIsFullyLoaded } from '../support/utils';
 
 const preloadedStateT3T1 = preparePreloadedReduxState(
     onboardingCompletedState,

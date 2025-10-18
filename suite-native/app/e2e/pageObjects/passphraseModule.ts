@@ -2,12 +2,9 @@ import { expect as detoxExpect } from 'detox';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import {
-    getModelFromEnv,
-    waitForElementByIdToBeVisible,
-    waitForElementByTextToBeVisible,
-} from '../utils';
 import { onDeviceManager } from './deviceManagerActions';
+import { getModelFromEnv } from '../support/setup';
+import { waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../support/utils';
 
 class PassphraseModule {
     public async openNewPassphraseFlow() {
