@@ -26,7 +26,7 @@ test.describe(
             await onboardingPage.firmware.continueThroughFirmware();
             await onboardingPage.recoverWalletButton.click();
             await recoveryModal.selectWordCount(24);
-            await recoveryModal.selectBasicRecoveryButton.click();
+            await recoveryModal.selectRecoveryButton('standard').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
 
@@ -38,7 +38,7 @@ test.describe(
             // Retry recovery process
             await onboardingPage.retryRecoveryButton.click();
             await recoveryModal.selectWordCount(24);
-            await recoveryModal.selectBasicRecoveryButton.click();
+            await recoveryModal.selectRecoveryButton('standard').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
         });
     },

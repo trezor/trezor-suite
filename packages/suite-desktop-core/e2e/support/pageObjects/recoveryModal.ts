@@ -3,15 +3,17 @@ import { Locator, Page, expect } from '@playwright/test';
 import { step } from '../common';
 
 export class RecoveryModal {
-    readonly selectBasicRecoveryButton: Locator;
+    readonly selectRecoveryButton = (type: 'standard' | 'advanced') =>
+        this.page.getByTestId(`@recovery/select-type/${type}`);
     readonly userUnderstandsCheckbox: Locator;
     readonly startButton: Locator;
     readonly successTitle: Locator;
     readonly header: Locator;
     readonly prompt: Locator;
+    readonly wordInputAtIndex = (index: number) =>
+        this.page.getByTestId(`@recovery/word-input-advanced/${index}`);
 
     constructor(private page: Page) {
-        this.selectBasicRecoveryButton = page.getByTestId('@recovery/select-type/standard');
         this.userUnderstandsCheckbox = page.getByTestId('@recovery/user-understands-checkbox');
         this.startButton = page.getByTestId('@recovery/start-button');
         this.successTitle = page.getByTestId('@recovery/success-title');
@@ -30,7 +32,7 @@ export class RecoveryModal {
         await this.startButton.click();
         await this.selectWordCount(numberOfWords);
         await this.page.getByTestId('@recovery/continue-button').click();
-        await this.page.getByTestId(`@recovery/select-type/${type}`).click();
+        await this.selectRecoveryButton(type).click();
         await this.page.getByTestId('@recovery/continue-button').click();
     }
 

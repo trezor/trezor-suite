@@ -21,41 +21,53 @@ test.describe(
             page,
             trezorUserEnvLink,
         }) => {
-            // Navigate through onboarding steps
-            await analyticsSection.passThroughAnalytics();
-            await onboardingPage.firmware.continueThroughFirmware();
-            await onboardingPage.recoverWalletButton.click();
+            await test.step('Navigate through onboarding steps', async () => {
+                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.firmware.continueThroughFirmware();
+                await onboardingPage.recoverWalletButton.click();
+            });
 
-            // Select advanced recovery
-            await recoveryModal.selectWordCount(24);
-            await page.getByTestId('@recovery/select-type/advanced').click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await test.step('Select advanced recovery', async () => {
+                await recoveryModal.selectWordCount(24);
+                await recoveryModal.selectRecoveryButton('advanced').click();
+                // Emulator isn't sometimes ready to accept confirm right away. Retry approach doesn't work.
+                await page.waitForTimeout(500);
+                await devicePrompt.waitForPromptAndConfirm();
+                await expect(recoveryModal.wordInputAtIndex(1)).toBeVisible();
+            });
 
-            // Simulate user input
-            for (let i = 0; i <= 4; i++) {
-                await page.getByTestId('@recovery/word-input-advanced/1').click({ force: true });
-            }
+            await test.step('Simulate user input', async () => {
+                for (let i = 0; i <= 4; i++) {
+                    await recoveryModal.wordInputAtIndex(1).click({ force: true });
+                }
+            });
 
-            // Simulate device disconnection due to lack of cancel button
-            await page.waitForTimeout(501);
-            await trezorUserEnvLink.stopEmu();
-            await devicePrompt.confirmOnDevicePromptIsShown();
+            await test.step('Simulate device disconnection due to lack of cancel button', async () => {
+                await page.waitForTimeout(501);
+                await trezorUserEnvLink.stopEmu();
+                await devicePrompt.connectDevicePromptIsShown({ timeout: 15_000 });
+            });
 
-            // Restart emulator
-            await trezorUserEnvLink.startEmu({ model: 'T1B1' });
+            await test.step('Restart emulator', async () => {
+                await trezorUserEnvLink.startEmu({ model: 'T1B1' });
+            });
 
-            // Retry recovery with basic type
-            await onboardingPage.retryRecoveryButton.click();
-            await recoveryModal.selectWordCount(12);
-            await page.getByTestId('@recovery/select-type/standard').click();
+            await test.step('Retry recovery with basic type', async () => {
+                await onboardingPage.retryRecoveryButton.click({ timeout: 15_000 });
+                await recoveryModal.selectWordCount(12);
+                await recoveryModal.selectRecoveryButton('standard').click();
+                // Emulator isn't sometimes ready to accept confirm right away. Retry approach doesn't work.
+                await page.waitForTimeout(500);
+            });
 
-            // Confirm on device
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await test.step('Confirm on device', async () => {
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+            });
 
-            // Ensure input field for basic recovery is visible
-            await expect(page.getByTestId('@word-input-select/input')).toBeVisible();
+            await test.step('Ensure input field for basic recovery is visible', async () => {
+                await expect(page.getByTestId('@word-input-select/input')).toBeVisible();
+            });
 
             // Note: Completion of reading device data requires support in trezor-user-env
         });
