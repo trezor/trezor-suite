@@ -19,9 +19,6 @@ const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 // secondOffer via Bank Transfer that matches input criteria has index 5
 const updateFiatAmount = buyQuotesBTCUpdate[5].fiatStringAmount;
-const secondOfferProvider = capitalizeFirstLetter(buyQuotesBTCUpdate[5].exchange);
-const secondOfferCryptoAmount = `${buyQuotesBTCUpdate[5].receiveStringAmount} BTC`;
-const formattedUpdateFiatAmount = `CZK ${localizeNumber(updateFiatAmount, 'en-US', 2)}`;
 
 test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage }) => {
@@ -71,16 +68,12 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
 
         await test.step('Select second offer', async () => {
             await tradingPage.selectThisQuoteButton.nth(1).click();
-        });
-
-        await test.step('Confirm trade and verifies confirmation summary', async () => {
+            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             await tradingPage.termsConfirmButton.click();
-            await expect(tradingPage.confirmationAddress).toHaveText(receiveAddress);
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedUpdateFiatAmount);
-            await expect(tradingPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
-            await expect(tradingPage.confirmationProvider).toHaveText(secondOfferProvider);
-            await expect(tradingPage.confirmationPaymentMethod).toHaveText('Bank Transfer');
-            await expect(tradingPage.finishTransactionButton).toBeEnabled();
+            await expect(tradeRequestPromise).toHavePayload(
+                { trade: { ...buyQuotesBTCUpdate[5], receiveAddress } },
+                { omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'] },
+            );
         });
     });
 

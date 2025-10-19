@@ -44,7 +44,7 @@ test.describe(
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.recoverWalletButton.click();
                 await recoveryModal.selectWordCount(24);
-                await recoveryModal.selectBasicRecoveryButton.click();
+                await recoveryModal.selectRecoveryButton('standard').click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await page.waitForTimeout(1000);
                 await trezorUserEnvLink.pressYes();

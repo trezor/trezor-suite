@@ -91,8 +91,8 @@ export class DevicePrompt {
     }
 
     @step()
-    async connectDevicePromptIsShown() {
-        await expect(this.connectDevicePrompt).toBeVisible();
+    async connectDevicePromptIsShown(params?: { timeout?: number }) {
+        await expect(this.connectDevicePrompt).toBeVisible({ timeout: params?.timeout });
     }
 
     @step()
