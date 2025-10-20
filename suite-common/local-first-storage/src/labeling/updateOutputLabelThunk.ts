@@ -22,6 +22,11 @@ export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkPa
         const evoluKeys = device?.localFirstStorageSecret?.evoluKeys;
 
         if (evoluKeys === undefined) {
+            console.error(
+                'Evolu: [updateOutputLabelThunk] no keys found on the selected device',
+                deviceStaticSessionId,
+            );
+
             return;
         }
 

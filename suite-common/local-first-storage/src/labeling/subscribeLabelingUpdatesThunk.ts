@@ -21,6 +21,10 @@ export const subscribeLabelingUpdatesThunk = createThunk<
 
         const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
             if (walletDescriptor !== payload.walletDescriptor) {
+                console.error(
+                    `Evolu: walletDescriptor mismatch exists ${walletDescriptor} !== ${payload.walletDescriptor}`,
+                );
+
                 return; // Filter out possibly corrupted data
             }
 
