@@ -580,7 +580,7 @@ export const messages = {
         exportAccounts: {
             title: 'Export accounts',
             message:
-                'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
+                'The following accounts from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
         },
         connectionStatus: {
             loading: 'Loading...',
