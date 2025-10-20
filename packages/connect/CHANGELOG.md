@@ -11,6 +11,15 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.6.4-beta.1
+
+This release primarily introduces support for the new Trezor device and enhancements to the transport API, including a new API type:
+
+- feat(connect): Expose API type and ID on descriptor (ed650e3)
+- feat(connect): Add additional variants of DeviceStatus = 'busy' (34d888e)
+
+In addition, this release includes various bug fixes, refactorings, and chores.
+
 # 9.6.3
 
 We’ve added support for Cardano message signing based on the CIP-8 standard, available through the new cardanoSignMessage method.
