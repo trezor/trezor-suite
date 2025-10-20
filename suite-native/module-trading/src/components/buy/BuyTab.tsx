@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { ServerOffline } from '@suite-native/trading-atoms';
+
 import { BuyForm } from './BuyForm';
 import { BuyFormContextProvider } from './BuyFormContextProvider';
 import { BuyFormSkeleton } from './BuyFormSkeleton';
 import { useBuyData } from '../../hooks/buy/useBuyData';
 import { selectIsTradingBuyEnabled } from '../../selectors/commonSelectors';
-import { ServerOffline } from '../general/Error/ServerOffline';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
 const BuyTabEnabled = () => {
@@ -16,7 +17,7 @@ const BuyTabEnabled = () => {
     const wasSkeletonDisplayed = useRef(!isLoadingFinished);
 
     if (isLoadingFinished && !isFullyLoaded) {
-        return <ServerOffline onRetryPress={() => setReloadOrdinal(reloadOrdinal + 1)} />;
+        return <ServerOffline onRetryPress={() => setReloadOrdinal(n => n + 1)} />;
     }
 
     if (!isFullyLoaded) {

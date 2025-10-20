@@ -14,7 +14,7 @@ export const NetworkBadge = ({ symbol }: PlatformBadgeProps) => {
     return (
         <Badge
             label={networkName}
-            accessibilityLabel={translate('moduleTrading.networkName')}
+            accessibilityLabel={translate('tradingAtoms.networkName')}
             size="small"
         />
     );

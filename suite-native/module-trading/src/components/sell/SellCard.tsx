@@ -3,13 +3,12 @@ import { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { CardTitle, useAnimatedBorderStyle } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SellFormFieldErrorBadge } from './SellFormFieldErrorBadge';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
 import { SellReceiveMethodPicker } from './fiat/SellReceiveMethodPicker';
-import { useAnimatedBorderStyle } from '../../hooks/general/useAnimatedBorderStyle';
-import { CardTitle } from '../general/CardTitle';
 import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';

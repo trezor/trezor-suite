@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import { useListDataFilter } from '@suite-native/trading-atoms';
 
-import { useListDataFilter } from './useListDataFilter';
 import { TradeableAsset } from '../../types/general';
 
 const doesContractAddressIncludeValue = (asset: TradeableAsset, value: string) =>

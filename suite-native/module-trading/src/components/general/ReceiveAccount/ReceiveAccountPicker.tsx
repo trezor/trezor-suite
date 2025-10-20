@@ -12,12 +12,11 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { AccountAddress, OverviewRow } from '@suite-native/trading-atoms';
 import { Color } from '@trezor/theme';
 
 import { ReceiveAccount } from '../../../types/general';
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
-import { AccountAddress } from '../AccountAddress';
-import { OverviewRow } from '../OverviewRow';
 
 export type ReceiveAccountPickerProps = {
     symbol: NetworkSymbol | undefined;
