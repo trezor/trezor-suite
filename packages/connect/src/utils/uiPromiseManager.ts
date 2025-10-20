@@ -14,6 +14,13 @@ export const createUiPromiseManager = (interactionTimeout: () => void) => {
             ...createDeferred(promiseEvent),
             device,
         };
+
+        const existing = _uiPromises.findIndex(p => p.id === promiseEvent);
+        if (existing >= 0) {
+            console.warn(`UiPromise '${promiseEvent}' already exists.`);
+            _uiPromises.splice(existing, 1);
+        }
+
         _uiPromises.push(uiPromise as unknown as AnyUiPromise);
 
         // Interaction timeout
