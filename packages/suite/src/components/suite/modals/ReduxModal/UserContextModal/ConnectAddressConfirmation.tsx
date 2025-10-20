@@ -61,6 +61,9 @@ export const ConnectAddressConfirmation = () => {
 
     if (!popupCall || popupCall?.state !== 'address-confirmation') return null;
 
+    const isPublicKeyMethod =
+        popupCall?.method === 'getPublicKey' || popupCall?.method.endsWith('GetPublicKey');
+
     return (
         <ConnectModalBackdrop onClick={onFinish} canSwitchDevice={!popupCall.exported}>
             <ConfirmOnDevicePill
@@ -133,7 +136,16 @@ export const ConnectAddressConfirmation = () => {
                         />
                     </Paragraph>
 
-                    <Card header={<Translation id="TR_ADDRESSES" />} margin={{ top: spacings.md }}>
+                    <Card
+                        header={
+                            isPublicKeyMethod ? (
+                                <Translation id="TR_PUBLIC_KEYS" />
+                            ) : (
+                                <Translation id="TR_ADDRESSES" />
+                            )
+                        }
+                        margin={{ top: spacings.md }}
+                    >
                         <Column gap={spacings.sm}>
                             {popupCall?.addresses.map((address, index) => (
                                 <Row

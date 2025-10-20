@@ -10787,7 +10787,7 @@ export default defineMessages({
     TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION: {
         id: 'TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION',
         defaultMessage:
-            'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
+            'The following accounts from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
     },
     TR_DYK_TITLE: {
         id: 'TR_DYK_TITLE',
@@ -10914,5 +10914,9 @@ export default defineMessages({
         id: 'TR_SEND_MIN_ADA_AMOUNT_TOOLTIP',
         defaultMessage:
             'Every transaction output with tokens must include a minimum amount of {networkDisplaySymbol}, based on the number of different tokens in the transaction output.',
+    },
+    TR_PUBLIC_KEYS: {
+        id: 'TR_PUBLIC_KEYS',
+        defaultMessage: 'Public keys',
     },
 } as const);
