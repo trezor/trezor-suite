@@ -56,8 +56,8 @@ export const TradingWebViewScreen = () => {
     }, [reportToAnalytics, trade?.tradeType]);
 
     useWatchTrade({
-        account: account ?? undefined,
-        trade,
+        accountKey: account?.key ?? undefined,
+        orderId: trade?.data.orderId ?? undefined,
         isInProgress: true,
     });
 
