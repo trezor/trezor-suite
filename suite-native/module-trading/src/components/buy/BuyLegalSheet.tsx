@@ -15,8 +15,7 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-
-import { useBottomSheetBackButtonSubscription } from '../../hooks/general/useBottomSheetBackButtonSubscription';
+import { useBottomSheetBackButtonSubscription } from '@suite-native/trading-atoms';
 
 export type BuyLegalSheetProps = {
     isVisible: boolean;

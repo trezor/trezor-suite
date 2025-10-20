@@ -1,6 +1,7 @@
 import { ReactNode, useMemo } from 'react';
 
-import { useListDataFilter } from './useListDataFilter';
+import { useListDataFilter } from '@suite-native/trading-atoms';
+
 import { FiatCurrencyItem } from '../../types/general';
 
 const filterCallback = ({ label, value }: FiatCurrencyItem, filterValue: string): boolean =>

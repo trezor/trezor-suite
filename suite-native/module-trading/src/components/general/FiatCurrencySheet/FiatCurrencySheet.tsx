@@ -3,13 +3,12 @@ import { memo, useCallback } from 'react';
 import type { FiatCurrencyCode } from 'invity-api';
 
 import { Translation, useTranslate } from '@suite-native/intl';
+import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/trading-atoms';
 
-import { useFiatCurrencyFilteredData } from '../../../hooks/general/useFiatCurrencyFilteredData';
-import { FiatCurrencyItem } from '../../../types/general';
-import { BottomSheetSectionList } from '../BottomSheetSectionList';
-import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { FiatCurrencyListEmptyComponent } from './FiatCurrencyListEmptyComponent';
 import { FIAT_CURRENCY_LIST_ITEM_HEIGHT, FiatCurrencyListItem } from './FiatCurrencyListItem';
+import { useFiatCurrencyFilteredData } from '../../../hooks/general/useFiatCurrencyFilteredData';
+import { FiatCurrencyItem } from '../../../types/general';
 
 export type FiatCurrencySheetProps = {
     isVisible: boolean;

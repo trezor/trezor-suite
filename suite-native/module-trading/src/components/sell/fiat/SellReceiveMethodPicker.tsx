@@ -7,13 +7,12 @@ import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '../../../selectors/sellSelectors';
-import { OverviewRow } from '../../general/OverviewRow';
-import { OverviewValueSkeleton } from '../../general/OverviewValueSkeleton';
 import { PaymentMethodSheet } from '../../general/PaymentMethodSheet/PaymentMethodSheet';
 
 const RECEIVE_METHOD_PICKER_TEST_ID = '@trading/sell/receive-method-picker';

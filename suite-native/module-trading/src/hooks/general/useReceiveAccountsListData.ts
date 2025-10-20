@@ -5,8 +5,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
+import { SectionListData } from '@suite-native/trading-atoms';
 
-import { SectionListData } from './useSectionList';
 import { selectVisibleDeviceAccountsByNetworkSymbolSorted } from '../../selectors/commonSelectors';
 import { ReceiveAccount } from '../../types/general';
 

@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { TradingTradeMapProps, TradingTradeType, TradingType } from '@suite-common/trading';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { BottomSheetSectionList } from '@suite-native/trading-atoms';
 import { prepareNativeStyle } from '@trezor/styles';
 
 import { useProviderFilters } from '../../../hooks/general/useProviderFilters';
@@ -10,7 +11,6 @@ import { QuotesByCategories, QuotesCategory } from '../../../types/general';
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 import { NoProvidersPlaceholder } from './NoProvidersPlaceholder';
 import { PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT, ProviderListItem } from './ProviderListItem';
-import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { ProviderSheetHandle } from './ProviderSheetHandle';
 import { ProviderSheetSectionHeader } from './ProviderSheetSectionHeader';
 

@@ -47,8 +47,8 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { TokensRootState } from '@suite-native/tokens';
+import { SectionListData } from '@suite-native/trading-atoms';
 
-import { SectionListData } from '../hooks/general/useSectionList';
 import { TradingRootState } from '../reducers';
 import { MyAsset, MyAssetRow, TradeableAsset } from '../types/general';
 import { getSymbolFromTradeableAsset } from '../utils/general/tradeableAssetUtils';

@@ -28,7 +28,7 @@ export const ProviderLogo = ({ logo, size = 'body' }: TradingProviderLogoProps) 
             style={applyStyle(imageStyle, { size })}
             source={logoUrl}
             contentFit="contain"
-            accessibilityLabel={translate('moduleTrading.providerLogo')}
+            accessibilityLabel={translate('tradingAtoms.providerLogo')}
         />
     );
 };
