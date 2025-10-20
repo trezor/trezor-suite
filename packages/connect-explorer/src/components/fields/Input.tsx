@@ -14,7 +14,7 @@ const Input = ({ 'data-testid': dataTest, field, onChange }: InputProps) => (
         <InputComponent
             data-testid={dataTest}
             label={field.name}
-            value={field.value}
+            value={field.value || ''}
             onChange={event => onChange(field, event.target.value)}
         />
     </Row>

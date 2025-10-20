@@ -136,8 +136,8 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
         const { fields } = getState().method;
         const parsed = JSON5.parse(value);
         const processField = (field: Field<unknown>) => {
-            const value = getDeepValue(parsed, [...(field.path ?? []), ...field.name.split('.')]);
-            dispatch(onFieldChange(field, value));
+            const valuePath = [...(field.path || []), ...field.name.split('.')].filter(f => !!f);
+            const value = getDeepValue(parsed, valuePath);
 
             if (field.type === 'array') {
                 // ensure the array has the correct number of items
@@ -157,6 +157,8 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
                 field.options.forEach(batch => {
                     batch.forEach(processField);
                 });
+            } else {
+                dispatch(onFieldChange(field, value));
             }
         };
         fields.forEach(processField);
