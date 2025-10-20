@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, Card, VStack } from '@suite-native/atoms';
+import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 
 import { ExchangeAlert } from './ExchangeAlert';
 import { ExchangeConfirmation } from './ExchangeConfirmation';
@@ -12,7 +13,6 @@ import { ExchangeSendCard } from './send/ExchangeSendCard';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useExchangeQuotes } from '../../hooks/exchange/useExchangeQuotes';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
-import { AmountEditingDoneButton } from '../general/AmountEditingDoneButton';
 
 type ExchangeFormProps = {
     shouldAnimateEntering?: boolean;

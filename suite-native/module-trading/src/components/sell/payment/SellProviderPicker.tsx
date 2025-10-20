@@ -13,15 +13,13 @@ import {
 import { EventType, analytics } from '@suite-native/analytics';
 import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { TradingRootState } from '../../../reducers';
 import { selectSellQuotesByPaymentMethod } from '../../../selectors/sellSelectors';
-import { OverviewRow } from '../../general/OverviewRow';
-import { OverviewValueSkeleton } from '../../general/OverviewValueSkeleton';
-import { ProviderLogo } from '../../general/ProviderLogo';
 import { ProviderSheet } from '../../general/ProviderSheet/ProviderSheet';
 
 const PROVIDER_PICKER_TEST_ID = '@trading/sell/provider-picker';

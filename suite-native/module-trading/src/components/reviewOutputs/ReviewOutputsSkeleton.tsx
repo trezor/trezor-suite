@@ -1,9 +1,7 @@
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedBox, Card, HStack, VStack } from '@suite-native/atoms';
-
-import { SkeletonLarge } from '../general/Skeleton/SkeletonLarge';
-import { SkeletonSmall } from '../general/Skeleton/SkeletonSmall';
+import { SkeletonLarge, SkeletonSmall } from '@suite-native/trading-atoms';
 
 export const ReviewOutputsSkeleton = () => (
     <AnimatedBox entering={FadeIn} exiting={FadeOut}>

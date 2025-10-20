@@ -2,10 +2,13 @@ import { useMemo, useState } from 'react';
 
 import { TradingTradeType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
+import type {
+    FilterItem,
+    SectionListData,
+    SectionListDataArray,
+} from '@suite-native/trading-atoms';
 import { exhaustive } from '@trezor/type-utils';
 
-import { SectionListData, SectionListDataArray } from './useSectionList';
-import { FilterItem } from '../../components/general/FilterTabs';
 import { QuotesByCategories, QuotesCategory } from '../../types/general';
 
 export type FilterValue = 'all' | 'cex' | 'dex';

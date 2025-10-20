@@ -10,7 +10,7 @@ import {
     SectionHeaderRenderConfig,
     SectionListData,
     useSectionList,
-} from '../../hooks/general/useSectionList';
+} from '../hooks/useSectionList';
 
 export type TradingBottomSheetSectionListProps<T, U> = Omit<
     BottomSheetFlashListProps<T>,

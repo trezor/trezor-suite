@@ -1,6 +1,5 @@
 import { TradingCountryOption, nonSanctionedRegional } from '@suite-common/trading';
-
-import { useListDataFilter } from './useListDataFilter';
+import { useListDataFilter } from '@suite-native/trading-atoms';
 
 const filterCallback = ({ label, value }: TradingCountryOption, filterValue: string): boolean =>
     label.toLowerCase().includes(filterValue.toLowerCase()) ||

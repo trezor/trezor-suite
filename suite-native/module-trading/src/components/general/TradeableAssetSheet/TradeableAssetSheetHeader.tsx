@@ -3,13 +3,13 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
 import {
     FOCUS_ANIMATION_DURATION,
     SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
     SearchableSheetHeader,
-} from '../SearchableSheetHeader';
+} from '@suite-native/trading-atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { TradeableAssetFilterTabs } from './TradeableAssetFilterTabs';
 
 type TradeableAssetsSheetHeaderProps = {

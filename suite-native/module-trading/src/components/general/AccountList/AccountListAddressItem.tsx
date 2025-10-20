@@ -2,11 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { WithLabelingState, selectAddressLabel } from '@suite-common/local-first-storage';
 import { Text } from '@suite-native/atoms';
+import { AccountAddress } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ReceiveAccount } from '../../../types/general';
-import { AccountAddress } from '../AccountAddress';
 import { AccountListBaseItem } from './AccountListBaseItem';
+import { ReceiveAccount } from '../../../types/general';
 
 const labelTextStyle = prepareNativeStyle(utils => ({
     color: utils.colors.textSubdued,
