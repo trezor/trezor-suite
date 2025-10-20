@@ -9,15 +9,15 @@ export type ServerOfflineProps = {
 
 export const ServerOffline = ({ onRetryPress }: ServerOfflineProps) => (
     <WarningCard
-        title={<Translation id="moduleTrading.error.serverOfflineTitle" />}
-        description={<Translation id="moduleTrading.error.serverOfflineDescription" />}
+        title={<Translation id="tradingAtoms.error.serverOfflineTitle" />}
+        description={<Translation id="tradingAtoms.error.serverOfflineDescription" />}
     >
         <Button
             colorScheme="tertiaryElevation0"
             onPress={onRetryPress}
             viewLeft="arrowsCounterClockwise"
         >
-            <Translation id="moduleTrading.error.serverOfflineRetry" />
+            <Translation id="tradingAtoms.error.serverOfflineRetry" />
         </Button>
     </WarningCard>
 );

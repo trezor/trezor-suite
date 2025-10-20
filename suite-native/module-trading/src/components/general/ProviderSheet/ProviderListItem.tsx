@@ -12,9 +12,9 @@ import {
 } from '@suite-common/trading';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { ProviderLogo } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ProviderLogo } from '../ProviderLogo';
 import { InfoLineItem } from './InfoLineItem';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 import { getKycPolicyWarningTranslation } from '../../../utils/general/kycUtils';

@@ -1,17 +1,16 @@
 import { memo, useCallback } from 'react';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { BottomSheetSectionList, ItemRenderConfig } from '@suite-native/trading-atoms';
 
+import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
+import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
+import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
 import {
     ListItemExtraData,
     useFavouriteAssetsSectionList,
 } from '../../../hooks/general/useFavouriteAssetsSectionList';
 import { TradeableAsset } from '../../../types/general';
-import { BottomSheetSectionList } from '../BottomSheetSectionList';
-import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
-import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
-import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
-import { ItemRenderConfig } from '../../../hooks/general/useSectionList';
 
 export type TradeableAssetsSheetProps = {
     isVisible: boolean;

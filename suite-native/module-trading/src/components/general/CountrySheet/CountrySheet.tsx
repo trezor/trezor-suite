@@ -4,11 +4,11 @@ import { Dimensions } from 'react-native';
 import { TradingCountryOption } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { SearchableSheetHeader } from '@suite-native/trading-atoms';
 
-import { useCountryFilteredData } from '../../../hooks/general/useCountryFilteredData';
-import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
+import { useCountryFilteredData } from '../../../hooks/general/useCountryFilteredData';
 
 export type CountrySheetProps = {
     isVisible: boolean;
