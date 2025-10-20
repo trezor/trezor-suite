@@ -383,7 +383,9 @@ const setDeviceState = (
  */
 const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
     // find all devices with "path"
-    const affectedDevices = draft.devices.filter(d => d.path === device.path);
+    const affectedDevices = draft.devices.filter(
+        d => d.path === device.path && d.descriptor.apiType === device.descriptor.apiType,
+    );
     affectedDevices.forEach(d => {
         // do not remove devices with state, they are potential candidates to remember if not remembered already
         const skip = d.features && d.remember;
