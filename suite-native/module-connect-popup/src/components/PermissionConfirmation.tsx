@@ -83,7 +83,7 @@ export const PermissionConfirmation = () => {
                     {popupCall.methodInfo.permissionTypes.map(permission => (
                         <HStack key={permission} alignItems="center" spacing="sp8">
                             <Icon name="checkCircle" color="iconPrimaryDefault" />
-                            <Text color="textSubdued" variant="hint">
+                            <Text color="textSubdued" variant="hint" style={{ flex: 1 }}>
                                 <Translation id={`moduleConnectPopup.permissions.${permission}`} />
                             </Text>
                         </HStack>
