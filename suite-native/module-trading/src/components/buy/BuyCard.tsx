@@ -3,6 +3,7 @@ import { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, AnimatedCard, Box, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { CardTitle, useAnimatedBorderStyle } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
@@ -11,8 +12,6 @@ import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance
 import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
-import { useAnimatedBorderStyle } from '../../hooks/general/useAnimatedBorderStyle';
-import { CardTitle } from '../general/CardTitle';
 import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 
 type BuyCardProps = {

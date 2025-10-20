@@ -4,12 +4,11 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import { PortfolioTrackerInfo, ViewOnlyWalletInfo } from '@suite-native/trading-atoms';
 
 import { SellTabContent } from './SellTabContent';
 import { selectIsTradingSellEnabled } from '../../selectors/commonSelectors';
-import { PortfolioTrackerInfo } from '../general/Error/PorfolioTrackerInfo';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
-import { ViewOnlyWalletInfo } from '../general/Error/ViewOnlyWalletInfo';
 
 const SellTabEnabled = () => {
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);

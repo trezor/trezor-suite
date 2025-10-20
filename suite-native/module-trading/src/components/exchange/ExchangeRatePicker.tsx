@@ -8,9 +8,7 @@ import {
 } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-
-import { OverviewRow } from '../general/OverviewRow';
-import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
+import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 
 type ExchangeRatePickerRightProps = {
     isLoading: boolean;

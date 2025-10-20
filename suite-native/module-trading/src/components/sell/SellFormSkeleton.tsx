@@ -1,7 +1,5 @@
 import { Card, VStack } from '@suite-native/atoms';
-
-import { SkeletonLargeRow } from '../general/Skeleton/SkeletonLargeRow';
-import { SkeletonSmall } from '../general/Skeleton/SkeletonSmall';
+import { SkeletonLargeRow, SkeletonSmall } from '@suite-native/trading-atoms';
 
 export const SellFormSkeleton = () => (
     <VStack spacing="sp16">

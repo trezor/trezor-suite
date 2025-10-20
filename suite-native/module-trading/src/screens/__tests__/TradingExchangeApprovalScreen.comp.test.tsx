@@ -27,7 +27,8 @@ jest.mock('@react-navigation/native', () => ({
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
 }));
 
-jest.mock('../../hooks/general/useBottomSheetControls', () => ({
+jest.mock('@suite-native/trading-atoms', () => ({
+    ...jest.requireActual('@suite-native/trading-atoms'),
     useBottomSheetControls: () => ({
         isSheetVisible: false,
         showSheet: mockShowSheet,

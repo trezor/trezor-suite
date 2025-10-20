@@ -1,8 +1,8 @@
 import { Dispatch, useCallback } from 'react';
 
 import type { FieldPathValue, Path, UseFormReturn } from '@suite-native/forms';
+import { useBottomSheetControls } from '@suite-native/trading-atoms';
 
-import { useBottomSheetControls } from './useBottomSheetControls';
 import { BuyFormValues } from '../../types/buy';
 import { ExchangeFormValues } from '../../types/exchange';
 import { SellFormValues } from '../../types/sell';

@@ -1,8 +1,7 @@
 import { TradingType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
+import { WarningCard } from '@suite-native/trading-atoms';
 import { exhaustive } from '@trezor/type-utils';
-
-import { WarningCard } from './WarningCard';
 
 export type TradingTypeDisabledProps = {
     tradingType: TradingType;
@@ -29,7 +28,7 @@ const useTitle = (tradingType: TradingType) => {
             return exhaustive(tradingType);
     }
 
-    return translate('moduleTrading.error.tradingTypeDisabledTitle', {
+    return translate('tradingAtoms.error.tradingTypeDisabledTitle', {
         tradingType: tradingTypeTitle,
     });
 };

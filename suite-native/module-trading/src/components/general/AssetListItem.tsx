@@ -5,9 +5,9 @@ import { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-confi
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { NetworkBadge } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { NetworkBadge } from './NetworkBadge';
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
 
 export type AssetListItemProps = {

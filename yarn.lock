@@ -12586,6 +12586,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
+    "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -12605,7 +12606,6 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.1"
     react-native-webview: "npm:13.15.0"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
   languageName: unknown
   linkType: soft
 
@@ -12957,6 +12957,28 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.1.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-atoms@workspace:*, @suite-native/trading-atoms@workspace:suite-native/trading-atoms":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-atoms@workspace:suite-native/trading-atoms"
+  dependencies:
+    "@react-navigation/native": "npm:7.1.17"
+    "@reduxjs/toolkit": "npm:2.9.1"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.4"
+    react-native-gesture-handler: "npm:2.28.0"
+    react-native-reanimated: "npm:~3.19.3"
+    type-fest: "npm:4.24.0"
   languageName: unknown
   linkType: soft
 

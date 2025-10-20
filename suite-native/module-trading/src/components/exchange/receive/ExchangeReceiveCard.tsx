@@ -1,11 +1,11 @@
 import { Card, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { CardTitle } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ExchangeReceiveAccountCryptoBalance } from './ExchangeReceiveAccountCryptoBalance';
 import { ExchangeTradeableAssetPicker } from './ExchangeTradeableAssetPicker';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
-import { CardTitle } from '../../general/CardTitle';
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 const nonEditableCardStyle = prepareNativeStyle(({ colors, borders }) => ({

@@ -10,11 +10,9 @@ import {
 } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 
 import { getKycPolicyWarningTranslation } from '../../utils/general/kycUtils';
-import { OverviewRow } from '../general/OverviewRow';
-import { OverviewValueSkeleton } from '../general/OverviewValueSkeleton';
-import { ProviderLogo } from '../general/ProviderLogo';
 
 type ExchangeProviderPickerRightProps = {
     isLoading: boolean;

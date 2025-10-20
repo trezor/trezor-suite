@@ -5,13 +5,15 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import {
+    BtcOnlyFirmwareInfo,
+    PortfolioTrackerInfo,
+    ViewOnlyWalletInfo,
+} from '@suite-native/trading-atoms';
 
 import { ExchangeTabContent } from './ExchangeTabContent';
 import { selectIsTradingExchangeEnabled } from '../../selectors/commonSelectors';
-import { BtcOnlyFirmwareInfo } from '../general/Error/BtcOnlyFirmwareInfo';
-import { PortfolioTrackerInfo } from '../general/Error/PorfolioTrackerInfo';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
-import { ViewOnlyWalletInfo } from '../general/Error/ViewOnlyWalletInfo';
 
 const ExchangeTabEnabled = () => {
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);

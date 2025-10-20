@@ -25,14 +25,13 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { ProviderLogo, useBottomSheetControls } from '@suite-native/trading-atoms';
 import { BigNumber } from '@trezor/utils';
 
 import { TradeInfoHeader } from '../components/TradeInfo/TradeInfoHeader';
 import { TradeInfoRow } from '../components/TradeInfo/TradeInfoRow';
 import { ExchangeApprovalLimitSheet } from '../components/exchange/ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
-import { ProviderLogo } from '../components/general/ProviderLogo';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
-import { useBottomSheetControls } from '../hooks/general/useBottomSheetControls';
 import { selectExchangeSelectedSendAccount } from '../selectors/exchangeSelectors';
 
 type TradingExchangeApprovalScreenProps = StackToStackCompositeScreenProps<

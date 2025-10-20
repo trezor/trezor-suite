@@ -5,12 +5,12 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import type { UseFormReturn } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { OverviewRow } from '@suite-native/trading-atoms';
 
+import { CountrySheet } from './CountrySheet';
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { BuyFormType, BuyFormValues } from '../../../types/buy';
 import { SellFormType, SellFormValues } from '../../../types/sell';
-import { OverviewRow } from '../OverviewRow';
-import { CountrySheet } from './CountrySheet';
 
 export type CountryOfResidencePickerProps<Form extends BuyFormType | SellFormType> = {
     testID: string;

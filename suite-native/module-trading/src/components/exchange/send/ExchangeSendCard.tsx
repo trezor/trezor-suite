@@ -1,12 +1,11 @@
 import { AnimatedCard, HStack, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { CardTitle, useAnimatedBorderStyle } from '@suite-native/trading-atoms';
 
 import { ExchangeSendAccountCryptoBalance } from './ExchangeSendAccountCryptoBalance';
 import { ExchangeSendAmountBadge } from './ExchangeSendAmountBadge';
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
-import { useAnimatedBorderStyle } from '../../../hooks/general/useAnimatedBorderStyle';
-import { CardTitle } from '../../general/CardTitle';
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
 export type ExchangeSendCardProps = {

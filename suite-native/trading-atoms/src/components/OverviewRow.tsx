@@ -74,7 +74,7 @@ export const OverviewRow = ({
                         <InlineAlertBox
                             variant="warning"
                             title={warning}
-                            accessibilityHint={translate('moduleTrading.tradingScreen.warning')}
+                            accessibilityHint={translate('generic.warning')}
                         />
                     </Box>
                 )}
