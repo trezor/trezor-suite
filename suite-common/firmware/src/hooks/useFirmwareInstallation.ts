@@ -260,6 +260,7 @@ export const useFirmwareInstallation = (
         showConfirmationPill,
         reconnectEvent,
         buttonEvent,
+        pinRequested,
         progressEvent,
         deviceIsWaitingForConfirmationToConnectToHost,
     };
