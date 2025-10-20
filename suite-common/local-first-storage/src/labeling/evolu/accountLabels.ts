@@ -8,8 +8,8 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountDescriptor } from '@suite-common/wallet-types';
+import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../../evoluUtils';
 import { normalizeLabel } from '../normalizeLabel';
@@ -76,8 +76,8 @@ export class AccountLabels {
                 }
 
                 onChange({
-                    accountDescriptor: label.accountDescriptor as unknown as AccountDescriptor,
-                    networkSymbol: label.networkSymbol as NetworkSymbol,
+                    accountDescriptor: asAccountDescriptor(label.accountDescriptor),
+                    networkSymbol: asNetworkSymbol(label.networkSymbol),
                     label: label.label,
                 });
             }

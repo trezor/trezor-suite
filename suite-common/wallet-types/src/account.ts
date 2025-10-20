@@ -109,6 +109,7 @@ export type AccountFailureSpecific =
 
 export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceStaticSessionId>
 export type AccountDescriptor = string & Branded<'AccountDescriptor'>; // Descriptor or xpub/zpub/..
+export const asAccountDescriptor = (value: string) => value as AccountDescriptor;
 
 export type Account = {
     deviceState: StaticSessionId;

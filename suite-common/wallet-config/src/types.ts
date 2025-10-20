@@ -26,6 +26,9 @@ export type NetworkSymbol =
     | 'txlm'
     | 'tada'
     | 'dsol';
+
+export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
+
 /**
  * Used for some edge cases where extension of NetworkSymbol is necessary.
  * Autocomplete is working as expected but can be passed any string.
