@@ -7,6 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest --coverage"
     },
@@ -50,6 +51,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
+        "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
@@ -67,8 +69,7 @@
         "react-native-reanimated": "^3.18.0",
         "react-native-safe-area-context": "5.6.1",
         "react-native-webview": "13.15.0",
-        "react-redux": "9.2.0",
-        "type-fest": "4.24.0"
+        "react-redux": "9.2.0"
     },
     "devDependencies": {
         "@suite-common/analytics": "workspace:*",

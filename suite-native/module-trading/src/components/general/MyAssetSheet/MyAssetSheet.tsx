@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { TradingType } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
+import { BottomSheetSectionList } from '@suite-native/trading-atoms';
 
-import { BottomSheetSectionList } from '../BottomSheetSectionList';
 import { MyAssetListEmptyComponent } from './MyAssetListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, MyAssetListItem, MyAssetListItemProps } from './MyAssetListItem';
 import { MyAssetListSectionHeader } from './MyAssetListSectionHeader';

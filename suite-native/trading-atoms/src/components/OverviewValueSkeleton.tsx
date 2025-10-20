@@ -11,7 +11,7 @@ export const OverviewValueSkeleton = () => {
         <BoxSkeleton
             height={SKELETON_HEIGHT}
             width={SKELETON_WIDTH}
-            accessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
+            accessibilityLabel={translate('tradingAtoms.quotesLoadingLabel')}
         />
     );
 };

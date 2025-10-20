@@ -11,7 +11,7 @@ export type AmountEditingDoneButtonProps = {
 export const AmountEditingDoneButton = ({ testID }: AmountEditingDoneButtonProps) => (
     <AnimatedBox entering={FadeInDown} exiting={FadeOutDown}>
         <Button onPress={Keyboard.dismiss} colorScheme="tertiaryElevation0" testID={testID}>
-            <Translation id="moduleTrading.tradingScreen.amountEditingDoneButton" />
+            <Translation id="generic.buttons.done" />
         </Button>
     </AnimatedBox>
 );

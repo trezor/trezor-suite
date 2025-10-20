@@ -13,6 +13,7 @@ export const messages = {
             confirm: 'Confirm',
             confirmSelection: 'Confirm selection',
             continue: 'Continue',
+            done: 'Done',
             disable: 'Disable',
             dismiss: 'Dismiss',
             eject: 'Eject',
@@ -63,6 +64,7 @@ export const messages = {
             },
         },
         tokens: '+ Tokens',
+        warning: 'Warning',
     },
     icons: {
         networkIconHint: 'Network Icon',
@@ -2206,7 +2208,6 @@ export const messages = {
             noCountryOfResidence: 'No country of residence selected',
             selectedCountryOfResidence: 'Selected country of residence',
             provider: 'Provider',
-            amountEditingDoneButton: 'Done',
             quotesLoadingLabel: 'Fetching offers...',
             rate: 'Rate',
             selectedRate: 'Selected rate',
@@ -2223,7 +2224,6 @@ export const messages = {
                 settings: 'Advanced settings',
             },
             kycWarning: 'This provider requires to know your identity.',
-            warning: 'Warning',
             buttons: {
                 continue: 'Continue',
                 swap: 'Swap',
@@ -2536,31 +2536,14 @@ export const messages = {
             },
         },
         error: {
-            deviceOfflineTitle: 'Trading is not available offline',
             deviceOfflineDescription:
                 'Trading needs an internet connection to be available. Check your mobile phone settings and try again.',
-            serverOfflineTitle: "It's not you, it's us.",
-            serverOfflineDescription:
-                'Something is wrong on our end. Please, wait a minute or try again later.',
-            serverOfflineRetry: 'Try again',
-            tradingTypeDisabledTitle: '{tradingType} disabled',
-            viewOnlyWalletTitle: 'View-only wallet',
-            viewOnlyWalletDescription:
-                'Selling & swapping are disabled. Connect your device to enable full functionality.',
-            portfolioTrackerTitle: 'Portfolio Tracker',
-            portfolioTrackerDescription:
-                'Selling & swapping are disabled. Connect your device to enable full functionality.',
-            btcOnlyFirmwareTitle: 'Bitcoin-only firmware',
-            btcOnlyFirmwareDescription:
-                'Swapping is unavailable with Bitcoin-only firmware. To enable, switch to universal firmware.',
-            notAvailableInCountryTitle: 'Trading is not yet available in your country',
         },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
         networkName: 'Network name',
         coinName: 'Coin name',
         coinSymbol: 'Coin symbol',
-        providerLogo: 'Provider logo',
         providerListItem: {
             rate: 'Rate',
             youGet: 'You get',
@@ -2815,5 +2798,30 @@ export const messages = {
             trade: 'Trade',
             settings: 'Settings',
         },
+    },
+    tradingAtoms: {
+        error: {
+            deviceOfflineTitle: 'Trading is not available offline',
+            deviceOfflineDescription:
+                'Trading needs an internet connection to be available. Check your mobile phone settings and try again.',
+            serverOfflineTitle: "It's not you, it's us.",
+            serverOfflineDescription:
+                'Something is wrong on our end. Please, wait a minute or try again later.',
+            serverOfflineRetry: 'Try again',
+            tradingTypeDisabledTitle: '{tradingType} disabled',
+            viewOnlyWalletTitle: 'View-only wallet',
+            viewOnlyWalletDescription:
+                'Selling & swapping are disabled. Connect your device to enable full functionality.',
+            portfolioTrackerTitle: 'Portfolio Tracker',
+            portfolioTrackerDescription:
+                'Selling & swapping are disabled. Connect your device to enable full functionality.',
+            btcOnlyFirmwareTitle: 'Bitcoin-only firmware',
+            btcOnlyFirmwareDescription:
+                'Swapping is unavailable with Bitcoin-only firmware. To enable, switch to universal firmware.',
+            notAvailableInCountryTitle: 'Trading is not yet available in your country',
+        },
+        providerLogo: 'Provider logo',
+        quotesLoadingLabel: 'Fetching offers...',
+        networkName: 'Network name',
     },
 };

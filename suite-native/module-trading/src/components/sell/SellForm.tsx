@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, VStack } from '@suite-native/atoms';
+import { AmountEditingDoneButton } from '@suite-native/trading-atoms';
 
 import { SellAlert } from './SellAlert';
 import { SellCard } from './SellCard';
@@ -11,7 +12,6 @@ import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { useSellQuotes } from '../../hooks/sell/useSellQuotes';
-import { AmountEditingDoneButton } from '../general/AmountEditingDoneButton';
 
 type SellFormProps = {
     shouldAnimateEntering?: boolean;
