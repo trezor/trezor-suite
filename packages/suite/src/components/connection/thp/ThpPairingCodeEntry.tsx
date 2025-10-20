@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { thpActions } from '@suite-common/thp';
 import { PinInput, Row, Spinner } from '@trezor/components';
@@ -21,17 +21,17 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
 
     const dispatch = useDispatch();
 
-    const onCodeEntry = (tag: string) => {
-        setLoading(true);
-        dispatch(thpActions.setLastThpCode({ code: tag }));
-        TrezorConnect.uiResponse({
-            type: 'ui-receive_thp_pairing_tag',
-            payload: {
-                source: 'code-entry',
-                tag,
-            },
-        });
-    };
+    const onCodeEntry = useCallback(
+        (tag: string) => {
+            setLoading(true);
+            dispatch(thpActions.setLastThpCode({ code: tag }));
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_thp_pairing_tag',
+                payload: { source: 'code-entry', tag },
+            });
+        },
+        [dispatch],
+    );
 
     return (
         <Row
