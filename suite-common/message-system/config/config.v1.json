@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-10-20T00:00:00+00:00",
-    "sequence": 117,
+    "timestamp": "2025-10-20T12:00:00+00:00",
+    "sequence": 118,
     "actions": [
         {
             "conditions": [
@@ -2155,6 +2155,46 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": ">=25.10.2",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "f2b80133-36f6-45c6-a262-33ac0d0c5dcc",
+                "priority": 2,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "ts7",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": ">=25.8.1",
                         "mobile": "!",
                         "web": "*"
@@ -2186,46 +2226,6 @@
                     {
                         "domain": "dashboard.promoBanner",
                         "visibleBanner": "tex",
-                        "flag": true
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ">=25.10.2",
-                        "mobile": "!",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "e179eda5-3ab1-48c9-8abc-940cf95c1f16",
-                "priority": 1,
-                "dismissible": true,
-                "variant": "info",
-                "category": "feature",
-                "content": {
-                    "en-GB": "Placehodler",
-                    "en": "Placehodler",
-                    "es": "Placehodler",
-                    "cs": "Placehodler",
-                    "de": "Placehodler",
-                    "fr": "Placehodler",
-                    "it": "Placehodler",
-                    "pt": "Placehodler",
-                    "tr": "Placehodler",
-                    "ru": "Placehodler",
-                    "ja": "Placehodler",
-                    "uk": "Placehodler",
-                    "hu": "Placehodler"
-                },
-                "feature": [
-                    {
-                        "domain": "dashboard.promoBanner",
-                        "visibleBanner": "ts7",
                         "flag": true
                     }
                 ]
