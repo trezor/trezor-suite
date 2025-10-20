@@ -229,12 +229,7 @@ export const prepareBundle = (field: Field<unknown>) => {
             });
         });
     } else if (field.type === 'union') {
-        field.current.forEach(batchField => {
-            if (field.name && batchField.name) {
-                batchField.name = field.name + '.' + batchField.name;
-            } else if (field.name) {
-                batchField.name = field.name;
-            }
+        const processBatchField = (batchField: Field<unknown>) => {
             batchField.path = [field.name];
             if (field.path) {
                 batchField.path = [...field.path, ...batchField.path];
@@ -242,6 +237,10 @@ export const prepareBundle = (field: Field<unknown>) => {
             if (batchField.type === 'array' || batchField.type === 'union') {
                 prepareBundle(batchField);
             }
+        };
+        field.current.forEach(processBatchField);
+        field.options.forEach(optionFields => {
+            optionFields.forEach(processBatchField);
         });
     }
 
