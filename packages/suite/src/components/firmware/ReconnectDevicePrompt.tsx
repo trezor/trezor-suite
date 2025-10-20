@@ -93,6 +93,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         reconnectEvent,
         buttonEvent,
         deviceIsWaitingForConfirmationToConnectToHost,
+        pinRequested,
     } = useFirmwareDesktopUpdate();
     const { device } = useDevice();
 
@@ -123,7 +124,9 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const showWebUsbButton = rebootPhase === 'disconnected' && isWebUsbTransport;
     const toNormal = reconnectEvent?.target === 'normal' && reconnectEvent.method === 'manual';
     const showConfirmOnDevice =
-        (!isManualRebootRequired && !isRebootDone) || deviceIsWaitingForConfirmationToConnectToHost;
+        (!isManualRebootRequired && !isRebootDone) ||
+        deviceIsWaitingForConfirmationToConnectToHost ||
+        pinRequested;
 
     const getHeading = () => {
         if (isRebootDone) {
@@ -171,7 +174,11 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     deviceModelInternal={eventDevice?.features?.internal_model}
                     deviceUnitColor={eventDevice?.features?.unit_color}
-                    isConfirmed={!buttonEvent && !deviceIsWaitingForConfirmationToConnectToHost}
+                    isConfirmed={
+                        !buttonEvent &&
+                        !deviceIsWaitingForConfirmationToConnectToHost &&
+                        !pinRequested
+                    }
                 />
             )}
             <Modal.ModalBase

@@ -20,10 +20,17 @@ export const useFirmwareDesktopUpdate = (
         selectIsDeviceConnectedViaBluetoothLowOnBattery,
     );
 
-    const { firmwareUpdate, originalDevice, reconnectEvent, operation, progress, ...rest } =
-        useFirmwareInstallation({
-            shouldSwitchFirmwareType,
-        });
+    const {
+        firmwareUpdate,
+        originalDevice,
+        reconnectEvent,
+        operation,
+        progress,
+        pinRequested,
+        ...rest
+    } = useFirmwareInstallation({
+        shouldSwitchFirmwareType,
+    });
 
     const desktopFirmwareUpdate = (arg: FirmwareUpdateProps) => {
         if (isDeviceConnectedViaBluetoothLowOnBattery) {
@@ -65,5 +72,6 @@ export const useFirmwareDesktopUpdate = (
         // NOTE: on desktop, set the progress during restart to 0, when device is just going to the bootloader
         ...updateOperation,
         showReconnectPrompt: rest.showReconnectPrompt || restartingToNormalWithPinProtection,
+        pinRequested: pinRequested || restartingToNormalWithPinProtection,
     };
 };
