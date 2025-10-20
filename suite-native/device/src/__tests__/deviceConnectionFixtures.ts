@@ -2,7 +2,13 @@ import { UnknownAction } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { extraDependenciesMock, getSuiteDevice } from '@suite-common/test-utils';
-import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    prepareDeviceReducer,
+    prepareWalletSettingsReducer,
+} from '@suite-common/wallet-core';
+import { deviceOnboardingSlice } from '@suite-native/device-onboarding';
+import { featureFlagsSlice } from '@suite-native/feature-flags';
 import { NativeFirmwareState, nativeFirmwareReducer } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
@@ -10,40 +16,64 @@ import {
     HomeStackRoutes,
     RootStackRoutes,
 } from '@suite-native/navigation';
-import { UI } from '@trezor/connect';
+import type { RootStackParamList } from '@suite-native/navigation';
+import { appSettingsSlice } from '@suite-native/settings';
+import { FirmwareType, UI } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 const INIT_ACTION = { type: 'foo' };
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesMock);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesMock);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesMock);
 
 type InitialStateConfig = {
     nativeFirmware?: Partial<NativeFirmwareState>;
     device?: Partial<ReturnType<typeof deviceReducer>>;
+    deviceOnboarding?: Partial<typeof deviceOnboardingSlice.reducer>;
+    walletSettings?: Partial<ReturnType<typeof walletSettingsReducer>>;
+    appSettings?: Partial<typeof appSettingsSlice.reducer>;
+    featureFlags?: Partial<typeof featureFlagsSlice.reducer>;
 };
 
 type RootState = {
     nativeFirmware: NativeFirmwareState;
     device: ReturnType<typeof deviceReducer>;
+    deviceOnboarding?: Partial<typeof deviceOnboardingSlice.reducer>;
+    wallet: {
+        settings: ReturnType<typeof walletSettingsReducer>;
+    };
     messageSystem: ReturnType<typeof messageSystemReducer>;
+    appSettings: ReturnType<typeof appSettingsSlice.reducer>;
+    featureFlags: ReturnType<typeof featureFlagsSlice.reducer>;
+};
+
+// All routes typed directly from RootStackParamList
+type RouteEntry = {
+    [K in keyof RootStackParamList]: {
+        name: K;
+        params: RootStackParamList[K];
+    };
+}[keyof RootStackParamList];
+
+type ResetNavigationRoute =
+    | RouteEntry
+    | {
+          name: RootStackRoutes.AppTabs;
+          params: { screen: HomeStackRoutes };
+      };
+
+type ResetNavigationTarget = {
+    index: number;
+    routes: ResetNavigationRoute[];
 };
 
 type NavigationTarget = {
     route: RootStackRoutes;
-    params: {
+    params?: {
         screen: string;
         params?: Record<string, any>;
     };
-};
-
-type ResetNavigationTarget = {
-    index: number;
-    routes: Array<{
-        name: RootStackRoutes;
-        params: {
-            screen: string;
-        };
-    }>;
 };
 
 type NavigationFixture = {
@@ -66,7 +96,14 @@ type NoNavigationFixture = {
     action: UnknownAction;
 };
 
-const buildInitialState = ({ nativeFirmware, device }: InitialStateConfig = {}): RootState => ({
+const buildInitialState = ({
+    nativeFirmware,
+    device,
+    walletSettings,
+    deviceOnboarding,
+    appSettings,
+    featureFlags,
+}: InitialStateConfig = {}): RootState => ({
     nativeFirmware: {
         ...nativeFirmwareReducer(undefined, INIT_ACTION),
         ...nativeFirmware,
@@ -75,7 +112,25 @@ const buildInitialState = ({ nativeFirmware, device }: InitialStateConfig = {}):
         ...deviceReducer(undefined, INIT_ACTION),
         ...device,
     },
-    messageSystem: messageSystemReducer(undefined, INIT_ACTION),
+    deviceOnboarding: {
+        ...deviceOnboardingSlice.reducer(undefined, INIT_ACTION),
+        ...deviceOnboarding,
+    },
+    wallet: {
+        settings: {
+            ...walletSettingsReducer(undefined, INIT_ACTION),
+            ...walletSettings,
+        },
+    },
+    appSettings: {
+        ...appSettingsSlice.reducer(undefined, INIT_ACTION),
+        ...appSettings,
+    },
+    messageSystem: { ...messageSystemReducer(undefined, INIT_ACTION) },
+    featureFlags: {
+        ...featureFlagsSlice.reducer(undefined, INIT_ACTION),
+        ...featureFlags,
+    },
 });
 
 // THP Pairing Fixtures
@@ -226,5 +281,217 @@ export const deviceDisconnectOnHomeFixtures: NoNavigationFixture[] = [
         description: 'does not navigate when already on Home screen',
         initialState: buildInitialState(),
         action: { type: deviceActions.deviceDisconnect.type, payload: getSuiteDevice() },
+    },
+];
+
+export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
+    {
+        description: 'blocks navigation when on a blacklisted route',
+        initialState: buildInitialState(),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice() },
+        },
+    },
+    {
+        description: 'blocks navigation when firmware installation is running',
+        initialState: buildInitialState({
+            nativeFirmware: { isFirmwareInstallationRunning: true },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice() },
+        },
+    },
+    {
+        description: 'blocks navigation when device is using passphrase',
+        initialState: buildInitialState({
+            device: {
+                selectedDevice: getSuiteDevice(
+                    {
+                        useEmptyPassphrase: false,
+                    },
+                    { passphrase_protection: true },
+                ),
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice() },
+        },
+    },
+    {
+        description: 'blocks navigation when device is remembered and a network is enabled',
+        initialState: buildInitialState({
+            device: {
+                devices: [getSuiteDevice()],
+            },
+            walletSettings: {
+                enabledNetworks: ['btc'],
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice() },
+        },
+    },
+    {
+        description: 'blocks onboarding navigation when device setup is not supported',
+        initialState: buildInitialState({}),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: {
+                    ...getSuiteDevice(
+                        { mode: 'initialize' },
+                        { initialized: false, internal_model: DeviceModelInternal.T1B1 },
+                    ),
+                },
+            },
+        },
+    },
+];
+
+export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
+    {
+        description: 'navigates to DeviceCompromisedModal when device is compromised',
+        initialState: buildInitialState({
+            appSettings: {
+                isDeviceAuthenticityCheckEnabled: true,
+            },
+            walletSettings: {
+                enabledNetworks: ['btc'],
+            },
+            device: {
+                selectedDevice: getSuiteDevice(),
+                deviceAuthenticity: {
+                    [getSuiteDevice().id ?? '']: { valid: false, error: 'foo' },
+                },
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: getSuiteDevice(),
+            },
+        },
+        expectedNavigation: {
+            route: RootStackRoutes.DeviceCompromisedModal,
+        },
+    },
+];
+
+export const deviceConnectUninitializedFixtures: ResetNavigationFixture[] = [
+    {
+        description: 'resets to Home then UninitializedDeviceLanding for new uninitialized device',
+        initialState: buildInitialState({}),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice(undefined, { initialized: false }) },
+        },
+        expectedReset: {
+            index: 1,
+            routes: [
+                {
+                    name: RootStackRoutes.AppTabs,
+                    params: {
+                        screen: HomeStackRoutes.Home,
+                    },
+                },
+                {
+                    name: RootStackRoutes.DeviceOnboardingStack,
+                    params: {
+                        screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+                        params: {
+                            deviceModel: DeviceModelInternal.T2T1,
+                        },
+                    },
+                },
+            ],
+        },
+    },
+    {
+        description: 'resets only to Home for uninitialized device when onboarding was cancelled',
+        initialState: buildInitialState({
+            deviceOnboarding: {
+                wasDeviceOnboardingCancelled: true,
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice(undefined, { initialized: false }) },
+        },
+        expectedReset: {
+            index: 0,
+            routes: [
+                {
+                    name: RootStackRoutes.AppTabs,
+                    params: {
+                        screen: HomeStackRoutes.Home,
+                    },
+                },
+            ],
+        },
+    },
+];
+
+export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
+    {
+        description:
+            'navigates to ConnectingDevice when connected new device and network is enabled',
+        initialState: buildInitialState({
+            walletSettings: {
+                enabledNetworks: ['btc'],
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice() },
+        },
+        expectedNavigation: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            params: {
+                screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
+            },
+        },
+    },
+    {
+        description: 'navigates to CoinEnablingInit when connected new and network is NOT enabled',
+        initialState: buildInitialState({}),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice() },
+        },
+        expectedNavigation: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            params: {
+                screen: AuthorizeDeviceStackRoutes.CoinEnablingInit,
+            },
+        },
+    },
+    {
+        description: 'Skips coin enabling for bitcoin only FW and goes to connecting screen',
+        initialState: buildInitialState({
+            device: {
+                selectedDevice: getSuiteDevice({
+                    useEmptyPassphrase: false,
+                }),
+            },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: {
+                    ...getSuiteDevice(),
+                    firmwareType: FirmwareType.BitcoinOnly,
+                },
+            },
+        },
+        expectedNavigation: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            params: {
+                screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
+            },
+        },
     },
 ];
