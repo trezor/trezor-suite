@@ -169,7 +169,7 @@ const waitForPairingTag = async (device: Device) => {
         selectedMethod: thpState.pairingMethod,
         nfcData: thpState.nfcData?.toString('hex'),
     };
-    device.prompt('thp_pairing', { payload }).then(response => {
+    device.prompt(DEVICE.THP_PAIRING, { payload }).then(response => {
         if (response.success) {
             dfd.resolve(response.payload);
         } else {
