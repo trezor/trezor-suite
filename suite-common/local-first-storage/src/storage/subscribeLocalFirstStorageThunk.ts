@@ -20,6 +20,10 @@ export const subscribeLocalFirstStorageThunk = createThunk<
         const deviceStaticSessionId = device.state?.staticSessionId;
 
         if (deviceStaticSessionId === undefined) {
+            console.error(
+                'Evolu: cannot subscribe local first storage, missing deviceStaticSessionId',
+            );
+
             return;
         }
 
@@ -37,6 +41,8 @@ export const subscribeLocalFirstStorageThunk = createThunk<
         const evoluKeys = reselectedDevice?.localFirstStorageSecret?.evoluKeys;
 
         if (evoluKeys === undefined) {
+            console.error('Evolu: Keys set to reselectedDevice');
+
             return;
         }
 

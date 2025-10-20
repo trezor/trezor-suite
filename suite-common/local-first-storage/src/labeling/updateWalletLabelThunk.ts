@@ -21,6 +21,11 @@ export const updateWalletLabelThunk = createThunk<void, UpdateWalletLabelThunkPa
         const evoluKeys = device?.localFirstStorageSecret?.evoluKeys;
 
         if (evoluKeys === undefined) {
+            console.error(
+                'Evolu: [updateWalletLabelThunk] no keys found on the selected device',
+                deviceStaticSessionId,
+            );
+
             return;
         }
 
