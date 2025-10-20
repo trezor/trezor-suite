@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import type { WalletDescriptor } from '@suite-common/wallet-types';
+import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../../evoluUtils';
 import { normalizeLabel } from '../normalizeLabel';
@@ -70,7 +70,7 @@ export class WalletLabels {
                 }
 
                 onChange({
-                    walletDescriptor: label.walletDescriptor as unknown as WalletDescriptor,
+                    walletDescriptor: asWalletDescriptor(label.walletDescriptor),
                     label: label.label,
                 });
             }
