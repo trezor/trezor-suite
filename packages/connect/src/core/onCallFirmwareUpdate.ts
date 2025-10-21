@@ -39,7 +39,7 @@ type ReconnectContext = {
     postMessage: PostMessage;
     log: Log;
     abortSignal: AbortSignal;
-    uiPromises: { create: UiPromiseCreator };
+    uiPromises: { create: UiPromiseCreator; rejectAll: (e: Error) => void };
 };
 
 const waitForReconnectedDevice = async (
@@ -139,6 +139,8 @@ const waitForReconnectedDevice = async (
                     skipLanguageChecks: true,
                 });
             } catch (error) {
+                uiPromises.rejectAll(error);
+
                 // error in THP pairing
                 if (error.code === 'Device_ThpPairingTagInvalid') {
                     thpPairingError = true;
