@@ -14118,7 +14118,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: "npm:38.0.0"
+    electron: "npm:35.7.5"
   languageName: unknown
   linkType: soft
 

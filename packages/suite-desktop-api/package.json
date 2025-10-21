@@ -19,6 +19,6 @@
         "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
-        "electron": "38.0.0"
+        "electron": "35.7.5"
     }
 }
