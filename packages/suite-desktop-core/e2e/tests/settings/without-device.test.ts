@@ -45,7 +45,11 @@ test.describe(
 
                 await page.getByTestId('@wallet/menu/wallet-send').click();
                 await trezorUserEnvLink.stopEmu();
-
+                await expect(
+                    page
+                        .getByTestId('@menu/switch-device')
+                        .getByTestId('@deviceStatus-disconnected'),
+                ).toBeVisible({ timeout: 30_000 });
                 await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
                 await tradingPage.sendAmountInput.fill('0.3');
 
