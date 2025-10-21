@@ -73,7 +73,8 @@ export interface Flags {
     showBluetoothDebugInfo: boolean;
     stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
     solanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
-    isLocalFirstStorageEnabled: boolean;
+    showLocalFirstStorage: boolean; // toogle in debug menu to show/hide local first storage settings in labeling section
+    isLocalFirstStorageEnabled: boolean; // flag indicating whether local first storage is enabled, move this to experimental later maybe?
     isLocalFirstStorageDebugEnabled: boolean;
     hasSeenDisconnectTooltip: boolean; // tooltip shown when device disconnects - show only once ever
 }
@@ -168,6 +169,7 @@ const initialState: SuiteState = {
         showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
         solanaLimitedHistoryBannerClosed: false,
+        showLocalFirstStorage: false,
         isLocalFirstStorageEnabled: false,
         isLocalFirstStorageDebugEnabled: false,
         hasSeenDisconnectTooltip: false,

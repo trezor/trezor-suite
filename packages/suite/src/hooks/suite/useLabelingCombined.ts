@@ -26,25 +26,40 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
             : undefined,
     );
 
-    const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled } =
+    const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled, showLocalFirstStorage } =
         useSelector(selectSuiteFlags);
     const legacyMetadataState = useSelector(state => state.metadata);
 
-    const legacyDisable = () => {
-        dispatch(metadataActions.disableMetadata());
+    const toggleShowLocalFirstStorage = () => {
+        dispatch(setFlag('showLocalFirstStorage', !showLocalFirstStorage));
     };
-    const localFirstDisable = () => {
-        dispatch(setFlag('isLocalFirstStorageEnabled', false));
-        dispatch(disposeAllLocalFirstStorageThunk());
+
+    const legacyDisableIfNeeded = () => {
+        if (legacyMetadataState.enabled) dispatch(metadataActions.disableMetadata());
     };
-    const localFirstEnable = () => {
-        legacyDisable(); // Enabling Evolu implicitly disables Legacy Labeling
-        dispatch(setFlag('isLocalFirstStorageEnabled', true));
-        dispatch(initSuiteLocalFirstStorageThunk());
+
+    const localFirstDisableIfNeeded = () => {
+        if (isLocalFirstStorageEnabled) {
+            dispatch(setFlag('isLocalFirstStorageEnabled', false));
+            dispatch(disposeAllLocalFirstStorageThunk());
+        }
     };
-    const legacyEnable = () => {
-        localFirstDisable(); // Enabling Legacy Labeling implicitly disables Evolu
-        dispatch(metadataLabelingActions.init(true));
+
+    const localFirstEnableIfNeeded = () => {
+        // Enabling Evolu implicitly disables Legacy Labeling
+        if (legacyMetadataState.enabled) legacyDisableIfNeeded();
+
+        if (!isLocalFirstStorageEnabled) {
+            dispatch(setFlag('isLocalFirstStorageEnabled', true));
+            dispatch(initSuiteLocalFirstStorageThunk());
+        }
+    };
+
+    const legacyEnableIfNeeded = () => {
+        if (!legacyMetadataState.enabled) {
+            localFirstDisableIfNeeded(); // Enabling Legacy Labeling implicitly disables Evolu
+            dispatch(metadataLabelingActions.init(true));
+        }
     };
 
     const isEvoluSupportedByDevice = device?.unavailableCapabilities?.evolu === undefined;
@@ -53,16 +68,18 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
 
     return {
         /** New Labeling: LocalFirstStorage (Evolu) */
+        showLocalFirstStorage,
+        toggleShowLocalFirstStorage,
         isLocalFirstStorageEnabled,
         isEvoluSupportedByDevice,
         isLocalFirstStorageDebugEnabled,
         hasDeviceLocalFirstStorageKeys,
-        localFirstEnable,
-        localFirstDisable,
+        localFirstEnableIfNeeded,
+        localFirstDisableIfNeeded,
 
         /** Legacy Labeling */
         legacyMetadataState,
-        legacyEnable,
-        legacyDisable,
+        legacyEnableIfNeeded,
+        legacyDisableIfNeeded,
     };
 };
