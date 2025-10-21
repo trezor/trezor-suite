@@ -141,7 +141,7 @@ export const useFirmwareInstallation = (
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
-    const deviceIsWaitingForConfirmationToConnectToHost =
+    const deviceIsWaitingForConfirmationToInitiateConnection =
         reconnectEvent?.method === 'auto' && reconnectEvent.target === 'bootloader';
     const pinRequested = Boolean(
         buttonEvent?.code && ['ButtonRequest_PinEntry'].includes(buttonEvent.code),
@@ -154,7 +154,7 @@ export const useFirmwareInstallation = (
             originalDevice,
         }) ||
         showManualReconnectPrompt ||
-        deviceIsWaitingForConfirmationToConnectToHost ||
+        deviceIsWaitingForConfirmationToInitiateConnection ||
         pinRequested;
 
     const deviceWillBeWiped = determineIfDeviceWillBeWiped(
@@ -262,6 +262,6 @@ export const useFirmwareInstallation = (
         buttonEvent,
         pinRequested,
         progressEvent,
-        deviceIsWaitingForConfirmationToConnectToHost,
+        deviceIsWaitingForConfirmationToInitiateConnection,
     };
 };

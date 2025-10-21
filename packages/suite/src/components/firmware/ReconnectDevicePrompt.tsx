@@ -92,7 +92,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         status,
         reconnectEvent,
         buttonEvent,
-        deviceIsWaitingForConfirmationToConnectToHost,
+        deviceIsWaitingForConfirmationToInitiateConnection,
         pinRequested,
     } = useFirmwareDesktopUpdate();
     const { device } = useDevice();
@@ -125,7 +125,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const toNormal = reconnectEvent?.target === 'normal' && reconnectEvent.method === 'manual';
     const showConfirmOnDevice =
         (!isManualRebootRequired && !isRebootDone) ||
-        deviceIsWaitingForConfirmationToConnectToHost ||
+        deviceIsWaitingForConfirmationToInitiateConnection ||
         pinRequested;
 
     const getHeading = () => {
@@ -176,7 +176,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                     deviceUnitColor={eventDevice?.features?.unit_color}
                     isConfirmed={
                         !buttonEvent &&
-                        !deviceIsWaitingForConfirmationToConnectToHost &&
+                        !deviceIsWaitingForConfirmationToInitiateConnection &&
                         !pinRequested
                     }
                 />
