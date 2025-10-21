@@ -2,6 +2,7 @@ import { useTheme } from 'styled-components';
 
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 import { borders } from '@trezor/theme';
 
 import { selectIsUnpairingDevice } from 'src/actions/bluetooth/desktopBluetoothSelectors';
@@ -155,14 +156,16 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <DontSeeTrezorPill onClick={toggleShowHints} />
             <Modal.ModalBase data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
                 <ConnectModalContent isBluetoothMode={false}>
-                    <Button
-                        icon="bluetooth"
-                        onClick={toggleBluetoothMode}
-                        variant="info"
-                        size="medium"
-                    >
-                        <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
-                    </Button>
+                    {isDesktop() && (
+                        <Button
+                            icon="bluetooth"
+                            onClick={toggleBluetoothMode}
+                            variant="info"
+                            size="medium"
+                        >
+                            <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
+                        </Button>
+                    )}
                 </ConnectModalContent>
             </Modal.ModalBase>
         </Modal.Backdrop>
