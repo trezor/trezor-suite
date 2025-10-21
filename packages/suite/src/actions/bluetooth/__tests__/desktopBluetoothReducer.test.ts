@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { BluetoothManufacturerData, prepareInitialState } from '@suite-common/bluetooth';
+import { BluetoothManufacturerData } from '@suite-common/bluetooth';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
 import {
-    DesktopBluetoothState,
     bluetoothSlice,
+    initialDesktopBluetoothState,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
 } from '../desktopBluetoothReducer';
@@ -20,12 +20,6 @@ const manufacturerData: BluetoothManufacturerData = {
 };
 
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependenciesMock);
-
-const initialState: DesktopBluetoothState = {
-    ...prepareInitialState(),
-    connectingDeviceIds: [],
-    isUnpairingDevice: false,
-};
 
 const disconnectedDeviceB: DesktopBluetoothDevice = {
     id: asBluetoothDeviceId('B'),
@@ -42,7 +36,7 @@ describe('desktopBluetoothReducer', () => {
             extra: {},
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
-                bluetooth: { ...initialState, knownDevices: [disconnectedDeviceB] },
+                bluetooth: { ...initialDesktopBluetoothState, knownDevices: [disconnectedDeviceB] },
             },
         });
 

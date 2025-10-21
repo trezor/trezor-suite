@@ -6,6 +6,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import {
+    setBluetoothDeviceNeedsManualPairing,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
 } from './desktopBluetoothReducer';
@@ -30,6 +31,13 @@ export const bluetoothConnectDeviceThunk = createThunk<
         desktopApi.appFocus();
 
         if (!result.success) {
+            if (result.error === 'PairingUiMissing') {
+                dispatch(stopConnectingBluetoothDevice({ deviceId }));
+                dispatch(setBluetoothDeviceNeedsManualPairing(true));
+
+                return fulfillWithValue({ success: result.success });
+            }
+
             // This can fail, but we are silent about this as the device may not be there anymore
             await bluetoothIpc.disconnectDevice(deviceId);
 
