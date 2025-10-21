@@ -14,20 +14,12 @@ import { RouterState } from 'src/reducers/suite/routerReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import WalletReducers from 'src/reducers/wallet';
 
+import { initialDesktopBluetoothState } from '../../../actions/bluetooth/desktopBluetoothReducer';
+
 export const initialAppState: AppState = {
     suite: suiteInitialState,
     device: initialState,
-    bluetooth: {
-        connectingDeviceIds: [],
-        isUnpairingDevice: false,
-        adapterStatus: 'unknown',
-        scanStatus: 'error',
-        nearbyDevices: null,
-        knownDevices: [],
-        ignoredDeviceIds: [],
-        autoConnectPolicy: {},
-        isDeviceOsUnpairingRequired: false,
-    },
+    bluetooth: initialDesktopBluetoothState,
     thp: {
         step: null,
         lastThpCode: undefined,

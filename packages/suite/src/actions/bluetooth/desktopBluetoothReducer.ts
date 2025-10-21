@@ -22,6 +22,16 @@ export type DesktopBluetoothState = BluetoothState<DesktopBluetoothDevice> & {
     // it may take some time. During that time, the Device is already disconnected,
     // but the user needs to be notified that something is happening.
     isUnpairingDevice: boolean;
+
+    // Flag to display Modal to instruct the user to open bluetooth settings and pair manually
+    isManualPairingRequired: boolean;
+};
+
+export const initialDesktopBluetoothState: DesktopBluetoothState = {
+    ...prepareInitialState<DesktopBluetoothDevice>(),
+    connectingDeviceIds: [],
+    isUnpairingDevice: false,
+    isManualPairingRequired: false,
 };
 
 export type WithBluetoothRootState = {
@@ -30,11 +40,7 @@ export type WithBluetoothRootState = {
 
 export const bluetoothSlice = createSliceWithExtraDeps({
     name: 'bluetooth',
-    initialState: {
-        ...prepareInitialState<DesktopBluetoothDevice>(),
-        connectingDeviceIds: [] as string[],
-        isUnpairingDevice: false,
-    } satisfies DesktopBluetoothState,
+    initialState: initialDesktopBluetoothState,
     reducers: {
         startConnectingBluetoothDevice: (state, { payload: { deviceId } }) => {
             state.connectingDeviceIds.push(deviceId);
@@ -44,6 +50,9 @@ export const bluetoothSlice = createSliceWithExtraDeps({
         },
         setIsUnpairingDevice: (state, { payload: { isUnpairing } }) => {
             state.isUnpairingDevice = isUnpairing;
+        },
+        setBluetoothDeviceNeedsManualPairing: (state, { payload }) => {
+            state.isManualPairingRequired = payload;
         },
     },
     extraReducers: (builder, extra) => {
@@ -73,4 +82,5 @@ export const {
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
     setIsUnpairingDevice,
+    setBluetoothDeviceNeedsManualPairing,
 } = bluetoothSlice.actions;

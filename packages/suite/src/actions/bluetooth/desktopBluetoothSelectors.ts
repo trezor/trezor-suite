@@ -5,3 +5,6 @@ export const selectConnectingDevices = (state: WithBluetoothRootState) =>
 
 export const selectIsUnpairingDevice = (state: WithBluetoothRootState) =>
     state.bluetooth.isUnpairingDevice;
+
+export const selectIsManualPairingRequired = (state: WithBluetoothRootState) =>
+    state.bluetooth.isManualPairingRequired;
