@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.9.0",
+        "@reduxjs/toolkit": "2.9.1",
         "@suite-common/message-system": "workspace:*",
         "expo-store-review": "~8.1.5",
         "react-redux": "9.2.0"
