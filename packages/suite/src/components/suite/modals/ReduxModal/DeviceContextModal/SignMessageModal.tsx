@@ -4,6 +4,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
+    DeviceRootState,
     selectAddressByNetworkAndPath,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
@@ -71,7 +72,7 @@ export const SignMessageModal = ({
         ? getNetworkByEvmChainId(eip712ChainId)
         : getNetwork(networkSymbol ?? 'eth');
 
-    const address = useSelector((state: AccountsRootState) =>
+    const address = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectAddressByNetworkAndPath(state, network, serializedPath),
     );
     const account =
