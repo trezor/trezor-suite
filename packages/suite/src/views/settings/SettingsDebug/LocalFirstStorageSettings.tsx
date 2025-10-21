@@ -4,7 +4,7 @@ import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     disposeAllLocalFirstStorageThunk,
 } from '@suite-common/local-first-storage';
-import { Banner, Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
@@ -19,30 +19,17 @@ import { selectLocalFirstStorageRelayUrl } from 'src/selectors/suite/suiteSelect
 export const LocalFirstStorageSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const {
-        legacyMetadataState,
-        isLocalFirstStorageEnabled,
-        isLocalFirstStorageDebugEnabled,
-        localFirstDisable,
-        localFirstEnable,
-    } = useLabelingCombined({
-        // In debug, there may not be any device selected and it is in fact irrelevant
-        deviceStaticSessionId: undefined,
-    });
+    const { isLocalFirstStorageDebugEnabled, toggleShowLocalFirstStorage, showLocalFirstStorage } =
+        useLabelingCombined({
+            // In debug, there may not be any device selected and it is in fact irrelevant
+            deviceStaticSessionId: undefined,
+        });
 
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
 
     const [relayUrl, setRelayUrl] = useState(localFirstStorageRelayUrl ?? '');
 
     const dispatch = useDispatch();
-
-    const handleToggleLocalFirstStorage = () => {
-        if (!isLocalFirstStorageEnabled) {
-            localFirstEnable();
-        } else {
-            localFirstDisable();
-        }
-    };
 
     const handleToggleLocalFirstStorageDebug = () => {
         dispatch(setFlag('isLocalFirstStorageDebugEnabled', !isLocalFirstStorageDebugEnabled));
@@ -68,23 +55,16 @@ export const LocalFirstStorageSettings = () => {
             <SectionItem>
                 <TextColumn
                     title="Local First Storage (Evolu)"
-                    description={
-                        legacyMetadataState.enabled && (
-                            <Banner>
-                                Legacy Labeling will be turned off by enabling Local First Storage
-                                (Evolu)
-                            </Banner>
-                        )
-                    }
+                    description="This enables Local First Storage (Evolu) for labeling in the application settings. This is an experimental feature."
                 />
                 <ActionColumn>
                     <Checkbox
-                        isChecked={isLocalFirstStorageEnabled}
-                        onClick={handleToggleLocalFirstStorage}
+                        isChecked={showLocalFirstStorage}
+                        onClick={toggleShowLocalFirstStorage}
                     />
                 </ActionColumn>
             </SectionItem>
-            {isLocalFirstStorageEnabled && (
+            {showLocalFirstStorage && (
                 <>
                     <SectionItem>
                         <TextColumn title="Relay URL" />
