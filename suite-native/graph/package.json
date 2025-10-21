@@ -13,7 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.17",
-        "@reduxjs/toolkit": "2.9.0",
+        "@reduxjs/toolkit": "2.9.1",
         "@sentry/react-native": "6.20.0",
         "@shopify/react-native-skia": "2.2.12",
         "@suite-common/formatters": "workspace:*",

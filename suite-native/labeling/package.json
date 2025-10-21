@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.1.5",
-        "@reduxjs/toolkit": "2.9.0",
+        "@reduxjs/toolkit": "2.9.1",
         "@suite-common/local-first-storage": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

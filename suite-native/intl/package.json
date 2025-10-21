@@ -18,7 +18,7 @@
         "translations:download": "crowdin download --all"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.9.0",
+        "@reduxjs/toolkit": "2.9.1",
         "@suite-common/suite-types": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@trezor/utils": "workspace:*",
