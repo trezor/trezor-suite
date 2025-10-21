@@ -162,6 +162,13 @@ const init = async () => {
     // https://github.com/electron/electron/issues/46538#issuecomment-2808806722
     app.commandLine.appendSwitch('gtk-version', '3');
 
+    // This is needed for web-workers to work.
+    // This only works up to Electron ^35. The flag was removed in
+    // later versions of the Chromium.
+    //
+    // See: https://github.com/electron/electron/issues/43556
+    app.commandLine.appendSwitch('disable-features', 'PlzDedicatedWorker');
+
     await app.whenReady();
 
     // Load bridge module first, it is required in both UI and daemon mode

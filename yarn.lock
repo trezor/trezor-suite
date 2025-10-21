@@ -14173,7 +14173,7 @@ __metadata:
     app-builder-lib: "npm:^26.0.12"
     chalk: "npm:^4.1.2"
     dotenv: "npm:^16.4.7"
-    electron: "npm:38.0.0"
+    electron: "npm:35.7.5"
     electron-devtools-installer: "npm:^4.0.0"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
@@ -14237,7 +14237,7 @@ __metadata:
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
     blake-hash: "npm:^2.0.0"
-    electron: "npm:38.0.0"
+    electron: "npm:35.7.5"
     electron-builder: "npm:26.0.3"
     openpgp: "npm:^6.2.2"
     usb: "npm:^2.15.0"
@@ -20613,7 +20613,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:38.0.0"
+    electron: "npm:35.7.5"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -20623,7 +20623,7 @@ __metadata:
   resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
   dependencies:
     "@trezor/eslint": "workspace:*"
-    electron: "npm:38.0.0"
+    electron: "npm:35.7.5"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -23069,16 +23069,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:38.0.0":
-  version: 38.0.0
-  resolution: "electron@npm:38.0.0"
+"electron@npm:35.7.5":
+  version: 35.7.5
+  resolution: "electron@npm:35.7.5"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/a245bf63fae60d1db85acddbe5787750e4d07acb273a1a5058163aee427fe07e52100b0d5a1e6b41efbdc1b398b6e7ec0fb3df75672e9148e95b31309d0c8f3a
+  checksum: 10/f3757f0b6f21ddd5ebf8b83becdaa3e47dc13473e5375e6e6aee638d7029e73d08d6a4170b37ad8c594057da139e7cdf4c8b82b70c2c1ad0306abdcc274c5fee
   languageName: node
   linkType: hard
 
