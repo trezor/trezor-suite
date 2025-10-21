@@ -219,7 +219,7 @@ const setupTest = () => {
         registerEvents: () => {},
         log: new Log('Test', false),
         abortSignal: new AbortController().signal,
-        uiPromises: { create: jest.fn() },
+        uiPromises: { create: jest.fn(), rejectAll: jest.fn() },
     };
 
     return {
