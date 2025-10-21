@@ -1,22 +1,4 @@
-export interface Slip15LikeInput {
-    version: string;
-    accountLabel?: string;
-    outputLabels?: {
-        [txid: string]: {
-            [vout: string]: string; // output index as a string
-        };
-    };
-    addressLabels?: {
-        [address: string]: string;
-    };
-}
-
-interface Bip329Label {
-    type: 'tx' | 'addr' | 'wallet' | 'xpub' | 'pubkey' | 'input' | 'output';
-    ref?: string; // The identifier for the object being labeled (e.g., txid, address, txid:vout)
-    label: string; // The label text
-    spendable?: boolean;
-}
+import { Bip329Label, Slip15LikeInput } from "./types";
 
 // Transforms a custom SLIP-15 like wallet label object into an array of BIP-329 label objects.
 export const transformToBip329 = (inputData: Slip15LikeInput): Bip329Label[] => {
@@ -33,6 +15,7 @@ export const transformToBip329 = (inputData: Slip15LikeInput): Bip329Label[] => 
                             type: 'output',
                             ref: `${txid}:${vout}`, // output reference is 'txid:vout'
                             label: outputs[vout],
+                            spendable: true, // right now Trezor Suite does not allow to set sependable so all are `true`.
                         });
                     }
                 }

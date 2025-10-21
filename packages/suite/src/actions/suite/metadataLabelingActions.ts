@@ -60,13 +60,16 @@ const fetchMetadata =
         }
 
         const entityMetadata = entity[encryptionVersion];
+        console.log('entityMetadata', entityMetadata);
         if (!entityMetadata) {
             throw new Error('trying to fetch entity without metadata');
         }
 
         const { fileName, aesKey } = entityMetadata;
 
+        console.log('fileName', fileName);
         const response = await providerInstance.getFileContent(fileName);
+        console.log('response', response);
 
         if (!response.success) {
             throw response;
@@ -158,6 +161,11 @@ const syncMetadataKeys =
         // note that devices are intentionally omitted here - device receives metadata
         // keys sooner when enabling labeling on device;
     };
+
+export const importBip329AndSaveMetaData = () => {
+    console.log('importBip329AndSaveMetaData');
+    // dispatch(metadataActions.setMetadata({ ...result, provider }));
+};
 
 export const fetchAndSaveMetadata =
     (deviceStateArg?: StaticSessionId) => async (dispatch: Dispatch, getState: GetState) => {

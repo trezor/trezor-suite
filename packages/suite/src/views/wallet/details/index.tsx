@@ -60,6 +60,7 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
 
 const Details = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const isMetadataEnabled = useSelector(state => state.metadata.enabled);
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
     const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const Details = () => {
     const shouldDisplayXpubSection =
         account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
-    const shouldDisplayExportBip329Labels = account.networkType === 'bitcoin';
+    const shouldDisplayExportBip329Labels = account.networkType === 'bitcoin' && isMetadataEnabled;
 
     const handleXpubClick = () => dispatch(showXpub());
 

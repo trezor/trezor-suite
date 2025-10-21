@@ -177,6 +177,7 @@ export const encryptAndSaveMetadata = async ({
 
 export const exportMetadataToBip329File = () => (dispatch: Dispatch, getState: GetState) => {
     const labelForSelectedAccount = selectLabelingDataForSelectedAccount(getState());
+    console.log('labelForSelectedAccount', labelForSelectedAccount);
     const labelsToExport = transformToBip329(labelForSelectedAccount as Slip15LikeInput);
 
     try {

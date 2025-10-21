@@ -1,4 +1,5 @@
-import { type Slip15LikeInput, transformToBip329 } from '../src/slip15ToBip329';
+import { transformToBip329 } from '../src/slip15ToBip329';
+import { Slip15LikeInput } from '../src/types';
 
 describe('slip15ToBip329', () => {
     it('transform properly', () => {
@@ -25,19 +26,16 @@ describe('slip15ToBip329', () => {
                 type: 'output',
                 ref: '50e4fa9ebfca7d510feae7226a7d5d046114f54a7918cdd83e40c98d70d17e4d:0',
                 label: 'this is expending transaction output or just tx',
-                time: 1760700406,
             },
             {
                 type: 'output',
                 ref: '519e17d6f3eb87cc8c4bf450d0dc2bad83a1387713680bec609bcb5d8e53335e:0',
                 label: 'this is receive tx label',
-                time: 1760700406,
             },
             {
                 type: 'addr',
                 ref: 'bc1qq46pg2kafgjvsh7me3puv0jujdl77a5829xlrs',
                 label: 'This address is labeled',
-                time: 1760700406,
             },
         ];
 

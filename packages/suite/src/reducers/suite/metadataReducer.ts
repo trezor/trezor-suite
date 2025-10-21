@@ -91,6 +91,11 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 draft.initiating = action.payload;
                 break;
             case METADATA.SET_DATA: {
+                console.log('METADATA.SET_DATA');
+                console.log('METADATA.SET_DATA');
+                console.log('METADATA.SET_DATA');
+                console.log('METADATA.SET_DATA');
+                console.log('action', action);
                 const targetProvider = draft.providers.find(
                     p =>
                         p.type === action.payload.provider.type &&
