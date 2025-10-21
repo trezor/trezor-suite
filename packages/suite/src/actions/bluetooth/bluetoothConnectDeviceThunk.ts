@@ -31,7 +31,8 @@ export const bluetoothConnectDeviceThunk = createThunk<
         desktopApi.appFocus();
 
         if (!result.success) {
-            if (result.error === 'PairingUiMissing') {
+            // handling for this error: https://github.com/trezor/trezor-suite/blob/837cdf89c70cca80fd5dabb910e9a8509de7c3b1/packages/transport-bluetooth/src/server/platform/linux.rs#L253
+            if (result.error === 'BluetoothSettingsMissing') {
                 dispatch(stopConnectingBluetoothDevice({ deviceId }));
                 dispatch(setBluetoothDeviceNeedsManualPairing(true));
 

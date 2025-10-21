@@ -10335,6 +10335,19 @@ export default defineMessages({
         defaultMessage: "Go to your Trezor's Menu > Pair & Connect > Pair new device",
         description: 'Displayed as hints of bluetooth connection in connect modal',
     },
+    TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING: {
+        id: 'TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING',
+        defaultMessage: 'Your Trezor needs to be paired manually',
+    },
+    TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT: {
+        id: 'TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT',
+        defaultMessage:
+            'Your system does not support automatic pairing via Trezor Suite. Please open your System Bluetooth Settings, find your Trezor device and pair it there.',
+    },
+    TR_DONE: {
+        id: 'TR_DONE',
+        defaultMessage: 'Done',
+    },
     TR_ALLOW_BLUETOOTH_CTA: {
         id: 'TR_ALLOW_BLUETOOTH_CTA',
         defaultMessage: 'Allow',
