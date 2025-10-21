@@ -45,6 +45,7 @@ export const useFirmwareDesktopUpdate = (
 
     // NOTE: Asume that when the device is restarting back to normal mode and is PIN protected, the PIN will be requested and hence display "device modal"
     const restartingToNormalWithPinProtection =
+        operation === 'restarting' &&
         reconnectEvent &&
         reconnectEvent.target === 'normal' &&
         originalDevice?.features?.pin_protection &&
