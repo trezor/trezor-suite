@@ -1,4 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
+import { testMocks } from '@suite-common/test-utils';
 import { networks } from '@suite-common/wallet-config';
 
 import { DeviceRootState } from '../../device/deviceReducer';
@@ -8,11 +9,18 @@ import {
     selectVisibleDeviceAccountsMap,
 } from '../accountsSelectors';
 
+const BTC_DEVICE_SSID: `${string}@${string}:${number}` =
+    'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0';
+const BTC_DEVICE = testMocks.getSuiteDevice({ state: BTC_DEVICE_SSID });
+
+const ETH_DEVICE_SSID: `${string}@${string}:${number}` = '1stTestnetAddress@device_id:0';
+const ETH_DEVICE = testMocks.getSuiteDevice({ state: ETH_DEVICE_SSID });
+
 const mockState: AccountsRootState & DeviceRootState = {
     wallet: {
         accounts: [
             {
-                deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
+                deviceState: BTC_DEVICE_SSID,
                 index: 0,
                 backendType: undefined,
                 misc: undefined,
@@ -74,7 +82,7 @@ const mockState: AccountsRootState & DeviceRootState = {
                 symbol: 'eth',
                 networkType: 'ethereum',
                 descriptor: '0xEthereumAddress',
-                deviceState: '1stTestnetAddress@device_id:0',
+                deviceState: ETH_DEVICE_SSID,
                 key: '0xEthereumAddress-eth-deviceState',
                 accountType: 'normal',
                 index: 0,
@@ -106,22 +114,25 @@ const mockState: AccountsRootState & DeviceRootState = {
         ],
     },
     device: {
-        devices: [],
-        selectedDevice: {
-            state: {
-                staticSessionId: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
-            },
-        } as unknown as TrezorDevice,
+        devices: [BTC_DEVICE, ETH_DEVICE],
         persistentDeviceData: [],
         isDeviceAutoEjectEnabled: true,
     },
 };
 
+const getStateWithSelectedDevice = (
+    state: AccountsRootState & DeviceRootState,
+    selectedDevice: TrezorDevice,
+): AccountsRootState & DeviceRootState => ({
+    ...state,
+    device: { ...state.device, selectedDevice },
+});
+
 describe('accountsSelectors', () => {
     describe(selectAddressByNetworkAndPath.name, () => {
         it('returns unused address for BTC', () => {
             const result = selectAddressByNetworkAndPath(
-                mockState,
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
                 networks['btc'],
                 "m/84'/0'/0'/0/0",
             );
@@ -130,7 +141,7 @@ describe('accountsSelectors', () => {
 
         it('returns used address for BTC', () => {
             const result = selectAddressByNetworkAndPath(
-                mockState,
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
                 networks['btc'],
                 "m/84'/0'/0'/0/1",
             );
@@ -139,16 +150,25 @@ describe('accountsSelectors', () => {
 
         it('returns change address for BTC', () => {
             const result = selectAddressByNetworkAndPath(
-                mockState,
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
                 networks['btc'],
                 "m/84'/0'/0'/1/0",
             );
             expect(result).toBe('bc1change');
         });
 
+        it('does not return address from another device', () => {
+            const result = selectAddressByNetworkAndPath(
+                getStateWithSelectedDevice(mockState, ETH_DEVICE),
+                networks['btc'],
+                "m/84'/0'/0'/0/0",
+            );
+            expect(result).toBeUndefined();
+        });
+
         it('returns descriptor for ETH', () => {
             const result = selectAddressByNetworkAndPath(
-                mockState,
+                getStateWithSelectedDevice(mockState, ETH_DEVICE),
                 networks['eth'],
                 "m/44'/60'/0'/0",
             );
@@ -157,7 +177,7 @@ describe('accountsSelectors', () => {
 
         it('returns undefined for unknown path', () => {
             const result = selectAddressByNetworkAndPath(
-                mockState,
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
                 networks['btc'],
                 "m/84'/0'/0'/9/9",
             );
@@ -165,19 +185,29 @@ describe('accountsSelectors', () => {
         });
 
         it('returns undefined if network is missing', () => {
-            const result = selectAddressByNetworkAndPath(mockState, undefined, "m/84'/0'/0'/0/0");
+            const result = selectAddressByNetworkAndPath(
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
+                undefined,
+                "m/84'/0'/0'/0/0",
+            );
             expect(result).toBeUndefined();
         });
 
         it('returns undefined if path is missing', () => {
-            const result = selectAddressByNetworkAndPath(mockState, networks['btc'], undefined);
+            const result = selectAddressByNetworkAndPath(
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
+                networks['btc'],
+                undefined,
+            );
             expect(result).toBeUndefined();
         });
     });
 
     describe('selectVisibleDeviceAccountsMap', () => {
         it('should return map of accounts for selected device only', () => {
-            const result = selectVisibleDeviceAccountsMap(mockState);
+            const result = selectVisibleDeviceAccountsMap(
+                getStateWithSelectedDevice(mockState, BTC_DEVICE),
+            );
 
             expect(result).toBeInstanceOf(Map);
             expect(result.size).toBe(1);

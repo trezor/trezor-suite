@@ -295,7 +295,7 @@ export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountBy
 
 export const selectAddressByNetworkAndPath = createMemoizedSelector(
     [
-        selectAccounts,
+        selectDeviceAccounts,
         (_state: AccountsRootState, network?: Network) => network,
         (_state: AccountsRootState, _network?: Network, path?: string) => path,
     ],
