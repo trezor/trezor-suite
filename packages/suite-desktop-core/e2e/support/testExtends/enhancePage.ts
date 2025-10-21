@@ -1,6 +1,6 @@
 import { Locator, Page, expect, test } from '@playwright/test';
 import { writeFileSync } from 'fs';
-import { get } from 'lodash';
+import { get, isMatch, set } from 'lodash';
 import { join } from 'path';
 
 declare module '@playwright/test' {
@@ -18,6 +18,12 @@ declare module '@playwright/test' {
         expectReduxObjectToEqual(
             objectPath: string,
             expectedValue: any,
+            options?: { timeout?: number },
+        ): Promise<void>;
+        expectReduxSubtreeToContain(
+            rootPath: string,
+            nestedPath: string,
+            expectedValue: unknown,
             options?: { timeout?: number },
         ): Promise<void>;
         runWithReduxDump<T>(
@@ -87,6 +93,31 @@ export const enhancePage = (page: Page): Page => {
             await expect(async () => {
                 const testedObject = await page.getReduxObject(objectPath);
                 expect(testedObject).toStrictEqual(expectedValue);
+            }).toPass({ timeout: options.timeout });
+        });
+    };
+
+    page.expectReduxSubtreeToContain = async function (
+        rootPath: string,
+        nestedPath: string,
+        expectedValue: unknown,
+        options = { timeout: 5000 },
+    ) {
+        await test.step('Expect Redux subtree to contain', async () => {
+            await expect(async () => {
+                const root = await page.getReduxObject(rootPath);
+                const needle: Record<string, unknown> = {};
+                set(needle, nestedPath, expectedValue);
+
+                const found = (function walk(node: unknown): boolean {
+                    if (!node || typeof node !== 'object') return false;
+                    if (isMatch(node, needle)) return true;
+
+                    return Object.values(node as Record<string, unknown>).some(walk);
+                })(root);
+
+                const errorMessage = `Expected Redux subtree "${rootPath}" to contain ${JSON.stringify(needle, null, 2)}`;
+                expect(found, errorMessage).toBe(true);
             }).toPass({ timeout: options.timeout });
         });
     };

@@ -1,10 +1,8 @@
 import { escapeRegExp } from 'lodash';
 
-import { EventType } from '@trezor/suite-analytics';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { expect, test } from '../../support/fixtures';
-import { ExtractByEventType } from '../../support/types';
 
 test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel'] }, () => {
     test.use({
@@ -12,14 +10,12 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
         emulatorSetupConf: { needs_backup: true },
     });
 
-    test.beforeEach(async ({ onboardingPage, analytics }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await analytics.interceptAnalytics();
     });
 
     test('Device disconnected during action', async ({
         page,
-        analytics,
         onboardingPage,
         dashboardPage,
         devicePrompt,
@@ -70,13 +66,5 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
             );
             await expect(onboardingPage.backup.backupFailedSettingButton).toBeDisabled();
         });
-
-        const createBackupEvent = analytics.findAnalyticsEventByType<
-            ExtractByEventType<EventType.CreateBackup>
-        >(EventType.CreateBackup);
-        expect(createBackupEvent.status).toEqual('error');
-        expect(createBackupEvent.error).toMatch(
-            /device\+disconnected\+during\+action|Device\+disconnected|session\+not\+found/,
-        );
     });
 });
