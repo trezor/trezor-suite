@@ -89,6 +89,8 @@ runs:
         if [[ "${{ inputs.project }}" == "web" ]]; then
           npx playwright install --with-deps > /dev/null
         fi
+        # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
+        yarn message-system-sign-config
         echo "::endgroup::"
 
     - name: Pull Docker Images
