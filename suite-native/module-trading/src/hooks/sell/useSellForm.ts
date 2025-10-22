@@ -28,6 +28,7 @@ import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
+import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
 import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
 
@@ -212,12 +213,15 @@ export const useSellForm = (): SellFormType => {
         context,
     });
 
+    const { watch } = form;
+
     useSendAccountChangeEffect(form.setValue, selectSellSelectedSendAccount);
     useAmountAndCurrencyFieldsChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setSendSymbol);
     useSellQuotesChangeEffect(form);
     useSellQuoteChangeEffect(form);
     useValidations(form, limits);
+    useCountryChangeEffect(watch);
 
     return form;
 };

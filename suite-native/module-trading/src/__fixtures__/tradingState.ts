@@ -131,6 +131,10 @@ export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
         },
         trades: [{ tradeType }],
         activeTradingType: tradeType,
+        residence: {
+            country: undefined,
+            wasOnboardingVisited: false,
+        },
     }) as TradingState;
 
 export const getInitializedTradingStateWithQuotes = () => {
