@@ -1570,9 +1570,9 @@ export default defineMessages({
         defaultMessage: "Enter {networkName} address that isn't in Trezor Suite.",
         id: 'TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT',
     },
-    TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESSES: {
-        defaultMessage: 'New addresses',
-        id: 'TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESSES',
+    TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS: {
+        defaultMessage: 'New address',
+        id: 'TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS',
     },
     TR_TRADING_RECEIVE_ADDRESS_USED_ADDRESSES: {
         defaultMessage: 'Used addresses',

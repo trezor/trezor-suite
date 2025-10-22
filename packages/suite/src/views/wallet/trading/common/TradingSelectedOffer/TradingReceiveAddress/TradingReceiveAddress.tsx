@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 
+import { TradingTradeBuyExchangeType } from '@suite-common/trading';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -24,7 +25,11 @@ export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddres
     </Column>
 );
 
-export const TradingReceiveAddress = () => {
+interface TradingReceiveAddressProps {
+    type: TradingTradeBuyExchangeType;
+}
+
+export const TradingReceiveAddress = ({ type }: TradingReceiveAddressProps) => {
     const { tradingReceiveAddress } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
 
@@ -43,7 +48,10 @@ export const TradingReceiveAddress = () => {
                 alignItems="center"
                 justifyContent="space-between"
                 onClick={onReceiveAccountClick}
-                padding={{ vertical: spacings.sm, horizontal: spacings.lg }}
+                padding={{
+                    vertical: !receiveAddress ? spacings.lg : spacings.sm,
+                    horizontal: spacings.lg,
+                }}
             >
                 <Text typographyStyle="body">
                     <Translation
@@ -93,11 +101,11 @@ export const TradingReceiveAddress = () => {
                         )}
                     </Column>
 
-                    <Icon name="caretRight" size={20} />
+                    <Icon name="caretRight" size={20} variant="tertiary" />
                 </Row>
             </Row>
 
-            <Divider margin={0} />
+            {type === 'exchange' && <Divider margin={0} />}
         </Column>
     );
 };

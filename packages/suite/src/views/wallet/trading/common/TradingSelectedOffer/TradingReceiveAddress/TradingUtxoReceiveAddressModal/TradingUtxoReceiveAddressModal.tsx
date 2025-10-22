@@ -13,6 +13,8 @@ import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/
 import { TradingUtxoReceiveAddressList } from './TradingUtxoReceiveAddressList';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
+const MAX_UNUSED_ADDRESSES = 1;
+
 export const TradingUtxoReceiveAddressModal = () => {
     const { tradingReceiveAddress } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
@@ -26,7 +28,7 @@ export const TradingUtxoReceiveAddressModal = () => {
 
     const [usedAddresses, unusedAddresses] = useMemo(() => {
         const used = addresses?.used ?? [];
-        const unused = addresses?.unused ?? [];
+        const unused = addresses?.unused?.slice(0, MAX_UNUSED_ADDRESSES) ?? [];
         const query = search.trim();
 
         const filterPredicate = (address: Address) =>
@@ -58,7 +60,7 @@ export const TradingUtxoReceiveAddressModal = () => {
             onCancel={onCancel}
             onBackClick={onBackClick}
         >
-            <Column gap={spacings.sm}>
+            <Column gap={spacings.xl}>
                 <SearchAsset
                     searchPlaceholder={translationString('TR_SEARCH')}
                     search={search}
@@ -75,7 +77,7 @@ export const TradingUtxoReceiveAddressModal = () => {
                         <TradingUtxoReceiveAddressList
                             account={account}
                             addresses={unusedAddresses}
-                            title={<Translation id="TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESSES" />}
+                            title={<Translation id="TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS" />}
                         />
 
                         <TradingUtxoReceiveAddressList

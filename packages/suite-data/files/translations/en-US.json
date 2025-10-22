@@ -2245,7 +2245,7 @@
   "TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT": "We couldn’t find an account that matches this asset.",
   "TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE": "Account not found",
   "TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT": "Enter {networkName} address that isn't in Trezor Suite.",
-  "TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESSES": "New addresses",
+  "TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS": "New address",
   "TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT": "Check the address or browse the list to select an option.",
   "TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE": "Address not found",
   "TR_TRADING_RECEIVE_ADDRESS_USED_ADDRESSES": "Used addresses",
