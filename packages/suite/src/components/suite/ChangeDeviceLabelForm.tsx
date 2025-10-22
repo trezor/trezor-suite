@@ -2,7 +2,7 @@ import { Controller, useController } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { selectDeviceLabel, selectDeviceName } from '@suite-common/wallet-core';
+import { selectDeviceName, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Button, Input, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
@@ -33,7 +33,7 @@ export const ChangeDeviceLabelForm = ({
     isVertical,
     onClick,
 }: ChangeDeviceLabelProps) => {
-    const deviceLabel = useSelector(selectDeviceLabel);
+    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const deviceName = useSelector(selectDeviceName);
 
     const { field, fieldState } = useController({
@@ -41,7 +41,7 @@ export const ChangeDeviceLabelForm = ({
     });
 
     const isDisabled =
-        isDeviceLocked || !field.value || field.value === deviceName || !!fieldState.error;
+        isDeviceLocked || !field.value || field.value === deviceLabel || !!fieldState.error;
     const placeholder = !deviceLabel ? deviceName : undefined;
 
     return (
