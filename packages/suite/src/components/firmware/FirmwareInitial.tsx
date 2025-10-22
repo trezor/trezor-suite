@@ -41,7 +41,7 @@ const getDescription = ({
 };
 
 type FirmwareInitialProps = {
-    shouldSwitchFirmwareType?: boolean;
+    shouldSwitchFirmwareType: boolean;
 };
 
 export const FirmwareInitial = ({ shouldSwitchFirmwareType = false }: FirmwareInitialProps) => {

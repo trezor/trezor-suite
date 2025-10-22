@@ -9,6 +9,7 @@ type StepStartedProps = {
     install: () => void;
     isCustomFirmwareUploaded?: boolean;
     modalHeading: ReactNode;
+    shouldSwitchFirmwareType: boolean;
 };
 
 export const StepStarted = ({
@@ -16,6 +17,7 @@ export const StepStarted = ({
     modalHeading,
     isCustomFirmwareUploaded,
     install,
+    shouldSwitchFirmwareType,
 }: StepStartedProps) => {
     const isCustomFirmware = typeof isCustomFirmwareUploaded !== 'undefined';
 
@@ -29,6 +31,7 @@ export const StepStarted = ({
                 install={install}
                 onPromptClose={onPromptClose}
                 isCustomFirmware={isCustomFirmware}
+                shouldSwitchFirmwareType={shouldSwitchFirmwareType}
             />
         </Modal.ModalBase>
     );

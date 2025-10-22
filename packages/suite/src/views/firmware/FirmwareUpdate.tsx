@@ -8,10 +8,10 @@ import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpda
 import { FirmwareModal } from './FirmwareModal';
 
 type FirmwareUpdateProps = {
-    shouldSwitchFirmwareType?: boolean;
+    shouldSwitchFirmwareType: boolean;
 };
 
-export const FirmwareUpdate = ({ shouldSwitchFirmwareType }: FirmwareUpdateProps) => {
+export const FirmwareUpdate = ({ shouldSwitchFirmwareType = false }: FirmwareUpdateProps) => {
     const { firmwareUpdate, targetFirmwareType, showLowBatteryModal, toggleLowBatteryModal } =
         useFirmwareDesktopUpdate({
             shouldSwitchFirmwareType,
