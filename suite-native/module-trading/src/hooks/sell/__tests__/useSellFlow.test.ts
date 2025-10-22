@@ -12,21 +12,19 @@ import { SellFormType } from '../../../types/sell';
 import { useSellFlow } from '../useSellFlow';
 import { useSellForm } from '../useSellForm';
 
+// Store the thunk arguments for testing
+let capturedThunkArgs: any = null;
+
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     sellThunks: {
-        selectQuoteThunk: (payload: unknown) => ({
-            type: 'selectQuoteThunkMock',
-            payload,
-        }),
-        handleTradeThunk: (payload: unknown) => ({
-            type: 'handleTradeThunkMock',
-            payload,
-        }),
-        confirmTradeThunk: (payload: unknown) => ({
-            type: 'confirmTradeThunkMock',
-            payload,
-        }),
+        selectQuoteThunk: (args: any) => {
+            capturedThunkArgs = args;
+
+            return () => args;
+        },
+        handleTradeThunk: (args: unknown) => () => args,
+        confirmTradeThunk: (args: unknown) => () => args,
     },
 }));
 
@@ -44,6 +42,7 @@ describe('useSellFlow', () => {
 
         const { result } = await renderSellForm();
         sellForm = result.current;
+        capturedThunkArgs = null; // Reset before each test
     });
 
     describe('canProceed', () => {
@@ -98,15 +97,13 @@ describe('useSellFlow', () => {
                     }),
                 );
             });
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseSellFlow();
 
             act(() => {
                 result.current.selectQuote();
             });
 
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { userConsent } = dispatchCall.payload;
+            const { userConsent } = capturedThunkArgs;
 
             act(() => {
                 userConsent({
@@ -134,15 +131,13 @@ describe('useSellFlow', () => {
         });
 
         it('should resolve consent', async () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseSellFlow();
 
             act(() => {
                 result.current.selectQuote();
             });
 
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { userConsent } = dispatchCall.payload;
+            const { userConsent } = capturedThunkArgs;
 
             act(() => {
                 userConsent({
@@ -176,15 +171,13 @@ describe('useSellFlow', () => {
         });
 
         it('should resolve consent (with false value)', async () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseSellFlow();
 
             act(() => {
                 result.current.selectQuote();
             });
 
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { userConsent } = dispatchCall.payload;
+            const { userConsent } = capturedThunkArgs;
 
             act(() => {
                 userConsent({
@@ -203,15 +196,13 @@ describe('useSellFlow', () => {
         });
 
         it('should reset consent when quote provider changes', async () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result, rerender } = await renderUseSellFlow();
 
             act(() => {
                 result.current.selectQuote();
             });
 
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { userConsent } = dispatchCall.payload;
+            const { userConsent } = capturedThunkArgs;
 
             act(() => {
                 userConsent({
@@ -229,6 +220,66 @@ describe('useSellFlow', () => {
             rerender({});
 
             expect(result.current.isLegalTermsConsentRequested).toEqual(false);
+        });
+    });
+
+    describe('Form Step Logic', () => {
+        it('should set form step to BANK_ACCOUNT when provider flow is BANK_ACCOUNT', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            act(() => {
+                sellForm.setValue('quote', sellQuotes[1]); // banxa-sell provider with BANK_ACCOUNT flow
+                store.dispatch(
+                    tradingSellActions.saveQuoteRequest({
+                        cryptoCurrency: sellQuotes[1].cryptoCurrency!,
+                        amountInCrypto: sellQuotes[1].amountInCrypto!,
+                        fiatCurrency: sellQuotes[1].fiatCurrency!,
+                    }),
+                );
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            // Check that setFormStep was called with BANK_ACCOUNT
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                tradingSellActions.setFormStep('BANK_ACCOUNT'),
+            );
+        });
+
+        it('should set form step to SEND_TRANSACTION when provider flow is not BANK_ACCOUNT', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            // Create a quote with a provider that doesn't have BANK_ACCOUNT flow
+            const customQuote = {
+                ...sellQuotes[0],
+                exchange: 'custom-provider', // This provider won't be in providerInfos
+            };
+
+            act(() => {
+                sellForm.setValue('quote', customQuote);
+                store.dispatch(
+                    tradingSellActions.saveQuoteRequest({
+                        cryptoCurrency: customQuote.cryptoCurrency!,
+                        amountInCrypto: customQuote.amountInCrypto!,
+                        fiatCurrency: customQuote.fiatCurrency!,
+                    }),
+                );
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            // Check that setFormStep was called with SEND_TRANSACTION
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                tradingSellActions.setFormStep('SEND_TRANSACTION'),
+            );
         });
     });
 });

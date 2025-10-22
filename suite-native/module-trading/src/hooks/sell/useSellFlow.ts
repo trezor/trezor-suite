@@ -10,6 +10,7 @@ import {
     selectTradingSellSelectedQuote,
     sellThunks,
     sellUtils,
+    tradingSellActions,
 } from '@suite-common/trading';
 import {
     RootStackParamList,
@@ -175,6 +176,16 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
     const selectQuote = useCallback(async () => {
         if (!candidateQuote || isLoading) {
             return;
+        }
+
+        const provider = candidateQuote.exchange
+            ? sellInfo?.providerInfos[candidateQuote.exchange]
+            : undefined;
+
+        if (provider?.flow === 'BANK_ACCOUNT') {
+            dispatch(tradingSellActions.setFormStep('BANK_ACCOUNT'));
+        } else {
+            dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
         }
 
         const nextStep = () => {

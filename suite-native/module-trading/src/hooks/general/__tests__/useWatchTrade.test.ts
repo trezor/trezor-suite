@@ -1,0 +1,238 @@
+import {
+    PreloadedState,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils';
+
+import { getBuyTrade } from '../../../__fixtures__/trades';
+import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
+import { useWatchTrade } from '../useWatchTrade';
+
+// Mock the useReloadTimer hook
+jest.mock('../useReloadTimer', () => ({
+    useReloadTimer: jest.fn(),
+}));
+
+// Mock analytics
+jest.mock('@suite-native/analytics', () => ({
+    analytics: {
+        report: jest.fn(),
+    },
+    EventType: {
+        TradingStatus: 'TradingStatus',
+    },
+}));
+
+// Mock trading thunks
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
+    tradingThunks: {
+        watchTradeThunk: jest.fn(() => ({ type: 'watchTradeThunk' })),
+    },
+}));
+
+const mockWatchTradeThunk = require('@suite-common/trading').tradingThunks.watchTradeThunk;
+
+const mockUseReloadTimer = require('../useReloadTimer').useReloadTimer;
+
+describe('useWatchTrade', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        // Default mock implementation
+        mockUseReloadTimer.mockReturnValue({
+            timer: {
+                reset: jest.fn(),
+            },
+            shouldReload: false,
+            resetCount: 0,
+        });
+    });
+
+    const getInitializedStore = async ({
+        trades = [],
+        accounts = [],
+    }: { trades?: any[]; accounts?: any[] } = {}) => {
+        const preloadedState: PreloadedState = {
+            wallet: {
+                trading: {
+                    ...getInitializedTradingState(),
+                    trades,
+                },
+                accounts:
+                    accounts.length > 0
+                        ? accounts
+                        : [
+                              {
+                                  key: 'btc1',
+                                  symbol: 'btc',
+                                  deviceState: 'device1@test:123',
+                                  descriptor: 'btc-descriptor',
+                                  addresses: { unused: [{ address: 'btc-address' }] },
+                                  visible: true,
+                              },
+                          ],
+            },
+            device: {
+                selectedDevice: {
+                    state: { staticSessionId: 'device1@test:123' },
+                },
+            },
+        };
+
+        return await initStore(preloadedState);
+    };
+
+    const renderUseWatchTrade = (
+        store: any,
+        props: { accountKey?: string; orderId?: string; isInProgress?: boolean },
+    ) =>
+        renderHookWithStoreProviderAsync(
+            () =>
+                useWatchTrade({
+                    accountKey: props.accountKey,
+                    orderId: props.orderId,
+                    isInProgress: props.isInProgress ?? false,
+                }),
+            { store },
+        );
+
+    describe('Trade Watching Behavior', () => {
+        it('should not dispatch watch trade thunk when no trade is found', async () => {
+            const store = await getInitializedStore();
+            await renderUseWatchTrade(store, {
+                accountKey: 'btc1',
+                orderId: 'non-existent-order',
+            });
+
+            expect(mockWatchTradeThunk).not.toHaveBeenCalled();
+        });
+
+        it('should not dispatch watch trade thunk when no account is found', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = await getInitializedStore({
+                trades: [buyTrade],
+            });
+
+            await renderUseWatchTrade(store, {
+                accountKey: 'non-existent-account',
+                orderId: buyTrade.data.orderId,
+            });
+
+            expect(mockWatchTradeThunk).not.toHaveBeenCalled();
+        });
+
+        it('should dispatch watch trade thunk when trade and account are found', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = await getInitializedStore({
+                trades: [buyTrade],
+            });
+
+            await renderUseWatchTrade(store, {
+                accountKey: 'btc1',
+                orderId: buyTrade.data.orderId,
+            });
+
+            expect(mockWatchTradeThunk).toHaveBeenCalledWith({
+                account: expect.objectContaining({ key: 'btc1' }),
+                trade: buyTrade,
+                refreshCount: 0,
+            });
+        });
+
+        it('should dispatch watch trade thunk when shouldReload is true', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = await getInitializedStore({
+                trades: [buyTrade],
+            });
+
+            mockUseReloadTimer.mockReturnValue({
+                timer: {
+                    reset: jest.fn(),
+                },
+                shouldReload: true,
+                resetCount: 1,
+            });
+
+            await renderUseWatchTrade(store, {
+                accountKey: 'btc1',
+                orderId: buyTrade.data.orderId,
+            });
+
+            expect(mockWatchTradeThunk).toHaveBeenCalledWith({
+                account: expect.objectContaining({ key: 'btc1' }),
+                trade: buyTrade,
+                refreshCount: 1,
+            });
+        });
+
+        it('should not dispatch watch trade thunk when trade is in final status', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUCCESS' });
+            const store = await getInitializedStore({
+                trades: [buyTrade],
+            });
+
+            await renderUseWatchTrade(store, {
+                accountKey: 'btc1',
+                orderId: buyTrade.data.orderId,
+            });
+
+            expect(mockWatchTradeThunk).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('Timer Management', () => {
+        it('should use faster refresh rate when trade is in progress', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = await getInitializedStore({
+                trades: [buyTrade],
+            });
+
+            await renderUseWatchTrade(store, {
+                accountKey: 'btc1',
+                orderId: buyTrade.data.orderId,
+                isInProgress: true,
+            });
+
+            expect(mockUseReloadTimer).toHaveBeenCalledWith({
+                isEnabled: true,
+                refreshLimitSeconds: 10, // REFRESH_SECONDS_IN_PROGRESS
+            });
+        });
+
+        it('should use slower refresh rate when trade is not in progress', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
+            const store = await getInitializedStore({
+                trades: [buyTrade],
+            });
+
+            await renderUseWatchTrade(store, {
+                accountKey: 'btc1',
+                orderId: buyTrade.data.orderId,
+                isInProgress: false,
+            });
+
+            expect(mockUseReloadTimer).toHaveBeenCalledWith({
+                isEnabled: true,
+                refreshLimitSeconds: 30, // REFRESH_SECONDS_BASE
+            });
+        });
+
+        it('should disable timer when trade is in final status', async () => {
+            const buyTrade = getBuyTrade({ status: 'SUCCESS' });
+            const store = await getInitializedStore({
+                trades: [buyTrade],
+            });
+
+            await renderUseWatchTrade(store, {
+                accountKey: 'btc1',
+                orderId: buyTrade.data.orderId,
+            });
+
+            expect(mockUseReloadTimer).toHaveBeenCalledWith({
+                isEnabled: false,
+                refreshLimitSeconds: 30,
+            });
+        });
+    });
+});

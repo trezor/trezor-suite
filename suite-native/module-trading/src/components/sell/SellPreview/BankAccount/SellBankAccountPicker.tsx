@@ -1,0 +1,99 @@
+import { memo } from 'react';
+import { useSelector } from 'react-redux';
+
+import type { BankAccount } from 'invity-api';
+
+import {
+    TradingRootState,
+    selectTradingAccountKeyByTradeType,
+    selectTradingTradeByOrderId,
+} from '@suite-common/trading';
+import { AnimatedCard, useBottomSheetModal } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+
+import { SellBankAccountItem } from './SellBankAccountItem';
+import { SellBankAccountSheet } from './SellBankAccountSheet';
+import { useWatchTrade } from '../../../../hooks/general/useWatchTrade';
+import { TradeInfoHeader } from '../../../TradeInfo/TradeInfoHeader';
+
+type SellBankAccountPickerProps = {
+    orderId: string | undefined;
+    selectedBankAccountIban: string;
+    onBankAccountSelect: (bankAccount: BankAccount) => void;
+};
+
+type MemoizedSellBankAccountPickerProps = {
+    bankAccount: BankAccount;
+    onPress?: () => void;
+    hasCaret: boolean;
+};
+
+// memoize the component because useWatchTrade needs useTimer and it causes re-renders
+const MemoizedSellBankAccountPicker = memo(
+    ({ bankAccount, onPress = () => {}, hasCaret }: MemoizedSellBankAccountPickerProps) => (
+        <AnimatedCard noPadding>
+            <TradeInfoHeader
+                title={<Translation id="moduleTrading.tradingSellPreviewScreen.bankAccount" />}
+            />
+            <SellBankAccountItem
+                bankAccount={bankAccount}
+                accessoryType={hasCaret ? 'caret' : 'none'}
+                onPress={onPress}
+            />
+        </AnimatedCard>
+    ),
+);
+
+export const SellBankAccountPicker = ({
+    orderId,
+    selectedBankAccountIban,
+    onBankAccountSelect,
+}: SellBankAccountPickerProps) => {
+    const trade = useSelector((state: TradingRootState) =>
+        selectTradingTradeByOrderId(state, orderId),
+    );
+
+    const accountKey = useSelector((state: TradingRootState) =>
+        selectTradingAccountKeyByTradeType(state, 'sell'),
+    );
+
+    useWatchTrade({
+        accountKey,
+        orderId,
+        isInProgress: true,
+    });
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    if (
+        trade?.tradeType !== 'sell' ||
+        !trade.data.bankAccounts ||
+        trade.data.bankAccounts.length === 0
+    ) {
+        return null;
+    }
+
+    const { bankAccounts } = trade.data;
+
+    const handleBankAccountSelect = (bankAccount: BankAccount) => {
+        onBankAccountSelect(bankAccount);
+        closeModal();
+    };
+
+    return (
+        <>
+            <MemoizedSellBankAccountPicker
+                bankAccount={bankAccounts[0]}
+                onPress={openModal}
+                hasCaret={bankAccounts.length > 1}
+            />
+
+            <SellBankAccountSheet
+                ref={bottomSheetRef}
+                bankAccounts={bankAccounts}
+                selectedBankAccountIban={selectedBankAccountIban}
+                onBankAccountSelect={handleBankAccountSelect}
+                closeModal={closeModal}
+            />
+        </>
+    );
+};
