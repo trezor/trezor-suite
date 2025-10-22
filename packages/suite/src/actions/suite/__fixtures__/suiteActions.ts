@@ -192,6 +192,8 @@ const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = 
                 isLocalFirstStorageEnabled: false,
                 isLocalFirstStorageDebugEnabled: false,
                 hasSeenDisconnectTooltip: false,
+                showEnableLocalFirstStorageModal: false,
+                showLocalFirstStorage: false,
             },
         },
     },

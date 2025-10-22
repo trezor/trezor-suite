@@ -76,6 +76,7 @@ export interface Flags {
     showLocalFirstStorage: boolean; // toogle in debug menu to show/hide local first storage settings in labeling section
     isLocalFirstStorageEnabled: boolean; // flag indicating whether local first storage is enabled, move this to experimental later maybe?
     isLocalFirstStorageDebugEnabled: boolean;
+    showEnableLocalFirstStorageModal: boolean; // to show modal prompting user to enable local first storage
     hasSeenDisconnectTooltip: boolean; // tooltip shown when device disconnects - show only once ever
 }
 
@@ -173,6 +174,7 @@ const initialState: SuiteState = {
         showLocalFirstStorage: false,
         isLocalFirstStorageEnabled: false,
         isLocalFirstStorageDebugEnabled: false,
+        showEnableLocalFirstStorageModal: false,
         hasSeenDisconnectTooltip: false,
     },
     evmSettings: {

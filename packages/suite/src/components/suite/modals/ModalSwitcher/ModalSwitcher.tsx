@@ -4,6 +4,7 @@ import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
 import { ForegroundAppModal } from './ForegroundAppModal';
 import { WipedBleDeviceNeedsManualOsRemovalModalManager } from '../../bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
+import { LabelingModalManager } from '../../labeling/LabelingModalManager';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 type ModalParams = ReturnType<typeof usePreferredModal>;
@@ -33,6 +34,7 @@ export const ModalSwitcher = () => {
             <WipedBleDeviceNeedsManualOsRemovalModalManager />
             <ThpGlobalModalManager />
             <ConnectionGlobalModalManager />
+            <LabelingModalManager />
             <Inner modal={modal} />
         </>
     );

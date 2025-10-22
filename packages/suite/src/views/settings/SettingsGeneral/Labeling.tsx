@@ -18,7 +18,7 @@ import { useDevice } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 
-import { LabelingSwitchToLegacyModal } from './LabelingSwitchToLegacyModal';
+import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
 export const Labeling = () => {
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
@@ -32,6 +32,7 @@ export const Labeling = () => {
         localFirstDisableIfNeeded,
         localFirstEnableIfNeeded,
         showLocalFirstStorage,
+        isEvoluSupportedByDevice,
         isLocalFirstStorageEnabled,
     } = useLabelingCombined({
         deviceStaticSessionId: device?.state?.staticSessionId,
@@ -118,7 +119,7 @@ export const Labeling = () => {
                 <ActionColumn>
                     <ActionSelect
                         options={
-                            showLocalFirstStorage
+                            showLocalFirstStorage && isEvoluSupportedByDevice
                                 ? EXPERIMENT_LABELING_SELECT_OPTIONS
                                 : LABELING_SELECT_OPTIONS
                         }
