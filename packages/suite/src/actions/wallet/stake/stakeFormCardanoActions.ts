@@ -114,7 +114,7 @@ export const prepareTxPlan = async (
 
     const pool = CARDANO_EVERSTAKE_STAKING_POOL.hex;
 
-    let certificates = [];
+    const certificates = [];
 
     if (action === 'delegate' || action === 'voteDelegate') {
         certificates.push(...getDelegationCertificates(stakingPath, pool, !isStakingActive));
@@ -139,12 +139,10 @@ export const prepareTxPlan = async (
     }
 
     if (action === 'deregister') {
-        certificates = [
-            {
-                type: PROTO.CardanoCertificateType.STAKE_DEREGISTRATION,
-                path: stakingPath,
-            },
-        ];
+        certificates.push({
+            type: PROTO.CardanoCertificateType.STAKE_DEREGISTRATION,
+            path: stakingPath,
+        });
     }
 
     const isDeregisterWithRewards = action === 'deregister' && new BigNumber(rewardsAmount).gt(0);
@@ -206,7 +204,7 @@ export const composeTransaction =
     async (_: Dispatch, getState: GetState) => {
         const { selectedAccount, stake } = getState().wallet;
 
-        if (!selectedAccount || !selectedAccount.account) return;
+        if (!selectedAccount.account) return;
 
         if (selectedAccount.status !== 'loaded') return;
 
@@ -216,7 +214,7 @@ export const composeTransaction =
             stake.votingDelegation,
         );
         const { txPlan } = txData || {};
-        if (!txPlan || txPlan.type !== 'final') return;
+        if (txPlan?.type !== 'final') return;
 
         const stakedBalance = new BigNumber(selectedAccount?.account.balance ?? '0').minus(
             txPlan?.totalSpent ?? '0',

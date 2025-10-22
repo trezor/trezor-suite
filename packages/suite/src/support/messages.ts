@@ -9392,6 +9392,10 @@ export default defineMessages({
         id: 'TR_STAKING_INVALID_DREP_ID',
         defaultMessage: 'Invalid DRep ID',
     },
+    TR_STAKING_DREP_ID: {
+        id: 'TR_STAKING_DREP_ID',
+        defaultMessage: 'DRep ID',
+    },
     TR_STAKING_CARD_TEXT: {
         id: 'TR_STAKING_CARD_TEXT',
         defaultMessage:
