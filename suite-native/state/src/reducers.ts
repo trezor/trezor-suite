@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { combineReducers } from '@reduxjs/toolkit';
 import { getStoredState } from 'redux-persist';
 
@@ -238,12 +240,16 @@ export const prepareRootReducers = async () => {
         reducer: featureFlagsReducer,
         persistedKeys: featureFlagsPersistedKeys,
         key: 'featureFlags',
-        version: 2,
+        version: 3,
         migrations: {
             2: (oldState: any) => ({
                 ...oldState,
                 [FeatureFlag.IsDeviceConnectEnabled]: true,
                 [FeatureFlag.IsBluetoothEnabled]: true,
+            }),
+            3: (oldState: any) => ({
+                ...oldState,
+                [FeatureFlag.IsTradingResidenceCheckEnabled]: Platform.OS === 'ios',
             }),
         },
     });

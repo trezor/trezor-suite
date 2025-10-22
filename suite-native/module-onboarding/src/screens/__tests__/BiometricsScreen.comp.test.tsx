@@ -1,0 +1,74 @@
+import { OnboardingStackRoutes } from '@suite-native/navigation';
+import {
+    TestStore,
+    initStore,
+    renderWithStoreProviderAsync,
+    userEvent,
+} from '@suite-native/test-utils';
+
+import { BiometricsScreen, BiometricsScreenProps } from '../BiometricsScreen';
+
+const mockNavigate = jest.fn();
+const mockNavigationDispatch = jest.fn();
+const mockRoute = {
+    key: 'BiometricsScreen',
+    name: OnboardingStackRoutes.Biometrics,
+    params: undefined,
+} as const;
+
+jest.mock('@react-navigation/core', () => ({
+    ...jest.requireActual('@react-navigation/core'),
+    useNavigation: () => ({
+        navigate: mockNavigate,
+        dispatch: mockNavigationDispatch,
+    }),
+    useRoute: () => mockRoute,
+}));
+
+describe('BiometricsScreen', () => {
+    let store: TestStore;
+
+    const renderBiometricsScreen = () =>
+        renderWithStoreProviderAsync(
+            <BiometricsScreen
+                navigation={
+                    { navigate: mockNavigate } as unknown as BiometricsScreenProps['navigation']
+                }
+                route={mockRoute}
+            />,
+            { store },
+        );
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should redirect to TradingLocation screen on Skip press when isTradingResidenceCheckEnabled is set to true', async () => {
+        store = await initStore({
+            featureFlags: {
+                isTradingResidenceCheckEnabled: true,
+            },
+        });
+        const { getByText } = await renderBiometricsScreen();
+
+        await userEvent.press(getByText('Not now'));
+
+        expect(mockNavigate).toHaveBeenCalledWith(OnboardingStackRoutes.TradingLocation);
+    });
+
+    it('should redirect to Home screen on Skip press when isTradingResidenceCheckEnabled is set to false', async () => {
+        store = await initStore({
+            featureFlags: {
+                isTradingResidenceCheckEnabled: false,
+            },
+        });
+        const { getByText } = await renderBiometricsScreen();
+
+        await userEvent.press(getByText('Not now'));
+
+        expect(mockNavigationDispatch).toHaveBeenCalledWith({
+            payload: { index: 0, routes: [{ name: 'AppTabs', params: { screen: 'Home' } }] },
+            type: 'RESET',
+        });
+    });
+});

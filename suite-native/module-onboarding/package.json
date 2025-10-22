@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest --coverage"
     },
     "dependencies": {
         "@react-navigation/core": "7.12.4",
@@ -21,6 +22,7 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
+        "@suite-native/trading-residence": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -31,5 +33,8 @@
         "react-native": "0.79.3",
         "react-native-reanimated": "^3.18.0",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }
