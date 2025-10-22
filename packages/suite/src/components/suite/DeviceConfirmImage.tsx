@@ -25,6 +25,7 @@ export const DeviceConfirmImage = ({
             width={width}
             unitColor={device?.features?.unit_color}
             height={height}
+            margin={20}
             {...rest}
         />
     );
