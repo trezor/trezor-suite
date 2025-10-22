@@ -102,6 +102,7 @@ export const Language = () => {
             />
             <ActionColumn>
                 <ActionSelect
+                    isSearchable
                     useKeyPressScroll
                     value={selectedValue}
                     options={options}
