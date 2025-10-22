@@ -208,7 +208,11 @@ export const useFirmwareInstallation = (
 
         // Automatically restarting from bootloader to normal mode at the end of non-intermediary installation:
         if (reconnectEvent?.method === 'wait' || reconnectEvent?.method === 'auto') {
-            return { operation: 'restarting', progress: 100 };
+            return {
+                operation: 'restarting',
+                // NOTE: when restarting to bootloader, set the progress to 0 (can't be finished yet)
+                progress: reconnectEvent && reconnectEvent.target === 'bootloader' ? 0 : 100,
+            };
         }
 
         if (!progressEvent && firmware.status !== 'started') {
@@ -216,7 +220,7 @@ export const useFirmwareInstallation = (
         }
 
         return { operation: null, progress: 0 };
-    }, [isThpInProgress, firmware.status, progressEvent, reconnectEvent?.method]);
+    }, [isThpInProgress, firmware.status, progressEvent, reconnectEvent]);
 
     const targetFirmwareType = useMemo(() => {
         const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
