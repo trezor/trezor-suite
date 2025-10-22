@@ -114,7 +114,7 @@ dependencies = [
 [[package]]
 name = "btleplug"
 version = "0.11.8"
-source = "git+https://github.com/trezor/btleplug?rev=7a479f259fc56006c096bbdf9c82e256aa25ad17#7a479f259fc56006c096bbdf9c82e256aa25ad17"
+source = "git+https://github.com/trezor/btleplug?rev=f66eb37ca293bea1708264a319ec02b14e7935ab#f66eb37ca293bea1708264a319ec02b14e7935ab"
 dependencies = [
  "async-trait",
  "bitflags",
