@@ -20,7 +20,7 @@ export const TradingLocationSettings = ({ context, children }: TradingLocationSe
             <Box flex={1} alignItems="center" justifyContent="center">
                 <GlobeSvg />
             </Box>
-            <VStack paddingVertical="sp32" spacing="sp24">
+            <VStack paddingTop="sp32" spacing="sp24">
                 <VStack spacing="sp8">
                     <Text variant="titleMedium" color="textDefault">
                         <Translation id="tradingResidence.locationSettings.title" />
@@ -38,7 +38,7 @@ export const TradingLocationSettings = ({ context, children }: TradingLocationSe
                     </Card>
                     <TradingAvailability />
                 </VStack>
-                <VStack spacing="sp8">{children}</VStack>
+                <VStack spacing="sp12">{children}</VStack>
             </VStack>
         </VStack>
     </LocationForm>

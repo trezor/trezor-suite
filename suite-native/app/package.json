@@ -94,6 +94,7 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@suite-native/trading-residence": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/bundler-security": "workspace:*",

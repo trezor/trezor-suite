@@ -36,6 +36,10 @@ import {
 } from '@suite-native/navigation';
 import { ReceiveStackNavigator } from '@suite-native/receive';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
+import {
+    TradingLocationModalScreen,
+    selectShouldDisplayTradingResidenceOnboarding,
+} from '@suite-native/trading-residence';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 
 import { AppTabNavigator } from './AppTabNavigator';
@@ -45,13 +49,20 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const shouldDisplayTradingResidenceOnboarding = useSelector(
+        selectShouldDisplayTradingResidenceOnboarding,
+    );
 
     const getInitialRouteName = () => {
-        if (isOnboardingFinished) {
-            return RootStackRoutes.AppTabs;
+        if (!isOnboardingFinished) {
+            return RootStackRoutes.OnboardingStack;
         }
 
-        return RootStackRoutes.OnboardingStack;
+        if (shouldDisplayTradingResidenceOnboarding) {
+            return RootStackRoutes.TradingLocationModal;
+        }
+
+        return RootStackRoutes.AppTabs;
     };
 
     return (
@@ -156,6 +167,10 @@ export const RootStackNavigator = () => {
                     options={{ title: RootStackRoutes.TradingWebView }}
                     name={RootStackRoutes.TradingWebView}
                     component={TradingWebViewScreen}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.TradingLocationModal}
+                    component={TradingLocationModalScreen}
                 />
             </RootStack.Group>
         </RootStack.Navigator>
