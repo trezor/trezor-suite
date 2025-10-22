@@ -20,6 +20,7 @@ export class BluetoothApi extends AbstractApi {
     api: TrezorBluetooth;
 
     private readBuffer = readMessageBuffer();
+    private readSubscription: Record<string, boolean> = {}; // [device.id]: true
 
     constructor(options: BluetoothApiParams) {
         super({ ...options, type: 'bluetooth' });
@@ -67,6 +68,7 @@ export class BluetoothApi extends AbstractApi {
         });
         api.on('device_disconnected', event => {
             this.readBuffer.cancelRead(event.id);
+            delete this.readSubscription[event.id];
             transportApiEvent(event);
         });
         api.on('device_read', ({ id, data, characteristic }) => {
@@ -109,6 +111,16 @@ export class BluetoothApi extends AbstractApi {
     }
 
     openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
+        const isReadChannel = !options?.channel || options.channel === 'read';
+        if (isReadChannel) {
+            if (this.readSubscription[path]) {
+                // already subscribed to TX (read) characteristics
+                return Promise.resolve(this.success(undefined));
+            } else {
+                this.readSubscription[path] = true;
+            }
+        }
+
         return this.api
             .send('open_device', { id: path, characteristic: options?.channel })
             .then(() => this.success(undefined))
@@ -118,7 +130,13 @@ export class BluetoothApi extends AbstractApi {
     }
 
     closeDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
-        this.readBuffer.cancelRead(path);
+        const isReadChannel = !options?.channel || options.channel === 'read';
+        if (isReadChannel) {
+            // do not close subscriptions to TX (read) characteristics
+            this.readBuffer.cancelRead(path);
+
+            return Promise.resolve(this.success(undefined));
+        }
 
         return this.api
             .send('close_device', { id: path, characteristic: options?.channel })
