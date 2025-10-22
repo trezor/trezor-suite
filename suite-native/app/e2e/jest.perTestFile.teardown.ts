@@ -16,7 +16,7 @@ const teardownPromises = async () => {
 };
 
 afterAll(async () => {
-    // We don't want timed out global teardown to fail the tests.
+    // We don't want timed out global teardown to fail test run.
     await Promise.race([
         teardownPromises(),
         new Promise<void>(resolve => setTimeout(resolve, TEARDOWN_TIMEOUT)),

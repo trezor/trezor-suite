@@ -145,7 +145,7 @@ jobs:
           GITHUB_ACTION: true
         run: |
           npx detox clean-framework-cache && npx detox build-framework-cache
-          yarn test:e2e ios.sim.release --headless --take-screenshots failing --record-videos failing
+          yarn test:e2e ios.sim.release --headless
 
       - name: Upload results to Currents.dev
         if: ${{ ! cancelled() }}
@@ -162,12 +162,12 @@ jobs:
             --framework-version=v11.2.0
           npx currents upload --project-id=${CURRENTS_PROJECT_ID} --key=${CURRENTS_RECORD_KEY} --report-dir ./currents
 
-      - name: "Store failed test screenshot artifacts"
-        if: ${{failure()}}
+      - name: "Store test artifacts"
         uses: actions/upload-artifact@v4
         with:
-          name: failed-ios-tests
+          name: ios-tests
           path: suite-native/app/artifacts
+          retention-days: 14
 
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest
