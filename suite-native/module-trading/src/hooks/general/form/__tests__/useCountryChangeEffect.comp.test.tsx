@@ -1,13 +1,13 @@
-import { TradingCountryCode } from '@suite-common/trading';
+import { TradingCountryCode, TradingCountryOption } from '@suite-common/trading';
 import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-residence';
 
-import { CuntryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
+import { CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
 
 describe('useCountryChangeEffect', () => {
     let store: TestStore;
 
-    const renderUseCountryChangeEffect = (watch: CuntryFormWatch) =>
+    const renderUseCountryChangeEffect = (watch: CountryFormWatch) =>
         renderHookWithStoreProviderAsync(() => useCountryChangeEffect(watch), { store });
 
     beforeEach(async () => {
@@ -22,7 +22,7 @@ describe('useCountryChangeEffect', () => {
 
     it('should update trading residence country on country change', async () => {
         let countryValue: TradingCountryCode = 'US';
-        const watch: CuntryFormWatch = () => ({ value: countryValue, label: 'Country' });
+        const watch: CountryFormWatch = () => ({ value: countryValue, label: 'Country' });
 
         const { rerender } = await renderUseCountryChangeEffect(watch);
 
@@ -30,5 +30,16 @@ describe('useCountryChangeEffect', () => {
         rerender({});
 
         expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
+    });
+
+    it('should not update when country becomes undefined', async () => {
+        let countryOption: TradingCountryOption | undefined = { value: 'US', label: 'Country' };
+        const watch: CountryFormWatch = () => countryOption;
+        const { rerender } = await renderUseCountryChangeEffect(watch);
+
+        countryOption = undefined;
+        rerender({});
+
+        expect(selectTradingResidenceCountry(store.getState())).toBeUndefined();
     });
 });
