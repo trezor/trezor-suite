@@ -30,7 +30,9 @@ const isConnectPopupUrl = (url: string): boolean => {
     return false;
 };
 
-const isWalletConnectUrl = (url: string): boolean => url.startsWith('trezorsuite://walletconnect');
+const isWalletConnectUrl = (url: string): boolean =>
+    url.startsWith('trezorsuite://walletconnect') ||
+    url.startsWith('https://connect.trezor.io/9/deeplink/wc');
 
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
@@ -45,9 +47,7 @@ export const useConnectPopupNavigation = () => {
     const url = Linking.useURL();
 
     useEffect(() => {
-        if (url && isConnectPopupUrl(url)) {
-            dispatch(connectPopupDeeplinkThunk({ url }));
-        } else if (url && isWalletConnectUrl(url)) {
+        if (url && isWalletConnectUrl(url)) {
             try {
                 const parsedUrl = new URL(url);
                 const wcUri = parsedUrl?.searchParams?.get('uri');
@@ -55,6 +55,8 @@ export const useConnectPopupNavigation = () => {
             } catch {
                 // Malformed url, ignore
             }
+        } else if (url && isConnectPopupUrl(url)) {
+            dispatch(connectPopupDeeplinkThunk({ url }));
         }
     }, [url, dispatch]);
 
