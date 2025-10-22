@@ -1,0 +1,59 @@
+import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { setIsOnboardingFinished } from '@suite-native/settings';
+import {
+    TestStore,
+    act,
+    initStore,
+    renderHookWithStoreProviderAsync,
+} from '@suite-native/test-utils';
+
+import { useExitOnboardingFlow } from '../useExitOnboardingFlow';
+
+const mockNavigationDispatch = jest.fn();
+
+jest.mock('@react-navigation/core', () => ({
+    ...jest.requireActual('@react-navigation/core'),
+    useNavigation: () => ({
+        dispatch: mockNavigationDispatch,
+    }),
+}));
+
+describe('useExitOnboardingFlow', () => {
+    let store: TestStore;
+
+    const renderUseExitOnboardingFlow = () =>
+        renderHookWithStoreProviderAsync(() => useExitOnboardingFlow(), { store });
+
+    beforeEach(async () => {
+        store = await initStore();
+        jest.clearAllMocks();
+    });
+
+    it('should set onboarding flag and navigate', async () => {
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseExitOnboardingFlow();
+
+        // call the returned callback
+        act(() => {
+            result.current();
+        });
+
+        // assert that onboarding finished action was dispatched
+        expect(dispatchSpy).toHaveBeenCalledWith(setIsOnboardingFinished());
+
+        // assert that navigation.reset was dispatched to navigate to AppTabs -> Home
+        expect(mockNavigationDispatch).toHaveBeenCalledTimes(1);
+        expect(mockNavigationDispatch).toHaveBeenCalledWith({
+            payload: {
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: { screen: HomeStackRoutes.Home },
+                    },
+                ],
+            },
+            type: 'RESET',
+        });
+    });
+});

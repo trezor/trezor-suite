@@ -1,10 +1,24 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import {
+    RootStackRoutes,
+    TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
 import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
-import { TradingLocationModalScreen } from '../TradingLocationModalScreen';
+import {
+    TradingLocationModalScreen,
+    TradingLocationModalScreenProps,
+} from '../TradingLocationModalScreen';
+
+const mockNavigationDispatch = jest.fn();
+const mockRoute: TradingLocationModalScreenProps['route'] = {
+    name: RootStackRoutes.TradingLocationModal,
+    key: 'TradingLocationModal',
+    params: undefined,
+};
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -12,11 +26,23 @@ jest.mock('@react-navigation/native', () => ({
         ({
             params: undefined,
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+    useNavigation: () => ({
+        dispatch: mockNavigationDispatch,
+    }),
 }));
 
 describe('TradingLocationModalScreen', () => {
     const renderTradingLocationModalScreen = () =>
-        renderWithStoreProviderAsync(<TradingLocationModalScreen />);
+        renderWithStoreProviderAsync(
+            <TradingLocationModalScreen
+                navigation={
+                    {
+                        dispatch: mockNavigationDispatch,
+                    } as unknown as TradingLocationModalScreenProps['navigation']
+                }
+                route={mockRoute}
+            />,
+        );
 
     it('should render all components', async () => {
         const { getByText, queryByLabelText } = await renderTradingLocationModalScreen();
@@ -41,6 +67,26 @@ describe('TradingLocationModalScreen', () => {
             payload: {
                 type: 'onboarding',
                 parameter: 'country',
+            },
+        });
+    });
+
+    it('should reset navigation on button press', async () => {
+        const { getByText } = await renderTradingLocationModalScreen();
+
+        await userEvent.press(getByText('Not now'));
+
+        expect(mockNavigationDispatch).toHaveBeenCalledTimes(1);
+        expect(mockNavigationDispatch).toHaveBeenCalledWith({
+            type: 'RESET',
+            payload: {
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: { screen: 'Home' },
+                    },
+                ],
             },
         });
     });

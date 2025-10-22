@@ -43,6 +43,7 @@ const stateWithEnabledBuy = {
     featureFlags: {
         ...featureFlagsInitialState,
         [FeatureFlag.IsTradingBuyEnabled]: true,
+        [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
     },
 };
 
@@ -50,6 +51,7 @@ const stateWithDisabledTrading = {
     featureFlags: {
         ...featureFlagsInitialState,
         [FeatureFlag.IsTradingBuyEnabled]: false,
+        [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
     },
     messageSystem: {
         validMessages: {

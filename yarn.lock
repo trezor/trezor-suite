@@ -11197,6 +11197,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
+    "@suite-native/trading-residence": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
@@ -11622,6 +11623,8 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.9.1"
     "@suite-native/config": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -12336,6 +12339,8 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@suite-native/trading-residence": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"

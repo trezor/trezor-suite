@@ -1,25 +1,32 @@
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/core';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
-import { TradingLocationOnboardingScreen } from '../TradingLocationOnboardingScreen';
+import { TradingLocationScreen } from '../TradingLocationScreen';
 
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
+const mockExitOnboardingFlow = jest.fn();
+
+jest.mock('@react-navigation/core', () => ({
+    ...jest.requireActual('@react-navigation/core'),
+
     useRoute: () =>
         ({
             params: undefined,
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
 }));
 
+jest.mock('../../hooks/useExitOnboardingFlow', () => ({
+    useExitOnboardingFlow: () => mockExitOnboardingFlow,
+}));
+
 describe('TradingLocationOnboardingScreen', () => {
-    const renderTradingLocationOnboardingScreen = () =>
-        renderWithStoreProviderAsync(<TradingLocationOnboardingScreen />);
+    const renderTradingLocationScreen = () =>
+        renderWithStoreProviderAsync(<TradingLocationScreen />);
 
     it('should render all components', async () => {
-        const { getByText, getByLabelText } = await renderTradingLocationOnboardingScreen();
+        const { getByText, getByLabelText } = await renderTradingLocationScreen();
 
         expect(getByText('Confirm your location to enable trading')).toBeOnTheScreen();
         expect(getByText('Confirm location')).toBeOnTheScreen();
@@ -30,7 +37,7 @@ describe('TradingLocationOnboardingScreen', () => {
 
     it('should log analytics event on country change', async () => {
         const analyticsSpy = jest.spyOn(analytics, 'report');
-        const { getByText } = await renderTradingLocationOnboardingScreen();
+        const { getByText } = await renderTradingLocationScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('🇦🇷 Argentina'));
@@ -43,5 +50,12 @@ describe('TradingLocationOnboardingScreen', () => {
                 parameter: 'country',
             },
         });
+    });
+
+    it('should use exitOnboardingFlow on button press', async () => {
+        const { getByText } = await renderTradingLocationScreen();
+        await userEvent.press(getByText('Not now'));
+
+        expect(mockExitOnboardingFlow).toHaveBeenCalledTimes(1);
     });
 });

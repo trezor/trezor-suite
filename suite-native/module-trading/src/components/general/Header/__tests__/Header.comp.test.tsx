@@ -29,6 +29,7 @@ describe('Header', () => {
             [FeatureFlag.IsTradingExchangeEnabled]: exchangeEnabled,
             [FeatureFlag.IsTradingSellEnabled]: sellEnabled,
             [FeatureFlag.AreTradingExchangeDexesEnabled]: areTradingExchangeDexesEnabled,
+            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
         },
     });
 

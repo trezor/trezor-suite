@@ -1,5 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { isIOs } from '@trezor/env-utils';
+
 export const FeatureFlag = {
     AreDebugOnlyNetworksEnabled: 'areDebugOnlyNetworksEnabled',
     AreExperimentalOnlyNetworksEnabled: 'areExperimentalOnlyNetworksEnabled',
@@ -38,7 +40,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.AreTradingExchangeDexesEnabled]:
         process.env.EXPO_PUBLIC_FF_ARE_TRADING_EXCHANGE_DEXES_ENABLED === 'true',
     [FeatureFlag.IsTradingResidenceCheckEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED === 'true',
+        process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED === 'true' ||
+        (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
     [FeatureFlag.IsLocalizationEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_LOCALIZATION_ENABLED === 'true',
     [FeatureFlag.IsLocalFirstStorageEnabled]:

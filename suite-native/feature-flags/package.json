@@ -13,6 +13,8 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.9.1",
         "@suite-native/config": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "react-native": "0.81.4",
         "react-redux": "9.2.0"
     }
 }

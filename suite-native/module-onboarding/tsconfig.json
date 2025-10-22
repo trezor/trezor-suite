@@ -10,10 +10,12 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../settings" },
+        { "path": "../trading-residence" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ]
 }

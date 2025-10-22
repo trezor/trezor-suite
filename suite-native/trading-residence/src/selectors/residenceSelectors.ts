@@ -34,3 +34,13 @@ export const selectIsTradingEnabledForCountry = (
 
 export const selectIsTradingCountrySet = (state: TradingResidenceRootState) =>
     selectTradingResidenceCountry(state) !== undefined;
+
+export const selectShouldDisplayTradingResidenceOnboarding = (
+    state: TradingResidenceRootState & FeatureFlagsRootState,
+) => {
+    const isResidenceCheckEnabled = selectIsTradingResidenceCheckEnabled(state);
+    const wasOnboardingVisited = selectWasTradingResidenceOnboardingVisited(state);
+    const isCountrySet = selectIsTradingCountrySet(state);
+
+    return isResidenceCheckEnabled && !wasOnboardingVisited && !isCountrySet;
+};
