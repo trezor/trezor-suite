@@ -137,10 +137,11 @@ jobs:
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
 
   run-e2e-suite-web-tests-t3w1:
-    if: github.repository == 'trezor/trezor-suite'
+    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
     runs-on: ubuntu-latest
     needs:
       - build-web
+      - check-previous-runs
     strategy:
       fail-fast: false
       matrix:

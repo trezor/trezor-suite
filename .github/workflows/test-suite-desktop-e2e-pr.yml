@@ -137,6 +137,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - build-app
+      - check-previous-runs
     strategy:
       fail-fast: false
       matrix:

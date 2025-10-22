@@ -47,6 +47,7 @@ screenshots
 test-results
 playwright-report
 suite-native/app/.metadata/
+suite-native/app/artifacts/
 
 # build outputs
 lib

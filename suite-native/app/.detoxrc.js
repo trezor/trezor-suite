@@ -65,4 +65,24 @@ module.exports = {
             app: 'android.release',
         },
     },
+    artifacts: {
+        rootDir: 'artifacts',
+        keepPrevious: false,
+        plugins: {
+            log: { enabled: true }, // device/simulator logs
+            screenshot: {
+                enabled: true,
+                shouldTakeAutomaticSnapshots: 'all',
+                keepOnlyFailedTestsArtifacts: false,
+            },
+            video: {
+                enabled: true,
+                keepOnlyFailedTestsArtifacts: false,
+            },
+            uiHierarchy: {
+                enabled: true,
+                keepOnlyFailedTestsArtifacts: false,
+            },
+        },
+    },
 };

@@ -2,6 +2,8 @@ name: "[Test] suite-native Android E2E"
 
 permissions:
   id-token: write # for fetching the OIDC token (needed for aws s3 actions)
+  contents: read # read attached artifacts from tests
+  actions: write # attach artifact overview and delete shard-x.txt
 
 on:
   schedule:
@@ -35,6 +37,7 @@ jobs:
     uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
     secrets:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
   run_android_e2e_tests:
     uses: ./.github/workflows/template-suite-native-e2e-android.yml
     needs: prepare_android_test_app
