@@ -11,6 +11,7 @@ import {
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { selectTradingResidenceCountry } from '@suite-native/trading-residence';
 
 import {
     TradingRootState,
@@ -48,13 +49,14 @@ export const selectSellFormDefaultValues = createMemoizedSelector(
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingSellInfo>,
         ({ wallet }) => wallet.trading.info.coins,
+        selectTradingResidenceCountry,
     ],
-    (sellInfo, coins) => {
+    (sellInfo, coins, residenceCountry) => {
         if (!sellInfo || !coins) {
             return {} as Partial<SellFormValues>;
         }
 
-        const country = sellInfo.country as TradingCountryCode;
+        const country = residenceCountry ?? (sellInfo.country as TradingCountryCode);
 
         const fiatCurrency = DEFAULT_FIAT_CURRENCY_FALLBACK;
         const countryDefaultValue =

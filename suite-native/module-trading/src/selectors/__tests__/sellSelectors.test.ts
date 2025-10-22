@@ -171,6 +171,19 @@ describe('sellSelectors', () => {
             });
         });
 
+        it('should respect residence settings', () => {
+            state.wallet.trading.residence.country = 'DE';
+
+            expect(selectSellFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    country: {
+                        label: '🇩🇪 Germany',
+                        value: 'DE',
+                    },
+                }),
+            );
+        });
+
         it('should return empty object when sell info is not initialized', () => {
             state.wallet.trading.sell.sellInfo = undefined;
 

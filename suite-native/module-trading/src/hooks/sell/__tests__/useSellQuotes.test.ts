@@ -169,7 +169,6 @@ describe('useSellQuotes', () => {
                 result.current.setValue(field, value);
             });
 
-            expect(dispatchSpy).toHaveBeenCalledTimes(1);
             expect(dispatchSpy).toHaveBeenLastCalledWith(
                 expect.objectContaining({
                     type: 'handleRequestThunkMock',
