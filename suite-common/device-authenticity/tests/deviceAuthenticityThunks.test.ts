@@ -1,3 +1,4 @@
+import { messageSystemInitialState } from '@suite-common/message-system';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
@@ -18,6 +19,9 @@ const initStore = (device?: TrezorDevice) =>
             selectors: {
                 selectDevice: () => device,
             },
+        },
+        preloadedState: {
+            messageSystem: messageSystemInitialState,
         },
     });
 

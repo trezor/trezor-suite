@@ -8,6 +8,11 @@ import {
     deviceAuthenticityActions,
     isDeviceAuthenticityValid,
 } from '@suite-common/device-authenticity';
+import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -31,6 +36,9 @@ export const useDeviceAuthenticityCheck = () => {
     const { translate } = useTranslate();
     const { showToast } = useToast();
     const allowDebugKeys = useFeatureFlag(FeatureFlag.IsDebugKeysAllowed);
+    const isTropicRemotelyDisabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckTropic),
+    );
 
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
@@ -74,11 +82,14 @@ export const useDeviceAuthenticityCheck = () => {
                     : undefined;
             }
 
-            const isOverallValid = isDeviceAuthenticityValid(result.payload);
+            const isOverallValid = isDeviceAuthenticityValid({
+                result: result.payload,
+                isTropicRemotelyDisabled,
+            });
 
             return { valid: isOverallValid, ...result.payload };
         },
-        [isDeviceBootloaderUnlocked],
+        [isDeviceBootloaderUnlocked, isTropicRemotelyDisabled],
     );
 
     const handleDeviceAccessError = useCallback(
