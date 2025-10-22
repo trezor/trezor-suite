@@ -12,18 +12,18 @@ type GetDescriptionProps = {
     required: boolean;
     reinstall: boolean;
     targetType: FirmwareType;
-    shouldSwitchFirmwareType?: boolean;
     isBitcoinOnlyAvailable?: boolean;
+    switchFirmwareType?: boolean;
 };
 
 const getDescription = ({
     required,
     reinstall,
     targetType,
-    shouldSwitchFirmwareType,
+    switchFirmwareType,
     isBitcoinOnlyAvailable,
 }: GetDescriptionProps) => {
-    if (shouldSwitchFirmwareType) {
+    if (switchFirmwareType) {
         if (!isBitcoinOnlyAvailable) {
             return 'TR_BITCOIN_ONLY_UNAVAILABLE';
         }
@@ -40,15 +40,10 @@ const getDescription = ({
     return reinstall ? 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION' : 'TR_FIRMWARE_NEW_FW_DESCRIPTION';
 };
 
-type FirmwareInitialProps = {
-    shouldSwitchFirmwareType: boolean;
-};
-
-export const FirmwareInitial = ({ shouldSwitchFirmwareType = false }: FirmwareInitialProps) => {
+export const FirmwareInitial = () => {
     const { device } = useDevice();
-    const { deviceWillBeWiped, targetFirmwareType } = useFirmwareDesktopUpdate({
-        shouldSwitchFirmwareType,
-    });
+    const { deviceWillBeWiped, switchFirmwareType, targetFirmwareType } =
+        useFirmwareDesktopUpdate();
 
     // Just to satisfy TS, disconnected device should be handled upstream.
     if (!device?.connected || !device?.features) {
@@ -81,7 +76,7 @@ export const FirmwareInitial = ({ shouldSwitchFirmwareType = false }: FirmwareIn
                         required: device.firmware === 'required',
                         reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
                         targetType: targetFirmwareType,
-                        shouldSwitchFirmwareType,
+                        switchFirmwareType,
                         isBitcoinOnlyAvailable,
                     })}
                     values={{

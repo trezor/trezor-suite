@@ -7,22 +7,21 @@ import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpda
 
 import { FirmwareModal } from './FirmwareModal';
 
-type FirmwareUpdateProps = {
-    shouldSwitchFirmwareType: boolean;
-};
-
-export const FirmwareUpdate = ({ shouldSwitchFirmwareType = false }: FirmwareUpdateProps) => {
-    const { firmwareUpdate, targetFirmwareType, showLowBatteryModal, toggleLowBatteryModal } =
-        useFirmwareDesktopUpdate({
-            shouldSwitchFirmwareType,
-        });
+export const FirmwareUpdate = () => {
+    const {
+        firmwareUpdate,
+        switchFirmwareType,
+        targetFirmwareType,
+        showLowBatteryModal,
+        toggleLowBatteryModal,
+    } = useFirmwareDesktopUpdate();
 
     const installTargetFirmware = () =>
         firmwareUpdate({
             firmwareType: targetFirmwareType,
         });
 
-    const heading = shouldSwitchFirmwareType ? (
+    const heading = switchFirmwareType ? (
         <Translation
             id="TR_SWITCH_FIRMWARE_TO"
             values={{
@@ -46,12 +45,8 @@ export const FirmwareUpdate = ({ shouldSwitchFirmwareType = false }: FirmwareUpd
     }
 
     return (
-        <FirmwareModal
-            shouldSwitchFirmwareType={shouldSwitchFirmwareType}
-            heading={heading}
-            install={installTargetFirmware}
-        >
-            <FirmwareInitial shouldSwitchFirmwareType={shouldSwitchFirmwareType} />
+        <FirmwareModal heading={heading} install={installTargetFirmware}>
+            <FirmwareInitial />
         </FirmwareModal>
     );
 };

@@ -25,6 +25,7 @@ const initialFirmwareState: FirmwareUpdateState = {
     uiEvent: undefined,
     useDevkit: false,
     firmwareUpdateSource: 'production',
+    switchFirmwareType: false,
 };
 
 const testCases: {

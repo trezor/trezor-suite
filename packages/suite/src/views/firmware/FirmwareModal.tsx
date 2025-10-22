@@ -26,7 +26,6 @@ type FirmwareModalProps = {
     heading: ReactNode;
     install: () => void;
     isCustomFirmwareUploaded?: boolean;
-    shouldSwitchFirmwareType: boolean;
 };
 
 export const FirmwareModal = ({
@@ -34,11 +33,9 @@ export const FirmwareModal = ({
     heading,
     install,
     isCustomFirmwareUploaded,
-    shouldSwitchFirmwareType = false,
 }: FirmwareModalProps) => {
-    const { resetReducer, status, setStatus, deviceWillBeWiped, error } = useFirmwareDesktopUpdate({
-        shouldSwitchFirmwareType,
-    });
+    const { resetReducer, status, setStatus, deviceWillBeWiped, error } =
+        useFirmwareDesktopUpdate();
     const device = useSelector(selectSelectedDevice);
 
     const thpStep = useSelector(selectThpStep);
@@ -133,7 +130,6 @@ export const FirmwareModal = ({
                         install={install}
                         onPromptClose={handleClose}
                         isCustomFirmwareUploaded={isCustomFirmwareUploaded}
-                        shouldSwitchFirmwareType={Boolean(shouldSwitchFirmwareType)}
                     />
                 );
             case 'done':
@@ -143,7 +139,6 @@ export const FirmwareModal = ({
                         install={install}
                         onClose={handleClose}
                         isCustomFirmwareUploaded={isCustomFirmwareUploaded}
-                        shouldSwitchFirmwareType={Boolean(shouldSwitchFirmwareType)}
                     />
                 );
             default:

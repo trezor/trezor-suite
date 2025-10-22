@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    FirmwareUpdateResult,
-    UseFirmwareInstallationParams,
-    useFirmwareInstallation,
-} from '@suite-common/firmware';
+import { FirmwareUpdateResult, useFirmwareInstallation } from '@suite-common/firmware';
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { setPriorityMode } from '@trezor/react-native-usb';
@@ -16,11 +12,7 @@ import { useFirmwareAnalytics } from './useFirmwareAnalytics';
 // If progress doesn't change for 1 minute
 const MAYBE_STUCKED_TIMEOUT = 1 * 60 * 1000; // 1 minute
 
-export const useFirmware = (
-    params?: UseFirmwareInstallationParams & {
-        navigationLocation: 'settings' | 'onboarding';
-    },
-) => {
+export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboarding' }) => {
     const dispatch = useDispatch();
     const {
         firmwareUpdate: firmwareUpdateCommon,
@@ -31,7 +23,7 @@ export const useFirmware = (
         progress,
         setStatus,
         ...firmwareInstallation
-    } = useFirmwareInstallation(params);
+    } = useFirmwareInstallation();
     const { translate } = useTranslate();
     const [mayBeStucked, setMayBeStucked] = useState(false);
     const mayBeStuckedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
