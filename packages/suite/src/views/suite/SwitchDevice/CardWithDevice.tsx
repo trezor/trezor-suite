@@ -27,7 +27,6 @@ export const CardWithDevice = ({
     onCancel,
     device,
     onBackButtonClick,
-    isFindTrezorVisible,
     isDeviceStatusVisible,
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
@@ -39,7 +38,6 @@ export const CardWithDevice = ({
         <Card paddingType="none">
             <Column gap={spacings.md} margin={spacings.xs}>
                 <DeviceHeader
-                    isFindTrezorVisible={isFindTrezorVisible}
                     onCancel={onCancel}
                     device={device}
                     onBackButtonClick={onBackButtonClick}

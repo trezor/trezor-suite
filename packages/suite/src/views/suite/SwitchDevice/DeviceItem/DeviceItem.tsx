@@ -79,7 +79,6 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
 
     return (
         <CardWithDevice
-            isFindTrezorVisible
             onCancel={onCancel}
             device={device}
             actions={null} // Do not show close button
