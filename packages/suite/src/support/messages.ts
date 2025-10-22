@@ -7351,6 +7351,14 @@ export default defineMessages({
         id: 'TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE',
         defaultMessage: 'Device connected—complete setup to continue',
     },
+    TR_INITIAL_RECONNECT_DEVICE_TITLE: {
+        id: 'TR_INITIAL_RECONNECT_DEVICE_TITLE',
+        defaultMessage: 'Reconnect device',
+    },
+    TR_INITIAL_RECONNECT_DEVICE_DESCRIPTION: {
+        id: 'TR_INITIAL_RECONNECT_DEVICE_DESCRIPTION',
+        defaultMessage: 'Disconnect and connect device to continue.',
+    },
     TR_DEVICE_CONNECTED_BOOTLOADER: {
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER',
         defaultMessage: 'Device connected in bootloader',
