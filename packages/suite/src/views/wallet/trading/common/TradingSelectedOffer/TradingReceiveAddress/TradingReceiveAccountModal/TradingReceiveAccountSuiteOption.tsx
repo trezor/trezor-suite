@@ -108,7 +108,9 @@ export const TradingReceiveAccountSuiteOption = ({
                     </Text>
                 </Column>
 
-                {(isUtxoBasedNetwork || requiresExtraField) && <Icon name="caretRight" size={20} />}
+                {(isUtxoBasedNetwork || requiresExtraField) && (
+                    <Icon name="caretRight" size={20} variant="tertiary" />
+                )}
             </Row>
         </TradingReceiveAccountOptionRow>
     );

@@ -136,7 +136,7 @@ export const TradingExchangeFormInputs = () => {
                     />
                 </Column>
 
-                {receiveCryptoId && !isLoading && <TradingReceiveAddress />}
+                {receiveCryptoId && !isLoading && <TradingReceiveAddress type="exchange" />}
 
                 <Column
                     gap={spacings.lg}

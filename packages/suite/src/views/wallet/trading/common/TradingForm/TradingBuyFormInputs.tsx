@@ -101,7 +101,7 @@ export const TradingBuyFormInputs = () => {
                         />
                     </Column>
 
-                    {cryptoId && !isLoading && <TradingReceiveAddress />}
+                    {cryptoId && !isLoading && <TradingReceiveAddress type="buy" />}
                 </Column>
             </Card>
 
