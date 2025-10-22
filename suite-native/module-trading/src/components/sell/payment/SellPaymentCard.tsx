@@ -3,8 +3,8 @@ import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-na
 
 import { AnimatedBox, Card } from '@suite-native/atoms';
 
-import { SellCountryOfResidencePicker } from './SellCountryOfResidencePicker';
 import { SellProviderPicker } from './SellProviderPicker';
+import { TradingCountryOfResidencePicker } from '../../general/TradingCountryOfResidencePicker';
 
 export type SellPaymentCardProps = {
     isFormMountedRecently?: boolean;
@@ -38,7 +38,7 @@ export const SellPaymentCard = ({
     return (
         <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
             <Card noPadding>
-                <SellCountryOfResidencePicker />
+                <TradingCountryOfResidencePicker testID="@trading/sell/country" context="sell" />
                 <SellProviderPicker />
             </Card>
         </AnimatedBox>
