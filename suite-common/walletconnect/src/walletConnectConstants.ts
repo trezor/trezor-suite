@@ -12,6 +12,7 @@ export const WALLETCONNECT_METADATA = {
     redirect: isNative()
         ? {
               native: 'trezorsuite://walletconnect/',
+              universal: 'https://connect.trezor.io/9/deeplink/wc',
               linkMode: true,
           }
         : {},
