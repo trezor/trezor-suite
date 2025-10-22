@@ -102,7 +102,10 @@ export const getMessageId = ({
         'device-rebooting': defaultKey, // TODO: device is booting to normal mode
         'device-bootloader-locked': defaultKey, // TODO: device is  a) rebooting or b) its was rebooted to bootloader
         'device-hard-locked': defaultKey, // TODO: device is hard locked and will not respond to messages, unlock it
-        'device-disconnect-required': defaultKey,
+        'device-disconnect-required': {
+            heading: 'TR_INITIAL_RECONNECT_DEVICE_TITLE',
+            description: 'TR_INITIAL_RECONNECT_DEVICE_DESCRIPTION',
+        },
         'device-disconnected': defaultKey,
         'device-initialize': defaultKey,
         'device-recovery-mode': defaultKey,
