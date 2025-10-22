@@ -14,7 +14,7 @@ export const LANGUAGES = {
     'fr-FR': { name: 'Français', en: 'French', type: 'official' },
     'hu-HU': { name: 'Magyar', en: 'Hungarian', type: 'community' },
     'it-IT': { name: 'Italiano', en: 'Italian', type: 'community' },
-    'ja-JP': { name: '日本語', en: 'Japanese', type: 'community' },
+    'ja-JP': { name: '日本語', en: 'Japanese', type: 'official' },
     'pt-BR': { name: 'Português (BR)', en: 'Portuguese (BR)', type: 'official' },
     'ru-RU': { name: 'Русский', en: 'Russian', type: 'community' },
     'tr-TR': { name: 'Türkçe', en: 'Turkish', type: 'community' },
