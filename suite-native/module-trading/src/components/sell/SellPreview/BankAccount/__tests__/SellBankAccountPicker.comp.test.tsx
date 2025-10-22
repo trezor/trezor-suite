@@ -1,0 +1,111 @@
+import React from 'react';
+
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+
+import { bankAccounts } from '../../../../../__fixtures__/bankAccounts';
+import { getWalletState } from '../../../../../__fixtures__/walletState';
+import { SellBankAccountPicker } from '../SellBankAccountPicker';
+
+// Mock the useWatchTrade hook since it's complex and not the focus of this test
+jest.mock('../../../../../hooks/general/useWatchTrade', () => ({
+    useWatchTrade: jest.fn(),
+}));
+
+// Mock the SellBankAccountSheet component to isolate the picker component
+jest.mock('../SellBankAccountSheet', () => ({
+    SellBankAccountSheet: jest.fn().mockImplementation(() => <div>Bank Account Sheet</div>),
+}));
+
+describe('SellBankAccountPicker', () => {
+    const mockOnBankAccountSelect = jest.fn();
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('Conditional Rendering', () => {
+        it('should not render when no bank accounts are available', async () => {
+            const preloadedState: PreloadedState = {
+                wallet: getWalletState({ tradeType: 'sell' }),
+            };
+
+            preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1';
+            preloadedState.wallet!.trading!.trades = [
+                {
+                    tradeType: 'sell',
+                    data: {
+                        orderId: 'order_id_1',
+                        bankAccounts: [], // No bank accounts
+                    },
+                },
+            ];
+
+            const { queryByTestId } = await renderWithStoreProviderAsync(
+                <SellBankAccountPicker
+                    orderId="order_id_1"
+                    selectedBankAccountIban=""
+                    onBankAccountSelect={mockOnBankAccountSelect}
+                />,
+                { preloadedState },
+            );
+
+            expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
+        });
+
+        it('should not render when bankAccounts is undefined', async () => {
+            const preloadedState: PreloadedState = {
+                wallet: getWalletState({ tradeType: 'sell' }),
+            };
+
+            preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1';
+            preloadedState.wallet!.trading!.trades = [
+                {
+                    tradeType: 'sell',
+                    data: {
+                        orderId: 'order_id_1',
+                        bankAccounts: undefined, // Undefined bank accounts
+                    },
+                },
+            ];
+
+            const { queryByTestId } = await renderWithStoreProviderAsync(
+                <SellBankAccountPicker
+                    orderId="order_id_1"
+                    selectedBankAccountIban=""
+                    onBankAccountSelect={mockOnBankAccountSelect}
+                />,
+                { preloadedState },
+            );
+
+            expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
+        });
+
+        it('should not render when orderId is undefined', async () => {
+            const preloadedState: PreloadedState = {
+                wallet: getWalletState({ tradeType: 'sell' }),
+            };
+
+            preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1';
+            preloadedState.wallet!.trading!.trades = [
+                {
+                    tradeType: 'sell',
+                    data: {
+                        orderId: 'order_id_1',
+                        bankAccounts,
+                    },
+                },
+            ];
+
+            const { queryByTestId } = await renderWithStoreProviderAsync(
+                <SellBankAccountPicker
+                    orderId={undefined}
+                    selectedBankAccountIban={bankAccounts[0].bankAccount}
+                    onBankAccountSelect={mockOnBankAccountSelect}
+                />,
+                { preloadedState },
+            );
+
+            expect(queryByTestId('@trading/sell/bank-account-item')).not.toBeOnTheScreen();
+        });
+    });
+});

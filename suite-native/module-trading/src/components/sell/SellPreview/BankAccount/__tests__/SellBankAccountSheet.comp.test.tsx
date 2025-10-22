@@ -1,0 +1,57 @@
+import React from 'react';
+
+import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+
+import { bankAccounts } from '../../../../../__fixtures__/bankAccounts';
+import { SellBankAccountSheet } from '../SellBankAccountSheet';
+
+describe('SellBankAccountSheet', () => {
+    const mockOnBankAccountSelect = jest.fn();
+    const mockCloseModal = jest.fn();
+    const mockRef = { current: null };
+
+    const renderSellBankAccountSheet = (props = {}) =>
+        renderWithBasicProvider(
+            <SellBankAccountSheet
+                ref={mockRef}
+                bankAccounts={bankAccounts}
+                selectedBankAccountIban={bankAccounts[0].bankAccount}
+                onBankAccountSelect={mockOnBankAccountSelect}
+                closeModal={mockCloseModal}
+                {...props}
+            />,
+        );
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('User Experience', () => {
+        it('should display all bank accounts', () => {
+            const { getByText } = renderSellBankAccountSheet();
+
+            // User should see bank account holder names
+            expect(getByText('John Doe')).toBeOnTheScreen();
+            expect(getByText('Jane Smith')).toBeOnTheScreen();
+            expect(getByText('Bob Johnson')).toBeOnTheScreen();
+        });
+
+        it('should allow user to select a bank account', async () => {
+            const { getByText } = renderSellBankAccountSheet();
+
+            // User should be able to tap on a bank account to select it
+            await userEvent.press(getByText('John Doe'));
+
+            expect(mockOnBankAccountSelect).toHaveBeenCalledWith(bankAccounts[0]);
+        });
+
+        it('should close the modal after user selects a bank account', async () => {
+            const { getByText } = renderSellBankAccountSheet();
+
+            // When user selects any bank account, modal should close
+            await userEvent.press(getByText('Jane Smith'));
+
+            expect(mockCloseModal).toHaveBeenCalledTimes(1);
+        });
+    });
+});

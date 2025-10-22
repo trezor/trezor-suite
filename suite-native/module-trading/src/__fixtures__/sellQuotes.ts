@@ -1,5 +1,7 @@
 import type { SellFiatTrade } from 'invity-api';
 
+import { bankAccounts } from './bankAccounts';
+
 export const sellQuotes = [
     {
         amountInCrypto: false,
@@ -39,6 +41,7 @@ export const sellQuotes = [
         paymentMethodName: 'Bank Transfer',
         rate: 3937.6279729091198,
         tags: ['wantFiat'],
+        bankAccounts,
     },
     {
         amountInCrypto: false,

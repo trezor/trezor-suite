@@ -2384,6 +2384,12 @@ export const messages = {
                 bankTransfer: 'Bank Transfer',
                 creditCard: 'Credit/Debit Card',
             },
+            bankAccount: 'Bank account',
+            verified: 'Verified',
+            notVerified: 'Not verified',
+            bankAccountSheetTitle: {
+                title: 'Select an account',
+            },
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
