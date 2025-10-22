@@ -3,7 +3,7 @@ import * as semver from 'semver';
 import { TranslationKey } from '@suite-common/intl-types';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { BulletList, Column, H2, Modal, Paragraph } from '@trezor/components';
+import { BulletList, Column, H2, Modal, Paragraph, Row } from '@trezor/components';
 import { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import { ConfirmOnDevicePill, DeviceAnimation } from '@trezor/product-components';
@@ -215,7 +215,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                 />
                             </Paragraph>
                         )}
-                        {showWebUsbButton && <WebUsbButton />}
+                        <Row justifyContent="center">{showWebUsbButton && <WebUsbButton />}</Row>
                     </Column>
                 )}
             </Modal.ModalBase>
