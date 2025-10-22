@@ -7,3 +7,5 @@ export * from './components/CountrySheet/CountryOfResidencePicker';
 export * from './components/TradingLocationSettings';
 export * from './components/ConfirmLocationButton';
 export * from './components/OnboardingButtons';
+
+export * from './screens/TradingLocationModalScreen';

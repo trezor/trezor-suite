@@ -7,6 +7,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
+import { residenceCheckDisabledState } from '../../../__fixtures__/residenceCheckState';
 import { sellQuotes } from '../../../__fixtures__/sellQuotes';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
@@ -42,7 +43,10 @@ describe('SellForm', () => {
         let preloadedState: PreloadedState;
 
         beforeEach(async () => {
-            preloadedState = { wallet: { trading: getInitializedTradingState() } };
+            preloadedState = {
+                wallet: { trading: getInitializedTradingState() },
+                ...residenceCheckDisabledState,
+            };
             preloadedState.wallet!.trading!.sell!.quotes = sellQuotes;
 
             const { result } = await renderFormHook(preloadedState);

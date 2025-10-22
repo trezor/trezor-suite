@@ -6,7 +6,7 @@ export type SkipButtonProps = {
 };
 
 export const SkipButton = ({ onPress }: SkipButtonProps) => (
-    <Button colorScheme="tertiaryElevation0" size="large" onPress={onPress}>
+    <Button colorScheme="tertiaryElevation0" size="medium" onPress={onPress}>
         <Translation id="tradingResidence.locationSettings.skipButton" />
     </Button>
 );

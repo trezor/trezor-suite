@@ -134,6 +134,7 @@ export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Welcome]: undefined;
     [OnboardingStackRoutes.AnalyticsConsent]: undefined;
     [OnboardingStackRoutes.Biometrics]: undefined;
+    [OnboardingStackRoutes.TradingLocation]: undefined;
 };
 
 export type DeviceOnboardingStackParamList = {
@@ -337,6 +338,7 @@ export type RootStackParamList = {
         orderId?: string;
     };
     [RootStackRoutes.BootloaderMode]: undefined;
+    [RootStackRoutes.TradingLocationModal]: undefined;
 };
 
 export type TradingStackParamList = {

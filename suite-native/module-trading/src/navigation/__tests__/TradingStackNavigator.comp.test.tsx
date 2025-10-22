@@ -18,6 +18,7 @@ describe('TradingStackNavigator', () => {
                 featureFlags: {
                     ...featureFlagsInitialState,
                     [FeatureFlag.IsTradingBuyEnabled]: true,
+                    [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
                 },
             },
         });

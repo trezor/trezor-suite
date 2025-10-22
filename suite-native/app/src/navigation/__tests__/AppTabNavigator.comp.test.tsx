@@ -36,6 +36,7 @@ describe('AppTabNavigator', () => {
                 [FeatureFlag.IsTradingBuyEnabled]: false,
                 [FeatureFlag.IsTradingExchangeEnabled]: false,
                 [FeatureFlag.IsTradingSellEnabled]: false,
+                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
             messageSystem: {
                 validMessages: {
@@ -80,6 +81,7 @@ describe('AppTabNavigator', () => {
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingBuyEnabled]: true,
+                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
             },
         });
 
