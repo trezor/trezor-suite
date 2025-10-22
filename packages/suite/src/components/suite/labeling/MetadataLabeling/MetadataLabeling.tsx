@@ -9,6 +9,7 @@ import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -383,6 +384,7 @@ export const MetadataLabeling = ({
     const {
         isLocalFirstStorageEnabled,
         isEvoluSupportedByDevice,
+        showLocalFirstStorage,
         legacyMetadataState,
         hasDeviceLocalFirstStorageKeys,
     } = useLabelingCombined({ deviceStaticSessionId });
@@ -417,14 +419,21 @@ export const MetadataLabeling = ({
             // Is there something that needs to be initiated?
             !isLegacyLabelingEnabled
         ) {
-            dispatch(
-                init(
-                    // Provide force=true argument (user wants to enable metadata).
-                    true,
-                    // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
-                    deviceState,
-                ),
-            );
+            if (showLocalFirstStorage && isEvoluSupportedByDevice) {
+                dispatch(setFlag('showEnableLocalFirstStorageModal', true));
+
+                return;
+            } else {
+                // TODO init
+                dispatch(
+                    init(
+                        // Provide force=true argument (user wants to enable metadata).
+                        true,
+                        // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
+                        deviceState,
+                    ),
+                );
+            }
         }
         dispatch(setEditing(payload.defaultValue));
     };
