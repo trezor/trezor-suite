@@ -267,7 +267,7 @@ describe('BuyFormFieldErrorBadge', () => {
                 },
             );
 
-            expect(getByText('Provider offer: 50000 sat')).toBeTruthy();
+            expect(getByText('Provider offer: 50,000 sat')).toBeTruthy();
         });
     });
 

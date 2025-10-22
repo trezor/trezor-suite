@@ -1,12 +1,12 @@
 import { FormatterProviderConfig } from '@suite-common/formatters';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectBitcoinAmountUnit } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 export const useFormattersConfig = (): FormatterProviderConfig => {
     const locale = useSelector(selectLanguage);
-    const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
+    const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
     const baseCurrency = useSelector(selectBaseCurrency);
 
     return {

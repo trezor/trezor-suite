@@ -352,7 +352,7 @@ describe('SellFormFieldErrorBadge', () => {
                 getPreloadedState(PROTO.AmountUnit.SATOSHI),
             );
 
-            expect(getByText('Provider offer: 2330000 sat')).toBeOnTheScreen();
+            expect(getByText('Provider offer: 2,330,000 sat')).toBeOnTheScreen();
         });
     });
 

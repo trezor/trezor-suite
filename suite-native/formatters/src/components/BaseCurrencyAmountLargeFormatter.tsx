@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useFormatters } from '@suite-common/formatters';
 import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -8,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountText } from './EmptyAmountText';
-import { parseBalanceAmount } from '../utils';
+import { useFormattedGraphHeaderValues } from '../hooks/useFormattedGraphHeaderValues';
 
 type BalanceFormatterProps = FormatterProps<BaseCurrencyAmount | null> & {
     isForcedDiscreetMode?: boolean;
@@ -27,15 +26,12 @@ export const BaseCurrencyAmountLargeFormatter = ({
     testID,
 }: BalanceFormatterProps) => {
     const { applyStyle } = useNativeStyles();
-    const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
+
+    const { currencySymbol, wholeNumber, decimalNumber } = useFormattedGraphHeaderValues(
+        value?.toString(),
+    );
 
     if (!value) return <EmptyAmountText />;
-
-    const formattedValue = formatter.format(value);
-
-    if (!formattedValue) return <EmptyAmountText />;
-
-    const { currencySymbol, wholeNumber, decimalNumber } = parseBalanceAmount(formattedValue);
 
     const isCrypto =
         currencySymbol?.toLowerCase() === 'sat' || currencySymbol?.toLowerCase() === 'btc';
@@ -64,7 +60,7 @@ export const BaseCurrencyAmountLargeFormatter = ({
     return (
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1} testID={testID}>
             {isCrypto ? (
-                <HStack spacing="sp8" alignItems="center">
+                <HStack spacing="sp8" alignItems="flex-end">
                     {valueElement}
                     {currencyElement}
                 </HStack>

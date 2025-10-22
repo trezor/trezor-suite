@@ -338,8 +338,8 @@ describe('useExchangeForm', () => {
         });
 
         it.each([
-            ['100', 'Minimum is 10000 sat'],
-            ['10000000000', 'Maximum is 5000000000 sat'],
+            ['100', 'Minimum is 10,000 sat'],
+            ['10000000000', 'Maximum is 5,000,000,000 sat'],
             ['10000000', 'Insufficient balance'],
         ])('should display error for crypto amount %s SATS', async (amount, expectedValue) => {
             store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);

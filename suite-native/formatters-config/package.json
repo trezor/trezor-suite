@@ -13,6 +13,7 @@
     "dependencies": {
         "@suite-common/formatters": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "expo-localization": "~17.0.7",
         "react": "19.1.0",
         "react-redux": "9.2.0"
