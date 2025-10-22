@@ -13,6 +13,7 @@ import {
     renderHook,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { selectTradingResidenceCountry } from '@suite-native/trading-residence';
 import { PROTO } from '@trezor/connect';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
@@ -662,6 +663,19 @@ describe('useBuyForm', () => {
 
                 expect(result.current.getValues('generalAlert')).toBeUndefined();
             });
+        });
+    });
+
+    describe('on country change', () => {
+        it('should set country to redux on change', async () => {
+            const store = await getInitializedStore(true);
+            const { result } = await renderUseTradingBuyForm(store);
+
+            act(() => {
+                result.current.setValue('country', { value: 'CA', label: 'Canada' });
+            });
+
+            expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
         });
     });
 

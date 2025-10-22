@@ -29,6 +29,7 @@ import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
+import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
@@ -226,13 +227,14 @@ export const useBuyForm = (): BuyFormType => {
         validation: buyFormValidationSchema,
         context,
     });
-    const { setValue } = form;
+    const { setValue, watch } = form;
 
     useAmountAndCurrencyFieldsChangeEffect(form);
     useReceiveAccountChangeEffect(setValue, selectBuySelectedReceiveAccount);
     useBuyQuotesChangeEffect(form);
     useBuyQuoteChangeEffect(form);
     useValidations(form, limits);
+    useCountryChangeEffect(watch);
 
     return form;
 };

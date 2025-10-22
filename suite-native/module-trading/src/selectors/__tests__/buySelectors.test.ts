@@ -22,17 +22,14 @@ import {
     selectValidTradingBuyQuotesNative,
 } from '../buySelectors';
 
-jest.mock('react-native', () => ({
-    Platform: {
-        OS: 'ios',
-        select: jest.fn(specifics => specifics.ios ?? specifics.default),
-    },
-}));
-
 describe('buySelectors', () => {
     let state: TradingRootState & AccountsRootState;
 
     beforeEach(() => {
+        Platform.OS = 'ios';
+        jest.spyOn(Platform, 'select').mockImplementation(
+            (specifics: any) => specifics.ios ?? specifics.default,
+        );
         state = { wallet: getWalletState() };
     });
 
@@ -143,6 +140,19 @@ describe('buySelectors', () => {
                 },
                 amountInCrypto: false,
             });
+        });
+
+        it('should respect residence settings', () => {
+            state.wallet.trading.residence.country = 'DE';
+
+            expect(selectBuyFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    country: {
+                        label: '🇩🇪 Germany',
+                        value: 'DE',
+                    },
+                }),
+            );
         });
 
         it('should use default value for fiat currency if no fiat is suggested', () => {
@@ -274,21 +284,12 @@ describe('buySelectors', () => {
         });
 
         describe('on android device', () => {
-            beforeAll(() => {
+            it('should ignore applePay', () => {
                 Platform.OS = 'android';
                 (Platform.select as jest.Mock).mockImplementation(
                     specifics => specifics.android ?? specifics.default,
                 );
-            });
 
-            afterAll(() => {
-                Platform.OS = 'ios';
-                (Platform.select as jest.Mock).mockImplementation(
-                    specifics => specifics.ios ?? specifics.default,
-                );
-            });
-
-            it('should ignore applePay', () => {
                 expect(selectValidTradingBuyQuotesNative(state)).toEqual([
                     expect.objectContaining({ orderId: 'order_id_1' }),
                     expect.objectContaining({ orderId: 'order_id_3' }),
