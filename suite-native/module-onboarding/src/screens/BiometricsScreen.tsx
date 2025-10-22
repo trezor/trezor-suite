@@ -1,6 +1,4 @@
-import { useDispatch } from 'react-redux';
-
-import { CommonActions } from '@react-navigation/core';
+import { useSelector } from 'react-redux';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -8,29 +6,33 @@ import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    HomeStackRoutes,
     OnboardingStackParamList,
     OnboardingStackRoutes,
-    RootStackRoutes,
     Screen,
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { setIsOnboardingFinished } from '@suite-native/settings';
+import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-residence';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { useExitOnboardingFlow } from '../hooks/useExitOnboardingFlow';
+
+export type BiometricsScreenProps = StackProps<
+    OnboardingStackParamList,
+    OnboardingStackRoutes.Biometrics
+>;
 
 const titleStyle = prepareNativeStyle(_ => ({
     // this title should have smaller letter spacing by design.
     letterSpacing: -1.4,
 }));
 
-export const BiometricsScreen = ({
-    navigation,
-}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.Biometrics>) => {
+export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const { applyStyle } = useNativeStyles();
     const { toggleBiometricsOption } = useBiometricsSettings();
+    const exitOnboardingFlow = useExitOnboardingFlow();
 
-    const dispatch = useDispatch();
+    const shouldDisplayTradingLocationScreen = useSelector(selectIsTradingResidenceCheckEnabled);
 
     const enableBiometrics = async () => {
         const result = await toggleBiometricsOption();
@@ -45,33 +47,21 @@ export const BiometricsScreen = ({
         }
     };
 
-    const exitOnboardingFlow = () => {
-        dispatch(setIsOnboardingFinished());
-
-        // TODO: COSMETIC IMPROVEMENT: redirect to home only if there is no device connected. In case of device connected,
-        // the redirect is handled in useHandleDeviceConnection hook. in reaction to the `setIsOnboardingFinished` call.
-        navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    {
-                        name: RootStackRoutes.AppTabs,
-                        params: {
-                            screen: HomeStackRoutes.Home,
-                        },
-                    },
-                ],
-            }),
-        );
+    const handleRedirect = () => {
+        if (shouldDisplayTradingLocationScreen) {
+            navigation.navigate(OnboardingStackRoutes.TradingLocation);
+        } else {
+            exitOnboardingFlow();
+        }
     };
 
     const handleEnableButtonPress = async () => {
         await enableBiometrics();
-        exitOnboardingFlow();
+        handleRedirect();
     };
 
     const handleNotNowButtonPress = () => {
-        exitOnboardingFlow();
+        handleRedirect();
     };
 
     return (

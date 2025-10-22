@@ -6,6 +6,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
+import { residenceCheckDisabledState } from '../../../__fixtures__/residenceCheckState';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
@@ -27,8 +28,11 @@ describe('BuyForm', () => {
         });
 
     it('should render when buy data are not preloaded', async () => {
-        const { result } = await renderFormHook({});
-        const { queryByText, getByText, getByLabelText } = await renderBuyForm({}, result.current);
+        const { result } = await renderFormHook(residenceCheckDisabledState);
+        const { queryByText, getByText, getByLabelText } = await renderBuyForm(
+            residenceCheckDisabledState,
+            result.current,
+        );
 
         expect(getByText('You pay')).toBeTruthy();
         expect(getByLabelText('Select asset')).toHaveTextContent(/Select asset/);
@@ -43,7 +47,10 @@ describe('BuyForm', () => {
 
     describe('with preloaded buy data', () => {
         let form: BuyFormType;
-        const preloadedState = { wallet: { trading: getInitializedTradingState() } };
+        const preloadedState = {
+            wallet: { trading: getInitializedTradingState() },
+            ...residenceCheckDisabledState,
+        };
 
         beforeEach(async () => {
             const { result } = await renderFormHook(preloadedState);
