@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { DEFAULT_LOCALE } from '../constants';
-import { selectUserSelectedLocale } from '../localeSlice';
-import { useSystemLocale } from './useSystemLocale';
+import { selectUserSelectedLocaleTag } from '../localeSlice';
+import { useSystemLocaleTag } from './useSystemLocaleTag';
 
 export const useLocale = () => {
     const isLocalizationEnabled = useFeatureFlag(FeatureFlag.IsLocalizationEnabled);
-    const userSelectedLocale = useSelector(selectUserSelectedLocale);
-    const systemLocale = useSystemLocale();
+    const userSelectedLocaleTag = useSelector(selectUserSelectedLocaleTag);
+    const systemLocaleTag = useSystemLocaleTag();
 
     const locale = useMemo(() => {
         // If localization is disabled, always return default locale
@@ -18,8 +18,8 @@ export const useLocale = () => {
             return DEFAULT_LOCALE;
         }
 
-        return userSelectedLocale === 'system' ? systemLocale : userSelectedLocale;
-    }, [isLocalizationEnabled, userSelectedLocale, systemLocale]);
+        return userSelectedLocaleTag === 'system' ? systemLocaleTag : userSelectedLocaleTag;
+    }, [isLocalizationEnabled, userSelectedLocaleTag, systemLocaleTag]);
 
     return locale;
 };

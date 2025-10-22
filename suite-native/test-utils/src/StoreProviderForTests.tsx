@@ -3,7 +3,8 @@ import { View } from 'react-native';
 import { Provider } from 'react-redux';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
-import { type PreloadedState, initStore } from '@suite-native/state';
+import { IntlProvider } from '@suite-native/intl';
+import { PreloadedState, initStore } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
 
@@ -59,7 +60,10 @@ export const StoreProviderForTests = ({
 
     return (
         <Provider store={store}>
-            <BasicProviderWithFormattingConfig>{children}</BasicProviderWithFormattingConfig>
+            <IntlProvider>
+                {/* Intl is accessing redux store to get the locale. */}
+                <BasicProviderWithFormattingConfig>{children}</BasicProviderWithFormattingConfig>
+            </IntlProvider>
         </Provider>
     );
 };

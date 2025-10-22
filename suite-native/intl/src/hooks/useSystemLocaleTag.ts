@@ -9,7 +9,7 @@ const readSystemLocale = () => {
     return locale[0].languageTag;
 };
 
-export const useSystemLocale = () => {
+export const useSystemLocaleTag = () => {
     const [systemLanguage, setSystemLanguage] = useState(readSystemLocale());
 
     useEffect(() => {
@@ -21,7 +21,7 @@ export const useSystemLocale = () => {
             }
         });
 
-        return () => subscription.remove();
+        return () => subscription?.remove();
     }, []);
 
     return systemLanguage;
