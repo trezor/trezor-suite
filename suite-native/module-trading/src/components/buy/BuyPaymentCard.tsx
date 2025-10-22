@@ -3,9 +3,9 @@ import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-na
 
 import { AnimatedBox, Card } from '@suite-native/atoms';
 
-import { BuyCountryOfResidencePicker } from './BuyCountryOfResidencePicker';
 import { BuyPaymentMethodPicker } from './BuyPaymentMethodPicker';
 import { BuyProviderPicker } from './BuyProviderPicker';
+import { TradingCountryOfResidencePicker } from '../general/TradingCountryOfResidencePicker';
 
 export type PaymentCardProps = {
     isFormMountedRecently?: boolean;
@@ -40,7 +40,7 @@ export const BuyPaymentCard = ({
         <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
             <Card noPadding>
                 <BuyPaymentMethodPicker />
-                <BuyCountryOfResidencePicker />
+                <TradingCountryOfResidencePicker testID="@trading/buy/country" context="buy" />
                 <BuyProviderPicker />
             </Card>
         </AnimatedBox>
