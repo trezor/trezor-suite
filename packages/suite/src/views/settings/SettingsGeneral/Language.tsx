@@ -22,6 +22,12 @@ const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleIn
 const onlyCommunity = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
     locale[1].type === 'community';
 
+const getOptions = (filterPolicy: (locale: [string, LocaleInfo]) => boolean) =>
+    typedObjectEntries(LANGUAGES)
+        .filter(filterPolicy)
+        .map(([value, { name }]) => ({ value, label: name }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+
 const useLanguageOptions = () => {
     const { translationString } = useTranslation();
     const systemOption = useMemo(
@@ -38,15 +44,11 @@ const useLanguageOptions = () => {
             },
             {
                 label: translationString('TR_OFFICIAL_LANGUAGES'),
-                options: typedObjectEntries(LANGUAGES)
-                    .filter(onlyOfficial)
-                    .map(([value, { name }]) => ({ value, label: name })),
+                options: getOptions(onlyOfficial),
             },
             {
                 label: translationString('TR_COMMUNITY_LANGUAGES'),
-                options: typedObjectEntries(LANGUAGES)
-                    .filter(onlyCommunity)
-                    .map(([value, { name }]) => ({ value, label: name })),
+                options: getOptions(onlyCommunity),
             },
         ],
         [systemOption, translationString],
