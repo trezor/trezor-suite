@@ -1,3 +1,4 @@
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
@@ -49,8 +50,14 @@ export const checkDeviceAuthenticityThunk = createThunk<
 
             return rejectWithValue(storedResult);
         }
-
-        const isOverallValid = isDeviceAuthenticityValid(result.payload);
+        const isTropicRemotelyDisabled = selectIsFeatureDisabled(
+            getState(),
+            Feature.deviceAuthenticityCheckTropic,
+        );
+        const isOverallValid = isDeviceAuthenticityValid({
+            result: result.payload,
+            isTropicRemotelyDisabled,
+        });
         const storedResult = { valid: isOverallValid, ...result.payload };
 
         // successful TrezorConnect call, but the signature authenticity validation failed

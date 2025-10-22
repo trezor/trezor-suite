@@ -51,6 +51,8 @@ export const Feature = {
     entropyCheck: 'security.entropyCheck',
     entropyCheckMobile: 'security.entropyCheck.mobile',
 
+    deviceAuthenticityCheckTropic: 'security.deviceAuthenticityCheck.tropic',
+
     trading: {
         buy: 'trading.buy',
         sell: 'trading.sell',
