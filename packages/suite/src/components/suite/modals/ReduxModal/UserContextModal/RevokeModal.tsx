@@ -69,6 +69,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
         getValues,
         changeFeeLevel,
         trigger,
+        tradingReceiveAddress,
     } = context;
 
     const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
@@ -102,6 +103,25 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
 
         setIsConfirmButtonLoading(false);
         setIsWaitingForDevice(false);
+    };
+
+    const onRefreshClick = async () => {
+        const { receiveAddress } = tradingReceiveAddress;
+        if (!receiveAddress) return;
+
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'revoke-modal',
+                action: 'refresh',
+                ...cryptoInfo,
+            },
+        });
+
+        await context.confirmTrade({
+            receiveAddress,
+            trade: { ...selectedQuote, status: 'CONFIRM' },
+        });
     };
 
     const onClose = (isSubmitting?: boolean) => {
@@ -140,14 +160,27 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
             }
             bottomContent={
                 <>
-                    <Modal.Button
-                        size="medium"
-                        isLoading={isFormLoading || isConfirmButtonLoading}
-                        isDisabled={!device?.connected}
-                        onClick={confirmAndSend}
-                    >
-                        <Translation id="TR_CONTINUE" />
-                    </Modal.Button>
+                    {selectedQuote.status === 'CONFIRM' && (
+                        <Modal.Button
+                            size="medium"
+                            isLoading={isFormLoading || isConfirmButtonLoading}
+                            isDisabled={!device?.connected}
+                            onClick={confirmAndSend}
+                        >
+                            <Translation id="TR_CONTINUE" />
+                        </Modal.Button>
+                    )}
+
+                    {selectedQuote.status === 'ERROR' && (
+                        <Modal.Button
+                            size="medium"
+                            isLoading={isFormLoading}
+                            isDisabled={!device?.connected || isFormLoading}
+                            onClick={onRefreshClick}
+                        >
+                            <Translation id="TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON" />
+                        </Modal.Button>
+                    )}
 
                     <Modal.Button size="medium" variant="tertiary" onClick={() => onClose()}>
                         <Translation id="TR_CANCEL" />

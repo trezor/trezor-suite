@@ -390,7 +390,7 @@ export type SuiteAnalyticsEvent =
           type: EventType.TradingExchangeApproval;
           payload: {
               type: 'approve-modal';
-              action: 'continue' | 'cancel' | 'limit-exact' | 'limit-unlimited';
+              action: 'continue' | 'cancel' | 'refresh' | 'limit-exact' | 'limit-unlimited';
 
               sendCryptoLabel?: string;
               sendCryptoNetworkSymbol?: string;
@@ -408,7 +408,7 @@ export type SuiteAnalyticsEvent =
           type: EventType.TradingExchangeApproval;
           payload: {
               type: 'revoke-modal';
-              action: 'continue' | 'cancel';
+              action: 'continue' | 'cancel' | 'refresh';
 
               sendCryptoLabel?: string;
               sendCryptoNetworkSymbol?: string;

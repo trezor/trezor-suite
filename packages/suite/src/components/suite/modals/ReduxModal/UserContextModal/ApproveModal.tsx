@@ -80,6 +80,7 @@ export const ApproveModal = ({
         changeFeeLevel,
         trigger,
         fetchFeesAndCompose,
+        tradingReceiveAddress,
     } = context;
 
     const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
@@ -177,6 +178,25 @@ export const ApproveModal = ({
         setIsWaitingForDevice(false);
     };
 
+    const onRefreshClick = async () => {
+        const { receiveAddress } = tradingReceiveAddress;
+        if (!receiveAddress) return;
+
+        analytics.report({
+            type: EventType.TradingExchangeApproval,
+            payload: {
+                type: 'approve-modal',
+                action: 'refresh',
+                ...cryptoInfo,
+            },
+        });
+
+        await context.confirmTrade({
+            receiveAddress,
+            trade: { ...selectedQuote, status: 'CONFIRM' },
+        });
+    };
+
     const onClose = (isSubmitting?: boolean) => {
         analytics.report({
             type: EventType.TradingExchangeApproval,
@@ -220,6 +240,17 @@ export const ApproveModal = ({
                             onClick={confirmAndSend}
                         >
                             <Translation id="TR_CONTINUE" />
+                        </Modal.Button>
+                    )}
+
+                    {selectedQuote.status === 'ERROR' && (
+                        <Modal.Button
+                            size="medium"
+                            isLoading={isFormLoading}
+                            isDisabled={!device?.connected || isFormLoading}
+                            onClick={onRefreshClick}
+                        >
+                            <Translation id="TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON" />
                         </Modal.Button>
                     )}
 
