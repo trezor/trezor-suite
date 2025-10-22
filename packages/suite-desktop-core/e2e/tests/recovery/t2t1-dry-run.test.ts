@@ -94,7 +94,39 @@ test.describe(
                     await recoveryModal.verifyDryCheckPrompt();
                 });
 
+                await test.step('Complete the dry run on emulator', async () => {
+                    await trezorUserEnvLink.selectNumOfWordsEmu(12);
+                    await trezorUserEnvLink.pressYes();
+                    await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+                    await trezorUserEnvLink.pressYes();
+                    await expect(recoveryModal.successTitle).toHaveText(
+                        'Wallet backup checked successfully',
+                    );
+                });
+            },
+        );
+
+        test(
+            'Recovery after partial recovery',
+            {
+                annotation: createTestAnnotation({
+                    testCase:
+                        'Verify that a user can successfully perform a recovery dry run after page reload.',
+                    category: TestCategory.Settings,
+                    priority: TestPriority.Medium,
+                }),
+            },
+            async ({ page, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
+                await test.step('Initiate recovery dry run in settings', async () => {
+                    await settingsPage.checkSeedButton.click();
+                    await recoveryModal.userUnderstandsCheckbox.click();
+                    await recoveryModal.startButton.click();
+                    await recoveryModal.verifyDryCheckPrompt();
+                });
+
                 await test.step('Partially complete the dry run on emulator', async () => {
+                    await trezorUserEnvLink.pressYes();
+                    await trezorUserEnvLink.inputEmu('1');
                     await trezorUserEnvLink.selectNumOfWordsEmu(12);
                     await trezorUserEnvLink.pressYes();
                     await trezorUserEnvLink.inputEmu('all');
