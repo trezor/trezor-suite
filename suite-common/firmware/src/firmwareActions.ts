@@ -25,6 +25,13 @@ const setTargetType = createAction(
     }),
 );
 
+const setSwitchFirmwareType = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/set-switch-firmware-type`,
+    (payload: boolean) => ({
+        payload,
+    }),
+);
+
 const setIsCustomFirmware = createAction(
     `${FIRMWARE_MODULE_PREFIX}/set-is-custom`,
     (payload: boolean) => ({
@@ -59,6 +66,7 @@ export const firmwareActions = {
     setStatus,
     setFirmwareUpdateError,
     setTargetType,
+    setSwitchFirmwareType,
     setIsCustomFirmware,
     resetReducer,
     toggleUseDevkit,

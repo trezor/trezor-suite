@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { firmwareActions } from '@suite-common/firmware';
 import { Button } from '@trezor/components';
 import {
     getFirmwareVersion,
@@ -46,7 +47,10 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         ? 'TR_SWITCH_TO_REGULAR'
         : 'TR_SWITCH_TO_BITCOIN_ONLY';
 
-    const handleAction = () => dispatch(goto('firmware-type', { params: { cancelable: true } }));
+    const handleAction = () => {
+        dispatch(goto('firmware-type', { params: { cancelable: true } }));
+        dispatch(firmwareActions.setSwitchFirmwareType(true));
+    };
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.FirmwareType}>

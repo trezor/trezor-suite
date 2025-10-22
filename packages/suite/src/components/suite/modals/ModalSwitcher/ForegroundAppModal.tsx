@@ -16,7 +16,7 @@ import { Version } from 'src/views/suite/version';
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 
 // would not work if defined directly in the switch
-const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
+const FirmwareType = () => <FirmwareUpdate />;
 
 const getForegroundApp = (app: ForegroundAppRoute['app']) => {
     const map: Record<ForegroundAppRoute['app'], FunctionComponent<any> | null> = {

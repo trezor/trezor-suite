@@ -38,17 +38,17 @@ const InstallButton = ({ isDisabled, onClick, variant, children }: ButtonProps) 
 type GetDescriptionProps = {
     required: boolean;
     targetType: FirmwareType;
-    shouldSwitchFirmwareType?: boolean;
+    switchFirmwareType?: boolean;
     isBitcoinOnlyAvailable?: boolean;
 };
 
 const getDescription = ({
     required,
     targetType,
-    shouldSwitchFirmwareType,
+    switchFirmwareType,
     isBitcoinOnlyAvailable,
 }: GetDescriptionProps) => {
-    if (shouldSwitchFirmwareType) {
+    if (switchFirmwareType) {
         if (!isBitcoinOnlyAvailable) {
             return 'TR_BITCOIN_ONLY_UNAVAILABLE';
         }
@@ -80,16 +80,12 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
 };
 
 type FirmwareInitialStepProps = {
-    shouldSwitchFirmwareType?: boolean;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     onClose?: () => void;
 };
 
-export const FirmwareInitialStep = ({
-    shouldSwitchFirmwareType = false,
-    onClose,
-}: FirmwareInitialStepProps) => {
+export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
     const { device } = useDevice();
     const {
         deviceWillBeWiped,
@@ -98,9 +94,8 @@ export const FirmwareInitialStep = ({
         targetFirmwareType,
         toggleLowBatteryModal,
         showLowBatteryModal,
-    } = useFirmwareDesktopUpdate({
-        shouldSwitchFirmwareType,
-    });
+        switchFirmwareType,
+    } = useFirmwareDesktopUpdate();
     const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
     const { translationString } = useTranslation();
     const devices = useSelector(selectDevices);
@@ -229,7 +224,7 @@ export const FirmwareInitialStep = ({
         return <PrerequisitesGuide />;
     } else if (device.firmware === 'required' || device.firmware === 'outdated') {
         content = {
-            heading: shouldSwitchFirmwareType ? (
+            heading: switchFirmwareType ? (
                 <Translation
                     id="TR_SWITCH_FIRMWARE_TO"
                     values={{
@@ -260,7 +255,7 @@ export const FirmwareInitialStep = ({
                          */
                         required: device.firmware === 'required',
                         targetType,
-                        shouldSwitchFirmwareType,
+                        switchFirmwareType,
                         isBitcoinOnlyAvailable,
                     })}
                     values={{

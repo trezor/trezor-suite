@@ -29,6 +29,7 @@ type FirmwareUpdateCommon = {
     useDevkit: boolean;
     uiEvent?: FirmwareUpdateUiEvent;
     firmwareUpdateSource: FirmwareUpdateSource;
+    switchFirmwareType: boolean;
 };
 
 export type FirmwareUpdateState =
@@ -49,6 +50,7 @@ const initialState: FirmwareUpdateState = {
     useDevkit: false,
     uiEvent: undefined,
     firmwareUpdateSource: 'production',
+    switchFirmwareType: false, // NOTE: flag that indicates when the user intents to change the type of FW universal -> bitcoin-only
 };
 
 type RootState = {
@@ -72,6 +74,9 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         )
         .addCase(firmwareActions.setStatus, (state, { payload }) => {
             state.status = payload;
+        })
+        .addCase(firmwareActions.setSwitchFirmwareType, (state, { payload }) => {
+            state.switchFirmwareType = payload;
         })
         .addCase(firmwareActions.setFirmwareUpdateError, (state, { payload }) => {
             state.error = payload;
@@ -116,6 +121,7 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
 export const selectFirmware = (state: RootState) => state.firmware;
 export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
 export const selectFirmwareUpdateSource = (state: RootState) => state.firmware.firmwareUpdateSource;
+export const selectSwitchFirmwareType = (state: RootState) => state.firmware.switchFirmwareType;
 
 export const selectIsFirmwareInstallationRunning = (state: RootState) =>
     state.firmware.status === 'started';

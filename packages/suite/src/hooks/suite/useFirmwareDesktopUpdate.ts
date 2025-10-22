@@ -1,28 +1,18 @@
 import { useCallback, useState } from 'react';
 
-import {
-    type FirmwareUpdateProps,
-    type UseFirmwareInstallationParams,
-    useFirmwareInstallation,
-} from '@suite-common/firmware';
+import { type FirmwareUpdateProps, useFirmwareInstallation } from '@suite-common/firmware';
 import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/wallet-core';
 
 import { useSelector } from './useSelector';
 
-export const useFirmwareDesktopUpdate = (
-    { shouldSwitchFirmwareType }: UseFirmwareInstallationParams = {
-        shouldSwitchFirmwareType: false,
-    },
-) => {
+export const useFirmwareDesktopUpdate = () => {
     const [showLowBatteryModal, setShowLowBatteryModal] = useState(false);
     const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(
         selectIsDeviceConnectedViaBluetoothLowOnBattery,
     );
 
     const { firmwareUpdate, originalDevice, reconnectEvent, pinRequested, ...rest } =
-        useFirmwareInstallation({
-            shouldSwitchFirmwareType,
-        });
+        useFirmwareInstallation();
 
     const desktopFirmwareUpdate = (arg: FirmwareUpdateProps) => {
         if (isDeviceConnectedViaBluetoothLowOnBattery) {

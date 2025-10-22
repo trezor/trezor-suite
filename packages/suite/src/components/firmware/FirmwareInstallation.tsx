@@ -16,20 +16,16 @@ import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 type FirmwareInstallationProps = {
     // If true, information about new version is not shown, because we don't know anything about it
     isCustomFirmware?: boolean;
-    shouldSwitchFirmwareType: boolean;
     install: () => void;
     onPromptClose?: () => void;
 };
 
 export const FirmwareInstallation = ({
-    shouldSwitchFirmwareType,
     isCustomFirmware,
     install,
     onPromptClose,
 }: FirmwareInstallationProps) => {
-    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate({
-        shouldSwitchFirmwareType,
-    });
+    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     // Device needs to be paired twice when using web usb transport. // Once in
