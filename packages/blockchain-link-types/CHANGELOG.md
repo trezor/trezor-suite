@@ -1,3 +1,7 @@
+# 1.4.4
+
+- npm-prerelease: @trezor/blockchain-link-types 1.4.4-beta.1 (57b50a6a1c)
+
 # 1.4.3
 
 - fix: add TON of missing dependecies in package.json (7027213e3f)
