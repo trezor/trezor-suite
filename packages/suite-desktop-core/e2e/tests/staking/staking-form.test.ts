@@ -42,7 +42,7 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({ page, walletPage, stakingSection }) => {
+        async ({ walletPage, stakingSection }) => {
             await test.step('Identify possible staking balance', async () => {
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
                 ethereumStakingBalance = await walletPage.topPanelBalance.textContent();
@@ -97,7 +97,9 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
             await test.step('Try all % inputs for Eth staking', async () => {
                 for (const percentage of [10, 25, 50]) {
                     await test.step(`${percentage}% of ETH balance`, async () => {
-                        await page.getByRole('button', { name: percentage + '%' }).click();
+                        await stakingSection.cryptoInputFractionButtons
+                            .getByRole('button', { name: percentage + '%' })
+                            .click();
                         const expectedValue = calculatePercentageOfBalance({
                             percentage,
                             balance: ethereumStakingBalance!,
@@ -108,7 +110,9 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
                 }
 
                 await test.step('Max of ETH balance', async () => {
-                    await page.getByRole('button', { name: 'Max' }).click();
+                    await stakingSection.cryptoInputFractionButtons
+                        .getByRole('button', { name: 'Max' })
+                        .click();
                     await expect
                         .soft(stakingSection.withdrawalWarning)
                         .toHaveText(
