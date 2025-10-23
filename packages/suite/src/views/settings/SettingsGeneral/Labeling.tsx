@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/local-first-storage';
 import { LoadingContent } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
@@ -14,7 +15,7 @@ import {
     LABELING_OPTIONS,
     LABELING_SELECT_OPTIONS,
 } from 'src/constants/suite/labeling';
-import { useDevice } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 
@@ -25,13 +26,14 @@ export const Labeling = () => {
     const { device } = useDevice();
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
+    const showLocalFirstStorage = useSelector(selectIsFeatureLocalFirstStorageAvailable);
+
     const {
         legacyMetadataState,
         legacyEnableIfNeeded,
         legacyDisableIfNeeded,
         localFirstDisableIfNeeded,
         localFirstEnableIfNeeded,
-        showLocalFirstStorage,
         isEvoluSupportedByDevice,
         isLocalFirstStorageEnabled,
     } = useLabelingCombined({

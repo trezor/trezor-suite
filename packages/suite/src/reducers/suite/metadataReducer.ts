@@ -1,9 +1,9 @@
 import { produce } from 'immer';
 
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import {
     AccountsRootState,
     DeviceReducerState,
-    DeviceRootState,
     deviceActions,
     selectAccountByKey,
     selectDeviceByState,
@@ -13,6 +13,8 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
+import { DesktopDeviceRootState } from 'src/actions/device/deviceSlice';
+import { DesktopLabelingRootState } from 'src/actions/labeling/labelingSlice';
 import {
     METADATA,
     METADATA_LABELING,
@@ -33,7 +35,6 @@ import {
 import { Account } from 'src/types/wallet';
 
 import { SuiteRootState } from './suiteReducer';
-import { selectSuiteFlags } from '../../selectors/suite/suiteSelectors';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
@@ -49,9 +50,10 @@ export const initialState: MetadataState = {
 
 type MetadataRootState = {
     metadata: MetadataState;
-} & DeviceRootState &
+} & DesktopDeviceRootState &
     SuiteRootState &
-    AccountsRootState;
+    AccountsRootState &
+    DesktopLabelingRootState;
 
 const metadataReducer = (state = initialState, action: Action): MetadataState =>
     produce(state, draft => {
@@ -294,7 +296,7 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
  */
 export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
     const device = selectSelectedDevice(state);
-    const { isLocalFirstStorageEnabled } = selectSuiteFlags(state);
+    const isLocalFirstStorageEnabled = selectIsLocalFirstStorageEnabled(state);
 
     // If Evolu is enabled, we do not want to allow for enabling Legacy Labeling just by
     // clicking on the stuff.

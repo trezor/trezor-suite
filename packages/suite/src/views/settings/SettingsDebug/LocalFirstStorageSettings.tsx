@@ -3,27 +3,30 @@ import { useState } from 'react';
 import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     disposeAllLocalFirstStorageThunk,
+    labelingActions,
 } from '@suite-common/local-first-storage';
+import { selectLocalFirstStorageRelayUrl } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
 import { setLocalFirstStorageRelayAction } from 'src/actions/settings/settingsActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
-import { selectLocalFirstStorageRelayUrl } from 'src/selectors/suite/suiteSelectors';
 
 export const LocalFirstStorageSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const { isLocalFirstStorageDebugEnabled, toggleShowLocalFirstStorage, showLocalFirstStorage } =
-        useLabelingCombined({
-            // In debug, there may not be any device selected and it is in fact irrelevant
-            deviceStaticSessionId: undefined,
-        });
+    const {
+        isLocalFirstStorageDebugEnabled,
+        toggleisFeatureLocalFirstStorageAvailable,
+        isFeatureLocalFirstStorageAvailable,
+    } = useLabelingCombined({
+        // In debug, there may not be any device selected and it is in fact irrelevant
+        deviceStaticSessionId: undefined,
+    });
 
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
 
@@ -32,7 +35,11 @@ export const LocalFirstStorageSettings = () => {
     const dispatch = useDispatch();
 
     const handleToggleLocalFirstStorageDebug = () => {
-        dispatch(setFlag('isLocalFirstStorageDebugEnabled', !isLocalFirstStorageDebugEnabled));
+        dispatch(
+            labelingActions.updateLocaleFirstStorageDebugEnabled({
+                isEnabled: !isLocalFirstStorageDebugEnabled,
+            }),
+        );
     };
 
     const onRelayUrlSave = () => {
@@ -59,12 +66,12 @@ export const LocalFirstStorageSettings = () => {
                 />
                 <ActionColumn>
                     <Checkbox
-                        isChecked={showLocalFirstStorage}
-                        onClick={toggleShowLocalFirstStorage}
+                        isChecked={isFeatureLocalFirstStorageAvailable}
+                        onClick={toggleisFeatureLocalFirstStorageAvailable}
                     />
                 </ActionColumn>
             </SectionItem>
-            {showLocalFirstStorage && (
+            {isFeatureLocalFirstStorageAvailable && (
                 <>
                     <SectionItem>
                         <TextColumn title="Relay URL" />
