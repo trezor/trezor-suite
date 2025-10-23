@@ -12,7 +12,7 @@ import { ForegroundAppProps } from 'src/types/suite';
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
-export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
+export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const dispatch = useDispatch();
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const devices = useSelector(selectDevices);
@@ -35,25 +35,29 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     };
 
     return (
-        <SwitchDeviceModal isAnimationEnabled onCancel={cancelable ? onCancel : undefined}>
-            <Column gap={spacings.md}>
-                {sortedDevices.map(device => (
-                    <DeviceItem
-                        key={`${device.path}-${device.id}-${device.instance}`}
-                        device={device}
-                        instances={deviceUtils.getDeviceInstances(device, devices)}
-                        onCancel={cancelable ? onCancel : undefined}
-                    />
-                ))}
-                <Button
-                    variant="tertiary"
-                    icon="trezorDevices"
-                    isFullWidth
-                    onClick={openDeviceConnectionModal}
-                >
-                    <Translation id="TR_CONNECT_DEVICE" />
-                </Button>
-            </Column>
-        </SwitchDeviceModal>
+        <Column gap={spacings.md}>
+            {sortedDevices.map(device => (
+                <DeviceItem
+                    key={`${device.path}-${device.id}-${device.instance}`}
+                    device={device}
+                    instances={deviceUtils.getDeviceInstances(device, devices)}
+                    onCancel={cancelable ? onCancel : undefined}
+                />
+            ))}
+            <Button
+                variant="tertiary"
+                icon="trezorDevices"
+                isFullWidth
+                onClick={openDeviceConnectionModal}
+            >
+                <Translation id="TR_CONNECT_DEVICE" />
+            </Button>
+        </Column>
     );
 };
+
+export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => (
+    <SwitchDeviceModal isAnimationEnabled onCancel={cancelable ? onCancel : undefined}>
+        <SwitchDeviceContent cancelable={cancelable} onCancel={onCancel} />
+    </SwitchDeviceModal>
+);

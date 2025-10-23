@@ -14,7 +14,11 @@ import { resolveAfter } from '@trezor/utils';
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
-import { CALL_SOURCE_WALLETCONNECT, ConnectCallSource } from './connectPopupTypes';
+import {
+    CALL_SOURCE_DEEPLINK,
+    CALL_SOURCE_WALLETCONNECT,
+    ConnectCallSource,
+} from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
@@ -85,12 +89,15 @@ export const connectPopupCallThunkInner = createThunk<
 
             let device = selectSelectedDevice(getState());
             let attempt = 0;
+            // more time needed on mobile deeplink, less on desktop
+            // todo: be smarter about the timeout based on actual connection events
+            const maxAttempts = source.type === CALL_SOURCE_DEEPLINK ? 10 : 5;
             // retry loop to wait for device to reconnect
             while (!device || !device.connected) {
                 await resolveAfter(1000);
                 device = selectSelectedDevice(getState());
                 attempt++;
-                if (attempt > 10) {
+                if (attempt > maxAttempts) {
                     throw TypedError('Device_Disconnected');
                 }
             }
@@ -161,6 +168,15 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch(connectPopupActions.finishCall());
             } else {
                 dispatch(connectPopupActions.setError(serializeError(error)));
+
+                // don't return error, allow user to reconnect device
+                if (
+                    error?.code === 'Device_NotFound' ||
+                    error?.code === 'Device_Disconnected' ||
+                    error?.code === 'Device_UsedElsewhere' ||
+                    error?.code === 'Device_InvalidState'
+                )
+                    return;
             }
 
             analytics.report({
