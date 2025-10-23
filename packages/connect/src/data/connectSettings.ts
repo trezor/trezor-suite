@@ -158,7 +158,7 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (
         typeof input.coreMode === 'string' &&
-        ['auto', 'popup', 'iframe', 'suite-desktop'].includes(input.coreMode)
+        ['auto', 'popup', 'iframe', 'suite-desktop', 'suite-web'].includes(input.coreMode)
     ) {
         settings.coreMode = input.coreMode;
     }

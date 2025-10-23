@@ -17,6 +17,7 @@ import { createRouterServices } from 'src/support/extraDependencies';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
+import { useConnectPopupWeb } from 'src/support/suite/useConnectPopupWeb';
 import { useTor } from 'src/support/suite/useTor';
 
 import { usePlaywright } from './support/usePlaywright';
@@ -26,6 +27,7 @@ const MainWeb = ({ history }: { history: History }) => {
     usePlaywright();
     useTor();
     useDebugLanguageShortcut();
+    useConnectPopupWeb();
 
     return (
         <Main history={history}>
