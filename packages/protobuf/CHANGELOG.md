@@ -1,3 +1,9 @@
+# 1.4.4
+
+- npm-prerelease: @trezor/protobuf 1.4.4-beta.1 (2a3c8588b8)
+- feat(protobuf): replace special chars when protobuf encoding (d4c9b88c9e)
+- chore(protobuf): update protobuf (295afab848)
+
 # 1.4.3
 
 - npm-prerelease: @trezor/protobuf 1.4.3-beta.1 (789d9d2d29)
