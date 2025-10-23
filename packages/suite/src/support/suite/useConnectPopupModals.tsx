@@ -4,6 +4,7 @@ import { connectPopupCallThunkInner, selectConnectPopupCall } from '@suite-commo
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
+import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
 import { CONTEXT_NONE, CONTEXT_USER } from 'src/actions/suite/constants/modalConstants';
 import { onCancel as cancelModal, openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
@@ -21,6 +22,7 @@ export const useConnectPopupModals = () => {
     const modalContext = useSelector(state => state.modal.context);
     const modalType = useSelector(selectModalType);
     const activeRoute = useSelector(selectRouteName);
+    const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     useEffect(() => {
         const isConnectModal =
             modalContext === CONTEXT_USER &&
@@ -103,7 +105,8 @@ export const useConnectPopupModals = () => {
             // This check prevents restarting the call immediately after it was created, since the route may not be updated yet
             popupCall?.timestamp < Date.now() - 500 &&
             // Wait for discovery user flow to finish
-            !isInDiscoveryFlow
+            !isInDiscoveryFlow &&
+            !isConnectionModalOpen
         ) {
             dispatch(
                 connectPopupCallThunkInner({
@@ -111,5 +114,5 @@ export const useConnectPopupModals = () => {
                 }),
             );
         }
-    }, [popupCall, activeRoute, dispatch, isInDiscoveryFlow]);
+    }, [popupCall, activeRoute, dispatch, isInDiscoveryFlow, isConnectionModalOpen]);
 };

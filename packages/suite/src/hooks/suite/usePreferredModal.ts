@@ -1,3 +1,4 @@
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Route } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
@@ -58,6 +59,9 @@ export const usePreferredModal = () => {
             discoveryForSelectedDevice?.status === 'progress' &&
             discoveryForSelectedDevice.hasLoadedAnyNonEmptyAccount
         );
+    const isConnectPopupFlow = useSelector(
+        state => selectConnectPopupCall(state)?.state === 'call-error',
+    );
 
     if (route && isForegroundApp(route) && hasPriority(route)) {
         return getForegroundAppAction(route, params);
@@ -77,6 +81,13 @@ export const usePreferredModal = () => {
             return {
                 type: 'device-request-passphrase',
                 payload: modal,
+            } as const;
+        }
+
+        // edge case for connect popup, since it itself is a modal, but we can enter passphrase flow from there
+        if (isPassphraseFlow && discoveryForSelectedDevice && isConnectPopupFlow) {
+            return {
+                type: 'passphrase-flow',
             } as const;
         }
 

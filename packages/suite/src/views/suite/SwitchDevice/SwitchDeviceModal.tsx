@@ -3,8 +3,11 @@ import { useEvent } from 'react-use';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { TrafficLightOffset } from '../../../components/suite/TrafficLightOffset';
 
@@ -37,12 +40,16 @@ export const SwitchDeviceModal = ({
         }
     });
 
+    const connectPopupCall = useSelector(selectConnectPopupCall);
+    const isInConnectPopup = connectPopupCall && connectPopupCall.state !== 'finished';
+
     return (
         <Modal.Backdrop
             onClick={onCancel}
             data-testid={`${dataTest}/backdrop`}
             alignment={{ x: 'start', y: 'start' }}
             padding={spacings.xs}
+            opaque={isInConnectPopup}
         >
             <TrafficLightOffset expand={false}>
                 <Container data-testid={`${dataTest}/switch-device`}>
