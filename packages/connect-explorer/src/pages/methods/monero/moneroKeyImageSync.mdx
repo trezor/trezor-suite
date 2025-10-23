@@ -7,22 +7,7 @@ import keyImageSync from '../../../data/methods/monero/keyImageSync.ts';
 # moneroKeyImageSync
 
 Export Monero key images for transaction outputs (UTXOs) to enable spent output tracking.
-
-Key images are cryptographic proofs that allow external wallet software to determine which outputs have been spent without revealing which specific transaction spent them. This is essential for:
-
-- Tracking spent vs unspent outputs
-- Calculating accurate available balance
-- Preventing double-spending
-
 The device returns **encrypted** key images that must be decrypted by your wallet software using the provided encryption key. The key images are encrypted using ChaCha20-Poly1305 for security.
-
-## Protocol Overview
-
-MoneroKeyImageSync uses a multi-step protocol:
-
-1. **Init**: Send commitment hash (Keccak) of all UTXOs to device
-2. **Step**: Send UTXO details, receive encrypted key images
-3. **Final**: Receive encryption key after successful verification
 
 ```javascript
 const result = await TrezorConnect.moneroKeyImageSync(params);
@@ -121,89 +106,26 @@ The result contains encrypted key images. Each key image is encrypted using ChaC
     payload: {
         key_images: [
             {
-                iv: string,         // 12-byte initialization vector/nonce (24 hex chars)
-                key_image: string,  // Encrypted blob: ciphertext + auth tag (112 hex chars)
+                iv: string,         // 12-byte initialization vector/nonce
+                key_image: string,  // Encrypted blob
             },
             // ... more key images
         ],
-        signature: string,  // 32-byte encryption key for decrypting ALL key images (64 hex chars)
+        signature: string,  // 32-byte encryption key
     }
 }
 ```
-
-### Encrypted Format Details
-
-- **`iv`** (12 bytes): ChaCha20-Poly1305 nonce/initialization vector for this specific key image
-- **`key_image`** (112 bytes): Encrypted data containing:
-    - 96 bytes plaintext: 32-byte key image + 32-byte signature.c + 32-byte signature.r
-    - 16 bytes: Poly1305 authentication tag
-- **`signature`** (32 bytes): Single encryption key used to decrypt ALL key images (returned at top level, not per key image)
 
 ### Decryption
 
 To use the key images, decrypt each one with ChaCha20-Poly1305 using the **same** encryption key:
 
-````javascript
-// The signature field contains the encryption key for ALL key images
+```javascript
+// The signature field contains the encryption key
 const encryptionKey = result.payload.signature;
 
 // Decrypt each key image
 result.payload.key_images.forEach(ki => {
-    const decrypted = chacha20poly1305_decrypt(
-        ki.key_image,    // ciphertext + tag (112 bytes)
-        encryptionKey,   // encryption key - same for all key images
-        ki.iv,           // nonce - unique per key image
-    );
-
-    // Decrypted contains (96 bytes):
-    // - bytes 0-31:  Key image (I = x * Hp(P))
-    // - bytes 32-63: Signature c component
-    // - bytes 64-95: Signature r component
+    const decrypted = chacha20poly1305_decrypt(ki.key_image, encryptionKey, ki.iv);
 });
-
-The decrypted key image and signature can then be imported into Monero wallet software.
-
-Error
-
-```javascript
-{
-    success: false,
-    payload: {
-        error: string // error message
-    }
-}
-````
-
-### Decryption Example
-
-```javascript
-// After receiving the response
-const result = await TrezorConnect.moneroKeyImageSync(params);
-
-if (result.success) {
-    const encryptionKey = result.payload.signature; // Single key for all key images
-
-    // Decrypt all key images
-    const decryptedKeyImages = result.payload.key_images.map(ki => {
-        // Decrypt using ChaCha20-Poly1305 (requires crypto library)
-        const plaintext = decrypt_chacha20poly1305(
-            hexToBytes(ki.key_image), // encrypted blob (112 bytes)
-            hexToBytes(encryptionKey), // encryption key (32 bytes) - same for all
-            hexToBytes(ki.iv), // nonce (12 bytes) - unique per key image
-        );
-
-        // Extract components from decrypted plaintext (96 bytes)
-        const keyImage = plaintext.slice(0, 32);
-        const signatureC = plaintext.slice(32, 64);
-        const signatureR = plaintext.slice(64, 96);
-
-        return {
-            key_image: bytesToHex(keyImage),
-            signature: bytesToHex(signatureC) + bytesToHex(signatureR),
-        };
-    });
-
-    // Import into Monero wallet
-    monero_wallet.import_key_images(decryptedKeyImages);
-}
 ```

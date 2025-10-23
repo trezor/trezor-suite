@@ -8,7 +8,7 @@ import getWatchKey from '../../../data/methods/monero/getWatchKey.ts';
 
 # moneroGetWatchKey
 
-Export Monero watch-only credentials (private view key and address) for a given BIP32 path.
+Export Monero watch-only credentials (private view key and address) for a given BIP44 path.
 The private view key allows external wallet software to scan the Monero blockchain for incoming transactions and calculate balances without exposing spending keys.
 
 User is presented with a description of the requested key and asked to confirm the export on Trezor.
@@ -69,14 +69,3 @@ Error
     }
 }
 ```
-
-## Use Case
-
-The exported watch-only credentials can be imported into external Monero wallet software (such as the official Monero CLI or GUI wallets) to:
-
-1. Scan the blockchain for incoming transactions to your addresses
-2. Calculate your wallet balance
-3. Monitor transaction history
-4. Generate new receiving addresses
-
-This is done without exposing your private spend key, maintaining security while enabling balance checking and transaction monitoring.
