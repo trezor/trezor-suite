@@ -1,18 +1,22 @@
 import { useSelector } from 'react-redux';
 
+import { TradingType } from '@suite-common/trading';
 import {
     CountryOfResidencePicker,
     selectIsTradingResidenceCheckEnabled,
 } from '@suite-native/trading-residence';
 
-const COUNTRY_PICKER_TEST_ID = '@trading/sell/country';
+export type TradingCountryOfResidencePickerProps = {
+    context: TradingType;
+    testID: string;
+};
 
-export const SellCountryOfResidencePicker = () => {
+export const TradingCountryOfResidencePicker = (props: TradingCountryOfResidencePickerProps) => {
     const isTradingResidenceCheckEnabled = useSelector(selectIsTradingResidenceCheckEnabled);
 
     if (isTradingResidenceCheckEnabled) {
         return null;
     }
 
-    return <CountryOfResidencePicker testID={COUNTRY_PICKER_TEST_ID} context="sell" />;
+    return <CountryOfResidencePicker {...props} />;
 };
