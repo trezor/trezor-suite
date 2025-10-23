@@ -1,11 +1,6 @@
 import { ReactNode, createContext, useMemo, useRef, useState } from 'react';
 
-import {
-    DarkTheme,
-    DefaultTheme,
-    NavigationContainer,
-    createNavigationContainerRef,
-} from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
 import { EventType, analytics } from '@suite-native/analytics';
@@ -13,11 +8,11 @@ import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useNativeStyles } from '@trezor/styles';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
-import { RootStackParamList } from '../navigators';
+import { createSafeNavigationContainerRef } from '../utils/createSafeNavigationContainerRef';
 
 export const IsNavigationReadyContext = createContext(false);
 
-export const navigationContainerRef = createNavigationContainerRef<RootStackParamList>();
+export const navigationContainerRef = createSafeNavigationContainerRef();
 
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const [isNavigationReady, setIsNavigationReady] = useState(false);
