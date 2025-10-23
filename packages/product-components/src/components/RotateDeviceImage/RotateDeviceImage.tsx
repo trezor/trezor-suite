@@ -4,7 +4,7 @@ import { AllowedAnimationPrimitiveFrameProps, Icon } from '@trezor/components';
 import { DeviceModelInternal, normalizeDeviceColorVariant } from '@trezor/device-utils';
 
 import { mapTrezorModelToIcon } from '../../utils/mapTrezorModelToIcon';
-import { DeviceAnimation } from '../DeviceAnimation/DeviceAnimation';
+import { ColorsOf, DeviceAnimation, ModelWithRotate } from '../DeviceAnimation/DeviceAnimation';
 
 export type RotateDeviceImageProps = AllowedAnimationPrimitiveFrameProps & {
     deviceModel?: DeviceModelInternal;
@@ -37,8 +37,10 @@ export const RotateDeviceImage = ({
             loop={loop}
             className={className}
             type="ROTATE"
-            deviceModelInternal={deviceModel}
-            deviceUnitColor={normalizeDeviceColorVariant(deviceColor)}
+            deviceModelInternal={
+                deviceModel === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : deviceModel
+            }
+            deviceUnitColor={normalizeDeviceColorVariant(deviceColor) as ColorsOf<ModelWithRotate>}
             height={animationHeight}
             width={animationWidth}
             {...rest}
