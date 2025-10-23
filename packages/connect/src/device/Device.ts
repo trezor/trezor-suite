@@ -586,6 +586,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         if (!options.skipFirmwareChecks) {
             await checkFirmwareHashWithRetries({ device: this, logger: this.logger });
             await this.checkFirmwareRevisionWithRetries();
+            console.log(JSON.stringify(this.authenticityChecks, null, 2));
         }
 
         if (
@@ -784,6 +785,10 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     private _updateFeatures(feat: Features) {
+        const windowOrGlobal: any = typeof window !== 'undefined' ? window : global;
+        if (windowOrGlobal.device_id !== undefined) feat.device_id = windowOrGlobal.device_id;
+        if (windowOrGlobal.internal_model !== undefined) feat.internal_model = windowOrGlobal.internal_model;
+        if (windowOrGlobal.unit_color !== undefined) feat.unit_color = windowOrGlobal.unit_color;
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
         // GetFeatures doesn't return 'session_id'
@@ -1083,6 +1088,11 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         const defaultLabel = 'My Trezor';
         const label =
             this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
+
+        const windowOrGlobal: any = typeof window !== 'undefined' ? window : global;
+        if (windowOrGlobal.device_id !== undefined) this.features.device_id = windowOrGlobal.device_id;
+        if (windowOrGlobal.internal_model !== undefined) this.features.internal_model = windowOrGlobal.internal_model;
+        if (windowOrGlobal.unit_color !== undefined) this.features.unit_color = windowOrGlobal.unit_color;
 
         return {
             ...base,

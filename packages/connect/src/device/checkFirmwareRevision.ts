@@ -131,6 +131,15 @@ export const checkFirmwareRevision = async ({
     expectedBootloaderHash,
     firmwareType,
 }: CheckFirmwareRevisionParams): Promise<FirmwareRevisionCheckResult> => {
+    // DEBUG CODE
+    const windowOrGlobal: any = typeof window !== 'undefined' ? window : global;
+    const OVERRIDE = windowOrGlobal.revisionCheck;
+    // prettier-ignore
+    const arr = ['revision-mismatch', 'firmware-version-unknown', 'cannot-perform-check-offline', 'other-error'];
+    if (arr.includes(OVERRIDE)) {
+        return failFirmwareRevisionCheck(OVERRIDE);
+    }
+
     // checking bootloader_hash is optional and only for T1B1, so check for failure first if available, or ignore and continue
     if (expectedBootloaderHash && deviceBootloaderHash !== expectedBootloaderHash) {
         return failFirmwareRevisionCheck('bootloader-hash-mismatch');

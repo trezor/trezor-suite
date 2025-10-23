@@ -1,79 +1,31 @@
-# TREZOR SUITE MONOREPO
+# Device checks playground
 
-Welcome to the Trezor Suite repository! This repository contains the source code for 3 projects:
+Easily test the UX of device checks failures by simulating them in Connect.
 
-- **Connect** - tool that offers developers an easy way to integrate Trezor's functionality into their own applications
-- **Trezor Suite** - desktop and web application for managing Trezor hardware wallet
-- **Trezor Suite Mobile** - Mobile/Tablet application designed for managing Trezor hardware wallet
+- [Run Suite Web](https://dev.suite.sldev.cz/suite-web/FW-check-UI-testing-branch/web) without device
+  - also works with Suite Lite on local Android emu
+- Open console
+- Enter one of the following commands
+- Connect device
 
-![img](https://repository-images.githubusercontent.com/148657224/439f6100-765f-11e9-9bff-b725eef3c4a6)
+```js
+authenticityCheckOptiga = 'fail';
+authenticityCheckTropic = 'fail';
+authenticityCheckMCU = 'fail';
+entropyCheck = 'fail';
 
-# Development
+hashCheck = 'other-error';
+hashCheck = 'hash-mismatch';
 
-### Prerequisities
+revisionCheck = 'revision-mismatch';
+revisionCheck = 'firmware-version-unknown';
+revisionCheck = 'cannot-perform-check-offline';
+revisionCheck = 'other-error';
 
-- Install [NVM](https://github.com/nvm-sh/nvm)
-    - _Hint: you can have your shell [automatically switch versions](https://github.com/nvm-sh/nvm/blob/master/README.md#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) in each repo_
-- Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
-- Install [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
-- Optional recommended: [setup PMG](https://docs.trezor.io/trezor-suite/misc/local-development-security.html)
+device_id = null;
+// only on 2nd and later connection:
+internal_model = 'T1B1';
+unit_color = 333;
+```
 
-### Getting started
-
-- `git clone git@github.com:trezor/trezor-suite.git`
-- `cd trezor-suite`
-- `git submodule update --init --recursive`
-- `git lfs install` // Set up Git LFS for your user account. You only need to run this once per user account.
-- `git lfs pull`
-- `nvm install`
-- `yarn`
-- `yarn build:essential`
-
-It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
-
-> You don't need a Trezor device to get into the app, you can use emulator. There is a [Trezor User Env](https://github.com/trezor/trezor-user-env) to help you set it up and run emulator for any Trezor model 🎉
-
-> You can use Nix to set up the repository — see [Nix Documentation](docs/misc/development-on-nix.md).
-
-## **Connect** @trezor/connect
-
-This repository is used for development of version 10 of @trezor/connect. For detailed documentation, please refer to this [page](./docs/packages/connect/index.md).
-
-Historically, Trezor Connect had its [own repository](https://github.com/trezor/connect). This repository is now archived.
-
-## **Trezor Suite** @trezor/suite
-
-Dev environment is primarily supported on **macOS or Linux**,
-though development on Windows is possible by following [this guide](https://docs.trezor.io/trezor-suite/misc/development-on-windows.html).
-
-Run a dev build:
-
-- `yarn suite:dev` (web app)
-- `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
-- `yarn suite:dev:desktop` (electron app)
-    - React dev tools are available with a known caveat: you need to reload the renderer process (Ctrl+R or Cmd+R) while having the dev tools open
-- `yarn suite:build:web:preview` (localhost of production web app with applied security headers)
-
-Local `.env` setup (optional):
-
-- Rename `env.local.example` to `.env.local` in the repo root.
-- Set `TANSTACK_REACT_QUERY_DEV_TOOLS=true` to enable TanStack React Query Devtools on localhost.
-- Set `TRANSPORT_BROWSER_PING=false` to disable transport period ping.
-
-## **Trezor Suite Mobile** @suite-native/app
-
-> To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
-
-## Contribute
-
-Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
-
-Using [Conventional Commits](COMMITS.md) is required.
-
-## Security vulnerability disclosure
-
-Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
-
-## IDE specific settings
-
-Find specific settings for Integrated Development Environments (IDE) in [IDE.md](./IDE.md)
+You may reset the variables to `undefined`, set different ones and **reconnect device** without restarting Suite :)

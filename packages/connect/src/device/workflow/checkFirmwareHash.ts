@@ -84,6 +84,11 @@ export const checkFirmwareHash = async ({
     // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
     // so device can't be used, but it's preferable to display proper message about counterfeit device
     try {
+        // DEBUG CODE
+        const windowOrGlobal: any = typeof window !== 'undefined' ? window : global;
+        const OVERRIDE = windowOrGlobal.hashCheck;
+        if (OVERRIDE === 'other-error') throw 'this is SIMULATED ERROR';
+
         const ts = performance.now();
         const deviceResponse = await device
             .getCurrentSession()
@@ -92,9 +97,11 @@ export const checkFirmwareHash = async ({
             return createFailResult('other-error', 'Device response is missing hash');
         }
 
-        if (deviceResponse.message.hash !== expectedHash) {
-            return createFailResult('hash-mismatch');
-        }
+        // DEBUG CODE - replacing original condition completely, so you can test with user env or real device interchangeably
+        console.log('expected hash: ' + expectedHash);
+        console.log('recieved hash: ' + deviceResponse.message.hash);
+        if (OVERRIDE === 'hash-mismatch') return createFailResult('hash-mismatch');
+        if (OVERRIDE === 'takes-too-long') return createFailResult('takes-too-long');
 
         const duration = performance.now() - ts;
         logger.debug('GetFirmwareHash time', duration);
