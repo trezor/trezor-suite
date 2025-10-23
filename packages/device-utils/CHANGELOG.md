@@ -1,3 +1,9 @@
+# 1.1.4
+
+- npm-prerelease: @trezor/device-utils 1.1.4-beta.1 (abda519429)
+- fix(device-utils): removed firmware_revision and url from intermediary type (cfd4c253f6)
+- fix(suite): normalize the color of the unacquired device to 1 if undefined as well as acquired device (bafeb394e3)
+
 # 1.1.3
 
 - npm-prerelease: @trezor/device-utils 1.1.3-beta.2 (8657afd6ce)
