@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { CountryChangeContextIOS } from '@suite-native/analytics';
+import { CountryChangeContextCheck } from '@suite-native/analytics';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -10,7 +10,7 @@ import { LocationForm } from './LocationForm';
 import { TradingAvailability } from './TradingAvailability';
 
 export type TradingLocationSettingsProps = {
-    context: CountryChangeContextIOS;
+    context: CountryChangeContextCheck;
     children: ReactNode | ReactNode[];
 };
 
