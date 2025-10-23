@@ -1,3 +1,24 @@
+# 1.5.4
+
+- npm-prerelease: @trezor/transport 1.5.4-beta.1 (18949fe103)
+- refactor(connect): random thp code polish (bdd7b7bb61)
+- fix(transport): fix broken usb synchronziation after page reload (6464476043)
+- chore(transport): all non version 3+ bridge backends are now considered outdated (387fbea4fa)
+- chore(transport): bridge 2.0.27 is now considered outdated (844aa9cafc)
+- fix(transport): apiType and id should be part of ApiLevelDescriptor type (2a53b8cf38)
+- feat: expose api type and id on descriptor (ed650e35c0)
+- chore(transport): move api type to api from transport (abcebd96fd)
+- feat(transport): add descriptor id (709b41af52)
+- chore(transport): add missing native Bluetooth transport name (26f4610d71)
+- fix(transport): remove NotificationData (514746add1)
+- feat(transport): NotificationData to trezor-push-notification (dde69a8a1c)
+- fix(transport): DEVICE_TYPE circular dependencies (c97a16f221)
+- feat(transport): add subscribe method (e10c73f44e)
+- test(connect): adjust unit tests (1b3c43a7c4)
+- fix(transport): thp ack deadline increased (b135ae8c4a)
+- fix(transport): adjust udp timeout (dd8e2e5925)
+- fix(transport): better sendThp signal propagation (21a291c800)
+
 # 1.5.3
 
 - fix: re-add removed packages, that are used, but not direcly imported (067db47640)
