@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { CountryChangeContext, EventType, analytics } from '@suite-native/analytics';
+import { type CountryChangeContext, EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
