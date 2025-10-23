@@ -53,6 +53,7 @@ export class TradingPage {
         this.page.getByTestId(`@trading/form/fiat-currency-select/option/${currency}`);
     readonly youPayFiatCryptoSwitchButton: Locator;
     readonly youPayCryptoInput: Locator;
+    readonly cryptoInputFractionButtons: Locator;
     readonly cryptoInputBottomText: Locator;
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
@@ -161,6 +162,7 @@ export class TradingPage {
             '@trading/form/switch-crypto-fiat',
         );
         this.youPayCryptoInput = this.page.getByTestId('@trading/form/crypto-input');
+        this.cryptoInputFractionButtons = this.page.getByTestId('@trading/form/fraction-buttons');
         this.cryptoInputBottomText = this.page.getByTestId(
             '@trading/form/crypto-input/bottom-text',
         );

@@ -16,6 +16,7 @@ export class StakingSection {
     readonly unstakeToClaimButton: Locator;
     readonly availableBalanceWithSymbol: Locator;
     readonly cryptoInput: Locator;
+    readonly cryptoInputFractionButtons: Locator;
     readonly fiatInput: Locator;
     readonly unstakeButton: Locator;
     readonly speedUpButton: Locator;
@@ -62,6 +63,8 @@ export class StakingSection {
             '@staking/available-balance-with-symbol',
         );
         this.cryptoInput = this.page.getByTestId('@staking/form/crypto-input');
+        this.cryptoInputFractionButtons = this.page.getByTestId('@staking/form/fraction-buttons');
+
         this.fiatInput = this.page.getByTestId('@staking/form/fiat-input');
         this.unstakeButton = this.page.getByTestId('@modal/staking/unstake-button');
         this.speedUpButton = this.page.getByTestId('@transaction-item/bump-fee-button');

@@ -18,7 +18,6 @@ export class Fees {
     readonly customInput: Locator;
     readonly maxFee: Locator;
     readonly maxFeeFiat: Locator;
-    readonly miscAmount: Locator;
     readonly swapDetails: Locator;
     readonly dustPreventionNotice: Locator;
     readonly ethereumFeeLimit: Locator;
@@ -28,13 +27,9 @@ export class Fees {
     constructor(private readonly page: Page) {
         this.collapsibleFees = this.page.getByTestId('@wallet/fees/collapsible-fees');
         this.collapsibleFeesToggle = '@collapsible-box/toggle';
-
         this.customInput = this.page.getByTestId('feePerUnit');
-        // TODO: add more tests
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
         this.maxFeeFiat = this.page.getByTestId('@trading/quote/maximum-fee-fiat-amount');
-        // TODO: add e2e test for misc amount
-        this.miscAmount = this.page.getByTestId('@wallet/misc-fee-amount');
         this.swapDetails = this.page.getByTestId('@wallet/fee-details');
         this.dustPreventionNotice = this.page.getByTestId('@wallet/fees/dust-prevention-notice');
         this.ethereumFeeLimit = this.page.getByTestId('feeLimit');

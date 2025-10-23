@@ -80,7 +80,7 @@ export const InputWithOptions = <TFieldValues extends FieldValues>({
             <Column gap={spacings.xs}>
                 {numberInputs}
                 <Row justifyContent="space-between">
-                    <Row gap={spacings.xs}>
+                    <Row gap={spacings.xs} data-testid={`${dataTest}/fraction-buttons`}>
                         {options.map(button => (
                             <FractionButton key={button.id} {...button} />
                         ))}

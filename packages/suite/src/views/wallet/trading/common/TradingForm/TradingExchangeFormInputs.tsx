@@ -80,7 +80,7 @@ export const TradingExchangeFormInputs = () => {
                     />
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
-                            <Row gap={spacings.xs}>
+                            <Row gap={spacings.xs} data-testid="@trading/form/fraction-buttons">
                                 {generateFractionButtons(helpers).map(button => (
                                     <FractionButton
                                         key={button.id}
