@@ -150,11 +150,7 @@ export const TradingExchangePreviewScreen = ({
 
     return (
         <Screen header={<ExchangePreviewScreenHeader />}>
-            <ExchangePreviewView
-                quote={quote}
-                txnErrorString={txnErrorString}
-                isApproved={isApproved}
-            />
+            <ExchangePreviewView quote={quote} txnError={txnErrorString} isApproved={isApproved} />
             <ExchangePreviewContinueButton
                 quote={quote}
                 isDisabled={!!txnErrorString}

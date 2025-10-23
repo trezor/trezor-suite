@@ -14,14 +14,14 @@ import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStrin
 
 export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
-    txnErrorString: JSX.Element;
+    txnError: JSX.Element;
     isApproved?: boolean;
 };
 
 export const ExchangePreviewView = memo(
-    ({ quote, txnErrorString, isApproved }: ExchangePreviewViewProps) => {
+    ({ quote, txnError, isApproved }: ExchangePreviewViewProps) => {
         const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
-        const isTxnError = !!txnErrorString;
+        const isTxnError = !!txnError;
         const isFusionPlus = quote?.exchange === '1inchfusionplus';
 
         return (
@@ -36,7 +36,7 @@ export const ExchangePreviewView = memo(
                 )}
                 {isTxnError && (
                     <Animated.View>
-                        <InlineAlertBox variant="critical" title={txnErrorString} />
+                        <InlineAlertBox variant="critical" title={txnError} />
                     </Animated.View>
                 )}
                 <ExchangeFromAccountTradePreviewCard

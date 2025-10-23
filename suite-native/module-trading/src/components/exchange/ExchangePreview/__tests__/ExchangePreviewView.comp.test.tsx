@@ -14,7 +14,7 @@ describe('ExchangePreviewView', () => {
         preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-1';
 
         return renderWithStoreProviderAsync(
-            <ExchangePreviewView quote={exchangeQuotes[0]} txnErrorString={null} {...props} />,
+            <ExchangePreviewView quote={exchangeQuotes[0]} txnError={undefined} {...props} />,
             { preloadedState },
         );
     };
@@ -27,9 +27,9 @@ describe('ExchangePreviewView', () => {
         expect(getByText('Fee')).toBeOnTheScreen();
     });
 
-    it('should render txnErrorString but no fee picker when isTxnError is true', async () => {
+    it('should render txnError but no fee picker when isTxnError is true', async () => {
         const { getByText, queryByText } = await renderExchangePreviewView({
-            txnErrorString: 'txnErrorString',
+            txnError: <>txnErrorString</>,
         });
 
         expect(getByText('BTC Account #1')).toBeOnTheScreen();
