@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { PNG_IMAGES, SVG_IMAGES } from '../src/components/Image/images';
+import { IMAGES } from '../src/components/Image/images';
 
 const imageDir = path.join(__dirname, '../../suite-data/files/images');
 
@@ -38,8 +38,9 @@ const checkImgSet = (imgSet: Record<string, string>, ext: string) => {
     }
 };
 
-checkImgSet(PNG_IMAGES, 'png');
-checkImgSet(SVG_IMAGES, 'svg');
+checkImgSet(IMAGES, 'png');
+checkImgSet(IMAGES, 'webp');
+checkImgSet(IMAGES, 'svg');
 
 console.log('=== NOT FOUND ===');
 console.log(notFound);

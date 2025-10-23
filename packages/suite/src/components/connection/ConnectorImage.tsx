@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { Image, PNG_IMAGES, PNG_PATH } from '@trezor/components';
+import { IMAGES, IMAGES_PATH, Image } from '@trezor/components';
 
 const ImageWrapper = styled.div<{
     $maxHeight?: number;
@@ -18,6 +18,6 @@ export type ConnectorImageProps = {
 
 export const ConnectorImage = ({ maxHeight }: ConnectorImageProps) => (
     <ImageWrapper $maxHeight={maxHeight}>
-        <Image imageSrc={resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.CONNECTOR}`)} />
+        <Image imageSrc={resolveStaticPath(`${IMAGES_PATH}/${IMAGES.CONNECTOR}`)} />
     </ImageWrapper>
 );

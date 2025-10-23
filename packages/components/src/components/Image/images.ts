@@ -1,6 +1,6 @@
-export type SvgImage = keyof typeof SVG_IMAGES;
+export type ImageType = keyof typeof IMAGES;
 
-export const SVG_IMAGES = {
+export const IMAGES = {
     APP_STORE_BADGE: 'app-store-badge.svg',
     APP_STORE_TITLE: 'app-store-title.svg',
     BRIDGE_CHECK_TREZOR_T2T1: 'bridge-check-trezor-t2t1.svg',
@@ -29,11 +29,6 @@ export const SVG_IMAGES = {
     USER_FOCUS: 'user-focus.svg',
     WARNING: 'warning.svg',
     WATCH: 'watch.svg',
-} as const;
-
-export type PngImage = keyof typeof PNG_IMAGES;
-
-export const PNG_IMAGES = {
     CONFIRM_FW_INSTALLATION_SCREEN_T1B1: 'confirm-fw-installation-screen-t1b1.png',
     CONNECTOR: 'connector.webp',
     DASHBOARD_PROMO_BANNER_T3W1: 'dashboard-promo-banner/t3w1.webp',

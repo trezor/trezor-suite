@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { Card, SVG_IMAGES, variables } from '@trezor/components';
+import { Card, IMAGES, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import TooltipSymbol from 'src/components/suite/TooltipSymbol';
@@ -32,7 +32,7 @@ const Wrapper = styled(Card)`
     padding: 12px 24px;
     font-variant-numeric: tabular-nums;
     border-left: 8px solid transparent;
-    border-image: url(${resolveStaticPath(`images/svg/${SVG_IMAGES.STROKE_BORDER}`)});
+    border-image: url(${resolveStaticPath(`images/svg/${IMAGES.STROKE_BORDER}`)});
     border-image-slice: 0 10;
     padding-left: 16px;
     margin: 8px 0 32px;
