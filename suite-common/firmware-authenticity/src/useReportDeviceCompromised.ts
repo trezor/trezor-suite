@@ -17,11 +17,10 @@ const useCommonData = () => {
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
     const vendor = device?.features?.fw_vendor;
-    const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
     return useMemo(
-        () => ({ model, revision, version, vendor, firmwareSource }),
-        [model, revision, version, vendor, firmwareSource],
+        () => ({ model, revision, version, vendor }),
+        [model, revision, version, vendor],
     );
 };
 
@@ -29,6 +28,7 @@ const useReportRevisionCheck = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const commonData = useCommonData();
+    const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
     const revisionCheck = isDeviceAcquired(device)
         ? device.authenticityChecks.firmwareRevision
@@ -38,6 +38,7 @@ const useReportRevisionCheck = () => {
     const errorPayload = isError ? revisionCheck.errorPayload : null;
 
     const shouldReport =
+        firmwareSource === 'production' &&
         device?.connected === true &&
         errorType !== null &&
         revisionCheckErrorScenarios[errorType].shouldReport;
@@ -60,6 +61,7 @@ const useReportHashCheck = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const commonData = useCommonData();
+    const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks.firmwareHash : null;
     const isError = hashCheck && !hashCheck.success;
@@ -68,6 +70,7 @@ const useReportHashCheck = () => {
     const attemptCount = isError ? hashCheck.attemptCount : null;
 
     const shouldReport =
+        firmwareSource === 'production' &&
         device?.connected === true &&
         errorType !== null &&
         hashCheckErrorScenarios[errorType].shouldReport;
