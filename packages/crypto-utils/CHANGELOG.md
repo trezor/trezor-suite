@@ -1,3 +1,8 @@
+# 1.1.5
+
+- npm-prerelease: @trezor/crypto-utils 1.1.5-beta.1 (fa87d94567)
+- feat(crypto-utils): add `getSubtleCrypto` (d9e45b2532)
+
 # 1.1.4
 
 - npm-prerelease: @trezor/crypto-utils 1.1.4-beta.1 (87ee557cea)
