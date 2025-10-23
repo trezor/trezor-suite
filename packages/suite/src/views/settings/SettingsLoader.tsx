@@ -79,7 +79,7 @@ export const SettingsLoading = ({ isPresent = false }: SettingsLoadingProps) => 
     <AnimatePresence initial={false}>
         {isPresent && (
             <motion.div {...getContainerAnimation(isPresent)}>
-                <Container {...getContentAnimation(isPresent)}>
+                <Container {...getContentAnimation(isPresent)} data-testid="@settings/loader">
                     <SpinnerContainer>
                         <Spinner size={40} isGrey={false} />
                     </SpinnerContainer>

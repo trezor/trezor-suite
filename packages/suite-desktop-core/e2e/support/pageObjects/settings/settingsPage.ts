@@ -93,6 +93,7 @@ export class SettingsPage {
             : this.page.getByTestId(`@radio-button-${level}`);
     readonly safetyChecksRadioButtonCheck = (check: boolean): Locator =>
         this.page.locator(`[data-testid*="@radio-button"][data-checked="${check}"]`);
+    readonly settingsLoader: Locator;
 
     constructor(private readonly page: Page) {
         this.coins = new CoinsTab(page);
@@ -134,6 +135,7 @@ export class SettingsPage {
         this.btcUnitsInput = this.page.getByTestId('@settings/btc-units-select/input');
         this.safetyChecksButton = this.page.getByTestId('@settings/device/safety-checks-button');
         this.safetyChecksConfirmButton = this.page.getByTestId('@safety-checks-apply');
+        this.settingsLoader = this.page.getByTestId('@settings/loader');
     }
 
     @step()
@@ -266,5 +268,15 @@ export class SettingsPage {
             this.btcUnitsInputOption(units),
         );
         await expect(this.btcUnitsInput).toHaveText(units);
+    }
+
+    @step()
+    async verifyDiscoveryLoaderFinishes() {
+        await expect(this.settingsLoader, 'Discovery loader should became visible').toBeVisible({
+            timeout: 15_000,
+        });
+        await expect(this.settingsLoader, 'Discovery loader should hide').toBeHidden({
+            timeout: 120_000,
+        });
     }
 }
