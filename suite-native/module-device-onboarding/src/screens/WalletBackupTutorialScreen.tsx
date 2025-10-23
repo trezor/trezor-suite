@@ -33,9 +33,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const WalletBackupTutorialScreen = () => {
-    const currentStepIndex = useSharedValue(0);
+    const currentStepIndex = useSharedValue(5);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
-
     const defaultBackupType = useSelector(selectDeviceDefaultBackupType);
     const [selectedBackupType, setSelectedBackupType] = useState<BackupType>(defaultBackupType);
 
