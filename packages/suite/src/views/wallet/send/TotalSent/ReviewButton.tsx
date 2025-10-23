@@ -20,11 +20,6 @@ const Container = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledWarning = styled(Banner)`
-    justify-content: flex-start;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
 const ButtonReview = styled(Button)<{ $isRed: boolean }>`
     background: ${({ $isRed, theme }) => $isRed && theme.legacy.BUTTON_RED};
     display: flex;
@@ -181,7 +176,7 @@ export const ReviewButton = () => {
     return (
         <Container>
             {showCoinControlWarning && (
-                <StyledWarning variant="destructive">
+                <Banner variant="destructive">
                     <Checkbox
                         variant="destructive"
                         isChecked={anonymityWarningChecked}
@@ -189,7 +184,7 @@ export const ReviewButton = () => {
                     >
                         <Translation id="TR_BREAKING_ANONYMITY_CHECKBOX" />
                     </Checkbox>
-                </StyledWarning>
+                </Banner>
             )}
 
             <Tooltip content={tooltipContent}>

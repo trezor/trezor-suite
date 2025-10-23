@@ -22,19 +22,13 @@ const Confirmed = styled.div`
     border-radius: ${borders.radii.sm};
 `;
 
-// reason: set size of RotateDeviceImage
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledRotateDeviceImage = styled(RotateDeviceImage)`
-    height: 34px;
-`;
-
 interface ConfirmedOnTrezorProps {
     device?: TrezorDevice;
 }
 
 export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => (
     <Confirmed data-testid="@trading/offer/confirm-on-trezor-button">
-        <StyledRotateDeviceImage
+        <RotateDeviceImage
             deviceModel={device?.features?.internal_model}
             deviceColor={device?.features?.unit_color}
             animationHeight="34px"

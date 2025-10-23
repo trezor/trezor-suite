@@ -1,8 +1,5 @@
-import styled from 'styled-components';
+import { type CardProps, Card as ComponentsCard } from '@trezor/components';
 
-import { Card as ComponentsCard } from '@trezor/components';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const Card = styled(ComponentsCard)`
-    margin: 8px 0;
-`;
+export const Card = (props: CardProps) => (
+    <ComponentsCard margin={{ top: 8, bottom: 8 }} {...props} />
+);

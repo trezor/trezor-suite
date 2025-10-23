@@ -7,11 +7,6 @@ const Wrapper = styled.div`
     animation: ${animations.FADE_IN} 0.15s ease-in-out;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledDataAnalytics = styled(DataAnalytics)`
-    box-shadow: 0 0 6px 1px #e3e3e3;
-`;
-
 type AnalyticsConsentWrapperProps = {
     isInitialTrackingEnabled: boolean;
     onAnalyticsConfirm: (enabled: boolean) => void;
@@ -33,7 +28,7 @@ export const AnalyticsConsentWrapper = ({
 
     return (
         <Wrapper>
-            <StyledDataAnalytics
+            <DataAnalytics
                 isInitialTrackingEnabled={isInitialTrackingEnabled}
                 onConfirm={onConfirm}
             />

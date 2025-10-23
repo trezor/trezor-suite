@@ -65,12 +65,6 @@ interface TokenAddressRowProps {
     showEnd?: number;
 }
 
-// This is needed because icon interferes with pointer events of Select
-// eslint-disable-next-line local-rules/no-override-ds-component
-const IconWithNoPointer = styled(Icon)`
-    pointer-events: none;
-`;
-
 // TODO: this component is little bit copy/paste of IOAddress component, please check it
 export const AddressRow = ({
     address,
@@ -106,7 +100,8 @@ export const AddressRow = ({
                 <Text textWrap="nowrap">{shortenedTokenAddress}</Text>
                 {shouldAllowCopy ? (
                     <IconWrapper onClick={copy}>
-                        <IconWithNoPointer
+                        <Icon
+                            pointerEvents="none"
                             name={isClicked ? 'check' : 'copy'}
                             size={12}
                             color={theme.iconOnPrimary}
@@ -122,7 +117,8 @@ export const AddressRow = ({
                             target="_blank"
                             onClick={e => e.stopPropagation()}
                         >
-                            <IconWithNoPointer
+                            <Icon
+                                pointerEvents="none"
                                 name="arrowUpRight"
                                 size={12}
                                 color={theme.iconOnPrimary}

@@ -38,11 +38,6 @@ const FeeWrapper = styled.div`
     padding: ${spacingsPx.md} 0;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const FeeHeading = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
 const Tiles = styled.div`
     display: grid;
     gap: ${spacingsPx.md};
@@ -143,9 +138,9 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                 </Tiles>
                 <FeeWrapper>
                     <TopFeeRow>
-                        <FeeHeading typographyStyle="highlight">
+                        <Paragraph typographyStyle="highlight" variant="tertiary">
                             <Translation id="TR_SERVICE_FEE" />
-                        </FeeHeading>
+                        </Paragraph>
                         <Paragraph typographyStyle="highlight">
                             {coordinatorFeePercentage}
                         </Paragraph>

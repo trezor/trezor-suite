@@ -29,12 +29,6 @@ const Headline = styled.div`
     width: 100%;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Submit = styled(Button)`
-    width: 100%;
-    margin: 0 0 20px;
-`;
-
 const SelectWrapper = styled.div`
     padding: 0 0 20px;
 `;
@@ -223,7 +217,9 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     maxLength={MESSAGE_CHARACTER_LIMIT}
                 />
 
-                <Submit
+                <Button
+                    isFullWidth
+                    margin={{ bottom: 20 }}
                     onClick={onSubmit}
                     isDisabled={
                         description.length === 0 ||
@@ -233,7 +229,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     data-testid="@guide/feedback/submit-button"
                 >
                     <Translation id="TR_GUIDE_FEEDBACK_SEND_REPORT" />
-                </Submit>
+                </Button>
 
                 <CollapsibleBox heading={<Translation id="TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE" />}>
                     <AnonymousDataList>

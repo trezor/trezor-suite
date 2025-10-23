@@ -16,7 +16,7 @@ import {
 import { TransientProps } from '../../../utils/transientProps';
 import { recolorLottieAnimation } from '../../animations/recolorLottieAnimation';
 
-export const allowedSpinnerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedSpinnerFrameProps = ['margin', 'opacity'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSpinnerFrameProps)[number]>;
 
 const StyledLottie = styled(Lottie)<

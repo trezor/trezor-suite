@@ -4,13 +4,8 @@ import Link from 'next/link';
 import { getPagesUnderRoute } from 'nextra/context';
 import styled from 'styled-components';
 
-import { Button, H3, Paragraph, Card as TrezorCard } from '@trezor/components';
+import { Button, Card, H3, Paragraph } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const SectionCard = styled(TrezorCard)`
-    margin-bottom: ${spacingsPx.xl};
-`;
 
 const BottomRow = styled.div`
     margin-top: ${spacingsPx.sm};
@@ -38,7 +33,7 @@ export default function GuideIndex(): ReactNode {
             style={{ color: 'inherit', textDecoration: 'none' }}
             key={page.route}
         >
-            <SectionCard>
+            <Card margin={{ bottom: 24 }}>
                 <H3>{page.meta?.title || page.frontMatter?.title || page.name}</H3>
                 <Paragraph>{page.frontMatter?.description}</Paragraph>
                 <BottomRow>
@@ -46,7 +41,7 @@ export default function GuideIndex(): ReactNode {
                         Read more
                     </Button>
                 </BottomRow>
-            </SectionCard>
+            </Card>
         </Link>
     ));
 }

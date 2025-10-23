@@ -12,12 +12,6 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Label = styled(H3)`
-    margin-right: 4px;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-`;
-
 // Label container to avoid jumping when tooltip appears
 const FakeTooltipContainer = styled.div`
     border-bottom: 1.5px solid transparent;
@@ -38,11 +32,15 @@ export const QuestionTooltip = ({ label, tooltip, className }: QuestionTooltipPr
                     content={typeof tooltip === 'string' ? <Translation id={tooltip} /> : tooltip}
                     dashed
                 >
-                    <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
+                    <H3 margin={{ right: 4 }} variant="tertiary">
+                        {typeof label === 'string' ? <Translation id={label} /> : label}
+                    </H3>
                 </Tooltip>
             ) : (
                 <FakeTooltipContainer>
-                    <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
+                    <H3 margin={{ right: 4 }} variant="tertiary">
+                        {typeof label === 'string' ? <Translation id={label} /> : label}
+                    </H3>
                 </FakeTooltipContainer>
             ))}
     </Wrapper>
