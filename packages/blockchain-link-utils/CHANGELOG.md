@@ -1,3 +1,7 @@
+# 1.4.4
+
+- npm-prerelease: @trezor/blockchain-link-utils 1.4.4-beta.1 (4d1585e947)
+
 # 1.4.3
 
 - fix: add TON of missing dependecies in package.json (7027213e3f)
