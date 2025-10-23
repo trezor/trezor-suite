@@ -1,3 +1,7 @@
+# 2.4.4
+
+- npm-prerelease: @trezor/utxo-lib 2.4.4-beta.1 (0b5bda5a62)
+
 # 2.4.3
 
 - fix: remove all dependenices that are unused (found by added depcheck script to package.json) (ecae55a2ea)
