@@ -54,7 +54,7 @@ const RebootDeviceGraphics = ({
             height="220px"
             width="220px"
             shape="ROUNDED"
-            deviceModelInternal={deviceModelInternal}
+            deviceModelInternal={deviceModelInternal || DeviceModelInternal.T1B1}
             loop
         />
     );
