@@ -37,8 +37,10 @@ export const RotateDeviceImage = ({
             loop={loop}
             className={className}
             type="ROTATE"
-            deviceModelInternal={deviceModel}
-            deviceUnitColor={normalizeDeviceColorVariant(deviceColor)}
+            deviceModelInternal={
+                deviceModel === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : deviceModel
+            }
+            deviceUnitColor={normalizeDeviceColorVariant(deviceColor) as any}
             height={animationHeight}
             width={animationWidth}
             {...rest}
