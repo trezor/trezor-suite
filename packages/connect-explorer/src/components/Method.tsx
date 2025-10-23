@@ -5,15 +5,7 @@ import { Inspector } from 'react-inspector';
 import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
-import {
-    ButtonProps,
-    Card,
-    H3,
-    IconButton,
-    Row,
-    Button as TrezorButton,
-    variables,
-} from '@trezor/components';
+import { Button, ButtonProps, Card, H3, IconButton, Row, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';
@@ -220,11 +212,6 @@ const Sticky = styled.div`
     width: 100%;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Button = styled(TrezorButton)`
-    margin-top: ${spacingsPx.sm};
-`;
-
 interface VerifyButtonProps {
     onClick: (url: string) => void;
     name: string;
@@ -236,7 +223,11 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     const index = signMethods.indexOf(name);
     if (index < 0) return null;
 
-    return <Button onClick={() => onClick(verifyUrls[index])}>Verify response</Button>;
+    return (
+        <Button margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
+            Verify response
+        </Button>
+    );
 };
 
 type SubmitButtonProps = {
@@ -252,6 +243,7 @@ const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonPro
         data-testid="@submit-button"
         isFullWidth={isFullWidth}
         isLoading={isLoading}
+        margin={{ top: 12 }}
     >
         {text || 'Submit'}
     </Button>

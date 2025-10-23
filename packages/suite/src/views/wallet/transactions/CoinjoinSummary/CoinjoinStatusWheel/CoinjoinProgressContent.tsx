@@ -47,11 +47,6 @@ const ProgressPercentage = styled.p`
     ${typography.titleMedium}
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLoader = styled(Spinner)`
-    opacity: 0.4;
-`;
-
 const TooltipChildren = styled.div`
     display: flex;
     flex-direction: column;
@@ -112,7 +107,7 @@ export const CoinjoinProgressContent = ({
         }
 
         if (isLoadingIndicatorShown) {
-            return <StyledLoader size={40} isGrey={false} />;
+            return <Spinner size={40} isGrey={false} opacity={0.4} />;
         }
 
         if (isAllPrivate && !isSessionActive) {

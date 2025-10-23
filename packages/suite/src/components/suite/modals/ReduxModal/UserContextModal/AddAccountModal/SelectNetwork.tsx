@@ -1,16 +1,7 @@
-import styled from 'styled-components';
-
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Paragraph } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 
 import { CoinList } from 'src/components/suite';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-    margin-bottom: ${spacingsPx.sm};
-`;
 
 type SelectNetworkProps = {
     heading: React.ReactNode;
@@ -31,7 +22,9 @@ export const SelectNetwork = ({
 
     return (
         <div>
-            <Title typographyStyle="hint">{heading}</Title>
+            <Paragraph variant="tertiary" margin={{ bottom: 12 }} typographyStyle="hint">
+                {heading}
+            </Paragraph>
             <CoinList
                 onToggle={handleNetworkSelection}
                 networks={networks}

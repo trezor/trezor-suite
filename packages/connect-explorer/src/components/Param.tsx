@@ -55,11 +55,6 @@ const ParamType = styled.div<{
     `}
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ParamBadge = styled(Badge)`
-    cursor: default;
-`;
-
 export const ParamDescriptionComponent = (
     props: Pick<ParamProps, 'description' | 'children' | 'type'>,
 ) => {
@@ -93,8 +88,16 @@ export const Param = (props: ParamProps) => {
                         props.type
                     )}
                 </ParamType>
-                {props.required === true && <ParamBadge variant="primary">Required</ParamBadge>}
-                {props.required === false && <ParamBadge variant="tertiary">Optional</ParamBadge>}
+                {props.required === true && (
+                    <Badge cursor="default" variant="primary">
+                        Required
+                    </Badge>
+                )}
+                {props.required === false && (
+                    <Badge cursor="default" variant="tertiary">
+                        Optional
+                    </Badge>
+                )}
             </ParamRow>
             <ParamDescriptionComponent {...props} />
         </ParamWrapper>

@@ -39,17 +39,6 @@ const Separator = styled.div`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin: 6px 12px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const GenericMessage = styled(Paragraph)`
-    margin-bottom: 10px;
-    text-align: center;
-`;
-
 const ErrorMessage = styled.span`
     text-align: center;
     max-width: 600px;
@@ -65,30 +54,34 @@ type ErrorProps = {
 export const Error = ({ error }: ErrorProps) => (
     <Wrapper>
         <H2>Error occurred</H2>
-        <GenericMessage>It appears something is broken.</GenericMessage>
+        <Paragraph margin={{ bottom: 8 }} align="center">
+            It appears something is broken.
+        </Paragraph>
         <ErrorMessage>{error}</ErrorMessage>
         <Separator />
         <Buttons>
-            <StyledButton
+            <Button
                 icon="repeat"
                 variant="tertiary"
+                margin={{ horizontal: 12, vertical: 8 }}
                 onClick={() => {
                     reloadApp();
                 }}
             >
                 Reload window
-            </StyledButton>
+            </Button>
 
-            <StyledButton
+            <Button
                 icon="repeat"
                 variant="tertiary"
+                margin={{ horizontal: 12, vertical: 8 }}
                 onClick={() => {
                     db.removeDatabase();
                     reloadApp();
                 }}
             >
                 Clear storage and reload
-            </StyledButton>
+            </Button>
         </Buttons>
     </Wrapper>
 );

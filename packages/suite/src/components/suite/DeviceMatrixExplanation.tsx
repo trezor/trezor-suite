@@ -47,11 +47,6 @@ const ItemText = styled.div`
     text-align: left;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    height: 40px;
-`;
-
 interface CommonItemProps {
     key: string;
     title: ReactNode;
@@ -92,9 +87,10 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
                             />
                         ) : (
                             item.deviceModelInternal && (
-                                <StyledImage
+                                <Image
                                     alt="Trezor"
                                     image={`TREZOR_${item.deviceModelInternal}`}
+                                    height={40}
                                 />
                             )
                         )}

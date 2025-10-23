@@ -32,13 +32,6 @@ const PrivateBalanceHeading = styled.span`
     color: ${({ theme }) => theme.legacy.TYPE_GREEN};
 `;
 
-// svg padding offset
-// eslint-disable-next-line local-rules/no-override-ds-component
-const CheckIcon = styled(Icon)`
-    width: 15px;
-    height: 15px;
-`;
-
 export const BalancePrivacyBreakdown = () => {
     const currentAccount = useSelector(selectSelectedAccount);
     const { anonymized, notAnonymized } = useSelector(selectCurrentCoinjoinBalanceBreakdown);
@@ -92,7 +85,7 @@ export const BalancePrivacyBreakdown = () => {
                         <Translation id="TR_PRIVATE" />
                     </PrivateBalanceHeading>
                 }
-                headerIcon={<CheckIcon name="check" size={19} color={theme.legacy.TYPE_GREEN} />}
+                headerIcon={<Icon name="check" size="medium" color={theme.iconPrimaryDefault} />}
                 value={anonymized}
                 symbol={currentAccount?.symbol}
                 color={

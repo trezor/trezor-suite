@@ -48,11 +48,6 @@ const Right = styled.div`
     display: flex;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin: 4px 8px 4px 0;
-`;
-
 const Inline = styled.span`
     display: inline-flex;
 `;
@@ -102,7 +97,8 @@ export const BitcoinOptions = () => {
                             content={<Translation id="TR_COIN_CONTROL_TOOLTIP" />}
                             cursor="pointer"
                         >
-                            <StyledButton
+                            <Button
+                                margin={{ top: 4, right: 8, bottom: 4 }}
                                 variant="tertiary"
                                 size="small"
                                 icon="circleDashed"
@@ -113,7 +109,7 @@ export const BitcoinOptions = () => {
                                     <Translation id="TR_COIN_CONTROL" />
                                     {isCoinControlEnabled && <OnOffSwitcher isOn />}
                                 </Inline>
-                            </StyledButton>
+                            </Button>
                         </Tooltip>
                     )}
                 </Left>
