@@ -18,6 +18,7 @@ export const AccountNotLoaded = () => {
 
     return (
         <AccountExceptionLayout
+            data-testid="@accounts/account-not-loaded"
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION" />}
             iconName="warning"

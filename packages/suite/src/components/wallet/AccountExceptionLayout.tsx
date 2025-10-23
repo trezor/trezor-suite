@@ -21,10 +21,11 @@ interface AccountExceptionLayoutProps {
     iconName?: IconName;
     iconVariant?: IconCircleVariant;
     actions?: ({ key: string } & ButtonProps)[];
+    'data-testid'?: string;
 }
 
 export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
-    <Card>
+    <Card data-testid={props['data-testid']}>
         <Column alignItems="center">
             {props.iconName && props.iconVariant && (
                 <IconCircle

@@ -48,6 +48,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
 
     return (
         <AccountExceptionLayout
+            data-testid="@accounts/empty-account"
             title={<Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />}
             description={
                 isTokensNetwork ? (

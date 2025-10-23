@@ -48,6 +48,8 @@ export class WalletPage {
     readonly segwitGroupButton: Locator;
     readonly addAccountButton: Locator;
     readonly copyToCliboardToast: Locator;
+    readonly accountNotLoaded: Locator;
+    readonly emptyAccount: Locator;
     readonly buyButton: Locator;
     readonly sellButton: Locator;
     readonly swapButton: Locator;
@@ -87,6 +89,8 @@ export class WalletPage {
         this.copyToCliboardToast = this.page.getByTestId('@toast/copy-to-clipboard');
         this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
+        this.accountNotLoaded = this.page.getByTestId('@accounts/account-not-loaded');
+        this.emptyAccount = this.page.getByTestId('@accounts/empty-account');
         this.buyButton = this.page.getByTestId('@accounts/empty-account/buy');
         this.sellButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
         this.swapButton = this.page.getByTestId('@trading/menu/wallet-trading-exchange');
