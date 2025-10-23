@@ -48,11 +48,7 @@ import {
     getAccountFiatBalance,
 } from '@suite-common/wallet-utils';
 import { DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
-import {
-    FeatureFlag,
-    FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
+import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { NativeFirmwareRootState } from '@suite-native/firmware';
 import {
     SettingsSliceRootState,
@@ -187,17 +183,12 @@ type FwAuthenticityCheckState = NativeDeviceRootState &
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: FwAuthenticityCheckState) => {
     const revisionCheckError = selectFirmwareRevisionCheckError(state);
     const { isFirmwareRevisionCheckEnabled } = state.appSettings;
-    const isDeviceConnectEnabled = selectIsFeatureFlagEnabled(
-        state,
-        FeatureFlag.IsDeviceConnectEnabled,
-    );
     const isMessageSystemFeatureEnabled = selectIsFeatureEnabled(
         state,
         Feature.firmwareRevisionCheckMobile,
         true,
     );
-    const isCheckEnabled =
-        isFirmwareRevisionCheckEnabled && isDeviceConnectEnabled && isMessageSystemFeatureEnabled;
+    const isCheckEnabled = isFirmwareRevisionCheckEnabled && isMessageSystemFeatureEnabled;
 
     return isCheckEnabled ? revisionCheckError : null;
 };

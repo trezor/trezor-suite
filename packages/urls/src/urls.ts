@@ -150,8 +150,6 @@ export const HELP_CENTER_PACKAGING_T3T1_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-devices/trezor-safe-5/authenticate-trezor-safe-5',
 );
 
-export const HELP_CENTER_URL: Url = withPlatformUtm('https://trezor.io/learn');
-
 export const HELP_CENTER_PACKAGING_T3W1_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/a/authenticate-trezor-safe-7',
 );

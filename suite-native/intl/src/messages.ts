@@ -1789,20 +1789,11 @@ export const messages = {
             devices: 'Change',
         },
         connectButton: 'Connect Trezor',
-        portfolioTracker: {
-            explore: 'Explore Trezor',
-            learnBasics: 'Learn the basics',
-            exploreShop: 'Explore Trezor Shop',
-        },
         status: {
             portfolioTracker: 'Track your coins without Trezor',
             connected: 'Connected',
             disconnected: 'Disconnected',
             bootloader: 'Bootloader mode',
-        },
-        syncCoinsButton: {
-            syncMyCoins: 'Sync my coins',
-            syncAnother: 'Sync another coin',
         },
         defaultHeader: 'Hi there!',
         wallet: {

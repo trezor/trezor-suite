@@ -10,7 +10,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
 import { selectIsDeviceReadyToUse, selectIsDeviceSetupSupported } from '@suite-native/device';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { EmptyConnectedDeviceState } from './EmptyConnectedDeviceState';
 import { EmptyPortfolioCrossroads } from './EmptyPortfolioCrossroads';
@@ -18,8 +17,6 @@ import { EmptyPortfolioTrackerState } from './EmptyPortfolioTrackerState';
 import { UninitializedConnectedDeviceState } from './UninitializedConnectedDeviceState';
 
 export const EmptyHomeRenderer = () => {
-    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
-
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
@@ -38,22 +35,20 @@ export const EmptyHomeRenderer = () => {
 
     let ScreenContent = EmptyPortfolioTrackerState;
 
-    if (isUsbDeviceConnectFeatureEnabled) {
-        if (
-            isDeviceSetupSupported &&
-            isDeviceConnected &&
-            !isDeviceInitialized &&
-            !isDeviceThpRequired
-        ) {
-            ScreenContent = UninitializedConnectedDeviceState;
-        }
-        // Crossroads should be displayed if there is no real device connected and portfolio tracker has no accounts
-        // or if there is device connected, but not authorized (PIN enter cancelled).
-        else if (hasOnlyEmptyPortfolioTracker || !isDeviceAuthorized) {
-            ScreenContent = EmptyPortfolioCrossroads;
-        } else if (!isPortfolioTrackerDevice && isDeviceAuthorized) {
-            ScreenContent = EmptyConnectedDeviceState;
-        }
+    if (
+        isDeviceSetupSupported &&
+        isDeviceConnected &&
+        !isDeviceInitialized &&
+        !isDeviceThpRequired
+    ) {
+        ScreenContent = UninitializedConnectedDeviceState;
+    }
+    // Crossroads should be displayed if there is no real device connected and portfolio tracker has no accounts
+    // or if there is device connected, but not authorized (PIN enter cancelled).
+    else if (hasOnlyEmptyPortfolioTracker || !isDeviceAuthorized) {
+        ScreenContent = EmptyPortfolioCrossroads;
+    } else if (!isPortfolioTrackerDevice && isDeviceAuthorized) {
+        ScreenContent = EmptyConnectedDeviceState;
     }
 
     return (

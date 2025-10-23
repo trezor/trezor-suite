@@ -1,7 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export const FeatureFlag = {
-    IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsBluetoothEnabled: 'isBluetoothEnabled',
     AreDebugOnlyNetworksEnabled: 'areDebugOnlyNetworksEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
@@ -23,8 +22,6 @@ export type FeatureFlagsRootState = {
 };
 
 export const featureFlagsInitialState: FeatureFlagsState = {
-    [FeatureFlag.IsDeviceConnectEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_DEVICE_CONNECT_ENABLED !== 'false',
     [FeatureFlag.IsBluetoothEnabled]: process.env.EXPO_PUBLIC_FF_IS_BLUETOOTH_ENABLED !== 'false',
     [FeatureFlag.AreDebugOnlyNetworksEnabled]:
         process.env.EXPO_PUBLIC_FF_ARE_DEBUG_ONLY_NETWORKS_ENABLED === 'true',
@@ -45,7 +42,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
-    FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsBluetoothEnabled,
     FeatureFlag.AreDebugOnlyNetworksEnabled,
     FeatureFlag.IsCardanoSendEnabled,

@@ -11,7 +11,6 @@ describe('featureFlagsSlice', () => {
             const initialState = featureFlagsReducer(undefined, { type: 'undefined_action' });
 
             expect(initialState).toEqual({
-                isDeviceConnectEnabled: true,
                 isBluetoothEnabled: true,
                 areDebugOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
@@ -32,15 +31,15 @@ describe('featureFlagsSlice', () => {
 
             const state = featureFlagsReducer(
                 undefined,
-                toggleFeatureFlag({ featureFlag: 'isDeviceConnectEnabled' }),
+                toggleFeatureFlag({ featureFlag: 'areDebugOnlyNetworksEnabled' }),
             );
-            expect(state.isDeviceConnectEnabled).toEqual(false);
+            expect(state.areDebugOnlyNetworksEnabled).toEqual(true);
 
             const state2 = featureFlagsReducer(
                 state,
-                toggleFeatureFlag({ featureFlag: 'isDeviceConnectEnabled' }),
+                toggleFeatureFlag({ featureFlag: 'areDebugOnlyNetworksEnabled' }),
             );
-            expect(state2.isDeviceConnectEnabled).toEqual(true);
+            expect(state2.areDebugOnlyNetworksEnabled).toEqual(false);
         });
     });
 });

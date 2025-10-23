@@ -8,12 +8,6 @@ describe('EmptyHomeRenderer', () => {
     const renderEmptyHomeRenderer = (preloadedState: PreloadedState) =>
         renderWithStoreProviderAsync(<EmptyHomeRenderer />, { preloadedState });
 
-    const expectPortfolioTrackerState = () => {
-        const { getByText } = screen;
-
-        expect(getByText('Get started')).toBeTruthy();
-    };
-
     const expectUninitializedConnectedDeviceState = () => {
         const { getByText } = screen;
 
@@ -32,85 +26,66 @@ describe('EmptyHomeRenderer', () => {
         expect(getByText('Your wallet is empty')).toBeTruthy();
     };
 
-    it('should display EmptyPortfolioTrackerState when IsDeviceConnectEnabled FF is disabled', async () => {
+    it('should display UninitializedConnectedDeviceState when device is connected but not initialized', async () => {
         await renderEmptyHomeRenderer({
-            featureFlags: { isDeviceConnectEnabled: false },
             device: {
-                selectedDevice: { type: 'acquired' },
+                selectedDevice: {
+                    connected: true,
+                    features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
+                },
                 devices: [{ id: 'device_id' }],
             },
         });
 
-        expectPortfolioTrackerState();
+        expectUninitializedConnectedDeviceState();
     });
 
-    describe('when IsDeviceConnectEnabled FF is enabled', () => {
-        it('should display UninitializedConnectedDeviceState when device is connected but not initialized', async () => {
-            await renderEmptyHomeRenderer({
-                featureFlags: { isDeviceConnectEnabled: true },
-                device: {
-                    selectedDevice: {
-                        connected: true,
-                        features: { initialized: false, internal_model: DeviceModelInternal.T3B1 },
-                    },
-                    devices: [{ id: 'device_id' }],
+    it('should not display UninitializedConnectedDeviceState when device is connected, not initialized, but model does not support setup', async () => {
+        await renderEmptyHomeRenderer({
+            device: {
+                selectedDevice: {
+                    connected: true,
+                    features: { initialized: false, internal_model: DeviceModelInternal.T1B1 },
                 },
-            });
-
-            expectUninitializedConnectedDeviceState();
+                devices: [{ id: 'device_id' }],
+            },
         });
 
-        it('should not display UninitializedConnectedDeviceState when device is connected, not initialized, but model does not support setup', async () => {
-            await renderEmptyHomeRenderer({
-                featureFlags: { isDeviceConnectEnabled: true },
-                device: {
-                    selectedDevice: {
-                        connected: true,
-                        features: { initialized: false, internal_model: DeviceModelInternal.T1B1 },
-                    },
-                    devices: [{ id: 'device_id' }],
-                },
-            });
+        expectEmptyPortfolioCrossroadsState();
+    });
 
-            expectEmptyPortfolioCrossroadsState();
+    it('should display EmptyPortfolioCrossroadsState when only portfolio tracker is allowed', async () => {
+        await renderEmptyHomeRenderer({
+            device: {
+                selectedDevice: {
+                    connected: false,
+                    features: { initialized: true },
+                    state: {},
+                },
+                devices: [{ id: PORTFOLIO_TRACKER_DEVICE_ID }],
+            },
         });
 
-        it('should display EmptyPortfolioCrossroadsState when only portfolio tracker is allowed', async () => {
-            await renderEmptyHomeRenderer({
-                featureFlags: { isDeviceConnectEnabled: true },
-                device: {
-                    selectedDevice: {
-                        connected: false,
-                        features: { initialized: true },
-                        state: {},
-                    },
-                    devices: [{ id: PORTFOLIO_TRACKER_DEVICE_ID }],
-                },
-            });
+        expectEmptyPortfolioCrossroadsState();
+    });
 
-            expectEmptyPortfolioCrossroadsState();
+    it('should display EmptyPortfolioCrossroadsState when device is not authorized', async () => {
+        await renderEmptyHomeRenderer({
+            device: {
+                selectedDevice: {
+                    connected: false,
+                    features: { initialized: true },
+                    state: undefined,
+                },
+                devices: [{ id: 'device_id' }],
+            },
         });
 
-        it('should display EmptyPortfolioCrossroadsState when device is not authorized', async () => {
-            await renderEmptyHomeRenderer({
-                featureFlags: { isDeviceConnectEnabled: true },
-                device: {
-                    selectedDevice: {
-                        connected: false,
-                        features: { initialized: true },
-                        state: undefined,
-                    },
-                    devices: [{ id: 'device_id' }],
-                },
-            });
-
-            expectEmptyPortfolioCrossroadsState();
-        });
+        expectEmptyPortfolioCrossroadsState();
     });
 
     it('should display EmptyConnectedDeviceState when device is connected and authorized', async () => {
         await renderEmptyHomeRenderer({
-            featureFlags: { isDeviceConnectEnabled: true },
             device: {
                 selectedDevice: {
                     connected: true,

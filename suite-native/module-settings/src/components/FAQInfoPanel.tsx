@@ -366,20 +366,19 @@ const getDisabledUsbFAQItems = (coinLabel: string) => [
 ];
 
 export const FAQInfoPanel = () => {
-    const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
     const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
     const coinLabel = useCoinLabel();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
     const items = useMemo(() => {
-        let itemsData = [];
+        let itemsData;
         if (isBluetoothEnabled) {
             if (isAndroid()) {
                 itemsData = getBluetoothAndroidFAQItems(coinLabel);
             } else {
                 itemsData = getBluetoothIOSFAQItems(coinLabel);
             }
-        } else if (isUsbDeviceConnectFeatureEnabled) {
+        } else if (isAndroid()) {
             itemsData = getEnabledUsbFAQItems(coinLabel);
         } else {
             itemsData = getDisabledUsbFAQItems(coinLabel);
@@ -407,7 +406,7 @@ export const FAQInfoPanel = () => {
         }
 
         return itemsData;
-    }, [coinLabel, isBluetoothEnabled, isUsbDeviceConnectFeatureEnabled, isTradingEnabled]);
+    }, [coinLabel, isBluetoothEnabled, isTradingEnabled]);
 
     return (
         <VStack paddingHorizontal="sp8">
