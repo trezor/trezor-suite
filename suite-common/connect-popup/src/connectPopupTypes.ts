@@ -8,6 +8,7 @@ export type ManifestPartial = {
 };
 
 export const CALL_SOURCE_DESKTOP_WS = 'desktop-ws';
+export const CALL_SOURCE_WEB = 'web';
 export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
 export const CALL_SOURCE_DEEPLINK = 'deeplink';
 
@@ -28,6 +29,11 @@ export type ConnectCallSource = {
       }
     | {
           type: typeof CALL_SOURCE_WALLETCONNECT;
+          process?: undefined;
+          manifest: ManifestPartial;
+      }
+    | {
+          type: typeof CALL_SOURCE_WEB;
           process?: undefined;
           manifest: ManifestPartial;
       }

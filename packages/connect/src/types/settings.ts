@@ -80,12 +80,12 @@ export interface ConnectSettingsInternal {
 
 export interface ConnectSettingsWeb {
     hostLabel?: string;
-    coreMode?: 'auto' | 'popup' | 'iframe' | 'deeplink' | 'suite-desktop';
+    coreMode?: 'auto' | 'popup' | 'iframe' | 'deeplink' | 'suite-desktop' | 'suite-web';
 }
 export interface ConnectSettingsWebextension {
     /** _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
-    coreMode?: 'auto' | 'popup' | 'suite-desktop';
+    coreMode?: 'auto' | 'popup' | 'suite-desktop' | 'suite-web';
 }
 export interface ConnectSettingsMobile {
     deeplinkUrl: string;
