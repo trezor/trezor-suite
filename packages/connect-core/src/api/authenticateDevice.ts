@@ -226,6 +226,22 @@ export default class AuthenticateDevice extends AbstractMethod<
             getMCUResult(),
         ]);
 
+        // DEBUG CODE
+        const windowOrGlobal: any = typeof window !== 'undefined' ? window : global;
+        if (windowOrGlobal.authenticityCheckOptiga === 'fail') {
+            optigaResult.valid = false;
+            optigaResult.error = 'INVALID_DEVICE_CERTIFICATE';
+        }
+        if (windowOrGlobal.authenticityCheckTropic === 'fail' && tropicResult) {
+            tropicResult.valid = false;
+            tropicResult.error = 'INVALID_DEVICE_CERTIFICATE';
+        }
+        if (windowOrGlobal.authenticityCheckMCU === 'fail' && mcuResult) {
+            mcuResult.valid = false;
+            mcuResult.error = 'INVALID_DEVICE_CERTIFICATE';
+        }
+        // END DEBUG CODE
+
         const results = { optigaResult, tropicResult, mcuResult };
 
         // Only T3W1 and later have serialNumber (i.e. devices that support Tropic authentication), this validation is skipped for all older models.

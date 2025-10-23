@@ -9,7 +9,7 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 const LOADER_HEIGHT = 4;
 const LOADER_WIDTH = getScreenWidth() - 32;
-export const LOADER_DURATION = 4000;
+export const LOADER_DURATION = 1;
 
 export const CreateWalletLoader = () => {
     const { utils } = useNativeStyles();

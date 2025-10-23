@@ -131,6 +131,12 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         }
         const finalXPubs = await getXPubs();
 
+        // DEBUG CODE
+        const windowOrGlobal: any = typeof window !== 'undefined' ? window : global;
+        if (windowOrGlobal.entropyCheck === 'fail') {
+            throw ERRORS.TypedError('Failure_EntropyCheck', 'this is SIMULATED ERROR');
+        }
+
         // step 7 EntropyCheckContinue > Success
         // wallet backup flow may follow after successful entropy check, so don't consider errors thrown there as entropy check failure
         await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
