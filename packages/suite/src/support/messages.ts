@@ -10617,6 +10617,42 @@ export default defineMessages({
         id: 'TR_QUIT_NOW',
         defaultMessage: 'Quit now',
     },
+    TR_TURN_ON_SECURE_SYNC: {
+        id: 'TR_TURN_ON_SECURE_SYNC',
+        defaultMessage: 'Turn on',
+    },
+    TR_SWITCH_ANYWAY: {
+        id: 'TR_SWITCH_ANYWAY',
+        defaultMessage: 'Switch anyway',
+    },
+    TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
+        id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
+        defaultMessage: 'Turn on secure sync to use labels',
+    },
+    TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION: {
+        id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION',
+        defaultMessage: 'Secure sync keeps your data consistent across all of your devices.',
+    },
+    TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
+        id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
+        defaultMessage: 'Data is stored locally and synced only with devices you authorize.',
+    },
+    TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES: {
+        id: 'TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES',
+        defaultMessage: 'Only devices you authorize with your Trezor can decrypt the data.',
+    },
+    TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
+        id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',
+        defaultMessage: 'Switch to legacy labeling?',
+    },
+    TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
+        id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
+        defaultMessage: 'Labels created with secure sync cannot be migrated.',
+    },
+    TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
+        id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
+        defaultMessage: 'With legacy labeling, labels cannot be synced to mobile devices.',
+    },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',
         defaultMessage: 'Switch account',
