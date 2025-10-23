@@ -11,15 +11,15 @@ export type OnboardingButtonsProps = {
 export const OnboardingButtons = ({ afterPress }: OnboardingButtonsProps) => {
     const dispatch = useDispatch();
 
-    const setOnboardingVisitedAndNavigate = () => {
+    const handleOnboardingComplete = () => {
         dispatch(tradingResidenceActions.setOnboardingVisited());
         afterPress();
     };
 
     return (
         <>
-            <ConfirmLocationButton afterConfirm={setOnboardingVisitedAndNavigate} />
-            <SkipButton onPress={setOnboardingVisitedAndNavigate} />
+            <ConfirmLocationButton afterConfirm={handleOnboardingComplete} />
+            <SkipButton onPress={handleOnboardingComplete} />
         </>
     );
 };

@@ -15,7 +15,7 @@ export const useLocationForm = () => {
 
     const defaultCountry = useMemo(() => {
         if (countryCode) {
-            const country = nonSanctionedRegional.countriesOptionsMap.get(countryCode)!;
+            const country = nonSanctionedRegional.countriesOptionsMap.get(countryCode);
             if (country) {
                 return country;
             }

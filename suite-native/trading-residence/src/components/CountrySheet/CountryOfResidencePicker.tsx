@@ -32,12 +32,12 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
     const selectedValue = watch('country');
 
     const setSelectedValue = useCallback(
-        (value: typeof selectedValue) => setValue('country', value),
+        (value: TradingLocationFormValues['country']) => setValue('country', value),
         [setValue],
     );
 
     const handleCountrySelect = useCallback(
-        (country: typeof selectedValue) => {
+        (country: TradingLocationFormValues['country']) => {
             setSelectedValue(country);
 
             if (selectedValue?.value !== country?.value) {
