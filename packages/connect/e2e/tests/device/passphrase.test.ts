@@ -176,7 +176,10 @@ describe('TrezorConnect passphrase', () => {
                 },
             });
             TrezorConnect.removeAllListeners('ui-request_passphrase');
-            controller.send({ type: 'emulator-input', value: 'a' });
+            // Due to race condition with node-bridge, we have to wait a bit
+            setTimeout(() => {
+                controller.send({ type: 'emulator-input', value: 'a' });
+            }, 50);
         });
         const walletA = await TrezorConnect.getDeviceState({
             device: {
