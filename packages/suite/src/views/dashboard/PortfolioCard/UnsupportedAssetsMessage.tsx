@@ -1,7 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { capitalizeFirstLetter, union } from '@trezor/utils';
 
@@ -74,7 +73,5 @@ export const UnsupportedAssetsMessage = ({
     affectedNetworks,
     hasTokens,
 }: UnsupportedAssetsMessageProps) => (
-    <Text variant="tertiary" typographyStyle="hint">
-        <Message affectedNetworks={affectedNetworks} hasTokens={hasTokens} />
-    </Text>
+    <Message affectedNetworks={affectedNetworks} hasTokens={hasTokens} />
 );

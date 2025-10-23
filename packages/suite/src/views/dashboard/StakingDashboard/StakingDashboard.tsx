@@ -159,7 +159,7 @@ export const StakingDashboard = () => {
                     </Badge>
                 </>
             }
-            text={<Translation id="TR_STAKING_DASHBOARD_TEXT" />}
+            subheading={<Translation id="TR_STAKING_DASHBOARD_TEXT" />}
             collapsible
             defaultCollapsed={collapsed}
             onCollapseChange={onCollapseChange}
@@ -187,6 +187,7 @@ export const StakingDashboard = () => {
                             <Table.Cell></Table.Cell>
                         </Table.Row>
                     </Table.Header>
+
                     <Table.Body>
                         {sortedAccounts.map(account => (
                             <StakingDashboardAccountRow account={account} key={account.key} />
