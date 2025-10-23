@@ -236,7 +236,6 @@ export const prepareRootReducers = async () => {
         migrations: {
             2: (oldState: any) => ({
                 ...oldState,
-                [FeatureFlag.IsDeviceConnectEnabled]: true,
                 [FeatureFlag.IsBluetoothEnabled]: true,
             }),
         },

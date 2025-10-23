@@ -15,7 +15,7 @@ import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
-import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
+import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
@@ -27,12 +27,12 @@ import {
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
+import { selectIsNetworkSendFlowEnabled } from '../selectors';
 import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
+import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
-import { selectIsNetworkSendFlowEnabled } from '../selectors';
-import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
@@ -87,7 +87,6 @@ const TransactionListHeaderContent = ({
 export const TransactionListHeader = memo(
     ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
         const navigation = useNavigation<NavigationProp>();
-        const isDeviceConnectEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
@@ -153,8 +152,7 @@ export const TransactionListHeader = memo(
         const isTokenDetail = !!tokenContract;
         const isPriceCardDisplayed = shallDisplayBaseCurrency && !isTokenDetail;
 
-        const isSendButtonDisplayed =
-            isDeviceConnectEnabled && isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
+        const isSendButtonDisplayed = isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
         const isReceiveButtonDisplayed = !hasFirmwareAuthenticityCheckHardFailed;
 
         return (

@@ -32,7 +32,6 @@ describe('FAQInfoPanel', () => {
         it('should render appropriate sections when BT is enabled', async () => {
             const { getByText } = await renderFAQInfoPanel({
                 featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: true,
                     [FeatureFlag.IsBluetoothEnabled]: true,
                 },
             });
@@ -47,7 +46,6 @@ describe('FAQInfoPanel', () => {
         it('should not render BT section when BT is disabled by FF', async () => {
             const { queryByText } = await renderFAQInfoPanel({
                 featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: true,
                     [FeatureFlag.IsBluetoothEnabled]: false,
                 },
             });
@@ -56,27 +54,11 @@ describe('FAQInfoPanel', () => {
             expect(queryByText('For wireless connections:')).toBeNull();
         });
 
-        it('should render BT and USB disabled info', async () => {
-            const { queryByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: false,
-                    [FeatureFlag.IsBluetoothEnabled]: false,
-                },
-            });
-
-            expect(
-                queryByText(
-                    'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
-                ),
-            ).toBeOnTheScreen();
-        });
-
         it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
             const { queryByText } = await renderFAQInfoPanel({
                 featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: true,
                     [FeatureFlag.IsBluetoothEnabled]: true,
                 },
             });
@@ -93,7 +75,6 @@ describe('FAQInfoPanel', () => {
         it('should render appropriate sections when BT is enabled', async () => {
             const { getByText } = await renderFAQInfoPanel({
                 featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: true,
                     [FeatureFlag.IsBluetoothEnabled]: true,
                 },
             });
@@ -110,7 +91,6 @@ describe('FAQInfoPanel', () => {
         it('should not render BT section when BT is disabled by FF', async () => {
             const { queryByText } = await renderFAQInfoPanel({
                 featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: true,
                     [FeatureFlag.IsBluetoothEnabled]: false,
                 },
             });
@@ -119,27 +99,11 @@ describe('FAQInfoPanel', () => {
             expect(queryByText('Can I connect my Trezor to Trezor Suite on Mobile?')).toBeNull();
         });
 
-        it('should render BT and USB disabled info', async () => {
-            const { queryByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: false,
-                    [FeatureFlag.IsBluetoothEnabled]: false,
-                },
-            });
-
-            expect(
-                queryByText(
-                    'No, it is not possible. It is designed to work as a companion to the desktop/web version of Trezor Suite as a way to keep up with your Trezor portfolio on the go.',
-                ),
-            ).toBeOnTheScreen();
-        });
-
         it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
             const { queryByText } = await renderFAQInfoPanel({
                 featureFlags: {
-                    [FeatureFlag.IsDeviceConnectEnabled]: true,
                     [FeatureFlag.IsBluetoothEnabled]: true,
                 },
             });
