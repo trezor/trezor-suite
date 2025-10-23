@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Image as ImageComponent, ImageProps, allowedImageFrameProps } from './Image';
-import { PNG_IMAGES, SVG_IMAGES } from './images';
+import { IMAGES } from './images';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
@@ -18,7 +18,7 @@ export const Image: StoryObj<ImageProps> = {
     },
     argTypes: {
         image: {
-            options: Object.keys({ ...SVG_IMAGES, ...PNG_IMAGES }),
+            options: Object.keys({ ...IMAGES }),
             control: {
                 type: 'select',
             },

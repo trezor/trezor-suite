@@ -1,17 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import {
-    Box,
-    Button,
-    Column,
-    PNG_IMAGES,
-    PNG_PATH,
-    Row,
-    SVG_IMAGES,
-    SVG_PATH,
-    Text,
-} from '@trezor/components';
+import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
 import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
@@ -20,9 +10,9 @@ import { Translation } from '../../../components/suite/Translation';
 import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
 
 const underlineImage = resolveStaticPath(
-    `${SVG_PATH}/${SVG_IMAGES.DASHBOARD_PROMO_BANNER_UNDERLINE}`,
+    `${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BANNER_UNDERLINE}`,
 );
-const mainImage = resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.DASHBOARD_PROMO_BANNER_TEX}`);
+const mainImage = resolveStaticPath(`${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BANNER_TEX}`);
 
 const StyledImage = styled.img`
     flex: 1;

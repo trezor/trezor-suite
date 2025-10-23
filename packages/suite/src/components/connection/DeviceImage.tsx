@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { Image, PNG_IMAGES, PNG_PATH } from '@trezor/components';
+import { IMAGES, IMAGES_PATH, Image } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 export const DEFAULT_CONNECT_DEVICE_NAME = 'T3T1-CONNECT-ON' as const;
@@ -9,8 +9,8 @@ export const DEFAULT_CONNECT_DEVICE_NAME = 'T3T1-CONNECT-ON' as const;
 type SupportedDeviceModels = DeviceModelInternal.T3W1;
 
 const deviceImageMap: Record<SupportedDeviceModels | typeof DEFAULT_CONNECT_DEVICE_NAME, string> = {
-    [DeviceModelInternal.T3W1]: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TREZOR_T3W1_LARGE_2x}`),
-    [DEFAULT_CONNECT_DEVICE_NAME]: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES.TREZOR_T3W1_LARGE}`),
+    [DeviceModelInternal.T3W1]: resolveStaticPath(`${IMAGES_PATH}/${IMAGES.TREZOR_T3W1_LARGE_2x}`),
+    [DEFAULT_CONNECT_DEVICE_NAME]: resolveStaticPath(`${IMAGES_PATH}/${IMAGES.TREZOR_T3W1_LARGE}`),
 };
 
 type DeviceImageSize = 'small' | 'normal' | 'large';

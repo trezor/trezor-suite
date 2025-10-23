@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { isArrayMember, typedObjectEntries } from '@trezor/utils';
 
-import { PNG_IMAGES, PngImage, SVG_IMAGES, SvgImage } from './images';
+import { IMAGES, ImageType } from './images';
 import {
     FrameProps,
     FramePropsKeys,
@@ -25,36 +25,35 @@ export const allowedImageFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedImageFrameProps)[number]>;
 
-export const PNG_PATH = 'images/png';
-export const SVG_PATH = 'images/svg';
+export const IMAGES_PATH = 'images/images';
 
-export type ImageKey = PngImage | SvgImage;
+export type ImageKey = ImageType;
 
-const buildSrcSet = (imageKey: PngImage) => {
-    const imageFile1x = PNG_IMAGES[imageKey];
-    const imageFile2x = PNG_IMAGES[`${String(imageKey)}_2x` as PngImage];
+const buildSrcSet = (imageKey: ImageType) => {
+    const imageFile1x = IMAGES[imageKey];
+    const imageFile2x = IMAGES[`${String(imageKey)}_2x` as ImageType];
 
     if (!imageFile2x) {
         return undefined;
     }
 
     return `
-        ${resolveStaticPath(`${PNG_PATH}/${imageFile1x}`)} 1x,
-        ${resolveStaticPath(`${PNG_PATH}/${imageFile2x}`)} 2x
+        ${resolveStaticPath(`${IMAGES_PATH}/${imageFile1x}`)} 1x,
+        ${resolveStaticPath(`${IMAGES_PATH}/${imageFile2x}`)} 2x
     `;
 };
 
-const isPNGImageKey = (key: ImageKey): key is PngImage => key in PNG_IMAGES;
+const isPNGImageKey = (key: ImageKey): key is ImageType => key in IMAGES;
 
 const getSourceProps = (imageKey: ImageKey) => {
     if (isPNGImageKey(imageKey)) {
         return {
-            src: resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES[imageKey]}`),
+            src: resolveStaticPath(`${IMAGES_PATH}/${IMAGES[imageKey]}`),
             srcSet: buildSrcSet(imageKey),
         };
     }
 
-    return { src: resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES[imageKey]}`) };
+    return { src: resolveStaticPath(`${IMAGES_PATH}/${IMAGES[imageKey]}`) };
 };
 
 const StyledImage = styled.img<TransientProps<AllowedFrameProps & { isFilterActive?: boolean }>>`
