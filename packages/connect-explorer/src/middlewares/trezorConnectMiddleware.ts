@@ -8,7 +8,6 @@ import { getQueryVariable } from '../utils/windowUtils';
 export const trezorConnectMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
         const prevConnectOptions = api.getState().connect.options;
-        console.log('trezorConnectMiddleware', action, prevConnectOptions);
 
         next(action);
 

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
-import { isBetaOnly } from '../components/BetaOnly';
 import { getField } from '../components/Method';
 import { useActions, useSelector } from '../hooks';
 
@@ -56,8 +55,9 @@ export const Settings = () => {
                 { value: 'auto', label: 'Auto' },
                 { value: 'iframe', label: 'Iframe' },
                 { value: 'popup', label: 'Popup' },
-                ...(isBetaOnly ? [{ value: 'deeplink', label: 'Deeplink (mobile)' }] : []),
-                ...(isBetaOnly ? [{ value: 'suite-desktop', label: 'Suite desktop' }] : []),
+                { value: 'deeplink', label: 'Deeplink (mobile)' },
+                { value: 'suite-desktop', label: 'Suite desktop' },
+                { value: 'suite-web', label: 'Suite web' },
             ],
         },
         {
