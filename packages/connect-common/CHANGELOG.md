@@ -1,3 +1,11 @@
+# 0.4.4
+
+- npm-prerelease: @trezor/connect-common 0.4.4-beta.1 (21b32236d3)
+- fix(connect-common): check FW revision only new format (acafacea41)
+- refactor: rename holesky to hoodi (0053b5b021)
+- Revert feat(connect-common): temporarily add 1.13.0 FW (1740165c53)
+- fix(connect-common): add missing requireds (a753e6d5df)
+
 # 0.4.3
 
 - fix: add depcheck scripts for all the package.json-s (a4f8b09e38)
