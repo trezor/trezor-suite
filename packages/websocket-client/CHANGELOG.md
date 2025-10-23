@@ -1,3 +1,7 @@
+# 1.2.4
+
+- npm-prerelease: @trezor/websocket-client 1.2.4-beta.1 (bdf6f0860f)
+
 # 1.2.3
 
 - fix: add missin @types/ws (7b89dc607b)
