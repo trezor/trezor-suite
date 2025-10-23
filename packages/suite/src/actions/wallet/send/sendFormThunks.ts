@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { processMetadataMessageThunk } from '@suite-common/local-first-storage';
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -37,7 +38,6 @@ import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
-import { selectSuiteFlags } from '../../../selectors/suite/suiteSelectors';
 import { findLabelsToBeMovedOrDeletedThunk } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
 import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
 
@@ -124,7 +124,7 @@ const applySendFormMetadataLabelsThunk = createThunk<
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
     ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
         const metadata = selectMetadata(getState());
-        const { isLocalFirstStorageEnabled } = selectSuiteFlags(getState());
+        const isLocalFirstStorageEnabled = selectIsLocalFirstStorageEnabled(getState());
 
         if (!metadata.enabled && !isLocalFirstStorageEnabled) {
             return;

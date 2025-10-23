@@ -35,10 +35,6 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
-        selectSuiteSettings: state => ({
-            ...extraDependenciesMock.selectors.selectSuiteSettings(state),
-            isLocalFirstStorageEnabled: state.featureFlags.isLocalFirstStorageEnabled,
-        }),
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
         selectDebugSettings: () => ({

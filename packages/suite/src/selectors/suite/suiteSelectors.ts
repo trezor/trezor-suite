@@ -28,9 +28,6 @@ export const selectTorState = (state: SuiteRootState) => {
 
 export const selectTorOnionLinks = (state: SuiteRootState) => state.suite.settings.torOnionLinks;
 
-export const selectLocalFirstStorageRelayUrl = (state: SuiteRootState) =>
-    state.suite.settings.localFirstStorageRelayUrl;
-
 // TODO: use this selector in all places where we need to check if debug mode is active
 export const selectIsDebugModeActive = (state: SuiteRootState) =>
     state.suite.settings.debug.showDebugMenu;
@@ -92,10 +89,6 @@ export const selectIsCopyAddressModalShown = (state: SuiteRootState) =>
     state.suite.flags.showCopyAddressModal;
 export const selectIsInitialRun = (state: SuiteRootState) => state.suite.flags.initialRun;
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
-export const selectSuiteSettings = (state: SuiteRootState) => ({
-    isLocalFirstStorageEnabled: state.suite.flags.isLocalFirstStorageEnabled,
-    localFirstStorageRelayUrl: state.suite.settings.localFirstStorageRelayUrl,
-});
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>
         state.suite.settings.experimental?.includes(feature) ?? false;

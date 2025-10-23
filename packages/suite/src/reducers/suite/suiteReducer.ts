@@ -16,8 +16,6 @@ import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 
-import { setLocalFirstStorageRelayAction } from '../../actions/settings/settingsActions';
-
 export interface SuiteRootState {
     suite: SuiteState;
 }
@@ -73,10 +71,6 @@ export interface Flags {
     showBluetoothDebugInfo: boolean;
     stellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
     solanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
-    showLocalFirstStorage: boolean; // toogle in debug menu to show/hide local first storage settings in labeling section
-    isLocalFirstStorageEnabled: boolean; // flag indicating whether local first storage is enabled, move this to experimental later maybe?
-    isLocalFirstStorageDebugEnabled: boolean;
-    showEnableLocalFirstStorageModal: boolean; // to show modal prompting user to enable local first storage
     hasSeenDisconnectTooltip: boolean; // tooltip shown when device disconnects - show only once ever
 }
 
@@ -110,7 +104,6 @@ export interface SuiteSettings {
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
-    localFirstStorageRelayUrl: string | null;
     autoEject: boolean;
 }
 
@@ -171,10 +164,6 @@ const initialState: SuiteState = {
         showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
         solanaLimitedHistoryBannerClosed: false,
-        showLocalFirstStorage: false,
-        isLocalFirstStorageEnabled: false,
-        isLocalFirstStorageDebugEnabled: false,
-        showEnableLocalFirstStorageModal: false,
         hasSeenDisconnectTooltip: false,
     },
     evmSettings: {
@@ -215,7 +204,6 @@ const initialState: SuiteState = {
         addressDisplayType: AddressDisplayOptions.CHUNKED,
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
-        localFirstStorageRelayUrl: null,
         autoEject: false,
     },
     recentlyConnectedDeviceRef: null,
@@ -441,9 +429,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.LOCK_ROUTER:
                 changeLock(draft, SUITE.LOCK_TYPE.ROUTER, action.payload);
                 break;
-
-            case setLocalFirstStorageRelayAction.type:
-                draft.settings.localFirstStorageRelayUrl = action.payload.url;
 
             // no default
         }

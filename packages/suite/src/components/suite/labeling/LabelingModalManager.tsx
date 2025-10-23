@@ -1,15 +1,15 @@
-import { setFlag } from 'src/actions/suite/suiteActions';
+import { selectShowEnableLocalFirstStorageModal } from 'src/actions/labeling/labelingSelectors';
+import { updateShowEnableLocalFirstStorageModal } from 'src/actions/labeling/labelingSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { TurnOnSecureSyncModal } from './TurnOnSecureSyncModal';
 
 export const LabelingModalManager = () => {
     const dispatch = useDispatch();
-    const { showEnableLocalFirstStorageModal } = useSelector(selectSuiteFlags);
+    const showEnableLocalFirstStorageModal = useSelector(selectShowEnableLocalFirstStorageModal);
 
     const onClose = () => {
-        dispatch(setFlag('showEnableLocalFirstStorageModal', false));
+        dispatch(updateShowEnableLocalFirstStorageModal({ show: false }));
     };
 
     if (!showEnableLocalFirstStorageModal) return null;

@@ -9,6 +9,18 @@ export type WithLabelingState = {
     labeling: LabelingState;
 };
 
+export const selectIsLocalFirstStorageEnabled = (state: WithLabelingState): boolean =>
+    state.labeling.isLocalFirstStorageEnabled;
+
+export const selectIsLocalFirstStorageDebugEnabled = (state: WithLabelingState): boolean =>
+    state.labeling.isLocalFirstStorageDebugEnabled;
+
+export const selectShowLocalFirstStorage = (state: WithLabelingState): boolean =>
+    state.labeling.showLocalFirstStorage;
+
+export const selectLocalFirstStorageRelayUrl = (state: WithLabelingState) =>
+    state.labeling.localFirstStorageRelayUrl;
+
 type SelectWalletLabelParams = {
     state: WithLabelingState;
     deviceStaticSessionId: StaticSessionId | undefined;

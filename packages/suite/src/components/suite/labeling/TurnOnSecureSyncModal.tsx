@@ -1,6 +1,6 @@
+import { labelingActions } from '@suite-common/local-first-storage';
 import { Card, List, Modal, Paragraph } from '@trezor/components';
 
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 
@@ -15,7 +15,7 @@ export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) =
 
     const onSwitch = () => {
         localFirstEnableIfNeeded();
-        dispatch(setFlag('showEnableLocalFirstStorageModal', false));
+        dispatch(labelingActions.updateshowLocalFirstStorage({ isShownInSettings: false }));
     };
 
     return (

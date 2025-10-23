@@ -3,18 +3,18 @@ import { useState } from 'react';
 import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     disposeAllLocalFirstStorageThunk,
+    labelingActions,
 } from '@suite-common/local-first-storage';
+import { selectLocalFirstStorageRelayUrl } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
 import { setLocalFirstStorageRelayAction } from 'src/actions/settings/settingsActions';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
-import { selectLocalFirstStorageRelayUrl } from 'src/selectors/suite/suiteSelectors';
 
 export const LocalFirstStorageSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +32,11 @@ export const LocalFirstStorageSettings = () => {
     const dispatch = useDispatch();
 
     const handleToggleLocalFirstStorageDebug = () => {
-        dispatch(setFlag('isLocalFirstStorageDebugEnabled', !isLocalFirstStorageDebugEnabled));
+        dispatch(
+            labelingActions.updateLocaleFirstStorageDebugEnabled({
+                isEnabled: !isLocalFirstStorageDebugEnabled,
+            }),
+        );
     };
 
     const onRelayUrlSave = () => {

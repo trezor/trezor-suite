@@ -10,6 +10,10 @@ const labelingReducer = prepareLabelingReducer(extraDependenciesMock);
 
 const initialState: LabelingState = {
     walletsLabels: {},
+    showLocalFirstStorage: false,
+    isLocalFirstStorageEnabled: false,
+    isLocalFirstStorageDebugEnabled: false,
+    localFirstStorageRelayUrl: null,
 };
 
 const walletDescriptor = asWalletDescriptor('mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q');

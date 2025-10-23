@@ -16,10 +16,18 @@ export type WalletLabelState = {
 
 export type LabelingState = {
     walletsLabels: Record<WalletDescriptor, WalletLabelState>; // key: WalletDescriptor = First btc testnet address
+    showLocalFirstStorage: boolean;
+    isLocalFirstStorageEnabled: boolean;
+    isLocalFirstStorageDebugEnabled: boolean;
+    localFirstStorageRelayUrl: string | null;
 };
 
 export const initialLabelingState: LabelingState = {
     walletsLabels: {},
+    showLocalFirstStorage: false,
+    isLocalFirstStorageEnabled: false,
+    isLocalFirstStorageDebugEnabled: false,
+    localFirstStorageRelayUrl: null,
 };
 
 const getOrCreateWalletsLabelsState = (
@@ -107,5 +115,14 @@ export const prepareLabelingReducer = createReducerWithExtraDeps<LabelingState>(
             })
             .addCase(labelingActions.clearAllLabels, (state, { payload }) => {
                 delete state.walletsLabels[payload.walletDescriptor];
+            })
+            .addCase(labelingActions.updateLocaleFirstStorageEnabled, (state, { payload }) => {
+                state.isLocalFirstStorageEnabled = payload.isEnabled;
+            })
+            .addCase(labelingActions.updateLocaleFirstStorageDebugEnabled, (state, { payload }) => {
+                state.isLocalFirstStorageDebugEnabled = payload.isEnabled;
+            })
+            .addCase(labelingActions.updateshowLocalFirstStorage, (state, { payload }) => {
+                state.showLocalFirstStorage = payload.isShownInSettings;
             }),
 );

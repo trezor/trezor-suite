@@ -1,4 +1,12 @@
-import { disposeAllLocalFirstStorageThunk } from '@suite-common/local-first-storage';
+import {
+    disposeAllLocalFirstStorageThunk,
+    labelingActions,
+} from '@suite-common/local-first-storage';
+import {
+    selectIsLocalFirstStorageDebugEnabled,
+    selectIsLocalFirstStorageEnabled,
+    selectShowLocalFirstStorage,
+} from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
@@ -8,8 +16,6 @@ import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActi
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
-import { setFlag } from '../../actions/suite/suiteActions';
-import { selectSuiteFlags } from '../../selectors/suite/suiteSelectors';
 
 type UseLabelingCombinedParams = {
     // This needs to be passed, as labeling can be attached to remembered wallets
@@ -26,12 +32,18 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
             : undefined,
     );
 
-    const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled, showLocalFirstStorage } =
-        useSelector(selectSuiteFlags);
+    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
+    const isLocalFirstStorageDebugEnabled = useSelector(selectIsLocalFirstStorageDebugEnabled);
+    const showLocalFirstStorage = useSelector(selectShowLocalFirstStorage);
+
     const legacyMetadataState = useSelector(state => state.metadata);
 
     const toggleShowLocalFirstStorage = () => {
-        dispatch(setFlag('showLocalFirstStorage', !showLocalFirstStorage));
+        dispatch(
+            labelingActions.updateshowLocalFirstStorage({
+                isShownInSettings: !showLocalFirstStorage,
+            }),
+        );
     };
 
     const legacyDisableIfNeeded = () => {
@@ -40,7 +52,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
 
     const localFirstDisableIfNeeded = () => {
         if (isLocalFirstStorageEnabled) {
-            dispatch(setFlag('isLocalFirstStorageEnabled', false));
+            dispatch(labelingActions.updateLocaleFirstStorageEnabled({ isEnabled: false }));
             dispatch(disposeAllLocalFirstStorageThunk());
         }
     };
@@ -50,7 +62,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         if (legacyMetadataState.enabled) legacyDisableIfNeeded();
 
         if (!isLocalFirstStorageEnabled) {
-            dispatch(setFlag('isLocalFirstStorageEnabled', true));
+            dispatch(labelingActions.updateLocaleFirstStorageEnabled({ isEnabled: true }));
             dispatch(initSuiteLocalFirstStorageThunk());
         }
     };
