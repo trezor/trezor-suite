@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { JSX, memo } from 'react';
 import Animated from 'react-native-reanimated';
 
 import type { ExchangeTrade } from 'invity-api';
@@ -14,7 +14,7 @@ import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStrin
 
 export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
-    txnErrorString: string | null;
+    txnErrorString: JSX.Element;
     isApproved?: boolean;
 };
 

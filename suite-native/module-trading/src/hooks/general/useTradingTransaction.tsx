@@ -33,9 +33,9 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
 import {
     NativeSupportedFeeLevel,
+    PrecomposedTransactionError,
     selectFeeLevels,
     useFeesFetching,
-    usePrecomposedTransactionError,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
 
@@ -115,12 +115,9 @@ export const useTradingTransaction = ({
     const selectedLevel = feeLevels[(selectedFee as NativeSupportedFeeLevel) ?? 'normal'];
     const feeError = selectedLevel?.type === 'error' ? selectedLevel.error : null;
 
-    const txnErrorString = usePrecomposedTransactionError({
-        error: feeError,
-        context: {
-            networkSymbol: sendAccount?.symbol,
-        },
-    });
+    const txnErrorString = (
+        <PrecomposedTransactionError error={feeError} networkSymbol={sendAccount?.symbol} />
+    );
 
     const {
         isConsentRequested: isTransactionSendConsentRequested,
