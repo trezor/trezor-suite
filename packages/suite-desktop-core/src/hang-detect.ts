@@ -4,7 +4,7 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { ElectronIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/proxy-handler';
 import { TimerId } from '@trezor/type-utils';
 
-import { APP_SRC } from './libs/constants';
+import { loadIndex } from './libs/loadIndex';
 import { ipcMain } from './typed-electron';
 
 const HANG_WAIT = 30000;
@@ -24,7 +24,7 @@ const showDialog = async (mainWindow: BrowserWindow) => {
 export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string, any>) => {
     const { logger } = global;
     const handshakeHandler = (ipcEvent: ElectronIpcMainInvokeEvent) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return Promise.resolve({});
     };
@@ -57,8 +57,7 @@ export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string
 
             return Promise.resolve({ statePatch });
         });
-        logger.debug('init', `Load URL (${APP_SRC})`);
-        mainWindow.loadURL(APP_SRC);
+        loadIndex(mainWindow);
     });
     const cleanup = () => {
         ipcMain.removeHandler('handshake/client');

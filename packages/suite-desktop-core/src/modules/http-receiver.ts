@@ -59,7 +59,7 @@ export const initBackground: ModuleInitBackground = ({
 
         // when httpReceiver was asked to provide current address for given pathname
         ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
-            validateIpcMessage(ipcEvent);
+            validateIpcMessage({ ipcEvent });
             try {
                 const address = receiver.getRouteAddress(pathname);
                 if (address) {
@@ -74,12 +74,12 @@ export const initBackground: ModuleInitBackground = ({
 
         const connectPopupEnabled = () => !store.getConnectSettings().disableWs;
         ipcMain.handle('connect-popup/enabled', ipcEvent => {
-            validateIpcMessage(ipcEvent);
+            validateIpcMessage({ ipcEvent });
 
             return connectPopupEnabled();
         });
         ipcMain.handle('connect-popup/set-enabled', (ipcEvent, enabled: boolean) => {
-            validateIpcMessage(ipcEvent);
+            validateIpcMessage({ ipcEvent });
 
             store.setConnectSettings({ disableWs: !enabled });
             restartApp();

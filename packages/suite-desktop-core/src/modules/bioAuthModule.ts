@@ -20,7 +20,7 @@ const loadWin = async () => {
     logger.info('bioAuth', 'WIN: bioAuth loaded');
 
     ipcMain.handle('bio-auth/validate-bio-auth', (ipcEvent, params) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return scheduleAction(
             async () => {
@@ -49,7 +49,7 @@ const loadWin = async () => {
     });
 
     ipcMain.handle('bio-auth/is-bio-auth-available', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return scheduleAction(
             async () => {
@@ -81,7 +81,7 @@ const loadWin = async () => {
 const loadMac = () => {
     const { logger } = global;
     ipcMain.handle('bio-auth/validate-bio-auth', (ipcEvent, params) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return scheduleAction(
             async () => {
@@ -117,7 +117,7 @@ const loadMac = () => {
     });
 
     ipcMain.handle('bio-auth/is-bio-auth-available', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return scheduleAction(
             async (): Promise<boolean> => {
@@ -138,7 +138,7 @@ const loadMac = () => {
 
 const loadLinux = () => {
     ipcMain.handle('bio-auth/validate-bio-auth', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return {
             success: false,
@@ -147,7 +147,7 @@ const loadLinux = () => {
     });
 
     ipcMain.handle('bio-auth/is-bio-auth-available', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return false;
     });

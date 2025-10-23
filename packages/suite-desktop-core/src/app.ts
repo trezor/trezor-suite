@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import { BrowserWindow, app, nativeTheme } from 'electron';
 import debounce from 'lodash/debounce';
 import path from 'path';
@@ -13,6 +14,7 @@ import { hangDetect } from './hang-detect';
 import { processStatePatch, removeElectronAppData, restartApp } from './libs/app-utils';
 import { APP_NAME } from './libs/constants';
 import { getBuildInfo, getComputerInfo } from './libs/info';
+import { loadIndex } from './libs/loadIndex';
 import { Logger } from './libs/logger';
 import { MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
@@ -45,7 +47,13 @@ const parseRemoveUserDataSwitch = () => {
 };
 parseRemoveUserDataSwitch();
 
-const createMainWindow = (winBounds: WinBoundsCoords, store: Store) => {
+type CreateMainWindowParams = {
+    winBounds: WinBoundsCoords;
+    store: Store;
+    cspNonce: string;
+};
+
+const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams) => {
     const darkTheme =
         store.getThemeSettings() === 'dark' ||
         (store.getThemeSettings() === 'system' && nativeTheme.shouldUseDarkColors);
@@ -68,7 +76,11 @@ const createMainWindow = (winBounds: WinBoundsCoords, store: Store) => {
             webSecurity: !isDevEnv,
             allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
-            additionalArguments: hasSwitch('expose-store') ? ['--expose-store'] : [],
+            additionalArguments: [
+                // This will pass nonce to Renderer process, so it can be used
+                `--cspNonce=${cspNonce}`,
+                ...(hasSwitch('expose-store') ? ['--expose-store'] : []),
+            ],
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
         backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].backgroundSurfaceElevation0,
@@ -120,10 +132,9 @@ const init = async () => {
 
     const store = Store.getStore();
 
-    initSentry({
-        store,
-        mainThreadEmitter,
-    });
+    const cspNonce = randomBytes(16).toString('base64');
+
+    initSentry({ store, mainThreadEmitter });
 
     app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
 
@@ -173,6 +184,7 @@ const init = async () => {
             store,
             interceptor,
             mainThreadEmitter,
+            cspNonce,
         });
     const backgroundModulesResponse = await loadBackgroundModules(undefined);
 
@@ -232,6 +244,7 @@ const init = async () => {
         store,
         interceptor,
         mainThreadEmitter,
+        cspNonce,
     });
 
     const reactivateWindow = () => {
@@ -240,7 +253,7 @@ const init = async () => {
         let mainWindow = mainWindowProxy.getInstance();
         if (!mainWindow || mainWindow.isDestroyed()) {
             logger.info('main', 'Main window destroyed, recreating');
-            mainWindow = createMainWindow(winBounds, store);
+            mainWindow = createMainWindow({ winBounds, store, cspNonce });
             mainWindowProxy.setInstance(mainWindow);
         }
 
@@ -275,7 +288,7 @@ const init = async () => {
 
     // repeated during app lifecycle (e.g. Ctrl+R)
     ipcMain.handle('handshake/load-modules', (ipcEvent, payload) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return loadModulesResponse(payload);
     });
@@ -287,6 +300,7 @@ const init = async () => {
         store,
         interceptor,
         mainThreadEmitter,
+        cspNonce,
     });
 
     const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule();
@@ -294,7 +308,7 @@ const init = async () => {
     loadBioAuthModule();
 
     ipcMain.handle('handshake/load-tor-module', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return loadTorModule();
     });
@@ -363,6 +377,12 @@ const init = async () => {
         logger.info('main', 'Main window initialized - calling handshake');
         const statePatch = processStatePatch();
         // load and wait for handshake message from renderer
+
+        // Refresh if it failed to load
+        mainWindow.webContents.on('did-fail-load', () => {
+            loadIndex(mainWindow);
+        });
+
         const { handshake, cleanup } = hangDetect(mainWindow, statePatch);
         mainWindowProxy.once('destroy', cleanup);
         const handshakeResult = await handshake;
@@ -386,7 +406,7 @@ const init = async () => {
     });
 
     // Create main window last, so all listeners are set up
-    mainWindowProxy.setInstance(createMainWindow(winBounds, store));
+    mainWindowProxy.setInstance(createMainWindow({ winBounds, store, cspNonce }));
 };
 
 init();
