@@ -7,7 +7,7 @@ import {
 } from '@suite-native/trading-residence';
 
 export type TradingCountryOfResidencePickerProps = {
-    context: TradingType;
+    context: Exclude<TradingType, 'exchange'>;
     testID: string;
 };
 
