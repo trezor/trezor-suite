@@ -1,3 +1,18 @@
+# 1.2.10
+
+- npm-prerelease: @trezor/protocol 1.2.10-beta.1 (f4d27203cc)
+- feat(connect): handle channel replacement in THP pairing (612f40e74d)
+- fix(connect): use randomly generated staticKey in first pairing (ca048710ce)
+- fix(connect): throw away credentials unaccepted by device (26ebf67f63)
+- chore: add `try_to_unlock` to handshake hash (64eeb31575)
+- feat(connect): add `tryToUnlock` to `ThpHandshakeInitRequest` (a8aff3e3f8)
+- refactor(connect): random thp code polish (bdd7b7bb61)
+- chore(protocol): remove unused `ThpInvalidData` error type (b3233240b4)
+- chore(protobuf): update protobuf (295afab848)
+- feat(protocol): exports for trezor push notification (c2dca4f0bd)
+- feat(protocol): trezor-push-notification decode (70f0b76f2e)
+- fix(protocol-thp): add error to getExpectedHeaders (37a4375b33)
+
 # 1.2.9
 
 - npm-prerelease: @trezor/protocol 1.2.9-beta.1 (0c08a0b9de)
