@@ -1,20 +1,11 @@
-import {
-    HTMLAttributes,
-    ReactElement,
-    ReactNode,
-    Ref,
-    forwardRef,
-    useEffect,
-    useState,
-} from 'react';
+import { HTMLAttributes, ReactElement, Ref, forwardRef, useEffect, useState } from 'react';
 
-import { Box, Column, H3, IconButton, Paragraph, Row } from '@trezor/components';
+import { Box, Column, H3, IconButton, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
     heading: ReactElement;
     subheading?: ReactElement;
-    text?: ReactNode;
     actions?: ReactElement;
     collapsible?: boolean;
     defaultCollapsed?: boolean;
@@ -27,7 +18,6 @@ export const DashboardSection = forwardRef(
         {
             heading,
             subheading,
-            text,
             actions,
             collapsible = false,
             defaultCollapsed = false,
@@ -66,9 +56,8 @@ export const DashboardSection = forwardRef(
                                     ></IconButton>
                                 )}
                             </Row>
-                            {subheading}
+                            {subheading && <Text variant="tertiary">{subheading}</Text>}
                         </Box>
-                        {text && <Paragraph variant="tertiary">{text}</Paragraph>}
                     </Column>
                     {!collapsed && children}
                 </Column>
