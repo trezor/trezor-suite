@@ -1,35 +1,44 @@
-import { Card, List, Modal, Paragraph } from '@trezor/components';
+import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
+
+import { Translation } from '../Translation';
 
 type LabelingSwitchToLegacyModalProps = {
     onSwitch: () => void;
     onClose: () => void;
 };
 
-// TODO add translations
 export const LabelingSwitchToLegacyModal = ({
     onSwitch,
     onClose,
 }: LabelingSwitchToLegacyModalProps) => (
     <Modal
-        heading="Switch to legacy labeling?"
+        heading={<Translation id="TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING" />}
         onCancel={onClose}
         bottomContent={
             <>
-                <Modal.Button onClick={onSwitch}>Switch anyway</Modal.Button>
+                <Modal.Button onClick={onSwitch}>
+                    <Translation id="TR_SWITCH_ANYWAY" />
+                </Modal.Button>
                 <Modal.Button onClick={onClose} variant="tertiary">
-                    Cancel
+                    <Translation id="TR_CANCEL" />
                 </Modal.Button>
             </>
         }
     >
         <Card>
-            <List>
+            <List
+                bulletGap={0}
+                gap={0}
+                bulletComponent={<Icon name="dot" variant="tertiary" size={32} />}
+            >
                 <List.Item>
-                    <Paragraph>Labels created with secure sync cannot be migrated.</Paragraph>
+                    <Paragraph variant="tertiary">
+                        <Translation id="TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED" />
+                    </Paragraph>
                 </List.Item>
                 <List.Item>
-                    <Paragraph>
-                        With legacy labeling, labels cannot be synced to mobile devices.
+                    <Paragraph variant="tertiary">
+                        <Translation id="TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE" />
                     </Paragraph>
                 </List.Item>
             </List>
