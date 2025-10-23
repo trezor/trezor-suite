@@ -35,6 +35,24 @@ button:disabled {
 #send_message_input { width: 100%; height: 80px; }
 `;
 
+const getPort = () => {
+    // UI served from the server
+    if (window.location.port) {
+        return window.location.port;
+    }
+    // UI is running as standalone file
+    if (window.location.hash.length > 0) {
+        const url = new URL(window.location.href.replace(/#/g, '?'));
+        const port = url.searchParams.get('port');
+        if (port) {
+            return port;
+        }
+    }
+
+    // default
+    return 21327;
+};
+
 export const App: React.FC = () => {
     // inject inline styles on mount
     useEffect(() => {
@@ -67,7 +85,8 @@ export const App: React.FC = () => {
     };
 
     useEffect(() => {
-        const api = new TrezorBluetooth({ url: `ws://127.0.0.1:${window.location.port}/` });
+        const port = getPort();
+        const api = new TrezorBluetooth({ url: `ws://127.0.0.1:${port}/` });
         apiRef.current = api;
 
         const onDisconnected = () => writeOutput('Api disconnected');
