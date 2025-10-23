@@ -114,7 +114,7 @@ export default [
         vbytes: 201,
     },
     {
-        // https://tbtc1.trezor.io/tx/d7bae8f41c45f43447ec6eedf2b900c5e15359a1b88771d2e4dee9a1aaf3e23e
+        // https://tbtc.trezor.io/tx/d7bae8f41c45f43447ec6eedf2b900c5e15359a1b88771d2e4dee9a1aaf3e23e
         description: 'external P2TR output',
         network: 'testnet',
         inputs: [...inputs, ...inputs, ...inputs],
@@ -129,7 +129,7 @@ export default [
         vbytes: 497,
     },
     {
-        // https://tbtc1.trezor.io/tx/ab1494fd55bcfe16822d2eb7f7619e34168f4d41e082e7868c753e7c87971d19
+        // https://tbtc.trezor.io/tx/ab1494fd55bcfe16822d2eb7f7619e34168f4d41e082e7868c753e7c87971d19
         description: 'internal P2TR output',
         network: 'testnet',
         inputs,

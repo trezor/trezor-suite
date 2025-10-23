@@ -24,13 +24,7 @@ export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment>
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
             wabisabiBackendUrl: 'https://api.wasabiwallet.io/',
-            blockbookUrls: [
-                'https://btc1.trezor.io',
-                'https://btc2.trezor.io',
-                'https://btc3.trezor.io',
-                'https://btc4.trezor.io',
-                'https://btc5.trezor.io',
-            ],
+            blockbookUrls: ['https://btc.trezor.io'],
             onionDomains: {
                 'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
                 'wasabiwallet.io': 'wasabiukrxmkdgve5kynjztuovbg43uxcbcxn6y2okcrsg7gb6jdmbad.onion',
@@ -60,7 +54,7 @@ export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment>
             coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://wasabiwallet.co/',
-            blockbookUrls: ['https://tbtc4-1.trezor.io', 'https://tbtc4-2.trezor.io'],
+            blockbookUrls: ['https://tbtc4.trezor.io'],
             onionDomains: {
                 'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
                 'wasabiwallet.co': 'testwnp3fugjln6vh5vpj7mvq3lkqqwjj3c2aafyu7laxz42kgwh2rad.onion',
@@ -107,7 +101,7 @@ export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment>
             coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
-            blockbookUrls: ['https://tbtc4-1.trezor.io', 'https://tbtc4-2.trezor.io'],
+            blockbookUrls: ['https://tbtc4.trezor.io'],
             baseBlockHeight: 0,
             baseBlockHash: '00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043',
             filtersBatchSize: 5000,

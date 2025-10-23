@@ -13,7 +13,7 @@ const FIXTURE = [
     ['simple domain https', 'https://trezor.io/', `http://trezorioabcd.onion/`],
     ['subdomain', 'https://cdn.trezor.io/x/1*ab.png', `http://cdn.trezorioabcd.onion/x/1*ab.png`],
     ['subsubdomain', 'http://alpha.beta.trezor.io', `http://alpha.beta.trezorioabcd.onion`],
-    ['blockbook', 'https://btc1.trezor.io/api?t=13#a', `http://btc1.trezorioabcd.onion/api?t=13#a`],
+    ['blockbook', 'https://btc.trezor.io/api?t=13#a', `http://btc.trezorioabcd.onion/api?t=13#a`],
     ['coingecko', 'https://coingecko.com/?dt=5-1-2021', `http://coingeckoabcd.onion/?dt=5-1-2021`],
     ['websocket wss', 'wss://trezor.io', 'ws://trezorioabcd.onion'],
     ['websocket ws', 'ws://foo.bar.trezor.io/?foo=bar', 'ws://foo.bar.trezorioabcd.onion/?foo=bar'],

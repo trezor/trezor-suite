@@ -40,7 +40,7 @@ export default {
         mnemonic: 'mnemonic_all',
     },
     tests: [
-        // https://tbtc1.trezor.io/api/tx/4123415574c16899b4bb5b691f9b65643dbe566a9b68e4e2e7a8b29c79c83f2b
+        // https://tbtc.trezor.io/api/tx/4123415574c16899b4bb5b691f9b65643dbe566a9b68e4e2e7a8b29c79c83f2b
         {
             description: 'Testnet (multisig): 2 of 3 (sign with 1st key)',
             params: {
@@ -73,7 +73,7 @@ export default {
                 signatures: [SIGNATURES_2_OF_3[0]],
             },
         },
-        // https://tbtc1.trezor.io/api/tx/4123415574c16899b4bb5b691f9b65643dbe566a9b68e4e2e7a8b29c79c83f2b
+        // https://tbtc.trezor.io/api/tx/4123415574c16899b4bb5b691f9b65643dbe566a9b68e4e2e7a8b29c79c83f2b
         {
             description: 'Testnet (multisig): 2 of 3 (sign with 3rd key)',
             params: {
@@ -108,7 +108,7 @@ export default {
                     '0100000001fc935b8e20518d2585154edf8c70411b43eb135e69f94357c8d9521b32c1076b00000000fdfd000047304402206c99b48a12f340599076b93efdc2578b0cdeaedf9092aed628788f4ffc579a50022031b16212dd1f0f62f01bb5862b6d128276c7a5430746aa27a04ae0c8acbcb3b10148304502210089153ad97c0d69656cd9bd9eb2056552acaec91365dd7ab31250f3f707123baa02200f884de63041d73bd20fbe8804c6036968d8149b7f46963a82b561cd8211ab08014c69522103725d6c5253f2040a9a73af24bcc196bf302d6cc94374dd7197b138e10912670121038924e94fff15302a3fb45ad4fc0ed17178800f0f1c2bdacb1017f4db951aa9f12102aae8affd0eb8e1181d665daef4de1828f23053c548ec9bafc3a787f558aa014153aeffffffff01c6ad1600000000001976a9144cfc772f24b600762f905a1ee799ce0e9c26831f88ac00000000',
             },
         },
-        // https://tbtc1.trezor.io/api/tx/b41284067577e1266ad3632f7caffead5d58277cc35f42642455bfd2a3fa0325
+        // https://tbtc.trezor.io/api/tx/b41284067577e1266ad3632f7caffead5d58277cc35f42642455bfd2a3fa0325
         {
             description: 'Testnet (multisig): 15 of 15 (sign with 15th key)',
             params: {

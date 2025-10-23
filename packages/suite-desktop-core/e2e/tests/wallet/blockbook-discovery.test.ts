@@ -19,7 +19,7 @@ test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
             }),
         },
         async ({ settingsPage, dashboardPage }) => {
-            const btcBlockbook = 'https://btc1.trezor.io';
+            const btcBlockbook = 'https://btc.trezor.io';
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.openNetworkAdvanceSettings('btc');
             await settingsPage.coins.changeBackend('blockbook', btcBlockbook);
@@ -30,7 +30,7 @@ test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
     );
 
     test('LTC blockbook discovery', async ({ page, settingsPage, dashboardPage }) => {
-        const ltcBlockbook = 'https://ltc1.trezor.io';
+        const ltcBlockbook = 'https://ltc.trezor.io';
         await settingsPage.navigateTo('coins');
         await settingsPage.coins.disableNetwork('btc');
         await settingsPage.coins.enableNetwork('ltc');

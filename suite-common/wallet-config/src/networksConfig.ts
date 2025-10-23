@@ -365,7 +365,7 @@ export const networks = {
         bip43Path: "m/44'/61'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://etc1.trezor.io', 'ethereum'),
+        explorer: getExplorerUrls('https://etc.trezor.io', 'ethereum'),
         features: ['sign-verify', 'tokens', 'coin-definitions', 'graph'],
         backendTypes: ['blockbook'],
         accountTypes: {},
