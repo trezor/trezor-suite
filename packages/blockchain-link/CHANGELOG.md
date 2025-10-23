@@ -1,3 +1,7 @@
+# 2.5.4
+
+- npm-prerelease: @trezor/blockchain-link 2.5.4-beta.1 (8972100854)
+
 # 2.5.3
 
 - fix: add TON of missing dependecies in package.json (7027213e3f)
