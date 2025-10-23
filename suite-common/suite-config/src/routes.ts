@@ -50,6 +50,12 @@ export const routes = [
         params: modalAppParams,
     },
     {
+        name: 'suite-connect-popup',
+        pattern: '/connect-popup',
+        app: 'connect-popup',
+        params: modalAppParams,
+    },
+    {
         name: 'suite-udev',
         pattern: '/udev',
         app: 'udev',

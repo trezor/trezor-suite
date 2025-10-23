@@ -2,6 +2,7 @@ import { ComponentType } from 'react';
 
 import { PageName } from '@suite-common/suite-types';
 
+import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
 import PasswordManager from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
@@ -37,6 +38,7 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
+    'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 
     'wallet-index': Transactions,
