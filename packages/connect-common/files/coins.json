@@ -6,13 +6,7 @@
             "bech32_prefix": "bc",
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://btc1.trezor.io",
-                    "https://btc2.trezor.io",
-                    "https://btc3.trezor.io",
-                    "https://btc4.trezor.io",
-                    "https://btc5.trezor.io"
-                ]
+                "url": ["https://btc.trezor.io"]
             },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
@@ -107,7 +101,7 @@
             "address_type": 111,
             "address_type_p2sh": 196,
             "bech32_prefix": "tb",
-            "blockchain_link": { "type": "blockbook", "url": ["https://tbtc4-1.trezor.io"] },
+            "blockchain_link": { "type": "blockbook", "url": ["https://tbtc4.trezor.io"] },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Testnet",
@@ -250,13 +244,7 @@
             "bech32_prefix": null,
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://bch1.trezor.io",
-                    "https://bch2.trezor.io",
-                    "https://bch3.trezor.io",
-                    "https://bch4.trezor.io",
-                    "https://bch5.trezor.io"
-                ]
+                "url": ["https://bch.trezor.io"]
             },
             "blocktime_seconds": 600,
             "cashaddr_prefix": "bitcoincash",
@@ -891,13 +879,7 @@
             "bech32_prefix": null,
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://doge1.trezor.io",
-                    "https://doge2.trezor.io",
-                    "https://doge3.trezor.io",
-                    "https://doge4.trezor.io",
-                    "https://doge5.trezor.io"
-                ]
+                "url": ["https://doge.trezor.io"]
             },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
@@ -1423,13 +1405,7 @@
             "bech32_prefix": "ltc",
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://ltc1.trezor.io",
-                    "https://ltc2.trezor.io",
-                    "https://ltc3.trezor.io",
-                    "https://ltc4.trezor.io",
-                    "https://ltc5.trezor.io"
-                ]
+                "url": ["https://ltc.trezor.io"]
             },
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
@@ -2484,13 +2460,7 @@
             "bech32_prefix": null,
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://zec1.trezor.io",
-                    "https://zec2.trezor.io",
-                    "https://zec3.trezor.io",
-                    "https://zec4.trezor.io",
-                    "https://zec5.trezor.io"
-                ]
+                "url": ["https://zec.trezor.io"]
             },
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
@@ -2633,7 +2603,7 @@
         {
             "blockchain_link": {
                 "type": "blockfrost",
-                "url": ["wss://ada1.trezor.io", "wss://ada2.trezor.io"]
+                "url": ["wss://ada.trezor.io"]
             },
             "curve": "ed25519",
             "decimals": 6,

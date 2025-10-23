@@ -18,7 +18,7 @@ interface EthereumTxFixture {
 
 export const serializeEthereumTx: EthereumTxFixture[] = [
     {
-        // https://eth1.trezor.io/tx/0xf6652a681b4474132b8b96512eb0bd5311f5ed8414af59e715c9738a3b3673f3
+        // https://eth.trezor.io/tx/0xf6652a681b4474132b8b96512eb0bd5311f5ed8414af59e715c9738a3b3673f3
         description: 'Legacy tx - ETH regular',
         from: '0x73d0385f4d8e00c5e6504c6030f47bf6212736a8',
         tx: {
@@ -40,7 +40,7 @@ export const serializeEthereumTx: EthereumTxFixture[] = [
         result: '0xf6652a681b4474132b8b96512eb0bd5311f5ed8414af59e715c9738a3b3673f3',
     },
     {
-        // https://eth1.trezor.io/tx/0xdcaf3eba690a3cdbad8c2926a8f5a95cd20003c5ba2aace91d8c5fe8048e395b
+        // https://eth.trezor.io/tx/0xdcaf3eba690a3cdbad8c2926a8f5a95cd20003c5ba2aace91d8c5fe8048e395b
         description: 'Legacy tx - ETH with ERC20',
         from: '0x73d0385f4d8e00c5e6504c6030f47bf6212736a8',
         tx: {
@@ -60,7 +60,7 @@ export const serializeEthereumTx: EthereumTxFixture[] = [
         result: '0xdcaf3eba690a3cdbad8c2926a8f5a95cd20003c5ba2aace91d8c5fe8048e395b',
     },
     {
-        // https://etc1.trezor.io/tx/0xebd7ef20c4358a6fdb09a951d6e77b8e88b37ac0f7a8d4e3b68f1666bf4c1d1a
+        // https://etc.trezor.io/tx/0xebd7ef20c4358a6fdb09a951d6e77b8e88b37ac0f7a8d4e3b68f1666bf4c1d1a
         description: 'Legacy tx - ETC regular',
         from: '0xf410e37e9c8bcf8cf319c84ae9dcebe057804a04',
         tx: {

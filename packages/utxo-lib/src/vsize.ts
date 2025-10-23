@@ -59,7 +59,7 @@ export const getTransactionVbytes = (
     const ins = vin.map(({ addresses = [] }) => addresses[0] ?? '');
 
     // Blockbook sometimes cannot parse any address from output
-    // e.g. https://tbtc1.trezor.io/tx/904f2c2dabc95c504d758d683a00110b324c2bb3caa8163019495fc0d0a82c42
+    // e.g. https://tbtc.trezor.io/tx/904f2c2dabc95c504d758d683a00110b324c2bb3caa8163019495fc0d0a82c42
     const outs = vout.map(({ addresses = [] }) => addresses[0] ?? '');
 
     return getTransactionVbytesFromAddresses(ins, outs, network);

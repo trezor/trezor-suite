@@ -21,7 +21,7 @@ export const prepareEthereumTransaction = [
         },
     },
     {
-        // https://eth1.trezor.io/tx/0xdcaf3eba690a3cdbad8c2926a8f5a95cd20003c5ba2aace91d8c5fe8048e395b
+        // https://eth.trezor.io/tx/0xdcaf3eba690a3cdbad8c2926a8f5a95cd20003c5ba2aace91d8c5fe8048e395b
         description: 'erc20',
         txInfo: {
             token: {

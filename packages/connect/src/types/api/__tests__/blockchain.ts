@@ -140,7 +140,7 @@ export const others = async (api: TrezorConnect) => {
         coin: 'btc',
         blockchainLink: {
             type: 'blockbook',
-            url: ['https://btc1.trezor.io/'],
+            url: ['https://btc.trezor.io/'],
         },
     });
 };

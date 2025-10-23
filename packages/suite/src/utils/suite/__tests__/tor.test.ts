@@ -34,8 +34,8 @@ describe('tor', () => {
             },
             {
                 desc: 'with query - blockbook',
-                in: 'https://btc1.trezor.io/api/v2/multi-tickers/?timestamp=12345678',
-                out: `http://btc1.${TOR_URLS['trezor.io']}/api/v2/multi-tickers/?timestamp=12345678`,
+                in: 'https://btc.trezor.io/api/v2/multi-tickers/?timestamp=12345678',
+                out: `http://btc.${TOR_URLS['trezor.io']}/api/v2/multi-tickers/?timestamp=12345678`,
             },
             {
                 desc: 'with query - coingecko',

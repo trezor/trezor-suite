@@ -206,7 +206,7 @@ export const validateReferencedTransactions = [
         description: 'transform AccountTransaction with opreturn output to OrigTransaction',
         params: {
             transactions: [
-                // see https://tbtc1.trezor.io/tx/ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c
+                // see https://tbtc.trezor.io/tx/ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c
                 {
                     txid: 'ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c',
                     details: {

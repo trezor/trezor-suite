@@ -8,7 +8,7 @@ export default {
         mnemonic: 'mnemonic_all',
     },
     tests: [
-        // https://tbtc1.trezor.io/api/tx/6dfac2f0d66e1972fea2bca80b6d6db80f6f48deacfdef42f15ff9625acdca59
+        // https://tbtc.trezor.io/api/tx/6dfac2f0d66e1972fea2bca80b6d6db80f6f48deacfdef42f15ff9625acdca59
         {
             description: 'Testnet (P2TR): send Taproot',
             skip: ['<1.10.4', '<2.4.3'],
@@ -38,7 +38,7 @@ export default {
                     '010000000001012554839b5b50466d597ec674a63f879a04c5da157addfbd56b74a3be949451ec0000000000ffffffff016211000000000000225120e9af2fc69e20b0be2629cd0e9c34da9f3ef56af7beac4fb4298262bc5a45ec5d0140aacd291b886f40025e93236f69653423b0c50912fbe43aacced10f2690cfc4872fb37694a947e893389084577ffce3c214b09ff4801006b1e7542ee23719abd100000000',
             },
         },
-        // https://tbtc1.trezor.io/api/tx/1054eb649110534518239bca2abebebee76d50addac27d0d582cef2b9b9d80c0
+        // https://tbtc.trezor.io/api/tx/1054eb649110534518239bca2abebebee76d50addac27d0d582cef2b9b9d80c0
         {
             description: 'Testnet (P2TR): 2 inputs, 1 output, 1 change',
             skip: ['<1.10.4', '<2.4.3'],

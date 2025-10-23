@@ -3,12 +3,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://eth1.trezor.io",
-                    "https://eth2.trezor.io",
-                    "https://eth3.trezor.io",
-                    "https://eth4.trezor.io"
-                ]
+                "url": ["https://eth.trezor.io"]
             },
             "chain": "eth",
             "chain_id": 1,
@@ -31,12 +26,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://op1.trezor.io",
-                    "https://op2.trezor.io",
-                    "https://op3.trezor.io",
-                    "https://op4.trezor.io"
-                ]
+                "url": ["https://op.trezor.io"]
             },
             "chain": "op",
             "chain_id": 10,
@@ -82,12 +72,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://bsc1.trezor.io",
-                    "https://bsc2.trezor.io",
-                    "https://bsc3.trezor.io",
-                    "https://bsc4.trezor.io"
-                ]
+                "url": ["https://bsc.trezor.io"]
             },
             "chain": "bsc",
             "chain_id": 56,
@@ -110,7 +95,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://etc1.trezor.io", "https://etc2.trezor.io"]
+                "url": ["https://etc.trezor.io"]
             },
             "chain": "etc",
             "chain_id": 61,
@@ -133,12 +118,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://pol1.trezor.io",
-                    "https://pol2.trezor.io",
-                    "https://pol3.trezor.io",
-                    "https://pol4.trezor.io"
-                ]
+                "url": ["https://pol.trezor.io"]
             },
             "chain": "pol",
             "chain_id": 137,
@@ -161,12 +141,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://base1.trezor.io",
-                    "https://base2.trezor.io",
-                    "https://base3.trezor.io",
-                    "https://base4.trezor.io"
-                ]
+                "url": ["https://base.trezor.io"]
             },
             "chain": "base",
             "chain_id": 8453,
@@ -189,7 +164,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://hoodi1.trezor.io", "https://hoodi2.trezor.io"]
+                "url": ["https://hoodi.trezor.io"]
             },
             "chain": "hod",
             "chain_id": 560048,
@@ -211,12 +186,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": [
-                    "https://arb1.trezor.io",
-                    "https://arb2.trezor.io",
-                    "https://arb3.trezor.io",
-                    "https://arb4.trezor.io"
-                ]
+                "url": ["https://arb.trezor.io"]
             },
             "chain": "arb",
             "chain_id": 42161,
@@ -239,7 +209,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://sepolia1.trezor.io"]
+                "url": ["https://sepolia.trezor.io"]
             },
             "chain": "sep",
             "chain_id": 11155111,
