@@ -2020,7 +2020,7 @@ export type MoneroRctKeyPublic = {
 };
 
 export type MoneroOutputEntry = {
-    idx: string;
+    idx: number;
     key: MoneroRctKeyPublic;
 };
 

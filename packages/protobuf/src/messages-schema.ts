@@ -3060,7 +3060,7 @@ export const MoneroTransferDetails = Type.Object(
         out_key: Type.Uint8Array(),
         tx_pub_key: Type.Uint8Array(),
         additional_tx_pub_keys: Type.Array(Type.Uint8Array()),
-        internal_output_index: Type.Uint(),
+        internal_output_index: Type.Number(),
         sub_addr_major: Type.Optional(Type.Number()),
         sub_addr_minor: Type.Optional(Type.Number()),
     },

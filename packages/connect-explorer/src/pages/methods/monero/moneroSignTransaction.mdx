@@ -8,27 +8,6 @@ import signTransaction from '../../../data/methods/monero/signTransaction.ts';
 
 Sign a Monero transaction using RingCT protocol with CLSAG signatures.
 
-This method implements the complete Monero transaction signing protocol, which creates confidential transactions with ring signatures to hide:
-
-- **Transaction amounts** (using Pedersen commitments and range proofs)
-- **Sender identity** (using ring signatures - mixing with decoy outputs)
-- **Receiver identity** (using stealth addresses)
-
-The device performs all cryptographic operations securely and returns the signed transaction data that can be broadcast to the Monero network.
-
-## Protocol Overview
-
-MoneroSignTransaction uses an 8-step protocol:
-
-1. **Init**: Send transaction data → receive HMACs for verification
-2. **SetInput**: For each UTXO → receive vini, pseudo_out, spend_key
-3. **InputVini**: Submit all TxinToKey structures in order
-4. **AllInputsSet**: Finalize inputs phase → device prepares for outputs
-5. **SetOutput**: For each output → receive encrypted tx_out and range proofs
-6. **AllOutSet**: Get tx_prefix_hash and RCT signature fields (rv)
-7. **SignInput**: For each input → generate CLSAG signature
-8. **Final**: Get encryption keys (cout_key, tx_enc_keys, opening_key)
-
 ```javascript
 const result = await TrezorConnect.moneroSignTransaction(params);
 ```
@@ -222,15 +201,15 @@ The result contains the complete signed transaction data ready for broadcast:
         ],
         tx_prefix_hash: 'prefix_hash_hex...',
         rv: {
-            txn_fee: '10000000000',
-            message: 'message_hex...',
-            rv_type: 5, // RCT type (e.g., CLSAGBulletproofPlus)
+            txn_fee: 10000000000, // optional
+            message: 'message_hex...', // optional
+            rv_type: 5, // optional - RCT type (e.g., CLSAGBulletproofPlus)
         },
-        cout_key: 'cout_key_hex...',
-        salt: 'salt_hex...',
-        rand_mult: 'rand_mult_hex...',
-        tx_enc_keys: 'encrypted_keys_hex...',
-        opening_key: 'opening_key_hex...',
+        cout_key: 'cout_key_hex...', // optional
+        salt: 'salt_hex...', // optional
+        rand_mult: 'rand_mult_hex...', // optional
+        tx_enc_keys: 'encrypted_keys_hex...', // optional
+        opening_key: 'opening_key_hex...', // optional
         pseudo_outs: [
             'pseudo_out_hex_1...',
             'pseudo_out_hex_2...',
@@ -245,14 +224,14 @@ The result contains the complete signed transaction data ready for broadcast:
 - **`signatures`** — Array of CLSAG signatures (one per input)
 - **`tx_prefix_hash`** — Keccak hash of transaction prefix
 - **`rv`** — RingCT signature data:
-    - `txn_fee` — Transaction fee
-    - `message` — Commitment to fee
-    - `rv_type` — RCT signature type (5 = CLSAG with Bulletproof+)
-- **`cout_key`** — Encrypted output key
-- **`salt`** — Encryption salt
-- **`rand_mult`** — Random multiplier
-- **`tx_enc_keys`** — Encrypted transaction keys
-- **`opening_key`** — Key for decrypting transaction data
+    - `txn_fee` — _optional_ Transaction fee
+    - `message` — _optional_ Commitment to fee
+    - `rv_type` — _optional_ RCT signature type (5 = CLSAG with Bulletproof+)
+- **`cout_key`** — _optional_ Encrypted output key
+- **`salt`** — _optional_ Encryption salt
+- **`rand_mult`** — _optional_ Random multiplier
+- **`tx_enc_keys`** — _optional_ Encrypted transaction keys
+- **`opening_key`** — _optional_ Key for decrypting transaction data
 - **`pseudo_outs`** — Array of pseudo output commitments (one per input, used in RingCT balance proof)
 
 ### Transaction Construction
@@ -286,88 +265,3 @@ const moneroTx = {
 const txHex = serializeMoneroTransaction(moneroTx);
 broadcastToNetwork(txHex);
 ```
-
-Error
-
-```javascript
-{
-    success: false,
-    payload: {
-        error: string // error message
-    }
-}
-```
-
-### Monero Transaction Signing Process
-
-The 8-step protocol ensures secure transaction construction:
-
-#### 1. **Init Phase**
-
-- Device receives complete transaction metadata
-- Validates ring size (mixin + 1 = outputs per input)
-- Generates HMACs for state verification
-- User confirms transaction details on device
-
-#### 2. **SetInput Phase**
-
-- For each UTXO:
-    - Derives spend key from derivation data
-    - Computes pseudo_out commitment
-    - Returns vini (TxinToKey) structure with key offsets
-    - Returns spend_key and pseudo_out with HMAC protection
-
-#### 3. **InputVini Phase**
-
-- Device receives all vini structures in order
-- Validates HMAC integrity
-- Prepares for output processing
-
-#### 4. **AllInputsSet**
-
-- Finalizes input processing
-- Prepares commitment to zero (sum of inputs = sum of outputs + fee)
-
-#### 5. **SetOutput Phase**
-
-- For each output:
-    - Creates one-time stealth address
-    - Generates Pedersen commitment
-    - Creates range proof (Bulletproof) to prove amount is valid
-    - Encrypts amount with ECDH
-
-#### 6. **AllOutSet Phase**
-
-- Computes tx_prefix_hash (Keccak)
-- Returns RCT signature fields (rv)
-- Prepares for signature generation
-
-#### 7. **SignInput Phase**
-
-- For each input:
-    - Generates CLSAG ring signature
-    - Proves knowledge of spend key
-    - Links to key image (prevents double-spending)
-    - Signature covers entire transaction
-
-#### 8. **Final Phase**
-
-- Returns encryption keys for transaction data
-- Includes opening_key for revealing amounts (view key)
-- Transaction is now complete and ready to broadcast
-
-### Wallet Integration
-
-After signing, the wallet must:
-
-1. **Construct transaction** from signed components
-2. **Serialize** transaction to binary format
-3. **Broadcast** to Monero network via RPC
-
-### Additional Resources
-
-- [Monero RingCT Specification](https://www.getmonero.org/resources/research-lab/pubs/MRL-0005.pdf)
-- [CLSAG Signatures](https://eprint.iacr.org/2019/654.pdf)
-- [Bulletproofs](https://eprint.iacr.org/2017/1066.pdf)
-- [Trezor Firmware Implementation](https://github.com/trezor/trezor-firmware/tree/main/core/src/apps/monero)
-- [Monero Device Integration](https://github.com/monero-project/monero/tree/master/src/device_trezor)

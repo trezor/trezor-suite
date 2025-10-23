@@ -11,7 +11,7 @@ import getAddress from '../../../data/methods/monero/getAddress.ts';
 
 # moneroGetAddress
 
-Display requested Monero address derived by given BIP32 path on device and returns it to caller.
+Display requested Monero address derived by given BIP44 path on device and returns it to caller.
 User is presented with a description of the requested key and asked to confirm the export on Trezor.
 
 ```javascript
@@ -26,22 +26,54 @@ Optional common params
 
 ### Exporting single address
 
-- `path` — _required_ `string | Array<number>` - minimum length is `3`. [read more](/details/path)
+- `path` — _required_ `string | Array<number>` - minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`).
 - `address` — _optional_ `string` - address for validation (read `Handle button request` section below)
 - `showOnTrezor` — _optional_ `boolean` - determines if address will be displayed on device. Default is set to `true`
+- `networkType` — _optional_ `number` - Monero network type: `0` = MAINNET (default), `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN
+- `account` — _optional_ `number` - Account index for subaddress derivation
+- `minor` — _optional_ `number` - Minor index for subaddress derivation
+- `paymentId` — _optional_ `string` - Payment ID (hex string, 16 or 64 chars) for integrated address generation
 - `chunkify` — _optional_ `boolean` - determines if address will be shown in chunks of 4 characters. Default is set to `false`
 
 ### Exporting bundle of addresses
 
-- `bundle` - `Array` of Objects with `path`, `showOnTrezor` and `address` fields
+- `bundle` - `Array` of Objects with `path`, `address`, `showOnTrezor`, `networkType`, `account`, `minor`, `paymentId`, and `chunkify` fields
 
 ## Example
 
-Display Monero address of first account:
+Display Monero address of first account on mainnet:
 
 ```javascript
 TrezorConnect.moneroGetAddress({
     path: "m/44'/128'/0'",
+});
+```
+
+Display Monero testnet address:
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+    networkType: 1, // TESTNET
+});
+```
+
+Get a Monero subaddress (account 0, minor 5):
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+    account: 0,
+    minor: 5,
+});
+```
+
+Generate an integrated address with payment ID:
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+    paymentId: '1234567890abcdef', // 16 hex chars for short payment ID
 });
 ```
 
@@ -104,19 +136,3 @@ Error
     }
 }
 ```
-
-## Handle button request
-
-**address** - _optional_ `string` - address for validation
-
-Since trezor-connecst@6.0.4 there is a possibility to handle `UI.ADDRESS_VALIDATION` event which will be triggered once the address is displayed on the device.
-You can handle this event and display custom UI inside of your application.
-
-If certain conditions are fulfilled popup will not be used at all:
-
-- the user gave permissions to communicate with Trezor
-- device is authenticated by pin/passphrase
-- application has `TrezorConnect.on(UI.ADDRESS_VALIDATION, () => {});` listener registered
-- parameter `address` is set
-- parameter `showOnTrezor` is set to `true` (or not set at all)
-- application is requesting ONLY ONE address

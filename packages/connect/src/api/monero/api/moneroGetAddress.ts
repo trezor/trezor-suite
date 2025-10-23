@@ -34,11 +34,11 @@ export default class MoneroGetAddress extends AbstractMethod<'getAddress', Param
 
         // validate bundle type and map to Monero-specific params
         const bundle = (payload.bundle as MoneroGetAddressParams[]).map(batch => {
-            // Monero path is m/44'/128'/0' (3 components)
+            // path is m/44'/128'/0' (3 components)
             // account and minor are passed as separate parameters
             const path = validatePath(batch.path, 3);
 
-            // Monero uses Ed25519 and requires ALL path components to be hardened
+            // require all path components to be hardened
             const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
             if (!allHardened) {
                 throw ERRORS.TypedError(

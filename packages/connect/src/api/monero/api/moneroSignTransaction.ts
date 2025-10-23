@@ -52,10 +52,8 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
 
         const { payload } = this;
 
-        // Validate path - must be minimum 3 hardened components (e.g., m/44'/128'/0') for Monero
+        // Validate path - must be minimum 3 hardened components
         const path = validatePath(payload.path, 3);
-
-        // Monero uses Ed25519 and requires ALL path components to be hardened
         const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
         if (!allHardened) {
             throw ERRORS.TypedError(

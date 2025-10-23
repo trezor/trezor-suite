@@ -50,8 +50,8 @@ Each transfer detail represents a UTXO to sync:
 
 - `out_key` — _required_ `string` - Output public key (64 hex chars = 32 bytes)
 - `tx_pub_key` — _required_ `string` - Transaction public key (64 hex chars = 32 bytes)
-- `additional_tx_pub_keys` — _optional_ `Array<string>` - Additional transaction public keys for multi-output transactions (each 64 hex chars)
-- `internal_output_index` — _required_ `string | number` - Output index within the transaction (used in hash computation)
+- `additional_tx_pub_keys` — _optional_ `Array<string> | string` - Additional transaction public keys for multi-output transactions (each 64 hex chars). Can be array or comma-separated string
+- `internal_output_index` — _required_ `number` - Output index within the transaction (used in hash computation)
 - `sub_addr_major` — _optional_ `number` - Major subaddress index (default: 0)
 - `sub_addr_minor` — _optional_ `number` - Minor subaddress index (default: 0)
 
@@ -123,39 +123,43 @@ The result contains encrypted key images. Each key image is encrypted using ChaC
             {
                 iv: string,         // 12-byte initialization vector/nonce (24 hex chars)
                 key_image: string,  // Encrypted blob: ciphertext + auth tag (112 hex chars)
-                signature: string,  // 32-byte encryption key for decryption (64 hex chars)
             },
             // ... more key images
-        ]
+        ],
+        signature: string,  // 32-byte encryption key for decrypting ALL key images (64 hex chars)
     }
 }
 ```
 
 ### Encrypted Format Details
 
-- **`iv`** (12 bytes): ChaCha20-Poly1305 nonce/initialization vector
+- **`iv`** (12 bytes): ChaCha20-Poly1305 nonce/initialization vector for this specific key image
 - **`key_image`** (112 bytes): Encrypted data containing:
     - 96 bytes plaintext: 32-byte key image + 32-byte signature.c + 32-byte signature.r
     - 16 bytes: Poly1305 authentication tag
-- **`signature`** (32 bytes): Encryption key (actually the `enc_key` from Final step)
+- **`signature`** (32 bytes): Single encryption key used to decrypt ALL key images (returned at top level, not per key image)
 
 ### Decryption
 
-To use the key images, decrypt them with ChaCha20-Poly1305:
+To use the key images, decrypt each one with ChaCha20-Poly1305 using the **same** encryption key:
 
-```javascript
-// Pseudocode for decryption
-const decrypted = chacha20poly1305_decrypt(
-    key_image, // ciphertext + tag
-    signature, // encryption key
-    iv, // nonce
-);
+````javascript
+// The signature field contains the encryption key for ALL key images
+const encryptionKey = result.payload.signature;
 
-// Decrypted contains (96 bytes):
-// - bytes 0-31:  Key image (I = x * Hp(P))
-// - bytes 32-63: Signature c component
-// - bytes 64-95: Signature r component
-```
+// Decrypt each key image
+result.payload.key_images.forEach(ki => {
+    const decrypted = chacha20poly1305_decrypt(
+        ki.key_image,    // ciphertext + tag (112 bytes)
+        encryptionKey,   // encryption key - same for all key images
+        ki.iv,           // nonce - unique per key image
+    );
+
+    // Decrypted contains (96 bytes):
+    // - bytes 0-31:  Key image (I = x * Hp(P))
+    // - bytes 32-63: Signature c component
+    // - bytes 64-95: Signature r component
+});
 
 The decrypted key image and signature can then be imported into Monero wallet software.
 
@@ -168,123 +172,38 @@ Error
         error: string // error message
     }
 }
-```
-
-## Use Case
-
-The MoneroKeyImageSync protocol is a secure multi-step process:
-
-### Protocol Steps
-
-1. **Initialization (Init)**
-    - Device receives UTXO count and cryptographic commitment (Keccak hash)
-    - Hash is computed as: `keccak(hash1 + hash2 + ... + hashN)` where each `hashN = keccak(out_key + tx_pub_key + additional_keys + varint(internal_output_index))`
-    - User confirms key image sync on device
-    - Device generates random encryption key
-
-2. **Step Processing**
-    - UTXOs are sent to device (can be batched)
-    - For each UTXO, device:
-        - Derives the spend secret key: `x = Hs(recv_derivation || output_index) + spend_key`
-        - Computes key image: `I = x * Hp(P)` where P is the output public key
-        - Generates ring signature proving knowledge of x
-        - Encrypts the result with ChaCha20-Poly1305
-    - Returns encrypted key images
-
-3. **Finalization (Final)**
-    - Device verifies hash commitment matches processed UTXOs
-    - If verification succeeds, returns encryption key
-    - If verification fails, returns error (prevents tampering)
-
-### Security Features
-
-- **Encryption**: Key images are encrypted until all UTXOs are processed
-- **Commitment**: Hash prevents UTXO reordering, tampering, or omission
-- **Ring Signature**: Proves output ownership without revealing spend key
-- **Device Confirmation**: User must approve on device screen
-
-### Wallet Integration
-
-External Monero wallet software uses the exported key images to:
-
-- **Scan the blockchain** and identify which outputs have been spent
-- **Calculate true balance**: total outputs - spent outputs
-- **Maintain accurate wallet state** without exposing the private spend key
-- **Prevent double-spending** by tracking used outputs
+````
 
 ### Decryption Example
 
 ```javascript
 // After receiving the response
-const encryptedKI = result.payload.key_images[0];
+const result = await TrezorConnect.moneroKeyImageSync(params);
 
-// Decrypt using ChaCha20-Poly1305 (requires crypto library)
-const plaintext = decrypt_chacha20poly1305(
-    hexToBytes(encryptedKI.key_image),
-    hexToBytes(encryptedKI.signature), // encryption key
-    hexToBytes(encryptedKI.iv), // nonce
-);
+if (result.success) {
+    const encryptionKey = result.payload.signature; // Single key for all key images
 
-// Extract components
-const keyImage = plaintext.slice(0, 32);
-const signatureC = plaintext.slice(32, 64);
-const signatureR = plaintext.slice(64, 96);
+    // Decrypt all key images
+    const decryptedKeyImages = result.payload.key_images.map(ki => {
+        // Decrypt using ChaCha20-Poly1305 (requires crypto library)
+        const plaintext = decrypt_chacha20poly1305(
+            hexToBytes(ki.key_image), // encrypted blob (112 bytes)
+            hexToBytes(encryptionKey), // encryption key (32 bytes) - same for all
+            hexToBytes(ki.iv), // nonce (12 bytes) - unique per key image
+        );
 
-// Import into Monero wallet
-monero_wallet.import_key_images([
-    {
-        key_image: bytesToHex(keyImage),
-        signature: bytesToHex(signatureC) + bytesToHex(signatureR),
-    },
-]);
+        // Extract components from decrypted plaintext (96 bytes)
+        const keyImage = plaintext.slice(0, 32);
+        const signatureC = plaintext.slice(32, 64);
+        const signatureR = plaintext.slice(64, 96);
+
+        return {
+            key_image: bytesToHex(keyImage),
+            signature: bytesToHex(signatureC) + bytesToHex(signatureR),
+        };
+    });
+
+    // Import into Monero wallet
+    monero_wallet.import_key_images(decryptedKeyImages);
+}
 ```
-
-### Verification with monero-wallet-cli
-
-```bash
-# Create export file
-echo '[{"key_image":"...","signature":"..."}]' > exported_key_images
-
-# Import into wallet
-monero-wallet-cli --wallet-file your-wallet --testnet
-[wallet]: import_key_images exported_key_images
-[wallet]: balance  # Should show updated balance
-```
-
-**Important**: The key images are returned in encrypted form for security. Your wallet software must decrypt them using ChaCha20-Poly1305 before importing into Monero wallet software.
-
-## Troubleshooting
-
-### Common Errors
-
-**"Invalid number of outputs"**
-
-- The hash commitment doesn't match the processed UTXOs
-- Ensure all UTXO fields are correct (out_key, tx_pub_key, internal_output_index)
-- Check that `internal_output_index` is correct (0-based index within transaction)
-
-**"Invalid key length"**
-
-- All keys must be exactly 64 hex characters (32 bytes)
-- Check `out_key` and `tx_pub_key` format
-- Each `additional_tx_pub_keys` entry must also be 64 hex chars
-
-**"Monero requires all path components to be hardened"**
-
-- All path components must use hardened derivation (e.g., `m/44'/128'/0'`)
-- Use apostrophe (') or add 0x80000000 to each component
-
-### Hash Computation Details
-
-The commitment hash uses Keccak-256 (not SHA-256):
-
-1. For each transfer detail, compute: `hash = keccak(out_key + tx_pub_key + additional_tx_pub_keys + varint(internal_output_index))`
-2. Final commitment: `keccak(hash1 + hash2 + ... + hashN)`
-
-The `internal_output_index` is encoded as varint (LEB128 format) before hashing.
-
-### Additional Resources
-
-- [Monero Key Images Documentation](https://www.getmonero.org/resources/moneropedia/keyimage.html)
-- [Trezor Firmware Implementation](https://github.com/trezor/trezor-firmware/blob/main/core/src/apps/monero/key_image_sync.py)
-- [Monero Device Integration](https://github.com/monero-project/monero/tree/master/src/device_trezor)

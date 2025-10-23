@@ -24,7 +24,7 @@ export default class MoneroGetWatchKeyMethod extends AbstractMethod<'moneroGetWa
         const { payload } = this;
         const path = validatePath(payload.path, 3);
 
-        // Monero uses Ed25519 and requires ALL path components to be hardened
+        // require all path components to be hardened
         const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
         if (!allHardened) {
             throw ERRORS.TypedError(

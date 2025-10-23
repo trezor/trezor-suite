@@ -14,6 +14,36 @@ const batch = [
         value: true,
     },
     {
+        name: 'networkType',
+        label: 'Network Type',
+        type: 'select',
+        value: 0,
+        data: [
+            { value: 0, label: 'MAINNET' },
+            { value: 1, label: 'TESTNET' },
+            { value: 2, label: 'STAGENET' },
+            { value: 3, label: 'FAKECHAIN' },
+        ],
+    },
+    {
+        name: 'account',
+        label: 'Account index (optional)',
+        type: 'number',
+        value: 0,
+    },
+    {
+        name: 'minor',
+        label: 'Minor index (optional)',
+        type: 'number',
+        value: 0,
+    },
+    {
+        name: 'paymentId',
+        label: 'Payment ID (optional, hex)',
+        type: 'input',
+        value: '',
+    },
+    {
         name: 'chunkify',
         label: 'Display address in chunks of 4 characters',
         type: 'checkbox',

@@ -1,6 +1,3 @@
-// Monero KeyImageSync implementation
-// This is a multi-step protocol: Init -> Step(s) -> Final
-
 import { keccak_256 } from '@noble/hashes/sha3';
 import { hexToBytes } from '@noble/hashes/utils';
 
@@ -43,7 +40,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         const { payload } = this;
         const path = validatePath(payload.path, 3);
 
-        // Monero uses Ed25519 and requires ALL path components to be hardened
+        // require all path components to be hardened
         const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
         if (!allHardened) {
             throw ERRORS.TypedError(
@@ -125,12 +122,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         const cmd = this.device.getCommands();
 
         // Compute hash of all tdis for verification
-        // This must match firmware's compute_hash() exactly:
-        // 1. For each td: keccak(out_key + tx_pub_key + additional_keys + varint(internal_output_index))
-        // 2. Final: keccak(hash1 + hash2 + ... + hashN)
-
         const tdHashes: Uint8Array[] = [];
-
         for (const tdi of this.params.tdis) {
             // Compute hash for this transfer detail
             const kck = keccak_256.create();
@@ -149,11 +141,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
             }
 
             // Update with internal_output_index as varint
-            const internalOutputIndex =
-                typeof tdi.internal_output_index === 'string'
-                    ? parseInt(tdi.internal_output_index, 10)
-                    : tdi.internal_output_index;
-            const indexVarint = encodeVarint(internalOutputIndex);
+            const indexVarint = encodeVarint(tdi.internal_output_index);
             kck.update(indexVarint);
 
             tdHashes.push(kck.digest());
@@ -207,15 +195,13 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
 
         // Decrypt and format key images
         const keyImages: MoneroExportedKeyImage[] = allKeyImages.map(ki => ({
-            // The device returns encrypted key images that need to be decrypted with enc_key
-            // For now, we return them as-is with the encryption info
             iv: ki.iv || '',
             key_image: ki.blob || '',
-            signature: encKey, // enc_key is used for decryption by the wallet software
         }));
 
         return {
             key_images: keyImages,
+            signature: encKey,
         };
     }
 }

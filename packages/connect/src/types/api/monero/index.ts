@@ -32,7 +32,7 @@ export interface MoneroTransferDetails {
     out_key: string;
     tx_pub_key: string;
     additional_tx_pub_keys?: string[] | string; // Optional: can be array, comma-separated string, or omitted
-    internal_output_index: string | number;
+    internal_output_index: number;
     sub_addr_major?: number;
     sub_addr_minor?: number;
 }
@@ -52,11 +52,11 @@ export interface MoneroKeyImageSync {
 export interface MoneroExportedKeyImage {
     iv: string;
     key_image: string;
-    signature: string;
 }
 
 export interface MoneroKeyImageSyncResult {
     key_images: MoneroExportedKeyImage[];
+    signature: string;
 }
 
 export interface MoneroOutputEntry {
@@ -137,20 +137,20 @@ export interface MoneroSignTransaction {
 }
 
 export interface MoneroRingCtSig {
-    txn_fee: number;
-    message: string;
-    rv_type: number;
+    txn_fee?: number;
+    message?: string;
+    rv_type?: number;
 }
 
 export interface MoneroSignedTransaction {
     signatures: string[];
     tx_prefix_hash: string;
     rv: MoneroRingCtSig;
-    cout_key: string;
-    salt: string;
-    rand_mult: string;
-    tx_enc_keys: string;
-    opening_key: string;
+    cout_key?: string;
+    salt?: string;
+    rand_mult?: string;
+    tx_enc_keys?: string;
+    opening_key?: string;
     pseudo_outs: string[];
 }
 
