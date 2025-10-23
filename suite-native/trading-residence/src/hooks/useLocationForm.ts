@@ -14,8 +14,10 @@ export const useLocationForm = () => {
     const countryCode = useSelector(selectTradingResidenceCountry);
 
     const defaultCountry = useMemo(() => {
+        const { countriesOptionsMap } = nonSanctionedRegional;
+
         if (countryCode) {
-            const country = nonSanctionedRegional.countriesOptionsMap.get(countryCode);
+            const country = countriesOptionsMap.get(countryCode);
             if (country) {
                 return country;
             }
@@ -23,15 +25,15 @@ export const useLocationForm = () => {
 
         const preferredCountryCode = getLocales()
             .map(({ regionCode }) => regionCode)
-            .find(regionCode =>
-                nonSanctionedRegional.countriesOptionsMap.has(regionCode as TradingCountryCode),
-            ) as TradingCountryCode | undefined;
+            .find(regionCode => countriesOptionsMap.has(regionCode as TradingCountryCode)) as
+            | TradingCountryCode
+            | undefined;
 
         if (preferredCountryCode) {
-            return nonSanctionedRegional.countriesOptionsMap.get(preferredCountryCode);
+            return countriesOptionsMap.get(preferredCountryCode);
         }
 
-        return nonSanctionedRegional.countriesOptionsMap.get('unknown')!;
+        return countriesOptionsMap.get('unknown')!;
     }, [countryCode]);
 
     return useForm<TradingLocationFormValues>({
