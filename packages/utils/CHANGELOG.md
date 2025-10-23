@@ -1,3 +1,10 @@
+# 9.4.4
+
+- npm-prerelease: @trezor/utils 9.4.4-beta.1 (a3165420ab)
+- refactor: rename holesky to hoodi (0053b5b021)
+- feat(suite): display an info alert if SOL staking rewards not available yet (d0b9209743)
+- refactor(suite): use new graph feature from networks instead of a constant on component level (ad8778aad1)
+
 # 9.4.3
 
 - fix: add depcheck scripts for all the package.json-s (a4f8b09e38)
