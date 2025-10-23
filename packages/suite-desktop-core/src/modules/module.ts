@@ -35,6 +35,7 @@ export type Dependencies = {
     store: Store;
     interceptor: RequestInterceptor;
     mainThreadEmitter: MainThreadEmitter;
+    cspNonce: string;
 };
 
 export type ModuleInterface = {

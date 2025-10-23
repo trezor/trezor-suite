@@ -131,7 +131,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
     });
 
     ipcMain.handle('tray/change-settings', (ipcEvent, updatedSettings: TraySettings) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         try {
             store.setTraySettings({
@@ -148,7 +148,7 @@ export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy })
     });
 
     ipcMain.handle('tray/get-settings', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         try {
             return { success: true, payload: store.getTraySettings() };

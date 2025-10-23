@@ -103,11 +103,11 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
     ipcMain.removeHandler('app/auto-start/popup-ack');
     ipcMain.removeHandler('app/auto-start/popup-response');
     ipcMain.handleOnce('app/auto-start/popup-ack', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
         modalShown = true;
     });
     ipcMain.handleOnce('app/auto-start/popup-response', (ipcEvent, response) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
         deferredResponse.resolve(response);
     });
     mainWindow.webContents.send('app/auto-start/popup-request');
@@ -150,7 +150,7 @@ export const init: ModuleInit = () => {
     });
 
     ipcMain.handle('app/auto-start/is-enabled', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
         const result = isAutoStartEnabled();
 
         return { success: true, payload: result };

@@ -90,7 +90,7 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
     debug?.info(SERVICE_NAME, `Init ipc interface ${channel}`);
     // Handle creation event from proxy-generator and creates actual interface instance
     ipcMain.handle(`${channel}/create`, async (ipcEvent, [instancePrefix, constructorParams]) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         debug?.info(SERVICE_NAME, `Create ipc chanel ${instancePrefix}`);
         const { onRequest, onAddListener, onRemoveListener } = await onCreateInstance(
@@ -145,7 +145,7 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
         });
 
         ipcMain.handle(`${instancePrefix}/invoke`, async (ipcEventInvoke, params) => {
-            validateIpcMessage(ipcEventInvoke);
+            validateIpcMessage({ ipcEvent: ipcEventInvoke });
 
             const payload = await onRequest(...params);
 

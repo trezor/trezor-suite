@@ -50,7 +50,10 @@ const formatErrorLogMessage = (data: string) => {
 
 const buildArgs = (params: LaunchSuiteParams) => {
     const args = [
-        path.join(appDir, './dist/app.js'),
+        // This needs to be just path to the app root, so it is same as for production builds,
+        // electron will resolve the path to app.js from the package.json => "main": "dist/app.js",
+        appDir,
+
         exposeStoreArgument,
         `--width=${params.viewport.width}`,
         `--height=${params.viewport.height}`,

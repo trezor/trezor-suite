@@ -216,7 +216,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
             ipcEvent,
             { useExternalTor, externalPort }: { useExternalTor: boolean; externalPort: number },
         ) => {
-            validateIpcMessage(ipcEvent);
+            validateIpcMessage({ ipcEvent });
 
             try {
                 store.setTorSettings({
@@ -237,7 +237,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     );
 
     ipcMain.handle('tor/get-settings', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         try {
             return { success: true, payload: store.getTorSettings() };
@@ -247,7 +247,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     });
 
     ipcMain.handle('tor/toggle', async (ipcEvent, shouldEnableTor: boolean) => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         logger.info('tor', `Toggling ${shouldEnableTor ? 'ON' : 'OFF'}`);
 

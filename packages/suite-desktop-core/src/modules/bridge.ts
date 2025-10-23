@@ -162,7 +162,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
     ipcMain.handle(
         'bridge/change-settings',
         async (ipcEvent, payload: { doNotStartOnStartup: boolean; legacy?: boolean }) => {
-            validateIpcMessage(ipcEvent);
+            validateIpcMessage({ ipcEvent });
 
             const oldSettings = store.getBridgeSettings();
 
@@ -192,7 +192,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
     );
 
     ipcMain.handle('bridge/get-settings', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         try {
             return { success: true, payload: store.getBridgeSettings() };
@@ -231,13 +231,13 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
         }
     };
     ipcMain.handle('bridge/toggle', async ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         return await toggleBridge();
     });
 
     ipcMain.handle('bridge/get-status', async ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         try {
             const status = await bridge.status();

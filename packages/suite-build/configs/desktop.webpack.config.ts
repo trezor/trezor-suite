@@ -7,7 +7,7 @@ import { FLAGS } from '@suite-common/suite-config';
 
 import { NixosInterpreterPlugin } from '../plugins/nixos-interpreter-plugin';
 import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
-import { assetPrefix, isCodesignBuild, isDev, launchElectron } from '../utils/env';
+import { isCodesignBuild, isDev, launchElectron } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
 const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
@@ -23,6 +23,7 @@ const config: webpack.Configuration = {
     entry: [path.join(baseDirUI, 'src', 'index.tsx')],
     output: {
         path: path.join(baseDir, 'build'),
+        publicPath: './',
     },
     plugins: [
         new CopyWebpackPlugin({
@@ -83,7 +84,10 @@ const config: webpack.Configuration = {
             minify: !isDev,
             template: path.join(baseDirUI, 'src', 'static', 'index.html'),
             templateParameters: {
-                assetPrefix,
+                // This needs to be set as `.` so it loads from appDir of the Electron app.
+                // For example (in case of AppImage): `file:///tmp/.mount_TrezorAvGo8g/resources/app.asar/build`,
+                // where the  requested asset (for example: `static/fonts/fonts.css`) is located.
+                assetPrefix: '.',
                 isOnionLocation: FLAGS.ONION_LOCATION_META,
             },
             filename: path.join(baseDir, 'build', 'index.html'),

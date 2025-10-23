@@ -10,7 +10,7 @@ export const init: ModuleInit = () => {
     const { logger } = global;
 
     ipcMain.handle('user-data/clear', ipcEvent => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         logger.info(SERVICE_NAME, `Clearing user-data.`);
 
@@ -18,7 +18,7 @@ export const init: ModuleInit = () => {
     });
 
     ipcMain.handle('user-data/open', (ipcEvent, directory = '') => {
-        validateIpcMessage(ipcEvent);
+        validateIpcMessage({ ipcEvent });
 
         logger.info(SERVICE_NAME, `Opening user-data${directory} folder.`);
 

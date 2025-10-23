@@ -6,6 +6,13 @@ import { getDesktopApi } from '@trezor/suite-desktop-api';
 import '@sentry/electron/preload'; // With this only IPCMode.Classic is ever taken into account
 import { hasSwitch } from './libs/process-switches';
 
+const cspNonce = process.argv
+    .find(p => p.startsWith('--cspNonce'))
+    ?.replace('--cspNonce=', '')
+    ?.trim();
+
+contextBridge.exposeInMainWorld('cspNonce', cspNonce);
+
 contextBridge.exposeInMainWorld(
     ...exposeIpcProxy(ipcRenderer, [
         'Bluetooth',

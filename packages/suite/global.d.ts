@@ -6,6 +6,10 @@ import { AnyAction } from '@suite-common/redux-utils';
 declare global {
     interface Window {
         __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+        electronFind: {
+            onShow: (callback: () => void) => void;
+            offShow: (callback: () => void) => void;
+        };
     }
 }
 
@@ -37,15 +41,6 @@ declare module 'redux' {
         D extends Dispatch = Dispatch<AnyAction>,
     > {
         (api: MiddlewareAPI<D, S>): (next: Dispatch<AnyAction>) => (action: any) => any;
-    }
-}
-
-declare global {
-    interface Window {
-        electronFind: {
-            onShow: (callback: () => void) => void;
-            offShow: (callback: () => void) => void;
-        };
     }
 }
 

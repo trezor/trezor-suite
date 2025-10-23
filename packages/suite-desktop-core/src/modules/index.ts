@@ -19,7 +19,6 @@ import * as eventLoggingApp from './event-logging/app';
 import * as eventLoggingContents from './event-logging/contents';
 import * as eventLoggingProcess from './event-logging/process';
 import * as externalLinks from './external-links';
-import * as fileProtocol from './file-protocol';
 import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
 import * as menu from './menu';
@@ -71,7 +70,7 @@ const MODULES: Module[] = [
     firmware,
     powerMonitor,
     // Modules used only in dev/prod mode
-    ...(isDevEnv ? [] : [csp, fileProtocol]),
+    ...(isDevEnv ? [] : [csp]),
 ];
 
 const MODULES_BACKGROUND: ModuleBackground[] = [bridge, trezorConnect, httpReceiverModule, tray];

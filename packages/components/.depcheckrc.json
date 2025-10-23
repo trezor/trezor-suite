@@ -7,6 +7,10 @@
         "typescript-styled-plugin",
         "@storybook/react-webpack5",
         "@storybook/addon-links",
-        "@storybook/addon-docs"
+        "@storybook/addon-docs",
+
+        "// Todo: hack to workaround the issue, see: https://github.com/JedWatson/react-select/issues/4631",
+        "@emotion/cache",
+        "@emotion/react"
     ]
 }

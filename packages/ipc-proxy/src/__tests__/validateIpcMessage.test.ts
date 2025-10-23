@@ -5,13 +5,23 @@ const createSenderFrame = (url: string, destroyed?: boolean): ElectronIpcMainInv
     senderFrame: { url, isDestroyed: () => destroyed === true },
 });
 
+const APP_IMAGE_EXAMPLE_DIRNAME = `/tmp/.mount_TrezorXsQUqQ/resources/app.asar/dist`;
+const appImageDirnameProvider = () => APP_IMAGE_EXAMPLE_DIRNAME;
+
 describe(validateIpcMessage.name, () => {
-    it('passes when in DEV (localhost.8000)', () => {
-        validateIpcMessage(createSenderFrame('http://localhost:8000/'));
+    it('passes when in DEV (localhost:8000)', () => {
+        validateIpcMessage({
+            ipcEvent: createSenderFrame('http://localhost:8000/'),
+            dirnameProvider: appImageDirnameProvider,
+        });
     });
 
-    it('passes in PROD (file:///index.html )', () => {
-        validateIpcMessage(createSenderFrame('file:///index.html'));
+    it('passes in PROD: AppImage Linux example', () => {
+        const senderUrl = 'file:///tmp/.mount_TrezorXsQUqQ/resources/app.asar/build/index.html';
+        validateIpcMessage({
+            ipcEvent: createSenderFrame(senderUrl),
+            dirnameProvider: appImageDirnameProvider,
+        });
     });
 
     it('fails when not in PROD environment and is on (localhost.8000)', () => {
@@ -19,25 +29,34 @@ describe(validateIpcMessage.name, () => {
         process.env.NODE_ENV = 'production';
 
         const subject = () => {
-            validateIpcMessage(createSenderFrame('http://localhost:8000/'));
+            validateIpcMessage({
+                ipcEvent: createSenderFrame('http://localhost:8000/'),
+                dirnameProvider: appImageDirnameProvider,
+            });
         };
 
-        expect(subject).toThrow('Invalid ipcEvent.senderFrame.url: "http://localhost:8000/"');
+        expect(subject).toThrow('Hostname localhost found, must be empty');
 
         process.env.NODE_ENV = original;
     });
 
     it('fails for malicious URL', () => {
         const subject = () => {
-            validateIpcMessage(createSenderFrame('https://www.irs.gov/'));
+            validateIpcMessage({
+                ipcEvent: createSenderFrame('https://www.irs.gov/'),
+                dirnameProvider: appImageDirnameProvider,
+            });
         };
 
-        expect(subject).toThrow('Invalid ipcEvent.senderFrame.url: "https://www.irs.gov/"');
+        expect(subject).toThrow('Hostname www.irs.gov found, must be empty');
     });
 
     it('fails for invalid senderFrame', () => {
         const subject = () => {
-            validateIpcMessage({} as ElectronIpcMainInvokeEvent);
+            validateIpcMessage({
+                ipcEvent: {} as ElectronIpcMainInvokeEvent,
+                dirnameProvider: appImageDirnameProvider,
+            });
         };
 
         expect(subject).toThrow('Invalid ipcEvent: {}');
@@ -45,9 +64,31 @@ describe(validateIpcMessage.name, () => {
 
     it('fails when senderFrame has been destroyed', () => {
         const subject = () => {
-            validateIpcMessage(createSenderFrame('http://localhost:8000/', true));
+            validateIpcMessage({
+                ipcEvent: createSenderFrame('http://localhost:8000/', true),
+                dirnameProvider: appImageDirnameProvider,
+            });
         };
 
         expect(subject).toThrow('ipcEvent.senderFrame is destroyed');
+    });
+
+    it('fails when in production, you get different protocol to file:', () => {
+        const original = process.env.NODE_ENV;
+        process.env.NODE_ENV = 'production';
+
+        const SCAM_URL =
+            'https://www.scam.com/tmp/.mount_Trezor0JOnDC/resources/app.asar/build/index.html';
+
+        const subject = () => {
+            validateIpcMessage({
+                ipcEvent: createSenderFrame(SCAM_URL),
+                dirnameProvider: appImageDirnameProvider,
+            });
+        };
+
+        expect(subject).toThrow('Hostname www.scam.com found, must be empty');
+
+        process.env.NODE_ENV = original;
     });
 });
