@@ -25,7 +25,7 @@ import type { AccountDescriptor } from '../device/DeviceCommands';
 import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
-import { checkXPubWithHashes } from './firmware/calculateXPubHash';
+import { calculateXPubHash, checkXPubWithHashes } from './firmware/calculateXPubHash';
 
 const { CARDANO_TXS_PER_PAGE, DEFAULT_TXS_PER_PAGE, SOLANA_TXS_PER_PAGE } = PAGING;
 
@@ -347,6 +347,11 @@ export default class DiscoverAccounts extends AbstractMethod<
         if (!xpub || knownXPubHashes?.[path] === undefined || !isStandardWallet) return;
 
         const success = checkXPubWithHashes({ xpub, path, knownXPubHashes });
+        if (!success) {
+            console.warn('Discovery Entropy check failed!');
+            console.warn(`expected xpub hash:${calculateXPubHash(xpub)}`);
+            console.warn(`received xpub hash:${calculateXPubHash(knownXPubHashes[path])}`);
+        }
         sendCoreMessage(
             createUiEventMessage(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, {
                 device: this.getDevice().toMessageObject(),
