@@ -21,7 +21,6 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
     ({ device }, { dispatch, getState, extra }) => {
         let trezorDevice: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
-
         if (device) {
             // "ts" is one of the field which distinguish Device from TrezorDevice
             // (device from connect doesn't have timestamp but suite device has)
@@ -39,7 +38,8 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
 
         dispatch(deviceActions.selectDevice(trezorDevice));
 
-        const { isLocalFirstStorageEnabled } = extra.selectors.selectSuiteSettings(getState());
+        const isLocalFirstStorageEnabled =
+            extra.selectors.selectIsLocalFirstStorageEnabled(getState());
 
         if (trezorDevice?.state?.staticSessionId !== undefined && isLocalFirstStorageEnabled) {
             dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));

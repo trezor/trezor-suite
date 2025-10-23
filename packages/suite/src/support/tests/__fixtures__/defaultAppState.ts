@@ -1,10 +1,10 @@
 import { FirmwareUpdateState } from '@suite-common/firmware';
-import { initialLabelingState } from '@suite-common/local-first-storage';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { MetadataState } from '@suite-common/metadata-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialState } from 'src/actions/device/deviceSlice';
+import { initialLabelingState } from 'src/actions/labeling/labelingSlice';
 import { BackupState } from 'src/reducers/backup/backupReducer';
 import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { AppState } from 'src/reducers/store';

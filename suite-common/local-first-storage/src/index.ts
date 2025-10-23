@@ -18,6 +18,11 @@ export {
     selectAccountLabel,
     selectOutputLabels,
     selectOutputLabel,
+    selectIsLocalFirstStorageDebugEnabled,
+    selectIsLocalFirstStorageEnabled,
+    selectLocalFirstStorageRelayUrl,
+    selectShouldOfferSecureSync,
+    selectIsFeatureLocalFirstStorageAvailable,
 } from './labeling/labelingSelectors';
 export { findAccountLabel, findOutputLabel, findAddressLabel } from './labeling/selectorUtils';
 export type { WithLabelingState } from './labeling/labelingSelectors';

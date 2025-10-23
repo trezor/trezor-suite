@@ -68,7 +68,8 @@ const initNewDeviceStateMetadataThunk = createThunk(
             await dispatch(extra.thunks.initMetadata(false));
         }
 
-        const { isLocalFirstStorageEnabled } = extra.selectors.selectSuiteSettings(getState());
+        const isLocalFirstStorageEnabled =
+            extra.selectors.selectIsLocalFirstStorageEnabled(getState());
 
         if (isLocalFirstStorageEnabled && device !== undefined) {
             const reselectDeviceForSecret = selectDeviceByStaticSessionId(
