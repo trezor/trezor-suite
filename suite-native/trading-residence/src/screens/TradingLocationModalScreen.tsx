@@ -16,24 +16,26 @@ export type TradingLocationModalScreenProps = StackProps<
     RootStackRoutes.TradingLocationModal
 >;
 
-export const TradingLocationModalScreen = ({ navigation }: TradingLocationModalScreenProps) => (
-    <Screen>
-        <TradingLocationSettings context="onboarding">
-            <OnboardingButtons
-                afterPress={() => {
-                    navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [
-                                {
-                                    name: RootStackRoutes.AppTabs,
-                                    params: { screen: HomeStackRoutes.Home },
-                                },
-                            ],
-                        }),
-                    );
-                }}
-            />
-        </TradingLocationSettings>
-    </Screen>
-);
+export const TradingLocationModalScreen = ({ navigation }: TradingLocationModalScreenProps) => {
+    const resetToHome = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: { screen: HomeStackRoutes.Home },
+                    },
+                ],
+            }),
+        );
+    };
+
+    return (
+        <Screen>
+            <TradingLocationSettings context="onboarding">
+                <OnboardingButtons afterPress={resetToHome} />
+            </TradingLocationSettings>
+        </Screen>
+    );
+};
