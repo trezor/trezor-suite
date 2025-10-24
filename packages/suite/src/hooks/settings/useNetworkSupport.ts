@@ -4,15 +4,21 @@ import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-util
 import { arrayPartition } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import {
+    selectHasExperimentalFeature,
+    selectIsDebugModeActive,
+} from 'src/selectors/suite/suiteSelectors';
 
 export const useNetworkSupport = () => {
     const device = useSelector(selectSelectedDevice);
     const isDebug = useSelector(selectIsDebugModeActive);
+    const useExperimentalNetworks = useSelector(
+        selectHasExperimentalFeature('experimental-networks'),
+    );
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
-    const mainnets = getMainnets(isDebug);
-    const testnets = getTestnets(isDebug);
+    const mainnets = getMainnets(isDebug, useExperimentalNetworks);
+    const testnets = getTestnets(isDebug, useExperimentalNetworks);
 
     const isNetworkSupported = (network: Network) =>
         deviceSupportedNetworkSymbols.includes(network.symbol);

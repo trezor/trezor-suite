@@ -128,6 +128,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     backendTypes: BackendType[];
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
+    isExperimentalOnlyNetwork?: boolean;
     coingeckoId?: string;
     tradeCryptoId?: string;
     caipId?: string; // CAIP-2 chain id, used by WalletConnect

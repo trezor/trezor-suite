@@ -12,6 +12,7 @@ describe('featureFlagsSlice', () => {
 
             expect(initialState).toEqual({
                 areDebugOnlyNetworksEnabled: false,
+                areExperimentalOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
                 isLocalFirstStorageEnabled: false,

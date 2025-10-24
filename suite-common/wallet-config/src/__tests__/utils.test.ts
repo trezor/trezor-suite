@@ -7,19 +7,19 @@ const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 
 describe(getMainnets.name, () => {
     it('returns non-testnet, non-debug-only networks when debug is false', () => {
-        const result = getMainnets(false, mockNetworks);
+        const result = getMainnets(false, false, mockNetworks);
         expect(result).toEqual([bitcoin, ethereum]);
     });
 });
 
 describe(getTestnets.name, () => {
     it('returns testnet, non-debug-only networks when debug is false', () => {
-        const result = getTestnets(false, mockNetworks);
+        const result = getTestnets(false, false, mockNetworks);
         expect(result).toEqual([testnet]);
     });
 
     it('includes all testnets when debug is true', () => {
-        const result = getTestnets(true, mockNetworks);
+        const result = getTestnets(true, false, mockNetworks);
         expect(result).toEqual([testnet, regtest]);
     });
 });
