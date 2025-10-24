@@ -60,7 +60,7 @@
         "expo-haptics": "~15.0.7",
         "expo-linear-gradient": "~15.0.7",
         "expo-video": "~3.0.11",
-        "jotai": "2.13.1",
+        "jotai": "2.15.0",
         "react": "19.1.0",
         "react-native": "0.81.4",
         "react-native-gesture-handler": "2.28.0",
@@ -68,6 +68,6 @@
         "react-native-svg": "15.12.1",
         "react-redux": "9.2.0",
         "semver": "^7.7.1",
-        "type-fest": "4.24.0"
+        "type-fest": "5.1.0"
     }
 }

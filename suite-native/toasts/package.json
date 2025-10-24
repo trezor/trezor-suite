@@ -15,7 +15,7 @@
         "@suite-native/icons": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "jotai": "2.13.1",
+        "jotai": "2.15.0",
         "react": "19.1.0",
         "react-native-reanimated": "~3.19.3",
         "react-native-safe-area-context": "5.6.1"

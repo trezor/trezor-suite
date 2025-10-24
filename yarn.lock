@@ -10978,7 +10978,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    yup: "npm:1.7.0"
+    yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
 
@@ -11142,7 +11142,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-hook-form: "npm:^7.64.0"
     react-native: "npm:0.81.4"
@@ -11160,7 +11160,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~3.19.3"
@@ -11303,7 +11303,7 @@ __metadata:
     expo-video: "npm:~3.0.11"
     jest: "npm:29.7.0"
     jest-junit: "npm:^16.0.0"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     lottie-react-native: "npm:7.3.2"
     metro-config: "npm:^0.82.4"
     node-libs-browser: "npm:^2.2.1"
@@ -11385,7 +11385,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-image: "npm:~3.0.9"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     lottie-react-native: "npm:7.3.2"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
@@ -11395,7 +11395,7 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.1"
     react-native-svg: "npm:15.12.1"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.1.0"
   languageName: unknown
   linkType: soft
 
@@ -11419,7 +11419,7 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-local-authentication: "npm:16.0.5"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-svg: "npm:15.12.1"
@@ -11642,7 +11642,7 @@ __metadata:
     expo-haptics: "npm:~15.0.7"
     expo-linear-gradient: "npm:~15.0.7"
     expo-video: "npm:~3.0.11"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-gesture-handler: "npm:2.28.0"
@@ -11650,7 +11650,7 @@ __metadata:
     react-native-svg: "npm:15.12.1"
     react-redux: "npm:9.2.0"
     semver: "npm:^7.7.1"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.1.0"
   languageName: unknown
   linkType: soft
 
@@ -11761,8 +11761,8 @@ __metadata:
     react-hook-form: "npm:^7.64.0"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~3.19.3"
-    type-fest: "npm:4.24.0"
-    yup: "npm:1.7.0"
+    type-fest: "npm:5.1.0"
+    yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
 
@@ -11798,7 +11798,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-haptics: "npm:~15.0.7"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~3.19.3"
@@ -11908,7 +11908,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.1.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.1.0"
   peerDependencies:
     react-native: "*"
     react-native-reanimated: "*"
@@ -12038,7 +12038,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
@@ -12287,7 +12287,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     expo-haptics: "npm:~15.0.7"
     expo-linear-gradient: "npm:~15.0.7"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     lottie-react-native: "npm:7.3.2"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
@@ -12367,7 +12367,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~3.19.3"
@@ -12450,7 +12450,7 @@ __metadata:
     "@trezor/transport": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-hook-form: "npm:^7.64.0"
     react-native: "npm:0.81.4"
@@ -12504,7 +12504,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~3.19.3"
@@ -12642,7 +12642,7 @@ __metadata:
     react-native-reanimated: "npm:~3.19.3"
     react-native-safe-area-context: "npm:5.6.1"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.1.0"
   languageName: unknown
   linkType: soft
 
@@ -12748,7 +12748,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.28.0"
     react-native-reanimated: "npm:~3.19.3"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.1.0"
   languageName: unknown
   linkType: soft
 
@@ -12862,7 +12862,7 @@ __metadata:
     expo-crypto: "npm:~14.1.5"
     expo-secure-store: "npm:~15.0.7"
     expo-splash-screen: "npm:~0.30.9"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-mmkv: "npm:2.12.2"
@@ -12900,7 +12900,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/theme": "workspace:*"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-fela: "npm:^12.2.1"
     react-native: "npm:0.81.4"
@@ -12934,7 +12934,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    jotai: "npm:2.13.1"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native-reanimated: "npm:~3.19.3"
     react-native-safe-area-context: "npm:5.6.1"
@@ -12976,7 +12976,7 @@ __metadata:
     react-native: "npm:0.81.4"
     react-native-gesture-handler: "npm:2.28.0"
     react-native-reanimated: "npm:~3.19.3"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:5.1.0"
   languageName: unknown
   linkType: soft
 
@@ -30021,9 +30021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jotai@npm:2.13.1":
-  version: 2.13.1
-  resolution: "jotai@npm:2.13.1"
+"jotai@npm:2.15.0":
+  version: 2.15.0
+  resolution: "jotai@npm:2.15.0"
   peerDependencies:
     "@babel/core": ">=7.0.0"
     "@babel/template": ">=7.0.0"
@@ -30038,7 +30038,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 10/6176f24c351dbcac7129ecc8000c12d3a358197963ecb71e24963873995f4286d8608575a36d4c6d6579e17d31a229f32eeab34676f2edeca63f372623661c20
+  checksum: 10/d05469caf6b8e67110c835c1a4cade2e5b36c3b2baa7cbcbbff1fbdb6949c1a819d1d8bd77d47cf3d806ef3576324dc979bbd2589eee70a9f0d7c01145dcd0a1
   languageName: node
   linkType: hard
 
@@ -42517,6 +42517,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tagged-tag@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tagged-tag@npm:1.0.0"
+  checksum: 10/e37653df3e495daa7ea7790cb161b810b00075bba2e4d6c93fb06a709e747e3ae9da11a120d0489833203926511b39e038a2affbd9d279cfb7a2f3fcccd30b5d
+  languageName: node
+  linkType: hard
+
 "tailwindcss@npm:^3.4.10":
   version: 3.4.10
   resolution: "tailwindcss@npm:3.4.10"
@@ -43487,10 +43494,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:4.24.0":
-  version: 4.24.0
-  resolution: "type-fest@npm:4.24.0"
-  checksum: 10/60efd6ec71f5113ef0a0fcabe61fc722bb2520ea082bc23e4b4dfb44204234dc691560a5e837f939160d7c18b410ed8fae32ddb752d57bed009248e0f61dce6b
+"type-fest@npm:5.1.0":
+  version: 5.1.0
+  resolution: "type-fest@npm:5.1.0"
+  dependencies:
+    tagged-tag: "npm:^1.0.0"
+  checksum: 10/c54997b38f274e795970fed1da0791979909726d6edb6e07b92a128af2be97682523076643ded0f3bc9266999ab48a4dcbacd533199f8829c381464a636de849
   languageName: node
   linkType: hard
 
@@ -46441,15 +46450,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yup@npm:1.7.0":
-  version: 1.7.0
-  resolution: "yup@npm:1.7.0"
+"yup@npm:1.7.1":
+  version: 1.7.1
+  resolution: "yup@npm:1.7.1"
   dependencies:
     property-expr: "npm:^2.0.5"
     tiny-case: "npm:^1.0.3"
     toposort: "npm:^2.0.2"
     type-fest: "npm:^2.19.0"
-  checksum: 10/668bf48c4730fe73db39659e843f2704ffc0bd0a10254994da8affd9fb9b391ed313dcde4d9031d858d290447996149b945c514c8aa60811bf0bd8314d6c5407
+  checksum: 10/90cef0ebe3ba37d329e9e3f2a7a20b3d84572aeccffd81681e5eaaf6145cb03c0737603f3f57bc60723592cc0323886e69f4e0f76ccb299ca3f9ce8ead3b6496
   languageName: node
   linkType: hard
 

@@ -42,6 +42,6 @@
         "react-native-reanimated": "~3.19.3",
         "react-native-safe-area-context": "5.6.1",
         "react-redux": "9.2.0",
-        "type-fest": "4.24.0"
+        "type-fest": "5.1.0"
     }
 }

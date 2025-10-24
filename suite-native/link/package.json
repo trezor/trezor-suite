@@ -15,7 +15,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react": "19.1.0",
-        "type-fest": "4.24.0"
+        "type-fest": "5.1.0"
     },
     "peerDependencies": {
         "react-native": "*",

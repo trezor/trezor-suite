@@ -28,7 +28,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "expo-image": "~3.0.9",
-        "jotai": "2.13.1",
+        "jotai": "2.15.0",
         "lottie-react-native": "7.3.2",
         "react": "19.1.0",
         "react-native": "0.81.4",
@@ -38,7 +38,7 @@
         "react-native-safe-area-context": "5.6.1",
         "react-native-svg": "15.12.1",
         "react-redux": "9.2.0",
-        "type-fest": "4.24.0"
+        "type-fest": "5.1.0"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"
