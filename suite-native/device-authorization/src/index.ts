@@ -1,5 +1,5 @@
 export * from './deviceAuthorizationSlice';
 export * from './utils';
 export * from './hooks/useDeviceConnectionGuard';
-export * from './hooks/useHandleDeviceRequestsPassphrase';
+export * from './hooks/useHandleDeviceAuthorization';
 export * from './components/DevicePinImage';

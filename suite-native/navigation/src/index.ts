@@ -4,6 +4,7 @@ export * from './types';
 export * from './config';
 export * from './hooks/useInterceptNativeNavigation';
 export * from './hooks/useNavigateToInitialScreen';
+export * from './hooks/useLastRouteName';
 export * from './useScrollDivider';
 export * from './routeUtils';
 export * from './hooks/useOverrideBackNavigation';

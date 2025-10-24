@@ -48,7 +48,7 @@ export const useShowDeviceDisconnectedAlert = () => {
 
     const showReviewCancellationAlert = () =>
         setTimeout(
-            // Timeout is needed to prevent the alert from being shown before the redirect from @suite-native/device - useHandleDeviceConnection hook happens.
+            // Timeout is needed to prevent the alert from being shown before the redirect from @suite-native/device - deviceConnectionMiddleware happens.
             () =>
                 showAlert({
                     title: <Translation id="moduleSend.review.deviceDisconnectedAlert.title" />,

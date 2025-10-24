@@ -12,6 +12,7 @@ import {
     AppTabsRoutes,
     HomeStackRoutes,
     RootStackRoutes,
+    useLastRouteName,
     useNavigationRouteMatch,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
@@ -25,7 +26,7 @@ import {
 export const useRenderDeviceDangerBanner = () => {
     const setBannerVariant = useSetAtom(deviceDangerBannerAtom);
     const navigation = useNavigation();
-    const lastRoute = navigation.getState()?.routes.at(-1)?.name;
+    const lastRoute = useLastRouteName();
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const isSkippedRevisionCheckError = useSelector(selectIsSkippedRevisionCheckError);
