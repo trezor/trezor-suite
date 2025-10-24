@@ -132,6 +132,7 @@ export const init = async (container: HTMLElement) => {
     });
 
     // init bluetooth module
+    // TODO should it really be here instead of initAction.ts?
     await store.dispatch(initBluetoothThunk());
 
     store.dispatch(initSuiteLocalFirstStorageThunk());
