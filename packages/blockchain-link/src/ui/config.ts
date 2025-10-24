@@ -249,7 +249,7 @@ export default [
         blockchain: {
             name: 'Avalanche C-Chain',
             worker: 'js/blockbook-worker.js',
-            server: ['https://blockbook-dev.corp.sldev.cz:9199'],
+            server: ['https://avax.trezor.io'],
             debug: true,
         },
         data: {
