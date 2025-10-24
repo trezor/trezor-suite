@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo } from 'react';
-import { Image, Pressable, SafeAreaView } from 'react-native';
+import { Image, Pressable } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { useBottomSheetModal } from '@suite-native/atoms';
@@ -29,7 +29,7 @@ export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImagePr
     const imageSource = useMemo(() => require('../assets/confirmOnTrezor.webp'), []);
 
     return (
-        <SafeAreaView>
+        <>
             <AnimatedPressable
                 entering={SlideInDown}
                 exiting={SlideOutDown}
@@ -45,6 +45,6 @@ export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImagePr
                     onClose={closeModal}
                 />
             )}
-        </SafeAreaView>
+        </>
     );
 };
