@@ -1,45 +1,37 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import {
-    NewButton as NewButtonComponent,
-    NewButtonProps,
-    allowedNewButtonFrameProps,
-} from './NewButton';
+    NewIconButton as NewIconButtonComponent,
+    NewIconButtonProps,
+    allowedNewIconButtonFrameProps,
+} from './NewIconButton';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { newButtonIntents, newButtonPriorities, newButtonSizes } from '../types';
 
-const meta: Meta<NewButtonProps> = {
+const meta: Meta<NewIconButtonProps> = {
     title: 'Buttons',
-    component: NewButtonComponent,
+    component: NewIconButtonComponent,
 };
 
 export default meta;
 
-export const NewButton: StoryObj<NewButtonProps> = {
+export const NewIconButton: StoryObj<NewIconButtonProps> = {
     args: {
-        children: 'Placeholder',
         onClick: () => null,
-        href: undefined,
-        target: undefined,
+        icon: 'addressBookFilled',
         intent: 'brand',
         priority: 'primary',
         size: 'medium',
         isDisabled: false,
         isLoading: false,
         isInverse: false,
-        shortcut: undefined,
-        ...getFramePropsStory(allowedNewButtonFrameProps).args,
+        ...getFramePropsStory(allowedNewIconButtonFrameProps).args,
     },
     argTypes: {
-        children: {
-            type: 'string',
-        },
-        href: {
-            type: 'string',
-        },
-        target: {
-            type: 'string',
+        icon: {
+            options: variables.ICONS,
+            control: { type: 'select' },
         },
         intent: {
             control: { type: 'select' },
@@ -62,17 +54,6 @@ export const NewButton: StoryObj<NewButtonProps> = {
         isInverse: {
             type: 'boolean',
         },
-        iconLeft: {
-            options: [null, ...variables.ICONS],
-            control: { type: 'select' },
-        },
-        iconRight: {
-            options: [null, ...variables.ICONS],
-            control: { type: 'select' },
-        },
-        shortcut: {
-            control: { type: 'object' },
-        },
-        ...getFramePropsStory(allowedNewButtonFrameProps).argTypes,
+        ...getFramePropsStory(allowedNewIconButtonFrameProps).argTypes,
     },
 };

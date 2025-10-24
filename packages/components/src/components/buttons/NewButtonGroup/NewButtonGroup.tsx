@@ -11,8 +11,8 @@ import {
 import { TransientProps } from '../../../utils/transientProps';
 import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 import { NewButtonProps } from '../NewButton/NewButton';
-import { NewButtonIntent, NewButtonPriority, NewButtonSize } from '../NewButton/types';
-import { addAlphaToHex, mapSizeToBorderRadius } from '../NewButton/utils';
+import { NewButtonIntent, NewButtonPriority, NewButtonSize } from '../types';
+import { addAlphaToHex, mapSizeToBorderRadius } from '../utils';
 
 export const allowedNewButtonGroupFrameProps = [
     'margin',
