@@ -17,12 +17,13 @@ import {
     SUITE_URL,
 } from '@trezor/urls';
 
-import { QrCode, TrezorLink } from 'src/components/suite';
+import { QrCode } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
+import { StoreBadge } from '../../components/suite/StoreBadge';
 import { useResponsiveContext } from '../../support/suite/ResponsiveContext';
 
 const Container = styled.div`
@@ -40,14 +41,6 @@ const Interaction = styled.span`
     display: flex;
 `;
 
-const BadgeContainer = styled.div<{ $isHighlighted: boolean }>`
-    opacity: ${({ $isHighlighted }) => ($isHighlighted ? 1 : 0.6)};
-    transition: opacity 0.3s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-`;
-
 const QRBox = styled.div`
     width: 140px;
     height: 140px;
@@ -58,7 +51,7 @@ const QRBox = styled.div`
 
 type QrType = 'app-store' | 'play-store';
 
-type StoreBadgeProps = {
+type StoreBadgeWithQrProps = {
     url: string;
     image: 'APP_STORE' | 'PLAY_STORE';
     type: QrType;
@@ -66,13 +59,13 @@ type StoreBadgeProps = {
     shownQRState: [QrType | undefined, (type: QrType | undefined) => void];
 };
 
-const StoreBadge = ({
+const StoreBadgeWithQr = ({
     url,
     image,
     type,
     analyticsPayload,
     shownQRState: [showQR, setShowQr],
-}: StoreBadgeProps) => {
+}: StoreBadgeWithQrProps) => {
     const { isBelowTablet } = useLayoutSize();
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
@@ -103,9 +96,8 @@ const StoreBadge = ({
                     setShowQr(undefined);
                 }}
             >
-                <TrezorLink
-                    href={url}
-                    variant="nostyle"
+                <StoreBadge
+                    url={url}
                     onClick={() =>
                         analytics.report({
                             type: EventType.GetMobileApp,
@@ -114,11 +106,9 @@ const StoreBadge = ({
                             },
                         })
                     }
-                >
-                    <BadgeContainer $isHighlighted={showQR === type}>
-                        <Image image={`${image}_BADGE`} height={35} maxWidth="unset" />
-                    </BadgeContainer>
-                </TrezorLink>
+                    isHighlighted={showQR === type}
+                    image={image}
+                />
             </Interaction>
         </Tooltip>
     );
@@ -134,14 +124,14 @@ const MobileAppPromo = ({ hasRightMargin }: { hasRightMargin: boolean }) => {
                 right: hasRightMargin ? spacings.xxxxxl : 0,
             }}
         >
-            <StoreBadge
+            <StoreBadgeWithQr
                 url={SUITE_MOBILE_APP_STORE}
                 image="APP_STORE"
                 type="app-store"
                 analyticsPayload="ios"
                 shownQRState={shownQRState}
             />
-            <StoreBadge
+            <StoreBadgeWithQr
                 url={SUITE_MOBILE_PLAY_STORE}
                 image="PLAY_STORE"
                 type="play-store"
