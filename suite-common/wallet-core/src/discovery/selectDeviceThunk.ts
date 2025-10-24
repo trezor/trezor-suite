@@ -38,12 +38,12 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
 
         dispatch(deviceActions.selectDevice(trezorDevice));
 
-        const isLocalFirstStorageEnabled =
-            extra.selectors.selectIsLocalFirstStorageEnabled(getState());
+        // const isLocalFirstStorageEnabled =
+        //     extra.selectors.selectIsLocalFirstStorageEnabled(getState());
 
-        if (trezorDevice?.state?.staticSessionId !== undefined && isLocalFirstStorageEnabled) {
-            dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));
-        }
+        // if (trezorDevice?.state?.staticSessionId !== undefined && isLocalFirstStorageEnabled) {
+        //     dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));
+        // }
     },
 );
 
