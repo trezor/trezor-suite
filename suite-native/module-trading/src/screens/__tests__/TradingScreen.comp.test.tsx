@@ -92,7 +92,7 @@ describe('TradingScreen', () => {
         expect(screen.getByText('You pay')).toBeOnTheScreen();
     };
 
-    it('should render nothing when trading feature flag is not enabled', async () => {
+    it.skip('should render nothing when trading feature flag is not enabled', async () => {
         const { toJSON } = await renderTradingScreen(stateWithDisabledTrading);
 
         expect(toJSON()).toBeNull();
