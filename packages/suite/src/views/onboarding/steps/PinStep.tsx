@@ -47,12 +47,6 @@ export const PinStep = () => {
     };
 
     useEffect(() => {
-        if (status === 'success') {
-            goToNextStep();
-        }
-    }, [status, goToNextStep]);
-
-    useEffect(() => {
         // This is where we detect requests from a device, figure out whether the PIN functionality got enabled,
         // and set a status of the setup process accordingly
         if (device?.features) {
@@ -70,9 +64,10 @@ export const PinStep = () => {
 
             if (device && device.features.pin_protection) {
                 setStatus('success');
+                goToNextStep();
             }
         }
-    }, [device]);
+    }, [device, goToNextStep]);
 
     if (!device || !device.features) {
         return null;
