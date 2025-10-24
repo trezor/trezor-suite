@@ -55,6 +55,13 @@ To run trading tests, you need to have passphrase wallet on `mnemonic_academic` 
 
 Specify passphrase in the `suite-native/app/e2e/.env` as `TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE` env variable.
 
+### Override default device model and FW version
+
+By default the tests use T3T1 model (unless a different specific model is explicitly specified in the test). You can override that via `EMULATOR_MODEL` environment variable.
+To override the default 2-latest FW, you can use `CANARY_FIRMWARE` environment variable, which enables testing with the 2-main FW.
+
+Example of how to run T3W1 with 2-main FW: `CANARY_FIRMWARE=true EMULATOR_MODEL=T3W1 yarn test:e2e android.emu.debug`
+
 ## Test tagging
 
 Since Detox/Jest doesn't natively support test tagging, we are using a common convention to achieve this goal. Tags are added as part of the test describe or test name. Tags are to be prefixed with @ and and wrapped in [] parentheses.

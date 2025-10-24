@@ -17,7 +17,7 @@ const preloadedState = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
 );
 
-describe('Account management', () => {
+describe('Account management [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();

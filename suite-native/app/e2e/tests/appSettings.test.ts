@@ -12,7 +12,7 @@ const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
 );
 
-describe('App Settings - without device interactions', () => {
+describe('App Settings - without device interactions [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();

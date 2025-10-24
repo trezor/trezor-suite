@@ -10,7 +10,7 @@ import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewAc
 import { outputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
 import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
-import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 
 const preloadedStateWithoutTrezor = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
@@ -26,7 +26,7 @@ const isCIRun = !!process.env.GITHUB_ACTION;
 const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 
 conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => {
-    describe('with portfolio tracker', () => {
+    describe('with portfolio tracker [@noDevice]', () => {
         beforeEach(async () => {
             await openApp({
                 newInstance: true,
@@ -48,7 +48,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
         });
     });
 
-    conditionalDescribe(isCIRun || passphrase, 'with device connected', () => {
+    conditionalDescribe(isCIRun || passphrase, 'with device connected [@fixT3W1]', () => {
         const openSwapForm = async () => {
             await onTabBar.navigateToTrade();
             await tradingExchangeActions.tapTradingSectionHeaderTab();

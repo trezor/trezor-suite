@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { TradingFormActions } from './TradingFormActions';
-import { waitForElementByIdToBeVisible } from '../../utils';
+import { waitForElementByIdToBeVisible } from '../../support/utils';
 
 class TradingExchangeActions extends TradingFormActions {
     constructor() {

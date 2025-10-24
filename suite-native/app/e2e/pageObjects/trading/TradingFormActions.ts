@@ -1,7 +1,11 @@
 import { expect as detoxExpect } from 'detox';
 
 import { TradingActions } from './TradingActions';
-import { wait, waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../../utils';
+import {
+    wait,
+    waitForElementByIdToBeVisible,
+    waitForElementByTextToBeVisible,
+} from '../../support/utils';
 
 export abstract class TradingFormActions extends TradingActions {
     abstract waitForQuotesToLoad(): Promise<void>;
