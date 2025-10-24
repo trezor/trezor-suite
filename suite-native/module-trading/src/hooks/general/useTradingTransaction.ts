@@ -117,9 +117,7 @@ export const useTradingTransaction = ({
 
     const txnErrorString = usePrecomposedTransactionError({
         error: feeError,
-        context: {
-            networkSymbol: sendAccount?.symbol,
-        },
+        networkSymbol: sendAccount?.symbol,
     });
 
     const {
