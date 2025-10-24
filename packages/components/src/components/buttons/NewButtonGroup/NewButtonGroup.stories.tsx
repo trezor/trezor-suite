@@ -10,7 +10,7 @@ import {
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { NewButton } from '../NewButton/NewButton';
-import { newButtonIntents, newButtonPriorities, newButtonSizes } from '../NewButton/types';
+import { newButtonIntents, newButtonPriorities, newButtonSizes } from '../types';
 
 const meta: Meta<NewButtonGroupProps> = {
     title: 'Buttons',

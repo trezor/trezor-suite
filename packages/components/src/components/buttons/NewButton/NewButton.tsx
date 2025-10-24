@@ -2,16 +2,6 @@ import { ButtonHTMLAttributes } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { NewButtonIntent, NewButtonPriority, NewButtonSize } from './types';
-import {
-    addAlphaToHex,
-    mapPropsToCSS,
-    mapPropsToColor,
-    mapSizeToBorderRadius,
-    mapSizeToIconSize,
-    mapSizeToPadding,
-    mapSizeToTypographyStyle,
-} from './utils';
 import {
     FrameProps,
     FramePropsKeys,
@@ -24,6 +14,17 @@ import { Row } from '../../Flex/Flex';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
+import { NewButtonIntent, NewButtonPriority, NewButtonSize } from '../types';
+import {
+    addAlphaToHex,
+    commonButtonStyles,
+    mapPropsToCSS,
+    mapPropsToColor,
+    mapSizeToBorderRadius,
+    mapSizeToIconSize,
+    mapSizeToTypographyStyle,
+} from '../utils';
+import { mapSizeToGap, mapSizeToPadding } from './utils';
 
 export const allowedNewButtonFrameProps = [
     'margin',
@@ -46,26 +47,7 @@ type ButtonContainerProps = TransientProps<AllowedNewButtonFrameProps> & {
 };
 
 const Container = styled.button<ButtonContainerProps>`
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    display: block;
-    overflow: hidden;
-    -webkit-app-region: no-drag;
-    transition: 0.1s ease-in-out;
-
-    &:focus-visible {
-        outline: 4px solid ${({ theme }) => theme.stateBorderElementFocused};
-        outline-offset: 2px;
-    }
-
-    &:disabled {
-        cursor: not-allowed;
-    }
-
-    &:active:not(:disabled) {
-        transform: scale(0.95);
-    }
+    ${commonButtonStyles}
 
     border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
 
@@ -137,6 +119,7 @@ export const NewButton = ({
             as={isLink ? 'a' : 'button'}
             data-testid={dataTestId}
             disabled={isDisabled}
+            href={href}
             onClick={onClick}
             tabIndex={tabIndex}
             target={target}
@@ -147,7 +130,12 @@ export const NewButton = ({
             $isInverse={isInverse}
             {...frameProps}
         >
-            <Row gap={4} padding={mapSizeToPadding(size)} justifyContent="center" overflow="hidden">
+            <Row
+                gap={mapSizeToGap(size)}
+                padding={mapSizeToPadding(size)}
+                justifyContent="center"
+                overflow="hidden"
+            >
                 {isLoading && (
                     <Spinner
                         isGrey={false}
