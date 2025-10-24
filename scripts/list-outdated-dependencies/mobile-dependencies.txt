@@ -2,7 +2,6 @@
 @evolu/react-native
 @expo/config-plugins
 @gorhom/bottom-sheet
-@jest/reporters
 @mobily/ts-belt
 @types/react-native-get-random-values
 @react-native-async-storage/async-storage
@@ -25,7 +24,6 @@
 @shopify/flash-list
 @shopify/react-native-skia
 @testing-library/react-native
-@types/jest
 @types/node
 @types/react
 @whatwg-node/events
@@ -100,6 +98,5 @@ react-native-webview
 react-qr-code
 redux-devtools-expo-dev-plugin
 redux-persist
-ts-jest
 type-fest
 yup

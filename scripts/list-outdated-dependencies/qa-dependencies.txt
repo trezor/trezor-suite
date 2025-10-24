@@ -1,12 +1,15 @@
+chai
 @currents/cmd
 @currents/playwright
+@jest/reporters
 @octokit/rest
 @playwright/browser-chromium
 @playwright/browser-firefox
 @playwright/browser-webkit
 @playwright/test
+@types/jest
 dotenv
 eslint-plugin-playwright
 jest-diff
 jest-junit
-chai
+ts-jest
