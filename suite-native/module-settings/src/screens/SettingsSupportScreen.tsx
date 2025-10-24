@@ -6,7 +6,7 @@ import { DATA_PRIVACY_URL, DATA_TOS_MOBILE_URL } from '@trezor/urls';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
 import { AppCommitHash } from '../components/AppCommitHash';
-import { FAQInfoPanel } from '../components/FAQInfoPanel';
+import { FaqInfoPanel } from '../components/FaqInfoPanel';
 import { SupportCard } from '../components/SupportCard';
 
 export const SettingsSupportScreen = () => {
@@ -26,7 +26,7 @@ export const SettingsSupportScreen = () => {
         >
             <VStack spacing="sp40">
                 <VStack spacing="sp32">
-                    <FAQInfoPanel />
+                    <FaqInfoPanel />
                     <SupportCard />
                 </VStack>
                 <AboutUsBanners />

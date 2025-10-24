@@ -3,7 +3,6 @@ import { LaunchArguments } from 'react-native-launch-arguments';
 export type LaunchArguments = {
     detoxURLBlacklistRegex?: string;
     DTXDisableMainRunLoopSync?: boolean;
-    isBluetoothEnabled?: boolean;
     isCardanoSendEnabled?: boolean;
     isDebugKeysAllowed?: boolean;
     isTradingBuyEnabled?: boolean;

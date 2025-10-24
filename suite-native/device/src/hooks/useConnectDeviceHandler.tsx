@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { acquireDevice, selectIsDeviceThpRequired } from '@suite-common/wallet-core';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     AuthorizeDeviceStackRoutes,
     HomeStackParamList,
@@ -26,15 +25,12 @@ export const useConnectDeviceHandler = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
 
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
-    const isIosWithBluetoothEnabled = Platform.OS === 'ios' && isBluetoothEnabled;
-
     const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
 
     const onConnectDevicePress = useCallback(() => {
         if (isDeviceThpRequired) {
             dispatch(acquireDevice({}));
-        } else if (isIosWithBluetoothEnabled) {
+        } else if (Platform.OS === 'ios') {
             // Make sure auto-connect is enabled in case some device was manually disconnected.
             dispatch(bluetoothActions.enableAutoConnect());
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
@@ -45,7 +41,7 @@ export const useConnectDeviceHandler = () => {
                 screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
             });
         }
-    }, [dispatch, isDeviceThpRequired, isIosWithBluetoothEnabled, navigation]);
+    }, [dispatch, isDeviceThpRequired, navigation]);
 
     return { onConnectDevicePress };
 };

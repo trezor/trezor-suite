@@ -13,7 +13,6 @@ import {
     ConnectAndUnlockDeviceScreenContent,
     TurnOnAndUnlockDeviceScreenContent,
 } from '@suite-native/device';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -34,15 +33,11 @@ export const DeviceConnectionGuardScreen = ({
 >) => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const isBluetoothSupportedByDevice = useSelector(selectIsBluetoothSupportedByDevice);
 
     const isBluetoothVariantVisible =
-        isBluetoothEnabled &&
-        bluetoothPermissionStatus === 'granted' &&
-        isBluetoothSupportedByDevice;
+        bluetoothPermissionStatus === 'granted' && isBluetoothSupportedByDevice;
 
     useFocusEffect(
         useCallback(() => {

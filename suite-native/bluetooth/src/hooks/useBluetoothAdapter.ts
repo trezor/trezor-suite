@@ -3,7 +3,6 @@ import { AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
@@ -33,7 +32,6 @@ export const useBluetoothAdapter = () => {
     const { showToast } = useToast();
     const { translate } = useTranslate();
 
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
     const { checkBluetoothPermission } = useBluetoothPermissions();
     const { showPairingFailedAlert } = useBluetoothAlerts();
     const { connectBluetoothDevice } = useBluetoothDevice();
@@ -44,10 +42,6 @@ export const useBluetoothAdapter = () => {
     const knownConnectableBluetoothDevices = useSelector(selectKnownConnectableBluetoothDevices);
 
     useEffect(() => {
-        if (!isBluetoothEnabled) {
-            return;
-        }
-
         checkBluetoothPermission();
 
         // check the required permissions every time the app becomes active
@@ -60,7 +54,7 @@ export const useBluetoothAdapter = () => {
         return () => {
             subscription.remove();
         };
-    }, [isBluetoothEnabled, checkBluetoothPermission]);
+    }, [checkBluetoothPermission]);
 
     useEffect(() => {
         if (bluetoothPermissionStatus !== 'granted') {

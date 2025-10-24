@@ -13,7 +13,6 @@ import {
 import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-storage';
 
 const featureFlagsTitleMap = {
-    [FeatureFlagEnum.IsBluetoothEnabled]: 'Bluetooth',
     [FeatureFlagEnum.AreDebugOnlyNetworksEnabled]: '🧪 Debug only networks',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
