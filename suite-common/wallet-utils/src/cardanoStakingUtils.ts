@@ -55,3 +55,6 @@ export const drepBech32ToKeyHashHex = (drepId: string): string => {
 
     throw new Error(`Unsupported DRep payload length: ${bytes.length}`);
 };
+
+export const getAdaAccountTotalStakingBalance = (account: Account) =>
+    account?.networkType === 'cardano' && account.misc?.staking?.isActive ? account.balance : null;

@@ -21,7 +21,10 @@ import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
-import { isSupportedAdaStakingNetworkSymbol } from './cardanoStakingUtils';
+import {
+    getAdaAccountTotalStakingBalance,
+    isSupportedAdaStakingNetworkSymbol,
+} from './cardanoStakingUtils';
 import {
     getAccountEverstakeStakingPool,
     getEthAccountTotalStakingBalance,
@@ -41,6 +44,8 @@ export const getAccountTotalStakingBalance = (account: Account) => {
             return getEthAccountTotalStakingBalance(account);
         case 'solana':
             return getSolAccountTotalStakingBalance(account);
+        case 'cardano':
+            return getAdaAccountTotalStakingBalance(account);
         default:
             return null;
     }
