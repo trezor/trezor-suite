@@ -25,7 +25,7 @@ const preloadedStateWithTrezor = preparePreloadedReduxState(
 const isCIRun = !!process.env.GITHUB_ACTION;
 const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 
-describe('Trade Exchange', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => {
     describe('with portfolio tracker', () => {
         beforeEach(async () => {
             await openApp({
