@@ -416,3 +416,20 @@ jest.mock('react-native-keyboard-controller', () =>
 );
 
 jest.mock('@gorhom/bottom-sheet', () => require('@gorhom/bottom-sheet/mock'));
+
+jest.mock('expo-video', () => ({
+    VideoView: 'VideoView',
+    useVideoPlayer: jest.fn(() => ({
+        play: jest.fn(),
+        pause: jest.fn(),
+        stop: jest.fn(),
+        seekTo: jest.fn(),
+        status: 'idle',
+        duration: 0,
+        currentTime: 0,
+        volume: 1,
+        muted: false,
+        loop: false,
+        audioMixingMode: 'auto',
+    })),
+}));
