@@ -176,7 +176,7 @@ jobs:
       - name: "Store test artifacts"
         uses: actions/upload-artifact@v4
         with:
-          name: failed-android-tests-${{ github.job }}-${{ matrix.TEST_GROUP }}
+          name: failed-android-tests-${{ inputs.emulator_model }}-${{ github.job }}-${{ matrix.TEST_GROUP }}
           path: suite-native/app/artifacts
           retention-days: 14
 
@@ -184,7 +184,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: shard-${{ matrix.TEST_GROUP }}
+          name: shard-${{ inputs.emulator_model }}-${{ github.job }}-${{ matrix.TEST_GROUP }}
           path: suite-native/app/shard.txt
 
   notify_scheduled_failure_to_slack:

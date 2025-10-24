@@ -1,4 +1,4 @@
-import { wait } from '../../utils';
+import { wait } from '../../support/utils';
 
 export class TradingActions {
     readonly DOUBLE_LONG_TIMEOUT = 60_000;

@@ -55,7 +55,7 @@ jobs:
     needs: prepare_android_test_app
     with:
       emulator_model: "T3W1"
-      jest_test_name_pattern: "^(?!.*(@specificModel|@fixT3W1))" # exclude @specificModel and @fixT3W1 tests
+      jest_test_name_pattern: "^(?!.*(@specificModel|@fixT3W1|@noDevice))" # exclude @specificModel, @fixT3W1 and @noDevice tests
       publish_results_to_github: ${{ inputs.publish_results_to_github == true }}
       currents_ci_build_id: "pr-run-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
       currents_tags: "T3W1"

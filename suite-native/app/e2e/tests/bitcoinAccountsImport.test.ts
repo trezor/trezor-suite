@@ -7,7 +7,7 @@ import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
-describe('Import Bitcoin network accounts.', () => {
+describe('Import Bitcoin network accounts. [@noDevice]', () => {
     beforeAll(async () => {
         await openApp({ args: { preloadedState } });
         await onTabBar.navigateToMyAssets();

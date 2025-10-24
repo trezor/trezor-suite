@@ -7,7 +7,7 @@ import { openApp, preparePreloadedReduxState } from '../support/setup';
 
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
-describe('Import accounts of other networks.', () => {
+describe('Import accounts of other networks. [@noDevice]', () => {
     beforeAll(async () => {
         await openApp({ args: { preloadedState } });
         await onTabBar.navigateToMyAssets();

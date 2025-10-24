@@ -11,12 +11,6 @@ type SecurityCodeInputProps = {
     onSubmit: (code: string) => void;
 };
 
-const textInputStyle = prepareNativeStyle(_ => ({
-    position: 'absolute',
-    top: -9999,
-    opacity: 0,
-}));
-
 export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -29,15 +23,11 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
         inputRef.current?.focus();
     }, []);
 
-    const onKeyPress = (key: string) => {
-        if (key >= '0' && key <= '9' && code.length < length) {
-            const newCode = code + key;
-            setCode(newCode);
-            if (newCode.length === length) {
-                onSubmit(newCode);
-            }
-        } else if (key === 'Backspace' && code.length > 0) {
-            setCode(code.slice(0, -1));
+    const onChangeText = (text: string) => {
+        const digits = text.replace(/\D/g, '').slice(0, length);
+        setCode(digits);
+        if (digits.length === length) {
+            onSubmit(digits);
         }
     };
 
@@ -60,8 +50,8 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
                 editable={code.length < length}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                onKeyPress={e => onKeyPress(e.nativeEvent.key)}
-                style={applyStyle(textInputStyle)}
+                onChangeText={text => onChangeText(text)}
+                style={applyStyle(prepareNativeStyle(_ => ({})))}
                 testID="@thpSecurityCode/Input"
             />
             <HStack justifyContent="center" alignItems="center">

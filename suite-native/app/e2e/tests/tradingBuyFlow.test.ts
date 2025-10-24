@@ -11,7 +11,7 @@ const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
 );
 
-describe('Trade Buy', () => {
+describe('Trade Buy [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
@@ -23,7 +23,7 @@ describe('Trade Buy', () => {
         await tradingBuyActions.selectReceiveAsset('BTC');
         await tradingBuyActions.selectBtcReceiveAccount('BTC SegWit', "m/84'/0'/0'/0/0");
         await tradingBuyActions.selectFiatCurrency('PLN');
-        await tradingBuyActions.selectCountry('Polan', '�� Poland');
+        await tradingBuyActions.selectCountry('Polan', '🇵🇱 Poland');
         await tradingBuyActions.setFiatAmount('100');
 
         await tradingBuyActions.scrollScreenToBottom();
