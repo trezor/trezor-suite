@@ -47,13 +47,12 @@ export const waitForRender = (delay = 1) =>
 
 export function findByTestId(id: string): HTMLElement;
 export function findByTestId(id: RegExp): HTMLElement[];
+/**
+ * @deprecated Use screen.findByTestId instead or `import { findByTestId, findAllByTestId } from '@testing-library/react'`
+ */
 export function findByTestId(id: any) {
     if (typeof id === 'string') {
-        return screen.getByText((_, element) => {
-            const attrValue = element?.getAttribute('data-testid');
-
-            return attrValue ? attrValue === id : false;
-        });
+        return screen.getByTestId(id);
     }
 
     return screen.getAllByText((_, element) => {
@@ -74,52 +73,47 @@ export type UserAction<R = any> = {
     expectRerender?: boolean;
 };
 
-export const actionSequence = <A extends UserAction[]>(
+export const actionSequence = async <A extends UserAction[]>(
     actions: A,
     callback?: (action: A[number]) => void,
 ) => {
     const user = userEvent.setup();
 
-    return actions.reduce(
-        (p, action) =>
-            p.then(async () => {
-                const element = findByTestId(action.element);
-                if (action.type === 'hover') {
-                    await user.hover(element);
-                }
-                if (action.type === 'click') {
-                    const isDisabled = element.getAttributeNames().includes('disabled');
-                    if (isDisabled) {
-                        throw new Error('Unable to perform pointer interaction');
-                    }
+    for (const action of actions) {
+        // Use native findByTestId so we can actually see some relevant error info
+        const element = await screen.findByTestId(action.element);
+        if (action.type === 'hover') {
+            await user.hover(element);
+        }
+        if (action.type === 'click') {
+            const isDisabled = element.getAttributeNames().includes('disabled');
+            if (isDisabled) {
+                throw new Error('Unable to perform pointer interaction');
+            }
 
-                    await user.click(element);
-                } else if (action.type === 'input') {
-                    const { value } = action;
-                    const typeUser = userEvent.setup(
-                        action.delay ? { delay: action.delay } : undefined,
-                    );
-                    if (!value) {
-                        await typeUser.clear(element);
-                    } else {
-                        await typeUser.type(element, value);
-                    }
+            await user.click(element);
+        } else if (action.type === 'input') {
+            const { value } = action;
+            const typeUser = userEvent.setup(action.delay ? { delay: action.delay } : undefined);
+            if (!value) {
+                await typeUser.clear(element);
+            } else {
+                await typeUser.type(element, value);
+            }
 
-                    // NOTE: typing or clearing inputs requires extra user action for proper render
-                    await user.click(element);
-                }
+            // NOTE: typing or clearing inputs requires extra user action for proper render
+            await user.click(element);
+        }
 
-                // wait for compose
-                await waitForLoader();
+        // wait for compose
+        await waitForLoader();
 
-                // in few cases extra render is needed. explained in each fixture
-                if (action.expectRerender) {
-                    await waitForRender();
-                }
+        // in few cases extra render is needed. explained in each fixture
+        if (action.expectRerender) {
+            await waitForRender();
+        }
 
-                // action complete. run test
-                if (callback) callback(action);
-            }),
-        Promise.resolve(),
-    );
+        // action complete. run test
+        if (callback) callback(action);
+    }
 };

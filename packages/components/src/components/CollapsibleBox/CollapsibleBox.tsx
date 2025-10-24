@@ -52,6 +52,7 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     hasDivider?: boolean;
     onAnimationComplete?: (isOpen: boolean) => void;
     'data-testid'?: string;
+    'data-testid-toggle'?: string;
     defaultIsOpen?: boolean;
     collapsible?: boolean;
 } & Pick<
@@ -124,6 +125,7 @@ export const CollapsibleBox = ({
     children,
     onAnimationComplete,
     'data-testid': dataTest,
+    'data-testid-toggle': dataTestToggleId = '@collapsible-box/toggle',
     collapsible = true,
     ...rest
 }: CollapsibleBoxProps) => {
@@ -141,7 +143,7 @@ export const CollapsibleBox = ({
         >
             <Collapsible isOpen={isOpen && collapsible}>
                 <Collapsible.Toggle
-                    data-testid="@collapsible-box/toggle"
+                    data-testid={dataTestToggleId}
                     onClick={() => {
                         if (collapsible) {
                             setIsOpen(!isOpen);

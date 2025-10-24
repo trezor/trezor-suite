@@ -1756,6 +1756,7 @@ type FeeChangeFixture = {
 export const feeChange: FeeChangeFixture[] = [
     {
         description: 'BTC fee changes',
+        skip: false,
         store: {
             send: {
                 drafts: getDraft(),
@@ -1791,6 +1792,10 @@ export const feeChange: FeeChangeFixture[] = [
         actionSequence: [
             {
                 type: 'click',
+                element: '@wallet/fees/collapsible-fees-toggle',
+            },
+            {
+                type: 'click',
                 element: '@fee-card/high',
                 result: {
                     composeTransactionCalls: 1,
@@ -1802,7 +1807,7 @@ export const feeChange: FeeChangeFixture[] = [
             },
             {
                 type: 'click',
-                element: 'select-bar/custom',
+                element: '@wallet/fees/select-custom-fee',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
@@ -1813,18 +1818,7 @@ export const feeChange: FeeChangeFixture[] = [
             },
             {
                 type: 'click',
-                element: 'select-bar/custom',
-                result: {
-                    composeTransactionCalls: 1,
-                    formValues: {
-                        selectedFee: 'custom' as const,
-                        feePerUnit: '40', // from high level
-                    },
-                },
-            },
-            {
-                type: 'click',
-                element: 'select-bar/normal',
+                element: '@wallet/fees/select-standard-fee',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
@@ -1847,7 +1841,7 @@ export const feeChange: FeeChangeFixture[] = [
             },
             {
                 type: 'click',
-                element: 'select-bar/custom',
+                element: '@wallet/fees/select-custom-fee',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
@@ -1906,7 +1900,7 @@ export const feeChange: FeeChangeFixture[] = [
             },
             {
                 type: 'click',
-                element: 'select-bar/normal',
+                element: '@wallet/fees/select-standard-fee',
                 result: {
                     composeTransactionCalls: 3, // called after fee level change from custom with error
                     formValues: {
@@ -1957,7 +1951,11 @@ export const feeChange: FeeChangeFixture[] = [
         actionSequence: [
             {
                 type: 'click',
-                element: 'select-bar/custom',
+                element: '@wallet/fees/collapsible-fees-toggle',
+            },
+            {
+                type: 'click',
+                element: '@wallet/fees/select-custom-fee',
                 result: {
                     estimateFeeCalls: 1,
                     formValues: {
@@ -2088,7 +2086,7 @@ export const feeChange: FeeChangeFixture[] = [
             // switch back to normal
             {
                 type: 'click',
-                element: 'select-bar/normal',
+                element: '@wallet/fees/select-standard-fee',
                 result: {
                     estimateFeeCalls: 4, // called after fee level change
                     formValues: {
@@ -2118,6 +2116,7 @@ export const feeChange: FeeChangeFixture[] = [
     },
     {
         description: 'XRP fee changes',
+        skip: false,
         store: {
             send: {
                 drafts: getDraft(),
@@ -2138,7 +2137,11 @@ export const feeChange: FeeChangeFixture[] = [
         actionSequence: [
             {
                 type: 'click',
-                element: 'select-bar/custom',
+                element: '@wallet/fees/collapsible-fees-toggle',
+            },
+            {
+                type: 'click',
+                element: '@wallet/fees/select-custom-fee',
                 result: {
                     getAccountInfoCalls: 1,
                     formValues: {

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
 import { useTheme } from 'styled-components';
 
@@ -35,9 +35,7 @@ export function CollapsibleFees({
     rbfForm,
     headerTypographyStyle = 'body',
 }: CollapsibleFeesProps) {
-    const { control } = useFormContext<FormState, FormState>();
     const selectedFee = useWatch<FormState, 'selectedFee'>({
-        control,
         name: 'selectedFee',
         defaultValue: 'normal',
     });
@@ -90,7 +88,7 @@ export function CollapsibleFees({
                     )
                 }
                 collapsible={supportsAdjustableFees}
-                data-testid="@wallet/fees/collapsible-fees"
+                data-testid-toggle="@wallet/fees/collapsible-fees-toggle"
             >
                 <Column gap={spacings.md}>
                     <Column gap={spacings.md}>
