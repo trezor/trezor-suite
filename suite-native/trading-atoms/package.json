@@ -12,7 +12,7 @@
         "test:unit": "yarn g:jest --coverage"
     },
     "dependencies": {
-        "@react-navigation/native": "7.1.17",
+        "@react-navigation/native": "7.1.18",
         "@reduxjs/toolkit": "2.9.1",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-native/atoms": "workspace:*",
@@ -23,9 +23,9 @@
         "@trezor/type-utils": "workspace:*",
         "react": "19.1.0",
         "react-native": "0.81.4",
-        "react-native-gesture-handler": "2.28.0",
+        "react-native-gesture-handler": "2.29.0",
         "react-native-reanimated": "~3.19.3",
-        "type-fest": "5.1.0"
+        "type-fest": "4.24.0"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"

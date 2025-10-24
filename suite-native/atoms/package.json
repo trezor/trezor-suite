@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.1.5",
+        "@gorhom/bottom-sheet": "5.2.6",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.9.1",
         "@shopify/flash-list": "1.8.3",
@@ -27,18 +27,18 @@
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-image": "~3.0.9",
+        "expo-image": "~3.0.10",
         "jotai": "2.15.0",
-        "lottie-react-native": "7.3.2",
+        "lottie-react-native": "7.3.4",
         "react": "19.1.0",
         "react-native": "0.81.4",
-        "react-native-gesture-handler": "2.28.0",
-        "react-native-keyboard-controller": "1.18.5",
+        "react-native-gesture-handler": "2.29.0",
+        "react-native-keyboard-controller": "1.19.2",
         "react-native-reanimated": "~3.19.3",
         "react-native-safe-area-context": "5.6.1",
-        "react-native-svg": "15.12.1",
+        "react-native-svg": "15.14.0",
         "react-redux": "9.2.0",
-        "type-fest": "5.1.0"
+        "type-fest": "4.24.0"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"

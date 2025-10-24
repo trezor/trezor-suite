@@ -18,7 +18,7 @@
         "react-hook-form": "^7.64.0",
         "react-native": "0.81.4",
         "react-native-reanimated": "~3.19.3",
-        "type-fest": "5.1.0",
+        "type-fest": "4.24.0",
         "yup": "1.7.1"
     }
 }
