@@ -16,7 +16,6 @@ import {
     selectDevices,
     selectIsAnyNetworkEnabled,
     selectIsDeviceRemembered,
-    selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
 import { selectWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
@@ -154,12 +153,6 @@ deviceConnectionMiddleware.startListening({
 
             return;
         }
-
-        // Passphrase protected devices are only connected through passphrase form
-        // The passphrase flow handles connection differently and redirect to connecting screen is not wanted.
-        const isDeviceUsingPassphrase = selectIsDeviceUsingPassphrase(getState());
-
-        if (isDeviceUsingPassphrase) return;
 
         // If device is authorized already (usually in case of remembered device which has already been authorized)
         // We need to use the state before we add connected device to the array so we find out whether it was previously remembered
