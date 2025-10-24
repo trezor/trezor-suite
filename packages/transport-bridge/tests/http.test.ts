@@ -511,7 +511,7 @@ describe('http', () => {
             if (!response.success) {
                 throw new Error(response.error);
             }
-            expect(response.payload).toEqual([{ path: '1', session: null }]);
+            expect(response.payload).toEqual([{ path: '1', session: null, apiType: 'usb' }]);
             await trezordNode.stop();
         });
 
@@ -722,15 +722,15 @@ describe('http', () => {
                 changeDescriptorsOnApi([{ path: '1' }]);
                 await waitForNthEventOfType(client, 'listen-response', 1);
                 expect(onListenResolvedSpy).toHaveBeenNthCalledWith(1, [
-                    { path: '1', session: null },
+                    { path: '1', session: null, apiType: 'usb' },
                 ]);
 
                 // another device connect
                 changeDescriptorsOnApi([{ path: '1' }, { path: '2' }]);
                 await waitForNthEventOfType(client, 'listen-response', 1);
                 expect(onListenResolvedSpy).toHaveBeenLastCalledWith([
-                    { path: '1', session: null },
-                    { path: '2', session: null },
+                    { path: '1', session: null, apiType: 'usb' },
+                    { path: '2', session: null, apiType: 'usb' },
                 ]);
 
                 client.dispose();
@@ -748,8 +748,8 @@ describe('http', () => {
                 // both events were registered and reported
                 await waitForNthEventOfType(client, 'listen-response', 2);
                 expect(onListenResolvedSpy).toHaveBeenLastCalledWith([
-                    { path: '1', session: null },
-                    { path: '2', session: null },
+                    { path: '1', session: null, apiType: 'usb' },
+                    { path: '2', session: null, apiType: 'usb' },
                 ]);
 
                 // both devices disconnected quickly after each other

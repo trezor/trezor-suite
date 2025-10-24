@@ -144,6 +144,7 @@ export class TrezordNode {
 
         const [affected, unaffected] = arrayPartition(
             notAborted,
+            // TODO this may be tricky comparison, e.g. when client send something extra in the descriptors
             subscription => stringify(subscription.descriptors) !== stringify(this.descriptors),
         );
 
