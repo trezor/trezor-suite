@@ -1,10 +1,9 @@
 // This is iOS version, see the file name.
 
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { selectDeviceName } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 
@@ -14,7 +13,6 @@ export const useBluetoothPlatformSpecificAlerts = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const dispatch = useDispatch();
-    const deviceName = useSelector(selectDeviceName);
 
     const showBluetoothAdapterDisabledAlert = useCallback(() => {
         showAlert({
@@ -40,17 +38,14 @@ export const useBluetoothPlatformSpecificAlerts = () => {
             title: translate('bluetooth.alerts.systemUnpairing.title.ios'),
             textAlign: 'left',
             description: (
-                <SystemUnpairingAlertIosInstructions
-                    translationKey="bluetooth.alerts.systemUnpairing.description.ios"
-                    deviceName={deviceName}
-                />
+                <SystemUnpairingAlertIosInstructions translationKey="bluetooth.alerts.systemUnpairing.description.ios" />
             ),
             primaryButtonTitle: translate('generic.buttons.gotIt'),
             onPressPrimaryButton: () => {
                 dispatch(bluetoothActions.setIsDeviceOsUnpairingRequired(false));
             },
         });
-    }, [showAlert, dispatch, translate, deviceName]);
+    }, [showAlert, dispatch, translate]);
 
     return {
         showBluetoothAdapterDisabledAlert,
