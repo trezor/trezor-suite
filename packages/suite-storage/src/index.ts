@@ -8,7 +8,6 @@ import {
     StoreValue,
     deleteDB,
     openDB,
-    unwrap,
 } from 'idb';
 
 import { createLazy } from '@trezor/utils';
@@ -145,34 +144,10 @@ class CommonDB<TDBStructure> {
         key?: TKey,
         upsert?: boolean,
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
-        // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
-        // and I couldn't figure out how to catch it. Maybe a bug in idb?
-        // So instead of using idb wrapper I use indexedDB directly, wrapped in my own promise.
-        const db: IDBDatabase = unwrap(await this.getDB());
+        const db = await this.getDB();
+        const resultPromise = upsert ? db.put(store, item, key) : db.add(store, item, key);
 
-        const storeName = store as string;
-
-        const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
-            try {
-                const tx = db.transaction(storeName, 'readwrite');
-                const params: Parameters<IDBObjectStore['put']> = key
-                    ? [item, key]
-                    : [item, undefined];
-                const req: IDBRequest = upsert
-                    ? tx.objectStore(storeName).put(...params)
-                    : tx.objectStore(storeName).add(...params);
-                req.onerror = _event => {
-                    reject(req.error);
-                };
-                req.onsuccess = _event => {
-                    resolve(req.result);
-                };
-            } catch (error) {
-                console.error(error);
-            }
-        });
-
-        return p;
+        return resultPromise;
     };
 
     addItems = async <
@@ -184,29 +159,13 @@ class CommonDB<TDBStructure> {
         upsert?: boolean,
     ) => {
         const db = await this.getDB();
-        // jest won't resolve tx.done when 'items' is empty array
-        if (items.length === 0) return Promise.resolve();
+
         const tx = db.transaction(store, 'readwrite');
 
-        const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
-        const promisesOfItems: Promise<void[]> = Promise.all(
-            items
-                .map(item => {
-                    if (upsert) {
-                        return tx.store.put(item).then(result => {
-                            keys.push(result);
-                        });
-                    }
-
-                    return tx.store.add(item).then(result => {
-                        keys.push(result);
-                    });
-                })
-                .concat(tx.done),
-        );
-        const aggregatedPromise: Promise<void> = promisesOfItems.then(() => {});
-
-        return aggregatedPromise;
+        await Promise.all([
+            ...items.map(item => (upsert ? tx.store.put(item) : tx.store.add(item))),
+            tx.done,
+        ]);
     };
 
     getItemByPK = async <
