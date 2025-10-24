@@ -13,8 +13,7 @@ export class Fees {
     readonly valueOnCard = (feeType: FeeTypes) =>
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
-    readonly collapsibleFees: Locator;
-    readonly collapsibleFeesToggle: string;
+    readonly collapsibleFeesToggle: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
     readonly maxFeeFiat: Locator;
@@ -25,8 +24,7 @@ export class Fees {
     readonly ethereumMaxPriorityFeePerGas: Locator;
 
     constructor(private readonly page: Page) {
-        this.collapsibleFees = this.page.getByTestId('@wallet/fees/collapsible-fees');
-        this.collapsibleFeesToggle = '@collapsible-box/toggle';
+        this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
         this.maxFeeFiat = this.page.getByTestId('@trading/quote/maximum-fee-fiat-amount');
@@ -65,17 +63,15 @@ export class Fees {
 
     @step()
     async openCollapsibleFees() {
-        const collapsibleFeesToggle = this.collapsibleFees.getByTestId(this.collapsibleFeesToggle);
-
-        const isExpanded = await collapsibleFeesToggle.getAttribute('aria-expanded');
+        const isExpanded = await this.collapsibleFeesToggle.getAttribute('aria-expanded');
 
         if (isExpanded === 'true') {
             return;
         }
 
-        await expect(collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'false');
-        await collapsibleFeesToggle.click();
-        await expect(collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'true');
+        await expect(this.collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'false');
+        await this.collapsibleFeesToggle.click();
+        await expect(this.collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'true');
     }
 
     @step()

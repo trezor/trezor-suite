@@ -118,9 +118,10 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         [networkType, rawFeeInfo],
     );
 
-    // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block
     const useFormMethods = useForm<FormState>({
         mode: 'onChange',
+        // !!! defaultValues are set later in "loadDraftValues" useEffect block
+        defaultValues: {},
     });
 
     const { control, reset, register, getValues, formState, setValue, trigger } = useFormMethods;
