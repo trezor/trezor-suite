@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@sentry/core": "8.55.0",
-        "@sentry/react-native": "6.20.0",
+        "@sentry/react-native": "6.22.0",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-native/config": "workspace:*"

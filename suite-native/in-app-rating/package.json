@@ -13,7 +13,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.9.1",
         "@suite-common/message-system": "workspace:*",
-        "expo-store-review": "~8.1.5",
+        "expo-store-review": "~9.0.8",
         "react-redux": "9.2.0"
     }
 }

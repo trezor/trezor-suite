@@ -12,9 +12,9 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/bottom-tabs": "7.4.6",
-        "@react-navigation/native": "7.1.17",
-        "@react-navigation/native-stack": "7.3.25",
+        "@react-navigation/bottom-tabs": "7.5.0",
+        "@react-navigation/native": "7.1.18",
+        "@react-navigation/native-stack": "7.5.1",
         "@react-navigation/routers": "^7.5.1",
         "@rozenite/react-navigation-plugin": "1.0.0-alpha.14",
         "@suite-common/message-system": "workspace:*",
@@ -34,14 +34,14 @@
         "@trezor/utils": "workspace:*",
         "@types/invity-api": "^1.1.11",
         "expo-linear-gradient": "~15.0.7",
-        "expo-system-ui": "~6.0.7",
+        "expo-system-ui": "~6.0.8",
         "react": "19.1.0",
         "react-native": "0.81.4",
-        "react-native-edge-to-edge": "1.6.2",
-        "react-native-keyboard-controller": "1.18.5",
+        "react-native-edge-to-edge": "1.7.0",
+        "react-native-keyboard-controller": "1.19.2",
         "react-native-reanimated": "~3.19.3",
         "react-native-safe-area-context": "5.6.1",
         "react-redux": "9.2.0",
-        "type-fest": "5.1.0"
+        "type-fest": "4.24.0"
     }
 }

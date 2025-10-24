@@ -11,10 +11,10 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@gorhom/bottom-sheet": "5.1.5",
+        "@gorhom/bottom-sheet": "5.2.6",
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.17",
-        "@react-navigation/native-stack": "7.3.25",
+        "@react-navigation/native": "7.1.18",
+        "@react-navigation/native-stack": "7.5.1",
         "@reduxjs/toolkit": "2.9.1",
         "@shopify/flash-list": "1.8.3",
         "@suite-common/formatters": "workspace:*",
@@ -57,7 +57,7 @@
         "react-hook-form": "^7.64.0",
         "react-native": "0.81.4",
         "react-native-reanimated": "~3.19.3",
-        "react-native-svg": "15.12.1",
+        "react-native-svg": "15.14.0",
         "react-redux": "9.2.0",
         "web3-utils": "^4.3.1"
     },
