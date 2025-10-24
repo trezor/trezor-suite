@@ -14,21 +14,31 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
+    useLastRouteName,
 } from '@suite-native/navigation';
 
 import {
     selectDeviceRequestedPassphrase,
+    selectDeviceRequestedPin,
     selectInputPassphraseOnDevice,
 } from '../deviceAuthorizationSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseForm,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList
 >;
 
-export const useHandleDeviceRequestsPassphrase = () => {
+const pinMatrixBlacklistedScreens = [
+    RootStackRoutes.DeviceSettingsStack,
+    RootStackRoutes.DeviceOnboardingStack,
+];
+
+export const useHandleDeviceAuthorization = () => {
     const navigation = useNavigation<NavigationProp>();
+    const lastRoute = useLastRouteName();
+
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const selectedDevice = useSelector(selectSelectedDevice);
     const discovery = useSelector((state: DiscoveryRootState) =>
@@ -67,4 +77,17 @@ export const useHandleDeviceRequestsPassphrase = () => {
             handleRequestPassphraseOnDevice();
         }
     }, [inputPassphraseOnDevice, handleRequestPassphraseOnDevice]);
+
+    const isOnPinMatrixBlacklistedRoute = pinMatrixBlacklistedScreens.includes(
+        lastRoute as RootStackRoutes,
+    );
+    // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
+    // and then continue with the interaction. For non-T1 devices, PIN is entered on device, but the screen is still displayed.
+    useEffect(() => {
+        if (hasDeviceRequestedPin && !isOnPinMatrixBlacklistedRoute) {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.PinMatrix,
+            });
+        }
+    }, [hasDeviceRequestedPin, isOnPinMatrixBlacklistedRoute, navigation]);
 };

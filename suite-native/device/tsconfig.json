@@ -41,7 +41,6 @@
         { "path": "../atoms" },
         { "path": "../bluetooth" },
         { "path": "../config" },
-        { "path": "../device-authorization" },
         { "path": "../device-mutex" },
         { "path": "../device-onboarding" },
         { "path": "../feature-flags" },
