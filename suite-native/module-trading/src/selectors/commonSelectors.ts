@@ -79,15 +79,12 @@ const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
 export const selectTradingEnvironment = (state: TradingRootState) =>
     state.wallet.trading.tradingEnvironment;
 
-export const selectIsTradingBuyEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingBuyEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.buy, true);
+export const selectIsTradingBuyEnabled = (_state: MessageSystemRootState & FeatureFlagsRootState) =>
+    true;
 
 export const selectIsTradingExchangeEnabled = (
-    state: MessageSystemRootState & FeatureFlagsRootState,
-) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingExchangeEnabled) ||
-    selectIsFeatureEnabled(state, Feature.trading.exchange, true);
+    _state: MessageSystemRootState & FeatureFlagsRootState,
+) => true;
 
 export const selectIsTradingSellEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
     selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSellEnabled) ||
