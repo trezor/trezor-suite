@@ -230,8 +230,8 @@ deviceConnectionMiddleware.startListening({
 });
 
 deviceConnectionMiddleware.startListening({
-    predicate: (action: UnknownAction) => isThpPairingUIRequestButtonAction(action),
-    effect: (_action: UnknownAction, { getState }) => {
+    predicate: isThpPairingUIRequestButtonAction,
+    effect: (_, { getState }) => {
         if (selectIsFirmwareInstallationRunning(getState())) return;
 
         // Nothing can be accomplished before a THP connection is established.
