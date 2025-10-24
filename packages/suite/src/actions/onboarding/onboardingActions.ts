@@ -11,6 +11,7 @@ import { Dispatch, GetState } from 'src/types/suite';
 import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
 
 import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
+import * as modalActions from '../suite/modalActions';
 import * as routerActions from '../suite/routerActions';
 import * as suiteActions from '../suite/suiteActions';
 
@@ -100,6 +101,11 @@ const resetOnboarding = (): OnboardingAction => ({
 const goToSuite = () => (dispatch: Dispatch, getState: GetState) => {
     const device = selectSelectedDevice(getState());
     const onboardingAnalytics = selectOnboardingAnalytics(getState());
+    // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
+    // After device interaction, Connect sends UI_REQUEST.CLOSE_UI_WINDOW to close any open modal. On Web this is
+    // instant, so nothing blocks navigation, but on Desktop there is delay, so we must clear the modal manually to
+    // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
+    dispatch(modalActions.onCancel());
 
     dispatch(suiteActions.initialRunCompleted());
     dispatch(resetOnboarding());
