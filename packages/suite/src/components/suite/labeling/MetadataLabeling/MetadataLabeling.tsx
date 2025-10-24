@@ -5,7 +5,9 @@ import styled from 'styled-components';
 import {
     processMetadataMessageThunk,
     selectShouldOfferSecureSync,
+    subscribeLocalFirstStorageThunk,
 } from '@suite-common/local-first-storage';
+import { selectDeviceByStaticSessionId, selectDeviceThunk } from '@suite-common/wallet-core';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
@@ -15,10 +17,7 @@ import { updateShowEnableLocalFirstStorageModal } from 'src/actions/labeling/lab
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectIsLabelingAvailableForEntity,
-    selectIsLabelingInitPossible,
-} from 'src/reducers/suite/metadataReducer';
+import { selectIsLabelingAvailableForEntity } from 'src/reducers/suite/metadataReducer';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } from './definitions';
@@ -378,18 +377,17 @@ export const MetadataLabeling = ({
     const { isDiscoveryRunning } = useDiscovery();
     const [showSuccess, setShowSuccess] = useState(false);
     const [pending, setPending] = useState(false);
+    const device = useSelector(state =>
+        selectDeviceByStaticSessionId(state, deviceStaticSessionId),
+    );
 
     const l10nLabelling = getLocalizedActions(payload.type);
     const dataTestBase = `@metadata/${payload.type}/${payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
 
-    const {
-        isLocalFirstStorageEnabled,
-        isEvoluSupportedByDevice,
-        legacyMetadataState,
-        hasDeviceLocalFirstStorageKeys,
-    } = useLabelingCombined({ deviceStaticSessionId });
+    const { isLocalFirstStorageEnabled, isEvoluSupportedByDevice, legacyMetadataState } =
+        useLabelingCombined({ deviceStaticSessionId });
 
     let timeout: TimerId | undefined;
     useEffect(() => {
@@ -402,7 +400,6 @@ export const MetadataLabeling = ({
         };
     }, [payload.defaultValue, timeout]);
 
-    const isLegacyLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
     const deviceState =
         payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
     const isLegacyLabelingEnabled = useSelector(state =>
@@ -414,7 +411,19 @@ export const MetadataLabeling = ({
     // is this concrete instance being edited?
     const editActive = legacyMetadataState.editing === payload.defaultValue;
 
-    const activateEdit = () => {
+    const activateEdit = async () => {
+        if (
+            isLocalFirstStorageEnabled &&
+            isEvoluSupportedByDevice &&
+            device &&
+            !device.localFirstStorageSecret?.evoluKeys
+        ) {
+            dispatch(selectDeviceThunk({ device }));
+            await dispatch(subscribeLocalFirstStorageThunk({ device }));
+
+            return;
+        }
+
         // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
             !isLocalFirstStorageEnabled &&
@@ -491,15 +500,8 @@ export const MetadataLabeling = ({
 
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
-    const isEvoluLabeling =
-        isLocalFirstStorageEnabled && isEvoluSupportedByDevice && hasDeviceLocalFirstStorageKeys;
-
     // Should "add label"/"edit label" button be visible?
-    const showActionButton =
-        !isDisabled &&
-        (isLegacyLabelingEnabled || isLegacyLabelingInitPossible || isEvoluLabeling) &&
-        !showSuccess &&
-        !editActive;
+    const showActionButton = isEvoluSupportedByDevice || isLegacyLabelingEnabled;
 
     const isVisible = pending || visible;
 
