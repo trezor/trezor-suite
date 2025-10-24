@@ -31,6 +31,8 @@ import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 
+import { StoreBadge } from '../../../../components/suite/StoreBadge';
+
 const IconWrapper = styled.div`
     display: flex;
     flex-shrink: 0;
@@ -47,18 +49,6 @@ const ColumnsWrapper = styled.div`
     ${SCREEN_QUERY.ABOVE_DESKTOP} {
         display: flex;
         flex-direction: row;
-    }
-`;
-
-const StoreBadge = styled.div<{ $isLight: boolean }>`
-    display: flex;
-    justify-content: center;
-    ${({ $isLight }) => $isLight && `filter: invert(1);`}
-    transition: opacity 0.3s;
-    cursor: pointer;
-
-    &:hover {
-        opacity: 0.6;
     }
 `;
 
@@ -95,27 +85,15 @@ const FeatureItem = ({ icon, featureNumber }: FeatureItemProps) => (
     </Row>
 );
 
-interface GetAppCardProps {
-    isLightTheme: boolean;
-}
-
-const GetAppCard = ({ isLightTheme }: GetAppCardProps) => (
+const GetAppCard = () => (
     <Card>
         <Row gap={spacings.lg} alignItems="stretch">
             <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
                 <Image isFilterActive image="TRADING_DCA_INVITY_APP_QR" width={100} height={100} />
             </TrezorLink>
             <Column justifyContent="center" gap={spacings.xxs}>
-                <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
-                    <StoreBadge $isLight={isLightTheme}>
-                        <Image isFilterActive image="PLAY_STORE_BADGE" height={32} />
-                    </StoreBadge>
-                </TrezorLink>
-                <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
-                    <StoreBadge $isLight={isLightTheme}>
-                        <Image isFilterActive image="APP_STORE_BADGE" height={32} />
-                    </StoreBadge>
-                </TrezorLink>
+                <StoreBadge url={TRADING_DOWNLOAD_INVITY_APP_URL} image="PLAY_STORE" />
+                <StoreBadge url={TRADING_DOWNLOAD_INVITY_APP_URL} image="APP_STORE" />
             </Column>
         </Row>
     </Card>
@@ -245,7 +223,7 @@ const DCALanding = () => {
                             description={
                                 <Translation id="TR_TRADING_DCA_STEP_CARD_1_DESCRIPTION" />
                             }
-                            bottomContent={<GetAppCard isLightTheme={isLightTheme} />}
+                            bottomContent={<GetAppCard />}
                         />
                         <StepCard
                             heading={<Translation id="TR_TRADING_DCA_STEP_CARD_2_SUBHEADING" />}
