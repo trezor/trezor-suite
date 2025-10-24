@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { AccordionList, Box, BulletListItem, Text, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsTradingEnabled } from '@suite-native/module-trading';
@@ -26,7 +25,7 @@ const AccordionContentText = ({
     </Text>
 );
 
-const getBluetoothAndroidFAQItems = (coinLabel: string) => [
+const getAndroidFaqItems = (coinLabel: string) => [
     {
         title: <Translation id="moduleSettings.faq.usbEnabled.0.question" />,
         content: (
@@ -149,7 +148,7 @@ const getBluetoothAndroidFAQItems = (coinLabel: string) => [
     },
 ];
 
-const getBluetoothIOSFAQItems = (coinLabel: string) => [
+const getIosFaqItems = (coinLabel: string) => [
     {
         title: <Translation id="moduleSettings.faq.bluetoothEnabled.ios.0.question" />,
         content: (
@@ -252,137 +251,12 @@ const getBluetoothIOSFAQItems = (coinLabel: string) => [
     },
 ];
 
-const getEnabledUsbFAQItems = (coinLabel: string) => [
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.0.question" />,
-        content: (
-            <AccordionContentText
-                translationKey="moduleSettings.faq.usbEnabled.0.answer"
-                values={{
-                    coinLabel,
-                }}
-            />
-        ),
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.1.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.1.answer" />,
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.2.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.2.answer" />,
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.3.question" />,
-        content: (
-            <Box>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.3.answer.0" />
-                </BulletListItem>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.3.answer.1" />
-                </BulletListItem>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.3.answer.2" />
-                </BulletListItem>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.3.answer.3" />
-                </BulletListItem>
-            </Box>
-        ),
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.4.question" />,
-        content: (
-            <Box style={{ position: 'relative' }}>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.4.answer.0" />
-                </BulletListItem>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.4.answer.1" />
-                </BulletListItem>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.4.answer.2" />
-                </BulletListItem>
-                <BulletListItem variant="label">
-                    <Translation id="moduleSettings.faq.usbEnabled.4.answer.3" />
-                </BulletListItem>
-            </Box>
-        ),
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.5.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.5.answer" />,
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.6.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.6.answer" />,
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbEnabled.7.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.7.answer" />,
-    },
-];
-
-const getDisabledUsbFAQItems = (coinLabel: string) => [
-    {
-        title: <Translation id="moduleSettings.faq.usbDisabled.0.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.0.answer" />,
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbDisabled.1.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.1.answer" />,
-    },
-    {
-        title: (
-            <Translation
-                id="moduleSettings.faq.usbDisabled.2.question"
-                values={{
-                    coinLabel,
-                }}
-            />
-        ),
-        content: (
-            <AccordionContentText
-                translationKey="moduleSettings.faq.usbDisabled.2.answer"
-                values={{
-                    coinLabel,
-                }}
-            />
-        ),
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbDisabled.3.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.3.answer" />,
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbDisabled.4.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.4.answer" />,
-    },
-    {
-        title: <Translation id="moduleSettings.faq.usbDisabled.5.question" />,
-        content: <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.5.answer" />,
-    },
-];
-
-export const FAQInfoPanel = () => {
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
+export const FaqInfoPanel = () => {
     const coinLabel = useCoinLabel();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
     const items = useMemo(() => {
-        let itemsData;
-        if (isBluetoothEnabled) {
-            if (isAndroid()) {
-                itemsData = getBluetoothAndroidFAQItems(coinLabel);
-            } else {
-                itemsData = getBluetoothIOSFAQItems(coinLabel);
-            }
-        } else if (isAndroid()) {
-            itemsData = getEnabledUsbFAQItems(coinLabel);
-        } else {
-            itemsData = getDisabledUsbFAQItems(coinLabel);
-        }
+        const itemsData = isAndroid() ? getAndroidFaqItems(coinLabel) : getIosFaqItems(coinLabel);
 
         if (isTradingEnabled) {
             itemsData.push({
@@ -406,7 +280,7 @@ export const FAQInfoPanel = () => {
         }
 
         return itemsData;
-    }, [coinLabel, isBluetoothEnabled, isTradingEnabled]);
+    }, [coinLabel, isTradingEnabled]);
 
     return (
         <VStack paddingHorizontal="sp8">

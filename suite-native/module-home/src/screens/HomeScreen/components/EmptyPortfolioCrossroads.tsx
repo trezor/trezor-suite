@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
@@ -40,10 +39,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const EmptyPortfolioCrossroads = () => {
     const navigation = useNavigation<NavigationProps>();
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
-
-    const isIosWithBluetoothEnabled = Platform.OS === 'ios' && isBluetoothEnabled;
-
     const { applyStyle } = useNativeStyles();
 
     const { onConnectDevicePress } = useConnectDeviceHandler();
@@ -67,7 +62,7 @@ export const EmptyPortfolioCrossroads = () => {
         <VStack spacing="sp16" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="sp24" justifyContent="center" alignItems="center">
-                    {isIosWithBluetoothEnabled ? <TurnOnTrezorSvg /> : <ConnectTrezorSvg />}
+                    {Platform.OS === 'ios' ? <TurnOnTrezorSvg /> : <ConnectTrezorSvg />}
                     <CenteredTitleHeader
                         title={<Translation id="moduleHome.emptyState.connectTrezor.title" />}
                         subtitle={

@@ -1,7 +1,6 @@
-import { FeatureFlag } from '@suite-native/feature-flags';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { FAQInfoPanel } from '../FAQInfoPanel';
+import { FaqInfoPanel } from '../FaqInfoPanel';
 
 let mockIsAndroid: boolean;
 let mockIsTradingEnabled: boolean;
@@ -16,9 +15,9 @@ jest.mock('@suite-native/module-trading', () => ({
     selectIsTradingEnabled: () => mockIsTradingEnabled,
 }));
 
-describe('FAQInfoPanel', () => {
+describe('FaqInfoPanel', () => {
     const renderFAQInfoPanel = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<FAQInfoPanel />, { preloadedState });
+        renderWithStoreProviderAsync(<FaqInfoPanel />, { preloadedState });
 
     beforeEach(() => {
         mockIsTradingEnabled = true;
@@ -30,11 +29,7 @@ describe('FAQInfoPanel', () => {
         });
 
         it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsBluetoothEnabled]: true,
-                },
-            });
+            const { getByText } = await renderFAQInfoPanel();
 
             // Android BT-specific info
             expect(getByText('For wireless connections:')).toBeOnTheScreen();
@@ -43,25 +38,10 @@ describe('FAQInfoPanel', () => {
             expect(getByText('What trading features are available?')).toBeOnTheScreen();
         });
 
-        it('should not render BT section when BT is disabled by FF', async () => {
-            const { queryByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsBluetoothEnabled]: false,
-                },
-            });
-
-            // Android BT-specific info
-            expect(queryByText('For wireless connections:')).toBeNull();
-        });
-
         it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsBluetoothEnabled]: true,
-                },
-            });
+            const { queryByText } = await renderFAQInfoPanel();
 
             expect(queryByText('What trading features are available?')).toBeNull();
         });
@@ -73,11 +53,7 @@ describe('FAQInfoPanel', () => {
         });
 
         it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsBluetoothEnabled]: true,
-                },
-            });
+            const { getByText } = await renderFAQInfoPanel();
 
             // iOS BT-specific info
             expect(
@@ -88,25 +64,10 @@ describe('FAQInfoPanel', () => {
             expect(getByText('What trading features are available?')).toBeOnTheScreen();
         });
 
-        it('should not render BT section when BT is disabled by FF', async () => {
-            const { queryByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsBluetoothEnabled]: false,
-                },
-            });
-
-            // BT-specific info
-            expect(queryByText('Can I connect my Trezor to Trezor Suite on Mobile?')).toBeNull();
-        });
-
         it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFAQInfoPanel({
-                featureFlags: {
-                    [FeatureFlag.IsBluetoothEnabled]: true,
-                },
-            });
+            const { queryByText } = await renderFAQInfoPanel();
 
             expect(queryByText('What trading features are available?')).toBeNull();
         });

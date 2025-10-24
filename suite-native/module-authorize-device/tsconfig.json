@@ -20,7 +20,6 @@
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },
-        { "path": "../feature-flags" },
         { "path": "../firmware" },
         { "path": "../forms" },
         { "path": "../icons" },

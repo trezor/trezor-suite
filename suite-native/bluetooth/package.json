@@ -18,7 +18,6 @@
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device-mutex": "workspace:*",
-        "@suite-native/feature-flags": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",

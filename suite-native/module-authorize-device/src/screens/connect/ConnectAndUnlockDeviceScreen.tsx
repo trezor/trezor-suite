@@ -6,7 +6,6 @@ import {
     selectIsDeviceConnected,
 } from '@suite-common/wallet-core';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -27,11 +26,8 @@ export const ConnectAndUnlockDeviceScreen = ({
     const dispatch = useDispatch();
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
-
-    const isBluetoothEnabled = useFeatureFlag(FeatureFlag.IsBluetoothEnabled);
     const isBluetoothSupportedByDevice = useSelector(selectIsBluetoothSupportedByDevice);
-    const isBluetoothButtonVisible =
-        isBluetoothEnabled && (!isDeviceConnected || isBluetoothSupportedByDevice);
+    const isBluetoothButtonVisible = !isDeviceConnected || isBluetoothSupportedByDevice;
 
     const navigateToTurnOnAndUnlockDeviceScreen = () => {
         // Make sure auto-connect is enabled in case some device was manually disconnected.

@@ -11,7 +11,6 @@ describe('featureFlagsSlice', () => {
             const initialState = featureFlagsReducer(undefined, { type: 'undefined_action' });
 
             expect(initialState).toEqual({
-                isBluetoothEnabled: true,
                 areDebugOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
