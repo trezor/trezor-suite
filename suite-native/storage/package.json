@@ -24,7 +24,7 @@
         "expo-crypto": "~14.1.5",
         "expo-secure-store": "~15.0.7",
         "expo-splash-screen": "~0.30.9",
-        "jotai": "2.13.1",
+        "jotai": "2.15.0",
         "react": "19.1.0",
         "react-native": "0.81.4",
         "react-native-mmkv": "2.12.2",
