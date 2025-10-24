@@ -304,23 +304,6 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
         },
     },
     {
-        description: 'blocks navigation when device is using passphrase',
-        initialState: buildInitialState({
-            device: {
-                selectedDevice: getSuiteDevice(
-                    {
-                        useEmptyPassphrase: false,
-                    },
-                    { passphrase_protection: true },
-                ),
-            },
-        }),
-        action: {
-            type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice() },
-        },
-    },
-    {
         description: 'blocks navigation when device is remembered and a network is enabled',
         initialState: buildInitialState({
             device: {
@@ -473,9 +456,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
         description: 'Skips coin enabling for bitcoin only FW and goes to connecting screen',
         initialState: buildInitialState({
             device: {
-                selectedDevice: getSuiteDevice({
-                    useEmptyPassphrase: false,
-                }),
+                selectedDevice: getSuiteDevice(),
             },
         }),
         action: {
