@@ -27,12 +27,12 @@ const SELECT_OPTIONS = [
     },
 ];
 
-const meta: Meta = {
+const meta: Meta<typeof Input> = {
     title: 'Form',
-} as Meta;
+};
 export default meta;
 
-export const AllForms: StoryObj = {
+export const AllForms: StoryObj<typeof meta> = {
     render: () => (
         <>
             <StoryColumn minWidth={520}>

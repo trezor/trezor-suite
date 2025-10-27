@@ -7,10 +7,10 @@ import { icons } from '@suite-common/icons/src/icons';
 import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof IconComponent> = {
     title: 'Icons',
     component: IconComponent,
-} as Meta;
+};
 export default meta;
 
 export const Icon: StoryObj<typeof IconComponent> = {

@@ -15,9 +15,9 @@ import { getFramePropsStory } from '../../utils/frameProps';
 import { flexDirection } from '../Flex/FlexProp';
 import { getTextPropsStory } from '../typography/utils';
 
-const meta: Meta = {
+const meta: Meta<typeof InfoItemComponent> = {
     title: 'InfoItem',
-} as Meta;
+};
 export default meta;
 
 export const InfoItem: StoryObj<typeof InfoItemComponent> = {

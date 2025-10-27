@@ -8,10 +8,10 @@ import {
     allowedDeviceWithSceneFrameProps,
 } from './DeviceWithScene';
 
-const meta: Meta = {
+const meta: Meta<typeof DeviceWithSceneComponent> = {
     title: 'DeviceWithScene',
     component: DeviceWithSceneComponent,
-} as Meta;
+};
 export default meta;
 
 export const DeviceWithScene: StoryObj<DeviceWithSceneProps> = {

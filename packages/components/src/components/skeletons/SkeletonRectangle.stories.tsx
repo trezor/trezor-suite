@@ -39,10 +39,10 @@ const Box = ({ children }: { children?: ReactNode }) => {
     );
 };
 
-const meta: Meta = {
+const meta: Meta<typeof SkeletonRectangleComponent> = {
     title: 'Skeletons',
     component: SkeletonRectangleComponent,
-} as Meta;
+};
 export default meta;
 
 export const SkeletonRectangle: StoryObj<SkeletonRectangleProps> = {

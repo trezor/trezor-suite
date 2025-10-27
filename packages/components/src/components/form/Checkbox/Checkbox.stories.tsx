@@ -3,7 +3,6 @@ import { useArgs } from 'storybook/preview-api';
 
 import {
     Checkbox as CheckboxComponent,
-    CheckboxProps,
     allowedCheckboxFrameProps,
     checkboxVariants,
     labelAlignments,
@@ -11,13 +10,13 @@ import {
 } from './Checkbox';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof CheckboxComponent> = {
     title: 'Form',
     component: CheckboxComponent,
-} as Meta;
+};
 export default meta;
 
-export const Checkbox: StoryObj<CheckboxProps> = {
+export const Checkbox: StoryObj<typeof meta> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ isChecked }, updateArgs] = useArgs();

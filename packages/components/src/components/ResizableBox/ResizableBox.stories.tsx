@@ -17,10 +17,10 @@ const Content = styled.div`
     height: 100%;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof ResizableBoxComponent> = {
     title: 'ResizableBox',
     component: ResizableBoxComponent,
-} as Meta;
+};
 export default meta;
 
 export const ResizableBox: StoryObj<ResizableBoxProps> = {

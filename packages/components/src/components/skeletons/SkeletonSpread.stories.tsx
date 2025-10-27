@@ -9,10 +9,10 @@ const Container = styled.div`
     width: 600px;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof SkeletonSpreadComponent> = {
     title: 'Skeletons',
     component: SkeletonSpreadComponent,
-} as Meta;
+};
 export default meta;
 
 export const SkeletonSpread: StoryObj<SkeletonSpreadProps> = {

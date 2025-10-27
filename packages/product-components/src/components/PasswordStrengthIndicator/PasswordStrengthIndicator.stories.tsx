@@ -5,10 +5,10 @@ import {
     PasswordStrengthIndicatorProps,
 } from './PasswordStrengthIndicator';
 
-const meta: Meta = {
+const meta: Meta<typeof PasswordStrengthIndicatorComponent> = {
     title: 'PasswordStrengthIndicator',
     component: PasswordStrengthIndicatorComponent,
-} as Meta;
+};
 export default meta;
 
 export const PasswordStrengthIndicator: StoryObj<PasswordStrengthIndicatorProps> = {

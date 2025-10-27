@@ -8,13 +8,13 @@ import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button } from '../Button/Button';
 import { IconButton } from '../IconButton/IconButton';
 
-const meta: Meta = {
+const meta: Meta<typeof ButtonGroup> = {
     title: 'Buttons',
     component: ButtonGroup,
-} as Meta;
+};
 export default meta;
 
-export const ButtonGroups: StoryObj = {
+export const ButtonGroups: StoryObj<typeof meta> = {
     render: () => (
         <StoryColumn minWidth={350} maxWidth={420}>
             <ButtonGroup>

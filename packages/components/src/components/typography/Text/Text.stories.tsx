@@ -9,10 +9,10 @@ import {
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../utils';
 
-const meta: Meta = {
+const meta: Meta<typeof TextComponent> = {
     title: 'Typography',
     component: TextComponent,
-} as Meta;
+};
 export default meta;
 
 export const Text: StoryObj<TextProps> = {

@@ -62,12 +62,12 @@ const argTypes: Partial<ArgTypes<GridProps>> = {
     ...getFramePropsStory(allowedGridFrameProps).argTypes,
 };
 
-const meta: Meta = {
+const meta: Meta<typeof GridComponent> = {
     title: 'Grid',
-} as Meta;
+};
 export default meta;
 
-export const Grid: StoryObj<GridProps> = {
+export const Grid: StoryObj<typeof meta> = {
     render: gridArgs => (
         <Container>
             <GridComponent {...gridArgs} />

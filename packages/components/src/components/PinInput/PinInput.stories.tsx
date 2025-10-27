@@ -4,10 +4,10 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { PinInput as PinInputComponent, PinInputProps } from './PinInput';
 
-const meta: Meta = {
+const meta: Meta<typeof PinInputComponent> = {
     title: 'PinInput',
     component: PinInputComponent,
-} as Meta;
+};
 export default meta;
 
 const Component = ({ ...props }: Omit<PinInputProps, 'onChange' | 'onComplete'>) => {

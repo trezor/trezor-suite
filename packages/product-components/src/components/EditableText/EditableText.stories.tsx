@@ -11,7 +11,7 @@ import {
     allowedEditableTextFrameProps,
 } from './EditableText';
 
-const meta: Meta = {
+const meta: Meta<typeof EditableTextComponent> = {
     title: 'EditableText',
     decorators: [
         (Story: React.FC) => (
@@ -21,7 +21,7 @@ const meta: Meta = {
         ),
     ],
     component: EditableTextComponent,
-} as Meta;
+};
 export default meta;
 
 export const EditableText: StoryObj<EditableTextProps> = {

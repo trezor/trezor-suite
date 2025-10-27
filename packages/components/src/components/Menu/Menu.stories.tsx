@@ -3,10 +3,10 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Menu as MenuComponent, MenuProps, allowedMenuFrameProps } from './Menu';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof MenuComponent> = {
     title: 'Menu',
     component: MenuComponent,
-} as Meta;
+};
 export default meta;
 
 export const Menu: StoryObj<MenuProps> = {

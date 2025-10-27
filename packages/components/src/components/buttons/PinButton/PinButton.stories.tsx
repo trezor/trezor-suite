@@ -2,13 +2,13 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { PinButton as PinButtonComponent } from './PinButton';
 
-const meta: Meta = {
+const meta: Meta<typeof PinButtonComponent> = {
     title: 'Buttons',
     component: PinButtonComponent,
-} as Meta;
+};
 export default meta;
 
-export const PinButton: StoryObj<typeof PinButtonComponent> = {
+export const PinButton: StoryObj<typeof meta> = {
     args: {
         'data-value': '1',
     },

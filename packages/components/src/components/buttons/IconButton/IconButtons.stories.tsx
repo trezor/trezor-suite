@@ -8,12 +8,12 @@ import { ButtonVariant } from '../buttonStyleUtils';
 
 const variants: Array<Exclude<ButtonVariant, 'danger'>> = ['primary', 'tertiary'];
 
-const meta: Meta = {
+const meta: Meta<typeof IconButton> = {
     title: 'Buttons',
-} as Meta;
+};
 export default meta;
 
-export const IconButtons: StoryObj = {
+export const IconButtons: StoryObj<typeof meta> = {
     render: () => (
         <>
             {variants.map(variant => (

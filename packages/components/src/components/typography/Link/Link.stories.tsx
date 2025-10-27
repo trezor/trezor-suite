@@ -3,10 +3,10 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Link as LinkComponent, LinkProps, allowedLinkTextProps } from '../../../index';
 import { getTextPropsStory } from '../utils';
 
-const meta: Meta = {
+const meta: Meta<typeof LinkComponent> = {
     title: 'Typography',
     component: LinkComponent,
-} as Meta;
+};
 export default meta;
 
 export const Link: StoryObj<LinkProps> = {

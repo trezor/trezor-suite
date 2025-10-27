@@ -12,10 +12,10 @@ const Container = styled.div`
     max-width: 200px;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof TruncateWithTooltipComponent> = {
     title: 'TruncateWithTooltip',
     component: TruncateWithTooltipComponent,
-} as Meta;
+};
 export default meta;
 
 export const TruncateWithTooltip: StoryObj<TruncateWithTooltipProps> = {

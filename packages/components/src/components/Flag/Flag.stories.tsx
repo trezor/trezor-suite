@@ -2,12 +2,12 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Flag as FlagComponent } from './Flag';
 
-const meta: Meta = {
+const meta: Meta<typeof FlagComponent> = {
     title: 'Flags',
     component: FlagComponent,
-} as Meta;
+};
 export default meta;
 
-export const Flag: StoryObj<typeof FlagComponent> = {
+export const Flag: StoryObj<typeof meta> = {
     args: { country: 'CZ' },
 };

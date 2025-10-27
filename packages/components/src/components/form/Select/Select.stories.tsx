@@ -15,10 +15,10 @@ const options = Object.keys(values)
     .filter((k: string) => values[k])
     .map((k: string) => values[k]);
 
-const meta: Meta = {
+const meta: Meta<typeof SelectComponent> = {
     title: 'Form',
     component: SelectComponent,
-} as Meta;
+};
 export default meta;
 
 export const Select: StoryObj<SelectProps> = {

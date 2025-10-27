@@ -5,10 +5,10 @@ import { borders } from '@trezor/theme';
 import { Box as BoxComponent, allowedBoxFrameProps } from './Box';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof BoxComponent> = {
     title: 'Box',
     component: BoxComponent,
-} as Meta;
+};
 export default meta;
 
 export const Box: StoryObj<typeof BoxComponent> = {

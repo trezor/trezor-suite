@@ -17,12 +17,12 @@ const LogoWrapper = styled.div<WrapperProps>`
     align-items: center;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof TrezorLogo> = {
     title: 'TrezorLogo',
-} as Meta;
+};
 export default meta;
 
-export const All: StoryObj = {
+export const All: StoryObj<typeof meta> = {
     render: () => (
         <StoryColumn minWidth={400}>
             <LogoWrapper>

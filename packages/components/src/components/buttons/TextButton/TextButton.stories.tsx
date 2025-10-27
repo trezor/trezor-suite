@@ -6,10 +6,10 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { allowedButtonFrameProps } from '../Button/Button';
 import { buttonSizes, buttonVariants, iconAlignments } from '../buttonStyleUtils';
 
-const meta: Meta = {
+const meta: Meta<typeof TextButtonComponent> = {
     title: 'Buttons',
     component: TextButtonComponent,
-} as Meta;
+};
 export default meta;
 
 export const TextButton: StoryObj<TextButtonProps> = {

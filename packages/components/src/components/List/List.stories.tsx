@@ -10,9 +10,9 @@ import { getFramePropsStory } from '../../utils/frameProps';
 import { Icon, IconProps } from '../Icon/Icon';
 import { getTextPropsStory } from '../typography/utils';
 
-const meta: Meta = {
+const meta: Meta<typeof ListComponent> = {
     title: 'List',
-} as Meta;
+};
 export default meta;
 
 const iconProps = {

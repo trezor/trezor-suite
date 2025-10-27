@@ -58,10 +58,10 @@ const Addon = styled.span`
     color: white;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof TooltipComponent> = {
     title: 'Tooltip',
     component: TooltipComponent,
-} as Meta;
+};
 export default meta;
 
 const TooltipWrapper = (args: TooltipProps) => {

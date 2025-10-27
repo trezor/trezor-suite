@@ -22,12 +22,12 @@ const Content = styled.div<{ $color: string }>`
     height: 100%;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof ResizableBox> = {
     title: 'ResizableBox',
-} as Meta;
+};
 export default meta;
 
-export const ResizableBoxExamples: StoryObj = {
+export const ResizableBoxExamples: StoryObj<typeof meta> = {
     render: () => (
         <Container>
             <ResizableBox
