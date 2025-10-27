@@ -2,7 +2,7 @@ import { systemPreferences } from 'electron';
 
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { createWinHelloManager } from '@trezor/suite-desktop-native';
+import { createWinHelloManagerWithRetries } from '@trezor/suite-desktop-native/src/winHelloManager';
 import { scheduleAction, serializeError } from '@trezor/utils';
 
 import { ipcMain } from '../typed-electron';
@@ -10,9 +10,9 @@ import { ipcMain } from '../typed-electron';
 const PROMPT_REASON = 'Trezor Suite: validation BIO authentication to access the Suite UI';
 const TIMEOUT = 60_000;
 
-const loadWin = async () => {
+const loadWin = () => {
     const { logger } = global;
-    const winHello = await createWinHelloManager({
+    const withWinHelloManager = createWinHelloManagerWithRetries({
         resourcesPath: process.resourcesPath,
         logger,
     });
@@ -25,7 +25,9 @@ const loadWin = async () => {
         return scheduleAction(
             async () => {
                 try {
-                    await winHello.requestHello(params.message ?? PROMPT_REASON);
+                    await withWinHelloManager(winHello =>
+                        winHello.requestHello(params.message ?? PROMPT_REASON),
+                    );
 
                     return {
                         success: true as const,
@@ -54,7 +56,9 @@ const loadWin = async () => {
         return scheduleAction(
             async () => {
                 try {
-                    const available = await winHello.isHelloAvailable();
+                    const available = await withWinHelloManager(winHello =>
+                        winHello.isHelloAvailable(),
+                    );
 
                     if (!available) {
                         logger.info('bioAuth', 'WIN: passport is not available');
@@ -74,7 +78,7 @@ const loadWin = async () => {
     });
 
     return {
-        destroy: () => winHello.destroy(),
+        destroy: () => withWinHelloManager(winHello => winHello.destroy()),
     };
 };
 

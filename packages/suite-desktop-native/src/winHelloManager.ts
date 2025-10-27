@@ -227,3 +227,32 @@ export async function createWinHelloManager(
 
     return manager;
 }
+
+export function createWinHelloManagerWithRetries(
+    options: WinHelloManagerOptions,
+): <R>(cb: (manager: WinHelloManager) => R) => Promise<R | undefined> {
+    let manager: WinHelloManager;
+    const managerPromise = createWinHelloManager(options).then(
+        m => (manager = m),
+        () => {
+            console.error(
+                'createWinHelloManagerWithRetries: Failed to create initial WinHelloManager',
+            );
+        },
+    );
+
+    return async <R>(cb: (manager: WinHelloManager) => R): Promise<R | undefined> => {
+        if (manager) {
+            return await cb(manager);
+        }
+
+        try {
+            return managerPromise
+                .catch(() => createWinHelloManager(options).then(m => (manager = m)))
+                .then(() => cb(manager));
+        } catch (error) {
+            console.error('Failed to create WinHelloManager:', error);
+            throw error;
+        }
+    };
+}
