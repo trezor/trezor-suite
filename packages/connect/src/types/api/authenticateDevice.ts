@@ -1,8 +1,10 @@
+import {
+    DeviceAuthenticityBlacklistConfig,
+    DeviceAuthenticityConfig,
+    VerifyAuthenticityProofResult,
+} from '@trezor/device-authenticity';
 import { Static, Type } from '@trezor/schema-utils';
 
-import { VerifyAuthenticityProofResult } from '../../api/firmware/verifyAuthenticity/types';
-import { DeviceAuthenticityBlacklistConfig } from '../../data/deviceAuthenticityBlacklistConfig';
-import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfigTypes';
 import type { Params, Response } from '../params';
 
 export type AuthenticateDeviceParams = Static<typeof AuthenticateDeviceParams>;

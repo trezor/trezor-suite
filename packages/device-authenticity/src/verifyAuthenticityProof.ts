@@ -7,8 +7,8 @@ import {
     VerifyAuthenticityProofParams,
     VerifyAuthenticityProofResult,
     VerifySignature,
-} from './verifyAuthenticity/types';
-import { getRootPubKeyBlacklist, getRootPubKeys } from './verifyAuthenticity/utils';
+} from './types';
+import { getRootPubKeyBlacklist, getRootPubKeys } from './utils';
 import { AlgorithmName, parseCertificate } from './x509certificate';
 
 // There is incomparability in results between nodejs and window SubtleCrypto api.
