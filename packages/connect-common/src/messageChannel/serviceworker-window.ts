@@ -70,6 +70,9 @@ export class ServiceWorkerWindowChannel<
                     'https://suite.corp.sldev.cz',
                     'https://dev.suite.sldev.cz',
                     'http://localhost:8088',
+                    'https://suite.trezor.io',
+                    'https://staging-suite.trezor.io',
+                    'http://localhost:8000',
                 ];
 
                 // If service worker is running in web extension and other env of this webextension
