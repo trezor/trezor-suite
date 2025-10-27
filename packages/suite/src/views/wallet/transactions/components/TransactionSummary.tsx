@@ -2,7 +2,7 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row, variables } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -44,10 +44,6 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
-
-    if (account.networkType === 'ripple' || account.networkType === 'stellar') {
-        return null;
-    }
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
     const data = intervalGraphData[0]?.data
@@ -96,9 +92,11 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
             }),
         );
 
+    const isGraphSupported = getNetworkFeatures(account.symbol).includes('graph');
+
     return (
         <Column alignItems="stretch" gap={20}>
-            {account.networkType !== 'solana' && (
+            {isGraphSupported && (
                 <>
                     <Row justifyContent="space-between" alignItems="center">
                         <GraphRangeSelector
@@ -153,16 +151,15 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     </Column>
                 </>
             )}
-            {!hasNetworkPotentialFraudTransactions(account.symbol) && (
-                <SummaryCards
-                    selectedRange={selectedRange}
-                    dataInterval={dataInterval}
-                    data={data}
-                    localCurrency={baseCurrencyCode}
-                    account={account}
-                    isLoading={isLoading}
-                />
-            )}
+            <SummaryCards
+                selectedRange={selectedRange}
+                dataInterval={dataInterval}
+                data={data}
+                localCurrency={baseCurrencyCode}
+                account={account}
+                isGraphSupported={isGraphSupported}
+                isLoading={isLoading}
+            />
         </Column>
     );
 };
