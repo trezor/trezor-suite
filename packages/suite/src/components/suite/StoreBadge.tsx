@@ -1,17 +1,9 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
-import { Image } from '@trezor/components';
+import { Box, Image, Row } from '@trezor/components';
+import { paletteV2 } from '@trezor/theme';
 
 import { TrezorLink } from './TrezorLink';
-const BadgeContainer = styled.div<{ $isHighlighted: boolean }>`
-    opacity: ${({ $isHighlighted }) => ($isHighlighted ? 1 : 0.6)};
-    transition: opacity 0.3s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-`;
 
 type StoreBadgeProps = {
     url: string;
@@ -29,16 +21,23 @@ export const StoreBadge = ({ url, image, isHighlighted, onClick }: StoreBadgePro
     const onMouseLeave = () => {
         setIsHovered(false);
     };
+    const highlighted = isHighlighted !== undefined ? isHighlighted : isHovered;
 
     return (
         <TrezorLink href={url} variant="nostyle" onClick={onClick}>
-            <BadgeContainer
-                $isHighlighted={isHighlighted !== undefined ? isHighlighted : isHovered}
+            <Box
+                opacity={highlighted ? 1 : 0.6}
                 onMouseEnter={onMouseEnter}
+                padding={{ vertical: 8, horizontal: 12 }}
+                cursor="pointer"
+                borderRadius={8}
+                backgroundColor={paletteV2.lightNeutralGrey100}
                 onMouseLeave={onMouseLeave}
             >
-                <Image image={`${image}_BADGE`} height={35} maxWidth="unset" />
-            </BadgeContainer>
+                <Row alignItems="center">
+                    <Image image={image} height={26} maxWidth="unset" />
+                </Row>
+            </Box>
         </TrezorLink>
     );
 };

@@ -1,8 +1,7 @@
 export type ImageType = keyof typeof IMAGES;
 
 export const IMAGES = {
-    APP_STORE_BADGE: 'app-store-badge.svg',
-    APP_STORE_TITLE: 'app-store-title.svg',
+    APP_STORE: 'app-store.svg',
     BRIDGE_CHECK_TREZOR_T2T1: 'bridge-check-trezor-t2t1.svg',
     CONFIRM_EVM_EXPLANATION_ETH: 'confirm-evm-explanation-eth.svg',
     CONFIRM_EVM_EXPLANATION_OTHER: 'confirm-evm-explanation-other.svg',
@@ -17,8 +16,7 @@ export const IMAGES = {
     GAINS_GRAPH: 'gains-graph.svg',
     GHOST: 'ghost.svg',
     INVITY_LOGO: 'invity-logo.svg',
-    PLAY_STORE_BADGE: 'play-store-badge.svg',
-    PLAY_STORE_TITLE: 'play-store-title.svg',
+    PLAY_STORE: 'play-store.svg',
     SPINNER: 'spinner.svg',
     STROKE_BORDER: 'stroke-border.svg',
     TOUCH: 'touch.webp',

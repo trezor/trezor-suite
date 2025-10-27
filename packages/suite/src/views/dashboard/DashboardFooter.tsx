@@ -6,10 +6,10 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
-import { Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
+import { Box, Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings } from '@trezor/theme';
+import { paletteV2, spacings } from '@trezor/theme';
 import {
     SUITE_MOBILE_APP_STORE,
     SUITE_MOBILE_PLAY_STORE,
@@ -41,12 +41,10 @@ const Interaction = styled.span`
     display: flex;
 `;
 
-const QRBox = styled.div`
-    width: 140px;
-    height: 140px;
-    padding: 4px;
-    background-color: white;
-    border-radius: 6px;
+const ImageContainer = styled.div`
+    img {
+        filter: invert(1);
+    }
 `;
 
 type QrType = 'app-store' | 'play-store';
@@ -73,16 +71,25 @@ const StoreBadgeWithQr = ({
         <Tooltip
             isOpen={isTooltipOpen}
             cursor={isBelowTablet ? 'not-allowed' : undefined}
+            hasArrow
             content={
                 <Column alignItems="center">
-                    <Image
-                        margin={{ bottom: spacings.xs, top: spacings.xxxs }}
-                        image={`${image}_TITLE`}
-                        height={26}
-                    />
-                    <QRBox>
+                    <ImageContainer>
+                        <Image
+                            margin={{ bottom: spacings.xs, top: spacings.xxxs }}
+                            image={image}
+                            height={26}
+                        />
+                    </ImageContainer>
+                    <Box
+                        height={140}
+                        width={140}
+                        padding={4}
+                        backgroundColor={paletteV2.globalWhiteAlpha1000}
+                        borderRadius={6}
+                    >
                         <QrCode value={url} />
-                    </QRBox>
+                    </Box>
                 </Column>
             }
         >
