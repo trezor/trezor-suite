@@ -17,6 +17,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../../packages/connect" },
         {
             "path": "../../packages/transport-native-bluetooth"
         }

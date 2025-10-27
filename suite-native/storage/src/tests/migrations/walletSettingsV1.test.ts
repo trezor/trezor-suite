@@ -1,6 +1,7 @@
 import { getStoredState } from 'redux-persist';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { WalletSettings } from '@suite-common/wallet-types';
 
 jest.mock('../../storage', () => ({
     initMmkvStorage: jest.fn().mockResolvedValue({}),
@@ -43,7 +44,7 @@ describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const walletSettingsState = {};
+        const walletSettingsState = {} as WalletSettings;
 
         const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
 
@@ -68,7 +69,7 @@ describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const walletSettingsState = { someProperty: 'value' };
+        const walletSettingsState = { someProperty: 'value' } as unknown as WalletSettings;
 
         const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
 

@@ -1,5 +1,7 @@
 import { getStoredState } from 'redux-persist';
 
+import { WalletSettings } from '@suite-common/wallet-types';
+
 jest.mock('../../storage', () => ({
     initMmkvStorage: jest.fn().mockResolvedValue({}),
 }));
@@ -28,7 +30,7 @@ describe(migrateAutoEjectToWalletSettings.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const walletSettingsState = { someOtherProperty: 'value' };
+        const walletSettingsState = { someOtherProperty: 'value' } as unknown as WalletSettings;
 
         const migratedState = await migrateAutoEjectToWalletSettings(walletSettingsState);
 
@@ -48,7 +50,7 @@ describe(migrateAutoEjectToWalletSettings.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const walletSettingsState = { someOtherProperty: 'value' };
+        const walletSettingsState = { someOtherProperty: 'value' } as unknown as WalletSettings;
 
         const migratedState = await migrateAutoEjectToWalletSettings(walletSettingsState);
 
@@ -60,6 +62,7 @@ describe(migrateAutoEjectToWalletSettings.name, () => {
     });
 
     it('returns original state when walletSettingsState is null/undefined', async () => {
+        // @ts-expect-error
         const migratedState = await migrateAutoEjectToWalletSettings(null);
 
         expect(migratedState).toBeNull();

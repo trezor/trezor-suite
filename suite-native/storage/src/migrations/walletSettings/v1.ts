@@ -2,10 +2,21 @@ import { pipe } from '@mobily/ts-belt';
 import { getStoredState } from 'redux-persist';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { WalletSettings } from '@suite-common/wallet-types';
+import { PROTO } from '@trezor/connect';
 
+import { UnknownPersistedState } from '../../createAsyncMigrate';
 import { initMmkvStorage } from '../../storage';
 
 type NetworkSymbolOld = Exclude<NetworkSymbol, 'bsc'> | 'bnb';
+
+type AppSettingsStateOld = {
+    fiatCurrencyCode: string;
+    bitcoinUnits: PROTO.AmountUnit;
+};
+type DiscoveryConfigStateOld = {
+    enabledDiscoveryNetworkSymbols: NetworkSymbol[];
+};
 
 const migrateEnabledDiscoveryNetworkSymbols = (
     oldEnabledDiscoveryNetworkSymbols: NetworkSymbol[],
@@ -38,16 +49,16 @@ const migrateDiscoveryConfigToWalletSettings = (
         migrateDiscoveryDeprecateNetworks,
     );
 
-export const migrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: any) => {
+export const migrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: WalletSettings) => {
     const storage = await initMmkvStorage();
     const appSettings = (await getStoredState({
         key: 'appSettings',
         storage,
-    })) as any;
+    })) as AppSettingsStateOld;
     const discoveryConfig = (await getStoredState({
         key: 'discoveryConfig',
         storage,
-    })) as any;
+    })) as DiscoveryConfigStateOld;
 
     if (appSettings && discoveryConfig) {
         const enabledNetworks = migrateDiscoveryConfigToWalletSettings(
@@ -59,8 +70,9 @@ export const migrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: 
             localCurrency: appSettings.fiatCurrencyCode,
             enabledNetworks,
             bitcoinAmountUnit: appSettings.bitcoinUnits,
-        };
+        } as UnknownPersistedState<WalletSettings>;
     }
 
-    return walletSettingsState;
+    // _persist is not guaranteed but required by Typescript
+    return walletSettingsState as UnknownPersistedState<WalletSettings>;
 };
