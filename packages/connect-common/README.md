@@ -22,7 +22,3 @@ There is a `releases.json` file for each Trezor model which must be updated any 
 ### Storage
 
 A utility to remember app permissions given by user.
-
-## Publishing
-
-[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.

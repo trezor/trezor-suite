@@ -13,7 +13,3 @@ EIP-712 hashes can be constructed with the plugin function
 You may also wish to construct your own hashes using a different library.
 
 For more information refer to [docs/ethereumSignTypedData](../../docs/packages/connect/methods/ethereumSignTypedData.md)
-
-## Publishing
-
-[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.

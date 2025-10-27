@@ -9,7 +9,6 @@
     - [adding new firmwares](./releases/adding-new-firmwares.md)
     - [desktop updates](./releases/desktop_updates.md)
     - [environments](./releases/environments.md)
-    - [npm packages](./releases/npm-packages.md)
     - [signing binaries windows](./releases/signing-binaries-win.md)
     - [versioning](./releases/versioning.md)
 - [Packages](./packages/index.md)
