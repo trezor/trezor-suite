@@ -18,7 +18,7 @@ export type FirmwareRange = Record<
 export type BinaryInfo = {
     binary: ArrayBuffer;
     binaryVersion: VersionArray;
-    releaseVersion?: VersionArray;
+    release?: FirmwareRelease;
 };
 
 export type FirmwareReleaseConfigInfo = {

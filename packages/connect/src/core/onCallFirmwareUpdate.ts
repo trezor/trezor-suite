@@ -284,7 +284,7 @@ const getBinaryHelper = async ({
         return Promise.resolve({
             binary: params.binary,
             binaryVersion: parseFirmwareHeaders(Buffer.from(params.binary)).version,
-            releaseVersion: undefined,
+            release: undefined,
         });
     }
 
@@ -324,7 +324,7 @@ const getBinaryHelper = async ({
         intermediaryVersion: isIntermediary && intermediary ? intermediary.version : undefined,
     });
 
-    return getBinary({ baseUrl, path, version });
+    return getBinary({ baseUrl, path, release });
 };
 
 export type Params = {
@@ -437,18 +437,17 @@ export const onCallFirmwareUpdate = async ({
         }),
     );
 
-    const finalBinaryRelease = device?.firmwareReleaseConfigInfo?.release;
-
     // We have completed binary download, and we should notify sending an event,
     // if desktop wants to store it. We only do this for final FW, not intermediaries.
-    if (isFirmwareCacheUsedForSelectedSource()) {
+    // We also check if `BinaryInfo.release` is present, otherwise it is custom FW, not to store.
+    if (isFirmwareCacheUsedForSelectedSource() && finalBinaryInfo.release) {
         const message = createUiMessage(UI.FIRMWARE_DOWNLOADED, {
             binary: finalBinaryInfo.binary,
             binaryVersion: finalBinaryInfo.binaryVersion,
-            releaseVersion: finalBinaryInfo.releaseVersion,
-            firmwareType: device.firmwareType,
+            releaseVersion: finalBinaryInfo.release?.version,
+            firmwareType,
+            release: finalBinaryInfo.release,
             internalModel: device.features.internal_model,
-            release: finalBinaryRelease,
         });
         postMessage(message);
     }
@@ -568,11 +567,13 @@ export const onCallFirmwareUpdate = async ({
         throw ERRORS.TypedError('Runtime', 'reconnectedDevice.installedVersion is not set');
     }
 
-    const { binaryVersion, releaseVersion } = finalBinaryInfo;
+    const { binaryVersion, release } = finalBinaryInfo;
     // check if installed version matches binary version
     const assertBinaryVersion = isEqual(installedVersion, binaryVersion);
     // check if installed version matches requested release version
-    const assertReleaseVersion = releaseVersion ? isEqual(installedVersion, releaseVersion) : true; // binary
+    const assertReleaseVersion = release?.version
+        ? isEqual(installedVersion, release?.version)
+        : true; // binary
 
     await reconnectedDevice.release();
 
@@ -583,6 +584,6 @@ export const onCallFirmwareUpdate = async ({
         bootloaderVersion,
         installedVersion,
         binaryVersion,
-        releaseVersion,
+        releaseVersion: release?.version,
     };
 };
