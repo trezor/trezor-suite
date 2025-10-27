@@ -237,7 +237,7 @@ export type FirmwareStoreEvent = {
     binaryVersion: VersionArray;
     internalModel: DeviceModelInternal;
     release: FirmwareRelease | undefined;
-    firmwareType?: FirmwareType;
+    firmwareType: FirmwareType;
     releaseVersion?: number[];
 };
 

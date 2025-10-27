@@ -60,7 +60,7 @@ export const checkFirmwareHash = async ({
     const firmwareBinary = await getBinaryOptional({
         baseUrl,
         path,
-        version: firmwareVersion,
+        release,
     });
 
     // release was found, but not its binary - happens on desktop, where only local files are searched

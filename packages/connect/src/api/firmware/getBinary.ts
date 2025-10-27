@@ -1,4 +1,4 @@
-import { VersionArray } from '@trezor/device-utils';
+import { FirmwareRelease } from '@trezor/device-utils';
 import { removeTrailingSlashes } from '@trezor/utils';
 
 import { parseFirmwareHeaders } from './parseFirmwareHeaders';
@@ -11,13 +11,13 @@ const MIN_FIRMWARE_SIZE_BYTES = 200;
 interface GetBinaryParams {
     baseUrl: string;
     path: string;
-    version: VersionArray;
+    release: FirmwareRelease;
 }
 
 export const getBinary = async ({
     baseUrl,
     path,
-    version,
+    release,
 }: GetBinaryParams): Promise<BinaryInfo> => {
     const sanitizedBaseUrl = removeTrailingSlashes(baseUrl);
     const url = `${sanitizedBaseUrl}/${path}`;
@@ -35,7 +35,7 @@ export const getBinary = async ({
     return {
         binary: binaryArrayBuffer,
         binaryVersion,
-        releaseVersion: version,
+        release,
     };
 };
 
