@@ -23,7 +23,6 @@ export const useGuideLoadArticle = (currentNode: GuideNode | null, language: Loc
 
     useEffect(() => {
         if (!currentNode) return;
-
         loadPageMarkdownFile(currentNode.id, language)
             .catch(() => loadPageMarkdownFile(currentNode.id))
             .then(res => setMarkdown(res))
