@@ -26,9 +26,9 @@ const Icon = styled.div`
     align-items: center;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof CoinLogo> = {
     title: 'CoinLogos',
-} as Meta;
+};
 export default meta;
 
 export const All: StoryObj = {

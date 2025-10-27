@@ -13,10 +13,10 @@ const Container = styled.div<Pick<DividerProps, 'orientation'>>`
     flex-direction: ${({ orientation }) => (orientation === 'horizontal' ? 'column' : 'row')};
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof DividerComponent> = {
     title: 'Divider',
     component: DividerComponent,
-} as Meta;
+};
 export default meta;
 
 export const Divider: StoryObj<typeof DividerComponent> = {

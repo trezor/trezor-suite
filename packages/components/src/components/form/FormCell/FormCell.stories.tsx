@@ -7,12 +7,12 @@ import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { SkeletonRectangle } from '../../skeletons/SkeletonRectangle';
 
-const meta: Meta = {
+const meta: Meta<typeof FormCellComponent> = {
     title: 'Form',
-} as Meta;
+};
 export default meta;
 
-export const FormCell: StoryObj<typeof FormCellComponent> = {
+export const FormCell: StoryObj<typeof meta> = {
     render: props => (
         <FormCellComponent {...props}>
             <SkeletonRectangle width="100%" height={40} />

@@ -8,10 +8,10 @@ import {
 import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof DropdownComponent> = {
     title: 'Dropdown',
     component: DropdownComponent,
-} as Meta;
+};
 export default meta;
 
 export const Dropdown: StoryObj<DropdownProps> = {

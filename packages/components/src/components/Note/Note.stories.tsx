@@ -4,10 +4,10 @@ import { Note as NoteComponent, NoteProps, allowedNoteFrameProps } from './Note'
 import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof NoteComponent> = {
     title: 'Note',
     component: NoteComponent,
-} as Meta;
+};
 export default meta;
 
 export const Note: StoryObj<NoteProps> = {

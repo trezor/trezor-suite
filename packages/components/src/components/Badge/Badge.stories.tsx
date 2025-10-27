@@ -3,13 +3,13 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Badge as BadgeComponent, BadgeProps, allowedBadgeFrameProps, badgeSizes } from './Badge';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof BadgeComponent> = {
     title: 'Badge',
     component: BadgeComponent,
-} as Meta;
+};
 export default meta;
 
-export const Badge: StoryObj<BadgeProps> = {
+export const Badge: StoryObj<typeof meta> = {
     args: {
         children: 'Badge label',
         isDisabled: false,

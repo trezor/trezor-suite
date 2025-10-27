@@ -12,9 +12,9 @@ const Wrapper = styled.div`
     overflow: hidden;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof H1> = {
     title: 'Typography',
-} as Meta;
+};
 export default meta;
 
 export const Heading: StoryObj<typeof H1> = {

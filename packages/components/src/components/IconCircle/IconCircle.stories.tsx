@@ -14,12 +14,12 @@ import {
 import { iconCirclePaddingTypes, iconCircleVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof IconCircleComponent> = {
     title: 'IconCircle',
-} as Meta;
+};
 export default meta;
 
-export const IconCircle: StoryObj<IconCircleProps> = {
+export const IconCircle: StoryObj<typeof meta> = {
     render: props => <IconCircleComponent {...(props as IconCircleProps)} />,
     args: {
         variant: 'primary',

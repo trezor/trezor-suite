@@ -21,7 +21,7 @@ const Buttons = () => (
     </>
 );
 
-const meta: Meta = {
+const meta: Meta<typeof ModalComponent> = {
     title: 'Modal',
     component: ModalComponent,
     decorators: [
@@ -44,7 +44,7 @@ const meta: Meta = {
             </ThemeProvider>
         ),
     ],
-} as Meta;
+};
 export default meta;
 
 export const Modal: StoryObj<ModalProps> = {

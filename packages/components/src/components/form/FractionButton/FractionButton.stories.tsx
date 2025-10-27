@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { FractionButton as FractionButtonComponent, FractionButtonProps } from './FractionButton';
 import { buttonVariants } from '../../buttons/buttonStyleUtils';
 
-const meta: Meta = {
+const meta: Meta<typeof FractionButtonComponent> = {
     title: 'Form',
     decorators: [
         (Story: React.FC) => (
@@ -15,7 +15,7 @@ const meta: Meta = {
         ),
     ],
     component: FractionButtonComponent,
-} as Meta;
+};
 export default meta;
 
 export const FractionButton: StoryObj<FractionButtonProps> = {

@@ -5,10 +5,10 @@ import { spacings } from '@trezor/theme';
 import { Collapsible as CollapsibleComponent } from './Collapsible';
 import { Button } from '../buttons/Button/Button';
 
-const meta: Meta = {
+const meta: Meta<typeof CollapsibleComponent> = {
     title: 'Collapsible',
     component: CollapsibleComponent,
-} as Meta;
+};
 export default meta;
 
 export const Collapsible: StoryObj<typeof CollapsibleComponent> = {

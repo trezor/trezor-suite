@@ -10,9 +10,9 @@ const EXAMPLE_TOKENS = [
     { name: 'MANA', balance: '20', price: '$2,15' },
 ];
 
-const meta: Meta = {
+const meta: Meta<typeof TableComponent> = {
     title: 'Table',
-} as Meta;
+};
 export default meta;
 
 interface TableProps {

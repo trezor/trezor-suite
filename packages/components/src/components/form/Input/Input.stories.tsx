@@ -12,14 +12,14 @@ import {
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../../typography/utils';
 
-const meta: Meta = {
+const meta: Meta<typeof InputComponent> = {
     title: 'Form',
     args: {
         value: 'Input',
         label: 'Label',
         isDisabled: false,
         size: 'large',
-        inputState: null,
+        inputState: undefined,
         ...getFramePropsStory(allowedInputFrameProps).args,
         ...getTextPropsStory(allowedInputTextProps).args,
     },
@@ -47,7 +47,7 @@ const meta: Meta = {
         ...getFramePropsStory(allowedInputFrameProps).argTypes,
         ...getTextPropsStory(allowedInputTextProps).argTypes,
     },
-} as Meta;
+};
 export default meta;
 
 export const Input: StoryObj<InputProps> = {

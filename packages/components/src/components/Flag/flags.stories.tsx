@@ -29,17 +29,17 @@ const Text = styled.div`
     padding-bottom: 10px;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof Flag> = {
     title: 'Flags',
     parameters: {
         options: {
             showPanel: false,
         },
     },
-} as Meta;
+};
 export default meta;
 
-export const All: StoryFn = () => {
+export const All: StoryFn<typeof meta> = () => {
     const flags = typedObjectKeys(FLAGS);
 
     return (

@@ -8,9 +8,9 @@ import { Tabs as TabsComponent, TabsProps } from './Tabs';
 import { tabsSizes } from './types';
 import { Column } from '../Flex/Flex';
 
-const meta: Meta = {
+const meta: Meta<typeof TabsComponent> = {
     title: 'Tabs',
-} as Meta;
+};
 export default meta;
 
 const TabsApp = (props: Partial<TabsProps>) => {

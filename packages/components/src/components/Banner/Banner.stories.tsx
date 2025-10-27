@@ -2,13 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { allowedBannerFrameProps } from './Banner';
-import {
-    Banner as BannerComponent,
-    BannerProps,
-    Row,
-    iconVerticalAlignments,
-    variables,
-} from '../../index';
+import { Banner as BannerComponent, Row, iconVerticalAlignments, variables } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Wrapper = styled.div`
@@ -18,7 +12,7 @@ const Wrapper = styled.div`
     gap: 20px;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof BannerComponent> = {
     title: 'Banner',
     component: BannerComponent,
     render: ({ children, ...rest }) => (
@@ -40,10 +34,10 @@ const meta: Meta = {
             </BannerComponent>
         </Wrapper>
     ),
-} as Meta;
+};
 export default meta;
 
-export const Banner: StoryObj<BannerProps> = {
+export const Banner: StoryObj<typeof meta> = {
     args: {
         children: 'Insert text here.',
         filled: true,

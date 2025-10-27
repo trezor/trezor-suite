@@ -6,17 +6,17 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { ConfirmOnDevicePill as ConfirmOnDeviceComponent } from './ConfirmOnDevicePill';
 
-const meta: Meta = {
+const meta: Meta<typeof ConfirmOnDeviceComponent> = {
     title: 'ConfirmOnDevice',
     parameters: {
         options: {
             showPanel: false,
         },
     },
-} as Meta;
+};
 export default meta;
 
-export const ConfirmOnDevice: StoryFn = () => (
+export const ConfirmOnDevice: StoryFn<typeof meta> = () => (
     <>
         <StoryColumn minWidth={300}>
             <ConfirmOnDeviceComponent

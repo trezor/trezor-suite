@@ -5,10 +5,10 @@ import { Meta, StoryObj } from '@storybook/react';
 import { InputButton as InputButtonComponent, InputButtonProps } from './InputButton';
 import { variables } from '../../../config';
 
-const meta: Meta = {
+const meta: Meta<typeof InputButtonComponent> = {
     title: 'Form',
     component: InputButtonComponent,
-} as Meta;
+};
 export default meta;
 
 const Controller = ({ placeholder, iconName }: Partial<InputButtonProps>) => {
@@ -28,7 +28,7 @@ const Controller = ({ placeholder, iconName }: Partial<InputButtonProps>) => {
     );
 };
 
-export const InputButton: StoryObj<typeof InputButtonComponent> = {
+export const InputButton: StoryObj<typeof meta> = {
     render: props => <Controller {...props} />,
     args: {
         placeholder: 'Token, symbol or contract address',

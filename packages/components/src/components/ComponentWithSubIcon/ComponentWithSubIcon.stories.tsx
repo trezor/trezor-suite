@@ -9,10 +9,10 @@ import { getFramePropsStory } from '../../utils/frameProps';
 import { Icon, iconVariants } from '../Icon/Icon';
 import { Button } from '../buttons/Button/Button';
 
-const meta: Meta = {
+const meta: Meta<typeof ComponentWithSubIconComponent> = {
     title: 'ComponentWithSubIcon',
     component: ComponentWithSubIconComponent,
-} as Meta;
+};
 export default meta;
 
 export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {

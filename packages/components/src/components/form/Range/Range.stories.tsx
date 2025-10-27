@@ -1,14 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import { Range as RangeComponent, RangeProps } from './Range';
+import { Range as RangeComponent } from './Range';
 
-const meta: Meta = {
+const meta: Meta<typeof RangeComponent> = {
     title: 'Form',
-} as Meta;
+};
 export default meta;
 
-export const Range: StoryObj<RangeProps> = {
+export const Range: StoryObj<typeof meta> = {
     render: args => {
         // eslint-disable-next-line
         const [, updateArgs] = useArgs();

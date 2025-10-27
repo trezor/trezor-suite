@@ -4,10 +4,10 @@ import { Image as ImageComponent, ImageProps, allowedImageFrameProps } from './I
 import { IMAGES } from './images';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof ImageComponent> = {
     title: 'Image',
     component: ImageComponent,
-} as Meta;
+};
 export default meta;
 
 export const Image: StoryObj<ImageProps> = {

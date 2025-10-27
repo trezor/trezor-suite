@@ -11,9 +11,9 @@ import { getFramePropsStory } from '../../utils/frameProps';
 import { Column } from '../Flex/Flex';
 import { IconName } from '../Icon/Icon';
 
-const meta: Meta = {
+const meta: Meta<typeof SubTabsComponent> = {
     title: 'SubTabs',
-} as Meta;
+};
 export default meta;
 
 const SubTabsApp = (props: Partial<SubTabsProps>) => {

@@ -15,10 +15,10 @@ import { newButtonIntents, newButtonPriorities, newButtonSizes } from '../NewBut
 const meta: Meta<NewButtonGroupProps> = {
     title: 'Buttons',
     component: NewButtonGroup,
-} as Meta;
+};
 export default meta;
 
-export const NewButtonGroups: StoryObj = {
+export const NewButtonGroups: StoryObj<typeof meta> = {
     render: args => (
         <NewButtonGroup {...args}>
             <NewButton isLoading>Button 1</NewButton>

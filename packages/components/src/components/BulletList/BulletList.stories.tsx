@@ -8,9 +8,9 @@ import { BulletList as BulletListComponent, allowedBulletListFrameProps } from '
 import { bulletLineWidths, bulletListDirections, bulletSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof BulletListComponent> = {
     title: 'BulletList',
-} as Meta;
+};
 export default meta;
 
 export const BulletList: StoryObj<typeof BulletListComponent> = {

@@ -68,9 +68,9 @@ const IconText = styled.div`
     text-align: center;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof Render> = {
     title: 'Icons',
-} as Meta;
+};
 export default meta;
 
 const Render = (props: IconProps) => {
@@ -115,7 +115,7 @@ const Render = (props: IconProps) => {
     );
 };
 
-export const AllIcons: StoryObj<IconProps> = {
+export const AllIcons: StoryObj<typeof meta> = {
     render: Render,
     args: {
         color: undefined,

@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 import { VirtualizedList as VirtualizedListComponent } from './VirtualizedList';
 
-const meta: Meta = {
+const meta: Meta<typeof VirtualizedListComponent> = {
     title: 'VirtualizedList',
-} as Meta;
+};
 export default meta;
 
 const Container = styled.div`

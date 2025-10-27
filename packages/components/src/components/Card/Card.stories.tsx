@@ -4,13 +4,13 @@ import { Card as CardComponent, allowedCardFrameProps } from './Card';
 import { cardVariants, fillTypes, paddingTypes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof CardComponent> = {
     title: 'Card',
     component: CardComponent,
-} as Meta;
+};
 export default meta;
 
-export const Card: StoryObj = {
+export const Card: StoryObj<typeof meta> = {
     args: {
         paddingType: 'normal',
         fillType: 'default',

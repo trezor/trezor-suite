@@ -33,9 +33,9 @@ const UiBox = styled.div<{ $elevation: Elevation }>`
     gap: ${spacingsPx.sm};
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof ElevationContextComponent> = {
     title: 'ElevationContext',
-} as Meta;
+};
 export default meta;
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
@@ -85,7 +85,7 @@ const Box = ({ children }: { children?: ReactNode }) => {
     );
 };
 
-export const ElevationContext: StoryObj = {
+export const ElevationContext: StoryObj<typeof meta> = {
     render: () => (
         <ElevationContextComponent baseElevation={-1}>
             <Background>

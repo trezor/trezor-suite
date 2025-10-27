@@ -3,10 +3,10 @@ import { ArgTypes, Meta, StoryObj } from '@storybook/react';
 import { Spinner as SpinnerComponent, SpinnerProps, allowedSpinnerFrameProps } from './Spinner';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof SpinnerComponent> = {
     title: 'Spinner',
     component: SpinnerComponent,
-} as Meta;
+};
 export default meta;
 
 const args: Partial<SpinnerProps> | undefined = {

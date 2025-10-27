@@ -7,10 +7,10 @@ import {
 } from './RadioCard';
 import { getFramePropsStory } from '../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof RadioCardComponent> = {
     title: 'RadioCard',
     component: RadioCardComponent,
-} as Meta;
+};
 export default meta;
 
 export const RadioCard: StoryObj<RadioCardProps> = {

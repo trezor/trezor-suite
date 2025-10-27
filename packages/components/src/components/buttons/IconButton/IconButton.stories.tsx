@@ -1,16 +1,16 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton';
+import { IconButton as IconButtonComponent } from './IconButton';
 import { variables } from '../../../config';
 import { buttonSizes, buttonVariants, subtleButtonVariants } from '../buttonStyleUtils';
 
-const meta: Meta = {
+const meta: Meta<typeof IconButtonComponent> = {
     title: 'Buttons',
     component: IconButtonComponent,
-} as Meta;
+};
 export default meta;
 
-export const IconButton: StoryObj<IconButtonProps> = {
+export const IconButton: StoryObj<typeof meta> = {
     args: {
         label: 'label',
         icon: 'arrowRight',

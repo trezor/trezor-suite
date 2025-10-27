@@ -7,10 +7,10 @@ import {
     animationDeviceTypes,
 } from './DeviceAnimation';
 
-const meta: Meta = {
+const meta: Meta<typeof DeviceAnimationComponent> = {
     title: 'DeviceAnimation',
     component: DeviceAnimationComponent,
-} as Meta;
+};
 export default meta;
 
 export const DeviceAnimation: StoryObj<typeof DeviceAnimationComponent> = {

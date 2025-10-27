@@ -7,7 +7,7 @@ import {
     PassphraseTypeCardProps,
 } from './PassphraseTypeCard';
 
-const meta: Meta = {
+const meta: Meta<typeof PassphraseTypeCardComponent> = {
     title: 'PassphraseTypeCard',
     decorators: [
         (Story: React.FC) => (
@@ -17,7 +17,7 @@ const meta: Meta = {
         ),
     ],
     component: PassphraseTypeCardComponent,
-} as Meta;
+};
 export default meta;
 
 export const Standard: StoryObj<PassphraseTypeCardProps> = {

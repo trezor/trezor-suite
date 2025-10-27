@@ -12,10 +12,10 @@ const Center = styled.div`
     padding: 100px 0;
 `;
 
-const meta: Meta = {
+const meta: Meta<typeof CoinLogoComponent> = {
     title: 'CoinLogos',
     component: CoinLogoComponent,
-} as Meta;
+};
 export default meta;
 
 export const CoinLogo: StoryObj<CoinLogoProps> = {

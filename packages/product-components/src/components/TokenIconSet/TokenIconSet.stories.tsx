@@ -15,9 +15,9 @@ const TOKEN_2 = getToken('0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9', 'AAVE', 6
 const TOKEN_3 = getToken('0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce', 'SHIB', 18);
 const TOKEN_4 = getToken('0xdAC17F958D2ee523a2206206994597C13D831ec7', 'usdt', 6);
 
-const meta: Meta = {
+const meta: Meta<typeof TokenIconSetComponent> = {
     title: 'TokenIconSet',
-} as Meta;
+};
 export default meta;
 export const TokenIconSet: StoryObj<TokenIconSetProps> = {
     render: (props: TokenIconSetProps) => <TokenIconSetComponent {...props} />,

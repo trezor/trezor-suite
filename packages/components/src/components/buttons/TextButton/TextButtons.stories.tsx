@@ -5,12 +5,12 @@ import { Meta, StoryFn } from '@storybook/react';
 import { TextButton } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 
-const meta: Meta = {
+const meta: Meta<typeof TextButton> = {
     title: 'Buttons',
-} as Meta;
+};
 export default meta;
 
-export const AllTextButtons: StoryFn = () => (
+export const AllTextButtons: StoryFn<typeof meta> = () => (
     <>
         <StoryColumn minWidth={350} maxWidth={420}>
             <TextButton

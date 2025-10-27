@@ -8,10 +8,10 @@ import {
     RotateDeviceImageProps,
 } from './RotateDeviceImage';
 
-const meta: Meta = {
+const meta: Meta<typeof RotateDeviceImageComponent> = {
     title: 'RotateDeviceImage',
     component: RotateDeviceImageComponent,
-} as Meta;
+};
 export default meta;
 
 export const RotateDeviceImage: StoryObj<RotateDeviceImageProps> = {

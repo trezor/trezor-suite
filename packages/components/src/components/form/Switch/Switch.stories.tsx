@@ -1,16 +1,16 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import { Switch as SwitchComponent, SwitchProps, allowedSwitchFrameProps } from './Switch';
+import { Switch as SwitchComponent, allowedSwitchFrameProps } from './Switch';
 import { switchLabelPositions, switchSizes } from './types';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
-const meta: Meta = {
+const meta: Meta<typeof SwitchComponent> = {
     title: 'Form',
-} as Meta;
+};
 export default meta;
 
-export const Switch: StoryObj<SwitchProps> = {
+export const Switch: StoryObj<typeof meta> = {
     render: () => {
         // eslint-disable-next-line
         const [{ isChecked, ...rest }, updateArgs] = useArgs();

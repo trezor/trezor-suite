@@ -5,10 +5,10 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { TextProps, allowedTextFrameProps, allowedTextTextProps } from '../Text/Text';
 import { getTextPropsStory } from '../utils';
 
-const meta: Meta = {
+const meta: Meta<typeof P> = {
     title: 'Typography',
     component: P,
-} as Meta;
+};
 export default meta;
 
 export const Paragraph: StoryObj<TextProps> = {

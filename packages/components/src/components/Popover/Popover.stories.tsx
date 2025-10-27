@@ -27,10 +27,10 @@ const Container = styled.div`
 
 const Content = () => <Card>Lorem ipsum dolor sit amet</Card>;
 
-const meta: Meta = {
+const meta: Meta<typeof PopoverComponent> = {
     title: 'Popover',
     component: PopoverComponent,
-} as Meta;
+};
 export default meta;
 
 type PopoverStoryProps = PopoverProps & {
