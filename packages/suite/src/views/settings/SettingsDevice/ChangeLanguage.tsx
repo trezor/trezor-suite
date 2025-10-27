@@ -24,12 +24,20 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
 
     const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Translations');
 
-    const deviceSupportedTranslations = Object.keys(device?.availableTranslations ?? {}).map(
-        it => ({
-            value: it,
-            label: `${LANGUAGES[it as Locale].name} (beta)`,
-        }),
-    );
+    const deviceSupportedTranslations = Object.keys(device?.availableTranslations ?? {})
+        .map(it => {
+            if (!LANGUAGES[it as Locale]) {
+                console.error('LANGUAGES[it as Locale] not found', it);
+
+                return null;
+            }
+
+            return {
+                value: it,
+                label: `${LANGUAGES[it as Locale].name} (beta)`,
+            };
+        })
+        .filter((lang): lang is { value: string; label: string } => Boolean(lang));
 
     if (isSupportedDevice !== true || deviceSupportedTranslations.length === 0) {
         return null;
