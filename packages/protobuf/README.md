@@ -29,9 +29,3 @@ The JSON is transformed to TypeScript definitions by a script in `scripts/protob
 
 All these steps are done manually and all the generated files are tracked in git. It's also not uncommon to circumvent
 some step by e.g. generating the messages.json file not from the Common submodule but directly from the firmware repo.
-
-## Publishing
-
-This package is published to npm registry because it is a dependency of [@trezor/connect](https://github.com/trezor/trezor-suite/issues/5440) which can be installed as a standalone package.
-
-[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.
