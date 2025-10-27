@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { useHandleDeviceAuthorization } from '@suite-native/device-authorization';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
@@ -39,8 +38,6 @@ const getTradingAnalyticsType = (
 };
 
 export const AppTabNavigator = () => {
-    useHandleDeviceAuthorization();
-
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
     const isTradingBuyEnabled = useSelector(selectIsTradingBuyEnabled);
     const isTradingExchangeEnabled = useSelector(selectIsTradingExchangeEnabled);
