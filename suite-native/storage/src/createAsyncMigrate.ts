@@ -53,6 +53,8 @@ export const createAsyncMigrate =
 
             return migratedState;
         } catch (err) {
-            return err;
+            console.error(err); // in order to log this to Sentry
+
+            return undefined;
         }
     };
