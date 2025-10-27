@@ -10,6 +10,9 @@
             "path": "../connect"
         },
         {
+            "path": "../connect-common"
+        },
+        {
             "path": "../connect-web"
         },
         {

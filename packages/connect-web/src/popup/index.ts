@@ -18,12 +18,12 @@ import {
     AbstractMessageChannel,
     Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
+import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
+import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
 import type { IntervalId, TimerId } from '@trezor/type-utils';
 import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
 
 import { showPopupRequest } from './showPopupRequest';
-import { ServiceWorkerWindowChannel } from '../channels/serviceworker-window';
-import { WindowWindowChannel } from '../channels/window-window';
 
 // Util
 const checkIfTabExists = (tabId: number | undefined) =>

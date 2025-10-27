@@ -9,7 +9,7 @@ import {
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
-import { ServiceWorkerWindowChannel } from '@trezor/connect-web/src/channels/serviceworker-window';
+import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 
 import { parseConnectSettings } from './connectSettings';
 import { CoreInPopupWebextension, CoreInSuiteDesktopWebextension } from './impl';

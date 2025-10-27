@@ -2,7 +2,7 @@ import {
     AbstractMessageChannel,
     AbstractMessageChannelConstructorParams,
     Message,
-} from '@trezor/connect-common';
+} from './abstract';
 
 /**
  * Communication channel between:
