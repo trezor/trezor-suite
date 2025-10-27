@@ -22,11 +22,6 @@ export const ActionColumn = styled.div`
 
 type WithTooltipProps = { tooltipContent?: ReactNode; isTooltipActive?: boolean };
 
-export type ActionSelectOption = {
-    label: string;
-    value: string;
-};
-
 export const ActionSelect = styled(
     ({ tooltipContent, isTooltipActive, ...selectProps }: SelectProps & WithTooltipProps) => (
         <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
