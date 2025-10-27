@@ -5,6 +5,9 @@ import * as ERRORS from '@trezor/connect/src/constants/errors';
 import {
     CallMethodAnyResponse,
     CallMethodPayload,
+    DEVICE_EVENT,
+    IFRAME,
+    POPUP,
     UiResponseEvent,
     createErrorMessage,
 } from '@trezor/connect/src/events';
@@ -18,9 +21,9 @@ import type {
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
-import { Deferred, createDeferred, createDeferredManager } from '@trezor/utils';
 
 import { parseConnectSettings } from '../connectSettings';
+import { PopupManager } from '../popup';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
@@ -29,27 +32,13 @@ import { parseConnectSettings } from '../connectSettings';
 export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();
     protected _settings: ConnectSettings;
+    private _popupManager?: PopupManager;
 
     protected logger: Log;
-
-    private _popup?: WindowProxy;
-    private _popupLoaded?: Deferred<void>;
-    private _responsePromises = createDeferredManager<CallMethodAnyResponse>();
 
     public constructor() {
         this._settings = parseConnectSettings();
         this.logger = initLog('@trezor/connect-web');
-
-        if (typeof window === 'undefined' || !window) return;
-        window.addEventListener('message', (event: MessageEvent) => {
-            this.logger.debug('window: message event', event.data);
-            if (event.data?.type === 'connect-popup/ready') {
-                this._popupLoaded?.resolve();
-            }
-            if (event.data?.type === 'connect-popup/response') {
-                this._responsePromises.resolve(event.data.id, event.data);
-            }
-        });
     }
 
     public manifest(data: Manifest) {
@@ -66,15 +55,6 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         return Promise.resolve(undefined);
     }
 
-    public cancel(_error?: string) {
-        this._popup?.postMessage(
-            {
-                type: 'connect-popup/cancel',
-            },
-            '*',
-        );
-    }
-
     public init(settings: InitFullSettings<{}>): Promise<void> {
         this._settings = parseConnectSettings({
             ...this._settings,
@@ -85,15 +65,21 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         if (!this._settings.manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
+        if (!this._popupManager) {
+            this._popupManager = new PopupManager(
+                { ...this._settings, useCoreInPopup: true, popupSrc: this.getSuiteUrl() },
+                {
+                    logger: this.logger,
+                },
+            );
+            this._popupManager.on(DEVICE_EVENT, event => {
+                this.eventEmitter.emit(DEVICE_EVENT, event);
+            });
+        }
 
         this.logger.debug('initiated');
 
         return Promise.resolve();
-    }
-
-    public setTransports() {
-        // not supported, transports are controlled by suite.
-        throw new Error('Unsupported');
     }
 
     private getSuiteUrl() {
@@ -120,45 +106,33 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
     public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
         this.logger.debug('call', params);
 
-        if (!this._popup || this._popup.closed) {
-            this._popup = window.open(this.getSuiteUrl(), 'trezor-connect-popup') || undefined;
-
-            if (!this._popup) {
-                throw ERRORS.TypedError('Init_NotInitialized');
-            }
-            this.logger.debug('call: opening popup');
-            // wait for popup to load
-            this._popupLoaded = createDeferred<void>();
-            /*setTimeout(() => {
-                popupLoaded.reject(ERRORS.TypedError('Init_NotInitialized'));
-            }, 10000);*/
-            this.logger.debug('call: popup waiting for ready message');
-            await this._popupLoaded.promise;
-            this.logger.debug('call: popup loaded');
+        if (!this._popupManager) {
+            return createErrorMessage(ERRORS.TypedError('Init_NotInitialized'));
         }
+        await this._popupManager.request();
+        await this._popupManager.channel.init();
+        await this._popupManager.handshakePromise?.promise;
 
         try {
             // post message to core in popup
-            const { promiseId, promise } = this._responsePromises.create();
-            this._popup.postMessage(
-                {
-                    id: promiseId,
-                    type: 'connect-popup/call',
-                    method: params.method,
-                    payload: params,
-                    manifest: this._settings.manifest,
-                },
-                '*',
-            );
-
-            const response = await promise;
+            const response = await this._popupManager.channel.postMessage({
+                type: IFRAME.CALL,
+                payload: params,
+            });
             this.logger.debug('call: response: ', response);
 
-            if (!response) {
+            if (!response?.payload) {
                 throw ERRORS.TypedError('Method_NoResponse');
             }
+            if (response.payload.error && response.payload.code) {
+                throw response.payload;
+            }
 
-            return response;
+            return {
+                success: response.payload.success,
+                payload: response.payload.payload,
+                device: response.payload.device,
+            };
         } catch (error) {
             this.logger.error('call: error', error);
 
@@ -166,7 +140,19 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         }
     }
 
-    // this shouldn't be needed, ui response should be handled in suite-desktop
+    public cancel(_error?: string) {
+        this._popupManager?.channel?.postMessage({
+            type: POPUP.CLOSED,
+            payload: { error: _error },
+        });
+    }
+
+    // not supported, transports are controlled by suite
+    public setTransports() {
+        throw new Error('Method_InvalidPackage');
+    }
+
+    // this shouldn't be needed, ui response should be handled in suite
     uiResponse(_response: UiResponseEvent) {
         throw ERRORS.TypedError('Method_InvalidPackage');
     }

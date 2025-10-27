@@ -121,7 +121,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
 
     public setTransports() {
         // not supported, transports are controlled by suite-desktop.
-        throw new Error('Unsupported');
+        throw new Error('Method_InvalidPackage');
     }
 
     public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
