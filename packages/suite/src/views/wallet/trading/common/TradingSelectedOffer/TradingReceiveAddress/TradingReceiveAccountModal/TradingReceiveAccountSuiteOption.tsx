@@ -87,8 +87,8 @@ export const TradingReceiveAccountSuiteOption = ({
                             shouldAllowCopy={false}
                             variant="tertiary"
                             typographyStyle="hint"
-                            showStart={14}
-                            showEnd={0}
+                            showStart={10}
+                            showEnd={4}
                         />
                     )}
                 </Column>
