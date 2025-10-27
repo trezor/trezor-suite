@@ -52,10 +52,11 @@ const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
 interface SummaryCardProps {
     selectedRange: GraphRange;
     data: AggregatedAccountHistory[];
-    dataInterval: [number, number];
+    dataInterval: [number | undefined, number | undefined];
     localCurrency: BaseCurrencyCode;
     account: Account;
     isLoading?: boolean;
+    isGraphSupported: boolean;
     className?: string;
 }
 
@@ -77,6 +78,7 @@ export const SummaryCards = ({
     localCurrency,
     account,
     isLoading,
+    isGraphSupported,
     className,
 }: SummaryCardProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
@@ -86,6 +88,12 @@ export const SummaryCards = ({
 
     // aggregate values from shown graph data
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
+
+    // on some networks it is not easy to get total number of txs (e.g. Ripple & Stellar)
+    if (numOfTransactions === -1) {
+        return null;
+    }
+
     const totalSentAmount = asBaseCurrencyAmount(
         data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0)),
     );
@@ -124,7 +132,8 @@ export const SummaryCards = ({
                     ) : null
                 }
             />
-            {account.networkType !== 'solana' && (
+            {/* without graph data, we do not know incoming/outgoing info */}
+            {isGraphSupported && (
                 <>
                     <InfoCard
                         title={<Translation id="TR_INCOMING" />}
