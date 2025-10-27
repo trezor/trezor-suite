@@ -1,18 +1,13 @@
-import { ActionSelectOption } from 'src/components/suite/section/sectionStyles';
+import { typedObjectValues } from '@trezor/utils';
 
-export const LABELING_OPTIONS: Record<string, ActionSelectOption> = {
-    ON: { label: 'On', value: 'on' } as const,
-    OFF: { label: 'Off', value: 'off' } as const,
-    SECURE_SYNC: { label: 'Secure sync (recommended)', value: 'secure-sync' } as const,
-    LEGACY: { label: 'Legacy', value: 'legacy' } as const,
-} as const;
+export type LabelingSelectValue = 'off' | 'secure-sync' | 'legacy';
 
-export const LABELING_SELECT_OPTIONS: ActionSelectOption[] = [
-    LABELING_OPTIONS.ON,
-    LABELING_OPTIONS.OFF,
-];
-export const EXPERIMENT_LABELING_SELECT_OPTIONS: ActionSelectOption[] = [
-    LABELING_OPTIONS.SECURE_SYNC,
-    LABELING_OPTIONS.LEGACY,
-    LABELING_OPTIONS.OFF,
-];
+export type LabelingOption = { label: string; value: LabelingSelectValue };
+
+export const LABELING_SELECT_OPTIONS_MAP: Record<LabelingSelectValue, LabelingOption> = {
+    off: { label: 'Off', value: 'off' },
+    'secure-sync': { label: 'Secure sync (recommended)', value: 'secure-sync' },
+    legacy: { label: 'Legacy', value: 'legacy' },
+};
+
+export const LABELING_SELECT_OPTIONS = typedObjectValues(LABELING_SELECT_OPTIONS_MAP);
