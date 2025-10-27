@@ -2,6 +2,7 @@ import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { initLog } from '@trezor/connect/src/utils/debug';
 import { CoreInPopup } from '@trezor/connect-web/src/impl/core-in-popup';
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
+import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
 
 import { parseConnectSettings } from './connectSettings';
 import { ConnectSettingsWebextension } from './proxy';
@@ -40,6 +41,16 @@ export class CoreInPopupWebextension extends CoreInPopup {
 }
 
 export class CoreInSuiteDesktopWebextension extends CoreInSuiteDesktop {
+    public init(settings: InitFullSettings<ConnectSettingsWebextension>): Promise<void> {
+        if (settings._extendWebextensionLifetime) {
+            extendLifetime();
+        }
+
+        return super.init(settings);
+    }
+}
+
+export class CoreInSuiteWebWebextension extends CoreInSuiteWeb {
     public init(settings: InitFullSettings<ConnectSettingsWebextension>): Promise<void> {
         if (settings._extendWebextensionLifetime) {
             extendLifetime();

@@ -12,12 +12,16 @@ import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 
 import { parseConnectSettings } from './connectSettings';
-import { CoreInPopupWebextension, CoreInSuiteDesktopWebextension } from './impl';
+import {
+    CoreInPopupWebextension,
+    CoreInSuiteDesktopWebextension,
+    CoreInSuiteWebWebextension,
+} from './impl';
 
 const _settings = parseConnectSettings();
 
 const impl = new TrezorConnectDynamic<
-    'core-in-popup' | 'core-in-suite-desktop',
+    'core-in-popup' | 'core-in-suite-desktop' | 'core-in-suite-web',
     ConnectSettingsWebextension,
     ConnectFactoryDependencies<ConnectSettingsWebextension>
 >({
@@ -30,10 +34,16 @@ const impl = new TrezorConnectDynamic<
             type: 'core-in-suite-desktop',
             impl: new CoreInSuiteDesktopWebextension(),
         },
+        {
+            type: 'core-in-suite-web',
+            impl: new CoreInSuiteWebWebextension(),
+        },
     ],
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWebextension>) => {
         if (settings.coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
+        } else if (settings.coreMode === 'suite-web') {
+            return 'core-in-suite-web';
         } else {
             return 'core-in-popup';
         }
