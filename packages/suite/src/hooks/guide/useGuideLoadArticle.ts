@@ -3,12 +3,18 @@ import { useEffect, useState } from 'react';
 import type { GuideNode, Locale } from '@suite-common/suite-types';
 
 export const loadPageMarkdownFile = async (id: string, language = 'en-US'): Promise<string> => {
-    const file = await import(
-        /* @vite-ignore */ `@trezor/suite-data/files/guide/${language.toLowerCase()}${id}`
-    );
-    const md = await file.default;
+    const cleanId = id.startsWith('/') ? id : `/${id}`;
+    const url = `/guide/${language.toLowerCase()}${cleanId}`;
 
-    return md;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Failed to load markdown: ${response.statusText}`);
+    }
+
+    const markdown = await response.text();
+
+    return markdown;
 };
 
 export const useGuideLoadArticle = (currentNode: GuideNode | null, language: Locale = 'en-US') => {
@@ -17,6 +23,7 @@ export const useGuideLoadArticle = (currentNode: GuideNode | null, language: Loc
 
     useEffect(() => {
         if (!currentNode) return;
+
         loadPageMarkdownFile(currentNode.id, language)
             .catch(() => loadPageMarkdownFile(currentNode.id))
             .then(res => setMarkdown(res))

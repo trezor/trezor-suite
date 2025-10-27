@@ -327,6 +327,26 @@ ${code}`,
     };
 };
 
+const markdownServerPlugin = (): Plugin => ({
+    name: 'markdown-server',
+    configureServer(server: ViteDevServer) {
+        return () => {
+            server.middlewares.use((req, res, next) => {
+                if (req.url?.endsWith('.md')) {
+                    const filePath = resolve(__dirname, '../suite-data/files', req.url.slice(1));
+                    if (fs.existsSync(filePath)) {
+                        res.setHeader('Content-Type', 'text/markdown');
+                        res.end(fs.readFileSync(filePath, 'utf-8'));
+
+                        return;
+                    }
+                }
+                next();
+            });
+        };
+    },
+});
+
 export default defineConfig({
     root: '../suite-web/src/static',
     cacheDir: resolve(__dirname, '../../node_modules/.vite'),
@@ -342,6 +362,7 @@ export default defineConfig({
         viteCommonjs(),
         workerPlugin(),
         wasm(),
+        markdownServerPlugin(),
         react({
             babel: {
                 plugins: [
