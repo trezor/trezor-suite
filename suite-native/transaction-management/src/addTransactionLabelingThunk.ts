@@ -24,7 +24,7 @@ export const addTransactionLabelingThunk = createThunk<
     async ({ selectedAccount, txId }, { getState, dispatch }) => {
         const isFeatureFlagOn = selectIsFeatureFlagEnabled(
             getState(),
-            FeatureFlag.IsLocalFirstStorageEnabled,
+            FeatureFlag.showLocalFirstStorage,
         );
 
         if (!isFeatureFlagOn) {

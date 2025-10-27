@@ -9,7 +9,7 @@ import {
 
 export const useIsLabelingEnabled = () => {
     const isFeatureFlagOn = useSelector((state: FeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlag.IsLocalFirstStorageEnabled),
+        selectIsFeatureFlagEnabled(state, FeatureFlag.showLocalFirstStorage),
     );
 
     const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
