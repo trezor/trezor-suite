@@ -13407,6 +13407,9 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/chrome": "npm:^0.0.299"
+    "@types/jest": "npm:29.5.12"
+    "@types/node": "npm:22.13.10"
     tsx: "npm:^4.20.3"
   peerDependencies:
     tslib: ^2.6.2
@@ -13697,6 +13700,7 @@ __metadata:
   dependencies:
     "@babel/preset-typescript": "npm:^7.27.1"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/chrome": "npm:^0.0.299"
