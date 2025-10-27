@@ -6,6 +6,7 @@ import {
     useRenderDeviceDangerBanner,
     useRetryFwAuthenticityChecks,
 } from '@suite-native/device';
+import { useHandleDeviceAuthorization } from '@suite-native/device-authorization';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
 
 /**
@@ -18,6 +19,7 @@ export const useGlobalHooks = () => {
     useBluetoothAdapter();
 
     useDetectDeviceError();
+    useHandleDeviceAuthorization();
     useReportDeviceCompromised();
     useRenderDeviceDangerBanner();
     useDeviceCompromisedNotification();
