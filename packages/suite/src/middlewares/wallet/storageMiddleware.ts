@@ -217,7 +217,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     action.payload?.mode === 'normal' &&
                     !isAutoEjectEnabled
                 ) {
-                    storageActions.saveDevice(action.payload);
+                    (storageActions.saveAccounts([]) ?? Promise.resolve())
+                        // This is a bit strange workaround to ensure that device data will be stored after all account-related db transactions are settled,
+                        // in order not to persist successful discovery before persisting all its accounts
+                        .then(() => storageActions.saveDevice(action.payload));
                 }
             }
 

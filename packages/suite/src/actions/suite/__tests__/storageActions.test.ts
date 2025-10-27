@@ -393,6 +393,7 @@ describe('Storage actions', () => {
             }),
         );
 
+        await new Promise(resolve => setTimeout(resolve));
         store.dispatch(await preloadStore());
         expect(selectDevices(store.getState())[0].label).toBe('New Label');
     });
