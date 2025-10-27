@@ -274,6 +274,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'eip1559',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
