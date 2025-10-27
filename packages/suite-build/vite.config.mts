@@ -351,6 +351,35 @@ ${code}`,
     };
 };
 
+// TODO: after migration to Vite, remove this completely and FIX THE GUIDE LOADING
+// Temporary and hacky plugin to handle the markdown guide apperance in vite dev env
+// It finds and transforms the code to use fetch instead of imports so
+// when we run vite dev the .md files are properly loaded
+const guideMarkdownPlugin = (): Plugin => ({
+    name: 'guide-md-dev',
+    apply: 'serve',
+    enforce: 'pre',
+    transform(code, id) {
+        if (!id.endsWith('useGuideLoadArticle.ts')) return null;
+
+        // This transform the hook logic to use fetch so that
+        // with Vite build md guides are displayed properly
+        const transformed = code.replace(
+            /const\s+file\s*=\s*await\s*import\([^)]*`@trezor\/suite-data\/files\/guide\/\$\{language\.toLowerCase\(\)\}\$\{id\}`[^)]*\);\s*const\s+md\s*=\s*(?:await\s*)?file\.default;?\s*return\s+md;?/s,
+            `
+const response = await fetch(\`/guide/\${language.toLowerCase()}\${id}\`);
+if (!response.ok) throw new Error('Failed to load markdown');
+return await response.text();
+          `.trim(),
+        );
+
+        return {
+            code: transformed,
+            map: null,
+        };
+    },
+});
+
 export default defineConfig({
     root: '../suite-web/src/static',
     cacheDir: resolve(__dirname, '../../node_modules/.vite'),
@@ -361,6 +390,7 @@ export default defineConfig({
         htmlTemplatePlugin(),
         bufferPolyfillPlugin(),
         noopCoreJsPlugin(),
+        guideMarkdownPlugin(),
         staticAliasPlugin(),
         serveCorePlugin(),
         sessionsSharedWorkerPlugin(),
