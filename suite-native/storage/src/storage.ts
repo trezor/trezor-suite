@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { MMKV } from 'react-native-mmkv';
+import { MMKV, createMMKV } from 'react-native-mmkv';
 import RNRestart from 'react-native-restart';
 
 import { captureException, captureMessage } from '@sentry/react-native';
@@ -80,7 +80,7 @@ const alertUser = () => {
 
 const tryInitStorage = (encryptionKey: string) => {
     try {
-        return new MMKV({
+        return createMMKV({
             id: ENCRYPTED_STORAGE_ID,
             encryptionKey,
         });
@@ -116,7 +116,7 @@ export const initMmkvStorage = async (): Promise<Storage> => {
             return Promise.resolve(value);
         },
         removeItem: key => {
-            encryptedStorage.delete(key);
+            encryptedStorage.remove(key);
 
             return Promise.resolve();
         },
