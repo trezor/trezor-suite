@@ -18,6 +18,7 @@ import { useClaimForm } from 'src/hooks/wallet/useClaimForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
 import { SolanaStakingLimitBanner } from '../SolanaStakingLimitBanner';
+import { ClaimRewardsCard } from './ClaimRewardsCard';
 
 interface ClaimModalModalProps {
     onCancel?: () => void;
@@ -47,16 +48,23 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         signTx,
         trigger,
         methods,
+        isClaimingDisabled: isCardanoClaimingDisabled,
     } = useClaimForm({ selectedAccount });
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
+
+    const isCardanoNetworkType = selectedAccount?.account.networkType === 'cardano';
 
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
 
     const { claimableAmount = '0' } = getStakingDataForNetwork(selectedAccount.account) ?? {};
-    const isDisabled =
-        !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
+
+    const isFormInputsValid = !isCardanoNetworkType
+        ? formIsValid && hasValues
+        : !isCardanoClaimingDisabled;
+
+    const isDisabled = !isFormInputsValid || isSubmitting || isLocked() || !device?.available;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     useEffect(() => {
@@ -96,15 +104,17 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
             data-testid="@staking/claim-modal"
             heading={
                 <Translation
-                    id="TR_STAKE_CLAIM_TOKEN"
+                    id={isCardanoNetworkType ? 'TR_STAKE_CLAIM_REWARDS' : 'TR_STAKE_CLAIM_TOKEN'}
                     values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                 />
             }
             description={
-                <Translation
-                    id="TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED"
-                    values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
-                />
+                !isCardanoNetworkType ? (
+                    <Translation
+                        id="TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED"
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                    />
+                ) : undefined
             }
             size="small"
             onCancel={onCancelClick}
@@ -137,29 +147,35 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                             type="claim"
                         />
 
-                        <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
-                            <Paragraph typographyStyle="titleSmall">
-                                <FormattedCryptoAmount
-                                    data-testid="@staking/claim-modal/amount"
-                                    value={claimableAmount}
-                                    symbol={account.symbol}
-                                />
-                            </Paragraph>
-                            <Paragraph typographyStyle="label" variant="tertiary">
-                                <BaseCurrencyValue
-                                    showApproximationIndicator
-                                    amount={claimableAmount}
-                                    symbol={account.symbol}
-                                />
-                            </Paragraph>
-                        </InfoItem>
+                        {isCardanoNetworkType ? (
+                            <ClaimRewardsCard account={account} />
+                        ) : (
+                            <>
+                                <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
+                                    <Paragraph typographyStyle="titleSmall">
+                                        <FormattedCryptoAmount
+                                            data-testid="@staking/claim-modal/amount"
+                                            value={claimableAmount}
+                                            symbol={account.symbol}
+                                        />
+                                    </Paragraph>
+                                    <Paragraph typographyStyle="label" variant="tertiary">
+                                        <BaseCurrencyValue
+                                            showApproximationIndicator
+                                            amount={claimableAmount}
+                                            symbol={account.symbol}
+                                        />
+                                    </Paragraph>
+                                </InfoItem>
 
-                        <InfoItem
-                            direction="column"
-                            label={<Translation id="TR_STAKE_CLAIMING_PERIOD" />}
-                        >
-                            <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
-                        </InfoItem>
+                                <InfoItem
+                                    direction="column"
+                                    label={<Translation id="TR_STAKE_CLAIMING_PERIOD" />}
+                                >
+                                    <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
+                                </InfoItem>
+                            </>
+                        )}
 
                         <Fees
                             control={control}

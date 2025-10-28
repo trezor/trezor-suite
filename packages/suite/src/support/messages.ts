@@ -9336,6 +9336,11 @@ export default defineMessages({
         id: 'TR_STAKING_REWARDS_REMAIN_INTACT',
         defaultMessage: 'Your past rewards remain safe and intact.',
     },
+    TR_STAKING_REWARDS_NETWORK_FEE_WARNING: {
+        id: 'TR_STAKING_REWARDS_NETWORK_FEE_WARNING',
+        defaultMessage:
+            'Network fee is higher than your rewards. Consider waiting until your rewards grow before claiming.',
+    },
     TR_STAKING_NEW_PROVIDER: {
         id: 'TR_STAKING_NEW_PROVIDER',
         defaultMessage: 'New provider',
@@ -9719,6 +9724,10 @@ export default defineMessages({
     TR_STAKE_UNSTAKE_TO_CLAIM: {
         id: 'TR_STAKE_UNSTAKE_TO_CLAIM',
         defaultMessage: 'Unstake to claim',
+    },
+    TR_STAKE_CLAIM_REWARDS: {
+        id: 'TR_STAKE_CLAIM_REWARDS',
+        defaultMessage: 'Claim rewards',
     },
     TR_STAKE_ETH_REWARDS_EARN_APY: {
         id: 'TR_STAKE_ETH_REWARDS_EARN_APY',

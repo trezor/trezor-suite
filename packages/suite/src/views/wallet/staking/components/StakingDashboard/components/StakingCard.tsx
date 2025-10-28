@@ -127,9 +127,11 @@ export const StakingCard = ({
         totalPendingStakeBalance = '0',
         withdrawTotalAmount = '0',
         claimableAmount = '0',
+        restakedReward = '0',
     } = getStakingDataForNetwork(selectedAccount) ?? {};
 
     const canUnstake = new BigNumber(autocompoundBalance).gt(0);
+    const canClaimRewards = new BigNumber(restakedReward).gt(0);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
 
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
@@ -169,6 +171,21 @@ export const StakingCard = ({
 
             analytics.report({
                 type: EventType.StakingStake,
+                payload: {
+                    action: 'continue',
+                    step: 'staking-dashboard',
+                    networkSymbol: selectedAccount?.symbol,
+                },
+            });
+        }
+    };
+
+    const openClaimModal = () => {
+        if (canClaimRewards) {
+            dispatch(openModal({ type: 'claim' }));
+
+            analytics.report({
+                type: EventType.StakingClaim,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',
@@ -300,7 +317,7 @@ export const StakingCard = ({
                 </Grid>
 
                 <Row margin={{ top: 'auto' }} gap={spacings.xs}>
-                    {!isCardanoNetworkType && (
+                    {!isCardanoNetworkType ? (
                         <Tooltip content={stakingMessageContent}>
                             <Button
                                 onClick={openStakeModal}
@@ -312,6 +329,14 @@ export const StakingCard = ({
                                 <Translation id="TR_STAKE_STAKE_MORE" />
                             </Button>
                         </Tooltip>
+                    ) : (
+                        <Button
+                            onClick={openClaimModal}
+                            isDisabled={!canClaimRewards}
+                            variant="primary"
+                        >
+                            <Translation id="TR_STAKE_CLAIM_REWARDS" />
+                        </Button>
                     )}
                     <Tooltip content={unstakingMessageContent}>
                         <Button
