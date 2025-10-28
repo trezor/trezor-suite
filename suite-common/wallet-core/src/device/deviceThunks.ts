@@ -122,18 +122,6 @@ export const forgetDisconnectedDevices = createThunk(
     },
 );
 
-export const forgetAllDisconnectedDevices = createThunk(
-    `${DEVICE_MODULE_PREFIX}/forgetAllDisconnectedDevices`,
-    (_, { dispatch, getState }) => {
-        const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
-        physicalDeviceWallets.forEach(device => {
-            if (!device.connected) {
-                dispatch(forgetDisconnectedDevices({ device, forceForget: true }));
-            }
-        });
-    },
-);
-
 /**
  * Called from `suiteMiddleware`
  * Keep `suite` reducer synchronized with `devices` reducer
@@ -351,7 +339,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     },
 );
 
-// Note: currently used only by mobile, see `forgetAllDisconnectedDevices` for a simpler thunk
+// Note: currently used only by mobile
 export const toggleAutoEjectThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
     (_, { dispatch, getState }) => {

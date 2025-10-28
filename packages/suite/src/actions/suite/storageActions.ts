@@ -251,16 +251,6 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
     ]);
 };
 
-export const forgetAllDevicesThunk = createThunk(
-    `${STORAGE.MODULE_PREFIX}/forgetAllDevices`,
-    (_, { dispatch, getState }) => {
-        const allDevices = selectDevices(getState());
-        allDevices.forEach(device => {
-            dispatch(forgetDevice(device));
-        });
-    },
-);
-
 export const saveAccounts = (accounts: SuccessfulAccount[]) => {
     if (!db.isAccessible()) return;
 
