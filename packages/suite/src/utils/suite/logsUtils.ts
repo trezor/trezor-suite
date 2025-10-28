@@ -120,7 +120,7 @@ export const redactAction = (action: LogEntry) => {
         case DEVICE.CONNECT:
         case DEVICE.DISCONNECT:
         case deviceActions.updateSelectedDevice.type:
-        case deviceActions.rememberDevice.type:
+        case deviceActions.setRememberDevice.type:
             payload = redactDevice(action.payload);
             break;
         default:

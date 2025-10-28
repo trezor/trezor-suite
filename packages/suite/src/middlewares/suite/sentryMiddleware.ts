@@ -55,7 +55,7 @@ const breadcrumbActions = new Set<Action['type']>([
     accountsActions.createAccount.type,
     accountsActions.updateAccount.type,
     deviceActions.updateSelectedDevice.type,
-    deviceActions.rememberDevice.type,
+    deviceActions.setRememberDevice.type,
     METADATA.ADD_PROVIDER,
     changeNetworks.type,
     TRANSPORT.START,

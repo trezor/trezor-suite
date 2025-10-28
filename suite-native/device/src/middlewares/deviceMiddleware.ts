@@ -24,7 +24,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.selectDevice,
             deviceActions.addButtonRequest,
             deviceActions.removeButtonRequests,
-            deviceActions.rememberDevice,
+            deviceActions.setRememberDevice,
             deviceActions.forgetDevice,
         )(action)
     ) {

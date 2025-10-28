@@ -94,7 +94,7 @@ const log =
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
             case deviceActions.updateSelectedDevice.type:
-            case deviceActions.rememberDevice.type:
+            case deviceActions.setRememberDevice.type:
                 api.dispatch(
                     addLog({
                         type: action.type,

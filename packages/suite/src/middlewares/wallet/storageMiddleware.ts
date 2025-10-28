@@ -178,7 +178,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 api.dispatch(storageActions.saveAnalytics());
             }
 
-            if (deviceActions.rememberDevice.match(action)) {
+            if (deviceActions.setRememberDevice.match(action)) {
                 const isAutoEjectEnabled = selectIsAutoEjectEnabled(api.getState());
 
                 if (action.payload.remember && !isAutoEjectEnabled) {

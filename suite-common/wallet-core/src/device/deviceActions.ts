@@ -68,11 +68,9 @@ const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice)
     payload,
 }));
 
-const rememberDevice = createAction(
-    `${DEVICE_MODULE_PREFIX}/rememberDevice`,
-    ({ device }: { device: TrezorDevice }) => ({
-        payload: { device, remember: !device.remember },
-    }),
+const setRememberDevice = createAction(
+    `${DEVICE_MODULE_PREFIX}/setRememberDevice`,
+    (payload: { device: TrezorDevice; remember: boolean }) => ({ payload }),
 );
 
 const setTemporaryRememberedDevice = createAction(
@@ -174,7 +172,7 @@ export const deviceActions = {
     addAuthorizedDevice,
     deviceDisconnect,
     dismissFirmwareAuthenticityCheck,
-    rememberDevice,
+    setRememberDevice,
     setTemporaryRememberedDevice,
     forgetDevice,
     forgetDevicePersistentData,
