@@ -341,6 +341,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DeviceCompromisedModal]: undefined;
     [RootStackRoutes.TradingWebView]: {
         closeCallbackUrl: string;
+        tradingType: TradingType;
         source?: { uri?: string; html?: string };
         orderId?: string;
     };

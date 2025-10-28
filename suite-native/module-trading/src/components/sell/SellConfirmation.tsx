@@ -4,8 +4,8 @@ import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { SellLegalSheet } from './SellLegalSheet';
-import { useSellFlow } from '../../hooks/sell/useSellFlow';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
+import { useSellSelectQuote } from '../../hooks/sell/useSellSelectQuote';
 
 export type ConfirmationProps = {
     enteringAnimation?: AnimatedProps<any>['entering'];
@@ -21,7 +21,7 @@ export const SellConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
         cancelLegalTermsConsent,
         giveLegalTermsConsent,
         selectQuote,
-    } = useSellFlow(form);
+    } = useSellSelectQuote(form);
 
     const [quote, sendAsset] = form.watch(['quote', 'sendAsset']);
 
