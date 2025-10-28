@@ -181,17 +181,15 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (deviceActions.rememberDevice.match(action)) {
                 const isAutoEjectEnabled = selectIsAutoEjectEnabled(api.getState());
 
-                api.dispatch(
-                    storageActions.rememberDevice(
-                        action.payload.device,
-                        isAutoEjectEnabled ? false : action.payload.remember,
-                    ),
-                );
+                if (action.payload.remember && !isAutoEjectEnabled) {
+                    api.dispatch(storageActions.rememberDevice(action.payload.device));
+                } else {
+                    api.dispatch(storageActions.forgetDevice(action.payload.device));
+                }
             }
 
             if (deviceActions.forgetDevice.match(action)) {
                 api.dispatch(storageActions.forgetDevice(action.payload.device));
-                api.dispatch(storageActions.forgetDeviceMetadataError(action.payload.device));
             }
 
             if (tokenDefinitionsActions.setTokenStatus.match(action)) {
