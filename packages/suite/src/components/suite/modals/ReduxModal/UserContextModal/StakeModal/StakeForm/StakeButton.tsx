@@ -42,7 +42,12 @@ export const StakeButton = () => {
     const isDisabled = !isFormInputsValid || isSubmitting || isLocked() || !device?.available;
 
     const onStakeClick = () => {
-        handleSubmit(onSubmit)();
+        if (isCardano) {
+            // direct call for cardano as there is no need to validate inputs
+            onSubmit();
+        } else {
+            handleSubmit(onSubmit)();
+        }
 
         analytics.report({
             type: EventType.StakingStake,
