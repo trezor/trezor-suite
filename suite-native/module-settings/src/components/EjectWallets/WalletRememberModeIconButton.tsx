@@ -2,11 +2,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    deviceActions,
-    selectIsDeviceAutoEjectEnabled,
-    toggleRememberDevice,
-} from '@suite-common/wallet-core';
+import { deviceActions, selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -20,7 +16,7 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
 
     const handleEjectWallet = () => {
         if (device.connected) {
-            dispatch(toggleRememberDevice({ device }));
+            dispatch(deviceActions.rememberDevice({ device }));
             if (device.remember) {
                 showToast({
                     variant: 'default',

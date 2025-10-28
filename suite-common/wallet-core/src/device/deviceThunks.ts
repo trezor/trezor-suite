@@ -48,19 +48,6 @@ import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
 
 /**
- * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
- * and if it is remembered it will be forgotten.
- * @param forceRemember can be set to `true` to remember given device regardless of its current state.
- *
- * Use `forgetDevice` to forget a device regardless if its current state.
- */
-export const toggleRememberDevice = createThunk(
-    `${DEVICE_MODULE_PREFIX}/toggleRememberDevice`,
-    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) =>
-        dispatch(deviceActions.rememberDevice({ device, forceRemember })),
-);
-
-/**
  * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
@@ -232,7 +219,7 @@ export const initDevices = createThunk(
             // if there are force remember devices, forget them and pick the first one of them as selected device
             const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
             forcedDevices.forEach(d => {
-                dispatch(toggleRememberDevice({ device: d }));
+                dispatch(deviceActions.rememberDevice({ device: d }));
             });
 
             dispatch(
