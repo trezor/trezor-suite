@@ -118,11 +118,7 @@ const InnerModalBase = ({
 
                                 {(heading || description) && (
                                     <Column flex="1" overflow="hidden">
-                                        {heading && (
-                                            <H3 data-testid="@modal/header" ellipsisLineCount={1}>
-                                                {heading}
-                                            </H3>
-                                        )}
+                                        {heading && <H3 data-testid="@modal/header">{heading}</H3>}
                                         {description && (
                                             <Text
                                                 variant="tertiary"

@@ -7,6 +7,7 @@ export const DEVICE_ANIMATION_TYPES = {
     CONNECT_CABLE: 'CONNECT_CABLE',
     CONNECT_BT_INTRO: 'CONNECT_BT_INTRO',
     CONNECT_BT_LOOP: 'CONNECT_BT_LOOP',
+    PAIRING_MODE: 'PAIRING_MODE',
 } as const;
 
 export type DeviceAnimationType =

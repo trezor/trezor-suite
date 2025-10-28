@@ -47,6 +47,10 @@ export const DEVICE_ANIMATION_CONFIG = {
         models: { [DeviceModelInternal.T3W1]: {} },
         hasSize: false,
     },
+    [DEVICE_ANIMATION_TYPES.PAIRING_MODE]: {
+        models: { [DeviceModelInternal.T3W1]: {} },
+        hasSize: false,
+    },
 } as const;
 
 export type DeviceAnimationConfig = typeof DEVICE_ANIMATION_CONFIG;

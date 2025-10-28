@@ -7737,6 +7737,14 @@ export default defineMessages({
         id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
         defaultMessage: 'Don’t see your Trezor?',
     },
+    TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE: {
+        id: 'TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE',
+        defaultMessage: 'Your Trezor needs to be in pairing mode',
+    },
+    TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED: {
+        id: 'TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED',
+        defaultMessage: 'This window will close as soon as your Trezor is paired.',
+    },
     TR_STILL_NOT_WORKING: {
         id: 'TR_STILL_NOT_WORKING',
         defaultMessage: 'Still not working',

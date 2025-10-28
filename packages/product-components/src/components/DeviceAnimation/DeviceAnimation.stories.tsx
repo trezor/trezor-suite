@@ -57,3 +57,4 @@ export const Hologram = createDeviceAnimationStory('HOLOGRAM');
 export const ConnectCable = createDeviceAnimationStory('CONNECT_CABLE');
 export const ConnectBtIntro = createDeviceAnimationStory('CONNECT_BT_INTRO');
 export const ConnectBtLoop = createDeviceAnimationStory('CONNECT_BT_LOOP');
+export const PairingMode = createDeviceAnimationStory('PAIRING_MODE');
