@@ -9,25 +9,17 @@ import { CoinjoinAccount } from 'src/types/wallet/coinjoin';
  * Strip fields from Device
  * @param {AcquiredDevice} device
  */
-export const serializeDevice = (
-    device: AcquiredDevice,
-    forceRemember?: true,
-): DeviceWithEmptyPath => {
-    const sd: DeviceWithEmptyPath = {
-        ...device,
-        path: '',
-        remember: true,
-        connected: false,
-        buttonRequests: [],
-        authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
-        // instead persisted on `persistentDeviceData` as part of the effort to unlink device from wallet
-        thp: undefined,
-        bluetoothProps: undefined,
-    };
-    if (forceRemember) sd.forceRemember = true;
-
-    return sd;
-};
+export const serializeDevice = (device: AcquiredDevice): DeviceWithEmptyPath => ({
+    ...device,
+    path: '',
+    remember: true,
+    connected: false,
+    buttonRequests: [],
+    authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
+    // instead persisted on `persistentDeviceData` as part of the effort to unlink device from wallet
+    thp: undefined,
+    bluetoothProps: undefined,
+});
 
 /**
  * Serialize coinjoin account so that it is never saved with a session and transaction candidates.

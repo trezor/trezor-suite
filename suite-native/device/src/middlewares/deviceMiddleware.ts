@@ -10,7 +10,6 @@ import {
     observeSelectedDevice,
     selectAccountsByDeviceState,
     selectDiscoveryByDevicePath,
-    selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
@@ -25,7 +24,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.selectDevice,
             deviceActions.addButtonRequest,
             deviceActions.removeButtonRequests,
-            deviceActions.rememberDevice,
+            deviceActions.setRememberDevice,
             deviceActions.forgetDevice,
         )(action)
     ) {
@@ -37,12 +36,8 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState, extra }) => {
-        const isDeviceForceRemembered = selectIsDeviceForceRemembered(getState());
-
         if (isDeviceEventAction(action, DEVICE.DISCONNECT)) {
-            if (!isDeviceForceRemembered) {
-                dispatch(forgetDisconnectedDevices({ device: action.payload }));
-            }
+            dispatch(forgetDisconnectedDevices({ device: action.payload }));
 
             const discovery = selectDiscoveryByDevicePath(getState(), action.payload.path);
             if (discovery?.status === 'complete' && action.payload.mode === 'normal') {
@@ -71,10 +66,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 break;
             }
             case DEVICE.DISCONNECT:
-                if (!isDeviceForceRemembered) {
-                    // In case of force remember we don't want to call this thunk because it will change selected device
-                    dispatch(handleDeviceDisconnect(action.payload));
-                }
+                dispatch(handleDeviceDisconnect(action.payload));
 
                 clearAndUnlockDeviceAccessQueue();
                 break;
