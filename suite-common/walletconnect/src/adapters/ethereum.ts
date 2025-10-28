@@ -104,15 +104,34 @@ const ethereumRequestThunk = createThunk<
         case 'eth_signTypedData_v4': {
             const [address, data] = event.params.request.params;
             const account = getAccount(address);
+            const parsedData = JSON.parse(data);
+
+            // For Trezor One (T1B1), we need to pre-compute the hashes
+            // as the device cannot process the full EIP-712 JSON structure
+            let payload: any = {
+                path: account.path,
+                data: parsedData,
+                metamask_v4_compat: true,
+            };
+
+            if (device?.features?.internal_model === 'T1B1') {
+                // Import the hash computation function
+                const { transformTypedData } = await import('@trezor/connect-plugin-ethereum');
+                const transformed = transformTypedData(parsedData, true);
+
+                // Add the pre-computed hashes for Trezor One
+                payload = {
+                    ...payload,
+                    domain_separator_hash: transformed.domain_separator_hash,
+                    message_hash: transformed.message_hash,
+                };
+            }
+
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     ...popupCallCommonParams,
                     method: 'ethereumSignTypedData',
-                    payload: {
-                        path: account.path,
-                        data: JSON.parse(data),
-                        metamask_v4_compat: true,
-                    },
+                    payload,
                 }),
             );
             const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
