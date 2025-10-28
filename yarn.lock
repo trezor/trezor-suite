@@ -11275,7 +11275,8 @@ __metadata:
     react-native-get-random-values: "npm:^1.11.0"
     react-native-keyboard-controller: "npm:1.19.2"
     react-native-launch-arguments: "npm:^4.1.1"
-    react-native-mmkv: "npm:2.12.2"
+    react-native-mmkv: "npm:~4.0.0"
+    react-native-nitro-modules: "npm:^0.31.2"
     react-native-performance: "npm:^5.1.4"
     react-native-permissions: "npm:5.4.2"
     react-native-quick-crypto: "npm:0.7.17"
@@ -12854,7 +12855,7 @@ __metadata:
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
-    react-native-mmkv: "npm:2.12.2"
+    react-native-mmkv: "npm:~4.0.0"
     react-native-restart: "npm:0.0.27"
     redux-persist: "npm:6.0.0"
   languageName: unknown
@@ -38553,13 +38554,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-mmkv@npm:2.12.2":
-  version: 2.12.2
-  resolution: "react-native-mmkv@npm:2.12.2"
+"react-native-mmkv@npm:~4.0.0":
+  version: 4.0.0
+  resolution: "react-native-mmkv@npm:4.0.0"
   peerDependencies:
     react: "*"
-    react-native: ">=0.71.0"
-  checksum: 10/c1ebb8e81905ee8ce17858ff6096525cbdd0e51892dca80a3cd6e26feb5e979a9c7d609c5a55886150efb0136c5899de174c71115f81607019ed7af68678797b
+    react-native: "*"
+    react-native-nitro-modules: "*"
+  checksum: 10/5247b3e19017c4059c997ac79c7e89d33a49c00e2255fb4c5ef8e993fea0ee3aed0b48be9576d154bd098c22099bfd93a70fb071a6c9d865955c97f0aa1a8759
+  languageName: node
+  linkType: hard
+
+"react-native-nitro-modules@npm:^0.31.2":
+  version: 0.31.2
+  resolution: "react-native-nitro-modules@npm:0.31.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/6c44eb074ee51b6b40bd62e657e4aab3c667af1c33dcfbe8a0b88c027db54c4148903a273fc5f008213d0add32b5508bce99362746d3eb6e5586d1a805296567
   languageName: node
   linkType: hard
 
