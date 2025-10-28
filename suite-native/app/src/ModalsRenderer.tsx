@@ -11,8 +11,5 @@ export const ModalsRenderer = () => (
         <ToastRenderer />
         <Snow />
         <BiometricsModalRenderer />
-        {/* Notifications are disabled until the problem with after-import notifications flooding is solved. */}
-        {/* More here: https://github.com/trezor/trezor-suite/issues/7721  */}
-        {/* <NotificationRenderer /> */}
     </>
 );
