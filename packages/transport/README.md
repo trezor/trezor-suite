@@ -15,9 +15,3 @@ _You probably don't want to use this package directly._ For communication with T
 - exposing single API for various transport methods:
     - Trezor Bridge
     - WebUSB
-
-## Publishing
-
-This package is published to npm registry because it is a dependency of [@trezor/connect](https://github.com/trezor/trezor-suite/issues/5440) which can be installed as a standalone package.
-
-[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.

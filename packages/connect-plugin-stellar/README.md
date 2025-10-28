@@ -5,7 +5,3 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect-plugin-stellar/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect-plugin-stellar/package.json)
 
 Serializer for data sent between StellarSdk and [@trezor/connect](../connect)
-
-## Publishing
-
-[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.
