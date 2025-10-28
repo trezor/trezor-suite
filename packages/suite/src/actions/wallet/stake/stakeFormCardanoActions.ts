@@ -5,6 +5,7 @@ import {
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    CARDANO_EVERSTAKE_DREP,
     CARDANO_EVERSTAKE_STAKING_POOL,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
@@ -116,21 +117,18 @@ export const prepareTxPlan = async (
 
     const certificates = [];
 
-    if (action === 'delegate' || action === 'voteDelegate') {
+    if (action === 'delegate') {
         certificates.push(...getDelegationCertificates(stakingPath, pool, !isStakingActive));
-    }
 
-    if (action === 'voteAbstain') {
-        const dRep = { type: PROTO.CardanoDRepType.ABSTAIN };
-        certificates.push(...getVotingCertificates(stakingPath, dRep));
-    }
+        const isVotingToAnotherDrep =
+            votingDelegation?.type === 'another_drep' &&
+            validateCardanoDrep(votingDelegation.drepId);
 
-    if (
-        action === 'voteDelegate' &&
-        votingDelegation?.type === 'another_drep' &&
-        validateCardanoDrep(votingDelegation.drepId)
-    ) {
-        const hex = drepBech32ToKeyHashHex(votingDelegation.drepId);
+        const drepBech32 = isVotingToAnotherDrep
+            ? votingDelegation.drepId
+            : CARDANO_EVERSTAKE_DREP.bech32;
+
+        const hex = drepBech32ToKeyHashHex(drepBech32);
         const dRep = {
             type: PROTO.CardanoDRepType.KEY_HASH,
             hex,
@@ -188,14 +186,16 @@ const getTransactionData = (
 
     const { account } = selectedAccount;
 
-    const action = votingDelegation ? 'voteDelegate' : 'delegate';
-
     if (stakeType === 'stake') {
-        return prepareTxPlan(account, action, votingDelegation);
+        return prepareTxPlan(account, 'delegate', votingDelegation);
     }
 
     if (stakeType === 'unstake') {
         return prepareTxPlan(account, 'deregister', votingDelegation);
+    }
+
+    if (stakeType === 'claim') {
+        return prepareTxPlan(account, 'withdrawal', votingDelegation);
     }
 };
 

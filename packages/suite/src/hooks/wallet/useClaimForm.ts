@@ -13,6 +13,7 @@ import { CRYPTO_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
+import { useCardanoStaking } from './useCardanoStaking';
 
 export const ClaimFormContext = createContext<ClaimContextValues | null>(null);
 ClaimFormContext.displayName = 'ClaimFormContext';
@@ -131,6 +132,13 @@ export const useClaimForm = ({ selectedAccount }: UseClaimFormsProps): ClaimCont
         }
     }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
+    const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking();
+    const isClaimingDisabled = !withdrawingAvailable.status;
+
+    useEffect(() => {
+        calculateFeeAndDeposit('withdrawal');
+    }, [calculateFeeAndDeposit]);
+
     return {
         ...methods,
         methods,
@@ -148,6 +156,7 @@ export const useClaimForm = ({ selectedAccount }: UseClaimFormsProps): ClaimCont
         onClaimChange,
         feeInfo,
         changeFeeLevel,
+        isClaimingDisabled,
     };
 };
 

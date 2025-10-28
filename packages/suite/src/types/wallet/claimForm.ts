@@ -13,4 +13,5 @@ export type ClaimContextValues = UseFormReturn<ClaimFormState> &
         onClaimChange: (amount: string) => Promise<void>;
     } & {
         methods: UseFormReturn<ClaimFormState>;
+        isClaimingDisabled?: boolean;
     };
