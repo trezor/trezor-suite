@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useURL } from 'expo-linking';
+import { useLinkingURL } from 'expo-linking';
 import { WebViewSource } from 'react-native-webview/lib/WebViewTypes';
 
 import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
@@ -31,12 +31,12 @@ const webViewStyle = prepareNativeStyle(_ => ({ flex: 1 }));
 
 export const TradingWebViewScreen = () => {
     const {
-        params: { source, closeCallbackUrl, orderId },
+        params: { source, tradingType, closeCallbackUrl, orderId },
     } = useRoute<RouteProps>();
     const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
-    const receivedDeeplinkUrl = useURL();
+    const receivedDeeplinkUrl = useLinkingURL();
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId ?? ''),
     );
@@ -61,12 +61,12 @@ export const TradingWebViewScreen = () => {
         isInProgress: true,
     });
 
-    // when url contains closeCallbackUrl or TRADING_URL_DEFAULT_BACK, go back and mark the trade to be opened
+    // when url contains closeCallbackUrl or TRADING_URL_DEFAULT_BACK, go back and mark the trade to be opened for buy
     const checkForGoBackOnUrl = useCallback(
         (url: string | null) => {
             const urlString = url ?? '';
             if (doesUrlContainCloseCallbackUrl(urlString, closeCallbackUrl)) {
-                if (orderId) {
+                if (orderId && tradingType === 'buy') {
                     dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
                 }
                 navigation.goBack();
@@ -76,7 +76,7 @@ export const TradingWebViewScreen = () => {
 
             return true;
         },
-        [closeCallbackUrl, dispatch, navigation, orderId],
+        [closeCallbackUrl, dispatch, navigation, orderId, tradingType],
     );
 
     useEffect(() => {

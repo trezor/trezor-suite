@@ -3,18 +3,31 @@ import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixt
 
 import { SellConfirmation } from '../SellConfirmation';
 
-jest.mock('../../../hooks/sell/useSellFlow', () => ({
-    useSellFlow: jest.fn(),
+jest.mock('../../../hooks/sell/useSellSelectQuote', () => ({
+    useSellSelectQuote: jest.fn(),
 }));
 
 jest.mock('../../../hooks/sell/useSellFormContext', () => ({
     useSellFormContext: () => ({
-        watch: () => [{ exchange: 'test-provider' }, { symbol: 'btc' }],
+        watch: (fields: any) => {
+            if (Array.isArray(fields)) {
+                return fields.map((field: string) => {
+                    if (field === 'quote') return { exchange: 'test-provider' };
+
+                    if (field === 'sendAsset') return { symbol: 'btc' };
+
+                    return null;
+                });
+            }
+
+            return null;
+        },
     }),
 }));
 
 describe('SellConfirmation', () => {
-    const mockUseSellFlow = require('../../../hooks/sell/useSellFlow').useSellFlow;
+    const mockUseSellSelectQuote = require('../../../hooks/sell/useSellSelectQuote')
+        .useSellSelectQuote;
 
     const renderConfirmation = () =>
         renderWithStoreProviderAsync(<SellConfirmation />, {
@@ -22,12 +35,12 @@ describe('SellConfirmation', () => {
         });
 
     it('should render continue button when canProceed is true', async () => {
-        mockUseSellFlow.mockReturnValue({
+        mockUseSellSelectQuote.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
-            isConsentRequested: false,
-            giveConsent: jest.fn(),
-            cancelConsent: jest.fn(),
+            isLegalTermsConsentRequested: false,
+            giveLegalTermsConsent: jest.fn(),
+            cancelLegalTermsConsent: jest.fn(),
         });
 
         const { getByText } = await renderConfirmation();
@@ -36,12 +49,12 @@ describe('SellConfirmation', () => {
     });
 
     it('should not render continue button when canProceed is false', async () => {
-        mockUseSellFlow.mockReturnValue({
+        mockUseSellSelectQuote.mockReturnValue({
             canProceed: false,
             selectQuote: jest.fn(),
-            isConsentRequested: false,
-            giveConsent: jest.fn(),
-            cancelConsent: jest.fn(),
+            isLegalTermsConsentRequested: false,
+            giveLegalTermsConsent: jest.fn(),
+            cancelLegalTermsConsent: jest.fn(),
         });
 
         const { queryByText } = await renderConfirmation();

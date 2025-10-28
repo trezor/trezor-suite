@@ -1,3 +1,5 @@
+import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
+
 import { tradingSellActions } from '@suite-common/trading';
 import {
     TestStore,
@@ -5,280 +7,359 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { bankAccounts, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { useSellFlow } from '../useSellFlow';
-import { useSellForm } from '../useSellForm';
 
-// Store the thunk arguments for testing
-let capturedThunkArgs: any = null;
+// Store captured arguments for testing side effects (processResponseData callback)
+let capturedHandleTradeArgs:
+    | Parameters<typeof import('@suite-common/trading').sellThunks.handleTradeThunk>[0]
+    | null = null;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     sellThunks: {
-        selectQuoteThunk: (args: any) => {
-            capturedThunkArgs = args;
+        handleTradeThunk: (args: unknown) => {
+            capturedHandleTradeArgs = args as typeof capturedHandleTradeArgs;
 
-            return () => args;
+            return {
+                type: 'handleTradeThunkMock',
+                payload: args,
+            };
         },
-        handleTradeThunk: (args: unknown) => () => args,
-        confirmTradeThunk: (args: unknown) => () => args,
+        confirmTradeThunk: (args: unknown) => ({
+            type: 'confirmTradeThunkMock',
+            payload: args,
+        }),
     },
+    sellUtils: {
+        needToRegisterOrVerifyBankAccount: jest.fn(
+            ({ quote }) =>
+                // Mock logic: return true if exchange is 'banxa-sell' and quote has no quoteId
+                quote?.exchange === 'banxa-sell' && !quote?.quoteId,
+        ),
+    },
+}));
+
+const mockNavigation = {
+    navigate: jest.fn(),
+};
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => mockNavigation,
 }));
 
 describe('useSellFlow', () => {
     let store: TestStore;
-    let sellForm: SellFormType;
-
-    const renderSellForm = () => renderHookWithStoreProviderAsync(() => useSellForm(), { store });
 
     const renderUseSellFlow = () =>
-        renderHookWithStoreProviderAsync(() => useSellFlow(sellForm), { store });
+        renderHookWithStoreProviderAsync(() => useSellFlow(), { store });
 
     beforeEach(async () => {
         store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
 
-        const { result } = await renderSellForm();
-        sellForm = result.current;
-        capturedThunkArgs = null; // Reset before each test
+        capturedHandleTradeArgs = null;
+        mockNavigation.navigate.mockClear();
+        jest.clearAllMocks();
     });
 
-    describe('canProceed', () => {
-        it('should be false when no quote is selected in form', async () => {
-            const { result } = await renderUseSellFlow();
-
-            expect(result.current.canProceed).toEqual(false);
-        });
-
-        it('should be false when quotes are being fetched', async () => {
-            act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
-                store.dispatch(tradingSellActions.setIsLoading(true));
-            });
-
-            const { result } = await renderUseSellFlow();
-
-            expect(result.current.canProceed).toEqual(false);
-        });
-
-        it('should be true when quote is selected', async () => {
-            act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
-            });
-
-            const { result } = await renderUseSellFlow();
-
-            expect(result.current.canProceed).toEqual(true);
-        });
-    });
-
-    describe('selectQuote', () => {
-        it('should do nothing when no quote is selected', async () => {
-            const { result } = await renderUseSellFlow();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
-        });
-
-        it('should request consent', async () => {
-            act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
-                store.dispatch(
-                    tradingSellActions.saveQuoteRequest({
-                        cryptoCurrency: sellQuotes[0].cryptoCurrency!,
-                        amountInCrypto: sellQuotes[0].amountInCrypto!,
-                        fiatCurrency: sellQuotes[0].fiatCurrency!,
-                    }),
-                );
-            });
-            const { result } = await renderUseSellFlow();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const { userConsent } = capturedThunkArgs;
-
-            act(() => {
-                userConsent({
-                    provider: 'Banxa',
-                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
-                });
-            });
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
-        });
-    });
-
-    describe('giveConsent', () => {
-        beforeEach(() => {
-            act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
-                store.dispatch(
-                    tradingSellActions.saveQuoteRequest({
-                        cryptoCurrency: sellQuotes[0].cryptoCurrency!,
-                        amountInCrypto: sellQuotes[0].amountInCrypto!,
-                        fiatCurrency: sellQuotes[0].fiatCurrency!,
-                    }),
-                );
-            });
-        });
-
-        it('should resolve consent', async () => {
-            const { result } = await renderUseSellFlow();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const { userConsent } = capturedThunkArgs;
-
-            act(() => {
-                userConsent({
-                    provider: 'Banxa',
-                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
-                });
-            });
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
-
-            act(() => {
-                result.current.giveLegalTermsConsent();
-            });
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
-        });
-    });
-
-    describe('cancelConsent', () => {
-        beforeEach(() => {
-            act(() => {
-                sellForm.setValue('quote', sellQuotes[0]);
-                store.dispatch(
-                    tradingSellActions.saveQuoteRequest({
-                        cryptoCurrency: sellQuotes[0].cryptoCurrency!,
-                        amountInCrypto: sellQuotes[0].amountInCrypto!,
-                        fiatCurrency: sellQuotes[0].fiatCurrency!,
-                    }),
-                );
-            });
-        });
-
-        it('should resolve consent (with false value)', async () => {
-            const { result } = await renderUseSellFlow();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const { userConsent } = capturedThunkArgs;
-
-            act(() => {
-                userConsent({
-                    provider: 'Banxa',
-                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
-                });
-            });
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
-
-            act(() => {
-                result.current.cancelLegalTermsConsent();
-            });
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
-        });
-
-        it('should reset consent when quote provider changes', async () => {
-            const { result, rerender } = await renderUseSellFlow();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const { userConsent } = capturedThunkArgs;
-
-            act(() => {
-                userConsent({
-                    provider: 'Banxa',
-                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
-                });
-            });
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
-
-            // Change quote to one with different provider
-            act(() => {
-                sellForm.setValue('quote', { ...sellQuotes[0], exchange: 'invity-sell' });
-            });
-            rerender({});
-
-            expect(result.current.isLegalTermsConsentRequested).toEqual(false);
-        });
-    });
-
-    describe('Form Step Logic', () => {
-        it('should set form step to BANK_ACCOUNT when provider flow is BANK_ACCOUNT', async () => {
+    describe('doSellTrade', () => {
+        it('should dispatch handleTradeThunk with correct parameters', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = sellQuotes[0];
 
+            // Set up required state
             act(() => {
-                sellForm.setValue('quote', sellQuotes[1]); // banxa-sell provider with BANK_ACCOUNT flow
-                store.dispatch(
-                    tradingSellActions.saveQuoteRequest({
-                        cryptoCurrency: sellQuotes[1].cryptoCurrency!,
-                        amountInCrypto: sellQuotes[1].amountInCrypto!,
-                        fiatCurrency: sellQuotes[1].fiatCurrency!,
-                    }),
-                );
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
             const { result } = await renderUseSellFlow();
 
-            act(() => {
-                result.current.selectQuote();
+            await act(async () => {
+                await result.current.doSellTrade(trade);
             });
 
-            // Check that setFormStep was called with BANK_ACCOUNT
-            expect(dispatchSpy).toHaveBeenCalledWith(
-                tradingSellActions.setFormStep('BANK_ACCOUNT'),
+            // Verify dispatch was called with the thunk
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'handleTradeThunkMock',
+                payload: expect.objectContaining({
+                    trade,
+                    account: expect.objectContaining({
+                        key: 'btc-account-1',
+                    }),
+                    returnUrl: expect.stringContaining('trezorsuite://trading'),
+                    processResponseData: expect.any(Function),
+                }),
+            });
+        });
+
+        it('should not dispatch thunk if sendAccount is missing', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = sellQuotes[0];
+
+            // Set up quote but not account
+            act(() => {
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+                // Explicitly clear trading account key
+                store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.doSellTrade(trade);
+            });
+
+            // Verify dispatch was NOT called with handleTradeThunk
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'handleTradeThunkMock',
+                }),
             );
         });
 
-        it('should set form step to SEND_TRANSACTION when provider flow is not BANK_ACCOUNT', async () => {
+        it('should dispatch thunk even when selectedQuote is not set (uses passed trade)', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = sellQuotes[0];
+
+            // Set up account but not selectedQuote
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.doSellTrade(trade);
+            });
+
+            // Should still work because trade is passed as parameter
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'handleTradeThunkMock',
+                payload: expect.objectContaining({
+                    trade,
+                }),
+            });
+        });
+    });
+
+    describe('confirmTrade', () => {
+        it('should dispatch confirmTradeThunk with bank account and correct parameters', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = sellQuotes[0];
+            const bankAccount = bankAccounts[0];
+
+            // Set up required state
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.confirmTrade(bankAccount);
+            });
+
+            // Verify dispatch was called
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'confirmTradeThunkMock',
+                payload: expect.objectContaining({
+                    bankAccount,
+                    account: expect.objectContaining({
+                        key: 'btc-account-1',
+                    }),
+                    returnUrl: expect.stringContaining('trezorsuite://trading'),
+                    triggerAnalyticsTradeConfirmation: expect.any(Function),
+                    processResponseData: expect.any(Function),
+                }),
+            });
+        });
+
+        it('should not dispatch thunk if selectedQuote is missing', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const bankAccount = bankAccounts[0];
+
+            // Set up account but not quote
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.confirmTrade(bankAccount);
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'confirmTradeThunkMock',
+                }),
+            );
+        });
+
+        it('should not dispatch thunk if sendAccount is missing', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = sellQuotes[0];
+            const bankAccount = bankAccounts[0];
+
+            // Set up quote but not account
+            act(() => {
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+                store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.confirmTrade(bankAccount);
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'confirmTradeThunkMock',
+                }),
+            );
+        });
+    });
+
+    describe('doBankAccountVerificationCheck', () => {
+        it('should call doSellTrade when needToRegisterOrVerifyBankAccount returns true', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = { ...sellQuotes[0], exchange: 'banxa-sell', quoteId: undefined };
+
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.doBankAccountVerificationCheck();
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'handleTradeThunkMock',
+                payload: expect.objectContaining({
+                    trade,
+                }),
+            });
+        });
+
+        it('should call doSellTrade when quoteId is empty', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = { ...sellQuotes[0], quoteId: '' };
+
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.doBankAccountVerificationCheck();
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'handleTradeThunkMock',
+                payload: expect.objectContaining({
+                    trade,
+                }),
+            });
+        });
+
+        it('should not call doSellTrade when verification is not needed', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            // Use a trade with a quoteId to avoid triggering doSellTrade
+            const trade = { ...sellQuotes[0], quoteId: 'test-quote-id' };
+
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.doBankAccountVerificationCheck();
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'handleTradeThunkMock',
+                }),
+            );
+        });
+
+        it('should not call doSellTrade if selectedQuote is missing', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-            // Create a quote with a provider that doesn't have BANK_ACCOUNT flow
-            const customQuote = {
-                ...sellQuotes[0],
-                exchange: 'custom-provider', // This provider won't be in providerInfos
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.doBankAccountVerificationCheck();
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'handleTradeThunkMock',
+                }),
+            );
+        });
+    });
+
+    describe('handleWebview', () => {
+        it('should navigate to webview when processResponseData is called with form data', async () => {
+            const trade = sellQuotes[0];
+
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.doSellTrade(trade);
+            });
+
+            const mockResponse: SellFiatTradeResponse = {
+                tradeForm: {
+                    form: {
+                        formMethod: 'GET',
+                        formAction: 'https://example.com/form',
+                        fields: {},
+                    },
+                },
+                trade: {
+                    orderId: 'order_id_0',
+                    exchange: 'banxa-sell',
+                } as SellFiatTrade,
             };
 
+            // Call processResponseData - capturedHandleTradeArgs is set during mock
+            expect(capturedHandleTradeArgs).toBeTruthy();
             act(() => {
-                sellForm.setValue('quote', customQuote);
-                store.dispatch(
-                    tradingSellActions.saveQuoteRequest({
-                        cryptoCurrency: customQuote.cryptoCurrency!,
-                        amountInCrypto: customQuote.amountInCrypto!,
-                        fiatCurrency: customQuote.fiatCurrency!,
-                    }),
-                );
+                capturedHandleTradeArgs!.processResponseData(mockResponse);
             });
 
-            const { result } = await renderUseSellFlow();
-
-            act(() => {
-                result.current.selectQuote();
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingWebView', {
+                closeCallbackUrl: expect.stringContaining('trezorsuite://trading'),
+                source: { uri: 'https://example.com/form' },
+                orderId: 'order_id_0',
+                tradingType: 'sell',
             });
-
-            // Check that setFormStep was called with SEND_TRANSACTION
-            expect(dispatchSpy).toHaveBeenCalledWith(
-                tradingSellActions.setFormStep('SEND_TRANSACTION'),
-            );
         });
     });
 });
