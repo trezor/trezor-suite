@@ -121,6 +121,13 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     );
                 }
 
+                case 'PAIRING_MODE':
+                    return (
+                        <Video
+                            src={`${basePath}/pairing_mode_${theme.legacy.THEME}.webm`}
+                            {...commonVideoProps}
+                        />
+                    );
                 case 'CONNECT_CABLE':
                     return <Video src={`${basePath}/connect_cable.webm`} {...commonVideoProps} />;
                 case 'CONNECT_BT_INTRO':

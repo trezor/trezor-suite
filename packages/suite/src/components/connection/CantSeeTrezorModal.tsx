@@ -1,8 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+
+import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { Modal } from '@trezor/components';
+import { Box, IconButton, Modal } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import { DeviceAnimation } from '@trezor/product-components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -27,6 +31,10 @@ import {
 
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
 
+const AnimationContainer = styled.div`
+    position: relative;
+`;
+
 type DontSeeYourTrezorModalProps = {
     onClose: () => void;
 };
@@ -46,6 +54,8 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
     } = useConnectionGlobalModalContext();
+    const videoRef = useRef<HTMLVideoElement>(null);
+
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
 
@@ -110,22 +120,63 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         }
     };
 
+    const handleReplayClick = () => {
+        const video = videoRef.current;
+        if (video) {
+            video.currentTime = 0;
+            video.play();
+        }
+    };
+
+    if (isBluetoothMode) {
+        return (
+            <Modal
+                heading={<Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />}
+                description={<Translation id="TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED" />}
+                onCancel={handlePrimaryCta}
+                size="tiny"
+                bottomContent={
+                    <>
+                        <Modal.Button onClick={handlePrimaryCta} variant="info">
+                            <Translation id="TR_BLUETOOTH_SCAN_AGAIN" />
+                        </Modal.Button>
+                        <Modal.Button variant="tertiary" onClick={handleTertiaryCta}>
+                            <Translation id={tertiaryButtonTranslation} />
+                        </Modal.Button>
+                    </>
+                }
+            >
+                <AnimationContainer>
+                    <DeviceAnimation
+                        ref={videoRef}
+                        type="PAIRING_MODE"
+                        deviceModelInternal={DeviceModelInternal.T3W1}
+                        width="368px"
+                        height="368px"
+                        shape="ROUNDED"
+                    />
+                    <Box position={{ type: 'absolute', bottom: '8px', left: '8px' }}>
+                        <IconButton
+                            icon="arrowClockwiseFilled"
+                            variant="tertiary"
+                            size="small"
+                            onClick={handleReplayClick}
+                        />
+                    </Box>
+                </AnimationContainer>
+            </Modal>
+        );
+    }
+
     return (
         <Modal
             bottomContent={
-                <>
-                    <Modal.Button onClick={handlePrimaryCta} variant="info">
-                        <Translation
-                            id={isBluetoothMode ? 'TR_BLUETOOTH_SCAN_AGAIN' : 'TR_GOT_IT'}
-                        />
-                    </Modal.Button>
-                    <Modal.Button variant="tertiary" onClick={handleTertiaryCta}>
-                        <Translation id={tertiaryButtonTranslation} />
-                    </Modal.Button>
-                </>
+                <Modal.Button variant="tertiary" onClick={handleTertiaryCta}>
+                    <Translation id={tertiaryButtonTranslation} />
+                </Modal.Button>
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
-            onCancel={onClose}
+            onCancel={handlePrimaryCta}
         >
             <TroubleshootingTipsList items={tipItems} />
         </Modal>
