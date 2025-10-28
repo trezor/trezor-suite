@@ -458,19 +458,12 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
  * @param {TrezorDevice} device
  * @param {boolean} remember
  */
-const remember = (
-    draft: DeviceReducerState,
-    device: TrezorDevice,
-    shouldRemember: boolean,
-    forceRemember?: true,
-) => {
+const remember = (draft: DeviceReducerState, device: TrezorDevice, shouldRemember: boolean) => {
     // only acquired devices
     if (!device || !device.features) return;
     draft.devices.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = shouldRemember;
-            if (forceRemember) d.forceRemember = true;
-            else delete d.forceRemember;
         }
     });
 };
@@ -638,7 +631,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 disconnectDevice(state, payload);
             })
             .addCase(deviceActions.rememberDevice, (state, { payload }) => {
-                remember(state, payload.device, payload.remember, payload.forceRemember);
+                remember(state, payload.device, payload.remember);
             })
             .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
                 setTemporaryRememberedDevice(state, payload.device, payload.temporaryRemember);

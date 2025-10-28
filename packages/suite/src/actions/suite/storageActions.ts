@@ -176,16 +176,11 @@ const removeAccountFormDraft = (prefix: FormDraftKeyPrefix, accountKey: string) 
     return db.removeItemByPK('formDrafts', getFormDraftKey(prefix, accountKey));
 };
 
-export const saveDevice = (device: TrezorDevice, forceRemember?: true) => {
+export const saveDevice = (device: TrezorDevice) => {
     if (!db.isAccessible()) return;
     if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
 
-    return db.addItem(
-        'devices',
-        serializeDevice(device, forceRemember),
-        device.state.staticSessionId,
-        true,
-    );
+    return db.addItem('devices', serializeDevice(device), device.state.staticSessionId, true);
 };
 
 const removeAccount = (account: Account) => {
@@ -299,8 +294,7 @@ export const saveAccountTransactions =
     };
 
 export const rememberDevice =
-    (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    (device: TrezorDevice, remember: boolean) => async (dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return;
         if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
         if (!remember) {
@@ -338,7 +332,7 @@ export const rememberDevice =
 
         try {
             await Promise.all([
-                saveDevice(device, forcedRemember),
+                saveDevice(device),
                 saveAccounts(accounts),
                 saveGraph(graphData),
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
