@@ -1,4 +1,5 @@
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 import path, { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
@@ -181,6 +182,14 @@ const config: webpack.Configuration = {
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
             __SENTRY_DEBUG__: isDev,
             __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, '../../suite-data/files/guide'),
+                    to: 'guide',
+                },
+            ],
         }),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
