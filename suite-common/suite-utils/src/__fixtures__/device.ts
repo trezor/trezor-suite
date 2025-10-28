@@ -381,7 +381,6 @@ const d = (obj: any) => ({
     firmware: obj.fw || 'valid',
     instance: obj.inst,
     ts: obj.ts,
-    forceRemember: !!obj.forceRemember,
 });
 
 const getFirstDeviceInstance = [
@@ -406,12 +405,11 @@ const getFirstDeviceInstance = [
             d({ id: '7', fw: 'required' }),
             d({ id: '10', inst: 2 }),
             d({ id: '10', inst: 1 }),
-            d({ id: '3', forceRemember: true }),
+            d({ id: '3' }),
         ],
         result: [
             d({ path: '1' }),
             d({ path: '2' }),
-            d({ id: '3', forceRemember: true }),
             d({ id: '4', mode: 'bootloader' }),
             d({ id: '5', mode: 'seedless' }),
             d({ id: '6', fw: 'outdated' }),
@@ -419,6 +417,7 @@ const getFirstDeviceInstance = [
             d({ id: '8', ts: 3 }),
             d({ id: '9', ts: 2, inst: 1 }),
             d({ id: '10', ts: 1 }),
+            d({ id: '3' }),
         ],
     },
 ];
