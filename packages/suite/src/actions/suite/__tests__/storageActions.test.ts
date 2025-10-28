@@ -256,9 +256,9 @@ describe('Storage actions', () => {
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // remember devices
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
-        await store.dispatch(storageActions.rememberDevice(dev2, true));
-        await store.dispatch(storageActions.rememberDevice(dev2Instance1, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
+        await store.dispatch(storageActions.rememberDevice(dev2));
+        await store.dispatch(storageActions.rememberDevice(dev2Instance1));
 
         store.dispatch(await preloadStore());
 
@@ -316,8 +316,8 @@ describe('Storage actions', () => {
         expect(load2.wallet.accounts.length).toEqual(1);
         expect(load2.wallet.accounts[0].deviceState).toEqual(dev2.state?.staticSessionId);
         // forget device dev1 along with its instances
-        await store.dispatch(storageActions.rememberDevice(dev2, false));
-        await store.dispatch(storageActions.rememberDevice(dev2Instance1, false));
+        await store.dispatch(storageActions.forgetDevice(dev2));
+        await store.dispatch(storageActions.forgetDevice(dev2Instance1));
         store.dispatch(await preloadStore());
         expect(selectDevicesCount(store.getState())).toEqual(0);
     });
@@ -344,8 +344,8 @@ describe('Storage actions', () => {
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // store in db
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
-        await store.dispatch(storageActions.rememberDevice(dev2, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
+        await store.dispatch(storageActions.rememberDevice(dev2));
 
         // remove txs for acc 1
         await storageActions.removeAccountTransactions(acc1);
@@ -386,7 +386,7 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // store device in db
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
 
         // Change device label inside a reducer
         await store.dispatch(
@@ -445,7 +445,7 @@ describe('Storage actions', () => {
         );
         updateStore(store);
         // store device in db
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
 
         // verify that graph data are stored
         store.dispatch(await preloadStore());

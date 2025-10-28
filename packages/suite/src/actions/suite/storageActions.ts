@@ -232,12 +232,22 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
 
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === staticSessionId);
 
+    // forget device metadata error
+    const metadataError = getState().metadata?.error;
+    let error;
+    if (metadataError) {
+        error = cloneObject(metadataError);
+        delete error[device.state.staticSessionId];
+    }
+
     return Promise.all([
         db.removeItemByPK('devices', staticSessionId),
         db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
         db.removeItemByIndex('txs', 'deviceState', staticSessionId),
         db.removeItemByIndex('graph', 'deviceState', staticSessionId),
         ...accounts.map(removeAccountWithDependencies(getState)),
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        ...(error ? [saveMetadata({ error })] : []),
     ]);
 };
 
@@ -294,15 +304,9 @@ export const saveAccountTransactions =
     };
 
 export const rememberDevice =
-    (device: TrezorDevice, remember: boolean) => async (dispatch: Dispatch, getState: GetState) => {
+    (device: TrezorDevice) => async (dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return;
         if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
-        if (!remember) {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            dispatch(forgetDeviceMetadataError(device));
-
-            return dispatch(forgetDevice(device));
-        }
 
         const { wallet } = getState();
         const accounts = wallet.accounts
@@ -482,18 +486,6 @@ export const saveDeviceMetadataError =
         if (device.state?.staticSessionId && metadata?.error?.[device.state.staticSessionId]) {
             const { error } = metadata;
             await saveMetadata({ error });
-        }
-    };
-
-export const forgetDeviceMetadataError =
-    (device: TrezorDevice) => (_dispatch: Dispatch, getState: GetState) => {
-        if (!db.isAccessible()) return;
-
-        const { metadata } = getState();
-        if (device.state?.staticSessionId && metadata?.error) {
-            const next = cloneObject(metadata.error);
-            delete next[device.state.staticSessionId];
-            saveMetadata({ error: next });
         }
     };
 
