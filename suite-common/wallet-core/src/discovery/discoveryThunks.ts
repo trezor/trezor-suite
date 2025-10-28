@@ -22,7 +22,6 @@ import {
     selectDeviceByStaticSessionId,
     selectDevices,
     selectSelectedDevice,
-    selectStandardWalletDevice,
 } from '../device/deviceSelectors';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
@@ -120,7 +119,9 @@ const applyDeviceStatesThunk = createThunk(
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
             // todo: this sanity check could be moved somewhere higher.
             if (devicesByPathWithoutState.length !== 1 && devicesByPathWithoutState.length !== 0) {
-                throw new Error('there must be either one or zero physical devices without state');
+                console.error('there must be either one or zero physical devices without state');
+
+                return;
             }
             const device = devicesByPath[0];
 
@@ -131,7 +132,8 @@ const applyDeviceStatesThunk = createThunk(
             // user was adding a hidden wallet but he might have input empty passphrase -> this is defacto standard wallet
             let useEmptyPassphrase = !isAddingHiddenWallet; // set to reasonable default
             if (isAddingHiddenWallet) {
-                let emptyPassphraseDeviceState = selectStandardWalletDevice(getState())?.state;
+                const emptyPassphraseDevice = devicesByPath.find(d => d.useEmptyPassphrase);
+                let emptyPassphraseDeviceState = emptyPassphraseDevice?.state;
 
                 // no cache hit, query device
                 if (!emptyPassphraseDeviceState) {
