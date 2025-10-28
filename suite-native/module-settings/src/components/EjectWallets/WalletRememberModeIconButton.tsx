@@ -16,7 +16,7 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
 
     const handleEjectWallet = () => {
         if (device.connected) {
-            dispatch(deviceActions.rememberDevice({ device }));
+            dispatch(deviceActions.setRememberDevice({ device, remember: !device.remember }));
             if (device.remember) {
                 showToast({
                     variant: 'default',

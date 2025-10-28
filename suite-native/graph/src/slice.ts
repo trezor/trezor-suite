@@ -70,7 +70,7 @@ export const graphSlice = createSlice({
                     );
                 }
             })
-            .addCase(deviceActions.rememberDevice, state => {
+            .addCase(deviceActions.setRememberDevice, state => {
                 // Persistence of graph depends on device.remember state,
                 // but redux-persist is not checking for changes in other reducers.
                 // This is a workaround to update redux-persist state.

@@ -938,7 +938,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
     },
 ];
 
-const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
+const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = [
     {
         description: `Remember unacquired device`,
         initialState: {
@@ -947,7 +947,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({ type: 'unacquired' }),
                     remember: false,
@@ -964,7 +964,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: SUITE_DEVICE,
                     remember: true,
@@ -985,7 +985,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
                         state: '1stTestnet@device_id:0',
@@ -1033,7 +1033,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
                         state: '1stTestnet@device_id:0',
@@ -1042,7 +1042,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                 },
             },
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
                         state: '1stTestnet@device_id:0',

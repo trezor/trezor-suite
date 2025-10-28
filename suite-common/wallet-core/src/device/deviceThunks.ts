@@ -351,7 +351,7 @@ export const toggleAutoEjectThunk = createThunk(
                 dispatch(deviceActions.forgetDevice({ device }));
             } else {
                 // TODO investigate why do we need to consider wallet.remember at all, when we are ejecting all wallets.
-                dispatch(deviceActions.rememberDevice({ device }));
+                dispatch(deviceActions.setRememberDevice({ device, remember: !device.remember }));
             }
         });
     },

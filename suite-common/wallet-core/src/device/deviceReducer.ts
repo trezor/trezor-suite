@@ -630,7 +630,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
                 disconnectDevice(state, payload);
             })
-            .addCase(deviceActions.rememberDevice, (state, { payload }) => {
+            .addCase(deviceActions.setRememberDevice, (state, { payload }) => {
                 remember(state, payload.device, payload.remember);
             })
             .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
