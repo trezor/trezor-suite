@@ -122,6 +122,7 @@ export const useBuyFlow = (form: BuyFormType) => {
 
         rootNavigation.navigate(RootStackRoutes.TradingWebView, {
             closeCallbackUrl: returnUrl,
+            tradingType: 'buy',
             source,
             orderId: candidateQuote?.orderId,
         });

@@ -6,64 +6,34 @@ import type { BankAccount, FormResponse, SellFiatTrade, SellFiatTradeResponse } 
 
 import {
     selectTradingSellInfo,
-    selectTradingSellIsLoading,
     selectTradingSellSelectedQuote,
     sellThunks,
     sellUtils,
-    tradingSellActions,
 } from '@suite-common/trading';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
-import { SellFormType } from '@suite-native/trading-types';
-import { useNullTimer } from '@trezor/react-utils';
 
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
-import { useConsent } from '../general/useConsent';
-import { useConsentDenier } from '../general/useConsentDenier';
-
-type NavigationProps = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.TradingSellPreview,
-    RootStackParamList
->;
 
 type SellFlowReturn = {
-    canProceed: boolean;
-    isLegalTermsConsentRequested: boolean;
-    selectQuote: () => Promise<void>;
-    giveLegalTermsConsent: () => void;
-    cancelLegalTermsConsent: () => void;
     doSellTrade: (trade: SellFiatTrade) => Promise<void>;
     confirmTrade: (bankAccount: BankAccount) => Promise<void>;
+    doBankAccountVerificationCheck: () => Promise<void>;
 };
 
-export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
+export const useSellFlow = (): SellFlowReturn => {
     const dispatch = useDispatch();
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
-    const navigation = useNavigation<NavigationProps>();
-    const timer = useNullTimer();
-    const candidateQuote = watch('quote');
-    const isLoading = useSelector(selectTradingSellIsLoading);
     const sellInfo = useSelector(selectTradingSellInfo);
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
 
     const sendAccount = useSelector(selectSellSelectedSendAccount);
-
-    const {
-        isConsentRequested: isLegalTermsConsentRequested,
-        waitForConsent: waitForLegalTermsConsent,
-        resolveConsent: resolveLegalTermsConsent,
-    } = useConsent();
-    useConsentDenier(candidateQuote?.exchange, resolveLegalTermsConsent);
 
     // whenever we get a form from the webview, we need to navigate to the webview screen
     const handleWebview = useCallback(
@@ -75,6 +45,7 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
 
             rootNavigation.navigate(RootStackRoutes.TradingWebView, {
                 closeCallbackUrl: returnUrl,
+                tradingType: 'sell',
                 source,
                 orderId: trade.orderId,
             });
@@ -87,6 +58,8 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
             const tradeToUse = trade ?? selectedQuote;
 
             if (!tradeToUse) {
+                console.warn('No trade to use for get common functions');
+
                 return;
             }
 
@@ -113,20 +86,12 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
         [handleWebview, selectedQuote],
     );
 
-    const canProceed = !!candidateQuote && !!sendAccount && !isLoading;
-
-    const giveLegalTermsConsent = useCallback(() => {
-        resolveLegalTermsConsent(true);
-    }, [resolveLegalTermsConsent]);
-
-    const cancelLegalTermsConsent = useCallback(() => {
-        resolveLegalTermsConsent(false);
-    }, [resolveLegalTermsConsent]);
-
     const doSellTrade = useCallback(
         async (trade: SellFiatTrade) => {
             const commonFunctions = getCommonFunctions(trade);
             if (!commonFunctions || !sendAccount) {
+                console.warn('No common functions or send account for do sell trade');
+
                 return;
             }
 
@@ -147,6 +112,8 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
     const confirmTrade = useCallback(
         async (bankAccount: BankAccount) => {
             if (!selectedQuote) {
+                console.warn('No selected quote for confirm trade');
+
                 return;
             }
 
@@ -154,6 +121,8 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
 
             const commonFunctions = getCommonFunctions(quote);
             if (!commonFunctions || !sendAccount) {
+                console.warn('No common functions or send account for confirm trade');
+
                 return;
             }
 
@@ -173,63 +142,29 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
         [dispatch, getCommonFunctions, selectedQuote, sendAccount],
     );
 
-    const selectQuote = useCallback(async () => {
-        if (!candidateQuote || isLoading) {
+    const doBankAccountVerificationCheck = useCallback(async () => {
+        if (!selectedQuote) {
+            console.warn('No selected quote for bank account check');
+
             return;
         }
 
-        const provider = candidateQuote.exchange
-            ? sellInfo?.providerInfos[candidateQuote.exchange]
-            : undefined;
-
-        if (provider?.flow === 'BANK_ACCOUNT') {
-            dispatch(tradingSellActions.setFormStep('BANK_ACCOUNT'));
-        } else {
-            dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
+        // empty quoteId means the partner requests login first, requestTrade to get login screen
+        if (
+            (sellInfo &&
+                sellUtils.needToRegisterOrVerifyBankAccount({
+                    quote: selectedQuote,
+                    sellInfo,
+                })) ||
+            !selectedQuote.quoteId
+        ) {
+            await doSellTrade(selectedQuote);
         }
-
-        const nextStep = () => {
-            // empty quoteId means the partner requests login first, requestTrade to get login screen
-            if (
-                (sellInfo &&
-                    sellUtils.needToRegisterOrVerifyBankAccount({
-                        quote: candidateQuote,
-                        sellInfo,
-                    })) ||
-                !candidateQuote.quoteId
-            ) {
-                doSellTrade(candidateQuote);
-            }
-            navigation.navigate(TradingStackRoutes.TradingSellPreview);
-        };
-
-        await dispatch(
-            sellThunks.selectQuoteThunk({
-                quote: candidateQuote,
-                timer,
-                userConsent: waitForLegalTermsConsent,
-                nextStep,
-                onCancel: () => {},
-            }),
-        );
-    }, [
-        candidateQuote,
-        isLoading,
-        navigation,
-        dispatch,
-        timer,
-        waitForLegalTermsConsent,
-        sellInfo,
-        doSellTrade,
-    ]);
+    }, [selectedQuote, sellInfo, doSellTrade]);
 
     return {
-        canProceed,
-        isLegalTermsConsentRequested,
-        giveLegalTermsConsent,
-        cancelLegalTermsConsent,
         doSellTrade,
         confirmTrade,
-        selectQuote,
+        doBankAccountVerificationCheck,
     };
 };

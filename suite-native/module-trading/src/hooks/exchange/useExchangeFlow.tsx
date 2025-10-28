@@ -56,6 +56,7 @@ export const useExchangeFlow = () => {
 
             rootNavigation.navigate(RootStackRoutes.TradingWebView, {
                 closeCallbackUrl: returnUrl,
+                tradingType: 'exchange',
                 source,
                 orderId: trade?.orderId,
             });
