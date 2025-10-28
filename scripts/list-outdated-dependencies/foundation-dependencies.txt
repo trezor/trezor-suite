@@ -63,6 +63,7 @@ openpgp
 prettier
 react-native-ble-plx
 react-native-mmkv
+react-native-nitro-modules
 simple-git
 sort-package-json
 typescript-eslint

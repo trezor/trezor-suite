@@ -1,10 +1,10 @@
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 
 import { atomWithStorage, createJSONStorage } from 'jotai/utils';
 
 const UNECRYPTED_STORAGE_ID = 'trezorSuite-app-unecrypted-storage';
 
-export const unecryptedJotaiStorage = new MMKV({
+export const unecryptedJotaiStorage = createMMKV({
     id: UNECRYPTED_STORAGE_ID,
 });
 
@@ -19,7 +19,7 @@ function setItem<T>(key: string, value: T): void {
 }
 
 function removeItem(key: string): void {
-    unecryptedJotaiStorage.delete(key);
+    unecryptedJotaiStorage.remove(key);
 }
 
 function clearAll(): void {
