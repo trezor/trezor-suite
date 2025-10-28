@@ -185,7 +185,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     storageActions.rememberDevice(
                         action.payload.device,
                         isAutoEjectEnabled ? false : action.payload.remember,
-                        action.payload.forceRemember,
                     ),
                 );
             }
