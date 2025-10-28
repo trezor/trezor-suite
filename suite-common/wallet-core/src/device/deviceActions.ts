@@ -70,8 +70,13 @@ const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice)
 
 const rememberDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/rememberDevice`,
-    (payload: { device: TrezorDevice; remember: boolean; forceRemember?: true }) => ({
-        payload,
+    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }) => ({
+        payload: {
+            device,
+            remember: !device.remember || !!forceRemember,
+            // if device is already remembered, do not force it, it would remove the remember on return to suite
+            forceRemember: device.remember ? undefined : forceRemember,
+        },
     }),
 );
 
