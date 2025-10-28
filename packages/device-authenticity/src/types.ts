@@ -1,6 +1,7 @@
-import { PROTO } from '../../../constants';
-import { DeviceAuthenticityBlacklistConfig } from '../../../data/deviceAuthenticityBlacklistConfig';
-import { DeviceAuthenticityConfig } from '../../../data/deviceAuthenticityConfigTypes';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+
+import type { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBlacklistConfigTypes';
+import type { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';
 
 export type VerifySignature = (
     rawKey: Buffer,

@@ -1,5 +1,5 @@
 /** This file is no longer automatically generated  */
-import { DeviceAuthenticityConfig } from './deviceAuthenticityConfigTypes';
+import type { DeviceAuthenticityConfig } from './deviceAuthenticityConfigTypes';
 
 /**
  * How to update this config or check Sentry "Device authenticity invalid!" error? Please read this internal description:

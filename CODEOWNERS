@@ -103,7 +103,8 @@
 
 /suite-common/graph @trezor/suite-mobile
 
-/packages/connect/src/data/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka
+/packages/device-authenticity/src/config/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka
+/packages/device-authenticity/src/config/deviceAuthenticityBlacklistConfig.ts @tsusanka @MiroslavProchazka
 
 /packages/schema-utils @martykan
 

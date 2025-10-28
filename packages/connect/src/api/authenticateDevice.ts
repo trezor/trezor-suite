@@ -1,13 +1,15 @@
+import {
+    deviceAuthenticityBlacklistConfig,
+    deviceAuthenticityConfig,
+    getRandomChallenge,
+    verifyAuthenticityProof,
+} from '@trezor/device-authenticity';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { deviceAuthenticityBlacklist } from '../data/deviceAuthenticityBlacklist';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
-import { deviceAuthenticityConfig } from '../data/deviceAuthenticityConfig';
-import { verifyAuthenticityProof } from './firmware/verifyAuthenticityProof';
 import { AuthenticateDeviceParams } from '../types/api/authenticateDevice';
-import { getRandomChallenge } from './firmware/verifyAuthenticity/utils';
 
 export default class AuthenticateDevice extends AbstractMethod<
     'authenticateDevice',
@@ -42,7 +44,7 @@ export default class AuthenticateDevice extends AbstractMethod<
             });
 
         const config = this.params.config || deviceAuthenticityConfig;
-        const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklist;
+        const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklistConfig;
         const commonParams = {
             challenge,
             deviceModel: this.device.features.internal_model,
