@@ -424,11 +424,6 @@ export const selectIsDeviceRemembered = createMemoizedSelector(
     device => !!device?.remember,
 );
 
-export const selectIsDeviceForceRemembered = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => !!device?.forceRemember,
-);
-
 export const selectRememberedStandardWalletsCount = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
     devices =>
