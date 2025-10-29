@@ -1,15 +1,9 @@
 @blockaid/client
 @codemirror/state
 @hbsnow/rehype-sectionize
-@jest/globals
-@jest/types
-@noble/hashes
+@headlessui/react
 @reown/walletkit
 @scure/bip39
-@sentry/browser
-@sentry/core
-@sentry/electron
-@sentry/webpack-plugin
 @sinclair/typebox
 @sinclair/typebox-codegen
 @types/bytebuffer
@@ -17,8 +11,10 @@
 @types/flexsearch
 @types/git-url-parse
 @types/json-stable-stringify
+@types/jws
 @types/karma
 @types/lodash
+@types/node
 @types/node-fetch
 @types/semver
 @types/sharedworker
@@ -33,6 +29,7 @@
 @walletconnect/utils
 base-x
 browserify-bignum
+buffer
 cbor
 cbor-js
 clsx
@@ -52,8 +49,6 @@ git-url-parse
 groestl-hash-js
 html-inline-script-webpack-plugin
 intersection-observer
-jest-environment-node
-jest-extended
 json-stable-stringify
 json5
 jssha
@@ -73,7 +68,6 @@ next-themes
 nextra
 nextra-theme-docs
 node-fetch
-node-libs-browser
 postcss
 postcss-cli
 postcss-import
