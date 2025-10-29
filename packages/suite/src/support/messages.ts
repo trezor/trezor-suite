@@ -5393,6 +5393,15 @@ export default defineMessages({
         defaultMessage:
             'Use Tor daemon running in an external process instead of the one bundled with Trezor Suite.',
     },
+    TR_EXPERIMENTAL_NETWORKS: {
+        id: 'TR_EXPERIMENTAL_NETWORKS',
+        defaultMessage: '{networkNames} {count, plural, one {network} other {networks}}',
+    },
+    TR_EXPERIMENTAL_NETWORKS_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_NETWORKS_DESCRIPTION',
+        defaultMessage:
+            'Send and receive transactions on the {networkNames} {count, plural, one {network} other {networks}}.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',

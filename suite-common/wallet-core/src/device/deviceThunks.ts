@@ -20,6 +20,7 @@ import {
     getNetworkId,
     getProtocolMagic,
     getStakingPath,
+    shouldDeviceBeRemembered,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     Address,
@@ -46,26 +47,8 @@ import { sortDevices } from './sortDevices';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
-
-/**
- * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
- * and if it is remembered it will be forgotten.
- * @param forceRemember can be set to `true` to remember given device regardless of its current state.
- *
- * Use `forgetDevice` to forget a device regardless if its current state.
- */
-export const toggleRememberDevice = createThunk(
-    `${DEVICE_MODULE_PREFIX}/toggleRememberDevice`,
-    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) =>
-        dispatch(
-            deviceActions.rememberDevice({
-                device,
-                remember: !device.remember || !!forceRemember,
-                // if device is already remembered, do not force it, it would remove the remember on return to suite
-                forceRemember: device.remember ? undefined : forceRemember,
-            }),
-        ),
-);
+import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
+import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`
@@ -137,18 +120,6 @@ export const forgetDisconnectedDevices = createThunk(
                     d.mode !== 'normal')
             ) {
                 dispatch(deviceActions.forgetDevice({ device: d }));
-            }
-        });
-    },
-);
-
-export const forgetAllDisconnectedDevices = createThunk(
-    `${DEVICE_MODULE_PREFIX}/forgetAllDisconnectedDevices`,
-    (_, { dispatch, getState }) => {
-        const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
-        physicalDeviceWallets.forEach(device => {
-            if (!device.connected) {
-                dispatch(forgetDisconnectedDevices({ device, forceForget: true }));
             }
         });
     },
@@ -236,17 +207,7 @@ export const initDevices = createThunk(
         const device = selectSelectedDevice(getState());
 
         if (!device && devices?.[0]) {
-            // if there are force remember devices, forget them and pick the first one of them as selected device
-            const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
-            forcedDevices.forEach(d => {
-                dispatch(toggleRememberDevice({ device: d }));
-            });
-
-            dispatch(
-                selectDeviceThunk({
-                    device: forcedDevices.length ? forcedDevices[0] : sortDevices(devices)[0],
-                }),
-            );
+            dispatch(selectDeviceThunk({ device: sortDevices(devices)[0] }));
         }
     },
 );
@@ -356,20 +317,27 @@ type DeviceConnectThunksParams = {
 
 export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
     `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
-    async ({ type, device }, { dispatch }) => {
+    async ({ type, device }, { dispatch, getState }) => {
+        const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
         switch (type) {
             case DEVICE.CONNECT:
                 if (getIsThpDevice(device)) {
                     // awaited so that discoveryMiddleware knows what state THP is when processing deviceActions.connectDevice
                     await dispatch(connectThpDeviceThunk({ device }));
                 }
-                dispatch(deviceActions.connectDevice({ device }));
+                dispatch(
+                    deviceActions.connectDevice({
+                        device,
+                        isAutoEjectEnabled,
+                    }),
+                );
                 dispatch(selectNewlyConnectedDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(
                     deviceActions.connectUnacquiredDevice({
                         device,
+                        isAutoEjectEnabled,
                     }),
                 );
                 dispatch(autoInitThpAfterDeviceConnectionThunk({ device }));
@@ -381,27 +349,54 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
     },
 );
 
-// Note: currently used only by mobile, see `forgetAllDisconnectedDevices` for a simpler thunk
-export const toggleAutoEjectThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
-    (_, { dispatch, getState }) => {
-        const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
-        dispatch(deviceActions.toggleIsDeviceAutoEjectEnabled());
+type SetDeviceAutoEjectThunkParams = {
+    shouldEnable: boolean;
+};
 
+export const setDeviceAutoEjectThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/setDeviceAutoEjectThunk`,
+    ({ shouldEnable }: SetDeviceAutoEjectThunkParams, { dispatch, getState }) => {
+        const isEnabled = selectIsDeviceAutoEjectEnabled(getState());
+
+        if (isEnabled === shouldEnable) {
+            return;
+        }
+
+        dispatch(setAutoEjectEnabled(shouldEnable));
+
+        const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
         physicalDeviceWallets.forEach(wallet => {
-            if (!wallet.connected && wallet.remember) {
-                dispatch(deviceActions.forgetDevice({ device: wallet }));
-            } else {
-                // TODO investigate why do we need to consider wallet.remember at all, when we are ejecting all wallets.
-                dispatch(
-                    deviceActions.rememberDevice({
-                        device: wallet,
-                        remember: !wallet.remember,
-                    }),
-                );
+            const shouldRemember = shouldDeviceBeRemembered({
+                isDeviceAutoEjectEnabled: shouldEnable,
+                device: wallet,
+            });
+
+            if (wallet.remember === shouldRemember) {
+                return;
+            }
+
+            dispatch(
+                deviceActions.setRememberDevice({
+                    device: wallet,
+                    remember: shouldRemember,
+                }),
+            );
+
+            if (shouldEnable && !wallet.connected) {
+                dispatch(forgetDisconnectedDevices({ device: wallet, forceForget: true }));
             }
         });
     },
+);
+
+export const toggleAutoEjectThunk = createThunk(
+    `${DEVICE_MODULE_PREFIX}/toggleAutoEjectThunk`,
+    (_, { dispatch, getState }) =>
+        dispatch(
+            setDeviceAutoEjectThunk({
+                shouldEnable: !selectIsDeviceAutoEjectEnabled(getState()),
+            }),
+        ),
 );
 
 type ForgetAllDeviceDataThunkParams = {

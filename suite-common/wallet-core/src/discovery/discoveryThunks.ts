@@ -21,12 +21,12 @@ import { deviceActions } from '../device/deviceActions';
 import {
     selectDeviceByStaticSessionId,
     selectDevices,
-    selectIsDeviceAutoEjectEnabled,
     selectSelectedDevice,
     selectStandardWalletDevice,
 } from '../device/deviceSelectors';
 import { selectAccountsToBeForgotten, selectDiscoveryAccountsParam } from '../selectors';
 import { selectDeviceThunk } from './selectDeviceThunk';
+import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
 
 const USER_UI_CANCEL_CODE = 'USER_UI_CANCEL';
 const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
@@ -153,17 +153,18 @@ const applyDeviceStatesThunk = createThunk(
             }
 
             // now we expect that there is exactly one device without state - meaning that we want to update its state
+            const isDeviceAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
+
             if (devicesByPathWithoutState.length === 1) {
                 dispatch(
                     deviceActions.setDeviceState({
                         device,
                         state: newDeviceState,
                         useEmptyPassphrase,
+                        isAutoEjectEnabled: isDeviceAutoEjectEnabled,
                     }),
                 );
             } else {
-                const isDeviceAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
-
                 dispatch(
                     deviceActions.addAuthorizedDevice({
                         device: {
@@ -648,11 +649,13 @@ export const runAdditionalDiscoveryThunk = createThunk(
         assertStaticSessionId(deviceStateResponse.payload._state);
 
         if (device.useEmptyPassphrase) {
+            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
             dispatch(
                 deviceActions.setDeviceState({
                     device,
                     state: deviceStateResponse.payload._state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
+                    isAutoEjectEnabled,
                 }),
             );
         }

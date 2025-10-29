@@ -29,14 +29,12 @@ export type DeviceReducerState = {
         firmwareAuthenticity?: string[];
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
-    isDeviceAutoEjectEnabled: boolean; // this is currently used only on mobile
 };
 
 export const deviceInitialState: DeviceReducerState = {
     devices: [],
     persistentDeviceData: [],
     selectedDevice: undefined,
-    isDeviceAutoEjectEnabled: false,
 };
 
 export const deviceReducerInitialState = deviceInitialState;
@@ -114,7 +112,11 @@ const merge = (
  * @param {Device} device
  * @returns
  */
-const connectDevice = (draft: DeviceReducerState, device: Device) => {
+const connectDevice = (
+    draft: DeviceReducerState,
+    device: Device,
+    options: { isAutoEjectEnabled: boolean },
+) => {
     const currentTime = new Date().getTime();
 
     const deviceCommonFields = {
@@ -193,7 +195,7 @@ const connectDevice = (draft: DeviceReducerState, device: Device) => {
         state: device._state,
         useEmptyPassphrase: undefined,
         remember: shouldDeviceBeRemembered({
-            isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
+            isDeviceAutoEjectEnabled: options.isAutoEjectEnabled,
             device,
         }),
         temporaryRemember: false,
@@ -340,6 +342,7 @@ const setDeviceState = (
     device: TrezorDevice,
     state: DeviceState,
     useEmptyPassphrase: boolean,
+    isAutoEjectEnabled: boolean,
 ) => {
     // change only acquired devices
     if (!device.features) return;
@@ -371,7 +374,7 @@ const setDeviceState = (
     delete affectedDevice[0].discovered;
 
     affectedDevice[0].remember = shouldDeviceBeRemembered({
-        isDeviceAutoEjectEnabled: draft.isDeviceAutoEjectEnabled,
+        isDeviceAutoEjectEnabled: isAutoEjectEnabled,
         device,
     });
 };
@@ -458,19 +461,12 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
  * @param {TrezorDevice} device
  * @param {boolean} remember
  */
-const remember = (
-    draft: DeviceReducerState,
-    device: TrezorDevice,
-    shouldRemember: boolean,
-    forceRemember?: true,
-) => {
+const remember = (draft: DeviceReducerState, device: TrezorDevice, shouldRemember: boolean) => {
     // only acquired devices
     if (!device || !device.features) return;
     draft.devices.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = shouldRemember;
-            if (forceRemember) d.forceRemember = true;
-            else delete d.forceRemember;
         }
     });
 };
@@ -628,7 +624,13 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 updatePersistentDeviceData(state, payload);
             })
             .addCase(deviceActions.setDeviceState, (state, { payload }) => {
-                setDeviceState(state, payload.device, payload.state, payload.useEmptyPassphrase);
+                setDeviceState(
+                    state,
+                    payload.device,
+                    payload.state,
+                    payload.useEmptyPassphrase,
+                    payload.isAutoEjectEnabled,
+                );
             })
             .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
                 addAuthorizedDevice(state, payload.device);
@@ -637,8 +639,8 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
                 disconnectDevice(state, payload);
             })
-            .addCase(deviceActions.rememberDevice, (state, { payload }) => {
-                remember(state, payload.device, payload.remember, payload.forceRemember);
+            .addCase(deviceActions.setRememberDevice, (state, { payload }) => {
+                remember(state, payload.device, payload.remember);
             })
             .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
                 setTemporaryRememberedDevice(state, payload.device, payload.temporaryRemember);
@@ -726,9 +728,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     };
                 },
             )
-            .addCase(deviceActions.toggleIsDeviceAutoEjectEnabled, state => {
-                state.isDeviceAutoEjectEnabled = !state.isDeviceAutoEjectEnabled;
-            })
             .addCase(deviceActions.setDiscovered, (state, { payload }) => {
                 const device = state.devices.find(
                     d => d.state?.staticSessionId === payload.staticSessionId,
@@ -737,8 +736,8 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             })
             .addMatcher(
                 isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
-                (state, { payload: { device } }) => {
-                    connectDevice(state, device);
+                (state, { payload: { device, isAutoEjectEnabled } }) => {
+                    connectDevice(state, device, { isAutoEjectEnabled });
                     updatePersistentDeviceData(state, device);
                 },
             );

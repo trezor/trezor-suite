@@ -19,6 +19,7 @@ export const DEVICE_MODULE_PREFIX = '@suite/device';
 
 export type DeviceConnectActionPayload = {
     device: Device;
+    isAutoEjectEnabled: boolean;
 };
 
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
@@ -32,7 +33,9 @@ const createDeviceInstance = createAction(
 
 const connectUnacquiredDevice = createAction(
     DEVICE.CONNECT_UNACQUIRED,
-    (payload: DeviceConnectActionPayload) => ({ payload }),
+    (payload: DeviceConnectActionPayload) => ({
+        payload,
+    }),
 );
 
 const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device) => ({
@@ -52,6 +55,7 @@ const setDeviceState = createAction(
         device: TrezorDevice;
         state: DeviceState & { staticSessionId: StaticSessionId };
         useEmptyPassphrase: boolean;
+        isAutoEjectEnabled: boolean;
     }) => ({
         payload,
     }),
@@ -68,11 +72,9 @@ const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice)
     payload,
 }));
 
-const rememberDevice = createAction(
-    `${DEVICE_MODULE_PREFIX}/rememberDevice`,
-    (payload: { device: TrezorDevice; remember: boolean; forceRemember?: true }) => ({
-        payload,
-    }),
+const setRememberDevice = createAction(
+    `${DEVICE_MODULE_PREFIX}/setRememberDevice`,
+    (payload: { device: TrezorDevice; remember: boolean }) => ({ payload }),
 );
 
 const setTemporaryRememberedDevice = createAction(
@@ -154,10 +156,6 @@ const setLocalFirstStorageSecretRetrieving = createAction(
     }),
 );
 
-const toggleIsDeviceAutoEjectEnabled = createAction(
-    `${DEVICE_MODULE_PREFIX}/toggleAutoEjectDevices`,
-);
-
 const setDiscovered = createAction(
     `${DEVICE_MODULE_PREFIX}/setDiscovered`,
     (staticSessionId: StaticSessionId, success: boolean) => ({
@@ -174,7 +172,7 @@ export const deviceActions = {
     addAuthorizedDevice,
     deviceDisconnect,
     dismissFirmwareAuthenticityCheck,
-    rememberDevice,
+    setRememberDevice,
     setTemporaryRememberedDevice,
     forgetDevice,
     forgetDevicePersistentData,
@@ -188,7 +186,6 @@ export const deviceActions = {
     setThpCredentials,
     setLocalFirstStorageSecret,
     setLocalFirstStorageSecretRetrieving,
-    toggleIsDeviceAutoEjectEnabled,
     setDiscovered,
     devicePushNotification,
 };

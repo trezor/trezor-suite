@@ -284,7 +284,7 @@ const analyticsMiddleware =
                 break;
             }
 
-            case deviceActions.rememberDevice.type: {
+            case deviceActions.setRememberDevice.type: {
                 analytics.report({
                     type: action.payload.remember
                         ? EventType.SwitchDeviceRemember

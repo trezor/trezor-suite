@@ -14,6 +14,7 @@ import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-stor
 
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.AreDebugOnlyNetworksEnabled]: '🧪 Debug only networks',
+    [FeatureFlagEnum.AreExperimentalOnlyNetworksEnabled]: '🧪 Experimental only networks',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
     [FeatureFlagEnum.IsTradingBuyEnabled]: '💰 Trading Buy',

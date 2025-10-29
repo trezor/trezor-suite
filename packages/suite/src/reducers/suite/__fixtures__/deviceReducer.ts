@@ -35,6 +35,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -62,6 +63,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -95,6 +97,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -123,6 +126,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -157,6 +161,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -194,6 +199,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -216,6 +222,7 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -245,6 +252,7 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -938,7 +946,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
     },
 ];
 
-const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
+const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = [
     {
         description: `Remember unacquired device`,
         initialState: {
@@ -947,11 +955,10 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({ type: 'unacquired' }),
                     remember: false,
-                    forceRemember: undefined,
                 },
             },
         ],
@@ -965,33 +972,14 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: SUITE_DEVICE,
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
         ],
         result: [{ ...SUITE_DEVICE, remember: true }],
-    },
-    {
-        description: `Force remember device`,
-        initialState: {
-            ...deviceReducerInitialState,
-            devices: [SUITE_DEVICE],
-        },
-        actions: [
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {
-                    device: SUITE_DEVICE,
-                    remember: true,
-                    forceRemember: true,
-                },
-            },
-        ],
-        result: [getSuiteDevice({ remember: true, forceRemember: true })],
     },
     {
         description: `Remember device success`,
@@ -1005,13 +993,12 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
                         state: '1stTestnet@device_id:0',
                     }),
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
         ],
@@ -1054,24 +1041,22 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         },
         actions: [
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
                         state: '1stTestnet@device_id:0',
                     }),
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
             {
-                type: deviceActions.rememberDevice.type,
+                type: deviceActions.setRememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
                         state: '1stTestnet@device_id:0',
                         instance: 3,
                     }),
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
         ],

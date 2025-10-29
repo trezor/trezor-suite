@@ -55,11 +55,6 @@ const dev2Instance1 = getSuiteDevice({
     instance: 2,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
-const devNotRemembered = getSuiteDevice({
-    state: '1stTestnetAddress@device_a_id:0',
-    path: '1',
-    instance: 1,
-});
 
 const acc1 = getWalletAccount({
     deviceState: dev1.state?.staticSessionId,
@@ -238,7 +233,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2, dev2Instance1],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
@@ -261,9 +255,9 @@ describe('Storage actions', () => {
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // remember devices
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
-        await store.dispatch(storageActions.rememberDevice(dev2, true));
-        await store.dispatch(storageActions.rememberDevice(dev2Instance1, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
+        await store.dispatch(storageActions.rememberDevice(dev2));
+        await store.dispatch(storageActions.rememberDevice(dev2Instance1));
 
         store.dispatch(await preloadStore());
 
@@ -321,8 +315,8 @@ describe('Storage actions', () => {
         expect(load2.wallet.accounts.length).toEqual(1);
         expect(load2.wallet.accounts[0].deviceState).toEqual(dev2.state?.staticSessionId);
         // forget device dev1 along with its instances
-        await store.dispatch(storageActions.rememberDevice(dev2, false));
-        await store.dispatch(storageActions.rememberDevice(dev2Instance1, false));
+        await store.dispatch(storageActions.forgetDevice(dev2));
+        await store.dispatch(storageActions.forgetDevice(dev2Instance1));
         store.dispatch(await preloadStore());
         expect(selectDevicesCount(store.getState())).toEqual(0);
     });
@@ -332,7 +326,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
@@ -349,8 +342,8 @@ describe('Storage actions', () => {
         store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // store in db
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
-        await store.dispatch(storageActions.rememberDevice(dev2, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
+        await store.dispatch(storageActions.rememberDevice(dev2));
 
         // remove txs for acc 1
         await storageActions.removeAccountTransactions(acc1);
@@ -378,7 +371,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1Connected],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
@@ -391,7 +383,7 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // store device in db
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
 
         // Change device label inside a reducer
         await store.dispatch(
@@ -418,7 +410,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1],
-                    isDeviceAutoEjectEnabled: false,
                     persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
@@ -450,7 +441,7 @@ describe('Storage actions', () => {
         );
         updateStore(store);
         // store device in db
-        await store.dispatch(storageActions.rememberDevice(dev1, true));
+        await store.dispatch(storageActions.rememberDevice(dev1));
 
         // verify that graph data are stored
         store.dispatch(await preloadStore());
@@ -464,26 +455,5 @@ describe('Storage actions', () => {
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(1);
         expect(store.getState().wallet.graph.data[0].account.symbol).toBe('ltc');
-    });
-
-    it('remember device with forceRemember', async () => {
-        const store = mockStore(
-            getInitialState({
-                device: {
-                    devices: [devNotRemembered],
-                    isDeviceAutoEjectEnabled: false,
-                    persistentDeviceData: [],
-                    isConnectionModalOpen: false,
-                    defaultConnectionMode: 'cable',
-                },
-            }),
-        );
-        updateStore(store);
-
-        // store in db
-        await store.dispatch(storageActions.rememberDevice(devNotRemembered, true, true));
-        store.dispatch(await preloadStore());
-        expect(selectDevices(store.getState())[0].remember).toBe(true);
-        expect(selectDevices(store.getState())[0].forceRemember).toBe(true);
     });
 });

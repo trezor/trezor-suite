@@ -107,7 +107,6 @@ export const selectIsFirmwareHashCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareHash;
 export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareRevision;
-export const selectIsAutoEjectEnabled = (state: SuiteRootState) => state.suite.settings.autoEject;
 export const selectIsTradingTermsDismissed = (state: AppState, tradingType: TradingType): boolean =>
     !!state.suite.dismissedTradingTerms?.[tradingType];
 

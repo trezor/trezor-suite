@@ -116,7 +116,6 @@ const mockState: AccountsRootState & DeviceRootState = {
     device: {
         devices: [BTC_DEVICE, ETH_DEVICE],
         persistentDeviceData: [],
-        isDeviceAutoEjectEnabled: true,
     },
 };
 

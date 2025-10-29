@@ -1,8 +1,7 @@
+import { DeviceAuthenticityConfig, deviceAuthenticityConfig } from '@trezor/device-authenticity';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import TrezorConnect from '../../../src';
-import { deviceAuthenticityConfig } from '../../../src/data/deviceAuthenticityConfig';
-import { DeviceAuthenticityConfig } from '../../../src/data/deviceAuthenticityConfigTypes';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();

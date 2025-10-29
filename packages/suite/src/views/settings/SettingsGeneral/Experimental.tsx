@@ -25,8 +25,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const checked = enabledFeatures.includes(feature);
 
     const config = EXPERIMENTAL_FEATURES[feature];
-    const titleId = config.title;
-    const descId = config.description;
+    const { title, description } = config;
     const url = config.knowledgeBaseUrl;
 
     const onChangeFeature = async () => {
@@ -54,8 +53,8 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     return (
         <Row gap={spacings.sm}>
             <TextColumn
-                title={titleId ? <Translation id={titleId} /> : feature}
-                description={descId && <Translation id={descId} />}
+                title={title ? <Translation {...title} /> : feature}
+                description={description ? <Translation {...description} /> : undefined}
                 buttonLink={url}
                 buttonTitle={<Translation id="TR_LEARN_MORE" />}
             />

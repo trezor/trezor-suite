@@ -35,8 +35,6 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
 export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
-export const selectIsDeviceAutoEjectEnabled = (state: DeviceRootState) =>
-    state.device.isDeviceAutoEjectEnabled;
 
 /**
  * @deprecated This is a HACK, and it shall be refactored. See: https://github.com/trezor/trezor-suite/issues/22022
@@ -409,6 +407,11 @@ export const selectIsNoPhysicalDeviceConnected = createMemoizedSelector(
     devices => devices.every(device => !device.connected),
 );
 
+export const selectIsAnyPhysicalDeviceConnectedViaUsb = createMemoizedSelector(
+    [selectPhysicalDeviceWallets],
+    devices => devices.some(device => device.connected && device.descriptor.apiType === 'usb'),
+);
+
 export const selectHasOnlyPortfolioDevice = createMemoizedSelector(
     [selectDevices],
     devices => devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID,
@@ -422,11 +425,6 @@ export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
 export const selectIsDeviceRemembered = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device?.remember,
-);
-
-export const selectIsDeviceForceRemembered = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => !!device?.forceRemember,
 );
 
 export const selectRememberedStandardWalletsCount = createMemoizedSelector(

@@ -78,7 +78,3 @@ yarn workspace @trezor/blockchain-link build:lib
 yarn workspace @trezor/blockchain-link build:workers
 yarn workspace @trezor/blockchain-link test:integration
 ```
-
-### Publishing
-
-[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
+import { initialWalletSettingsState, prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
@@ -67,7 +67,6 @@ const getInitialState = (state?: InitialState) => {
         device: {
             devices: device ? [device] : [],
             selectedDevice: device,
-            isDeviceAutoEjectEnabled: false,
             persistentDeviceData: [],
             isConnectionModalOpen: false,
         },
@@ -83,6 +82,7 @@ const getInitialState = (state?: InitialState) => {
             selectedAccount: {
                 account: accounts[0],
             },
+            settings: initialWalletSettingsState,
         },
         router: {
             app: 'fo',

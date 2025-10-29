@@ -109,7 +109,6 @@ export interface SuiteSettings {
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
     localFirstStorageRelayUrl: string | null;
-    autoEject: boolean;
 }
 
 export interface TransportState extends InstallerInfo {
@@ -212,7 +211,6 @@ const initialState: SuiteState = {
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
         localFirstStorageRelayUrl: null,
-        autoEject: false,
     },
     recentlyConnectedDeviceRef: null,
     recentlyDisconnectedDevice: null,
@@ -371,10 +369,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_IS_COINS_FILTER_VISIBLE:
                 draft.settings.isCoinsFilterVisible = action.payload.isCoinsFilterVisible;
-                break;
-
-            case SUITE.SET_AUTO_EJECT:
-                draft.settings.autoEject = action.payload;
                 break;
 
             case TRANSPORT.START: {

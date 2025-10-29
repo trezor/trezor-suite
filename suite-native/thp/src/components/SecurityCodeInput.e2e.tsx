@@ -11,6 +11,8 @@ type SecurityCodeInputProps = {
     onSubmit: (code: string) => void;
 };
 
+// This e2e version of the component uses onChangeText instead of onKeyPress to be compatible with Detox testing framework
+// The style removed to be able to interact with the input in e2e tests
 export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) => {
     const { applyStyle } = useNativeStyles();
 

@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../crypto-utils" },
+        { "path": "../protobuf" },
+        { "path": "../schema-utils" },
+        { "path": "../utils" }
+    ]
+}

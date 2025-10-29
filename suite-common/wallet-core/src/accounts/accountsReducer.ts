@@ -111,7 +111,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             // Persistence of accounts and transactions in suite-native depends on device.remember state,
             // but redux-persist is not checking for changes in other reducers.
             // This is a workaround to update redux-persist state.
-            .addCase(deviceActions.rememberDevice, state => [...state])
+            .addCase(deviceActions.setRememberDevice, state => [...state])
             .addMatcher(isAnyOf(extra.actions.setAccountAddMetadata), (state, action) => {
                 const { payload } = action;
                 setMetadata(state, payload);
