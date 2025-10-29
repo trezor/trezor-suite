@@ -8,7 +8,6 @@ import { project } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
 const distPath = path.join(getPathForProject(project), 'build');
-const suiteDataPath = path.resolve(__dirname, '../../suite-data/files');
 const config: webpack.Configuration = {
     stats: {
         children: true,
@@ -31,7 +30,7 @@ const config: webpack.Configuration = {
             port: DEV_PORTS[project],
             hmr: true,
             host: 'localhost',
-            static: [distPath, suiteDataPath],
+            static: distPath,
             progress: true,
             historyFallback: {
                 htmlAcceptHeaders: ['text/html', '*/*'],
