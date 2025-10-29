@@ -55,7 +55,7 @@ export const ModalBackdrop = ({
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
             <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndex}>
-                <Backdrop onClick={onClick} $opaque={opaque} data-testid={dataTest}>
+                <Backdrop onMouseDown={onClick} $opaque={opaque} data-testid={dataTest}>
                     <Box padding={padding} height="100%">
                         <Column
                             alignItems={mapAlignmentToAlignItems(alignment)}
@@ -64,7 +64,7 @@ export const ModalBackdrop = ({
                             height="100%"
                             overflow="auto"
                         >
-                            <InnerWrapper onClick={e => e.stopPropagation()}>
+                            <InnerWrapper onMouseDown={e => e.stopPropagation()}>
                                 {children}
                             </InnerWrapper>
                         </Column>
