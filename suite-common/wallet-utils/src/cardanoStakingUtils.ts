@@ -7,7 +7,10 @@ import {
     SupportedCardanoNetworkSymbols,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
-import { isArrayMember } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
+
+import { asAmountSubunit } from './AmountTypes';
+import { subunitsToUnits } from './amountUtils';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -57,4 +60,9 @@ export const drepBech32ToKeyHashHex = (drepId: string): string => {
 };
 
 export const getAdaAccountTotalStakingBalance = (account: Account) =>
-    account?.networkType === 'cardano' && account.misc?.staking?.isActive ? account.balance : null;
+    account?.networkType === 'cardano' && account.misc?.staking?.isActive
+        ? subunitsToUnits({
+              value: asAmountSubunit(new BigNumber(account.balance)),
+              symbol: account.symbol,
+          }).toString()
+        : null;
