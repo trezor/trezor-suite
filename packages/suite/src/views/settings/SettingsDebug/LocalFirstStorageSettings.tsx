@@ -4,13 +4,12 @@ import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     disposeAllLocalFirstStorageThunk,
     labelingActions,
+    selectLocalFirstStorageRelayUrl,
 } from '@suite-common/local-first-storage';
-import { selectLocalFirstStorageRelayUrl } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { Checkbox, Code, Column, Input, NewButton, Text } from '@trezor/components';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
-import { setLocalFirstStorageRelayAction } from 'src/actions/settings/settingsActions';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -44,7 +43,7 @@ export const LocalFirstStorageSettings = () => {
 
     const onRelayUrlSave = () => {
         setIsLoading(true);
-        dispatch(setLocalFirstStorageRelayAction({ url: relayUrl }));
+        dispatch(labelingActions.setLocalFirstStorageRelayUrl({ url: relayUrl }));
 
         // We need to dispose of all Evolu instances and create new
         // as they do not support the Relay URL change
