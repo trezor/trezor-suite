@@ -3,7 +3,6 @@ import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/su
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     AccountInfo,
     BundleProgress,
@@ -124,7 +123,7 @@ const applyDeviceStatesThunk = createThunk(
             // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
             // todo: this sanity check could be moved somewhere higher.
-            if (devicesByPathWithoutState.length !== 1 && devicesByPathWithoutState.length !== 0) {
+            if (devicesByPathWithoutState.length > 1) {
                 console.error('there must be either one or zero physical devices without state');
 
                 return;
@@ -138,7 +137,7 @@ const applyDeviceStatesThunk = createThunk(
             const useEmptyPassphrase = !isAddingHiddenWallet;
 
             // now we expect that there is exactly one device without state - meaning that we want to update its state
-            const isDeviceAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
+            const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
 
             if (devicesByPathWithoutState.length === 1) {
                 dispatch(
@@ -146,24 +145,16 @@ const applyDeviceStatesThunk = createThunk(
                         device,
                         state: newDeviceState,
                         useEmptyPassphrase,
-                        isAutoEjectEnabled: isDeviceAutoEjectEnabled,
+                        isAutoEjectEnabled,
                     }),
                 );
             } else {
                 dispatch(
                     deviceActions.addAuthorizedDevice({
-                        device: {
-                            ...device,
-                            metadata: {},
-                            instance: getNewInstanceNumber(selectDevices(getState()), device),
-                            useEmptyPassphrase,
-                            remember: shouldDeviceBeRemembered({
-                                isDeviceAutoEjectEnabled,
-                                device,
-                            }),
-                            state: newDeviceState,
-                            localFirstStorageSecret: undefined,
-                        },
+                        device,
+                        state: newDeviceState,
+                        useEmptyPassphrase,
+                        isAutoEjectEnabled,
                     }),
                 );
 
@@ -308,11 +299,7 @@ export const runDiscoveryThunk = createThunk(
                 : getNewInstanceNumber(selectDevices(getState()), device);
 
             const deviceStateResponse = await TrezorConnect.getDeviceState({
-                device: {
-                    path: device.path,
-                    instance,
-                    state: undefined,
-                },
+                device: { path: device.path, instance, state: undefined },
                 useEmptyPassphrase: !isAddingHiddenWallet,
             });
 
@@ -434,11 +421,7 @@ export const runDiscoveryThunk = createThunk(
             // before asnyc onBundleProgress is called which sets progress
             dispatch(
                 discoveryActions.updateDiscovery(
-                    {
-                        status: 'progress',
-                        total: Infinity,
-                        progress: 0,
-                    },
+                    { status: 'progress', total: Infinity, progress: 0 },
                     device.path,
                 ),
             );

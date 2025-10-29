@@ -17,7 +17,7 @@ import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
 import { Device, DeviceState, Features, KnownDevice, StaticSessionId } from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 
-import { deviceActions } from './deviceActions';
+import { DeviceStateActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type DeviceReducerState = {
@@ -115,7 +115,7 @@ const merge = (
 const connectDevice = (
     draft: DeviceReducerState,
     device: Device,
-    options: { isAutoEjectEnabled: boolean },
+    { isAutoEjectEnabled }: { isAutoEjectEnabled: boolean },
 ) => {
     const currentTime = new Date().getTime();
 
@@ -194,10 +194,7 @@ const connectDevice = (
         ...deviceCommonFields,
         state: device._state,
         useEmptyPassphrase: undefined,
-        remember: shouldDeviceBeRemembered({
-            isDeviceAutoEjectEnabled: options.isAutoEjectEnabled,
-            device,
-        }),
+        remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
@@ -230,12 +227,6 @@ const connectDevice = (
         // add new device
         draft.devices.push(newDevice);
     }
-};
-
-const addAuthorizedDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
-    device.walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
-    delete device.discovered;
-    draft.devices.push(device);
 };
 
 /**
@@ -337,12 +328,28 @@ const changeDevice = (
     }
 };
 
+const addAuthorizedDevice = (
+    draft: DeviceReducerState,
+    { device, state, useEmptyPassphrase, isAutoEjectEnabled }: DeviceStateActionPayload,
+) => {
+    const { discovered, ...oldDevice } = device;
+    const newDevice = {
+        ...oldDevice,
+        metadata: {},
+        instance: deviceUtils.getNewInstanceNumber(draft.devices, device),
+        walletNumber: deviceUtils.getNewWalletNumber(draft.devices, device),
+        useEmptyPassphrase,
+        remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
+        state,
+        localFirstStorageSecret: undefined,
+    };
+
+    draft.devices.push(newDevice);
+};
+
 const setDeviceState = (
     draft: DeviceReducerState,
-    device: TrezorDevice,
-    state: DeviceState,
-    useEmptyPassphrase: boolean,
-    isAutoEjectEnabled: boolean,
+    { device, state, useEmptyPassphrase, isAutoEjectEnabled }: DeviceStateActionPayload,
 ) => {
     // change only acquired devices
     if (!device.features) return;
@@ -366,10 +373,7 @@ const setDeviceState = (
     affectedDevice[0].walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
     delete affectedDevice[0].discovered;
 
-    affectedDevice[0].remember = shouldDeviceBeRemembered({
-        isDeviceAutoEjectEnabled: isAutoEjectEnabled,
-        device,
-    });
+    affectedDevice[0].remember = shouldDeviceBeRemembered({ isAutoEjectEnabled, device });
 };
 
 /**
@@ -617,18 +621,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 updatePersistentDeviceData(state, payload);
             })
             .addCase(deviceActions.setDeviceState, (state, { payload }) => {
-                setDeviceState(
-                    state,
-                    payload.device,
-                    payload.state,
-                    payload.useEmptyPassphrase,
-                    payload.isAutoEjectEnabled,
-                );
+                setDeviceState(state, payload);
             })
             .addCase(deviceActions.addAuthorizedDevice, (state, { payload }) => {
-                addAuthorizedDevice(state, payload.device);
+                addAuthorizedDevice(state, payload);
             })
-
             .addCase(deviceActions.deviceDisconnect, (state, { payload }) => {
                 disconnectDevice(state, payload);
             })
