@@ -59,7 +59,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://blockbook-dev.corp.sldev.cz:9199"]
+                "url": ["https://avax.trezor.io"]
             },
             "chain": "avax",
             "chain_id": 43114,

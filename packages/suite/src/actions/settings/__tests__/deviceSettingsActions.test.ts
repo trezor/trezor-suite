@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { deviceActions } from '@suite-common/wallet-core';
+import { deviceActions, initialWalletSettingsState } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -23,9 +23,11 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     device: {
         devices: state.device?.devices ?? [DEVICE],
         selectedDevice: state.device?.selectedDevice ?? DEVICE,
-        isDeviceAutoEjectEnabled: false,
         persistentDeviceData: [],
         isConnectionModalOpen: false,
+    },
+    wallet: {
+        settings: initialWalletSettingsState,
     },
     router: {},
     messageSystem: { validMessages: { feature: [] } },

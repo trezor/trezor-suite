@@ -24,5 +24,6 @@ export interface WalletSettings {
     hideSuspiciousTransactions: boolean;
     bitcoinAmountUnit: PROTO.AmountUnit;
     mevProtection: boolean;
-    autoForgetDeviceData: boolean;
+    isAutoForgetDeviceDataEnabled: boolean;
+    isAutoEjectEnabled: boolean;
 }

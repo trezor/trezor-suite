@@ -56,11 +56,7 @@ export const NewCardanoStakingDashboard = ({
     const hasPendingTx = stakeTxs.some(tx => isPending(tx));
     const isStakedWithEverstake = isCardanoStakedWithEverstake(account);
 
-    const isStakeActivated = isStakingActive || hasPendingTx;
-    const isStakeInactive = !isStakedWithEverstake && !isStakeActivated;
-    const shouldShowStakingDashboard = (isStakedWithEverstake && isStakingActive) || hasPendingTx;
-
-    const stakingCard = isStakeInactive ? <EmptyStakingCard /> : <NewProviderCard />;
+    const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
 
     return (
         <StakingDashboard
@@ -79,6 +75,8 @@ export const NewCardanoStakingDashboard = ({
                             <Column alignItems="normal" gap={spacings.sm}>
                                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                 {isDiscoveryRunning && <DiscoveryWarning />}
+
+                                {!isStakedWithEverstake && <NewProviderCard />}
 
                                 <Grid
                                     columns={isBelowLaptop || !canClaim ? 1 : 2}
@@ -102,7 +100,7 @@ export const NewCardanoStakingDashboard = ({
                             </Column>
                         </DashboardSection>
                     ) : (
-                        stakingCard
+                        <EmptyStakingCard />
                     )}
                 </Column>
             }

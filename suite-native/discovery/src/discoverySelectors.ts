@@ -68,12 +68,14 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
         selectAreTestnetsEnabled,
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
+        state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
     (
         deviceNetworks,
         defaultAreTestnetsEnabled,
         forcedAreTestnetsEnabled,
         areDebugOnlyNetworksEnabled,
+        areExperimentalOnlyNetworksEnabled,
     ) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? defaultAreTestnetsEnabled;
 
@@ -81,11 +83,19 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
             deviceNetworks,
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             networkSymbols =>
-                networkSymbols.filter(symbol =>
-                    (getNetwork(symbol).isDebugOnlyNetwork ?? false)
-                        ? areDebugOnlyNetworksEnabled
-                        : true,
-                ),
+                networkSymbols.filter(symbol => {
+                    const network = getNetwork(symbol);
+
+                    if (network.isDebugOnlyNetwork) {
+                        return areDebugOnlyNetworksEnabled;
+                    }
+
+                    if (network.isExperimentalOnlyNetwork) {
+                        return areExperimentalOnlyNetworksEnabled;
+                    }
+
+                    return true;
+                }),
             filterUnavailableNetworks,
             sortNetworks,
             returnStableArrayIfEmpty,

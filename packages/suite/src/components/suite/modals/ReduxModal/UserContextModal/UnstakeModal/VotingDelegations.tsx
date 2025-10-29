@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
     VotingDelegationOption,
@@ -21,6 +21,8 @@ const VOTING_OPTIONS: {
     { key: 'another_drep', translationId: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP' },
 ];
 
+const DEFAULT_VOTING_OPTION: VotingDelegationOption = { type: 'everstake' };
+
 export const VotingDelegations = () => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
@@ -28,9 +30,16 @@ export const VotingDelegations = () => {
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
     const [hasError, setHasError] = useState<boolean>(false);
 
+    // reset voting delegation option on modal open
+    useEffect(() => {
+        dispatch(stakeActions.setVotingDelegationOption(DEFAULT_VOTING_OPTION));
+    }, [dispatch]);
+
     if (!account || account.networkType !== 'cardano') return null;
 
     const handleOptionSelect = (type: VotingDelegationOption['type']) => {
+        setHasError(false);
+
         switch (type) {
             case 'everstake':
                 dispatch(stakeActions.setVotingDelegationOption({ type: 'everstake' }));
@@ -40,9 +49,6 @@ export const VotingDelegations = () => {
                 dispatch(
                     stakeActions.setVotingDelegationOption({ type: 'another_drep', drepId: '' }),
                 );
-                break;
-
-            default:
                 break;
         }
     };

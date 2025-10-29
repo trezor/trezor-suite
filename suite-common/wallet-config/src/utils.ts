@@ -19,11 +19,29 @@ export const networksCollection: Network[] = Object.values(networks);
  */
 export const networkSymbolCollection = networksCollection.map(n => n.symbol);
 
-export const getMainnets = (debug = false, allNetworks = networksCollection) =>
-    allNetworks.filter(n => !n.testnet && (!n.isDebugOnlyNetwork || debug));
+export const getMainnets = (
+    debug = false,
+    useExperimentalNetworks = false,
+    allNetworks = networksCollection,
+) =>
+    allNetworks.filter(
+        n =>
+            !n.testnet &&
+            (!n.isDebugOnlyNetwork || debug) &&
+            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
+    );
 
-export const getTestnets = (debug = false, allNetworks = networksCollection) =>
-    allNetworks.filter(n => n.testnet === true && (!n.isDebugOnlyNetwork || debug));
+export const getTestnets = (
+    debug = false,
+    useExperimentalNetworks = false,
+    allNetworks = networksCollection,
+) =>
+    allNetworks.filter(
+        n =>
+            n.testnet === true &&
+            (!n.isDebugOnlyNetwork || debug) &&
+            (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
+    );
 
 export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);
 

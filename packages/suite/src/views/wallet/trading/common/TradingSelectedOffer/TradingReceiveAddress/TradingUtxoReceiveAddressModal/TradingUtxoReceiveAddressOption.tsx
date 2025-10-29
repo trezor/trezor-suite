@@ -65,7 +65,7 @@ export const TradingUtxoReceiveAddressOption = ({
                             shouldAllowCopy={false}
                             variant="default"
                             typographyStyle="body"
-                            showStart={14}
+                            showStart={10}
                             showEnd={4}
                         />
                         <Text typographyStyle="hint" variant="tertiary">

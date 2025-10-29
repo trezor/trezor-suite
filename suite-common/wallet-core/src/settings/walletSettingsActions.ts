@@ -39,6 +39,11 @@ export const setAutoForgetDeviceData = createAction(
     (enabled: boolean) => ({ payload: enabled }),
 );
 
+export const setAutoEjectEnabled = createAction(
+    WALLET_SETTINGS.SET_AUTO_EJECT,
+    (enabled: boolean) => ({ payload: enabled }),
+);
+
 export type ChangeCoinVisibilityAction = {
     type: typeof WALLET_SETTINGS.CHANGE_COIN_VISIBILITY;
     payload: {
@@ -67,6 +72,7 @@ export type WalletSettingsAction =
     | ReturnType<typeof setBaseCurrency>
     | ReturnType<typeof toggleHideSuspiciousTransactions>
     | ReturnType<typeof setAutoForgetDeviceData>
+    | ReturnType<typeof setAutoEjectEnabled>
     | ChangeCoinVisibilityAction
     | SetHideBalanceAction
     | SetBitcoinAmountUnitsAction

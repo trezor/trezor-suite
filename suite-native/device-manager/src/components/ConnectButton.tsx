@@ -2,11 +2,7 @@ import { FadeInUp, FadeOutUp, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    selectHasRunningDiscovery,
-    selectIsNoPhysicalDeviceConnected,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
@@ -29,12 +25,13 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const device = useSelector(selectSelectedDevice);
 
-    const isConnectButtonVisible = !hasDiscovery && isNoPhysicalDeviceConnected;
-
     const { onConnectDevicePress } = useConnectDeviceHandler();
+
+    if (hasDiscovery) {
+        return null;
+    }
 
     const handleConnectDevice = () => {
         if (device) {
@@ -49,8 +46,6 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
             payload: { action: 'connectDeviceButton' },
         });
     };
-
-    if (!isConnectButtonVisible) return null;
 
     return (
         <AnimatedBox

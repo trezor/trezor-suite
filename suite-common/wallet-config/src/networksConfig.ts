@@ -274,6 +274,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'eip1559',
+            'graph',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -284,7 +285,7 @@ export const networks = {
                 isDebugOnlyAccountType: true,
             },
         },
-        isDebugOnlyNetwork: true,
+        isExperimentalOnlyNetwork: true,
         coingeckoId: 'avalanche',
         tradeCryptoId: 'avalanche-2',
         caipId: 'eip155:43114',

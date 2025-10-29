@@ -73,6 +73,7 @@ export const PortfolioCard = memo(() => {
         showGraphControls,
         device,
         accounts,
+        dashboardGraphHidden,
     });
 
     const goToReceive = () => dispatch(goto('wallet-receive'));

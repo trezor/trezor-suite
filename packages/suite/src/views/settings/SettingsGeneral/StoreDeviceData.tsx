@@ -35,7 +35,7 @@ export const StoreDeviceDataModal = ({ onCancel }: ModalProps) => {
 
     const handleConfirmClick = () => {
         const shouldEnableAutoForget = !isStoreDataEnabled;
-        dispatch(setAutoForgetDeviceDataThunk({ enabled: shouldEnableAutoForget }));
+        dispatch(setAutoForgetDeviceDataThunk({ shouldEnable: shouldEnableAutoForget }));
 
         analytics.report({
             type: EventType.SettingsGeneralStoreDeviceData,

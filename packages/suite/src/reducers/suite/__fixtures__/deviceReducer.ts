@@ -35,6 +35,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -62,6 +63,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -95,6 +97,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -123,6 +126,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -157,6 +161,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -194,6 +199,7 @@ const connect: Fixture<
                     device: getConnectDevice({
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -216,6 +222,7 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],
@@ -245,6 +252,7 @@ const connect: Fixture<
                         type: 'unacquired',
                         path: '1',
                     }),
+                    isAutoEjectEnabled: false,
                 },
             },
         ],

@@ -1,8 +1,8 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { capitalizeFirstLetter, union } from '@trezor/utils';
+import { union } from '@trezor/utils';
 
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
@@ -15,35 +15,36 @@ export const useUnsupportedNetworkMessage = ({
     showGraphControls,
     device,
     accounts,
+    dashboardGraphHidden,
 }: {
     showGraphControls: boolean;
     device?: TrezorDevice;
     accounts: Account[];
+    dashboardGraphHidden: boolean;
 }) => {
     const affectedAccounts =
         showGraphControls && !hasBitcoinOnlyFirmware(device)
             ? accounts
                   .filter(account => account.history && !isNetworkWithGraphFeature(account.symbol))
-                  .map(({ networkType }) => networkType)
+                  .map(({ symbol }) => symbol)
             : [];
 
     const affectedNetworks = union(affectedAccounts);
     const hasTokens = hasAnyAccountWithTokens(accounts);
-    const showMissingDataTooltip = affectedNetworks.length > 0 || hasAnyAccountWithTokens(accounts);
+    const showMissingDataTooltip =
+        !dashboardGraphHidden && (affectedNetworks.length > 0 || hasAnyAccountWithTokens(accounts));
 
     return { affectedNetworks, showMissingDataTooltip, hasTokens };
 };
 
 type MessageProps = {
-    affectedNetworks: string[];
+    affectedNetworks: NetworkSymbol[];
     hasTokens: boolean;
 };
 
 const Message = ({ affectedNetworks, hasTokens }: MessageProps) => {
     const hasNetworks = affectedNetworks.length > 0;
-    const networksString = affectedNetworks
-        .map(network => capitalizeFirstLetter(network))
-        .join(', ');
+    const networksString = affectedNetworks.map(network => getNetwork(network).name).join(', ');
 
     if (hasNetworks && hasTokens) {
         return (
@@ -65,7 +66,7 @@ const Message = ({ affectedNetworks, hasTokens }: MessageProps) => {
 };
 
 type UnsupportedAssetsMessageProps = {
-    affectedNetworks: string[];
+    affectedNetworks: NetworkSymbol[];
     hasTokens: boolean;
 };
 

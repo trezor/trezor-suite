@@ -77,8 +77,8 @@ export const TradingReceiveAddress = ({ type }: TradingReceiveAddressProps) => {
                                     shouldAllowCopy={false}
                                     variant="tertiary"
                                     typographyStyle="hint"
-                                    showStart={14}
-                                    showEnd={0}
+                                    showStart={10}
+                                    showEnd={4}
                                 />
                             </>
                         ) : (
@@ -89,8 +89,8 @@ export const TradingReceiveAddress = ({ type }: TradingReceiveAddressProps) => {
                                         shouldAllowCopy={false}
                                         variant="default"
                                         typographyStyle="body"
-                                        showStart={14}
-                                        showEnd={0}
+                                        showStart={10}
+                                        showEnd={4}
                                     />
                                 ) : (
                                     <Text typographyStyle="hint" variant="tertiary">
