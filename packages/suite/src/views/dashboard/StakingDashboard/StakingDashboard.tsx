@@ -39,10 +39,15 @@ export const StakingDashboard = () => {
 
     const ethCurrentRate = useCryptoCurrentRate('eth');
     const solCurrentRate = useCryptoCurrentRate('sol');
+    const adaCurrentRate = useCryptoCurrentRate('ada');
 
     const currentRates: Record<StakingNetworkSymbol, number | undefined> = {
         eth: ethCurrentRate,
         sol: solCurrentRate,
+        ada: adaCurrentRate,
+        thod: ethCurrentRate,
+        tada: adaCurrentRate,
+        dsol: solCurrentRate,
     };
 
     const ethStakingMessageSystem = useMessageSystemStaking('eth');

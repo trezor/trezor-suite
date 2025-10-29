@@ -12,8 +12,10 @@ import {
     selectPoolStatsApyData,
     selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
+import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
@@ -33,6 +35,8 @@ const getInfoRowsData = (
     accountSymbol: NetworkSymbol,
     daysToAddToPool?: number,
 ): InfoRowsData | null => {
+    if (!isStakingNetworkType(networkType)) return null;
+
     switch (networkType) {
         case 'ethereum':
             return {
@@ -88,7 +92,7 @@ const getInfoRowsData = (
                 ),
             };
         default:
-            return null;
+            return exhaustive(networkType);
     }
 };
 

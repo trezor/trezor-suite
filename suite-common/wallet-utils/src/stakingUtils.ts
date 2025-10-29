@@ -1,4 +1,11 @@
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import {
+    NetworkSymbol,
+    NetworkType,
+    STAKING_SYMBOLS,
+    STAKING_TYPES,
+    StakingNetworkSymbol,
+    StakingNetworkType,
+} from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
     MAX_CARDANO_AMOUNT_FOR_STAKING,
@@ -17,6 +24,7 @@ import {
     UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
 import { Account, PrecomposedLevels, StakingPoolExtended } from '@suite-common/wallet-types';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
@@ -38,18 +46,22 @@ import {
 
 export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
-export const getAccountTotalStakingBalance = (account: Account) => {
-    switch (account?.networkType) {
-        case 'ethereum':
-            return getEthAccountTotalStakingBalance(account);
-        case 'solana':
-            return getSolAccountTotalStakingBalance(account);
-        case 'cardano':
-            return getAdaAccountTotalStakingBalance(account);
-        default:
-            return null;
-    }
-};
+export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkType =>
+    (STAKING_TYPES as readonly string[]).includes(type);
+
+export const isStakingSymbol = (symbol: NetworkSymbol): symbol is StakingNetworkSymbol =>
+    (STAKING_SYMBOLS as readonly string[]).includes(symbol);
+
+const STAKING_BALANCE_BY_TYPE = {
+    ethereum: getEthAccountTotalStakingBalance,
+    solana: getSolAccountTotalStakingBalance,
+    cardano: getAdaAccountTotalStakingBalance,
+} satisfies Record<StakingNetworkType, (a: Account) => string | null>;
+
+export const getAccountTotalStakingBalance = (account: Account) =>
+    isStakingNetworkType(account.networkType)
+        ? STAKING_BALANCE_BY_TYPE[account.networkType](account)
+        : null;
 
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) ||
@@ -66,8 +78,9 @@ export type StakingLimits = {
 export const getStakingLimitsByNetworkSymbol = (
     symbol: NetworkSymbol | undefined,
 ): StakingLimits | null => {
+    if (!symbol || !isStakingSymbol(symbol)) return null;
+
     switch (symbol) {
-        case 'tsep':
         case 'thod':
         case 'eth':
             return {
@@ -96,14 +109,14 @@ export const getStakingLimitsByNetworkSymbol = (
             };
 
         default:
-            return null;
+            return exhaustive(symbol);
     }
 };
 
 export const getStakingDataForNetwork = (
     account?: Account,
 ): Omit<StakingPoolExtended, 'contract' | 'name'> | undefined => {
-    if (!account) return;
+    if (!account || !isStakingNetworkType(account.networkType)) return;
 
     switch (account.networkType) {
         case 'ethereum':
@@ -155,7 +168,7 @@ export const getStakingDataForNetwork = (
             };
         }
         default:
-            return;
+            return exhaustive(account.networkType);
     }
 };
 
