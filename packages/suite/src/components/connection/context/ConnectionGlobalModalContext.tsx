@@ -43,6 +43,7 @@ const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalCon
     selectedDevice: undefined,
     notConnectedKnownDevices: [],
     notConnectedNearbyDevices: [],
+    manuallyPairedConnectedDevices: [],
     shouldShowBluetoothUnPairDeviceList: false,
 
     showHints: false,
@@ -123,6 +124,7 @@ const useConnectionGlobalModal = () => {
         selectedDevice,
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
+        manuallyPairedConnectedDevices,
         onConnect,
         handlePairingCancel,
     } = useBluetoothConnection({
@@ -157,6 +159,7 @@ const useConnectionGlobalModal = () => {
         notConnectedKnownDevices,
         shouldShowBluetoothUnPairDeviceList,
         notConnectedNearbyDevices,
+        manuallyPairedConnectedDevices,
     };
 };
 

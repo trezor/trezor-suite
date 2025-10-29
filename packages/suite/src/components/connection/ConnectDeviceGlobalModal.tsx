@@ -77,6 +77,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         shouldShowBluetoothUnPairDeviceList,
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
+        manuallyPairedConnectedDevices,
         showRemoveFromOsBluetooth,
         closeShowRemoveFromOsBluetooth,
         selectedDevice,
@@ -132,8 +133,12 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         );
     }
 
-    // there are nearby devices, show the list and let user connect
-    if (isBluetoothMode && (notConnectedNearbyDevices.length > 0 || selectedDevice)) {
+    // there are nearby devices which can be selected to proceed, show the list and let user connect
+    const areConnectableDevices =
+        selectedDevice ||
+        notConnectedNearbyDevices.length > 0 ||
+        manuallyPairedConnectedDevices.length > 0;
+    if (isBluetoothMode && areConnectableDevices) {
         return <BluetoothConnectionModal onClose={onCancel} />;
     }
 

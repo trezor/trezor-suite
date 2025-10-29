@@ -14,6 +14,7 @@ const NEARBY_DEVICE_DECREASE = -1_000; // ms
 const CONNECTION_STATUSES_TO_KEEP: DeviceBluetoothConnectionStatusType[] = [
     'connecting',
     'pairing',
+    'connected', // this is relevant for devices manually paired via OS Bluetooth settings, instead of Suite
 ] as const;
 
 /**

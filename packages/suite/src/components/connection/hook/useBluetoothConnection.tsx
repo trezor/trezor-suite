@@ -18,6 +18,7 @@ export type UseBluetoothConnectionReturn = {
     selectedDevice: DesktopBluetoothDevice | undefined;
     notConnectedKnownDevices: DesktopBluetoothDevice[];
     notConnectedNearbyDevices: DesktopBluetoothDevice[];
+    manuallyPairedConnectedDevices: DesktopBluetoothDevice[];
     onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
     handlePairingCancel: (deviceId: BluetoothDeviceId) => Promise<void>;
 };
@@ -43,10 +44,20 @@ export const useBluetoothConnection = ({
         () => knownDevices.filter(device => device.connectionStatus.type === 'disconnected'),
         [knownDevices],
     );
-
     const notConnectedNearbyDevices = useMemo(
         () => devices.filter(device => device.connectionStatus.type === 'disconnected'),
         [devices],
+    );
+
+    // Devices manually paired via OS Bluetooth settings, instead of via Suite
+    const manuallyPairedConnectedDevices = useMemo(
+        () =>
+            devices.filter(
+                device =>
+                    device.connectionStatus.type === 'connected' &&
+                    knownDevices.every(d => d.id !== device.id),
+            ),
+        [devices, knownDevices],
     );
 
     const onConnect = async (deviceId: BluetoothDeviceId): Promise<void> => {
@@ -78,6 +89,7 @@ export const useBluetoothConnection = ({
         selectedDevice,
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
+        manuallyPairedConnectedDevices,
         onConnect,
         handlePairingCancel,
     };
