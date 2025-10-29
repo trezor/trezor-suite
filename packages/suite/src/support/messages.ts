@@ -634,12 +634,12 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM: {
-        defaultMessage: 'Minimum you get',
+        defaultMessage: 'Minimum received amount',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_INFO: {
         defaultMessage:
-            'Prices can change during the swap. Maximum slippage sets how much difference you’ll accept in the final amount. A higher tolerance makes the transaction more likely to go through, but you may receive less than expected.',
+            "Exchange rates can change quickly, so the final amount you receive may differ from the offer—this is called slippage. Slippage tolerance sets the maximum difference you're willing to accept. A higher tolerance means your transaction is more likely to go through but you might get less than expected. A lower tolerance gives you a better rate but may cause the transaction to fail, and you'll still pay the transaction fee.",
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_INFO',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM: {
@@ -711,15 +711,15 @@ export default defineMessages({
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
-        defaultMessage: 'Fixed',
+        defaultMessage: 'Fixed-rate offer',
         id: 'TR_EXCHANGE_FIXED',
     },
     TR_EXCHANGE_FLOAT: {
-        defaultMessage: 'Floating',
+        defaultMessage: 'Floating-rate offer',
         id: 'TR_EXCHANGE_FLOAT',
     },
     TR_EXCHANGE_DEX: {
-        defaultMessage: 'DEX',
+        defaultMessage: 'Decentralized exchange offer',
         id: 'TR_EXCHANGE_DEX',
     },
     TR_EXCHANGE_DECENTRALIZED_EXCHANGE: {
@@ -1432,7 +1432,7 @@ export default defineMessages({
     },
     TR_TRADING_DCA_FEATURE_1_DESCRIPTION: {
         defaultMessage:
-            'Set it & forget it with Auto Buy or let Auto Buy Plus optimize your timing for smarter stacking.',
+            'Set it and forget it with Auto Buy, or let Auto Buy Plus optimize your timing for smarter stacking.',
         id: 'TR_TRADING_DCA_FEATURE_1_DESCRIPTION',
         dynamic: true,
     },
@@ -1485,7 +1485,7 @@ export default defineMessages({
     },
     TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION: {
         defaultMessage:
-            'Use Auto Send to automatically move your bitcoin to your Trezor (not valid for active Turbo Buy).',
+            'Use Auto Send to automatically move your bitcoin to your Trezor. Not available for Turbo Buy.',
         id: 'TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION',
         dynamic: true,
     },
@@ -1500,7 +1500,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN: {
-        defaultMessage: 'DCA is currently available only for Bitcoin',
+        defaultMessage: 'DCA is currently available only for bitcoin',
         id: 'TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN',
         dynamic: true,
     },
@@ -4675,7 +4675,7 @@ export default defineMessages({
     },
     TR_FORGET_DEVICE_DESCRIPTION: {
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
-        defaultMessage: 'Removes all device-related data from Trezor Suite.',
+        defaultMessage: 'Remove all device-related data from Trezor Suite.',
     },
     TR_DEVICE_CONNECTION: {
         id: 'TR_DEVICE_CONNECTION',
@@ -4823,7 +4823,7 @@ export default defineMessages({
     },
     TR_FW_INSTALL_MAY_TAKE_A_WHILE: {
         id: 'TR_FW_INSTALL_MAY_TAKE_A_WHILE',
-        defaultMessage: 'Firmware installation may take a some time to complete.',
+        defaultMessage: 'Firmware installation may take some time to complete.',
     },
     TR_CHARGE_BATTERY_TO_ATLEAST: {
         id: 'TR_CHARGE_BATTERY_TO_ATLEAST',
@@ -5115,7 +5115,7 @@ export default defineMessages({
     TR_LABEL_REQUIREMENTS: {
         id: 'TR_LABEL_REQUIREMENTS',
         defaultMessage:
-            'Use names up to {length} characters, containing only letters from the English alphabet.',
+            'Select a name up to {length} characters, containing letters only from the English alphabet.',
         description: 'How many characters may be in device label and of what type.',
     },
     TR_LABEL_ERROR_LENGTH: {
@@ -5239,7 +5239,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI',
-        defaultMessage: 'Changeable to Multi-share Backup',
+        defaultMessage: 'Supports upgrade to Multi-share Backup',
     },
     TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE',
@@ -5252,12 +5252,12 @@ export default defineMessages({
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
-        defaultMessage: 'Secure & reliable—not easily changeable to Multi-share Backup',
+        defaultMessage: "Secure & reliable—can't be upgraded to Multi-share Backup",
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            "Generates a single set of 12 or 24 words that can fully recover your wallet. Legacy wallet backup types can't be changed easily to Multi-share Backups. <a>Read more</a>",
+            "Generates a single set of 12 or 24 words that can fully recover your wallet. A legacy wallet backup can't be upgraded to a Multi-share Backup. <a>Learn more</a>",
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
@@ -5274,7 +5274,7 @@ export default defineMessages({
     TR_ONBOARDING_BACKUP_LEGACY_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_LEGACY_WARNING',
         defaultMessage:
-            "This can't be directly changed to Multi-share Backup. For future flexibility, use the default Single-share Backup.",
+            "This can't be upgraded to a Multi-share Backup. For more flexibility later, use the default Single-share Backup.",
     },
     TR_ONBOARDING_BACKUP_SHAMIR_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_SHAMIR_WARNING',
@@ -6079,7 +6079,7 @@ export default defineMessages({
         id: 'FEE_LEVEL_STANDARD',
     },
     FEE_LEVEL_ADVANCED: {
-        defaultMessage: 'Advanced',
+        defaultMessage: 'Customize fee',
         id: 'FEE_LEVEL_ADVANCED',
     },
     FEE_LEVEL_HIGH: {
@@ -7856,7 +7856,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION',
         defaultMessage:
-            "<a>Click to switch</a> how your Trezor connects to Trezor Suite. This may help if you're experiencing connection issues. Current version: ({currentVersion})",
+            "<a>Click to switch</a> how your Trezor connects to Trezor Suite. This may help if you're experiencing connection issues. Current version {currentVersion}",
     },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
@@ -8760,13 +8760,13 @@ export default defineMessages({
     TR_LOADING_FACT_13: {
         id: 'TR_LOADING_FACT_13',
         description: '140 symbols max',
-        defaultMessage: 'Privacy is not secrecy - Eric Hughes',
+        defaultMessage: '"Privacy is not secrecy." - Eric Hughes',
     },
     TR_LOADING_FACT_14: {
         id: 'TR_LOADING_FACT_14',
         description: '140 symbols max',
         defaultMessage:
-            'Privacy is the power to selectively reveal oneself to the world - Eric Hughes',
+            '"Privacy is the power to selectively reveal oneself to the world." - Eric Hughes',
     },
     TR_LOADING_FACT_15: {
         id: 'TR_LOADING_FACT_15',
@@ -8800,7 +8800,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_20',
         description: '140 symbols max',
         defaultMessage:
-            "Mel B, better known as 'Scary Spice', was the first mainstream musician to accept Bitcoin payments for a single",
+            'Mel B, better known as Scary Spice, was the first mainstream musician to accept Bitcoin payments for a single',
     },
     TR_LOADING_FACT_21: {
         id: 'TR_LOADING_FACT_21',
@@ -9023,12 +9023,12 @@ export default defineMessages({
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
         defaultMessage:
-            'Address poisoning alert! This transaction looks suspicious. <a>Learn more.</a>',
+            'Address poisoning alert! This transaction looks suspicious. <a>Learn more</a>',
     },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
         defaultMessage:
-            'Proceed with caution. This may be a fraudulent transaction. <a>Read more here.</a>',
+            'Proceed with caution. This may be a fraudulent transaction. <a>Learn more</a>',
     },
     TR_SENDFORM_LABELING_EXAMPLE_1: {
         id: 'TR_SENDFORM_LABELING_EXAMPLE_1',
@@ -10392,7 +10392,7 @@ export default defineMessages({
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING: {
         id: 'TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING',
-        defaultMessage: 'Manually pair your Trezor:',
+        defaultMessage: 'Manually pair your Trezor',
         description: 'Displayed as hints of bluetooth connection in connect modal',
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_DESCRIPTION: {
