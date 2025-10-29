@@ -61,18 +61,27 @@ const GhostDeviceActionButton = ({
 
 type ActionButtonProps = {
     isGhostDevice: boolean;
+    isManuallyPairedDevice: boolean;
     device: DesktopBluetoothDevice;
     onConnect: (deviceId: BluetoothDeviceId) => void;
     onPairAgain?: (deviceId: BluetoothDeviceId) => void;
 };
 
-const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionButtonProps) => {
+const ActionButton = ({
+    isGhostDevice,
+    isManuallyPairedDevice,
+    device,
+    onConnect,
+    onPairAgain,
+}: ActionButtonProps) => {
     const connectingDevicesIds = useSelector(selectConnectingDevices);
 
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
     const connectionStatus = connectionStatusMap[device.connectionStatus.type];
     const isClickable = connectionStatus?.component === 'button';
     const isLoading = connectionStatus?.component === 'loader';
+
+    const handleOnClick = () => onConnect(device.id);
 
     if (isGhostDevice) {
         return (
@@ -84,12 +93,17 @@ const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionB
             />
         );
     }
+    if (isManuallyPairedDevice) {
+        return (
+            <Button variant="primary" size="small" onClick={handleOnClick}>
+                <Translation id="TR_BLUETOOTH_CONNECT" />
+            </Button>
+        );
+    }
 
     if (isLoading) {
         return <PairingState isLoading text={connectionStatus.text} />;
     }
-
-    const handleOnClick = () => onConnect(device.id);
 
     if (isClickable) {
         return (
@@ -98,6 +112,8 @@ const ActionButton = ({ isGhostDevice, device, onConnect, onPairAgain }: ActionB
             </Button>
         );
     }
+
+    return null;
 };
 
 type BluetoothDeviceItemProps = {
@@ -119,6 +135,8 @@ export const BluetoothDeviceListItem = ({
     const isKnownDevice = knownDevices.some(knownDevice => knownDevice.id === device.id);
 
     const isGhostDevice = isKnownDevice && !isNearbyDevice;
+    // device manually paired via OS Bluetooth settings, instead of Suite
+    const isManuallyPairedDevice = isNearbyDevice && !isKnownDevice;
 
     return (
         <Row gap={16} justifyContent="space-between">
@@ -126,6 +144,7 @@ export const BluetoothDeviceListItem = ({
             <ActionButton
                 onPairAgain={onPairAgain}
                 isGhostDevice={isGhostDevice}
+                isManuallyPairedDevice={isManuallyPairedDevice}
                 device={device}
                 onConnect={onConnect}
             />
