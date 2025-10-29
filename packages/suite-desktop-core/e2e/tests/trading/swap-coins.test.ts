@@ -168,7 +168,9 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
             await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
                 formattedReceiveAmount,
             );
-            await expect(tradingPage.confirmationExchangeType).toHaveText('Fixed');
+            await expect(tradingPage.confirmationExchangeType).toHaveTranslation(
+                'TR_EXCHANGE_FIXED',
+            );
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });
     });
