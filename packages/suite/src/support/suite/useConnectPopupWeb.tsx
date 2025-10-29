@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
     CALL_SOURCE_WEB,
@@ -29,23 +29,25 @@ export const useConnectPopupWeb = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
     const lifecycle = useSelector(state => state.suite.lifecycle);
-    const [manifest, setManifest] = useState<ManifestPartial | undefined>();
+    const manifest = useRef<ManifestPartial | undefined>(undefined);
+    const [pendingHandshake, setPendingHandshake] = useState<string | undefined>();
 
     useEffect(() => {
-        if (lifecycle.status !== 'ready') return;
-
         const onMessage = async (event: MessageEvent) => {
             console.log('onMessage', event.data);
             if (event.data?.type === 'channel-handshake-request') {
                 postMessageToParent({ type: 'channel-handshake-confirm' });
             } else if (event.data.type === POPUP.HANDSHAKE) {
-                setManifest(event.data.payload.settings.manifest);
-                postMessageToParent({
-                    id: event.data.id,
-                    type: POPUP.HANDSHAKE,
-                });
+                manifest.current = event.data.payload.settings.manifest;
+                setPendingHandshake(event.data.id);
             } else if (event.data?.type === IFRAME.CALL) {
-                if (!manifest) return;
+                if (!manifest.current) {
+                    console.warn(
+                        'Connect Popup Web: manifest is not set yet, cannot process IFRAME.CALL',
+                    );
+
+                    return;
+                }
 
                 await queuePopupCall();
                 const deferred = getPopupCallDeferred(true);
@@ -56,7 +58,7 @@ export const useConnectPopupWeb = () => {
                         source: {
                             type: CALL_SOURCE_WEB,
                             origin: event.origin,
-                            manifest,
+                            manifest: manifest.current,
                         },
                     }),
                 );
@@ -76,13 +78,23 @@ export const useConnectPopupWeb = () => {
         return () => {
             window.removeEventListener('message', onMessage);
         };
-    }, [dispatch, manifest, lifecycle.status]);
+    }, [dispatch]);
 
     useEffect(() => {
         if (lifecycle.status !== 'ready') return;
 
         postMessageToParent(createPopupMessage(POPUP.CORE_LOADED));
     }, [lifecycle.status]);
+
+    useEffect(() => {
+        // respond to handshake, but only after suite is ready
+        if (lifecycle.status !== 'ready' || !pendingHandshake) return;
+
+        postMessageToParent({
+            id: pendingHandshake,
+            type: POPUP.HANDSHAKE,
+        });
+    }, [lifecycle.status, pendingHandshake]);
 
     // Window close control
     useEffect(() => {

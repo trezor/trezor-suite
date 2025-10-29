@@ -5,6 +5,7 @@ import {
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
+import { UI_REQUEST } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -103,6 +104,20 @@ export const ConnectErrorModal = () => {
     };
     const getErrorText = () => {
         if (isCancelled) return <Translation id="TR_CONNECT_ERROR_CANCELED" />;
+        if (popupCall.error?.error === UI_REQUEST.BOOTLOADER)
+            return <Translation id="TR_DEVICE_IN_BOOTLOADER" />;
+        if (popupCall.error?.error === UI_REQUEST.NOT_IN_BOOTLOADER)
+            return <Translation id="TR_RECONNECT_IN_BOOTLOADER" />;
+        if (popupCall.error?.error === UI_REQUEST.SEEDLESS)
+            return <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />;
+        if (popupCall.error?.error === UI_REQUEST.INITIALIZE)
+            return <Translation id="TR_DEVICE_NOT_INITIALIZED" />;
+        if (popupCall.error?.error === UI_REQUEST.FIRMWARE_NOT_INSTALLED)
+            return <Translation id="TR_NO_FIRMWARE" />;
+        if (popupCall.error?.error === UI_REQUEST.FIRMWARE_NOT_SUPPORTED)
+            return <Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />;
+        if (popupCall.error?.error === UI_REQUEST.FIRMWARE_OLD)
+            return <Translation id="TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED" />;
         if (popupCall.error?.error) return popupCall.error.error;
 
         return <Translation id="TR_UNKNOWN_ERROR_SEE_CONSOLE" />;
