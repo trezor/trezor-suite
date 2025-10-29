@@ -135,7 +135,7 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
                     pending: '300',
-                    staked: 'hidden',
+                    staked: '0',
                     rewards: '0',
                     unstaking: '3,234',
                 });
@@ -165,7 +165,7 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
                     pending: '300',
-                    staked: 'hidden',
+                    staked: '0',
                     rewards: '0',
                     unstaking: 'hidden',
                 });

@@ -131,7 +131,6 @@ export const StakingCard = ({
 
     const canUnstake = new BigNumber(autocompoundBalance).gt(0);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
-    const hasDepositedBalance = new BigNumber(depositedBalance).gt(0);
 
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
 
@@ -216,24 +215,23 @@ export const StakingCard = ({
                             data-testid="@account/staking/pending"
                         />
                     )}
-                    {hasDepositedBalance && (
-                        <Item
-                            label={
-                                <Translation
-                                    id={
-                                        isCardanoNetworkType
-                                            ? 'TR_STAKE_ACTIVE_STAKE'
-                                            : 'TR_STAKE_STAKE'
-                                    }
-                                />
-                            }
-                            iconName="lock"
-                            symbol={selectedAccount?.symbol}
-                            cryptoAmount={depositedBalance}
-                            fiatAmount={depositedBalance}
-                            data-testid="@account/staking/staked"
-                        />
-                    )}
+
+                    <Item
+                        label={
+                            <Translation
+                                id={
+                                    isCardanoNetworkType
+                                        ? 'TR_STAKE_ACTIVE_STAKE'
+                                        : 'TR_STAKE_STAKE'
+                                }
+                            />
+                        }
+                        iconName="lock"
+                        symbol={selectedAccount?.symbol}
+                        cryptoAmount={depositedBalance || '0'}
+                        fiatAmount={depositedBalance || '0'}
+                        data-testid="@account/staking/staked"
+                    />
 
                     <Item
                         label={
