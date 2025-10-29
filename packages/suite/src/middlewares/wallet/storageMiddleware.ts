@@ -19,7 +19,8 @@ import {
     deviceActions,
     explorerActions,
     selectAccountByKey,
-    selectAccounts,
+    selectAccountsByDeviceState,
+    selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectDevices,
     selectHistoricFiatRates,
@@ -62,30 +63,26 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 const state = api.getState();
                 const device = findAccountDevice(newAccount, selectDevices(state));
 
-                // ensure index 0 gets saved once index 1+ appears, since it may be skipped during initial discovery
-                if (newAccount.index > 0) {
-                    const prevAccount = selectAccounts(state).find(
-                        account =>
-                            account.deviceState === newAccount.deviceState &&
-                            account.accountType === newAccount.accountType &&
-                            account.symbol === newAccount.symbol &&
-                            account.index === newAccount.index - 1,
-                    );
-
-                    if (
-                        prevAccount &&
-                        prevAccount.index === 0 &&
-                        prevAccount.balance === '0' &&
-                        isAccountSuccessful(prevAccount)
-                    ) {
-                        storageActions.saveAccounts([prevAccount]);
-                    }
-                }
-
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device) && isAccountSuccessful(newAccount)) {
                     storageActions.saveAccounts([newAccount]);
                     api.dispatch(storageActions.saveCoinjoinAccount(newAccount.key));
+                }
+            }
+
+            if (isAnyOf(deviceActions.setDeviceState, deviceActions.addAuthorizedDevice)(action)) {
+                const device = selectDeviceByState(api.getState(), action.payload.state);
+
+                // When setDeviceState/addAuthorizedDevice is dispatched for passphrase wallet,
+                // it means that its device was just created, but already discovered accounts
+                // may have not been persisted, so try to do it now
+                if (device && !device.useEmptyPassphrase && isDeviceRemembered(device)) {
+                    const accounts = selectAccountsByDeviceState(
+                        api.getState(),
+                        action.payload.state,
+                    ).filter(isAccountSuccessful);
+
+                    storageActions.saveAccounts(accounts);
                 }
             }
 
