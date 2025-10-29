@@ -30,7 +30,7 @@ test.describe(
             await onboardingPage.completeOnboarding();
 
             await settingsPage.navigateTo('application');
-            await expect(settingsPage.metadataSwitch.locator('input')).not.toBeChecked();
+            expect(settingsPage.metadataSelectInput).toBe('off');
 
             // Navigate to account and hover over add label button
             await page.getByTestId('@suite/menu/suite-index').click();

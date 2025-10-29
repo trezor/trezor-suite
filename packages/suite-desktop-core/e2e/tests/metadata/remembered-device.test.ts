@@ -36,7 +36,12 @@ test.describe(
             await page.getByTestId('@account-menu/btc/normal/0/label').click();
 
             await settingsPage.navigateTo('application');
-            await settingsPage.metadataSwitch.click();
+
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('legacy'),
+            );
+
             await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
 
             // Now metadata is enabled, go to accounts and see what we got loaded from provider
@@ -68,7 +73,12 @@ test.describe(
 
             // device not saved, disable metadata
             await settingsPage.navigateTo('application');
-            await page.getByTestId('@settings/metadata-switch').click();
+
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('off'),
+            );
+
             await walletPage.openAccount();
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).not.toContainText(
                 'label',
@@ -116,7 +126,10 @@ test.describe(
 
             // device saved, disable metadata
             await settingsPage.navigateTo('application');
-            await page.getByTestId('@settings/metadata-switch').click();
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('off'),
+            );
             await walletPage.openAccount();
 
             // Now it is not possible to add labels, keys are gone and device is not connected
