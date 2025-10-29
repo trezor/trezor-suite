@@ -1,3 +1,7 @@
+import { memo } from 'react';
+import { useWatch } from 'react-hook-form';
+
+import { FormState } from '@suite-common/wallet-types';
 import { getLowestFeeFromLevels } from '@suite-common/wallet-utils';
 import { Banner, Collapsible } from '@trezor/components';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
@@ -6,14 +10,12 @@ import { BigNumber } from '@trezor/utils';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { Translation } from 'src/components/suite/Translation';
 
+import { FEE_PER_UNIT } from './constants';
 import { useFeesContext } from '../../context/FeesContext';
 
-type CustomFeeTooLowBannerProps = {
-    feePerUnitValue: string;
-};
-
-export const CustomFeeTooLowBanner = ({ feePerUnitValue }: CustomFeeTooLowBannerProps) => {
+export const CustomFeeTooLowBanner = memo(function CustomFeeTooLowBannerInner() {
     const { feeInfo } = useFeesContext();
+    const feePerUnitValue = useWatch<FormState, typeof FEE_PER_UNIT>({ name: FEE_PER_UNIT });
     const lowestFeeLevel = getLowestFeeFromLevels(feeInfo.levels);
     const isCustomFeeBelowLowest = BigNumber(feePerUnitValue).isLessThan(lowestFeeLevel);
 
@@ -36,4 +38,4 @@ export const CustomFeeTooLowBanner = ({ feePerUnitValue }: CustomFeeTooLowBanner
             </Collapsible.Content>
         </Collapsible>
     );
-};
+});

@@ -62,7 +62,7 @@ export const TradingExchangeFormInputs = () => {
 
     return (
         <Card paddingType="none">
-            <Column gap={spacings.lg} padding={{ vertical: spacings.lg, horizontal: spacings.lg }}>
+            <Column gap={spacings.lg} padding={spacings.lg}>
                 <TradingFormInputAccount<TradingExchangeFormProps>
                     accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     label="TR_FROM"
