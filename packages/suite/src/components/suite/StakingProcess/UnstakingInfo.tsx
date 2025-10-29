@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { StakeRootState, selectValidatorsQueue } from '@suite-common/wallet-core';
-import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
+import { getUnstakingPeriodInDays, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
@@ -24,6 +25,8 @@ const getInfoRowsData = (
     accountSymbol: NetworkSymbol,
     daysToUnstake?: number,
 ): InfoRowsData | null => {
+    if (!isStakingNetworkType(networkType)) return null;
+
     switch (networkType) {
         case 'ethereum':
             return {
@@ -63,7 +66,7 @@ const getInfoRowsData = (
                 ),
             };
         default:
-            return null;
+            return exhaustive(networkType);
     }
 };
 

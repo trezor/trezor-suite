@@ -3,7 +3,7 @@ import {
     selectFeatureMessageContent,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
@@ -19,12 +19,12 @@ export const useMessageSystemStaking = (networkSymbol?: NetworkSymbol) => {
     const language = useSelector(selectLanguage);
 
     const isAvailable = networkSymbol != null && availableNetworks.includes(networkSymbol);
+    const isStaking = isAvailable && networkSymbol in Feature.stake;
+    const key = networkSymbol as keyof typeof Feature.stake;
 
-    const stake = isAvailable ? Feature.stake[networkSymbol as StakingNetworkSymbol] : undefined;
-    const unstake = isAvailable
-        ? Feature.unstake[networkSymbol as StakingNetworkSymbol]
-        : undefined;
-    const claim = isAvailable ? Feature.claim[networkSymbol as StakingNetworkSymbol] : undefined;
+    const stake = isStaking ? Feature.stake[key] : undefined;
+    const unstake = isStaking ? Feature.unstake[key] : undefined;
+    const claim = isStaking ? Feature.claim[key] : undefined;
 
     const isStakingDisabled = useSelector(state =>
         stake ? selectIsFeatureDisabled(state, stake) : undefined,

@@ -36,8 +36,6 @@ export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
  */
 export type NetworkSymbolExtended = NetworkSymbol | (string & {});
 
-export type StakingNetworkSymbol = Extract<NetworkSymbol, 'eth' | 'sol'>;
-
 export type NetworkType = 'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana' | 'stellar';
 
 type UtilityAccountType = 'normal' | 'imported' | 'placeholder'; // reserved accountTypes to stand in for a real accountType
