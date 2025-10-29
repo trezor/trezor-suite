@@ -367,7 +367,7 @@ export const setDeviceAutoEjectThunk = createThunk(
         const physicalDeviceWallets = selectPhysicalDeviceWallets(getState());
         physicalDeviceWallets.forEach(wallet => {
             const shouldRemember = shouldDeviceBeRemembered({
-                isDeviceAutoEjectEnabled: shouldEnable,
+                isAutoEjectEnabled: shouldEnable,
                 device: wallet,
             });
 

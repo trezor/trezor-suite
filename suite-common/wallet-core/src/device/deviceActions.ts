@@ -22,6 +22,13 @@ export type DeviceConnectActionPayload = {
     isAutoEjectEnabled: boolean;
 };
 
+export type DeviceStateActionPayload = {
+    device: AcquiredDevice;
+    state: DeviceState & { staticSessionId: StaticSessionId };
+    useEmptyPassphrase: boolean;
+    isAutoEjectEnabled: boolean;
+};
+
 const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
     payload,
 }));
@@ -51,21 +58,12 @@ const devicePushNotification = createAction(
 
 const setDeviceState = createAction(
     `${DEVICE_MODULE_PREFIX}/set-device-state`,
-    (payload: {
-        device: TrezorDevice;
-        state: DeviceState & { staticSessionId: StaticSessionId };
-        useEmptyPassphrase: boolean;
-        isAutoEjectEnabled: boolean;
-    }) => ({
-        payload,
-    }),
+    (payload: DeviceStateActionPayload) => ({ payload }),
 );
 
 const addAuthorizedDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/addAuthorizedDevice`,
-    (payload: { device: TrezorDevice }) => ({
-        payload,
-    }),
+    (payload: DeviceStateActionPayload) => ({ payload }),
 );
 
 const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice) => ({

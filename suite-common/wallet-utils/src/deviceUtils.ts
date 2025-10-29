@@ -13,16 +13,16 @@ export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionI
 
 export const shouldDeviceBeRemembered = ({
     device,
-    isDeviceAutoEjectEnabled = false,
+    isAutoEjectEnabled = false,
 }: {
     device: TrezorDevice | Device;
-    isDeviceAutoEjectEnabled?: boolean;
+    isAutoEjectEnabled?: boolean;
 }) => {
     if (device.mode !== 'normal') return false;
 
     if (device.type !== 'acquired') return false;
 
-    return !isDeviceAutoEjectEnabled;
+    return !isAutoEjectEnabled;
 };
 
 export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
