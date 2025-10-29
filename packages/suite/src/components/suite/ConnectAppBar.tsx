@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { TrafficLightOffset } from './TrafficLightOffset';
 import { Translation } from './Translation';
+import { SuiteBanners } from './banners';
 
 export const ConnectBarWrapper = styled.div`
     position: absolute;
@@ -90,6 +91,7 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                     </Row>
                 </TrafficLightOffset>
             </Box>
+            <SuiteBanners fill />
         </ConnectBarWrapper>
     );
 };

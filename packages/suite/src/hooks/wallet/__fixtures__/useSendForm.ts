@@ -422,6 +422,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
             } satisfies LabelingState,
             state => state,
         ),
+        connectPopup: createReducer({}, () => ({})),
     });
 
 const DEFAULT_DRAFT = {
