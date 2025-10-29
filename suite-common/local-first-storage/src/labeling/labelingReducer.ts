@@ -127,5 +127,8 @@ export const prepareLabelingReducer = createReducerWithExtraDeps<LabelingState>(
                 (state, { payload }) => {
                     state.isFeatureLocalFirstStorageAvailable = payload.isShownInSettings;
                 },
-            ),
+            )
+            .addCase(labelingActions.setLocalFirstStorageRelayUrl, (state, { payload }) => {
+                state.localFirstStorageRelayUrl = payload.url;
+            }),
 );

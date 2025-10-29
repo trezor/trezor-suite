@@ -11,6 +11,9 @@
         },
         { "path": "../../suite-common/trading" },
         {
+            "path": "../../suite-common/validators"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
@@ -18,6 +21,7 @@
         { "path": "../config" },
         { "path": "../feature-flags" },
         { "path": "../firmware" },
+        { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
