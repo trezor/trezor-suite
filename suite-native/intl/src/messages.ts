@@ -157,6 +157,7 @@ export const messages = {
                 stillWorking: 'Retrieving balances',
             },
         },
+        rediscoveryNeeded: 'Reconnect your trezor to load all assets.',
     },
     biometricsButton: 'Unlock with biometrics',
     bluetooth: {

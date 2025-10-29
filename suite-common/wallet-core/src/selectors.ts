@@ -34,11 +34,11 @@ This file is for selectors that reach into more than one wallet-core reduce
 to prevent circular dependencies between reducers
 */
 
-type CompoundRootState = AccountsRootState &
+export type WalletCoreCompoundRootState = AccountsRootState &
     DeviceRootState &
     DiscoveryRootState &
     WalletSettingsRootState;
-const createMemoizedSelector = createWeakMapSelector.withTypes<CompoundRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<WalletCoreCompoundRootState>();
 
 const selectEnabledSupportedNetworks = createMemoizedSelector(
     [selectEnabledNetworks, selectSelectedDevice],
@@ -79,7 +79,7 @@ export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
 type DiscoveryAccountsParam = Parameters<TrezorConnect['discoverAccounts']>[0]['coins'];
 
 export const selectDiscoveryAccountsParam = (
-    state: CompoundRootState,
+    state: WalletCoreCompoundRootState,
     deviceState: StaticSessionId,
     knownOnly?: boolean,
 ): DiscoveryAccountsParam => {
@@ -118,8 +118,49 @@ export const selectDiscoveryAccountsParam = (
     });
 };
 
+export const selectShouldAccountsBeRediscovered = (
+    state: WalletCoreCompoundRootState,
+    deviceState?: StaticSessionId,
+): boolean | null => {
+    if (!deviceState) return null;
+
+    const networkSymbols = selectEnabledSupportedNetworks(state);
+    const deviceDiscoveredAccounts = selectAccountsByDeviceState(state, deviceState);
+    const discoverableAccounts = deviceDiscoveredAccounts.filter(isAccountDiscoverable);
+
+    const networkSymbolToAccountsMap = arrayToDictionary(
+        discoverableAccounts,
+        acc => acc.symbol,
+        true,
+    );
+
+    return networkSymbols.some(symbol => {
+        const networkSymbolsAccounts = networkSymbolToAccountsMap[symbol];
+
+        // undiscovered network; needs discovery
+        if (!networkSymbolsAccounts) return true;
+
+        // discovered network; check each account type
+        const networkSymbolAccountTypeToAccountMap = arrayToDictionary(
+            networkSymbolsAccounts,
+            acc => acc.accountType,
+            true,
+        );
+
+        return Object.values(networkSymbolAccountTypeToAccountMap).some(accounts => {
+            // account with the highest index
+            const lastAccount = accounts.reduce((last, current) =>
+                current.index > last.index ? current : last,
+            );
+            if (lastAccount.failed || lastAccount.empty) return true;
+
+            return false;
+        });
+    });
+};
+
 const selectShouldRediscoverHelper = (
-    state: CompoundRootState,
+    state: WalletCoreCompoundRootState,
     device: TrezorDevice | undefined,
     allowUndiscovered: boolean,
 ) => {
@@ -137,10 +178,12 @@ const selectShouldRediscoverHelper = (
     return symbols.some(symbol => !discoveredNetworks.has(symbol));
 };
 
-export const selectShowRediscoverButton = (state: CompoundRootState, device?: TrezorDevice) =>
-    selectShouldRediscoverHelper(state, device, false);
+export const selectShowRediscoverButton = (
+    state: WalletCoreCompoundRootState,
+    device?: TrezorDevice,
+) => selectShouldRediscoverHelper(state, device, false);
 
-export const selectShouldRediscover = (state: CompoundRootState, device?: TrezorDevice) =>
+export const selectShouldRediscover = (state: WalletCoreCompoundRootState, device?: TrezorDevice) =>
     selectShouldRediscoverHelper(state, device, true);
 
 export const selectAccountsToBeForgotten = (
@@ -177,7 +220,7 @@ export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
 export const selectIsTxOutputInternal = createMemoizedSelector(
     [
         selectDeviceAccountsByNetworkSymbol,
-        (_state: CompoundRootState, symbol?: NetworkSymbol, output?: ReviewOutput) => ({
+        (_state: WalletCoreCompoundRootState, symbol?: NetworkSymbol, output?: ReviewOutput) => ({
             symbol,
             output,
         }),
