@@ -102,6 +102,27 @@ runs:
         docker compose pull --quiet ${{ inputs.containers }}
         echo "::endgroup::"
 
+    - name: Await Connect deployment
+      if: >-
+        ${{ 
+          github.event_name == 'pull_request' && 
+          github.repository == 'trezor/trezor-suite' &&
+          (contains(github.event.pull_request.changed_files, 'packages/connect') ||
+          contains(github.event.pull_request.changed_files, 'packages/connect-explorer') ||
+          contains(github.event.pull_request.changed_files, 'packages/connect-web') ||
+          contains(github.event.pull_request.changed_files, 'packages/connect-popup'))
+        }}
+      uses: kamilchodola/wait-for-workflow-action@1.1.0
+      with:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        workflow_id: "build-connect.yml"
+        max_wait_minutes: "5"
+        interval: "15"
+        timeout: "15"
+        org_name: "trezor"
+        repo_name: "trezor-suite"
+        ref: "${{ github.ref }}"
+
     - name: Run Playwright E2E Tests
       shell: bash
       env:
