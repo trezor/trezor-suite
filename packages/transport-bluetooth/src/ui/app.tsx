@@ -70,11 +70,11 @@ export const App: React.FC = () => {
     const [devices, setDevices] = useState<BluetoothDevice[]>([]);
     const [output, setOutput] = useState<string[]>([]);
     const [deviceId, setDeviceId] = useState('');
-    const [messageInput, setMessageInput] = useState('{}');
     const [connected, setConnected] = useState(false);
     const selectRef = useRef<(HTMLSelectElement & { value?: NotificationCharacteristic }) | null>(
         null,
     );
+    const messageInputRef = useRef<HTMLTextAreaElement | null>(null);
 
     const writeOutput = (message: unknown) => {
         try {
@@ -250,7 +250,7 @@ export const App: React.FC = () => {
 
     const setState = async () => {
         try {
-            const value = deviceId.split(',');
+            const value = messageInputRef.current!.value.split(',');
             const state = { devices: value.map(d => ({ id: d, macAddress: d })) };
             const r = await api().send('set_state', state);
             writeOutput(r);
@@ -259,13 +259,15 @@ export const App: React.FC = () => {
         }
     };
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         try {
-            const json = JSON.parse(messageInput);
-            const resp = api().sendMessage(json);
+            const { value } = messageInputRef.current!;
+            console.warn('VAL', value);
+            const json = JSON.parse(value);
+            const resp = await api().sendMessage(json);
             writeOutput(resp);
         } catch (e) {
-            writeOutput(e);
+            writeOutput({ error: e.message });
         }
     };
 
@@ -316,8 +318,8 @@ export const App: React.FC = () => {
 
                         <textarea
                             id="send_message_input"
-                            value={messageInput}
-                            onChange={e => setMessageInput(e.target.value)}
+                            ref={messageInputRef}
+                            defaultValue={`{"method": "get_info"}`}
                             style={{ width: '100%', height: 80 }}
                         />
                         <div style={{ marginTop: 8 }}>
