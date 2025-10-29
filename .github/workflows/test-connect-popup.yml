@@ -1,5 +1,4 @@
-# todo: at the moment it is build only. I don't want to change the name not to mess with existing runs in github
-name: "[Build/Test] connect-popup e2e"
+name: "[Build] connect"
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -17,11 +16,11 @@ on:
       - "packages/connect-common/**"
       - "packages/connect-data/**"
       - "packages/connect-explorer/**"
+      - "packages/connect-webextension/**"
       - "packages/connect-web/**"
       - "packages/connect-explorer-theme/**"
-      - "packages/trezor-user-env-link/**"
-      - "submodules/trezor-common/**"
       - ".github/actions/release-connect/**"
+      - ".github/workflows/build-connect.yml"
   workflow_dispatch:
 
 concurrency:
