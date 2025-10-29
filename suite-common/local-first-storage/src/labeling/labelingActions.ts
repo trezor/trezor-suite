@@ -59,6 +59,11 @@ export const updateisFeatureLocalFirstStorageAvailable = createAction(
     (payload: { isShownInSettings: boolean }) => ({ payload }),
 );
 
+export const setLocalFirstStorageRelayUrl = createAction(
+    `${LABELING_PREFIX}/select-local-first-storage-relay-url`,
+    (payload: { url: string }) => ({ payload }),
+);
+
 export const labelingActions = {
     setWalletLabel,
     setAccountLabel,
@@ -68,4 +73,5 @@ export const labelingActions = {
     updateLocaleFirstStorageEnabled,
     updateLocaleFirstStorageDebugEnabled,
     updateisFeatureLocalFirstStorageAvailable,
+    setLocalFirstStorageRelayUrl,
 };

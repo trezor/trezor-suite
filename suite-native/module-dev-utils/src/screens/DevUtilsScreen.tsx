@@ -21,6 +21,7 @@ import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { FirmwareUpdateEnvironmentSelect } from '../components/FirmwareUpdateEnvironmentSelect';
+import { LocalFirstRelaySettings } from '../components/LocalFirstRelaySettings';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { TestnetsToggle } from '../components/TestnetsToggle';
@@ -104,6 +105,7 @@ export const DevUtilsScreen = () => {
                         <FirmwareUpdateEnvironmentSelect />
                     </VStack>
                 </Card>
+                <LocalFirstRelaySettings />
             </VStack>
         </Screen>
     );
