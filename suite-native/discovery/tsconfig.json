@@ -20,9 +20,12 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../feature-flags" },
+        { "path": "../icons" },
+        { "path": "../intl" },
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },

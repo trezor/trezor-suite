@@ -38,6 +38,7 @@ export type InlineAlertBoxProps = Omit<BoxProps, 'style'> & {
     buttonLabel?: ReactNode;
     onButtonPress?: () => void;
     iconName?: IconName;
+    viewLeft?: ReactNode;
     buttonProps?: Partial<ButtonProps>;
 };
 
@@ -47,6 +48,7 @@ export const InlineAlertBox = ({
     onButtonPress,
     iconName,
     buttonProps,
+    viewLeft,
     variant = 'neutral',
     ...props
 }: InlineAlertBoxProps) => {
@@ -62,7 +64,11 @@ export const InlineAlertBox = ({
             })}
             {...props}
         >
-            <Icon name={iconName || variantToIconName[variant]} size="mediumLarge" />
+            {viewLeft ? (
+                viewLeft
+            ) : (
+                <Icon name={iconName || variantToIconName[variant]} size="mediumLarge" />
+            )}
             <Text variant="hint" style={applyStyle(textStyle)}>
                 {title}
             </Text>
