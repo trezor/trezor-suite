@@ -40,7 +40,7 @@ export function CollapsibleHeaderContent({
     toggleLabel,
     toggleComponent,
     toggleIconName = 'caretCircleDown',
-    toggleIconSize = headingSize,
+    toggleIconSize = 'large',
     toggleIconVariant,
     collapsible,
 }: CollapsibleHeaderContentProps) {

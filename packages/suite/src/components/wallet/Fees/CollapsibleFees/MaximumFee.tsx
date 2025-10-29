@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { AmountUnit, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -20,17 +20,21 @@ export const MaximumFee = memo(function MaximumFeeInner({ typographyStyle }: Max
     const transactionInfo = composedLevels?.[selectedFeeLevel.label];
     const txFee = transactionInfo?.type !== 'error' ? transactionInfo?.fee : null;
     const [txMaximumFee, setTxMaximumFee] = useState<AmountUnit | null>(null);
+    const txMaxFee = useMemo(() => {
+        if (!txFee) return null;
+
+        return subunitsToUnits({
+            value: asAmountSubunit(new BigNumber(txFee)),
+            symbol: networkSymbol,
+            decimals: getNetwork(networkSymbol)?.decimals,
+        }) as AmountUnit;
+    }, [networkSymbol, txFee]);
 
     useEffect(() => {
-        if (txFee) {
-            const txMaxFee = subunitsToUnits({
-                value: asAmountSubunit(new BigNumber(txFee ?? '0')),
-                symbol: networkSymbol,
-                decimals: getNetwork(networkSymbol)?.decimals,
-            });
+        if (txMaxFee) {
             setTxMaximumFee(txMaxFee);
         }
-    }, [networkSymbol, txFee]);
+    }, [txMaxFee]);
 
     if (!txMaximumFee) {
         return (
