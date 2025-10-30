@@ -1,6 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { disposeAllLocalFirstStorageThunk } from '@suite-common/local-first-storage';
+import {
+    disposeAllLocalFirstStorageThunk,
+    labelingActions,
+} from '@suite-common/local-first-storage';
 import { Box, Card, CheckBox, Text, VStack } from '@suite-native/atoms';
 import {
     FeatureFlag as FeatureFlagEnum,
@@ -37,6 +40,11 @@ const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
 
     const onChange = () => {
         if (featureFlag === FeatureFlagEnum.IsLocalFirstStorageEnabled) {
+            dispatch(
+                labelingActions.updateLocaleFirstStorageEnabled({
+                    isEnabled: !originalIsLocalFirstStorageEnabled,
+                }),
+            );
             if (!originalIsLocalFirstStorageEnabled) {
                 dispatch(initNativeLocalFirstStorageThunk());
             } else {
