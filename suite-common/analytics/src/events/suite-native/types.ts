@@ -20,6 +20,7 @@ import {
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
+export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 export type SuiteNativeAnalyticsEvent =
     | {
@@ -511,6 +512,13 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               type: CountryChangeContext;
               parameter: 'country';
+          };
+      }
+    | {
+          type: EventType.TradingCountrySelection;
+          payload: {
+              type: CountryChangeContextCheck;
+              action: CountryChangeAction;
           };
       }
     | {

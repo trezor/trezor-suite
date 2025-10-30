@@ -115,4 +115,13 @@ describe('CountryOfResidencePicker', () => {
             'Not selected',
         );
     });
+
+    it('should render without TestID', async () => {
+        const { getByText, queryByTestId } = await renderCountryOfResidencePicker({
+            testID: undefined,
+        });
+
+        expect(getByText('Country of residence')).toBeOnTheScreen();
+        expect(queryByTestId('undefined/value')).toBeNull();
+    });
 });

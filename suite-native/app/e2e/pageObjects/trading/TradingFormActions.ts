@@ -19,7 +19,7 @@ export abstract class TradingFormActions extends TradingActions {
     }
 
     getSearchCountryElement() {
-        return this.getElementById('country-search-input');
+        return this.getElementById('country/search-input');
     }
 
     getFiatAmountElement() {
