@@ -155,12 +155,6 @@ export type UserContextPayload =
           type: 'uneco-coinjoin-warning';
       }
     | {
-          type: 'authenticate-device';
-      }
-    | {
-          type: 'authenticate-device-fail';
-      }
-    | {
           type: 'stake-in-a-nutshell';
       }
     | {

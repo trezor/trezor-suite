@@ -14,8 +14,6 @@ import { AddAccountModal } from './AddAccountModal/AddAccountModal';
 import { AddTokenModal } from './AddTokenModal';
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 import { ApplicationLogModal } from './ApplicationLogModal';
-import { AuthenticateDeviceFailModal } from './AuthenticateDeviceFailModal';
-import { AuthenticateDeviceModal } from './AuthenticateDeviceModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { BackgroundGalleryModal } from './BackgroundGalleryModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
@@ -187,10 +185,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <MoreRoundsNeededModal />;
         case 'uneco-coinjoin-warning':
             return <UnecoCoinjoinModal />;
-        case 'authenticate-device':
-            return <AuthenticateDeviceModal />;
-        case 'authenticate-device-fail':
-            return <AuthenticateDeviceFailModal />;
         case 'stake-in-a-nutshell':
             return <StakeInANutshellModal onCancel={onCancel} />;
         case 'stake':
