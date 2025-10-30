@@ -40,6 +40,18 @@ export const Feature = {
         eth: 'eth.staking.claim',
         sol: 'sol.staking.claim',
     },
+
+    banners: {
+        staking: {
+            ada: {
+                newProvider: 'ada.staking.banner.newProvider',
+            },
+        },
+        dashboard: {
+            promo: 'dashboard.promoBanner',
+        },
+    },
+
     firmwareRevisionCheck: 'security.firmware.revisionCheck',
     firmwareRevisionCheckMobile: 'security.firmware.revisionCheck.mobile',
     firmwareHashCheck: 'security.firmware.hashCheck',
@@ -62,7 +74,6 @@ export const Feature = {
         },
         survey: 'trading.survey',
     },
-    dashboardPromoBanner: 'dashboard.promoBanner',
     mevProtection: 'settings.mevProtection',
 
     // Feature flags implemented only for mobile app

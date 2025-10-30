@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
@@ -53,8 +56,11 @@ export const NewCardanoStakingDashboard = ({
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, account.key));
-    const hasPendingTx = stakeTxs.some(tx => isPending(tx));
+    const hasPendingTx = useMemo(() => stakeTxs.some(tx => isPending(tx)), [stakeTxs]);
     const isStakedWithEverstake = isCardanoStakedWithEverstake(account);
+    const isNewProviderBannerEnabled = useSelector(state =>
+        selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
+    );
 
     const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
 
@@ -76,7 +82,9 @@ export const NewCardanoStakingDashboard = ({
                                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
-                                {!isStakedWithEverstake && !hasPendingTx && <NewProviderCard />}
+                                {!isStakedWithEverstake &&
+                                    !hasPendingTx &&
+                                    isNewProviderBannerEnabled && <NewProviderCard />}
 
                                 <Grid
                                     columns={isBelowLaptop || !canClaim ? 1 : 2}
