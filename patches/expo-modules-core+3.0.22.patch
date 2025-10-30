@@ -1,5 +1,5 @@
 diff --git a/node_modules/expo-modules-core/src/Platform.ts b/node_modules/expo-modules-core/src/Platform.ts
-index e736f6e..7a12a06 100644
+index a6d6c37..f3be1ff 100644
 --- a/node_modules/expo-modules-core/src/Platform.ts
 +++ b/node_modules/expo-modules-core/src/Platform.ts
 @@ -11,12 +11,6 @@ export type PlatformSelectOSType = PlatformOSType | 'native' | 'electron' | 'def
