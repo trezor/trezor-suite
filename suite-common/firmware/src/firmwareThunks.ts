@@ -98,9 +98,14 @@ export const firmwareUpdate = createThunk<
             btcOnly: toBitcoinOnlyFirmware,
             binary,
             baseUrl,
-            // Firmware language should only be set during the initial firmware installation.
-            language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
         });
+
+        // Firmware language should only be set during the initial firmware installation.
+        if (device.firmware === 'none' && targetTranslationLanguage) {
+            await TrezorConnect.changeLanguage({
+                language: targetTranslationLanguage,
+            });
+        }
 
         const targetProperties = binary
             ? {}
