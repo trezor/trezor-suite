@@ -35,7 +35,7 @@ export class Analytics<T extends AnalyticsEvent> {
         this.instanceId = options.instanceId || getRandomId();
         this.sessionId = options.sessionId || getRandomId();
         this.commitId = options.commitId;
-        this.url = getUrl(this.app, options.isDev, options.environment);
+        this.url = options.url ?? getUrl(this.app, options.isDev, options.environment);
         this.callbacks = options.callbacks;
 
         // Call flushQueue only if 'enabled' is explicitly set (true or false).
@@ -74,6 +74,10 @@ export class Analytics<T extends AnalyticsEvent> {
     };
 
     public isEnabled = () => !!this.enabled;
+
+    public setUrl = (url: string) => {
+        this.url = url;
+    };
 
     public report = (data: T, config?: ReportConfig) => {
         // Add a timestamp to each event to track its actual occurrence time, considering possible queuing delays.

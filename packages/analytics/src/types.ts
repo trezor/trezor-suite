@@ -8,6 +8,7 @@ export type InitOptions = {
     sessionId?: string;
     instanceId?: string;
     environment?: Environment;
+    url?: string; // custom analytics URL if set
     isDev: boolean;
     commitId: string;
     callbacks?: {
