@@ -5,6 +5,7 @@ import {
     SettingsStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
+import { SettingsTradingLocationScreen } from '@suite-native/trading-residence';
 
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
@@ -12,7 +13,6 @@ import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScree
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
 import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
-import { SettingsTradingLocationScreen } from '../screens/SettingsTradingLocationScreen';
 import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
 import { TurnOffFirmwareAuthenticityCheckScreen } from '../screens/TurnOffFirmwareAuthenticityCheckScreen';
 
@@ -60,6 +60,7 @@ export const SettingsStackNavigator = () => (
             component={TurnOffDeviceAuthenticityCheckScreen}
         />
         <SettingsStack.Screen
+            options={{ title: SettingsStackRoutes.SettingsTradingLocation }}
             name={SettingsStackRoutes.SettingsTradingLocation}
             component={SettingsTradingLocationScreen}
         />

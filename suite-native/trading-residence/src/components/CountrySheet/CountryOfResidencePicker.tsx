@@ -87,6 +87,7 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                 onClose={hideSheet}
                 onCountrySelect={handleCountrySelect}
                 selectedCountryId={selectedValue?.value}
+                testID={testID}
             />
         </>
     );

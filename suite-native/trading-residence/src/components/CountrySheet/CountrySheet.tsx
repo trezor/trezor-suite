@@ -15,14 +15,18 @@ export type CountrySheetProps = {
     onClose: () => void;
     onCountrySelect: (symbol: TradingCountryOption) => void;
     selectedCountryId?: string;
+    testID: string;
 };
 
 const keyExtractor = (item: TradingCountryOption) => item.value;
 
 export const CountrySheet = memo(
-    ({ isVisible, onClose, onCountrySelect, selectedCountryId }: CountrySheetProps) => {
+    ({ isVisible, onClose, onCountrySelect, selectedCountryId, testID }: CountrySheetProps) => {
         const { filteredData, filterValue, setFilterValue } = useCountryFilteredData();
         const { translate } = useTranslate();
+
+        const searchInputTestId = testID ? testID + '/search-input' : undefined;
+        const bottomSheetTestId = testID ? testID + '/bottom-sheet' : undefined;
 
         // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
@@ -31,13 +35,13 @@ export const CountrySheet = memo(
                     onClose={onClose}
                     title={<Translation id="tradingResidence.countrySheet.title" />}
                     onFilterChange={setFilterValue}
-                    searchInputTestId="@trading/buy/country-search-input"
+                    searchInputTestId={searchInputTestId}
                     searchInputPlaceholder={translate(
                         'tradingResidence.countrySheet.searchInputPlaceholder',
                     )}
                 />
             ),
-            [onClose, setFilterValue, translate],
+            [onClose, setFilterValue, translate, searchInputTestId],
         );
 
         const onCountrySelectCallback = (country: TradingCountryOption) => {
@@ -69,6 +73,7 @@ export const CountrySheet = memo(
                 keyboardShouldPersistTaps="handled"
                 flashListKey={flashListKey}
                 extraData={selectedCountryId}
+                testID={bottomSheetTestId}
             />
         );
     },

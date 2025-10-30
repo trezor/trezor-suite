@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
 import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
@@ -13,9 +13,10 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingHistory>,
+        }) as RouteProp<SettingsStackParamList, SettingsStackRoutes.SettingsTradingLocation>,
     useNavigation: () => ({
         goBack: () => mockNavigationGoBack(),
+        setOptions: jest.fn(),
     }),
 }));
 
@@ -59,6 +60,22 @@ describe('TradingLocationSettingsScreen', () => {
             payload: {
                 type: 'settings',
                 parameter: 'country',
+            },
+        });
+    });
+
+    it('should go back and log analytics event on back button press', async () => {
+        const analyticsSpy = jest.spyOn(analytics, 'report');
+        const { getByLabelText } = await renderTradingLocationSettingsScreen();
+
+        await userEvent.press(getByLabelText('Go back'));
+
+        expect(analyticsSpy).toHaveBeenCalledTimes(1);
+        expect(analyticsSpy).toHaveBeenCalledWith({
+            type: EventType.TradingCountrySelection,
+            payload: {
+                type: 'settings',
+                action: 'cancel',
             },
         });
     });
