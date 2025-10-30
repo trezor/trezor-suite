@@ -15,30 +15,36 @@ import { AlgorithmName, parseCertificate } from './x509certificate';
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
 // The only common format of publicKey is PEM.
 const verifySignatureP256: VerifySignature = async (rawKey, data, signature) => {
-    const signer = crypto.createVerify('sha256');
-    signer.update(Buffer.from(data));
+    try {
+        const signer = crypto.createVerify('sha256');
+        signer.update(Buffer.from(data));
 
-    const SubtleCrypto = getSubtleCrypto();
+        const SubtleCrypto = getSubtleCrypto();
 
-    // get ECDSA P-256 (secp256r1) key from RAW key
-    const ecPubKey = await SubtleCrypto.importKey(
-        'raw',
-        rawKey,
-        { name: 'ECDSA', namedCurve: 'P-256' },
-        true,
-        ['verify'],
-    );
+        // get ECDSA P-256 (secp256r1) key from RAW key
+        const ecPubKey = await SubtleCrypto.importKey(
+            'raw',
+            rawKey,
+            { name: 'ECDSA', namedCurve: 'P-256' },
+            true,
+            ['verify'],
+        );
 
-    // export ECDSA key as spki
-    const spkiPubKey = await SubtleCrypto.exportKey('spki', ecPubKey);
+        // export ECDSA key as spki
+        const spkiPubKey = await SubtleCrypto.exportKey('spki', ecPubKey);
 
-    // create PEM from spki
-    const key = `-----BEGIN PUBLIC KEY-----\n${Buffer.from(spkiPubKey).toString(
-        'base64',
-    )}\n-----END PUBLIC KEY-----`;
+        // create PEM from spki
+        const key = `-----BEGIN PUBLIC KEY-----\n${Buffer.from(spkiPubKey).toString(
+            'base64',
+        )}\n-----END PUBLIC KEY-----`;
 
-    // verify using PEM key
-    return signer.verify({ key }, Buffer.from(signature));
+        // verify using PEM key
+        return signer.verify({ key }, Buffer.from(signature));
+    } catch {
+        // invalid inputs shall be considered unsuccessful verification, rather than runtime error
+        // (e.g. attempting to verify a Ed25519 signature signature here)
+        return false;
+    }
 };
 
 // Verifies Ed25519 signature using SubtleCrypto (browser or Node.js)
@@ -53,7 +59,8 @@ const verifySignatureEd25519: VerifySignature = async (rawKey, data, signature) 
         // Verify signature
         return await SubtleCrypto.verify({ name: 'Ed25519' }, edPubKey, signature, data);
     } catch {
-        // Consider invalid inputs an unsuccessful verification rather than throw
+        // invalid inputs shall be considered unsuccessful verification, rather than runtime error
+        // (e.g. attempting to verify a P-256 signature signature here)
         return false;
     }
 };
