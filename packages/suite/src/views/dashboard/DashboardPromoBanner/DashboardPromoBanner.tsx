@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { Feature as MessageFeature } from '@suite-common/suite-types';
@@ -25,7 +25,7 @@ export const DashboardPromoBanner = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
 
     const allPromoBanners = useSelector(state =>
-        selectFeaturesConfig(state, Feature.dashboardPromoBanner),
+        selectFeaturesConfig(state, Feature.banners.dashboard.promo),
     );
 
     const deduplicatedBanners = allPromoBanners
