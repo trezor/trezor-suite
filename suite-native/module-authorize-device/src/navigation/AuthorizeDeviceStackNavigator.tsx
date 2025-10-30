@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectDeviceRequestedPin, selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
+import { selectDeviceRequestedPassphrase } from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -29,6 +30,7 @@ export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceSt
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
+    const hasDeviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
 
     return (
         <AuthorizeDeviceStack.Navigator
@@ -67,7 +69,7 @@ export const AuthorizeDeviceStackNavigator = () => {
                     </AuthorizeDeviceStack.Group>
                 )
             }
-            {!isDeviceThpRequired && hasDeviceRequestedPin && (
+            {!isDeviceThpRequired && hasDeviceRequestedPin && !hasDeviceRequestedPassphrase && (
                 <AuthorizeDeviceStack.Screen
                     name={AuthorizeDeviceStackRoutes.PinMatrix}
                     component={PinScreen}
