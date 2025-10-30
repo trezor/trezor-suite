@@ -1,8 +1,4 @@
-// Don't include core-js polyfills when using Vite instead of Webpack. Vite already handles this on its own.
-if (!process.env.VITE) {
-    // @ts-expect-error
-    await import('core-js/actual');
-}
+import 'core-js/actual';
 
 import { Suspense } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
