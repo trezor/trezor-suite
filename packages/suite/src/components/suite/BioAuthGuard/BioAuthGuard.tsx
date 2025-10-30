@@ -124,7 +124,6 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
         selectIsBioAuthValidationRequired(state, new Date()),
     );
     const isBioAuthAvailable = useSelector(selectBioAuthEnabled);
-    const isAppUiHidden = false; // NOTE: temporary
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -155,7 +154,7 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
         };
     }, [dispatch, isBioAuthAvailable]);
 
-    return isAppUiHidden || isBioAuthValidationRequired ? (
+    return isBioAuthValidationRequired ? (
         <BioAuthOverlay isBioAuthValidationRequired={isBioAuthValidationRequired} />
     ) : (
         children
