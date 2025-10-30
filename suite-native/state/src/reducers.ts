@@ -277,6 +277,18 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const labelingPersistedReducer = await preparePersistReducer({
+        reducer: labelingReducer,
+        persistedKeys: [
+            'localFirstStorageRelayUrl',
+            'isLocalFirstStorageEnabled',
+            'isLocalFirstStorageDebugEnabled',
+            'isFeatureLocalFirstStorageAvailable',
+        ],
+        key: 'labeling',
+        version: 1,
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             app: appReducer,
@@ -301,7 +313,7 @@ export const prepareRootReducers = async () => {
             geolocation: geolocationReducer,
             thp: thpPersistedReducer,
             locale: localePersistedReducer,
-            labeling: labelingReducer,
+            labeling: labelingPersistedReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
