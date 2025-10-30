@@ -1,6 +1,5 @@
-import { resolveStaticPath } from '@suite-common/suite-utils';
-import { Column, Image, InfoSegments, Row, Text } from '@trezor/components';
-import { models } from '@trezor/device-utils';
+import { Column, Image, ImageKey, InfoSegments, Row, Text } from '@trezor/components';
+import { DeviceModelInternal, models } from '@trezor/device-utils';
 
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
@@ -10,6 +9,20 @@ import { useSelector } from '../../../hooks/suite';
 
 type BluetoothDeviceProps = {
     device: DesktopBluetoothDevice;
+};
+
+const getBackColorImage = (model: DeviceModelInternal, color: string): ImageKey => {
+    if (model === 'T3W1') {
+        const map = {
+            '1': 'TREZOR_T3W1_BACKCOLOR_1',
+            '2': 'TREZOR_T3W1_BACKCOLOR_2',
+            '3': 'TREZOR_T3W1_BACKCOLOR_3',
+        } as const satisfies Record<string, ImageKey>;
+
+        return map[color as keyof typeof map] ?? 'TREZOR_T3W1_BACKCOLOR_1';
+    }
+
+    return 'TREZOR_UNKNOWN';
 };
 
 const getTHPVideoColor = (
@@ -27,13 +40,8 @@ export const BluetoothDeviceComponent = ({ device }: BluetoothDeviceProps) => {
 
     return (
         <Row gap={12} alignItems="stretch">
-            <Column alignItems="center" justifyContent="center">
-                <Image
-                    height="36px"
-                    imageSrc={resolveStaticPath(
-                        `images/png/t3w1/${internalModel.toLocaleLowerCase()}-back-color-${color}.webp`,
-                    )}
-                />
+            <Column alignItems="center" justifyContent="center" minWidth={22}>
+                <Image height="36px" image={getBackColorImage(internalModel, color)} />
             </Column>
             <Column justifyContent="start" alignItems="start" flex="1">
                 <Text typographyStyle="body">{device.name}</Text>
