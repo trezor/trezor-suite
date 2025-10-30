@@ -101,7 +101,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
         if (stakingBalance !== '0') {
             if (!hasEnoughBalanceForStaking) {
-                return 'staking-max';
+                return 'staked-but-insufficient-funds';
             }
 
             return 'staking-active';
@@ -227,6 +227,30 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
                     <Table.Cell align="end">
                         <Button variant="tertiary" size="small" onClick={navigateToTradingBuy}>
+                            <Translation id="TR_BUY" />
+                        </Button>
+                    </Table.Cell>
+                </>
+            )}
+
+            {state === 'staked-but-insufficient-funds' && (
+                <>
+                    <CurrentRewardsCell />
+
+                    <Table.Cell>
+                        <Paragraph typographyStyle="body" variant="tertiary">
+                            <Translation
+                                id="TR_STAKING_DASHBOARD_MINIMUM_STAKE"
+                                values={{
+                                    amount: minStakingAmount?.toString(),
+                                    displaySymbol,
+                                }}
+                            />
+                        </Paragraph>
+                    </Table.Cell>
+
+                    <Table.Cell align="end">
+                        <Button variant="primary" size="small" onClick={navigateToTradingBuy}>
                             <Translation id="TR_BUY" />
                         </Button>
                     </Table.Cell>
