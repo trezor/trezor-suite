@@ -12350,6 +12350,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     expo: "npm:~54.0.20"
+    jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
