@@ -9321,7 +9321,7 @@ export default defineMessages({
     },
     TR_STAKING_NEW_PROVIDER_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
-        defaultMessage: 'Start earning rewards with Everstake',
+        defaultMessage: 'Earn ~{apy}% APY with new provider',
     },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
