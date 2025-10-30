@@ -19,6 +19,8 @@ export class Analytics<T extends AnalyticsEvent> {
     private instanceId?: string;
     private sessionId?: string;
     private commitId?: string;
+    private isDev?: boolean;
+    private environment?: InitOptions['environment'];
     private url?: string;
 
     private callbacks?: InitOptions['callbacks'];
@@ -35,6 +37,8 @@ export class Analytics<T extends AnalyticsEvent> {
         this.instanceId = options.instanceId || getRandomId();
         this.sessionId = options.sessionId || getRandomId();
         this.commitId = options.commitId;
+        this.isDev = options.isDev;
+        this.environment = options.environment;
         this.url = options.url ?? getUrl(this.app, options.isDev, options.environment);
         this.callbacks = options.callbacks;
 
@@ -76,7 +80,7 @@ export class Analytics<T extends AnalyticsEvent> {
     public isEnabled = () => !!this.enabled;
 
     public setUrl = (url: string) => {
-        this.url = url;
+        this.url = url ?? getUrl(this.app, this.isDev ?? false, this.environment);
     };
 
     public report = (data: T, config?: ReportConfig) => {
