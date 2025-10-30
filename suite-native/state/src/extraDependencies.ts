@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 
 import {
+    selectIsLocalFirstStorageEnabled,
     subscribeLocalFirstStorageThunk,
     unsubscribeAndDisposeLocalFirstStorageThunk,
 } from '@suite-common/local-first-storage';
@@ -57,6 +58,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             staticKey: state.thp?.staticKey,
             knownCredentials: state.thp?.credentials,
         }),
+        selectIsLocalFirstStorageEnabled,
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {
         // This needs to be over `extra` to prevent circular dependency,
