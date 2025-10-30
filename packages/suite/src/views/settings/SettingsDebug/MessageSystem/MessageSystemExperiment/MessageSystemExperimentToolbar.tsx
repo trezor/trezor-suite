@@ -6,9 +6,9 @@ import { EXPERIMENT_MAP } from '@suite-common/message-system';
 import { Condition } from '@suite-common/suite-types';
 import {
     Card,
-    IconButton,
     Menu,
     NewButton,
+    NewIconButton,
     Popover,
     PopoverRef,
     Row,
@@ -128,7 +128,7 @@ export const MessageSystemExperimentToolbar = ({
                     }
                     zIndex={zIndices.tooltip}
                 >
-                    <IconButton icon="question" size="small" variant="tertiary" />
+                    <NewIconButton icon="question" intent="neutral" priority="secondary" />
                 </Popover>
             </Row>
         </Row>

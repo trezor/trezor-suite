@@ -6,10 +6,10 @@ import { CONTEXT_PATTERNS, FEATURE_LIST } from '@suite-common/message-system';
 import { Category, Condition } from '@suite-common/suite-types';
 import {
     Card,
-    IconButton,
     Menu,
     NewButton,
     NewButtonGroup,
+    NewIconButton,
     Popover,
     PopoverRef,
     Row,
@@ -131,7 +131,7 @@ export const MessageSystemManagerToolbar = ({
                     }
                     zIndex={zIndices.tooltip}
                 >
-                    <IconButton icon="question" size="small" variant="tertiary" />
+                    <NewIconButton icon="question" intent="neutral" priority="secondary" />
                 </Popover>
             </Row>
         </Row>

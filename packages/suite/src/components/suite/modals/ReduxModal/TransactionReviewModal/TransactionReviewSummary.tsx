@@ -10,7 +10,7 @@ import {
     isEip1559,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { Badge, Box, IconButton, Note, Row, Text } from '@trezor/components';
+import { Badge, Box, NewIconButton, Note, Row, Text } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -163,10 +163,10 @@ export const TransactionReviewSummary = ({
                     {tx.inputs.length > 0 && (
                         // TODO: IconButton doesn't take margin even though it should
                         <Box margin={{ left: 'auto' }}>
-                            <IconButton
-                                size="tiny"
+                            <NewIconButton
                                 onClick={() => onDetailsClick()}
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 icon="info"
                             />
                         </Box>

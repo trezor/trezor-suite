@@ -189,7 +189,6 @@ export const Pagination = ({
                         intent="neutral"
                         priority="secondary"
                         onClick={goToPage}
-                        size="small"
                         isDisabled={isPageInputInvalid}
                     >
                         <Translation id="TR_PAGINATION_GO" />

@@ -199,6 +199,7 @@ export const EmptyStakingCard = () => {
                             isDisabled={isStakingDisabled}
                             iconLeft={isStakingDisabled ? 'info' : undefined}
                             data-testid="@wallet/staking/empty-card/start-staking-button"
+                            size="large"
                         >
                             <Translation id="TR_STAKING_CARD_START_STAKING" />
                         </NewButton>

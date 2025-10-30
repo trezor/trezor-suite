@@ -14,9 +14,9 @@ import {
     Column,
     Grid,
     H4,
-    IconButton,
     IconCircle,
     NewButton,
+    NewIconButton,
     Paragraph,
     Row,
 } from '@trezor/components';
@@ -175,10 +175,15 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 </Row>
 
                 <Row gap={spacings.sm}>
-                    <NewButton size="small" onClick={goToStakingTab}>
+                    <NewButton onClick={goToStakingTab}>
                         <Translation id="TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING" />
                     </NewButton>
-                    <IconButton size="small" variant="tertiary" icon="x" onClick={closeBanner} />
+                    <NewIconButton
+                        intent="neutral"
+                        priority="secondary"
+                        icon="x"
+                        onClick={closeBanner}
+                    />
                 </Row>
             </Grid>
         </Card>

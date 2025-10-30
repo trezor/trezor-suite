@@ -16,7 +16,7 @@ import {
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
-import { Icon, IconButton, Input, Link, Row } from '@trezor/components';
+import { Icon, Input, Link, NewIconButton, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -491,11 +491,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         />
                     )}
                     {outputsCount > 1 && (
-                        <IconButton
+                        <NewIconButton
                             margin={{ left: spacings.md }}
                             icon="x"
-                            size="tiny"
-                            variant="tertiary"
+                            intent="neutral"
+                            priority="secondary"
                             data-testid={`outputs.${outputId}.remove`}
                             onClick={() => {
                                 removeOutput(outputId);

@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { Badge, Box, IconButton, Row, Spinner, Tooltip, useElevation } from '@trezor/components';
+import { Badge, Box, NewIconButton, Row, Spinner, Tooltip, useElevation } from '@trezor/components';
 import {
     Elevation,
     borders,
@@ -79,9 +79,9 @@ export const ActionsContainer = ({
                                         delayShow={1000}
                                         cursor="inherit"
                                     >
-                                        <IconButton
+                                        <NewIconButton
                                             icon="check"
-                                            size="tiny"
+                                            size="small"
                                             onClick={onSave}
                                             isDisabled={isDisabled}
                                         />
@@ -97,10 +97,10 @@ export const ActionsContainer = ({
                                         delayShow={1000}
                                         cursor="inherit"
                                     >
-                                        <IconButton
-                                            variant="destructive"
+                                        <NewIconButton
+                                            intent="critical"
                                             icon="x"
-                                            size="tiny"
+                                            size="small"
                                             onClick={onCancel}
                                             isDisabled={isDisabled}
                                         />
@@ -110,18 +110,20 @@ export const ActionsContainer = ({
                         )}
                         {!isJustSaved && !isEditable && isHovered && (
                             <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
-                                <IconButton
-                                    variant="tertiary"
+                                <NewIconButton
+                                    intent="neutral"
+                                    priority="secondary"
                                     icon="pencil"
-                                    size="tiny"
+                                    size="small"
                                     onClick={onEdit}
                                     isDisabled={isDisabled}
                                 />
                                 {isDeleteButtonVisible && (
-                                    <IconButton
-                                        variant="tertiary"
+                                    <NewIconButton
+                                        intent="neutral"
                                         icon="x"
-                                        size="tiny"
+                                        size="small"
+                                        priority="secondary"
                                         onClick={onDelete}
                                         isDisabled={isDisabled}
                                     />

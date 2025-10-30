@@ -7,24 +7,9 @@ import {
     useState,
 } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { AutoScalingInput, Icon, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
-const IconWrapper = styled.div<{ $bgColor: string }>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: ${({ $bgColor }) => $bgColor};
-    border-radius: 4px;
-    margin: 0 3px;
-    padding: 4px;
-`;
-
-const IconListWrapper = styled.div`
-    display: flex;
-`;
+import { AutoScalingInput, NewIconButton, Row } from '@trezor/components';
 
 // To inherit everything so the input looks like the text we want to edit
 // However, we need to reset some properties: for example margin and padding to not duplicate spacings
@@ -55,7 +40,6 @@ export const withEditable =
         const [touched, setTouched] = useState(false);
         const [value, setValue] = useState('');
 
-        const theme = useTheme();
         const divRef = useRef<HTMLInputElement>(null);
 
         const submit = useCallback(
@@ -89,14 +73,13 @@ export const withEditable =
         }, [value, touched]);
 
         return (
-            <Row gap={spacings.xs}>
+            <Row gap={8}>
                 <WrappedComponent {...props}>
                     <Editable
                         minWidth={20}
                         ref={divRef}
                         data-testid="@metadata/input"
                         value={value}
-                        // onBlur={onBlur}
                         onChange={event => {
                             setTouched(true);
                             setValue(event.target.value);
@@ -112,34 +95,30 @@ export const withEditable =
                         updateFlag={updateFlag}
                     />
                 </WrappedComponent>
-
-                <IconListWrapper>
-                    <IconWrapper $bgColor={theme.legacy.BG_LIGHT_GREEN}>
-                        <Icon
-                            size={14}
-                            data-testid="@metadata/submit"
-                            name="check"
-                            onClick={e => {
-                                e.stopPropagation();
-                                submit(value);
-                            }}
-                            color={theme.legacy.TYPE_GREEN}
-                        />
-                    </IconWrapper>
-
-                    <IconWrapper $bgColor={theme.legacy.BG_GREY}>
-                        <Icon
-                            size={14}
-                            data-testid="@metadata/cancel"
-                            name="x"
-                            onClick={e => {
-                                e.stopPropagation();
-                                onBlur();
-                            }}
-                            color={theme.legacy.TYPE_DARK_GREY}
-                        />
-                    </IconWrapper>
-                </IconListWrapper>
+                <Row gap={4}>
+                    <NewIconButton
+                        size="small"
+                        data-testid="@metadata/submit"
+                        icon="check"
+                        onClick={e => {
+                            e.stopPropagation();
+                            submit(value);
+                        }}
+                        intent="brand"
+                        priority="secondary"
+                    />
+                    <NewIconButton
+                        size="small"
+                        data-testid="@metadata/cancel"
+                        icon="x"
+                        onClick={e => {
+                            e.stopPropagation();
+                            onBlur();
+                        }}
+                        intent="neutral"
+                        priority="secondary"
+                    />
+                </Row>
             </Row>
         );
     };

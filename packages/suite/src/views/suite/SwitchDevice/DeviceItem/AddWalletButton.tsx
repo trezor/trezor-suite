@@ -7,8 +7,8 @@ import {
     Card,
     Column,
     ElevationUp,
-    IconButton,
     NewButton,
+    NewIconButton,
     Row,
     Text,
     Tooltip,
@@ -66,10 +66,10 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         <Text>
                             <Translation id="TR_ADD_HIDDEN_WALLET" />
                         </Text>
-                        <IconButton
-                            variant="tertiary"
+                        <NewIconButton
+                            intent="neutral"
+                            priority="secondary"
                             icon="x"
-                            size="tiny"
                             onClick={() => {
                                 setIsPassphraseExpanded(false);
                             }}
@@ -78,8 +78,8 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                     <Column gap={spacings.xs}>
                         <NewButton
                             data-testid="@switch-device/add-new-hidden-wallet-button"
-                            intent="brand"
-                            priority="secondary"
+                            intent="neutral"
+                            priority="primary"
                             size="large"
                             iconLeft="plusCircleFilled"
                             width="100%"

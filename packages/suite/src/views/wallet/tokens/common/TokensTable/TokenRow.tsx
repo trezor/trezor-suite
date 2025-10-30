@@ -26,13 +26,14 @@ import {
     Card,
     Column,
     Dropdown,
-    IconButton,
     InfoItem,
     NewButton,
     NewButtonGroup,
+    NewIconButton,
     Row,
     Table,
     Text,
+    Tooltip,
 } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -145,10 +146,10 @@ export const TokenRow = ({
                 <Text typographyStyle="label" as="div">
                     <Address isChunked={false} value={address} />
                 </Text>
-                <IconButton
+                <NewIconButton
                     icon="copy"
-                    size="tiny"
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                     onClick={() => {
                         dispatch(
                             shouldShowCopyAddressModal
@@ -394,23 +395,26 @@ export const TokenRow = ({
                         ]}
                     />
                     {!isBelowTablet && (
-                        <IconButton
-                            label={
+                        <Tooltip
+                            content={
                                 canSwapToken ? (
                                     <Translation id="TR_TRADING_SWAP" />
                                 ) : (
                                     <Translation id="TR_TRADING_SWAP_UNAVAILABLE" />
                                 )
                             }
-                            isDisabled={!canSwapToken}
-                            key="swap"
-                            variant="tertiary"
-                            icon="arrowsLeftRight"
-                            size="small"
-                            onClick={() =>
-                                onTradeButtonClick('exchange', 'wallet-trading-exchange')
-                            }
-                        />
+                        >
+                            <NewIconButton
+                                isDisabled={!canSwapToken}
+                                key="swap"
+                                intent="neutral"
+                                priority="secondary"
+                                icon="arrowsLeftRight"
+                                onClick={() =>
+                                    onTradeButtonClick('exchange', 'wallet-trading-exchange')
+                                }
+                            />
+                        </Tooltip>
                     )}
                     {!isBelowTablet &&
                         (tokenStatusType === TokenManagementAction.SHOW ? (
@@ -440,34 +444,34 @@ export const TokenRow = ({
                                 <Translation id="TR_UNHIDE" />
                             </NewButton>
                         ) : (
-                            <NewButtonGroup size="small" intent="neutral" priority="secondary">
-                                <IconButton
-                                    label={<Translation id="TR_NAV_SEND" />}
-                                    isDisabled={token.balance === '0'}
-                                    key="token-send"
-                                    variant="tertiary"
-                                    icon="arrowUp"
-                                    onClick={() => {
-                                        dispatch({
-                                            type: SUITE.SET_SEND_FORM_PREFILL,
-                                            payload: token.contract,
-                                        });
-                                        dispatch(
-                                            sendFormActions.removeDraft({
-                                                accountKey: account.key,
-                                            }),
-                                        );
-                                        goToWithAnalytics('wallet-send', {
-                                            params: {
-                                                symbol: account.symbol,
-                                                accountIndex: account.index,
-                                                accountType: account.accountType,
-                                            },
-                                        });
-                                    }}
-                                />
-                                <IconButton
-                                    label={
+                            <NewButtonGroup intent="neutral" priority="secondary">
+                                <Tooltip content={<Translation id="TR_NAV_SEND" />}>
+                                    <NewIconButton
+                                        isDisabled={token.balance === '0'}
+                                        key="token-send"
+                                        icon="arrowUp"
+                                        onClick={() => {
+                                            dispatch({
+                                                type: SUITE.SET_SEND_FORM_PREFILL,
+                                                payload: token.contract,
+                                            });
+                                            dispatch(
+                                                sendFormActions.removeDraft({
+                                                    accountKey: account.key,
+                                                }),
+                                            );
+                                            goToWithAnalytics('wallet-send', {
+                                                params: {
+                                                    symbol: account.symbol,
+                                                    accountIndex: account.index,
+                                                    accountType: account.accountType,
+                                                },
+                                            });
+                                        }}
+                                    />
+                                </Tooltip>
+                                <Tooltip
+                                    content={
                                         <Translation
                                             id={
                                                 isDeviceCompromised
@@ -476,12 +480,14 @@ export const TokenRow = ({
                                             }
                                         />
                                     }
-                                    key="token-receive"
-                                    variant="tertiary"
-                                    icon="arrowDown"
-                                    isDisabled={!canReceiveToken}
-                                    onClick={onReceive}
-                                />
+                                >
+                                    <NewIconButton
+                                        key="token-receive"
+                                        icon="arrowDown"
+                                        isDisabled={!canReceiveToken}
+                                        onClick={onReceive}
+                                    />
+                                </Tooltip>
                             </NewButtonGroup>
                         ))}
                 </Row>

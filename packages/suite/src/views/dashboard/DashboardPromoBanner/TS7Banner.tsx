@@ -44,7 +44,7 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
     const href = useExternalLink(DASHBOARD_BANNER_TS7_URL);
 
     return (
-        <NewButton intent="brand" onClick={onClick} href={href}>
+        <NewButton intent="brand" onClick={onClick} size="large" href={href}>
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON" />
         </NewButton>
     );
@@ -58,7 +58,7 @@ export const TS7Banner = ({ onClose, onCTAClick, isVisible }: TS7BannerProps) =>
         <AnimatedWrapper isVisible={isVisible} flagToHide="showTS7DashboardPromoBanner">
             <Box
                 height={213}
-                padding={{ left: 24, right: 24 }}
+                padding={{ horizontal: 24 }}
                 backgroundColor={theme.backgroundTertiaryDefaultOnElevation0}
             >
                 <Row

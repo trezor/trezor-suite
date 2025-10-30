@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { IconButton, Row, Textarea, Tooltip, variables } from '@trezor/components';
+import { NewIconButton, Row, Textarea, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -96,11 +96,11 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                     <Translation id="OP_RETURN_ADD" />
                 </Tooltip>
 
-                <IconButton
-                    variant="tertiary"
+                <NewIconButton
+                    intent="neutral"
+                    priority="secondary"
                     icon="x"
                     onClick={() => removeOpReturn(outputId)}
-                    size="small"
                 />
             </Row>
 

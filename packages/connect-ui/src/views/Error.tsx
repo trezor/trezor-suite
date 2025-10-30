@@ -4,10 +4,10 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
-    Button,
     CollapsibleBox,
     Icon,
     IconName,
+    NewButton,
     intermediaryTheme,
     variables,
 } from '@trezor/components';
@@ -154,16 +154,16 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
                     props.code === 'Device_MissingCapabilityBtcOnly' ? (
                         <>
                             <Step>{props.message}</Step>
-                            <Button
+                            <NewButton
                                 href={HELP_FIRMWARE_TYPE}
                                 size="small"
-                                variant="tertiary"
-                                icon="arrowRight"
-                                iconAlignment="end"
+                                intent="neutral"
+                                priority="secondary"
+                                iconRight="arrowRight"
                                 margin={{ top: spacings.md }}
                             >
                                 Learn more
-                            </Button>
+                            </NewButton>
                         </>
                     ) : (
                         <Step>{props.message}</Step>
@@ -326,13 +326,13 @@ export const ErrorView = (props: ErrorViewProps) => {
                     ))}
                 </TipsContainer>
 
-                <Button
+                <NewButton
                     data-testid="@connect-ui/error-close-button"
-                    variant="primary"
+                    intent="brand"
                     onClick={() => window.closeWindow()}
                 >
                     Close
-                </Button>
+                </NewButton>
             </InnerWrapper>
         </View>
     );

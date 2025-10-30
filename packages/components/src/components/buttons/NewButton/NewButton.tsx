@@ -103,6 +103,7 @@ export const NewButton = ({
     target,
     type = 'button',
     priority = 'primary',
+    // TODO: remove className
     className,
     ...rest
 }: NewButtonProps) => {

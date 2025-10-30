@@ -3,7 +3,7 @@ import { JSX, useContext } from 'react';
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
-import { IconButton, variables } from '@trezor/components';
+import { NewIconButton, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { typography, zIndices } from '@trezor/theme';
 
@@ -85,11 +85,11 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
         <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled}>
             {!useBreadcrumb && back && (
                 <>
-                    <IconButton
-                        size="medium"
+                    <NewIconButton
                         icon="arrowLeft"
                         onClick={goBack}
-                        variant="tertiary"
+                        intent="neutral"
+                        priority="secondary"
                         data-testid="@guide/button-back"
                     />
 
@@ -100,12 +100,12 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
 
             {useBreadcrumb && <HeaderBreadcrumb />}
 
-            <IconButton
+            <NewIconButton
                 icon="arrowLineRight"
-                variant="tertiary"
+                intent="neutral"
+                priority="secondary"
                 onClick={handleClose}
                 data-testid="@guide/button-close"
-                size="medium"
             />
         </HeaderWrapper>
     );

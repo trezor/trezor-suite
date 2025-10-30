@@ -16,10 +16,10 @@ import {
     Column,
     Dropdown,
     Icon,
-    IconButton,
     IconCircle,
     InfoItem,
     NewButton,
+    NewIconButton,
     Row,
     Table,
     Text,
@@ -109,10 +109,10 @@ const NftsRow = ({
                                                         value={nft.contract}
                                                     />
                                                 </Text>
-                                                <IconButton
+                                                <NewIconButton
                                                     icon="copy"
-                                                    size="tiny"
-                                                    variant="tertiary"
+                                                    intent="neutral"
+                                                    priority="secondary"
                                                     onClick={() => {
                                                         dispatch(
                                                             shouldShowCopyAddressModal

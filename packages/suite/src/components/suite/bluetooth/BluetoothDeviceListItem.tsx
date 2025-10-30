@@ -100,9 +100,9 @@ const ActionButton = ({
     }
     if (isManuallyPairedDevice) {
         return (
-            <Button variant="primary" size="small" onClick={handleOnClick}>
+            <NewButton intent="brand" size="small" onClick={handleOnClick}>
                 <Translation id="TR_BLUETOOTH_CONNECT" />
-            </Button>
+            </NewButton>
         );
     }
 

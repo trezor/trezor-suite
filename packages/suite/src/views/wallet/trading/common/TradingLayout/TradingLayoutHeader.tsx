@@ -2,7 +2,7 @@ import { PropsWithChildren, useMemo } from 'react';
 
 import { Route } from '@suite-common/suite-types';
 import { type TradingType, selectTradingActiveSection } from '@suite-common/trading';
-import { Box, IconButton, NewButton, Row } from '@trezor/components';
+import { Box, NewButton, NewIconButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -39,10 +39,11 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
     return (
         <PageHeader>
             <Row width="100%" gap={spacings.md}>
-                <IconButton
+                <NewIconButton
                     icon="caretLeft"
-                    variant="tertiary"
-                    size="medium"
+                    intent="neutral"
+                    priority="secondary"
+                    size="large"
                     onClick={goToRoute(getBackRoute(currentRouteName, activeSection))}
                     data-testid="@account-subpage/back"
                 />
@@ -50,7 +51,6 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
                 {currentRouteName !== 'wallet-trading-transactions' && (
                     <Box margin={{ left: 'auto' }}>
                         <NewButton
-                            size="small"
                             intent="neutral"
                             priority="secondary"
                             margin={{ left: 'auto' }}

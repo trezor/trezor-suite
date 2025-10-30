@@ -11,6 +11,7 @@ import {
 import { TransientProps } from '../../../utils/transientProps';
 import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 import { NewButtonProps } from '../NewButton/NewButton';
+import { NewIconButtonProps } from '../NewIconButton/NewIconButton';
 import { NewButtonIntent, NewButtonPriority, NewButtonSize } from '../types';
 import { addAlphaToHex, mapSizeToBorderRadius } from '../utils';
 
@@ -71,7 +72,7 @@ const Container = styled.div<
     ${withFrameProps}
 `;
 
-type AllowedChildrenPropsType = NewButtonProps;
+type AllowedChildrenPropsType = NewButtonProps | NewIconButtonProps;
 
 export type NewButtonGroupProps = {
     intent?: NewButtonIntent;

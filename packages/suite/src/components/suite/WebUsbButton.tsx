@@ -1,4 +1,11 @@
-import { IconButton, IconName, NewButton, NewButtonProps, Tooltip } from '@trezor/components';
+import {
+    IconName,
+    NewButton,
+    NewButtonProps,
+    NewIconButton,
+    NewIconButtonProps,
+    Tooltip,
+} from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 
@@ -75,6 +82,40 @@ export const WebUsbButton = ({
     </div>
 );
 
+const mapVariantToIconIntent = (
+    variant: LegacyButtonVariant = 'primary',
+): NewIconButtonProps['intent'] => {
+    switch (variant) {
+        case 'primary':
+            return 'brand';
+        case 'info':
+            return 'info';
+        case 'warning':
+            return 'warning';
+        case 'destructive':
+            return 'critical';
+        case 'tertiary':
+            return 'neutral';
+        default:
+            return 'brand';
+    }
+};
+
+const mapIconSize = (size: LegacyButtonSize = 'small'): NewIconButtonProps['size'] | undefined => {
+    switch (size) {
+        case 'tiny':
+            return 'small';
+        case 'small':
+            return 'small';
+        case 'large':
+            return 'large';
+        case 'medium':
+            return undefined;
+        default:
+            return 'small';
+    }
+};
+
 export const WebUsbIconButton = ({
     translationId = 'TR_CHECK_FOR_DEVICES',
     size = 'small',
@@ -83,11 +124,11 @@ export const WebUsbIconButton = ({
 }: WebUsbButtonProps) => (
     <div data-testid="web-usb-button">
         <Tooltip content={<Translation id={translationId} />}>
-            <IconButton
+            <NewIconButton
                 {...rest}
                 icon="magnifyingGlass"
-                variant={variant}
-                size={size}
+                intent={mapVariantToIconIntent(variant)}
+                size={mapIconSize(size)}
                 onClick={handleClick}
             />
         </Tooltip>

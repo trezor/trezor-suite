@@ -368,13 +368,13 @@ export const StakingCard = ({
                             </NewButton>
                         </Tooltip>
                     ) : (
-                        <Button
+                        <NewButton
                             onClick={openClaimModal}
                             isDisabled={!canClaimRewards}
-                            variant="primary"
+                            intent="brand"
                         >
                             <Translation id="TR_STAKE_CLAIM_REWARDS" />
-                        </Button>
+                        </NewButton>
                     )}
                     <Tooltip content={unstakingMessageContent}>
                         <NewButton

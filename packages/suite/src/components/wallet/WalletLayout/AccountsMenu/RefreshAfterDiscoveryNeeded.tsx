@@ -8,7 +8,7 @@ import {
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { IconButton, NewButton, Row, Tooltip, motionEasing } from '@trezor/components';
+import { NewButton, NewIconButton, Row, Tooltip, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -67,9 +67,9 @@ export const RefreshAfterDiscoveryNeeded = () => {
                             margin={{ top: spacings.xs, bottom: spacings.lg }}
                         >
                             <Tooltip content={<Translation id="REFRESH" />}>
-                                <IconButton
-                                    variant="tertiary"
-                                    size="tiny"
+                                <NewIconButton
+                                    intent="neutral"
+                                    priority="secondary"
                                     icon="repeat"
                                     onClick={restartDiscovery}
                                 />

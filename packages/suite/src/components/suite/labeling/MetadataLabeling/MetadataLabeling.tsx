@@ -74,20 +74,6 @@ const ActionButton = styled(NewButton)<{ $isVisible?: boolean }>`
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 `;
 
-// @TODO this shouldn't be NewButton
-// eslint-disable-next-line local-rules/no-override-ds-component
-const SuccessButton = styled(NewButton)`
-    cursor: wait;
-    width: auto;
-    background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
-    color: ${({ theme }) => theme.textPrimaryDefault};
-
-    &:hover {
-        color: ${({ theme }) => theme.textPrimaryDefault};
-        background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
-    }
-`;
-
 const LabelContainer = styled.div`
     display: flex;
     white-space: nowrap;
@@ -114,8 +100,6 @@ const LabelContainer = styled.div`
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const RelativeButton = styled(NewButton)`
-    padding-bottom: 4px;
-    padding-top: 4px;
     position: relative;
     overflow: hidden;
     text-align: left;
@@ -146,13 +130,14 @@ const ButtonLikeLabel = ({
         return (
             <EditableButton
                 // @ts-expect-error todo: hm this needs some clever generic
-                variant="tertiary"
-                icon="tag"
+                intent="neutral"
+                priority="secondary"
+                iconLeft="tag"
                 data-testid={dataTest}
                 originalValue={payload.value ?? defaultEditableValue}
                 onSubmit={onSubmit}
                 onBlur={onBlur}
-                size="tiny"
+                size="small"
             />
         );
     }
@@ -558,6 +543,7 @@ export const MetadataLabeling = ({
                                 : `${dataTestBase}/add-label-button`
                         }
                         intent="neutral"
+                        priority="secondary"
                         iconLeft={!actionButtonsDisabled ? 'tag' : undefined}
                         isLoading={actionButtonsDisabled}
                         isDisabled={actionButtonsDisabled}
@@ -573,15 +559,15 @@ export const MetadataLabeling = ({
                 )}
 
                 {showSuccess && !editActive && (
-                    <SuccessButton
-                        intent="neutral"
+                    <NewButton
+                        intent="brand"
                         priority="secondary"
                         data-testid={`${dataTestBase}/success`}
                         iconLeft="check"
                         size="small"
                     >
                         {l10nLabelling.edited}
-                    </SuccessButton>
+                    </NewButton>
                 )}
             </LabelContainer>
         </Tooltip>

@@ -46,13 +46,7 @@ export const TradingButton = ({
     };
 
     return (
-        <NewButton
-            onClick={onClick}
-            intent="neutral"
-            priority="secondary"
-            data-testid={dataTest}
-            size="small"
-        >
+        <NewButton onClick={onClick} intent="neutral" priority="secondary" data-testid={dataTest}>
             {children}
         </NewButton>
     );

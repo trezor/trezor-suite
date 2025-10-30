@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { pushSendFormRawTransactionThunk, sendFormActions } from '@suite-common/wallet-core';
 import { getInputState, isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { Card, H3, IconButton, NewButton, Row, Textarea, Tooltip } from '@trezor/components';
+import { Card, H3, NewButton, NewIconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -83,7 +83,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
                     </Tooltip>
                 </H3>
 
-                <IconButton variant="tertiary" icon="x" onClick={cancel} size="small" />
+                <NewIconButton intent="neutral" priority="secondary" icon="x" onClick={cancel} />
             </Row>
 
             <Textarea

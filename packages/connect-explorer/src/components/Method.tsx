@@ -5,7 +5,15 @@ import { Inspector } from 'react-inspector';
 import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
-import { Button, ButtonProps, Card, H3, IconButton, Row, variables } from '@trezor/components';
+import {
+    ButtonProps,
+    Card,
+    H3,
+    NewButton,
+    NewIconButton,
+    Row,
+    variables,
+} from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';
@@ -224,9 +232,9 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     if (index < 0) return null;
 
     return (
-        <Button margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
+        <NewButton margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
             Verify response
-        </Button>
+        </NewButton>
     );
 };
 
@@ -238,15 +246,15 @@ type SubmitButtonProps = {
 };
 
 const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonProps) => (
-    <Button
+    <NewButton
         onClick={onClick}
         data-testid="@submit-button"
-        isFullWidth={isFullWidth}
+        width={isFullWidth ? '100%' : undefined}
         isLoading={isLoading}
         margin={{ top: 12 }}
     >
         {text || 'Submit'}
-    </Button>
+    </NewButton>
 );
 
 export const Method = () => {
@@ -321,9 +329,10 @@ export const Method = () => {
                         <Row>
                             <SubmitButton {...buttonProps} isFullWidth />
                             {buttonProps.isLoading && (
-                                <IconButton
+                                <NewIconButton
                                     icon="x"
-                                    variant="tertiary"
+                                    intent="neutral"
+                                    priority="secondary"
                                     onClick={() => actions.onCancelCall()}
                                 />
                             )}
@@ -345,9 +354,10 @@ export const Method = () => {
                             <Row>
                                 <SubmitButton {...buttonProps} isFullWidth />
                                 {buttonProps.isLoading && (
-                                    <IconButton
+                                    <NewIconButton
                                         icon="x"
-                                        variant="tertiary"
+                                        intent="neutral"
+                                        priority="secondary"
                                         onClick={() => actions.onCancelCall()}
                                     />
                                 )}
