@@ -517,10 +517,6 @@ export default defineMessages({
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
     },
-    TR_EXCHANGE_SEND_FROM: {
-        defaultMessage: 'Sending account',
-        id: 'TR_EXCHANGE_SEND_FROM',
-    },
     TR_EXCHANGE_SEND_TO: {
         defaultMessage: '{providerName}’s address',
         id: 'TR_EXCHANGE_SEND_TO',
@@ -612,18 +608,6 @@ export default defineMessages({
     TR_EXCHANGE_SWAP_SEND_TO: {
         defaultMessage: '{provider} contract address',
         id: 'TR_EXCHANGE_SWAP_SEND_TO',
-    },
-    TR_EXCHANGE_SWAP_DATA: {
-        defaultMessage: 'Swap transaction data',
-        id: 'TR_EXCHANGE_SWAP_DATA',
-    },
-    TR_EXCHANGE_SWAP_SLIPPAGE: {
-        defaultMessage: 'Slippage',
-        id: 'TR_EXCHANGE_SWAP_SLIPPAGE',
-    },
-    TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE: {
-        defaultMessage: 'Slippage tolerance',
-        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED: {
         defaultMessage: 'Swap offer amount',
@@ -719,7 +703,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_FLOAT',
     },
     TR_EXCHANGE_DEX: {
-        defaultMessage: 'Decentralized exchange offer',
+        defaultMessage: 'DEX',
         id: 'TR_EXCHANGE_DEX',
     },
     TR_EXCHANGE_DECENTRALIZED_EXCHANGE: {
@@ -2609,18 +2593,6 @@ export default defineMessages({
         defaultMessage: 'The 7d change rate is currently not available.',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
-    TR_FINAL_HEADING: {
-        defaultMessage: 'Setup complete',
-        id: 'TR_FINAL_HEADING',
-    },
-    TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
-        defaultMessage: 'Change homescreen',
-        id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
-    },
-    TR_ONBOARDING_DEVICE_EDIT_LABEL: {
-        defaultMessage: 'Change name',
-        id: 'TR_ONBOARDING_DEVICE_EDIT_LABEL',
-    },
     TR_FIRMWARE: {
         defaultMessage: 'Firmware',
         id: 'TR_FIRMWARE',
@@ -4393,10 +4365,6 @@ export default defineMessages({
         id: 'TR_ONION_LINKS_TITLE',
         defaultMessage: 'Open trezor.io links as .onion links',
     },
-    TR_TOR_ENABLE_TITLE: {
-        id: 'TR_TOR_ENABLE_TITLE',
-        defaultMessage: 'Enable Tor',
-    },
     TR_ONION_LINKS_DESCRIPTION: {
         id: 'TR_ONION_LINKS_DESCRIPTION',
         defaultMessage:
@@ -4664,10 +4632,6 @@ export default defineMessages({
         id: 'TR_EJECT_HEADING',
         defaultMessage: 'Eject this wallet',
         description: 'Heading above col with "eject wallet" buttons in switch wallets modal',
-    },
-    TR_EJECT_ALL_HEADING: {
-        id: 'TR_EJECT_ALL_HEADING',
-        defaultMessage: 'Eject all wallets on this Trezor',
     },
     TR_FORGET_DEVICE_HEADING: {
         id: 'TR_FORGET_DEVICE_HEADING',
@@ -4994,10 +4958,6 @@ export default defineMessages({
         defaultMessage:
             'In all cases, we strongly recommend creating a wallet backup. With a wallet backup, your coins are safe and secure even if your Trezor is lost, damaged, or stolen.',
     },
-    TR_IMPORTANT: {
-        id: 'TR_IMPORTANT',
-        defaultMessage: 'Important!',
-    },
     TR_FIRMWARE_SWITCH_WARNING_1: {
         id: 'TR_FIRMWARE_SWITCH_WARNING_1',
         defaultMessage:
@@ -5172,10 +5132,6 @@ export default defineMessages({
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2',
         defaultMessage: 'If you want to use this device instead, start again.',
-    },
-    TR_GO_TO_SUITE: {
-        id: 'TR_GO_TO_SUITE',
-        defaultMessage: 'Go to Trezor Suite',
     },
     TR_ONBOARDING_CREATE_NEW_WALLET: {
         id: 'TR_ONBOARDING_CREATE_NEW_WALLET',
@@ -6027,10 +5983,6 @@ export default defineMessages({
         description: 'Sign and send button used in send form',
         defaultMessage: 'Review & send',
     },
-    TR_CONNECT_TREZOR_TO_SEND_BUTTON: {
-        id: 'TR_CONNECT_TREZOR_TO_SEND_BUTTON',
-        defaultMessage: 'Connect your Trezor to send',
-    },
     SEND_RAW: {
         id: 'SEND_RAW',
         description: 'item in dropdown menu',
@@ -6334,17 +6286,9 @@ export default defineMessages({
         id: 'FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU',
         defaultMessage: "Upgrade your Trezor's firmware for Evolu storage.",
     },
-    LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE: {
-        id: 'LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE',
-        defaultMessage: 'Enabling legacy labeling will disable Evolu storage.',
-    },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
         defaultMessage: 'Connect & unlock device to change',
-    },
-    TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP: {
-        id: 'TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP',
-        defaultMessage: 'Unavailable until device setup is complete.',
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
@@ -6357,11 +6301,6 @@ export default defineMessages({
     TR_FIRMWARE_LANGUAGE_FETCH_ERROR: {
         id: 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR',
         defaultMessage: 'Translation download failed',
-    },
-    TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
-        id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP',
-        defaultMessage:
-            'Firmware update required. You can change your homescreen after firmware update.',
     },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
@@ -6563,10 +6502,6 @@ export default defineMessages({
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
         defaultMessage:
             "Your wallet backup has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
-    },
-    TR_BACKUP_FAILED: {
-        id: 'TR_BACKUP_FAILED',
-        defaultMessage: 'Wallet backup failed',
     },
     TR_STANDARD_WALLET_DESCRIPTION: {
         id: 'TR_STANDARD_WALLET_DESCRIPTION',
@@ -6815,10 +6750,6 @@ export default defineMessages({
         id: 'TR_PIN_HEADING_INITIAL',
         defaultMessage: 'Set a PIN',
     },
-    TR_COMPLETE: {
-        id: 'TR_COMPLETE',
-        defaultMessage: 'Complete',
-    },
     TR_COMPLETE_SETUP: {
         id: 'TR_COMPLETE_SETUP',
         defaultMessage: 'Complete setup',
@@ -6919,10 +6850,6 @@ export default defineMessages({
     TR_EXPLORER_TX: {
         id: 'TR_EXPLORER_TX',
         defaultMessage: 'Transaction',
-    },
-    TR_EXPLORER_ACCOUNT: {
-        id: 'TR_EXPLORER_ACCOUNT',
-        defaultMessage: 'Account',
     },
     TR_EXPLORER_ADDRESS: {
         id: 'TR_EXPLORER_ADDRESS',
@@ -8208,7 +8135,7 @@ export default defineMessages({
     TR_STAKE_NOT_ENOUGH_FUNDS_WARNING: {
         id: 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING',
         defaultMessage:
-            'You don’t have enough {networkDisplaySymbol} to cover registration deposit and network fee.',
+            'You don’t have enough {networkDisplaySymbol} to cover the registration deposit and network fee.',
     },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',
@@ -9126,11 +9053,11 @@ export default defineMessages({
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
-        defaultMessage: 'Introducing Trezor Safe 7',
+        defaultMessage: 'Introducing Trezor Safe 7',
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_DESCRIPTION: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_DESCRIPTION',
-        defaultMessage: 'Radically transparent, fully wireless, and quantum‑ready.',
+        defaultMessage: 'Radically transparent, fully wireless, and quantum‑ready.',
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON',
@@ -10009,15 +9936,6 @@ export default defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
         defaultMessage: 'Cancel',
     },
-    TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_TITLE: {
-        id: 'TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_TITLE',
-        defaultMessage: 'Eject all wallets on this Trezor?',
-    },
-    TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION: {
-        id: 'TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION',
-        defaultMessage:
-            "Your assets and transactions won't be visible until you reconnect your device.",
-    },
     TR_DO_NOT_SHOW_AGAIN: {
         id: 'TR_DO_NOT_SHOW_AGAIN',
         defaultMessage: "Don't show again",
@@ -10178,14 +10096,6 @@ export default defineMessages({
     TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION',
         defaultMessage: 'Connect your Trezor to continue.',
-    },
-    TR_CONNECT_DEVICE_SEND_PROMO_TITLE: {
-        id: 'TR_CONNECT_DEVICE_SEND_PROMO_TITLE',
-        defaultMessage: "Your Trezor isn't connected",
-    },
-    TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION: {
-        id: 'TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION',
-        defaultMessage: 'Connect your Trezor to send assets.',
     },
     TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE',
