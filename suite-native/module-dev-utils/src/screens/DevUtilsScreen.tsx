@@ -18,6 +18,7 @@ import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
+import { AnalyticsUrlControl } from '../components/AnalyticsUrlControl';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { FirmwareUpdateEnvironmentSelect } from '../components/FirmwareUpdateEnvironmentSelect';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
@@ -97,6 +98,9 @@ export const DevUtilsScreen = () => {
                     </VStack>
                 </Card>
                 <MessageSystemInfo />
+                <Card>
+                    <AnalyticsUrlControl />
+                </Card>
                 <Card>
                     <VStack>
                         <Text variant="highlight">Firmware Source</Text>
