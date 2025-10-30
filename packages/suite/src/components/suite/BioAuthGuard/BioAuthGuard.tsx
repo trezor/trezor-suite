@@ -50,11 +50,7 @@ const Container = styled.div<{ $elevation: Elevation }>`
     padding: ${spacingsPx.sm} ${spacingsPx.xxs};
 `;
 
-const BioAuthOverlay = ({
-    isBioAuthValidationRequired,
-}: {
-    isBioAuthValidationRequired: boolean;
-}) => {
+const BioAuthOverlay = () => {
     const dispatch = useDispatch();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { elevation } = useElevation();
@@ -63,10 +59,10 @@ const BioAuthOverlay = ({
     const hasEverValidatedBioAuth = useSelector(selectHasEverValidatedBioAuth);
 
     useEffect(() => {
-        if (!hasEverValidatedBioAuth && isBioAuthValidationRequired) {
+        if (!hasEverValidatedBioAuth) {
             dispatch(requestOnceBioAuthValidationThunk({ translationString }));
         }
-    }, [hasEverValidatedBioAuth, dispatch, isBioAuthValidationRequired, translationString]);
+    }, [hasEverValidatedBioAuth, dispatch, translationString]);
 
     return (
         <Wrapper ref={wrapperRef} data-testid="@suite-layout">
@@ -80,36 +76,32 @@ const BioAuthOverlay = ({
                                 alignItems="center"
                                 justifyContent="center"
                             >
-                                {isBioAuthValidationRequired ? (
-                                    <Container $elevation={elevation}>
-                                        <Icon name="lockFilled" />
-                                        <Paragraph align="center" typographyStyle="titleSmall">
-                                            <Translation id="TR_BIO_AUTH_LOCKED_HEADING" />
-                                        </Paragraph>
-                                        <Paragraph align="center" typographyStyle="body">
-                                            {isMacOs() ? (
-                                                <Translation id="TR_BIO_AUTH_LOCKED_TEXT_MAC" />
-                                            ) : (
-                                                <Translation id="TR_BIO_AUTH_LOCKED_TEXT_WIN" />
-                                            )}
-                                        </Paragraph>
-                                        <Button
-                                            isFullWidth
-                                            variant="primary"
-                                            onClick={() =>
-                                                dispatch(
-                                                    requestBioAuthValidationThunk({
-                                                        translationString,
-                                                    }),
-                                                )
-                                            }
-                                        >
-                                            <Translation id="TR_BIO_AUTH_UNLOCK" />
-                                        </Button>
-                                    </Container>
-                                ) : (
-                                    <Icon name="eyeSlashFilled" />
-                                )}
+                                <Container $elevation={elevation}>
+                                    <Icon name="lockFilled" />
+                                    <Paragraph align="center" typographyStyle="titleSmall">
+                                        <Translation id="TR_BIO_AUTH_LOCKED_HEADING" />
+                                    </Paragraph>
+                                    <Paragraph align="center" typographyStyle="body">
+                                        {isMacOs() ? (
+                                            <Translation id="TR_BIO_AUTH_LOCKED_TEXT_MAC" />
+                                        ) : (
+                                            <Translation id="TR_BIO_AUTH_LOCKED_TEXT_WIN" />
+                                        )}
+                                    </Paragraph>
+                                    <Button
+                                        isFullWidth
+                                        variant="primary"
+                                        onClick={() =>
+                                            dispatch(
+                                                requestBioAuthValidationThunk({
+                                                    translationString,
+                                                }),
+                                            )
+                                        }
+                                    >
+                                        <Translation id="TR_BIO_AUTH_UNLOCK" />
+                                    </Button>
+                                </Container>
                             </Row>
                         </MainContent>
                     </Columns>
@@ -154,9 +146,5 @@ export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
         };
     }, [dispatch, isBioAuthAvailable]);
 
-    return isBioAuthValidationRequired ? (
-        <BioAuthOverlay isBioAuthValidationRequired={isBioAuthValidationRequired} />
-    ) : (
-        children
-    );
+    return isBioAuthValidationRequired ? <BioAuthOverlay /> : children;
 };
