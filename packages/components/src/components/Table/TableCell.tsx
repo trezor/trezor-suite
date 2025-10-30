@@ -75,15 +75,13 @@ export const TableCell = ({
     'data-testid': dataTestId,
 }: TableCellProps) => {
     const isHeader = useTableHeader();
-    const { hasBorders, typographyStyle } = useTable();
+    const { hasBorders, typographyStyle = 'body' } = useTable();
     const { parentElevation } = useElevation();
 
     const defaultPadding = {
         vertical: hasBorders ? spacings.sm : spacings.xs,
         horizontal: spacings.lg,
     };
-
-    const defaultTypographyStyle = isHeader ? 'hint' : 'body';
 
     return (
         <Cell
@@ -97,7 +95,7 @@ export const TableCell = ({
         >
             <Text
                 as="div"
-                typographyStyle={typographyStyle ?? defaultTypographyStyle}
+                typographyStyle={isHeader ? 'hint' : typographyStyle}
                 variant={isHeader ? 'tertiary' : 'default'}
             >
                 <Content $align={align}>{children}</Content>

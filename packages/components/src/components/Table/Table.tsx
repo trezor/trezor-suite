@@ -2,7 +2,13 @@ import { ReactNode, createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { TypographyStyle, mapElevationToBackgroundToken } from '@trezor/theme';
+import {
+    Elevation,
+    TypographyStyle,
+    borders,
+    mapElevationToBackgroundToken,
+    mapElevationToBorder,
+} from '@trezor/theme';
 
 import { TableBody } from './TableBody';
 import { TableCell } from './TableCell';
@@ -46,9 +52,12 @@ const Container = styled.table<TransientProps<AllowedFrameProps>>`
     ${withFrameProps}
 `;
 
-const ScrollContainer = styled.div`
+const ScrollContainer = styled.div<{ $elevation: Elevation }>`
     overflow: auto hidden;
     -webkit-overflow-scrolling: touch;
+
+    border-radius: ${borders.radii.md};
+    border: 1px solid ${({ theme, $elevation }) => mapElevationToBorder({ theme, $elevation })};
 `;
 
 export type TableProps = AllowedFrameProps &
@@ -72,12 +81,12 @@ export const Table = ({
     typographyStyle = 'body',
 }: TableProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowRight } = useScrollShadow();
-    const { parentElevation } = useElevation();
+    const { elevation, parentElevation } = useElevation();
 
     return (
         <TableContext.Provider value={{ isRowHighlightedOnHover, hasBorders, typographyStyle }}>
             <ShadowContainer>
-                <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                <ScrollContainer onScroll={onScroll} ref={scrollElementRef} $elevation={elevation}>
                     <Container {...makePropsTransient({ margin })}>
                         {colWidths && (
                             <colgroup>
