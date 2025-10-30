@@ -27,6 +27,10 @@ const labelingReducer = prepareLabelingReducer(extraDependenciesMock);
 
 const initialState: LabelingState = {
     walletsLabels: {},
+    isFeatureLocalFirstStorageAvailable: false,
+    isLocalFirstStorageEnabled: false,
+    isLocalFirstStorageDebugEnabled: false,
+    localFirstStorageRelayUrl: null,
 };
 
 const walletDescriptor = asWalletDescriptor('mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q');
@@ -57,6 +61,10 @@ describe('labelingReducer', () => {
                     outputLabels: [],
                 },
             },
+            isFeatureLocalFirstStorageAvailable: false,
+            isLocalFirstStorageEnabled: false,
+            isLocalFirstStorageDebugEnabled: false,
+            localFirstStorageRelayUrl: null,
         };
 
         const store = configureMockStore({
@@ -320,7 +328,13 @@ describe('labelingReducer', () => {
     });
 
     it('clears all labels for a wallet (remove whole entry)', () => {
-        const preloaded: LabelingState = { walletsLabels: {} };
+        const preloaded: LabelingState = {
+            walletsLabels: {},
+            isFeatureLocalFirstStorageAvailable: false,
+            isLocalFirstStorageEnabled: false,
+            isLocalFirstStorageDebugEnabled: false,
+            localFirstStorageRelayUrl: null,
+        };
         preloaded.walletsLabels[walletDescriptor] = {
             walletLabel: 'To be removed',
             accountLabels: [

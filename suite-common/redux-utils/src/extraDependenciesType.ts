@@ -77,10 +77,7 @@ export type ExtraDependencies = {
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
-        selectSuiteSettings: SuiteCompatibleSelector<{
-            localFirstStorageRelayUrl: string | null;
-            isLocalFirstStorageEnabled: boolean;
-        }>;
+        selectIsLocalFirstStorageEnabled: SuiteCompatibleSelector<boolean>;
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;

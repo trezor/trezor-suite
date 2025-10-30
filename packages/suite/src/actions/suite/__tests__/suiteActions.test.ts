@@ -2,6 +2,7 @@
 // data provided by TrezorConnect are mocked
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { prepareLabelingReducer } from '@suite-common/local-first-storage';
 import { testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
@@ -31,6 +32,7 @@ const { getSuiteDevice } = testMocks;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const labelingReducer = prepareLabelingReducer(extraDependencies);
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
@@ -68,6 +70,7 @@ const getInitialState = (
     device?: Partial<DevicesState>,
     router?: RouterState,
     firmware?: Partial<FirmwareState>,
+    labeling?: Partial<ReturnType<typeof labelingReducer>>,
 ) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
@@ -85,6 +88,10 @@ const getInitialState = (
     firmware: {
         ...firmwareReducer(undefined, { type: 'foo' } as any),
         ...firmware,
+    },
+    labeling: {
+        ...labelingReducer(undefined, { type: 'foo' } as any),
+        ...labeling,
     },
     wallet: {
         settings: {
@@ -134,6 +141,8 @@ describe('Suite Actions', () => {
 
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
+            console.log('f.device', f.device);
+
             const state = getInitialState({}, f.state.device);
             const store = initStore(state);
             await store.dispatch(selectDeviceThunk({ device: f.device }));

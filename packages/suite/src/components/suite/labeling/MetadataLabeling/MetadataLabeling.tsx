@@ -2,12 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { processMetadataMessageThunk } from '@suite-common/local-first-storage';
+import {
+    processMetadataMessageThunk,
+    selectShouldOfferSecureSync,
+} from '@suite-common/local-first-storage';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
+import { updateShowEnableLocalFirstStorageModal } from 'src/actions/labeling/labelingSlice';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -405,6 +409,8 @@ export const MetadataLabeling = ({
         selectIsLabelingAvailableForEntity(state, payload.entityKey, deviceState),
     );
 
+    const shouldOfferSecureSync = useSelector(selectShouldOfferSecureSync);
+
     // is this concrete instance being edited?
     const editActive = legacyMetadataState.editing === payload.defaultValue;
 
@@ -417,14 +423,21 @@ export const MetadataLabeling = ({
             // Is there something that needs to be initiated?
             !isLegacyLabelingEnabled
         ) {
-            dispatch(
-                init(
-                    // Provide force=true argument (user wants to enable metadata).
-                    true,
-                    // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
-                    deviceState,
-                ),
-            );
+            if (shouldOfferSecureSync) {
+                dispatch(updateShowEnableLocalFirstStorageModal({ show: true }));
+
+                // user can decide if they want to enable metadata or not, so we do not set editing state yet
+                return;
+            } else {
+                dispatch(
+                    init(
+                        // Provide force=true argument (user wants to enable metadata).
+                        true,
+                        // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
+                        deviceState,
+                    ),
+                );
+            }
         }
         dispatch(setEditing(payload.defaultValue));
     };

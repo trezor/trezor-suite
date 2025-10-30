@@ -98,10 +98,7 @@ export const extraDependenciesMock: ExtraDependencies = {
             account: testMocks.getWalletAccount(),
         } as SelectedAccountLoaded),
         selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
-        selectSuiteSettings: mockSelector('selectSuiteSettings', {
-            localFirstStorageRelayUrl: null,
-            isLocalFirstStorageEnabled: false,
-        }),
+        selectIsLocalFirstStorageEnabled: mockSelector('selectIsLocalFirstStorageEnabled', false),
         selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: mockSelector('selectTradingEnvironment', 'localhost'),
         selectIsViewOnlyByDefaultEnabled: mockSelector('selectIsViewOnlyByDefaultEnabled', true),
