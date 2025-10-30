@@ -10,7 +10,7 @@ import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
-import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
+import { Column, Icon, NewIconButton, Row, Table, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -205,7 +205,11 @@ export const AssetRow = memo(
                                     <Translation id="TR_BUY_BUY" />
                                 </TradingButton>
                             )}
-                            <IconButton icon="arrowRight" size="small" variant="tertiary" />
+                            <NewIconButton
+                                icon="arrowRight"
+                                intent="neutral"
+                                priority="secondary"
+                            />
                         </Row>
                     </Table.Cell>
                 </Table.Row>

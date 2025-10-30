@@ -437,6 +437,7 @@ export const TradingFormOffer = () => {
                     width="100%"
                     isDisabled={isButtonDisabled || isLoading}
                     isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
+                    size="large"
                 >
                     <Translation id="TR_CONTINUE" />
                 </NewButton>
@@ -460,6 +461,7 @@ export const TradingFormOffer = () => {
                                 top: spacings.md,
                             }}
                             width="100%"
+                            size="large"
                             isDisabled={isButtonDisabled || isLoading}
                             isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
                             data-testid={`@trading/form/${type}-button`}

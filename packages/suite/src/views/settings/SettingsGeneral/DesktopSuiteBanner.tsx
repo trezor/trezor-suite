@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Box, H2, Icon, IconButton, Image, NewButton, Paragraph, Row } from '@trezor/components';
+import { Box, H2, Icon, Image, NewButton, NewIconButton, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -51,7 +51,6 @@ const OSIcons = styled.div`
     align-self: center;
     align-items: center;
     gap: 6px;
-    opacity: 0.7;
 `;
 
 export const DesktopSuiteBanner = () => {
@@ -79,12 +78,13 @@ export const DesktopSuiteBanner = () => {
                         margin={{ vertical: spacings.sm, horizontal: spacings.lg }}
                     >
                         <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
-                            <IconButton
+                            <NewIconButton
                                 icon="x"
                                 onClick={handleClose}
                                 data-testid="@banner/install-desktop-suite/close-button"
-                                size="small"
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
+                                isInverse
                             />
                         </Box>
 

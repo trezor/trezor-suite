@@ -26,7 +26,7 @@ import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext
 import { Column, Row } from '../Flex/Flex';
 import { IconName } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
-import { IconButton } from '../buttons/IconButton/IconButton';
+import { NewIconButton } from '../buttons/NewIconButton/NewIconButton';
 import { H3 } from '../typography/Heading/Heading';
 import { Text } from '../typography/Text/Text';
 
@@ -109,12 +109,12 @@ const InnerModalBase = ({
                         >
                             <ElevationUp>
                                 {onBackClick && (
-                                    <IconButton
-                                        variant="tertiary"
+                                    <NewIconButton
+                                        intent="neutral"
+                                        priority="secondary"
                                         icon="caretLeft"
                                         data-testid="@modal/back-button"
                                         onClick={onBackClick}
-                                        size="small"
                                     />
                                 )}
 
@@ -136,12 +136,12 @@ const InnerModalBase = ({
                                 )}
 
                                 {onCancel && (
-                                    <IconButton
-                                        variant="tertiary"
+                                    <NewIconButton
+                                        intent="neutral"
+                                        priority="secondary"
                                         icon="x"
                                         data-testid="@modal/close-button"
                                         onClick={onCancel}
-                                        size="small"
                                         margin={{ left: 'auto' }}
                                     />
                                 )}

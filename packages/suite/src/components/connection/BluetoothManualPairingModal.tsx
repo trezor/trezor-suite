@@ -22,7 +22,7 @@ export const BluetoothManualPairingModal = ({ onCancel }: BluetoothManualPairing
             onCancel={handleCancel}
             bottomContent={
                 <>
-                    <Modal.Button onClick={handleCancel} variant="tertiary">
+                    <Modal.Button onClick={handleCancel} intent="neutral" priority="secondary">
                         <Translation id="TR_DONE" />
                     </Modal.Button>
                 </>

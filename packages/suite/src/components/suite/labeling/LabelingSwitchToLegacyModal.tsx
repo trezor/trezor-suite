@@ -19,7 +19,7 @@ export const LabelingSwitchToLegacyModal = ({
                 <Modal.Button onClick={onSwitch}>
                     <Translation id="TR_SWITCH_ANYWAY" />
                 </Modal.Button>
-                <Modal.Button onClick={onClose} variant="tertiary">
+                <Modal.Button onClick={onClose} intent="neutral" priority="secondary">
                     <Translation id="TR_CANCEL" />
                 </Modal.Button>
             </>

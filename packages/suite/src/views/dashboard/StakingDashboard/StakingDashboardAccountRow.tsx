@@ -271,9 +271,9 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     </Table.Cell>
 
                     <Table.Cell align="end">
-                        <Button variant="primary" size="small" onClick={navigateToTradingBuy}>
+                        <NewButton intent="brand" size="small" onClick={navigateToTradingBuy}>
                             <Translation id="TR_BUY" />
-                        </Button>
+                        </NewButton>
                     </Table.Cell>
                 </>
             )}

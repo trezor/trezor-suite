@@ -160,6 +160,7 @@ export const PassphraseInputCard = ({
                             }
                             width="100%"
                             isLoading={isLoading}
+                            size="large"
                         >
                             Confirm
                         </NewButton>

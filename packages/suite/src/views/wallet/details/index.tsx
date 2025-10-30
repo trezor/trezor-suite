@@ -140,7 +140,6 @@ const Details = () => {
                                         onClick={handleXpubClick}
                                         isDisabled={disabled}
                                         isLoading={locked}
-                                        size="small"
                                         minWidth={140}
                                     >
                                         <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />

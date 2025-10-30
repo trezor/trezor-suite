@@ -3,7 +3,6 @@ import { useTheme } from 'styled-components';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import { Box, Column, Modal, NewButton, Row, Spinner, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { borders } from '@trezor/theme';
 
 import {
     selectIsManualPairingRequired,
@@ -32,7 +31,7 @@ const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => {
     const theme = useTheme();
 
     return (
-        <Box backgroundColor={theme.backgroundSurfaceElevation1} borderRadius={borders.radii.full}>
+        <Box backgroundColor={theme.backgroundSurfaceElevation1} borderRadius={10}>
             <NewButton onClick={onClick} iconLeft="question" intent="info" priority="secondary">
                 <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
             </NewButton>

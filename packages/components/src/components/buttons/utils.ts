@@ -12,6 +12,7 @@ export const commonButtonStyles = css`
     padding: 0;
     cursor: pointer;
     display: inline-flex;
+    flex-shrink: 0;
     width: fit-content;
     overflow: hidden;
     -webkit-app-region: no-drag;

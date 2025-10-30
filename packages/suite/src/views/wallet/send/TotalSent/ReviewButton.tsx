@@ -177,6 +177,7 @@ export const ReviewButton = () => {
                     isDisabled={isDisabled || isLoading}
                     onClick={handleButtonReviewClick}
                     minWidth={200}
+                    size="large"
                 >
                     <Column alignItems="center" gap={4}>
                         <Translation id={getPrimaryText()} />

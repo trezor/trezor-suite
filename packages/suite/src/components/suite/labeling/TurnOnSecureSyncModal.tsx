@@ -26,7 +26,7 @@ export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) =
                     <Modal.Button onClick={onSwitch}>
                         <Translation id="TR_TURN_ON_SECURE_SYNC" />
                     </Modal.Button>
-                    <Modal.Button onClick={onClose} variant="tertiary">
+                    <Modal.Button onClick={onClose} intent="neutral" priority="secondary">
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

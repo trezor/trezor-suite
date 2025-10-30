@@ -1,4 +1,4 @@
-import { IconButton } from '@trezor/components';
+import { NewIconButton, Tooltip } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -10,13 +10,14 @@ export const NavSettings = () => {
     const handleClick = () => dispatch(goto('settings-index'));
 
     return (
-        <IconButton
-            label={<Translation id="TR_SETTINGS" />}
-            icon="gear"
-            size="medium"
-            variant="tertiary"
-            onClick={handleClick}
-            data-testid="@suite/menu/settings"
-        />
+        <Tooltip content={<Translation id="TR_SETTINGS" />}>
+            <NewIconButton
+                icon="gear"
+                intent="neutral"
+                priority="secondary"
+                onClick={handleClick}
+                data-testid="@suite/menu/settings"
+            />
+        </Tooltip>
     );
 };

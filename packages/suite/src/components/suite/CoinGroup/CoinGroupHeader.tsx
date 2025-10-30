@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { IconButton, Paragraph, Row } from '@trezor/components';
+import { NewIconButton, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -30,11 +30,11 @@ export const CoinGroupHeader = ({
                 </Paragraph>
             )}
             {isAtLeastOneActive && (
-                <IconButton
+                <NewIconButton
                     icon={settingsMode ? 'x' : 'gear'}
                     onClick={toggleSettingsMode}
-                    variant="tertiary"
-                    size="medium"
+                    intent="neutral"
+                    priority="secondary"
                     margin={{ left: 'auto' }}
                 />
             )}

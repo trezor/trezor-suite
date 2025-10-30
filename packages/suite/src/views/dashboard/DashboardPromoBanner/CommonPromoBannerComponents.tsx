@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { IconButton } from '@trezor/components';
+import { NewIconButton } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { setFlag } from '../../../actions/suite/suiteActions';
@@ -13,20 +13,22 @@ const CloseButtonContainer = styled.div`
     position: absolute;
     top: ${spacingsPx.sm};
     right: ${spacingsPx.sm};
-    opacity: 0.5;
-
-    &:hover {
-        opacity: 1;
-    }
 `;
 
 type CloseButtonProps = {
     onClose: () => void;
+    isInverse?: boolean;
 };
 
-export const CloseButton = ({ onClose }: CloseButtonProps) => (
+export const CloseButton = ({ onClose, isInverse = false }: CloseButtonProps) => (
     <CloseButtonContainer>
-        <IconButton size="small" icon="x" variant="tertiary" onClick={onClose} />
+        <NewIconButton
+            icon="x"
+            intent="neutral"
+            priority="secondary"
+            onClick={onClose}
+            isInverse={isInverse}
+        />
     </CloseButtonContainer>
 );
 

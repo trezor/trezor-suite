@@ -3,7 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { Button, Paragraph, intermediaryTheme } from '@trezor/components';
+import { NewButton, Paragraph, intermediaryTheme } from '@trezor/components';
 import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
 import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';
@@ -42,9 +42,9 @@ const DeeplinkFallback = () => (
             data-testid="@connect-deeplink"
             buttons={
                 <>
-                    <Button variant="primary" onClick={() => window.close()}>
+                    <NewButton intent="brand" onClick={() => window.close()}>
                         Close
-                    </Button>
+                    </NewButton>
                 </>
             }
         >

@@ -11,21 +11,25 @@ import {
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
+import { Elevation, spacingsPx, typography } from '@trezor/theme';
 
 import { motionEasing } from '../../../config/motion';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Row } from '../../Flex/Flex';
 import { IconName } from '../../Icon/Icon';
-import { IconButton } from '../../buttons/IconButton/IconButton';
+import { NewIconButton } from '../../buttons/NewIconButton/NewIconButton';
 import { mapElevationToButtonOnBackground } from '../../buttons/buttonStyleUtils';
+import { mapSizeToBorderRadius } from '../../buttons/utils';
 
-const Wrapper = styled.div<{ $elevation: Elevation }>`
+const Wrapper = styled.div<{ $elevation: Elevation; $isExpanded: boolean }>`
     position: relative;
-    border-radius: ${borders.radii.full};
-    background: ${({ theme, $elevation }) =>
-        mapElevationToButtonOnBackground({ elevation: $elevation, theme, state: 'normal' })};
+    border-radius: ${mapSizeToBorderRadius('medium')};
+    transition: background 0.2s ease;
+    background: ${({ theme, $elevation, $isExpanded }) =>
+        $isExpanded
+            ? mapElevationToButtonOnBackground({ elevation: $elevation, theme, state: 'normal' })
+            : 'none'};
     overflow-x: hidden;
 `;
 
@@ -134,16 +138,16 @@ export const InputButton = ({
     );
 
     return (
-        <Wrapper $elevation={elevation}>
+        <Wrapper $elevation={elevation} $isExpanded={isExpanded}>
             <HiddenPlaceholder aria-hidden="true" ref={placeholderRef}>
                 {placeholder}
             </HiddenPlaceholder>
             <Row alignItems="stretch">
-                <IconButton
+                <NewIconButton
                     icon={isDirty ? 'xCircleFilled' : iconName}
-                    size="small"
                     onClick={isDirty ? clear : toggle}
-                    variant="tertiary"
+                    intent="neutral"
+                    priority="secondary"
                 />
                 <InputWrapper
                     animate={isExpanded || isDirty ? 'expanded' : 'collapsed'}

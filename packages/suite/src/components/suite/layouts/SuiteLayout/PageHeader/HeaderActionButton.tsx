@@ -1,11 +1,4 @@
-import {
-    IconButton,
-    IconButtonProps,
-    IconName,
-    NewButton,
-    NewButtonProps,
-} from '@trezor/components';
-import { NewButtonIntent } from '@trezor/components/src/components/buttons/NewButton/types';
+import { IconName, NewButton, NewButtonProps, NewIconButton } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
@@ -17,24 +10,6 @@ type HeaderActionButtonProps = Pick<
     icon: IconName;
 };
 
-const mapIntentToIconVariant = (
-    intent: NewButtonIntent | undefined,
-): IconButtonProps['variant'] => {
-    switch (intent) {
-        case 'info':
-            return 'info';
-        case 'warning':
-            return 'warning';
-        case 'critical':
-            return 'destructive';
-        case 'neutral':
-            return 'tertiary';
-        case 'brand':
-        default:
-            return 'primary';
-    }
-};
-
 export const HeaderActionButton = ({
     icon,
     onClick,
@@ -44,36 +19,31 @@ export const HeaderActionButton = ({
     priority,
     isDisabled,
     children,
-}: HeaderActionButtonProps) => {
-    const iconButtonVariant = mapIntentToIconVariant(intent);
-    const isIconSubtle = priority === 'secondary';
-
-    return (
-        <>
-            <ConditionalRender container="content" maxWidth={breakpoints.mobile}>
-                <IconButton
-                    icon={icon}
-                    onClick={onClick}
-                    data-testid={dataTestId}
-                    variant={iconButtonVariant}
-                    size={size}
-                    isDisabled={isDisabled}
-                    isSubtle={isIconSubtle}
-                />
-            </ConditionalRender>
-            <ConditionalRender container="content" minWidth={breakpoints.mobile}>
-                <NewButton
-                    iconLeft={icon}
-                    onClick={onClick}
-                    data-testid={dataTestId}
-                    size={size}
-                    isDisabled={isDisabled}
-                    intent={intent}
-                    priority={priority}
-                >
-                    {children}
-                </NewButton>
-            </ConditionalRender>
-        </>
-    );
-};
+}: HeaderActionButtonProps) => (
+    <>
+        <ConditionalRender container="content" maxWidth={breakpoints.mobile}>
+            <NewIconButton
+                icon={icon}
+                onClick={onClick}
+                data-testid={dataTestId}
+                intent={intent}
+                size={size}
+                isDisabled={isDisabled}
+                priority={priority}
+            />
+        </ConditionalRender>
+        <ConditionalRender container="content" minWidth={breakpoints.mobile}>
+            <NewButton
+                iconLeft={icon}
+                onClick={onClick}
+                data-testid={dataTestId}
+                size={size}
+                isDisabled={isDisabled}
+                intent={intent}
+                priority={priority}
+            >
+                {children}
+            </NewButton>
+        </ConditionalRender>
+    </>
+);

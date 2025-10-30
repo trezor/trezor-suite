@@ -28,7 +28,7 @@ export const AuthenticateDeviceInititalStep = ({
                 <Modal.Button onClick={handleClick} isDisabled={isLoading} isLoading={isLoading}>
                     <Translation id="TR_START_CHECK" />
                 </Modal.Button>
-                <Modal.Button variant="tertiary" onClick={handleClose}>
+                <Modal.Button intent="neutral" priority="secondary" onClick={handleClose}>
                     <Translation id="TR_CANCEL" />
                 </Modal.Button>
             </>

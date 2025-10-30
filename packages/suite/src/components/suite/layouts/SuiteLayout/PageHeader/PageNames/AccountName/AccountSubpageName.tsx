@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Route } from '@suite-common/suite-types';
 import { Account } from '@suite-common/wallet-types';
-import { IconButton } from '@trezor/components';
+import { NewIconButton } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -40,10 +40,11 @@ export const AccountSubpageName = ({
 
     return (
         <Container>
-            <IconButton
+            <NewIconButton
                 icon="caretLeft"
-                variant="tertiary"
-                size="medium"
+                intent="neutral"
+                priority="secondary"
+                size="large"
                 onClick={handleBackClick}
                 data-testid="@account-subpage/back"
             />

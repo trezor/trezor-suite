@@ -78,7 +78,7 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
     const href = useExternalLink(DASHBOARD_BANNER_TEX_URL);
 
     return (
-        <NewButton intent="brand" size="small" onClick={onClick} href={href}>
+        <NewButton intent="brand" onClick={onClick} href={href}>
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON" />
         </NewButton>
     );
@@ -98,7 +98,7 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExp
         <AnimatedWrapper isVisible={isVisible} flagToHide="showTEXDashboardPromoBanner">
             <Box
                 height={213}
-                padding={{ left: 24, right: 24 }}
+                padding={{ horizontal: 24 }}
                 backgroundColor={theme.baseFillSurfaceBrandDark}
             >
                 <Row
@@ -120,7 +120,7 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExp
                     <StyledImage src={mainImage} alt="Trezor Expert" />
                 </Row>
 
-                <CloseButton onClose={onClose} />
+                <CloseButton onClose={onClose} isInverse />
             </Box>
         </AnimatedWrapper>
     );
