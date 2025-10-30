@@ -35,6 +35,7 @@ pub struct AdapterManager {
     manager_state: Arc<Mutex<ManagerState>>,
     discovered_id: DashSet<String>,
     serviceless_peripherals: DashMap<String, ServicelessDevice>,
+    serviceless_peripherals_prune_ts: Arc<Mutex<u128>>,
 }
 
 struct ManagerState {
@@ -98,6 +99,7 @@ impl AdapterManager {
             manager_state,
             discovered_id: DashSet::new(),
             serviceless_peripherals: DashMap::new(),
+            serviceless_peripherals_prune_ts: Arc::new(Mutex::new(0)),
         })
     }
 
@@ -478,6 +480,17 @@ impl AdapterManager {
             }
         } else if update_count < 1000 && peripheral.services().is_empty() {
             let _ = self.add_serviceless_device(id, update_count + 1).await;
+        }
+
+        // prune outdated data
+        let threshold = 30_000;
+        let now = utils::get_timestamp();
+        let mut ts = self.serviceless_peripherals_prune_ts.lock().await;
+        if now - threshold > *ts {
+            let threshold = now - threshold;
+            self.serviceless_peripherals
+                .retain(|_key, p| p.timestamp >= threshold);
+            *ts = now;
         }
 
         Ok(())
