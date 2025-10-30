@@ -7,7 +7,7 @@ import {
 } from '@suite-common/analytics';
 import { EventType, analytics } from '@suite-common/analytics/src/events/suite-native';
 import { createThunk } from '@suite-common/redux-utils';
-import { isDevelopEnv } from '@suite-native/config';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { unecryptedJotaiStorage } from '@suite-native/storage';
 import { getTrackingRandomId } from '@trezor/analytics';
@@ -57,7 +57,7 @@ export const initAnalyticsThunk = createThunk(
             environment: 'mobile',
             url: unecryptedJotaiStorage.getString(CUSTOM_ANALYTICS_URL_KEY),
             commitId: getCommitHash() || 'undefined',
-            isDev: isDevelopEnv(),
+            isDev: isDevelopOrDebugEnv(),
             callbacks: {
                 onEnable: () => dispatch(enableAnalyticsThunk()),
                 onDisable: () => dispatch(disableAnalyticsThunk()),

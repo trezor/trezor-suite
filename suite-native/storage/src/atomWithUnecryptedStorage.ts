@@ -15,6 +15,12 @@ export function getItem<T>(key: string): T | null {
 }
 
 function setItem<T>(key: string, value: T): void {
+    if (value === undefined) {
+        unecryptedJotaiStorage.delete(key);
+
+        return;
+    }
+
     unecryptedJotaiStorage.set(key, JSON.stringify(value));
 }
 
