@@ -108,6 +108,9 @@ conditionalDescribe(
 
             await element(by.id('@popup/deeplink-info'));
 
+            // Skip waiting for Reanimated animations.
+            await device.disableSynchronization();
+
             const permissionButton = element(by.id('@popup/call-device'));
             await waitFor(permissionButton).toBeVisible().withTimeout(30000);
             await permissionButton.tap();
@@ -116,6 +119,7 @@ conditionalDescribe(
             await waitFor(confirmButton).toBeVisible().withTimeout(10000);
             await confirmButton.tap();
 
+            await device.enableSynchronization();
             await TrezorUserEnvLink.pressYes();
 
             const response = await promise;

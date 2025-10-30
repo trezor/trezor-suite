@@ -25,6 +25,8 @@ class SendOutputsReviewActions {
 
     async clickSendTransaction() {
         await waitFor(sendButton).toBeVisible().withTimeout(15000);
+        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
+
         await sendButton.tap();
 
         await waitFor(element(by.id('@screen/TransactionDetail')))

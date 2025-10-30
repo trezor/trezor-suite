@@ -35,7 +35,7 @@ export abstract class TradingFormActions extends TradingActions {
     }
 
     async expectSheetHeaderTitle(title: string) {
-        await waitFor(element(by.text(title).withAncestor(by.id('@trading/sheet-header-title'))))
+        await waitFor(element(by.text(title).and(by.id('@trading/sheet-header-title'))))
             .toBeVisible()
             .withTimeout(this.SHORT_TIMEOUT);
     }
