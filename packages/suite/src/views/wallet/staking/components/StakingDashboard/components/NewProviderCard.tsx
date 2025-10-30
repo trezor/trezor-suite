@@ -43,7 +43,7 @@ export const NewProviderCard = () => {
                 <Column gap={spacings.xxxl}>
                     <Column gap={spacings.xs}>
                         <H3>
-                            <Translation id="TR_STAKING_NEW_PROVIDER_TITLE" />
+                            <Translation id="TR_STAKING_NEW_PROVIDER_TITLE" values={{ apy }} />
                         </H3>
                         <Paragraph variant="tertiary" maxWidth={700}>
                             <Translation
