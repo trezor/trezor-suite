@@ -32,13 +32,17 @@ const DashedText = ({ children, ...props }: React.ComponentProps<typeof Text>) =
     </DashedTextWrapper>
 );
 
+interface StellarTokenInfo extends TokenInfo {
+    homeDomain?: string;
+    rating?: number;
+}
+
 /**
  * Get the list of inactive Stellar tokens for the user account
  */
-const getInactiveStellarTokens = async (account: Account): Promise<TokenInfo[]> => {
+const getInactiveStellarTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
     if (account.symbol !== 'xlm') return [];
 
-    // TODO(stellar): add issuer domain to the token metadata
     const allTokens: TokenDetailByMint = await getTokenMetadata();
 
     // Get the currently active token contract addresses for the user
@@ -54,7 +58,17 @@ const getInactiveStellarTokens = async (account: Account): Promise<TokenInfo[]> 
             name: allTokens[contract]?.name,
             symbol: contract.split('-')[0],
             decimals: STELLAR_DECIMALS,
-        }));
+            homeDomain: allTokens[contract]?.home_domain,
+            rating: allTokens[contract]?.rating,
+        }))
+        .sort((a, b) => {
+            // Place tokens without ratings last, otherwise sort high to low
+            if (a.rating == null && b.rating == null) return 0;
+            if (a.rating == null) return 1;
+            if (b.rating == null) return -1;
+
+            return b.rating - a.rating;
+        });
 
     return inactiveTokens;
 };
@@ -68,10 +82,10 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
     const dispatch = useDispatch();
     const { account } = selectedAccount;
     const coingeckoId = getCoingeckoId(account.symbol);
-    const [allInactiveTokens, setAllInactiveTokens] = useState<TokenInfo[]>([]);
+    const [allInactiveTokens, setAllInactiveTokens] = useState<StellarTokenInfo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
-    const [tokenToActivate, setTokenToActivate] = useState<TokenInfo | null>(null);
+    const [tokenToActivate, setTokenToActivate] = useState<StellarTokenInfo | null>(null);
 
     useEffect(() => {
         if (account.symbol === 'xlm') {
@@ -114,7 +128,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
         );
     }, [searchQuery, allInactiveTokens]);
 
-    const handleActivateToken = (token: TokenInfo) => {
+    const handleActivateToken = (token: StellarTokenInfo) => {
         setTokenToActivate(token);
     };
 
@@ -195,7 +209,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                     }
                                 >
                                     <DashedText variant="tertiary" typographyStyle="hint">
-                                        example.com
+                                        {token.homeDomain || '-'}
                                     </DashedText>
                                 </Tooltip>
                             </Table.Cell>
