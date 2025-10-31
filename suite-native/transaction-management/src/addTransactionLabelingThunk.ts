@@ -1,9 +1,11 @@
-import { updateOutputLabelThunk } from '@suite-common/local-first-storage';
+import {
+    selectIsLocalFirstStorageEnabled,
+    updateOutputLabelThunk,
+} from '@suite-common/local-first-storage';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectPrecomposedSendForm, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 
@@ -22,12 +24,9 @@ export const addTransactionLabelingThunk = createThunk<
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/sendTransactionThunk`,
     async ({ selectedAccount, txId }, { getState, dispatch }) => {
-        const isFeatureFlagOn = selectIsFeatureFlagEnabled(
-            getState(),
-            FeatureFlag.IsLocalFirstStorageEnabled,
-        );
+        const isLocalFirstStorageEnabled = selectIsLocalFirstStorageEnabled(getState());
 
-        if (!isFeatureFlagOn) {
+        if (!isLocalFirstStorageEnabled) {
             return;
         }
 

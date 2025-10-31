@@ -15,7 +15,6 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../atoms" },
-        { "path": "../feature-flags" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../../packages/connect" }
