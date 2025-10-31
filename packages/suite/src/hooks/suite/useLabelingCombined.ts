@@ -1,4 +1,12 @@
-import { disposeAllLocalFirstStorageThunk } from '@suite-common/local-first-storage';
+import {
+    disposeAllLocalFirstStorageThunk,
+    labelingActions,
+} from '@suite-common/local-first-storage';
+import {
+    selectIsFeatureLocalFirstStorageAvailable,
+    selectIsLocalFirstStorageDebugEnabled,
+    selectIsLocalFirstStorageEnabled,
+} from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
@@ -8,8 +16,6 @@ import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActi
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
-import { setFlag } from '../../actions/suite/suiteActions';
-import { selectSuiteFlags } from '../../selectors/suite/suiteSelectors';
 
 type UseLabelingCombinedParams = {
     // This needs to be passed, as labeling can be attached to remembered wallets
@@ -26,25 +32,48 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
             : undefined,
     );
 
-    const { isLocalFirstStorageEnabled, isLocalFirstStorageDebugEnabled } =
-        useSelector(selectSuiteFlags);
+    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
+    const isLocalFirstStorageDebugEnabled = useSelector(selectIsLocalFirstStorageDebugEnabled);
+    const isFeatureLocalFirstStorageAvailable = useSelector(
+        selectIsFeatureLocalFirstStorageAvailable,
+    );
+
     const legacyMetadataState = useSelector(state => state.metadata);
 
-    const legacyDisable = () => {
-        dispatch(metadataActions.disableMetadata());
+    const toggleisFeatureLocalFirstStorageAvailable = () => {
+        dispatch(
+            labelingActions.updateisFeatureLocalFirstStorageAvailable({
+                isShownInSettings: !isFeatureLocalFirstStorageAvailable,
+            }),
+        );
     };
-    const localFirstDisable = () => {
-        dispatch(setFlag('isLocalFirstStorageEnabled', false));
-        dispatch(disposeAllLocalFirstStorageThunk());
+
+    const legacyDisableIfNeeded = () => {
+        if (legacyMetadataState.enabled) dispatch(metadataActions.disableMetadata());
     };
-    const localFirstEnable = () => {
-        legacyDisable(); // Enabling Evolu implicitly disables Legacy Labeling
-        dispatch(setFlag('isLocalFirstStorageEnabled', true));
-        dispatch(initSuiteLocalFirstStorageThunk());
+
+    const localFirstDisableIfNeeded = () => {
+        if (isLocalFirstStorageEnabled) {
+            dispatch(labelingActions.updateLocaleFirstStorageEnabled({ isEnabled: false }));
+            dispatch(disposeAllLocalFirstStorageThunk());
+        }
     };
-    const legacyEnable = () => {
-        localFirstDisable(); // Enabling Legacy Labeling implicitly disables Evolu
-        dispatch(metadataLabelingActions.init(true));
+
+    const localFirstEnableIfNeeded = () => {
+        // Enabling Evolu implicitly disables Legacy Labeling
+        if (legacyMetadataState.enabled) legacyDisableIfNeeded();
+
+        if (!isLocalFirstStorageEnabled) {
+            dispatch(labelingActions.updateLocaleFirstStorageEnabled({ isEnabled: true }));
+            dispatch(initSuiteLocalFirstStorageThunk());
+        }
+    };
+
+    const legacyEnableIfNeeded = () => {
+        if (!legacyMetadataState.enabled) {
+            localFirstDisableIfNeeded(); // Enabling Legacy Labeling implicitly disables Evolu
+            dispatch(metadataLabelingActions.init(true));
+        }
     };
 
     const isEvoluSupportedByDevice = device?.unavailableCapabilities?.evolu === undefined;
@@ -53,16 +82,18 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
 
     return {
         /** New Labeling: LocalFirstStorage (Evolu) */
+        isFeatureLocalFirstStorageAvailable,
+        toggleisFeatureLocalFirstStorageAvailable,
         isLocalFirstStorageEnabled,
         isEvoluSupportedByDevice,
         isLocalFirstStorageDebugEnabled,
         hasDeviceLocalFirstStorageKeys,
-        localFirstEnable,
-        localFirstDisable,
+        localFirstEnableIfNeeded,
+        localFirstDisableIfNeeded,
 
         /** Legacy Labeling */
         legacyMetadataState,
-        legacyEnable,
-        legacyDisable,
+        legacyEnableIfNeeded,
+        legacyDisableIfNeeded,
     };
 };

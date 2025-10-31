@@ -517,10 +517,6 @@ export default defineMessages({
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
     },
-    TR_EXCHANGE_SEND_FROM: {
-        defaultMessage: 'Sending account',
-        id: 'TR_EXCHANGE_SEND_FROM',
-    },
     TR_EXCHANGE_SEND_TO: {
         defaultMessage: '{providerName}’s address',
         id: 'TR_EXCHANGE_SEND_TO',
@@ -613,18 +609,6 @@ export default defineMessages({
         defaultMessage: '{provider} contract address',
         id: 'TR_EXCHANGE_SWAP_SEND_TO',
     },
-    TR_EXCHANGE_SWAP_DATA: {
-        defaultMessage: 'Swap transaction data',
-        id: 'TR_EXCHANGE_SWAP_DATA',
-    },
-    TR_EXCHANGE_SWAP_SLIPPAGE: {
-        defaultMessage: 'Slippage',
-        id: 'TR_EXCHANGE_SWAP_SLIPPAGE',
-    },
-    TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE: {
-        defaultMessage: 'Slippage tolerance',
-        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE',
-    },
     TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED: {
         defaultMessage: 'Swap offer amount',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED',
@@ -634,12 +618,12 @@ export default defineMessages({
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM: {
-        defaultMessage: 'Minimum you get',
+        defaultMessage: 'Minimum received amount',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_INFO: {
         defaultMessage:
-            'Prices can change during the swap. Maximum slippage sets how much difference you’ll accept in the final amount. A higher tolerance makes the transaction more likely to go through, but you may receive less than expected.',
+            "Exchange rates can change quickly, so the final amount you receive may differ from the offer—this is called slippage. Slippage tolerance sets the maximum difference you're willing to accept. A higher tolerance means your transaction is more likely to go through but you might get less than expected. A lower tolerance gives you a better rate but may cause the transaction to fail, and you'll still pay the transaction fee.",
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_INFO',
     },
     TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM: {
@@ -711,11 +695,11 @@ export default defineMessages({
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
-        defaultMessage: 'Fixed',
+        defaultMessage: 'Fixed-rate offer',
         id: 'TR_EXCHANGE_FIXED',
     },
     TR_EXCHANGE_FLOAT: {
-        defaultMessage: 'Floating',
+        defaultMessage: 'Floating-rate offer',
         id: 'TR_EXCHANGE_FLOAT',
     },
     TR_EXCHANGE_DEX: {
@@ -1432,7 +1416,7 @@ export default defineMessages({
     },
     TR_TRADING_DCA_FEATURE_1_DESCRIPTION: {
         defaultMessage:
-            'Set it & forget it with Auto Buy or let Auto Buy Plus optimize your timing for smarter stacking.',
+            'Set it and forget it with Auto Buy, or let Auto Buy Plus optimize your timing for smarter stacking.',
         id: 'TR_TRADING_DCA_FEATURE_1_DESCRIPTION',
         dynamic: true,
     },
@@ -1485,7 +1469,7 @@ export default defineMessages({
     },
     TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION: {
         defaultMessage:
-            'Use Auto Send to automatically move your bitcoin to your Trezor (not valid for active Turbo Buy).',
+            'Use Auto Send to automatically move your bitcoin to your Trezor. Not available for Turbo Buy.',
         id: 'TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION',
         dynamic: true,
     },
@@ -1500,7 +1484,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN: {
-        defaultMessage: 'DCA is currently available only for Bitcoin',
+        defaultMessage: 'DCA is currently available only for bitcoin',
         id: 'TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN',
         dynamic: true,
     },
@@ -2608,18 +2592,6 @@ export default defineMessages({
     TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
         defaultMessage: 'The 7d change rate is currently not available.',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
-    },
-    TR_FINAL_HEADING: {
-        defaultMessage: 'Setup complete',
-        id: 'TR_FINAL_HEADING',
-    },
-    TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
-        defaultMessage: 'Change homescreen',
-        id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
-    },
-    TR_ONBOARDING_DEVICE_EDIT_LABEL: {
-        defaultMessage: 'Change name',
-        id: 'TR_ONBOARDING_DEVICE_EDIT_LABEL',
     },
     TR_FIRMWARE: {
         defaultMessage: 'Firmware',
@@ -4393,10 +4365,6 @@ export default defineMessages({
         id: 'TR_ONION_LINKS_TITLE',
         defaultMessage: 'Open trezor.io links as .onion links',
     },
-    TR_TOR_ENABLE_TITLE: {
-        id: 'TR_TOR_ENABLE_TITLE',
-        defaultMessage: 'Enable Tor',
-    },
     TR_ONION_LINKS_DESCRIPTION: {
         id: 'TR_ONION_LINKS_DESCRIPTION',
         defaultMessage:
@@ -4665,17 +4633,13 @@ export default defineMessages({
         defaultMessage: 'Eject this wallet',
         description: 'Heading above col with "eject wallet" buttons in switch wallets modal',
     },
-    TR_EJECT_ALL_HEADING: {
-        id: 'TR_EJECT_ALL_HEADING',
-        defaultMessage: 'Eject all wallets on this Trezor',
-    },
     TR_FORGET_DEVICE_HEADING: {
         id: 'TR_FORGET_DEVICE_HEADING',
         defaultMessage: 'Forget this device',
     },
     TR_FORGET_DEVICE_DESCRIPTION: {
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
-        defaultMessage: 'Removes all device-related data from Trezor Suite.',
+        defaultMessage: 'Remove all device-related data from Trezor Suite.',
     },
     TR_DEVICE_CONNECTION: {
         id: 'TR_DEVICE_CONNECTION',
@@ -4823,7 +4787,7 @@ export default defineMessages({
     },
     TR_FW_INSTALL_MAY_TAKE_A_WHILE: {
         id: 'TR_FW_INSTALL_MAY_TAKE_A_WHILE',
-        defaultMessage: 'Firmware installation may take a some time to complete.',
+        defaultMessage: 'Firmware installation may take some time to complete.',
     },
     TR_CHARGE_BATTERY_TO_ATLEAST: {
         id: 'TR_CHARGE_BATTERY_TO_ATLEAST',
@@ -4994,10 +4958,6 @@ export default defineMessages({
         defaultMessage:
             'In all cases, we strongly recommend creating a wallet backup. With a wallet backup, your coins are safe and secure even if your Trezor is lost, damaged, or stolen.',
     },
-    TR_IMPORTANT: {
-        id: 'TR_IMPORTANT',
-        defaultMessage: 'Important!',
-    },
     TR_FIRMWARE_SWITCH_WARNING_1: {
         id: 'TR_FIRMWARE_SWITCH_WARNING_1',
         defaultMessage:
@@ -5115,7 +5075,7 @@ export default defineMessages({
     TR_LABEL_REQUIREMENTS: {
         id: 'TR_LABEL_REQUIREMENTS',
         defaultMessage:
-            'Use names up to {length} characters, containing only letters from the English alphabet.',
+            'Select a name up to {length} characters, containing letters only from the English alphabet.',
         description: 'How many characters may be in device label and of what type.',
     },
     TR_LABEL_ERROR_LENGTH: {
@@ -5172,10 +5132,6 @@ export default defineMessages({
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2',
         defaultMessage: 'If you want to use this device instead, start again.',
-    },
-    TR_GO_TO_SUITE: {
-        id: 'TR_GO_TO_SUITE',
-        defaultMessage: 'Go to Trezor Suite',
     },
     TR_ONBOARDING_CREATE_NEW_WALLET: {
         id: 'TR_ONBOARDING_CREATE_NEW_WALLET',
@@ -5239,7 +5195,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI',
-        defaultMessage: 'Changeable to Multi-share Backup',
+        defaultMessage: 'Supports upgrade to Multi-share Backup',
     },
     TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE',
@@ -5252,12 +5208,12 @@ export default defineMessages({
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
-        defaultMessage: 'Secure & reliable—not easily changeable to Multi-share Backup',
+        defaultMessage: "Secure & reliable—can't be upgraded to Multi-share Backup",
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            "Generates a single set of 12 or 24 words that can fully recover your wallet. Legacy wallet backup types can't be changed easily to Multi-share Backups. <a>Read more</a>",
+            "Generates a single set of 12 or 24 words that can fully recover your wallet. A legacy wallet backup can't be upgraded to a Multi-share Backup. <a>Learn more</a>",
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
@@ -5274,7 +5230,7 @@ export default defineMessages({
     TR_ONBOARDING_BACKUP_LEGACY_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_LEGACY_WARNING',
         defaultMessage:
-            "This can't be directly changed to Multi-share Backup. For future flexibility, use the default Single-share Backup.",
+            "This can't be upgraded to a Multi-share Backup. For more flexibility later, use the default Single-share Backup.",
     },
     TR_ONBOARDING_BACKUP_SHAMIR_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_SHAMIR_WARNING',
@@ -6027,10 +5983,6 @@ export default defineMessages({
         description: 'Sign and send button used in send form',
         defaultMessage: 'Review & send',
     },
-    TR_CONNECT_TREZOR_TO_SEND_BUTTON: {
-        id: 'TR_CONNECT_TREZOR_TO_SEND_BUTTON',
-        defaultMessage: 'Connect your Trezor to send',
-    },
     SEND_RAW: {
         id: 'SEND_RAW',
         description: 'item in dropdown menu',
@@ -6079,7 +6031,7 @@ export default defineMessages({
         id: 'FEE_LEVEL_STANDARD',
     },
     FEE_LEVEL_ADVANCED: {
-        defaultMessage: 'Advanced',
+        defaultMessage: 'Customize fee',
         id: 'FEE_LEVEL_ADVANCED',
     },
     FEE_LEVEL_HIGH: {
@@ -6334,17 +6286,9 @@ export default defineMessages({
         id: 'FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU',
         defaultMessage: "Upgrade your Trezor's firmware for Evolu storage.",
     },
-    LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE: {
-        id: 'LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE',
-        defaultMessage: 'Enabling legacy labeling will disable Evolu storage.',
-    },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
         defaultMessage: 'Connect & unlock device to change',
-    },
-    TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP: {
-        id: 'TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP',
-        defaultMessage: 'Unavailable until device setup is complete.',
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
@@ -6357,11 +6301,6 @@ export default defineMessages({
     TR_FIRMWARE_LANGUAGE_FETCH_ERROR: {
         id: 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR',
         defaultMessage: 'Translation download failed',
-    },
-    TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
-        id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP',
-        defaultMessage:
-            'Firmware update required. You can change your homescreen after firmware update.',
     },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
@@ -6563,10 +6502,6 @@ export default defineMessages({
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
         defaultMessage:
             "Your wallet backup has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
-    },
-    TR_BACKUP_FAILED: {
-        id: 'TR_BACKUP_FAILED',
-        defaultMessage: 'Wallet backup failed',
     },
     TR_STANDARD_WALLET_DESCRIPTION: {
         id: 'TR_STANDARD_WALLET_DESCRIPTION',
@@ -6815,10 +6750,6 @@ export default defineMessages({
         id: 'TR_PIN_HEADING_INITIAL',
         defaultMessage: 'Set a PIN',
     },
-    TR_COMPLETE: {
-        id: 'TR_COMPLETE',
-        defaultMessage: 'Complete',
-    },
     TR_COMPLETE_SETUP: {
         id: 'TR_COMPLETE_SETUP',
         defaultMessage: 'Complete setup',
@@ -6919,10 +6850,6 @@ export default defineMessages({
     TR_EXPLORER_TX: {
         id: 'TR_EXPLORER_TX',
         defaultMessage: 'Transaction',
-    },
-    TR_EXPLORER_ACCOUNT: {
-        id: 'TR_EXPLORER_ACCOUNT',
-        defaultMessage: 'Account',
     },
     TR_EXPLORER_ADDRESS: {
         id: 'TR_EXPLORER_ADDRESS',
@@ -7856,7 +7783,7 @@ export default defineMessages({
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION',
         defaultMessage:
-            "<a>Click to switch</a> how your Trezor connects to Trezor Suite. This may help if you're experiencing connection issues. Current version: ({currentVersion})",
+            "<a>Click to switch</a> how your Trezor connects to Trezor Suite. This may help if you're experiencing connection issues. Current version {currentVersion}",
     },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
@@ -8208,7 +8135,7 @@ export default defineMessages({
     TR_STAKE_NOT_ENOUGH_FUNDS_WARNING: {
         id: 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING',
         defaultMessage:
-            'You don’t have enough {networkDisplaySymbol} to cover registration deposit and network fee.',
+            'You don’t have enough {networkDisplaySymbol} to cover the registration deposit and network fee.',
     },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',
@@ -8760,13 +8687,13 @@ export default defineMessages({
     TR_LOADING_FACT_13: {
         id: 'TR_LOADING_FACT_13',
         description: '140 symbols max',
-        defaultMessage: 'Privacy is not secrecy - Eric Hughes',
+        defaultMessage: '"Privacy is not secrecy." - Eric Hughes',
     },
     TR_LOADING_FACT_14: {
         id: 'TR_LOADING_FACT_14',
         description: '140 symbols max',
         defaultMessage:
-            'Privacy is the power to selectively reveal oneself to the world - Eric Hughes',
+            '"Privacy is the power to selectively reveal oneself to the world." - Eric Hughes',
     },
     TR_LOADING_FACT_15: {
         id: 'TR_LOADING_FACT_15',
@@ -8800,7 +8727,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_20',
         description: '140 symbols max',
         defaultMessage:
-            "Mel B, better known as 'Scary Spice', was the first mainstream musician to accept Bitcoin payments for a single",
+            'Mel B, better known as Scary Spice, was the first mainstream musician to accept Bitcoin payments for a single',
     },
     TR_LOADING_FACT_21: {
         id: 'TR_LOADING_FACT_21',
@@ -9023,12 +8950,12 @@ export default defineMessages({
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
         defaultMessage:
-            'Address poisoning alert! This transaction looks suspicious. <a>Learn more.</a>',
+            'Address poisoning alert! This transaction looks suspicious. <a>Learn more</a>',
     },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
         defaultMessage:
-            'Proceed with caution. This may be a fraudulent transaction. <a>Read more here.</a>',
+            'Proceed with caution. This may be a fraudulent transaction. <a>Learn more</a>',
     },
     TR_SENDFORM_LABELING_EXAMPLE_1: {
         id: 'TR_SENDFORM_LABELING_EXAMPLE_1',
@@ -9126,11 +9053,11 @@ export default defineMessages({
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
-        defaultMessage: 'Introducing Trezor Safe 7',
+        defaultMessage: 'Introducing Trezor Safe 7',
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_DESCRIPTION: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_DESCRIPTION',
-        defaultMessage: 'Radically transparent, fully wireless, and quantum‑ready.',
+        defaultMessage: 'Radically transparent, fully wireless, and quantum‑ready.',
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON',
@@ -9394,7 +9321,7 @@ export default defineMessages({
     },
     TR_STAKING_NEW_PROVIDER_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
-        defaultMessage: 'Start earning rewards with Everstake',
+        defaultMessage: 'Earn ~{apy}% APY with new provider',
     },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
@@ -10009,15 +9936,6 @@ export default defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
         defaultMessage: 'Cancel',
     },
-    TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_TITLE: {
-        id: 'TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_TITLE',
-        defaultMessage: 'Eject all wallets on this Trezor?',
-    },
-    TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION: {
-        id: 'TR_SWITCH_DEVICE_EJECT_ALL_CONFIRMATION_DESCRIPTION',
-        defaultMessage:
-            "Your assets and transactions won't be visible until you reconnect your device.",
-    },
     TR_DO_NOT_SHOW_AGAIN: {
         id: 'TR_DO_NOT_SHOW_AGAIN',
         defaultMessage: "Don't show again",
@@ -10178,14 +10096,6 @@ export default defineMessages({
     TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION',
         defaultMessage: 'Connect your Trezor to continue.',
-    },
-    TR_CONNECT_DEVICE_SEND_PROMO_TITLE: {
-        id: 'TR_CONNECT_DEVICE_SEND_PROMO_TITLE',
-        defaultMessage: "Your Trezor isn't connected",
-    },
-    TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION: {
-        id: 'TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION',
-        defaultMessage: 'Connect your Trezor to send assets.',
     },
     TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE',
@@ -10392,7 +10302,7 @@ export default defineMessages({
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING: {
         id: 'TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_HEADING',
-        defaultMessage: 'Manually pair your Trezor:',
+        defaultMessage: 'Manually pair your Trezor',
         description: 'Displayed as hints of bluetooth connection in connect modal',
     },
     TR_BLUETOOTH_MANUAL_PAIR_DEVICE_GUIDE_DESCRIPTION: {
@@ -10625,6 +10535,42 @@ export default defineMessages({
     TR_QUIT_NOW: {
         id: 'TR_QUIT_NOW',
         defaultMessage: 'Quit now',
+    },
+    TR_TURN_ON_SECURE_SYNC: {
+        id: 'TR_TURN_ON_SECURE_SYNC',
+        defaultMessage: 'Turn on',
+    },
+    TR_SWITCH_ANYWAY: {
+        id: 'TR_SWITCH_ANYWAY',
+        defaultMessage: 'Switch anyway',
+    },
+    TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
+        id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
+        defaultMessage: 'Turn on secure sync to use labels',
+    },
+    TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION: {
+        id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION',
+        defaultMessage: 'Secure sync keeps your data consistent across all of your devices.',
+    },
+    TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
+        id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
+        defaultMessage: 'Data is stored locally and synced only with devices you authorize.',
+    },
+    TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES: {
+        id: 'TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES',
+        defaultMessage: 'Only devices you authorize with your Trezor can decrypt the data.',
+    },
+    TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
+        id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',
+        defaultMessage: 'Switch to legacy labeling?',
+    },
+    TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
+        id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
+        defaultMessage: 'Labels created with secure sync cannot be migrated.',
+    },
+    TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
+        id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
+        defaultMessage: 'With legacy labeling, labels cannot be synced to mobile devices.',
     },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',

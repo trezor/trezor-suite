@@ -32,7 +32,6 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { selectSuiteSettings } from 'src/selectors/suite/suiteSelectors';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
@@ -93,11 +92,12 @@ export const extraDependencies: ExtraDependencies = {
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
-        selectSuiteSettings,
         selectIsWindowVisible,
         selectTradingEnvironment: (state: AppState) =>
             state.suite.settings.debug.invityServerEnvironment,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
+        selectIsLocalFirstStorageEnabled: (state: AppState) =>
+            state.labeling.isLocalFirstStorageEnabled,
         selectThpSettings: (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
             pairingMethods: ['CodeEntry'],

@@ -3,6 +3,7 @@ use crate::server::{
     types::{MethodResult, WsResponsePayload},
     utils,
 };
+#[cfg_attr(target_os = "windows", allow(unused_imports))]
 use std::process::Command;
 
 #[cfg(target_os = "linux")]
@@ -13,7 +14,7 @@ async fn get_adapter_info() -> Result<String, Box<dyn std::error::Error>> {
     let result2 = Command::new("hciconfig").arg("-a").output();
 
     match (result1, result2) {
-        (Ok(info1), Ok(info2)) => Ok(String::from_utf8_lossy(&info1.stdout).to_string()),
+        (Ok(info1), Ok(_info2)) => Ok(String::from_utf8_lossy(&info1.stdout).to_string()),
         (Ok(info1), Err(_)) => Ok(String::from_utf8_lossy(&info1.stdout).to_string()),
         (Err(_), Ok(info2)) => Ok(String::from_utf8_lossy(&info2.stdout).to_string()),
         (Err(error), Err(_)) => Err(error.into()),

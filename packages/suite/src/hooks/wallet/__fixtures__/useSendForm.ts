@@ -412,7 +412,16 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
         ),
         router: createReducer({}, () => ({})),
         modal: createReducer({}, () => ({})),
-        labeling: createReducer({ walletsLabels: {} } satisfies LabelingState, state => state),
+        labeling: createReducer(
+            {
+                walletsLabels: {},
+                isFeatureLocalFirstStorageAvailable: false,
+                isLocalFirstStorageEnabled: false,
+                isLocalFirstStorageDebugEnabled: false,
+                localFirstStorageRelayUrl: null,
+            } satisfies LabelingState,
+            state => state,
+        ),
     });
 
 const DEFAULT_DRAFT = {

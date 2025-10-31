@@ -659,7 +659,7 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.SettingsGeneralLabeling;
           payload: {
-              value: boolean;
+              value: string;
           };
       }
     | {

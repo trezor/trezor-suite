@@ -9,17 +9,12 @@ import { z } from 'zod';
 import { Select } from '@trezor/components';
 
 import { useConfig } from '../contexts/useConfig';
+import { themeOptionsSchema } from '../schema';
 
 type ThemeSwitchProps = {
     lite?: boolean;
     className?: string;
 };
-
-export const themeOptionsSchema = z.strictObject({
-    light: z.string(),
-    dark: z.string(),
-    system: z.string(),
-});
 
 type ThemeOptions = z.infer<typeof themeOptionsSchema>;
 

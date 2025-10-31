@@ -35,6 +35,24 @@ button:disabled {
 #send_message_input { width: 100%; height: 80px; }
 `;
 
+const getPort = () => {
+    // UI served from the server
+    if (window.location.port) {
+        return window.location.port;
+    }
+    // UI is running as standalone file
+    if (window.location.hash.length > 0) {
+        const url = new URL(window.location.href.replace(/#/g, '?'));
+        const port = url.searchParams.get('port');
+        if (port) {
+            return port;
+        }
+    }
+
+    // default
+    return 21327;
+};
+
 export const App: React.FC = () => {
     // inject inline styles on mount
     useEffect(() => {
@@ -52,11 +70,11 @@ export const App: React.FC = () => {
     const [devices, setDevices] = useState<BluetoothDevice[]>([]);
     const [output, setOutput] = useState<string[]>([]);
     const [deviceId, setDeviceId] = useState('');
-    const [messageInput, setMessageInput] = useState('{}');
     const [connected, setConnected] = useState(false);
     const selectRef = useRef<(HTMLSelectElement & { value?: NotificationCharacteristic }) | null>(
         null,
     );
+    const messageInputRef = useRef<HTMLTextAreaElement | null>(null);
 
     const writeOutput = (message: unknown) => {
         try {
@@ -67,7 +85,8 @@ export const App: React.FC = () => {
     };
 
     useEffect(() => {
-        const api = new TrezorBluetooth({ url: `ws://127.0.0.1:${window.location.port}/` });
+        const port = getPort();
+        const api = new TrezorBluetooth({ url: `ws://127.0.0.1:${port}/` });
         apiRef.current = api;
 
         const onDisconnected = () => writeOutput('Api disconnected');
@@ -231,7 +250,7 @@ export const App: React.FC = () => {
 
     const setState = async () => {
         try {
-            const value = deviceId.split(',');
+            const value = messageInputRef.current!.value.split(',');
             const state = { devices: value.map(d => ({ id: d, macAddress: d })) };
             const r = await api().send('set_state', state);
             writeOutput(r);
@@ -240,13 +259,15 @@ export const App: React.FC = () => {
         }
     };
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         try {
-            const json = JSON.parse(messageInput);
-            const resp = api().sendMessage(json);
+            const { value } = messageInputRef.current!;
+            console.warn('VAL', value);
+            const json = JSON.parse(value);
+            const resp = await api().sendMessage(json);
             writeOutput(resp);
         } catch (e) {
-            writeOutput(e);
+            writeOutput({ error: e.message });
         }
     };
 
@@ -297,8 +318,8 @@ export const App: React.FC = () => {
 
                         <textarea
                             id="send_message_input"
-                            value={messageInput}
-                            onChange={e => setMessageInput(e.target.value)}
+                            ref={messageInputRef}
+                            defaultValue={`{"method": "get_info"}`}
                             style={{ width: '100%', height: 80 }}
                         />
                         <div style={{ marginTop: 8 }}>

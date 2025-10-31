@@ -3,6 +3,7 @@ import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
 
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -15,7 +16,6 @@ import {
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { Options } from './Options/Options';
 import { Outputs } from './Outputs/Outputs';
@@ -60,7 +60,7 @@ interface SendLoadedProps extends SendProps {
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
-    const { isLocalFirstStorageEnabled } = useSelector(selectSuiteFlags);
+    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
 
     const props = useSelector(state => ({
         localCurrency: state.wallet.settings.localCurrency,

@@ -28,7 +28,11 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
             await onboardingPage.completeOnboarding();
 
             await settingsPage.navigateTo('application');
-            await settingsPage.metadataSwitch.click();
+
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('legacy'),
+            );
 
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
@@ -70,7 +74,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
                 testCase: 'Suite labeling handles GET retries from Dropbox',
             }),
         },
-        async ({ onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
+        async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
             await metadataMock.setFileContent(
                 '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
                 metadataMock.defaultFileContent,
@@ -80,7 +84,11 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
             await onboardingPage.completeOnboarding();
 
             await settingsPage.navigateTo('application');
-            await settingsPage.metadataSwitch.click();
+
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('legacy'),
+            );
 
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
@@ -128,7 +136,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
                 testCase: 'Suite labeling handles incomplete data from Dropbox',
             }),
         },
-        async ({ onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
+        async ({ page, onboardingPage, settingsPage, metadataPage, walletPage, metadataMock }) => {
             await metadataMock.setFileContent(
                 '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
                 {
@@ -144,7 +152,11 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
             await onboardingPage.completeOnboarding();
 
             await settingsPage.navigateTo('application');
-            await settingsPage.metadataSwitch.click();
+
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('legacy'),
+            );
 
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 

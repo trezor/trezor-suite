@@ -104,7 +104,7 @@ const config = {
             }
             // Todo: ----- End of hack -----
 
-            if (process.env.IS_DETOX_BUILD && moduleName === '@trezor/connect') {
+            if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
                 // Mock some Trezor Connect methods to avoid network flakiness during e2e tests.
                 return {
                     filePath: require.resolve('./e2e/mocks/trezor-connect.js'),

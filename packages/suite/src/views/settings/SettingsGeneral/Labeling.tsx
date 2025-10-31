@@ -1,109 +1,135 @@
-import { isDevicePerceivedAsNew } from '@suite-common/suite-utils';
-import { Banner, LoadingContent, Switch, Tooltip } from '@trezor/components';
+import { useState } from 'react';
+
+import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/local-first-storage';
+import { LoadingContent } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionColumn, TextColumn } from 'src/components/suite';
+import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDiscovery } from 'src/hooks/suite';
+import {
+    LABELING_SELECT_OPTIONS,
+    LABELING_SELECT_OPTIONS_MAP,
+    LabelingOption,
+} from 'src/constants/suite/labeling';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
+import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 
-import { useLabelingCombined } from '../../../hooks/suite/useLabelingCombined';
+import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
-/**
- * @deprecated This will be replaced by LocalFistStorage (Evolu)
- */
 export const Labeling = () => {
-    const { device, isLocked } = useDevice();
-    const { legacyMetadataState, legacyEnable, legacyDisable, isLocalFirstStorageEnabled } =
-        useLabelingCombined({ deviceStaticSessionId: device?.state?.staticSessionId });
+    const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
+    const { device } = useDevice();
+    const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
-    const { isDiscoveryRunning } = useDiscovery();
+    const showLocalFirstStorage = useSelector(selectIsFeatureLocalFirstStorageAvailable);
 
-    const handleSwitchClick = () => {
-        if (legacyMetadataState.enabled) {
-            legacyDisable();
-        } else {
-            legacyEnable();
+    const {
+        legacyMetadataState,
+        legacyEnableIfNeeded,
+        legacyDisableIfNeeded,
+        localFirstDisableIfNeeded,
+        localFirstEnableIfNeeded,
+        isEvoluSupportedByDevice,
+        isLocalFirstStorageEnabled,
+    } = useLabelingCombined({
+        deviceStaticSessionId: device?.state?.staticSessionId,
+    });
+
+    const handleOnChange = (selected: LabelingOption) => {
+        const { value } = selected;
+
+        // show a warning legacy modal when user selects legacy option while using local first storage
+        if (value === 'legacy' && isLocalFirstStorageEnabled) {
+            setLegacyModalWarningVisible(true);
+
+            return;
+        }
+
+        switch (value) {
+            case 'off':
+                legacyDisableIfNeeded();
+                localFirstDisableIfNeeded();
+                break;
+
+            case 'secure-sync':
+                localFirstEnableIfNeeded();
+                break;
+
+            case 'legacy':
+                localFirstDisableIfNeeded();
+                legacyEnableIfNeeded();
+                break;
+
+            default:
+                exhaustive(value);
         }
 
         analytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
-                value: !legacyMetadataState.enabled,
+                value,
             },
         });
     };
 
-    // This should ideally not depend on the device so it should never be disabled.
-    // But if user have REMEMBERED device DISCONNECTED, he would get to the wrong state where
-    // Labeling is turned on in Settings, but not accessible at all and user is not informed
-    // what to do to enable it. That is why it's disabled for now in that case.
-    //
-    // Following use cases need some bigger UX refactoring:
-    // - Labeling enabled without any device connected
-    // - Labeling enabled with the device connected inside Settings
-    // The initialization of Labeling then start when user select a Wallet.
+    const getSelectedOption = (): LabelingOption => {
+        if (showLocalFirstStorage) {
+            if (isLocalFirstStorageEnabled) return LABELING_SELECT_OPTIONS_MAP['secure-sync'];
+            if (legacyMetadataState.enabled) return LABELING_SELECT_OPTIONS_MAP.legacy;
 
-    const newlyConnectedDevice = isDevicePerceivedAsNew(device);
-    const isDisabled =
-        isLocked() ||
-        device?.mode !== 'normal' ||
-        !device?.state?.staticSessionId ||
-        newlyConnectedDevice;
-
-    const getTooltipContent = () => {
-        if (newlyConnectedDevice) {
-            return <Translation id="TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP" />;
+            return LABELING_SELECT_OPTIONS_MAP.off;
         }
 
-        if (isDiscoveryRunning) {
-            return null;
-        }
-
-        return <Translation id="TR_DISABLED_SWITCH_TOOLTIP" />;
+        return legacyMetadataState.enabled
+            ? LABELING_SELECT_OPTIONS_MAP.legacy
+            : LABELING_SELECT_OPTIONS_MAP.off;
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Labeling}>
-            <TextColumn
-                title={
-                    <LoadingContent
-                        isLoading={legacyMetadataState.initiating}
-                        isSuccessful={legacyMetadataState.enabled}
-                    >
-                        <Translation id="TR_LABELING_ENABLED" />
-                    </LoadingContent>
-                }
-                description={
-                    <>
-                        <Translation id="TR_LABELING_FEATURE_ALLOWS" />
-                        {isLocalFirstStorageEnabled && (
-                            <Banner>
-                                <Translation id="LEGACY_LABELING_TURNS_OFF_EVOLU_NOTICE" />
-                            </Banner>
+        <>
+            {legacyModalWarningVisible && (
+                <LabelingSwitchToLegacyModal
+                    onClose={() => setLegacyModalWarningVisible(false)}
+                    onSwitch={() => {
+                        localFirstDisableIfNeeded();
+                        legacyEnableIfNeeded();
+                        setLegacyModalWarningVisible(false);
+                    }}
+                />
+            )}
+
+            <SettingsSectionItem anchorId={SettingsAnchor.Labeling}>
+                <TextColumn
+                    title={
+                        <LoadingContent
+                            isLoading={legacyMetadataState.initiating}
+                            isSuccessful={legacyMetadataState.enabled}
+                        >
+                            <Translation id="TR_LABELING_ENABLED" />
+                        </LoadingContent>
+                    }
+                    description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
+                    buttonLink={HELP_CENTER_LABELING}
+                />
+                <ActionColumn>
+                    <ActionSelect
+                        options={LABELING_SELECT_OPTIONS.filter(
+                            option =>
+                                option.value !== 'secure-sync' ||
+                                (showLocalFirstStorage && isEvoluSupportedByDevice),
                         )}
-                    </>
-                }
-                buttonLink={HELP_CENTER_LABELING}
-            />
-            <ActionColumn>
-                <Tooltip
-                    isActive={isDisabled && !isDiscoveryRunning}
-                    maxWidth={280}
-                    offset={10}
-                    placement="top"
-                    content={getTooltipContent()}
-                >
-                    <Switch
-                        isDisabled={isDisabled || legacyMetadataState.initiating}
-                        data-testid="@settings/metadata-switch"
-                        isChecked={legacyMetadataState.enabled}
-                        onChange={handleSwitchClick}
+                        value={getSelectedOption()}
+                        onChange={handleOnChange}
+                        data-testid="@settings/labeling-select"
+                        isDisabled={isDeviceLabelingDisabled}
                     />
-                </Tooltip>
-            </ActionColumn>
-        </SettingsSectionItem>
+                </ActionColumn>
+            </SettingsSectionItem>
+        </>
     );
 };

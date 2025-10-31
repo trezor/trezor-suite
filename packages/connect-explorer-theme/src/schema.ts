@@ -2,12 +2,16 @@ import { isValidElement } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import type { NextSeoProps } from 'next-seo';
-import type { Item } from 'nextra/normalize-pages';
+import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import { z } from 'zod';
 
-import type { NavBarProps } from './components/navbar';
-import { themeOptionsSchema } from './components/theme-switch';
 import type { TOCProps } from './components/toc';
+
+export const themeOptionsSchema = z.strictObject({
+    light: z.string(),
+    dark: z.string(),
+    system: z.string(),
+});
 
 function isFunction(value: unknown): boolean {
     return typeof value === 'function';
@@ -76,7 +80,13 @@ export const themeSchema = z.strictObject({
     logoLink: z.boolean().or(z.string()),
     main: z.custom<FC<{ children: ReactNode }>>(...fc).optional(),
     navbar: z.strictObject({
-        component: z.custom<ReactNode | FC<NavBarProps>>(...reactNode),
+        component: z.custom<
+            | ReactNode
+            | FC<{
+                  flatDirectories: Item[];
+                  items: (PageItem | MenuItem)[];
+              }>
+        >(...reactNode),
         extraContent: z.custom<ReactNode | FC>(...reactNode).optional(),
     }),
     navigation: z.boolean().or(

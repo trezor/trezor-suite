@@ -189,8 +189,6 @@ const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = 
                 showBluetoothDebugInfo: false,
                 stellarLimitedHistoryBannerClosed: false,
                 solanaLimitedHistoryBannerClosed: false,
-                isLocalFirstStorageEnabled: false,
-                isLocalFirstStorageDebugEnabled: false,
                 hasSeenDisconnectTooltip: false,
             },
         },

@@ -568,10 +568,6 @@ export const selectDeviceDefaultBackupType = createMemoizedSelector(
     },
 );
 
-export const selectStandardWalletDevice = createMemoizedSelector([selectDevices], devices =>
-    devices.find(device => device.useEmptyPassphrase),
-);
-
 export const selectIsSameOrNewDevice = createMemoizedSelector(
     [selectSelectedDevice, (_state, device: Device | TrezorDevice | undefined) => device],
     (selectedDevice, device) => selectedDevice === undefined || device?.id === selectedDevice.id,

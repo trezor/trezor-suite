@@ -5,19 +5,13 @@ import { Session } from '@trezor/transport/src/types';
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { errorCase1, descriptor as fixtureDescriptor } from './expect';
 
-const wait = (ms = 1000) =>
-    new Promise(resolve => {
-        setTimeout(() => {
-            resolve(undefined);
-        }, ms);
-    });
+const wait = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms));
 
 const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
     const d = {
         ...fixtureDescriptor,
         session: Session('1'),
         ...descriptor,
-        apiType: 'usb' as const,
     };
 
     if (env.USE_NODE_BRIDGE && d.session && !d.sessionOwner) {
@@ -48,11 +42,7 @@ describe('bridge', () => {
             descriptors = result.payload;
         }
 
-        expect(descriptors).toEqual([
-            getDescriptor({
-                session: null,
-            }),
-        ]);
+        expect(descriptors).toEqual([getDescriptor({ session: null })]);
 
         bridge1.handleDescriptorsChange(descriptors);
         bridge2.handleDescriptorsChange(descriptors);

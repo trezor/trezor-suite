@@ -73,7 +73,9 @@ export class SettingsPage {
     readonly languageInputOption = (language: Language) =>
         this.page.getByTestId(`@settings/language-select/option/${language}`);
     readonly checkSeedButton: Locator;
-    readonly metadataSwitch: Locator;
+    readonly metadataSelectInput: Locator;
+    readonly metadataSelectInputOption = (option: 'legacy' | 'off') =>
+        this.page.getByTestId(`@settings/labeling-select/option/${option}`);
     readonly analyticsSwitch: Locator;
     readonly analyticsSwitchInput: Locator;
     readonly showLogButton: Locator;
@@ -122,7 +124,7 @@ export class SettingsPage {
         this.themeInput = this.page.getByTestId('@theme/color-scheme-select/input');
         this.languageInput = this.page.getByTestId('@settings/language-select/input');
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
-        this.metadataSwitch = this.page.getByTestId('@settings/metadata-switch');
+        this.metadataSelectInput = this.page.getByTestId('@settings/labeling-select/input');
         this.analyticsSwitch = this.page.getByTestId('@analytics/toggle-switch');
         this.analyticsSwitchInput = this.page
             .getByTestId('@analytics/toggle-switch')

@@ -2,9 +2,9 @@ import type { ReactElement } from 'react';
 
 import cn from 'clsx';
 
-import { useConfig } from '../contexts/useConfig';
-import { renderComponent } from '../utils';
 import { LocaleSwitch } from './locale-switch';
+import { useConfig } from '../contexts/useConfig';
+import { renderComponent } from '../utils/render';
 
 export function Footer({ menu }: { menu?: boolean }): ReactElement {
     const config = useConfig();
