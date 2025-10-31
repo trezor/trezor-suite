@@ -1,5 +1,5 @@
 import { getStakingTotalRewards } from '@suite-common/staking';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     StakeRootState,
     selectAccountStakeTypeTransactions,
@@ -42,23 +42,19 @@ import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 type ItemProps = {
     label: React.ReactNode;
     iconName: IconName;
-    symbol: NetworkSymbol;
-    cryptoAmount: string;
-    fiatAmount: string;
+    title: React.ReactNode;
+    description: React.ReactNode;
     isReward?: boolean;
     isLoading?: boolean;
-    'data-testid': string;
 };
 
 const Item = ({
     label,
-    symbol,
-    cryptoAmount,
-    fiatAmount,
     iconName,
     isReward = false,
     isLoading = false,
-    'data-testid': dataTestId,
+    title,
+    description,
 }: ItemProps) => (
     <InfoItem label={label} iconName={iconName}>
         {isLoading ? (
@@ -69,20 +65,10 @@ const Item = ({
         ) : (
             <>
                 <Paragraph typographyStyle="titleSmall" variant={isReward ? 'primary' : 'default'}>
-                    <FormattedCryptoAmount
-                        data-testid={dataTestId}
-                        value={cryptoAmount}
-                        symbol={symbol}
-                    />
+                    {title}
                 </Paragraph>
                 <Paragraph typographyStyle="hint" variant="tertiary">
-                    <BaseCurrencyValue
-                        amount={fiatAmount}
-                        symbol={symbol}
-                        showApproximationIndicator
-                    >
-                        {({ value }) => (value ? <span>{value}</span> : null)}
-                    </BaseCurrencyValue>
+                    {description}
                 </Paragraph>
             </>
         )}
@@ -222,33 +208,64 @@ export const StakingCard = ({
                 )}
 
                 <Grid columns={isBelowLaptop ? 1 : 2} gap={spacings.xxl}>
-                    {isStakePending && (
+                    {isStakePending && !isCardanoNetworkType && (
                         <Item
                             label={<Translation id="TR_STAKE_TOTAL_PENDING" />}
                             iconName="spinnerGap"
-                            symbol={selectedAccount.symbol}
-                            cryptoAmount={totalPendingStakeBalance}
-                            fiatAmount={totalPendingStakeBalance}
-                            data-testid="@account/staking/pending"
+                            title={
+                                <FormattedCryptoAmount
+                                    data-testid="@account/staking/pending"
+                                    value={totalPendingStakeBalance}
+                                    symbol={selectedAccount.symbol}
+                                />
+                            }
+                            description={
+                                <BaseCurrencyValue
+                                    amount={totalPendingStakeBalance}
+                                    symbol={selectedAccount.symbol}
+                                    showApproximationIndicator
+                                />
+                            }
                         />
                     )}
 
-                    <Item
-                        label={
-                            <Translation
-                                id={
-                                    isCardanoNetworkType
-                                        ? 'TR_STAKE_ACTIVE_STAKE'
-                                        : 'TR_STAKE_STAKE'
-                                }
-                            />
-                        }
-                        iconName="lock"
-                        symbol={selectedAccount?.symbol}
-                        cryptoAmount={depositedBalance || '0'}
-                        fiatAmount={depositedBalance || '0'}
-                        data-testid="@account/staking/staked"
-                    />
+                    {isCardanoNetworkType ? (
+                        <Item
+                            label={<Translation id="TR_STAKE_STAKED_AUTOMATICALLY" />}
+                            iconName="check"
+                            title={<Translation id="TR_STAKE_FULL_BALANCE" />}
+                            description={
+                                <Translation
+                                    id="TR_STAKE_FUNDS_FULLY_ACCESSIBLE"
+                                    values={{
+                                        networkDisplaySymbol: getNetworkDisplaySymbol(
+                                            selectedAccount.symbol,
+                                        ),
+                                    }}
+                                />
+                            }
+                            data-testid="@account/staking/full-balance"
+                        />
+                    ) : (
+                        <Item
+                            label={<Translation id="TR_STAKE_STAKE" />}
+                            iconName="lock"
+                            title={
+                                <FormattedCryptoAmount
+                                    data-testid="@account/staking/staked"
+                                    value={depositedBalance || '0'}
+                                    symbol={selectedAccount.symbol}
+                                />
+                            }
+                            description={
+                                <BaseCurrencyValue
+                                    amount={depositedBalance || '0'}
+                                    symbol={selectedAccount.symbol}
+                                    showApproximationIndicator
+                                />
+                            }
+                        />
+                    )}
 
                     <Item
                         label={
@@ -280,10 +297,20 @@ export const StakingCard = ({
                         }
                         iconName="plusCircle"
                         isReward
-                        cryptoAmount={totalRewards}
-                        fiatAmount={totalRewards}
-                        data-testid="@account/staking/rewards"
-                        symbol={selectedAccount.symbol}
+                        title={
+                            <FormattedCryptoAmount
+                                data-testid="@account/staking/rewards"
+                                value={totalRewards}
+                                symbol={selectedAccount.symbol}
+                            />
+                        }
+                        description={
+                            <BaseCurrencyValue
+                                amount={totalRewards}
+                                symbol={selectedAccount.symbol}
+                                showApproximationIndicator
+                            />
+                        }
                         isLoading={isTotalRewardsLoading}
                     />
                     {isPendingUnstakeShown && (
@@ -308,10 +335,20 @@ export const StakingCard = ({
                                 </>
                             }
                             iconName="spinnerGap"
-                            symbol={selectedAccount.symbol}
-                            cryptoAmount={withdrawTotalAmount}
-                            fiatAmount={withdrawTotalAmount}
-                            data-testid="@account/staking/unstaking"
+                            title={
+                                <FormattedCryptoAmount
+                                    data-testid="@account/staking/unstaking"
+                                    value={withdrawTotalAmount}
+                                    symbol={selectedAccount.symbol}
+                                />
+                            }
+                            description={
+                                <BaseCurrencyValue
+                                    amount={withdrawTotalAmount}
+                                    symbol={selectedAccount.symbol}
+                                    showApproximationIndicator
+                                />
+                            }
                         />
                     )}
                 </Grid>
