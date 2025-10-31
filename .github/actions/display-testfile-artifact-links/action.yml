@@ -6,6 +6,9 @@ inputs:
   github-token:
     description: "Token to call the Actions API"
     required: true
+  model:
+    description: "Emulator model name"
+    required: true
 
 runs:
   using: "composite"
@@ -15,7 +18,7 @@ runs:
       uses: actions/download-artifact@v4
       continue-on-error: true
       with:
-        pattern: shard-*
+        pattern: shard-${{ inputs.model }}-*
         path: ./shards
         merge-multiple: false
 
@@ -23,6 +26,7 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
+        MODEL: ${{ inputs.model }}
       run: |
         set -euo pipefail
         SUMMARY="$GITHUB_STEP_SUMMARY"
@@ -46,17 +50,17 @@ runs:
 
         # Header
         {
-          echo "## Android tests → artifact links"
+          echo "## $MODEL: Android tests → artifact links"
           echo
           echo "| Test file | Artifact |"
           echo "|---|---|"
         } >> "$SUMMARY"
 
         shopt -s nullglob
-        for dir in ./shards/shard-*; do
+        for dir in ./shards/shard-$MODEL-*; do
           shard_name="$(basename "$dir")"              # e.g., shard-1
-          shard_idx="${shard_name#shard-}"            # e.g., 1
-          main_artifact="android-tests-${shard_idx}"
+          shard_idx="${shard_name#shard-$MODEL-}"      # e.g., 1
+          main_artifact="android-tests-$MODEL-${shard_idx}"
 
           art_id="$(jq -r --arg n "$main_artifact" '.[$n] // empty' artifacts_map.json)"
           if [ -n "$art_id" ]; then
@@ -82,13 +86,14 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
+        MODEL: ${{ inputs.model }}
       run: |
         set -euo pipefail
         curl -fsSL \
           -H "Authorization: Bearer $GITHUB_TOKEN" \
           "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts?per_page=100" \
           -o artifacts.json
-        jq -r '.artifacts[] | select(.name | startswith("shard-")) | .id' artifacts.json | while read -r id; do
+          jq -r --arg model "$MODEL" '.artifacts[] | select(.name | startswith("shard-" + $model + "-")) | .id' artifacts.json | while read -r id; do
           curl -fsSL -X DELETE \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}" \
