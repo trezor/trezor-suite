@@ -53,7 +53,7 @@ const impl = new TrezorConnectDynamic<
                 console.warn(`Invalid coreMode: ${settings.coreMode}`);
             }
 
-            return 'iframe';
+            return 'core-in-suite-web';
         }
     },
     handleBeforeCall: async () => {
@@ -77,7 +77,7 @@ const impl = new TrezorConnectDynamic<
             impl.getTargetType() === 'core-in-suite-desktop' &&
             (errorCode === 'Desktop_ConnectionMissing' || errorCode === 'Method_Unsupported')
         ) {
-            await impl.switchTarget('iframe');
+            await impl.switchTarget('core-in-suite-web');
 
             return true;
         }
