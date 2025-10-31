@@ -17,7 +17,7 @@ export const PassphraseConfirmFeatureUnlockEnterOnTrezorScreen = () => {
     useEffect(() => {
         if (!isCreatingNewPassphraseWallet && !inputPassphraseOnDevice) {
             // NOTE: this means that the device passphrase request was fulfilled either success or not,
-            // TzoreConnect will trigger proper events globaly and this will be reopened if needed
+            // TrezorConnect will trigger proper events globally and this will be reopened if needed
             navigateToInitialScreen();
         }
     }, [isCreatingNewPassphraseWallet, inputPassphraseOnDevice, navigateToInitialScreen]);
