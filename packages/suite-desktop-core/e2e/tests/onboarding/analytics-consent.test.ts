@@ -7,6 +7,7 @@ test.describe(
         test.beforeEach(async ({ page, url, onboardingPage }) => {
             await page.goto(url + 'accounts');
             await onboardingPage.disableNecessaryFirmwareChecks();
+            await onboardingPage.disableAuthenticityCheck();
             await onboardingPage.optionallyDismissFwHashCheckError();
         });
 
@@ -27,10 +28,6 @@ test.describe(
             }
 
             await onboardingPage.onboardingExitButton.click();
-
-            if (model.isModelWithSecureElement()) {
-                await onboardingPage.passThroughAuthenticityCheck();
-            }
 
             await expect(dashboardPage.suiteLayout).toBeVisible();
             await walletPage.openAccount();

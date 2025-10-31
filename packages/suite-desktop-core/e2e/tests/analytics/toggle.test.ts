@@ -3,9 +3,11 @@ import { EventType } from '@trezor/suite-analytics';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other'] }, () => {
+    test.use({ electronConf: { disableAuthenticityCheck: true } });
     test.beforeEach(async ({ analytics, onboardingPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.disableNecessaryFirmwareChecks();
+        await onboardingPage.disableAuthenticityCheck();
     });
 
     test('should respect disabled analytics in onboarding with following enabling in settings', async ({
@@ -48,9 +50,6 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
             }
 
             await onboardingPage.onboardingExitButton.click();
-            if (model.isModelWithSecureElement()) {
-                await onboardingPage.passThroughAuthenticityCheck();
-            }
         });
 
         await test.step('Reload app and check analytics state', async () => {
@@ -131,9 +130,6 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
                 await onboardingPage.enterTHPPairingCode();
             }
             await onboardingPage.onboardingExitButton.click();
-            if (model.isModelWithSecureElement()) {
-                await onboardingPage.passThroughAuthenticityCheck();
-            }
         });
 
         await test.step('Go to settings and disable analytics', async () => {

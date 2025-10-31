@@ -19,7 +19,10 @@ import { getModelFromEnv } from '../helpers/modelFromEnv';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
-type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
+type ElectronConf = Pick<
+    LaunchSuiteParams,
+    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'disableAuthenticityCheck'
+>;
 
 type suiteBaseFixture = {
     startEmulator: boolean;
