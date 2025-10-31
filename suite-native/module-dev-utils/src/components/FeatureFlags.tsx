@@ -1,19 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-
-import {
-    disposeAllLocalFirstStorageThunk,
-    labelingActions,
-} from '@suite-common/local-first-storage';
 import { Box, Card, CheckBox, Text, VStack } from '@suite-native/atoms';
 import {
     FeatureFlag as FeatureFlagEnum,
-    FeatureFlagsRootState,
     featureFlagsInitialState,
-    selectIsFeatureFlagEnabled,
     useFeatureFlag,
     useToggleFeatureFlag,
 } from '@suite-native/feature-flags';
-import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-storage';
 
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.AreDebugOnlyNetworksEnabled]: '🧪 Debug only networks',
@@ -26,32 +17,13 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.AreTradingExchangeDexesEnabled]: '💰 Trading Exchange Dexes',
     [FeatureFlagEnum.IsTradingResidenceCheckEnabled]: '💰 Trading Residence Check',
     [FeatureFlagEnum.IsLocalizationEnabled]: '🌍 Localization',
-    [FeatureFlagEnum.IsLocalFirstStorageEnabled]: 'Local First Storage (Labels)',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
-    const dispatch = useDispatch();
     const value = useFeatureFlag(featureFlag);
     const toggleFeatureFlag = useToggleFeatureFlag(featureFlag);
 
-    const originalIsLocalFirstStorageEnabled = useSelector((state: FeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlagEnum.IsLocalFirstStorageEnabled),
-    );
-
     const onChange = () => {
-        if (featureFlag === FeatureFlagEnum.IsLocalFirstStorageEnabled) {
-            dispatch(
-                labelingActions.updateLocaleFirstStorageEnabled({
-                    isEnabled: !originalIsLocalFirstStorageEnabled,
-                }),
-            );
-            if (!originalIsLocalFirstStorageEnabled) {
-                dispatch(initNativeLocalFirstStorageThunk());
-            } else {
-                dispatch(disposeAllLocalFirstStorageThunk());
-            }
-        }
-
         toggleFeatureFlag();
     };
 

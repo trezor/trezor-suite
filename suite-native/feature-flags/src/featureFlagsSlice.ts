@@ -13,7 +13,6 @@ export const FeatureFlag = {
     AreTradingExchangeDexesEnabled: 'areTradingExchangeDexesEnabled',
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsLocalizationEnabled: 'isLocalizationEnabled',
-    IsLocalFirstStorageEnabled: 'isLocalFirstStorageEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -44,8 +43,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
     [FeatureFlag.IsLocalizationEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_LOCALIZATION_ENABLED === 'true',
-    [FeatureFlag.IsLocalFirstStorageEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_LOCAL_FIRST_STORAGE_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -57,7 +54,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingSellEnabled,
     FeatureFlag.AreTradingExchangeDexesEnabled,
     FeatureFlag.IsTradingResidenceCheckEnabled,
-    FeatureFlag.IsLocalFirstStorageEnabled,
     FeatureFlag.IsLocalizationEnabled,
 ];
 
