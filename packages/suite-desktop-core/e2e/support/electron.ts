@@ -30,6 +30,7 @@ export type LaunchSuiteParams = {
     colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
     artefactFolder: string;
     viewport: { width: number; height: number };
+    disableAuthenticityCheck?: boolean;
 };
 
 export type Suite = {
@@ -80,7 +81,7 @@ const buildArgs = (params: LaunchSuiteParams) => {
         args.push(disableFirmwareRevisionChecksPatch);
     }
 
-    if (getModelFromEnv() === 'T3W1') {
+    if (getModelFromEnv() === 'T3W1' || params.disableAuthenticityCheck) {
         args.push(disableAuthenticityCheckPatch);
     }
 

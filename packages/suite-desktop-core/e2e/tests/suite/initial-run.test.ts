@@ -42,10 +42,6 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
 
         await page.reload();
 
-        if (model.isModelWithTHP()) {
-            await devicePrompt.allowConnectToTrezor();
-        }
-
         await onboardingPage.verifySuiteIsLoaded();
         optionallyDismissFwHashCheckError(page);
         await expect(analyticsSection.toggleSwitch).toBeHidden();

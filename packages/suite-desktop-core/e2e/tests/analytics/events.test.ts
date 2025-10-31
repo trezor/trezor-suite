@@ -105,6 +105,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
+        await onboardingPage.disableAuthenticityCheck();
     });
 
     test('Analytics capture suite-ready after getting enabled', async ({
@@ -160,11 +161,6 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             await settingsPage.analyticsSwitch.click();
             await settingsPage.closeSettings();
             await page.reload();
-
-            if (model.isModelWithTHP()) {
-                await devicePrompt.allowConnectToTrezor();
-            }
-
             await onboardingPage.onboardingExitButton.click();
         });
 
