@@ -5,7 +5,11 @@ import { calculateGains } from '@suite-common/staking';
 import { StakeRootState, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';
-import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
+import {
+    HELP_CENTER_ADA_STAKING,
+    HELP_CENTER_ETH_STAKING,
+    HELP_CENTER_SOL_STAKING,
+} from '@trezor/urls';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -15,13 +19,22 @@ import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 export const EstimatedGains = () => {
     const { account, getValues, formState } = useStakeFormContext();
 
-    const cardanoAmount = account.networkType === 'cardano' ? account.formattedBalance : undefined;
-    const value = getValues(CRYPTO_INPUT) || cardanoAmount;
+    const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =
         Object.keys(formState.errors).length > 0 &&
         formState.errors[CRYPTO_INPUT]?.type !== 'reserveOrBalance'; // provide gains calculation even if the user has not enough balance
 
-    const cryptoInput = hasInvalidFormState || !value ? '0' : value;
+    const cryptoInput = useMemo(() => {
+        if (account.networkType === 'cardano') {
+            return account.formattedBalance ?? '0';
+        }
+
+        if (!hasInvalidFormState && value) {
+            return value;
+        }
+
+        return '0';
+    }, [account.networkType, account.formattedBalance, hasInvalidFormState, value]);
 
     const apy = useSelector((state: StakeRootState) =>
         selectPoolStatsApyData(state, account?.symbol),
@@ -48,6 +61,8 @@ export const EstimatedGains = () => {
                 return HELP_CENTER_ETH_STAKING;
             case 'solana':
                 return HELP_CENTER_SOL_STAKING;
+            case 'cardano':
+                return HELP_CENTER_ADA_STAKING;
             default:
                 return undefined;
         }
