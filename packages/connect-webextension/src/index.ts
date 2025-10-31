@@ -42,10 +42,10 @@ const impl = new TrezorConnectDynamic<
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWebextension>) => {
         if (settings.coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
-        } else if (settings.coreMode === 'suite-web') {
-            return 'core-in-suite-web';
-        } else {
+        } else if (settings.coreMode === 'popup') {
             return 'core-in-popup';
+        } else {
+            return 'core-in-suite-web';
         }
     },
     handleBeforeCall: async () => {
@@ -63,7 +63,7 @@ const impl = new TrezorConnectDynamic<
             impl.getTargetType() === 'core-in-suite-desktop' &&
             errorCode === 'Desktop_ConnectionMissing'
         ) {
-            await impl.switchTarget('core-in-popup');
+            await impl.switchTarget('core-in-suite-web');
 
             return true;
         }
