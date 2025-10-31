@@ -11,15 +11,19 @@ import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-storage';
+import { useToast } from '@suite-native/toasts';
+
+const DEFAULT_CUSTOM_RELAY_URL = '';
 
 export const LocalFirstRelaySettings = () => {
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
     const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
     const dispatch = useDispatch();
+    const { showToast } = useToast();
 
     const form = useForm<{ localFirstStorageRelayUrl: string }>({
         defaultValues: {
-            localFirstStorageRelayUrl: localFirstStorageRelayUrl ?? '',
+            localFirstStorageRelayUrl: localFirstStorageRelayUrl ?? DEFAULT_CUSTOM_RELAY_URL,
         },
         validation: yup.object({
             localFirstStorageRelayUrl: yup.string(),
@@ -30,7 +34,10 @@ export const LocalFirstRelaySettings = () => {
         dispatch(
             labelingActions.setLocalFirstStorageRelayUrl({ url: values.localFirstStorageRelayUrl }),
         );
-        form.reset(values);
+        showToast({
+            message: 'Local First Storage relay URL updated',
+            variant: 'success',
+        });
     });
 
     const handleLocalFirstEnableToggle = () => {
@@ -48,6 +55,21 @@ export const LocalFirstRelaySettings = () => {
         }
     };
 
+    const handleResetToDefault = () => {
+        dispatch(
+            labelingActions.setLocalFirstStorageRelayUrl({
+                url: DEFAULT_CUSTOM_RELAY_URL,
+            }),
+        );
+        form.reset({
+            localFirstStorageRelayUrl: DEFAULT_CUSTOM_RELAY_URL,
+        });
+        showToast({
+            message: 'Local First Storage relay URL reset to default',
+            variant: 'success',
+        });
+    };
+
     return (
         <Card>
             <VStack paddingTop="sp16">
@@ -55,9 +77,7 @@ export const LocalFirstRelaySettings = () => {
                     <Text variant="highlight">Enable Local First Storage (Evolu)</Text>
                     <CheckBox
                         isChecked={isLocalFirstStorageEnabled}
-                        onChange={() => {
-                            handleLocalFirstEnableToggle();
-                        }}
+                        onChange={handleLocalFirstEnableToggle}
                     />
                 </HStack>
                 <VStack spacing="sp8">
@@ -84,16 +104,7 @@ export const LocalFirstRelaySettings = () => {
                     <Button
                         colorScheme="tertiaryElevation0"
                         size="small"
-                        onPress={() => {
-                            dispatch(
-                                labelingActions.setLocalFirstStorageRelayUrl({
-                                    url: null,
-                                }),
-                            );
-                            form.reset({
-                                localFirstStorageRelayUrl: '',
-                            });
-                        }}
+                        onPress={handleResetToDefault}
                     >
                         Reset to default
                     </Button>
