@@ -2,7 +2,7 @@ import { resolveStaticPath } from '../resolveStaticPath';
 
 const OLD_ENV = { ...process.env };
 
-describe('resolve static path', () => {
+describe(resolveStaticPath.name, () => {
     beforeEach(() => {
         jest.resetModules();
     });
@@ -11,20 +11,20 @@ describe('resolve static path', () => {
         process.env = { ...OLD_ENV };
     });
 
-    it('should return static path', () => {
+    it('return static path', () => {
         process.env.ASSET_PREFIX = '';
-        expect(resolveStaticPath('mypath')).toBe('/static/mypath');
+        expect(resolveStaticPath('mypath')).toBe('./static/mypath');
     });
 
-    it('should return static path even if ASSET_PREFIX is undefined', () => {
+    it('return static path even if ASSET_PREFIX is undefined', () => {
         process.env.ASSET_PREFIX = undefined;
-        expect(resolveStaticPath('mypath')).toBe('/static/mypath');
-        expect(resolveStaticPath('/mypath')).toBe('/static/mypath');
+        expect(resolveStaticPath('mypath')).toBe('./static/mypath');
+        expect(resolveStaticPath('/mypath')).toBe('./static/mypath');
     });
 
-    it('should return static path prefixed with ASSET_PREFIX', () => {
-        process.env.ASSET_PREFIX = 'brachName';
-        expect(resolveStaticPath('mypath')).toBe('brachName/static/mypath');
-        expect(resolveStaticPath('/mypath')).toBe('brachName/static/mypath');
+    it('return static path prefixed with ASSET_PREFIX', () => {
+        process.env.ASSET_PREFIX = 'branchName';
+        expect(resolveStaticPath('mypath')).toBe('branchName/static/mypath');
+        expect(resolveStaticPath('/mypath')).toBe('branchName/static/mypath');
     });
 });
