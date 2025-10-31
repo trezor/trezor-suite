@@ -1,4 +1,5 @@
 import { Badge, BulletList, Paragraph, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 interface InfoRowProps {
     heading: React.ReactNode;
@@ -13,13 +14,13 @@ interface InfoRowProps {
 export const InfoRow = ({ heading, subheading, content, isExpanded = false }: InfoRowProps) => (
     <BulletList.Item
         title={
-            <Row justifyContent="space-between">
+            <Row justifyContent="space-between" gap={spacings.md}>
                 {heading}
                 {content &&
                     (content.isBadge ? (
                         <Badge size="tiny">{content.text}</Badge>
                     ) : (
-                        <Paragraph variant="tertiary" typographyStyle="hint">
+                        <Paragraph variant="tertiary" typographyStyle="hint" textWrap="nowrap">
                             {content.text}
                         </Paragraph>
                     ))}

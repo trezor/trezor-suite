@@ -1,9 +1,10 @@
 import React, { JSX } from 'react';
 
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
-import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_DAYS,
+    CARDANO_APPROXIMATE_EPOCHS,
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
@@ -12,7 +13,7 @@ import {
     selectPoolStatsApyData,
     selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
-import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import { isCardanoUpdateProviderFlow, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
@@ -20,6 +21,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+import { Account } from 'src/types/wallet';
 
 import { InfoRow } from './InfoRow';
 
@@ -30,11 +32,9 @@ type InfoRowsData = {
     rewardsEarningHeading: JSX.Element;
 };
 
-const getInfoRowsData = (
-    networkType: NetworkType,
-    accountSymbol: NetworkSymbol,
-    daysToAddToPool?: number,
-): InfoRowsData | null => {
+const getInfoRowsData = (account: Account, daysToAddToPool?: number): InfoRowsData | null => {
+    const { networkType, symbol } = account;
+
     if (!isStakingNetworkType(networkType)) return null;
 
     switch (networkType) {
@@ -50,7 +50,7 @@ const getInfoRowsData = (
                 rewardsPeriodSubheading: (
                     <Translation
                         id="TR_STAKING_GETTING_READY"
-                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(accountSymbol) }}
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(symbol) }}
                     />
                 ),
                 rewardsEarningHeading: <Translation id="TR_STAKE_EARN_REWARDS_WEEKLY" />,
@@ -64,7 +64,7 @@ const getInfoRowsData = (
                 rewardsPeriodSubheading: (
                     <Translation
                         id="TR_STAKE_WAIT_FOR_ACTIVATION"
-                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(accountSymbol) }}
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(symbol) }}
                     />
                 ),
                 rewardsEarningHeading: (
@@ -76,17 +76,39 @@ const getInfoRowsData = (
             };
         case 'cardano':
             return {
-                payoutDays: (
+                payoutDays: isCardanoUpdateProviderFlow(account) ? (
+                    <Translation
+                        id="TR_STAKE_APPROXIMATE_EPOCHS"
+                        values={{
+                            count: CARDANO_APPROXIMATE_EPOCHS,
+                        }}
+                    />
+                ) : (
                     <Translation
                         id="TR_STAKE_APPROXIMATE_DAYS"
-                        values={{ count: CARDANO_ACTIVATION_PERIOD_DAYS }}
+                        values={{
+                            count: CARDANO_ACTIVATION_PERIOD_DAYS,
+                        }}
                     />
                 ),
-                rewardsPeriodHeading: <Translation id="TR_STAKE_ENTER_ACTIVATION_PERIOD" />,
+                rewardsPeriodHeading: (
+                    <Translation
+                        id={
+                            isCardanoUpdateProviderFlow(account)
+                                ? 'TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER'
+                                : 'TR_STAKE_ENTER_ACTIVATION_PERIOD'
+                        }
+                        values={{ days: CARDANO_ACTIVATION_PERIOD_DAYS }}
+                    />
+                ),
                 rewardsPeriodSubheading: <Translation id="TR_STAKE_TIME_TO_START_EARNING" />,
                 rewardsEarningHeading: (
                     <Translation
-                        id="TR_STAKE_EARN_REWARDS_EVERY"
+                        id={
+                            isCardanoUpdateProviderFlow(account)
+                                ? 'TR_STAKE_START_EARNING_FROM_NEW_PROVIDER'
+                                : 'TR_STAKE_EARN_REWARDS_EVERY'
+                        }
                         values={{ days: CARDANO_EPOCH_DAYS }}
                     />
                 ),
@@ -112,11 +134,7 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
     if (!account) return null;
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
-    const infoRowsData = getInfoRowsData(
-        account.networkType,
-        account.symbol,
-        daysToAddToPoolInitial,
-    );
+    const infoRowsData = getInfoRowsData(account, daysToAddToPoolInitial);
 
     const infoRows = [
         {

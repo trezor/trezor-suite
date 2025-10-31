@@ -1,9 +1,14 @@
 import React from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    StakeRootState,
+    selectPoolStatsApyData,
+    selectValidatorsQueueData,
+} from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { getUnstakingPeriodInDays, isCardanoUpdateProviderFlow } from '@suite-common/wallet-utils';
 import {
     Badge,
     CollapsibleBox,
@@ -33,7 +38,28 @@ interface StakingDetails {
     translationId: TranslationKey;
 }
 
-const getStakingDetails = (networkType: NetworkType): StakingDetails[] => {
+const getStakingDetails = (account: Account): StakingDetails[] => {
+    const { networkType } = account;
+
+    if (isCardanoUpdateProviderFlow(account))
+        return [
+            {
+                id: 0,
+                icon: 'piggyBank',
+                translationId: 'TR_STAKING_EARN_APY_WITH_EVERSTAKE',
+            },
+            {
+                id: 1,
+                icon: 'wallet',
+                translationId: 'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',
+            },
+            {
+                id: 2,
+                icon: 'handCoins',
+                translationId: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
+            },
+        ];
+
     if (networkType === 'cardano')
         return [
             {
@@ -85,6 +111,9 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
     const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
         selectValidatorsQueueData(state, account?.symbol),
     );
+    const apy = useSelector((state: StakeRootState) =>
+        selectPoolStatsApyData(state, account?.symbol),
+    );
 
     const isCardano = account?.networkType === 'cardano';
 
@@ -123,7 +152,15 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
 
     const processes = [
         {
-            heading: <Translation id="TR_STAKE_STAKING_PROCESS" />,
+            heading: (
+                <Translation
+                    id={
+                        isCardanoUpdateProviderFlow(account)
+                            ? 'TR_STAKE_PROVIDER_UPDATE'
+                            : 'TR_STAKE_STAKING_PROCESS'
+                    }
+                />
+            ),
             badge: <Translation id="TR_TX_FEE" />,
             content: <StakingInfo />,
         },
@@ -163,7 +200,7 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
                 typographyStyle="hint"
                 margin={{ top: spacings.xs }}
             >
-                {getStakingDetails(account.networkType).map(({ id, icon, translationId }) => (
+                {getStakingDetails(account).map(({ id, icon, translationId }) => (
                     <List.Item key={id} bulletComponent={<Icon name={icon} variant="primary" />}>
                         <Paragraph variant="tertiary">
                             <Translation
@@ -171,6 +208,7 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
                                 values={{
                                     networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                                     count: unstakingPeriod,
+                                    apy,
                                 }}
                             />
                         </Paragraph>
