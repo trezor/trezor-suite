@@ -305,4 +305,11 @@ export type ChannelMessage<T> = T & { id: number };
 
 export type StakeType = 'stake' | 'unstake' | 'claim';
 
-export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };
+export type TokenDetailByMint = {
+    [mint: string]: {
+        name: string;
+        symbol: string;
+        home_domain?: string;
+        rating?: number;
+    };
+};
