@@ -60,8 +60,8 @@ export const updateisFeatureLocalFirstStorageAvailable = createAction(
 );
 
 export const setLocalFirstStorageRelayUrl = createAction(
-    `${LABELING_PREFIX}/select-local-first-storage-relay-url`,
-    (payload: { url: string }) => ({ payload }),
+    `${LABELING_PREFIX}/set-local-first-storage-relay-url`,
+    (payload: { url: string | null }) => ({ payload }),
 );
 
 export const labelingActions = {

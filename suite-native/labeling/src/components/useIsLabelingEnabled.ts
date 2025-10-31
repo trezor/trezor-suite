@@ -1,16 +1,10 @@
 import { useSelector } from 'react-redux';
 
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
-import {
-    FeatureFlag,
-    FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
 
 export const useIsLabelingEnabled = () => {
-    const isFeatureFlagOn = useSelector((state: FeatureFlagsRootState) =>
-        selectIsFeatureFlagEnabled(state, FeatureFlag.IsLocalFirstStorageEnabled),
-    );
+    const isFeatureFlagOn = useSelector(selectIsLocalFirstStorageEnabled);
 
     const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
 
