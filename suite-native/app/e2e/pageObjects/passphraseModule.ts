@@ -4,7 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onDeviceManager } from './deviceManagerActions';
 import { getModelFromEnv } from '../support/setup';
-import { waitForElementByIdToBeVisible, waitForElementByTextToBeVisible } from '../support/utils';
+import { waitForVisible } from '../support/utils';
 
 class PassphraseModule {
     public async openNewPassphraseFlow() {
@@ -18,13 +18,13 @@ class PassphraseModule {
     }
 
     public async expectEnterPassphraseScreen() {
-        await waitForElementByIdToBeVisible('@screen/PassphraseForm');
+        await waitForVisible(by.id('@screen/PassphraseForm'));
     }
 
     public async enterPassphrase(passphrase: string) {
-        const inputTestId = '@passphrase/passphraseInput';
-        await element(by.id(inputTestId)).tap();
-        await element(by.id(inputTestId)).replaceText(passphrase);
+        const passphraseInput = element(by.id('@passphrase/passphraseInput'));
+        await passphraseInput.tap();
+        await passphraseInput.replaceText(passphrase);
         await element(by.id('@passphrase/confirmButton')).tap();
     }
 
@@ -42,7 +42,7 @@ class PassphraseModule {
     }
 
     public async expectConfirmPassphraseOnDeviceRequest() {
-        await waitForElementByIdToBeVisible('@screen/PassphraseConfirmOnTrezor');
+        await waitForVisible(by.id('@screen/PassphraseConfirmOnTrezor'));
     }
 
     public async confirmPassphraseOnEmu() {
@@ -59,22 +59,22 @@ class PassphraseModule {
     }
 
     public async expectEmptyPassphraseWalletScreen() {
-        await waitForElementByIdToBeVisible('@screen/PassphraseEmptyWallet');
+        await waitForVisible(by.id('@screen/PassphraseEmptyWallet'));
     }
 
     public async openEmptyPassphraseWalletAndConfirmBestPractices() {
         await element(by.id('@passphrase/emptyPassphraseWallet/confirmButton')).tap();
-        await waitForElementByTextToBeVisible('Passphrase best practices');
+        await waitForVisible(by.text('Passphrase best practices'));
         await element(by.text('Got it')).tap();
     }
 
     public async expectEmptyPassphraseWalletConfirmationScreen() {
-        await waitForElementByIdToBeVisible('@screen/PassphraseVerifyEmptyWallet');
+        await waitForVisible(by.id('@screen/PassphraseVerifyEmptyWallet'));
     }
 
     public async expectSwitcherSubheader(expectedText: string) {
         const subheaderTestID = '@deviceManager/walletDetail/subheader';
-        await waitForElementByIdToBeVisible(subheaderTestID);
+        await waitForVisible(by.id(subheaderTestID));
         await detoxExpect(element(by.id(subheaderTestID))).toHaveText(expectedText);
     }
 
@@ -89,7 +89,7 @@ class PassphraseModule {
 
         try {
             // If trying to open an already open passphrase wallet, just confirm the alert.
-            await waitForElementByTextToBeVisible('Passphrase duplicate', 5000);
+            await waitForVisible(by.text('Passphrase duplicate'));
             await element(by.id('@alert-sheet/primary-button')).tap();
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {

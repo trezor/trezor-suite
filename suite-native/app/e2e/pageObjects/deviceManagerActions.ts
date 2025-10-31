@@ -1,8 +1,10 @@
+import { waitForVisible } from '../support/utils';
+
 class DeviceManagerActions {
     async tapDeviceSwitch() {
         const deviceSwitch = element(by.id('@device-manager/device-switch'));
 
-        await waitFor(deviceSwitch).toBeVisible().withTimeout(30_000);
+        await waitForVisible(deviceSwitch);
         await waitFor(element(by.id('@screen/ConnectingDevice')))
             .not.toBeVisible()
             .withTimeout(30_000);
@@ -12,14 +14,14 @@ class DeviceManagerActions {
     async tapDeviceSettingsButton() {
         const deviceSettingsButton = element(by.id('@device-manager/device-settings-button'));
 
-        await waitFor(deviceSettingsButton).toBeVisible().withTimeout(30000);
+        await waitForVisible(deviceSettingsButton);
         await deviceSettingsButton.tap();
     }
 
     async tapOpenPassphraseButton() {
         const openPassphraseButton = element(by.id('@device-manager/passphrase/add'));
 
-        await waitFor(openPassphraseButton).toBeVisible().withTimeout(30000);
+        await waitForVisible(openPassphraseButton);
         await openPassphraseButton.tap();
     }
 
@@ -28,11 +30,9 @@ class DeviceManagerActions {
     }: {
         title: 'Connected' | 'Disconnected' | 'Hi there!';
     }) {
-        await waitFor(
+        await waitForVisible(
             element(by.id('@device-manager/device-switch').withDescendant(by.text(title))),
-        )
-            .toBeVisible()
-            .withTimeout(10000);
+        );
     }
 }
 

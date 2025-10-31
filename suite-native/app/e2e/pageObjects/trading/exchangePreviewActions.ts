@@ -1,4 +1,5 @@
 import { TradingActions } from './TradingActions';
+import { waitForVisible } from '../../support/utils';
 
 class ExchangePreviewActions extends TradingActions {
     constructor() {
@@ -10,13 +11,14 @@ class ExchangePreviewActions extends TradingActions {
     }
 
     async expectExchangePreviewScreenToBeVisible() {
-        await waitFor(this.getScreen()).toBeVisible().withTimeout(this.SHORT_TIMEOUT);
+        await waitForVisible(this.getScreen());
     }
 
     async waitForFeesToLoad() {
-        await waitFor(element(by.text('≈').withAncestor(by.id('@trading/fees/fee-picker'))))
-            .toBeVisible()
-            .withTimeout(this.DOUBLE_LONG_TIMEOUT);
+        await waitForVisible(
+            element(by.text('≈').withAncestor(by.id('@trading/fees/fee-picker'))),
+            { timeout: this.DOUBLE_LONG_TIMEOUT },
+        );
     }
 
     async goToFees() {

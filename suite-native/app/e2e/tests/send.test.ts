@@ -1,3 +1,5 @@
+import { expect as detoxExpect } from 'detox';
+
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -27,7 +29,7 @@ const SEND_FORM_ERROR_MESSAGES = {
     dustAmount: 'The value is lower than the dust limit.',
     higherThanBalance: 'You don’t have enough balance to send this amount.',
     tooManyDecimals: 'Too many decimals.',
-    addressRequired: 'Address is required.',
+    addressRequired: 'Field is mandatory',
     amountRequired: 'Amount is required.',
 };
 
@@ -111,20 +113,21 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow. 
     it('Validate send form input errors.', async () => {
         await onSendOutputsForm.fillForm([{ address: 'wrong address', amount: '200' }]);
 
-        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.invalidAddress))).toBeVisible();
-        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.higherThanBalance))).toBeVisible();
+        await detoxExpect(element(by.text(SEND_FORM_ERROR_MESSAGES.invalidAddress))).toBeVisible();
+        await detoxExpect(
+            element(by.text(SEND_FORM_ERROR_MESSAGES.higherThanBalance)),
+        ).toBeVisible();
 
         await onSendOutputsForm.clearForm();
-
-        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.addressRequired))).toBeVisible();
-        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.amountRequired))).toBeVisible();
+        await detoxExpect(element(by.text(SEND_FORM_ERROR_MESSAGES.addressRequired))).toBeVisible();
+        await detoxExpect(element(by.text(SEND_FORM_ERROR_MESSAGES.amountRequired))).toBeVisible();
 
         await onSendOutputsForm.fillForm([{ amount: '0.00000001' }]);
-        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.dustAmount))).toBeVisible();
+        await detoxExpect(element(by.text(SEND_FORM_ERROR_MESSAGES.dustAmount))).toBeVisible();
 
         await onSendOutputsForm.clearForm();
 
         await onSendOutputsForm.fillForm([{ amount: '0.10000000000' }]);
-        await waitFor(element(by.text(SEND_FORM_ERROR_MESSAGES.tooManyDecimals))).toBeVisible();
+        await detoxExpect(element(by.text(SEND_FORM_ERROR_MESSAGES.tooManyDecimals))).toBeVisible();
     });
 });

@@ -1,29 +1,23 @@
 import { expect as detoxExpect } from 'detox';
 
-import { waitForElementByIdToBeVisible } from '../support/utils';
+import { waitForVisible } from '../support/utils';
 
 class MyAssetsActions {
     async waitForScreen() {
-        await waitFor(element(by.id('@screen/MyAssets')))
-            .toBeVisible()
-            .withTimeout(5000);
+        await waitForVisible(by.id('@screen/MyAssets'));
     }
 
     async addAccount() {
-        await waitForElementByIdToBeVisible('@screen/mainScrollView');
+        await waitForVisible(by.id('@screen/mainScrollView'));
         await element(by.id('@screen/mainScrollView')).scrollTo('top');
         const addAccountButtonId = '@myAssets/addAccountButton/import';
-        await waitForElementByIdToBeVisible(addAccountButtonId);
+        await waitForVisible(by.id(addAccountButtonId));
         await element(by.id(addAccountButtonId)).tap();
-
-        await waitFor(element(by.id('@screen/SelectNetwork')))
-            .toBeVisible()
-            .withTimeout(5000);
+        await waitForVisible(by.id('@screen/SelectNetwork'));
     }
 
     async openAccountDetail({ accountName }: { accountName: string }) {
         await element(by.text(accountName)).tap();
-
         await detoxExpect(element(by.id('@screen/AccountDetail'))).toBeVisible();
     }
 }

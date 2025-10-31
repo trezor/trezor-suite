@@ -42,7 +42,7 @@ export const LanguageSelector = () => {
                 selectLabel={<Translation id="moduleSettings.preferences.languageLabel" />}
                 items={languageItems}
                 onSelectItem={handleSelectLanguage}
-                testID="@settings/localization/bitcoin-units-selector"
+                testID="@settings/localization/language-selector"
             />
         </PreferencesSettingsCard>
     );

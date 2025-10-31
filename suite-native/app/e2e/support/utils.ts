@@ -1,3 +1,11 @@
+const isIndexableNativeElement = (
+    v: Detox.IndexableNativeElement | Detox.NativeMatcher,
+): v is Detox.IndexableNativeElement => {
+    const anyV = v as any;
+
+    return !!anyV && (typeof anyV.tap === 'function' || typeof anyV.atIndex === 'function');
+};
+
 export const platform = device.getPlatform();
 
 // There is inconsistency between platforms. Android needs to have 100% of an element visible to be able to interact with it.
@@ -8,10 +16,18 @@ export const wait = async (ms: number) => {
     await new Promise(resolve => setTimeout(resolve, ms));
 };
 
+export const waitForVisible = async (
+    elementOrMatcher: Detox.IndexableNativeElement | Detox.NativeMatcher,
+    { timeout = 30_000 }: { timeout?: number } = {},
+) => {
+    const target = isIndexableNativeElement(elementOrMatcher)
+        ? elementOrMatcher
+        : element(elementOrMatcher);
+    await waitFor(target).toBeVisible().withTimeout(timeout);
+};
+
 export const appIsFullyLoaded = async () => {
-    await waitFor(element(by.id('@screen/mainScrollView')))
-        .toBeVisible()
-        .withTimeout(35000);
+    await waitForVisible(by.id('@screen/mainScrollView'), { timeout: 35_000 });
 };
 
 export const scrollUntilVisible = async (
@@ -23,16 +39,6 @@ export const scrollUntilVisible = async (
         .whileElement(by.id(scrollViewTestId))
         .scroll(300, 'down', 0.5, 0.5);
 };
-
-export const waitForElementByTextToBeVisible = (text: string, timeout = 30000) =>
-    waitFor(element(by.text(text)))
-        .toBeVisible()
-        .withTimeout(timeout);
-
-export const waitForElementByIdToBeVisible = (testId: string, timeout = 30000) =>
-    waitFor(element(by.id(testId)))
-        .toBeVisible()
-        .withTimeout(timeout);
 
 export const inputTextToElement = async (element: Detox.IndexableNativeElement, text: string) => {
     // on Android it is very slow to type text symbol by symbol, for performance reasons `replaceText` is used instead.

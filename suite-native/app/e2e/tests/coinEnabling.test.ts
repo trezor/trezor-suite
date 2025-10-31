@@ -1,3 +1,5 @@
+import { expect as detoxExpect } from 'detox';
+
 import { conditionalDescribe } from '@suite-common/test-utils';
 
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
@@ -14,6 +16,7 @@ import {
     preparePreloadedReduxState,
     prepareTrezorEmulator,
 } from '../support/setup';
+import { waitForVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -33,10 +36,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling [@fixT3W1
 
         await onDeviceConnecting.waitForDeviceConnectingScreen();
         await onHome.waitForScreen();
-
-        const bitcoinTextElement = element(by.text('Bitcoin'));
-
-        await waitFor(bitcoinTextElement).toExist().withTimeout(10000);
+        await onHome.scrollScreenToBottom();
+        await waitForVisible(by.text('Bitcoin'));
 
         await onTabBar.navigateToSettings();
         await onSettings.tapCoinEnabling();
@@ -45,8 +46,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling [@fixT3W1
         await device.pressBack();
         await onTabBar.navigateToHome();
 
-        const ethereumTextElement = element(by.text('Ethereum'));
-        await waitFor(ethereumTextElement).toExist().withTimeout(10000);
+        await onHome.scrollScreenToBottom();
+        await waitForVisible(by.text('Ethereum'));
 
         await onTabBar.navigateToSettings();
         await onSettings.tapCoinEnabling();
@@ -54,6 +55,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling [@fixT3W1
         await device.pressBack();
         await onTabBar.navigateToHome();
 
-        await waitFor(ethereumTextElement).not.toExist().withTimeout(10000);
+        await detoxExpect(element(by.text('Ethereum'))).not.toExist();
     });
 });
