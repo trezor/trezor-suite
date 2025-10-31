@@ -45,7 +45,7 @@
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../feature-flags" },
-        { "path": "../formatters" },
+        { "path": "../formatters-config" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../local-first-storage" },

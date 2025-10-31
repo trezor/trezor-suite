@@ -5,9 +5,8 @@
         {
             "path": "../../suite-common/formatters"
         },
-        { "path": "../formatters-config" },
-        { "path": "../intl" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        {
+            "path": "../../suite-common/wallet-core"
+        }
     ]
 }
