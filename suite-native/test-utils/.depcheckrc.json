@@ -1,8 +1,4 @@
 {
     "ignore-patterns": ["libDev", "lib"],
-    "ignores": [
-        "// Todo: This need so be solved. See: https://github.com/trezor/trezor-suite/issues/21557",
-        "@suite-native/formatters",
-        "@suite-native/state"
-    ]
+    "ignores": ["// This can't be solved", "@suite-native/state"]
 }

@@ -11168,7 +11168,7 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/formatters": "workspace:*"
+    "@suite-native/formatters-config": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/local-first-storage": "workspace:*"
@@ -11655,6 +11655,18 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~3.19.3"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/formatters-config@workspace:*, @suite-native/formatters-config@workspace:suite-native/formatters-config":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/formatters-config@workspace:suite-native/formatters-config"
+  dependencies:
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    expo-localization: "npm:~17.0.7"
+    react: "npm:19.1.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -12812,6 +12824,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.18"
     "@reduxjs/toolkit": "npm:2.9.1"
     "@suite-common/formatters": "workspace:*"
+    "@suite-native/formatters-config": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@testing-library/react-native": "npm:13.3.0"
     "@trezor/styles": "workspace:*"
