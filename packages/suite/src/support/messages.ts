@@ -9689,6 +9689,18 @@ export default defineMessages({
         id: 'TR_STAKE_ACTIVE_STAKE',
         defaultMessage: 'Active stake',
     },
+    TR_STAKE_STAKED_AUTOMATICALLY: {
+        id: 'TR_STAKE_STAKED_AUTOMATICALLY',
+        defaultMessage: 'Staked automatically',
+    },
+    TR_STAKE_FULL_BALANCE: {
+        id: 'TR_STAKE_FULL_BALANCE',
+        defaultMessage: 'Full balance',
+    },
+    TR_STAKE_FUNDS_FULLY_ACCESSIBLE: {
+        id: 'TR_STAKE_FUNDS_FULLY_ACCESSIBLE',
+        defaultMessage: 'Your {networkDisplaySymbol} stays fully accessible while earning rewards.',
+    },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
         defaultMessage: 'Unstake',
