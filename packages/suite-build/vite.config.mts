@@ -327,22 +327,28 @@ ${code}`,
     };
 };
 
-const markdownServerPlugin = (): Plugin => ({
-    name: 'markdown-server',
-    configureServer(server: ViteDevServer) {
-        return () => {
-            server.middlewares.use((req, res, next) => {
-                if (req.url?.endsWith('.md')) {
-                    const filePath = resolve(__dirname, '../suite-data/files', req.url.slice(1));
-                    if (fs.existsSync(filePath)) {
-                        res.setHeader('Content-Type', 'text/markdown');
-                        res.end(fs.readFileSync(filePath, 'utf-8'));
+// Plugin to support md guides in vite dev
+const guideMarkdownPlugin = (): Plugin => ({
+    name: 'guide-md-dev',
+    apply: 'serve',
+    enforce: 'pre',
+    transform(code, id) {
+        if (!id.endsWith('useGuideLoadArticle.ts')) return null;
 
-                        return;
-                    }
-                }
-                next();
-            });
+        // This transform the hook logic to use fetch so that
+        // with Vite build md guides are displayed properly
+        const transformed = code.replace(
+            /const\s+file\s*=\s*await\s*import\([^)]*`@trezor\/suite-data\/files\/guide\/\$\{language\.toLowerCase\(\)\}\$\{id\}`[^)]*\);\s*const\s+md\s*=\s*(?:await\s*)?file\.default;?\s*return\s+md;?/s,
+            `
+const response = await fetch(\`/guide/\${language.toLowerCase()}\${id}\`);
+if (!response.ok) throw new Error('Failed to load markdown');
+return await response.text();
+          `.trim(),
+        );
+
+        return {
+            code: transformed,
+            map: null,
         };
     },
 });
@@ -356,13 +362,13 @@ export default defineConfig({
     plugins: [
         htmlTemplatePlugin(),
         bufferPolyfillPlugin(),
+        guideMarkdownPlugin(),
         staticAliasPlugin(),
         serveCorePlugin(),
         sessionsSharedWorkerPlugin(),
         viteCommonjs(),
         workerPlugin(),
         wasm(),
-        markdownServerPlugin(),
         react({
             babel: {
                 plugins: [
