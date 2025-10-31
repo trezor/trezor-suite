@@ -54,6 +54,47 @@ describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
         });
     });
 
+    it('should migrate enabled network symbols but exclude unknown values', async () => {
+        mockGetStoredState.mockImplementation(({ key }) => {
+            if (key === 'appSettings') {
+                return Promise.resolve({
+                    fiatCurrencyCode: 'usd',
+                    bitcoinUnits: 'btc',
+                });
+            }
+            if (key === 'discoveryConfig') {
+                return Promise.resolve({
+                    enabledDiscoveryNetworkSymbols: [
+                        // invalid
+                        'foo',
+                        'bar',
+                        // valid
+                        'btc',
+                        'eth',
+                        'test',
+                        // renamed
+                        'bnb',
+                        // removed
+                        'nmc',
+                        'dash',
+                    ] as NetworkSymbol[],
+                });
+            }
+
+            return Promise.resolve(undefined);
+        });
+
+        const walletSettingsState = {};
+
+        const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
+
+        expect(migratedState).toEqual({
+            localCurrency: 'usd',
+            enabledNetworks: ['btc', 'eth', 'test', 'bsc'],
+            bitcoinAmountUnit: 'btc',
+        });
+    });
+
     it('should return original state when appSettings or discoveryConfig is missing', async () => {
         mockGetStoredState.mockImplementation(({ key }) => {
             if (key === 'appSettings') {

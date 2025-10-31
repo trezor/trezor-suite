@@ -87,17 +87,11 @@ export const prepareRootReducers = async () => {
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
         key: 'appSettings',
-        // Note: Migration to version 3 has been removed.
-        // The `isCoinEnablingInitFinished` property was deleted, and
+        // Note: Migrations have been removed.
+        // To version 3: The `isCoinEnablingInitFinished` property was deleted, and
         // `areTestnetsEnabled` is a developer-only option and does not require migration.
+        // To version 2: moved to migrateAppSettingsAndDiscoveryConfig
         version: 3,
-        migrations: {
-            2: oldState => {
-                if (!oldState?.fiatCurrency?.label) return oldState;
-
-                return { ...oldState, fiatCurrencyCode: oldState?.fiatCurrency?.label };
-            },
-        },
     });
 
     const tradingPersistedReducer = await preparePersistReducer({

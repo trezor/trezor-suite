@@ -19,7 +19,7 @@ export const preparePersistReducer = async <TReducerInitialState>({
     persistedKeys: Array<keyof TReducerInitialState>;
     key: string;
     version: number;
-    migrations?: MigrationsManifest;
+    migrations?: MigrationsManifest<TReducerInitialState>;
     transforms?: Array<Transform<any, any>>;
     mergeLevel?: 1 | 2;
 }) => {

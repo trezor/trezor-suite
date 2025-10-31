@@ -18,6 +18,10 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        {
             "path": "../../packages/transport-native-bluetooth"
         }
     ]
