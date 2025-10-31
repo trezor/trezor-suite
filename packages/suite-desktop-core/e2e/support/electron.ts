@@ -5,11 +5,14 @@ import path from 'path';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
+import { getModelFromEnv } from './helpers/modelFromEnv';
 
 const appDir = path.join(__dirname, '../../../suite-desktop');
 const disableHashChecksPatch = '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
 const disableFirmwareRevisionChecksPatch =
     '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
+const disableAuthenticityCheckPatch =
+    '--state.suite.settings.enabledSecurityChecks.deviceAuthenticity=false';
 const showDebugMenuStatePatch = '--state.suite.settings.debug.showDebugMenu=true';
 const disableDisconnectPromptPatch = '--state.suite.flags.hasSeenDisconnectTooltip=true';
 const showConnectLogsArgument = '--state.suite.settings.debug.showConnectLogs=true';
@@ -75,6 +78,10 @@ const buildArgs = (params: LaunchSuiteParams) => {
 
     if (process.env.CANARY_FIRMWARE) {
         args.push(disableFirmwareRevisionChecksPatch);
+    }
+
+    if (getModelFromEnv() === 'T3W1') {
+        args.push(disableAuthenticityCheckPatch);
     }
 
     return args;

@@ -76,7 +76,7 @@ export const NewCardanoStakingDashboard = ({
                                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
-                                {!isStakedWithEverstake && <NewProviderCard />}
+                                {!isStakedWithEverstake && !hasPendingTx && <NewProviderCard />}
 
                                 <Grid
                                     columns={isBelowLaptop || !canClaim ? 1 : 2}

@@ -16,7 +16,9 @@ import { TOC } from './components/toc';
 import { DEFAULT_LOCALE } from './constants';
 import { useConfig } from './contexts/useConfig';
 import type { DocsThemeConfig } from './schema';
-import { getGitIssueUrl, useGitEditUrl } from './utils';
+import { getGitIssueUrl } from './utils/get-git-issue-url';
+import { useGitEditUrl } from './utils/use-git-edit-url';
+
 const LOADING_LOCALES: Record<string, string> = {
     'en-US': 'Loading',
     fr: 'Сhargement',

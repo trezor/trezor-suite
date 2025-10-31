@@ -11,10 +11,10 @@ import { useElevation } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
+import { Anchor } from './anchor';
 import { useMenu } from '../contexts/menu';
 import { useConfig } from '../contexts/useConfig';
-import { renderComponent } from '../utils';
-import { Anchor } from './anchor';
+import { renderComponent } from '../utils/render';
 
 const Container = styled.div<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.full};
@@ -27,11 +27,6 @@ const Container = styled.div<{ $elevation: Elevation }>`
     flex: 1;
     gap: ${spacingsPx.md};
 `;
-
-export type NavBarProps = {
-    flatDirectories: Item[];
-    items: (PageItem | MenuItem)[];
-};
 
 const classes = {
     link: cn('nx-text-sm contrast-more:nx-text-gray-700 contrast-more:dark:nx-text-gray-100'),
@@ -92,7 +87,13 @@ function NavbarMenu({
     );
 }
 
-export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
+export function Navbar({
+    flatDirectories,
+    items,
+}: {
+    flatDirectories: Item[];
+    items: (PageItem | MenuItem)[];
+}): ReactElement {
     const config = useConfig();
     const { elevation } = useElevation();
 

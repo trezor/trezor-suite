@@ -78,6 +78,10 @@ const alias = [
         replacement: '@trezor/connect-web/src/module',
     },
     {
+        find: 'core-js/actual',
+        replacement: 'noop-core-js-actual',
+    },
+    {
         find: 'src',
         replacement: resolve(__dirname, '../suite/src'),
     },
@@ -256,6 +260,26 @@ const serveCorePlugin = () => ({
 
 const commitId = execSync('git rev-parse HEAD').toString().trim();
 
+// Plugin to provide a no-op replacement for core-js/actual as a virtual module
+const noopCoreJsPlugin = (): Plugin => {
+    const virtualModuleId = 'noop-core-js-actual';
+    const resolvedVirtualModuleId = '\0' + virtualModuleId;
+
+    return {
+        name: 'noop-core-js-actual',
+        resolveId(id) {
+            if (id === virtualModuleId) {
+                return resolvedVirtualModuleId;
+            }
+        },
+        load(id) {
+            if (id === resolvedVirtualModuleId) {
+                return '// No-op replacement for core-js/actual\nexport default {};';
+            }
+        },
+    };
+};
+
 // Plugin to provide Buffer polyfill via a virtual module
 const bufferPolyfillPlugin = (): Plugin => {
     const virtualModuleId = 'virtual:buffer-polyfill';
@@ -356,6 +380,7 @@ export default defineConfig({
     plugins: [
         htmlTemplatePlugin(),
         bufferPolyfillPlugin(),
+        noopCoreJsPlugin(),
         staticAliasPlugin(),
         serveCorePlugin(),
         sessionsSharedWorkerPlugin(),
@@ -382,7 +407,6 @@ export default defineConfig({
         preserveSymlinks: true,
     },
     define: {
-        'process.env.VITE': true,
         'process.browser': true,
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.COMMIT_HASH': JSON.stringify(commitId),

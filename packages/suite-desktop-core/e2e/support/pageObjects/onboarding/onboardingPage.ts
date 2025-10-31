@@ -10,6 +10,7 @@ import { BackupSection } from './backupSection';
 import { FirmwareSection } from './firmwareSection';
 import { PinSection } from './pinSection';
 import { TutorialSection } from './tutorialSection';
+import { getModelFromEnv } from '../../helpers/modelFromEnv';
 import { ModelFixture } from '../../modelFixture';
 import { SettingsPage } from '../settings/settingsPage';
 
@@ -123,7 +124,7 @@ export class OnboardingPage {
         }
 
         await this.onboardingExitButton.click();
-        if (this.model.isModelWithSecureElement()) {
+        if (this.model.isModelWithSecureElement() && getModelFromEnv() !== 'T3W1') {
             await this.passThroughAuthenticityCheck();
         }
         // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
@@ -216,6 +217,22 @@ export class OnboardingPage {
     }
 
     @step()
+    async disableAuthenticityCheck() {
+        // Desktop starts with already disabled authenticity check. Web needs to disable it.
+        if (!isWebProject(this.testInfo)) {
+            return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        await this.page.evaluate(SuiteActions => {
+            window.store.dispatch({
+                type: SuiteActions.TOGGLE_DEVICE_AUTHENTICITY_CHECK,
+                payload: false,
+            });
+        }, SuiteActions);
+    }
+
+    @step()
     async disableDisconnectPrompt() {
         // Desktop starts with already disabled disconnect prompt. Web needs to disable it.
         if (!isWebProject(this.testInfo)) {
@@ -237,6 +254,10 @@ export class OnboardingPage {
         await this.disableFirmwareHashCheck(options);
         if (process.env.CANARY_FIRMWARE) {
             await this.disableFirmwareRevisionCheck();
+        }
+
+        if (getModelFromEnv() === 'T3W1') {
+            await this.disableAuthenticityCheck();
         }
     }
 

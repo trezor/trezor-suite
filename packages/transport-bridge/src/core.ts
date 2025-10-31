@@ -14,7 +14,12 @@ import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { callThpMessage, receiveThpMessage, sendThpMessage } from '@trezor/transport/src/thp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
-import { BridgeProtocolMessage, PathInternal, Session } from '@trezor/transport/src/types';
+import {
+    BridgeProtocolMessage,
+    DescriptorApiLevel,
+    PathInternal,
+    Session,
+} from '@trezor/transport/src/types';
 import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
 import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
 import { error, success, unknownError } from '@trezor/transport/src/utils/result';
@@ -49,12 +54,18 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         api = apiArg;
     }
 
+    // Descriptors from node-bridge should always have apiType usb in order to be consistent with BridgeTransport.apiType
+    const transformApiType = (descriptor: DescriptorApiLevel): DescriptorApiLevel => ({
+        ...descriptor,
+        apiType: 'usb',
+    });
+
     api.listen();
 
     // whenever low-level api reports changes to descriptors, report them to sessions module
     api.on('transport-interface-change', descriptors => {
         logger?.debug(`core: transport-interface-change ${JSON.stringify(descriptors)}`);
-        sessionsClient.enumerateDone({ descriptors });
+        sessionsClient.enumerateDone({ descriptors: descriptors.map(transformApiType) });
     });
     const writeUtil = async ({
         path,
@@ -122,7 +133,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         }
 
         const enumerateDoneResponse = await sessionsClient.enumerateDone({
-            descriptors: enumerateResult.payload,
+            descriptors: enumerateResult.payload.map(transformApiType),
         });
 
         return enumerateDoneResponse;

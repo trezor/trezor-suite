@@ -19,7 +19,7 @@ import { FocusedItemContext, OnFocusItemContext } from './sidebar';
 import { useActiveAnchor } from '../contexts/active-anchor';
 import { useMenu } from '../contexts/menu';
 import { useConfig } from '../contexts/useConfig';
-import { renderComponent } from '../utils';
+import { renderComponent } from '../utils/render';
 
 const TreeState: Record<string, boolean> = Object.create(null);
 const FolderLevelContext = createContext(0);

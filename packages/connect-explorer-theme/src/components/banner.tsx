@@ -4,7 +4,7 @@ import cn from 'clsx';
 import { XIcon } from 'nextra/icons';
 
 import { useConfig } from '../contexts/useConfig';
-import { renderComponent } from '../utils';
+import { renderComponent } from '../utils/render';
 
 export function Banner(): ReactElement | null {
     const { banner } = useConfig();
