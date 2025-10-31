@@ -31,14 +31,17 @@ export const Feature = {
     stake: {
         eth: 'eth.staking.stake',
         sol: 'sol.staking.stake',
+        ada: 'ada.staking.stake',
     },
     unstake: {
         eth: 'eth.staking.unstake',
         sol: 'sol.staking.unstake',
+        ada: 'ada.staking.unstake',
     },
     claim: {
         eth: 'eth.staking.claim',
         sol: 'sol.staking.claim',
+        ada: 'ada.staking.claim',
     },
 
     banners: {

@@ -217,7 +217,7 @@ export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
     return precomposedTx.outputs[0].amount;
 };
 
-export const calculateYearlyRewards = (amount: string, apyPercent: number, days = 365) => {
+export const calculateRewards = (amount: string, apyPercent: number, days = 365) => {
     const apy = apyPercent / 100;
     const factor = Math.pow(1 + apy, days / 365) - 1;
     const currentRewards = new BigNumber(amount).multipliedBy(factor).toString();

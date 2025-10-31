@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { calculateGains } from '@suite-common/staking';
+import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { StakeRootState, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 import { negativeSpacings, spacings } from '@trezor/theme';
@@ -26,7 +26,7 @@ export const EstimatedGains = () => {
 
     const cryptoInput = useMemo(() => {
         if (account.networkType === 'cardano') {
-            return account.formattedBalance ?? '0';
+            return getNetworkAdjustedStakingBalance(account.formattedBalance, account) ?? '0';
         }
 
         if (!hasInvalidFormState && value) {
@@ -34,7 +34,7 @@ export const EstimatedGains = () => {
         }
 
         return '0';
-    }, [account.networkType, account.formattedBalance, hasInvalidFormState, value]);
+    }, [hasInvalidFormState, value, account]);
 
     const apy = useSelector((state: StakeRootState) =>
         selectPoolStatsApyData(state, account?.symbol),
@@ -43,15 +43,15 @@ export const EstimatedGains = () => {
     const gains = [
         {
             label: <Translation id="TR_STAKE_WEEKLY" />,
-            value: calculateGains(cryptoInput, apy, 52),
+            value: calculateGains(cryptoInput, apy, 365 / 52),
         },
         {
             label: <Translation id="TR_STAKE_MONTHLY" />,
-            value: calculateGains(cryptoInput, apy, 12),
+            value: calculateGains(cryptoInput, apy, 365 / 12),
         },
         {
             label: <Translation id="TR_STAKE_YEARLY" />,
-            value: calculateGains(cryptoInput, apy, 1),
+            value: calculateGains(cryptoInput, apy, 365),
         },
     ];
 

@@ -1,14 +1,26 @@
+import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { Account, StakeType } from '@suite-common/wallet-types';
-import { formatNetworkAmount, getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import {
+    calculateRewards,
+    formatNetworkAmount,
+    getStakingDataForNetwork,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getEthereumStakingAddressByType } from './ethereumStaking';
 import { StakingTotalRewards } from '../types';
 
-export const calculateGains = (input: string, apy: number, divisor: number) => {
-    const amount = new BigNumber(input).multipliedBy(apy).dividedBy(100).dividedBy(divisor);
+export const calculateGains = (amount: string, apy: number, days: number) => {
+    const rewards = calculateRewards(amount, apy, days);
 
-    return amount.toFixed(5, 1);
+    return new BigNumber(rewards).toFixed(5, 1);
+};
+
+export const getNetworkAdjustedStakingBalance = (amount: string, account: Account) => {
+    if (account.networkType === 'cardano')
+        return new BigNumber(amount).minus(CARDANO_STAKING_REGISTRATION_DEPOSIT).toString();
+
+    return amount;
 };
 
 export const getStakingContractAddress = (account: Account, stakeType: StakeType) => {

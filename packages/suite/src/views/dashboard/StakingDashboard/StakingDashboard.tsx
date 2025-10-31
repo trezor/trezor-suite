@@ -52,15 +52,18 @@ export const StakingDashboard = () => {
 
     const ethStakingMessageSystem = useMessageSystemStaking('eth');
     const solStakingMessageSystem = useMessageSystemStaking('sol');
+    const adaStakingMessageSystem = useMessageSystemStaking('ada');
 
     const isEthStakingDisabled = !!ethStakingMessageSystem.isStakingDisabled;
     const isSolStakingDisabled = !!solStakingMessageSystem.isStakingDisabled;
+    const isAdaStakingDisabled = !!adaStakingMessageSystem.isStakingDisabled;
 
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const stakingAccounts = accounts.filter(
         account =>
             (account.symbol === 'eth' && !isEthStakingDisabled) ||
-            (account.symbol === 'sol' && !isSolStakingDisabled),
+            (account.symbol === 'sol' && !isSolStakingDisabled) ||
+            (account.symbol === 'ada' && !isAdaStakingDisabled),
     );
 
     const isStakingActive = !!stakingAccounts.find(account => {
@@ -135,7 +138,8 @@ export const StakingDashboard = () => {
 
     const ethNotActivated = !stakingAccounts.find(account => account.symbol === 'eth');
     const solNotActivated = !stakingAccounts.find(account => account.symbol === 'sol');
-    const stakingAccountsNotActivated = ethNotActivated && solNotActivated;
+    const adaNotActivated = !stakingAccounts.find(account => account.symbol === 'ada');
+    const stakingAccountsNotActivated = ethNotActivated && solNotActivated && adaNotActivated;
 
     const onCollapseChange = (collapsed: boolean) => {
         dispatch(setStakingDashboardCollapsed(collapsed));
@@ -203,6 +207,9 @@ export const StakingDashboard = () => {
                         )}
                         {solNotActivated && !isSolStakingDisabled && (
                             <StakingDashboardActivateRow symbol="sol" />
+                        )}
+                        {adaNotActivated && !isAdaStakingDisabled && (
+                            <StakingDashboardActivateRow symbol="ada" />
                         )}
                     </Table.Body>
                 </Table>

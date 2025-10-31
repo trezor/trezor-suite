@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
-    calculateYearlyRewards,
+    calculateRewards,
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-utils';
@@ -25,6 +26,8 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
     const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
     const displaySymbol = getDisplaySymbol(account.symbol);
+    const isCardanoNetworkType = account.networkType === 'cardano';
+    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
@@ -92,7 +95,10 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         });
 
     const state = useMemo(() => {
-        if (accountBalance === '0' && stakingBalance !== '0') {
+        if (
+            (accountBalance === '0' && stakingBalance !== '0') ||
+            (isCardanoNetworkType && isStakingActive)
+        ) {
             return 'staking-max';
         }
 
@@ -112,11 +118,11 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         }
 
         return 'staking-inactive';
-    }, [accountBalance, stakingBalance, minStakingAmount]);
+    }, [accountBalance, stakingBalance, minStakingAmount, isCardanoNetworkType, isStakingActive]);
 
     const CurrentRewardsCell = () => {
         const isStakingActive = stakingBalance !== '0';
-        const currentRewards = calculateYearlyRewards(stakingBalance, apy);
+        const currentRewards = calculateRewards(stakingBalance, apy);
 
         return (
             <Table.Cell>
@@ -145,22 +151,27 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
     const PotentialRewardsCell = () => {
         const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
-        const potentialRewards = calculateYearlyRewards(totalBalance, apy);
+        const potentialRewards = calculateRewards(
+            getNetworkAdjustedStakingBalance(totalBalance, account),
+            apy,
+        );
 
         return (
             <Table.Cell>
                 <Column>
                     <H4 variant="primary">{formatCryptoAmount(potentialRewards, true)}</H4>
 
-                    <Paragraph typographyStyle="hint" variant="tertiary">
-                        <Translation
-                            id="TR_STAKING_DASHBOARD_IF_YOU_ADD"
-                            values={{
-                                amount: formatCryptoAmount(accountBalance),
-                                displaySymbol,
-                            }}
-                        />
-                    </Paragraph>
+                    {!isCardanoNetworkType && (
+                        <Paragraph typographyStyle="hint" variant="tertiary">
+                            <Translation
+                                id="TR_STAKING_DASHBOARD_IF_YOU_ADD"
+                                values={{
+                                    amount: formatCryptoAmount(accountBalance),
+                                    displaySymbol,
+                                }}
+                            />
+                        </Paragraph>
+                    )}
                 </Column>
             </Table.Cell>
         );
