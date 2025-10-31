@@ -8,6 +8,7 @@ import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySu
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { waitForVisible } from '../support/utils';
 
 const preloadedStateT3T1 = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -21,7 +22,6 @@ conditionalDescribe(
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateT3T1 } });
             await prepareTrezorEmulator({ model: 'T3T1' });
-
             await onDeviceManager.tapDeviceSwitch();
             await onDeviceManager.tapDeviceSettingsButton();
         });
@@ -75,29 +75,22 @@ conditionalDescribe(
             await onDeviceSettings.tapChangeDeviceNameButton();
             await onDeviceSettings.submitNewDeviceName('new name');
             await TrezorUserEnvLink.pressYes();
-
             await onDeviceSettings.waitForSettingsScreen();
-
-            await waitFor(element(by.text('new name')))
-                .toBeVisible()
-                .withTimeout(10000);
+            await waitForVisible(by.text('new name'));
         });
 
         test('Wipe device', async () => {
             await onDeviceSettings.tapWipeDevice();
-
             await onDeviceSettings.confirmStepperItems(2);
             await onDeviceSettings.waitForWipeDeviceContinueOnTrezor();
             await TrezorUserEnvLink.pressNo();
             await onDeviceSettings.confirmStepperItems(1);
             await TrezorUserEnvLink.pressYes();
-
             await onDeviceSettings.waitForHomeScreenAndUninitializedTitle();
         });
 
         test('Device Check Backup', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
-
             await onDeviceSettings.passCheckBackupFlow();
         });
     },

@@ -1,19 +1,18 @@
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
-import { scrollUntilVisible, wait } from '../support/utils';
+import { scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
 class SettingsActions {
     async tapPreferences() {
         const preferencesSettingsElement = element(by.id('@settings/preferences'));
-        await waitFor(preferencesSettingsElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(preferencesSettingsElement);
         await preferencesSettingsElement.tap();
     }
 
     async tapPrivacyAndSecurity() {
         const privacyAndSecurityElement = element(by.id('@settings/privacy'));
-
-        await waitFor(privacyAndSecurityElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(privacyAndSecurityElement);
         await privacyAndSecurityElement.tap();
     }
 
@@ -25,8 +24,7 @@ class SettingsActions {
 
     async tapEjectWallets() {
         const ejectWalletsElement = element(by.id('@settings/eject-wallets'));
-
-        await waitFor(ejectWalletsElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(ejectWalletsElement);
         await ejectWalletsElement.tap();
     }
 
@@ -34,7 +32,7 @@ class SettingsActions {
         const discreetModeToggleElement = element(
             by.id('@settings/privacy-and-security/discreet-mode-toggle'),
         );
-        await waitFor(discreetModeToggleElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(discreetModeToggleElement);
         await discreetModeToggleElement.tap();
     }
 
@@ -42,7 +40,7 @@ class SettingsActions {
         const currencySelectorTriggerElement = element(
             by.id('@settings/localization/currency-selector'),
         );
-        await waitFor(currencySelectorTriggerElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(currencySelectorTriggerElement);
         await currencySelectorTriggerElement.tap();
 
         await wait(1000); // wait for the currency selector to open
@@ -58,7 +56,7 @@ class SettingsActions {
         const currencySelectorTriggerElement = element(
             by.id('@settings/localization/bitcoin-units-selector'),
         );
-        await waitFor(currencySelectorTriggerElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(currencySelectorTriggerElement);
         await currencySelectorTriggerElement.tap();
 
         const currencySelectorItemElement = element(by.id(`@select/item/${unit}/content`));
@@ -69,13 +67,13 @@ class SettingsActions {
 
     async toggleAutoEject() {
         const autoEjectElement = element(by.id('@settings/auto-eject-toggle'));
-        await waitFor(autoEjectElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(autoEjectElement);
         await autoEjectElement.tap();
     }
 
     async ejectSingleWallet() {
         const ejectWalletElement = element(by.id(`@settings/eject-single-wallet`));
-        await waitFor(ejectWalletElement).toBeVisible().withTimeout(10000);
+        await waitForVisible(ejectWalletElement);
         await ejectWalletElement.tap();
     }
 }

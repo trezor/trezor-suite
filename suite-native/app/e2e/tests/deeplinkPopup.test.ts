@@ -18,6 +18,7 @@ import {
     preparePreloadedReduxState,
     prepareTrezorEmulator,
 } from '../support/setup';
+import { waitForVisible } from '../support/utils';
 
 const deepLinkServer = new DeepLinkServer();
 
@@ -80,14 +81,14 @@ conditionalDescribe(
                 coin: 'btc',
             });
 
-            await element(by.id('@popup/deeplink-info'));
+            await waitForVisible(by.id('@popup/deeplink-info'));
 
             const permissionButton = element(by.id('@popup/call-device'));
-            await waitFor(permissionButton).toBeVisible().withTimeout(30000);
+            await waitForVisible(permissionButton);
             await permissionButton.tap();
 
             const confirmButton = element(by.id('@popup/confirm-addresses'));
-            await waitFor(confirmButton).toBeVisible().withTimeout(10000);
+            await waitForVisible(confirmButton);
             await confirmButton.tap();
 
             await TrezorUserEnvLink.pressYes();

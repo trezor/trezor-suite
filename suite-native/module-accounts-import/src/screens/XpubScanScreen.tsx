@@ -122,6 +122,7 @@ export const XpubScanScreen = ({
         ) {
             showDelayedAlert({
                 title: <Translation id="moduleAccountImport.xpubScanScreen.alert.address.title" />,
+                testID: '@alert-sheet/error/invalidXpub',
                 description: (
                     <Translation id="moduleAccountImport.xpubScanScreen.alert.address.description" />
                 ),

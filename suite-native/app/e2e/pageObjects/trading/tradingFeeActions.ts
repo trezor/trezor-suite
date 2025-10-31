@@ -1,4 +1,5 @@
 import { TradingActions } from './TradingActions';
+import { waitForVisible } from '../../support/utils';
 
 class TradingFeeActions extends TradingActions {
     constructor() {
@@ -10,7 +11,7 @@ class TradingFeeActions extends TradingActions {
     }
 
     async expectFeesScreenToBeVisible() {
-        await waitFor(this.getScreen()).toBeVisible().withTimeout(this.SHORT_TIMEOUT);
+        await waitForVisible(this.getScreen());
     }
 
     async goBack() {

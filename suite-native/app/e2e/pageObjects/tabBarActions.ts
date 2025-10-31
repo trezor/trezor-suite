@@ -1,16 +1,18 @@
 import { expect as detoxExpect } from 'detox';
 
+import { waitForVisible } from '../support/utils';
+
 class TabBarActions {
     async navigateToHome() {
         const homeTabBarItem = element(by.id('@tabBar/HomeStack'));
-        await waitFor(homeTabBarItem).toBeVisible().withTimeout(10000);
+        await waitForVisible(homeTabBarItem);
         await homeTabBarItem.tap();
 
         await detoxExpect(element(by.id('@screen/Home'))).toBeVisible();
     }
     async navigateToMyAssets() {
         const AccountsTabBarItem = element(by.id('@tabBar/AccountsStack'));
-        await waitFor(AccountsTabBarItem).toBeVisible().withTimeout(10000);
+        await waitForVisible(AccountsTabBarItem);
         await AccountsTabBarItem.tap();
 
         await detoxExpect(element(by.id('@screen/Accounts'))).toBeVisible();
@@ -18,7 +20,7 @@ class TabBarActions {
 
     async navigateToSettings() {
         const settingsTabBarItem = element(by.id('@tabBar/Settings'));
-        await waitFor(settingsTabBarItem).toBeVisible().withTimeout(10000);
+        await waitForVisible(settingsTabBarItem);
         await settingsTabBarItem.tap();
 
         await detoxExpect(element(by.id('@screen/Settings'))).toBeVisible();
@@ -26,13 +28,13 @@ class TabBarActions {
 
     async tapBackButton() {
         const backButton = element(by.id('@screen/sub-header/go-back-button'));
-        await waitFor(backButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(backButton);
         await backButton.tap();
     }
 
     async navigateToTrade() {
         const tradeTabBarItem = element(by.id('@tabBar/TradeStack'));
-        await waitFor(tradeTabBarItem).toBeVisible().withTimeout(10000);
+        await waitForVisible(tradeTabBarItem);
         await tradeTabBarItem.tap();
 
         await detoxExpect(element(by.id('@screen/Trading'))).toBeVisible();

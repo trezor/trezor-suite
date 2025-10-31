@@ -1,11 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { TradingActions } from './TradingActions';
-import {
-    wait,
-    waitForElementByIdToBeVisible,
-    waitForElementByTextToBeVisible,
-} from '../../support/utils';
+import { wait, waitForVisible } from '../../support/utils';
 
 export abstract class TradingFormActions extends TradingActions {
     abstract waitForQuotesToLoad(): Promise<void>;
@@ -31,13 +27,13 @@ export abstract class TradingFormActions extends TradingActions {
     }
 
     async waitForTradeDataToLoad() {
-        await waitForElementByIdToBeVisible(this.getTestId('form'), this.LONG_TIMEOUT);
+        await waitForVisible(this.getElementById('form'));
     }
 
     async expectSheetHeaderTitle(title: string) {
-        await waitFor(element(by.text(title).withAncestor(by.id('@trading/sheet-header-title'))))
-            .toBeVisible()
-            .withTimeout(this.SHORT_TIMEOUT);
+        await waitForVisible(
+            element(by.text(title).withAncestor(by.id('@trading/sheet-header-title'))),
+        );
     }
 
     async selectFiatCurrency(fiatCurrency: string) {
@@ -64,10 +60,10 @@ export abstract class TradingFormActions extends TradingActions {
 
     async selectReceiveAccount(accountName: string, derivationPath?: string) {
         await this.getElementById('receive-account').tap();
-        await waitForElementByTextToBeVisible(accountName);
+        await waitForVisible(by.text(accountName));
         await element(by.text(accountName)).tap();
         if (derivationPath) {
-            await waitForElementByTextToBeVisible(derivationPath);
+            await waitForVisible(by.text(derivationPath));
             await element(by.text(derivationPath)).tap();
         }
 
@@ -105,7 +101,7 @@ export abstract class TradingFormActions extends TradingActions {
         await this.getElementById('provider-picker').tap();
         await this.expectSheetHeaderTitle('Providers');
         await element(by.label('Close')).tap();
-        await waitForElementByIdToBeVisible(this.getTestId('provider-picker'), this.SHORT_TIMEOUT);
+        await waitForVisible(this.getElementById('provider-picker'));
     }
 
     async selectReceiveAsset(asset: string, network?: string) {
@@ -117,10 +113,10 @@ export abstract class TradingFormActions extends TradingActions {
             const networkFilterTab = element(
                 by.text(network).withAncestor(by.id(this.getTestId('receive-asset-sheet/header'))),
             );
-            await waitFor(networkFilterTab).toBeVisible().withTimeout(this.SHORT_TIMEOUT);
+            await waitForVisible(networkFilterTab);
             await networkFilterTab.tap();
         }
-        await waitForElementByTextToBeVisible(asset, this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await waitForVisible(by.text(asset), { timeout: this.BOTTOM_SHEET_ANIMATION_DURATION });
         await element(by.text(asset)).tap();
 
         await waitFor(this.getElementById('asset-receive-button/symbol'))
