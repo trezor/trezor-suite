@@ -351,7 +351,11 @@ ${code}`,
     };
 };
 
-// Plugin to support md guides in vite dev
+
+// TODO: after migration to Vite, remove this completely and FIX THE GUIDE LOADING
+// Temporary and hacky plugin to handle the markdown guide apperance in vite dev env
+// It finds and transforms the code to use fetch instead of imports so
+// when we run vite dev the .md files are properly loaded
 const guideMarkdownPlugin = (): Plugin => ({
     name: 'guide-md-dev',
     apply: 'serve',
