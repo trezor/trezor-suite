@@ -7,8 +7,8 @@ import '@sentry/electron/preload'; // With this only IPCMode.Classic is ever tak
 import { hasSwitch } from './libs/process-switches';
 
 const cspNonce = process.argv
-    .find(p => p.startsWith('--cspNonce'))
-    ?.replace('--cspNonce=', '')
+    .find(p => p.startsWith('--csp-nonce'))
+    ?.replace('--csp-nonce=', '')
     ?.trim();
 
 contextBridge.exposeInMainWorld('cspNonce', cspNonce);
