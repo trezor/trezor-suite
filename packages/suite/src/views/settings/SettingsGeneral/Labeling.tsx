@@ -8,20 +8,24 @@ import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
+    LABELING_LEGACY_OPTION_LABEL,
     LABELING_SELECT_OPTIONS,
-    LABELING_SELECT_OPTIONS_MAP,
     LabelingOption,
+    LabelingOptionTranslated,
+    LabelingSelectValue,
 } from 'src/constants/suite/labeling';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDevice, useSelector, useTranslation } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
 export const Labeling = () => {
+    const translate = useTranslation();
+
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
@@ -40,7 +44,15 @@ export const Labeling = () => {
         deviceStaticSessionId: device?.state?.staticSessionId,
     });
 
-    const handleOnChange = (selected: LabelingOption) => {
+    const translatedOptions: LabelingOption<string>[] = LABELING_SELECT_OPTIONS.map(option => ({
+        ...option,
+        label:
+            !showLocalFirstStorage && option.value === 'legacy'
+                ? translate.translationString(LABELING_LEGACY_OPTION_LABEL)
+                : translate.translationString(option.label),
+    }));
+
+    const handleOnChange = (selected: LabelingOptionTranslated) => {
         const { value } = selected;
 
         // show a warning legacy modal when user selects legacy option while using local first storage
@@ -77,17 +89,30 @@ export const Labeling = () => {
         });
     };
 
-    const getSelectedOption = (): LabelingOption => {
-        if (showLocalFirstStorage) {
-            if (isLocalFirstStorageEnabled) return LABELING_SELECT_OPTIONS_MAP['secure-sync'];
-            if (legacyMetadataState.enabled) return LABELING_SELECT_OPTIONS_MAP.legacy;
+    const getSelectedOption = (): LabelingOptionTranslated => {
+        const LABELING_SELECT_TRANSLATED_OPTIONS_MAP = LABELING_SELECT_OPTIONS.reduce(
+            (acc, option) => {
+                acc[option.value] = option;
 
-            return LABELING_SELECT_OPTIONS_MAP.off;
+                return acc;
+            },
+            {} as Record<LabelingSelectValue, LabelingOption<TranslationKey>>,
+        );
+
+        if (showLocalFirstStorage) {
+            if (isLocalFirstStorageEnabled)
+                return LABELING_SELECT_TRANSLATED_OPTIONS_MAP['secure-sync'];
+            if (legacyMetadataState.enabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy;
+
+            return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.off;
         }
 
         return legacyMetadataState.enabled
-            ? LABELING_SELECT_OPTIONS_MAP.legacy
-            : LABELING_SELECT_OPTIONS_MAP.off;
+            ? {
+                  ...LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy,
+                  label: LABELING_LEGACY_OPTION_LABEL,
+              }
+            : LABELING_SELECT_TRANSLATED_OPTIONS_MAP.off;
     };
 
     return (
@@ -118,7 +143,7 @@ export const Labeling = () => {
                 />
                 <ActionColumn>
                     <ActionSelect
-                        options={LABELING_SELECT_OPTIONS.filter(
+                        options={translatedOptions.filter(
                             option =>
                                 option.value !== 'secure-sync' ||
                                 (showLocalFirstStorage && isEvoluSupportedByDevice),
