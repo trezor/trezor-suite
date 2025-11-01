@@ -7,11 +7,13 @@ const defaultDirnameProvider = () => __dirname;
 type ValidateIpcMessageParams = {
     ipcEvent: ElectronIpcMainInvokeEvent;
     dirnameProvider?: () => string;
+    platformProvider?: () => string;
 };
 
 export const validateIpcMessage = ({
     ipcEvent,
     dirnameProvider = defaultDirnameProvider,
+    platformProvider = () => process.platform,
 }: ValidateIpcMessageParams) => {
     if (ipcEvent?.senderFrame?.isDestroyed()) {
         throw new Error('ipcEvent.senderFrame is destroyed');
@@ -40,17 +42,29 @@ export const validateIpcMessage = ({
             throw new Error(`Invalid protocol "${parsedUrl.protocol}", only file: allowed`);
         }
 
-        const dirname = dirnameProvider();
+        const baseDir = dirnameProvider();
 
-        const pathToServe = path.resolve(dirname, parsedUrl.pathname);
-        const relativePath = path.normalize(path.relative(dirname, pathToServe));
+        // Windows quirk: strip leading slash if path looks like /C:/...
+        const winFixedPathname =
+            platformProvider() === 'win32' &&
+            parsedUrl.pathname.startsWith('/') &&
+            /^[A-Za-z]:/.test(parsedUrl.pathname.slice(1))
+                ? parsedUrl.pathname.slice(1)
+                : parsedUrl.pathname;
+
+        const normalizedBase = path.normalize(baseDir);
+        const normalizedFile = path.normalize(winFixedPathname);
+        // for purposes of comparison, revert Windows backslashes to forward slashes
+        const relativePath = path.relative(normalizedBase, normalizedFile).replace(/\\/g, '/');
 
         // Verify that the sender is our index.html and nothing else.
         // Electron-main is running in asar/dist, so by comparing the relativePath,
         // only our asar/build/index.html can pass the check.
         if (relativePath !== '../build/index.html') {
             throw new Error(
-                `Invalid ipcEvent.senderFrame.url: "${ipcEvent.senderFrame.url}", relative path is: ${relativePath}`,
+                `Invalid ipcEvent.senderFrame.url: "${ipcEvent.senderFrame.url}", ` +
+                    `relative path is: "${relativePath}", ` +
+                    `dirname is: "${baseDir}"`,
             );
         }
     } else {

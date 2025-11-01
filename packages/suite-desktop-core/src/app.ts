@@ -78,7 +78,7 @@ const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams
             preload: path.join(__dirname, 'preload.js'),
             additionalArguments: [
                 // This will pass nonce to Renderer process, so it can be used
-                `--cspNonce=${cspNonce}`,
+                `--csp-nonce=${cspNonce}`,
                 ...(hasSwitch('expose-store') ? ['--expose-store'] : []),
             ],
         },

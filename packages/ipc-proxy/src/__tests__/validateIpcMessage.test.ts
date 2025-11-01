@@ -18,9 +18,21 @@ describe(validateIpcMessage.name, () => {
 
     it('passes in PROD: AppImage Linux example', () => {
         const senderUrl = 'file:///tmp/.mount_TrezorXsQUqQ/resources/app.asar/build/index.html';
+
         validateIpcMessage({
             ipcEvent: createSenderFrame(senderUrl),
             dirnameProvider: appImageDirnameProvider,
+        });
+    });
+
+    it('passes in PROD: Windows example', () => {
+        const senderUrl =
+            'file:///C:/Users/vm11-/Desktop/win-unpacked/resources/app.asar/build/index.html';
+
+        validateIpcMessage({
+            ipcEvent: createSenderFrame(senderUrl),
+            dirnameProvider: () => 'C:/Users/vm11-/Desktop/win-unpacked/resources/app.asar/dist',
+            platformProvider: () => 'win32',
         });
     });
 
