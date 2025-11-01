@@ -6457,6 +6457,22 @@ export default defineMessages({
         id: 'TR_LABELING_REMOVE_OUTPUT',
         defaultMessage: 'Remove label',
     },
+    TR_LABELING_ON: {
+        id: 'TR_LABELING_ON',
+        defaultMessage: 'On',
+    },
+    TR_LABELING_OFF: {
+        id: 'TR_LABELING_OFF',
+        defaultMessage: 'Off',
+    },
+    TR_LABELING_LEGACY: {
+        id: 'TR_LABELING_LEGACY',
+        defaultMessage: 'Legacy',
+    },
+    TR_LABELING_SECURE_SYNC: {
+        id: 'TR_LABELING_SECURE_SYNC',
+        defaultMessage: 'Secure Sync (recommended)',
+    },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
         defaultMessage:
