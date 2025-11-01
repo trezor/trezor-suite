@@ -2,8 +2,8 @@
 set -e
 
 # !!! If you are going to change this, change update-tor workflow as well !!!
-CRX_VER=1_0_38
-CRX_LINUX_ARM_VER=1_0_7
+CRX_VER=1_0_39
+CRX_LINUX_ARM_VER=1_0_8
 
 # check whether we have all required commands
 for cmd in 7z curl lipo shasum ; do
