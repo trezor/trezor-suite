@@ -779,6 +779,11 @@ export default defineMessages({
         defaultMessage: 'Your swap might be partially filled based on market conditions',
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_3',
     },
+    TR_INSTALLATION_FW_SLOW_TIP_BANNER: {
+        id: 'TR_INSTALLATION_FW_SLOW_TIP_BANNER',
+        defaultMessage:
+            'Firmware installation is taking longer than usual. This may be cause by other connected bluetooth devices. Consider disconnecting them.',
+    },
     TR_SELL_STATUS_ERROR: {
         defaultMessage: 'Rejected',
         id: 'TR_SELL_STATUS_ERROR',
