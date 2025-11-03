@@ -17,7 +17,7 @@ export const DEVICE_ANIMATION_TYPES = {
     ROTATE: 'ROTATE',
     BOOTLOADER: 'BOOTLOADER',
     BOOTLOADER_TWO_BUTTONS: 'BOOTLOADER_TWO_BUTTONS',
-    NORMAL: 'NORMAL',
+    NORMAL: 'NORMAL', // rename to RECONNECT
     HOLOGRAM: 'HOLOGRAM',
     CONNECT_CABLE: 'CONNECT_CABLE',
     CONNECT_BT_INTRO: 'CONNECT_BT_INTRO',
@@ -83,7 +83,7 @@ type SizePropFor<M extends ModelWithRotate> = M extends keyof typeof MODEL_ROTAT
     ? { sizeVariant?: 'LARGE' }
     : {};
 
-type RotateProps = {
+export type RotateProps = {
     [M in ModelWithRotate]: Base & {
         type: typeof DEVICE_ANIMATION_TYPES.ROTATE;
         deviceModelInternal: M;
@@ -164,7 +164,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         const content = (() => {
             switch (type) {
                 case DEVICE_ANIMATION_TYPES.BOOTLOADER: {
-                    // T3B1 má "bootloader.webm", ostatní "bootloader_dark|light.webm"
+                    // T3B1 has "bootloader.webm", others have "bootloader_dark|light.webm"
                     const file =
                         model === DeviceModelInternal.T3B1
                             ? 'bootloader.webm'

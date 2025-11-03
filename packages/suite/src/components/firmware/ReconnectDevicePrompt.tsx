@@ -6,7 +6,11 @@ import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, H2, Modal, Paragraph, Row } from '@trezor/components';
 import { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
-import { ConfirmOnDevicePill, DeviceAnimation } from '@trezor/product-components';
+import {
+    ConfirmOnDevicePill,
+    DeviceAnimation,
+    DeviceAnimationProps,
+} from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -30,10 +34,21 @@ const RebootDeviceGraphics = ({
 
     const deviceModelInternal = device?.features?.internal_model;
 
+    const getModelForBootloader = () => {
+        switch (deviceModelInternal) {
+            case DeviceModelInternal.T1B1:
+                return DeviceModelInternal.T1B1;
+            case DeviceModelInternal.T2T1:
+                return DeviceModelInternal.T2T1;
+            default:
+                return DeviceModelInternal.T3B1;
+        }
+    };
+
     const getRebootType = () => {
         // Used during intermediary update on T1B1.
         if (device?.mode === 'bootloader') {
-            return 'NORMAL';
+            return { type: 'NORMAL', deviceModelInternal: DeviceModelInternal.T1B1 };
         }
         // T1B1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons.
         const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
@@ -42,19 +57,23 @@ const RebootDeviceGraphics = ({
             semver.valid(deviceFwVersion) &&
             semver.satisfies(deviceFwVersion, '<1.8.0')
         ) {
-            return 'BOOTLOADER_TWO_BUTTONS';
+            return {
+                type: 'BOOTLOADER_TWO_BUTTONS',
+                deviceModelInternal: DeviceModelInternal.T1B1,
+            };
         }
 
-        return 'BOOTLOADER';
+        return { type: 'BOOTLOADER', deviceModelInternal: getModelForBootloader() };
     };
+
+    const deviceAnimationProps = getRebootType();
 
     return (
         <DeviceAnimation
-            type={getRebootType()}
+            {...(deviceAnimationProps as DeviceAnimationProps)}
             height="220px"
             width="220px"
             shape="ROUNDED"
-            deviceModelInternal={deviceModelInternal || DeviceModelInternal.T1B1}
             loop
         />
     );
