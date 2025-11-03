@@ -14,12 +14,15 @@ export type WalletLabelState = {
     outputLabels: OutputLabel[];
 };
 
-export type LabelingState = {
-    walletsLabels: Record<WalletDescriptor, WalletLabelState>; // key: WalletDescriptor = First btc testnet address
+export type LabelingSettings = {
     isFeatureLocalFirstStorageAvailable: boolean;
     isLocalFirstStorageEnabled: boolean;
     isLocalFirstStorageDebugEnabled: boolean;
     localFirstStorageRelayUrl: string | null;
+};
+
+export type LabelingState = LabelingSettings & {
+    walletsLabels: Record<WalletDescriptor, WalletLabelState>; // key: WalletDescriptor = First btc testnet address
 };
 
 export const initialLabelingState: LabelingState = {
