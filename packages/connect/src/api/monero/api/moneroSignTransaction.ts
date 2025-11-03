@@ -242,16 +242,6 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
                 });
         }
 
-        // If there's a change output, send it too
-        if (this.params.tsx_data.change_dts) {
-            await this.device
-                .getCommands()
-                .typedCall('MoneroTransactionSetOutputRequest', 'MoneroTransactionSetOutputAck', {
-                    dst_entr: this.params.tsx_data.change_dts,
-                    dst_entr_hmac: this.state.hmacs[outputs.length],
-                });
-        }
-
         // Step 6: AllOutSet - Get RCT signature fields
         const allOutSetResponse = await this.device
             .getCommands()
