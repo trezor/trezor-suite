@@ -31,7 +31,7 @@ const navigateToEjectWallets = async () => {
     await onSettings.tapEjectWallets();
 };
 
-conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets [@fixT3W1]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
