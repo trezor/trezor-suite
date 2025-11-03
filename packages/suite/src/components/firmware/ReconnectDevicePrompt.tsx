@@ -71,8 +71,8 @@ const RebootDeviceGraphics = ({
     return (
         <DeviceAnimation
             {...(deviceAnimationProps as DeviceAnimationProps)}
-            height="220px"
-            width="220px"
+            height={220}
+            width={220}
             shape="ROUNDED"
             loop
         />

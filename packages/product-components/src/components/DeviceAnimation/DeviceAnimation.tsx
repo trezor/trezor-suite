@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
+import { MouseEventHandler, forwardRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
@@ -23,8 +23,6 @@ const getThemeVariant = (theme: any) =>
     (theme?.legacy?.THEME as string | undefined)?.toLowerCase() === 'dark' ? 'dark' : 'light';
 
 type Base = AllowedAnimationPrimitiveFrameProps & {
-    height?: CSSProperties['height'];
-    width?: CSSProperties['width'];
     loop?: boolean;
     shape?: Shape;
     onEnded?: () => void;
@@ -49,8 +47,6 @@ export type DeviceAnimationProps = {
 export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps>(
     (props, videoRef) => {
         const {
-            height,
-            width,
             type,
             loop = false,
             shape,
@@ -138,7 +134,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         })();
 
         return (
-            <AnimationWrapper height={height} width={width} shape={shape} {...frameProps}>
+            <AnimationWrapper shape={shape} {...frameProps}>
                 {content}
             </AnimationWrapper>
         );

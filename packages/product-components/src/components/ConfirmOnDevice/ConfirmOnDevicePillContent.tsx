@@ -59,7 +59,7 @@ export const ConfirmOnDevicePillContent = ({
             <RotateDeviceImage
                 deviceModel={deviceModelInternal}
                 deviceColor={deviceUnitColor}
-                animationHeight="34px"
+                height={34}
                 maxWidth={30}
             />
 

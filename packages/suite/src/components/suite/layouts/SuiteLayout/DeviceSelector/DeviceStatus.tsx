@@ -32,7 +32,7 @@ export const DeviceStatus = ({
                 <RotateDeviceImage
                     deviceModel={deviceModel}
                     deviceColor={getDeviceColorVariant(device)}
-                    animationHeight="34px"
+                    height={34}
                 />
             )}
         </Row>

@@ -18,8 +18,6 @@ export const RotateDeviceImage: StoryObj<RotateDeviceImageProps> = {
     args: {
         deviceModel: DeviceModelInternal.T3B1,
         deviceColor: undefined,
-        animationHeight: undefined,
-        animationWidth: undefined,
         ...getFramePropsStory(allowedAnimationPrimitivesFrameProps).args,
     },
     argTypes: {

@@ -65,7 +65,7 @@ export const SecurityCheckLayout = ({
                                 type="ROTATE"
                                 deviceModelInternal={model}
                                 deviceUnitColor={deviceUnitColor as any}
-                                height="300px"
+                                height={300}
                                 sizeVariant="LARGE"
                             />
                         ) : (
