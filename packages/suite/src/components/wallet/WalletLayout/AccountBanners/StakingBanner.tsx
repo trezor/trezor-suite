@@ -2,15 +2,12 @@ import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_SOL_AMOUNT_FOR_STAKING,
-} from '@suite-common/wallet-constants';
 import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
+    isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -25,6 +22,7 @@ import {
 } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -41,7 +39,8 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { isBelowLaptop } = useLayoutSize();
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const { stakeEthBannerClosed, stakeSolBannerClosed } = useSelector(selectSuiteFlags);
+    const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
+        useSelector(selectSuiteFlags);
     const { route } = useSelector(state => state.router);
     const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
@@ -73,6 +72,16 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             case 'solana':
                 dispatch(setFlag('stakeSolBannerClosed', true));
                 break;
+            case 'cardano':
+                dispatch(setFlag('stakeCardanoBannerClosed', true));
+                break;
+            default:
+                if (isSupportedStakingNetworkSymbol(account.symbol)) {
+                    exhaustive(
+                        account.networkType as never,
+                        `Add missing case for ${account.symbol} network type`,
+                    );
+                }
         }
 
         analytics.report({
@@ -98,32 +107,31 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         });
     };
 
-    const getNetworkDetails = (networkType: NetworkType) => {
+    const isStakingBannerClosed = (networkType: NetworkType) => {
         switch (networkType) {
             case 'ethereum':
-                return {
-                    isStakingBannerClosed: stakeEthBannerClosed,
-                    minStakingAmount: MIN_ETH_AMOUNT_FOR_STAKING,
-                };
+                return stakeEthBannerClosed;
             case 'solana':
-                return {
-                    isStakingBannerClosed: stakeSolBannerClosed,
-                    minStakingAmount: MIN_SOL_AMOUNT_FOR_STAKING,
-                };
+                return stakeSolBannerClosed;
+            case 'cardano':
+                return stakeCardanoBannerClosed;
             default:
-                return {
-                    isStakingBannerClosed: true,
-                    minStakingAmount: undefined,
-                };
+                if (isSupportedStakingNetworkSymbol(account.symbol)) {
+                    exhaustive(
+                        account.networkType as never,
+                        `Add missing case for ${account.symbol} network type`,
+                    );
+                }
+
+                return true;
         }
     };
 
-    const { isStakingBannerClosed } = getNetworkDetails(account.networkType) ?? {};
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
     if (
         route?.name !== 'wallet-index' ||
-        isStakingBannerClosed ||
+        isStakingBannerClosed(account.networkType) ||
         !account ||
         isStakingActive ||
         !stakingLimits
