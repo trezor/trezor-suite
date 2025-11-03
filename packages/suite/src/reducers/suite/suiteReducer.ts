@@ -63,6 +63,7 @@ export interface Flags {
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
     stakeSolBannerClosed: boolean; // banner in account view (Overview tab) presenting SOL staking feature
+    stakeCardanoBannerClosed: boolean; // banner in account view (Overview tab) presenting Cardano staking feature
     showDashboardStakingPromoBanner: boolean;
     suspiciousTransactionsTooltipClosed: boolean;
     showUnhideTokenModal: boolean;
@@ -157,6 +158,7 @@ const initialState: SuiteState = {
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
         stakeSolBannerClosed: false,
+        stakeCardanoBannerClosed: false,
         showDashboardStakingPromoBanner: true,
         suspiciousTransactionsTooltipClosed: false,
         showCopyAddressModal: true,

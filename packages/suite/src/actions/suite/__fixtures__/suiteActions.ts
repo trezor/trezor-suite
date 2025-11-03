@@ -181,6 +181,7 @@ const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = 
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
                 stakeSolBannerClosed: false,
+                stakeCardanoBannerClosed: false,
                 suspiciousTransactionsTooltipClosed: false,
                 showDashboardStakingPromoBanner: true,
                 showCopyAddressModal: true,
