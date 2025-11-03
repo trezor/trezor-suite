@@ -20,7 +20,7 @@ export const LocalFirstStorageSettings = () => {
 
     const {
         isLocalFirstStorageDebugEnabled,
-        toggleisFeatureLocalFirstStorageAvailable,
+        toggleIsFeatureLocalFirstStorageAvailable,
         isFeatureLocalFirstStorageAvailable,
     } = useLabelingCombined({
         // In debug, there may not be any device selected and it is in fact irrelevant
@@ -35,7 +35,7 @@ export const LocalFirstStorageSettings = () => {
 
     const handleToggleLocalFirstStorageDebug = () => {
         dispatch(
-            labelingActions.updateLocaleFirstStorageDebugEnabled({
+            labelingActions.updateLocalFirstStorageDebugEnabled({
                 isEnabled: !isLocalFirstStorageDebugEnabled,
             }),
         );
@@ -66,7 +66,7 @@ export const LocalFirstStorageSettings = () => {
                 <ActionColumn>
                     <Checkbox
                         isChecked={isFeatureLocalFirstStorageAvailable}
-                        onClick={toggleisFeatureLocalFirstStorageAvailable}
+                        onClick={toggleIsFeatureLocalFirstStorageAvailable}
                     />
                 </ActionColumn>
             </SectionItem>

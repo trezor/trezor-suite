@@ -116,14 +116,14 @@ export const prepareLabelingReducer = createReducerWithExtraDeps<LabelingState>(
             .addCase(labelingActions.clearAllLabels, (state, { payload }) => {
                 delete state.walletsLabels[payload.walletDescriptor];
             })
-            .addCase(labelingActions.updateLocaleFirstStorageEnabled, (state, { payload }) => {
+            .addCase(labelingActions.updateLocalFirstStorageEnabled, (state, { payload }) => {
                 state.isLocalFirstStorageEnabled = payload.isEnabled;
             })
-            .addCase(labelingActions.updateLocaleFirstStorageDebugEnabled, (state, { payload }) => {
+            .addCase(labelingActions.updateLocalFirstStorageDebugEnabled, (state, { payload }) => {
                 state.isLocalFirstStorageDebugEnabled = payload.isEnabled;
             })
             .addCase(
-                labelingActions.updateisFeatureLocalFirstStorageAvailable,
+                labelingActions.updateIsFeatureLocalFirstStorageAvailable,
                 (state, { payload }) => {
                     state.isFeatureLocalFirstStorageAvailable = payload.isShownInSettings;
                 },
