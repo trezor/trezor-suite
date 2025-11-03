@@ -155,6 +155,11 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
         ),
 );
 
+export const hasPendingStakeTypeTransaction = createMemoizedSelector(
+    [selectAccountStakeTypeTransactions],
+    transactions => transactions.some(tx => isPending(tx)),
+);
+
 export const selectAccountStakeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions =>
