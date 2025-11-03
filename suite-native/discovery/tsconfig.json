@@ -24,11 +24,11 @@
         { "path": "../device" },
         { "path": "../feature-flags" },
         { "path": "../settings" },
-        { "path": "../test-utils" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ]
 }

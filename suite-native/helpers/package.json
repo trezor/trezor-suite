@@ -23,5 +23,8 @@
         "react": "19.1.0",
         "react-native": "0.81.4",
         "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

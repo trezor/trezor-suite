@@ -77,7 +77,6 @@
         { "path": "../settings" },
         { "path": "../state" },
         { "path": "../storage" },
-        { "path": "../test-utils" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../transactions" },
@@ -101,6 +100,7 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../test-utils" },
         {
             "path": "../../packages/connect-mobile"
         }
