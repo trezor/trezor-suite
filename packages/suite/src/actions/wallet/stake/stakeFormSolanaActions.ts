@@ -66,7 +66,7 @@ const calculateTransaction = (
         ),
     };
 
-    const estimatedFeeLevel = { ...feeLevel, ...estimatedFee };
+    const estimatedFeeLevel = { ...feeLevel, ...estimatedFee?.payload };
 
     return calculate(
         availableBalance,
