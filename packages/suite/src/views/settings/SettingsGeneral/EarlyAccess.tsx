@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-
+import { Row } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { openEarlyAccessSetup } from 'src/actions/suite/desktopUpdateActions';
@@ -8,13 +7,6 @@ import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const Version = styled.div`
-    span {
-        display: flex;
-        align-items: center;
-    }
-`;
 
 export const EarlyAccess = () => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -38,7 +30,7 @@ export const EarlyAccess = () => {
                     />
                 }
                 description={
-                    <Version>
+                    <Row alignItems="center">
                         <Translation
                             id={
                                 desktopUpdate.allowPrerelease
@@ -46,7 +38,7 @@ export const EarlyAccess = () => {
                                     : 'TR_EARLY_ACCESS_DESCRIPTION'
                             }
                         />
-                    </Version>
+                    </Row>
                 }
             />
             <ActionColumn>

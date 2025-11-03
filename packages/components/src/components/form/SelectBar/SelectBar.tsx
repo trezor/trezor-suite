@@ -207,7 +207,6 @@ export const SelectBar = <V extends ValueTypes>({
                                     key={String(option.value)}
                                     variant={mapStateToTextVariant(isDisabled, isSelected)}
                                     typographyStyle={mapSizeToTypographyStyle(size, isSelected)}
-                                    case="capitalize"
                                     textWrap="nowrap"
                                     as="div"
                                     cursor={isDisabled ? 'not-allowed' : 'pointer'}

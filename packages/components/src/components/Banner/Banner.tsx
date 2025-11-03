@@ -166,7 +166,9 @@ export const Banner = ({
             )}
 
             <ContentComponent>
-                <Column alignItems="flex-start">{children}</Column>
+                <Column alignItems="flex-start">
+                    <span>{children}</span>
+                </Column>
                 {rightContent && (
                     <BannerContext.Provider value={{ variant }}>
                         {rightContent}
