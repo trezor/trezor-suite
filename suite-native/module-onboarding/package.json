@@ -23,6 +23,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
+        "@suite-native/trading-state": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",

@@ -63,6 +63,7 @@
         { "path": "../tokens" },
         { "path": "../trading-atoms" },
         { "path": "../trading-residence" },
+        { "path": "../trading-state" },
         { "path": "../transaction-management" },
         {
             "path": "../../packages/blockchain-link-types"
@@ -73,14 +74,9 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
-        {
-            "path": "../../suite-common/suite-types"
-        },
-        {
-            "path": "../../suite-common/test-utils"
-        },
         { "path": "../atoms" },
         { "path": "../test-utils" },
+        { "path": "../trading-types" },
         { "path": "../../packages/theme" }
     ],
     "include": [".", "**/*.json"]

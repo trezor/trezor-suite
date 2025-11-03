@@ -4,9 +4,9 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
+import { SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../hooks/sell/useSellForm';
-import { SellFormType } from '../../../types/sell';
 import { SellAlert } from '../SellAlert';
 
 describe('SellAlert', () => {

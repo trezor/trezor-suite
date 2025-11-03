@@ -16,8 +16,7 @@ import {
     TradingExchangeStep,
     analytics,
 } from '@suite-native/analytics';
-
-import { coinInfoToTradeableAsset } from '../../utils/general/tradeableAssetUtils';
+import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
 const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {
     const { send, receive, exchange } = quote || {};

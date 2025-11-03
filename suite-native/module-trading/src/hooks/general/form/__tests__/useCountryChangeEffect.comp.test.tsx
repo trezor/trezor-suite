@@ -1,6 +1,6 @@
 import { TradingCountryCode, TradingCountryOption } from '@suite-common/trading';
 import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
-import { selectTradingResidenceCountry } from '@suite-native/trading-residence';
+import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { CountryFormWatch, useCountryChangeEffect } from '../useCountryChangeEffect';
 

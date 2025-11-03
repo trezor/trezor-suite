@@ -1,0 +1,46 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../accounts" },
+        { "path": "../feature-flags" },
+        { "path": "../tokens" },
+        { "path": "../trading-atoms" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../trading-types" }
+    ],
+    "include": [".", "**/*.json"]
+}

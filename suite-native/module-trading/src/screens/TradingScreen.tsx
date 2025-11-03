@@ -7,6 +7,11 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
+import {
+    selectActiveTradingType,
+    selectIsTradingEnabled,
+    selectTradeToBeOpened,
+} from '@suite-native/trading-state';
 
 import { Footer } from '../components/general/Footer';
 import { Header } from '../components/general/Header/Header';
@@ -16,11 +21,6 @@ import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
 import { useMountedRecentlyFlag } from '../hooks/general/useMountedRecentlyFlag';
-import {
-    selectActiveTradingType,
-    selectIsTradingEnabled,
-    selectTradeToBeOpened,
-} from '../selectors/commonSelectors';
 
 const TradingScreenContent = () => {
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);

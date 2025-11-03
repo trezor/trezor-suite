@@ -7,6 +7,7 @@ import {
     TradingSellState,
     TradingType,
 } from '@suite-common/trading';
+import { TradingState, tradingInitialState } from '@suite-native/trading-state';
 
 import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
 import buyQuotes from './buyQuotes.json';
@@ -15,12 +16,11 @@ import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeP
 import { exchangeQuotes } from './exchangeQuotes';
 import platforms from './platforms.json';
 import { sellBanxa, sellCexdirect, sellInvity, sellMercuryo, sellMoonpay } from './sellProviders';
-import { TradingState, initialState } from '../reducers';
 import { sellQuotes } from './sellQuotes';
 
 export const getInitializedBuyState = () =>
     ({
-        ...initialState.buy,
+        ...tradingInitialState.buy,
         quotesRequest: undefined,
         selectedQuote: {
             paymentMethod: 'eps',
@@ -60,7 +60,7 @@ export const getInitializedBuyState = () =>
 
 export const getInitializedExchangeState = () =>
     ({
-        ...initialState.exchange,
+        ...tradingInitialState.exchange,
         exchangeInfo: {
             providerInfos: {
                 ['invity']: exchangeInvity,
@@ -89,7 +89,7 @@ export const getInitializedExchangeState = () =>
 
 export const getInitializedSellState = () =>
     ({
-        ...initialState.sell,
+        ...tradingInitialState.sell,
         sellInfo: {
             providerInfos: {
                 ['invity']: sellInvity,
@@ -115,7 +115,7 @@ export const getInitializedSellState = () =>
 
 export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
     ({
-        ...initialState,
+        ...tradingInitialState,
         buy: getInitializedBuyState(),
         exchange: getInitializedExchangeState(),
         sell: getInitializedSellState(),

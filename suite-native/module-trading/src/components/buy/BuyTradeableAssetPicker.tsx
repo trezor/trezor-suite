@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { HStack } from '@suite-native/atoms';
+import { selectBuyTradeableAssets } from '@suite-native/trading-state';
+import { TradeableAsset } from '@suite-native/trading-types';
 
 import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { selectBuyTradeableAssets } from '../../selectors/buySelectors';
-import { TradeableAsset } from '../../types/general';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/buy/asset-receive-button';

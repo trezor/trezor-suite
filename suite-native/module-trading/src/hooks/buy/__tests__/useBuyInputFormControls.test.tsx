@@ -3,8 +3,8 @@ import {
     renderHookWithBasicProvider,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { BuyFormType } from '@suite-native/trading-types';
 
-import { BuyFormType } from '../../../types/buy';
 import { useBuyForm } from '../useBuyForm';
 import { useBuyInputFormControls } from '../useBuyInputFormControls';
 

@@ -11,7 +11,7 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
-import { prepareTradingMiddleware } from '@suite-native/module-trading';
+import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
 
 import { extraDependencies } from './extraDependencies';

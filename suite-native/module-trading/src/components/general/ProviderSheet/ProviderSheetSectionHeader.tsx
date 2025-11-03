@@ -1,9 +1,9 @@
+import { QuotesCategory } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { CexFixedSectionHeader } from './CexFixedSectionHeader';
 import { CexFloatSectionHeader } from './CexFloatSectionHeader';
 import { DexSectionHeader } from './DexSectionHeader';
-import { QuotesCategory } from '../../../types/general';
 
 export type ProviderSheetSectionHeaderProps = {
     category: QuotesCategory;

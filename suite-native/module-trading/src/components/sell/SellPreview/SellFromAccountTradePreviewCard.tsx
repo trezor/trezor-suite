@@ -4,8 +4,8 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
-import { selectSellSelectedSendAccount } from '../../../selectors/sellSelectors';
 import { TradeSideCard } from '../../general/TradeSideCard';
 
 export type SellFromAccountTradePreviewCardProps = {

@@ -7,9 +7,8 @@ import type {
     SectionListData,
     SectionListDataArray,
 } from '@suite-native/trading-atoms';
+import { QuotesByCategories, QuotesCategory } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
-
-import { QuotesByCategories, QuotesCategory } from '../../types/general';
 
 export type FilterValue = 'all' | 'cex' | 'dex';
 

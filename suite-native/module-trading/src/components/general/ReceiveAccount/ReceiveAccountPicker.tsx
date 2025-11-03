@@ -13,9 +13,9 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { AccountAddress, OverviewRow } from '@suite-native/trading-atoms';
+import { ReceiveAccount } from '@suite-native/trading-types';
 import { Color } from '@trezor/theme';
 
-import { ReceiveAccount } from '../../../types/general';
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 
 export type ReceiveAccountPickerProps = {

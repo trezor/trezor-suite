@@ -13,9 +13,8 @@ let mockUseSellData: jest.Mock;
 jest.mock('../../../hooks/sell/useSellData', () => ({
     useSellData: (...params: unknown[]) => mockUseSellData(...params),
 }));
-
-jest.mock('../../../selectors/commonSelectors', () => ({
-    ...jest.requireActual('../../../selectors/commonSelectors'),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingSellEnabled: () => true,
 }));
 

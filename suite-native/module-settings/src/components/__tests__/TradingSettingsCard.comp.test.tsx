@@ -5,8 +5,8 @@ import { TradingSettingsCard, TradingSettingsCardProps } from '../TradingSetting
 let mockIsTradingCountrySet: boolean;
 let mockIsTradingResidenceCheckEnabled: boolean;
 
-jest.mock('@suite-native/trading-residence', () => ({
-    ...jest.requireActual('@suite-native/trading-residence'),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingCountrySet: () => mockIsTradingCountrySet,
     selectIsTradingResidenceCheckEnabled: () => mockIsTradingResidenceCheckEnabled,
 }));

@@ -6,9 +6,8 @@ import { useSelector } from 'react-redux';
 import { AnimatedBox, Button, HStack, Image, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { INVITY_URL } from '@trezor/urls';
-
-import { selectIsAmountInputActive } from '../../selectors/commonSelectors';
 
 export type FooterProps = {
     isFormMountedRecently?: boolean;

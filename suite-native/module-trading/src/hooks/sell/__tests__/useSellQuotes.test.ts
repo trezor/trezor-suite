@@ -6,12 +6,12 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { SellFormValues } from '@suite-native/trading-types';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { sellQuotes } from '../../../__fixtures__/sellQuotes';
 import { bnbAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { SellFormValues } from '../../../types/sell';
 import { useSellForm } from '../useSellForm';
 import { useSellQuotes } from '../useSellQuotes';
 

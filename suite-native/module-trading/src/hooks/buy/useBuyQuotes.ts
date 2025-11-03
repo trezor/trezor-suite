@@ -15,14 +15,12 @@ import {
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
+import { AbortablePromise, BuyFormType } from '@suite-native/trading-types';
 import { useDebounce } from '@trezor/react-utils';
 
-import { buyActions } from '../../reducers';
-import { selectValidTradingBuyQuotesNative } from '../../selectors/buySelectors';
-import { BuyFormType } from '../../types/buy';
-import { AbortablePromise } from '../../types/general';
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 import { useReloadTimer } from '../general/useReloadTimer';
 

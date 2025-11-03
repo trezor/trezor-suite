@@ -12,9 +12,9 @@ import {
 } from '@suite-common/trading';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
+import { TradingRootState } from '@suite-native/trading-state';
 
 import { useReloadTimer } from './useReloadTimer';
-import { TradingRootState } from '../../reducers';
 import { getTradeStatusStep } from '../../utils/general/utils';
 
 export type TradingTradeMapProps = {

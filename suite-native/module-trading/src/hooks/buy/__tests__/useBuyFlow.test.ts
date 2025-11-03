@@ -7,11 +7,11 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { BuyFormType } from '@suite-native/trading-types';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/buyQuotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
-import { BuyFormType } from '../../../types/buy';
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
 

@@ -14,18 +14,18 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-
-import { exchangeActions } from '../../reducers';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
+    exchangeActions,
     selectExchangeAmountLimits,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
-} from '../../selectors/exchangeSelectors';
-import { ExchangeFormType, ExchangeFormValues } from '../../types/exchange';
+} from '@suite-native/trading-state';
+import { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
+
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';

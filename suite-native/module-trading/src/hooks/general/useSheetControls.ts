@@ -2,10 +2,7 @@ import { Dispatch, useCallback } from 'react';
 
 import type { FieldPathValue, Path, UseFormReturn } from '@suite-native/forms';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
-
-import { BuyFormValues } from '../../types/buy';
-import { ExchangeFormValues } from '../../types/exchange';
-import { SellFormValues } from '../../types/sell';
+import { BuyFormValues, ExchangeFormValues, SellFormValues } from '@suite-native/trading-types';
 
 type BottomSheetControls = ReturnType<typeof useBottomSheetControls>;
 type FormUnion = BuyFormValues | ExchangeFormValues | SellFormValues;

@@ -12,7 +12,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-residence';
+import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useExitOnboardingFlow } from '../hooks/useExitOnboardingFlow';

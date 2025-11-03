@@ -5,9 +5,8 @@ import type { CryptoId } from 'invity-api';
 
 import { useTranslate } from '@suite-native/intl';
 import { SectionListData } from '@suite-native/trading-atoms';
-
-import { selectTradingFavouriteAssets } from '../../selectors/favouritesSelectors';
-import { TradeableAsset } from '../../types/general';
+import { selectTradingFavouriteAssets } from '@suite-native/trading-state';
+import { TradeableAsset } from '@suite-native/trading-types';
 
 export type ListItemExtraData = {
     isFavourite: boolean;

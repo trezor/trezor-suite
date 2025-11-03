@@ -1,7 +1,6 @@
 import { invariant } from '@suite-common/suite-utils';
 import { MinimalSellFormProps } from '@suite-common/trading';
-
-import { SellFormType } from '../../types/sell';
+import { SellFormType } from '@suite-native/trading-types';
 
 export const tradingSellFormToTradingSellFormProps = (
     getValues: SellFormType['getValues'],

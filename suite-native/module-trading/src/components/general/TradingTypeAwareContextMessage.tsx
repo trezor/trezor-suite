@@ -2,8 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Context } from '@suite-common/message-system';
 import { ContextMessage, ContextMessageProps } from '@suite-native/message-system';
-
-import { selectActiveTradingType } from '../../selectors/commonSelectors';
+import { selectActiveTradingType } from '@suite-native/trading-state';
 
 export type TradingTypeAwareContextMessageProps = Omit<ContextMessageProps, 'context'>;
 

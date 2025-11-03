@@ -35,6 +35,7 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/device-mutex": "workspace:*",
@@ -53,11 +54,13 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
+        "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
@@ -72,11 +75,8 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@suite-common/suite-types": "workspace:*",
-        "@suite-common/test-utils": "workspace:*",
-        "@suite-native/atoms": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
-        "@trezor/theme": "workspace:*",
+        "@suite-native/trading-types": "workspace:*",
         "@types/invity-api": "^1.1.11"
     }
 }

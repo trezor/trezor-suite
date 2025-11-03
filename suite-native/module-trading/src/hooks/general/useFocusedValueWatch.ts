@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { tradingActions } from '@suite-native/trading-state';
 import { useDebouncedValue } from '@trezor/react-utils';
-
-import { tradingActions } from '../../reducers';
 
 export const useFocusedValueWatch = <T extends string | undefined>(
     watch: (field: 'focusedValue') => T,

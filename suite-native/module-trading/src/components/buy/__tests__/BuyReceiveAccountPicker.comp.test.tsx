@@ -6,13 +6,12 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { tradingInitialState } from '@suite-native/trading-state';
+import { BuyFormType, ReceiveAccount, TradeableAsset } from '@suite-native/trading-types';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { initialState } from '../../../reducers';
-import { BuyFormType } from '../../../types/buy';
-import { ReceiveAccount, TradeableAsset } from '../../../types/general';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
@@ -29,9 +28,9 @@ jest.mock('@react-navigation/native', () => ({
 const getTradingState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
     wallet: {
         trading: {
-            ...initialState,
+            ...tradingInitialState,
             buy: {
-                ...initialState.buy,
+                ...tradingInitialState.buy,
                 receiveAddress: selectedReceiveAccount?.address?.address,
                 tradingAccountKey: selectedReceiveAccount?.account.key,
             },

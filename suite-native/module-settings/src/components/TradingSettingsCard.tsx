@@ -4,7 +4,7 @@ import { Translation } from '@suite-native/intl';
 import {
     selectIsTradingCountrySet,
     selectIsTradingResidenceCheckEnabled,
-} from '@suite-native/trading-residence';
+} from '@suite-native/trading-state';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 

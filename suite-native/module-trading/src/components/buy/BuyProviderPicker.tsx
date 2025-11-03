@@ -13,11 +13,13 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
+import {
+    TradingRootState,
+    selectBuyQuotesByPaymentMethodNative,
+} from '@suite-native/trading-state';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { TradingRootState } from '../../reducers';
-import { selectBuyQuotesByPaymentMethodNative } from '../../selectors/buySelectors';
 import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 
 type BuyProviderPickerRightProps = {

@@ -6,12 +6,12 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
+import { BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../types/buy';
 import { BuyCryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
 
 describe('BuyCryptoAmountInput', () => {

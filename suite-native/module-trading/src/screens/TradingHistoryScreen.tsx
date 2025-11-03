@@ -12,6 +12,7 @@ import {
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
+import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TradeDetailSheet } from '../components/history/TradeDetailSheet/TradeDetailSheet';
@@ -19,8 +20,6 @@ import {
     TRADE_HISTORY_LIST_ITEM_HEIGHT,
     TradeHistoryListItem,
 } from '../components/history/TradeHistoryListItem/TradeHistoryListItem';
-import { tradingActions } from '../reducers';
-import { selectTradeToBeOpened } from '../selectors/commonSelectors';
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;

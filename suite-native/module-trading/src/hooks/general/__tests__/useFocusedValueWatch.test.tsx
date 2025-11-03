@@ -5,9 +5,9 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { selectIsAmountInputActive } from '@suite-native/trading-state';
+import { BuyFormType } from '@suite-native/trading-types';
 
-import { selectIsAmountInputActive } from '../../../selectors/commonSelectors';
-import { BuyFormType } from '../../../types/buy';
 import { useBuyForm } from '../../buy/useBuyForm';
 import { useFocusedValueWatch } from '../useFocusedValueWatch';
 

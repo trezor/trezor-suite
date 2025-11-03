@@ -8,8 +8,7 @@ import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
-
-import { TradeableAsset } from '../../types/general';
+import { TradeableAsset } from '@suite-native/trading-types';
 
 export type TradeableAssetAccountBalanceProps = {
     account?: Account;

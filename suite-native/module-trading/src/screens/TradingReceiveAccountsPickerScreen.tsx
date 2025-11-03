@@ -15,11 +15,13 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import {
+    selectBuySelectedReceiveAccount,
+    selectExchangeSelectedReceiveAccount,
+} from '@suite-native/trading-state';
 
 import { AccountList } from '../components/general/AccountList/AccountList';
 import { ReceiveAccountsListMode } from '../hooks/general/useReceiveAccountsListData';
-import { selectBuySelectedReceiveAccount } from '../selectors/buySelectors';
-import { selectExchangeSelectedReceiveAccount } from '../selectors/exchangeSelectors';
 
 export const TradingReceiveAccountsPickerScreen = () => {
     const {

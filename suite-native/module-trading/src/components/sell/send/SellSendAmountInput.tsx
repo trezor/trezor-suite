@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 
 import { useAmountInputDecimals } from '../../../hooks/general/useAmountInputDecimals';
 import { useInputFieldControls } from '../../../hooks/general/useInputFieldControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
-import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
 import { AmountInput } from '../../general/Input/AmountInput';
 
 export type SellSendAmountInputProps = {

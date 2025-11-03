@@ -30,11 +30,11 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { ProviderLogo } from '@suite-native/trading-atoms';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { BigNumber } from '@trezor/utils';
 
 import { TradeInfoHeader } from '../components/TradeInfo/TradeInfoHeader';
 import { TradeInfoRow } from '../components/TradeInfo/TradeInfoRow';
-import { selectExchangeSelectedSendAccount } from '../selectors/exchangeSelectors';
 
 type TradingExchangeRevokeScreenProps = StackToStackCompositeScreenProps<
     TradingStackParamList,

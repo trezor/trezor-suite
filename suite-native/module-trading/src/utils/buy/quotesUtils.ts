@@ -8,10 +8,8 @@ import {
     cryptoIdToNetwork,
     toCryptoOption,
 } from '@suite-common/trading';
-
-import { BuyFormType } from '../../types/buy';
-import { getCurrencyLabel } from '../general/currencyUtils';
-import { coinInfoToTradeableAsset } from '../general/tradeableAssetUtils';
+import { coinInfoToTradeableAsset, getCurrencyLabel } from '@suite-native/trading-atoms';
+import { BuyFormType } from '@suite-native/trading-types';
 
 export type GetAnalyticsTradingBuyPayloadProps = {
     quote: BuyTrade | undefined;

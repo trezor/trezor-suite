@@ -20,10 +20,10 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
+import { SellFormType } from '@suite-native/trading-types';
 import { useTimer } from '@trezor/react-utils';
 
-import { selectSellSelectedSendAccount } from '../../selectors/sellSelectors';
-import { SellFormType } from '../../types/sell';
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
 import { useConsent } from '../general/useConsent';
 import { useConsentDenier } from '../general/useConsentDenier';

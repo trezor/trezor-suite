@@ -5,11 +5,11 @@ import { useDispatch } from 'react-redux';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import { HStack } from '@suite-native/atoms';
+import { TradeableAsset } from '@suite-native/trading-types';
 
 import { ExchangeSendAmountInput } from './ExchangeSendAmountInput';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
-import { TradeableAsset } from '../../../types/general';
 import { MyAssetSheet } from '../../general/MyAssetSheet/MyAssetSheet';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 

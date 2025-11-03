@@ -4,11 +4,11 @@ import {
     initStore,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
-
 import {
     selectTradingResidenceCountry,
     selectWasTradingResidenceOnboardingVisited,
-} from '../../selectors/residenceSelectors';
+} from '@suite-native/trading-state';
+
 import { LocationForm } from '../LocationForm';
 import { OnboardingButtons, OnboardingButtonsProps } from '../OnboardingButtons';
 

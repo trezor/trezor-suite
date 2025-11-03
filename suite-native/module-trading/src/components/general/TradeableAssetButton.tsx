@@ -8,12 +8,12 @@ import { cryptoIdToSymbol } from '@suite-common/trading';
 import { NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Box } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
+import { TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
 
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
 import { useTradeableAssetDominantColor } from '../../hooks/general/useTradeableAssetDominantColor';
-import { TradeableAsset } from '../../types/general';
 
 export type TradeableAssetButtonProps = {
     asset: TradeableAsset;

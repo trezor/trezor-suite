@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { selectBuySupportedFiatCurrenciesList } from '../../selectors/buySelectors';
+import { selectBuySupportedFiatCurrenciesList } from '@suite-native/trading-state';
+
 import {
     FiatCurrencySheet,
     FiatCurrencySheetProps,

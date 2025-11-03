@@ -1,18 +1,15 @@
 import { TradingType } from '@suite-common/trading';
 import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { selectActiveTradingType, selectEnabledTradingTypes } from '@suite-native/trading-state';
 
-import {
-    selectActiveTradingType,
-    selectEnabledTradingTypes,
-} from '../../../selectors/commonSelectors';
 import { useActiveTradingTypeReaction } from '../useActiveTradingTypeReaction';
 
 let mockUseRouteParams: {
     tradingType?: TradingType;
 };
 
-jest.mock('../../../selectors/commonSelectors', () => ({
-    ...jest.requireActual('../../../selectors/commonSelectors'),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
     selectEnabledTradingTypes: jest.fn(),
 }));
 

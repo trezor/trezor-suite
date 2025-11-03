@@ -14,7 +14,10 @@
     "dependencies": {
         "@react-navigation/native": "7.1.18",
         "@reduxjs/toolkit": "2.9.1",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
@@ -28,6 +31,9 @@
         "type-fest": "4.24.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/test-utils": "workspace:*",
+        "@suite-native/trading-types": "workspace:*",
+        "@types/invity-api": "^1.1.11"
     }
 }

@@ -31,6 +31,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
+import { TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
     NativeSupportedFeeLevel,
     selectFeeLevels,
@@ -40,9 +41,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 import { useConsent } from './useConsent';
-import { TradingRootState } from '../../reducers';
 import { composeTradingTransactionThunk, signAndPushSendFormTransactionThunk } from '../../thunks';
-import { getFormDraftKeyByTradeType } from '../../utils/general/utils';
 
 export type TradingTransactionSignAndSendProps = {
     nextStep: () => void;

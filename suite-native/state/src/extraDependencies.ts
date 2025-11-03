@@ -11,8 +11,8 @@ import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDepende
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
-import { selectTradingEnvironment } from '@suite-native/module-trading';
 import { reportSecurityCheck } from '@suite-native/sentry';
+import { selectTradingEnvironment } from '@suite-native/trading-state';
 import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';

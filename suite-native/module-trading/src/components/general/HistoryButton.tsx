@@ -14,10 +14,10 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 
 import { useWatchAllTrades } from '../../hooks/general/useWatchAllTrades';
-import { selectIsAmountInputActive } from '../../selectors/commonSelectors';
 
 export type HistoryButtonProps = {
     isFormMountedRecently?: boolean;

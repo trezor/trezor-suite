@@ -15,8 +15,8 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { selectExchangeSelectedSendAccount } from '../../selectors/exchangeSelectors';
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
 import { useTradingTransaction } from '../general/useTradingTransaction';
 

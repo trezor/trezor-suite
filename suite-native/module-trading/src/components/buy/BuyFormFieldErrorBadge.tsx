@@ -6,14 +6,14 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { BuyFormValues } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
-import { BuyFormValues } from '../../types/buy';
 import { truncateDecimals } from '../../utils/general/amountUtils';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 
 export type BuyFormFieldErrorBadgeProps = {
     fieldName: keyof BuyFormValues;

@@ -6,9 +6,8 @@ import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 import { SectionListData } from '@suite-native/trading-atoms';
-
-import { selectVisibleDeviceAccountsByNetworkSymbolSorted } from '../../selectors/commonSelectors';
-import { ReceiveAccount } from '../../types/general';
+import { selectVisibleDeviceAccountsByNetworkSymbolSorted } from '@suite-native/trading-state';
+import { ReceiveAccount } from '@suite-native/trading-types';
 
 export type ReceiveAccountsListMode = 'account' | 'address';
 

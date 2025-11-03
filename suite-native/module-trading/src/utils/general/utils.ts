@@ -1,21 +1,15 @@
 import type { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import {
-    TradingExchangeType,
-    TradingSellType,
     TradingTradeType,
     TradingTransaction,
     TradingType,
-    cryptoIdToNetworkSymbolAndContractAddress,
     isBuyTrade,
-    isCryptoIdForNativeToken,
     isExchangeTrade,
     isSellFiatTrade,
-    toTokenCryptoId,
     tradeFinalStatuses,
 } from '@suite-common/trading';
 import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol, getFormDraftKey } from '@suite-common/wallet-utils/';
 import type { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 import { getWeakRandomId } from '@trezor/utils';
@@ -234,30 +228,4 @@ export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown) => {
     }
 
     return 'Unknown error';
-};
-
-export const toCaseAwareCryptoId = (cryptoId: CryptoId): CryptoId => {
-    if (isCryptoIdForNativeToken(cryptoId)) {
-        return cryptoId;
-    }
-
-    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
-    if (!contractAddress) {
-        return cryptoId;
-    }
-
-    const adjustedContractAddress = getContractAddressForNetworkSymbol(symbol, contractAddress);
-
-    return toTokenCryptoId(symbol, adjustedContractAddress);
-};
-
-export const getFormDraftKeyByTradeType = (tradeType: TradingSellType | TradingExchangeType) => {
-    switch (tradeType) {
-        case 'exchange':
-            return getFormDraftKey('trading-exchange', '');
-        case 'sell':
-            return getFormDraftKey('trading-sell', '');
-        default:
-            return exhaustive(tradeType);
-    }
 };

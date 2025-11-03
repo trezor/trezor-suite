@@ -1,6 +1,6 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { QuotesCategory } from '@suite-native/trading-types';
 
-import { QuotesCategory } from '../../../../types/general';
 import {
     ProviderSheetSectionHeader,
     ProviderSheetSectionHeaderProps,

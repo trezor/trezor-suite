@@ -7,14 +7,16 @@ import {
     initStore,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    selectBuySelectedReceiveAccount,
+    selectExchangeSelectedReceiveAccount,
+    tradingInitialState,
+} from '@suite-native/trading-state';
+import { ReceiveAccount } from '@suite-native/trading-types';
 import { Address } from '@trezor/blockchain-link-types';
 import { StaticSessionId } from '@trezor/connect';
 
 import fixturesAccounts from '../../../../__fixtures__/accounts.json';
-import { initialState } from '../../../../reducers';
-import { selectBuySelectedReceiveAccount } from '../../../../selectors/buySelectors';
-import { selectExchangeSelectedReceiveAccount } from '../../../../selectors/exchangeSelectors';
-import { ReceiveAccount } from '../../../../types/general';
 import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 
 const accounts = fixturesAccounts as Account[];
@@ -37,9 +39,9 @@ const getStateMockupBuy = (selectedAccount: ReceiveAccount) => ({
     wallet: {
         accounts: defaultPreloadedState.wallet.accounts,
         trading: {
-            ...initialState,
+            ...tradingInitialState,
             buy: {
-                ...initialState.buy,
+                ...tradingInitialState.buy,
                 receiveAddress: selectedAccount?.address?.address,
                 tradingAccountKey: selectedAccount.account.key,
             },
@@ -52,9 +54,9 @@ const getStateMockupExchange = (selectedAccount: ReceiveAccount) => ({
     wallet: {
         accounts: defaultPreloadedState.wallet.accounts,
         trading: {
-            ...initialState,
+            ...tradingInitialState,
             exchange: {
-                ...initialState.exchange,
+                ...tradingInitialState.exchange,
                 receiveAddress: selectedAccount?.address?.address,
                 receiveAccountKey: selectedAccount.account.key,
             },

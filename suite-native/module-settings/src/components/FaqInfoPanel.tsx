@@ -5,7 +5,7 @@ import { AccordionList, Box, BulletListItem, Text, VStack } from '@suite-native/
 import { useCoinLabel } from '@suite-native/device';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { selectIsTradingEnabled } from '@suite-native/module-trading';
+import { selectIsTradingEnabled } from '@suite-native/trading-state';
 import { isAndroid } from '@trezor/env-utils';
 import {
     TREZOR_SUPPORT_BLUETOOTH_TROUBLESHOOTING,

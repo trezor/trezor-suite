@@ -13,16 +13,14 @@ import {
     renderHook,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
-import { selectTradingResidenceCountry } from '@suite-native/trading-residence';
+import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
+import { BuyFormType, TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/buyQuotes.json';
 import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { buyActions } from '../../../reducers';
-import { BuyFormType } from '../../../types/buy';
-import { TradeableAsset } from '../../../types/general';
 import { clearBuyFormQuoteData, useBuyForm } from '../useBuyForm';
 
 jest.mock('@trezor/react-utils', () => {

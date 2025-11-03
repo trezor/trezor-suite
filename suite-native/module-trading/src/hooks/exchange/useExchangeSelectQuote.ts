@@ -16,18 +16,18 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import {
+    selectExchangeSelectedReceiveAccount,
+    selectExchangeSelectedSendAccount,
+} from '@suite-native/trading-state';
+import { ExchangeFormType } from '@suite-native/trading-types';
 import { useTimer } from '@trezor/react-utils';
 
 import { useExchangeAnalyticReportCallback } from './useExchangeAnalyticReportCallback';
 import { clearExchangeFormQuoteData } from './useExchangeForm';
-import {
-    selectExchangeSelectedReceiveAccount,
-    selectExchangeSelectedSendAccount,
-} from '../../selectors/exchangeSelectors';
-import { ExchangeFormType } from '../../types/exchange';
 import { getApprovalStatus } from '../../utils/general/approvalStatusUtils';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConsent } from '../general/useConsent';
 import { useConsentDenier } from '../general/useConsentDenier';
 

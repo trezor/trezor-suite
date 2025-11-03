@@ -10,9 +10,9 @@ import {
     PortfolioTrackerInfo,
     ViewOnlyWalletInfo,
 } from '@suite-native/trading-atoms';
+import { selectIsTradingExchangeEnabled } from '@suite-native/trading-state';
 
 import { ExchangeTabContent } from './ExchangeTabContent';
-import { selectIsTradingExchangeEnabled } from '../../selectors/commonSelectors';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
 const ExchangeTabEnabled = () => {

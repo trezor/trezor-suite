@@ -6,8 +6,8 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { tradingResidenceActions } from '@suite-native/trading-state';
 
-import { tradingResidenceActions } from '../../reducers/residenceSlice';
 import { useLocationForm } from '../useLocationForm';
 
 describe('useLocationForm', () => {

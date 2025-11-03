@@ -6,9 +6,9 @@ import { Button, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { MaxSlippageFormValues } from '@suite-native/trading-types';
 
 import { useMaxSlippageForm } from '../../hooks/settings/useMaxSlippageForm';
-import { MaxSlippageFormValues } from '../../types/settings';
 
 export type MaxSlippageFormProps = {
     onSubmit: () => void;

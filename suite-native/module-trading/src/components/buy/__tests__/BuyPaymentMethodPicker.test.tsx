@@ -12,11 +12,11 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { BuyFormType } from '@suite-native/trading-types';
 
 import quotes from '../../../__fixtures__/buyQuotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../types/buy';
 import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
 
 describe('BuyPaymentMethodPicker', () => {

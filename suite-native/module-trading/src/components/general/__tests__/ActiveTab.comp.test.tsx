@@ -4,8 +4,8 @@ import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test
 import { ActiveTab } from '../ActiveTab';
 
 // for the sake of easier testing, we mock the flags to return false
-jest.mock('../../../selectors/commonSelectors', () => ({
-    ...jest.requireActual('../../../selectors/commonSelectors'),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingBuyEnabled: () => false,
     selectIsTradingExchangeEnabled: () => false,
     selectIsTradingSellEnabled: () => false,

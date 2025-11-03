@@ -15,17 +15,17 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-
-import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
-import { sellActions } from '../../reducers';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     selectSellAmountLimits,
     selectSellFormDefaultValues,
     selectSellSelectedSendAccount,
-} from '../../selectors/sellSelectors';
-import { SellFormType, SellFormValues } from '../../types/sell';
+    sellActions,
+} from '@suite-native/trading-state';
+import { SellFormType, SellFormValues } from '@suite-native/trading-types';
+
+import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { truncateDecimals } from '../../utils/general/amountUtils';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';

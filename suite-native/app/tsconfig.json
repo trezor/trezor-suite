@@ -80,6 +80,7 @@
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../trading-residence" },
+        { "path": "../trading-state" },
         { "path": "../transactions" },
         {
             "path": "../../packages/blockchain-link-types"

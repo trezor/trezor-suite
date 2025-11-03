@@ -7,10 +7,10 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
+import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { selectBuyBestQuotesForAvailablePaymentMethods } from '../../selectors/buySelectors';
 import { PaymentMethodSheet } from '../general/PaymentMethodSheet/PaymentMethodSheet';
 
 const PAYMENT_METHOD_PICKER_TEST_ID = '@trading/buy/payment-method-picker';

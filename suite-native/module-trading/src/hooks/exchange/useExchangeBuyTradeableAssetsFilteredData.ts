@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { selectExchangeBuyTradeableAssets } from '../../selectors/exchangeSelectors';
+import { selectExchangeBuyTradeableAssets } from '@suite-native/trading-state';
+
 import { useTradeableAssetsFilteredData } from '../general/useTradeableAssetsFilteredData';
 
 export const useExchangeBuyTradeableAssetsFilteredData = () => {

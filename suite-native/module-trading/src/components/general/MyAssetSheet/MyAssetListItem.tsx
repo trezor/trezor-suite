@@ -10,9 +10,9 @@ import {
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
+import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
+import { MyAsset, TradeableAsset } from '@suite-native/trading-types';
 
-import { MyAsset, TradeableAsset } from '../../../types/general';
-import { coinInfoToTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
 import { ASSET_ITEM_HEIGHT, AssetListItem } from '../AssetListItem';
 
 export type MyAssetListItemProps = {

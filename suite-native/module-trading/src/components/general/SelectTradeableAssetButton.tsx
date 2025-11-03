@@ -1,9 +1,9 @@
 import { Button, ButtonColorScheme, buttonSchemeToColorsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetButton } from './TradeableAssetButton';
-import { TradeableAsset } from '../../types/general';
 
 export type SelectAssetButtonProps = {
     onPress: () => void;

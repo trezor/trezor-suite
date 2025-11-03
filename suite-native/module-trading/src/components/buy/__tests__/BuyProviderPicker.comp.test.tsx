@@ -9,12 +9,12 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { BuyFormType } from '@suite-native/trading-types';
 
 import { buyCexdirect, buyInvity, buyMercuryo } from '../../../__fixtures__/buyProviders';
 import quotes from '../../../__fixtures__/buyQuotes.json';
 import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../types/buy';
 import { BuyProviderPicker } from '../BuyProviderPicker';
 
 describe('BuyProviderPicker', () => {
