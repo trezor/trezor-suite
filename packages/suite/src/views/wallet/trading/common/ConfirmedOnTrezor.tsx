@@ -31,8 +31,8 @@ export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => (
         <RotateDeviceImage
             deviceModel={device?.features?.internal_model}
             deviceColor={device?.features?.unit_color}
-            animationHeight="34px"
-            animationWidth="34px"
+            height={34}
+            width={34}
         />
 
         <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />

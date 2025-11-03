@@ -1,4 +1,4 @@
-import styled, { CSSProperties, css } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
@@ -9,6 +9,8 @@ export const allowedAnimationPrimitivesFrameProps = [
     'margin',
     'maxWidth',
     'maxHeight',
+    'width',
+    'height',
 ] as const satisfies FramePropsKeys[];
 export type AllowedAnimationPrimitiveFrameProps = Pick<
     FrameProps,
@@ -20,8 +22,6 @@ export type Shape = (typeof shapes)[number];
 
 export const AnimationWrapper = styled.div<
     TransientProps<AllowedAnimationPrimitiveFrameProps> & {
-        height?: CSSProperties['height'];
-        width?: CSSProperties['width'];
         shape?: Shape;
     }
 >`
@@ -29,9 +29,6 @@ export const AnimationWrapper = styled.div<
     display: flex;
     justify-content: center;
     align-items: center;
-
-    width: ${({ width }) => width};
-    height: ${({ height }) => height};
 
     ${withFrameProps}
 
