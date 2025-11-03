@@ -1037,8 +1037,6 @@
   "TR_EXPERIMENTAL_FEATURES": "Experimental",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Recursos experimentais",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Apenas para usuários experientes. Use por sua conta e risco. Estes recursos estão em teste, talvez estejam instáveis e podem não ter suporte a longo prazo.",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "Enviar e receber globalmente",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "Envie e receba transações do seu painel diretamente para qualquer conta.",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFTs (tokens não fungíveis)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Adicione uma seção de NFT para contas em cadeia baseadas em EVM, o que permite a você visualizar NFTs. Não há suporte para o envio de NFTs no momento.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Migre senhas do Dropbox",

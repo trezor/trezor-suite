@@ -1015,8 +1015,6 @@
   "TR_EXPERIMENTAL_FEATURES": "實驗室",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "實驗功能",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "僅提供給經驗豐富的使用者使用，使用時請自負風險。這些功能還在測試當中，有時可能會壞掉，並且也不保證有長期支援。",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "全域收送",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "直接從儀表板收送交易到任何帳戶。",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFT (非同值型代幣)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "在 EVM 區塊鏈帳戶增加 NFT 項目，以便檢視非同值型代幣(NFT)。目前還不支援傳送代幣。",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "移轉 Dropbox 密碼",

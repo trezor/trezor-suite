@@ -1037,8 +1037,6 @@
   "TR_EXPERIMENTAL_FEATURES": "Experimentell",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Experimentelle Funktionen",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Der langfristige Support dieser Funktionen ist von der Garantie ausgeschlossen.",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "Globales Senden und Empfangen",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "Sende und empfange Transaktionen von deinem Dashboard direkt an jedes Konto.",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFTs (Non-Fungible Tokens)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Füge einen NFT-Bereich auf EVM-basierten Chain-Konten hinzu, sodass NFTs angezeigt werden können. Das Senden von NFTs wird derzeit nicht unterstützt.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Dropbox-Passwörter migrieren",

@@ -1037,8 +1037,6 @@
   "TR_EXPERIMENTAL_FEATURES": "Expérimental",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Fonctionnalités expérimentales",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Destiné uniquement aux utilisateurs expérimentés. Cette utilisation se fait à vos risques et périls. Ces fonctionnalités sont en cours de test, peuvent être instables et ne pas être prises en charge à long terme.",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "Envoyer et recevoir",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "Envoyez et recevez des transactions directement depuis votre tableau de bord sur n'importe quel compte.",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFT (jetons non fongibles)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Ajoutez une section NFT aux comptes de chaîne basés sur l’EVM (Ethereum Virtual Machine), ce qui vous permet d’afficher les NFT. L’envoi de NFT n’est pas pris en charge actuellement.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Migration des mots de passe Dropbox",
