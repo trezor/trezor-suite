@@ -3,11 +3,9 @@ import 'core-js/actual';
 import { Suspense } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
-import { init as initSentry } from '@sentry/browser';
 import { History, createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
@@ -19,6 +17,7 @@ import { preloadStore } from 'src/support/suite/preloadStore';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useTor } from 'src/support/suite/useTor';
 
+import { initSentry } from './sentry';
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
 
@@ -42,7 +41,7 @@ const MainWeb = ({ history }: { history: History }) => {
 
 export const init = async (container: HTMLElement) => {
     if (!window.Playwright) {
-        initSentry(SENTRY_CONFIG);
+        initSentry();
     }
 
     const browserHistory = createBrowserHistory();

@@ -1,9 +1,7 @@
 /* eslint-disable import/order */
 import { Provider as ReduxProvider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
-import { init as initSentry } from '@sentry/electron/renderer';
 
-import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import TrezorConnect from '@trezor/connect';
@@ -37,6 +35,7 @@ import { type History, createMemoryHistory } from 'history';
 import { createRouterServices } from 'src/support/extraDependencies';
 import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
 import { GlobalStyle } from './GlobalStyle';
+import { initSentry } from './sentry';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();
@@ -63,7 +62,7 @@ const MainDesktop = ({ history }: { history: History }) => {
 };
 
 export const init = async (container: HTMLElement) => {
-    initSentry(SENTRY_CONFIG);
+    initSentry();
 
     // render simple loader with theme provider without redux, wait for indexedDB
     const root = createRoot(container);

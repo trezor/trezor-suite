@@ -1,4 +1,4 @@
-import { Options, Event as SentryEvent, captureConsoleIntegration } from '@sentry/core';
+import { Options, Event as SentryEvent } from '@sentry/core';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isCodesignBuild } from '@trezor/env-utils';
@@ -35,7 +35,7 @@ const redactUserPath = (event: SentryEvent) => {
     }
 };
 
-const beforeSend: Options['beforeSend'] = event => {
+export const beforeSend = (event: SentryEvent) => {
     // sentry events are skipped until user confirm analytics reporting
     const allowReport = event.tags?.[allowReportTag];
     if (allowReport === false) {
@@ -90,14 +90,9 @@ const ignoreErrors = [
     'device disconnected during action', // the same as with 'other call in progress'
 ];
 
-export const SENTRY_CONFIG: Options = {
+export const SENTRY_CONFIG = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
-    autoSessionTracking: false, // do not send analytical data to Sentry
-    integrations: [
-        captureConsoleIntegration({
-            levels: ['error'],
-        }),
-    ],
+
     beforeSend,
     enabled: !isDevEnv, // set to true to enable Sentry logging while testing locally
     maxValueLength: 500, // default 250 is not enough for some errors
@@ -112,4 +107,4 @@ export const SENTRY_CONFIG: Options = {
             version: process.env.VERSION || 'undefined',
         },
     },
-};
+} satisfies Options;

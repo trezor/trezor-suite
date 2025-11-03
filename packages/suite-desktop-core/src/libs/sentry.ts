@@ -1,4 +1,9 @@
-import { ElectronMainOptions, IPCMode, init } from '@sentry/electron/main';
+import {
+    ElectronMainOptions,
+    IPCMode,
+    captureConsoleIntegration,
+    init,
+} from '@sentry/electron/main';
 import { session } from 'electron';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
@@ -11,6 +16,17 @@ interface InitSentryParams {
     mainThreadEmitter: MainThreadEmitter;
     store: Store;
 }
+
+const ELECTRON_MAIN_SENTRY_CONFIG = {
+    ...SENTRY_CONFIG,
+    integrations: defaults => [
+        ...defaults.filter(i => i.name !== 'MainProcessSession'),
+        captureConsoleIntegration({ levels: ['error'] }),
+    ],
+
+    ipcMode: IPCMode.Classic,
+    getSessions: () => [session.defaultSession],
+} as ElectronMainOptions;
 
 export const initSentry = ({ mainThreadEmitter, store }: InitSentryParams) => {
     let torStatus = TorStatus.Enabling;
@@ -25,13 +41,6 @@ export const initSentry = ({ mainThreadEmitter, store }: InitSentryParams) => {
         shouldSend: () => !(store.getTorSettings().running && torStatus !== TorStatus.Enabled),
     };
 
-    const sentryConfig: ElectronMainOptions = {
-        ...SENTRY_CONFIG,
-        ipcMode: IPCMode.Classic,
-        getSessions: () => [session.defaultSession],
-        transportOptions,
-    };
-
     // Sentry ignore userPath change by environment so even in local build it uses @trezor/suite-desktop/sentry folder.
-    init(sentryConfig);
+    init({ ...ELECTRON_MAIN_SENTRY_CONFIG, transportOptions });
 };
