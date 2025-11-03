@@ -11,7 +11,11 @@ import type { AcquiredDevice } from 'src/types/suite';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
+import { CopyAddressModal } from '../CopyAddressModal';
+import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
 import type { ReduxModalProps } from '../ReduxModal';
+import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
+import { UnhideTokenModal } from '../UnhideTokenModal';
 import { AddAccountModal } from './AddAccountModal/AddAccountModal';
 import { AddTokenModal } from './AddTokenModal';
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
@@ -19,7 +23,6 @@ import { ApplicationLogModal } from './ApplicationLogModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
 import { BackgroundGalleryModal } from './BackgroundGalleryModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
-import { UnhideTokenModal } from '../UnhideTokenModal';
 import { ClaimModal } from './ClaimModal/ClaimModal';
 import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
 import { ConfirmUnverifiedAddressModal } from './ConfirmUnverifiedAddressModal';
@@ -29,7 +32,6 @@ import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { ConnectPermissionsModal } from './ConnectPermissionsModal';
-import { CopyAddressModal } from '../CopyAddressModal';
 import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
 import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
 import { DisableTorModal } from './DisableTorModal';
@@ -51,11 +53,9 @@ import { TradingTermsModal } from './TradingTermsModal';
 import { TxDetailModal } from './TxDetailModal/TxDetailModal';
 import { TxSimulationModal } from './TxSimulationModal';
 import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
+import { UnstakeModal } from './UnstakeModal/UnstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
-import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
-import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
-import { UnstakeModal } from './UnstakeModal/UnstakeModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
@@ -186,15 +186,15 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
         case 'uneco-coinjoin-warning':
             return <UnecoCoinjoinModal />;
         case 'stake-in-a-nutshell':
-            return <StakeInANutshellModal onCancel={onCancel} />;
+            return <StakeInANutshellModal onCancel={onCancel} flow={payload.flow} />;
         case 'stake':
-            return <StakeModal onCancel={onCancel} />;
+            return <StakeModal onCancel={onCancel} flow={payload.flow} />;
         case 'unstake':
             return <UnstakeModal onCancel={onCancel} />;
         case 'claim':
             return <ClaimModal onCancel={onCancel} />;
         case 'everstake':
-            return <EverstakeModal onCancel={onCancel} />;
+            return <EverstakeModal onCancel={onCancel} flow={payload.flow} />;
         case 'copy-address':
             return (
                 <CopyAddressModal

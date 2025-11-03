@@ -1,3 +1,4 @@
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -6,11 +7,15 @@ import { Translation } from 'src/components/suite/Translation';
 
 import { EstimatedGains } from './EstimatedGains';
 
-export const StakeInfoCards = () => {
+interface StakeInfoCardsProps {
+    flow: StakingFlow;
+}
+
+export const StakeInfoCards = ({ flow }: StakeInfoCardsProps) => {
     const cards = [
         {
             heading: <Translation id="TR_STAKING_ONCE_YOU_CONFIRM" />,
-            content: <StakingInfo isExpanded />,
+            content: <StakingInfo isExpanded flow={flow} />,
             defaultIsOpen: true,
         },
         {

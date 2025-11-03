@@ -1,15 +1,21 @@
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite/Translation';
+import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
-export const StakeButton = () => {
+interface StakeButtonProps {
+    flow: StakingFlow;
+}
+
+export const StakeButton = ({ flow }: StakeButtonProps) => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(
         state => state.wallet.selectedAccount,
@@ -50,7 +56,7 @@ export const StakeButton = () => {
         }
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
                 step: 'stake-form-modal',

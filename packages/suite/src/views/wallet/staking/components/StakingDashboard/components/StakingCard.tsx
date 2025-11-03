@@ -1,4 +1,5 @@
 import { getStakingTotalRewards } from '@suite-common/staking';
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     StakeRootState,
@@ -35,9 +36,9 @@ import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
+import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 
 type ItemProps = {
     label: React.ReactNode;
@@ -153,7 +154,7 @@ export const StakingCard = ({
 
     const openStakeModal = () => {
         if (!isStakingDisabled) {
-            dispatch(openModal({ type: 'stake' }));
+            dispatch(openModal({ type: 'stake', flow: StakingFlow.Stake }));
 
             analytics.report({
                 type: EventType.StakingStake,

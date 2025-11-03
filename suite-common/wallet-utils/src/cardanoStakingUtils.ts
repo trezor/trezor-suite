@@ -27,14 +27,6 @@ export const isCardanoStakedWithEverstake = (account: Account) => {
     return account?.misc.staking.poolId === CARDANO_EVERSTAKE_STAKING_POOL.bech32;
 };
 
-export const isCardanoUpdateProviderFlow = (account?: Account) => {
-    if (!account || account.networkType !== 'cardano') return false;
-
-    const isStakeActive = account?.misc?.staking?.isActive;
-
-    return !isCardanoStakedWithEverstake(account) && isStakeActive;
-};
-
 export const isStakedWithFiveBinaries = (account?: Account, fiveBinariesPools?: PoolsResponse) => {
     if (account?.networkType !== 'cardano' || !fiveBinariesPools) return false;
 

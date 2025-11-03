@@ -1,5 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -12,7 +13,11 @@ import { StakeAvailableBalance } from './StakeAvailableBalance';
 import { StakeInputs } from './StakeInputs';
 import { StakeRegistrationDepositCard } from './StakeRegistrationDepositCard';
 
-export const StakeForm = () => {
+interface StakeFormProps {
+    flow: StakingFlow;
+}
+
+export const StakeForm = ({ flow }: StakeFormProps) => {
     const {
         account,
         isConfirmModalOpen,
@@ -37,6 +42,7 @@ export const StakeForm = () => {
                     isLoading={isLoading}
                     onConfirm={signTx}
                     onCancel={closeConfirmModal}
+                    flow={flow}
                 />
             )}
 

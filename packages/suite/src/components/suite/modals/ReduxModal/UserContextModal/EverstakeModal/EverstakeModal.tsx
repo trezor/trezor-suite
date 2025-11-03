@@ -1,5 +1,6 @@
 import { JSX, useMemo, useState } from 'react';
 
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -7,11 +8,12 @@ import {
 } from '@suite-common/wallet-core';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Banner, Card, Checkbox, Column, IconName, Modal } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
+import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -19,9 +21,10 @@ import { VotingDelegations } from './VotingDelegations';
 
 interface EverstakeModalProps {
     onCancel: () => void;
+    flow: StakingFlow;
 }
 
-export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
+export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
@@ -42,14 +45,15 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
 
     const proceedToStaking = () => {
         onCancel();
-        dispatch(openModal({ type: 'stake' }));
+        dispatch(openModal({ type: 'stake', flow }));
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
                 step: 'funds-maintained-modal',
                 networkSymbol: account?.symbol,
+                votingDelegation: selectedVotingDelegation.type,
             },
         });
     };
@@ -58,11 +62,12 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
         onCancel();
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
                 step: 'funds-maintained-modal',
                 networkSymbol: account?.symbol,
+                votingDelegation: selectedVotingDelegation.type,
             },
         });
     };

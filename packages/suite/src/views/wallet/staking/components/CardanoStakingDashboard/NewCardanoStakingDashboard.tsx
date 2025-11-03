@@ -8,7 +8,7 @@ import {
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork, isCardanoUpdateProviderFlow } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -76,13 +76,7 @@ export const NewCardanoStakingDashboard = ({
                                 >
                                     <ClaimCard />
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
-                                        <ApyCard
-                                            apy={
-                                                !isCardanoUpdateProviderFlow(account)
-                                                    ? apy
-                                                    : undefined
-                                            }
-                                        />
+                                        <ApyCard apy={apy} />
                                         <PayoutCard
                                             nextRewardPayout={CARDANO_EPOCH_DAYS}
                                             daysToAddToPool={CARDANO_EPOCH_DAYS}

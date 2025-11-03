@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
 
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import {
     HELP_CENTER_ADA_STAKING,
@@ -15,6 +16,7 @@ import {
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
+import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -28,9 +30,15 @@ interface ConfirmStakeModalProps {
     isLoading: boolean;
     onConfirm: () => void;
     onCancel: () => void;
+    flow: StakingFlow;
 }
 
-export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmStakeModalProps) => {
+export const ConfirmStakeModal = ({
+    isLoading,
+    onConfirm,
+    onCancel,
+    flow,
+}: ConfirmStakeModalProps) => {
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
@@ -43,10 +51,10 @@ export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmSta
 
     const handleOnCancel = () => {
         onCancel();
-        dispatch(openModal({ type: 'stake', flow: EventType.StakingStake }));
+        dispatch(openModal({ type: 'stake', flow }));
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
                 step: 'entry-period-stake-modal',
@@ -59,7 +67,7 @@ export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmSta
         onConfirm();
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
                 step: 'entry-period-stake-modal',

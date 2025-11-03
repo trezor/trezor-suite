@@ -1,14 +1,12 @@
-import React from 'react';
-
 import { TranslationKey } from '@suite-common/intl-types';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     StakeRootState,
     selectPoolStatsApyData,
     selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { getUnstakingPeriodInDays, isCardanoUpdateProviderFlow } from '@suite-common/wallet-utils';
+import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import {
     Badge,
     CollapsibleBox,
@@ -22,13 +20,14 @@ import {
     Row,
     Text,
 } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
 import { Translation } from 'src/components/suite/Translation';
+import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -38,10 +37,8 @@ interface StakingDetails {
     translationId: TranslationKey;
 }
 
-const getStakingDetails = (account: Account): StakingDetails[] => {
-    const { networkType } = account;
-
-    if (isCardanoUpdateProviderFlow(account))
+const getStakingDetails = (flow: StakingFlow, networkType: NetworkType): StakingDetails[] => {
+    if (flow === StakingFlow.UpdateProvider)
         return [
             {
                 id: 0,
@@ -103,9 +100,10 @@ const getStakingDetails = (account: Account): StakingDetails[] => {
 
 interface StakeInANutshellModalProps {
     onCancel: () => void;
+    flow: StakingFlow;
 }
 
-export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) => {
+export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
@@ -125,10 +123,10 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
 
     const proceedToEverstakeModal = () => {
         onCancel();
-        dispatch(openModal({ type: 'everstake' }));
+        dispatch(openModal({ type: 'everstake', flow }));
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
                 step: 'stake-in-a-nutshell-modal',
@@ -141,7 +139,7 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
         onCancel();
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
                 step: 'stake-in-a-nutshell-modal',
@@ -155,14 +153,14 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
             heading: (
                 <Translation
                     id={
-                        isCardanoUpdateProviderFlow(account)
+                        flow === StakingFlow.UpdateProvider
                             ? 'TR_STAKE_PROVIDER_UPDATE'
                             : 'TR_STAKE_STAKING_PROCESS'
                     }
                 />
             ),
             badge: <Translation id="TR_TX_FEE" />,
-            content: <StakingInfo />,
+            content: <StakingInfo flow={flow} />,
         },
         {
             heading: <Translation id="TR_STAKE_UNSTAKING_PROCESS" />,
@@ -200,7 +198,7 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
                 typographyStyle="hint"
                 margin={{ top: spacings.xs }}
             >
-                {getStakingDetails(account).map(({ id, icon, translationId }) => (
+                {getStakingDetails(flow, account.networkType).map(({ id, icon, translationId }) => (
                     <List.Item key={id} bulletComponent={<Icon name={icon} variant="primary" />}>
                         <Paragraph variant="tertiary">
                             <Translation

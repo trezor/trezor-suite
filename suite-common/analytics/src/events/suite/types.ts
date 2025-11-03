@@ -455,6 +455,22 @@ export type SuiteAnalyticsEvent =
                   | 'entry-period-stake-modal';
               networkSymbol?: string;
               currency?: 'crypto' | 'fiat';
+              votingDelegation?: 'everstake' | 'another_drep';
+          };
+      }
+    | {
+          type: EventType.StakingUpdateProvider;
+          payload: {
+              action: 'continue' | 'cancel';
+              step:
+                  | 'staking-dashboard'
+                  | 'stake-in-a-nutshell-modal'
+                  | 'funds-maintained-modal'
+                  | 'stake-form-modal'
+                  | 'entry-period-stake-modal';
+              networkSymbol?: string;
+              currency?: 'crypto' | 'fiat';
+              votingDelegation?: 'everstake' | 'another_drep';
           };
       }
     | {

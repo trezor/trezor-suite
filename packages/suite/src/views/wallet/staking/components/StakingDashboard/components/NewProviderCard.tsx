@@ -1,3 +1,4 @@
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
@@ -22,10 +23,15 @@ export const NewProviderCard = () => {
 
     const openStakeInANutshellModal = () => {
         if (!isStakingDisabled) {
-            dispatch(openModal({ type: 'stake-in-a-nutshell' }));
+            dispatch(
+                openModal({
+                    type: 'stake-in-a-nutshell',
+                    flow: StakingFlow.UpdateProvider,
+                }),
+            );
 
             analytics.report({
-                type: EventType.StakingStake,
+                type: EventType.StakingUpdateProvider,
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',

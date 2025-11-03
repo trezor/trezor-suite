@@ -1,3 +1,4 @@
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     ComposeActionContext,
@@ -71,7 +72,14 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
 
     const { stakeType } = precomposedForm ?? {};
     if (stakeType && !isSuccessTx) {
-        dispatch(openModal({ type: stakeType }));
+        switch (stakeType) {
+            case 'stake':
+                dispatch(openModal({ type: stakeType, flow: StakingFlow.Stake }));
+                break;
+
+            default:
+                dispatch(openModal({ type: stakeType }));
+        }
     }
 };
 
@@ -250,7 +258,14 @@ export const signTransaction =
 
             const { stakeType } = formValues;
             if (stakeType) {
-                dispatch(openModal({ type: stakeType }));
+                switch (stakeType) {
+                    case 'stake':
+                        dispatch(openModal({ type: stakeType, flow: StakingFlow.Stake }));
+                        break;
+
+                    default:
+                        dispatch(openModal({ type: stakeType }));
+                }
             }
 
             return;

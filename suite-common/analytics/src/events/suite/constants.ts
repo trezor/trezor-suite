@@ -72,6 +72,7 @@ export enum EventType {
     StakingUnstake = 'staking/unstake',
     StakingClaim = 'staking/claim',
     StakingConfirm = 'staking/confirm',
+    StakingUpdateProvider = 'staking/update-provider',
 
     MenuGuide = 'menu/guide',
     MenuNotificationsToggle = 'menu/notifications/toggle',

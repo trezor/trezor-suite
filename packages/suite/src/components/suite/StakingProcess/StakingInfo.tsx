@@ -1,6 +1,7 @@
 import React, { JSX } from 'react';
 
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_DAYS,
@@ -13,7 +14,7 @@ import {
     selectPoolStatsApyData,
     selectValidatorsQueueData,
 } from '@suite-common/wallet-core';
-import { isCardanoUpdateProviderFlow, isStakingNetworkType } from '@suite-common/wallet-utils';
+import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
@@ -32,7 +33,11 @@ type InfoRowsData = {
     rewardsEarningHeading: JSX.Element;
 };
 
-const getInfoRowsData = (account: Account, daysToAddToPool?: number): InfoRowsData | null => {
+const getInfoRowsData = (
+    account: Account,
+    flow: StakingFlow,
+    daysToAddToPool?: number,
+): InfoRowsData | null => {
     const { networkType, symbol } = account;
 
     if (!isStakingNetworkType(networkType)) return null;
@@ -76,25 +81,26 @@ const getInfoRowsData = (account: Account, daysToAddToPool?: number): InfoRowsDa
             };
         case 'cardano':
             return {
-                payoutDays: isCardanoUpdateProviderFlow(account) ? (
-                    <Translation
-                        id="TR_STAKE_APPROXIMATE_EPOCHS"
-                        values={{
-                            count: CARDANO_APPROXIMATE_EPOCHS,
-                        }}
-                    />
-                ) : (
-                    <Translation
-                        id="TR_STAKE_APPROXIMATE_DAYS"
-                        values={{
-                            count: CARDANO_ACTIVATION_PERIOD_DAYS,
-                        }}
-                    />
-                ),
+                payoutDays:
+                    flow === StakingFlow.UpdateProvider ? (
+                        <Translation
+                            id="TR_STAKE_APPROXIMATE_EPOCHS"
+                            values={{
+                                count: CARDANO_APPROXIMATE_EPOCHS,
+                            }}
+                        />
+                    ) : (
+                        <Translation
+                            id="TR_STAKE_APPROXIMATE_DAYS"
+                            values={{
+                                count: CARDANO_ACTIVATION_PERIOD_DAYS,
+                            }}
+                        />
+                    ),
                 rewardsPeriodHeading: (
                     <Translation
                         id={
-                            isCardanoUpdateProviderFlow(account)
+                            flow === StakingFlow.UpdateProvider
                                 ? 'TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER'
                                 : 'TR_STAKE_ENTER_ACTIVATION_PERIOD'
                         }
@@ -105,7 +111,7 @@ const getInfoRowsData = (account: Account, daysToAddToPool?: number): InfoRowsDa
                 rewardsEarningHeading: (
                     <Translation
                         id={
-                            isCardanoUpdateProviderFlow(account)
+                            flow === StakingFlow.UpdateProvider
                                 ? 'TR_STAKE_START_EARNING_FROM_NEW_PROVIDER'
                                 : 'TR_STAKE_EARN_REWARDS_EVERY'
                         }
@@ -120,9 +126,10 @@ const getInfoRowsData = (account: Account, daysToAddToPool?: number): InfoRowsDa
 
 interface StakingInfoProps {
     isExpanded?: boolean;
+    flow: StakingFlow;
 }
 
-export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
+export const StakingInfo = ({ isExpanded, flow }: StakingInfoProps) => {
     const { account } = useSelector((state: CoinjoinRootState) => state.wallet.selectedAccount);
 
     const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
@@ -134,7 +141,7 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
     if (!account) return null;
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
-    const infoRowsData = getInfoRowsData(account, daysToAddToPoolInitial);
+    const infoRowsData = getInfoRowsData(account, flow, daysToAddToPoolInitial);
 
     const infoRows = [
         {
