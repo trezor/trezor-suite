@@ -20,6 +20,7 @@ import {
 import { useBluetoothAlerts } from './useBluetoothAlerts';
 import { useBluetoothDevice } from './useBluetoothDevice';
 import { useBluetoothPermissions } from './useBluetoothPermissions';
+import { useBluetoothScanner } from './useBluetoothScanner';
 
 const toBluetoothDevice = (device: TransportBluetoothDevice) => ({
     ...device,
@@ -34,6 +35,7 @@ export const useBluetoothAdapter = () => {
 
     const { checkBluetoothPermission } = useBluetoothPermissions();
     const { showPairingFailedAlert } = useBluetoothAlerts();
+    const { startDeviceScan } = useBluetoothScanner();
     const { connectBluetoothDevice } = useBluetoothDevice();
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
@@ -98,22 +100,9 @@ export const useBluetoothAdapter = () => {
 
     useEffect(() => {
         if (bluetoothAdapterStatus === 'enabled' && knownBluetoothDevices.length > 0) {
-            bluetoothManager.startDeviceScan();
-
-            const subscription = AppState.addEventListener('change', nextAppState => {
-                if (nextAppState === 'active') {
-                    bluetoothManager.startDeviceScan();
-                } else {
-                    bluetoothManager.stopDeviceScan();
-                }
-            });
-
-            return () => {
-                subscription.remove();
-                bluetoothManager.stopDeviceScan();
-            };
+            return startDeviceScan();
         }
-    }, [bluetoothAdapterStatus, knownBluetoothDevices]);
+    }, [bluetoothAdapterStatus, knownBluetoothDevices, startDeviceScan]);
 
     useEffect(() => {
         knownConnectableBluetoothDevices.forEach(connectBluetoothDevice);

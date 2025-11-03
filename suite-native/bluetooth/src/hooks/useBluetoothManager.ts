@@ -2,15 +2,17 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { BleError, BleErrorCode, bluetoothManager } from '@trezor/transport-native-bluetooth';
+import { BleError, BleErrorCode } from '@trezor/transport-native-bluetooth';
 
 import { selectBluetoothAdapterStatus, selectBluetoothPermissionStatus } from '../selectors';
 import { useBluetoothAlerts } from './useBluetoothAlerts';
 import { useBluetoothPermissions } from './useBluetoothPermissions';
+import { useBluetoothScanner } from './useBluetoothScanner';
 
 export const useBluetoothManager = () => {
     const { requestBluetoothPermission } = useBluetoothPermissions();
     const { showOrHideBluetoothAlert, showLocationServicesDisabledAlert } = useBluetoothAlerts();
+    const { startDeviceScan } = useBluetoothScanner();
 
     const bluetoothPermissionStatus = useSelector(selectBluetoothPermissionStatus);
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
@@ -56,11 +58,7 @@ export const useBluetoothManager = () => {
 
     useEffect(() => {
         if (bluetoothAdapterStatus === 'enabled') {
-            bluetoothManager.startDeviceScan(scanErrorHandler);
-
-            return () => {
-                bluetoothManager.stopDeviceScan();
-            };
+            return startDeviceScan(scanErrorHandler);
         }
-    }, [bluetoothAdapterStatus, scanErrorHandler]);
+    }, [bluetoothAdapterStatus, startDeviceScan, scanErrorHandler]);
 };
