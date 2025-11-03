@@ -129,7 +129,7 @@ export const HELP_CENTER_DRY_RUN_T3T1_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/backups-recovery/general-standards/check-backup-on-trezor-safe-5',
 );
 export const HELP_CENTER_DRY_RUN_T3W1_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/a/check-backup-on-trezor-safe-7',
+    'https://trezor.io/guides/backups-recovery/general-standards/check-backup-on-trezor-safe-7',
 );
 export const HELP_CENTER_PASSPHRASE_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/backups-recovery/advanced-wallets/passphrases-and-hidden-wallets',
@@ -151,7 +151,7 @@ export const HELP_CENTER_PACKAGING_T3T1_URL: Url = withPlatformUtm(
 );
 
 export const HELP_CENTER_PACKAGING_T3W1_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/a/authenticate-trezor-safe-7',
+    'https://trezor.io/guides/trezor-devices/trezor-safe-7/authenticate-trezor-safe-7',
 );
 export const HELP_CENTER_XRP_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/xrp-xlm/xrp-on-trezor-devices',
