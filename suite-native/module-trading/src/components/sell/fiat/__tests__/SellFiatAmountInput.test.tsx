@@ -5,9 +5,9 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
+import { SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellFormType } from '../../../../types/sell';
 import { SellFiatAmountInput } from '../SellFiatAmountInput';
 
 describe('SellFiatAmountInput', () => {

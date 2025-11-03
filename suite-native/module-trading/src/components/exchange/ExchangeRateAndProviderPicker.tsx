@@ -4,12 +4,12 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
+import { selectGroupedExchangeQuotes } from '@suite-native/trading-state';
 
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
 import { ExchangeRatePicker } from './ExchangeRatePicker';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { selectGroupedExchangeQuotes } from '../../selectors/exchangeSelectors';
 import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 
 export const ExchangeRateAndProviderPicker = () => {

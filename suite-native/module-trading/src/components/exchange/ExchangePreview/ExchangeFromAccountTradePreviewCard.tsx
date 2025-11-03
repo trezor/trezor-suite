@@ -4,8 +4,8 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { selectExchangeSelectedSendAccount } from '../../../selectors/exchangeSelectors';
 import { TradeSideCard } from '../../general/TradeSideCard';
 
 export type ExchangeFromAccountTradePreviewCardProps = {

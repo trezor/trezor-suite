@@ -5,10 +5,10 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { SellFormType } from '@suite-native/trading-types';
 
 import { sellQuotes } from '../../../__fixtures__/sellQuotes';
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { SellFormType } from '../../../types/sell';
 import { useSellFlow } from '../useSellFlow';
 import { useSellForm } from '../useSellForm';
 

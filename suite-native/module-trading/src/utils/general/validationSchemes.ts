@@ -1,9 +1,8 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
-
-import { TradingFormContext } from '../../types/general';
 
 export const getAmountLimitContext = ({
     options,

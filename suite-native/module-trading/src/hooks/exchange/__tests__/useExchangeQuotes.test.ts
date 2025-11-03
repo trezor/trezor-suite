@@ -10,13 +10,13 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { ExchangeFormValues } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
 import { btcAsset, ethAsset, usdtAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { ExchangeFormValues } from '../../../types/exchange';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeQuotes } from '../useExchangeQuotes';
 

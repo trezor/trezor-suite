@@ -7,8 +7,8 @@ import {
     initStore,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
-import { selectTradingResidenceCountry } from '../../selectors/residenceSelectors';
 import { TradingLocationFormValues } from '../../types/tradingLocationForm';
 import { ConfirmLocationButton, ConfirmLocationButtonProps } from '../ConfirmLocationButton';
 import { LocationForm } from '../LocationForm';

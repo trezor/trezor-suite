@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux';
 
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-
-import { HeaderTabs } from './HeaderTabs';
 import {
     selectIsAmountInputActive,
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
     selectIsTradingSellEnabled,
-} from '../../../selectors/commonSelectors';
+} from '@suite-native/trading-state';
+
+import { HeaderTabs } from './HeaderTabs';
 
 export type HeaderProps = {
     isFormMountedRecently?: boolean;

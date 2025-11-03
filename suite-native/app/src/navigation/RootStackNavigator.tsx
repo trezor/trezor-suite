@@ -36,10 +36,8 @@ import {
 } from '@suite-native/navigation';
 import { ReceiveStackNavigator } from '@suite-native/receive';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import {
-    TradingLocationModalScreen,
-    selectShouldDisplayTradingResidenceOnboarding,
-} from '@suite-native/trading-residence';
+import { TradingLocationModalScreen } from '@suite-native/trading-residence';
+import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 
 import { AppTabNavigator } from './AppTabNavigator';

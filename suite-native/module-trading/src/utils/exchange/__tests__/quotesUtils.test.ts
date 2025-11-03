@@ -4,6 +4,7 @@ import type { CryptoId } from 'invity-api';
 
 import type { TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { ExchangeFormType } from '@suite-native/trading-types';
 
 import {
     btcAsset,
@@ -14,7 +15,6 @@ import {
 } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../types/exchange';
 import { tradingExchangeFormToTradingExchangeFormProps } from '../quotesUtils';
 
 describe('quotesUtils', () => {

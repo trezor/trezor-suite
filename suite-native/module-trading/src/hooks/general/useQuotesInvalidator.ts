@@ -3,9 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
+import { AbortablePromise } from '@suite-native/trading-types';
 import { useDebounce } from '@trezor/react-utils';
-
-import { AbortablePromise } from '../../types/general';
 
 export type UseQuotesInvalidatorProps = {
     isFormValid: boolean;

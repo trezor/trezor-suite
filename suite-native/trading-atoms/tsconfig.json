@@ -3,7 +3,14 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../../suite-common/trading" },
+        {
             "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
         { "path": "../icons" },
@@ -11,6 +18,11 @@
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
-        { "path": "../test-utils" }
-    ]
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../test-utils" },
+        { "path": "../trading-types" }
+    ],
+    "include": [".", "**/*.json"]
 }

@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
-import { getSymbolFromTradeableAsset } from '../../../utils/general/tradeableAssetUtils';
 import { AmountInput } from '../../general/Input/AmountInput';
 
 export type ExchangeReceiveAmountInputProps = {

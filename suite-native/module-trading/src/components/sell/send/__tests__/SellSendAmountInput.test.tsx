@@ -7,12 +7,12 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
+import { SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellFormType } from '../../../../types/sell';
 import { SellSendAmountInput, SellSendAmountInputProps } from '../SellSendAmountInput';
 
 const mockUseAmountInputDecimals = jest.fn(

@@ -5,9 +5,9 @@ import {
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { PortfolioTrackerInfo, ViewOnlyWalletInfo } from '@suite-native/trading-atoms';
+import { selectIsTradingSellEnabled } from '@suite-native/trading-state';
 
 import { SellTabContent } from './SellTabContent';
-import { selectIsTradingSellEnabled } from '../../selectors/commonSelectors';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
 const SellTabEnabled = () => {

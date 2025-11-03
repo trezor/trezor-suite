@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { AccountsRootState } from '@suite-common/wallet-core';
-
-import type { TradingRootState } from '../../../reducers';
-import type { ReceiveAccount } from '../../../types/general';
+import type { TradingRootState } from '@suite-native/trading-state';
+import type { ReceiveAccount } from '@suite-native/trading-types';
 
 // Lame version of `UseFormReturn<{receiveAccount: ReceiveAccount | undefined}>['setValue']`,
 // but TS likes this one more.

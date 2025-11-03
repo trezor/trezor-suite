@@ -4,8 +4,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-
-import { TradeableAsset } from '../../types/general';
+import { TradeableAsset } from '@suite-native/trading-types';
 
 export type TradeableAssetNetworkInfoProps = {
     asset: TradeableAsset | undefined;

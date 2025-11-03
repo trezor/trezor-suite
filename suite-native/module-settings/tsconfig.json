@@ -34,13 +34,13 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-connect-popup" },
-        { "path": "../module-trading" },
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../trading-residence" },
+        { "path": "../trading-state" },
         {
             "path": "../../packages/blockchain-link-types"
         },

@@ -4,8 +4,8 @@ import { GeneralSettings } from '../GeneralSettings';
 
 const mockNavigate = jest.fn();
 
-jest.mock('@suite-native/trading-residence', () => ({
-    ...jest.requireActual('@suite-native/trading-residence'),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingCountrySet: () => true,
     selectIsTradingResidenceCheckEnabled: () => true,
 }));

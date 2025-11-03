@@ -5,12 +5,12 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { BuyFormType } from '@suite-native/trading-types';
 
 import { residenceCheckDisabledState } from '../../../__fixtures__/residenceCheckState';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../types/buy';
 import { BuyForm } from '../BuyForm';
 
 jest.mock('../../../hooks/general/useFocusedValueWatch', () =>

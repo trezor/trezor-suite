@@ -2,9 +2,8 @@ import type { CoinInfo, ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import { MinimalExchangeFormProps } from '@suite-common/trading';
-
-import { ExchangeFormType } from '../../types/exchange';
-import { toCaseAwareCryptoId } from '../general/utils';
+import { toCaseAwareCryptoId } from '@suite-native/trading-atoms';
+import { ExchangeFormType } from '@suite-native/trading-types';
 
 export type GetAnalyticsTradingExchangePayloadProps = {
     quote: ExchangeTrade | undefined;

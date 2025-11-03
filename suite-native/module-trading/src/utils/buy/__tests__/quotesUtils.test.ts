@@ -1,13 +1,13 @@
 import type { BuyTrade } from 'invity-api';
 
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { BuyFormType } from '@suite-native/trading-types';
 
 import quotes from '../../../__fixtures__/buyQuotes.json';
 import coins from '../../../__fixtures__/coins.json';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormType } from '../../../types/buy';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
 
 describe('quotesUtils', () => {

@@ -3,8 +3,8 @@ import { useMemo, useState } from 'react';
 import { useFormatters } from '@suite-common/formatters';
 import { TradingAmountLimitProps } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
+import { TradingFormContext } from '@suite-native/trading-types';
 
-import { TradingFormContext } from '../../../types/general';
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';
 
 export const useContextForTradingForm = (limits: TradingAmountLimitProps | undefined) => {

@@ -2,9 +2,9 @@ import { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { tradingThunks } from '@suite-common/trading';
+import { selectTradesToWatchByAccount } from '@suite-native/trading-state';
 
 import { useReloadTimer } from './useReloadTimer';
-import { selectTradesToWatchByAccount } from '../../selectors/commonSelectors';
 
 const REFRESH_SECONDS = 120;
 

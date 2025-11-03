@@ -13,10 +13,10 @@ import { AccountsRootState } from '@suite-common/wallet-core';
 import { Card, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { selectAccountLabelWithNetworkFallback } from '@suite-native/trading-state';
 
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
-import { selectAccountLabelWithNetworkFallback } from '../../../selectors/commonSelectors';
 
 export type TradeDetailTransactionInfoProps = {
     orderId: string;

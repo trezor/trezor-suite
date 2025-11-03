@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { selectActiveTradingType } from '@suite-native/trading-state';
 import { exhaustive } from '@trezor/type-utils';
 
-import { selectActiveTradingType } from '../../selectors/commonSelectors';
 import { BuyTab } from '../buy/BuyTab';
 import { ExchangeTab } from '../exchange/ExchangeTab';
 import { SellTab } from '../sell/SellTab';

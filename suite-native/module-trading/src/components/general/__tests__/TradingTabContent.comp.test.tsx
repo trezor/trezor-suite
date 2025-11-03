@@ -1,6 +1,6 @@
 import { renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import { tradingInitialState } from '@suite-native/trading-state';
 
-import { initialState } from '../../../reducers';
 import { TradingTabContent } from '../TradingTabContent';
 
 let mockIsInternetReachable: boolean | null = true;
@@ -25,7 +25,7 @@ describe('TradingTabContent', () => {
             preloadedState: {
                 wallet: {
                     trading: {
-                        ...initialState,
+                        ...tradingInitialState,
                         activeTradingType: 'buy',
                     },
                 },

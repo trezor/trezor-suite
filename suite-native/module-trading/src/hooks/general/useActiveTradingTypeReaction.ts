@@ -5,9 +5,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { TradingType } from '@suite-common/trading';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-
-import { tradingActions } from '../../reducers';
-import { selectEnabledTradingTypes } from '../../selectors/commonSelectors';
+import { selectEnabledTradingTypes, tradingActions } from '@suite-native/trading-state';
 
 export const useActiveTradingTypeReaction = () => {
     const dispatch = useDispatch();

@@ -15,8 +15,7 @@ import {
     type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-
-import { selectExchangeSelectedSendAccount } from '../../../selectors/exchangeSelectors';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 export type ExchangePreviewContinueButtonProps = {
     isDisabled: boolean;

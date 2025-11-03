@@ -14,8 +14,8 @@ jest.mock('../../../hooks/exchange/useExchangeData', () => ({
     useExchangeData: (...params: unknown[]) => mockUseTradingExchangeData(...params),
 }));
 
-jest.mock('../../../selectors/commonSelectors', () => ({
-    ...jest.requireActual('../../../selectors/commonSelectors'),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingExchangeEnabled: () => true,
 }));
 

@@ -21,17 +21,17 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { BuyFormType } from '@suite-native/trading-types';
 import { useTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';
-import { BuyFormType } from '../../types/buy';
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
 import {
     getReceiveAccountAddressText,
     isFullySelectedReceiveAccount,
 } from '../../utils/general/receiveAccountUtils';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useConsent } from '../general/useConsent';
 import { useConsentDenier } from '../general/useConsentDenier';
 

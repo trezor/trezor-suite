@@ -5,8 +5,8 @@ import {
     screen,
     userEvent,
 } from '@suite-native/test-utils';
+import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
-import { selectIsTradingBuyEnabled } from '../../../selectors/commonSelectors';
 import { BuyTab } from '../BuyTab';
 
 let mockUseTradingBuyData: jest.Mock;
@@ -15,8 +15,8 @@ jest.mock('../../../hooks/buy/useBuyData', () => ({
     useBuyData: (...params: unknown[]) => mockUseTradingBuyData(...params),
 }));
 
-jest.mock('../../../selectors/commonSelectors', () => ({
-    ...jest.requireActual('../../../selectors/commonSelectors'),
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingBuyEnabled: jest.fn(),
 }));
 

@@ -7,9 +7,8 @@ import { useCoinLabel } from '@suite-native/device';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import { ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { ReceiveAccount } from '../../../types/general';
 
 export type AccountListBaseItemProps = {
     receiveAccount: ReceiveAccount;

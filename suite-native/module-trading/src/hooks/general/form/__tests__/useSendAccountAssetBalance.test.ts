@@ -1,12 +1,10 @@
 import { Account } from '@suite-common/wallet-types';
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { ExchangeFormType, SellFormType, TradeableAsset } from '@suite-native/trading-types';
 
 import { getBtcAccount } from '../../../../__fixtures__/account';
 import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { ExchangeFormType } from '../../../../types/exchange';
-import { TradeableAsset } from '../../../../types/general';
-import { SellFormType } from '../../../../types/sell';
 import { useSendAccountAssetBalance } from '../useSendAccountAssetBalance';
 
 type HookProps = {

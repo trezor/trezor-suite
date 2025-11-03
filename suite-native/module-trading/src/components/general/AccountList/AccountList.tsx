@@ -14,6 +14,11 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useSectionList } from '@suite-native/trading-atoms';
+import {
+    selectBuySelectedReceiveAccount,
+    selectExchangeSelectedReceiveAccount,
+} from '@suite-native/trading-state';
+import { ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
@@ -26,9 +31,6 @@ import {
     ReceiveAccountsListMode,
     useReceiveAccountsListData,
 } from '../../../hooks/general/useReceiveAccountsListData';
-import { selectBuySelectedReceiveAccount } from '../../../selectors/buySelectors';
-import { selectExchangeSelectedReceiveAccount } from '../../../selectors/exchangeSelectors';
-import { ReceiveAccount } from '../../../types/general';
 import { isFullySelectedReceiveAccount } from '../../../utils/general/receiveAccountUtils';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

@@ -5,15 +5,15 @@ import { TradingType } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
+import {
+    CombinedSelectorsRootState,
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
+} from '@suite-native/trading-state';
+import { MyAssetRow, TradeableAsset } from '@suite-native/trading-types';
 
 import { MyAssetListEmptyComponent } from './MyAssetListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, MyAssetListItem, MyAssetListItemProps } from './MyAssetListItem';
 import { MyAssetListSectionHeader } from './MyAssetListSectionHeader';
-import {
-    CombinedSelectorsRootState,
-    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
-} from '../../../selectors/commonSelectors';
-import { MyAssetRow, TradeableAsset } from '../../../types/general';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
 import { MyAssetsDisabledListItem } from './MyAssetsDisabledListItem';
 

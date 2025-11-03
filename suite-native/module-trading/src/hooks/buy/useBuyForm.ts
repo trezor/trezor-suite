@@ -15,19 +15,19 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-
-import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
-import { buyActions } from '../../reducers';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
+    buyActions,
     selectBuyAmountLimits,
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
     selectValidTradingBuyQuotesNative,
-} from '../../selectors/buySelectors';
-import { BuyFormType, BuyFormValues } from '../../types/buy';
+} from '@suite-native/trading-state';
+import { BuyFormType, BuyFormValues } from '@suite-native/trading-types';
+
+import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { truncateDecimals } from '../../utils/general/amountUtils';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';

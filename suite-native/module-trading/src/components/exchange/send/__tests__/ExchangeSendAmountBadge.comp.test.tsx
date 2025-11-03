@@ -5,12 +5,12 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../../types/exchange';
 import { ExchangeSendAmountBadge } from '../ExchangeSendAmountBadge';
 
 describe('ExchangeSendAmountBadge', () => {

@@ -2,10 +2,10 @@ import { useDispatch } from 'react-redux';
 
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { tradingResidenceActions } from '@suite-native/trading-state';
 
 import { useCountrySelectionAnalyticsReport } from '../hooks/useCountrySelectionAnalyticsReport';
 import { useFormCountryCode } from '../hooks/useFormCountryCode';
-import { tradingResidenceActions } from '../reducers/residenceSlice';
 import { getPreferredCountryOption } from '../utils/getPreferredCountryOption';
 
 export type ConfirmLocationButtonProps = {

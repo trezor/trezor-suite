@@ -8,12 +8,12 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../feature-flags" },
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../trading-atoms" },
+        { "path": "../trading-state" },
         { "path": "../../packages/styles" },
         { "path": "../test-utils" }
     ]

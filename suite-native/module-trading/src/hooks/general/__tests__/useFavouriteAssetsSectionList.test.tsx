@@ -6,9 +6,9 @@ import {
     renderHook,
     waitFor,
 } from '@suite-native/test-utils';
+import { TradeableAsset } from '@suite-native/trading-types';
 
 import { adaAsset, btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
-import { TradeableAsset } from '../../../types/general';
 import { useFavouriteAssetsSectionList } from '../useFavouriteAssetsSectionList';
 
 describe('useFavouriteAssetsSectionList', () => {

@@ -12,6 +12,7 @@ import type {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { tradingActions } from '@suite-native/trading-state';
 import {
     selectIsTransactionAlreadySigned,
     transactionManagementActions,
@@ -19,7 +20,6 @@ import {
 } from '@suite-native/transaction-management';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
-import { tradingActions } from '../../reducers';
 import { useExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
 import {
     TradingExchangeSignAndSendTransactionProps,

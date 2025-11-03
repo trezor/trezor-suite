@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { nonSanctionedRegional } from '@suite-common/trading';
 import { useForm } from '@suite-native/forms';
+import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
-import { selectTradingResidenceCountry } from '../selectors/residenceSelectors';
 import { TradingLocationFormValues } from '../types/tradingLocationForm';
 import { getPreferredCountryOption } from '../utils/getPreferredCountryOption';
 import { locationFormValidationSchema } from '../utils/locationFormValidationSchema';

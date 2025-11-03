@@ -10,9 +10,12 @@ import {
 } from '@suite-common/wallet-core';
 import type { UseFormReturn } from '@suite-native/forms';
 import { selectAccountTokenBalance } from '@suite-native/tokens';
-
-import { ExchangeFormType, ExchangeFormValues } from '../../../types/exchange';
-import { SellFormType, SellFormValues } from '../../../types/sell';
+import {
+    ExchangeFormType,
+    ExchangeFormValues,
+    SellFormType,
+    SellFormValues,
+} from '@suite-native/trading-types';
 
 export const useSendAccountAssetBalance = (
     form: ExchangeFormType | SellFormType,

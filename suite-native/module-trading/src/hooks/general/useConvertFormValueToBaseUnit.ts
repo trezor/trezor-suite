@@ -5,11 +5,6 @@ import { NetworkSymbol, NetworkSymbolExtended, getNetwork } from '@suite-common/
 import { selectAreSatsAmountUnit } from '@suite-common/wallet-core';
 import { satoshiAmountToBtc } from '@suite-common/wallet-utils';
 
-export type ConvertStrToBaseUnit = ReturnType<typeof useConvertFormValueToBaseUnit>;
-export type ConvertNumberToBaseUnit = ReturnType<
-    typeof useConvertFormValueToBaseUnit
->['convertNumberToBaseUnit'];
-
 export const useConvertFormValueToBaseUnit = () => {
     const areSatsAmountUnit = useSelector(selectAreSatsAmountUnit);
 

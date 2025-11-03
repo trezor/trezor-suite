@@ -2,12 +2,12 @@ import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ServerOffline } from '@suite-native/trading-atoms';
+import { selectIsTradingBuyEnabled } from '@suite-native/trading-state';
 
 import { BuyForm } from './BuyForm';
 import { BuyFormContextProvider } from './BuyFormContextProvider';
 import { BuyFormSkeleton } from './BuyFormSkeleton';
 import { useBuyData } from '../../hooks/buy/useBuyData';
-import { selectIsTradingBuyEnabled } from '../../selectors/commonSelectors';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
 const BuyTabEnabled = () => {

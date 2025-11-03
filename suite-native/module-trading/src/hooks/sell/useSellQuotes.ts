@@ -11,12 +11,11 @@ import {
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { useFormState } from '@suite-native/forms';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { sellActions } from '@suite-native/trading-state';
+import { AbortablePromise, SellFormType } from '@suite-native/trading-types';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
-import { sellActions } from '../../reducers';
-import { AbortablePromise } from '../../types/general';
-import { SellFormType } from '../../types/sell';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { tradingSellFormToTradingSellFormProps } from '../../utils/sell/quotesUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 import { useReloadTimer } from '../general/useReloadTimer';

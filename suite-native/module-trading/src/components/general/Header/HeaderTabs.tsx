@@ -8,15 +8,15 @@ import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import {
+    TradingWithFeatureFlagsRootState,
+    selectActiveTradingType,
+    selectIsTradingSellEnabled,
+    tradingActions,
+} from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { HeaderTab } from './HeaderTab';
-import { tradingActions } from '../../../reducers';
-import {
-    selectActiveTradingType,
-    selectIsTradingSellEnabled,
-} from '../../../selectors/commonSelectors';
-import { TradingWithFeatureFlagsRootState } from '../../../selectors/exchangeSelectors';
 import { AdvancedSettingsSheet } from '../../settings/AdvancedSettingsSheet';
 
 const useSelectedTab = () => {

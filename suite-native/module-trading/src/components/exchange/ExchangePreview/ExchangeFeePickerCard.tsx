@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { selectExchangeSelectedSendAccount } from '../../../selectors/exchangeSelectors';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+
 import { FeePickerCard } from '../../fees/FeePickerCard';
 
 export type ExchangeFeePickerCardProps = {

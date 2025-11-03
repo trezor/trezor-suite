@@ -18,11 +18,11 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
-import { tradingActions } from '../reducers';
 import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
 
 type RouteProps = StackProps<RootStackParamList, RootStackRoutes.TradingWebView>['route'];

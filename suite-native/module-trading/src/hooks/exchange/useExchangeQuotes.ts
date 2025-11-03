@@ -14,14 +14,12 @@ import {
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
+import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
+import { AbortablePromise, ExchangeFormType } from '@suite-native/trading-types';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
-import { exchangeActions } from '../../reducers';
-import { selectExchangeQuotes } from '../../selectors/exchangeSelectors';
-import { ExchangeFormType } from '../../types/exchange';
-import { AbortablePromise } from '../../types/general';
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
-import { getSymbolFromTradeableAsset } from '../../utils/general/tradeableAssetUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 import { useReloadTimer } from '../general/useReloadTimer';
 

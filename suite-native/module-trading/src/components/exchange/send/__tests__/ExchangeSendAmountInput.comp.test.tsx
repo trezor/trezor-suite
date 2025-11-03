@@ -7,11 +7,11 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
+import { ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
-import { ExchangeFormType } from '../../../../types/exchange';
 import { ExchangeSendAmountInput, ExchangeSendAmountInputProps } from '../ExchangeSendAmountInput';
 
 const mockUseAmountInputDecimals = jest.fn(

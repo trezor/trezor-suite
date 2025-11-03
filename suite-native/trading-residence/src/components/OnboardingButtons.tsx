@@ -1,8 +1,9 @@
 import { useDispatch } from 'react-redux';
 
+import { tradingResidenceActions } from '@suite-native/trading-state';
+
 import { ConfirmLocationButton } from './ConfirmLocationButton';
 import { SkipButton } from './SkipButton';
-import { tradingResidenceActions } from '../reducers/residenceSlice';
 
 export type OnboardingButtonsProps = {
     afterPress: () => void;

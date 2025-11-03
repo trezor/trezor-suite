@@ -11,6 +11,7 @@
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../trading-residence" },
+        { "path": "../trading-state" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

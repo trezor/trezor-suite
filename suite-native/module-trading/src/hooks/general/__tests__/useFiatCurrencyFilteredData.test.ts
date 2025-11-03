@@ -1,6 +1,6 @@
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { FiatCurrencyItem } from '@suite-native/trading-types';
 
-import { FiatCurrencyItem } from '../../../types/general';
 import { useFiatCurrencyFilteredData } from '../useFiatCurrencyFilteredData';
 
 const supportedFiatCurrencies: FiatCurrencyItem[] = [

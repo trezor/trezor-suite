@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 
 import type { AccountsRootState } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
-
-import type { TradingRootState } from '../../../reducers';
-import type { FormWithSendAccountValues } from '../../../types/general';
+import type { TradingRootState } from '@suite-native/trading-state';
+import type { FormWithSendAccountValues } from '@suite-native/trading-types';
 
 // Lame version of `UseFormReturn<FormWithSendAssetValues>['setValue']`, but TS likes this one more.
 type FormSetValue = ((

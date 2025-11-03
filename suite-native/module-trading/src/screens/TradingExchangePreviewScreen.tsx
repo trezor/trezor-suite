@@ -13,6 +13,10 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import {
+    selectExchangeSelectedReceiveAccount,
+    selectExchangeSelectedSendAccount,
+} from '@suite-native/trading-state';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 
@@ -23,10 +27,6 @@ import {
 } from '../components/exchange/ExchangePreview';
 import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
-import {
-    selectExchangeSelectedReceiveAccount,
-    selectExchangeSelectedSendAccount,
-} from '../selectors/exchangeSelectors';
 import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 

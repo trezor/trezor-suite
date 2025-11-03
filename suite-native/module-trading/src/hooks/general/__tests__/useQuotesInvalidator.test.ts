@@ -1,8 +1,8 @@
 import { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
 
 import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { AbortablePromise } from '@suite-native/trading-types';
 
-import { AbortablePromise } from '../../../types/general';
 import { UseQuotesInvalidatorProps, useQuotesInvalidator } from '../useQuotesInvalidator';
 
 describe('useQuotesInvalidator', () => {

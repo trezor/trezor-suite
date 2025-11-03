@@ -2,10 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
+import {
+    TradingRootState,
+    selectIsTradingFavouriteAsset,
+    tradingActions,
+} from '@suite-native/trading-state';
+import { TradeableAsset } from '@suite-native/trading-types';
 
-import { TradingRootState, tradingActions } from '../../../reducers';
-import { selectIsTradingFavouriteAsset } from '../../../selectors/favouritesSelectors';
-import { TradeableAsset } from '../../../types/general';
 import { ASSET_ITEM_HEIGHT, AssetListItem } from '../AssetListItem';
 import { FavouriteIcon } from './FavouriteIcon';
 

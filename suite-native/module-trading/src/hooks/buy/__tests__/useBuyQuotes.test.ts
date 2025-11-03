@@ -9,12 +9,12 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { BuyFormValues } from '@suite-native/trading-types';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
 import quotes from '../../../__fixtures__/buyQuotes.json';
 import { bnbAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
-import { BuyFormValues } from '../../../types/buy';
 import { useBuyForm } from '../useBuyForm';
 import { useBuyQuotes } from '../useBuyQuotes';
 

@@ -4,11 +4,11 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { SellFormType } from '@suite-native/trading-types';
 
 import { getBtcAccount } from '../../../../__fixtures__/account';
 import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
-import { SellFormType } from '../../../../types/sell';
 import {
     SEND_ACCOUNT_BALANCE_TEST_ID,
     SellSendAccountCryptoBalance,

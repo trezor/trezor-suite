@@ -3,16 +3,19 @@ import type { CryptoId } from 'invity-api';
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
+import { MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
 import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
-import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '../../../../selectors/commonSelectors';
-import { MyAssetTradeable } from '../../../../types/general';
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
 import { MyAssetSheet, MyAssetSheetProps } from '../MyAssetSheet';
 
-jest.mock('../../../../selectors/commonSelectors');
+jest.mock('@suite-native/trading-state', () => ({
+    ...jest.requireActual('@suite-native/trading-state'),
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType: jest.fn(),
+}));
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionCondensedListByTradingType as unknown as jest.Mock;
 
