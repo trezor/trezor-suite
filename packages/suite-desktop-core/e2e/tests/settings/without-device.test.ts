@@ -41,6 +41,8 @@ test.describe(
                 });
 
                 await dashboardPage.dashboardMenuButton.click();
+                await page.discoveryShouldFinish();
+
                 await walletPage.openAccount({ symbol: 'regtest' });
 
                 await page.getByTestId('@wallet/menu/wallet-send').click();
