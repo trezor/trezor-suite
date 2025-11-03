@@ -22,7 +22,7 @@
         "git:bisect": "./e2e/bisect-commits.sh"
     },
     "dependencies": {
-        "@sentry/electron": "^5.12.0",
+        "@sentry/electron": "^7.2.0",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-constants": "workspace:^",
