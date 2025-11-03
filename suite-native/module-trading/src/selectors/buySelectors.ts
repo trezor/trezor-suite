@@ -26,10 +26,7 @@ import { BuyFormValues } from '../types/buy';
 import { FiatCurrencyItem } from '../types/general';
 import { getCurrencyLabel } from '../utils/general/currencyUtils';
 import { getReceiveAccountFromAccountAndAddressString } from '../utils/general/receiveAccountUtils';
-import {
-    coinInfoToTradeableAsset,
-    tradeableAssetSortingComparator,
-} from '../utils/general/tradeableAssetUtils';
+import { coinInfoToTradeableAsset } from '../utils/general/tradeableAssetUtils';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 
@@ -52,7 +49,7 @@ export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccount
 export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
     returnStableArrayIfEmpty(selectTradingBuy(state).buyInfo?.supportedFiatCurrencies);
 
-export const selectBuyTradeableAssetsSorted = createMemoizedSelector(
+export const selectBuyTradeableAssets = createMemoizedSelector(
     [
         selectTradingBuySupportedCryptoIds as unknown as (
             state: TradingRootState,
@@ -64,9 +61,7 @@ export const selectBuyTradeableAssetsSorted = createMemoizedSelector(
             return [];
         }
 
-        return cryptoIds
-            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
-            .sort(tradeableAssetSortingComparator);
+        return cryptoIds.map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]));
     },
 );
 

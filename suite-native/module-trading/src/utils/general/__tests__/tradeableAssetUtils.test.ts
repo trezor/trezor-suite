@@ -1,17 +1,8 @@
 import type { CoinInfo, CryptoId } from 'invity-api';
 
 import coins from '../../../__fixtures__/coins.json';
-import {
-    btcAsset,
-    ethAsset,
-    ethOnBaseAsset,
-    usdcAsset,
-} from '../../../__fixtures__/tradeableAssets';
-import {
-    coinInfoToTradeableAsset,
-    getSymbolFromTradeableAsset,
-    tradeableAssetSortingComparator,
-} from '../tradeableAssetUtils';
+import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
+import { coinInfoToTradeableAsset, getSymbolFromTradeableAsset } from '../tradeableAssetUtils';
 
 describe('tradeableAssetUtils', () => {
     describe('coinInfoToTradeableAsset', () => {
@@ -59,23 +50,6 @@ describe('tradeableAssetUtils', () => {
             [usdcAsset, 'eth'],
         ])('should return symbol based on asset.cryptoId', (asset, expectedSymbol) => {
             expect(getSymbolFromTradeableAsset(asset)).toEqual(expectedSymbol);
-        });
-    });
-
-    describe('tradeableAssetSortingComparator', () => {
-        it('should sort assets', () => {
-            const assets = [btcAsset, ethAsset, usdcAsset, ethOnBaseAsset];
-
-            expect(assets.sort(tradeableAssetSortingComparator)).toEqual([
-                expect.objectContaining({ cryptoId: 'bitcoin' }),
-                expect.objectContaining({ cryptoId: 'ethereum' }),
-                expect.objectContaining({
-                    cryptoId: 'base--0x0000000000000000000000000000000000000000',
-                }),
-                expect.objectContaining({
-                    cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                }),
-            ]);
         });
     });
 });

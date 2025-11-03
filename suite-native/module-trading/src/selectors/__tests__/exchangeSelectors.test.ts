@@ -1,5 +1,3 @@
-import type { CryptoId } from 'invity-api';
-
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -10,7 +8,7 @@ import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
     selectExchangeAmountLimits,
-    selectExchangeBuyTradeableAssetsSorted,
+    selectExchangeBuyTradeableAssets,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -100,42 +98,20 @@ describe('exchangeSelectors', () => {
         });
     });
 
-    describe('selectExchangeBuyTradeableAssetsSorted', () => {
+    describe('selectExchangeBuyTradeableAssets', () => {
         it('should select only coins with exchange set to true', () => {
-            expect(selectExchangeBuyTradeableAssetsSorted(state)).toEqual([
-                expect.objectContaining({ cryptoId: 'bitcoin' }),
-                expect.objectContaining({ cryptoId: 'ethereum' }),
+            expect(selectExchangeBuyTradeableAssets(state)).toEqual([
                 expect.objectContaining({
                     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                 }),
-            ]);
-        });
-
-        it('should sort coins', () => {
-            state.wallet.trading.exchange.exchangeInfo!.buyCryptoIds = [
-                'bitcoin',
-                'ethereum',
-                'eos',
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                'base--0x0000000000000000000000000000000000000000',
-                'ethereum--0xWithoutObjectInCoinsInfo',
-            ] as CryptoId[];
-
-            expect(selectExchangeBuyTradeableAssetsSorted(state)).toEqual([
-                expect.objectContaining({ cryptoId: 'bitcoin' }),
                 expect.objectContaining({ cryptoId: 'ethereum' }),
-                expect.objectContaining({
-                    cryptoId: 'base--0x0000000000000000000000000000000000000000',
-                }),
-                expect.objectContaining({
-                    cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                }),
+                expect.objectContaining({ cryptoId: 'bitcoin' }),
             ]);
         });
 
         it('should be stable', () => {
-            const first = selectExchangeBuyTradeableAssetsSorted(state);
-            const second = selectExchangeBuyTradeableAssetsSorted(state);
+            const first = selectExchangeBuyTradeableAssets(state);
+            const second = selectExchangeBuyTradeableAssets(state);
 
             expect(first).toBe(second);
         });
@@ -143,7 +119,7 @@ describe('exchangeSelectors', () => {
         it('should be empty array when coins are not set', () => {
             state.wallet.trading.info.coins = undefined;
 
-            expect(selectExchangeBuyTradeableAssetsSorted(state)).toEqual([]);
+            expect(selectExchangeBuyTradeableAssets(state)).toEqual([]);
         });
     });
 

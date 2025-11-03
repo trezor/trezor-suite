@@ -19,10 +19,7 @@ import {
     createMemoizedSelectorWithAccounts,
 } from '../reducers';
 import { getReceiveAccountFromAccountAndAddressString } from '../utils/general/receiveAccountUtils';
-import {
-    coinInfoToTradeableAsset,
-    tradeableAssetSortingComparator,
-} from '../utils/general/tradeableAssetUtils';
+import { coinInfoToTradeableAsset } from '../utils/general/tradeableAssetUtils';
 
 export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRootState;
 
@@ -57,7 +54,7 @@ export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAc
     },
 );
 
-export const selectExchangeBuyTradeableAssetsSorted = createMemoizedSelector(
+export const selectExchangeBuyTradeableAssets = createMemoizedSelector(
     [
         selectTradingExchangeBuyCryptoIds as unknown as (
             state: TradingRootState,
@@ -69,9 +66,7 @@ export const selectExchangeBuyTradeableAssetsSorted = createMemoizedSelector(
             return [];
         }
 
-        return cryptoIds
-            .map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]))
-            .sort(tradeableAssetSortingComparator);
+        return cryptoIds.map(cryptoId => coinInfoToTradeableAsset(cryptoId, coins[cryptoId]));
     },
 );
 
