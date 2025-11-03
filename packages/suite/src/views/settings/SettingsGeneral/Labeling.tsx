@@ -8,7 +8,7 @@ import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     LABELING_LEGACY_OPTION_LABEL,
@@ -89,14 +89,14 @@ export const Labeling = () => {
         });
     };
 
-    const getSelectedOption = (): LabelingOptionTranslated => {
-        const LABELING_SELECT_TRANSLATED_OPTIONS_MAP = LABELING_SELECT_OPTIONS.reduce(
+    const getSelectedOption = () => {
+        const LABELING_SELECT_TRANSLATED_OPTIONS_MAP = translatedOptions.reduce(
             (acc, option) => {
                 acc[option.value] = option;
 
                 return acc;
             },
-            {} as Record<LabelingSelectValue, LabelingOption<TranslationKey>>,
+            {} as Record<LabelingSelectValue, LabelingOption<string>>,
         );
 
         if (showLocalFirstStorage) {
