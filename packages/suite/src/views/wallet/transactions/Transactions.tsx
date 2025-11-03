@@ -16,6 +16,7 @@ import { WalletTransactionList } from './TransactionList/WalletTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { NoTransactions } from './components/NoTransactions';
 import { TransactionSummary } from './components/TransactionSummary';
+import { CardanoNewProviderCard } from '../staking/components/CardanoNewProviderCard';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -69,6 +70,7 @@ export const Transactions = () => {
     if (accountTransactions.length > 0 || transactionsIsLoading) {
         return (
             <Layout selectedAccount={selectedAccount}>
+                <CardanoNewProviderCard account={account} />
                 <TransactionSummary account={account} />
                 <TradeBox account={account} />
                 <WalletTransactionList account={account} symbol={account.symbol} />
