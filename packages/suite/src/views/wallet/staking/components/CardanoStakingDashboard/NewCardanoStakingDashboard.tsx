@@ -1,21 +1,14 @@
-import { useMemo } from 'react';
-
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     StakeRootState,
+    hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
-    selectAccountStakeTypeTransactions,
     selectHasRunningDiscovery,
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import {
-    getStakingDataForNetwork,
-    isCardanoStakedWithEverstake,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -24,15 +17,14 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
+import { CardanoNewProviderCard } from '../CardanoNewProviderCard';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
-import { NewProviderCard } from '../StakingDashboard/components/NewProviderCard';
 import { PayoutCard } from '../StakingDashboard/components/PayoutCard';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
-
 interface NewCardanoStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
 }
@@ -54,13 +46,7 @@ export const NewCardanoStakingDashboard = ({
     );
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-
-    const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, account.key));
-    const hasPendingTx = useMemo(() => stakeTxs.some(tx => isPending(tx)), [stakeTxs]);
-    const isStakedWithEverstake = isCardanoStakedWithEverstake(account);
-    const isNewProviderBannerEnabled = useSelector(state =>
-        selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
-    );
+    const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
 
     const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
 
@@ -82,9 +68,7 @@ export const NewCardanoStakingDashboard = ({
                                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
-                                {!isStakedWithEverstake &&
-                                    !hasPendingTx &&
-                                    isNewProviderBannerEnabled && <NewProviderCard />}
+                                <CardanoNewProviderCard account={account} />
 
                                 <Grid
                                     columns={isBelowLaptop || !canClaim ? 1 : 2}
