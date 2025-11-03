@@ -25,6 +25,12 @@ export { InputWithOptions } from './components/InputWithOptions/InputWithOptions
 export { EditableText } from './components/EditableText/EditableText';
 export { CardButton } from './components/CardButton/CardButton';
 export { FeeRate } from './components/FeeRate/FeeRate';
-export { DeviceAnimation } from './components/DeviceAnimation/DeviceAnimation';
+export {
+    DeviceAnimation,
+    type ModelWithRotate,
+    type RotateProps,
+    type ColorsOf,
+    type DeviceAnimationProps,
+} from './components/DeviceAnimation/DeviceAnimation';
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
 export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';
