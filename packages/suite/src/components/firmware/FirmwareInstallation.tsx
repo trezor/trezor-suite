@@ -25,8 +25,12 @@ export const FirmwareInstallation = ({
     install,
     onPromptClose,
 }: FirmwareInstallationProps) => {
-    const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
+    const { status, showReconnectPrompt, targetType, reconnectEvent, isSlow } =
+        useFirmwareDesktopUpdate();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isBluetoothTransport = useSelector(selectHasTransportOfType('BluetoothTransport'));
+
+    const displayIsSlow = isSlow && isBluetoothTransport;
 
     // Device needs to be paired twice when using web usb transport. // Once in
     // bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
@@ -63,6 +67,11 @@ export const FirmwareInstallation = ({
                         }
                     >
                         <Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />
+                    </Banner>
+                )}
+                {displayIsSlow && (
+                    <Banner variant="info" icon="bluetooth">
+                        <Translation id="TR_INSTALLATION_FW_SLOW_TIP_BANNER" />
                     </Banner>
                 )}
                 <Card>
