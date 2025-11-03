@@ -4,6 +4,12 @@ import { AppState, Platform } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import {
+    addSentryBreadcrumb,
+    captureSentryException,
+    captureSentryMessage,
+} from '@suite-native/sentry';
+
+import {
     useIsBiometricsEnabled,
     useIsBiometricsOverlayVisible,
     useIsUserAuthenticated,
@@ -82,13 +88,36 @@ export const useBiometrics = () => {
     const requestAuthenticationCheck = () => setIsBiometricsAuthenticationAllowed(true);
 
     const doAuthentication = useCallback(async () => {
-        const result = await authenticate();
+        try {
+            const result = await authenticate();
 
-        setIsBiometricsAuthenticationAllowed(false);
+            addSentryBreadcrumb({
+                category: 'biometrics',
+                message: 'LocalAuthentication.authenticateAsync result received',
+                data: {
+                    authenticationResult: result,
+                },
+                level: result?.success ? 'info' : 'warning',
+            });
 
-        if (result?.success) {
-            setIsUserAuthenticated(true);
-            setIsBiometricsOverlayVisible(false);
+            if (result?.success) {
+                setIsUserAuthenticated(true);
+                setIsBiometricsOverlayVisible(false);
+            } else if (result?.error) {
+                captureSentryMessage(`Biometrics attempt failed: ${result.error}`, {
+                    level: 'warning',
+                    tags: {
+                        biometrics_error_code: result.error,
+                    },
+                });
+            }
+            setIsBiometricsAuthenticationAllowed(false);
+        } catch (e) {
+            captureSentryException(e, {
+                tags: {
+                    context: 'biometrics_authentication',
+                },
+            });
         }
     }, [setIsBiometricsOverlayVisible, setIsUserAuthenticated]);
 
@@ -97,6 +126,17 @@ export const useBiometrics = () => {
     // and also when app state changes
     // and if auth allowance changes
     useEffect(() => {
+        addSentryBreadcrumb({
+            category: 'biometrics',
+            message: 'Biometrics check useEffect triggered',
+            data: {
+                appState: appState.current,
+                isOptionEnabled: isBiometricsOptionEnabled,
+                isAuthenticated: isUserAuthenticated,
+                isAllowed: isBiometricsAuthenticationAllowed,
+            },
+            level: 'info',
+        });
         // if appState is not active we want to cancel the flow by returning
         if (appState.current !== 'active') {
             // and on android also cancel the auth
@@ -112,6 +152,11 @@ export const useBiometrics = () => {
             !isUserAuthenticated &&
             isBiometricsAuthenticationAllowed
         ) {
+            addSentryBreadcrumb({
+                category: 'biometrics',
+                message: 'Calling doAuthentication() based on useEffect conditions',
+                level: 'info',
+            });
             doAuthentication();
         }
     }, [
