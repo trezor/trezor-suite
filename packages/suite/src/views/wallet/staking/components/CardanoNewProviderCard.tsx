@@ -21,8 +21,15 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isCardanoNetworkType = account?.networkType === 'cardano';
 
-    if (isStakedWithEverstake || hasPendingTx || !isNewProviderBannerEnabled || !isStakingActive) {
+    if (
+        isStakedWithEverstake ||
+        hasPendingTx ||
+        !isNewProviderBannerEnabled ||
+        !isCardanoNetworkType ||
+        !isStakingActive
+    ) {
         return null;
     }
 
