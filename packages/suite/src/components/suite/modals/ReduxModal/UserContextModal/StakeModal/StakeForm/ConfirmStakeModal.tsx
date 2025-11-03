@@ -7,7 +7,11 @@ import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
-import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
+import {
+    HELP_CENTER_ADA_STAKING,
+    HELP_CENTER_ETH_STAKING,
+    HELP_CENTER_SOL_STAKING,
+} from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -39,7 +43,7 @@ export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmSta
 
     const handleOnCancel = () => {
         onCancel();
-        dispatch(openModal({ type: 'stake' }));
+        dispatch(openModal({ type: 'stake', flow: EventType.StakingStake }));
 
         analytics.report({
             type: EventType.StakingStake,
@@ -70,6 +74,8 @@ export const ConfirmStakeModal = ({ isLoading, onConfirm, onCancel }: ConfirmSta
                 return HELP_CENTER_ETH_STAKING;
             case 'solana':
                 return HELP_CENTER_SOL_STAKING;
+            case 'cardano':
+                return HELP_CENTER_ADA_STAKING;
             default:
                 return undefined;
         }
