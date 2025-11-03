@@ -27,10 +27,8 @@ export { CardButton } from './components/CardButton/CardButton';
 export { FeeRate } from './components/FeeRate/FeeRate';
 export {
     DeviceAnimation,
-    type ModelWithRotate,
-    type RotateProps,
-    type ColorsOf,
     type DeviceAnimationProps,
 } from './components/DeviceAnimation/DeviceAnimation';
+export { type ModelFor, type ColorsFor } from './components/DeviceAnimation/deviceAnimationConfig';
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
 export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';

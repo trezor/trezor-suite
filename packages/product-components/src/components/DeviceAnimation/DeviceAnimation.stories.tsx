@@ -2,10 +2,46 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
-    DEVICE_ANIMATION_TYPES,
-    DeviceAnimation as DeviceAnimationComponent,
-} from './DeviceAnimation';
+import { DeviceAnimation as DeviceAnimationComponent } from './DeviceAnimation';
+import { DEVICE_ANIMATION_CONFIG } from './deviceAnimationConfig';
+import { DEVICE_ANIMATION_TYPES } from './deviceAnimationTypes';
+
+const createDeviceAnimationStory = (
+    type: keyof typeof DEVICE_ANIMATION_TYPES,
+): StoryObj<typeof DeviceAnimationComponent> => {
+    const animationType = DEVICE_ANIMATION_TYPES[type];
+    const config = DEVICE_ANIMATION_CONFIG[animationType];
+    const modelEntries = Object.entries(config.models) as [DeviceModelInternal, any][];
+    const [firstModel, firstModelCfg] = modelEntries[0];
+    const colors: number[] = (firstModelCfg?.colors as number[]) ?? [1];
+    const hasSize = (config as { hasSize?: boolean }).hasSize ?? false;
+
+    return {
+        args: {
+            height: 300,
+            width: 300,
+            type: animationType,
+            loop: false,
+            shape: undefined,
+            deviceModelInternal: firstModel,
+            deviceUnitColor: colors[0],
+            sizeVariant: hasSize ? 'LARGE' : undefined,
+        } as any,
+        argTypes: {
+            loop: { control: 'boolean' },
+            deviceModelInternal: {
+                control: 'select',
+                options: modelEntries.map(([m]) => m),
+            },
+            deviceUnitColor: colors.length
+                ? { control: 'select', options: colors }
+                : { table: { disable: true } },
+            sizeVariant: hasSize
+                ? { control: 'select', options: ['LARGE', undefined] }
+                : { table: { disable: true } },
+        },
+    };
+};
 
 const meta: Meta<typeof DeviceAnimationComponent> = {
     title: 'DeviceAnimation',
@@ -13,170 +49,11 @@ const meta: Meta<typeof DeviceAnimationComponent> = {
 };
 export default meta;
 
-export const Rotate: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.ROTATE,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T3T1,
-        deviceUnitColor: 1,
-        sizeVariant: 'LARGE',
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [
-                DeviceModelInternal.T1B1,
-                DeviceModelInternal.T2T1,
-                DeviceModelInternal.T3B1,
-                DeviceModelInternal.T3T1,
-                DeviceModelInternal.T3W1,
-            ],
-        },
-        deviceUnitColor: { control: 'number' },
-        sizeVariant: { control: 'select', options: ['LARGE', undefined] },
-    },
-};
-
-export const Bootloader: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.BOOTLOADER,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T1B1,
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [DeviceModelInternal.T1B1, DeviceModelInternal.T2T1, DeviceModelInternal.T3B1],
-        },
-        deviceUnitColor: { table: { disable: true } },
-        sizeVariant: { table: { disable: true } },
-    },
-};
-
-export const BootloaderTwoButtons: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.BOOTLOADER_TWO_BUTTONS,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T1B1,
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [DeviceModelInternal.T1B1],
-        },
-        deviceUnitColor: { table: { disable: true } },
-        sizeVariant: { table: { disable: true } },
-    },
-};
-
-export const Normal: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.NORMAL,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T1B1,
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [DeviceModelInternal.T1B1],
-        },
-        deviceUnitColor: { table: { disable: true } },
-        sizeVariant: { table: { disable: true } },
-    },
-};
-
-export const Hologram: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.HOLOGRAM,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T1B1,
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [DeviceModelInternal.T1B1],
-        },
-        deviceUnitColor: { table: { disable: true } },
-        sizeVariant: { table: { disable: true } },
-    },
-};
-
-export const ConnectCable: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.CONNECT_CABLE,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T3W1,
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [DeviceModelInternal.T3W1],
-        },
-        deviceUnitColor: { table: { disable: true } },
-        sizeVariant: { table: { disable: true } },
-    },
-};
-
-export const ConnectBtIntro: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.CONNECT_BT_INTRO,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T3W1,
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [DeviceModelInternal.T3W1],
-        },
-        deviceUnitColor: { table: { disable: true } },
-        sizeVariant: { table: { disable: true } },
-    },
-};
-
-export const ConnectBtLoop: StoryObj<typeof DeviceAnimationComponent> = {
-    args: {
-        height: 300,
-        width: 300,
-        type: DEVICE_ANIMATION_TYPES.CONNECT_BT_LOOP,
-        loop: false,
-        shape: undefined,
-        deviceModelInternal: DeviceModelInternal.T3W1,
-    },
-    argTypes: {
-        loop: { control: 'boolean' },
-        deviceModelInternal: {
-            control: 'select',
-            options: [DeviceModelInternal.T3W1],
-        },
-        deviceUnitColor: { table: { disable: true } },
-        sizeVariant: { table: { disable: true } },
-    },
-};
+export const Rotate = createDeviceAnimationStory('ROTATE');
+export const Bootloader = createDeviceAnimationStory('BOOTLOADER');
+export const BootloaderTwoButtons = createDeviceAnimationStory('BOOTLOADER_TWO_BUTTONS');
+export const Normal = createDeviceAnimationStory('NORMAL');
+export const Hologram = createDeviceAnimationStory('HOLOGRAM');
+export const ConnectCable = createDeviceAnimationStory('CONNECT_CABLE');
+export const ConnectBtIntro = createDeviceAnimationStory('CONNECT_BT_INTRO');
+export const ConnectBtLoop = createDeviceAnimationStory('CONNECT_BT_LOOP');
