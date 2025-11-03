@@ -1,14 +1,12 @@
 import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
-import { getNetworkType } from '@suite-common/wallet-config';
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 import { AssetsView } from './AssetsView/AssetsView';
 import { DashboardFooter } from './DashboardFooter';
@@ -27,11 +25,6 @@ export const Dashboard = () => {
     useLayout('Home', <PageHeader />);
     useNotificationForDisconnectedDevice();
 
-    const enabledNetworks = useSelector(selectEnabledNetworks);
-    const hasNonBitcoinNetwork = enabledNetworks
-        .map(getNetworkType)
-        .some(networkType => networkType !== 'bitcoin');
-
     return (
         <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
             <Container>
@@ -40,7 +33,7 @@ export const Dashboard = () => {
             </Container>
             <DashboardPromoBanner />
             <AssetsView />
-            {hasNonBitcoinNetwork && <StakingDashboard />}
+            <StakingDashboard />
             <DashboardFooter />
         </Column>
     );
