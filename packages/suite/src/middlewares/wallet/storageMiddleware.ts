@@ -5,6 +5,7 @@ import { analyticsActions } from '@suite-common/analytics';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { firmwareActions } from '@suite-common/firmware';
+import { labelingActions } from '@suite-common/local-first-storage';
 import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
@@ -173,6 +174,17 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 api.dispatch(storageActions.saveAnalytics());
+            }
+
+            if (
+                isAnyOf(
+                    labelingActions.updateLocalFirstStorageDebugEnabled,
+                    labelingActions.updateLocalFirstStorageEnabled,
+                    labelingActions.updateIsFeatureLocalFirstStorageAvailable,
+                    labelingActions.setLocalFirstStorageRelayUrl,
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveLabelingSettings());
             }
 
             if (deviceActions.setRememberDevice.match(action)) {

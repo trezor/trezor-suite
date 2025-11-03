@@ -454,6 +454,7 @@ const saveMetadata = async (metadata: Partial<Pick<MetadataState, MetadataPersis
 
 /**
  * save general metadata settings
+ * obsolete - will be replaced with labeling settings
  */
 export const saveMetadataSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     // for some strage race-condition reason it has to be awaited, so that the getState runs async
@@ -466,6 +467,24 @@ export const saveMetadataSettings = () => async (_dispatch: Dispatch, getState: 
         enabled: metadata.enabled,
         selectedProvider: metadata.selectedProvider,
     });
+};
+
+export const saveLabelingSettings = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+
+    const { labeling } = getState();
+
+    return db.addItem(
+        'labelingSettings',
+        {
+            isFeatureLocalFirstStorageAvailable: labeling.isFeatureLocalFirstStorageAvailable,
+            isLocalFirstStorageEnabled: labeling.isLocalFirstStorageEnabled,
+            isLocalFirstStorageDebugEnabled: labeling.isLocalFirstStorageDebugEnabled,
+            localFirstStorageRelayUrl: labeling.localFirstStorageRelayUrl,
+        },
+        'labelingSettings',
+        true,
+    );
 };
 
 export const saveDeviceMetadataError =

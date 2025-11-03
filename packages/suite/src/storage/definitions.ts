@@ -4,6 +4,7 @@ import type { DBSchema } from 'idb';
 
 import { AnalyticsState } from '@suite-common/analytics';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { LabelingSettings } from '@suite-common/local-first-storage';
 import type { MessageState } from '@suite-common/message-system';
 import type {
     DeviceWithEmptyPath,
@@ -138,6 +139,10 @@ export interface SuiteDBSchema extends DBSchema {
     metadata: {
         key: 'state';
         value: MetadataState;
+    };
+    labelingSettings: {
+        key: 'labelingSettings';
+        value: LabelingSettings;
     };
     messageSystem: {
         key: string;

@@ -27,6 +27,10 @@ export {
 export { findAccountLabel, findOutputLabel, findAddressLabel } from './labeling/selectorUtils';
 export type { WithLabelingState } from './labeling/labelingSelectors';
 export { labelingActions } from './labeling/labelingActions';
-export { prepareLabelingReducer, initialLabelingState } from './labeling/labelingReducer';
+export {
+    prepareLabelingReducer,
+    initialLabelingState,
+    type LabelingSettings,
+} from './labeling/labelingReducer';
 export type { LabelingState } from './labeling/labelingReducer';
 export { processMetadataMessageThunk } from './labeling/processMetadataMessageThunk';
