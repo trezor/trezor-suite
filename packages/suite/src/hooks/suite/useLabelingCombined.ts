@@ -38,9 +38,9 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
-    const toggleisFeatureLocalFirstStorageAvailable = () => {
+    const toggleIsFeatureLocalFirstStorageAvailable = () => {
         dispatch(
-            labelingActions.updateisFeatureLocalFirstStorageAvailable({
+            labelingActions.updateIsFeatureLocalFirstStorageAvailable({
                 isShownInSettings: !isFeatureLocalFirstStorageAvailable,
             }),
         );
@@ -52,7 +52,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
 
     const localFirstDisableIfNeeded = () => {
         if (isLocalFirstStorageEnabled) {
-            dispatch(labelingActions.updateLocaleFirstStorageEnabled({ isEnabled: false }));
+            dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: false }));
             dispatch(disposeAllLocalFirstStorageThunk());
         }
     };
@@ -62,7 +62,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         if (legacyMetadataState.enabled) legacyDisableIfNeeded();
 
         if (!isLocalFirstStorageEnabled) {
-            dispatch(labelingActions.updateLocaleFirstStorageEnabled({ isEnabled: true }));
+            dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
             dispatch(initSuiteLocalFirstStorageThunk());
         }
     };
@@ -81,7 +81,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
     return {
         /** New Labeling: LocalFirstStorage (Evolu) */
         isFeatureLocalFirstStorageAvailable,
-        toggleisFeatureLocalFirstStorageAvailable,
+        toggleIsFeatureLocalFirstStorageAvailable,
         isLocalFirstStorageEnabled,
         isEvoluSupportedByDevice,
         isLocalFirstStorageDebugEnabled,

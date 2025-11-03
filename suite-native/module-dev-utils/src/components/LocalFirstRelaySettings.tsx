@@ -43,7 +43,7 @@ export const LocalFirstRelaySettings = () => {
     const handleLocalFirstEnableToggle = () => {
         const originalIsLocalFirstStorageEnabled = isLocalFirstStorageEnabled;
         dispatch(
-            labelingActions.updateLocaleFirstStorageEnabled({
+            labelingActions.updateLocalFirstStorageEnabled({
                 isEnabled: !isLocalFirstStorageEnabled,
             }),
         );

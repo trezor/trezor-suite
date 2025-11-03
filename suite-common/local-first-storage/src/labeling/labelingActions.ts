@@ -44,17 +44,17 @@ export const clearAllLabels = createAction(
     (payload: { walletDescriptor: WalletDescriptor }) => ({ payload }),
 );
 
-export const updateLocaleFirstStorageEnabled = createAction(
+export const updateLocalFirstStorageEnabled = createAction(
     `${LABELING_PREFIX}/update-locale-first-storage-enabled`,
     (payload: { isEnabled: boolean }) => ({ payload }),
 );
 
-export const updateLocaleFirstStorageDebugEnabled = createAction(
+export const updateLocalFirstStorageDebugEnabled = createAction(
     `${LABELING_PREFIX}/update-locale-first-storage-debug-enabled`,
     (payload: { isEnabled: boolean }) => ({ payload }),
 );
 
-export const updateisFeatureLocalFirstStorageAvailable = createAction(
+export const updateIsFeatureLocalFirstStorageAvailable = createAction(
     `${LABELING_PREFIX}/update-show-locale-first-storage`,
     (payload: { isShownInSettings: boolean }) => ({ payload }),
 );
@@ -70,8 +70,8 @@ export const labelingActions = {
     setAddressLabel,
     setOutputLabel,
     clearAllLabels,
-    updateLocaleFirstStorageEnabled,
-    updateLocaleFirstStorageDebugEnabled,
-    updateisFeatureLocalFirstStorageAvailable,
+    updateLocalFirstStorageEnabled,
+    updateLocalFirstStorageDebugEnabled,
+    updateIsFeatureLocalFirstStorageAvailable,
     setLocalFirstStorageRelayUrl,
 };
