@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
@@ -16,6 +16,10 @@ import { isArrayMember } from '@trezor/utils';
 import { firmwareActions } from '../firmwareActions';
 import { selectFirmware, selectSwitchFirmwareType } from '../firmwareReducer';
 import { FirmwareUpdateProps, firmwareUpdate as firmwareUpdateThunk } from '../firmwareThunks';
+
+const INTERVAL_CHECK_SLOW_INSTALLATION_MS = 1_000;
+const TIME_THRESHOLD_SLOW_INSTALLATION_MS = 30_000;
+const PERCENTAGE_THRESHOLD_SLOW_INSTALLATION = 20;
 
 /*
 There are three firmware update flows, depending on current firmware version:
@@ -108,6 +112,41 @@ export const useFirmwareInstallation = () => {
     const isThpInProgress = useSelector(selectIsThpInProgress);
     const thpStep = useSelector(selectThpStep);
     const switchFirmwareType = useSelector(selectSwitchFirmwareType);
+
+    const [isSlow, setIsSlow] = useState(false);
+    const [startTime, setStartTime] = useState<null | number>(null);
+
+    useEffect(() => {
+        if (
+            !startTime &&
+            firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
+            firmware.uiEvent.payload.progress === 1
+        ) {
+            setStartTime(new Date().getTime());
+        }
+    }, [firmware.uiEvent, startTime]);
+
+    useEffect(() => {
+        if (!startTime || isSlow) {
+            return;
+        }
+
+        const interval = setInterval(() => {
+            const now = new Date().getTime();
+
+            if (now - startTime > TIME_THRESHOLD_SLOW_INSTALLATION_MS) {
+                if (
+                    firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
+                    firmware.uiEvent.payload.progress < PERCENTAGE_THRESHOLD_SLOW_INSTALLATION
+                ) {
+                    setIsSlow(true);
+                    clearInterval(interval);
+                }
+            }
+        }, INTERVAL_CHECK_SLOW_INSTALLATION_MS);
+
+        return () => clearInterval(interval);
+    }, [startTime, isSlow, firmware.uiEvent]);
 
     const [reconnectEvent, buttonEvent, progressEvent] = useMemo(() => {
         if (firmware.uiEvent) {
@@ -255,5 +294,6 @@ export const useFirmwareInstallation = () => {
         pinRequested,
         progressEvent,
         deviceIsWaitingForConfirmationToInitiateConnection,
+        isSlow,
     };
 };
