@@ -1,11 +1,13 @@
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
+import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { StakeFormContext, useStakeForm } from 'src/hooks/wallet/useStakeForm';
 
@@ -16,9 +18,10 @@ import { StakeInfoCards } from './StakeInfoCards/StakeInfoCards';
 interface StakeModalModalProps {
     onCancel?: () => void;
     selectedAccount: SelectedAccountLoaded;
+    flow: StakingFlow;
 }
 
-export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalProps) => {
+export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModalModalProps) => {
     const { account } = selectedAccount;
 
     const stakeContextValues = useStakeForm({ selectedAccount });
@@ -31,7 +34,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
         onCancel?.();
 
         analytics.report({
-            type: EventType.StakingStake,
+            type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
                 step: 'stake-form-modal',
@@ -59,18 +62,18 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalP
                     />
                 }
                 onCancel={onCancelClick}
-                bottomContent={<StakeButton />}
+                bottomContent={<StakeButton flow={flow} />}
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
-                    <StakeForm />
-                    <StakeInfoCards />
+                    <StakeForm flow={flow} />
+                    <StakeInfoCards flow={flow} />
                 </Grid>
             </Modal>
         </StakeFormContext.Provider>
     );
 };
 
-export const StakeModal = ({ onCancel }: Pick<StakeModalModalProps, 'onCancel'>) => {
+export const StakeModal = ({ onCancel, flow }: Pick<StakeModalModalProps, 'onCancel' | 'flow'>) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded' || !selectedAccount.account) {
@@ -83,6 +86,7 @@ export const StakeModal = ({ onCancel }: Pick<StakeModalModalProps, 'onCancel'>)
         <StakeModalLoaded
             onCancel={onCancel}
             selectedAccount={selectedAccount as SelectedAccountLoaded}
+            flow={flow}
         />
     );
 };

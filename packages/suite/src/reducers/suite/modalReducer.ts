@@ -16,7 +16,7 @@ import type { Action, TrezorDevice } from 'src/types/suite';
 
 export type State = ModalState & { preserve?: boolean };
 
-type ModalState =
+export type ModalState =
     | { context: typeof MODAL.CONTEXT_NONE }
     | {
           context: typeof MODAL.CONTEXT_DEVICE;

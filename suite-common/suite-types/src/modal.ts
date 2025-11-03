@@ -5,6 +5,7 @@ import { UI } from '@trezor/connect';
 import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
+import { StakingFlow } from './staking';
 
 export type UserContextPayload =
     | {
@@ -156,9 +157,11 @@ export type UserContextPayload =
       }
     | {
           type: 'stake-in-a-nutshell';
+          flow: StakingFlow;
       }
     | {
           type: 'stake';
+          flow: StakingFlow;
       }
     | {
           type: 'unstake';
@@ -168,6 +171,7 @@ export type UserContextPayload =
       }
     | {
           type: 'everstake';
+          flow: StakingFlow;
       }
     | {
           type: 'copy-address';
