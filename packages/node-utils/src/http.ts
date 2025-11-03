@@ -213,7 +213,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             });
 
             this.server.listen(port, '127.0.0.1', undefined, () => {
-                this.logger.info('Server started');
+                this.logger.info('Server started, listening on port: ', port);
                 const address = this.getServerAddress();
                 if (address) {
                     this.emitter.emit('server/listening', address);
