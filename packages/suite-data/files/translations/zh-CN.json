@@ -1041,8 +1041,6 @@
   "TR_EXPERIMENTAL_FEATURES": "实验性",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "实验性功能",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "仅限有经验的用户使用。风险自负。这些功能处于测试阶段，可能不稳定，也可能不提供长期支持。",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "仪表板发送与接收",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "从仪表板直接向任意账户发送和接收交易。",
   "TR_EXPERIMENTAL_NETWORKS": "{networkNames} {count, plural, one {网络} other {网络}}",
   "TR_EXPERIMENTAL_NETWORKS_DESCRIPTION": "在 {networkNames} {count, plural, one {网络} other {网络}} 上发送和接收交易。",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFT（非同质化代币）",

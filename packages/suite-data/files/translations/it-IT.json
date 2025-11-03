@@ -1012,7 +1012,6 @@
   "TR_EXPERIMENTAL_FEATURES": "Sperimentale",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Funzionalità sperimentali",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Solo per utenti esperti. L'utilizzo del presente servizio avviene a proprio rischio e pericolo. Queste funzioni sono in fase di test. Di conseguenza potrebbero risultare instabili e non essere supportate a lungo termine.",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "Invia e ricevi transazioni dalla tua dashboard direttamente su qualsiasi conto.",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFT (token non fungibili)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Aggiungi una sezione NFT ai conti della chain basati su EVM per visualizzare i token non fungibili. L'invio di token non fungibili non è attualmente supportato.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Migrazione delle password Dropbox",

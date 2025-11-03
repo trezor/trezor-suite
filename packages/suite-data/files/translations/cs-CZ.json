@@ -1037,8 +1037,6 @@
   "TR_EXPERIMENTAL_FEATURES": "Experimentální",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Experimentální funkce",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Pouze pro zkušené uživatele. Používejte jen na vlastní nebezpečí. Tyto funkce jsou ve fázi testování, mohou být nestabilní a nemusí mít dlouhodobou podporu.",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "Odesílání a přijímání z hlavního panelu",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "Odesílejte a přijímejte transakce přímo z hlavního panelu na jakýkoliv účet.",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFT (nezaměnitelné tokeny)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Přidává NFT sekci k EVM účtům, ve které si můžete prohlížet NFT kolekce. Odesílání NFT aktuálně není podporováno.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Migrovat hesla Dropbox",

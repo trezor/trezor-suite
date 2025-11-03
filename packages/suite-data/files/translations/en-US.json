@@ -1040,8 +1040,6 @@
   "TR_EXPERIMENTAL_FEATURES": "Experimental",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Experimental features",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "Global send & receive",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "Send and receive transactions from your dashboard directly to any account.",
   "TR_EXPERIMENTAL_NETWORKS": "{networkNames} {count, plural, one {network} other {networks}}",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFTs (non-fungible tokens)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Add an NFT section to EVM-based chain accounts, allowing you to view NFTs. Sending NFTs isn't currently supported.",

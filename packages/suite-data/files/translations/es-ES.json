@@ -1037,8 +1037,6 @@
   "TR_EXPERIMENTAL_FEATURES": "Experimental",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Funciones experimentales",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Solo para usuarios con experiencia. Utilízala bajo tu propia responsabilidad. Estas funciones están en fase de prueba, pueden ser inestables y podrían dejar de recibir soporte a largo plazo.",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "Envió y recepción global",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "Envía y recibe transacciones desde tu panel directamente a cualquier cuenta.",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFT (tokens no fungibles)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "Añade una sección de NFT a las cuentas de cadenas de EVM para consultar los NFT. Por ahora no se pueden enviar NFT.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Migrar contraseñas de Dropbox",

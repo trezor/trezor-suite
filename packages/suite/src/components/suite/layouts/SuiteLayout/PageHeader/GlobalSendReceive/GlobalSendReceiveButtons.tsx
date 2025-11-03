@@ -1,10 +1,5 @@
-import { useSelector } from 'react-redux';
-
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { ButtonGroup, ButtonVariant } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-
-import { ExperimentalFeatureFlag } from 'src/support/suite/ExperimentalFeatureFlag';
 
 import { Translation } from '../../../../Translation';
 import { HeaderActionButton } from '../HeaderActionButton';
@@ -18,40 +13,34 @@ export const GlobalSendReceiveButtons = ({
     setIsSendModalOpen,
     setIsReceiveModalOpen,
     variant,
-}: GlobalSendReceiveButtonsProps) => {
-    const btcOnlyFw = useSelector(selectHasBitcoinOnlyFirmware);
+}: GlobalSendReceiveButtonsProps) => (
+    <ButtonGroup size="small">
+        <HeaderActionButton
+            key="wallet-send"
+            icon="arrowUp"
+            onClick={() => {
+                setIsSendModalOpen(true);
 
-    return (
-        <ExperimentalFeatureFlag feature="global-send-receive" featureFlagDisabled={btcOnlyFw}>
-            <ButtonGroup size="small">
-                <HeaderActionButton
-                    key="wallet-send"
-                    icon="arrowUp"
-                    onClick={() => {
-                        setIsSendModalOpen(true);
+                analytics.report({ type: EventType.DashboardSendModal });
+            }}
+            data-testid="@wallet/menu/wallet-global-send"
+            variant={variant}
+        >
+            <Translation id="TR_NAV_SEND" />
+        </HeaderActionButton>
 
-                        analytics.report({ type: EventType.DashboardSendModal });
-                    }}
-                    data-testid="@wallet/menu/wallet-global-send"
-                    variant={variant}
-                >
-                    <Translation id="TR_NAV_SEND" />
-                </HeaderActionButton>
+        <HeaderActionButton
+            key="wallet-receive"
+            icon="arrowDown"
+            onClick={() => {
+                setIsReceiveModalOpen(true);
 
-                <HeaderActionButton
-                    key="wallet-receive"
-                    icon="arrowDown"
-                    onClick={() => {
-                        setIsReceiveModalOpen(true);
-
-                        analytics.report({ type: EventType.DashboardReceiveModal });
-                    }}
-                    data-testid="@wallet/menu/wallet-global-receive"
-                    variant={variant}
-                >
-                    <Translation id="TR_NAV_RECEIVE" />
-                </HeaderActionButton>
-            </ButtonGroup>
-        </ExperimentalFeatureFlag>
-    );
-};
+                analytics.report({ type: EventType.DashboardReceiveModal });
+            }}
+            data-testid="@wallet/menu/wallet-global-receive"
+            variant={variant}
+        >
+            <Translation id="TR_NAV_RECEIVE" />
+        </HeaderActionButton>
+    </ButtonGroup>
+);

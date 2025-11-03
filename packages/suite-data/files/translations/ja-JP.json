@@ -1037,8 +1037,6 @@
   "TR_EXPERIMENTAL_FEATURES": "実験的な機能",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "実験的な機能",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "上級者向けです。自己責任で使用してください。これらの機能はテスト中であり、不安定な場合があり、長期的なサポートがない可能性があります。",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE": "グローバル送信と受信",
-  "TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION": "ダッシュボードから任意のアカウントに取引を直接送信または受信します。",
   "TR_EXPERIMENTAL_NFT_SECTION": "NFTs (非代替性トークン)",
   "TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION": "EVMベースのチェーンのアカウントにNFTセクションを追加し、NFTを表示できるようにします。NFTの送信は現在サポートされていません。",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Dropboxのパスワードを移行する",
