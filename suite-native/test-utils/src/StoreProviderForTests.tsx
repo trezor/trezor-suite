@@ -1,11 +1,9 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { EnhancedStore } from '@reduxjs/toolkit';
-
 import { useFormattersConfig } from '@suite-native/formatters-config';
-import { PreloadedState, initStore } from '@suite-native/state';
+import { type PreloadedState, initStore } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
 
@@ -13,7 +11,7 @@ export type TestStore = Awaited<ReturnType<typeof initStore>>;
 
 type ReduxProviderProps = {
     children: ReactNode;
-    preloadedState: Partial<PreloadedState>;
+    preloadedState: PreloadedState;
     injectedStore?: TestStore;
 };
 
@@ -38,7 +36,7 @@ export const StoreProviderForTests = ({
     injectedStore,
     preloadedState,
 }: ReduxProviderProps) => {
-    const [store, setStore] = useState<EnhancedStore | null>(null);
+    const [store, setStore] = useState<TestStore | null>(null);
 
     useEffect(() => {
         if (injectedStore) {
