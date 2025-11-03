@@ -9,7 +9,7 @@ import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';
-import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
+import { selectBuyTradeableAssets } from '../../selectors/buySelectors';
 import { TradeableAsset } from '../../types/general';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
@@ -24,7 +24,7 @@ export const BuyTradeableAssetPicker = () => {
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'asset');
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const assets = useSelector(selectBuyTradeableAssetsSorted);
+    const assets = useSelector(selectBuyTradeableAssets);
 
     const btcAsset = useMemo(() => assets.find(asset => asset.cryptoId === 'bitcoin'), [assets]);
 
