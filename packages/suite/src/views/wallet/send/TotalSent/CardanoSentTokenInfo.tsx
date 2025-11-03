@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { asAmountUnit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -10,10 +11,11 @@ export const CardanoSentTokenInfo = () => {
     const {
         account: { networkType, tokens },
         getValues,
+        control,
         composedLevels,
     } = useSendFormContext();
 
-    const formOutputs = getValues().outputs;
+    const formOutputs = useWatch({ control, name: 'outputs', defaultValue: [] });
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
     const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
