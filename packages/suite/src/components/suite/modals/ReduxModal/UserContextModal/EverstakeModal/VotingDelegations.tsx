@@ -65,12 +65,23 @@ export const VotingDelegations = () => {
             <CollapsibleBox
                 heading={
                     <Row gap={spacings.sm} justifyContent="space-between">
-                        <Text>
+                        <Text typographyStyle="hint">
                             <Translation id="TR_STAKING_DELEGATE_YOUR_VOTING_RIGHTS" />
                         </Text>
                     </Row>
                 }
                 toggleIconName="caretDown"
+                toggleLabel={
+                    <Text variant="default" typographyStyle="callout">
+                        <Translation
+                            id={
+                                selectedVotingDelegation.type === 'another_drep'
+                                    ? 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP'
+                                    : 'TR_STAKING_DELEGATE_TO_EVERSTAKE'
+                            }
+                        />
+                    </Text>
+                }
                 fillType="none"
                 paddingType="none"
                 hasDivider={false}
@@ -103,7 +114,7 @@ export const VotingDelegations = () => {
                         </React.Fragment>
                     ))}
                 </Column>
-                <Text variant="tertiary">
+                <Text variant="tertiary" typographyStyle="hint" margin={{ top: spacings.xs }}>
                     <Translation id="TR_STAKING_DELEGATION_INFO_TEXT" />
                 </Text>
             </CollapsibleBox>
