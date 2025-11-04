@@ -52,6 +52,13 @@ function assertStaticSessionId(
     }
 }
 
+const deviceStateEqualTo = (first: DeviceState) => {
+    const firstParsed = first.staticSessionId?.split(':')[0];
+
+    return (second?: DeviceState) =>
+        firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
+};
+
 /**
  * If metadata are enabled in settings but metadata master key does not exist for this device state,
  * try to generate device metadata master key
@@ -99,9 +106,6 @@ const applyDeviceStatesThunk = createThunk(
         { dispatch, getState },
     ) => {
         try {
-            const devices = selectDevices(getState());
-            const devicesByPath = devices.filter(d => d.path === devicePath);
-
             const currentDeviceByStaticSessionId = newDeviceState.staticSessionId
                 ? selectDeviceByStaticSessionId(getState(), newDeviceState.staticSessionId)
                 : null;
@@ -114,6 +118,8 @@ const applyDeviceStatesThunk = createThunk(
                 return;
             }
 
+            const devices = selectDevices(getState());
+            const devicesByPath = devices.filter(d => d.path === devicePath);
             const devicesByPathWithoutState = devicesByPath.filter(d => !d.state?.staticSessionId);
             // sanity check that there is no 2 devices sharing the same path. this shouldn't happen, the only way that comes to my mind
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
@@ -149,9 +155,9 @@ const applyDeviceStatesThunk = createThunk(
                 }
 
                 if (emptyPassphraseDeviceState) {
-                    useEmptyPassphrase =
-                        emptyPassphraseDeviceState!.staticSessionId?.split(':')[0] ===
-                        staticSessionId.split(':')[0];
+                    useEmptyPassphrase = deviceStateEqualTo(newDeviceState)(
+                        emptyPassphraseDeviceState,
+                    );
                 }
             }
 
@@ -363,19 +369,15 @@ export const runDiscoveryThunk = createThunk(
             device = reselectDevice();
 
             const duplicate = selectDevices(getState())
-                .filter(d => d.state?.staticSessionId)
-                .find(
-                    d =>
-                        d.state!.staticSessionId!.split(':')[0] ===
-                        deviceState.staticSessionId!.split(':')[0],
-                );
+                .map(d => d.state)
+                .find(deviceStateEqualTo(deviceState));
 
-            if (isAddingHiddenWallet && duplicate?.state?.staticSessionId) {
+            if (isAddingHiddenWallet && duplicate?.staticSessionId) {
                 dispatch(
                     discoveryActions.updateDiscovery(
                         {
                             status: 'passphrase-duplicate',
-                            duplicateDeviceStaticSessionId: duplicate.state.staticSessionId,
+                            duplicateDeviceStaticSessionId: duplicate.staticSessionId,
                         },
                         device.path,
                     ),
@@ -528,11 +530,8 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            if (
-                // todo: not sure about instance, now it looks that there are 2 devices created in connect
-                getDeviceState2Res.payload._state.staticSessionId?.split(':')[0] !==
-                deviceState.staticSessionId?.split(':')[0]
-            ) {
+            // todo: not sure about instance, now it looks that there are 2 devices created in connect
+            if (!deviceStateEqualTo(deviceState)(getDeviceState2Res.payload._state)) {
                 dispatch(
                     discoveryActions.updateDiscovery(
                         { status: 'passphrase-mismatch' },
