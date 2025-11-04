@@ -1,19 +1,10 @@
 import { config } from '@trezor/connect/src/data/config';
-import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
-import {
-    CoreEventMessage,
-    CoreRequestMessage,
-    ERRORS,
-    TRANSPORT,
-    TRANSPORT_EVENT,
-} from '@trezor/connect/src/exports';
+import { CoreRequestMessage, ERRORS, TRANSPORT } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import type { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
 import { CoreInModule } from '@trezor/connect/src/impl/core-in-module';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 import type { ConnectSettingsPublic } from '@trezor/connect/src/types';
-import { getInstallerPackage } from '@trezor/connect-common';
-import { cloneObject } from '@trezor/utils';
 
 interface ConnectWebDynamicImplementation
     extends ConnectFactoryDependencies<ConnectSettingsPublic> {
@@ -28,15 +19,7 @@ const impl = new TrezorConnectDynamic<
     implementations: [
         {
             type: 'core-in-module',
-            impl: new CoreInModule((message: CoreEventMessage) => {
-                if (message.event === TRANSPORT_EVENT) {
-                    // note: udev and bridge are part of the event already emitted from "core" but without "preferred" field set
-                    const platform = getInstallerPackage();
-                    message.payload.udev = cloneObject(suggestUdevInstaller(platform));
-                }
-
-                return message;
-            }),
+            impl: new CoreInModule(),
         },
     ],
     getInitTarget: () => 'core-in-module',
