@@ -20,6 +20,12 @@ jest.mock('src/components/suite/Translation', () => ({
     Translation: ({ id }: any) => <span data-testid={id}>{id}</span>,
 }));
 
+global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+};
+
 const mockStore = configureStore<AppState, any>();
 
 const initStore = (state: AppState) => mockStore(state);

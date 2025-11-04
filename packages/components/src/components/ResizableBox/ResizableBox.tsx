@@ -41,6 +41,8 @@ export type ResizableBoxProps = AllowedResizableBoxFrameProps & {
     onHeightResizeEnd?: (height: number) => void;
     onWidthResizeMove?: (width: number) => void;
     onHeightResizeMove?: (height: number) => void;
+    onResizeStart?: (direction: Direction) => void;
+    onResizeStop?: (direction: Direction | null) => void;
     disabledWidthInterval?: DisabledInterval;
     disabledHeightInterval?: DisabledInterval;
 };
@@ -277,6 +279,8 @@ export const ResizableBox = ({
     onHeightResizeEnd,
     onWidthResizeMove,
     onHeightResizeMove,
+    onResizeStart,
+    onResizeStop,
     disabledWidthInterval,
     disabledHeightInterval,
     ...rest
@@ -307,7 +311,6 @@ export const ResizableBox = ({
     } = state;
 
     const effectiveWidth = typeof forcedWidth === 'number' ? forcedWidth : widthState;
-    const lockHorizontal = typeof forcedWidth === 'number';
 
     const resizeCooldown = createCooldown(150);
 
@@ -323,8 +326,7 @@ export const ResizableBox = ({
                 dispatch({ type: 'SET_HEIGHT', height: rect.height });
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleResize = useCallback(
         (e: MouseEvent) => {
@@ -358,13 +360,13 @@ export const ResizableBox = ({
                             ? getMaxResult(maxHeight, result)
                             : getMinResult(minHeight, result);
                     dispatch({ type: 'SET_HEIGHT', height: nextHeight });
-                } else if (direction === 'left' && !lockHorizontal) {
+                } else if (direction === 'left') {
                     let result = ensureMinimalSize(-difX);
                     result = calculateDisabledInterval(result, disabledWidthInterval);
                     nextWidth =
                         difX < 0 ? getMaxResult(maxWidth, result) : getMinResult(minWidth, result);
                     dispatch({ type: 'SET_WIDTH', width: nextWidth });
-                } else if (direction === 'right' && !lockHorizontal) {
+                } else if (direction === 'right') {
                     let result = ensureMinimalSize(effectiveWidth + difX);
                     result = calculateDisabledInterval(result, disabledWidthInterval);
                     nextWidth =
@@ -372,7 +374,7 @@ export const ResizableBox = ({
                     dispatch({ type: 'SET_WIDTH', width: nextWidth });
                 }
 
-                if (!lockHorizontal) onWidthResizeMove?.(nextWidth);
+                onWidthResizeMove?.(nextWidth);
                 onHeightResizeMove?.(nextHeight);
             });
         },
@@ -391,7 +393,6 @@ export const ResizableBox = ({
             onWidthResizeMove,
             onHeightResizeMove,
             resizeCooldown,
-            lockHorizontal,
         ],
     );
 
@@ -400,9 +401,12 @@ export const ResizableBox = ({
 
         window.addEventListener('mousemove', handleResize);
 
+        const currentDirection = direction;
+
         const handleMouseUp = () => {
+            onResizeStop?.(currentDirection ?? null);
             dispatch({ type: 'STOP_RESIZE' });
-            if (!lockHorizontal) onWidthResizeEnd?.(widthState);
+            onWidthResizeEnd?.(widthState);
             onHeightResizeEnd?.(heightState);
         };
 
@@ -420,36 +424,29 @@ export const ResizableBox = ({
     }, [
         isResizing,
         handleResize,
-        lockHorizontal,
         widthState,
         heightState,
         onWidthResizeEnd,
         onHeightResizeEnd,
+        onResizeStop,
+        direction,
     ]);
 
     const handleMouseDown = useCallback(
         (handlerDirection: Direction) => () => {
-            if (lockHorizontal && (handlerDirection === 'left' || handlerDirection === 'right')) {
-                return;
-            }
+            onResizeStart?.(handlerDirection);
             dispatch({ type: 'START_RESIZE', direction: handlerDirection });
         },
-        [lockHorizontal],
+        [onResizeStart],
     );
 
     const handleMouseOver = useCallback(
         (handlerDirection: Direction) => () => {
             if (!isResizing) {
-                if (
-                    lockHorizontal &&
-                    (handlerDirection === 'left' || handlerDirection === 'right')
-                ) {
-                    return;
-                }
                 dispatch({ type: 'MOUSE_OVER', direction: handlerDirection });
             }
         },
-        [isResizing, lockHorizontal],
+        [isResizing],
     );
 
     const handleMouseOut = useCallback(() => {
@@ -468,8 +465,8 @@ export const ResizableBox = ({
 
     const showTop = directions.includes('top');
     const showBottom = directions.includes('bottom');
-    const showLeft = directions.includes('left') && !lockHorizontal && !isLocked;
-    const showRight = directions.includes('right') && !lockHorizontal && !isLocked;
+    const showLeft = directions.includes('left') && !isLocked;
+    const showRight = directions.includes('right') && !isLocked;
 
     return (
         <Resizers
