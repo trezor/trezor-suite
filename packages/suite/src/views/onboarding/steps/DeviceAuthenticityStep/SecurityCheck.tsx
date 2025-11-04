@@ -11,6 +11,7 @@ import {
     H3,
     Icon,
     NewButton,
+    Note,
     Paragraph,
     Row,
     Text,
@@ -214,7 +215,7 @@ const SecurityCheckContent = ({
             <Row
                 alignItems="stretch"
                 flexWrap="wrap"
-                gap={20}
+                gap={16}
                 width="100%"
                 margin={{ top: spacings.xxxxl }}
             >
@@ -238,23 +239,23 @@ const SecurityCheckContent = ({
                         <Translation id="TR_YES_CONTINUE" />
                     </NewButton>
                 ) : (
-                    <NewButton
-                        onClick={handleSetupButtonClick}
-                        data-testid="@analytics/continue-button"
-                        size="large"
-                        intent="brand"
-                        minWidth={240}
+                    <Tooltip
+                        content={
+                            <Note iconName="clock">
+                                <Translation id="TR_TAKES_N_MINUTES" />
+                            </Note>
+                        }
                     >
-                        <Column alignItems="center">
+                        <NewButton
+                            onClick={handleSetupButtonClick}
+                            data-testid="@analytics/continue-button"
+                            size="large"
+                            intent="brand"
+                            minWidth={240}
+                        >
                             <Translation id={primaryButtonTopText} />
-                            <Text typographyStyle="label" as="div" opacity={0.65}>
-                                <Row gap={spacings.xxs}>
-                                    <Icon size={12} name="clock" />
-                                    <Translation id="TR_TAKES_N_MINUTES" />
-                                </Row>
-                            </Text>
-                        </Column>
-                    </NewButton>
+                        </NewButton>
+                    </Tooltip>
                 )}
             </Row>
         </SecurityCheckLayout>

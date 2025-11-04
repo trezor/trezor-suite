@@ -1,136 +1,29 @@
-import {
-    IconName,
-    NewButton,
-    NewButtonProps,
-    NewIconButton,
-    NewIconButtonProps,
-    Tooltip,
-} from '@trezor/components';
+import { NewButton, NewButtonProps } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 
-import { Translation, TranslationKey } from './Translation';
-
-type LegacyButtonVariant = 'primary' | 'info' | 'warning' | 'destructive' | 'tertiary';
-type LegacyButtonSize = 'tiny' | 'small' | 'medium' | 'large';
-
-interface WebUsbButtonProps
-    extends Omit<
-        NewButtonProps,
-        'children' | 'iconLeft' | 'iconRight' | 'intent' | 'priority' | 'size'
-    > {
-    translationId?: TranslationKey;
-    icon?: IconName | false;
-    variant?: LegacyButtonVariant;
-    size?: LegacyButtonSize;
-}
+import { Translation } from './Translation';
 
 const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
     (TrezorConnect as typeof TrezorConnectWeb).requestWebUSBDevice();
 };
 
-const mapVariantToIntent = (variant: LegacyButtonVariant = 'primary'): NewButtonProps['intent'] => {
-    switch (variant) {
-        case 'primary':
-            return 'brand';
-        case 'info':
-            return 'info';
-        case 'warning':
-            return 'warning';
-        case 'destructive':
-            return 'critical';
-        case 'tertiary':
-            return 'neutral';
-        default:
-            return 'brand';
-    }
+type WebUsbButtonProps = Omit<
+    NewButtonProps,
+    'onClick' | 'data-testid' | 'children' | 'iconRight'
+> & {
+    children?: React.ReactNode;
 };
 
-const mapSize = (size: LegacyButtonSize = 'small'): NewButtonProps['size'] | undefined => {
-    switch (size) {
-        case 'tiny':
-            return 'small';
-        case 'small':
-            return 'small';
-        case 'large':
-            return 'large';
-        case 'medium':
-            return 'medium';
-        default:
-            return 'small';
-    }
-};
-
-export const WebUsbButton = ({
-    translationId = 'TR_CHECK_FOR_DEVICES',
-    icon = 'magnifyingGlass',
-    size = 'tiny',
-    variant = 'primary',
-    ...rest
-}: WebUsbButtonProps) => (
-    <div data-testid="web-usb-button">
-        <NewButton
-            {...rest}
-            iconLeft={icon === false ? undefined : icon}
-            size={mapSize(size)}
-            intent={mapVariantToIntent(variant)}
-            onClick={handleClick}
-        >
-            <Translation id={translationId} />
-        </NewButton>
-    </div>
-);
-
-const mapVariantToIconIntent = (
-    variant: LegacyButtonVariant = 'primary',
-): NewIconButtonProps['intent'] => {
-    switch (variant) {
-        case 'primary':
-            return 'brand';
-        case 'info':
-            return 'info';
-        case 'warning':
-            return 'warning';
-        case 'destructive':
-            return 'critical';
-        case 'tertiary':
-            return 'neutral';
-        default:
-            return 'brand';
-    }
-};
-
-const mapIconSize = (size: LegacyButtonSize = 'small'): NewIconButtonProps['size'] | undefined => {
-    switch (size) {
-        case 'tiny':
-            return 'small';
-        case 'small':
-            return 'small';
-        case 'large':
-            return 'large';
-        case 'medium':
-            return undefined;
-        default:
-            return 'small';
-    }
-};
-
-export const WebUsbIconButton = ({
-    translationId = 'TR_CHECK_FOR_DEVICES',
-    size = 'small',
-    variant = 'primary',
-    ...rest
-}: WebUsbButtonProps) => (
-    <div data-testid="web-usb-button">
-        <Tooltip content={<Translation id={translationId} />}>
-            <NewIconButton
-                {...rest}
-                icon="magnifyingGlass"
-                intent={mapVariantToIconIntent(variant)}
-                size={mapIconSize(size)}
-                onClick={handleClick}
-            />
-        </Tooltip>
-    </div>
+export const WebUsbButton = (props: WebUsbButtonProps) => (
+    <NewButton
+        {...props}
+        size={props.size ?? 'small'}
+        iconLeft={props.iconLeft ?? 'magnifyingGlass'}
+        data-testid="web-usb-button"
+        onClick={handleClick}
+    >
+        {props.children ?? <Translation id="TR_CHECK_FOR_DEVICES" />}
+    </NewButton>
 );

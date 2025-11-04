@@ -32,7 +32,7 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
                 <Row gap={12}>
                     {deviceConnectedButNotAcquired && <AcquireDeviceButton />}
                     {isWebUsbTransport && !device?.connected && (
-                        <WebUsbButton variant="warning" size="small" />
+                        <WebUsbButton intent="warning" size="small" />
                     )}
                 </Row>
             }

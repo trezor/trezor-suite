@@ -174,7 +174,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                             <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
                         </NewButton>
                     )}
-                    {isWebUsbTransport && <WebUsbButton variant="primary" size="medium" />}
+                    {isWebUsbTransport && <WebUsbButton intent="brand" size="medium" />}
                 </ConnectModalContent>
             </Modal.ModalBase>
         </Modal.Backdrop>
