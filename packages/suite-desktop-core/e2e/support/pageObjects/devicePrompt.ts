@@ -86,11 +86,6 @@ export class DevicePrompt {
     }
 
     @step()
-    async confirmOnDevicePromptIsHiddenOnModal() {
-        await expect(this.confirmOnDevicePrompt).toHaveCSS('opacity', '0'); // On some modal dialogs, the prompt is hidden via opacity but still present in the DOM
-    }
-
-    @step()
     async connectDevicePromptIsShown(params?: { timeout?: number }) {
         await expect(this.connectDevicePrompt).toBeVisible({ timeout: params?.timeout });
     }

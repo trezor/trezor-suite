@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { Box, Card, NewIconButton, Modal } from '@trezor/components';
+import { Box, Card, Modal, NewIconButton } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { DeviceAnimation } from '@trezor/product-components';

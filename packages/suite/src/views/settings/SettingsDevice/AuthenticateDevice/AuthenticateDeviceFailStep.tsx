@@ -1,4 +1,4 @@
-import { Button, Modal } from '@trezor/components';
+import { Modal, NewButton } from '@trezor/components';
 
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
@@ -13,9 +13,9 @@ export const AuthenticateDeviceFailStep = ({ handleClose }: AuthenticateDeviceFa
             ctaSection={
                 <>
                     <AuthenticateDeviceSupportButton />
-                    <Button variant="tertiary" onClick={handleClose}>
+                    <NewButton intent="neutral" priority="secondary" onClick={handleClose}>
                         <Translation id="TR_DISMISS" />
-                    </Button>
+                    </NewButton>
                 </>
             }
             text="TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT"

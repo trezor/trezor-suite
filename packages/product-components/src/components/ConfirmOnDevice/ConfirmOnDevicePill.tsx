@@ -1,60 +1,16 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
-import styled, { css, keyframes } from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTheme } from 'styled-components';
 
-import { ElevationUp } from '@trezor/components';
+import { Box } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { borders, spacingsPx } from '@trezor/theme';
 
 import { ConfirmOnDevicePillContent } from './ConfirmOnDevicePillContent';
 
-enum AnimationDirection {
-    Up,
-    Down,
-}
+const INITIAL_STATE = { opacity: 0, y: '50%' };
 
-export const SLIDE_UP = keyframes`
-    0% {
-        transform: translateY(150%);
-    }
-    100% {
-        transform: translateY(0%);
-    }
-`;
-
-export const SLIDE_DOWN = keyframes`
-    0% {
-        transform: translateY(0%);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(150%);
-        opacity: 0;
-    }
-`;
-
-const Wrapper = styled.div<{ $animation?: AnimationDirection; $isCancelable?: boolean }>`
-    padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xxl};
-    border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-
-    ${({ $isCancelable }) => !$isCancelable && `padding-right: ${spacingsPx.xxl};`}
-
-    ${({ $animation }) =>
-        $animation === AnimationDirection.Up &&
-        css`
-            animation: ${SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        `}
-
-    ${({ $animation }) =>
-        $animation === AnimationDirection.Down &&
-        css`
-            animation: ${SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        `}
-`;
-
-export interface ConfirmOnDeviceProps {
+export type ConfirmOnDeviceProps = {
     title: ReactNode;
     successText?: ReactNode;
     steps?: number;
@@ -63,17 +19,37 @@ export interface ConfirmOnDeviceProps {
     onCancel?: () => void;
     deviceModelInternal?: DeviceModelInternal;
     deviceUnitColor?: number;
-}
+};
 
-export const ConfirmOnDevicePill = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) => (
-    <Wrapper
-        $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
-        $isCancelable={!!rest.onCancel}
-        data-testid="@prompts/confirm-on-device"
-        onClick={e => e.stopPropagation()}
-    >
-        <ElevationUp>
-            <ConfirmOnDevicePillContent {...rest} />
-        </ElevationUp>
-    </Wrapper>
-);
+export const ConfirmOnDevicePill = ({ isConfirmed, ...props }: ConfirmOnDeviceProps) => {
+    const theme = useTheme();
+
+    const isCancelable = !!props.onCancel;
+
+    return (
+        <AnimatePresence>
+            <motion.div
+                initial={INITIAL_STATE}
+                animate={isConfirmed ? INITIAL_STATE : { opacity: 1, y: 0 }}
+                exit={INITIAL_STATE}
+                transition={{
+                    duration: 0.6,
+                    ease: [0.16, 1, 0.3, 1],
+                }}
+            >
+                <Box
+                    backgroundColor={theme.baseFillSurfaceModeless}
+                    padding={isCancelable ? 16 : { vertical: 16, left: 16, right: 24 }}
+                    borderRadius={20}
+                    borderWidth={1}
+                    borderColor={theme.baseBorderSurfaceModeless}
+                    shadow={theme.boxShadowElevated}
+                    data-testid="@prompts/confirm-on-device"
+                    onClick={e => e.stopPropagation()}
+                >
+                    <ConfirmOnDevicePillContent {...props} />
+                </Box>
+            </motion.div>
+        </AnimatePresence>
+    );
+};

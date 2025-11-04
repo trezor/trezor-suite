@@ -90,7 +90,6 @@ export const AddAccountButton = ({
             onClick={device ? handleOnClick : undefined}
             iconLeft="plus"
             isDisabled={addAccountDisabled || isDisabled}
-            size="small"
             intent="neutral"
             priority="secondary"
             width={isFullWidth ? '100%' : undefined}

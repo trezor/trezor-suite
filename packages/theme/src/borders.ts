@@ -24,7 +24,8 @@ export type BorderRadii =
     | SpacingValuesNew;
 export type BorderWidths =
     | (typeof borders.widths)[keyof typeof borders.widths]
-    | SpacingValuesPxNew;
+    | SpacingValuesPxNew
+    | SpacingValuesNew;
 
 type NativeRadiusValue = 4 | 6 | 8 | 12 | 16 | 20;
 

@@ -86,7 +86,7 @@ export class DashboardPage {
         this.discoveryEmptyHeader = this.page.getByTestId('@exception/discovery-empty/header');
         this.discoveryEmptyDesc = this.page.getByTestId('@exception/discovery-empty/description');
         this.discoveryEmptyPrimaryButton = this.page.getByTestId(
-            '@exception/discovery-empty/primary-button',
+            '@exception/discovery-empty/warning-button',
         );
     }
 

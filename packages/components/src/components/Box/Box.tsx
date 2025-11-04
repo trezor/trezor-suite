@@ -17,6 +17,9 @@ import {
 import { TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
+const getValueWithUnit = (value: string | number) =>
+    typeof value === 'number' ? `${value}px` : value;
+
 export const allowedBoxFrameProps = [
     'margin',
     'padding',
@@ -45,22 +48,26 @@ const Container = styled.div<
         $elevation: Elevation;
         $hasBackground?: boolean;
         $backgroundColor?: CSSColor;
+        $borderColor?: CSSColor;
+        $shadow?: string;
     }
 >`
-    border: 0 solid ${mapElevationToBorder};
+    border: 0 solid
+        ${({ $borderColor, $elevation, theme }) =>
+            $borderColor ?? mapElevationToBorder({ theme, $elevation })};
     transition: background 0.2s ease;
 
     ${({ $borderWidth }) =>
         $borderWidth &&
         (typeof $borderWidth === 'object'
             ? css`
-                  border-width: ${$borderWidth.top ?? $borderWidth.vertical ?? 0}
-                      ${$borderWidth.right ?? $borderWidth.horizontal ?? 0}
-                      ${$borderWidth.bottom ?? $borderWidth.vertical ?? 0}
-                      ${$borderWidth.left ?? $borderWidth.horizontal ?? 0};
+                  border-width: ${getValueWithUnit($borderWidth.top ?? $borderWidth.vertical ?? 0)}
+                      ${getValueWithUnit($borderWidth.right ?? $borderWidth.horizontal ?? 0)}
+                      ${getValueWithUnit($borderWidth.bottom ?? $borderWidth.vertical ?? 0)}
+                      ${getValueWithUnit($borderWidth.left ?? $borderWidth.horizontal ?? 0)};
               `
             : css`
-                  border-width: ${$borderWidth};
+                  border-width: ${getValueWithUnit($borderWidth)};
               `)}
 
     ${({ $hasBackground, $elevation, theme }) =>
@@ -73,6 +80,12 @@ const Container = styled.div<
         $backgroundColor &&
         css`
             background: ${$backgroundColor};
+        `}
+
+    ${({ $shadow }) =>
+        $shadow &&
+        css`
+            box-shadow: ${$shadow};
         `}
 
     ${withFrameProps};
@@ -93,7 +106,12 @@ export type BoxProps = AllowedFrameProps & {
     children: React.ReactNode;
     borderWidth?: BorderWidth;
     hasBackground?: boolean;
+    // TODO: type to token names
     backgroundColor?: CSSColor;
+    // TODO: type to token names
+    borderColor?: CSSColor;
+    // TODO: type to token names
+    shadow?: string;
     'data-testid'?: string;
     'aria-hidden'?: boolean;
     as?: React.ElementType;
@@ -107,6 +125,8 @@ export const Box = ({
     borderWidth,
     hasBackground,
     backgroundColor,
+    borderColor,
+    shadow,
     'data-testid': dataTestId,
     'aria-hidden': ariaHidden,
     as = 'div',
@@ -125,11 +145,13 @@ export const Box = ({
             aria-hidden={ariaHidden}
             $borderWidth={borderWidth}
             $backgroundColor={backgroundColor}
+            $borderColor={borderColor}
             $hasBackground={hasBackground}
             $elevation={elevation}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            $shadow={shadow}
             {...frameProps}
         >
             {children}

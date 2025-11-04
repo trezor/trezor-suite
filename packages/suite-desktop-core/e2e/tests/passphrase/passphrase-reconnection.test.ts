@@ -36,7 +36,6 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
             await trezorUserEnvLink.pressYes(); // confirm address
-            await devicePrompt.confirmOnDevicePromptIsHiddenOnModal();
 
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
@@ -89,7 +88,6 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
             await trezorUserEnvLink.pressYes(); // confirm address
-            await devicePrompt.confirmOnDevicePromptIsHiddenOnModal();
 
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
@@ -101,7 +99,6 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
             await expect(page.getByTestId('@modal/output-value')).toBeVisible();
 
             await trezorUserEnvLink.pressYes(); // confirm address
-            await devicePrompt.confirmOnDevicePromptIsHiddenOnModal();
 
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
             await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
