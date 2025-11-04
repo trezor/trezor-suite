@@ -5,6 +5,7 @@ import { DeviceOnboardingStackRoutes, HomeStackRoutes, RootStackRoutes } from '.
 jest.mock('../components/NavigationContainerWithAnalytics', () => ({
     navigationContainerRef: {
         getState: jest.fn(),
+        isReady: jest.fn().mockReturnValue(true),
     },
 }));
 
