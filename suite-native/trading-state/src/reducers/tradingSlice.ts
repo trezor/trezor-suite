@@ -22,8 +22,8 @@ import {
 import {
     TRADING_RESIDENCE,
     TradingResidenceState,
-    tradingResidenceInitialState,
-    tradingResidenceReducer,
+    residenceInitialState,
+    residenceReducer,
 } from './residenceSlice';
 import {
     TRADING_SELL,
@@ -56,7 +56,7 @@ export const tradingInitialState: TradingState = {
     buy: buyInitialState,
     exchange: exchangeInitialState,
     sell: sellInitialState,
-    residence: tradingResidenceInitialState,
+    residence: residenceInitialState,
     favouriteAssets: {},
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
@@ -135,7 +135,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             .addMatcher(
                 action => action.type.startsWith(TRADING_RESIDENCE),
                 (state, action) => {
-                    tradingResidenceReducer(state.residence, action);
+                    residenceReducer(state.residence, action);
                 },
             )
             // In case that this reducer does not match the action, try to handle it by suite-common tradingReducer.

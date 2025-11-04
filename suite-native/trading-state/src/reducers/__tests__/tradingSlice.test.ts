@@ -15,7 +15,7 @@ import { sellQuotes } from '../../__fixtures__/sellQuotes';
 import { adaAsset, btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
 import { buyActions, buyInitialState } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';
-import { tradingResidenceActions } from '../residenceSlice';
+import { residenceActions } from '../residenceSlice';
 import { sellActions, sellInitialState } from '../sellSlice';
 import { TradingState, tradingActions, tradingInitialState, tradingSlice } from '../tradingSlice';
 
@@ -410,8 +410,8 @@ describe('tradingSlice', () => {
     describe('residence slice', () => {
         it('should handle residence actions', () => {
             const actions = [
-                tradingResidenceActions.setResidenceCountry('PL'),
-                tradingResidenceActions.setOnboardingVisited(),
+                residenceActions.setResidenceCountry('PL'),
+                residenceActions.setOnboardingVisited(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;

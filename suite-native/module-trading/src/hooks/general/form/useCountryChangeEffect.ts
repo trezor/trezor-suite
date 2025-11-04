@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { TradingCountryOption } from '@suite-common/trading';
-import { tradingResidenceActions } from '@suite-native/trading-state';
+import { residenceActions } from '@suite-native/trading-state';
 
 export type CountryFormWatch = (key: 'country') => TradingCountryOption | undefined;
 
@@ -17,7 +17,7 @@ export const useCountryChangeEffect = (watch: CountryFormWatch) => {
             return;
         }
 
-        dispatch(tradingResidenceActions.setResidenceCountry(country));
+        dispatch(residenceActions.setResidenceCountry(country));
         prevCountryCode.current = country;
     }, [country, dispatch]);
 };

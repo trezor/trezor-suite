@@ -1,10 +1,10 @@
 import { TradingCountryCode } from '@suite-common/trading';
 
-import { tradingResidenceActions, tradingResidenceReducer } from '../residenceSlice';
+import { residenceActions, residenceReducer } from '../residenceSlice';
 
 describe('residenceSlice', () => {
     it('should return the initial state', () => {
-        const state = tradingResidenceReducer(undefined, { type: 'unknown-action' });
+        const state = residenceReducer(undefined, { type: 'unknown-action' });
         expect(state).toEqual({
             country: undefined,
             wasOnboardingVisited: false,
@@ -15,9 +15,9 @@ describe('residenceSlice', () => {
         it('should set the residence country', () => {
             const country: TradingCountryCode = 'CZ';
 
-            const state = tradingResidenceReducer(
+            const state = residenceReducer(
                 undefined,
-                tradingResidenceActions.setResidenceCountry(country),
+                residenceActions.setResidenceCountry(country),
             );
 
             expect(state.country).toBe(country);
@@ -26,10 +26,7 @@ describe('residenceSlice', () => {
 
     describe('setOnboardingVisited', () => {
         it('should set onboardingCompleted to true', () => {
-            const state = tradingResidenceReducer(
-                undefined,
-                tradingResidenceActions.setOnboardingVisited(),
-            );
+            const state = residenceReducer(undefined, residenceActions.setOnboardingVisited());
 
             expect(state.wasOnboardingVisited).toBe(true);
         });
