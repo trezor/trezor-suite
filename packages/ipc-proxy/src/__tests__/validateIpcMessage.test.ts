@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { ElectronIpcMainInvokeEvent } from '../proxy-handler';
 import { validateIpcMessage } from '../validateIpcMessage';
 
@@ -31,8 +33,10 @@ describe(validateIpcMessage.name, () => {
 
         validateIpcMessage({
             ipcEvent: createSenderFrame(senderUrl),
-            dirnameProvider: () => 'C:/Users/vm11-/Desktop/win-unpacked/resources/app.asar/dist',
+            dirnameProvider: () =>
+                'C:\\Users\\vm11-\\Desktop\\win-unpacked\\resources\\app.asar\\dist',
             platformProvider: () => 'win32',
+            pathProvider: path.win32,
         });
     });
 
