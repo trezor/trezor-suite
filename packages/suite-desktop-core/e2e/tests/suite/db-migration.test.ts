@@ -14,11 +14,14 @@ const workaroundBtcAddressInputSelector = 'outputs.0.address';
 
 test.describe(
     'Database migration',
-    // This test is run only on web nightly builds, it works with web instances of 25.7 and develop branch
+    // This test is run only on web nightly builds, it works with web instances of 22.5 and develop branch
     // On PR and release CI run it would provide no value and potentially false failures
-    { tag: ['@group=migrations', '@webOnly', '@nightlyOnly'] },
+    { tag: ['@group=migrations', '@webOnly', '@nightlyOnly', '@specificModel'] },
     () => {
-        test.use({ emulatorSetupConf: { passphrase_protection: true, mnemonic: 'mnemonic_all' } });
+        test.use({
+            emulatorStartConf: { model: 'T3T1' },
+            emulatorSetupConf: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
+        });
 
         test(
             `Db migration between: ${migrateFromVersion} => ${migrateToVersion}`,
