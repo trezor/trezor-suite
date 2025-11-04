@@ -17,27 +17,20 @@ const DEVICE_CERT_TROPIC =
 const SIGNATURE_TROPIC =
     '9d6a7cfc1d9957a7eaa09f58ab385a4722dc621c6a58f0e281305f36c1447206ea6642f4e4ff36207bd57c3719101855e9c9a00a5db60cc84e20181d69f4fa00';
 const CHALLENGE = '29d0be0f3cb191c80d108359c64d22984a77ad8b99433814be31db0b6e9e7920';
+
+const T2B1rootPubKeyOptiga =
+    '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96';
+// TODO this is staging key, get the DEBUG key for Tropic T3W1, see deviceAuthenticityConfig.ts
+const T3W1rootPubKeyTropic = 'cd318dc8405ae4f4144e3284dcb7b0cb0f0c2195c2ca14a0f6fccd9104e32a4b';
+
 const CONFIG: DeviceAuthenticityConfig = {
     version: 1,
-    T3B1: {
-        rootPubKeysOptiga: [
-            '045b5c3fdd01f3602092834209b86df0ca86a9faf25cac35c73bf6237d66eb21eafcec3706f1ccd5eb4cc7f2fa1751213eccb1c78389afba89a5788ff31ee46a5d',
-        ],
-    },
-    T2B1: {
-        rootPubKeysOptiga: [
-            '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
-        ],
-    },
-    T3T1: {
-        rootPubKeysOptiga: [
-            '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
-        ],
-    },
+    T2B1: { rootPubKeysOptiga: [T2B1rootPubKeyOptiga] },
+    T3B1: { rootPubKeysOptiga: [] },
+    T3T1: { rootPubKeysOptiga: [] },
     T3W1: {
-        // TODO get T3W1 debug keys, see deviceAuthenticityConfig.ts
-        rootPubKeysOptiga: ['you shall not pass'],
-        rootPubKeysTropic: ['cd318dc8405ae4f4144e3284dcb7b0cb0f0c2195c2ca14a0f6fccd9104e32a4b'], // TODO this is STAGING key
+        rootPubKeysOptiga: [],
+        rootPubKeysTropic: [T3W1rootPubKeyTropic],
     },
 };
 
@@ -87,12 +80,14 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         const verify = await verifyAuthenticityProof(defaultOptigaProps);
         expect(verify.valid).toBe(true);
         expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(T2B1rootPubKeyOptiga);
     });
 
     it('verify success for tropic (with prod keys)', async () => {
         const verify = await verifyAuthenticityProof(defaultTropicProps);
         expect(verify.valid).toBe(true);
         expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(T3W1rootPubKeyTropic);
     });
 
     it('verify success for optiga (with debug keys)', async () => {
@@ -103,6 +98,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         });
         expect(verify.valid).toBe(true);
         expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(T2B1rootPubKeyOptiga);
     });
 
     it('verify success for tropic (with debug keys)', async () => {
@@ -113,6 +109,29 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         });
         expect(verify.valid).toBe(true);
         expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(T3W1rootPubKeyTropic);
+    });
+
+    it('verify failed for optiga (debug keys not allowed)', async () => {
+        const verify = await verifyAuthenticityProof({
+            ...defaultOptigaProps,
+            config: CONFIG_WITH_DEBUG_KEYS,
+        });
+        expect(verify.valid).toBe(false);
+        expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
+        expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(undefined);
+    });
+
+    it('verify failed for tropic (debug keys not allowed)', async () => {
+        const verify = await verifyAuthenticityProof({
+            ...defaultTropicProps,
+            config: CONFIG_WITH_DEBUG_KEYS,
+        });
+        expect(verify.valid).toBe(false);
+        expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
+        expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(undefined);
     });
 
     it('verify failed for optiga (signature mismatch)', async () => {
@@ -125,6 +144,8 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
 
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('INVALID_DEVICE_SIGNATURE');
+        expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(T2B1rootPubKeyOptiga);
     });
 
     it('verify failed for tropic (signature mismatch)', async () => {
@@ -137,6 +158,8 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
 
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('INVALID_DEVICE_SIGNATURE');
+        expect(verify.caPubKey).toEqual(expect.any(String));
+        expect(verify.rootPubKey).toBe(T3W1rootPubKeyTropic);
     });
 
     it('verify failed for optiga (missing rootPubKey)', async () => {
@@ -155,6 +178,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         });
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
+        expect(verify.rootPubKey).toBe(undefined);
     });
 
     it('verify failed for tropic (missing rootPubKey)', async () => {
@@ -170,6 +194,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         });
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
+        expect(verify.rootPubKey).toBe(undefined);
     });
 
     it('verify failed for tropic (no rootPubKeysTropic defined)', async () => {
@@ -179,6 +204,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         });
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('ROOT_PUBKEY_NOT_FOUND');
+        expect(verify.rootPubKey).toBe(undefined);
     });
 
     it('verify failed for optiga (device model mismatch)', async () => {
@@ -192,6 +218,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
 
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('INVALID_DEVICE_MODEL');
+        expect(verify.rootPubKey).toBe(T2B1rootPubKeyOptiga);
     });
 
     // device model mismatch case is not relevant for tropic (supported only by T3W1)
@@ -209,6 +236,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
 
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('CA_PUBKEY_BLACKLISTED');
+        expect(verify.rootPubKey).toBe(T2B1rootPubKeyOptiga);
     });
 
     it('verify failed for tropic (caPubKey on blacklist)', async () => {
@@ -224,5 +252,6 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
 
         expect(verify.valid).toBe(false);
         expect(verify.error).toBe('CA_PUBKEY_BLACKLISTED');
+        expect(verify.rootPubKey).toBe(T3W1rootPubKeyTropic);
     });
 });
