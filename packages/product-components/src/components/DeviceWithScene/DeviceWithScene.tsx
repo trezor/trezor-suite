@@ -5,6 +5,7 @@ import {
     FrameProps,
     FramePropsKeys,
     Image,
+    ObjectFit,
     TransientProps,
     pickAndPrepareFrameProps,
     withFrameProps,
@@ -55,6 +56,7 @@ export type DeviceWithSceneProps = AllowedFrameProps & {
     deviceModel: DeviceModelInternal;
     scene?: 'ghost' | 'confirm';
     unitColor?: number;
+    objectFit?: ObjectFit;
 };
 
 const BASE_HEIGHT = 400;
@@ -69,6 +71,7 @@ export const DeviceWithScene = ({
     deviceModel = DEFAULT_FLAGSHIP_MODEL,
     scene,
     unitColor,
+    objectFit,
     ...rest
 }: DeviceWithSceneProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedDeviceWithSceneFrameProps);
@@ -76,7 +79,12 @@ export const DeviceWithScene = ({
 
     return (
         <Container {...frameProps}>
-            <Image image={image} width={frameProps.$width} height={frameProps.$height} />
+            <Image
+                image={image}
+                width={frameProps.$width}
+                height={frameProps.$height}
+                objectFit={objectFit}
+            />
             {scene === 'confirm' && (
                 <TouchContainer
                     $scale={

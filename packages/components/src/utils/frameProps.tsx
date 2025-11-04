@@ -66,6 +66,9 @@ type Cursor = (typeof cursors)[number];
 const userSelects = ['none', 'text', 'all', 'auto', 'inherit'] as const;
 type UserSelect = (typeof userSelects)[number];
 
+const objectFits = ['none', 'fill', 'contain', 'cover', 'scale-down'] as const;
+export type ObjectFit = (typeof objectFits)[number];
+
 export type FrameProps = {
     margin?: Margin;
     padding?: Padding;
@@ -85,6 +88,7 @@ export type FrameProps = {
     opacity?: number;
     aspectRatio?: `${number}` | `${number} / ${number}`;
     userSelect?: UserSelect;
+    objectFit?: ObjectFit;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -129,6 +133,7 @@ export const withFrameProps = ({
     $aspectRatio,
     $opacity,
     $userSelect,
+    $objectFit,
 }: TransientFrameProps) => css`
     ${$margin &&
     (typeof $margin === 'object'
@@ -222,6 +227,10 @@ export const withFrameProps = ({
     css`
         user-select: ${$userSelect};
     `};
+    ${$objectFit &&
+    css`
+        object-fit: ${$objectFit};
+    `};
 `;
 
 const getStorybookType = (key: FramePropsKeys) => {
@@ -280,17 +289,25 @@ const getStorybookType = (key: FramePropsKeys) => {
                     type: 'number',
                 },
             };
-        default:
-            return {
-                control: {
-                    type: 'text',
-                },
-            };
         case 'userSelect':
             return {
                 options: userSelects,
                 control: {
                     type: 'select',
+                },
+            };
+        case 'objectFit':
+            return {
+                options: objectFits,
+                control: {
+                    type: 'select',
+                },
+            };
+
+        default:
+            return {
+                control: {
+                    type: 'text',
                 },
             };
     }
@@ -360,6 +377,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('opacity') ? { opacity: undefined } : {}),
             ...(allowedFrameProps.includes('aspectRatio') ? { aspectRatio: undefined } : {}),
             ...(allowedFrameProps.includes('userSelect') ? { userSelect: undefined } : {}),
+            ...(allowedFrameProps.includes('objectFit') ? { objectFit: undefined } : {}),
         },
         argTypes,
     };

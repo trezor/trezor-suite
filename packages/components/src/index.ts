@@ -110,6 +110,7 @@ export { StoryColumn, StoryWrapper } from './support/Story';
 export {
     type Margin,
     type Padding,
+    type ObjectFit,
     type FrameProps,
     type FramePropsKeys,
     pickAndPrepareFrameProps,
