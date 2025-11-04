@@ -55,6 +55,7 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
     evolu.subscribeError(() => {
         const error = evolu.getError();
+        console.error('Evolu error:', error);
         console.error(JSON.stringify(error));
     });
 
