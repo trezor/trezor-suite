@@ -10989,4 +10989,9 @@ export default defineMessages({
         id: 'TR_ERROR_LOADING_TOKENS',
         defaultMessage: 'Failed to load tokens',
     },
+    TR_LOCAL_NETWORK_ACCESS_PERMISSION_WARNING: {
+        id: 'TR_LOCAL_NETWORK_ACCESS_PERMISSION_WARNING',
+        defaultMessage:
+            'In order to use all features of Trezor Suite web version please allow local network access in your browser settings.',
+    },
 } as const);
