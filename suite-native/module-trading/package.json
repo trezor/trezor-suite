@@ -53,6 +53,7 @@
         "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
+        "@suite-native/trading-consts": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
@@ -76,6 +77,7 @@
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*",
+        "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
         "@types/invity-api": "^1.1.11"
     }

@@ -1,8 +1,7 @@
 import { TradingTransaction } from '@suite-common/trading';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getInitializedTradingState, getSellTrade } from '@suite-native/trading-fixtures';
 
-import { getSellTrade } from '../../../../__fixtures__/trades';
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { TradeDetailFooter } from '../TradeDetailFooter';
 
 const mockCopyToClipboard = jest.fn();

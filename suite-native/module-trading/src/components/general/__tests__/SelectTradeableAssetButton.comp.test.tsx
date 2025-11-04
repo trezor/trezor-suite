@@ -1,6 +1,6 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { adaAsset } from '@suite-native/trading-fixtures';
 
-import { adaAsset } from '../../../__fixtures__/tradeableAssets';
 import { SelectTradeableAssetButton } from '../SelectTradeableAssetButton';
 
 describe('SelectTradeableAssetButton', () => {

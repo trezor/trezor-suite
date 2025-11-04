@@ -7,15 +7,16 @@ import {
     TradingSellState,
     TradingType,
 } from '@suite-common/trading';
+import { tradingInitialState } from '@suite-native/trading-consts';
+import { TradingState } from '@suite-native/trading-types';
 
 import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
-import buyQuotes from './buyQuotes.json';
-import coins from './coins.json';
+import { buyQuotes } from './buyQuotes';
+import { coins } from './coins';
 import { exchangeCexdirect, exchangeInvity, exchangeMercuryo } from './exchangeProviders';
 import { exchangeQuotes } from './exchangeQuotes';
-import platforms from './platforms.json';
+import { platforms } from './platforms';
 import { sellBanxa, sellCexdirect, sellInvity, sellMercuryo, sellMoonpay } from './sellProviders';
-import { TradingState, tradingInitialState } from '../reducers';
 import { sellQuotes } from './sellQuotes';
 
 export const getInitializedBuyState = () =>

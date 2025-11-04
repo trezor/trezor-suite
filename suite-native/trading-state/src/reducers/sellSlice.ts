@@ -1,16 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { TradingSellState as CommonTradingSellState, initialState } from '@suite-common/trading';
-
-export interface TradingSellState extends CommonTradingSellState {}
-
-export const sellInitialState: TradingSellState = initialState.sell;
+import { tradingInitialState } from '@suite-native/trading-consts';
 
 export const TRADING_SELL = 'tradingSell';
 
 const sellSlice = createSlice({
     name: TRADING_SELL,
-    initialState: initialState.sell,
+    initialState: tradingInitialState.sell,
     reducers: {
         clearState: state => {
             state.tradingAccountKey = undefined;

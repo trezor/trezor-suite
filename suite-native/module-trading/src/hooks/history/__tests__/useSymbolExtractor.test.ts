@@ -1,8 +1,8 @@
 import type { CryptoId } from 'invity-api';
 
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useSymbolExtractor } from '../useSymbolExtractor';
 
 describe('useSymbolExtractor', () => {

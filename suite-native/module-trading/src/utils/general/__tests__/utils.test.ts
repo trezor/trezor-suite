@@ -4,8 +4,8 @@ import type { TradingTransaction, TradingType } from '@suite-common/trading';
 import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
+import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures__/trades';
 import { INVITY_CALLBACK_TREZOR_BUY_URL, TRADING_URL_DEFAULT_BACK } from '../formUtils';
 import {
     doesUrlContainCloseCallbackUrl,

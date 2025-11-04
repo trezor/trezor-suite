@@ -7,10 +7,10 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
 

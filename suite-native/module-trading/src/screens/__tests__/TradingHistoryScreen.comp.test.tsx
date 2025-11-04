@@ -1,13 +1,10 @@
 import { RouteProp } from '@react-navigation/native';
 
-import { Account } from '@suite-common/wallet-types';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { accounts, getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { StaticSessionId } from '@trezor/connect';
 
-import fixturesAccounts from '../../__fixtures__/accounts.json';
-import { getBuyTrade } from '../../__fixtures__/trades';
-import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingHistoryScreen } from '../TradingHistoryScreen';
 
 const mockShowSheet = jest.fn();
@@ -45,7 +42,7 @@ const getPreloadedState = (): PreloadedState => ({
             ...getInitializedTradingState(),
             trades: [getBuyTrade({ status: 'SUBMITTED' })],
         },
-        accounts: fixturesAccounts as Account[],
+        accounts,
     },
     device: {
         selectedDevice: {

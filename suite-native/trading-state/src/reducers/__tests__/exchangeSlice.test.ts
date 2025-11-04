@@ -1,12 +1,10 @@
 import type { CryptoId } from 'invity-api';
 
-import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
-import {
-    TradingExchangeState,
-    exchangeActions,
-    exchangeInitialState,
-    exchangeReducer,
-} from '../exchangeSlice';
+import { tradingInitialState } from '@suite-native/trading-consts';
+import { exchangeQuotes } from '@suite-native/trading-fixtures';
+import { TradingExchangeState } from '@suite-native/trading-types';
+
+import { exchangeActions, exchangeReducer } from '../exchangeSlice';
 
 describe('exchangeSlice', () => {
     it('should have correct initial state', () => {
@@ -23,7 +21,7 @@ describe('exchangeSlice', () => {
     describe('clearState', () => {
         it('should clear exchange state', () => {
             const prevState: TradingExchangeState = {
-                ...exchangeInitialState,
+                ...tradingInitialState.exchange,
                 receiveAddress: 'bc1qxyz',
                 tradingAccountKey: 'account-key1',
                 receiveAccountKey: 'account-key2',
@@ -54,7 +52,7 @@ describe('exchangeSlice', () => {
     describe('clearQuotesAndQuotesRequest', () => {
         it('should clear quotes and quotesRequest', () => {
             const prevState: TradingExchangeState = {
-                ...exchangeInitialState,
+                ...tradingInitialState.exchange,
                 quotesRequest: {
                     send: 'bitcoin' as CryptoId,
                     receive: 'ethereum' as CryptoId,
@@ -72,7 +70,7 @@ describe('exchangeSlice', () => {
     describe('sendAssetChanged', () => {
         it('should clear amount limits and quotes request data', () => {
             const prevState: TradingExchangeState = {
-                ...exchangeInitialState,
+                ...tradingInitialState.exchange,
                 amountLimits: {
                     currency: 'BTC',
                     minCrypto: '0.001',
@@ -94,7 +92,7 @@ describe('exchangeSlice', () => {
     describe('receiveAssetChanged', () => {
         it('should clear amount limits, quotes request and receive account info', () => {
             const prevState: TradingExchangeState = {
-                ...exchangeInitialState,
+                ...tradingInitialState.exchange,
                 amountLimits: {
                     currency: 'BTC',
                     minCrypto: '0.001',

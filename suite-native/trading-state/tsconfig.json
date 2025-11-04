@@ -34,12 +34,13 @@
         { "path": "../feature-flags" },
         { "path": "../tokens" },
         { "path": "../trading-atoms" },
-        { "path": "../../packages/connect" },
+        { "path": "../trading-consts" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../trading-fixtures" },
         { "path": "../trading-types" }
     ],
     "include": [".", "**/*.json"]

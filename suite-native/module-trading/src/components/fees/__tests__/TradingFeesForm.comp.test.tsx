@@ -7,11 +7,14 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    getBtcAccount,
+    getEthAccount,
+    getInitializedTradingState,
+    getWalletState,
+} from '@suite-native/trading-fixtures';
 import { useFeesForm } from '@suite-native/transaction-management';
-import { getWalletState } from '@suite-native/transaction-management/src/__fixtures__/walletState';
 
-import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { TradingFeesForm } from '../TradingFeesForm';
 
 jest.mock('@suite-native/module-trading/src/thunks', () => ({

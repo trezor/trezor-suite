@@ -1,9 +1,9 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { accounts } from '@suite-native/trading-fixtures';
 import { StaticSessionId } from '@trezor/connect';
 
-import accounts from '../../../__fixtures__/accounts.json';
 import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
 
 describe('useReceiveAccountsListData', () => {
@@ -15,7 +15,7 @@ describe('useReceiveAccountsListData', () => {
                 },
             },
         },
-        wallet: { accounts: accounts as Account[] },
+        wallet: { accounts },
     };
 
     const renderUseReceiveAccountsListDataHook = (

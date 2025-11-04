@@ -7,10 +7,9 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
+import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 
-import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker';
 

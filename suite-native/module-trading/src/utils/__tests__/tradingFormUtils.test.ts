@@ -1,7 +1,7 @@
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { exchangeInvity } from '../../__fixtures__/exchangeProviders';
-import { sellInvity } from '../../__fixtures__/sellProviders';
+import { exchangeInvity, sellInvity } from '@suite-native/trading-fixtures';
+
 import { createFormStateForSendForm } from '../tradingFormUtils';
 
 describe('createFormStateForSendForm', () => {

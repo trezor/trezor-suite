@@ -1,7 +1,6 @@
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { ExchangeProviderPicker, ExchangeProviderPickerProps } from '../ExchangeProviderPicker';
 
 describe('ExchangeProviderPicker', () => {

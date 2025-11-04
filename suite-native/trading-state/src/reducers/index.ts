@@ -1,11 +1,11 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { AccountsRootState } from '@suite-common/wallet-core';
+import { TradingRootState } from '@suite-native/trading-types';
 
-import { TradingRootState } from './tradingSlice';
+export type { TradingState, TradingRootState } from '@suite-native/trading-types';
+export { tradingInitialState } from '@suite-native/trading-consts';
 
-export type { TradingState, TradingRootState } from './tradingSlice';
-
-export { tradingInitialState, tradingSlice, tradingActions } from './tradingSlice';
+export { tradingSlice, tradingActions } from './tradingSlice';
 export { buyActions } from './buySlice';
 export { exchangeActions } from './exchangeSlice';
 export { sellActions } from './sellSlice';

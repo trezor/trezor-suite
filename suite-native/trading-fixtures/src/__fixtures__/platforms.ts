@@ -1,0 +1,12 @@
+export const platforms = {
+    ethereum: {
+        id: 'ethereum',
+        name: 'Ethereum',
+        nativeCoinSymbol: 'eth',
+    },
+    base: {
+        id: 'base',
+        name: 'Base',
+        nativeCoinSymbol: 'eth',
+    },
+};

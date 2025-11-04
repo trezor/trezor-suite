@@ -4,13 +4,10 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { StaticSessionId } from '@trezor/connect';
 
-import fixturesAccounts from '../../__fixtures__/accounts.json';
-import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';
-
-const accounts = fixturesAccounts as Account[];
 
 let mockRouteParams: {
     symbol: NetworkSymbol;

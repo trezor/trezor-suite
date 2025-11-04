@@ -9,12 +9,15 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
+import {
+    getBtcAccount,
+    getEthAccount,
+    getInitializedTradingState,
+} from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
 import { MyAssetTradeable, SellFormType } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellSendAssetPicker } from '../SellSendAssetPicker';
 

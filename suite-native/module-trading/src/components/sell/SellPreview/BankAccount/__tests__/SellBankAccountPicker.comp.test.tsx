@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { bankAccounts, getWalletState } from '@suite-native/trading-fixtures';
 
-import { bankAccounts } from '../../../../../__fixtures__/bankAccounts';
-import { getWalletState } from '../../../../../__fixtures__/walletState';
 import { SellBankAccountPicker } from '../SellBankAccountPicker';
 
 // Mock the useWatchTrade hook since it's complex and not the focus of this test

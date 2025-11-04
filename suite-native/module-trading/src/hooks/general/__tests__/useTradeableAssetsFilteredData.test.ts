@@ -1,7 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { act, renderHook } from '@suite-native/test-utils';
-import { TradeableAsset } from '@suite-native/trading-types';
-
 import {
     btcAsset,
     ethAsset,
@@ -11,7 +9,9 @@ import {
     usdcAsset,
     usdtOnArbAsset,
     usdtOnBscAsset,
-} from '../../../__fixtures__/tradeableAssets';
+} from '@suite-native/trading-fixtures';
+import { TradeableAsset } from '@suite-native/trading-types';
+
 import { useTradeableAssetsFilteredData } from '../useTradeableAssetsFilteredData';
 
 const mockAssets: TradeableAsset[] = [

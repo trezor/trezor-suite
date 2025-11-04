@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Account } from '@suite-common/wallet-types';
 import {
     TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { accounts } from '@suite-native/trading-fixtures';
 import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
@@ -16,10 +16,8 @@ import { ReceiveAccount } from '@suite-native/trading-types';
 import { Address } from '@trezor/blockchain-link-types';
 import { StaticSessionId } from '@trezor/connect';
 
-import fixturesAccounts from '../../../../__fixtures__/accounts.json';
 import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 
-const accounts = fixturesAccounts as Account[];
 const defaultPreloadedState = {
     device: {
         selectedDevice: {

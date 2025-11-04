@@ -4,10 +4,8 @@ import type { BuyTrade } from 'invity-api';
 
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { buyQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
-import { getBtcAccount } from '../../__fixtures__/account';
-import quotes from '../../__fixtures__/buyQuotes.json';
-import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
     selectBuyAmountLimits,
@@ -241,8 +239,8 @@ describe('buySelectors', () => {
     describe('selectValidMobileTradingBuyQuotes', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
-                ...quotes,
-                { ...quotes[0], exchange: 'simplex', orderId: 'order_id_4' },
+                ...buyQuotes,
+                { ...buyQuotes[0], exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 
@@ -279,7 +277,7 @@ describe('buySelectors', () => {
 
     describe('selectBuyBestQuotesForAvailablePaymentMethods', () => {
         beforeEach(() => {
-            state.wallet.trading.buy.quotes = quotes as BuyTrade[];
+            state.wallet.trading.buy.quotes = buyQuotes;
         });
 
         it('should return only best quote for each payment method', () => {
@@ -307,7 +305,7 @@ describe('buySelectors', () => {
 
         it('should ignore quotes without payment method', () => {
             const quote = {
-                ...quotes[0],
+                ...buyQuotes[0],
                 paymentMethod: undefined,
             } as unknown as BuyTrade;
 
@@ -318,7 +316,7 @@ describe('buySelectors', () => {
 
         it('should ignore quotes without payment method name', () => {
             const quote = {
-                ...quotes[0],
+                ...buyQuotes[0],
                 paymentMethodName: undefined,
             } as unknown as BuyTrade;
 
@@ -331,8 +329,8 @@ describe('buySelectors', () => {
     describe('selectMobileBuyQuotesByPaymentMethod', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
-                ...quotes,
-                { ...quotes[0], exchange: 'simplex', orderId: 'order_id_4' },
+                ...buyQuotes,
+                { ...buyQuotes[0], exchange: 'simplex', orderId: 'order_id_4' },
             ] as BuyTrade[];
         });
 

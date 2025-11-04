@@ -1,9 +1,7 @@
-import { Account } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
-import fixturesAccounts from '../../__fixtures__/accounts.json';
-import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingFeesScreen } from '../TradingFeesScreen';
 
 // Mock the useSubscribeForSolanaBlockUpdates hook
@@ -22,8 +20,6 @@ jest.mock('../../components/fees/TradingFeesForm', () => ({
         return <div data-testid="trading-fees-form" />;
     },
 }));
-
-const accounts = fixturesAccounts as Account[];
 
 const mockUseRoute = jest.fn();
 jest.mock('@react-navigation/native', () => ({

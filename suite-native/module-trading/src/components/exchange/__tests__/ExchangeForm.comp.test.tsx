@@ -4,11 +4,13 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    btcAsset,
+    exchangeQuotes,
+    getInitializedTradingState,
+} from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 
-import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeForm } from '../ExchangeForm';
 

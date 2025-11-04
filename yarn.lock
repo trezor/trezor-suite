@@ -12551,6 +12551,8 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
+    "@suite-native/trading-consts": "workspace:*"
+    "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
@@ -12942,6 +12944,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
+    "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -12952,6 +12955,30 @@ __metadata:
     react-native-gesture-handler: "npm:2.29.0"
     react-native-reanimated: "npm:~3.19.3"
     type-fest: "npm:4.24.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-consts@workspace:*, @suite-native/trading-consts@workspace:suite-native/trading-consts":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-consts@workspace:suite-native/trading-consts"
+  dependencies:
+    "@suite-common/trading": "workspace:*"
+    "@suite-native/trading-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-fixtures@workspace:*, @suite-native/trading-fixtures@workspace:suite-native/trading-fixtures":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-fixtures@workspace:suite-native/trading-fixtures"
+  dependencies:
+    "@suite-common/trading": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/trading-consts": "workspace:*"
+    "@suite-native/trading-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@types/invity-api": "npm:^1.1.11"
   languageName: unknown
   linkType: soft
 
@@ -13002,8 +13029,9 @@ __metadata:
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
+    "@suite-native/trading-consts": "workspace:*"
+    "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.11"

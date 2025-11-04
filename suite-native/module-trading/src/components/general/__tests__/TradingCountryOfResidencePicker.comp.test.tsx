@@ -10,11 +10,11 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
-
 import {
     residenceCheckDisabledState,
     residenceCheckEnabledState,
-} from '../../../__fixtures__/residenceCheckState';
+} from '@suite-native/trading-fixtures';
+
 import { TradingCountryOfResidencePicker } from '../TradingCountryOfResidencePicker';
 
 describe('TradingCountryOfResidencePicker', () => {

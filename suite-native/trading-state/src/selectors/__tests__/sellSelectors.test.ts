@@ -2,10 +2,8 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { getBtcAccount, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
-import { getBtcAccount } from '../../__fixtures__/account';
-import { sellQuotes } from '../../__fixtures__/sellQuotes';
-import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
     selectSellAmountLimits,

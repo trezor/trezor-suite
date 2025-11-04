@@ -22,7 +22,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../test-utils" },
+        { "path": "../trading-fixtures" },
         { "path": "../trading-types" }
-    ],
-    "include": [".", "**/*.json"]
+    ]
 }

@@ -6,9 +6,8 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useSellData } from '../useSellData';
 
 jest.mock('../../../utils/general/utils', () => ({

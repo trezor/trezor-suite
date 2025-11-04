@@ -2,67 +2,14 @@ import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
-import {
-    TradingState as CommonTradingState,
-    InvityServerEnvironment,
-    TradingType,
-    initialState as commonInitialState,
-    prepareTradingReducer,
-} from '@suite-common/trading';
+import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
+import { tradingInitialState } from '@suite-native/trading-consts';
 
-import { TRADING_BUY, TradingBuyState, buyActions, buyInitialState, buyReducer } from './buySlice';
-import {
-    TRADING_EXCHANGE,
-    TradingExchangeState,
-    exchangeActions,
-    exchangeInitialState,
-    exchangeReducer,
-} from './exchangeSlice';
-import {
-    TRADING_RESIDENCE,
-    TradingResidenceState,
-    residenceInitialState,
-    residenceReducer,
-} from './residenceSlice';
-import {
-    TRADING_SELL,
-    TradingSellState,
-    sellActions,
-    sellInitialState,
-    sellReducer,
-} from './sellSlice';
-
-export interface TradingState extends CommonTradingState {
-    buy: TradingBuyState;
-    exchange: TradingExchangeState;
-    sell: TradingSellState;
-    residence: TradingResidenceState;
-    favouriteAssets: Record<CryptoId, true>;
-    tradingEnvironment: InvityServerEnvironment;
-    tradeOrderIdToBeOpened: string | undefined;
-    isAmountInputActive: boolean;
-    activeTradingType: TradingType | undefined;
-}
-
-export type TradingRootState = {
-    wallet: {
-        trading: TradingState;
-    };
-};
-
-export const tradingInitialState: TradingState = {
-    ...commonInitialState,
-    buy: buyInitialState,
-    exchange: exchangeInitialState,
-    sell: sellInitialState,
-    residence: residenceInitialState,
-    favouriteAssets: {},
-    tradingEnvironment: 'production',
-    tradeOrderIdToBeOpened: undefined,
-    isAmountInputActive: false,
-    activeTradingType: undefined,
-};
+import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
+import { TRADING_EXCHANGE, exchangeActions, exchangeReducer } from './exchangeSlice';
+import { TRADING_RESIDENCE, residenceReducer } from './residenceSlice';
+import { TRADING_SELL, sellActions, sellReducer } from './sellSlice';
 
 export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',

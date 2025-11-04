@@ -6,9 +6,9 @@ import {
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
+import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyFiatAmountInput } from '../BuyFiatAmountInput';
 

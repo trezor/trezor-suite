@@ -1,9 +1,8 @@
 import { TradingTradeType, TradingType } from '@suite-common/trading';
 import { FeatureFlag } from '@suite-native/feature-flags';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { buyQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import buyQuotes from '../../../../__fixtures__/buyQuotes.json';
-import { getWalletState } from '../../../../__fixtures__/walletState';
 import { ProviderSheet, ProviderSheetProps } from '../ProviderSheet';
 
 describe('ProviderSheet', () => {

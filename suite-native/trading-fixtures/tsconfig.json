@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../feature-flags" },
+        { "path": "../trading-consts" },
+        { "path": "../../packages/connect" },
+        { "path": "../trading-types" }
+    ]
+}

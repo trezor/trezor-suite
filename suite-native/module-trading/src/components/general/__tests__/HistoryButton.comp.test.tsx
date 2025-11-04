@@ -1,7 +1,7 @@
 import { TradingTransaction } from '@suite-common/trading';
 import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getBuyTrade } from '@suite-native/trading-fixtures';
 
-import { getBuyTrade } from '../../../__fixtures__/trades';
 import { HistoryButton } from '../HistoryButton';
 
 let mockSelectDeviceTradingTrades: TradingTransaction[];

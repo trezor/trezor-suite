@@ -12,14 +12,17 @@ import {
     renderHookWithStoreProviderAsync,
     waitFor,
 } from '@suite-native/test-utils';
+import {
+    btcAsset,
+    getBtcAccount,
+    getWalletState,
+    sellQuotes,
+    usdcAsset,
+} from '@suite-native/trading-fixtures';
 import { selectTradingResidenceCountry, sellActions } from '@suite-native/trading-state';
 import { SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import { sellQuotes } from '../../../__fixtures__/sellQuotes';
-import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { useSellForm } from '../useSellForm';
 
 describe('useSellForm', () => {

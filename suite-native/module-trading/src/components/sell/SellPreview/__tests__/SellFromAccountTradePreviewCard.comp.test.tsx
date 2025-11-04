@@ -1,7 +1,6 @@
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
-import { sellQuotes } from '../../../../__fixtures__/sellQuotes';
-import { getWalletState } from '../../../../__fixtures__/walletState';
 import {
     SellFromAccountTradePreviewCard,
     SellFromAccountTradePreviewCardProps,

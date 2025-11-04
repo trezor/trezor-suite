@@ -1,17 +1,19 @@
 import { TradingTransaction } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    accounts,
+    getBuyTrade,
+    getExchangeTrade,
+    getInitializedTradingState,
+    getSellTrade,
+} from '@suite-native/trading-fixtures';
 import { StaticSessionId } from '@trezor/connect';
 
-import fixturesAccounts from '../../../../__fixtures__/accounts.json';
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../../__fixtures__/trades';
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import {
     TradeDetailTransactionInfo,
     TradeDetailTransactionInfoProps,
 } from '../TradeDetailTransactionInfo';
 
-const accounts = fixturesAccounts as Account[];
 const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
     device: {
         selectedDevice: {

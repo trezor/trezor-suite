@@ -6,9 +6,11 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    getBtcAccount,
+    getInitializedTradingStateWithQuotes,
+} from '@suite-native/trading-fixtures';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useExchangeFlow } from '../useExchangeFlow';
 
 // Mock TrezorConnect to prevent errors during cleanup

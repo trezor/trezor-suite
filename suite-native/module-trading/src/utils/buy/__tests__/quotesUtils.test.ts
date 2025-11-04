@@ -1,12 +1,14 @@
 import type { BuyTrade } from 'invity-api';
 
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    btcAsset,
+    buyQuotes,
+    coins,
+    getInitializedTradingState,
+} from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 
-import quotes from '../../../__fixtures__/buyQuotes.json';
-import coins from '../../../__fixtures__/coins.json';
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';
 
@@ -30,7 +32,7 @@ describe('quotesUtils', () => {
 
         it('should return TradingPaymentMethodListProps object when quote is set', () => {
             act(() => {
-                form.setValue('quote', quotes[0] as BuyTrade);
+                form.setValue('quote', buyQuotes[0]);
             });
 
             expect(getPaymentMethodFromBuyForm(form)).toEqual({
@@ -56,7 +58,7 @@ describe('quotesUtils', () => {
                         value: 'US',
                         label: 'United States of America',
                     });
-                    form.setValue('quote', quotes[0] as BuyTrade);
+                    form.setValue('quote', buyQuotes[0]);
                 });
             });
 
@@ -99,7 +101,7 @@ describe('quotesUtils', () => {
             it('should set paymentMethod to undefined when provided quote is not complete', () => {
                 act(() => {
                     form.setValue('quote', {
-                        ...quotes[0],
+                        ...buyQuotes[0],
                         paymentMethodName: undefined,
                     } as unknown as BuyTrade);
                 });

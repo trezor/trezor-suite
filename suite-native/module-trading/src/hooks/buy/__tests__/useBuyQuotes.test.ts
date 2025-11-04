@@ -1,5 +1,3 @@
-import type { BuyTrade } from 'invity-api';
-
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingBuyActions } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -9,12 +7,15 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    bnbAsset,
+    buyQuotes,
+    getBtcAccount,
+    getInitializedTradingState,
+    usdcAsset,
+} from '@suite-native/trading-fixtures';
 import { BuyFormValues } from '@suite-native/trading-types';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import quotes from '../../../__fixtures__/buyQuotes.json';
-import { bnbAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useBuyForm } from '../useBuyForm';
 import { useBuyQuotes } from '../useBuyQuotes';
 
@@ -154,7 +155,7 @@ describe('useBuyQuotes', () => {
 
     it('should clear buy state on unmount', async () => {
         const store = await getInitializedStore();
-        store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+        store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { unmount } = await renderUseBuyQuotes(store);
 
@@ -253,7 +254,7 @@ describe('useBuyQuotes', () => {
         });
         // handleRequestThunk is mocked, add quotes manually
         act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+            store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
         });
 
         dispatchSpy.mockClear();

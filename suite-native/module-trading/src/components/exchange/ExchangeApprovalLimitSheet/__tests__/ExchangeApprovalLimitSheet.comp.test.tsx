@@ -1,7 +1,6 @@
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { exchangeQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
-import { exchangeQuotes } from '../../../../__fixtures__/exchangeQuotes';
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { ExchangeApprovalLimitSheet } from '../ExchangeApprovalLimitSheet';
 
 const mockOnDismiss = jest.fn();
