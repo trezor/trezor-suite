@@ -124,23 +124,13 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 content={<Translation id="TR_FIND_PREV" />}
                                 delayShow={TOOLTIP_DELAY_LONG}
                             >
-                                <NewIconButton
-                                    icon="arrowUp"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    onClick={prev}
-                                />
+                                <NewIconButton icon="arrowUp" onClick={prev} />
                             </Tooltip>
                             <Tooltip
                                 content={<Translation id="TR_FIND_NEXT" />}
                                 delayShow={TOOLTIP_DELAY_LONG}
                             >
-                                <NewIconButton
-                                    icon="arrowDown"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    onClick={next}
-                                />
+                                <NewIconButton icon="arrowDown" onClick={next} />
                             </Tooltip>
                         </NewButtonGroup>
                         <Tooltip
@@ -149,6 +139,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                         >
                             <NewIconButton
                                 icon="x"
+                                size="small"
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={handleCloseFindBar}

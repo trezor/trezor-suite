@@ -43,7 +43,9 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
                     <Paragraph typographyStyle="hint" variant="tertiary">
                         <Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />
                     </Paragraph>
-                    <WebUsbButton translationId="TR_SELECT_TREZOR" size="medium" icon={false} />
+                    <WebUsbButton size="medium">
+                        <Translation id="TR_SELECT_TREZOR" />
+                    </WebUsbButton>
                 </Column>
             );
         }
