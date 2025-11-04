@@ -59,6 +59,7 @@ const handleDeviceConnectNavigation = ({
     isDeviceSetupSupported: boolean;
     wasDeviceOnboardingCancelled: boolean;
 }) => {
+    if (!navigationContainerRef.isReady()) return;
     if (!isDeviceInitialized) {
         // If device setup is not supported, we don't want to navigate anywhere
         // We handle it separately in `useDetectDeviceError` hook. Ideally, the alert would be triggered here (it would need to be in redux though).
@@ -131,6 +132,8 @@ deviceConnectionMiddleware.startListening({
             getOriginalState,
         }: ListenerEffectAPI<NativeDeviceRootState, Dispatch<UnknownAction>>,
     ) => {
+        if (!navigationContainerRef.isReady()) return;
+
         if (!deviceActions.connectDevice.match(action)) {
             throw new Error('This listener only handles connectDevice action');
         }
@@ -180,6 +183,8 @@ deviceConnectionMiddleware.startListening({
 deviceConnectionMiddleware.startListening({
     predicate: action => deviceActions.deviceDisconnect.match(action),
     effect: (action: UnknownAction, { getState }) => {
+        if (!navigationContainerRef.isReady()) return;
+
         if (!deviceActions.deviceDisconnect.match(action)) {
             throw new Error('This listener only handles deviceDisconnect action');
         }
@@ -225,6 +230,8 @@ deviceConnectionMiddleware.startListening({
 deviceConnectionMiddleware.startListening({
     predicate: isThpPairingUIRequestButtonAction,
     effect: (_, { getState }) => {
+        if (!navigationContainerRef.isReady()) return;
+
         if (selectIsFirmwareInstallationRunning(getState())) return;
 
         // Nothing can be accomplished before a THP connection is established.
