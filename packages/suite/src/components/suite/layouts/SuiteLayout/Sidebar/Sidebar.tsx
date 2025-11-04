@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { selectDevicesCount, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogo } from '@trezor/product-components';
 import {
     Elevation,
@@ -74,11 +75,11 @@ const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
     }
 
     return isCollapsed ? (
-        <Box margin={{ left: 'auto', right: 'auto', top: 12, bottom: 12 }}>
+        <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
             <Icon name="trezorLogo" size="large" pointerEvents="none" />
         </Box>
     ) : (
-        <Box margin={{ left: 20, right: 12, top: 12, bottom: 12 }}>
+        <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>
             <TrezorLogo width="107px" type="horizontal" />
         </Box>
     );
