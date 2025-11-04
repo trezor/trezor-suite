@@ -1,5 +1,3 @@
-import { Route } from '@suite-common/suite-types';
-
 import { useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage } from 'src/reducers/suite/routerReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -9,11 +7,7 @@ import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { BasicName } from './BasicName';
 import { SettingsName } from './SettingsName';
 
-interface PageNameProps {
-    backRoute?: Route['name'];
-}
-
-export const PageName = ({ backRoute }: PageNameProps) => {
+export const PageName = () => {
     const currentRoute = useSelector(state => state.router.route?.name);
     const selectedAccount = useSelector(selectSelectedAccount);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
@@ -29,7 +23,7 @@ export const PageName = ({ backRoute }: PageNameProps) => {
         return <AccountName selectedAccount={selectedAccount} />;
     }
     if (selectedAccount) {
-        return <AccountSubpageName selectedAccount={selectedAccount} backRoute={backRoute} />;
+        return <AccountSubpageName selectedAccount={selectedAccount} />;
     }
 
     return <BasicName nameId="TR_DASHBOARD" />;

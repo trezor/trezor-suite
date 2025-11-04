@@ -1,3 +1,4 @@
+import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { NewButtonGroup, NewButtonProps } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -5,14 +6,12 @@ import { Translation } from '../../../../Translation';
 import { HeaderActionButton } from '../HeaderActionButton';
 
 type GlobalSendReceiveButtonsProps = {
-    setIsSendModalOpen: (isSendModalOpen: boolean) => void;
-    setIsReceiveModalOpen: (isReceiveModalOpen: boolean) => void;
+    setActiveModal: (activeModal: NonNullable<GlobalSendReceiveType>) => void;
     intent: NonNullable<NewButtonProps['intent']>;
     priority: NonNullable<NewButtonProps['priority']>;
 };
 export const GlobalSendReceiveButtons = ({
-    setIsSendModalOpen,
-    setIsReceiveModalOpen,
+    setActiveModal,
     intent,
     priority,
 }: GlobalSendReceiveButtonsProps) => (
@@ -21,7 +20,7 @@ export const GlobalSendReceiveButtons = ({
             key="wallet-send"
             icon="arrowUp"
             onClick={() => {
-                setIsSendModalOpen(true);
+                setActiveModal('send');
 
                 analytics.report({ type: EventType.DashboardSendModal });
             }}
@@ -34,7 +33,7 @@ export const GlobalSendReceiveButtons = ({
             key="wallet-receive"
             icon="arrowDown"
             onClick={() => {
-                setIsReceiveModalOpen(true);
+                setActiveModal('receive');
 
                 analytics.report({ type: EventType.DashboardReceiveModal });
             }}

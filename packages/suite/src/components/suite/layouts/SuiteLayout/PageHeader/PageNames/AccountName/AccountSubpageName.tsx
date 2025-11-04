@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
-import { Route } from '@suite-common/suite-types';
 import { Account } from '@suite-common/wallet-types';
 import { NewIconButton } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AccountDetails } from './AccountDetails';
 
@@ -18,25 +17,14 @@ const Container = styled.div`
 
 interface AccountSubpageNameProps {
     selectedAccount: Account;
-    backRoute?: Route['name'];
 }
 
-export const AccountSubpageName = ({
-    selectedAccount,
-    backRoute = 'wallet-index',
-}: AccountSubpageNameProps) => {
+export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps) => {
     const dispatch = useDispatch();
+    const previousRoute = useSelector(state => state.router.settingsBackRoute);
 
     const handleBackClick = () =>
-        dispatch(
-            goto(backRoute, {
-                params: {
-                    symbol: selectedAccount.symbol,
-                    accountIndex: selectedAccount.index,
-                    accountType: selectedAccount.accountType,
-                },
-            }),
-        );
+        dispatch(goto(previousRoute.name, { params: previousRoute.params }));
 
     return (
         <Container>
