@@ -1,4 +1,4 @@
-import type { BuyTrade, CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
@@ -8,16 +8,22 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
+import { tradingInitialState } from '@suite-native/trading-consts/';
+import {
+    adaAsset,
+    btcAsset,
+    buyQuotes,
+    exchangeQuotes,
+    sellQuotes,
+    usdcAsset,
+} from '@suite-native/trading-fixtures';
+import { TradingState } from '@suite-native/trading-types';
 
-import quotes from '../../__fixtures__/buyQuotes.json';
-import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
-import { sellQuotes } from '../../__fixtures__/sellQuotes';
-import { adaAsset, btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
-import { buyActions, buyInitialState } from '../buySlice';
+import { buyActions } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';
 import { residenceActions } from '../residenceSlice';
-import { sellActions, sellInitialState } from '../sellSlice';
-import { TradingState, tradingActions, tradingInitialState, tradingSlice } from '../tradingSlice';
+import { sellActions } from '../sellSlice';
+import { tradingActions, tradingSlice } from '../tradingSlice';
 
 describe('tradingSlice', () => {
     let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
@@ -117,7 +123,7 @@ describe('tradingSlice', () => {
             const prevState: TradingState = {
                 ...tradingInitialState,
                 buy: {
-                    ...buyInitialState,
+                    ...tradingInitialState.buy,
                     tradingAccountKey: 'account-key',
                     receiveAddress: 'bc1qxyz',
                     quotesRequest: {
@@ -126,8 +132,8 @@ describe('tradingSlice', () => {
                         fiatCurrency: 'czk',
                         country: 'CZ',
                     },
-                    quotes: quotes as BuyTrade[],
-                    selectedQuote: quotes[0] as BuyTrade,
+                    quotes: buyQuotes,
+                    selectedQuote: buyQuotes[0],
                     amountLimits: {
                         currency: 'CZK',
                         minFiat: '100',
@@ -148,7 +154,7 @@ describe('tradingSlice', () => {
             const prevState: TradingState = {
                 ...tradingInitialState,
                 sell: {
-                    ...sellInitialState,
+                    ...tradingInitialState.sell,
                     quotes: sellQuotes,
                     tradingAccountKey: 'account-key',
                     quotesRequest: {
@@ -212,7 +218,7 @@ describe('tradingSlice', () => {
                 ...tradingInitialState,
                 buy: {
                     ...tradingInitialState.buy,
-                    quotes: quotes as BuyTrade[],
+                    quotes: buyQuotes,
                 },
             } as TradingState;
 
@@ -265,7 +271,7 @@ describe('tradingSlice', () => {
             const initialState = {
                 ...tradingInitialState,
                 sell: {
-                    ...sellInitialState,
+                    ...tradingInitialState.sell,
                     quotes: sellQuotes,
                 },
             } as TradingState;

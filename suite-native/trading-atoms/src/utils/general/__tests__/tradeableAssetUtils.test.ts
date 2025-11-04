@@ -1,7 +1,7 @@
 import type { CoinInfo, CryptoId } from 'invity-api';
 
-import coins from '../../../__fixtures__/coins.json';
-import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
+import { btcAsset, coins, usdcAsset } from '@suite-native/trading-fixtures';
+
 import { coinInfoToTradeableAsset, getSymbolFromTradeableAsset } from '../tradeableAssetUtils';
 
 describe('tradeableAssetUtils', () => {

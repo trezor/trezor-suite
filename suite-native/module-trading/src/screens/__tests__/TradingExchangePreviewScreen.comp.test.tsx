@@ -9,10 +9,8 @@ import {
     userEvent,
     waitFor,
 } from '@suite-native/test-utils';
+import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
-import { getBtcAccount } from '../../__fixtures__/account';
-import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
-import { getWalletState } from '../../__fixtures__/walletState';
 import {
     TradingExchangePreviewScreen,
     TradingExchangePreviewScreenProps,

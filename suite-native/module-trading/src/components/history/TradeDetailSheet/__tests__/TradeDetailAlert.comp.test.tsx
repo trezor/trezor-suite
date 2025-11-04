@@ -7,11 +7,15 @@ import {
     fireEvent,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    buyMercuryo,
+    exchangeMercuryo,
+    getBuyTrade,
+    getExchangeTrade,
+    getInitializedTradingStateWithQuotes,
+    getSellTrade,
+} from '@suite-native/trading-fixtures';
 
-import { buyMercuryo } from '../../../../__fixtures__/buyProviders';
-import { exchangeMercuryo } from '../../../../__fixtures__/exchangeProviders';
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../../__fixtures__/trades';
-import { getInitializedTradingStateWithQuotes } from '../../../../__fixtures__/tradingState';
 import { getTradeStatusStep } from '../../../../utils/general/utils';
 import { TradeDetailAlert } from '../TradeDetailAlert';
 

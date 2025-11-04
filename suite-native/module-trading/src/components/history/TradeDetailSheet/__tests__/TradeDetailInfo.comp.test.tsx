@@ -1,8 +1,11 @@
 import { TradingTransaction } from '@suite-common/trading';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    getBuyTrade,
+    getExchangeTrade,
+    getInitializedTradingState,
+} from '@suite-native/trading-fixtures';
 
-import { getBuyTrade, getExchangeTrade } from '../../../../__fixtures__/trades';
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { TradeDetailInfo } from '../TradeDetailInfo';
 
 const getPreloadedState = (trades: TradingTransaction[]) => ({

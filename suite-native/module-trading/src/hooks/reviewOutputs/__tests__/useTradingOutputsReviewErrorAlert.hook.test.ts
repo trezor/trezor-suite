@@ -5,8 +5,8 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { getWalletState } from '@suite-native/trading-fixtures';
 
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { useTradingOutputsReviewErrorAlert } from '../useTradingOutputsReviewErrorAlert';
 
 const mockShowAlert = jest.fn();

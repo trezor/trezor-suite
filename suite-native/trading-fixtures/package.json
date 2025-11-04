@@ -1,0 +1,25 @@
+{
+    "name": "@suite-native/trading-fixtures",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/trading": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/trading-consts": "workspace:*",
+        "@trezor/connect": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-native/trading-types": "workspace:*",
+        "@types/invity-api": "^1.1.11"
+    }
+}

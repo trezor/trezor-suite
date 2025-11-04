@@ -1,10 +1,8 @@
 import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
-import { getBtcAccount } from '../../__fixtures__/account';
-import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
-import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState } from '../../reducers';
 import {
     selectExchangeAmountLimits,

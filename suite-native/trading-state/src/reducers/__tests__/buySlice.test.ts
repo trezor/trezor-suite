@@ -1,13 +1,16 @@
-import type { BuyTrade, CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
-import quotes from '../../__fixtures__/buyQuotes.json';
-import { TradingBuyState, buyActions, buyInitialState, buyReducer } from '../buySlice';
+import { tradingInitialState } from '@suite-native/trading-consts';
+import { buyQuotes } from '@suite-native/trading-fixtures';
+import { TradingBuyState } from '@suite-native/trading-types';
+
+import { buyActions, buyReducer } from '../buySlice';
 
 describe('buySlice', () => {
     describe('clearState', () => {
         it('should clear buy state', () => {
             const prevState: TradingBuyState = {
-                ...buyInitialState,
+                ...tradingInitialState.buy,
                 tradingAccountKey: 'account-key',
                 receiveAddress: 'bc1qxyz',
                 quotesRequest: {
@@ -16,8 +19,8 @@ describe('buySlice', () => {
                     fiatCurrency: 'czk',
                     country: 'CZ',
                 },
-                quotes: quotes as BuyTrade[],
-                selectedQuote: quotes[0] as BuyTrade,
+                quotes: buyQuotes,
+                selectedQuote: buyQuotes[0],
                 amountLimits: {
                     currency: 'CZK',
                     minFiat: '100',
@@ -37,14 +40,14 @@ describe('buySlice', () => {
     describe('clearQuotesAndQuotesRequest', () => {
         it('should clear quotes and quotesRequest', () => {
             const prevState: TradingBuyState = {
-                ...buyInitialState,
+                ...tradingInitialState.buy,
                 quotesRequest: {
                     wantCrypto: true,
                     receiveCurrency: 'btc' as CryptoId,
                     fiatCurrency: 'czk',
                     country: 'CZ',
                 },
-                quotes: quotes as BuyTrade[],
+                quotes: buyQuotes,
             };
 
             const state = buyReducer(prevState, buyActions.clearQuotesAndQuotesRequest());
@@ -57,7 +60,7 @@ describe('buySlice', () => {
     describe('assetChanged', () => {
         it('should clear tradingAccountKey and receiveAddress', () => {
             const prevState: TradingBuyState = {
-                ...buyInitialState,
+                ...tradingInitialState.buy,
                 tradingAccountKey: 'account-key',
                 receiveAddress: 'bc1qxyz',
             };
@@ -70,7 +73,7 @@ describe('buySlice', () => {
 
         it('should clear buy amountLimits', () => {
             const prevState: TradingBuyState = {
-                ...buyInitialState,
+                ...tradingInitialState.buy,
                 amountLimits: {
                     currency: 'CZK',
                     minFiat: '100',
@@ -87,7 +90,7 @@ describe('buySlice', () => {
 
         it('should clear quotesRequest', () => {
             const prevState: TradingBuyState = {
-                ...buyInitialState,
+                ...tradingInitialState.buy,
                 quotesRequest: {
                     wantCrypto: true,
                     receiveCurrency: 'btc' as CryptoId,
@@ -105,7 +108,7 @@ describe('buySlice', () => {
     describe('fiatCurrencyChanged', () => {
         it('should clear buy amountLimits', () => {
             const prevState: TradingBuyState = {
-                ...buyInitialState,
+                ...tradingInitialState.buy,
                 amountLimits: {
                     currency: 'CZK',
                     minFiat: '100',
@@ -122,7 +125,7 @@ describe('buySlice', () => {
 
         it('should clear quotesRequest', () => {
             const prevState: TradingBuyState = {
-                ...buyInitialState,
+                ...tradingInitialState.buy,
                 quotesRequest: {
                     wantCrypto: true,
                     receiveCurrency: 'btc' as CryptoId,

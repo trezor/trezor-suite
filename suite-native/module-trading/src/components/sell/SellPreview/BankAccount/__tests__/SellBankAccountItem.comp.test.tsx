@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { bankAccounts } from '@suite-native/trading-fixtures';
 
-import { bankAccounts } from '../../../../../__fixtures__/bankAccounts';
 import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from '../SellBankAccountItem';
 
 describe('SellBankAccountItem', () => {

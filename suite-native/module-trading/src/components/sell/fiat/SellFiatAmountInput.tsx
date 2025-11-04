@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
+import { MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 
-import { MAX_FIAT_DECIMALS } from '../../../consts/general/consts';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { useSellInputFormControls } from '../../../hooks/sell/useSellInputFormControls';
 import { AmountInput } from '../../general/Input/AmountInput';

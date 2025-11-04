@@ -3,12 +3,15 @@ import type { CryptoId } from 'invity-api';
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    getBtcAccount,
+    getEthAccount,
+    getInitializedTradingState,
+} from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
 import { MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getBtcAccount, getEthAccount } from '../../../../__fixtures__/account';
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { TEST_ID_ACCOUNT_TYPE_BADGE } from '../MyAssetListSectionHeader';
 import { MyAssetSheet, MyAssetSheetProps } from '../MyAssetSheet';
 

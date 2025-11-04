@@ -6,10 +6,10 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
-import { getInitializedTradingState } from '../../../../__fixtures__/tradingState';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeTradeableAssetPicker } from '../ExchangeTradeableAssetPicker';
 

@@ -4,8 +4,7 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { tradingCountriesWhitelistSet } from '@suite-native/trading-atoms';
-
-import type { TradingResidenceRootState } from '../reducers/residenceSlice';
+import { TradingResidenceRootState } from '@suite-native/trading-types';
 
 export const selectTradingResidenceCountry = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.country;

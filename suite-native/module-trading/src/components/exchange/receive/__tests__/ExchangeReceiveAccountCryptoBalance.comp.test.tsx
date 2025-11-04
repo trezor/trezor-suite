@@ -4,10 +4,9 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 
-import { getBtcAccount } from '../../../../__fixtures__/account';
-import { btcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import {
     ExchangeReceiveAccountCryptoBalance,

@@ -3,8 +3,8 @@ import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invit
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { BadgeVariant } from '@suite-native/atoms';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures__/trades';
 import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from '../TradeStatusBadge';
 
 describe('TradeStatusBadge', () => {

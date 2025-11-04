@@ -1,6 +1,6 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
-import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { SellConfirmation } from '../SellConfirmation';
 
 jest.mock('../../../hooks/sell/useSellFlow', () => ({

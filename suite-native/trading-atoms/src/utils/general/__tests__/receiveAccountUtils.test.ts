@@ -1,6 +1,6 @@
 import type { Account } from '@suite-common/wallet-types';
+import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 
-import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import { getReceiveAccountFromAccountAndAddressString } from '../receiveAccountUtils';
 
 describe('receiveAccountUtils', () => {

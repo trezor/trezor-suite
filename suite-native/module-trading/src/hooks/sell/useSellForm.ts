@@ -16,6 +16,7 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 import {
     selectSellAmountLimits,
     selectSellFormDefaultValues,
@@ -24,7 +25,6 @@ import {
 } from '@suite-native/trading-state';
 import { SellFormType, SellFormValues } from '@suite-native/trading-types';
 
-import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '../../consts/general/consts';
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';

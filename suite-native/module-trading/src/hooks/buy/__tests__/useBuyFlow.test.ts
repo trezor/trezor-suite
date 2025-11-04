@@ -1,5 +1,3 @@
-import type { BuyTrade } from 'invity-api';
-
 import {
     PreloadedState,
     TestStore,
@@ -7,11 +5,13 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    buyQuotes,
+    getBtcAccount,
+    getInitializedTradingStateWithQuotes,
+} from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import quotes from '../../../__fixtures__/buyQuotes.json';
-import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';
 
@@ -71,7 +71,7 @@ describe('useBuyFlow', () => {
             buyForm = result.current;
 
             act(() => {
-                buyForm.setValue('quote', quotes[2] as BuyTrade);
+                buyForm.setValue('quote', buyQuotes[2]);
             });
         });
 
@@ -163,7 +163,10 @@ describe('useBuyFlow', () => {
 
                 // change selected quote to quote with different provider
                 act(() => {
-                    buyForm.setValue('quote', { ...quotes[2], exchange: 'invity-buy' } as BuyTrade);
+                    buyForm.setValue('quote', {
+                        ...buyQuotes[2],
+                        exchange: 'invity-buy',
+                    });
                 });
 
                 // we need to manually rerender tested hook

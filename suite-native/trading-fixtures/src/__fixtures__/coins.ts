@@ -1,0 +1,74 @@
+export const coins = {
+    bitcoin: {
+        symbol: 'btc',
+        name: 'Bitcoin',
+        coingeckoId: 'bitcoin',
+        services: {
+            buy: true,
+            sell: true,
+            exchange: true,
+        },
+    },
+    ethereum: {
+        symbol: 'eth',
+        name: 'Ethereum',
+        coingeckoId: 'ethereum',
+        services: {
+            buy: true,
+            sell: true,
+            exchange: true,
+        },
+    },
+    'ethereum--0x07150e919b4de5fd6a63de1f9384828396f25fdc': {
+        symbol: 'base',
+        name: 'Base Protocol',
+        coingeckoId: 'base-protocol',
+        services: {
+            buy: false,
+            sell: false,
+            exchange: true,
+        },
+    },
+    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+        symbol: 'usdc',
+        name: 'USDC',
+        coingeckoId: 'usd-coin',
+        services: {
+            buy: true,
+            sell: true,
+            exchange: true,
+        },
+    },
+    'base--0x0000000000000000000000000000000000000000': {
+        symbol: 'eth',
+        name: 'Ethereum',
+        coingeckoId: 'ethereum',
+        services: {
+            buy: true,
+            sell: false,
+            exchange: true,
+        },
+    },
+    binancecoin: {
+        symbol: 'bnb',
+        name: 'BNB',
+        coingeckoId: 'binancecoin',
+        services: {
+            buy: true,
+            sell: true,
+            exchange: true,
+        },
+    },
+    solana: {
+        symbol: 'sol',
+        name: 'Solana',
+        coingeckoId: 'solana',
+        services: { buy: true, sell: true, exchange: true },
+    },
+    'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL': {
+        symbol: 'jto',
+        name: 'Jito',
+        coingeckoId: 'jito-governance-token',
+        services: { buy: true, sell: false, exchange: true },
+    },
+};

@@ -1,6 +1,6 @@
+import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import type { Address } from '@trezor/blockchain-link-types';
 
-import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import {
     getReceiveAccountAddressText,
     isFullySelectedReceiveAccount,

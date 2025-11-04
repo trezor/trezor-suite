@@ -45,6 +45,7 @@
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
+        { "path": "../atoms" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
@@ -62,6 +63,7 @@
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../trading-atoms" },
+        { "path": "../trading-consts" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
@@ -71,13 +73,12 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
-        { "path": "../atoms" },
         { "path": "../test-utils" },
-        { "path": "../trading-types" },
-        { "path": "../../packages/theme" }
-    ],
-    "include": [".", "**/*.json"]
+        { "path": "../trading-fixtures" },
+        { "path": "../trading-types" }
+    ]
 }

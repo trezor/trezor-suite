@@ -6,8 +6,8 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { useListDataFilter } from '@suite-native/trading-atoms';
+import { getWalletState } from '@suite-native/trading-fixtures';
 
-import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellFiatCurrencyPicker } from '../SellFiatCurrencyPicker';
 

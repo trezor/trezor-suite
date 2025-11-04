@@ -13,14 +13,19 @@ import {
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import {
+    btcAsset,
+    getBtcAccount,
+    getBuyTrade,
+    getCardanoAccount,
+    getEthAccount,
+    getExchangeTrade,
+    getInitializedTradingState,
+    getWalletState,
+} from '@suite-native/trading-fixtures';
 import { TradeableAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getBtcAccount, getCardanoAccount, getEthAccount } from '../../__fixtures__/account';
-import { btcAsset } from '../../__fixtures__/tradeableAssets';
-import { getBuyTrade, getExchangeTrade } from '../../__fixtures__/trades';
-import { getInitializedTradingState } from '../../__fixtures__/tradingState';
-import { getWalletState } from '../../__fixtures__/walletState';
 import { TradingRootState, tradingInitialState } from '../../reducers';
 import {
     selectAccountLabelWithNetworkFallback,

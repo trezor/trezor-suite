@@ -1,13 +1,14 @@
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-
-import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
 import {
     btcAsset,
     ethAsset,
     ethOnBaseAsset,
+    getBtcAccount,
+    getEthAccount,
     usdcAsset,
     usdtAsset,
-} from '../../../__fixtures__/tradeableAssets';
+} from '@suite-native/trading-fixtures';
+
 import {
     TradeableAssetAccountBalance,
     TradeableAssetAccountBalanceProps,

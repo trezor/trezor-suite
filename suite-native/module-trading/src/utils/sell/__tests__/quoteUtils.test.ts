@@ -1,8 +1,7 @@
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { btcAsset, getWalletState } from '@suite-native/trading-fixtures';
 import { SellFormType } from '@suite-native/trading-types';
 
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { tradingSellFormToTradingSellFormProps } from '../quotesUtils';
 

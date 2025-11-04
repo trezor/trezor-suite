@@ -1,13 +1,16 @@
 import type { CryptoId } from 'invity-api';
 
-import { sellQuotes } from '../../__fixtures__/sellQuotes';
-import { TradingSellState, sellActions, sellInitialState, sellReducer } from '../sellSlice';
+import { tradingInitialState } from '@suite-native/trading-consts';
+import { sellQuotes } from '@suite-native/trading-fixtures';
+import { TradingSellState } from '@suite-native/trading-types';
+
+import { sellActions, sellReducer } from '../sellSlice';
 
 describe('sellSlice', () => {
     describe('clearState', () => {
         it('should clear the state', () => {
             const prevState: TradingSellState = {
-                ...sellInitialState,
+                ...tradingInitialState.sell,
                 tradingAccountKey: 'account-key',
                 quotesRequest: {
                     fiatCurrency: 'czk',
@@ -25,14 +28,14 @@ describe('sellSlice', () => {
 
             const state = sellReducer(prevState, sellActions.clearState());
 
-            expect(state).toEqual(sellInitialState);
+            expect(state).toEqual(tradingInitialState.sell);
         });
     });
 
     describe('clearQuotesAndQuotesRequest', () => {
         it('should clear quotes and quotesRequest', () => {
             const prevState: TradingSellState = {
-                ...sellInitialState,
+                ...tradingInitialState.sell,
                 quotesRequest: {
                     fiatCurrency: 'czk',
                     country: 'CZ',
@@ -52,7 +55,7 @@ describe('sellSlice', () => {
     describe('sendAssetChanged', () => {
         it('should clear amount limits and quotes request data', () => {
             const prevState: TradingSellState = {
-                ...sellInitialState,
+                ...tradingInitialState.sell,
                 amountLimits: {
                     currency: 'CZK',
                     minFiat: '100',
@@ -75,7 +78,7 @@ describe('sellSlice', () => {
     describe('fiatCurrencyChanged', () => {
         it('should clear amount limits and quotes request data', () => {
             const prevState: TradingSellState = {
-                ...sellInitialState,
+                ...tradingInitialState.sell,
                 amountLimits: {
                     currency: 'CZK',
                     minFiat: '100',

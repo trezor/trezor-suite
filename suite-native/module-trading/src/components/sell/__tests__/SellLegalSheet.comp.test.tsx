@@ -1,6 +1,6 @@
 import { act, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 
-import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { SellLegalSheet, SellLegalSheetProps } from '../SellLegalSheet';
 
 describe('SellLegalSheet', () => {

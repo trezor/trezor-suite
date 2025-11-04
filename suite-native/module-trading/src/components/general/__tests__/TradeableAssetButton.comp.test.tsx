@@ -1,6 +1,6 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
-import { btcAsset, ethOnBaseAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { TradeableAssetButton } from '../TradeableAssetButton';
 
 describe('TradeableAssetButton', () => {

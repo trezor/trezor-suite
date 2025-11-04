@@ -10,14 +10,17 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    btcAsset,
+    exchangeQuotes,
+    getBtcAccount,
+    getWalletState,
+    usdcAsset,
+} from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
 import { ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { btcAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
 describe('useExchangeForm', () => {

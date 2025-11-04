@@ -5,13 +5,15 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    btcAsset,
+    getBtcAccount,
+    getInitializedTradingState,
+    residenceCheckDisabledState,
+    sellQuotes,
+} from '@suite-native/trading-fixtures';
 import { SellFormType } from '@suite-native/trading-types';
 
-import { getBtcAccount } from '../../../__fixtures__/account';
-import { residenceCheckDisabledState } from '../../../__fixtures__/residenceCheckState';
-import { sellQuotes } from '../../../__fixtures__/sellQuotes';
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useSellForm } from '../../../hooks/sell/useSellForm';
 import { SellForm } from '../SellForm';
 

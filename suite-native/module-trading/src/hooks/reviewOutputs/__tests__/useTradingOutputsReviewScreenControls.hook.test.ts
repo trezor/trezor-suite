@@ -6,9 +6,9 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { getWalletState } from '@suite-native/trading-fixtures';
 import { transactionManagementActions } from '@suite-native/transaction-management';
 
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 

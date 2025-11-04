@@ -4,12 +4,9 @@ import {
     FeatureFlagsRootState,
     featureFlagsInitialState,
 } from '@suite-native/feature-flags';
+import { tradingInitialState } from '@suite-native/trading-consts';
+import { TradingResidenceRootState, TradingResidenceState } from '@suite-native/trading-types';
 
-import {
-    TradingResidenceRootState,
-    TradingResidenceState,
-    residenceInitialState,
-} from '../../reducers/residenceSlice';
 import {
     selectIsTradingCountrySet,
     selectIsTradingEnabledForCountry,
@@ -31,7 +28,7 @@ describe('residenceSelectors', () => {
         wallet: {
             trading: {
                 residence: {
-                    ...residenceInitialState,
+                    ...tradingInitialState.residence,
                     ...overrides,
                 },
             },
@@ -48,7 +45,7 @@ describe('residenceSelectors', () => {
     describe('selectTradingResidenceCountry', () => {
         it(' should select the country', () => {
             expect(
-                selectTradingResidenceCountry(getRootResidenceState(residenceInitialState)),
+                selectTradingResidenceCountry(getRootResidenceState(tradingInitialState.residence)),
             ).toBe(undefined);
             expect(selectTradingResidenceCountry(getRootResidenceState(visitedState))).toBe('US');
         });
@@ -58,7 +55,7 @@ describe('residenceSelectors', () => {
         it('should select wasOnboardingVisited', () => {
             expect(
                 selectWasTradingResidenceOnboardingVisited(
-                    getRootResidenceState(residenceInitialState),
+                    getRootResidenceState(tradingInitialState.residence),
                 ),
             ).toBe(false);
             expect(
@@ -129,7 +126,7 @@ describe('residenceSelectors', () => {
     describe('selectShouldDisplayTradingResidenceOnboarding', () => {
         it('should return false when residence check FF is disabled', () => {
             const state = {
-                ...getRootResidenceState(residenceInitialState),
+                ...getRootResidenceState(tradingInitialState.residence),
                 ...getRootFFState(false),
             };
 
@@ -156,7 +153,7 @@ describe('residenceSelectors', () => {
 
         it('should return true when FF enabled, onboarding not visited and country not set', () => {
             const state = {
-                ...getRootResidenceState(residenceInitialState),
+                ...getRootResidenceState(tradingInitialState.residence),
                 ...getRootFFState(true),
             };
 

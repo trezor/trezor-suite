@@ -6,8 +6,8 @@ import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
+import { MAX_CRYPTO_DECIMALS } from '@suite-native/trading-consts';
 
-import { MAX_CRYPTO_DECIMALS } from '../../consts/general/consts';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyInputFormControls } from '../../hooks/buy/useBuyInputFormControls';
 import { AmountInput } from '../general/Input/AmountInput';

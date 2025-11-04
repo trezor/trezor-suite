@@ -7,12 +7,15 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    btcAsset,
+    exchangeQuotes,
+    getBtcAccount,
+    getEthAccount,
+    getInitializedTradingStateWithQuotes,
+} from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
 
-import { getBtcAccount, getEthAccount } from '../../../__fixtures__/account';
-import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
-import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import * as approvalStatusUtils from '../../../utils/general/approvalStatusUtils';
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';

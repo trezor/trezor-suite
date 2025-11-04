@@ -1,8 +1,7 @@
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import { exchangeQuotes } from '../../../../__fixtures__/exchangeQuotes';
-import { getWalletState } from '../../../../__fixtures__/walletState';
 import {
     ExchangePreviewContinueButton,
     ExchangePreviewContinueButtonProps,

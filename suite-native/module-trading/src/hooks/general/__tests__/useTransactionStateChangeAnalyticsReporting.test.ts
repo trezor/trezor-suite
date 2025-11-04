@@ -1,8 +1,8 @@
 import { TradingTransaction } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { renderHook } from '@suite-native/test-utils';
+import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
 
-import { getBuyTrade, getExchangeTrade } from '../../../__fixtures__/trades';
 import { useTransactionStateChangeAnalyticsReporting } from '../useTransactionStateChangeAnalyticsReporting';
 
 // Mock analytics

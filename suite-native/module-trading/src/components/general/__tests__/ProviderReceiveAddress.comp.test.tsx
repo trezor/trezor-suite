@@ -3,12 +3,14 @@ import React from 'react';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    exchangeMercuryo,
+    exchangeQuotes,
+    getWalletState,
+    sellBanxa,
+    sellQuotes,
+} from '@suite-native/trading-fixtures';
 
-import { exchangeMercuryo } from '../../../__fixtures__/exchangeProviders';
-import { exchangeQuotes } from '../../../__fixtures__/exchangeQuotes';
-import { sellBanxa } from '../../../__fixtures__/sellProviders';
-import { sellQuotes } from '../../../__fixtures__/sellQuotes';
-import { getWalletState } from '../../../__fixtures__/walletState';
 import { ProviderReceiveAddress } from '../ProviderReceiveAddress';
 
 describe('ProviderReceiveAddress', () => {

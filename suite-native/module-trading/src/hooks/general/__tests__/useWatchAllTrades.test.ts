@@ -4,9 +4,13 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import {
+    getBuyTrade,
+    getExchangeTrade,
+    getInitializedTradingState,
+    getSellTrade,
+} from '@suite-native/trading-fixtures';
 
-import { getBuyTrade, getExchangeTrade, getSellTrade } from '../../../__fixtures__/trades';
-import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
 import { useWatchAllTrades } from '../useWatchAllTrades';
 
 // Mock the useAllTradesReloadTimer hook

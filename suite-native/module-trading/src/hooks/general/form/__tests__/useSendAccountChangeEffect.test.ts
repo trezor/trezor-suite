@@ -5,10 +5,9 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
+import { getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { getBtcAccount } from '../../../../__fixtures__/account';
-import { getWalletState } from '../../../../__fixtures__/walletState';
 import { useSendAccountChangeEffect } from '../useSendAccountChangeEffect';
 
 describe('useSendAccountChangeEffect', () => {

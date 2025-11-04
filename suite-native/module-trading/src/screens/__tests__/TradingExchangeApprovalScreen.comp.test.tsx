@@ -1,12 +1,13 @@
 import { RouteProp } from '@react-navigation/native';
 
-import { Account } from '@suite-common/wallet-types';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    accounts,
+    exchangeQuotes,
+    getInitializedTradingState,
+} from '@suite-native/trading-fixtures';
 
-import fixturesAccounts from '../../__fixtures__/accounts.json';
-import { exchangeQuotes } from '../../__fixtures__/exchangeQuotes';
-import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
 
 const mockShowSheet = jest.fn();
@@ -36,7 +37,6 @@ jest.mock('@suite-native/trading-atoms', () => ({
     }),
 }));
 
-const accounts = fixturesAccounts as Account[];
 const testQuote = exchangeQuotes[0];
 
 const preloadedState = {

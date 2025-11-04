@@ -1,0 +1,17 @@
+import { initialState as commonInitialState } from '@suite-common/trading/';
+import type { TradingResidenceState, TradingState } from '@suite-native/trading-types';
+
+export const residenceInitialState: TradingResidenceState = {
+    country: undefined,
+    wasOnboardingVisited: false,
+};
+
+export const tradingInitialState: TradingState = {
+    ...commonInitialState,
+    residence: residenceInitialState,
+    favouriteAssets: {},
+    tradingEnvironment: 'production',
+    tradeOrderIdToBeOpened: undefined,
+    isAmountInputActive: false,
+    activeTradingType: undefined,
+};
