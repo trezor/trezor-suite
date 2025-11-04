@@ -8,10 +8,12 @@ import {
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
+import { isWeb } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
@@ -22,6 +24,7 @@ import { MessageSystemBanner } from '../MessageSystemBanner';
 import { BridgeDeprecated } from './BridgeDeprecatedBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
+import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
@@ -50,6 +53,8 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
+    const transport = useSelector(state => state.suite.transport);
+    const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -67,6 +72,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
 
     let banner = null;
     let priority = 0;
+
     // firmware hash & revision check (performed when connecting a device), either of them may fail
     if (firmwareRevisionError || firmwareHashError) {
         banner = <FirmwareAuthenticityCheckBanner />;
@@ -90,6 +96,15 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
         // Let the user dismiss the warning.
         banner = <SafetyChecksBanner onDismiss={() => setSafetyChecksDismissed(true)} />;
         priority = 50;
+    } else if (
+        isWeb() &&
+        window.location.hostname !== 'localhost' && // localhost is not cross-origin so it is not needed there
+        // transport error is unfortunately not very specific but we don't have anything better
+        transport?.error === 'Network request failed' &&
+        localNetworkAccessPermission === 'denied'
+    ) {
+        banner = <LocalNetworkAccessPermission />;
+        priority = 40;
     } else if (bridge?.outdated) {
         banner = <BridgeDeprecated />;
         priority = 30;
