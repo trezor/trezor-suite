@@ -135,31 +135,7 @@ const applyDeviceStatesThunk = createThunk(
             assertStaticSessionId(newDeviceState);
             const { staticSessionId } = newDeviceState;
 
-            // user was adding a hidden wallet but he might have input empty passphrase -> this is defacto standard wallet
-            let useEmptyPassphrase = !isAddingHiddenWallet; // set to reasonable default
-            if (isAddingHiddenWallet) {
-                const emptyPassphraseDevice = devicesByPath.find(d => d.useEmptyPassphrase);
-                let emptyPassphraseDeviceState = emptyPassphraseDevice?.state;
-
-                // no cache hit, query device
-                if (!emptyPassphraseDeviceState) {
-                    const res = await TrezorConnect.getDeviceState({
-                        device,
-                        useEmptyPassphrase: true,
-                    });
-                    if (res.success) {
-                        emptyPassphraseDeviceState = res.payload._state;
-                    }
-
-                    // todo: how to handle error?
-                }
-
-                if (emptyPassphraseDeviceState) {
-                    useEmptyPassphrase = deviceStateEqualTo(newDeviceState)(
-                        emptyPassphraseDeviceState,
-                    );
-                }
-            }
+            const useEmptyPassphrase = !isAddingHiddenWallet;
 
             // now we expect that there is exactly one device without state - meaning that we want to update its state
             const isDeviceAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
@@ -296,7 +272,8 @@ export const runDiscoveryThunk = createThunk(
 
             if (!isDiscoveryInProgress(discovery)) return;
 
-            const { isAddingHiddenWallet } = discovery;
+            // Can be changed later if the passphrase typed on device is identified as empty
+            let { isAddingHiddenWallet } = discovery;
 
             assertDeviceIsAcquired(device);
             if (isAddingHiddenWallet && device.features && !device.features.passphrase_protection) {
@@ -356,6 +333,42 @@ export const runDiscoveryThunk = createThunk(
 
             const { discovered } = device;
 
+            if (isAddingHiddenWallet) {
+                const duplicate = selectDevices(getState())
+                    .map(d => d.state)
+                    .find(deviceStateEqualTo(deviceState));
+
+                if (duplicate?.staticSessionId) {
+                    dispatch(
+                        discoveryActions.updateDiscovery(
+                            {
+                                status: 'passphrase-duplicate',
+                                duplicateDeviceStaticSessionId: duplicate.staticSessionId,
+                            },
+                            device.path,
+                        ),
+                    );
+
+                    return;
+                }
+
+                const standardWallet = selectDevices(getState()).find(
+                    d => d.path === passedDevice.path && d.useEmptyPassphrase,
+                );
+
+                if (!standardWallet) {
+                    // no passphrase duplicity and no standard wallet -> check that this is not in fact empty passphrase
+                    const res = await TrezorConnect.getDeviceState({
+                        device: { path: passedDevice.path },
+                        useEmptyPassphrase: true,
+                    });
+
+                    if (res.success && deviceStateEqualTo(deviceState)(res.payload._state)) {
+                        isAddingHiddenWallet = false;
+                    }
+                }
+            }
+
             if (!isAddingHiddenWallet) {
                 await dispatch(
                     applyDeviceStatesThunk({
@@ -367,24 +380,6 @@ export const runDiscoveryThunk = createThunk(
             }
 
             device = reselectDevice();
-
-            const duplicate = selectDevices(getState())
-                .map(d => d.state)
-                .find(deviceStateEqualTo(deviceState));
-
-            if (isAddingHiddenWallet && duplicate?.staticSessionId) {
-                dispatch(
-                    discoveryActions.updateDiscovery(
-                        {
-                            status: 'passphrase-duplicate',
-                            duplicateDeviceStaticSessionId: duplicate.staticSessionId,
-                        },
-                        device.path,
-                    ),
-                );
-
-                return;
-            }
 
             const accountsParam = selectDiscoveryAccountsParam(
                 getState(),
