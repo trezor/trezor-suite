@@ -15,6 +15,7 @@ import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluet
 import { useDispatch, useSelector } from '../../../hooks/suite';
 import { Translation, TranslationKey } from '../Translation';
 import { PairingState } from './PairingState';
+import { useConnectionGlobalModalContext } from '../../connection/context/ConnectionGlobalModalContext';
 
 const connectionStatusMap: Record<
     DeviceBluetoothConnectionStatusType,
@@ -68,7 +69,6 @@ type ActionButtonProps = {
     isGhostDevice: boolean;
     isManuallyPairedDevice: boolean;
     device: DesktopBluetoothDevice;
-    onConnect: (deviceId: BluetoothDeviceId) => void;
     onPairAgain?: (deviceId: BluetoothDeviceId) => void;
 };
 
@@ -76,10 +76,10 @@ const ActionButton = ({
     isGhostDevice,
     isManuallyPairedDevice,
     device,
-    onConnect,
     onPairAgain,
 }: ActionButtonProps) => {
     const connectingDevicesIds = useSelector(selectConnectingDevices);
+    const { onConnect } = useConnectionGlobalModalContext();
 
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
     const connectionStatus = connectionStatusMap[device.connectionStatus.type];
@@ -123,15 +123,10 @@ const ActionButton = ({
 
 type BluetoothDeviceItemProps = {
     device: DesktopBluetoothDevice;
-    onConnect: (deviceId: BluetoothDeviceId) => void;
     onPairAgain?: (deviceId: BluetoothDeviceId) => void;
 };
 
-export const BluetoothDeviceListItem = ({
-    device,
-    onConnect,
-    onPairAgain,
-}: BluetoothDeviceItemProps) => {
+export const BluetoothDeviceListItem = ({ device, onPairAgain }: BluetoothDeviceItemProps) => {
     const nearbyDevices = useSelector(selectNearbyDevices);
     const isNearbyDevice = (nearbyDevices ?? []).some(
         nearbyDevice => nearbyDevice.id === device.id,
@@ -151,7 +146,6 @@ export const BluetoothDeviceListItem = ({
                 isGhostDevice={isGhostDevice}
                 isManuallyPairedDevice={isManuallyPairedDevice}
                 device={device}
-                onConnect={onConnect}
             />
         </Row>
     );
