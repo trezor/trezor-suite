@@ -4,6 +4,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import {
     Account,
+    PoolsResponse,
     SupportedCardanoNetworkSymbols,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
@@ -32,6 +33,14 @@ export const isCardanoUpdateProviderFlow = (account?: Account) => {
     const isStakeActive = account?.misc?.staking?.isActive;
 
     return !isCardanoStakedWithEverstake(account) && isStakeActive;
+};
+
+export const isStakedWithFiveBinaries = (account?: Account, fiveBinariesPools?: PoolsResponse) => {
+    if (account?.networkType !== 'cardano' || !fiveBinariesPools) return false;
+
+    const currentPool = account?.misc?.staking?.poolId;
+
+    return fiveBinariesPools.pools.some(pool => pool.bech32 === currentPool);
 };
 
 export const validateCardanoDrep = (drepId: string): boolean => {

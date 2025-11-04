@@ -2,9 +2,14 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { isStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
+import {
+    HELP_CENTER_ADA_STAKING,
+    HELP_CENTER_ETH_STAKING,
+    HELP_CENTER_SOL_STAKING,
+} from '@trezor/urls';
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { Translation } from 'src/components/suite/Translation';
@@ -30,6 +35,9 @@ const Left = styled.div`
 
 export const EverstakeFooter = () => {
     const account = useSelector(selectSelectedAccount);
+    const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
+    const { trezorPools } = cardanoStaking['mainnet'];
+    const isFiveBinariesPool = isStakedWithFiveBinaries(account, trezorPools);
 
     const learnMoreLink = useMemo(() => {
         switch (account?.networkType) {
@@ -37,6 +45,8 @@ export const EverstakeFooter = () => {
                 return HELP_CENTER_ETH_STAKING;
             case 'solana':
                 return HELP_CENTER_SOL_STAKING;
+            case 'cardano':
+                return HELP_CENTER_ADA_STAKING;
             default:
                 return undefined;
         }
@@ -46,7 +56,11 @@ export const EverstakeFooter = () => {
         <Wrapper>
             <Left>
                 <Translation id="TR_STAKE_PROVIDED_BY" />{' '}
-                <Icon size={100} name="everstakeLogoText" variant="default" />
+                <Icon
+                    size={isFiveBinariesPool ? 75 : 100}
+                    name={isFiveBinariesPool ? 'fiveBinariesLogo' : 'everstakeLogoText'}
+                    variant="default"
+                />
             </Left>
             {learnMoreLink && <LearnMoreButton url={learnMoreLink} />}
         </Wrapper>
