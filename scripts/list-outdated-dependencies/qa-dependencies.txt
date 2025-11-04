@@ -10,6 +10,7 @@ chai
 @playwright/browser-webkit
 @playwright/test
 @types/jest
+babel-jest
 detox
 dotenv
 eslint-plugin-playwright
