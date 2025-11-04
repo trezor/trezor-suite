@@ -4,7 +4,7 @@ import { ElectronIpcMainInvokeEvent } from '../proxy-handler';
 import { validateIpcMessage } from '../validateIpcMessage';
 
 const createSenderFrame = (url: string, destroyed?: boolean): ElectronIpcMainInvokeEvent => ({
-    senderFrame: { url, isDestroyed: () => destroyed === true },
+    senderFrame: { url: encodeURI(url), isDestroyed: () => destroyed === true },
 });
 
 const APP_IMAGE_EXAMPLE_DIRNAME = `/tmp/.mount_TrezorXsQUqQ/resources/app.asar/dist`;
@@ -28,15 +28,29 @@ describe(validateIpcMessage.name, () => {
     });
 
     it('passes in PROD: Windows example', () => {
+        // note that the path contains spaces (will be URI encoded to %20)
         const senderUrl =
-            'file:///C:/Users/vm11-/Desktop/win-unpacked/resources/app.asar/build/index.html';
+            'file:///C:/Users/myself/AppData/Local/Programs/Trezor Suite/resources/app.asar/build/index.html';
 
         validateIpcMessage({
             ipcEvent: createSenderFrame(senderUrl),
             dirnameProvider: () =>
-                'C:\\Users\\vm11-\\Desktop\\win-unpacked\\resources\\app.asar\\dist',
+                'C:\\Users\\myself\\AppData\\Local\\Programs\\Trezor Suite\\resources\\app.asar\\dist',
             platformProvider: () => 'win32',
             pathProvider: path.win32,
+        });
+    });
+
+    it('passes in PROD: macOS example', () => {
+        // note that the path contains spaces (will be URI encoded to %20)
+        const senderUrl =
+            'file:///Applications/Trezor Suite.app/Contents/Resources/app.asar/build/index.html';
+
+        validateIpcMessage({
+            ipcEvent: createSenderFrame(senderUrl),
+            dirnameProvider: () =>
+                '/Applications/Trezor Suite.app/Contents/Resources/app.asar/dist',
+            platformProvider: () => 'macos',
         });
     });
 
