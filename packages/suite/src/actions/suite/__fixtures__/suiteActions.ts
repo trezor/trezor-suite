@@ -126,20 +126,12 @@ const reducerActions = [
         actions: [
             {
                 type: TRANSPORT.ERROR,
-                payload: {
-                    bridge: {
-                        version: [1],
-                    },
-                },
+                payload: {},
             },
         ],
         result: [
             {
-                transport: {
-                    bridge: {
-                        version: [1],
-                    },
-                },
+                transport: {},
             },
         ],
     },

@@ -79,9 +79,6 @@ export const events = (api: TrezorConnect) => {
             // event.payload.version;
             // event.payload.outdated;
         }
-        if (event.type === TRANSPORT.ERROR) {
-            event.payload.bridge?.changelog.toLowerCase();
-        }
     });
     api.off(TRANSPORT_EVENT, () => {});
     api.removeAllListeners(TRANSPORT_EVENT);
