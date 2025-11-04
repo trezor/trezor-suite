@@ -17,6 +17,10 @@ type ResponsiveContextType = {
     setContentWidth: (width: number) => void;
     autoCollapsed: boolean;
     setAutoCollapsed: (v: boolean) => void;
+    userResizingSidebar: boolean;
+    setUserResizingSidebar: (v: boolean) => void;
+    autoCollapseSuppressed: boolean;
+    setAutoCollapseSuppressed: (v: boolean) => void;
 };
 
 export const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
@@ -29,6 +33,8 @@ export const ResponsiveContextProvider = ({ children }: { children: React.ReactN
     const [forcedSidebarWidth, setForcedSidebarWidth] = useState<number | undefined>(undefined);
     const [contentWidth, setContentWidth] = useState<number | undefined>(undefined);
     const [autoCollapsed, setAutoCollapsed] = useState<boolean>(false);
+    const [userResizingSidebar, setUserResizingSidebar] = useState<boolean>(false);
+    const [autoCollapseSuppressed, setAutoCollapseSuppressed] = useState<boolean>(false);
 
     const effectiveWidth = useMemo(
         () => (typeof forcedSidebarWidth === 'number' ? forcedSidebarWidth : sidebarWidthRaw),
@@ -41,8 +47,7 @@ export const ResponsiveContextProvider = ({ children }: { children: React.ReactN
     );
 
     const setSidebarWidth = (width: number) => {
-        if (typeof forcedSidebarWidth === 'number') return;
-
+        if (typeof forcedSidebarWidth === 'number' && !userResizingSidebar) return;
         const clamped = Math.max(width, SIDEBAR_MIN_WIDTH);
         setSidebarWidthRaw(clamped);
         setSidebarWidthManual(clamped);
@@ -59,6 +64,10 @@ export const ResponsiveContextProvider = ({ children }: { children: React.ReactN
         setContentWidth,
         autoCollapsed,
         setAutoCollapsed,
+        userResizingSidebar,
+        setUserResizingSidebar,
+        autoCollapseSuppressed,
+        setAutoCollapseSuppressed,
     };
 
     return <ResponsiveContext.Provider value={value}>{children}</ResponsiveContext.Provider>;

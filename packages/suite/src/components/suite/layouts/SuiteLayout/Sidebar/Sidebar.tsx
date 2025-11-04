@@ -103,6 +103,10 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         lastManualSidebarWidth,
         autoCollapsed,
         setAutoCollapsed,
+        userResizingSidebar,
+        setUserResizingSidebar,
+        autoCollapseSuppressed,
+        setAutoCollapseSuppressed,
     } = useResponsiveContext();
     const dispatch = useDispatch();
 
@@ -117,8 +121,22 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         dispatch(setSidebarWidthInRedux({ width }));
     };
     const handleSidebarWidthUpdate = (width: number) => {
+        if (userResizingSidebar && typeof forcedSidebarWidth === 'number') {
+            setForcedSidebarWidth(undefined);
+            setAutoCollapsed(false);
+            setSidebarWidth(width);
+
+            return;
+        }
         if (typeof forcedSidebarWidth !== 'number') setSidebarWidth(width);
     };
+
+    useEffect(() => {
+        const onResize = () => setAutoCollapseSuppressed(false);
+        window.addEventListener('resize', onResize);
+
+        return () => window.removeEventListener('resize', onResize);
+    }, [setAutoCollapseSuppressed]);
 
     const onNotificationBannerClosed = () => {
         if (updateStatusSuite !== 'up-to-date') {
@@ -136,11 +154,12 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     const showAccountsAndIsDeviceReady =
         !shouldDisplayDeviceCompromised &&
         selectedDevice !== undefined &&
-        selectedDevice.mode === 'normal' && // not bootloader, etc...
+        selectedDevice.mode === 'normal' &&
         showAccounts;
 
     useEffect(() => {
         if (contentWidth == null) return;
+        if (userResizingSidebar || autoCollapseSuppressed) return;
 
         if (!autoCollapsed && contentWidth < SIDEBAR_AUTO_COLLAPSE_BREAKPOINT) {
             setAutoCollapsed(true);
@@ -169,6 +188,8 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         forcedSidebarWidth,
         setForcedSidebarWidth,
         lastManualSidebarWidth,
+        userResizingSidebar,
+        autoCollapseSuppressed,
     ]);
 
     return (
@@ -181,6 +202,15 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 zIndex={zIndices.draggableComponent}
                 onWidthResizeEnd={handleSidebarWidthChanged}
                 onWidthResizeMove={handleSidebarWidthUpdate}
+                onResizeStart={direction => {
+                    if (direction === 'left' || direction === 'right') {
+                        setUserResizingSidebar(true);
+                        setAutoCollapseSuppressed(true);
+                    }
+                }}
+                onResizeStop={() => {
+                    setUserResizingSidebar(false);
+                }}
                 disabledWidthInterval={[SIDEBAR_MIN_WIDTH, SIDEBAR_COLLAPSED_WIDTH]}
                 flex="1"
                 forcedWidth={forcedSidebarWidth}
