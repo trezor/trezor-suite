@@ -25,6 +25,7 @@ import {
     PrecomposedTransactionFinal,
     SelectedAccountStatus,
     StakeFormState,
+    StakeType,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -199,6 +200,33 @@ const getTransactionData = (
     }
 };
 
+export const calculateOutputAmount = (
+    account: Account,
+    stakeType: StakeType,
+    totalSpent?: string,
+) => {
+    const accountBalance = new BigNumber(account.balance ?? '0');
+
+    let amount: BigNumber;
+
+    switch (stakeType) {
+        case 'stake':
+        case 'unstake':
+            amount = accountBalance.minus(totalSpent ?? '0');
+            break;
+        case 'claim':
+            amount = accountBalance.minus(account.availableBalance ?? '0');
+            break;
+        default:
+            return '0';
+    }
+
+    return subunitsToUnits({
+        value: asAmountSubunit(amount),
+        symbol: account.symbol,
+    }).toString();
+};
+
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch, getState: GetState) => {
@@ -216,22 +244,20 @@ export const composeTransaction =
         const { txPlan } = txData || {};
         if (txPlan?.type !== 'final') return;
 
-        const stakedBalance = new BigNumber(selectedAccount?.account.balance ?? '0').minus(
-            txPlan?.totalSpent ?? '0',
+        const amountAda = calculateOutputAmount(
+            selectedAccount.account,
+            formValues.stakeType,
+            txPlan?.totalSpent,
         );
-        const stakedBalanceAda = subunitsToUnits({
-            value: asAmountSubunit(stakedBalance),
-            symbol: selectedAccount.account.symbol,
-        }).toString();
 
         const outputExtended = {
             ...formValues.outputs[0],
-            amount: stakedBalanceAda,
+            amount: amountAda,
         };
 
         const formValuesExtended = {
             ...formValues,
-            cryptoInput: stakedBalanceAda,
+            cryptoInput: amountAda,
             outputs: [outputExtended],
         };
 
