@@ -9528,6 +9528,10 @@ export default defineMessages({
         id: 'TR_STAKE_APY_APPROX',
         defaultMessage: '~{apyPercent}% APY',
     },
+    TR_STAKE_UNKNOWN_APY: {
+        id: 'TR_STAKE_UNKNOWN_APY',
+        defaultMessage: 'Unknown',
+    },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
         defaultMessage: '*Annual Percentage Yield',

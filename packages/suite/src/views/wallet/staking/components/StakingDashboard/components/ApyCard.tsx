@@ -4,7 +4,7 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
 
 interface ApyCardProps {
-    apy: number;
+    apy?: number;
 }
 
 export const ApyCard = ({ apy }: ApyCardProps) => (
@@ -13,7 +13,9 @@ export const ApyCard = ({ apy }: ApyCardProps) => (
             <Icon name="percent" variant="tertiary" />
 
             <Column margin={{ top: 'auto' }}>
-                <Paragraph typographyStyle="titleMedium">{`${apy}%`}</Paragraph>
+                <Paragraph typographyStyle="titleMedium">
+                    {apy ? `${apy}%` : <Translation id="TR_STAKE_UNKNOWN_APY" />}
+                </Paragraph>
                 <Paragraph typographyStyle="hint" variant="tertiary">
                     <Translation id="TR_STAKE_APY" />
                 </Paragraph>
