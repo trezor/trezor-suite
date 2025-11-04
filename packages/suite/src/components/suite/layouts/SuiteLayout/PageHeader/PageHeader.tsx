@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Route } from '@suite-common/suite-types';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -34,12 +34,12 @@ const Container = styled.div`
 
 // TODO: perhaps this could be a part of some router config / useLayoutHook / somthing else?
 interface PageHeaderProps {
-    backRoute?: Route['name'];
     children?: ReactNode;
 }
 
-export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
+export const PageHeader = ({ children }: PageHeaderProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
+    const accounts = useSelector(selectAccounts);
     // TODO subpages + tabs could be in some router config? this approach feels a bit fragile
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const routeName = useSelector(selectRouteName);
@@ -47,14 +47,16 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     // handle moment when children are not rendered yet in the Trade section
     const isTradeSection = routeName?.includes('wallet-trading');
 
+    const hasAccounts = accounts.length > 0;
+
     return isTradeSection || children ? (
         <Container>{children ?? null}</Container>
     ) : (
         <Container>
-            <PageName backRoute={backRoute} />
+            <PageName />
 
-            {routeName === 'suite-index' && (
-                <Row gap={8}>
+            {routeName === 'suite-index' && hasAccounts && (
+                <Row gap={spacings.xxs}>
                     <HeaderDropdown />
                     <TradeActions />
                     <GlobalSendReceive />

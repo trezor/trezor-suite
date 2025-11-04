@@ -31,6 +31,7 @@ const getInitialState = (device: DeviceReducerState): AppState =>
         wallet: {
             ...initialAppState.wallet,
             selectedAccount: initialAppState.wallet?.selectedAccount ?? { account: null },
+            accounts: initialAppState.wallet?.accounts ?? [],
         },
     }) as AppState;
 

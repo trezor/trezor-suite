@@ -6,6 +6,7 @@
 
 export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
+export const dashboardParams = ['modal'] as const;
 
 export const routes = [
     {
@@ -20,6 +21,7 @@ export const routes = [
         name: 'suite-index',
         pattern: '/',
         app: 'dashboard',
+        params: dashboardParams,
     },
     {
         name: 'suite-version',

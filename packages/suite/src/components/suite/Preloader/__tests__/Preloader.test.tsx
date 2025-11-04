@@ -95,6 +95,7 @@ const getInitialState = ({
     wallet: {
         ...initialAppState.wallet,
         selectedAccount: initialAppState.wallet?.selectedAccount ?? { account: null },
+        accounts: initialAppState.wallet?.accounts ?? [],
     },
 });
 

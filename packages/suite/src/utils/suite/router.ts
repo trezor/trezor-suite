@@ -1,5 +1,5 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { modalAppParams } from '@suite-common/suite-config';
+import { dashboardParams, modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
@@ -85,7 +85,7 @@ const modalAppParamsDefaultValues: ModalAppParams = {
     variant: undefined,
 };
 
-const validateModalAppParams = (url: string, params?: Route['params']): ModalAppParams | null => {
+const validateModalAppParams = (url: string, params?: Route['params']): ModalAppParams => {
     const [, hash] = stripPrefixedURL(url).split('#');
     const splitted = hash?.split('/').filter(p => p.length > 0);
     if (!splitted || splitted.length === 0) return modalAppParamsDefaultValues;
@@ -104,6 +104,24 @@ const validateModalAppParams = (url: string, params?: Route['params']): ModalApp
     } as ModalAppParams;
 };
 
+export type DashboardParams = {
+    [key in (typeof dashboardParams)[number]]: string | boolean | undefined;
+};
+
+const validateDashboardParams = (url: string): DashboardParams | undefined => {
+    const stripped = stripPrefixedURL(url);
+    const hashIndex = stripped.indexOf('#');
+
+    const hash = hashIndex >= 0 ? stripped.slice(hashIndex + 1) : '';
+    const [modal] = hash.split('/').filter(Boolean);
+
+    if (modal === undefined) {
+        return undefined;
+    }
+
+    return { modal };
+};
+
 // Used in routerReducer
 export const getAppWithParams = (url: string): RouterAppWithParams => {
     const route = findRoute(url);
@@ -113,6 +131,14 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
             app: 'unknown',
             route: undefined,
             params: undefined,
+        };
+    }
+
+    if (route.app === 'dashboard') {
+        return {
+            app: route.app,
+            params: validateDashboardParams(url),
+            route,
         };
     }
 
@@ -141,7 +167,9 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
 
 export type WalletParams = CommonWalletParams;
 export type RouteParams = {
-    [K in keyof (WalletParams & ModalAppParams)]?: (WalletParams & ModalAppParams)[K];
+    [K in keyof (WalletParams & ModalAppParams & DashboardParams)]?: (WalletParams &
+        ModalAppParams &
+        DashboardParams)[K];
 };
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
