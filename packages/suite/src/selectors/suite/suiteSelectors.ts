@@ -50,7 +50,6 @@ export const selectHasTransportOfType = (type: TransportInfo['type']) => (state:
     state.suite.transport?.transports.some(t => t.type === type) ?? false;
 export const selectTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
     state.suite.transport?.transports.find(t => t.type === type);
-export const selectUdevInstaller = (state: SuiteRootState) => state.suite.transport?.udev;
 
 export const selectIsActionAbortable = (state: SuiteRootState) => {
     const bridge = state.suite.transport?.transports.find(t => t.type === 'BridgeTransport');

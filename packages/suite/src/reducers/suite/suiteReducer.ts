@@ -5,7 +5,7 @@ import { Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
+import { ConnectSettings, TRANSPORT, TransportInfo } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
@@ -109,7 +109,7 @@ export interface SuiteSettings {
     autoEject: boolean;
 }
 
-export interface TransportState extends InstallerInfo {
+export interface TransportState {
     transports: TransportInfo[];
     error?: string;
 }
@@ -359,21 +359,21 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case TRANSPORT.START: {
-                const { udev, ...transport } = action.payload;
+                const { ...transport } = action.payload;
                 const transports = draft.transport?.transports ?? [];
                 const index = transports.findIndex(t => t.apiType === transport.apiType);
                 if (index >= 0) transports[index] = transport;
                 else transports.push(transport);
-                draft.transport = { udev, transports };
+                draft.transport = { transports };
                 break;
             }
             case TRANSPORT.ERROR: {
-                const { udev, apiType, error } = action.payload;
+                const { apiType, error } = action.payload;
                 const transports =
                     !draft.transport || !apiType
                         ? (draft.transport?.transports ?? [])
                         : draft.transport.transports?.filter(t => t.apiType !== apiType);
-                draft.transport = { udev, transports, error };
+                draft.transport = { transports, error };
                 break;
             }
             case SUITE.ONLINE_STATUS:

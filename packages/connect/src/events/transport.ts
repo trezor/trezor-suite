@@ -2,7 +2,6 @@ import type { Transport } from '@trezor/transport';
 import { TRANSPORT } from '@trezor/transport/src/constants';
 
 import { serializeError } from '../constants/errors';
-import { UdevInfo, suggestUdevInstaller } from '../data/udevInfo';
 import { ConnectSettings } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
@@ -23,13 +22,9 @@ export interface TransportError {
     code?: string;
 }
 
-export interface InstallerInfo {
-    udev?: UdevInfo;
-}
-
 export type TransportEvent =
-    | { type: typeof TRANSPORT.START; payload: TransportInfo & InstallerInfo }
-    | { type: typeof TRANSPORT.ERROR; payload: TransportError & InstallerInfo };
+    | { type: typeof TRANSPORT.START; payload: TransportInfo }
+    | { type: typeof TRANSPORT.ERROR; payload: TransportError };
 
 export interface TransportSetTransports {
     type: typeof TRANSPORT.SET_TRANSPORTS;
@@ -66,12 +61,5 @@ export const createTransportMessage: MessageFactoryFn<typeof TRANSPORT_EVENT, Tr
     ({
         event: TRANSPORT_EVENT,
         type,
-        payload:
-            'error' in payload
-                ? serializeError(payload)
-                : // suggest udev installer without setting "preferred" field
-                  {
-                      ...payload,
-                      udev: suggestUdevInstaller(),
-                  },
+        payload: 'error' in payload ? serializeError(payload) : payload,
     }) as any;
