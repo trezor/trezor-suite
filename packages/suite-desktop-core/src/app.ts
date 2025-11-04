@@ -77,6 +77,24 @@ const createMainWindow = (winBounds: WinBoundsCoords, store: Store) => {
     // Ensure all network requests from the renderer report a custom user-agent identifying Suite and its version.
     mainWindow.webContents.setUserAgent(`Trezor Suite ${app.getVersion()}`);
 
+    mainWindow.webContents.session.resolveProxy('https://www.trezor.io').then((proxyUrl) => {
+        console.log('proxyUrl', proxyUrl);
+
+        // DIRECT means no proxy is configured
+        if (proxyUrl !== 'DIRECT') {
+            // retrieve the parts of the proxy from the string returned
+            // the url would look something like: 'PROXY http-proxy.mydomain.com:8080'
+            const proxyUrlComponents = proxyUrl.split(':');
+
+            const proxyHost = proxyUrlComponents[0].split(' ')[1];
+            console.log('proxyHost', proxyHost);
+            const proxyPort = parseInt(proxyUrlComponents[1], 10);
+            console.log('proxyPort', proxyPort);
+
+            // do something with proxy details
+        }
+    });
+
     const debouncedStoreWinBounds = debounce(() => {
         if (!mainWindow) return;
         const winBound = mainWindow.getBounds();
