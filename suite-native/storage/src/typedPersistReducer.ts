@@ -19,7 +19,7 @@ export const preparePersistReducer = async <TReducerInitialState>({
     persistedKeys: Array<keyof TReducerInitialState>;
     key: string;
     version: number;
-    migrations?: MigrationsManifest<TReducerInitialState>;
+    migrations?: MigrationsManifest;
     transforms?: Array<Transform<any, any>>;
     mergeLevel?: 1 | 2;
 }) => {
@@ -30,7 +30,7 @@ export const preparePersistReducer = async <TReducerInitialState>({
         storage,
         whitelist: persistedKeys as string[],
         version,
-        migrate: createAsyncMigrate(migrations ?? {}),
+        migrate: createAsyncMigrate<TReducerInitialState>(migrations ?? {}),
         transforms,
         stateReconciler: (mergeLevel === 2 ? autoMergeLevel2 : autoMergeLevel1) as any,
     };

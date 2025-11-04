@@ -10,11 +10,11 @@ jest.mock('redux-persist', () => ({
     getStoredState: jest.fn(),
 }));
 
-import { migrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
+import { initialMigrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
 
 const mockGetStoredState = getStoredState as jest.MockedFunction<typeof getStoredState>;
 
-describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
+describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -45,7 +45,8 @@ describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
 
         const walletSettingsState = {};
 
-        const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
+        const migratedState =
+            await initialMigrateAppSettingsAndDiscoveryConfig(walletSettingsState);
 
         expect(migratedState).toEqual({
             localCurrency: 'usd',
@@ -86,7 +87,8 @@ describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
 
         const walletSettingsState = {};
 
-        const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
+        const migratedState =
+            await initialMigrateAppSettingsAndDiscoveryConfig(walletSettingsState);
 
         expect(migratedState).toEqual({
             localCurrency: 'usd',
@@ -111,7 +113,8 @@ describe(migrateAppSettingsAndDiscoveryConfig.name, () => {
 
         const walletSettingsState = { someProperty: 'value' };
 
-        const migratedState = await migrateAppSettingsAndDiscoveryConfig(walletSettingsState);
+        const migratedState =
+            await initialMigrateAppSettingsAndDiscoveryConfig(walletSettingsState);
 
         expect(migratedState).toEqual(walletSettingsState);
     });

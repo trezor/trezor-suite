@@ -1,16 +1,14 @@
 import { pipe } from '@mobily/ts-belt';
-import { getStoredState } from 'redux-persist';
+import { PersistedState, getStoredState } from 'redux-persist';
 
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { WalletSettings } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
 import { BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { PROTO } from '@trezor/connect';
 
-import { UnknownPersistedState } from '../../createAsyncMigrate';
 import { initMmkvStorage } from '../../storage';
 
-const getFiatCurrencyCode = (appSettings: object): string => {
+const getFiatCurrencyCode = (appSettings: object): string | undefined => {
     if ('fiatCurrencyCode' in appSettings && typeof appSettings.fiatCurrencyCode === 'string') {
         return appSettings.fiatCurrencyCode;
     }
@@ -25,31 +23,28 @@ const getFiatCurrencyCode = (appSettings: object): string => {
         return appSettings.fiatCurrency.label;
     }
 
-    return initialWalletSettingsState.localCurrency;
+    return undefined;
 };
 
-const migrateLocalCurrency = (appSettings: object): BaseCurrencyCode => {
+const migrateLocalCurrency = (appSettings: object): BaseCurrencyCode | undefined => {
     const localCurrency = getFiatCurrencyCode(appSettings);
 
-    if (!isBaseCurrencyCode(localCurrency)) {
-        return initialWalletSettingsState.localCurrency;
-    }
+    if (!localCurrency || !isBaseCurrencyCode(localCurrency)) return undefined;
 
     return localCurrency;
 };
 
-const migrateBitcoinAmountUnit = (appSettings: object): PROTO.AmountUnit => {
-    if (!('bitcoinUnits' in appSettings)) {
-        return PROTO.AmountUnit.BITCOIN; // TODO undefined is enough here?
-    }
+const migrateBitcoinAmountUnit = (appSettings: object): PROTO.AmountUnit | undefined => {
+    if (!('bitcoinUnits' in appSettings)) return undefined;
 
     const bitcoinAmountUnit = appSettings.bitcoinUnits;
 
     if (
         typeof bitcoinAmountUnit !== 'number' ||
+        // only BTC or SATS are supported
         ![PROTO.AmountUnit.BITCOIN, PROTO.AmountUnit.SATOSHI].includes(bitcoinAmountUnit)
     ) {
-        return PROTO.AmountUnit.BITCOIN;
+        return undefined;
     }
 
     return bitcoinAmountUnit;
@@ -70,13 +65,13 @@ const filterUnknownNetworkSymbols = (networkSymbols: string[]): NetworkSymbol[] 
  */
 const migrateDiscoveryConfigToWalletSettings = <T extends object>(
     discoveryConfig: T,
-): NetworkSymbol[] => {
+): NetworkSymbol[] | undefined => {
     if (!('enabledDiscoveryNetworkSymbols' in discoveryConfig)) {
-        return []; // TODO: can we just return undefined and initial state will be used?
+        return undefined;
     }
 
     if (!Array.isArray(discoveryConfig.enabledDiscoveryNetworkSymbols)) {
-        return [];
+        return undefined;
     }
 
     return pipe(
@@ -86,32 +81,45 @@ const migrateDiscoveryConfigToWalletSettings = <T extends object>(
     );
 };
 
-export const migrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: unknown) => {
-    // This is supposed to be initial migration from empty state.
-    if (typeof walletSettingsState !== 'undefined') return walletSettingsState;
+export const initialMigrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: unknown) => {
+    // This is supposed to be initial migration from an empty state.
+    if (typeof walletSettingsState !== 'undefined') return undefined;
 
     const storage = await initMmkvStorage();
-    const appSettings = await getStoredState({
-        key: 'appSettings',
-        storage,
-    });
-    const discoveryConfig = await getStoredState({
-        key: 'discoveryConfig',
-        storage,
-    });
+    const appSettings =
+        (await getStoredState({
+            key: 'appSettings',
+            storage,
+        })) || {};
+    const discoveryConfig =
+        (await getStoredState({
+            key: 'discoveryConfig',
+            storage,
+        })) || {};
 
-    if (appSettings && discoveryConfig) {
+    if (!appSettings && !discoveryConfig) return undefined;
+
+    const newState = {} as Partial<WalletSettings> & PersistedState;
+
+    if (appSettings) {
         const localCurrency = migrateLocalCurrency(appSettings);
         const bitcoinAmountUnit = migrateBitcoinAmountUnit(appSettings);
-        const enabledNetworks = migrateDiscoveryConfigToWalletSettings(discoveryConfig);
 
-        // TODO: are other properties from initial state missing?
-        return {
-            localCurrency,
-            enabledNetworks,
-            bitcoinAmountUnit,
-        } as UnknownPersistedState<WalletSettings>;
+        if (localCurrency) {
+            newState.localCurrency = localCurrency;
+        }
+        if (bitcoinAmountUnit) {
+            newState.bitcoinAmountUnit = bitcoinAmountUnit;
+        }
     }
 
-    return undefined;
+    if (discoveryConfig) {
+        const enabledNetworks = migrateDiscoveryConfigToWalletSettings(discoveryConfig);
+
+        if (enabledNetworks) {
+            newState.enabledNetworks = enabledNetworks;
+        }
+    }
+
+    return newState;
 };

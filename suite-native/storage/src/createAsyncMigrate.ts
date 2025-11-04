@@ -1,13 +1,16 @@
 import { DEFAULT_VERSION, PersistedState } from 'redux-persist';
 
-export type UnknownPersistedState<T> = (T & PersistedState) | undefined;
+export type UnknownPersistedState = unknown & PersistedState;
 
-export type MigrationsManifest<T> = {
+export type MigrationsManifest = {
     [key: string]: (
-        // <any> because this is the old state = won't conform to the current reducer type
-        state: UnknownPersistedState<unknown>,
-    ) => UnknownPersistedState<T> | Promise<UnknownPersistedState<T>>;
+        state: UnknownPersistedState,
+    ) => UnknownPersistedState | Promise<UnknownPersistedState> | undefined;
 };
+
+type MigratedState<TReducerInitialState> =
+    | (Partial<TReducerInitialState> & PersistedState)
+    | undefined;
 
 /**
  * This is a replacement of createMigrate helper from redux-persist that allows to use async migrations
@@ -16,14 +19,13 @@ export type MigrationsManifest<T> = {
  * Debug config is not implemented, but it can be added if needed.
  */
 export const createAsyncMigrate =
-    <T>(migrations: MigrationsManifest<T>) =>
+    <TReducerInitialState>(migrations: MigrationsManifest) =>
     async (
-        oldState: UnknownPersistedState<unknown>,
+        oldState: UnknownPersistedState,
         currentVersion: number,
-    ): Promise<UnknownPersistedState<T>> => {
+    ): Promise<MigratedState<TReducerInitialState>> => {
         // If there is migration for version 1 it is considered as initial migration from empty state.
-        // Note that migrations will be indexed from 1 in the manifest.
-        if (!oldState && !migrations[1]) return undefined;
+        if (!oldState && !migrations[1]) return Promise.resolve(undefined);
 
         const inboundVersion: number =
             oldState?._persist?.version !== undefined
@@ -32,7 +34,7 @@ export const createAsyncMigrate =
 
         if (inboundVersion === currentVersion) {
             // `as` because we do no migration here
-            return Promise.resolve(oldState as UnknownPersistedState<T>);
+            return Promise.resolve(oldState as MigratedState<TReducerInitialState>);
         }
 
         if (inboundVersion > currentVersion) {
@@ -40,7 +42,7 @@ export const createAsyncMigrate =
                 console.error('redux-persist: downgrading version is not supported');
 
             // `as` because we do no migration here
-            return Promise.resolve(oldState as UnknownPersistedState<T>);
+            return Promise.resolve(oldState as MigratedState<TReducerInitialState>);
         }
 
         const migrationKeys = Object.keys(migrations)
@@ -50,11 +52,13 @@ export const createAsyncMigrate =
 
         try {
             // `as` for two reasons: 1) this state is still old, will be new after all migrations, 2) _persist is not guaranteed
-            let migratedState = oldState as UnknownPersistedState<T>;
+            let migratedState = oldState as MigratedState<TReducerInitialState>;
 
             // Run migrations sequentially.
             for (const versionKey of migrationKeys) {
-                migratedState = await migrations[versionKey.toString()](migratedState);
+                migratedState = (await migrations[versionKey.toString()](
+                    migratedState,
+                )) as MigratedState<TReducerInitialState>;
             }
 
             return Promise.resolve(migratedState);

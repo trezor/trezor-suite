@@ -45,10 +45,10 @@ import {
     bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
+    initialMigrateAppSettingsAndDiscoveryConfig,
     migrateAccountBnbToBsc,
     migrateAccountLabel,
     migrateAccountsDeprecateNetworks,
-    migrateAppSettingsAndDiscoveryConfig,
     migrateDeviceState,
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
@@ -90,7 +90,7 @@ export const prepareRootReducers = async () => {
         // Note: Migrations have been removed.
         // To version 3: The `isCoinEnablingInitFinished` property was deleted, and
         // `areTestnetsEnabled` is a developer-only option and does not require migration.
-        // To version 2: moved to migrateAppSettingsAndDiscoveryConfig
+        // To version 2: moved to initialMigrateAppSettingsAndDiscoveryConfig
         version: 3,
     });
 
@@ -113,7 +113,7 @@ export const prepareRootReducers = async () => {
         key: 'walletSettings',
         version: 1,
         migrations: {
-            1: migrateAppSettingsAndDiscoveryConfig,
+            1: initialMigrateAppSettingsAndDiscoveryConfig,
         },
     });
 
@@ -139,7 +139,9 @@ export const prepareRootReducers = async () => {
         version: 3,
         migrations: {
             2: oldState => {
-                if (!oldState?.accounts) return oldState;
+                if (!oldState) return undefined;
+
+                if (!('accounts' in oldState) || !Array.isArray(oldState.accounts)) return oldState;
 
                 const oldAccountsState = { accounts: oldState.accounts };
                 const migratedAccounts = migrateAccountLabel(oldAccountsState.accounts);
@@ -147,8 +149,10 @@ export const prepareRootReducers = async () => {
 
                 return migratedState;
             },
-            3: oldState => {
-                if (!oldState?.accounts) return oldState;
+            3: (oldState: any) => {
+                if (!oldState) return undefined;
+
+                if (!('accounts' in oldState)) return oldState;
 
                 const oldAccountsState = { accounts: oldState.accounts };
                 const migratedAccounts = deriveAccountTypeFromPaymentType(
@@ -180,7 +184,9 @@ export const prepareRootReducers = async () => {
         transforms: [devicePersistTransform],
         migrations: {
             2: oldState => {
-                if (!oldState?.devices) return oldState;
+                if (!oldState) return undefined;
+
+                if (!('devices' in oldState)) return oldState;
 
                 const oldDevicesState: { devices: any } = { devices: oldState.devices };
                 const migratedDevices = migrateDeviceState(oldDevicesState.devices);
@@ -188,8 +194,10 @@ export const prepareRootReducers = async () => {
 
                 return migratedState;
             },
-            3: oldState => {
-                if (!oldState?.devices) return oldState;
+            3: (oldState: any) => {
+                if (!oldState) return undefined;
+
+                if (!('devices' in oldState)) return oldState;
                 const migratedDevices = backfillDeviceAuthenticityChecks(oldState.devices);
 
                 return { ...oldState, devices: migratedDevices };
@@ -289,10 +297,21 @@ export const prepareRootReducers = async () => {
         key: 'root',
         version: 3,
         migrations: {
-            2: oldState => {
-                if (!oldState?.wallet) return oldState;
+            2: (oldState: any) => {
+                if (!oldState) return undefined;
+
+                if (!('wallet' in oldState)) return oldState;
 
                 const oldStateWallet = oldState.wallet;
+
+                if (
+                    typeof oldStateWallet !== 'object' ||
+                    oldStateWallet === null ||
+                    !('accounts' in oldStateWallet)
+                ) {
+                    return oldState;
+                }
+
                 const migratedAccounts = migrateAccountBnbToBsc(oldStateWallet.accounts);
 
                 const migratedTransactions = migrateTransactionsBnbToBsc(
@@ -313,8 +332,10 @@ export const prepareRootReducers = async () => {
 
                 return migratedState;
             },
-            3: oldState => {
-                if (!oldState?.wallet) return oldState;
+            3: (oldState: any) => {
+                if (!oldState) return undefined;
+
+                if (!('wallet' in oldState)) return oldState;
 
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountsDeprecateNetworks(oldStateWallet.accounts);
