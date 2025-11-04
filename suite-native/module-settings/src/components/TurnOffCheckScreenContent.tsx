@@ -5,6 +5,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    Box,
     Button,
     Card,
     CheckBox,
@@ -106,9 +107,11 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                         alertPosition="bottom"
                     >
                         <HStack spacing="sp16" justifyContent="space-between">
-                            <Text>
-                                <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.acknowledgement" />
-                            </Text>
+                            <Box flex={1}>
+                                <Text>
+                                    <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.acknowledgement" />
+                                </Text>
+                            </Box>
                             <CheckBox isChecked={isChecked} onChange={handleCheckboxPress} />
                         </HStack>
                     </Card>
