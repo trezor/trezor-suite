@@ -48,7 +48,7 @@ const RebootDeviceGraphics = ({
     const getRebootType = () => {
         // Used during intermediary update on T1B1.
         if (device?.mode === 'bootloader') {
-            return { type: 'NORMAL', deviceModelInternal: DeviceModelInternal.T1B1 };
+            return { type: 'RECONNECT', deviceModelInternal: DeviceModelInternal.T1B1 };
         }
         // T1B1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons.
         const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
