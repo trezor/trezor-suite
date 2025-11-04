@@ -44,18 +44,41 @@ const getEnabledTitleTranslationId = (enabled: boolean) =>
         : 'transactions.TransactionDetailScreen.parametersSheet.values.disabled';
 
 const EthereumParameters = ({ transaction }: EthereumParametersProps) => {
+    const { translate } = useTranslate();
     if (!transaction.ethereumSpecific) return null;
 
     const { gasLimit, gasUsed, nonce } = transaction.ethereumSpecific;
 
     return (
         <>
-            <TransactionDetailRow title="Gas limit">{gasLimit}</TransactionDetailRow>
-            <TransactionDetailRow title="Gas used">{gasUsed}</TransactionDetailRow>
-            <TransactionDetailRow title="Gas price">
+            <TransactionDetailRow
+                title={translate(
+                    'transactions.TransactionDetailScreen.parametersSheet.ethereum.gasLimit',
+                )}
+            >
+                {gasLimit}
+            </TransactionDetailRow>
+            <TransactionDetailRow
+                title={translate(
+                    'transactions.TransactionDetailScreen.parametersSheet.ethereum.gasUsed',
+                )}
+            >
+                {gasUsed}
+            </TransactionDetailRow>
+            <TransactionDetailRow
+                title={translate(
+                    'transactions.TransactionDetailScreen.parametersSheet.ethereum.gasPrice',
+                )}
+            >
                 <FeeFormatter transaction={transaction} />
             </TransactionDetailRow>
-            <TransactionDetailRow title="Nonce">{nonce}</TransactionDetailRow>
+            <TransactionDetailRow
+                title={translate(
+                    'transactions.TransactionDetailScreen.parametersSheet.ethereum.nonce',
+                )}
+            >
+                {nonce}
+            </TransactionDetailRow>
         </>
     );
 };

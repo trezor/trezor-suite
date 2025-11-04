@@ -1764,6 +1764,12 @@ export const messages = {
                 broadcast: 'Broadcast',
                 transactionId: 'Transaction ID',
                 transactionIdCopied: 'Transaction ID copied',
+                ethereum: {
+                    gasLimit: 'Gas limit',
+                    gasUsed: 'Gas used',
+                    gasPrice: 'Gas price',
+                    nonce: 'Nonce',
+                },
                 values: {
                     enabled: 'Enabled',
                     disabled: 'Disabled',
@@ -1772,6 +1778,7 @@ export const messages = {
             addressesSheet: {
                 from: 'From {count}',
                 to: 'To {count}',
+                changeAddresses: 'Change {count,plural, one {Address} other {Addresses}}',
                 copied: 'Address copied to clipboard',
             },
             unknownTarget: 'Target or Origin of transaction is unknown.',
