@@ -41,7 +41,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                 'dsol',
             ];
 
-            await test.step('No assets are acitve', async () => {
+            await test.step('No assets are active', async () => {
                 await expect(settingsPage.coins.networkButton('btc')).toBeEnabledCoin();
                 for (const network of defaultUnchecked) {
                     await expect(settingsPage.coins.networkButton(network)).toBeDisabledCoin();

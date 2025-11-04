@@ -55,12 +55,12 @@ export const ConfirmOnDevicePillContent = ({
     const hasSteps = steps && activeStep !== undefined;
 
     return (
-        <Row gap={spacings.xl}>
+        <Row gap={16}>
             <RotateDeviceImage
                 deviceModel={deviceModelInternal}
                 deviceColor={deviceUnitColor}
-                height={34}
-                maxWidth={30}
+                height={28}
+                width={28}
             />
 
             <Column alignItems="center">

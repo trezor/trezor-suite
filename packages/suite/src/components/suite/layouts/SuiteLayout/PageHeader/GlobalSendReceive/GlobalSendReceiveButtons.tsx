@@ -23,12 +23,12 @@ export const GlobalSendReceiveButtons = ({
             onClick={() => {
                 setIsSendModalOpen(true);
 
-                        analytics.report({ type: EventType.DashboardSendModal });
-                    }}
-                    data-testid="@wallet/menu/wallet-global-send"
-                >
-                    <Translation id="TR_NAV_SEND" />
-                </HeaderActionButton>
+                analytics.report({ type: EventType.DashboardSendModal });
+            }}
+            data-testid="@wallet/menu/wallet-global-send"
+        >
+            <Translation id="TR_NAV_SEND" />
+        </HeaderActionButton>
 
         <HeaderActionButton
             key="wallet-receive"
@@ -36,12 +36,11 @@ export const GlobalSendReceiveButtons = ({
             onClick={() => {
                 setIsReceiveModalOpen(true);
 
-                        analytics.report({ type: EventType.DashboardReceiveModal });
-                    }}
-                    data-testid="@wallet/menu/wallet-global-receive"
-                >
-                    <Translation id="TR_NAV_RECEIVE" />
-                </HeaderActionButton>
-            </NewButtonGroup>
-    );
-};
+                analytics.report({ type: EventType.DashboardReceiveModal });
+            }}
+            data-testid="@wallet/menu/wallet-global-receive"
+        >
+            <Translation id="TR_NAV_RECEIVE" />
+        </HeaderActionButton>
+    </NewButtonGroup>
+);
