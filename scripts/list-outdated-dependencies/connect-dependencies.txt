@@ -87,7 +87,6 @@ stream-browserify
 swr
 tailwindcss
 tar
-terser-webpack-plugin
 tiny-worker
 ts-mixer
 ts-node

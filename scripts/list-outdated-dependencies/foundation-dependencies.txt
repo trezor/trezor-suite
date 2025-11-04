@@ -15,6 +15,7 @@
 @evolu/react-native
 @evolu/web
 @noble/curves
+@pmmmwh/react-refresh-webpack-plugin
 @sentry/browser
 @sentry/core
 @sentry/electron
@@ -24,7 +25,6 @@
 @types/file-saver
 @types/webpack-bundle-analyzer
 @types/webpack-plugin-serve
-babel-jest
 babel-loader
 babel-plugin-transform-remove-console
 chalk
@@ -53,12 +53,10 @@ express
 fake-indexeddb
 file-saver
 globals
-golomb
 html-webpack-plugin
 husky
 idb
 minimatch
-n64
 nx
 openpgp
 prettier
@@ -66,8 +64,8 @@ react-native-ble-plx
 react-native-mmkv
 react-freeze
 react-native-nitro-modules
-simple-git
 sort-package-json
+terser-webpack-plugin
 typescript-eslint
 uuid
 vm-browserify

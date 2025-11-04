@@ -6,7 +6,6 @@
 @hookform/resolvers
 @metamask/eth-sig-util
 @noble/hashes
-@pmmmwh/react-refresh-webpack-plugin
 @reduxjs/toolkit
 @solana-program/compute-budget
 @solana-program/stake
@@ -44,11 +43,13 @@ cashaddrjs
 create-hmac
 eth-phishing-detect
 event-target-shim
+golomb
 immer
 int64-buffer
 json-schema-to-typescript
 jws
 minimaldata
+n64
 patch-package
 raw-loader
 react-hook-form
