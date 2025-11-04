@@ -10,6 +10,8 @@ type ResponsiveContextType = {
     setContentWidth: (contentWidth: number) => void;
     isSidebarCollapsed: boolean;
     setIsSidebarCollapsed: (isSidebarCollapsed: boolean) => void;
+    forcedSidebarWidth?: number;
+    setForcedSidebarWidth: (forcedSidebarWidth?: number) => void;
 };
 
 export const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
@@ -17,16 +19,27 @@ export const ResponsiveContext = createContext<ResponsiveContextType | undefined
 export const ResponsiveContextProvider = ({ children }: { children: React.ReactNode }) => {
     const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
     const [sidebarWidth, setSidebarWidth] = useState<number>(sidebarWidthFromRedux);
+    const [forcedSidebarWidth, setForcedSidebarWidth] = useState<number | undefined>(undefined);
     const [contentWidth, setContentWidth] = useState<number | undefined>(undefined);
     const [forcedSidebarCollapsed, setForcedSidebarCollapsed] = useState<boolean>(false);
+
+    const getIsSidebarCollapsed = () => {
+        if (forcedSidebarWidth) {
+            return !!forcedSidebarWidth;
+        }
+
+        return sidebarWidth ? sidebarWidth < SIDEBAR_COLLAPSED_WIDTH : false;
+    };
 
     const value: ResponsiveContextType = {
         sidebarWidth,
         setSidebarWidth,
         contentWidth,
         setContentWidth,
-        isSidebarCollapsed: sidebarWidth ? sidebarWidth < SIDEBAR_COLLAPSED_WIDTH : false,
+        isSidebarCollapsed: getIsSidebarCollapsed(),
         setIsSidebarCollapsed: setForcedSidebarCollapsed,
+        forcedSidebarWidth,
+        setForcedSidebarWidth,
     };
 
     return (
