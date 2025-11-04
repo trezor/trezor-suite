@@ -74,4 +74,25 @@ export const typescriptConfig = [
             ],
         },
     },
+    {
+        files: ['**/src/**/*.{ts,tsx}'],
+        languageOptions: {
+            parserOptions: {
+                projectService: true,
+                allowDefaultProject: true,
+            },
+        },
+        rules: {
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+            ],
+            '@typescript-eslint/consistent-type-exports': [
+                'error',
+                {
+                    fixMixedExportsWithInlineTypeSpecifier: true,
+                },
+            ],
+        },
+    },
 ];

@@ -1,0 +1,35 @@
+Processed 6646 files (17.4s) (645 warnings)
+
+1) packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts
+2) packages/connect/src/data/DataManager.ts > packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts
+3) packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx
+4) packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx > packages/components/src/components/Table/TableHeader.tsx
+5) packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableRow.tsx
+6) suite-common/wallet-utils/src/baseCurrency.ts > suite-common/wallet-utils/src/fiatConverterUtils.ts
+7) suite-common/wallet-utils/src/accountUtils.ts > suite-common/wallet-utils/src/stakingUtils.ts > suite-common/wallet-utils/src/solanaStakingUtils.ts
+8) suite-common/wallet-utils/src/accountUtils.ts > suite-common/wallet-utils/src/transactionUtils.ts
+9) suite-common/wallet-core/src/settings/walletSettingsReducer.ts > suite-common/wallet-core/src/settings/walletSettingsActions.ts
+10) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/bluetooth/src/index.ts > suite-common/bluetooth/src/bluetoothReducer.ts
+11) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk.ts
+12) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/finishThpAutoconnectThunk.ts
+13) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/removeThpAutoconnectThunk.ts
+14) packages/suite/src/actions/suite/metadataActions.ts > packages/suite/src/actions/suite/metadataProviderActions.ts
+15) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/buy/index.ts > suite-common/trading/src/thunks/buy/confirmBuyTradeThunk.ts
+16) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/buy/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts
+17) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/confirmExchangeTradeThunk.ts
+18) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
+19) suite-common/trading/src/thunks/common/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
+20) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
+21) suite-common/trading/src/thunks/common/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
+22) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/signDataAndConfirmThunk.ts
+23) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/sell/index.ts > suite-common/trading/src/thunks/sell/confirmSellTradeThunk.ts > suite-common/trading/src/thunks/sell/handleSellTradeThunk.ts
+24) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/sell/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts
+25) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/sell/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
+26) suite-common/trading/src/thunks/common/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts > suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/sell/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
+27) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx
+28) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx
+29) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalContent.tsx
+30) packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/Preloader/Preloader.tsx > packages/suite/src/views/start/AnalyticsConsentScreen.tsx
+31) packages/suite/src/views/onboarding/steps/SelectBackupType/SelectBackupType.tsx > packages/suite/src/views/onboarding/steps/SelectBackupType/FloatingSelections.tsx
+32) suite-native/device/src/index.ts > suite-native/device/src/hooks/useDetectDeviceError.tsx > suite-native/firmware/src/index.ts > suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx
+

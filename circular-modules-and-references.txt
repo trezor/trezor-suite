@@ -1,0 +1,106 @@
+Processed 6638 files (20.5s) (657 warnings)
+
+1) packages/blockchain-link-types/src/blockbook.ts > packages/blockchain-link-types/src/common.ts
+2) packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts
+3) packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts > packages/coinjoin/src/types/index.ts
+4) packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts
+5) packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts
+6) packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinFilterController.ts
+7) packages/coinjoin/src/backend/CoinjoinAddressController.ts > packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
+8) packages/coinjoin/src/backend/backendUtils.ts > packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
+9) packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
+10) packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/connectionConfirmation.ts
+11) packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/endedRound.ts
+12) packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/inputRegistration.ts
+13) packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/outputRegistration.ts
+14) packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/outputRegistration.ts > packages/coinjoin/src/client/round/outputDecomposition.ts
+15) packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/selectRound.ts
+16) packages/coinjoin/src/client/CoinjoinRound.ts > packages/coinjoin/src/client/round/transactionSigning.ts
+17) packages/coinjoin/src/client/CoinjoinClient.ts > packages/coinjoin/src/client/analyzeTransactions.ts
+18) packages/transport/src/transports/abstract.ts > packages/transport/src/transports/bridge.ts
+19) packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts
+20) packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts > packages/connect/src/utils/firmwareReleaseConfigUtils.ts
+21) packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts
+22) packages/connect/src/device/Device.ts > packages/connect/src/device/DeviceCommands.ts > packages/connect/src/device/DeviceCurrentSession.ts
+23) packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/DeviceCommands.ts > packages/connect/src/device/DeviceCurrentSession.ts
+24) packages/connect/src/device/Device.ts > packages/connect/src/device/StateStorage.ts
+25) packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts
+26) packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/handshake.ts
+27) packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/handshake.ts > packages/connect/src/device/thp/thpCall.ts
+28) packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/handshake.ts > packages/connect/src/device/thp/thpCall.ts
+29) packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/pairing.ts
+30) packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/pairing.ts
+31) packages/connect/src/device/Device.ts > packages/connect/src/device/thp/index.ts > packages/connect/src/device/thp/session.ts
+32) packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts
+33) packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/getBinary.ts > packages/connect/src/types/index.ts > packages/connect/src/types/api/index.ts > packages/connect/src/types/api/off.ts > packages/connect/src/events/ui-request.ts > packages/connect/src/core/AbstractMethod.ts
+34) packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/getBinary.ts > packages/connect/src/types/index.ts > packages/connect/src/types/api/index.ts > packages/connect/src/types/api/off.ts > packages/connect/src/events/ui-request.ts > packages/connect/src/core/AbstractMethod.ts
+35) packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/uploadFirmware.ts
+36) packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts > packages/connect/src/api/firmware/index.ts > packages/connect/src/api/firmware/uploadFirmware.ts
+37) packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/checkFirmwareHashWithRetries.ts > packages/connect/src/device/workflow/checkFirmwareHash.ts
+38) packages/connect/src/device/Device.ts > packages/connect/src/device/workflow/handshake.ts > packages/connect/src/types/workflow.ts
+39) packages/connect/src/events/index.ts > packages/connect/src/events/call.ts > packages/connect/src/device/Device.ts
+40) packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx
+41) packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx > packages/components/src/components/Table/TableHeader.tsx
+42) packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableRow.tsx
+43) packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/customComponents.tsx
+44) packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/useOnKeyDown.ts
+45) suite-common/intl-types/src/index.ts > suite-common/intl-types/src/types.ts > packages/suite/src/components/suite/Translation.tsx
+46) suite-common/wallet-types/src/sendForm.ts > suite-common/wallet-types/src/transaction.ts
+47) suite-common/wallet-types/src/index.ts > suite-common/wallet-types/src/solanaStaking.ts > suite-common/staking-solana/src/index.ts > suite-common/staking-solana/src/utils/index.ts > suite-common/staking-solana/src/utils/stakingUtils.ts
+48) suite-common/wallet-utils/src/index.ts > suite-common/wallet-utils/src/accountUtils.ts > suite-common/suite-types/src/index.ts > suite-common/suite-types/src/modal.ts > suite-common/wallet-types/src/index.ts > suite-common/wallet-types/src/solanaStaking.ts > suite-common/staking-solana/src/index.ts > suite-common/staking-solana/src/utils/index.ts > suite-common/staking-solana/src/utils/stakingUtils.ts
+49) suite-common/wallet-utils/src/baseCurrency.ts > suite-common/wallet-utils/src/fiatConverterUtils.ts
+50) suite-common/wallet-utils/src/accountUtils.ts > suite-common/wallet-utils/src/stakingUtils.ts > suite-common/wallet-utils/src/solanaStakingUtils.ts
+51) suite-common/wallet-utils/src/accountUtils.ts > suite-common/wallet-utils/src/transactionUtils.ts
+52) packages/product-components/src/components/SelectAssetModal/SelectAssetModal.tsx > packages/product-components/src/components/SelectAssetModal/AssetItem.tsx
+53) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/app.ts
+54) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts
+55) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/index.ts
+56) packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/process.ts
+57) suite-common/wallet-core/src/settings/walletSettingsReducer.ts > suite-common/wallet-core/src/settings/walletSettingsActions.ts
+58) suite-common/wallet-core/src/transactions/transactionsSelectors.ts > suite-common/wallet-core/src/transactions/transactionsReducer.ts > suite-common/wallet-core/src/transactions/transactionsThunks.ts > suite-common/wallet-core/src/send/sendFormEthereumThunks.ts
+59) suite-common/wallet-core/src/transactions/transactionsSelectors.ts > suite-common/wallet-core/src/transactions/transactionsReducer.ts > suite-common/wallet-core/src/transactions/transactionsThunks.ts
+60) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/bluetooth/src/index.ts > suite-common/bluetooth/src/bluetoothReducer.ts
+61) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk.ts
+62) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/finishThpAutoconnectThunk.ts
+63) suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/removeThpAutoconnectThunk.ts
+64) suite-common/wallet-core/src/stake/stakeThunks.ts > suite-common/wallet-core/src/stake/stakeSelectors.ts > suite-common/wallet-core/src/stake/stakeReducer.ts
+65) packages/suite/src/actions/suite/metadataActions.ts > packages/suite/src/actions/suite/metadataProviderActions.ts
+66) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/buy/index.ts > suite-common/trading/src/thunks/buy/confirmBuyTradeThunk.ts
+67) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/buy/index.ts > suite-common/trading/src/thunks/buy/confirmBuyTradeThunk.ts > suite-common/trading/src/selectors/tradingSelectors.ts
+68) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/buy/index.ts > suite-common/trading/src/thunks/buy/handleBuyRequestThunk.ts
+69) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/confirmExchangeTradeThunk.ts
+70) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts
+71) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts > suite-common/trading/src/thunks/common/index.ts > suite-common/trading/src/thunks/common/loadInitialDataThunk.ts
+72) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts > suite-common/trading/src/thunks/common/index.ts > suite-common/trading/src/thunks/common/verifyAddressThunk.ts
+73) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendDexTransactionThunk.ts > suite-common/trading/src/thunks/common/index.ts > suite-common/trading/src/thunks/common/watchTradeThunk.ts
+74) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/sendTransactionThunk.ts
+75) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/exchange/index.ts > suite-common/trading/src/thunks/exchange/signDataAndConfirmThunk.ts
+76) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/sell/index.ts > suite-common/trading/src/thunks/sell/confirmSellTradeThunk.ts > suite-common/trading/src/thunks/sell/handleSellTradeThunk.ts
+77) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/sell/index.ts > suite-common/trading/src/thunks/sell/handleSellRequestThunk.ts
+78) suite-common/trading/src/reducers/tradingReducer.ts > suite-common/trading/src/thunks/sell/index.ts > suite-common/trading/src/thunks/sell/sendSellTransactionThunk.ts
+79) packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx
+80) packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsList.tsx > packages/suite/src/components/suite/troubleshooting/TroubleshootingTipsItemComponent.tsx
+81) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupStep2to4.tsx
+82) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal.tsx
+83) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/DeviceContextModal.tsx
+84) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx
+85) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalBottomContent.tsx
+86) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBody.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalBodyInner.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewModalContent.tsx
+87) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalExchange.tsx
+88) packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModalSell.tsx
+89) packages/suite/src/components/suite/modals/ReduxModal/ReduxModal.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/UserContextModal.tsx
+90) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/CollapsibleIOSection.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IOGroup.tsx
+91) packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/IODetails.tsx > packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/Detail/AdvancedTxDetails/IODetails/TokenSpecificBalanceDetailsRow.tsx
+92) packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/Preloader/Preloader.tsx > packages/suite/src/views/start/AnalyticsConsentScreen.tsx
+93) packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipAccount.tsx
+94) packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipDashboard.tsx
+95) packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx
+96) packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFee.tsx > packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeMisc.tsx
+97) packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTargetsList.tsx > packages/suite/src/components/wallet/TransactionItem/TransactionTarget/TransactionTarget.tsx
+98) packages/suite/src/utils/wallet/graph/utils.ts > packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
+99) packages/suite/src/utils/wallet/graph/utilsShared.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
+100) packages/suite/src/views/dashboard/AssetsView/AssetTable/AssetTable.tsx > packages/suite/src/views/dashboard/AssetsView/AssetsView.tsx
+101) packages/suite/src/views/onboarding/steps/SelectBackupType/SelectBackupType.tsx > packages/suite/src/views/onboarding/steps/SelectBackupType/FloatingSelections.tsx
+102) suite-common/graph/src/graphDataFetching.ts > suite-common/graph/src/graphUtils.ts
+103) suite-native/device/src/index.ts > suite-native/device/src/hooks/useDetectDeviceError.tsx > suite-native/device/src/selectors.ts > suite-native/firmware/src/index.ts > suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx
+
