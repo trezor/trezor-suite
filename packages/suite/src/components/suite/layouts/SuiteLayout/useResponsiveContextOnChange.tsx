@@ -1,32 +1,45 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useDebounce } from '@trezor/react-utils';
 
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
+const THRESHOLD_SIZE = 8;
+
 export const useResponsiveContextOnChange = (ref: React.RefObject<HTMLDivElement | null>) => {
     const { setContentWidth } = useResponsiveContext();
     const debounce = useDebounce();
-    useEffect(() => {
-        const resizeObserver = new ResizeObserver(entries => {
-            if (entries[0]) {
-                const newWidth = entries[0].contentRect.width;
+    const lastWidthRef = useRef<number | null>(null);
 
-                debounce(() => {
-                    setContentWidth(newWidth);
-                });
+    useEffect(() => {
+        if (!ref.current) return;
+
+        const resizeObserver = new ResizeObserver(entries => {
+            const entry = entries[0];
+            if (!entry) return;
+
+            const newWidth = entry.contentRect.width;
+
+            if (
+                lastWidthRef.current !== null &&
+                Math.abs(lastWidthRef.current - newWidth) < THRESHOLD_SIZE
+            ) {
+                return;
             }
+
+            lastWidthRef.current = newWidth;
+
+            debounce(() => {
+                setContentWidth(newWidth);
+            });
         });
 
-        if (ref.current) {
-            const boundingRect = ref.current.getBoundingClientRect();
+        const rect = ref.current.getBoundingClientRect();
+        lastWidthRef.current = rect.width;
+        setContentWidth(rect.width);
 
-            setContentWidth(boundingRect.width);
-            resizeObserver.observe(ref.current);
-        }
+        resizeObserver.observe(ref.current);
 
-        return () => {
-            resizeObserver.disconnect();
-        };
-    }, [ref, setContentWidth, debounce]);
+        return () => resizeObserver.disconnect();
+    }, [ref, debounce, setContentWidth]);
 };

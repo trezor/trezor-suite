@@ -36,7 +36,6 @@ import {
 const Container = styled.nav<{ $elevation: Elevation }>`
     overflow-x: hidden;
     display: flex;
-    container-type: inline-size;
     flex-direction: column;
     flex: 0 0 auto;
     height: 100%;
@@ -99,9 +98,11 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         setSidebarWidth,
         sidebarWidth,
         contentWidth,
-        setIsSidebarCollapsed,
-        setForcedSidebarWidth,
         forcedSidebarWidth,
+        setForcedSidebarWidth,
+        lastManualSidebarWidth,
+        autoCollapsed,
+        setAutoCollapsed,
     } = useResponsiveContext();
     const dispatch = useDispatch();
 
@@ -116,7 +117,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         dispatch(setSidebarWidthInRedux({ width }));
     };
     const handleSidebarWidthUpdate = (width: number) => {
-        if (!forcedSidebarWidth) setSidebarWidth(width);
+        if (typeof forcedSidebarWidth !== 'number') setSidebarWidth(width);
     };
 
     const onNotificationBannerClosed = () => {
@@ -139,19 +140,36 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         showAccounts;
 
     useEffect(() => {
-        const COLLAPSE_BREAKPOINT = SIDEBAR_AUTO_COLLAPSE_BREAKPOINT;
-        const UNCOLLAPSE_BREAKPOINT =
-            SIDEBAR_AUTO_COLLAPSE_BREAKPOINT +
-            (sidebarWidth ? sidebarWidth - SIDEBAR_MIN_WIDTH : 0);
+        if (contentWidth == null) return;
 
-        if (contentWidth && contentWidth < COLLAPSE_BREAKPOINT) {
-            setForcedSidebarWidth(SIDEBAR_MIN_WIDTH);
+        if (!autoCollapsed && contentWidth < SIDEBAR_AUTO_COLLAPSE_BREAKPOINT) {
+            setAutoCollapsed(true);
+            if (forcedSidebarWidth !== SIDEBAR_MIN_WIDTH) {
+                setForcedSidebarWidth(SIDEBAR_MIN_WIDTH);
+            }
+
+            return;
         }
 
-        if (contentWidth && contentWidth > UNCOLLAPSE_BREAKPOINT) {
-            setForcedSidebarWidth(undefined);
+        if (autoCollapsed) {
+            const delta = Math.max(0, lastManualSidebarWidth - SIDEBAR_MIN_WIDTH);
+            const uncollapseThreshold = SIDEBAR_AUTO_COLLAPSE_BREAKPOINT + delta;
+
+            if (contentWidth > uncollapseThreshold) {
+                setAutoCollapsed(false);
+                if (typeof forcedSidebarWidth === 'number') {
+                    setForcedSidebarWidth(undefined);
+                }
+            }
         }
-    }, [contentWidth, setForcedSidebarWidth, setIsSidebarCollapsed, sidebarWidth]);
+    }, [
+        contentWidth,
+        autoCollapsed,
+        setAutoCollapsed,
+        forcedSidebarWidth,
+        setForcedSidebarWidth,
+        lastManualSidebarWidth,
+    ]);
 
     return (
         <Wrapper>

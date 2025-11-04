@@ -15,7 +15,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const DiscoveryButtonContainer = styled(motion.div)`
     display: flex;
@@ -46,7 +46,7 @@ const animationConfig: MotionProps = {
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isSidebarCollapsed = useIsSidebarCollapsed();
+    const { isSidebarCollapsed } = useResponsiveContext();
     const isDiscoveryButtonVisible = useSelector(state =>
         selectShowRediscoverButton(state, selectedDevice),
     );

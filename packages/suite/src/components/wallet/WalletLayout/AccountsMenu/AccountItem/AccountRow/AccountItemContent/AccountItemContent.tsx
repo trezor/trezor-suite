@@ -9,12 +9,12 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { AccountLabel, CoinBalance } from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { Translation } from 'src/components/suite/Translation';
-import { useIsSidebarCollapsed } from 'src/components/suite/layouts/SuiteLayout/Sidebar/utils';
 import { useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
 
 import { BalancePlaceholder } from './BalancePlaceholder';
 import { BaseCurrency } from './BaseCurrency';
+import { useResponsiveContext } from '../../../../../../../support/suite/ResponsiveContext';
 
 export const AccountLabelContainer = styled.div`
     flex: 1;
@@ -45,7 +45,7 @@ export const AccountItemContent = ({
     isFiatLoading,
 }: AccountItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
-    const isSidebarCollapsed = useIsSidebarCollapsed();
+    const { isSidebarCollapsed } = useResponsiveContext();
     const isCardanoStaking = account.networkType === 'cardano' && type === 'staking';
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 

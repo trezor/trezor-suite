@@ -15,7 +15,7 @@ import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { Account } from 'src/types/wallet';
 
 import { AccountItem, type AccountItemProps } from './AccountItem/AccountItem';
-import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean }>`
     display: flex;
@@ -57,7 +57,7 @@ export const AccountItemsGroup = ({
     dataTestKey,
     onItemClick,
 }: AccountItemsGroupProps) => {
-    const isSidebarCollapsed = useIsSidebarCollapsed();
+    const { isSidebarCollapsed } = useResponsiveContext();
     const stakingBalance = getAccountTotalStakingBalance(account);
 
     const routeName = useSelector(selectRouteName);
