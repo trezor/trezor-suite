@@ -1105,6 +1105,7 @@ export const icons = {
     fishFilled: require('../assets/fishFilled.svg'),
     fishSimple: require('../assets/fishSimple.svg'),
     fishSimpleFilled: require('../assets/fishSimpleFilled.svg'),
+    fiveBinariesLogo: require('../assets/fiveBinariesLogo.svg'),
     flag: require('../assets/flag.svg'),
     flagBanner: require('../assets/flagBanner.svg'),
     flagBannerFilled: require('../assets/flagBannerFilled.svg'),
