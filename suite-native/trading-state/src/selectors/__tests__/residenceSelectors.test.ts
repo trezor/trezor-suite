@@ -8,7 +8,7 @@ import {
 import {
     TradingResidenceRootState,
     TradingResidenceState,
-    tradingResidenceInitialState,
+    residenceInitialState,
 } from '../../reducers/residenceSlice';
 import {
     selectIsTradingCountrySet,
@@ -31,7 +31,7 @@ describe('residenceSelectors', () => {
         wallet: {
             trading: {
                 residence: {
-                    ...tradingResidenceInitialState,
+                    ...residenceInitialState,
                     ...overrides,
                 },
             },
@@ -48,7 +48,7 @@ describe('residenceSelectors', () => {
     describe('selectTradingResidenceCountry', () => {
         it(' should select the country', () => {
             expect(
-                selectTradingResidenceCountry(getRootResidenceState(tradingResidenceInitialState)),
+                selectTradingResidenceCountry(getRootResidenceState(residenceInitialState)),
             ).toBe(undefined);
             expect(selectTradingResidenceCountry(getRootResidenceState(visitedState))).toBe('US');
         });
@@ -58,7 +58,7 @@ describe('residenceSelectors', () => {
         it('should select wasOnboardingVisited', () => {
             expect(
                 selectWasTradingResidenceOnboardingVisited(
-                    getRootResidenceState(tradingResidenceInitialState),
+                    getRootResidenceState(residenceInitialState),
                 ),
             ).toBe(false);
             expect(
@@ -129,7 +129,7 @@ describe('residenceSelectors', () => {
     describe('selectShouldDisplayTradingResidenceOnboarding', () => {
         it('should return false when residence check FF is disabled', () => {
             const state = {
-                ...getRootResidenceState(tradingResidenceInitialState),
+                ...getRootResidenceState(residenceInitialState),
                 ...getRootFFState(false),
             };
 
@@ -156,7 +156,7 @@ describe('residenceSelectors', () => {
 
         it('should return true when FF enabled, onboarding not visited and country not set', () => {
             const state = {
-                ...getRootResidenceState(tradingResidenceInitialState),
+                ...getRootResidenceState(residenceInitialState),
                 ...getRootFFState(true),
             };
 
