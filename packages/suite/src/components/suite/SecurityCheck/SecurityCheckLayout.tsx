@@ -7,9 +7,11 @@ import {
     getLargeModelImagePath,
 } from '@trezor/product-components';
 import type { ModelFor } from '@trezor/product-components';
-import { borders, spacings } from '@trezor/theme';
+import { borders, breakpoints, spacings } from '@trezor/theme';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
+
+import { useResponsiveContext } from '../../../support/suite/ResponsiveContext';
 
 type SecurityCheckLayoutProps = {
     isFailed?: boolean;
@@ -33,7 +35,7 @@ export const SecurityCheckLayout = ({
     imageMode,
 }: SecurityCheckLayoutProps) => {
     const device = useSelector(selectSelectedDevice);
-    const { isBelowTablet } = useLayoutSize();
+    const { contentWidth } = useResponsiveContext();
 
     const model = getDeviceModel(device?.features?.internal_model);
     const isDeviceImageRotating = imageMode === 'ROTATE';
@@ -55,8 +57,10 @@ export const SecurityCheckLayout = ({
         return <Image maxHeight={300} isFilterActive={false} image={image} />;
     };
 
+    const isContentBelowTablet = !!(contentWidth && contentWidth < breakpoints.tablet);
+
     return (
-        <Grid columns={isBelowTablet ? '1fr' : '260px 1fr'} gap={spacings.xl} width="100%">
+        <Grid columns={isContentBelowTablet ? '1fr' : '260px 1fr'} gap={spacings.xl} width="100%">
             {model && (
                 <Box hasBackground borderRadius={borders.radii.sm} padding={spacings.xxl}>
                     <Column height="100%" justifyContent="center" alignItems="center">
