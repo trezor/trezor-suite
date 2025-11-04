@@ -7,7 +7,6 @@ import { selectDevicesCount, selectSelectedDevice } from '@suite-common/wallet-c
 import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
 import {
-    breakpoints,
     Elevation,
     mapElevationToBackground,
     mapElevationToBorder,
@@ -27,7 +26,12 @@ import { TrafficLightOffset } from '../../../TrafficLightOffset';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
 import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
-import { SIDEBAR_MAX_WIDTH, SIDEBAR_MIN_WIDTH } from './consts';
+import {
+    SIDEBAR_AUTO_COLLAPSE_BREAKPOINT,
+    SIDEBAR_COLLAPSED_WIDTH,
+    SIDEBAR_MAX_WIDTH,
+    SIDEBAR_MIN_WIDTH,
+} from './consts';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     overflow-x: hidden;
@@ -89,13 +93,15 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
     const [isBannerVisible, setIsBannerVisible] = useState(true);
-    const [forcedWidth, setForcedWidth] = useState<number | undefined>(undefined);
+
     const {
         isSidebarCollapsed,
         setSidebarWidth,
         sidebarWidth,
         contentWidth,
         setIsSidebarCollapsed,
+        setForcedSidebarWidth,
+        forcedSidebarWidth,
     } = useResponsiveContext();
     const dispatch = useDispatch();
 
@@ -110,7 +116,7 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         dispatch(setSidebarWidthInRedux({ width }));
     };
     const handleSidebarWidthUpdate = (width: number) => {
-        setSidebarWidth(width);
+        if (!forcedSidebarWidth) setSidebarWidth(width);
     };
 
     const onNotificationBannerClosed = () => {
@@ -133,21 +139,19 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         showAccounts;
 
     useEffect(() => {
-        if (contentWidth && contentWidth < breakpoints.laptop) {
-            setForcedWidth(SIDEBAR_MIN_WIDTH);
-            setIsSidebarCollapsed(true);
-            console.log('___a', contentWidth);
-        } else if (
-            forcedWidth &&
-            contentWidth &&
-            sidebarWidth &&
-            contentWidth >= breakpoints.laptop + sidebarWidth - SIDEBAR_MIN_WIDTH
-        ) {
-            console.log('___b', breakpoints.laptop + sidebarWidth - SIDEBAR_MIN_WIDTH);
-            setForcedWidth(undefined);
-            setIsSidebarCollapsed(false);
+        const COLLAPSE_BREAKPOINT = SIDEBAR_AUTO_COLLAPSE_BREAKPOINT;
+        const UNCOLLAPSE_BREAKPOINT =
+            SIDEBAR_AUTO_COLLAPSE_BREAKPOINT +
+            (sidebarWidth ? sidebarWidth - SIDEBAR_MIN_WIDTH : 0);
+
+        if (contentWidth && contentWidth < COLLAPSE_BREAKPOINT) {
+            setForcedSidebarWidth(SIDEBAR_MIN_WIDTH);
         }
-    }, [contentWidth, forcedWidth, setIsSidebarCollapsed, sidebarWidth]);
+
+        if (contentWidth && contentWidth > UNCOLLAPSE_BREAKPOINT) {
+            setForcedSidebarWidth(undefined);
+        }
+    }, [contentWidth, setForcedSidebarWidth, setIsSidebarCollapsed, sidebarWidth]);
 
     return (
         <Wrapper>
@@ -159,9 +163,9 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 zIndex={zIndices.draggableComponent}
                 onWidthResizeEnd={handleSidebarWidthChanged}
                 onWidthResizeMove={handleSidebarWidthUpdate}
-                disabledWidthInterval={[84, 240]}
+                disabledWidthInterval={[SIDEBAR_MIN_WIDTH, SIDEBAR_COLLAPSED_WIDTH]}
                 flex="1"
-                forcedWidth={forcedWidth}
+                forcedWidth={forcedSidebarWidth}
             >
                 <Container $elevation={elevation}>
                     <TrafficLightOffset>

@@ -16,8 +16,7 @@ import { Elevation, spacingsPx } from '@trezor/theme';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { SuiteBanners } from 'src/components/suite/banners';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
+import { useSelector } from 'src/hooks/suite';
 
 import { TrafficLightOffset } from '../../TrafficLightOffset';
 import { ContentContainer } from '../ContentContainer';
@@ -26,7 +25,6 @@ import { DebugLegend } from '../SuiteLayout/DebugLegend';
 import { BasicName } from '../SuiteLayout/PageHeader/PageNames/BasicName';
 import { Sidebar } from '../SuiteLayout/Sidebar/Sidebar';
 import { MainContent } from '../SuiteLayout/SuiteLayout';
-import { MobileMenu } from '../SuiteLayout/MobileMenu/MobileMenu';
 
 const Content = styled.div<{ $elevation: Elevation; $verticalCenter?: boolean }>`
     display: flex;
@@ -114,7 +112,6 @@ export const WelcomeLayoutWithoutModalSwitcher = ({
     showAccounts = true,
 }: WelcomeLayoutWithoutModalSwitcherProps) => {
     const theme = useSelector(state => state.suite.settings.theme);
-    const { isBelowTablet } = useLayoutSize();
 
     return (
         <ElevationDown>
