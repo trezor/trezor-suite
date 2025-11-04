@@ -53,9 +53,10 @@ export const validateIpcMessage = ({
             /^[A-Za-z]:/.test(parsedUrl.pathname.slice(1))
                 ? parsedUrl.pathname.slice(1)
                 : parsedUrl.pathname;
+        const sanitizedPathname = decodeURIComponent(winFixedPathname);
 
         const normalizedBase = pathProvider.normalize(baseDir);
-        const normalizedFile = pathProvider.normalize(winFixedPathname);
+        const normalizedFile = pathProvider.normalize(sanitizedPathname);
         // for purposes of comparison, revert Windows backslashes to forward slashes
         const relativePath = pathProvider
             .relative(normalizedBase, normalizedFile)
