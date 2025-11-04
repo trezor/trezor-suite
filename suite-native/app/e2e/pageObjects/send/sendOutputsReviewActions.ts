@@ -15,6 +15,7 @@ class SendOutputsReviewActions {
     }
 
     async clickSendTransaction() {
+        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
         await waitForVisible(sendButton);
         await sendButton.tap();
 

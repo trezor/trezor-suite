@@ -49,7 +49,7 @@ export const AccountImportSummaryScreen = ({
                         subtitle={subtitle}
                     />
                 </Box>
-                <Box flex={1} testID={testID}>
+                <Box flex={1} testID={testID} accessible>
                     {children}
                 </Box>
             </VStack>

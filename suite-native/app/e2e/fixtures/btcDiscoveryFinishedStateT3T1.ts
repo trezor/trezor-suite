@@ -55,6 +55,9 @@ export const btcDiscoveryFinishedStateT3T1: PreloadedState = {
             {
                 path: '52cf91cc',
                 name: 'Trezor Safe 5',
+                descriptor: {
+                    apiType: 'usb',
+                },
                 type: 'acquired',
                 id: '448CCE89D32A733A1632F345',
                 label: 'Trezor T - Tester',

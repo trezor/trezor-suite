@@ -127,6 +127,7 @@ export const Screen = ({
     return (
         <DynamicHeaderProvider>
             <View
+                accessible
                 style={[
                     applyStyle(screenContainerStyle, {
                         backgroundColor,

@@ -49,7 +49,7 @@ const BuyFormMemoized = memo(
 
         return (
             <AnimatedBox layout={LinearTransition}>
-                <VStack spacing="sp16" testID={BUY_FORM_TEST_ID}>
+                <VStack spacing="sp16" testID={BUY_FORM_TEST_ID} accessible>
                     <BuyAlert />
                     <BuyCard
                         isAmountInputActive={isAmountInputActive}
