@@ -11237,7 +11237,7 @@ __metadata:
     babel-jest: "npm:29.7.0"
     babel-plugin-transform-remove-console: "npm:^6.9.4"
     babel-preset-expo: "npm:~54.0.6"
-    detox: "npm:20.44.0"
+    detox: "npm:20.45.1"
     dotenv: "npm:^17.2.1"
     event-target-shim: "npm:6.0.2"
     expo: "npm:~54.0.13"
@@ -22436,9 +22436,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detox@npm:20.44.0":
-  version: 20.44.0
-  resolution: "detox@npm:20.44.0"
+"detox@npm:20.45.1":
+  version: 20.45.1
+  resolution: "detox@npm:20.45.1"
   dependencies:
     "@wix-pilot/core": "npm:^3.4.2"
     "@wix-pilot/detox": "npm:^1.0.13"
@@ -22484,7 +22484,7 @@ __metadata:
       optional: true
   bin:
     detox: local-cli/cli.js
-  checksum: 10/07aa7264d5c5a3cb4aa2b58cb01660eb191f2a9bdcfa865b401edde0b31adae6bacb231ddc1e2b24b8ce22a8da96d19d7e9dd3b4da0e11d95a1ec7604cf4b55f
+  checksum: 10/27e55c553541579d5d45c4880f7c353005f929c93972fdb221c6d9514b57518c60e1acb8a6663611c49e426bdac57eea12dc4b1813524fb39df9e13c68f232af
   languageName: node
   linkType: hard
 

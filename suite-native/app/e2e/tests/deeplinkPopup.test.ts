@@ -94,6 +94,7 @@ conditionalDescribe(
             await waitForVisible(confirmButton);
             await confirmButton.tap();
 
+            await device.enableSynchronization();
             await TrezorUserEnvLink.pressYes();
 
             const response = await promise;
