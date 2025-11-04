@@ -8,12 +8,14 @@ type ValidateIpcMessageParams = {
     ipcEvent: ElectronIpcMainInvokeEvent;
     dirnameProvider?: () => string;
     platformProvider?: () => string;
+    pathProvider?: typeof path;
 };
 
 export const validateIpcMessage = ({
     ipcEvent,
     dirnameProvider = defaultDirnameProvider,
     platformProvider = () => process.platform,
+    pathProvider = path,
 }: ValidateIpcMessageParams) => {
     if (ipcEvent?.senderFrame?.isDestroyed()) {
         throw new Error('ipcEvent.senderFrame is destroyed');
@@ -52,10 +54,12 @@ export const validateIpcMessage = ({
                 ? parsedUrl.pathname.slice(1)
                 : parsedUrl.pathname;
 
-        const normalizedBase = path.normalize(baseDir);
-        const normalizedFile = path.normalize(winFixedPathname);
+        const normalizedBase = pathProvider.normalize(baseDir);
+        const normalizedFile = pathProvider.normalize(winFixedPathname);
         // for purposes of comparison, revert Windows backslashes to forward slashes
-        const relativePath = path.relative(normalizedBase, normalizedFile).replace(/\\/g, '/');
+        const relativePath = pathProvider
+            .relative(normalizedBase, normalizedFile)
+            .replace(/\\/g, '/');
 
         // Verify that the sender is our index.html and nothing else.
         // Electron-main is running in asar/dist, so by comparing the relativePath,
