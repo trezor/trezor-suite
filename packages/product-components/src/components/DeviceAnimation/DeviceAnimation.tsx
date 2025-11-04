@@ -62,7 +62,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         const variant = getThemeVariant(theme);
         const modelDir = model.toLowerCase();
 
-        const withVariant = (base: string) => `${base}_${variant}.webm`;
+        const withThemeVariant = (base: string) => `${base}_${variant}.webm`;
         const basePath = `videos/device/${modelDir}`;
         const rerenderKey = `${modelDir}_${type.toLowerCase()}_${variant}`;
         const commonVideoProps = { loop, videoRef, onMouseOver, rerenderKey, onEnded };
@@ -73,7 +73,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     const file =
                         model === DeviceModelInternal.T3B1
                             ? 'bootloader.webm'
-                            : withVariant('bootloader');
+                            : withThemeVariant('bootloader');
 
                     return <Video src={`${basePath}/${file}`} {...commonVideoProps} />;
                 }
@@ -81,14 +81,17 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 case 'BOOTLOADER_TWO_BUTTONS':
                     return (
                         <Video
-                            src={`${basePath}/${withVariant('bootloader_two_buttons')}`}
+                            src={`${basePath}/${withThemeVariant('bootloader_two_buttons')}`}
                             {...commonVideoProps}
                         />
                     );
 
-                case 'NORMAL':
+                case 'RECONNECT':
                     return (
-                        <Video src={`${basePath}/${withVariant('normal')}`} {...commonVideoProps} />
+                        <Video
+                            src={`${basePath}/${withThemeVariant('reconnect')}`}
+                            {...commonVideoProps}
+                        />
                     );
 
                 case 'HOLOGRAM':

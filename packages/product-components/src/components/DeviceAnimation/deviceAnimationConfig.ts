@@ -27,7 +27,7 @@ export const DEVICE_ANIMATION_CONFIG = {
         models: { [DeviceModelInternal.T1B1]: {} },
         hasSize: false,
     },
-    [DEVICE_ANIMATION_TYPES.NORMAL]: {
+    [DEVICE_ANIMATION_TYPES.RECONNECT]: {
         models: { [DeviceModelInternal.T1B1]: {} },
         hasSize: false,
     },

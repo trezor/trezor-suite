@@ -52,7 +52,7 @@ export default meta;
 export const Rotate = createDeviceAnimationStory('ROTATE');
 export const Bootloader = createDeviceAnimationStory('BOOTLOADER');
 export const BootloaderTwoButtons = createDeviceAnimationStory('BOOTLOADER_TWO_BUTTONS');
-export const Normal = createDeviceAnimationStory('NORMAL');
+export const Reconnect = createDeviceAnimationStory('RECONNECT');
 export const Hologram = createDeviceAnimationStory('HOLOGRAM');
 export const ConnectCable = createDeviceAnimationStory('CONNECT_CABLE');
 export const ConnectBtIntro = createDeviceAnimationStory('CONNECT_BT_INTRO');
