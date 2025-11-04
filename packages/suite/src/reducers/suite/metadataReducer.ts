@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage';
 import {
     AccountsRootState,
     DeviceReducerState,
