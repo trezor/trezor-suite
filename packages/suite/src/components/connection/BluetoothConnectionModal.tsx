@@ -16,7 +16,7 @@ type BluetoothConnectionModalProps = {
 const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
 export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalProps) => {
-    const { handlePairingCancel, onReScanClick, onConnect, devices, selectedDevice } =
+    const { handlePairingCancel, onReScanClick, selectedDevice } =
         useConnectionGlobalModalContext();
     const connectingDevices = useSelector(selectConnectingDevices);
 
@@ -64,11 +64,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
             description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
             size="small"
         >
-            <BluetoothScanningList
-                devices={devices}
-                onConnect={onConnect}
-                onReScanClick={onReScanClick}
-            />
+            <BluetoothScanningList />
         </Modal>
     );
 };

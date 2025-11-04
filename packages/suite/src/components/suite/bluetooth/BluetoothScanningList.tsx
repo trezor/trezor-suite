@@ -1,24 +1,14 @@
 import { selectScanStatus } from '@suite-common/bluetooth';
-import { BluetoothDeviceId } from '@trezor/connect';
 
 import { BluetoothDeviceList } from './BluetoothDeviceList';
 import { BluetoothTips } from './BluetoothTips';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
+import { useConnectionGlobalModalContext } from '../../connection/context/ConnectionGlobalModalContext';
 import { Translation } from '../Translation';
 
-type BluetoothScanningListProps = {
-    devices: DesktopBluetoothDevice[];
-    onConnect: (deviceId: BluetoothDeviceId) => Promise<void>;
-    onReScanClick: () => void;
-};
-
-export const BluetoothScanningList = ({
-    devices,
-    onConnect,
-    onReScanClick,
-}: BluetoothScanningListProps) => {
+export const BluetoothScanningList = () => {
     const scanStatus = useSelector(selectScanStatus);
+    const { onReScanClick, devices } = useConnectionGlobalModalContext();
 
     // This is fake, we scan for devices all the time
     const isScanning = scanStatus === 'running';
@@ -30,7 +20,7 @@ export const BluetoothScanningList = ({
             header={<Translation id="TR_BLUETOOTH_CHECK_TIPS_TRY_AGAIN" />}
         />
     ) : (
-        <BluetoothDeviceList onConnect={onConnect} deviceList={devices} isScanning={isScanning} />
+        <BluetoothDeviceList deviceList={devices} isScanning={isScanning} />
     );
 
     return content;

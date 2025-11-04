@@ -72,7 +72,6 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         toggleShowHints,
         isBluetoothMode,
         showHints,
-        onConnect,
         openShowRemoveFromOsBluetooth,
         shouldShowBluetoothUnPairDeviceList,
         notConnectedKnownDevices,
@@ -123,7 +122,6 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             >
                 <BluetoothDeviceList
                     deviceList={notConnectedKnownDevices}
-                    onConnect={onConnect}
                     isScanning={false}
                     onPairAgain={openShowRemoveFromOsBluetooth}
                 />
