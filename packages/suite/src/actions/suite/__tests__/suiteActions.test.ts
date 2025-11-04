@@ -141,8 +141,6 @@ describe('Suite Actions', () => {
 
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
-            console.log('f.device', f.device);
-
             const state = getInitialState({}, f.state.device);
             const store = initStore(state);
             await store.dispatch(selectDeviceThunk({ device: f.device }));

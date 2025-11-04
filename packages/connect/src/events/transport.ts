@@ -2,7 +2,6 @@ import type { Transport } from '@trezor/transport';
 import { TRANSPORT } from '@trezor/transport/src/constants';
 
 import { serializeError } from '../constants/errors';
-import { BridgeInfo, suggestBridgeInstaller } from '../data/transportInfo';
 import { UdevInfo, suggestUdevInstaller } from '../data/udevInfo';
 import { ConnectSettings } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
@@ -25,7 +24,6 @@ export interface TransportError {
 }
 
 export interface InstallerInfo {
-    bridge?: BridgeInfo;
     udev?: UdevInfo;
 }
 
@@ -75,6 +73,5 @@ export const createTransportMessage: MessageFactoryFn<typeof TRANSPORT_EVENT, Tr
                   {
                       ...payload,
                       udev: suggestUdevInstaller(),
-                      bridge: suggestBridgeInstaller(),
                   },
     }) as any;

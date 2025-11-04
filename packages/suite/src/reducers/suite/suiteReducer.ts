@@ -370,21 +370,21 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case TRANSPORT.START: {
-                const { udev, bridge, ...transport } = action.payload;
+                const { udev, ...transport } = action.payload;
                 const transports = draft.transport?.transports ?? [];
                 const index = transports.findIndex(t => t.apiType === transport.apiType);
                 if (index >= 0) transports[index] = transport;
                 else transports.push(transport);
-                draft.transport = { udev, bridge, transports };
+                draft.transport = { udev, transports };
                 break;
             }
             case TRANSPORT.ERROR: {
-                const { udev, bridge, apiType } = action.payload;
+                const { udev, apiType } = action.payload;
                 const transports =
                     !draft.transport || !apiType
                         ? (draft.transport?.transports ?? [])
                         : draft.transport.transports?.filter(t => t.apiType !== apiType);
-                draft.transport = { udev, bridge, transports };
+                draft.transport = { udev, transports };
                 break;
             }
             case SUITE.ONLINE_STATUS:
