@@ -148,14 +148,15 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         ['react-native-edge-to-edge'],
-        [
-            '@sentry/react-native/expo',
-            {
-                url: 'https://sentry.io/',
-                project: 'suite-native',
-                organization: 'satoshilabs',
-            },
-        ],
+        // Temporarily disabled Sentry to fix build issues
+        // [
+        //     '@sentry/react-native/expo',
+        //     {
+        //         url: 'https://sentry.io/',
+        //         project: 'suite-native',
+        //         organization: 'satoshilabs',
+        //     },
+        // ],
         ['expo-secure-store'],
         ['react-native-ble-plx', {}],
         [

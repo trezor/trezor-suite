@@ -24,6 +24,11 @@ export const setSentryUser = (instanceId: string) => {
 };
 
 const beforeSend: Sentry.ReactNativeOptions['beforeSend'] = event => {
+    // Disable all Sentry events during build
+    if (process.env.DISABLE_SENTRY === 'true') {
+        return null;
+    }
+    
     // sentry events are skipped until user confirm analytics reporting
     const allowReport = event.tags?.[allowReportTag];
 
@@ -40,6 +45,11 @@ const beforeSend: Sentry.ReactNativeOptions['beforeSend'] = event => {
 };
 
 export const initSentry = () => {
+    // Skip Sentry initialization during build
+    if (process.env.DISABLE_SENTRY === 'true' || process.env.CI === 'true') {
+        return;
+    }
+    
     Sentry.init({
         dsn: 'https://d473f56df60c4974ae3f3ce00547c2a9@o117836.ingest.sentry.io/4504214699245568',
         enableAutoSessionTracking: false,
