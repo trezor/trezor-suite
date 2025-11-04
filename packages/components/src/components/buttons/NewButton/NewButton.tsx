@@ -43,7 +43,7 @@ type ButtonContainerProps = TransientProps<AllowedNewButtonFrameProps> & {
     $priority: NewButtonPriority;
     $intent: NewButtonIntent;
     $isInverse: boolean;
-    disabled: boolean;
+    $isDisabled: boolean;
 };
 
 const Container = styled.button<ButtonContainerProps>`
@@ -51,8 +51,8 @@ const Container = styled.button<ButtonContainerProps>`
 
     border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
 
-    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
-        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme)}
+    ${({ $intent, $priority, $isDisabled, $isInverse, theme }) =>
+        mapPropsToCSS($intent, $priority, $isDisabled, $isInverse, theme)}
 
     ${withFrameProps}
 `;
@@ -121,9 +121,10 @@ export const NewButton = ({
         <Container
             as={isLink ? 'a' : 'button'}
             data-testid={dataTestId}
-            disabled={isDisabled}
+            $isDisabled={isDisabled}
+            disabled={isDisabled || isLoading}
             href={href}
-            onClick={onClick}
+            onClick={isDisabled || isLoading ? undefined : onClick}
             tabIndex={tabIndex}
             target={target}
             type={type}
