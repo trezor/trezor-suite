@@ -52,6 +52,7 @@ const DeviceImage = ({ selectedDevice }: { selectedDevice: TrezorDevice | undefi
     return (
         <Box margin={{ top: 40, bottom: 60 }}>
             <DeviceWithScene
+                objectFit="contain"
                 deviceModel={selectedDeviceModelInternal}
                 unitColor={selectedDevice?.features?.unit_color}
                 height={300}
