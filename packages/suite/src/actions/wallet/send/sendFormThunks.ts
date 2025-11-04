@@ -1,8 +1,10 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { processMetadataMessageThunk } from '@suite-common/local-first-storage';
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
+import {
+    processMetadataMessageThunk,
+    selectIsLocalFirstStorageEnabled,
+} from '@suite-common/local-first-storage';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import {
