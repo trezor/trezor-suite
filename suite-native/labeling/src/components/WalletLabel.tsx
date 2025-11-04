@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { WithLabelingState, selectWalletLabel } from '@suite-common/suite-sync';
-import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { useIsLabelingEnabled } from './useIsLabelingEnabled';
@@ -19,5 +18,5 @@ export const WalletLabel = ({ deviceStaticSessionId, fallbackLabel }: WalletLabe
         selectWalletLabel({ state, deviceStaticSessionId }),
     );
 
-    return <Text>{!isLabelingEnabled || label === null ? fallbackLabel : label}</Text>;
+    return !isLabelingEnabled || label === null ? fallbackLabel : label;
 };

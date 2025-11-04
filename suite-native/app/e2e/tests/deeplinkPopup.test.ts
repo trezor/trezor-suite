@@ -83,6 +83,9 @@ conditionalDescribe(
 
             await waitForVisible(by.id('@popup/deeplink-info'));
 
+            // Skip waiting for Reanimated animations.
+            await device.disableSynchronization();
+
             const permissionButton = element(by.id('@popup/call-device'));
             await waitForVisible(permissionButton);
             await permissionButton.tap();

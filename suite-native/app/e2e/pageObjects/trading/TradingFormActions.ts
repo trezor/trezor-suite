@@ -31,9 +31,7 @@ export abstract class TradingFormActions extends TradingActions {
     }
 
     async expectSheetHeaderTitle(title: string) {
-        await waitForVisible(
-            element(by.text(title).withAncestor(by.id('@trading/sheet-header-title'))),
-        );
+        await waitForVisible(element(by.text(title).and(by.id('@trading/sheet-header-title'))));
     }
 
     async selectFiatCurrency(fiatCurrency: string) {

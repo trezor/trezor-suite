@@ -21,8 +21,13 @@ export const SheetHeaderTitle = ({
     rightButtonA11yLabel,
     children,
 }: SheetHeaderTitleProps) => (
-    <HStack alignItems="center" justifyContent="space-between" testID={SHEET_HEADER_TITLE_TEST_ID}>
-        <Text variant="titleSmall" ellipsizeMode="tail" numberOfLines={1}>
+    <HStack alignItems="center" justifyContent="space-between">
+        <Text
+            variant="titleSmall"
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            testID={SHEET_HEADER_TITLE_TEST_ID}
+        >
             {children}
         </Text>
         {rightButtonIcon && (
