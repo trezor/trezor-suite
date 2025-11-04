@@ -256,7 +256,7 @@ const bumpConnect = async () => {
             '--title',
             `${commitMessage}`,
             '--body-file',
-            'docs/releases/connect-bump-version.md',
+            'scripts/templates/connect-bump-version.md',
             '--base',
             'develop',
             '--head',
