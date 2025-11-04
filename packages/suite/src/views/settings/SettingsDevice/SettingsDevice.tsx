@@ -96,6 +96,9 @@ export const SettingsDevice = () => {
     const deviceModelInternal = device.features.internal_model;
 
     const supportsDeviceAuthentication = SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModelInternal];
+    // because Device authenticity check is something you can (and have to) do on a device with FW but without seed
+    const isSecuritySectionVisible =
+        isNormalMode || (initializeMode && supportsDeviceAuthentication);
 
     const isThpDevice = device?.thp !== undefined;
 
@@ -148,29 +151,30 @@ export const SettingsDevice = () => {
                 <ChangeLanguage isDeviceLocked={isDeviceLocked} />
             </SettingsSection>
 
-            {isNormalMode && (
-                <>
-                    <SettingsSection
-                        title={<Translation id="TR_DEVICE_SECURITY" />}
-                        icon="shieldCheck"
-                    >
-                        <PinProtection isDeviceLocked={isDeviceLocked} />
-                        {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
-                        {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
-                        {supportsDeviceAuthentication && (
-                            <AuthenticateDevice isDeviceLocked={isDeviceLocked} />
-                        )}
-                    </SettingsSection>
+            {isSecuritySectionVisible && (
+                <SettingsSection title={<Translation id="TR_DEVICE_SECURITY" />} icon="shieldCheck">
+                    {isNormalMode && (
+                        <>
+                            <PinProtection isDeviceLocked={isDeviceLocked} />
+                            {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
+                            {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
+                        </>
+                    )}
+                    {supportsDeviceAuthentication && (
+                        <AuthenticateDevice isDeviceLocked={isDeviceLocked} />
+                    )}
+                </SettingsSection>
+            )}
 
-                    <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="palette">
-                        <DeviceLabel isDeviceLocked={isDeviceLocked} />
-                        <Homescreen isDeviceLocked={isDeviceLocked} />
-                        <DisplayRotation isDeviceLocked={isDeviceLocked} />
-                        <Brightness isDeviceLocked={isDeviceLocked} />
-                        <HapticFeedback isDeviceLocked={isDeviceLocked} />
-                        {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
-                    </SettingsSection>
-                </>
+            {isNormalMode && (
+                <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="palette">
+                    <DeviceLabel isDeviceLocked={isDeviceLocked} />
+                    <Homescreen isDeviceLocked={isDeviceLocked} />
+                    <DisplayRotation isDeviceLocked={isDeviceLocked} />
+                    <Brightness isDeviceLocked={isDeviceLocked} />
+                    <HapticFeedback isDeviceLocked={isDeviceLocked} />
+                    {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
+                </SettingsSection>
             )}
 
             <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
