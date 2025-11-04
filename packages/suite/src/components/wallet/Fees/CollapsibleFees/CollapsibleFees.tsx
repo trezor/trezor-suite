@@ -6,7 +6,7 @@ import { useTheme } from 'styled-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { FormState } from '@suite-common/wallet-types';
-import { Button, CollapsibleBox, Column, Link, Row } from '@trezor/components';
+import { CollapsibleBox, Column, Link, NewButton, Row } from '@trezor/components';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -98,14 +98,14 @@ export function CollapsibleFees({
 
                     <Row justifyContent="center">
                         {isCustomFee && (
-                            <Button
-                                variant="tertiary"
-                                size="small"
+                            <NewButton
+                                intent="neutral"
+                                priority="secondary"
                                 onClick={() => changeFeeLevel('normal')}
                                 data-testid="@wallet/fees/select-standard-fee"
                             >
                                 <Translation id="FEE_LEVEL_STANDARD" />
-                            </Button>
+                            </NewButton>
                         )}
                         {!isCustomFee && hasNormalFeeLevel && (
                             <Link
