@@ -1,77 +1,73 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 
-import { SIDEBAR_COLLAPSED_WIDTH } from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
+import {
+    SIDEBAR_COLLAPSED_WIDTH,
+    SIDEBAR_MIN_WIDTH,
+} from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
 import { useSelector } from '../../hooks/suite';
 
 type ResponsiveContextType = {
-    sidebarWidth?: number;
-    setSidebarWidth: (sidebarWidth: number) => void;
-    contentWidth?: number;
-    setContentWidth: (contentWidth: number) => void;
-    isSidebarCollapsed: boolean;
-    setIsSidebarCollapsed: (isSidebarCollapsed: boolean) => void;
+    sidebarWidth: number;
+    setSidebarWidth: (width: number) => void;
+    lastManualSidebarWidth: number;
     forcedSidebarWidth?: number;
-    setForcedSidebarWidth: (forcedSidebarWidth?: number) => void;
+    setForcedSidebarWidth: (width?: number) => void;
+    isSidebarCollapsed: boolean;
+    contentWidth?: number;
+    setContentWidth: (width: number) => void;
+    autoCollapsed: boolean;
+    setAutoCollapsed: (v: boolean) => void;
 };
 
 export const ResponsiveContext = createContext<ResponsiveContextType | undefined>(undefined);
 
 export const ResponsiveContextProvider = ({ children }: { children: React.ReactNode }) => {
     const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
-    const [sidebarWidth, setSidebarWidth] = useState<number>(sidebarWidthFromRedux);
+
+    const [sidebarWidthManual, setSidebarWidthManual] = useState<number>(sidebarWidthFromRedux);
+    const [sidebarWidthRaw, setSidebarWidthRaw] = useState<number>(sidebarWidthFromRedux);
     const [forcedSidebarWidth, setForcedSidebarWidth] = useState<number | undefined>(undefined);
     const [contentWidth, setContentWidth] = useState<number | undefined>(undefined);
-    const [forcedSidebarCollapsed, setForcedSidebarCollapsed] = useState<boolean>(false);
+    const [autoCollapsed, setAutoCollapsed] = useState<boolean>(false);
 
-    const getIsSidebarCollapsed = () => {
-        if (forcedSidebarWidth) {
-            return !!forcedSidebarWidth;
-        }
+    const effectiveWidth = useMemo(
+        () => (typeof forcedSidebarWidth === 'number' ? forcedSidebarWidth : sidebarWidthRaw),
+        [forcedSidebarWidth, sidebarWidthRaw],
+    );
 
-        return sidebarWidth ? sidebarWidth < SIDEBAR_COLLAPSED_WIDTH : false;
+    const isSidebarCollapsed = useMemo(
+        () => effectiveWidth < SIDEBAR_COLLAPSED_WIDTH,
+        [effectiveWidth],
+    );
+
+    const setSidebarWidth = (width: number) => {
+        if (typeof forcedSidebarWidth === 'number') return;
+
+        const clamped = Math.max(width, SIDEBAR_MIN_WIDTH);
+        setSidebarWidthRaw(clamped);
+        setSidebarWidthManual(clamped);
     };
 
     const value: ResponsiveContextType = {
-        sidebarWidth,
+        sidebarWidth: effectiveWidth,
         setSidebarWidth,
-        contentWidth,
-        setContentWidth,
-        isSidebarCollapsed: getIsSidebarCollapsed(),
-        setIsSidebarCollapsed: setForcedSidebarCollapsed,
+        lastManualSidebarWidth: sidebarWidthManual,
         forcedSidebarWidth,
         setForcedSidebarWidth,
+        isSidebarCollapsed,
+        contentWidth,
+        setContentWidth,
+        autoCollapsed,
+        setAutoCollapsed,
     };
 
-    return (
-        <ResponsiveContext.Provider
-            value={{
-                ...value,
-                isSidebarCollapsed: forcedSidebarCollapsed || value.isSidebarCollapsed,
-                sidebarWidth: forcedSidebarCollapsed ? SIDEBAR_COLLAPSED_WIDTH : value.sidebarWidth,
-            }}
-        >
-            {children}
-        </ResponsiveContext.Provider>
-    );
+    return <ResponsiveContext.Provider value={value}>{children}</ResponsiveContext.Provider>;
 };
 
-export const useResponsiveContext = ({
-    forceIsSidebarCollapsed,
-}: {
-    forceIsSidebarCollapsed?: boolean;
-} = {}) => {
-    const context = useContext(ResponsiveContext);
-    const setSidebarCollapsed = context?.setIsSidebarCollapsed;
-
-    useEffect(() => {
-        if (typeof forceIsSidebarCollapsed === 'boolean') {
-            setSidebarCollapsed?.(forceIsSidebarCollapsed);
-        }
-    }, [forceIsSidebarCollapsed, setSidebarCollapsed]);
-
-    if (!context) {
+export const useResponsiveContext = () => {
+    const ctx = useContext(ResponsiveContext);
+    if (!ctx)
         throw new Error('useResponsiveContext must be used within a ResponsiveContextProvider');
-    }
 
-    return context;
+    return ctx;
 };

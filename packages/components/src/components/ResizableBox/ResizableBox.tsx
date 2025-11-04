@@ -191,7 +191,6 @@ const ensureMinimalSize = (size: number): number =>
     size < MINIMAL_BOX_SIZE ? MINIMAL_BOX_SIZE : size;
 
 const getMinResult = (min: number, result: number) => (result > min ? result : min);
-
 const getMaxResult = (max: number | undefined, result: number) =>
     max === undefined || result < max ? result : max;
 
@@ -300,14 +299,15 @@ export const ResizableBox = ({
     const {
         x,
         y,
-        width: newWidthState,
-        height: newHeight,
+        width: widthState,
+        height: heightState,
         isResizing,
         isHovering,
         direction,
     } = state;
 
-    const newWidth = typeof forcedWidth === 'number' ? forcedWidth : newWidthState;
+    const effectiveWidth = typeof forcedWidth === 'number' ? forcedWidth : widthState;
+    const lockHorizontal = typeof forcedWidth === 'number';
 
     const resizeCooldown = createCooldown(150);
 
@@ -316,80 +316,72 @@ export const ResizableBox = ({
             const rect = resizableBoxRef.current.getBoundingClientRect();
             dispatch({ type: 'SET_POSITION', x: rect.x, y: rect.y });
 
-            if (newWidth === 0) {
+            if (widthState === 0) {
                 dispatch({ type: 'SET_WIDTH', width: rect.width });
             }
-            if (newHeight === 0) {
+            if (heightState === 0) {
                 dispatch({ type: 'SET_HEIGHT', height: rect.height });
             }
         }
-    }, [newWidth, newHeight]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleResize = useCallback(
         (e: MouseEvent) => {
             if (!direction || !resizeCooldown()) return;
 
-            if (rafRef.current) {
-                cancelAnimationFrame(rafRef.current);
-            }
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
             rafRef.current = requestAnimationFrame(() => {
                 const mouseX = e.pageX;
                 const mouseY = e.pageY;
 
-                const difX = mouseX - x - newWidth;
-                const difY = mouseY - y - newHeight;
+                const difX = mouseX - x - effectiveWidth;
+                const difY = mouseY - y - heightState;
 
-                let result = 0;
+                let nextWidth = effectiveWidth;
+                let nextHeight = heightState;
 
                 if (direction === 'top') {
-                    result = ensureMinimalSize(-difY);
+                    let result = ensureMinimalSize(-difY);
                     result = calculateDisabledInterval(result, disabledHeightInterval);
-
-                    if (difY < 0) {
-                        dispatch({ type: 'SET_HEIGHT', height: getMaxResult(maxHeight, result) });
-                    } else if (difY > 0) {
-                        dispatch({ type: 'SET_HEIGHT', height: getMinResult(minHeight, result) });
-                    }
+                    nextHeight =
+                        difY < 0
+                            ? getMaxResult(maxHeight, result)
+                            : getMinResult(minHeight, result);
+                    dispatch({ type: 'SET_HEIGHT', height: nextHeight });
                 } else if (direction === 'bottom') {
-                    result = ensureMinimalSize(newHeight + difY);
+                    let result = ensureMinimalSize(heightState + difY);
                     result = calculateDisabledInterval(result, disabledHeightInterval);
-
-                    if (difY > 0) {
-                        dispatch({ type: 'SET_HEIGHT', height: getMaxResult(maxHeight, result) });
-                    } else if (difY < 0) {
-                        dispatch({ type: 'SET_HEIGHT', height: getMinResult(minHeight, result) });
-                    }
-                } else if (direction === 'left') {
-                    result = ensureMinimalSize(-difX);
+                    nextHeight =
+                        difY > 0
+                            ? getMaxResult(maxHeight, result)
+                            : getMinResult(minHeight, result);
+                    dispatch({ type: 'SET_HEIGHT', height: nextHeight });
+                } else if (direction === 'left' && !lockHorizontal) {
+                    let result = ensureMinimalSize(-difX);
                     result = calculateDisabledInterval(result, disabledWidthInterval);
-
-                    if (difX < 0) {
-                        dispatch({ type: 'SET_WIDTH', width: getMaxResult(maxWidth, result) });
-                    } else if (difX > 0) {
-                        dispatch({ type: 'SET_WIDTH', width: getMinResult(minWidth, result) });
-                    }
-                } else if (direction === 'right') {
-                    result = ensureMinimalSize(newWidth + difX);
+                    nextWidth =
+                        difX < 0 ? getMaxResult(maxWidth, result) : getMinResult(minWidth, result);
+                    dispatch({ type: 'SET_WIDTH', width: nextWidth });
+                } else if (direction === 'right' && !lockHorizontal) {
+                    let result = ensureMinimalSize(effectiveWidth + difX);
                     result = calculateDisabledInterval(result, disabledWidthInterval);
-
-                    if (difX > 0) {
-                        dispatch({ type: 'SET_WIDTH', width: getMaxResult(maxWidth, result) });
-                    } else if (difX < 0) {
-                        dispatch({ type: 'SET_WIDTH', width: getMinResult(minWidth, result) });
-                    }
+                    nextWidth =
+                        difX > 0 ? getMaxResult(maxWidth, result) : getMinResult(minWidth, result);
+                    dispatch({ type: 'SET_WIDTH', width: nextWidth });
                 }
 
-                onWidthResizeMove?.(newWidth);
-                onHeightResizeMove?.(newHeight);
+                if (!lockHorizontal) onWidthResizeMove?.(nextWidth);
+                onHeightResizeMove?.(nextHeight);
             });
         },
         [
             direction,
             x,
             y,
-            newWidth,
-            newHeight,
+            effectiveWidth,
+            heightState,
             minWidth,
             maxWidth,
             minHeight,
@@ -399,6 +391,7 @@ export const ResizableBox = ({
             onWidthResizeMove,
             onHeightResizeMove,
             resizeCooldown,
+            lockHorizontal,
         ],
     );
 
@@ -409,8 +402,8 @@ export const ResizableBox = ({
 
         const handleMouseUp = () => {
             dispatch({ type: 'STOP_RESIZE' });
-            onWidthResizeEnd?.(newWidth);
-            onHeightResizeEnd?.(newHeight);
+            if (!lockHorizontal) onWidthResizeEnd?.(widthState);
+            onHeightResizeEnd?.(heightState);
         };
 
         window.addEventListener('mouseup', handleMouseUp);
@@ -424,22 +417,39 @@ export const ResizableBox = ({
                 rafRef.current = null;
             }
         };
-    }, [isResizing, handleResize, newWidth, newHeight, onWidthResizeEnd, onHeightResizeEnd]);
+    }, [
+        isResizing,
+        handleResize,
+        lockHorizontal,
+        widthState,
+        heightState,
+        onWidthResizeEnd,
+        onHeightResizeEnd,
+    ]);
 
     const handleMouseDown = useCallback(
         (handlerDirection: Direction) => () => {
+            if (lockHorizontal && (handlerDirection === 'left' || handlerDirection === 'right')) {
+                return;
+            }
             dispatch({ type: 'START_RESIZE', direction: handlerDirection });
         },
-        [],
+        [lockHorizontal],
     );
 
     const handleMouseOver = useCallback(
         (handlerDirection: Direction) => () => {
             if (!isResizing) {
+                if (
+                    lockHorizontal &&
+                    (handlerDirection === 'left' || handlerDirection === 'right')
+                ) {
+                    return;
+                }
                 dispatch({ type: 'MOUSE_OVER', direction: handlerDirection });
             }
         },
-        [isResizing],
+        [isResizing, lockHorizontal],
     );
 
     const handleMouseOut = useCallback(() => {
@@ -456,14 +466,17 @@ export const ResizableBox = ({
         $zIndex: zIndex,
     });
 
+    const showTop = directions.includes('top');
+    const showBottom = directions.includes('bottom');
+    const showLeft = directions.includes('left') && !lockHorizontal && !isLocked;
+    const showRight = directions.includes('right') && !lockHorizontal && !isLocked;
+
     return (
         <Resizers
-            $width={collapse ? minWidth : newWidth}
+            $width={collapse ? minWidth : effectiveWidth}
             $minWidth={minWidth}
             $maxWidth={maxWidth}
-            $height={
-                directions.includes('top') || directions.includes('bottom') ? newHeight : undefined
-            }
+            $height={showTop || showBottom ? heightState : undefined}
             $minHeight={minHeight}
             $maxHeight={maxHeight}
             ref={resizableBoxRef}
@@ -477,12 +490,10 @@ export const ResizableBox = ({
             </Child>
             {!isLocked && (
                 <>
-                    {directions.includes('top') && <TopHandler {...getHandlerProps('top')} />}
-                    {directions.includes('left') && <LeftHandler {...getHandlerProps('left')} />}
-                    {directions.includes('bottom') && (
-                        <BottomHandler {...getHandlerProps('bottom')} />
-                    )}
-                    {directions.includes('right') && <RightHandler {...getHandlerProps('right')} />}
+                    {showTop && <TopHandler {...getHandlerProps('top')} />}
+                    {showLeft && <LeftHandler {...getHandlerProps('left')} />}
+                    {showBottom && <BottomHandler {...getHandlerProps('bottom')} />}
+                    {showRight && <RightHandler {...getHandlerProps('right')} />}
                 </>
             )}
         </Resizers>

@@ -16,10 +16,10 @@ import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 import { selectDiscoveryOverallStatus } from '../../../../utils/wallet/selectDiscoveryOverallStatus';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 interface AccountListProps {
     forceOnlyItemClick?: boolean;
@@ -115,7 +115,7 @@ export const AccountsList = ({
     );
 
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const isSidebarCollapsed = useIsSidebarCollapsed();
+    const { isSidebarCollapsed } = useResponsiveContext();
     const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';

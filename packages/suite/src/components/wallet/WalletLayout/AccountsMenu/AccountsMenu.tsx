@@ -13,7 +13,7 @@ import { AccountsList } from './AccountsList';
 import { AccountsMenuHeader } from './AccountsMenuHeader';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
-import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const ScrollContainer = styled.div`
     height: auto;
@@ -25,7 +25,7 @@ export const AccountsMenu = () => {
 
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow();
-    const isSidebarCollapsed = useIsSidebarCollapsed();
+    const { isSidebarCollapsed } = useResponsiveContext();
 
     if (!device) {
         if (isSidebarCollapsed) return null;

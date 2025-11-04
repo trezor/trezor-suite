@@ -12,7 +12,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 
-import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
+import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     let message;
@@ -45,7 +45,7 @@ export const AddAccountButton = ({
 }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
     const dispatch = useDispatch();
-    const isSidebarCollapsed = useIsSidebarCollapsed();
+    const { isSidebarCollapsed } = useResponsiveContext();
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled = isDiscoveryRunning || !device || !device.connected;
 
