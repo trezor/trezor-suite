@@ -64,9 +64,9 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     if (bitcoinOnlyDevice) {
-        return device.firmware === 'none'
-            ? 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE'
-            : 'TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE';
+        // device.firmware === 'unknown' is for T1B1 in bootloader (most likely fresh or factory reset),
+        // but T1B1 is never bitcoin-only device (meaning you can always choose Universal or BTC-only)
+        return 'TR_FIRMWARE_SUBHEADING_BITCOIN_ONLY_DEVICE';
     }
 
     return device.firmware === 'none'
