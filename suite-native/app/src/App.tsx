@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Freeze } from 'react-freeze';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -9,6 +10,7 @@ import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
+import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { configureNetInfo } from '@suite-native/connection-status';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
@@ -63,6 +65,7 @@ const AppComponent = () => {
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
@@ -92,7 +95,9 @@ const AppComponent = () => {
         <FormatterProvider config={formattersConfig}>
             <BannersRenderer />
             <BottomSheetModalProvider>
-                <RootStackNavigator />
+                <Freeze freeze={isBiometricsOverlayVisible}>
+                    <RootStackNavigator />
+                </Freeze>
             </BottomSheetModalProvider>
             <ModalsRenderer />
             {/* NOTE: Rendered as last item so that it covers the whole app screen */}
