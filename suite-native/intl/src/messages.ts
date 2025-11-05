@@ -516,12 +516,17 @@ export const messages = {
                 step4: '4. Enable connection for Trezor Suite via phone system message',
             },
             pairing: {
-                title: 'Unable to pair your Trezor?',
-                altTitle: 'We couldn’t find your Trezor',
-                hint1: 'Make sure your Trezor is turned on and unlocked.',
-                hint2: 'Try manually pairing your Trezor:\nGo to your Trezor’s Menu > Pair & Connect > Pair new device',
-                scanAgainButton: 'Scan again',
-                stillNotWorkingButton: 'It’s still not working',
+                hints: {
+                    title: 'Your Trezor needs to be in pairing mode',
+                    description: 'This window will close as soon as we detect your Trezor.',
+                    stillNotWorkingButton: 'It’s still not working',
+                },
+                settings: {
+                    title: 'Confirm that your Trezor is visible in your phone’s settings',
+                    description: 'If not, pair your Trezor again.',
+                    goToSettingsButton: 'Go to Bluetooth settings',
+                    pairAgainButton: 'Pair again',
+                },
             },
             pinMatrix: {
                 title: 'Enter PIN',
