@@ -98,7 +98,7 @@ export const BridgeRequested = () => {
             <Metadata title="Bridge | Trezor Suite" />
             <Column gap={spacings.xxs}>
                 <H3>
-                    <Translation id="TR_BRIDGE" />
+                    <Translation id="TR_TREZOR_CONNECT" />
                 </H3>
                 <Paragraph variant="tertiary">
                     <Translation id="TR_BRIDGE_REQUESTED_DESCRIPTION" />
