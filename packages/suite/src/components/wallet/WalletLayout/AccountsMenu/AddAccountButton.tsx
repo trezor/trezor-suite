@@ -73,6 +73,9 @@ export const AddAccountButton = ({
         if (closeMenu) closeMenu();
     };
 
+    const { size, isInverse, iconLeft, iconRight, intent, priority, shortcut, ...textButtonRest } =
+        rest;
+
     const ButtonComponent = isIconOnly ? (
         <Tooltip isActive={!tooltipMessage} content={<Translation id="TR_ADD_ACCOUNT" />}>
             <TextButton
@@ -82,7 +85,7 @@ export const AddAccountButton = ({
                 size="small"
                 variant="tertiary"
                 margin={{ right: isSidebarCollapsed ? 0 : spacings.xs }}
-                {...rest}
+                {...textButtonRest}
             />
         </Tooltip>
     ) : (

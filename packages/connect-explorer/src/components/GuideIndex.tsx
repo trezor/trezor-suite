@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { getPagesUnderRoute } from 'nextra/context';
 import styled from 'styled-components';
 
-import { Button, Card, H3, Paragraph } from '@trezor/components';
+import { Card, H3, NewButton, Paragraph } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 const BottomRow = styled.div`
@@ -37,9 +37,14 @@ export default function GuideIndex(): ReactNode {
                 <H3>{page.meta?.title || page.frontMatter?.title || page.name}</H3>
                 <Paragraph>{page.frontMatter?.description}</Paragraph>
                 <BottomRow>
-                    <Button variant="primary" size="tiny" icon="arrowRight" iconAlignment="end">
+                    <NewButton
+                        intent="neutral"
+                        priority="secondary"
+                        size="small"
+                        iconRight="arrowUpRight"
+                    >
                         Read more
-                    </Button>
+                    </NewButton>
                 </BottomRow>
             </Card>
         </Link>

@@ -22,7 +22,6 @@ export const AllTextButtons: StoryFn<typeof meta> = () => (
                 Text Button
             </TextButton>
             <TextButton
-                size="medium"
                 data-testid="text-button"
                 onClick={() => {
                     console.log('click');

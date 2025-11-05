@@ -18,11 +18,7 @@ export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo
 export * from './components/Flag/Flag';
 export * from './components/AutoScalingInput/AutoScalingInput';
 export * from './components/Badge/Badge';
-export * from './components/buttons/Button/Button';
-export { type ButtonVariant } from './components/buttons/buttonStyleUtils';
-export * from './components/buttons/ButtonGroup/ButtonGroup';
 export * from './components/buttons/NewButtonGroup/NewButtonGroup';
-export * from './components/buttons/IconButton/IconButton';
 export { NewButton, type NewButtonProps } from './components/buttons/NewButton/NewButton';
 export {
     NewIconButton,

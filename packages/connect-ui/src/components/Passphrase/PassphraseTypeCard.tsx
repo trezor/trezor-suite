@@ -5,10 +5,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css, useTheme } from 'styled-components';
 
 import {
-    Button,
     Checkbox,
     Icon,
     Input,
+    NewButton,
     Tooltip,
     TooltipProps,
     motionAnimation,
@@ -133,7 +133,7 @@ const Actions = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(Button)`
+const ActionButton = styled(NewButton)`
     margin-top: ${spacingsPx.xs};
 
     &:first-child {
@@ -412,9 +412,9 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                         props.type === 'hidden' ? 'hidden' : 'standard'
                                     }/submit-button`}
                                     isDisabled={!enabled || isTooLong}
-                                    variant="primary"
+                                    intent="brand"
                                     onClick={() => submit(value)}
-                                    isFullWidth
+                                    width="100%"
                                 >
                                     {props.submitLabel}
                                 </ActionButton>
@@ -424,9 +424,10 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                         {props.offerPassphraseOnDevice && (
                             <OnDeviceActionButton
                                 isDisabled={!enabled}
-                                variant="tertiary"
+                                intent="neutral"
+                                priority="secondary"
                                 onClick={() => submit(value, true)}
-                                isFullWidth
+                                width="100%"
                                 data-testid="@passphrase/enter-on-device-button"
                             >
                                 <FormattedMessage

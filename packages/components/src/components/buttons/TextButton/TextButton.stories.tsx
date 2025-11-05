@@ -1,10 +1,15 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { TextButton as TextButtonComponent, TextButtonProps } from './TextButton';
+import {
+    TextButton as TextButtonComponent,
+    TextButtonProps,
+    allowedTextButtonFrameProps,
+    textButtonSizes,
+    textButtonVariants,
+} from './TextButton';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { allowedButtonFrameProps } from '../Button/Button';
-import { buttonSizes, buttonVariants, iconAlignments } from '../buttonStyleUtils';
+import { iconAlignments } from '../buttonStyleUtils';
 
 const meta: Meta<typeof TextButtonComponent> = {
     title: 'Buttons',
@@ -21,7 +26,7 @@ export const TextButton: StoryObj<TextButtonProps> = {
         isDisabled: false,
         isLoading: false,
         isUnderlined: false,
-        ...getFramePropsStory(allowedButtonFrameProps).args,
+        ...getFramePropsStory(allowedTextButtonFrameProps).args,
     },
     argTypes: {
         children: {
@@ -35,7 +40,7 @@ export const TextButton: StoryObj<TextButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: buttonVariants,
+            options: textButtonVariants,
         },
         icon: {
             options: [null, ...variables.ICONS],
@@ -57,7 +62,7 @@ export const TextButton: StoryObj<TextButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: buttonSizes,
+            options: textButtonSizes,
         },
         isDisabled: {
             control: {
@@ -77,6 +82,6 @@ export const TextButton: StoryObj<TextButtonProps> = {
         title: {
             control: { type: 'text' },
         },
-        ...getFramePropsStory(allowedButtonFrameProps).argTypes,
+        ...getFramePropsStory(allowedTextButtonFrameProps).argTypes,
     },
 };

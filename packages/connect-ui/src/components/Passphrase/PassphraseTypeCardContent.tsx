@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-import { Button, Card, Column, Icon, Input, Row, motionAnimation } from '@trezor/components';
+import { Card, Column, Icon, Input, NewButton, Row, motionAnimation } from '@trezor/components';
 import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
 import { useKeyPress } from '@trezor/react-utils';
@@ -29,7 +29,7 @@ const Actions = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(Button)`
+const ActionButton = styled(NewButton)`
     margin-top: ${spacingsPx.xs};
 
     &:first-child {
@@ -193,9 +193,9 @@ export const PassphraseTypeCardContent = ({
                                             type === 'hidden' ? 'hidden' : 'standard'
                                         }/submit-button`}
                                         isDisabled={isPassphraseEmpty || isPassphraseTooLong}
-                                        variant="primary"
+                                        intent="brand"
                                         onClick={() => submit(value)}
-                                        isFullWidth
+                                        width="100%"
                                     >
                                         {submitLabel}
                                     </ActionButton>

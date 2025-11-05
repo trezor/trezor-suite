@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Card, Cards, Steps, Tabs } from 'nextra/components';
 import styled from 'styled-components';
 
-import { Button, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
+import { NewButton, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { BetaOnly } from '../components/BetaOnly';
@@ -136,23 +136,25 @@ export const ExampleHeading = styled.h3`
         <SdkName>Node.js</SdkName>
         <SdkTag></SdkTag>
         <Link href="/readme/connect" passHref legacyBehavior>
-            <Button
-                variant="tertiary"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
                 size="small"
-                icon="bookOpenText"
+                iconLeft="bookOpenText"
                 target="_self"
                 href="#">
                 README
-            </Button>
+            </NewButton>
         </Link>
-        <Button
-            variant="tertiary"
+        <NewButton
+            intent="neutral"
+            priority="secondary"
             size="small"
-            icon="githubLogoAlt"
+            iconLeft="githubLogoAlt"
             href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect"
             target="_blank">
             View on Github
-        </Button>
+        </NewButton>
     </SdkHeading>
 
     <ZoomableIllustration src="/images/schema-connect.svg" $darkMode alt="connect schema when used in node" />
@@ -235,24 +237,25 @@ export const ExampleHeading = styled.h3`
         <SdkName>Web</SdkName>
         <SdkTag>DOM required</SdkTag>
         <Link href="/readme/connect-web" passHref legacyBehavior>
-            <Button
-                variant="tertiary"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
                 size="small"
-                icon="bookOpenText"
+                iconLeft="bookOpenText"
                 target="_self"
                 href="#">
                 README
-            </Button>
+            </NewButton>
         </Link>
-        <Button
-            as="a"
-            variant="tertiary"
+        <NewButton
+            intent="neutral"
+            priority="secondary"
             size="small"
-            icon="githubLogoAlt"
+            iconLeft="githubLogoAlt"
             href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web"
             target="_blank">
             View on Github
-        </Button>
+        </NewButton>
     </SdkHeading>
 
     <Tabs items={['Core in iframe', 'Core in popup', 'Auto mode selection']}>
@@ -369,24 +372,25 @@ export const ExampleHeading = styled.h3`
         <SdkName>Web extension</SdkName>
         <SdkTag>Using service worker</SdkTag>
         <Link href="/readme/connect-webextension" passHref legacyBehavior>
-            <Button
-                variant="tertiary"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
                 size="small"
-                icon="bookOpenText"
+                iconLeft="bookOpenText"
                 target="_self"
                 href="#">
                 README
-            </Button>
+            </NewButton>
         </Link>
-        <Button
-            as="a"
-            variant="tertiary"
+        <NewButton
+            intent="neutral"
+            priority="secondary"
             size="small"
-            icon="githubLogoAlt"
+            iconLeft="githubLogoAlt"
             href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension"
             target="_blank">
             View on Github
-        </Button>
+        </NewButton>
     </SdkHeading>
 
     <ZoomableIllustration src="/images/schema-connect-webextension.svg" $darkMode alt="connect schema when used in webextension" />
@@ -404,15 +408,16 @@ export const ExampleHeading = styled.h3`
             By the end, you'll have a fully functional web extension.
 
             <Link href="/guides/webextension-implementation-tutorial" passHref legacyBehavior>
-                <Button
-                    variant="tertiary"
+                <NewButton
+                    intent="neutral"
+                    priority="secondary"
                     className="nx-mt-4 nx-mb-8"
                     size="small"
-                    icon="bookOpenText"
+                    iconLeft="bookOpenText"
                     target="_self"
                     href="#">
                     Open Tutorial  →
-                </Button>
+                </NewButton>
             </Link>
         </SdkDescription>
         <ExamplesAside>
@@ -514,24 +519,25 @@ export const ExampleHeading = styled.h3`
         <SdkName>Mobile</SdkName>
         <SdkTag>Using deep linking</SdkTag>
         <Link href="/readme/connect-mobile" passHref legacyBehavior>
-            <Button
-                variant="tertiary"
+            <NewButton
+                intent="neutral"
+                priority="secondary"
                 size="small"
-                icon="bookOpenText"
+                iconLeft="bookOpenText"
                 target="_self"
                 href="#">
                 README
-            </Button>
+            </NewButton>
         </Link>
-        <Button
-            as="a"
-            variant="tertiary"
+        <NewButton
+            intent="neutral"
+            priority="secondary"
             size="small"
-            icon="githubLogoAlt"
+            iconLeft="githubLogoAlt"
             href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect-mobile"
             target="_blank">
             View on Github
-        </Button>
+        </NewButton>
     </SdkHeading>
 
     <ZoomableIllustration src="/images/schema-connect-deeplink.svg" $darkMode alt="connect schema when used in deeplink" />
@@ -550,16 +556,16 @@ export const ExampleHeading = styled.h3`
             This can be done by implementing the following specification.
 
             <Link href="/details/deeplinking" passHref legacyBehavior>
-                <Button
-                    variant="tertiary"
+                <NewButton
+                    intent="neutral"
+                    priority="secondary"
                     className="nx-mt-4 nx-mb-8"
                     size="small"
-                    icon="arrowRight"
-                    iconAlignment="end"
+                    iconRight="arrowRight"
                     target="_self"
                     href="#">
                     Deep linking specification
-                </Button>
+                </NewButton>
             </Link>
 
         </SdkDescription>

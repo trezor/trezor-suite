@@ -7,7 +7,7 @@ import {
 } from './ComponentWithSubIcon';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Icon, iconVariants } from '../Icon/Icon';
-import { Button } from '../buttons/Button/Button';
+import { NewButton } from '../buttons/NewButton/NewButton';
 
 const meta: Meta<typeof ComponentWithSubIconComponent> = {
     title: 'ComponentWithSubIcon',
@@ -19,7 +19,7 @@ export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
     args: {
         icon: <Icon name="check" size="small" />,
         variant: 'destructive',
-        children: <Button>Use Bitcoin</Button>,
+        children: <NewButton>Use Bitcoin</NewButton>,
         iconPadding: 8,
         iconOffset: 4,
         ...getFramePropsStory(allowedComponentWithSubIconFrameProps).args,

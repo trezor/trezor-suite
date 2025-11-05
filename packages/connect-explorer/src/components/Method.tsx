@@ -6,10 +6,10 @@ import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
 import {
-    ButtonProps,
     Card,
     H3,
     NewButton,
+    NewButtonProps,
     NewIconButton,
     Row,
     variables,
@@ -239,9 +239,9 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
 };
 
 type SubmitButtonProps = {
-    onClick: ButtonProps['onClick'];
-    isFullWidth?: ButtonProps['isFullWidth'];
-    isLoading: ButtonProps['isLoading'];
+    onClick: NewButtonProps['onClick'];
+    isFullWidth?: boolean;
+    isLoading: boolean;
     text?: string;
 };
 

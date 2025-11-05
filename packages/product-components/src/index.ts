@@ -6,7 +6,6 @@ export {
     type AssetTokenBalance,
 } from './components/SelectAssetModal/SelectAssetModal';
 export { SearchAsset } from './components/SelectAssetModal/SearchAsset';
-export { PassphraseTypeCard } from './components/PassphraseTypeCard/PassphraseTypeCard';
 export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
 export { mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
 export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';

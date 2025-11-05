@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
-import { spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -56,7 +56,7 @@ export const PageHeader = ({ children }: PageHeaderProps) => {
             <PageName />
 
             {routeName === 'suite-index' && hasAccounts && (
-                <Row gap={spacings.xxs}>
+                <Row gap={8}>
                     <HeaderDropdown />
                     <TradeActions />
                     <GlobalSendReceive />

@@ -19,7 +19,7 @@ import {
 } from './ElevationContext';
 import { Card } from '../Card/Card';
 import { Modal } from '../Modal/Modal';
-import { Button } from '../buttons/Button/Button';
+import { NewButton } from '../buttons/NewButton/NewButton';
 import { Textarea } from '../form/Textarea/Textarea';
 
 const UiBox = styled.div<{ $elevation: Elevation }>`
@@ -79,7 +79,9 @@ const Box = ({ children }: { children?: ReactNode }) => {
     return (
         <UiBox $elevation={elevation}>
             <div>Elevation: {elevation}</div>
-            <Button variant="tertiary">tertiary button</Button>
+            <NewButton intent="neutral" priority="secondary">
+                tertiary button
+            </NewButton>
             <ElevationUp>{children}</ElevationUp>
         </UiBox>
     );
