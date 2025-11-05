@@ -39,6 +39,9 @@ interface Args {
 const getInitialState = ({ router, accounts, settings, selectedAccount, send }: Args = {}) => ({
     router: {
         app: 'wallet',
+        route: {
+            name: 'wallet-index',
+        },
         ...router,
     },
     suite: {},

@@ -5,7 +5,6 @@ import { Button, Image, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,23 +30,10 @@ const Description = styled.div`
     text-align: center;
 `;
 
-interface PaymentSuccessfulProps {
-    account: Account;
-}
-
-export const TradingDetailExchangePaymentSuccessful = ({ account }: PaymentSuccessfulProps) => {
+export const TradingDetailExchangePaymentSuccessful = () => {
     const dispatch = useDispatch();
 
-    const handleClick = () =>
-        dispatch(
-            goto('wallet-trading-exchange', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const handleClick = () => dispatch(goto('wallet-trading-exchange'));
 
     return (
         <Wrapper>

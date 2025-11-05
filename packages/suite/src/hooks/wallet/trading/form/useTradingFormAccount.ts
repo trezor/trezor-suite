@@ -1,0 +1,157 @@
+import { useCallback, useEffect, useMemo } from 'react';
+
+import { CryptoId } from 'invity-api';
+
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import {
+    CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
+    parseCryptoId,
+    selectTradingExchangeAccountKey,
+    selectTradingPrefilledFromAccount,
+    toTokenCryptoId,
+    tradingActions,
+    tradingExchangeActions,
+} from '@suite-common/trading';
+import { getNetwork } from '@suite-common/wallet-config';
+import {
+    selectAccountByKey,
+    selectAllAccountsToList,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { getTokens } from 'src/utils/wallet/tokenUtils';
+
+/*
+ * Selects the most suitable account and cryptoId for trading forms based on the trade type.
+ *
+ * Eligibility rule: Account must have a positive balance of network's native token or any other (not hidden) token
+ *
+ * Selection priority:
+ * 1) Preferred account (resolved from selected trading account key OR prefilled.key) if eligible.
+ * 2) First account with the same symbol as the preferred account that is eligible.
+ * 3) Fallbacks:
+ *    a) BTC account (eligible per rule above),
+ *    b) any eligible account,
+ *    c) otherwise the first available account (last resort).
+ *
+ * cryptoId resolution:
+ * 1) Use prefilled.cryptoId when present and account for given cryptoId is eligible.
+ * 2) Otherwise derive from the selected account's network (getNetwork(symbol).tradeCryptoId).
+ * 3) Fallback to 'bitcoin' if unavailable.
+ */
+export const useTradingFormAccount = () => {
+    const dispatch = useDispatch();
+    const accounts = useSelector(selectAllAccountsToList);
+    const device = useSelector(selectSelectedDevice);
+    const tokenDefinitions = useSelector(selectTokenDefinitions);
+
+    const prefilled = useSelector(selectTradingPrefilledFromAccount);
+    const accountKey = useSelector(selectTradingExchangeAccountKey);
+
+    const preferredKey = accountKey ?? prefilled.key;
+    const preferredAccount = useSelector(state => selectAccountByKey(state, preferredKey));
+
+    const isAccountEligibleForTrade = useCallback(
+        (account: Account, cryptoId?: CryptoId) => {
+            const { contractAddress } = cryptoId ? parseCryptoId(cryptoId) : {};
+            const isNativeToken =
+                !contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
+
+            const tokens =
+                account.tokens && (account.tokens ?? []).length > 0
+                    ? getTokens({
+                          tokens: account.tokens,
+                          symbol: account.symbol,
+                          tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
+                      })
+                    : undefined;
+
+            if (isNativeToken) {
+                return tokens
+                    ? tokens.shownWithBalance.length > 0
+                    : new BigNumber(account.balance).gt(0);
+            }
+
+            return tokens?.shownWithBalance.some(token => {
+                const id = toTokenCryptoId(
+                    account.symbol,
+                    getContractAddressForNetworkSymbol(account.symbol, token.contract),
+                );
+
+                return id === cryptoId && new BigNumber(token.balance ?? '0').gt(0);
+            });
+        },
+        [tokenDefinitions],
+    );
+
+    const pickFallbackAccount = useCallback(
+        (accounts: Account[]) =>
+            accounts.find(
+                acc =>
+                    isAccountEligibleForTrade(acc) &&
+                    acc.deviceState === device?.state?.staticSessionId,
+            ) ?? accounts[0],
+        [device?.state?.staticSessionId, isAccountEligibleForTrade],
+    );
+
+    const account = useMemo(() => {
+        if (preferredAccount && isAccountEligibleForTrade(preferredAccount, prefilled.cryptoId)) {
+            return preferredAccount;
+        }
+
+        const sameSymbolAccount = accounts.find(
+            acc =>
+                acc.symbol === preferredAccount?.symbol &&
+                isAccountEligibleForTrade(acc, prefilled.cryptoId) &&
+                acc.deviceState === device?.state?.staticSessionId,
+        );
+
+        if (sameSymbolAccount) {
+            return sameSymbolAccount;
+        }
+
+        return pickFallbackAccount(accounts);
+    }, [
+        accounts,
+        device?.state?.staticSessionId,
+        isAccountEligibleForTrade,
+        pickFallbackAccount,
+        preferredAccount,
+        prefilled.cryptoId,
+    ]);
+
+    const cryptoId = useMemo(() => {
+        if (prefilled.cryptoId && account.key === preferredAccount?.key) {
+            return prefilled.cryptoId;
+        }
+
+        return (getNetwork(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
+    }, [prefilled.cryptoId, account.key, account.symbol, preferredAccount?.key]);
+
+    useEffect(() => {
+        if (!accountKey && account.key) {
+            dispatch(tradingExchangeActions.setTradingAccountKey(account.key));
+        }
+    }, [account.key, accountKey, dispatch]);
+
+    useEffect(() => {
+        if (prefilled.key && accountKey) {
+            dispatch(
+                tradingActions.setTradingFromPrefilledAccount({
+                    key: undefined,
+                    cryptoId: undefined,
+                }),
+            );
+        }
+    }, [accountKey, dispatch, prefilled.key]);
+
+    return {
+        tradingAccountKey: account.key,
+        account,
+        cryptoId,
+    };
+};

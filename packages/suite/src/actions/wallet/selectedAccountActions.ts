@@ -1,4 +1,4 @@
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     blockchainActions,
@@ -10,7 +10,7 @@ import {
     selectEnabledNetworks,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { SelectedAccountStatus, WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
@@ -52,16 +52,17 @@ export const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // get params from router
     // or set first default account from discovery list
-    const params =
+    const params = (
         state.router.app === 'wallet' && state.router.params
             ? state.router.params
             : {
                   accountIndex: 0,
                   accountType: 'normal' as const,
                   symbol: accounts[0]?.symbol || 'btc',
-              };
+              }
+    ) as Pick<NonNullable<WalletParams>, 'symbol' | 'accountIndex' | 'accountType'>;
 
-    const network = networks[params.symbol];
+    const network = getNetwork(params.symbol);
 
     // account cannot exists since requested network is not selected in settings/wallet
     if (!enabledNetworks.includes(network.symbol)) {
@@ -180,8 +181,13 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
     // ignore not listed actions
     if (!actions.has(action.type)) return;
     const state = getState();
-    // ignore if not in wallet
-    if (state.router.app !== 'wallet') return;
+    // ignore if not in wallet or in swap trading
+    if (
+        state.router.app !== 'wallet' ||
+        state.router.route.name.startsWith('wallet-trading-exchange')
+    ) {
+        return;
+    }
 
     // get new state
     const newState = getAccountState(state);

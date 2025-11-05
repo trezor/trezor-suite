@@ -9,6 +9,7 @@ import {
 } from '@suite-common/token-definitions';
 import {
     TradingType,
+    getTradingPrefilledFromAccountData,
     getUnusedAddressFromAccount,
     selectTradingInfo,
     toTokenCryptoId,
@@ -170,10 +171,9 @@ export const TokenRow = ({
 
     const onTradeButtonClick = (type: TradingType, ...[routeName]: Parameters<typeof goto>) => {
         dispatch(
-            tradingActions.setTradingFromPrefilledAccount({
-                cryptoId: tokenCryptoId,
-                key: account.key,
-            }),
+            tradingActions.setTradingFromPrefilledAccount(
+                getTradingPrefilledFromAccountData(account, tokenCryptoId),
+            ),
         );
 
         goToWithAnalytics(routeName, {
@@ -182,6 +182,7 @@ export const TokenRow = ({
                 accountIndex: account.index,
                 accountType: account.accountType,
             },
+            ...{ preserveParams: type !== 'exchange' },
         });
 
         analytics.report({

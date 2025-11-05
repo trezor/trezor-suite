@@ -1,5 +1,5 @@
 import { SendState, StakeState, sendFormActions } from '@suite-common/wallet-core';
-import { FormState, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { FormState } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
@@ -8,7 +8,6 @@ import { TransactionReviewModalProps } from './TransactionReviewModal';
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 
 type TransactionReviewModalExchangeProps = {
-    selectedAccount: SelectedAccountLoaded;
     txInfoState: SendState | StakeState;
     isRbfConfirmedError: boolean;
     cancelSignTx: () => void;
@@ -17,14 +16,16 @@ type TransactionReviewModalExchangeProps = {
 
 export const TransactionReviewModalExchange = ({
     decision,
-    selectedAccount,
     txInfoState,
     cancelSignTx,
     isRbfConfirmedError,
     precomposedForm,
 }: TransactionReviewModalExchangeProps) => {
     const dispatch = useDispatch();
-    const tradingExchangeForm = useTradingExchangeForm({ selectedAccount, pageType: 'retry' });
+
+    const tradingExchangeForm = useTradingExchangeForm({
+        pageType: 'retry',
+    });
 
     if (!precomposedForm) {
         return null;

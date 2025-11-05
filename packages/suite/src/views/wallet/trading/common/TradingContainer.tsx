@@ -17,10 +17,6 @@ export const TradingContainer = ({ SectionComponent }: TradingContainerProps) =>
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    if (selectedAccount.status !== 'loaded') {
-        return <TradingLayoutHeader />;
-    }
-
     return (
         <TradingLayoutHeader>
             {isDiscoveryRunning && (

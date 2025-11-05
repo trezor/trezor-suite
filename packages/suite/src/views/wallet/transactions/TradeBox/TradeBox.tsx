@@ -1,4 +1,5 @@
 import { Route } from '@suite-common/suite-types';
+import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -20,6 +21,8 @@ type TradeBoxProps = {
     account: Account;
 };
 
+type ActionType = 'buy' | 'sell' | 'exchange' | 'stake';
+
 export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const dispatch = useDispatch();
@@ -34,7 +37,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
         children,
         isDisabled = false,
     }: {
-        type: 'stake' | 'buy' | 'exchange' | 'sell';
+        type: ActionType;
         children: React.ReactNode;
         isDisabled?: boolean;
     }) => {
@@ -42,46 +45,54 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
             type === 'stake' ? 'wallet-staking' : `wallet-trading-${type}`;
         const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
 
+        const handleOnClick = () => {
+            dispatch(
+                tradingActions.setTradingFromPrefilledAccount(
+                    getTradingPrefilledFromAccountData(account),
+                ),
+            );
+
+            dispatch(goto(gotoRouteName, { preserveParams: type !== 'exchange' }));
+
+            switch (type) {
+                case 'buy':
+                case 'sell':
+                case 'exchange': {
+                    analytics.report({
+                        type: EventType.TradingNavigate,
+                        payload: {
+                            action: 'navigate',
+                            type,
+                            from: 'account/tradebox',
+                            networkSymbol: account.symbol,
+                        },
+                    });
+
+                    break;
+                }
+                case 'stake': {
+                    analytics.report({
+                        type: EventType.StakingNavigate,
+                        payload: {
+                            action: 'navigate',
+                            from: 'account/tradebox',
+                            networkSymbol: account.symbol,
+                        },
+                    });
+
+                    break;
+                }
+                default:
+                    exhaustive(type);
+            }
+        };
+
         return (
             <Button
                 intent="neutral"
                 priority="secondary"
                 size="small"
-                onClick={() => {
-                    dispatch(goto(gotoRouteName, { preserveParams: true }));
-
-                    switch (type) {
-                        case 'buy':
-                        case 'sell':
-                        case 'exchange': {
-                            analytics.report({
-                                type: EventType.TradingNavigate,
-                                payload: {
-                                    action: 'navigate',
-                                    type,
-                                    from: 'account/tradebox',
-                                    networkSymbol: account.symbol,
-                                },
-                            });
-
-                            break;
-                        }
-                        case 'stake': {
-                            analytics.report({
-                                type: EventType.StakingNavigate,
-                                payload: {
-                                    action: 'navigate',
-                                    from: 'account/tradebox',
-                                    networkSymbol: account.symbol,
-                                },
-                            });
-
-                            break;
-                        }
-                        default:
-                            exhaustive(type);
-                    }
-                }}
+                onClick={handleOnClick}
                 data-testid={dataTestId}
                 isDisabled={isDisabled}
             >

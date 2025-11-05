@@ -73,11 +73,13 @@ export const useTradingBuyForm = ({
     const isTradingTermsDismissed = useSelector(state =>
         selectIsTradingTermsDismissed(state, type),
     );
-    const { account, timer, device, checkQuotesTimer } = useTradingInitializer({
-        selectedAccount,
+    const { timer, device, checkQuotesTimer } = useTradingInitializer({
         pageType,
         isLoading,
     });
+
+    const { account } = selectedAccount;
+
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useTradingNavigation(account);
 

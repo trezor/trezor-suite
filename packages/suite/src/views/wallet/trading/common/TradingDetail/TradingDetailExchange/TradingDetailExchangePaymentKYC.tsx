@@ -7,7 +7,6 @@ import { spacings, typography } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
 
 const Wrapper = styled.div`
@@ -33,27 +32,16 @@ interface PaymentKYCProps {
     transactionId?: string;
     supportUrl?: string;
     provider?: ExchangeProviderInfo;
-    account: Account;
 }
 
 export const TradingDetailExchangePaymentKYC = ({
     transactionId,
     supportUrl,
     provider,
-    account,
 }: PaymentKYCProps) => {
     const dispatch = useDispatch();
 
-    const goToExchange = () =>
-        dispatch(
-            goto('wallet-trading-exchange', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const goToExchange = () => dispatch(goto('wallet-trading-exchange'));
 
     return (
         <Wrapper>

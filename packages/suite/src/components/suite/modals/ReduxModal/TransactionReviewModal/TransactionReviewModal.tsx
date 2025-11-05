@@ -93,20 +93,19 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         }
     };
 
-    if (isSelectedAccountLoaded) {
-        if (isExchange) {
-            return (
-                <TransactionReviewModalExchange
-                    selectedAccount={selectedAccount}
-                    decision={decision}
-                    txInfoState={txInfoState}
-                    cancelSignTx={handleCancelSignTx}
-                    isRbfConfirmedError={isRbfConfirmedError}
-                    precomposedForm={precomposedForm}
-                />
-            );
-        }
+    if (isExchange) {
+        return (
+            <TransactionReviewModalExchange
+                decision={decision}
+                txInfoState={txInfoState}
+                cancelSignTx={handleCancelSignTx}
+                isRbfConfirmedError={isRbfConfirmedError}
+                precomposedForm={precomposedForm}
+            />
+        );
+    }
 
+    if (isSelectedAccountLoaded) {
         if (isSell) {
             return (
                 <TransactionReviewModalSell

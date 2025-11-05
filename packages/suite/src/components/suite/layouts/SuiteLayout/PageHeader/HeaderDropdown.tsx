@@ -75,7 +75,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             id: 'wallet-swap',
             callback: () => {
                 goToWithAnalytics('wallet-trading-exchange', {
-                    preserveParams: true,
+                    preserveParams: false,
                 });
 
                 analytics.report({
