@@ -34,10 +34,8 @@ import { QrCode } from 'src/components/suite/QrCode';
 import { Translation } from 'src/components/suite/Translation';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectIsMetadataEnabled,
-    selectLabelingDataForSelectedAccount,
-} from 'src/reducers/suite/metadataReducer';
+import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
@@ -69,14 +67,19 @@ export const ConfirmValueModal = ({
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
+    const { accountLabel, addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
-    const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
-    // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
-    const isMetadataBlockedByDeviceCall = isDeviceLocked && !isMetadataEnabled;
 
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const { isLocalFirstStorageEnabled, legacyMetadataState } = useLabelingCombined({
+        deviceStaticSessionId: account!.deviceState,
+    });
+    // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
+    const isMetadataBlockedByDeviceCall =
+        isDeviceLocked &&
+        !isLocalFirstStorageEnabled &&
+        (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
+
     const localFirstAddressLabels = useSelector(state =>
         account
             ? selectAddressLabels({ state, deviceStaticSessionId: account.deviceState })
