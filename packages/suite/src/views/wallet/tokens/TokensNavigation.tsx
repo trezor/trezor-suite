@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { IconName, InputButton, NewIconButton, Row, SubTabs } from '@trezor/components';
+import { IconButton, IconName, InputButton, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -129,7 +129,7 @@ export const TokensNavigation = ({
                     data-testid="@wallet/accounts/search-icon"
                 />
                 {showAddToken && (
-                    <NewIconButton
+                    <IconButton
                         icon="plus"
                         size="small"
                         intent="neutral"

@@ -1,15 +1,7 @@
 import { JSX } from 'react';
 
 import type { NotificationEntry } from '@suite-common/toast-notifications';
-import {
-    Column,
-    Icon,
-    IconName,
-    NewButton,
-    NewButtonProps,
-    Paragraph,
-    Row,
-} from '@trezor/components';
+import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDateWithBullet } from 'src/components/suite';
@@ -36,7 +28,7 @@ export interface NotificationViewProps {
 
 export const mapActionVariantToIntent = (
     variant: NotificationActionVariant = 'tertiary',
-): NewButtonProps['intent'] => {
+): ButtonProps['intent'] => {
     switch (variant) {
         case 'primary':
             return 'brand';
@@ -84,14 +76,14 @@ export const NotificationView = ({
                 (isBelowTablet ? (
                     <Icon name="caretRight" onClick={action.onClick} size={18} />
                 ) : (
-                    <NewButton
+                    <Button
                         intent={mapActionVariantToIntent(action.variant)}
                         size="small"
                         onClick={action.onClick}
                         minWidth={80}
                     >
                         <Translation id={action.label} />
-                    </NewButton>
+                    </Button>
                 ))}
         </Row>
     );

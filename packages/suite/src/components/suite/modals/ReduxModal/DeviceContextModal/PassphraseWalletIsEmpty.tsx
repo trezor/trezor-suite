@@ -1,6 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import { Card, Column, H3, NewButton, Paragraph, Row } from '@trezor/components';
+import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
@@ -55,7 +55,7 @@ const PassphraseWalletIsEmptyContent = ({
                         margin={{ top: spacings.xxxs, bottom: spacings.xxs }}
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT" />
-                        <NewButton
+                        <Button
                             size="small"
                             intent="info"
                             iconRight="arrowUpRight"
@@ -63,7 +63,7 @@ const PassphraseWalletIsEmptyContent = ({
                             href={HELP_CENTER_PASSPHRASE_URL}
                         >
                             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />
-                        </NewButton>
+                        </Button>
                     </Row>
                 }
             >
@@ -71,14 +71,14 @@ const PassphraseWalletIsEmptyContent = ({
                     <Paragraph typographyStyle="highlight">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION" />
                     </Paragraph>
-                    <NewButton
+                    <Button
                         width="100%"
                         intent="brand"
                         onClick={onNext}
                         data-testid="@passphrase-confirmation/step1-open-unused-wallet-button"
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON" />
-                    </NewButton>
+                    </Button>
                 </Column>
             </Card>
             <Card paddingType="small">
@@ -97,7 +97,7 @@ const PassphraseWalletIsEmptyContent = ({
                                 ))}
                             </Row>
                             {onCancel && (
-                                <NewButton
+                                <Button
                                     intent="neutral"
                                     priority="secondary"
                                     iconLeft="plus"
@@ -109,11 +109,11 @@ const PassphraseWalletIsEmptyContent = ({
                                     }}
                                 >
                                     <Translation id="TR_ADD" />
-                                </NewButton>
+                                </Button>
                             )}
                         </Row>
                     )}
-                    <NewButton
+                    <Button
                         width="100%"
                         intent="neutral"
                         priority="secondary"
@@ -122,7 +122,7 @@ const PassphraseWalletIsEmptyContent = ({
                         data-testid="@passphrase-confirmation/step1-retry-button"
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON" />
-                    </NewButton>
+                    </Button>
                 </Column>
             </Card>
         </Column>

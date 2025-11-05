@@ -3,7 +3,7 @@ import { Controller, useController } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { selectDeviceName, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Input, NewButton, Tooltip } from '@trezor/components';
+import { Button, Input, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
 
@@ -66,7 +66,7 @@ export const ChangeDeviceLabelForm = ({
                 content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 isFullWidth
             >
-                <NewButton
+                <Button
                     onClick={onClick}
                     isDisabled={isDisabled}
                     data-testid="@settings/device/label-submit"
@@ -75,7 +75,7 @@ export const ChangeDeviceLabelForm = ({
                     type="submit"
                 >
                     <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
-                </NewButton>
+                </Button>
             </Tooltip>
         </Container>
     );

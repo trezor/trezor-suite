@@ -7,17 +7,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import {
-    Badge,
-    Card,
-    Column,
-    H3,
-    Icon,
-    Modal,
-    NewButton,
-    Paragraph,
-    Row,
-} from '@trezor/components';
+import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
@@ -189,7 +179,7 @@ export const ConnectAddressConfirmation = () => {
                                             </Badge>
                                         )}
                                     </Row>
-                                    <NewButton
+                                    <Button
                                         data-testid={`@connect-address-confirmation/verify-button/${index}`}
                                         intent="neutral"
                                         priority="secondary"
@@ -209,7 +199,7 @@ export const ConnectAddressConfirmation = () => {
                                         ) : (
                                             <Translation id="TR_VERIFY" />
                                         )}
-                                    </NewButton>
+                                    </Button>
                                 </Row>
                             ))}
                         </Column>

@@ -6,7 +6,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { Column, NewButton } from '@trezor/components';
+import { Button, Column } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -101,14 +101,14 @@ export const TradingOfferExchange = ({
                 exchange={exchange}
             />
 
-            <NewButton
+            <Button
                 data-testid="@trading/offer/confirm-on-trezor-and-send"
                 isLoading={isFormLoading || disabled}
                 isDisabled={!device?.connected || disabled}
                 onClick={() => handleClick(() => onConfirmAndSendClick())}
             >
                 <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
-            </NewButton>
+            </Button>
         </Column>
     );
 };

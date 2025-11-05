@@ -4,16 +4,7 @@ import styled from 'styled-components';
 
 import { EXPERIMENT_MAP } from '@suite-common/message-system';
 import { Condition } from '@suite-common/suite-types';
-import {
-    Card,
-    Menu,
-    NewButton,
-    NewIconButton,
-    Popover,
-    PopoverRef,
-    Row,
-    Text,
-} from '@trezor/components';
+import { Button, Card, IconButton, Menu, Popover, PopoverRef, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { MessageSystemManual } from '../MessageSystemManual';
@@ -56,14 +47,14 @@ export const MessageSystemExperimentToolbar = ({
         <Row justifyContent="space-between" alignItems="center">
             <Row alignItems="center" gap={spacings.xs}>
                 <Text>Preset:</Text>
-                <NewButton
+                <Button
                     intent="neutral"
                     priority="secondary"
                     size="small"
                     onClick={() => onPreset()}
                 >
                     Default experiment
-                </NewButton>
+                </Button>
 
                 <Popover
                     ref={popoverRef}
@@ -80,7 +71,7 @@ export const MessageSystemExperimentToolbar = ({
                         />
                     }
                 >
-                    <NewButton
+                    <Button
                         size="small"
                         iconLeft="plus"
                         intent="neutral"
@@ -88,7 +79,7 @@ export const MessageSystemExperimentToolbar = ({
                         isDisabled={!canAddCondition}
                     >
                         Condition
-                    </NewButton>
+                    </Button>
                 </Popover>
             </Row>
             <Row gap={spacings.xs}>
@@ -108,14 +99,14 @@ export const MessageSystemExperimentToolbar = ({
                     }
                     zIndex={zIndices.tooltip}
                 >
-                    <NewButton
+                    <Button
                         size="small"
                         iconLeft="codeBlockFilled"
                         intent="neutral"
                         priority="secondary"
                     >
                         Experiment map
-                    </NewButton>
+                    </Button>
                 </Popover>
 
                 <Popover
@@ -128,7 +119,7 @@ export const MessageSystemExperimentToolbar = ({
                     }
                     zIndex={zIndices.tooltip}
                 >
-                    <NewIconButton icon="question" intent="neutral" priority="secondary" />
+                    <IconButton icon="question" intent="neutral" priority="secondary" />
                 </Popover>
             </Row>
         </Row>

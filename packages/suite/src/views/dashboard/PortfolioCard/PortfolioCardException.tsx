@@ -3,7 +3,7 @@ import { ComponentProps, JSX } from 'react';
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
-import { Column, H3, IconCircle, IconName, NewButton, Row, Text } from '@trezor/components';
+import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -14,7 +14,7 @@ import { DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
     label?: TranslationKey;
-    intent?: ComponentProps<typeof NewButton>['intent'];
+    intent?: ComponentProps<typeof Button>['intent'];
     action: () => void;
     icon?: IconName;
     isDisabled?: boolean;
@@ -53,7 +53,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
             )}
             <Row gap={spacings.sm} margin={{ top: spacings.md }}>
                 {actions.map(a => (
-                    <NewButton
+                    <Button
                         key={a.label || 'TR_RETRY'}
                         intent={a.intent || 'warning'}
                         iconLeft={a.icon || 'plus'}
@@ -62,7 +62,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                         data-testid={`@exception/${dataTestBase}/${a.intent || 'warning'}-button`}
                     >
                         <Translation id={a.label || 'TR_RETRY'} />
-                    </NewButton>
+                    </Button>
                 ))}
             </Row>
         </Column>

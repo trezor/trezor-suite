@@ -17,7 +17,7 @@ import {
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
-import { Column, NewButton, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
+import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -428,7 +428,7 @@ export const TradingFormOffer = () => {
             </Column>
 
             {!isTradingSellContext(context) && !isReceiveAddressSelected && quote ? (
-                <NewButton
+                <Button
                     onClick={onContinueClick}
                     intent="brand"
                     margin={{
@@ -440,7 +440,7 @@ export const TradingFormOffer = () => {
                     size="large"
                 >
                     <Translation id="TR_CONTINUE" />
-                </NewButton>
+                </Button>
             ) : (
                 <>
                     {requiresTokenApproval && bestScoredQuote && !isLoading ? (
@@ -454,7 +454,7 @@ export const TradingFormOffer = () => {
                             setIsManuallyApproved={setIsManuallyApproved}
                         />
                     ) : (
-                        <NewButton
+                        <Button
                             onClick={onSelectQuote}
                             intent="brand"
                             margin={{
@@ -467,7 +467,7 @@ export const TradingFormOffer = () => {
                             data-testid={`@trading/form/${type}-button`}
                         >
                             <Translation id={tradingGetSectionActionLabel(type)} />
-                        </NewButton>
+                        </Button>
                     )}
                 </>
             )}

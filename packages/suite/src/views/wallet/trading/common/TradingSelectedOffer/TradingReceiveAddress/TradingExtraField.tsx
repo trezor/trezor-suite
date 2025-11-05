@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { Column, NewButton, Row, Switch } from '@trezor/components';
+import { Button, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -59,7 +59,7 @@ export const TradingExtraField = ({
                     }
                     isDisabled={isDisabled || required}
                 />
-                <NewButton
+                <Button
                     intent="neutral"
                     priority="secondary"
                     type="button"
@@ -67,7 +67,7 @@ export const TradingExtraField = ({
                     onClick={handleOpenGuide}
                 >
                     <Translation id="DESTINATION_TAG_GUIDE_LINK" />
-                </NewButton>
+                </Button>
             </Row>
 
             {enabled && inputComponent}

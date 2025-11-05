@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
-import { Card, Column, Link, NewButtonProps, Note, Row, Tooltip } from '@trezor/components';
+import { ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
@@ -16,7 +16,7 @@ import { useDevice, useOnboarding, useSelector, useTranslation } from 'src/hooks
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-const InstallButton = ({ children, ...rest }: NewButtonProps) => (
+const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip
         cursor="default"
         isActive={rest.isDisabled}

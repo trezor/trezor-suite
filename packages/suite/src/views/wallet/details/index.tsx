@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
-import { Card, Column, InfoItem, NewButton, Paragraph, Row, variables } from '@trezor/components';
+import { Button, Card, Column, InfoItem, Paragraph, Row, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
 
@@ -133,7 +133,7 @@ const Details = () => {
                                 learnMoreUrl={HELP_CENTER_XPUB_URL}
                             >
                                 <ReceiveDisabledWrapper>
-                                    <NewButton
+                                    <Button
                                         intent="neutral"
                                         priority="secondary"
                                         data-testid="@wallets/details/show-xpub-button"
@@ -143,7 +143,7 @@ const Details = () => {
                                         minWidth={140}
                                     >
                                         <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                                    </NewButton>
+                                    </Button>
                                 </ReceiveDisabledWrapper>
                             </DetailsRow>
                         )

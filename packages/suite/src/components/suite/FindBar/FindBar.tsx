@@ -5,10 +5,10 @@ import styled, { useTheme } from 'styled-components';
 
 import {
     Box,
+    ButtonGroup,
     Icon,
+    IconButton,
     Input,
-    NewButtonGroup,
-    NewIconButton,
     Paragraph,
     Row,
     TOOLTIP_DELAY_LONG,
@@ -119,25 +119,25 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                         onChange={handleInputChange}
                     />
                     <Row gap={8} justifyContent="flex-end">
-                        <NewButtonGroup intent="neutral" priority="secondary" size="small">
+                        <ButtonGroup intent="neutral" priority="secondary" size="small">
                             <Tooltip
                                 content={<Translation id="TR_FIND_PREV" />}
                                 delayShow={TOOLTIP_DELAY_LONG}
                             >
-                                <NewIconButton icon="arrowUp" onClick={prev} />
+                                <IconButton icon="arrowUp" onClick={prev} />
                             </Tooltip>
                             <Tooltip
                                 content={<Translation id="TR_FIND_NEXT" />}
                                 delayShow={TOOLTIP_DELAY_LONG}
                             >
-                                <NewIconButton icon="arrowDown" onClick={next} />
+                                <IconButton icon="arrowDown" onClick={next} />
                             </Tooltip>
-                        </NewButtonGroup>
+                        </ButtonGroup>
                         <Tooltip
                             content={<Translation id="TR_FIND_CLOSE" />}
                             delayShow={TOOLTIP_DELAY_LONG}
                         >
-                            <NewIconButton
+                            <IconButton
                                 icon="x"
                                 size="small"
                                 intent="neutral"

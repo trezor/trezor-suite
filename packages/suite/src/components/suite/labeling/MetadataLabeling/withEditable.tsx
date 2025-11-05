@@ -9,7 +9,7 @@ import {
 
 import styled from 'styled-components';
 
-import { AutoScalingInput, NewIconButton, Row } from '@trezor/components';
+import { AutoScalingInput, IconButton, Row } from '@trezor/components';
 
 // To inherit everything so the input looks like the text we want to edit
 // However, we need to reset some properties: for example margin and padding to not duplicate spacings
@@ -96,7 +96,7 @@ export const withEditable =
                     />
                 </WrappedComponent>
                 <Row gap={4}>
-                    <NewIconButton
+                    <IconButton
                         size="small"
                         data-testid="@metadata/submit"
                         icon="check"
@@ -107,7 +107,7 @@ export const withEditable =
                         intent="brand"
                         priority="secondary"
                     />
-                    <NewIconButton
+                    <IconButton
                         size="small"
                         data-testid="@metadata/cancel"
                         icon="x"

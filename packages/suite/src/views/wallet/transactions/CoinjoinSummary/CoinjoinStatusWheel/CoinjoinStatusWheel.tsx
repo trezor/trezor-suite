@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Card, NewButton } from '@trezor/components';
+import { Button, Card } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
@@ -51,7 +51,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
             )}
 
             {isPaused && !isLoading && (
-                <NewButton
+                <Button
                     intent="neutral"
                     priority="secondary"
                     iconRight="stop"
@@ -60,7 +60,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
                     margin={{ top: spacings.xs }}
                 >
                     <Translation id="TR_STOP" />
-                </NewButton>
+                </Button>
             )}
         </Container>
     );

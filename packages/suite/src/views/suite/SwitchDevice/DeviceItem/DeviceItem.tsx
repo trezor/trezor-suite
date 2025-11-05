@@ -3,16 +3,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import {
-    Column,
-    Icon,
-    IconName,
-    List,
-    NewButton,
-    Paragraph,
-    Row,
-    Tooltip,
-} from '@trezor/components';
+import { Button, Column, Icon, IconName, List, Paragraph, Row, Tooltip } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -119,7 +110,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                             </ListItem>
                                         </List>
                                         <Row gap={spacings.sm} margin={{ top: spacings.xs }}>
-                                            <NewButton
+                                            <Button
                                                 size="small"
                                                 onClick={() => {
                                                     onTooltipClose();
@@ -127,8 +118,8 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 }}
                                             >
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY" />
-                                            </NewButton>
-                                            <NewButton
+                                            </Button>
+                                            <Button
                                                 size="small"
                                                 intent="neutral"
                                                 priority="secondary"
@@ -142,7 +133,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 }}
                                             >
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_SECONDARY" />
-                                            </NewButton>
+                                            </Button>
                                         </Row>
                                     </Column>
                                 }

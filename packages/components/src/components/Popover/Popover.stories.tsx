@@ -13,7 +13,7 @@ import {
     PopoverPlacementPosition,
 } from './utils';
 import { Card } from '../Card/Card';
-import { NewButton } from '../buttons/NewButton/NewButton';
+import { Button } from '../buttons/Button/Button';
 
 const Container = styled.div`
     width: 100%;
@@ -55,7 +55,7 @@ export const Popover: StoryObj<PopoverStoryProps> = {
                     placement={placement}
                     content={<Content />}
                 >
-                    <NewButton>Uncontrolled</NewButton>
+                    <Button>Uncontrolled</Button>
                 </PopoverComponent>
                 <PopoverComponent
                     isOpen={args.isOpen}
@@ -63,9 +63,7 @@ export const Popover: StoryObj<PopoverStoryProps> = {
                     placement={placement}
                     content={<Content />}
                 >
-                    <NewButton onClick={() => updateArgs({ isOpen: !args.isOpen })}>
-                        Controlled
-                    </NewButton>
+                    <Button onClick={() => updateArgs({ isOpen: !args.isOpen })}>Controlled</Button>
                 </PopoverComponent>
             </Container>
         );

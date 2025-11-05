@@ -1,10 +1,10 @@
 import { UIIntent, UIPriority, UISize } from '../../config/types';
 
-export const newButtonIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
-export type NewButtonIntent = Extract<UIIntent, (typeof newButtonIntents)[number]>;
+export const buttonIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
+export type ButtonIntent = Extract<UIIntent, (typeof buttonIntents)[number]>;
 
-export const newButtonSizes = ['large', 'medium', 'small'] as const;
-export type NewButtonSize = Extract<UISize, (typeof newButtonSizes)[number]>;
+export const buttonSizes = ['large', 'medium', 'small'] as const;
+export type ButtonSize = Extract<UISize, (typeof buttonSizes)[number]>;
 
-export const newButtonPriorities = ['primary', 'secondary'] as const;
-export type NewButtonPriority = Extract<UIPriority, (typeof newButtonPriorities)[number]>;
+export const buttonPriorities = ['primary', 'secondary'] as const;
+export type ButtonPriority = Extract<UIPriority, (typeof buttonPriorities)[number]>;

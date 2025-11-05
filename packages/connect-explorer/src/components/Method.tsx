@@ -5,15 +5,7 @@ import { Inspector } from 'react-inspector';
 import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
-import {
-    Card,
-    H3,
-    NewButton,
-    NewButtonProps,
-    NewIconButton,
-    Row,
-    variables,
-} from '@trezor/components';
+import { Button, ButtonProps, Card, H3, IconButton, Row, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';
@@ -232,21 +224,21 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     if (index < 0) return null;
 
     return (
-        <NewButton margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
+        <Button margin={{ top: 12 }} onClick={() => onClick(verifyUrls[index])}>
             Verify response
-        </NewButton>
+        </Button>
     );
 };
 
 type SubmitButtonProps = {
-    onClick: NewButtonProps['onClick'];
+    onClick: ButtonProps['onClick'];
     isFullWidth?: boolean;
     isLoading: boolean;
     text?: string;
 };
 
 const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonProps) => (
-    <NewButton
+    <Button
         onClick={onClick}
         data-testid="@submit-button"
         width={isFullWidth ? '100%' : undefined}
@@ -254,7 +246,7 @@ const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonPro
         margin={{ top: 12 }}
     >
         {text || 'Submit'}
-    </NewButton>
+    </Button>
 );
 
 export const Method = () => {
@@ -329,7 +321,7 @@ export const Method = () => {
                         <Row>
                             <SubmitButton {...buttonProps} isFullWidth />
                             {buttonProps.isLoading && (
-                                <NewIconButton
+                                <IconButton
                                     icon="x"
                                     intent="neutral"
                                     priority="secondary"
@@ -354,7 +346,7 @@ export const Method = () => {
                             <Row>
                                 <SubmitButton {...buttonProps} isFullWidth />
                                 {buttonProps.isLoading && (
-                                    <NewIconButton
+                                    <IconButton
                                         icon="x"
                                         intent="neutral"
                                         priority="secondary"

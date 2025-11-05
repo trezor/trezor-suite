@@ -1,4 +1,4 @@
-import { Column, Divider, H2, Image, NewButton, Paragraph, Row } from '@trezor/components';
+import { Button, Column, Divider, H2, Image, Paragraph, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -46,12 +46,12 @@ export const FirmwareInstallationProgressCheckPrompt = ({
             width="100%"
             margin={{ top: spacings.xxxxl }}
         >
-            <NewButton intent="neutral" priority="secondary" onClick={toggleView} flex="1">
+            <Button intent="neutral" priority="secondary" onClick={toggleView} flex="1">
                 <Translation id="TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_NO_BUTTON" />
-            </NewButton>
-            <NewButton onClick={handleDismiss} flex="1">
+            </Button>
+            <Button onClick={handleDismiss} flex="1">
                 <Translation id="TR_FIRMWARE_INSTALLATION_PROGRESS_CHECK_YES_BUTTON" />
-            </NewButton>
+            </Button>
         </Row>
     </SecurityCheckLayout>
 );

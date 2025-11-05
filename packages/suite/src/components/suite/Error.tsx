@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H2, NewButton, Paragraph, variables } from '@trezor/components';
+import { Button, H2, Paragraph, variables } from '@trezor/components';
 
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';
@@ -60,7 +60,7 @@ export const Error = ({ error }: ErrorProps) => (
         <ErrorMessage>{error}</ErrorMessage>
         <Separator />
         <Buttons>
-            <NewButton
+            <Button
                 iconLeft="repeat"
                 intent="neutral"
                 priority="secondary"
@@ -70,9 +70,9 @@ export const Error = ({ error }: ErrorProps) => (
                 margin={{ vertical: 6, horizontal: 12 }}
             >
                 Reload window
-            </NewButton>
+            </Button>
 
-            <NewButton
+            <Button
                 iconLeft="repeat"
                 intent="neutral"
                 priority="secondary"
@@ -83,7 +83,7 @@ export const Error = ({ error }: ErrorProps) => (
                 margin={{ vertical: 6, horizontal: 12 }}
             >
                 Clear storage and reload
-            </NewButton>
+            </Button>
         </Buttons>
     </Wrapper>
 );

@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 
-import { Image, NewButton } from '@trezor/components';
+import { Button, Image } from '@trezor/components';
 import { type UiEvent } from '@trezor/connect';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
@@ -60,12 +60,12 @@ export const Transport = () => {
             image={<Image imageSrc={imageSrc} />}
             buttons={
                 <>
-                    <NewButton intent="brand" iconRight="arrowUpRight" onClick={handleOpenSuite}>
+                    <Button intent="brand" iconRight="arrowUpRight" onClick={handleOpenSuite}>
                         <FormattedMessage
                             id="TR_OPEN_TREZOR_SUITE_DESKTOP"
                             defaultMessage="Open Trezor Suite desktop app"
                         />
-                    </NewButton>
+                    </Button>
                 </>
             }
         />

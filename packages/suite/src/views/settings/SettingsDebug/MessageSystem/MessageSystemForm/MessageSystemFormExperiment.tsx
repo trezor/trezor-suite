@@ -10,7 +10,7 @@ import {
 } from '@suite-common/message-system';
 import { Experiments } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
-import { Column, NewButton, Row } from '@trezor/components';
+import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -103,9 +103,9 @@ export const MessageSystemFormExperiment = () => {
 
     if (!showForm) {
         return (
-            <NewButton size="small" onClick={() => setShowForm(true)}>
+            <Button size="small" onClick={() => setShowForm(true)}>
                 Add new experiment
-            </NewButton>
+            </Button>
         );
     }
 
@@ -128,17 +128,17 @@ export const MessageSystemFormExperiment = () => {
             />
 
             <Row isReversed gap={spacings.xs}>
-                <NewButton isDisabled={!isValid} onClick={handleAddExperiment} size="small">
+                <Button isDisabled={!isValid} onClick={handleAddExperiment} size="small">
                     Add experiment
-                </NewButton>
-                <NewButton
+                </Button>
+                <Button
                     size="small"
                     intent="neutral"
                     priority="secondary"
                     onClick={() => setShowForm(false)}
                 >
                     Cancel
-                </NewButton>
+                </Button>
             </Row>
         </Column>
     );

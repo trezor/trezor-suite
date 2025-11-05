@@ -2,7 +2,7 @@ import { MouseEventHandler } from 'react';
 
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
-import { Box, H4, NewButton, Paragraph, Row } from '@trezor/components';
+import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -35,7 +35,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                 <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />
             </Paragraph>
             <Row gap={spacings.xs} margin={{ top: spacings.md }}>
-                <NewButton
+                <Button
                     size="small"
                     iconLeft="eject"
                     onClick={handleEject}
@@ -44,8 +44,8 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                     width="100%"
                 >
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON" />
-                </NewButton>
-                <NewButton
+                </Button>
+                <Button
                     size="small"
                     onClick={onCancel}
                     intent="neutral"
@@ -54,7 +54,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                     width="100%"
                 >
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON" />
-                </NewButton>
+                </Button>
             </Row>
         </Box>
     );

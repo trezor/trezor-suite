@@ -2,7 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { TradingTradeType, isBuyTrade, isExchangeTrade } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Column, InfoItem, NewButton, Row, Text } from '@trezor/components';
+import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -164,14 +164,14 @@ export const TradingSelectedOfferInfo = ({
                 {type === 'exchange' && transactionId && (
                     <InfoItem label={<Translation id="TR_TRADING_TRANS_ID" />} direction="column">
                         <Text typographyStyle="hint">{transactionId}</Text>
-                        <NewButton
+                        <Button
                             size="small"
                             intent="neutral"
                             priority="secondary"
                             onClick={() => copyToClipboard(transactionId)}
                         >
                             <Translation id="TR_COPY_TO_CLIPBOARD" />
-                        </NewButton>
+                        </Button>
                     </InfoItem>
                 )}
             </Column>

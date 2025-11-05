@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Box, Column, Image, NewButton, Row, Text } from '@trezor/components';
+import { Box, Button, Column, Image, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 
@@ -44,9 +44,9 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
     const href = useExternalLink(DASHBOARD_BANNER_TS7_URL);
 
     return (
-        <NewButton intent="brand" onClick={onClick} size="large" href={href}>
+        <Button intent="brand" onClick={onClick} size="large" href={href}>
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON" />
-        </NewButton>
+        </Button>
     );
 };
 

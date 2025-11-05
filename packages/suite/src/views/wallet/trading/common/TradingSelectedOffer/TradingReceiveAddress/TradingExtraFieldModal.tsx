@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { Input, Modal, NewButton } from '@trezor/components';
+import { Button, Input, Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
@@ -74,12 +74,12 @@ export const TradingExtraFieldModal = () => {
             onCancel={onCancel}
             onBackClick={onBackClick}
             bottomContent={
-                <NewButton
+                <Button
                     data-testid="@trading/extra-field-modal/confirm-button"
                     onClick={onConfirmClick}
                 >
                     <Translation id="TR_CONFIRM" />
-                </NewButton>
+                </Button>
             }
         >
             <TradingExtraField

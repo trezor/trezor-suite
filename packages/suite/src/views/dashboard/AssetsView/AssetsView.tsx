@@ -27,7 +27,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
-import { Card, Icon, LoadingContent, NewButton, NewIconButton, Row } from '@trezor/components';
+import { Button, Card, Icon, IconButton, LoadingContent, Row } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { PartialRecord } from '@trezor/type-utils';
 import { typedObjectKeys } from '@trezor/utils';
@@ -195,7 +195,7 @@ export const AssetsView = () => {
                 ) : (
                     <Row justifyContent="space-around" gap={spacings.sm}>
                         {hasMainnetNetworksToEnable && (
-                            <NewButton
+                            <Button
                                 intent="neutral"
                                 priority="secondary"
                                 iconLeft="plus"
@@ -203,17 +203,17 @@ export const AssetsView = () => {
                                 data-testid="@dashboard/assets/enable-more-coins"
                             >
                                 <Translation id="TR_ENABLE_MORE_COINS" />
-                            </NewButton>
+                            </Button>
                         )}
                         <Row gap={4}>
-                            <NewIconButton
+                            <IconButton
                                 icon="rowsFilled"
                                 data-testid="@dashboard/assets/table-icon"
                                 onClick={setTable}
                                 intent={dashboardAssetsGridMode ? 'neutral' : 'brand'}
                                 priority="secondary"
                             />
-                            <NewIconButton
+                            <IconButton
                                 icon="gridNineFilled"
                                 data-testid="@dashboard/assets/grid-icon"
                                 onClick={setGrid}

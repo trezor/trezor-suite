@@ -1,5 +1,5 @@
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
-import { NewButtonGroup, NewButtonProps } from '@trezor/components';
+import { ButtonGroup, ButtonProps } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from '../../../../Translation';
@@ -7,15 +7,15 @@ import { HeaderActionButton } from '../HeaderActionButton';
 
 type GlobalSendReceiveButtonsProps = {
     setActiveModal: (activeModal: NonNullable<GlobalSendReceiveType>) => void;
-    intent: NonNullable<NewButtonProps['intent']>;
-    priority: NonNullable<NewButtonProps['priority']>;
+    intent: NonNullable<ButtonProps['intent']>;
+    priority: NonNullable<ButtonProps['priority']>;
 };
 export const GlobalSendReceiveButtons = ({
     setActiveModal,
     intent,
     priority,
 }: GlobalSendReceiveButtonsProps) => (
-    <NewButtonGroup intent={intent} priority={priority}>
+    <ButtonGroup intent={intent} priority={priority}>
         <HeaderActionButton
             key="wallet-send"
             icon="arrowUp"
@@ -41,5 +41,5 @@ export const GlobalSendReceiveButtons = ({
         >
             <Translation id="TR_NAV_RECEIVE" />
         </HeaderActionButton>
-    </NewButtonGroup>
+    </ButtonGroup>
 );

@@ -6,7 +6,7 @@ import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isStakeTypeTx, isTxFeePaid } from '@suite-common/wallet-utils';
-import { Card, Column, Link, NewButton, Row, Tooltip } from '@trezor/components';
+import { Button, Card, Column, Link, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
@@ -170,7 +170,7 @@ export const TransactionItem = memo(
         }`;
 
         const BumpFeeButton = ({ isDisabled }: { isDisabled: boolean }) => (
-            <NewButton
+            <Button
                 intent="neutral"
                 priority="secondary"
                 iconLeft="gauge"
@@ -179,11 +179,11 @@ export const TransactionItem = memo(
                 data-testid="@transaction-item/bump-fee-button"
             >
                 <Translation id="TR_BUMP_FEE" />
-            </NewButton>
+            </Button>
         );
 
         const CancelTransactionButton = ({ isDisabled }: { isDisabled: boolean }) => (
-            <NewButton
+            <Button
                 intent="neutral"
                 priority="secondary"
                 iconLeft="x"
@@ -191,7 +191,7 @@ export const TransactionItem = memo(
                 isDisabled={isDisabled}
             >
                 <Translation id="TR_CANCEL_TX" />
-            </NewButton>
+            </Button>
         );
 
         const DisabledBumpFeeButtonWithTooltip = () => (
@@ -327,7 +327,7 @@ export const TransactionItem = memo(
 
                                         {isExpandable && (
                                             <ExpandButtonWrapper>
-                                                <NewButton
+                                                <Button
                                                     intent="neutral"
                                                     priority="secondary"
                                                     iconRight={
@@ -347,7 +347,7 @@ export const TransactionItem = memo(
                                                         }
                                                         values={{ count: toExpand }}
                                                     />
-                                                </NewButton>
+                                                </Button>
                                             </ExpandButtonWrapper>
                                         )}
                                     </Column>

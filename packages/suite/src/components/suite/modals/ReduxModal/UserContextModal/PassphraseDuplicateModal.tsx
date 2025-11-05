@@ -5,7 +5,7 @@ import {
     switchToDuplicatedWallet,
 } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { Column, H3, NewButton, Text, Tooltip } from '@trezor/components';
+import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -72,14 +72,14 @@ export const PassphraseDuplicateModal = ({
                                 <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
-                            <NewButton
+                            <Button
                                 intent="brand"
                                 onClick={handleDuplicateDevicePassphrase}
                                 isDisabled={isDeviceLocked}
                                 width="100%"
                             >
                                 <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
-                            </NewButton>
+                            </Button>
                         </Tooltip>
                         <Tooltip
                             isActive={isDeviceLocked}
@@ -87,7 +87,7 @@ export const PassphraseDuplicateModal = ({
                                 <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
-                            <NewButton
+                            <Button
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={onTryDifferentPassphrase}
@@ -95,7 +95,7 @@ export const PassphraseDuplicateModal = ({
                                 width="100%"
                             >
                                 <Translation id="TR_WALLET_DUPLICATE_RETRY" />
-                            </NewButton>
+                            </Button>
                         </Tooltip>
                     </Column>
                 </Column>

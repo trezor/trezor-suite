@@ -6,7 +6,7 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
-import { Box, Column, Divider, Image, NewButton, Row, Tooltip } from '@trezor/components';
+import { Box, Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { paletteV2, spacings } from '@trezor/theme';
@@ -157,7 +157,7 @@ const ReferralButton = () => {
     );
 
     return (
-        <NewButton
+        <Button
             href={SUITE_REFERRAL}
             intent="neutral"
             priority="secondary"
@@ -171,7 +171,7 @@ const ReferralButton = () => {
             }}
         >
             <Translation id="TR_DASHBOARD_REFERRAL_BUTTON" />
-        </NewButton>
+        </Button>
     );
 };
 
@@ -203,7 +203,7 @@ export const DashboardFooter = () => {
                 >
                     <ReferralButton />
                     {isWeb() && !isBelowTablet && (
-                        <NewButton
+                        <Button
                             href={SUITE_URL}
                             intent="neutral"
                             priority="secondary"
@@ -215,7 +215,7 @@ export const DashboardFooter = () => {
                             }
                         >
                             <Translation id="TR_DESKTOP_APP_PROMO_GET" />
-                        </NewButton>
+                        </Button>
                     )}
                 </Row>
                 {!isVerticalLayout && <Divider orientation="vertical" />}

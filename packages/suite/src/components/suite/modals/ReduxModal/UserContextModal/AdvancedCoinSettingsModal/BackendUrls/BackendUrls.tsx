@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Column, DotIndicator, Input, List, NewButton, Row, Text } from '@trezor/components';
+import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -51,7 +51,7 @@ export function BackendUrls({
                                     {url}
                                 </Text>
                                 {isEditable && (
-                                    <NewButton
+                                    <Button
                                         intent="neutral"
                                         priority="secondary"
                                         size="small"
@@ -59,7 +59,7 @@ export function BackendUrls({
                                         onClick={() => removeUrl(url)}
                                     >
                                         <Translation id="TR_REMOVE" />
-                                    </NewButton>
+                                    </Button>
                                 )}
                             </Row>
                         </List.Item>
@@ -76,7 +76,7 @@ export function BackendUrls({
                         innerRef={inputRef}
                         maxLength={2048}
                         rightContent={
-                            <NewButton
+                            <Button
                                 intent="brand"
                                 size="small"
                                 iconLeft="plus"
@@ -88,7 +88,7 @@ export function BackendUrls({
                                 isDisabled={!!input.error || input.value === ''}
                             >
                                 <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
-                            </NewButton>
+                            </Button>
                         }
                         {...inputField}
                     />

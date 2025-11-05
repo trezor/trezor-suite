@@ -2,11 +2,11 @@ import { useCallback, useEffect } from 'react';
 
 import {
     Banner,
+    Button,
     Card,
     Column,
     Grid,
     KEYBOARD_CODE,
-    NewButton,
     Paragraph,
     PinButton,
 } from '@trezor/components';
@@ -144,7 +144,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                             </>
                         )}
                     </Grid>
-                    <NewButton
+                    <Button
                         intent="neutral"
                         priority="secondary"
                         onClick={backspace}
@@ -152,7 +152,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                         iconLeft="caretLeft"
                     >
                         <Translation id="TR_BACKSPACE" />
-                    </NewButton>
+                    </Button>
                 </Column>
             </Card>
         </Column>

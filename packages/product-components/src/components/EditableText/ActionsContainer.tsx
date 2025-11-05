@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { Badge, Box, NewIconButton, Row, Spinner, Tooltip, useElevation } from '@trezor/components';
+import { Badge, Box, IconButton, Row, Spinner, Tooltip, useElevation } from '@trezor/components';
 import {
     Elevation,
     borders,
@@ -79,7 +79,7 @@ export const ActionsContainer = ({
                                         delayShow={1000}
                                         cursor="inherit"
                                     >
-                                        <NewIconButton
+                                        <IconButton
                                             icon="check"
                                             size="small"
                                             onClick={onSave}
@@ -97,7 +97,7 @@ export const ActionsContainer = ({
                                         delayShow={1000}
                                         cursor="inherit"
                                     >
-                                        <NewIconButton
+                                        <IconButton
                                             intent="critical"
                                             icon="x"
                                             size="small"
@@ -110,7 +110,7 @@ export const ActionsContainer = ({
                         )}
                         {!isJustSaved && !isEditable && isHovered && (
                             <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
-                                <NewIconButton
+                                <IconButton
                                     intent="neutral"
                                     priority="secondary"
                                     icon="pencil"
@@ -119,7 +119,7 @@ export const ActionsContainer = ({
                                     isDisabled={isDisabled}
                                 />
                                 {isDeleteButtonVisible && (
-                                    <NewIconButton
+                                    <IconButton
                                         intent="neutral"
                                         icon="x"
                                         size="small"

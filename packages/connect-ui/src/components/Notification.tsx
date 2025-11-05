@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Icon, NewButton } from '@trezor/components';
+import { Button, Icon } from '@trezor/components';
 import { SUITE_BRIDGE_DEEPLINK } from '@trezor/urls';
 
 const NotificationBox = styled.div`
@@ -44,7 +44,7 @@ const NotificationCta = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(NewButton)`
+const StyledButton = styled(Button)`
     width: 100%;
     border: 1px solid #eb8a00;
     background-color: transparent;

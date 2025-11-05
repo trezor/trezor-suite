@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { Card, H3, NewButton, Note, Paragraph, Tooltip, variables } from '@trezor/components';
+import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
@@ -143,14 +143,14 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
             </Card>
 
             <Tooltip content={getButtonTooltipMessage()}>
-                <NewButton
+                <Button
                     onClick={anonymize}
                     isDisabled={isDisabled}
                     isLoading={isLoading}
                     margin={{ top: spacings.xl }}
                 >
                     <Translation id="TR_START_COINJOIN" />
-                </NewButton>
+                </Button>
             </Tooltip>
         </>
     );

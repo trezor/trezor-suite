@@ -14,7 +14,7 @@ import { Row } from '../../Flex/Flex';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
-import { NewButtonIntent, NewButtonPriority, NewButtonSize } from '../types';
+import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
 import {
     addAlphaToHex,
     commonButtonStyles,
@@ -26,22 +26,19 @@ import {
 } from '../utils';
 import { mapSizeToGap, mapSizeToPadding } from './utils';
 
-export const allowedNewButtonFrameProps = [
+export const allowedButtonFrameProps = [
     'margin',
     'minWidth',
     'maxWidth',
     'width',
     'flex',
 ] as const satisfies FramePropsKeys[];
-export type AllowedNewButtonFrameProps = Pick<
-    FrameProps,
-    (typeof allowedNewButtonFrameProps)[number]
->;
+export type AllowedButtonFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
-type ButtonContainerProps = TransientProps<AllowedNewButtonFrameProps> & {
-    $size: NewButtonSize;
-    $priority: NewButtonPriority;
-    $intent: NewButtonIntent;
+type ButtonContainerProps = TransientProps<AllowedButtonFrameProps> & {
+    $size: ButtonSize;
+    $priority: ButtonPriority;
+    $intent: ButtonIntent;
     $isInverse: boolean;
     $isDisabled: boolean;
 };
@@ -69,10 +66,10 @@ type ExclusiveAProps =
           target?: string;
       };
 
-export type NewButtonProps = SelectedHTMLButtonProps &
-    AllowedNewButtonFrameProps &
+export type ButtonProps = SelectedHTMLButtonProps &
+    AllowedButtonFrameProps &
     ExclusiveAProps & {
-        size?: NewButtonSize;
+        size?: ButtonSize;
         isDisabled?: boolean;
         isInverse?: boolean;
         isLoading?: boolean;
@@ -80,13 +77,13 @@ export type NewButtonProps = SelectedHTMLButtonProps &
         iconRight?: IconName;
         children: React.ReactNode;
         'data-testid'?: string;
-        intent?: NewButtonIntent;
-        priority?: NewButtonPriority;
+        intent?: ButtonIntent;
+        priority?: ButtonPriority;
         shortcut?: string[];
         className?: string;
     };
 
-export const NewButton = ({
+export const Button = ({
     'data-testid': dataTestId,
     children,
     href,
@@ -106,9 +103,9 @@ export const NewButton = ({
     // TODO: remove className
     className,
     ...rest
-}: NewButtonProps) => {
+}: ButtonProps) => {
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedNewButtonFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
     const isLink = href !== undefined;
     const color = mapPropsToColor(intent, priority, isDisabled, isInverse, theme);
 

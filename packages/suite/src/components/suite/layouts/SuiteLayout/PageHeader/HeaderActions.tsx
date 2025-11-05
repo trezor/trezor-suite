@@ -1,5 +1,5 @@
 import { Row } from '@trezor/components';
-import { NewButtonGroup } from '@trezor/components/src/components/buttons/NewButtonGroup/NewButtonGroup';
+import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { Translation } from 'src/components/suite/Translation';
@@ -31,7 +31,7 @@ export const HeaderActions = () => {
             {isTradingAvailable && <TradeActions selectedAccount={selectedAccount} />}
 
             <AppNavigationTooltip>
-                <NewButtonGroup
+                <ButtonGroup
                     isDisabled={isAccountLoading}
                     intent={isDeviceConnected ? 'brand' : 'neutral'}
                     priority={isDeviceConnected ? 'primary' : 'secondary'}
@@ -57,7 +57,7 @@ export const HeaderActions = () => {
                     >
                         <Translation id="TR_NAV_RECEIVE" />
                     </HeaderActionButton>
-                </NewButtonGroup>
+                </ButtonGroup>
             </AppNavigationTooltip>
         </Row>
     );

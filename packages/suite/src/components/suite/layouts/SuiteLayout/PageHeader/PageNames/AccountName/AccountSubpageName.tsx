@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { NewIconButton } from '@trezor/components';
+import { IconButton } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -28,7 +28,7 @@ export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps)
 
     return (
         <Container>
-            <NewIconButton
+            <IconButton
                 icon="caretLeft"
                 intent="neutral"
                 priority="secondary"

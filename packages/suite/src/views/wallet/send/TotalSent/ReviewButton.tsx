@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
-import { Banner, Checkbox, Column, NewButton, Tooltip, variables } from '@trezor/components';
+import { Banner, Button, Checkbox, Column, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -171,7 +171,7 @@ export const ReviewButton = () => {
             )}
 
             <Tooltip content={tooltipContent}>
-                <NewButton
+                <Button
                     intent={anonymityWarningChecked ? 'critical' : 'brand'}
                     data-testid="@send/review-button"
                     isDisabled={isDisabled || isLoading}
@@ -187,7 +187,7 @@ export const ReviewButton = () => {
                             </SecondLine>
                         )}
                     </Column>
-                </NewButton>
+                </Button>
             </Tooltip>
         </Container>
     );

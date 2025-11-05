@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
-import { Banner, Card, Column, H3, Modal, NewButton, Paragraph, Row } from '@trezor/components';
+import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -86,7 +86,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                             {urls.join(', ')}
                                         </Paragraph>
                                     </Column>
-                                    <NewButton
+                                    <Button
                                         intent="neutral"
                                         priority="secondary"
                                         onClick={() => setSymbol(symbol)}
@@ -95,7 +95,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                         margin={{ left: 'auto' }}
                                     >
                                         <Translation id="TR_GO_TO_SETTINGS" />
-                                    </NewButton>
+                                    </Button>
                                 </Row>
                             ))}
                         </Column>

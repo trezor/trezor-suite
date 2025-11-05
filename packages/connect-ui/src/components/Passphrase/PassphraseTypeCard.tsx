@@ -5,10 +5,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css, useTheme } from 'styled-components';
 
 import {
+    Button,
     Checkbox,
     Icon,
     Input,
-    NewButton,
     Tooltip,
     TooltipProps,
     motionAnimation,
@@ -133,7 +133,7 @@ const Actions = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(NewButton)`
+const ActionButton = styled(Button)`
     margin-top: ${spacingsPx.xs};
 
     &:first-child {

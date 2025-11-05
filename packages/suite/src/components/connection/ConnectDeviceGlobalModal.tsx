@@ -1,7 +1,7 @@
 import { useTheme } from 'styled-components';
 
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
-import { Box, Column, Modal, NewButton, Row, Spinner, Text } from '@trezor/components';
+import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
 import {
@@ -32,9 +32,9 @@ const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => {
 
     return (
         <Box backgroundColor={theme.backgroundSurfaceElevation1} borderRadius={10}>
-            <NewButton onClick={onClick} iconLeft="question" intent="info" priority="secondary">
+            <Button onClick={onClick} iconLeft="question" intent="info" priority="secondary">
                 <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
-            </NewButton>
+            </Button>
         </Box>
     );
 };
@@ -168,9 +168,9 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <Modal.ModalBase data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
                 <ConnectModalContent isBluetoothMode={false}>
                     {isDesktop() && (
-                        <NewButton iconLeft="bluetooth" onClick={toggleBluetoothMode} intent="info">
+                        <Button iconLeft="bluetooth" onClick={toggleBluetoothMode} intent="info">
                             <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
-                        </NewButton>
+                        </Button>
                     )}
                     {isWebUsbTransport && <WebUsbButton intent="brand" size="medium" />}
                 </ConnectModalContent>

@@ -5,12 +5,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Box,
+    Button,
     Card,
     Column,
     Icon,
     Image,
     Input,
-    NewButton,
     Row,
     Text,
     Tooltip,
@@ -148,7 +148,7 @@ export const PassphraseInputCard = ({
                         </AnimatePresence>
                     </Column>
                     <Tooltip content={errorMessage}>
-                        <NewButton
+                        <Button
                             intent="brand"
                             type="submit"
                             data-testid="@passphrase/hidden/submit-button"
@@ -163,7 +163,7 @@ export const PassphraseInputCard = ({
                             size="large"
                         >
                             Confirm
-                        </NewButton>
+                        </Button>
                     </Tooltip>
                 </Column>
             </Card>

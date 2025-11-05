@@ -10,26 +10,24 @@ import {
 } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
-import { NewButtonProps } from '../NewButton/NewButton';
-import { NewIconButtonProps } from '../NewIconButton/NewIconButton';
-import { NewButtonIntent, NewButtonPriority, NewButtonSize } from '../types';
+import { ButtonProps } from '../Button/Button';
+import { IconButtonProps } from '../IconButton/IconButton';
+import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
 import { addAlphaToHex, mapSizeToBorderRadius } from '../utils';
 
-export const allowedNewButtonGroupFrameProps = [
+export const allowedButtonGroupFrameProps = [
     'margin',
     'minWidth',
     'maxWidth',
     'width',
     'flex',
 ] as const satisfies FramePropsKeys[];
-export type AllowedNewButtonGroupFrameProps = Pick<
+export type AllowedButtonGroupFrameProps = Pick<
     FrameProps,
-    (typeof allowedNewButtonGroupFrameProps)[number]
+    (typeof allowedButtonGroupFrameProps)[number]
 >;
 
-const Container = styled.div<
-    TransientProps<AllowedNewButtonGroupFrameProps> & { $size: NewButtonSize }
->`
+const Container = styled.div<TransientProps<AllowedButtonGroupFrameProps> & { $size: ButtonSize }>`
     position: relative;
     display: flex;
 
@@ -72,25 +70,25 @@ const Container = styled.div<
     ${withFrameProps}
 `;
 
-type AllowedChildrenPropsType = NewButtonProps | NewIconButtonProps;
+type AllowedChildrenPropsType = ButtonProps | IconButtonProps;
 
-export type NewButtonGroupProps = {
-    intent?: NewButtonIntent;
-    priority?: NewButtonPriority;
-    size?: NewButtonSize;
+export type ButtonGroupProps = {
+    intent?: ButtonIntent;
+    priority?: ButtonPriority;
+    size?: ButtonSize;
     isDisabled?: boolean;
     children: (React.ReactElement<AllowedChildrenPropsType | TooltipProps> | null)[];
-} & AllowedNewButtonGroupFrameProps;
+} & AllowedButtonGroupFrameProps;
 
-export const NewButtonGroup = ({
+export const ButtonGroup = ({
     intent = 'brand',
     priority = 'primary',
     size = 'medium',
     isDisabled,
     children,
     ...rest
-}: NewButtonGroupProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedNewButtonGroupFrameProps);
+}: ButtonGroupProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedButtonGroupFrameProps);
 
     const childrenWithProps = React.Children.map(children, child => {
         if (React.isValidElement(child)) {

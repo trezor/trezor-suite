@@ -11,7 +11,7 @@ import {
 } from '@suite-common/message-system';
 import { Action, Category } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
-import { Column, NewButton, Row } from '@trezor/components';
+import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -104,9 +104,9 @@ export const MessageSystemFormMessage = () => {
 
     if (!showForm) {
         return (
-            <NewButton size="small" onClick={() => setShowForm(true)}>
+            <Button size="small" onClick={() => setShowForm(true)}>
                 Add new message
-            </NewButton>
+            </Button>
         );
     }
 
@@ -130,17 +130,17 @@ export const MessageSystemFormMessage = () => {
             />
 
             <Row isReversed gap={spacings.xs}>
-                <NewButton isDisabled={!isValid} onClick={handleAddMessage} size="small">
+                <Button isDisabled={!isValid} onClick={handleAddMessage} size="small">
                     Add message
-                </NewButton>
-                <NewButton
+                </Button>
+                <Button
                     size="small"
                     intent="neutral"
                     priority="secondary"
                     onClick={() => setShowForm(false)}
                 >
                     Cancel
-                </NewButton>
+                </Button>
             </Row>
         </Column>
     );

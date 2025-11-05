@@ -26,7 +26,7 @@ import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext
 import { Column, Row } from '../Flex/Flex';
 import { IconName } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
-import { NewIconButton } from '../buttons/NewIconButton/NewIconButton';
+import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';
 import { Text } from '../typography/Text/Text';
 
@@ -109,7 +109,7 @@ const InnerModalBase = ({
                         >
                             <ElevationUp>
                                 {onBackClick && (
-                                    <NewIconButton
+                                    <IconButton
                                         intent="neutral"
                                         priority="secondary"
                                         icon="caretLeft"
@@ -136,7 +136,7 @@ const InnerModalBase = ({
                                 )}
 
                                 {onCancel && (
-                                    <NewIconButton
+                                    <IconButton
                                         intent="neutral"
                                         priority="secondary"
                                         icon="x"

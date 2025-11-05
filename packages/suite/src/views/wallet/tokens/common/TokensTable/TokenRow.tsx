@@ -23,13 +23,13 @@ import {
 } from '@suite-common/wallet-utils';
 import {
     AssetLogo,
+    Button,
+    ButtonGroup,
     Card,
     Column,
     Dropdown,
+    IconButton,
     InfoItem,
-    NewButton,
-    NewButtonGroup,
-    NewIconButton,
     Row,
     Table,
     Text,
@@ -146,7 +146,7 @@ export const TokenRow = ({
                 <Text typographyStyle="label" as="div">
                     <Address isChunked={false} value={address} />
                 </Text>
-                <NewIconButton
+                <IconButton
                     icon="copy"
                     intent="neutral"
                     priority="secondary"
@@ -404,7 +404,7 @@ export const TokenRow = ({
                                 )
                             }
                         >
-                            <NewIconButton
+                            <IconButton
                                 isDisabled={!canSwapToken}
                                 key="swap"
                                 intent="neutral"
@@ -418,7 +418,7 @@ export const TokenRow = ({
                     )}
                     {!isBelowTablet &&
                         (tokenStatusType === TokenManagementAction.SHOW ? (
-                            <NewButton
+                            <Button
                                 iconLeft="eye"
                                 onClick={() =>
                                     isUnverifiedTable && shouldShowUnhideTokenModal
@@ -442,11 +442,11 @@ export const TokenRow = ({
                                 size="small"
                             >
                                 <Translation id="TR_UNHIDE" />
-                            </NewButton>
+                            </Button>
                         ) : (
-                            <NewButtonGroup intent="neutral" priority="secondary">
+                            <ButtonGroup intent="neutral" priority="secondary">
                                 <Tooltip content={<Translation id="TR_NAV_SEND" />}>
-                                    <NewIconButton
+                                    <IconButton
                                         isDisabled={token.balance === '0'}
                                         key="token-send"
                                         icon="arrowUp"
@@ -481,14 +481,14 @@ export const TokenRow = ({
                                         />
                                     }
                                 >
-                                    <NewIconButton
+                                    <IconButton
                                         key="token-receive"
                                         icon="arrowDown"
                                         isDisabled={!canReceiveToken}
                                         onClick={onReceive}
                                     />
                                 </Tooltip>
-                            </NewButtonGroup>
+                            </ButtonGroup>
                         ))}
                 </Row>
             </Table.Cell>

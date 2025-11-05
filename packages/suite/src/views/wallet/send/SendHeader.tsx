@@ -3,7 +3,7 @@ import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { sendFormActions } from '@suite-common/wallet-core';
-import { Dropdown, DropdownMenuItemProps, NewButton, Switch, Text } from '@trezor/components';
+import { Button, Dropdown, DropdownMenuItemProps, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -102,7 +102,7 @@ export const SendHeader = () => {
             <WalletSubpageHeading title="TR_NAV_SEND">
                 {isDirty && (
                     <ClearButtonWrapper>
-                        <NewButton
+                        <Button
                             size="small"
                             intent="neutral"
                             priority="secondary"
@@ -110,7 +110,7 @@ export const SendHeader = () => {
                             data-testid="clear-form"
                         >
                             <Translation id="TR_CLEAR_ALL" />
-                        </NewButton>
+                        </Button>
                     </ClearButtonWrapper>
                 )}
 

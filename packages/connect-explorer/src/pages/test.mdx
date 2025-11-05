@@ -1,4 +1,4 @@
-import { NewButton } from '@trezor/components';
+import { Button } from '@trezor/components';
 import TrezorConnect from '@trezor/connect-web';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
@@ -10,9 +10,9 @@ export const InitButton = () => {
     });
 
     return (
-        <NewButton onClick={actions.onSubmitInit} data-testid="@testpage/init">
+        <Button onClick={actions.onSubmitInit} data-testid="@testpage/init">
           Init
-        </NewButton>
+        </Button>
     );
 
 };
@@ -38,12 +38,9 @@ export const subsequentCallsWithError = async () => {
 Hidden page for testing purposes.
 
 <InitButton />
-<NewButton onClick={() => subsequentCalls()} data-testid="@testpage/subsequentCalls">
+<Button onClick={() => subsequentCalls()} data-testid="@testpage/subsequentCalls">
     Subsequent calls
-</NewButton>
-<NewButton
-    onClick={() => subsequentCallsWithError()}
-    data-testid="@testpage/subsequentCallsWithError"
->
+</Button>
+<Button onClick={() => subsequentCallsWithError()} data-testid="@testpage/subsequentCallsWithError">
     Subsequent calls with error
-</NewButton>
+</Button>

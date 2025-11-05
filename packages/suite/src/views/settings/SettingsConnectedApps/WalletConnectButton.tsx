@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
-import { Input, Modal, NewButton } from '@trezor/components';
+import { Button, Input, Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
@@ -79,7 +79,7 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
                 </Modal.Backdrop>
             )}
 
-            <NewButton
+            <Button
                 iconLeft="plus"
                 intent="neutral"
                 priority="secondary"
@@ -87,7 +87,7 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
                 onClick={() => handleOpen()}
             >
                 <Translation id="TR_ADD_WALLETCONNECT" />
-            </NewButton>
+            </Button>
         </>
     );
 };

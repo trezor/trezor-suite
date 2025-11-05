@@ -2,7 +2,7 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { NewButton, Tooltip, variables } from '@trezor/components';
+import { Button, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -40,7 +40,7 @@ const Left = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const AddRecipientButton = styled(NewButton)`
+const AddRecipientButton = styled(Button)`
     align-self: center;
 `;
 
@@ -97,7 +97,7 @@ export const BitcoinOptions = () => {
                             content={<Translation id="TR_COIN_CONTROL_TOOLTIP" />}
                             cursor="pointer"
                         >
-                            <NewButton
+                            <Button
                                 margin={{ top: 4, right: 8, bottom: 4 }}
                                 intent="neutral"
                                 priority="secondary"
@@ -110,7 +110,7 @@ export const BitcoinOptions = () => {
                                     <Translation id="TR_COIN_CONTROL" />
                                     {isCoinControlEnabled && <OnOffSwitcher isOn />}
                                 </Inline>
-                            </NewButton>
+                            </Button>
                         </Tooltip>
                     )}
                 </Left>

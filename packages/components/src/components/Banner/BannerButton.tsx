@@ -1,10 +1,10 @@
 import { BannerContext, useBannerContext } from './BannerContext';
 import { BannerVariant } from './types';
-import { NewButton, NewButtonProps } from '../buttons/NewButton/NewButton';
+import { Button, ButtonProps } from '../buttons/Button/Button';
 
 const mapVariantToIntent = (
     variant: BannerVariant | undefined,
-): NonNullable<NewButtonProps['intent']> => {
+): NonNullable<ButtonProps['intent']> => {
     switch (variant) {
         case 'info':
             return 'info';
@@ -20,15 +20,15 @@ const mapVariantToIntent = (
     }
 };
 
-export const BannerButton = ({ children, intent, size = 'small', ...rest }: NewButtonProps) => {
+export const BannerButton = ({ children, intent, size = 'small', ...rest }: ButtonProps) => {
     const { variant: bannerVariant } = useBannerContext();
     const resolvedIntent = intent ?? mapVariantToIntent(bannerVariant);
 
     return (
         <BannerContext.Provider value={{ variant: bannerVariant }}>
-            <NewButton intent={resolvedIntent} size={size} {...rest}>
+            <Button intent={resolvedIntent} size={size} {...rest}>
                 {children}
-            </NewButton>
+            </Button>
         </BannerContext.Provider>
     );
 };

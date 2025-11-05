@@ -1,6 +1,6 @@
 import { HTMLAttributes, ReactElement, Ref, forwardRef, useEffect, useState } from 'react';
 
-import { Box, Column, H3, NewIconButton, Row, Text } from '@trezor/components';
+import { Box, Column, H3, IconButton, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
@@ -48,12 +48,12 @@ export const DashboardSection = forwardRef(
 
                                 {actions && <div>{actions}</div>}
                                 {collapsible && (
-                                    <NewIconButton
+                                    <IconButton
                                         icon={collapsed ? 'caretDown' : 'caretUp'}
                                         intent="neutral"
                                         priority="secondary"
                                         onClick={() => setCollapsed(prev => !prev)}
-                                    ></NewIconButton>
+                                    ></IconButton>
                                 )}
                             </Row>
                             {subheading && <Text variant="tertiary">{subheading}</Text>}

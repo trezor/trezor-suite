@@ -1,5 +1,5 @@
-import { NewIconButton, NewIconButtonProps } from '@trezor/components';
+import { IconButton, IconButtonProps } from '@trezor/components';
 
-export const CloseButton = (props: Omit<NewIconButtonProps, 'icon'>) => (
-    <NewIconButton intent="neutral" priority="secondary" icon="x" {...props} />
+export const CloseButton = (props: Omit<IconButtonProps, 'icon'>) => (
+    <IconButton intent="neutral" priority="secondary" icon="x" {...props} />
 );

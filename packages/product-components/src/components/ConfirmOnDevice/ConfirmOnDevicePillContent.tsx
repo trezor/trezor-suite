@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Column, NewIconButton, Row, Text } from '@trezor/components';
+import { Column, IconButton, Row, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
@@ -92,7 +92,7 @@ export const ConfirmOnDevicePillContent = ({
             </Column>
 
             {onCancel && (
-                <NewIconButton
+                <IconButton
                     icon="x"
                     onClick={onCancel}
                     data-testid="@confirm-on-device/close-button"

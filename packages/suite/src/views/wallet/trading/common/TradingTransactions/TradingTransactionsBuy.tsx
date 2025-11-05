@@ -4,7 +4,7 @@ import {
     type TradingTransactionBuy as TradingTxBuy,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { NewButton } from '@trezor/components';
+import { Button } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
@@ -65,14 +65,14 @@ export const TradingTransactionBuy = ({
                 />
             }
             TradeButton={
-                <NewButton
+                <Button
                     size="small"
                     intent="neutral"
                     priority="secondary"
                     onClick={handleViewDetailsButtonClick}
                 >
                     <Translation id="TR_TRADING_VIEW_DETAILS" />
-                </NewButton>
+                </Button>
             }
         />
     );

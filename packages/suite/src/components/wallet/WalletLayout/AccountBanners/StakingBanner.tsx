@@ -10,13 +10,13 @@ import {
     isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import {
+    Button,
     Card,
     Column,
     Grid,
     H4,
+    IconButton,
     IconCircle,
-    NewButton,
-    NewIconButton,
     Paragraph,
     Row,
 } from '@trezor/components';
@@ -175,10 +175,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 </Row>
 
                 <Row gap={spacings.sm}>
-                    <NewButton onClick={goToStakingTab}>
+                    <Button onClick={goToStakingTab}>
                         <Translation id="TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING" />
-                    </NewButton>
-                    <NewIconButton
+                    </Button>
+                    <IconButton
                         intent="neutral"
                         priority="secondary"
                         icon="x"

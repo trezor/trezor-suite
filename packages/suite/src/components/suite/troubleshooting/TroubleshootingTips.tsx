@@ -4,11 +4,11 @@ import {
     Banner,
     BannerVariant,
     Box,
+    Button,
     Card,
     Column,
     IconName,
     Modal,
-    NewButton,
     Row,
     Text,
 } from '@trezor/components';
@@ -87,7 +87,7 @@ export const TroubleshootingTips = ({
                 alignItems="center"
                 data-testid={dataTest || '@onboarding/troubleshooting-tips'}
             >
-                <NewButton
+                <Button
                     onClick={onOpen}
                     intent="neutral"
                     size="small"
@@ -96,7 +96,7 @@ export const TroubleshootingTips = ({
                     data-testid="@onboarding/troubleshooting-tips/button"
                 >
                     {toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}
-                </NewButton>
+                </Button>
 
                 {isTroubleshootingModalVisible && (
                     <Modal

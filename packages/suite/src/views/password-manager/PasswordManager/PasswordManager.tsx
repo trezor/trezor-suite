@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { NewButton, Tooltip } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -65,9 +65,9 @@ export const PasswordManager = () => {
                         isActive={isDeviceLocked}
                         content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                     >
-                        <NewButton onClick={connect} isDisabled={isDeviceLocked}>
+                        <Button onClick={connect} isDisabled={isDeviceLocked}>
                             Connect to Dropbox
-                        </NewButton>
+                        </Button>
                     </Tooltip>
                     {/* TODO: connect to drive */}
                 </ActionColumn>
@@ -83,7 +83,7 @@ export const PasswordManager = () => {
                     description={`type: ${selectedProvider.type}, clientId: ${selectedProvider.clientId}, connected user: ${selectedProvider.user}`}
                 />
                 <ActionColumn>
-                    <NewButton onClick={disconnect}>Disconnect</NewButton>
+                    <Button onClick={disconnect}>Disconnect</Button>
                 </ActionColumn>
             </Section>
             <Section>
@@ -111,7 +111,7 @@ export const PasswordManager = () => {
                         {formActive !== 0 && (
                             <>
                                 <div>There are no passwords yet </div>
-                                <NewButton
+                                <Button
                                     size="small"
                                     onClick={() => setFormActive(0)}
                                     type="button"
@@ -120,7 +120,7 @@ export const PasswordManager = () => {
                                     iconLeft="pencil"
                                 >
                                     Add the first one!
-                                </NewButton>
+                                </Button>
                             </>
                         )}
                         {formActive === 0 && (

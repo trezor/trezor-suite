@@ -1,4 +1,4 @@
-import { NewButton, NewButtonGroup, Tooltip } from '@trezor/components';
+import { Button, ButtonGroup, Tooltip } from '@trezor/components';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -28,33 +28,33 @@ export const ChangeHomescreenButtons = ({
     const hasGallery = getHomescreens(isBitcoinOnlyFirmware)[deviceModelInternal].length > 0;
 
     return (
-        <NewButtonGroup isDisabled={isDeviceLocked || !isSupportedHomescreen}>
+        <ButtonGroup isDisabled={isDeviceLocked || !isSupportedHomescreen}>
             <Tooltip
                 isActive={isDeviceLocked}
                 content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
             >
-                <NewButton
+                <Button
                     onClick={onImageUploadClick}
                     data-testid="@settings/device/homescreen-upload"
                     key="@settings/device/homescreen-upload"
                 >
                     <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-                </NewButton>
+                </Button>
             </Tooltip>
             {hasGallery ? (
                 <Tooltip
                     isActive={isDeviceLocked}
                     content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
-                    <NewButton
+                    <Button
                         onClick={openGallery}
                         data-testid="@settings/device/homescreen-gallery"
                         key="@settings/device/homescreen-gallery"
                     >
                         <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
-                    </NewButton>
+                    </Button>
                 </Tooltip>
             ) : null}
-        </NewButtonGroup>
+        </ButtonGroup>
     );
 };

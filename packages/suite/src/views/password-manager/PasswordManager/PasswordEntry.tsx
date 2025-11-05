@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Column, H3, Modal, NewButton, Paragraph } from '@trezor/components';
+import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -148,7 +148,7 @@ export const PasswordEntry = ({
                 </PasswordEntryCol>
                 <PasswordEntryCol>
                     {decryptedPassword === null && (
-                        <NewButton
+                        <Button
                             size="small"
                             onClick={decrypt}
                             type="button"
@@ -156,13 +156,13 @@ export const PasswordEntry = ({
                             priority="secondary"
                         >
                             {inProgress ? '....' : 'decrypt'}
-                        </NewButton>
+                        </Button>
                     )}
                     {decryptedPassword !== null && (
                         <>
                             {formActive === index && (
                                 <Row>
-                                    <NewButton
+                                    <Button
                                         size="small"
                                         onClick={() => {
                                             setConfirmRemove(index);
@@ -171,12 +171,12 @@ export const PasswordEntry = ({
                                         intent="critical"
                                     >
                                         Remove
-                                    </NewButton>
+                                    </Button>
                                 </Row>
                             )}
                             {formActive === null && (
                                 <Row>
-                                    <NewButton
+                                    <Button
                                         size="small"
                                         onClick={() => setFormActive(index)}
                                         type="button"
@@ -185,7 +185,7 @@ export const PasswordEntry = ({
                                         iconLeft="pencil"
                                     >
                                         Edit
-                                    </NewButton>
+                                    </Button>
                                 </Row>
                             )}
                         </>

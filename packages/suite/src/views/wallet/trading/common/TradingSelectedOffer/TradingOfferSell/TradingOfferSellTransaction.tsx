@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import type { TradingSellType } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Column, NewButton, Spinner, Text } from '@trezor/components';
+import { Button, Column, Spinner, Text } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -134,7 +134,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                     )}
 
                     <ButtonWrapper>
-                        <NewButton
+                        <Button
                             minWidth={200}
                             isLoading={isFormLoading || disabled}
                             isDisabled={!device?.connected || isDiscoveryRunning || disabled}
@@ -142,7 +142,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                             data-testid="@trading/offer/confirm-on-trezor-and-send"
                         >
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
-                        </NewButton>
+                        </Button>
                     </ButtonWrapper>
                 </>
             ) : (

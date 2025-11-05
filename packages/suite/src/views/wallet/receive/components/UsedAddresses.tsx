@@ -6,7 +6,7 @@ import { selectAddressLabels } from '@suite-common/local-first-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Column, GradientOverlay, NewButton, Row, Table, Text } from '@trezor/components';
+import { Button, Card, Column, GradientOverlay, Row, Table, Text } from '@trezor/components';
 import { AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
@@ -76,7 +76,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
             <Table.Cell align="end">
                 <AddressActions $isVisible={isHovered}>
                     <ReceiveDisabledWrapper>
-                        <NewButton
+                        <Button
                             data-testid={`@wallet/receive/reveal-address-button/${index}`}
                             intent="neutral"
                             priority="secondary"
@@ -86,7 +86,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                             size="small"
                         >
                             <Translation id="TR_REVEAL_ADDRESS" />
-                        </NewButton>
+                        </Button>
                     </ReceiveDisabledWrapper>
                 </AddressActions>
             </Table.Cell>
@@ -200,7 +200,7 @@ export const UsedAddresses = ({
                 {actionButtonsVisible && (
                     <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
                         {actionShowVisible && (
-                            <NewButton
+                            <Button
                                 intent="neutral"
                                 priority="secondary"
                                 iconRight="caretDown"
@@ -208,18 +208,18 @@ export const UsedAddresses = ({
                                 data-testid="@wallet/receive/used-address/show-more"
                             >
                                 <Translation id="TR_SHOW_MORE" />
-                            </NewButton>
+                            </Button>
                         )}
 
                         {actionHideVisible && (
-                            <NewButton
+                            <Button
                                 intent="neutral"
                                 priority="secondary"
                                 iconLeft="caretUp"
                                 onClick={() => setLimit(DEFAULT_LIMIT)}
                             >
                                 <Translation id="TR_SHOW_LESS" />
-                            </NewButton>
+                            </Button>
                         )}
                     </Row>
                 )}

@@ -4,7 +4,7 @@ import { BankAccount } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
 import { type TradingSellType, sellUtils } from '@suite-common/trading';
-import { Icon, NewButton, Row, Select } from '@trezor/components';
+import { Button, Icon, Row, Select } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 
 import { QuestionTooltip } from 'src/components/suite';
@@ -146,7 +146,7 @@ export const TradingOfferSellBankAccount = () => {
                         </CustomLabel>
                     </Left>
                     <Row alignItems="center">
-                        <NewButton
+                        <Button
                             intent="neutral"
                             priority="secondary"
                             iconLeft="plus"
@@ -154,7 +154,7 @@ export const TradingOfferSellBankAccount = () => {
                             onClick={addBankAccount}
                         >
                             <Translation id="TR_SELL_ADD_BANK_ACCOUNT" />
-                        </NewButton>
+                        </Button>
                     </Row>
                 </RowWrapper>
                 <RowWrapper>
@@ -199,7 +199,7 @@ export const TradingOfferSellBankAccount = () => {
                 </RowWrapper>
             </CardContent>
             <ButtonWrapper>
-                <NewButton
+                <Button
                     minWidth={200}
                     isLoading={isFormLoading}
                     onClick={() => {
@@ -208,7 +208,7 @@ export const TradingOfferSellBankAccount = () => {
                     isDisabled={isFormLoading || !bankAccount}
                 >
                     <Translation id="TR_SELL_GO_TO_TRANSACTION" />
-                </NewButton>
+                </Button>
             </ButtonWrapper>
         </Wrapper>
     );
