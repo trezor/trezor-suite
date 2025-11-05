@@ -232,19 +232,12 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
 
 type SubmitButtonProps = {
     onClick: ButtonProps['onClick'];
-    isFullWidth?: boolean;
     isLoading: boolean;
     text?: string;
 };
 
-const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonProps) => (
-    <Button
-        onClick={onClick}
-        data-testid="@submit-button"
-        width={isFullWidth ? '100%' : undefined}
-        isLoading={isLoading}
-        margin={{ top: 12 }}
-    >
+const SubmitButton = ({ onClick, text, isLoading }: SubmitButtonProps) => (
+    <Button onClick={onClick} data-testid="@submit-button" flex="1" isLoading={isLoading}>
         {text || 'Submit'}
     </Button>
 );
@@ -318,8 +311,8 @@ export const Method = () => {
                             <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                         </CopyWrapper>
 
-                        <Row>
-                            <SubmitButton {...buttonProps} isFullWidth />
+                        <Row gap={4} margin={{ top: 12 }}>
+                            <SubmitButton {...buttonProps} />
                             {buttonProps.isLoading && (
                                 <IconButton
                                     icon="x"
@@ -343,8 +336,8 @@ export const Method = () => {
                                 <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                             </CopyWrapper>
                             <pre>{javascriptCode}</pre>
-                            <Row>
-                                <SubmitButton {...buttonProps} isFullWidth />
+                            <Row gap={4} margin={{ top: 12 }}>
+                                <SubmitButton {...buttonProps} />
                                 {buttonProps.isLoading && (
                                     <IconButton
                                         icon="x"
