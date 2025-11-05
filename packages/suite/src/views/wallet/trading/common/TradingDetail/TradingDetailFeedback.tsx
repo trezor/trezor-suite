@@ -8,6 +8,7 @@ import {
 } from 'invity-api';
 
 import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
+import { selectCountryCode } from '@suite-common/geolocation';
 import { ExperimentId } from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
 import { Card, Column, IconCircle, NewButton, Row, Text, Textarea } from '@trezor/components';
@@ -16,7 +17,7 @@ import { spacings } from '@trezor/theme';
 import { EmojiRatingSelector } from 'src/components/suite/EmojiRatingSelector';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Translation } from 'src/components/suite/Translation';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
 interface TradingDetailFeedbackProps {
@@ -25,6 +26,7 @@ interface TradingDetailFeedbackProps {
     provider?: ExchangeProviderInfo['name'];
     id?: string;
     quoteAmounts: TradingGetCryptoQuoteAmountProps;
+    country?: string;
 }
 
 export const TradingDetailFeedback = ({
@@ -33,6 +35,7 @@ export const TradingDetailFeedback = ({
     provider,
     id,
     quoteAmounts: { sendCurrency, receiveCurrency },
+    country,
 }: TradingDetailFeedbackProps) => {
     const [rating, setRating] = useState<Rating | undefined>();
     const [description, setDescription] = useState<string>('');
@@ -40,6 +43,7 @@ export const TradingDetailFeedback = ({
 
     const { device } = useDevice();
     const dispatch = useDispatch();
+    const geolocation = useSelector(selectCountryCode);
 
     const submitFeedback = () => {
         if (!rating) return;
@@ -59,6 +63,8 @@ export const TradingDetailFeedback = ({
                     type,
                     sendCurrency,
                     receiveCurrency,
+                    geolocation: geolocation || undefined,
+                    countryOfResidence: country || undefined,
                     ...userData,
                 },
             }),

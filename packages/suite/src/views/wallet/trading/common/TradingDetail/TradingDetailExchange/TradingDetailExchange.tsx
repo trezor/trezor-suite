@@ -155,6 +155,7 @@ export const TradingDetailExchange = () => {
                         <TradingDetailExchangePaymentSending supportUrl={supportUrl} />
                     )}
                 </Card>
+
                 {tradingSurveyFeature ? (
                     <TradingDetailSurvey />
                 ) : (
