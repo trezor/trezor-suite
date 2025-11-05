@@ -5,7 +5,6 @@ import { join } from 'path';
 import sharp from 'sharp';
 
 import {
-    COIN_IMAGE_SIZES,
     FILES_CRYPTOICONS_PATH,
     RATE_LIMIT_PER_MINUTE,
     RUN_LIMIT_SECONDS,
@@ -14,6 +13,35 @@ import {
 import { CoinListData } from './types';
 import { getCoinData, getCoinList, getUpdatedIconsList } from './utils/fetchCoins';
 import { sleep } from './utils/sleep';
+import {
+    COIN_IMAGE_QUALITIES,
+    COIN_IMAGE_SIZES,
+    createCoinImageName,
+    createCoinImageNameLegacy,
+} from '../src/coinImages';
+
+function writeImageSync(fileName: string, imageBuffer: Buffer) {
+    const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
+
+    fs.writeFileSync(destinationFile, Buffer.from(imageBuffer));
+}
+
+async function resizeImage(imageBuffer: ArrayBuffer, size: number) {
+    const fullQualityImageBuffer = await sharp(imageBuffer)
+        .resize(size, size)
+        .webp({ quality: 100 })
+        .toBuffer();
+
+    const lossLessImageBuffer = await sharp(imageBuffer)
+        .resize(size, size)
+        .webp({ lossless: true })
+        .toBuffer();
+
+    // sometimes lossless image is much smaller than 100 quality compressed image
+    return fullQualityImageBuffer.byteLength < lossLessImageBuffer.byteLength
+        ? fullQualityImageBuffer
+        : lossLessImageBuffer;
+}
 
 const updateIcon = async (coin: CoinListData) => {
     console.log('Start icon updating for:', coin.id);
@@ -48,40 +76,38 @@ const updateIcon = async (coin: CoinListData) => {
     try {
         const originImageBuffer = await originImage.arrayBuffer();
 
-        for (const [size, COIN_IMAGE_SIZE] of Object.entries(COIN_IMAGE_SIZES)) {
-            const fullQualityImageBuffer = await sharp(originImageBuffer)
-                .resize(COIN_IMAGE_SIZE, COIN_IMAGE_SIZE)
-                .webp({ quality: 100 })
-                .toBuffer();
+        const platforms = Object.entries(coinData.platforms).filter(
+            ([platform, contract]) => platform && contract,
+        );
 
-            const lossLessImageBuffer = await sharp(originImageBuffer)
-                .resize(COIN_IMAGE_SIZE, COIN_IMAGE_SIZE)
-                .webp({ lossless: true })
-                .toBuffer();
+        for (const size of COIN_IMAGE_SIZES) {
+            const finalImageBuffer = await resizeImage(originImageBuffer, size);
 
-            // sometimes lossless image is much smaller than 100 quality compressed image
-            const finalImageBuffer =
-                fullQualityImageBuffer.byteLength < lossLessImageBuffer.byteLength
-                    ? fullQualityImageBuffer
-                    : lossLessImageBuffer;
-
-            const platforms = Object.entries(coinData.platforms).filter(
-                ([platform, contract]) => platform && contract,
-            );
-            if (platforms.length > 0) {
+            for (const quality of COIN_IMAGE_QUALITIES) {
                 platforms.forEach(([platform, contract]) => {
                     const name = `${platform}--${contract}`;
-                    const fileName = `${encodeURIComponent(name)}${size !== '1x' ? `@${size}` : ''}.webp`;
-                    const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
 
-                    fs.writeFileSync(destinationFile, Buffer.from(finalImageBuffer));
+                    const fileName = createCoinImageName(name, { size, quality });
+                    writeImageSync(fileName, finalImageBuffer);
+
+                    // Make sure it's backwards compatible for older versions of the Trezor Suite
+                    if (size === 24) {
+                        const fileNameLegacy = createCoinImageNameLegacy(name, quality);
+                        writeImageSync(fileNameLegacy, finalImageBuffer);
+                    }
                 });
+
+                const name = coinData.id;
+
+                const fileName = createCoinImageName(name, { size, quality });
+                writeImageSync(fileName, finalImageBuffer);
+
+                // Make sure it's backwards compatible for older versions of the Trezor Suite
+                if (size === 24) {
+                    const fileNameLegacy = createCoinImageNameLegacy(name, quality);
+                    writeImageSync(fileNameLegacy, finalImageBuffer);
+                }
             }
-
-            const fileName = `${encodeURIComponent(coinData.id)}${size !== '1x' ? `@${size}` : ''}.webp`;
-            const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
-
-            fs.writeFileSync(destinationFile, Buffer.from(finalImageBuffer));
         }
     } catch (error) {
         console.error('Error:', error);
