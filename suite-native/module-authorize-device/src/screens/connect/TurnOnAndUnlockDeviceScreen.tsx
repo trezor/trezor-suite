@@ -19,8 +19,8 @@ import {
 } from '@suite-native/navigation';
 import { TimerId } from '@trezor/type-utils';
 
-import { BluetoothPairingHelpButton } from '../../components/connect/BluetoothPairingHelpButton';
-import { BluetoothPairingHints } from '../../components/connect/BluetoothPairingHints';
+import { BluetoothPairingAnimation } from '../../components/connect/BluetoothPairingAnimation';
+import { BluetoothPairingSettings } from '../../components/connect/BluetoothPairingSettings';
 import { ConnectDeviceScreen } from '../../components/connect/ConnectDeviceScreen';
 
 type NavigationProps = StackNavigationProps<
@@ -41,35 +41,65 @@ export const TurnOnAndUnlockDeviceScreen = () => {
         navigation.replace(AuthorizeDeviceStackRoutes.RemoveBluetoothDevice);
     }, [navigation]);
 
-    const setBluetoothPairingAlertTimeout = useCallback(() => {
-        timeoutIdRef.current = setTimeout(
+    const showBluetoothPairingSettingsAlert = useCallback(() => {
+        setTimeout(
             () =>
                 showAlert({
                     type: 'bluetoothPairing',
-                    title: <Translation id="moduleConnectDevice.helpModal.pairing.altTitle" />,
+                    title: (
+                        <Translation id="moduleConnectDevice.helpModal.pairing.settings.title" />
+                    ),
+                    description: (
+                        <Translation id="moduleConnectDevice.helpModal.pairing.settings.description" />
+                    ),
                     primaryButtonTitle: (
-                        <Translation id="moduleConnectDevice.helpModal.pairing.scanAgainButton" />
+                        <Translation id="moduleConnectDevice.helpModal.pairing.settings.pairAgainButton" />
                     ),
                     primaryButtonVariant: 'blueBold',
-                    onPressPrimaryButton: setBluetoothPairingAlertTimeout,
-                    secondaryButtonTitle: (
-                        <Translation
-                            id={
-                                hasKnownBluetoothDevices
-                                    ? 'moduleConnectDevice.helpModal.pairing.stillNotWorkingButton'
-                                    : 'generic.buttons.cancel'
-                            }
-                        />
-                    ),
+                    onPressPrimaryButton: navigateToRemoveBluetoothDeviceScreen,
+                    secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                     secondaryButtonVariant: 'blueElevation0',
-                    onPressSecondaryButton: hasKnownBluetoothDevices
-                        ? navigateToRemoveBluetoothDeviceScreen
-                        : navigation.goBack,
-                    appendix: <BluetoothPairingHints />,
+                    onPressSecondaryButton: navigation.goBack,
+                    appendix: <BluetoothPairingSettings />,
                 }),
-            15_000,
+            1, // ensures the previous alert disappears first
         );
-    }, [showAlert, hasKnownBluetoothDevices, navigateToRemoveBluetoothDeviceScreen, navigation]);
+    }, [showAlert, navigateToRemoveBluetoothDeviceScreen, navigation]);
+
+    const setBluetoothPairingHintsAlertTimeout = useCallback(() => {
+        timeoutIdRef.current = setTimeout(() => {
+            if (hasKnownBluetoothDevices) {
+                showAlert({
+                    type: 'bluetoothPairing',
+                    title: <Translation id="moduleConnectDevice.helpModal.pairing.hints.title" />,
+                    description: (
+                        <Translation id="moduleConnectDevice.helpModal.pairing.hints.description" />
+                    ),
+                    primaryButtonTitle: (
+                        <Translation id="moduleConnectDevice.helpModal.pairing.hints.stillNotWorkingButton" />
+                    ),
+                    primaryButtonVariant: 'blueBold',
+                    onPressPrimaryButton: showBluetoothPairingSettingsAlert,
+                    secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    secondaryButtonVariant: 'blueElevation0',
+                    onPressSecondaryButton: navigation.goBack,
+                    appendix: <BluetoothPairingAnimation />,
+                });
+            } else {
+                showAlert({
+                    type: 'bluetoothPairing',
+                    title: <Translation id="moduleConnectDevice.helpModal.pairing.hints.title" />,
+                    description: (
+                        <Translation id="moduleConnectDevice.helpModal.pairing.hints.description" />
+                    ),
+                    primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    primaryButtonVariant: 'blueElevation0',
+                    onPressPrimaryButton: navigation.goBack,
+                    appendix: <BluetoothPairingAnimation />,
+                });
+            }
+        }, 15_000);
+    }, [showAlert, hasKnownBluetoothDevices, showBluetoothPairingSettingsAlert, navigation]);
 
     const clearBluetoothPairingAlertTimeout = () => {
         clearTimeout(timeoutIdRef.current);
@@ -78,11 +108,11 @@ export const TurnOnAndUnlockDeviceScreen = () => {
     useFocusEffect(
         useCallback(() => {
             if (bluetoothAdapterStatus === 'enabled') {
-                setBluetoothPairingAlertTimeout();
+                setBluetoothPairingHintsAlertTimeout();
 
                 return clearBluetoothPairingAlertTimeout;
             }
-        }, [bluetoothAdapterStatus, setBluetoothPairingAlertTimeout]),
+        }, [bluetoothAdapterStatus, setBluetoothPairingHintsAlertTimeout]),
     );
 
     useEffect(() => {
@@ -95,14 +125,7 @@ export const TurnOnAndUnlockDeviceScreen = () => {
     useBluetoothManager();
 
     return (
-        <ConnectDeviceScreen
-            helpButton={
-                <BluetoothPairingHelpButton
-                    onShowAlert={clearBluetoothPairingAlertTimeout}
-                    onHideAlert={setBluetoothPairingAlertTimeout}
-                />
-            }
-        >
+        <ConnectDeviceScreen>
             <TurnOnAndUnlockDeviceScreenContent />
         </ConnectDeviceScreen>
     );
