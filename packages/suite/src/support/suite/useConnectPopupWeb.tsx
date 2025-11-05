@@ -34,7 +34,6 @@ export const useConnectPopupWeb = () => {
 
     useEffect(() => {
         const onMessage = async (event: MessageEvent) => {
-            console.log('onMessage', event.data);
             if (event.data?.type === 'channel-handshake-request') {
                 postMessageToParent({ type: 'channel-handshake-confirm' });
             } else if (event.data.type === POPUP.HANDSHAKE) {
