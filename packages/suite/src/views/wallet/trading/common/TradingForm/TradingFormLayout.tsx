@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 
 import { Context } from '@suite-common/message-system';
@@ -8,7 +10,6 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingFeaturedOffers } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffers';
-import { TradingFormInputs } from 'src/views/wallet/trading/common/TradingForm/TradingFormInputs';
 import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
@@ -18,7 +19,11 @@ const TradingFormLayoutWrapper = styled.form`
     ${TradingWrapper}
 `;
 
-export const TradingFormLayout = () => {
+interface TradingFormLayoutProps {
+    children: ReactNode;
+}
+
+export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     return (
@@ -27,7 +32,7 @@ export const TradingFormLayout = () => {
 
             <TradingFormLayoutWrapper>
                 <ReceiveAddressModalControlsProvider>
-                    <TradingFormInputs />
+                    {children}
                     <Card>
                         <TradingFormOffer />
                     </Card>
