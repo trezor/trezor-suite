@@ -3,7 +3,7 @@ import { useTheme } from 'styled-components';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
-import { Box, Column, NewButton } from '@trezor/components';
+import { Box, Button, Column } from '@trezor/components';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
@@ -47,7 +47,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
                 />
             ))}
             <Box backgroundColor={theme.backgroundSurfaceElevation1} borderRadius={12}>
-                <NewButton
+                <Button
                     intent="neutral"
                     priority="secondary"
                     iconLeft="trezorDevices"
@@ -56,7 +56,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
                     onClick={openDeviceConnectionModal}
                 >
                     <Translation id="TR_CONNECT_DEVICE" />
-                </NewButton>
+                </Button>
             </Box>
         </Column>
     );

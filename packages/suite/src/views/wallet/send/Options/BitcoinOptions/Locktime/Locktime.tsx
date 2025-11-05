@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { datetimeToLocktime } from '@suite-common/wallet-utils';
-import { Card, NewIconButton, Row, Select, Tooltip } from '@trezor/components';
+import { Card, IconButton, Row, Select, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { TextColumn } from 'src/components/suite';
@@ -114,7 +114,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                     }
                     description={translationString('LOCKTIME_DESCRIPTION')}
                 />
-                <NewIconButton icon="x" intent="neutral" priority="secondary" onClick={close} />
+                <IconButton icon="x" intent="neutral" priority="secondary" onClick={close} />
             </Row>
             {locktimeOption == 'block' ? (
                 <LocktimeBlockHeight rightContent={locktimeOptionSelect} />

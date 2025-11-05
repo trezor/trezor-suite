@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { NewButton } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -40,7 +40,7 @@ const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
     return (
         <CoordinatorVersionContainer>
             Build{' '}
-            <NewButton
+            <Button
                 intent="neutral"
                 priority="secondary"
                 iconRight="arrowUpRight"
@@ -48,7 +48,7 @@ const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
                 margin={{ left: spacings.xxs }}
             >
                 {version.commitHash}
-            </NewButton>
+            </Button>
         </CoordinatorVersionContainer>
     );
 };

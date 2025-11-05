@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { Box, Card, Modal, NewIconButton } from '@trezor/components';
+import { Box, Card, IconButton, Modal } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { DeviceAnimation } from '@trezor/product-components';
@@ -160,7 +160,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                         shape="ROUNDED"
                     />
                     <Box position={{ type: 'absolute', bottom: '8px', left: '8px' }}>
-                        <NewIconButton
+                        <IconButton
                             icon="arrowClockwiseFilled"
                             intent="neutral"
                             size="small"

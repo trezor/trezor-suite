@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Divider, NewIconButton, Row, Tabs } from '@trezor/components';
+import { Divider, IconButton, Row, Tabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -47,12 +47,7 @@ export const Notifications = (props: NotificationsProps) => {
                     </Tabs.Item>
                 </Tabs>
                 {props.onCancel && (
-                    <NewIconButton
-                        intent="neutral"
-                        priority="secondary"
-                        icon="x"
-                        onClick={onCancel}
-                    />
+                    <IconButton intent="neutral" priority="secondary" icon="x" onClick={onCancel} />
                 )}
             </Row>
             <Divider margin={{ top: 0, bottom: spacings.md }} />

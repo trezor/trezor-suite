@@ -1,6 +1,6 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { Card, Column, H3, Icon, NewButton, Paragraph, Row, Tooltip } from '@trezor/components';
+import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -54,14 +54,14 @@ export const NewProviderCard = () => {
                     </Column>
 
                     <Tooltip content={stakingMessageContent}>
-                        <NewButton
+                        <Button
                             onClick={openStakeInANutshellModal}
                             isDisabled={isStakingDisabled}
                             iconLeft={isStakingDisabled ? 'info' : undefined}
                             data-testid="@wallet/staking/empty-card/start-staking-button"
                         >
                             <Translation id="TR_STAKING_UPDATE_PROVIDER" />
-                        </NewButton>
+                        </Button>
                     </Tooltip>
                 </Column>
             </Row>

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Image, NewButton, variables } from '@trezor/components';
+import { Button, Image, variables } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -58,9 +58,9 @@ export const TradingDetailBuyPaymentPaymentSuccessful = ({ account }: PaymentSuc
             <Description>
                 <Translation id="TR_BUY_DETAIL_SUCCESS_TEXT" />
             </Description>
-            <NewButton onClick={handleClick}>
+            <Button onClick={handleClick}>
                 <Translation id="TR_BUY_DETAIL_SUCCESS_BUTTON" />
-            </NewButton>
+            </Button>
         </Wrapper>
     );
 };

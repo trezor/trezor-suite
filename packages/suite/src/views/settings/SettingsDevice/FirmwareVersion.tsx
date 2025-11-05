@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { getChangelogUrl } from '@suite-common/suite-utils';
-import { NewButton, Tooltip } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -65,7 +65,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     };
 
     const GithubButton = () => (
-        <NewButton
+        <Button
             intent="neutral"
             priority="secondary"
             size="small"
@@ -73,7 +73,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             isDisabled={!revision}
         >
             {currentFwVersion}
-        </NewButton>
+        </Button>
     );
 
     return (

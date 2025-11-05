@@ -11,10 +11,10 @@ import { Action } from '@suite-common/suite-types';
 import {
     Banner,
     BannerVariant,
+    Button,
     Column,
     Divider,
     Modal,
-    NewButton,
     useElevation,
 } from '@trezor/components';
 import { mapVariantToBackgroundColor } from '@trezor/components/src/components/Banner/utils';
@@ -113,7 +113,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                 isInApp={!!allManuallyAddedMessageIds?.[message.id]}
                             />
                             <Column alignItems="flex-end" gap={spacings.xs}>
-                                <NewButton
+                                <Button
                                     size="small"
                                     iconLeft="copy"
                                     intent="brand"
@@ -124,16 +124,16 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                                     }
                                 >
                                     Copy to clipboard
-                                </NewButton>
+                                </Button>
                                 {!!allManuallyAddedMessageIds?.[message.id] && (
-                                    <NewButton
+                                    <Button
                                         size="small"
                                         iconLeft="trash"
                                         intent="critical"
                                         onClick={() => removeMessage(message.id)}
                                     >
                                         Remove
-                                    </NewButton>
+                                    </Button>
                                 )}
                             </Column>
                         </Column>

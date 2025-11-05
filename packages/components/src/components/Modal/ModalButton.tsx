@@ -1,10 +1,10 @@
 import { ModalContext, useModalContext } from './ModalContext';
 import { ModalVariant } from './types';
-import { NewButton, NewButtonProps } from '../buttons/NewButton/NewButton';
+import { Button, ButtonProps } from '../buttons/Button/Button';
 
 const mapVariantToIntent = (
     variant: ModalVariant | undefined,
-): NonNullable<NewButtonProps['intent']> => {
+): NonNullable<ButtonProps['intent']> => {
     switch (variant) {
         case 'info':
             return 'info';
@@ -23,15 +23,15 @@ export const ModalButton = ({
     size = 'large',
     minWidth = 150,
     ...rest
-}: NewButtonProps) => {
+}: ButtonProps) => {
     const { variant: modalVariant } = useModalContext();
     const resolvedIntent = intent ?? mapVariantToIntent(modalVariant);
 
     return (
         <ModalContext.Provider value={{ variant: modalVariant }}>
-            <NewButton intent={resolvedIntent} size={size} minWidth={minWidth} {...rest}>
+            <Button intent={resolvedIntent} size={size} minWidth={minWidth} {...rest}>
                 {children}
-            </NewButton>
+            </Button>
         </ModalContext.Provider>
     );
 };

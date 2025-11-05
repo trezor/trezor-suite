@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { NewButton, variables } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const AddRecipientButton = styled(NewButton)`
+const AddRecipientButton = styled(Button)`
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
         width: 100%;
     }

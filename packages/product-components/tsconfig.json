@@ -20,9 +20,6 @@
             "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -31,11 +28,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../components" },
         { "path": "../device-utils" },
-        { "path": "../dom-utils" },
-        { "path": "../env-utils" },
-        { "path": "../react-utils" },
         { "path": "../theme" },
-        { "path": "../urls" },
         { "path": "../utils" },
         { "path": "../eslint" }
     ]

@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
-import { Icon, NewButton } from '@trezor/components';
+import { Button, Icon } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import {
@@ -78,7 +78,7 @@ const ToastNotification = ({
     };
 
     const actionButton = action && (
-        <NewButton
+        <Button
             intent={mapActionVariantToIntent(action.variant)}
             onClick={action.onClick}
             size="small"
@@ -93,7 +93,7 @@ const ToastNotification = ({
             }
         >
             <Translation id={action.label} />
-        </NewButton>
+        </Button>
     );
 
     return (

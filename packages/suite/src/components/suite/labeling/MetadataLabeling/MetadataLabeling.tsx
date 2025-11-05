@@ -6,7 +6,7 @@ import {
     processMetadataMessageThunk,
     selectShouldOfferSecureSync,
 } from '@suite-common/local-first-storage';
-import { DropdownMenuItemProps, NewButton, Row, Text, Tooltip } from '@trezor/components';
+import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
@@ -65,12 +65,12 @@ const Label = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const LabelButton = styled(NewButton)`
+const LabelButton = styled(Button)`
     overflow: hidden;
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(NewButton)<{ $isVisible?: boolean }>`
+const ActionButton = styled(Button)<{ $isVisible?: boolean }>`
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 `;
 
@@ -99,7 +99,7 @@ const LabelContainer = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const RelativeButton = styled(NewButton)`
+const RelativeButton = styled(Button)`
     position: relative;
     overflow: hidden;
     text-align: left;
@@ -559,7 +559,7 @@ export const MetadataLabeling = ({
                 )}
 
                 {showSuccess && !editActive && (
-                    <NewButton
+                    <Button
                         intent="brand"
                         priority="secondary"
                         data-testid={`${dataTestBase}/success`}
@@ -567,7 +567,7 @@ export const MetadataLabeling = ({
                         size="small"
                     >
                         {l10nLabelling.edited}
-                    </NewButton>
+                    </Button>
                 )}
             </LabelContainer>
         </Tooltip>

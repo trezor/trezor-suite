@@ -1,6 +1,6 @@
 import { ChangeEventHandler } from 'react';
 
-import { NewButton } from '@trezor/components';
+import { Button } from '@trezor/components';
 
 import { Row } from './Row';
 import type { FieldBasic } from '../../types';
@@ -26,9 +26,7 @@ const File = ({ disabled, field, onChange }: FileProps) => {
 
     return (
         <Row style={{ cursor: disabled ? 'default' : 'pointer' }}>
-            <NewButton onClick={() => document!.getElementById('files')?.click()}>
-                Chose File
-            </NewButton>
+            <Button onClick={() => document!.getElementById('files')?.click()}>Chose File</Button>
 
             <input
                 style={{ display: 'none' }}

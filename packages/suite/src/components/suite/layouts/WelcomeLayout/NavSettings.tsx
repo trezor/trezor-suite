@@ -1,4 +1,4 @@
-import { NewIconButton, Tooltip } from '@trezor/components';
+import { IconButton, Tooltip } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -11,7 +11,7 @@ export const NavSettings = () => {
 
     return (
         <Tooltip content={<Translation id="TR_SETTINGS" />}>
-            <NewIconButton
+            <IconButton
                 icon="gear"
                 intent="neutral"
                 priority="secondary"

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { NewIconButton } from '@trezor/components';
+import { IconButton } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { setFlag } from '../../../actions/suite/suiteActions';
@@ -22,7 +22,7 @@ type CloseButtonProps = {
 
 export const CloseButton = ({ onClose, isInverse = false }: CloseButtonProps) => (
     <CloseButtonContainer>
-        <NewIconButton
+        <IconButton
             icon="x"
             intent="neutral"
             priority="secondary"

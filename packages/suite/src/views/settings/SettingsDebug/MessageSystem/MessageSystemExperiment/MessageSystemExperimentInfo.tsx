@@ -6,7 +6,7 @@ import {
     getInclusionFromInstanceId,
     messageSystemActions,
 } from '@suite-common/message-system';
-import { Column, Icon, InfoItem, NewButton, Range } from '@trezor/components';
+import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
 import { useDebounce } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -84,7 +84,7 @@ export const MessageSystemExperimentInfo = ({
             />
 
             <Column alignItems="flex-end">
-                <NewButton
+                <Button
                     size="small"
                     intent="warning"
                     iconLeft="arrowCounterClockwise"
@@ -92,7 +92,7 @@ export const MessageSystemExperimentInfo = ({
                     onClick={onResetInclusion}
                 >
                     Reset inclusion
-                </NewButton>
+                </Button>
             </Column>
         </Column>
     );

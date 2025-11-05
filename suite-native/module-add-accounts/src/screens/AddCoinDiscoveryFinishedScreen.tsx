@@ -97,7 +97,7 @@ export const AddCoinDiscoveryFinishedScreen = ({
                         onPress={handleAddAccount}
                         testID="@add-account/after-discovery/button-add-new"
                     >
-                        <Translation id="moduleAddAccounts.coinDiscoveryFinishedScreen.addNewButton" />
+                        <Translation id="moduleAddAccounts.coinDiscoveryFinishedScreen.addButton" />
                     </Button>
                 </Box>
             </Card>

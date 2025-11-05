@@ -7,10 +7,10 @@ import {
 } from '@suite-common/wallet-core';
 import {
     Box,
+    Button,
     Column,
     Dropdown,
     DropdownRef,
-    NewButton,
     Paragraph,
     Radio,
     Row,
@@ -68,7 +68,7 @@ export const FilterAction = () => {
                             <Translation id="TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP" />
                         </Paragraph>
                     </Box>
-                    <NewButton
+                    <Button
                         intent="neutral"
                         priority="secondary"
                         size="small"
@@ -76,7 +76,7 @@ export const FilterAction = () => {
                         data-testid="@hideScamTransactionsTooltip/gotIt"
                     >
                         <Translation id="TR_GOT_IT_BUTTON" />
-                    </NewButton>
+                    </Button>
                 </Row>
             }
         >

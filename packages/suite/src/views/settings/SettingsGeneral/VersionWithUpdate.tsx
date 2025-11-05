@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { NewButton, NewButtonProps } from '@trezor/components';
+import { Button, ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -39,7 +39,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
     const dispatch = useDispatch();
     const openChangelog = () => dispatch(openJustUpdatedChangelog());
     const url = useExternalLink(getReleaseUrl(appVersion));
-    const commonButtonProps: Partial<NewButtonProps> = {
+    const commonButtonProps: Partial<ButtonProps> = {
         'data-testid': '@settings/suite-version',
         intent: 'neutral',
         priority: 'secondary',
@@ -60,22 +60,18 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                     version: (
                         <Container>
                             {isDesktop() ? (
-                                <NewButton
+                                <Button
                                     onClick={() => {
                                         openChangelog();
                                     }}
                                     {...commonButtonProps}
                                 >
                                     {buttonLabel}
-                                </NewButton>
+                                </Button>
                             ) : (
-                                <NewButton
-                                    href={url}
-                                    iconRight="arrowUpRight"
-                                    {...commonButtonProps}
-                                >
+                                <Button href={url} iconRight="arrowUpRight" {...commonButtonProps}>
                                     {buttonLabel}
-                                </NewButton>
+                                </Button>
                             )}
                         </Container>
                     ),
@@ -95,13 +91,13 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                                         href={getReleaseUrl(desktopUpdateState.latest.version)}
                                         variant="nostyle"
                                     >
-                                        <NewButton
+                                        <Button
                                             intent="critical"
                                             size="small"
                                             iconRight="arrowUpRight"
                                         >
                                             {desktopUpdateState.latest.version}
-                                        </NewButton>
+                                        </Button>
                                     </TrezorLink>
                                 ),
                             }}

@@ -18,7 +18,7 @@ import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Row } from '../../Flex/Flex';
 import { IconName } from '../../Icon/Icon';
-import { NewIconButton } from '../../buttons/NewIconButton/NewIconButton';
+import { IconButton } from '../../buttons/IconButton/IconButton';
 import { mapElevationToButtonOnBackground } from '../../buttons/buttonStyleUtils';
 import { mapSizeToBorderRadius } from '../../buttons/utils';
 
@@ -143,7 +143,7 @@ export const InputButton = ({
                 {placeholder}
             </HiddenPlaceholder>
             <Row alignItems="stretch">
-                <NewIconButton
+                <IconButton
                     icon={isDirty ? 'xCircleFilled' : iconName}
                     onClick={isDirty ? clear : toggle}
                     intent="neutral"

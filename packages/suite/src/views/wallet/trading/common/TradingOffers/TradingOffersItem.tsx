@@ -7,7 +7,7 @@ import {
     sellUtils,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { Badge, Card, NewButton, Row, Text } from '@trezor/components';
+import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -182,11 +182,11 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                     <ActionsOfferColumn>
                         <ButtonWrapper>
                             {quote.status === 'LOGIN_REQUEST' ? (
-                                <NewButton width="100%" onClick={() => selectQuote(quote)}>
+                                <Button width="100%" onClick={() => selectQuote(quote)}>
                                     <Translation id="TR_LOGIN_PROCEED" />
-                                </NewButton>
+                                </Button>
                             ) : (
-                                <NewButton
+                                <Button
                                     width="100%"
                                     isLoading={isFormLoading}
                                     isDisabled={!!quote.error || tradingDeviceDisconnected}
@@ -200,7 +200,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                                                 : 'TR_TRADING_OFFERS_SELECT'
                                         }
                                     />
-                                </NewButton>
+                                </Button>
                             )}
                         </ButtonWrapper>
                     </ActionsOfferColumn>

@@ -12,7 +12,7 @@ import { TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { NewButtonIntent, NewButtonPriority, NewButtonSize } from '../types';
+import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,
@@ -22,16 +22,16 @@ import {
 } from '../utils';
 import { mapSizeToPadding } from './utils';
 
-export const allowedNewIconButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
-export type AllowedNewIconButtonFrameProps = Pick<
+export const allowedIconButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export type AllowedIconButtonFrameProps = Pick<
     FrameProps,
-    (typeof allowedNewIconButtonFrameProps)[number]
+    (typeof allowedIconButtonFrameProps)[number]
 >;
 
-type ButtonContainerProps = TransientProps<AllowedNewIconButtonFrameProps> & {
-    $size: NewButtonSize;
-    $priority: NewButtonPriority;
-    $intent: NewButtonIntent;
+type ButtonContainerProps = TransientProps<AllowedIconButtonFrameProps> & {
+    $size: ButtonSize;
+    $priority: ButtonPriority;
+    $intent: ButtonIntent;
     $isInverse: boolean;
     disabled: boolean;
 };
@@ -52,19 +52,19 @@ type SelectedHTMLButtonProps = Pick<
     'onClick' | 'type' | 'tabIndex'
 >;
 
-export type NewIconButtonProps = SelectedHTMLButtonProps &
-    AllowedNewIconButtonFrameProps & {
-        size?: NewButtonSize;
+export type IconButtonProps = SelectedHTMLButtonProps &
+    AllowedIconButtonFrameProps & {
+        size?: ButtonSize;
         isDisabled?: boolean;
         isInverse?: boolean;
         isLoading?: boolean;
         icon: IconName;
         'data-testid'?: string;
-        intent?: NewButtonIntent;
-        priority?: NewButtonPriority;
+        intent?: ButtonIntent;
+        priority?: ButtonPriority;
     };
 
-export const NewIconButton = ({
+export const IconButton = ({
     'data-testid': dataTestId,
     icon,
     intent = 'brand',
@@ -77,9 +77,9 @@ export const NewIconButton = ({
     type = 'button',
     priority = 'primary',
     ...rest
-}: NewIconButtonProps) => {
+}: IconButtonProps) => {
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedNewIconButtonFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedIconButtonFrameProps);
     const color = mapPropsToColor(intent, priority, isDisabled, isInverse, theme);
 
     const iconProps = {

@@ -1,4 +1,4 @@
-import { Flex, NewButton, Paragraph } from '@trezor/components';
+import { Button, Flex, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { INVITY_SCHEDULE_OF_FEES } from '@trezor/urls';
 
@@ -9,7 +9,7 @@ export const TradingFormFeesDisclamer = () => (
         <Paragraph variant="tertiary">
             <Translation id="TR_TRADING_FEES_CALCULATION_DISCLAIMER" />
         </Paragraph>
-        <NewButton
+        <Button
             href={INVITY_SCHEDULE_OF_FEES}
             iconRight="arrowUpRight"
             intent="neutral"
@@ -17,6 +17,6 @@ export const TradingFormFeesDisclamer = () => (
             size="small"
         >
             <Translation id="TR_LEARN_MORE" />
-        </NewButton>
+        </Button>
     </Flex>
 );

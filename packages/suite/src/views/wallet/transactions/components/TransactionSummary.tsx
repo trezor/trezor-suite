@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { Card, Column, NewButton, Row, variables } from '@trezor/components';
+import { Button, Card, Column, Row, variables } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
@@ -112,14 +112,14 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                 <Row height={320} overflow="visible" alignItems="stretch">
                                     <ErrorMessage>
                                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                                        <NewButton
+                                        <Button
                                             onClick={() => onRefresh()}
                                             iconLeft="repeat"
                                             intent="neutral"
                                             priority="secondary"
                                         >
                                             <Translation id="TR_RETRY" />
-                                        </NewButton>
+                                        </Button>
                                     </ErrorMessage>
                                 </Row>
                             </Card>

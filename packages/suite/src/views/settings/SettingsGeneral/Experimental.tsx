@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Banner, Checkbox, Column, NewButton, Row, Switch } from '@trezor/components';
+import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
@@ -60,9 +60,9 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
             />
             <ActionColumn>
                 {config.routeName ? (
-                    <NewButton intent="neutral" priority="secondary" onClick={handleClick}>
+                    <Button intent="neutral" priority="secondary" onClick={handleClick}>
                         <Translation id="TR_GO_TO_EXP_FEATURE" />
-                    </NewButton>
+                    </Button>
                 ) : (
                     <Checkbox isChecked={checked} onClick={onChangeFeature} />
                 )}

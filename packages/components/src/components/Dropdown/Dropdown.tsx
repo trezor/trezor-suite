@@ -5,7 +5,7 @@ import { IconName } from '../Icon/Icon';
 import { DropdownMenuItemProps, Menu, MenuProps } from '../Menu/Menu';
 import { Popover, PopoverRef } from '../Popover/Popover';
 import { PopoverPlacement } from '../Popover/utils';
-import { NewIconButton } from '../buttons/NewIconButton/NewIconButton';
+import { IconButton } from '../buttons/IconButton/IconButton';
 
 export const allowedDropdownFrameProps = ['width', 'minWidth'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDropdownFrameProps)[number]>;
@@ -71,7 +71,7 @@ export const Dropdown = forwardRef(
                     />
                 }
             >
-                <NewIconButton
+                <IconButton
                     intent="neutral"
                     priority="secondary"
                     icon={iconName}

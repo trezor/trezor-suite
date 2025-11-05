@@ -345,7 +345,7 @@ export const messages = {
                 plural: 'We’ve found {count} {coin} accounts',
             },
             orSeparator: 'OR',
-            addNewButton: 'Add new',
+            addButton: 'Add new',
         },
         selectAccountTypeScreen: {
             title: 'Select <symbol></symbol> account type',

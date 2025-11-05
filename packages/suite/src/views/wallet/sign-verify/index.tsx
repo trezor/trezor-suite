@@ -3,11 +3,11 @@ import { FieldError } from 'react-hook-form';
 
 import { getInputState } from '@suite-common/wallet-utils';
 import {
+    Button,
     Card,
     Column,
     Divider,
     Input,
-    NewButton,
     Row,
     SelectBar,
     Switch,
@@ -134,7 +134,7 @@ const SignVerify = () => {
         >
             <WalletSubpageHeading title={canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE'}>
                 {isFormDirty && (
-                    <NewButton
+                    <Button
                         type="button"
                         size="small"
                         intent="neutral"
@@ -142,7 +142,7 @@ const SignVerify = () => {
                         onClick={resetForm}
                     >
                         <Translation id="TR_CLEAR_ALL" />
-                    </NewButton>
+                    </Button>
                 )}
             </WalletSubpageHeading>
 
@@ -270,7 +270,7 @@ const SignVerify = () => {
                                     )}
                                     rightContent={
                                         canCopy ? (
-                                            <NewButton
+                                            <Button
                                                 type="button"
                                                 intent="neutral"
                                                 priority="secondary"
@@ -285,7 +285,7 @@ const SignVerify = () => {
                                                             : 'TR_COPY_SIGNED_MESSAGE'
                                                     }
                                                 />
-                                            </NewButton>
+                                            </Button>
                                         ) : undefined
                                     }
                                     {...signatureProps}
@@ -300,7 +300,7 @@ const SignVerify = () => {
                                         )}
                                         rightContent={
                                             canCopy ? (
-                                                <NewButton
+                                                <Button
                                                     type="button"
                                                     intent="neutral"
                                                     priority="secondary"
@@ -311,7 +311,7 @@ const SignVerify = () => {
                                                     size="small"
                                                 >
                                                     <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                                </NewButton>
+                                                </Button>
                                             ) : undefined
                                         }
                                         {...pubKeyProps}
@@ -341,7 +341,7 @@ const SignVerify = () => {
                             </>
                         )}
                     </Column>
-                    <NewButton
+                    <Button
                         type="submit"
                         intent="brand"
                         iconLeft={isCompleted ? 'check' : undefined}
@@ -356,7 +356,7 @@ const SignVerify = () => {
                         ) : (
                             <Translation id={isCompleted ? 'TR_VERIFIED' : 'TR_VERIFY'} />
                         )}
-                    </NewButton>
+                    </Button>
                 </form>
             </Card>
         </WalletLayout>

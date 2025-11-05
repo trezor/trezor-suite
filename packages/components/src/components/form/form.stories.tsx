@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { Checkbox, Input, NewButton, Radio, Range, Select, Switch, Textarea } from '../../index';
+import { Button, Checkbox, Input, Radio, Range, Select, Switch, Textarea } from '../../index';
 import { StoryColumn } from '../../support/Story';
 
 const Heading = styled.h2``;
@@ -97,14 +97,14 @@ export const AllForms: StoryObj<typeof meta> = {
                     data-testid="input-warning-label"
                     bottomText="bottom text"
                     labelHoverRight={
-                        <NewButton
+                        <Button
                             intent="neutral"
                             priority="secondary"
                             iconLeft="qrCode"
                             onClick={() => {}}
                         >
                             Scan QR code
-                        </NewButton>
+                        </Button>
                     }
                 />
                 <Input

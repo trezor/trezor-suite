@@ -1,7 +1,7 @@
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
-import { NewButton, Paragraph, Table } from '@trezor/components';
+import { Button, Paragraph, Table } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -54,7 +54,7 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
             </Table.Cell>
 
             <Table.Cell align="end">
-                <NewButton
+                <Button
                     size="small"
                     onClick={startNetworkDiscovery}
                     isDisabled={isDiscoveryRunning}
@@ -63,7 +63,7 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
                         id="TR_STAKING_DASHBOARD_ACTIVATE"
                         values={{ networkName: name }}
                     />
-                </NewButton>
+                </Button>
             </Table.Cell>
         </Table.Row>
     );

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { NewButton, Tooltip } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
@@ -22,13 +22,13 @@ export const DeviceButton = ({
     children,
 }: DeviceButtonProps) => (
     <Tooltip maxWidth={285} content={tooltipContent}>
-        <NewButton
+        <Button
             isDisabled={isDisabled}
             isLoading={isLoading}
             onClick={onClick}
             iconLeft={mapTrezorModelToIcon[deviceModelInternal]}
         >
             {children}
-        </NewButton>
+        </Button>
     </Tooltip>
 );

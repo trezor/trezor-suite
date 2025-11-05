@@ -1,15 +1,15 @@
 import { MouseEventHandler } from 'react';
 
-import { NewButton, Paragraph, Row } from '@trezor/components';
+import { Button, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Url } from '@trezor/urls';
 
 import { LearnMoreButton } from '../suite/LearnMoreButton';
 
-type NewButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
+type ButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
 
 export type InputErrorProps = {
-    buttonProps?: NewButtonProps;
+    buttonProps?: ButtonProps;
     learnMoreUrl?: Url;
     message?: string;
 };
@@ -21,14 +21,14 @@ export const InputError = ({ buttonProps, learnMoreUrl, message }: InputErrorPro
             {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
         </Row>
         {buttonProps?.text && (
-            <NewButton
+            <Button
                 size="small"
                 intent="neutral"
                 priority="secondary"
                 onClick={buttonProps.onClick}
             >
                 {buttonProps.text}
-            </NewButton>
+            </Button>
         )}
     </Row>
 );

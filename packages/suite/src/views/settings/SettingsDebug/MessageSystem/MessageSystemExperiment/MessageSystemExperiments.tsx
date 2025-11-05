@@ -13,7 +13,7 @@ import {
     selectAllValidExperiments,
 } from '@suite-common/message-system';
 import { Experiments } from '@suite-common/suite-types';
-import { Banner, Column, Divider, Modal, NewButton } from '@trezor/components';
+import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
@@ -118,7 +118,7 @@ export const MessageSystemExperiments = ({
                                     inclusionOverride={inclusionOverride}
                                 />
                                 <Column alignItems="flex-end" gap={spacings.xs}>
-                                    <NewButton
+                                    <Button
                                         size="small"
                                         iconLeft="copy"
                                         intent="brand"
@@ -129,16 +129,16 @@ export const MessageSystemExperiments = ({
                                         }
                                     >
                                         Copy to clipboard
-                                    </NewButton>
+                                    </Button>
                                     {!!allManuallyAddedExperimentIds?.[experiment.id] && (
-                                        <NewButton
+                                        <Button
                                             size="small"
                                             iconLeft="trash"
                                             intent="critical"
                                             onClick={() => removeExperiment(experiment.id)}
                                         >
                                             Remove
-                                        </NewButton>
+                                        </Button>
                                     )}
                                 </Column>
                             </Column>

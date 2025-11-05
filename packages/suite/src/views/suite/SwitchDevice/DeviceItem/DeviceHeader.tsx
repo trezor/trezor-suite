@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { NewIconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -39,7 +39,7 @@ export const DeviceHeader = ({
     return (
         <Row gap={spacings.sm}>
             {onBackButtonClick && (
-                <NewIconButton
+                <IconButton
                     icon="caretLeft"
                     onClick={onBackButtonClick}
                     intent="neutral"
@@ -59,7 +59,7 @@ export const DeviceHeader = ({
             <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
                 {isDefaultCancelVisible && (
                     <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
-                        <NewIconButton
+                        <IconButton
                             icon="x"
                             intent="neutral"
                             priority="secondary"

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Box, H2, Icon, Image, NewButton, NewIconButton, Paragraph, Row } from '@trezor/components';
+import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -78,7 +78,7 @@ export const DesktopSuiteBanner = () => {
                         margin={{ vertical: spacings.sm, horizontal: spacings.lg }}
                     >
                         <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
-                            <NewIconButton
+                            <IconButton
                                 icon="x"
                                 onClick={handleClose}
                                 data-testid="@banner/install-desktop-suite/close-button"
@@ -102,7 +102,7 @@ export const DesktopSuiteBanner = () => {
                                 </Paragraph>
                             </TextContainer>
 
-                            <NewButton
+                            <Button
                                 intent="brand"
                                 href={href}
                                 onClick={() =>
@@ -112,7 +112,7 @@ export const DesktopSuiteBanner = () => {
                                 }
                             >
                                 <Translation id="TR_DESKTOP_APP_PROMO_GET" />
-                            </NewButton>
+                            </Button>
 
                             <OSIcons>
                                 <Icon name="appleLogo" variant="primary" />

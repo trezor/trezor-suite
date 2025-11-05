@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { NewButton, Paragraph, intermediaryTheme } from '@trezor/components';
+import { Button, Paragraph, intermediaryTheme } from '@trezor/components';
 import { LogMessage } from '@trezor/connect/src/utils/debug';
 import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
@@ -75,9 +75,9 @@ const DownloadButton = ({ array, filename }: { array: any[]; filename: string })
     };
 
     return (
-        <NewButton data-testid="@log-container/download-button" onClick={downloadArrayAsFile}>
+        <Button data-testid="@log-container/download-button" onClick={downloadArrayAsFile}>
             Download Logs
-        </NewButton>
+        </Button>
     );
 };
 

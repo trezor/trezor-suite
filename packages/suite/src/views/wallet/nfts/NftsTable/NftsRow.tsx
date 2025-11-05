@@ -12,14 +12,14 @@ import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import {
     Badge,
+    Button,
     Card,
     Column,
     Dropdown,
     Icon,
+    IconButton,
     IconCircle,
     InfoItem,
-    NewButton,
-    NewIconButton,
     Row,
     Table,
     Text,
@@ -109,7 +109,7 @@ const NftsRow = ({
                                                         value={nft.contract}
                                                     />
                                                 </Text>
-                                                <NewIconButton
+                                                <IconButton
                                                     icon="copy"
                                                     intent="neutral"
                                                     priority="secondary"
@@ -180,7 +180,7 @@ const NftsRow = ({
                             ]}
                         />
                         {!isShown && (
-                            <NewButton
+                            <Button
                                 iconLeft="eye"
                                 onClick={() => {
                                     dispatch(
@@ -197,7 +197,7 @@ const NftsRow = ({
                                 size="small"
                             >
                                 <Translation id="TR_UNHIDE" />
-                            </NewButton>
+                            </Button>
                         )}
                     </Row>
                 </Table.Cell>

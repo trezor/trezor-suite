@@ -2,14 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    NewButton,
-    NewButtonProps,
-    Select,
-    SelectProps,
-    Tooltip,
-    variables,
-} from '@trezor/components';
+import { Button, ButtonProps, Select, SelectProps, Tooltip, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const { SCREEN_SIZE } = variables;
@@ -57,16 +50,16 @@ export const ActionButton = styled(
         isTooltipActive,
         children,
         ...buttonProps
-    }: WithTooltipProps & NewButtonProps) => (
+    }: WithTooltipProps & ButtonProps) => (
         <div>
             <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
-                <NewButton
+                <Button
                     {...buttonProps}
                     margin={{ top: spacings.xxs, bottom: spacings.xxs, left: spacings.xxs }}
                     minWidth={140}
                 >
                     {children}
-                </NewButton>
+                </Button>
             </Tooltip>
         </div>
     ),

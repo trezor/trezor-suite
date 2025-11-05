@@ -10,6 +10,7 @@ import {
     Banner,
     Box,
     BulletList,
+    Button,
     Card,
     Column,
     H3,
@@ -18,7 +19,6 @@ import {
     Link,
     Modal,
     ModalProps,
-    NewButton,
     Paragraph,
     Row,
 } from '@trezor/components';
@@ -215,7 +215,7 @@ export const ConfirmValueModal = ({
                                     )}
                                 </Column>
 
-                                <NewButton
+                                <Button
                                     onClick={copy}
                                     intent="neutral"
                                     priority="secondary"
@@ -230,7 +230,7 @@ export const ConfirmValueModal = ({
                                                 : 'TR_COPY_TO_CLIPBOARD'
                                         }
                                     />
-                                </NewButton>
+                                </Button>
                             </Column>
                         </Row>
                     </Card>

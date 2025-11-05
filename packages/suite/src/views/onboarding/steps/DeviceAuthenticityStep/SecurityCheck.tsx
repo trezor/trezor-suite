@@ -5,12 +5,12 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
+    Button,
     Card,
     Column,
     Divider,
     H3,
     Icon,
-    NewButton,
     Note,
     Paragraph,
     Row,
@@ -202,7 +202,7 @@ const SecurityCheckContent = ({
         <SecurityCheckFail
             ctaSection={
                 <ButtonFlex isContentSmall={isContentBelowMobile}>
-                    <NewButton
+                    <Button
                         intent="neutral"
                         priority="secondary"
                         onClick={toggleView}
@@ -210,7 +210,7 @@ const SecurityCheckContent = ({
                         minWidth={100}
                     >
                         <Translation id="TR_BACK" />
-                    </NewButton>
+                    </Button>
                     <ContactSupport supportUrl={supportUrl} />
                 </ButtonFlex>
             }
@@ -239,7 +239,7 @@ const SecurityCheckContent = ({
                 <SecurityChecklist items={checklistItems} />
             </Column>
             <ButtonFlex isContentSmall={isContentBelowMobile}>
-                <NewButton
+                <Button
                     intent="neutral"
                     priority="secondary"
                     onClick={toggleView}
@@ -247,9 +247,9 @@ const SecurityCheckContent = ({
                     minWidth={240}
                 >
                     <Translation id={secondaryButtonText} />
-                </NewButton>
+                </Button>
                 {initialized ? (
-                    <NewButton
+                    <Button
                         data-testid="@onboarding/exit-app-button"
                         onClick={handleContinueButtonClick}
                         size="large"
@@ -257,7 +257,7 @@ const SecurityCheckContent = ({
                         minWidth={240}
                     >
                         <Translation id="TR_YES_CONTINUE" />
-                    </NewButton>
+                    </Button>
                 ) : (
                     <Tooltip
                         content={
@@ -266,7 +266,7 @@ const SecurityCheckContent = ({
                             </Note>
                         }
                     >
-                        <NewButton
+                        <Button
                             onClick={handleSetupButtonClick}
                             data-testid="@analytics/continue-button"
                             size="large"
@@ -274,7 +274,7 @@ const SecurityCheckContent = ({
                             minWidth={240}
                         >
                             <Translation id={primaryButtonTopText} />
-                        </NewButton>
+                        </Button>
                     </Tooltip>
                 )}
             </ButtonFlex>

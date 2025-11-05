@@ -1,22 +1,18 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import {
-    NewButton as NewButtonComponent,
-    NewButtonProps,
-    allowedNewButtonFrameProps,
-} from './NewButton';
+import { Button as ButtonComponent, ButtonProps, allowedButtonFrameProps } from './Button';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { newButtonIntents, newButtonPriorities, newButtonSizes } from '../types';
+import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
-const meta: Meta<NewButtonProps> = {
+const meta: Meta<ButtonProps> = {
     title: 'Buttons',
-    component: NewButtonComponent,
+    component: ButtonComponent,
 };
 
 export default meta;
 
-export const NewButton: StoryObj<NewButtonProps> = {
+export const Button: StoryObj<ButtonProps> = {
     args: {
         children: 'Placeholder',
         onClick: () => null,
@@ -29,7 +25,7 @@ export const NewButton: StoryObj<NewButtonProps> = {
         isLoading: false,
         isInverse: false,
         shortcut: undefined,
-        ...getFramePropsStory(allowedNewButtonFrameProps).args,
+        ...getFramePropsStory(allowedButtonFrameProps).args,
     },
     argTypes: {
         children: {
@@ -43,15 +39,15 @@ export const NewButton: StoryObj<NewButtonProps> = {
         },
         intent: {
             control: { type: 'select' },
-            options: newButtonIntents,
+            options: buttonIntents,
         },
         priority: {
             control: { type: 'select' },
-            options: newButtonPriorities,
+            options: buttonPriorities,
         },
         size: {
             control: { type: 'select' },
-            options: newButtonSizes,
+            options: buttonSizes,
         },
         isDisabled: {
             type: 'boolean',
@@ -73,6 +69,6 @@ export const NewButton: StoryObj<NewButtonProps> = {
         shortcut: {
             control: { type: 'object' },
         },
-        ...getFramePropsStory(allowedNewButtonFrameProps).argTypes,
+        ...getFramePropsStory(allowedButtonFrameProps).argTypes,
     },
 };

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import styled, { css } from 'styled-components';
 
-import { NewButton, Row } from '@trezor/components';
+import { Button, Row } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
@@ -133,24 +133,24 @@ export const Pagination = ({
         return (
             <Wrapper $hasPages={hasPages} {...rest}>
                 <Actions $isActive={showPrev}>
-                    <NewButton
+                    <Button
                         onClick={() => onPageSelected(currentPage - 1)}
                         iconLeft="caretLeft"
                         intent="neutral"
                         priority="secondary"
                     >
                         <Translation id="TR_PAGINATION_NEWER" />
-                    </NewButton>
+                    </Button>
                 </Actions>
                 <Actions $isActive={!isLastPage}>
-                    <NewButton
+                    <Button
                         onClick={() => onPageSelected(currentPage + 1)}
                         iconRight="caretRight"
                         intent="neutral"
                         priority="secondary"
                     >
                         <Translation id="TR_PAGINATION_OLDER" />
-                    </NewButton>
+                    </Button>
                 </Actions>
             </Wrapper>
         );
@@ -185,14 +185,14 @@ export const Pagination = ({
             {explicitNavigation && (
                 <Row alignItems="center" gap={spacings.sm} maxWidth="140px">
                     <NumberInput name="pageInput" control={control} locale={locale} size="small" />
-                    <NewButton
+                    <Button
                         intent="neutral"
                         priority="secondary"
                         onClick={goToPage}
                         isDisabled={isPageInputInvalid}
                     >
                         <Translation id="TR_PAGINATION_GO" />
-                    </NewButton>
+                    </Button>
                 </Row>
             )}
         </Wrapper>

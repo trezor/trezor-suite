@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
-import { Card, Column, InfoItem, NewButton, Paragraph, Tooltip } from '@trezor/components';
+import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -109,14 +109,14 @@ export const ClaimCard = () => {
                 </InfoItem>
 
                 <Tooltip content={claimingMessageContent}>
-                    <NewButton
+                    <Button
                         onClick={openClaimModal}
                         isDisabled={isClaimingDisabled}
                         iconLeft={isClaimingDisabled ? 'info' : undefined}
                         data-testid="@account/staking/claim-button"
                     >
                         <Translation id="TR_STAKE_CLAIM" />
-                    </NewButton>
+                    </Button>
                 </Tooltip>
             </Column>
         </Card>

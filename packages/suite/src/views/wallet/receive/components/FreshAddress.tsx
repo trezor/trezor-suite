@@ -7,12 +7,12 @@ import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/walle
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import {
     Banner,
+    Button,
+    ButtonProps,
     Card,
     GradientOverlay,
     H4,
     InfoItem,
-    NewButton,
-    NewButtonProps,
     Paragraph,
     Row,
     Text,
@@ -134,7 +134,7 @@ export const FreshAddress = ({
         return null;
     };
 
-    const buttonRevealAddressProps: Partial<NewButtonProps> = {
+    const buttonRevealAddressProps: Partial<ButtonProps> = {
         'data-testid': '@wallet/receive/reveal-address-button',
         onClick: handleAddressReveal,
         isDisabled:
@@ -166,13 +166,13 @@ export const FreshAddress = ({
                 </InfoItem>
                 <Tooltip content={buttonTooltipContent()}>
                     {isDeviceConnected ? (
-                        <NewButton iconLeft="trezorDevices" {...buttonRevealAddressProps}>
+                        <Button iconLeft="trezorDevices" {...buttonRevealAddressProps}>
                             <Translation id="RECEIVE_ADDRESS_REVEAL" />
-                        </NewButton>
+                        </Button>
                     ) : (
-                        <NewButton {...buttonRevealAddressProps} intent="warning">
+                        <Button {...buttonRevealAddressProps} intent="warning">
                             <Translation id="RECEIVE_UNVERIFIED_ADDRESS_REVEAL" />
-                        </NewButton>
+                        </Button>
                     )}
                 </Tooltip>
             </Row>

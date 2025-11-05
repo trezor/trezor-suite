@@ -1,5 +1,5 @@
 import { selectEnabledNetworks, selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
-import { Column, H3, IconCircle, NewButton, Paragraph, Row } from '@trezor/components';
+import { Button, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -34,7 +34,7 @@ export const EmptyWallet = () => {
                             <CoinLogo key={network} symbol={network} size={16} />
                         ))}
                     </Row>
-                    <NewButton
+                    <Button
                         intent="neutral"
                         priority="secondary"
                         iconLeft="plus"
@@ -44,7 +44,7 @@ export const EmptyWallet = () => {
                         }}
                     >
                         <Translation id="TR_ADD" />
-                    </NewButton>
+                    </Button>
                 </Row>
             )}
         </Column>

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H4, NewButton, Spinner } from '@trezor/components';
+import { Button, H4, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -24,7 +24,7 @@ export const TradingDetailExchangePaymentSending = ({ supportUrl }: PaymentSendi
             <Translation id="TR_EXCHANGE_DETAIL_SENDING_TITLE" />
         </H4>
         {supportUrl && (
-            <NewButton
+            <Button
                 intent="neutral"
                 priority="secondary"
                 href={supportUrl}
@@ -32,7 +32,7 @@ export const TradingDetailExchangePaymentSending = ({ supportUrl }: PaymentSendi
                 margin={{ top: spacings.xxxxl }}
             >
                 <Translation id="TR_EXCHANGE_DETAIL_SENDING_SUPPORT" />
-            </NewButton>
+            </Button>
         )}
     </Wrapper>
 );

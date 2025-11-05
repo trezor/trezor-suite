@@ -1,5 +1,5 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NewButton, Row, Text } from '@trezor/components';
+import { Button, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
@@ -30,9 +30,9 @@ export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProp
             >
                 <Translation id="TR_TRADING_TRANS_ID" /> {transactionId}
             </Text>
-            <NewButton size="small" intent="neutral" priority="secondary" onClick={copy}>
+            <Button size="small" intent="neutral" priority="secondary" onClick={copy}>
                 <Translation id="TR_COPY_TO_CLIPBOARD" />
-            </NewButton>
+            </Button>
         </Row>
     );
 };

@@ -1,10 +1,10 @@
-import { IconName, NewButton, NewButtonProps, NewIconButton } from '@trezor/components';
+import { Button, ButtonProps, IconButton, IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
 
 type HeaderActionButtonProps = Pick<
-    NewButtonProps,
+    ButtonProps,
     'onClick' | 'data-testid' | 'size' | 'isDisabled' | 'children' | 'intent' | 'priority'
 > & {
     icon: IconName;
@@ -22,7 +22,7 @@ export const HeaderActionButton = ({
 }: HeaderActionButtonProps) => (
     <>
         <ConditionalRender container="content" maxWidth={breakpoints.mobile}>
-            <NewIconButton
+            <IconButton
                 icon={icon}
                 onClick={onClick}
                 data-testid={dataTestId}
@@ -33,7 +33,7 @@ export const HeaderActionButton = ({
             />
         </ConditionalRender>
         <ConditionalRender container="content" minWidth={breakpoints.mobile}>
-            <NewButton
+            <Button
                 iconLeft={icon}
                 onClick={onClick}
                 data-testid={dataTestId}
@@ -43,7 +43,7 @@ export const HeaderActionButton = ({
                 priority={priority}
             >
                 {children}
-            </NewButton>
+            </Button>
         </ConditionalRender>
     </>
 );

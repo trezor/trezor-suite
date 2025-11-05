@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H4, Image, NewButton } from '@trezor/components';
+import { Button, H4, Image } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -56,7 +56,7 @@ export const TradingDetailBuyPaymentFailed = ({ supportUrl, account }: PaymentFa
                 <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
             </Description>
             {supportUrl && (
-                <NewButton
+                <Button
                     intent="neutral"
                     priority="secondary"
                     href={supportUrl}
@@ -64,11 +64,11 @@ export const TradingDetailBuyPaymentFailed = ({ supportUrl, account }: PaymentFa
                     margin={{ top: spacings.xxl }}
                 >
                     <Translation id="TR_BUY_DETAIL_ERROR_SUPPORT" />
-                </NewButton>
+                </Button>
             )}
-            <NewButton onClick={goToBuy} margin={{ top: spacings.xxl }}>
+            <Button onClick={goToBuy} margin={{ top: spacings.xxl }}>
                 <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />
-            </NewButton>
+            </Button>
         </Wrapper>
     );
 };

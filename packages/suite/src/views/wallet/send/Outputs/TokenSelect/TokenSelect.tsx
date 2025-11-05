@@ -15,7 +15,7 @@ import {
     hasNetworkFeatures,
     isNftToken,
 } from '@suite-common/wallet-utils';
-import { AssetLogo, Card, Column, NewIconButton, Row, Text } from '@trezor/components';
+import { AssetLogo, Card, Column, IconButton, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -198,7 +198,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     </Row>
                     {!hasNoStandardTokens &&
                         hasNetworkFeatures(account, 'tokens', isDebugModeActive) && (
-                            <NewIconButton icon="caretDown" intent="neutral" priority="secondary" />
+                            <IconButton icon="caretDown" intent="neutral" priority="secondary" />
                         )}
                 </Row>
             </Card>

@@ -1,5 +1,5 @@
 import { Tooltip } from '../../Tooltip/Tooltip';
-import { NewButton } from '../../buttons/NewButton/NewButton';
+import { Button } from '../../buttons/Button/Button';
 
 export type FractionButtonProps = {
     id: string;
@@ -17,7 +17,7 @@ export const FractionButton = ({
     onClick,
 }: FractionButtonProps) => (
     <Tooltip key={id} content={tooltip} cursor="pointer">
-        <NewButton
+        <Button
             intent="neutral"
             type="button"
             size="small"
@@ -26,6 +26,6 @@ export const FractionButton = ({
             onClick={onClick}
         >
             {children}
-        </NewButton>
+        </Button>
     </Tooltip>
 );

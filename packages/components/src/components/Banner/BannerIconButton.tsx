@@ -1,8 +1,8 @@
 import { BannerContext, useBannerContext } from './BannerContext';
 import { DEFAULT_VARIANT } from './consts';
-import { NewIconButton, NewIconButtonProps } from '../buttons/NewIconButton/NewIconButton';
+import { IconButton, IconButtonProps } from '../buttons/IconButton/IconButton';
 
-const mapVariantToIconIntent = (variant: string): NewIconButtonProps['intent'] => {
+const mapVariantToIconIntent = (variant: string): IconButtonProps['intent'] => {
     switch (variant) {
         case 'info':
             return 'info';
@@ -21,7 +21,7 @@ export const BannerIconButton = ({
     icon,
     isSubtle,
     ...rest
-}: NewIconButtonProps & { isSubtle?: boolean }) => {
+}: IconButtonProps & { isSubtle?: boolean }) => {
     const { variant } = useBannerContext();
     const value = { variant: DEFAULT_VARIANT };
     const resolvedIntent = rest.intent ?? mapVariantToIconIntent(variant || DEFAULT_VARIANT);
@@ -30,7 +30,7 @@ export const BannerIconButton = ({
 
     return (
         <BannerContext.Provider value={value}>
-            <NewIconButton
+            <IconButton
                 icon={icon}
                 {...rest}
                 intent={resolvedIntent}

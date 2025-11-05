@@ -1,4 +1,4 @@
-import { NewButton, NewButtonProps } from '@trezor/components';
+import { Button, ButtonProps } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 
@@ -9,15 +9,12 @@ const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     (TrezorConnect as typeof TrezorConnectWeb).requestWebUSBDevice();
 };
 
-type WebUsbButtonProps = Omit<
-    NewButtonProps,
-    'onClick' | 'data-testid' | 'children' | 'iconRight'
-> & {
+type WebUsbButtonProps = Omit<ButtonProps, 'onClick' | 'data-testid' | 'children' | 'iconRight'> & {
     children?: React.ReactNode;
 };
 
 export const WebUsbButton = (props: WebUsbButtonProps) => (
-    <NewButton
+    <Button
         {...props}
         size={props.size ?? 'small'}
         iconLeft={props.iconLeft ?? 'magnifyingGlass'}
@@ -25,5 +22,5 @@ export const WebUsbButton = (props: WebUsbButtonProps) => (
         onClick={handleClick}
     >
         {props.children ?? <Translation id="TR_CHECK_FOR_DEVICES" />}
-    </NewButton>
+    </Button>
 );

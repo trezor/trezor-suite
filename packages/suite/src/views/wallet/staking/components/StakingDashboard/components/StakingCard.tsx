@@ -12,13 +12,13 @@ import {
 } from '@suite-common/wallet-utils';
 import {
     Badge,
+    Button,
     Card,
     Column,
     Grid,
     Icon,
     IconName,
     InfoItem,
-    NewButton,
     Paragraph,
     Row,
     SkeletonRectangle,
@@ -356,7 +356,7 @@ export const StakingCard = ({
                 <Row margin={{ top: 'auto' }} gap={spacings.xs}>
                     {!isCardanoNetworkType ? (
                         <Tooltip content={stakingMessageContent}>
-                            <NewButton
+                            <Button
                                 onClick={openStakeModal}
                                 isDisabled={isStakingDisabled}
                                 iconLeft={isStakingDisabled ? 'info' : undefined}
@@ -365,19 +365,19 @@ export const StakingCard = ({
                                 data-testid="@account/staking/stake-more-button"
                             >
                                 <Translation id="TR_STAKE_STAKE_MORE" />
-                            </NewButton>
+                            </Button>
                         </Tooltip>
                     ) : (
-                        <NewButton
+                        <Button
                             onClick={openClaimModal}
                             isDisabled={!canClaimRewards}
                             intent="brand"
                         >
                             <Translation id="TR_STAKE_CLAIM_REWARDS" />
-                        </NewButton>
+                        </Button>
                     )}
                     <Tooltip content={unstakingMessageContent}>
-                        <NewButton
+                        <Button
                             isDisabled={!canUnstake || isUnstakingDisabled || hasCardanoPendingTx}
                             onClick={openUnstakeModal}
                             iconLeft={isUnstakingDisabled ? 'info' : undefined}
@@ -392,7 +392,7 @@ export const StakingCard = ({
                                         : 'TR_STAKE_UNSTAKE_TO_CLAIM'
                                 }
                             />
-                        </NewButton>
+                        </Button>
                     </Tooltip>
                 </Row>
             </Column>

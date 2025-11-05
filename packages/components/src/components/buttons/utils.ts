@@ -2,7 +2,7 @@ import { DefaultTheme, RuleSet, css } from 'styled-components';
 
 import { BorderRadii, CSSColor, TypographyStyle } from '@trezor/theme';
 
-import { NewButtonIntent, NewButtonPriority, NewButtonSize } from './types';
+import { ButtonIntent, ButtonPriority, ButtonSize } from './types';
 
 const OPACITY_HOVER_STATE = 0.82;
 const OPACITY_ACTIVE_STATE = 0.74;
@@ -55,8 +55,8 @@ export const addAlphaToHex = (hex: CSSColor, percent: number): CSSColor => {
     return `#${rgbHex}${newAlphaHex}`;
 };
 
-export const mapSizeToBorderRadius = (size: NewButtonSize): BorderRadii => {
-    const borderRadiusMap: Record<NewButtonSize, BorderRadii> = {
+export const mapSizeToBorderRadius = (size: ButtonSize): BorderRadii => {
+    const borderRadiusMap: Record<ButtonSize, BorderRadii> = {
         large: '12px',
         medium: '10px',
         small: '8px',
@@ -65,8 +65,8 @@ export const mapSizeToBorderRadius = (size: NewButtonSize): BorderRadii => {
     return borderRadiusMap[size];
 };
 
-export const mapSizeToIconSize = (size: NewButtonSize): number => {
-    const iconSizeMap: Record<NewButtonSize, number> = {
+export const mapSizeToIconSize = (size: ButtonSize): number => {
+    const iconSizeMap: Record<ButtonSize, number> = {
         large: 20,
         medium: 16,
         small: 16,
@@ -75,8 +75,8 @@ export const mapSizeToIconSize = (size: NewButtonSize): number => {
     return iconSizeMap[size];
 };
 
-export const mapSizeToTypographyStyle = (size: NewButtonSize): TypographyStyle => {
-    const typographyStyleMap: Record<NewButtonSize, TypographyStyle> = {
+export const mapSizeToTypographyStyle = (size: ButtonSize): TypographyStyle => {
+    const typographyStyleMap: Record<ButtonSize, TypographyStyle> = {
         large: 'highlight',
         medium: 'callout',
         small: 'callout',
@@ -86,8 +86,8 @@ export const mapSizeToTypographyStyle = (size: NewButtonSize): TypographyStyle =
 };
 
 export const mapPropsToColor = (
-    intent: NewButtonIntent,
-    priority: NewButtonPriority,
+    intent: ButtonIntent,
+    priority: ButtonPriority,
     isDisabled: boolean,
     isInverse: boolean,
     theme: DefaultTheme,
@@ -96,7 +96,7 @@ export const mapPropsToColor = (
         return isInverse ? theme.stateContentDisabledInverse : theme.stateContentDisabled;
     }
 
-    const colorMap: Record<NewButtonPriority, Record<NewButtonIntent, CSSColor>> = {
+    const colorMap: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
         primary: {
             brand: theme.baseContentOnActionBrandPrimary,
             neutral: theme.baseContentReversePrimary,
@@ -113,7 +113,7 @@ export const mapPropsToColor = (
         },
     };
 
-    const colorMapInverse: Record<NewButtonPriority, Record<NewButtonIntent, CSSColor>> = {
+    const colorMapInverse: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
         primary: {
             brand: theme.baseContentOnActionBrandPrimaryInverse,
             neutral: theme.baseContentReversePrimaryInverse,
@@ -134,19 +134,19 @@ export const mapPropsToColor = (
 };
 
 export const mapPropsToCSS = (
-    intent: NewButtonIntent,
-    priority: NewButtonPriority,
+    intent: ButtonIntent,
+    priority: ButtonPriority,
     isDisabled: boolean,
     isInverse: boolean,
     theme: DefaultTheme,
 ): RuleSet<object> => {
     if (isDisabled) {
-        const backgroundMapDisabled: Record<NewButtonPriority, CSSColor> = {
+        const backgroundMapDisabled: Record<ButtonPriority, CSSColor> = {
             primary: theme.stateFillElementBoldDisabled,
             secondary: theme.stateFillElementSoftDisabled,
         };
 
-        const backgroundMapDisabledInverse: Record<NewButtonPriority, CSSColor> = {
+        const backgroundMapDisabledInverse: Record<ButtonPriority, CSSColor> = {
             primary: theme.stateFillElementBoldInverseDisabled,
             secondary: theme.stateFillElementSoftInverseDisabled,
         };
@@ -160,7 +160,7 @@ export const mapPropsToCSS = (
         `;
     }
 
-    const backgroundMap: Record<NewButtonPriority, Record<NewButtonIntent, CSSColor>> = {
+    const backgroundMap: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
         primary: {
             brand: theme.baseFillElementBrandBold,
             neutral: theme.baseFillElementContrast,
@@ -177,7 +177,7 @@ export const mapPropsToCSS = (
         },
     };
 
-    const backgroundMapInverse: Record<NewButtonPriority, Record<NewButtonIntent, CSSColor>> = {
+    const backgroundMapInverse: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
         primary: {
             brand: theme.baseFillElementBrandBoldInverse,
             neutral: theme.baseFillElementNeutralLight,

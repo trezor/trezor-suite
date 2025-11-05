@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { FormOptions } from '@suite-common/wallet-types';
-import { NewButton, Tooltip } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -22,7 +22,7 @@ const Left = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(NewButton)`
+const StyledButton = styled(Button)`
     margin-right: 8px;
 
     & > div {

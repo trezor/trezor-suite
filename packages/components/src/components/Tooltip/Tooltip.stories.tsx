@@ -15,7 +15,7 @@ import {
 } from './TooltipDelay';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import { NewButton } from '../buttons/NewButton/NewButton';
+import { Button } from '../buttons/Button/Button';
 
 const Center = styled.div`
     display: flex;
@@ -84,13 +84,13 @@ const TooltipWrapper = (args: TooltipProps) => {
                 placement="bottom-start"
                 content={
                     <div>
-                        <NewButton intent="brand" isInverse onClick={() => setOpen(false)}>
+                        <Button intent="brand" isInverse onClick={() => setOpen(false)}>
                             Click to close
-                        </NewButton>
+                        </Button>
                     </div>
                 }
             >
-                <NewButton onClick={() => setOpen(true)}>Click to open Tooltip</NewButton>
+                <Button onClick={() => setOpen(true)}>Click to open Tooltip</Button>
             </TooltipComponent>
         </Center>
     );

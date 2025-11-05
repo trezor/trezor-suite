@@ -1,22 +1,22 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import {
-    NewIconButton as NewIconButtonComponent,
-    NewIconButtonProps,
-    allowedNewIconButtonFrameProps,
-} from './NewIconButton';
+    IconButton as IconButtonComponent,
+    IconButtonProps,
+    allowedIconButtonFrameProps,
+} from './IconButton';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { newButtonIntents, newButtonPriorities, newButtonSizes } from '../types';
+import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
-const meta: Meta<NewIconButtonProps> = {
+const meta: Meta<IconButtonProps> = {
     title: 'Buttons',
-    component: NewIconButtonComponent,
+    component: IconButtonComponent,
 };
 
 export default meta;
 
-export const NewIconButton: StoryObj<NewIconButtonProps> = {
+export const IconButton: StoryObj<IconButtonProps> = {
     args: {
         onClick: () => null,
         icon: 'addressBookFilled',
@@ -26,7 +26,7 @@ export const NewIconButton: StoryObj<NewIconButtonProps> = {
         isDisabled: false,
         isLoading: false,
         isInverse: false,
-        ...getFramePropsStory(allowedNewIconButtonFrameProps).args,
+        ...getFramePropsStory(allowedIconButtonFrameProps).args,
     },
     argTypes: {
         icon: {
@@ -35,15 +35,15 @@ export const NewIconButton: StoryObj<NewIconButtonProps> = {
         },
         intent: {
             control: { type: 'select' },
-            options: newButtonIntents,
+            options: buttonIntents,
         },
         priority: {
             control: { type: 'select' },
-            options: newButtonPriorities,
+            options: buttonPriorities,
         },
         size: {
             control: { type: 'select' },
-            options: newButtonSizes,
+            options: buttonSizes,
         },
         isDisabled: {
             type: 'boolean',
@@ -54,6 +54,6 @@ export const NewIconButton: StoryObj<NewIconButtonProps> = {
         isInverse: {
             type: 'boolean',
         },
-        ...getFramePropsStory(allowedNewIconButtonFrameProps).argTypes,
+        ...getFramePropsStory(allowedIconButtonFrameProps).argTypes,
     },
 };

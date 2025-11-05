@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { firmwareActions } from '@suite-common/firmware';
-import { NewButton } from '@trezor/components';
+import { Button } from '@trezor/components';
 import {
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
@@ -64,14 +64,14 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                 values={{
                                     version: (
                                         <TrezorLink href={HELP_FIRMWARE_TYPE} variant="nostyle">
-                                            <NewButton
+                                            <Button
                                                 intent="neutral"
                                                 priority="secondary"
                                                 size="small"
                                                 iconRight="arrowUpRight"
                                             >
                                                 <Translation id={currentFwType} />
-                                            </NewButton>
+                                            </Button>
                                         </TrezorLink>
                                     ),
                                 }}
