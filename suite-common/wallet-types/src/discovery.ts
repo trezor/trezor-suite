@@ -38,6 +38,7 @@ export type DiscoveryStatus = CommonDiscoveryStatus &
           }
         | {
               status: 'confirm-empty-passphrase';
+              accountFailed?: boolean;
           }
         | {
               status: 'complete';
