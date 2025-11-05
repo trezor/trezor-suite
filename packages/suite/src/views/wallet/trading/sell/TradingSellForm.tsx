@@ -15,6 +15,7 @@ import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/T
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 
 import { TradingDisabled } from '../common/TradingDisabled';
+import { TradingSellFormInputs } from '../common/TradingForm/TradingSellFormInputs';
 
 const TradingSellFormContent = ({ selectedAccount }: UseTradingProps) => {
     const tradingSellContextValues = useTradingSellForm({ selectedAccount });
@@ -22,7 +23,9 @@ const TradingSellFormContent = ({ selectedAccount }: UseTradingProps) => {
     return (
         <TradingFormContext.Provider value={tradingSellContextValues}>
             <FormProvider {...tradingSellContextValues.methods}>
-                <TradingFormLayout />
+                <TradingFormLayout>
+                    <TradingSellFormInputs />
+                </TradingFormLayout>
             </FormProvider>
         </TradingFormContext.Provider>
     );

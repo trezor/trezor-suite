@@ -15,6 +15,7 @@ import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/T
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 
 import { TradingDisabled } from '../common/TradingDisabled';
+import { TradingExchangeFormInputs } from '../common/TradingForm/TradingExchangeFormInputs';
 
 const TradingExchangeFormContent = ({ selectedAccount }: UseTradingProps) => {
     const tradingExchangeContextValue = useTradingExchangeForm({ selectedAccount });
@@ -22,7 +23,9 @@ const TradingExchangeFormContent = ({ selectedAccount }: UseTradingProps) => {
     return (
         <TradingFormContext.Provider value={tradingExchangeContextValue}>
             <FormProvider {...tradingExchangeContextValue.methods}>
-                <TradingFormLayout />
+                <TradingFormLayout>
+                    <TradingExchangeFormInputs />
+                </TradingFormLayout>
             </FormProvider>
         </TradingFormContext.Provider>
     );
