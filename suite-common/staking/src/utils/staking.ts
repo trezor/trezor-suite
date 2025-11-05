@@ -16,9 +16,12 @@ export const calculateGains = (amount: string, apy: number, days: number) => {
     return new BigNumber(rewards).toFixed(5, 1);
 };
 
-export const getNetworkAdjustedStakingBalance = (amount: string, account: Account) => {
-    if (account.networkType === 'cardano')
-        return new BigNumber(amount).minus(CARDANO_STAKING_REGISTRATION_DEPOSIT).toString();
+export const getNetworkAdjustedStakingBalance = (amount: string, account?: Account) => {
+    if (account?.networkType === 'cardano') {
+        const adjusted = new BigNumber(amount).minus(CARDANO_STAKING_REGISTRATION_DEPOSIT);
+
+        return BigNumber.max(adjusted, 0).toString();
+    }
 
     return amount;
 };
