@@ -19,6 +19,7 @@ type PassphraseWalletIsEmptyProps = {
     device: TrezorDevice;
     onNext: () => void;
     onBack: () => void;
+    accountFailed?: boolean;
 };
 
 type PassphraseWalletIsEmptyContentProps = {
@@ -26,6 +27,7 @@ type PassphraseWalletIsEmptyContentProps = {
     onRetry: () => void;
     onCancel: () => void;
     'data-testid'?: string;
+    accountFailed?: boolean;
 };
 
 const PassphraseWalletIsEmptyContent = ({
@@ -33,6 +35,7 @@ const PassphraseWalletIsEmptyContent = ({
     onRetry,
     onCancel,
     'data-testid': dataTest,
+    accountFailed,
 }: PassphraseWalletIsEmptyContentProps) => {
     const { supportedMainnets } = useNetworkSupport();
     const enabledNetworks = useSelector(selectEnabledNetworks);
@@ -45,7 +48,9 @@ const PassphraseWalletIsEmptyContent = ({
     return (
         <Column gap={spacings.sm}>
             <H3>
-                <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE" />
+                <Translation
+                    id={`TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE${accountFailed ? '_ERROR' : ''}`}
+                />
             </H3>
             <Card
                 paddingType="small"
@@ -69,7 +74,9 @@ const PassphraseWalletIsEmptyContent = ({
             >
                 <Column gap={spacings.sm} alignItems="center">
                     <Paragraph typographyStyle="highlight">
-                        <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION" />
+                        <Translation
+                            id={`TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION${accountFailed ? '_ERROR' : ''}`}
+                        />
                     </Paragraph>
                     <Button
                         width="100%"
@@ -135,10 +142,16 @@ export const PassphraseWalletIsEmpty = ({
     onBack,
     onRetry,
     onNext,
+    accountFailed,
 }: PassphraseWalletIsEmptyProps) => (
     <SwitchDeviceModal onCancel={onCancel}>
         <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
-            <PassphraseWalletIsEmptyContent onNext={onNext} onRetry={onRetry} onCancel={onCancel} />
+            <PassphraseWalletIsEmptyContent
+                onNext={onNext}
+                onRetry={onRetry}
+                onCancel={onCancel}
+                accountFailed={accountFailed}
+            />
         </CardWithDevice>
     </SwitchDeviceModal>
 );

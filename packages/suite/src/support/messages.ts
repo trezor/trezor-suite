@@ -10027,10 +10027,19 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
         defaultMessage: 'This Passphrase wallet is empty',
     },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE_ERROR: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE_ERROR',
+        defaultMessage: "Passphrase wallet couldn't be loaded",
+    },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION',
         defaultMessage:
             "This Passphrase wallet is empty and hasn't been used before. Do you want to open it?",
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR',
+        defaultMessage:
+            'Your wallet may appear empty until the internet connection is restored. Do you want to open it?',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON',

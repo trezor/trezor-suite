@@ -486,7 +486,7 @@ export const runDiscoveryThunk = createThunk(
 
             dispatch(
                 discoveryActions.updateDiscovery(
-                    { status: 'confirm-empty-passphrase' },
+                    { status: 'confirm-empty-passphrase', accountFailed: !!result.payload.failed },
                     device.path,
                 ),
             );
