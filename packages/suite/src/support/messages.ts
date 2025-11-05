@@ -2262,7 +2262,7 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED',
     },
     TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED: {
-        defaultMessage: 'Firmware is corrupted. Install new firmware to continue.',
+        defaultMessage: "Your Trezor's firmware is corrupt. Reinstall firmware to continue.",
         id: 'TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED',
     },
     TR_NEEDS_ATTENTION_UNAVAILABLE: {
@@ -2298,11 +2298,11 @@ export default defineMessages({
         id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING',
     },
     TR_FIRMWARE_CORRUPTED_CONNECT_TITLE: {
-        defaultMessage: 'Trezor firmware is corrupted',
+        defaultMessage: "Your Trezor's firmware is corrupt",
         id: 'TR_FIRMWARE_CORRUPTED_CONNECT_TITLE',
     },
     TR_FIRMWARE_CORRUPTED_CONNECT_DESCRIPTION: {
-        defaultMessage: 'Firmware installation likely failed, reinstall the firmware',
+        defaultMessage: 'Firmware installation may have failed.',
         id: 'TR_FIRMWARE_CORRUPTED_CONNECT_DESCRIPTION',
     },
     TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION: {
@@ -5046,12 +5046,12 @@ export default defineMessages({
     },
     FW_CORRUPTED_REINSTALL_REQUIRED: {
         id: 'FW_CORRUPTED_REINSTALL_REQUIRED',
-        defaultMessage: 'Firmware installation is corrupted',
+        defaultMessage: "Reinstall your Trezor's firmware.",
     },
     TR_FIRMWARE_CORRUPTED_REQUIRED_EXPLAINED: {
         id: 'TR_FIRMWARE_CORRUPTED_REQUIRED_EXPLAINED',
         defaultMessage:
-            'The firmware installation was probably abruptly stopped. Reinstall the firmware to fix the issue.',
+            'Firmware installation may have stopped unexpectedly. Reinstall firmware to continue.',
     },
     TR_DEVICE_IN_BOOTLOADER: {
         id: 'TR_DEVICE_IN_BOOTLOADER',
@@ -9355,7 +9355,7 @@ export default defineMessages({
     },
     TR_STAKING_NEW_PROVIDER_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
-        defaultMessage: 'Earn ~{apy}% APY with new provider',
+        defaultMessage: 'Start earning rewards with Everstake',
     },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
@@ -9422,7 +9422,7 @@ export default defineMessages({
     TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY: {
         id: 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY',
         defaultMessage:
-            'Stake your full balance and start earning rewards. Your {displaySymbol} stay in your account, ready to use anytime—while helping secure the network.',
+            'Stake your full balance and start earning rewards. Your {displaySymbol} stay in your account, ready to use anytime—while helping to secure the network.',
     },
     TR_STAKING_CARD_START_STAKING: {
         id: 'TR_STAKING_CARD_START_STAKING',
@@ -10631,23 +10631,23 @@ export default defineMessages({
     },
     TR_SWITCH_ANYWAY: {
         id: 'TR_SWITCH_ANYWAY',
-        defaultMessage: 'Switch anyway',
+        defaultMessage: 'Yes, switch',
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
-        defaultMessage: 'Turn on secure sync to use labels',
+        defaultMessage: 'Turn on Secure Sync to use labels',
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION',
-        defaultMessage: 'Secure sync keeps your data consistent across all of your devices.',
+        defaultMessage: 'Secure Sync keeps your data up to date on all your devices.',
     },
     TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
-        defaultMessage: 'Data is stored locally and synced only with devices you authorize.',
+        defaultMessage: 'Your data is stored locally and only synced with devices you’ve approved.',
     },
     TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES: {
         id: 'TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES',
-        defaultMessage: 'Only devices you authorize with your Trezor can decrypt the data.',
+        defaultMessage: 'Only devices you’ve authorized through your Trezor can decrypt your data.',
     },
     TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
         id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',
@@ -10655,11 +10655,11 @@ export default defineMessages({
     },
     TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
         id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
-        defaultMessage: 'Labels created with secure sync cannot be migrated.',
+        defaultMessage: 'Labels created with Secure Sync can’t be migrated',
     },
     TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
         id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
-        defaultMessage: 'With legacy labeling, labels cannot be synced to mobile devices.',
+        defaultMessage: 'Legacy labeling doesn’t sync labels to mobile devices',
     },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',
@@ -10798,7 +10798,7 @@ export default defineMessages({
     TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION: {
         id: 'TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION',
         defaultMessage:
-            'The following accounts from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
+            'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
     },
     TR_DYK_TITLE: {
         id: 'TR_DYK_TITLE',
@@ -10891,7 +10891,7 @@ export default defineMessages({
     },
     TR_FIND_PLACEHOLDER: {
         id: 'TR_FIND_PLACEHOLDER',
-        defaultMessage: 'Find in page...',
+        defaultMessage: 'Find in page',
     },
     TR_FIND_NEXT: {
         id: 'TR_FIND_NEXT',
@@ -10903,7 +10903,7 @@ export default defineMessages({
     },
     TR_FIND_CLOSE: {
         id: 'TR_FIND_CLOSE',
-        defaultMessage: 'Close find bar',
+        defaultMessage: 'Close search bar',
     },
     TR_FIND_NOT_FOUND: {
         id: 'TR_FIND_NOT_FOUND',
@@ -10915,16 +10915,16 @@ export default defineMessages({
     },
     TR_SEND_MIN_ADA_AMOUNT: {
         id: 'TR_SEND_MIN_ADA_AMOUNT',
-        defaultMessage: 'Not enough {networkDisplaySymbol} for the transaction.',
+        defaultMessage: 'Not enough {networkDisplaySymbol} for this transaction.',
     },
     TR_SEND_MIN_ADA_AMOUNT_TITLE: {
         id: 'TR_SEND_MIN_ADA_AMOUNT_TITLE',
-        defaultMessage: 'Min {networkDisplaySymbol}',
+        defaultMessage: 'Minimum {networkDisplaySymbol}',
     },
     TR_SEND_MIN_ADA_AMOUNT_TOOLTIP: {
         id: 'TR_SEND_MIN_ADA_AMOUNT_TOOLTIP',
         defaultMessage:
-            'Every transaction output with tokens must include a minimum amount of {networkDisplaySymbol}, based on the number of different tokens in the transaction output.',
+            'Transactions with tokens need a minimum of {networkDisplaySymbol}, based on how many token types they include.',
     },
     TR_PUBLIC_KEYS: {
         id: 'TR_PUBLIC_KEYS',
