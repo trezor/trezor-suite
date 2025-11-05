@@ -9488,7 +9488,8 @@ export default defineMessages({
     },
     TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
         id: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
-        defaultMessage: 'All of your available {networkDisplaySymbol} is staked.',
+        defaultMessage:
+            'All your available {networkDisplaySymbol} is staked. Newly received {networkDisplaySymbol} activates after two epochs.',
     },
     TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED: {
         id: 'TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED',
