@@ -15,8 +15,17 @@ export interface CoinData {
     contract_address?: string;
     platforms: Record<string, string>;
     image: {
+        /**
+         * 25x25
+         */
         thumb: string;
+        /**
+         * 50x50
+         */
         small: string;
+        /**
+         * 250x250
+         */
         large: string;
     };
 }

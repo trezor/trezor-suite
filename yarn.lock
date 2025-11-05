@@ -13377,6 +13377,8 @@ __metadata:
 "@trezor/asset-utils@workspace:*, @trezor/asset-utils@workspace:packages/asset-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/asset-utils@workspace:packages/asset-utils"
+  dependencies:
+    "@suite-common/icons": "workspace:*"
   languageName: unknown
   linkType: soft
 

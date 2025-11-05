@@ -5,7 +5,7 @@ import styled from 'styled-components';
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { getNetwork, getNetworkByCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
-import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { getAssetLogoUrl, resolveAssetLogoSize } from '@trezor/asset-utils';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetInitials } from './AssetInitials';
@@ -18,7 +18,7 @@ import {
 import { TransientProps } from '../../utils/transientProps';
 import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 
-export const allowedAssetLogoSizes = [20, 24];
+export const allowedAssetLogoSizes = [20, 24, 32, 40] as const;
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
 
 export const allowedAssetLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -100,11 +100,14 @@ export const AssetLogo = ({
     const logoUrl = getAssetLogoUrl({
         coingeckoId: coingeckoIdLogo,
         contractAddress: contractAddressLogo,
+        quality: '1x',
+        size: resolveAssetLogoSize(size),
     });
     const logoUrl2x = getAssetLogoUrl({
         coingeckoId: coingeckoIdLogo,
         contractAddress: contractAddressLogo,
-        quality: '@2x',
+        quality: '2x',
+        size: resolveAssetLogoSize(size),
     });
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
