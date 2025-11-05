@@ -191,7 +191,6 @@ export const routes = [
         name: 'wallet-trading-exchange',
         pattern: '/accounts/coinmarket/exchange',
         app: 'wallet',
-        params: walletParams,
     },
     {
         name: 'wallet-trading-sell',
@@ -215,7 +214,6 @@ export const routes = [
         name: 'wallet-trading-exchange-offers',
         pattern: '/accounts/coinmarket/exchange/offers',
         app: 'wallet',
-        params: walletParams,
     },
     {
         name: 'wallet-trading-buy-detail',
@@ -233,7 +231,6 @@ export const routes = [
         name: 'wallet-trading-exchange-detail',
         pattern: '/accounts/coinmarket/exchange/detail',
         app: 'wallet',
-        params: walletParams,
     },
     {
         name: 'wallet-trading-buy-confirm',
@@ -251,7 +248,6 @@ export const routes = [
         name: 'wallet-trading-exchange-confirm',
         pattern: '/accounts/coinmarket/exchange/confirm',
         app: 'wallet',
-        params: walletParams,
     },
     {
         name: 'wallet-trading-dca',

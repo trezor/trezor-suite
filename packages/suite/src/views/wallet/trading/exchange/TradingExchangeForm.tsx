@@ -9,7 +9,6 @@ import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
-import { UseTradingProps } from 'src/types/trading/trading';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
@@ -17,8 +16,8 @@ import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/Tra
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingExchangeFormInputs } from '../common/TradingForm/TradingExchangeFormInputs';
 
-const TradingExchangeFormContent = ({ selectedAccount }: UseTradingProps) => {
-    const tradingExchangeContextValue = useTradingExchangeForm({ selectedAccount });
+const TradingExchangeFormContent = () => {
+    const tradingExchangeContextValue = useTradingExchangeForm({});
 
     return (
         <TradingFormContext.Provider value={tradingExchangeContextValue}>
@@ -31,7 +30,7 @@ const TradingExchangeFormContent = ({ selectedAccount }: UseTradingProps) => {
     );
 };
 
-const TradingExchangeFormWrapper = ({ selectedAccount }: UseTradingProps) => {
+const TradingExchangeFormWrapper = () => {
     const type: TradingType = 'exchange';
     const { isDisabled, content } = useMessageSystemTrading(type);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
@@ -42,7 +41,7 @@ const TradingExchangeFormWrapper = ({ selectedAccount }: UseTradingProps) => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingExchangeFormContent selectedAccount={selectedAccount} />
+                <TradingExchangeFormContent />
             )}
         </TradingLayout>
     );

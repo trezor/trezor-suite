@@ -38,7 +38,6 @@ import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
     ETHEREUM_ADJUST_GAS_LIMIT,
     fetchAndUpdateAccountThunk,
-    selectAccountByKey,
     updateFeeInfoThunk,
     useFormDraft,
 } from '@suite-common/wallet-core';
@@ -50,7 +49,6 @@ import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sen
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
-import { useTradingAccountKey } from 'src/hooks/wallet/trading/form/common/useTradingAccountKey';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingExchangeHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingExchangeHandleChange';
@@ -65,7 +63,7 @@ import {
     selectIsTradingTermsDismissed,
 } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch } from 'src/types/suite';
-import { UseTradingFormProps } from 'src/types/trading/trading';
+import { UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
     TradingExchangeConfirmTradeProps,
     TradingExchangeFormContextProps,
@@ -78,12 +76,12 @@ import {
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingPreviousRoute } from './common/useTradingPreviousRoute';
+import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
 export const useTradingExchangeForm = ({
-    selectedAccount,
     pageType = 'form',
-}: UseTradingFormProps): TradingExchangeFormContextProps => {
+}: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
     const type = 'exchange';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
@@ -93,7 +91,6 @@ export const useTradingExchangeForm = ({
         isFromRedirect,
         quotes,
         transactionId,
-        tradingAccountKey,
         selectedQuote,
         preselectedQuote,
         amountLimits,
@@ -103,32 +100,19 @@ export const useTradingExchangeForm = ({
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
+    const { account } = useTradingFormAccount();
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
     // used for disabling approve/revoke controls when
     // quotes are scheduled to refresh after changing swap form inputs
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
-    const [shouldUseTradingAccountKey, setShouldUseTradingAccountKey] = useState<boolean>(
-        isPreviousRouteFromTradeSection,
-    );
-
-    const [accountKey, setAccountKey] = useTradingAccountKey({
-        type,
-        tradingAccountKey,
-        selectedAccount,
-        shouldUseTradingAccountKey,
-    });
-    const accountByKey = useSelector(state => selectAccountByKey(state, accountKey));
-
-    const account = accountByKey ?? selectedAccount.account;
 
     const isTradingTermsDismissed = useSelector(state =>
         selectIsTradingTermsDismissed(state, type),
     );
 
     const { timer, device, checkQuotesTimer } = useTradingInitializer({
-        selectedAccount,
         pageType,
         isLoading,
     });
@@ -164,7 +148,7 @@ export const useTradingExchangeForm = ({
     const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
 
-    const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(account);
+    const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues();
 
     const { draft, saveDraft, removeDraft } =
         useFormDraft<TradingExchangeFormProps>('trading-exchange');
@@ -176,7 +160,7 @@ export const useTradingExchangeForm = ({
         return null;
     };
     const draftUpdated = getDraftUpdated();
-    const methods = useForm({
+    const methods = useForm<TradingExchangeFormProps>({
         mode: 'onChange',
         defaultValues: draftUpdated ?? defaultValues,
     });
@@ -283,7 +267,6 @@ export const useTradingExchangeForm = ({
         setComposedLevels,
         setAccountOnChange: newAccount => {
             dispatch(tradingExchangeActions.setTradingAccountKey(newAccount.key));
-            setAccountKey(newAccount.key);
         },
     });
 
@@ -827,23 +810,6 @@ export const useTradingExchangeForm = ({
         setValue('extraField', extraField);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [extraField]);
-
-    useEffect(() => {
-        if (isPreviousRouteFromTradeSection && tradingAccountKey !== selectedAccount.account?.key) {
-            setShouldUseTradingAccountKey(true);
-
-            return;
-        }
-
-        if (tradingAccountKey && isFormPage) {
-            setShouldUseTradingAccountKey(selectedAccount.account?.key !== tradingAccountKey);
-        }
-    }, [
-        isPreviousRouteFromTradeSection,
-        isFormPage,
-        selectedAccount.account?.key,
-        tradingAccountKey,
-    ]);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));

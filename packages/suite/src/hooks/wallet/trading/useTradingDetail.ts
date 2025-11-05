@@ -27,6 +27,8 @@ import {
     TradingUseDetailProps,
 } from 'src/types/trading/tradingDetail';
 
+import { useTradingFormAccount } from './form/useTradingFormAccount';
+
 const isBuyTrade = (trade: TradingTransaction): trade is TradingTransactionBuy =>
     trade.tradeType === 'buy';
 
@@ -77,7 +79,7 @@ export const useTradingDetail = <T extends TradingType>({
     tradeType,
 }: TradingUseDetailProps): TradingUseDetailOutputProps<T> => {
     const trading = useSelector(selectTrading);
-    const { account } = selectedAccount;
+    const { account: exchangeAccount } = useTradingFormAccount();
     const buyInfo = useSelector(selectTradingBuyInfo);
     const sellInfo = useSelector(selectTradingSellInfo);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
@@ -90,6 +92,8 @@ export const useTradingDetail = <T extends TradingType>({
             exchange: exchangeInfo,
         },
     });
+
+    const account = tradeType === 'exchange' ? exchangeAccount : selectedAccount.account;
     const dispatch = useDispatch();
 
     useEffect(() => {

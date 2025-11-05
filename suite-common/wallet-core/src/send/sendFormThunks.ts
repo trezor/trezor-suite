@@ -505,21 +505,11 @@ export const signTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, paymentRequests },
-        { dispatch, rejectWithValue, extra, getState },
+        { dispatch, rejectWithValue, getState },
     ) => {
-        const {
-            selectors: { selectSelectedAccountStatus },
-        } = extra;
-        const accountStatus = selectSelectedAccountStatus(getState());
         const device = selectSelectedDevice(getState());
 
-        if (
-            G.isNullable(selectedAccount) ||
-            accountStatus !== 'loaded' ||
-            !device ||
-            !precomposedTransaction ||
-            precomposedTransaction.type !== 'final'
-        )
+        if (!device || !precomposedTransaction || precomposedTransaction.type !== 'final')
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid input data.',

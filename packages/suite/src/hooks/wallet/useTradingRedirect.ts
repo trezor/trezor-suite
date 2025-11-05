@@ -183,9 +183,6 @@ export const useTradingRedirect = () => {
 
     const redirectToExchangeOffers = (params: ExchangeOfferRedirectParams) => {
         const {
-            symbol,
-            index,
-            accountType,
             send,
             receive,
             amount,
@@ -221,11 +218,7 @@ export const useTradingRedirect = () => {
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(orderId));
-        dispatch(
-            goto('wallet-trading-exchange-confirm', {
-                params: { symbol, accountIndex: index, accountType },
-            }),
-        );
+        dispatch(goto('wallet-trading-exchange-confirm'));
     };
 
     const redirectToBuyDetail = (params: DetailRedirectParams) => {

@@ -20,7 +20,7 @@ const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route
         return activeSection === 'exchange' ? `${routePrefix}exchange` : `${routePrefix}buy`;
     }
 
-    return match ? (`${routePrefix}${match[1]}` as Route['name']) : 'wallet-index';
+    return match ? (`${routePrefix}${match[1]}` as Route['name']) : 'suite-index';
 };
 
 type TradingPageHeaderProps = {

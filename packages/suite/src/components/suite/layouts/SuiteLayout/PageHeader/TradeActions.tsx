@@ -1,3 +1,4 @@
+import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
@@ -59,8 +60,16 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     };
 
     const onSwapClick = () => {
+        if (account) {
+            dispatch(
+                tradingActions.setTradingFromPrefilledAccount(
+                    getTradingPrefilledFromAccountData(account),
+                ),
+            );
+        }
+
         goToWithAnalytics('wallet-trading-exchange', {
-            preserveParams: true,
+            preserveParams: false,
         });
 
         analytics.report({

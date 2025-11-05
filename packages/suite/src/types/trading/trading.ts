@@ -31,25 +31,15 @@ import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AssetLogoProps } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { AssetOptionBaseProps } from '@trezor/product-components';
-import { Timer } from '@trezor/react-utils';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
-import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
 
 export type UseTradingProps = { selectedAccount: SelectedAccountLoaded };
-export type UseTradingCommonProps = UseTradingProps & {
-    pageType: TradingPageType;
-    isLoading: boolean;
-};
-export interface UseTradingCommonReturnProps {
-    account: Account;
-    timer: Timer;
-    device: TrezorDevice | undefined;
-    checkQuotesTimer: (callback: () => Promise<void>) => void;
-}
-export type UseTradingFormProps = UseTradingProps & {
+
+export type UseTradingFormCommonProps = {
     /**
      * Difference between form and offers is that on the offers page are used all data filled in the form
      * but on the form page we prefill form with only some data from draft
@@ -58,6 +48,8 @@ export type UseTradingFormProps = UseTradingProps & {
      */
     pageType?: TradingPageType;
 };
+
+export type UseTradingFormProps = UseTradingProps & UseTradingFormCommonProps;
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;

@@ -13,9 +13,7 @@ import {
     TradingExchangeKycFilter,
     TradingExchangeRateFilter,
     TradingExchangeRateType,
-    cryptoIdToSymbol,
     enabledTradingCurrencies,
-    selectTradingPrefilledFromAccount,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -25,18 +23,16 @@ import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
-import { TradingExchangeFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { Account } from 'src/types/wallet';
 import {
     buildTradingFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
 } from 'src/utils/wallet/trading/tradingUtils';
 
-export const useTradingExchangeFormDefaultValues = (
-    account: Account,
-): TradingExchangeFormDefaultValuesProps => {
+import { useTradingFormAccount } from './useTradingFormAccount';
+
+export const useTradingExchangeFormDefaultValues = () => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
+    const { tradingAccountKey, cryptoId } = useTradingFormAccount();
 
     const defaultCurrency = useMemo(
         () =>
@@ -57,19 +53,12 @@ export const useTradingExchangeFormDefaultValues = (
 
     const defaultSendCryptoSelect = useMemo(
         () =>
-            (prefilledFromAccount.cryptoId &&
-                cryptoOptions.find(
-                    option =>
-                        option.value === prefilledFromAccount.cryptoId &&
-                        option.descriptor ===
-                            parseAccountKey(prefilledFromAccount.key || '').accountDescriptor,
-                )) ||
             cryptoOptions.find(
                 option =>
-                    option.descriptor === account.descriptor &&
-                    cryptoIdToSymbol(option.value) === account.symbol,
+                    option.value === cryptoId &&
+                    option.descriptor === parseAccountKey(tradingAccountKey).accountDescriptor,
             ),
-        [account.descriptor, account.symbol, prefilledFromAccount, cryptoOptions],
+        [cryptoId, cryptoOptions, tradingAccountKey],
     );
 
     const { address, token } =

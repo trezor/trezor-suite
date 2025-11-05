@@ -96,7 +96,6 @@ export const useTradingSellForm = ({
     const account = accountByKey ?? selectedAccount.account;
 
     const { timer, device, checkQuotesTimer } = useTradingInitializer({
-        selectedAccount,
         pageType,
         isLoading,
     });

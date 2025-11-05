@@ -35,7 +35,12 @@ export const tradingMiddleware =
             const isTradingRoute = !!routeName?.includes('wallet-trading');
             const isBuy = routeName === 'wallet-trading-buy';
             const isSell = routeName === 'wallet-trading-sell';
-            const isExchange = routeName === 'wallet-trading-exchange';
+            const isExchangeCreationFlow = [
+                'wallet-trading-exchange',
+                'wallet-trading-exchange-confirm',
+                'wallet-trading-exchange-offers',
+            ].some(name => name === routeName);
+            const isExchangeTransactionDetail = routeName === 'wallet-trading-exchange-detail';
             const nextModalAccountKey = selectTradingModalAccountKey(nextState);
             const prefilledFromAccount = selectTradingPrefilledFromAccount(nextState);
 
@@ -63,15 +68,10 @@ export const tradingMiddleware =
                 }
             }
 
-            if (isExchange) {
+            if (isExchangeCreationFlow) {
                 activeSection = 'exchange';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
                 api.dispatch(tradingExchangeActions.saveTransactionId(undefined));
-                if (prefilledFromAccount.key) {
-                    api.dispatch(
-                        tradingExchangeActions.setTradingAccountKey(prefilledFromAccount.key),
-                    );
-                }
             }
 
             const wasBuy = state.router.route?.name === 'wallet-trading-buy';
@@ -79,11 +79,15 @@ export const tradingMiddleware =
             const isBuyToSell = wasBuy && isSell;
             const isSellToBuy = wasSell && isBuy;
 
-            const cleanupPrefilledFromCryptoId =
-                !!prefilledFromAccount.cryptoId &&
-                ((!isSell && !isExchange && !isBuy) || isBuyToSell || isSellToBuy);
+            const isInTradingSection =
+                isBuy || isSell || isExchangeCreationFlow || isExchangeTransactionDetail;
+            const isSwitchingBetweenBuyAndSell = isBuyToSell || isSellToBuy;
 
-            if (cleanupPrefilledFromCryptoId) {
+            const shouldResetTradingAccountInfo =
+                !isInTradingSection || isSwitchingBetweenBuyAndSell;
+
+            if (shouldResetTradingAccountInfo) {
+                api.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
                 api.dispatch(
                     tradingActions.setTradingFromPrefilledAccount({
                         key: undefined,

@@ -58,7 +58,7 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
 
 export const TradingDetailExchange = () => {
     const accounts = useSelector(selectAccounts);
-    const { account, trade, info } = useTradingDetailContext<TradingExchangeType>();
+    const { trade, info } = useTradingDetailContext<TradingExchangeType>();
     const tradingSurveyFeature = useSelector(state =>
         selectFeatureConfig(state, Feature.trading.survey),
     );
@@ -102,15 +102,7 @@ export const TradingDetailExchange = () => {
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
-        dispatch(
-            goto('wallet-trading-exchange', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+        dispatch(goto('wallet-trading-exchange'));
 
         return null;
     }
@@ -131,19 +123,15 @@ export const TradingDetailExchange = () => {
                             />
                         </InfoItem>
                     )}
-                    {tradeStatusStep === 'success' && sendAccount && (
-                        <TradingDetailExchangePaymentSuccessful account={sendAccount} />
-                    )}
-                    {tradeStatusStep === 'kyc' && sendAccount && (
+                    {tradeStatusStep === 'success' && <TradingDetailExchangePaymentSuccessful />}
+                    {tradeStatusStep === 'kyc' && (
                         <TradingDetailExchangePaymentKYC
-                            account={sendAccount}
                             provider={provider}
                             supportUrl={supportUrl}
                         />
                     )}
                     {tradeStatusStep === 'error' && sendAccount && (
                         <TradingDetailExchangePaymentFailed
-                            account={sendAccount}
                             transactionId={trade.key}
                             supportUrl={supportUrl}
                         />

@@ -45,7 +45,7 @@ const TRADING_EXCHANGE_ROUTE = {
         app: 'wallet',
     },
     settingsBackRoute: { name: 'wallet-index', params: undefined },
-    url: '/accounts/coinmarket/exchange#/btc/0/normal',
+    url: '/accounts/coinmarket/exchange',
 } as RouterState;
 
 const DEFAULT_ROUTE = {

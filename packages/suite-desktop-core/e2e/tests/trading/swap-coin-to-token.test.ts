@@ -105,7 +105,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnl
 
         await test.step('Return to account swap form', async () => {
             await tradingPage.backToAccountButton('Swap').click();
-            await expect(page).toHaveURL(/\/accounts\/coinmarket\/exchange#\/sol\/0\/normal$/);
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/exchange$/);
         });
     });
 });

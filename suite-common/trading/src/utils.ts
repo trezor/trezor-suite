@@ -427,3 +427,15 @@ export const getTokenSelectableNetworks = (
                 TOKEN_SELECT_SELECTABLE_NETWORKS.includes(n.symbol),
         )
         .map(n => n.symbol);
+
+export const getTradingPrefilledFromAccountData = (
+    { symbol, key }: Account,
+    cryptoId?: CryptoId | undefined,
+) => {
+    const defaultCryptoId = getNetwork(symbol).tradeCryptoId as CryptoId;
+
+    return {
+        cryptoId: cryptoId ?? defaultCryptoId,
+        key,
+    };
+};

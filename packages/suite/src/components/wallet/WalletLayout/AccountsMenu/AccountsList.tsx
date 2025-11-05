@@ -10,7 +10,9 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels as selectAccountLabelsOld } from 'src/reducers/suite/metadataReducer';
+import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 import { AccountItemType } from 'src/types/wallet';
+import { RouteParams } from 'src/utils/suite/router';
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
@@ -50,9 +52,9 @@ const Accounts = ({
     deviceStaticSessionId,
 }: AccountsProps) => {
     const accountLabels = useSelector(selectAccountLabelsOld);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const { params } = selectedAccount;
+
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
+    const params = useSelector(selectRouterParams) as RouteParams;
 
     const localFirstAccountLabels = useSelector(state =>
         selectAccountLabels({ state, deviceStaticSessionId }),
@@ -105,6 +107,7 @@ export const AccountsList = ({
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(selectAllAccountsToList);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabelsOld);
 
@@ -161,10 +164,9 @@ export const AccountsList = ({
     const ledgerAccounts = filterAccountsByType('ledger');
 
     const hasMultipleAccounts = filteredAccounts.some(a => a.accountType !== 'normal');
-    const { params } = selectedAccount;
 
     const keepOpen = (type: Account['accountType']) =>
-        params?.accountType === type || // selected account is from this group
+        selectedAccount.account?.accountType === type || // selected account is from this group
         (type === 'coinjoin' && coinjoinIsPreloading) || // coinjoin account is requested but not yet created
         (!!searchString && searchString.length > 0) || // filter by search string is active
         (type === 'normal' && !hasMultipleAccounts); // always keep normal accounts open

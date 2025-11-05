@@ -1,24 +1,33 @@
 import { useCallback } from 'react';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import {
     INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { useTimer } from '@trezor/react-utils';
+import { Timer, useTimer } from '@trezor/react-utils';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { UseTradingCommonProps, UseTradingCommonReturnProps } from 'src/types/trading/trading';
+import { TradingPageType } from 'src/types/trading/trading';
+
+export type UseTradingCommonProps = {
+    pageType: TradingPageType;
+    isLoading: boolean;
+};
+export interface UseTradingCommonReturnProps {
+    timer: Timer;
+    device: TrezorDevice | undefined;
+    checkQuotesTimer: (callback: () => Promise<void>) => void;
+}
 
 export const useTradingInitializer = ({
-    selectedAccount,
     pageType,
     isLoading,
 }: UseTradingCommonProps): UseTradingCommonReturnProps => {
     const dispatch = useDispatch();
     const timer = useTimer();
-    const { account } = selectedAccount;
     const { device } = useDevice();
 
     const isWindowVisible = useSelector(selectIsWindowVisible);
@@ -53,7 +62,6 @@ export const useTradingInitializer = ({
     useServerEnvironment();
 
     return {
-        account,
         timer,
         device,
         checkQuotesTimer,
