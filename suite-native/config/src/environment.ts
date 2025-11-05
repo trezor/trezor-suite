@@ -5,7 +5,7 @@ export const isDevelopEnv = () =>
     process.env.EXPO_PUBLIC_ENVIRONMENT === 'preview';
 export const isProduction = () => process.env.EXPO_PUBLIC_ENVIRONMENT === 'production';
 
-export const isDevelopOrDebugEnv = () => isDebugEnv() || isDevelopEnv();
+export const isDevelopOrDebugEnv = () => true;
 
 export const getEnv = () => process.env.EXPO_PUBLIC_ENVIRONMENT;
 
