@@ -10,6 +10,8 @@ import { baseInputDisabledStyle, baseInputStyle } from '../form/styles';
 
 const SymbolBox = styled.input<{ $elevation: Elevation; $fakeDisabled?: boolean }>`
     ${baseInputStyle};
+    background-color: ${({ theme }) => theme.baseFillElementNeutralSoft};
+    border-color: ${({ theme }) => theme.borderInputDefault};
 
     height: ${spacingsPx.xxxxxl};
     width: ${spacingsPx.xxxxl};
@@ -20,14 +22,20 @@ const SymbolBox = styled.input<{ $elevation: Elevation; $fakeDisabled?: boolean 
 
     &:focus,
     &:focus-within {
-        border-color: ${({ theme }) => theme.backgroundPrimaryDefault};
+        border-color: ${({ theme, $fakeDisabled }) =>
+            $fakeDisabled ? 'transparent' : theme.borderInputFocus};
     }
 
-    ${({ $fakeDisabled }) =>
+    ${({ theme, $fakeDisabled }) =>
         // This is here to prevent jump of browser-native focus jump to the next element.
         // For example, it may focus the close [X] button of the Modal and user may accidentaly close
         // it by hitting the enter key.
-        $fakeDisabled ? baseInputDisabledStyle : undefined}
+        $fakeDisabled &&
+        `
+        ${baseInputDisabledStyle}
+        border-color: transparent;
+        color: ${theme.textDisabled};
+    `}
 
     caret-color: transparent;
 `;
