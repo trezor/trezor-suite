@@ -1,10 +1,13 @@
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { Box, Column, ElevationContext, Input, Modal, Row } from '@trezor/components';
+import { Box, Column, ElevationContext, Modal, Row } from '@trezor/components';
+import { SearchAsset } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { useAccountSearch, useSelector, useTranslation } from 'src/hooks/suite';
+import { AccountItemType } from 'src/types/wallet';
+
 import { AccountList } from './AccountList';
-import { useAccountSearch, useTranslation } from '../../../../../../hooks/suite';
-import { AccountItemType } from '../../../../../../types/wallet';
 
 type GlobalSendReceiveModalBaseProps = {
     heading?: React.ReactNode;
@@ -19,19 +22,29 @@ export const GlobalSendReceiveModalBase = ({
     onSubmit,
     additionalAction,
 }: GlobalSendReceiveModalBaseProps) => {
-    const { searchString, setSearchString } = useAccountSearch();
+    const { searchString, setSearchString, selectedNetwork, setSelectedNetwork } =
+        useAccountSearch();
     const { translationString } = useTranslation();
+    const enabledNetworksSymbol = useSelector(selectEnabledNetworks);
 
     return (
         <Modal heading={heading} onCancel={() => onCancel(!!searchString)} size="small">
             <Column height={500} gap={spacings.sm}>
                 <Row gap={spacings.xs}>
                     <Box flex="1">
-                        <Input
-                            placeholder={translationString('TR_SEARCH')}
-                            size="small"
-                            value={searchString ?? ''}
-                            onChange={event => setSearchString(event.target.value)}
+                        <SearchAsset
+                            searchPlaceholder={translationString('TR_SEARCH')}
+                            search={searchString ?? ''}
+                            setSearch={setSearchString}
+                            selectConfig={{
+                                networks: enabledNetworksSymbol,
+                                selectedNetwork,
+                                onChange: setSelectedNetwork,
+                                includeAllOption: true,
+                                allLabel: translationString('TR_ALL_NETWORKS', {
+                                    networkCount: enabledNetworksSymbol.length,
+                                }),
+                            }}
                         />
                     </Box>
                     {additionalAction}
