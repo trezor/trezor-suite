@@ -125,6 +125,7 @@
         "metro-config": "^0.82.4",
         "node-libs-browser": "^2.2.1",
         "react": "19.1.0",
+        "react-freeze": "^1.0.4",
         "react-intl": "^7.1.11",
         "react-native": "0.81.4",
         "react-native-ble-plx": "3.5.0",

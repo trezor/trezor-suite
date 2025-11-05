@@ -11261,6 +11261,7 @@ __metadata:
     metro-config: "npm:^0.82.4"
     node-libs-browser: "npm:^2.2.1"
     react: "npm:19.1.0"
+    react-freeze: "npm:^1.0.4"
     react-intl: "npm:^7.1.11"
     react-native: "npm:0.81.4"
     react-native-ble-plx: "npm:3.5.0"
@@ -38307,12 +38308,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-freeze@npm:^1.0.0":
-  version: 1.0.3
-  resolution: "react-freeze@npm:1.0.3"
+"react-freeze@npm:^1.0.0, react-freeze@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "react-freeze@npm:1.0.4"
   peerDependencies:
     react: ">=17.0.0"
-  checksum: 10/369e2bebd88d30921055df0f1f2c72680db5687b27baaa88dc97d0a5d1472eb1022db03df4b4010f2a67e1feac24af4a40e1697e522d727713afe1da268992be
+  checksum: 10/1dc433319341ec3dca84513c4197ef4f4c8232604d35f83546a8abfb41d9591f934b66aaaa4dc3dc8b1b65f488705a2a48ae6c1d9792660119a9cdedeab4ca8f
   languageName: node
   linkType: hard
 
