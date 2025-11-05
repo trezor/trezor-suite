@@ -7,7 +7,7 @@ import { messages as defaultMessages } from '../messages';
 import { flatten } from '../utils';
 
 const LANGUAGE_TRANSLATIONS_MAP = {
-    'en-US': require('../../translations/en-US.json'),
+    'en-US': {}, // english is always read from `messages.ts` source
     'cs-CZ': require('../../translations/cs-CZ.json'),
 } as const satisfies Record<NativeLocale, any>;
 
