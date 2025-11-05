@@ -59,6 +59,8 @@ export const TradingDetailBuy = () => {
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{paymentId}}', trade?.data?.paymentId || '');
 
+    const country = trade?.data?.country;
+
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         amountInCrypto: trade?.data?.wantCrypto,
         sendAmount: trade?.data?.fiatStringAmount ?? '',
@@ -127,6 +129,7 @@ export const TradingDetailBuy = () => {
                     provider={provider?.name}
                     id={trade.data.id}
                     quoteAmounts={quoteAmounts}
+                    country={country}
                 />
             </Column>
             <Card>
