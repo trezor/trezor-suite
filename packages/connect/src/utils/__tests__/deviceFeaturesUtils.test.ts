@@ -229,6 +229,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 sol: 'no-capability',
                 dsol: 'no-capability',
                 thod: 'update-required',
+                tropicDeviceAuthentication: 'no-support',
                 tsep: 'update-required',
                 usdt: 'no-capability',
                 vtc: 'no-support',

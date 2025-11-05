@@ -47,8 +47,9 @@ describe('TrezorConnect.authenticateDevice', () => {
             success: true,
             payload: {
                 optigaResult: { valid: true },
-                // trezor-user-env T3W1 has no tropic debug keys provisioned. This test will fail if that changes in future.
-                tropicResult: null,
+                // trezor-user-env T3W1 has no tropic debug keys provisioned, but it is now required.
+                // TODO change to true when it's fixed in trezor-user-env (this E2E will start failing)
+                tropicResult: { valid: false },
             },
         });
     });

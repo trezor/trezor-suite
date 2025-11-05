@@ -28,12 +28,13 @@ export type VerifyAuthenticityProofResult =
       }
     | {
           valid: false;
-          caPubKey: string;
+          caPubKey?: string;
           rootPubKey?: string;
           error:
               | 'ROOT_PUBKEY_NOT_FOUND'
               | 'CA_PUBKEY_BLACKLISTED'
               | 'INVALID_DEVICE_MODEL'
               | 'INVALID_DEVICE_CERTIFICATE'
-              | 'INVALID_DEVICE_SIGNATURE';
+              | 'INVALID_DEVICE_SIGNATURE'
+              | 'RESPONSE_PAYLOAD_MISSING';
       };

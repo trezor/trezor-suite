@@ -272,6 +272,16 @@ export const config: Config = {
             },
         },
         {
+            capabilities: ['tropicDeviceAuthentication'],
+            min: {
+                // devices that don't support 'authenticateDevice' don't have to be listed here
+                T2B1: '0',
+                T3B1: '0',
+                T3T1: '0',
+                T3W1: '2.9.3',
+            },
+        },
+        {
             capabilities: ['getFirmwareHash'],
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
