@@ -1,36 +1,123 @@
 import { pipe } from '@mobily/ts-belt';
+import { PersistedState, getStoredState } from 'redux-persist';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { WalletSettings } from '@suite-common/wallet-types';
+import { BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { PROTO } from '@trezor/connect';
 
-type NetworkSymbolOld = Exclude<NetworkSymbol, 'bsc'> | 'bnb';
+import { initMmkvStorage } from '../../storage';
 
-const migrateEnabledDiscoveryNetworkSymbols = (
-    oldEnabledDiscoveryNetworkSymbols: NetworkSymbol[],
-): NetworkSymbol[] =>
-    (oldEnabledDiscoveryNetworkSymbols as NetworkSymbolOld[]).map(networkSymbol =>
+const getFiatCurrencyCode = (appSettings: object): string | undefined => {
+    if ('fiatCurrencyCode' in appSettings && typeof appSettings.fiatCurrencyCode === 'string') {
+        return appSettings.fiatCurrencyCode;
+    }
+
+    if (
+        'fiatCurrency' in appSettings &&
+        typeof appSettings.fiatCurrency === 'object' &&
+        appSettings.fiatCurrency !== null &&
+        'label' in appSettings.fiatCurrency &&
+        typeof appSettings.fiatCurrency.label === 'string'
+    ) {
+        return appSettings.fiatCurrency.label;
+    }
+
+    return undefined;
+};
+
+const migrateLocalCurrency = (appSettings: object): BaseCurrencyCode | undefined => {
+    const localCurrency = getFiatCurrencyCode(appSettings);
+
+    if (!localCurrency || !isBaseCurrencyCode(localCurrency)) return undefined;
+
+    return localCurrency;
+};
+
+const migrateBitcoinAmountUnit = (appSettings: object): PROTO.AmountUnit | undefined => {
+    if (!('bitcoinUnits' in appSettings)) return undefined;
+
+    const bitcoinAmountUnit = appSettings.bitcoinUnits;
+
+    if (
+        typeof bitcoinAmountUnit !== 'number' ||
+        // only BTC or SATS are supported
+        ![PROTO.AmountUnit.BITCOIN, PROTO.AmountUnit.SATOSHI].includes(bitcoinAmountUnit)
+    ) {
+        return undefined;
+    }
+
+    return bitcoinAmountUnit;
+};
+
+const migrateBscNetworkSymbol = (oldEnabledDiscoveryNetworkSymbols: string[]): string[] =>
+    oldEnabledDiscoveryNetworkSymbols.map(networkSymbol =>
         networkSymbol === 'bnb' ? 'bsc' : networkSymbol,
     );
 
-// @ts-expect-error
-const deprecatedNetworks: NetworkSymbol[] = ['dash', 'btg', 'nmc', 'vtc', 'dgb'];
-
-const migrateDiscoveryDeprecateNetworks = (
-    oldEnabledDiscoveryNetworkSymbols: NetworkSymbol[],
-): NetworkSymbol[] =>
-    oldEnabledDiscoveryNetworkSymbols.filter(
-        networkSymbol => !deprecatedNetworks.includes(networkSymbol),
-    );
+const filterUnknownNetworkSymbols = (networkSymbols: string[]): NetworkSymbol[] =>
+    networkSymbols.filter(networkSymbol => isNetworkSymbol(networkSymbol));
 
 /**
  * Migration of discoveryConfig slice, which was declared locally in suite-native,
  * to the walletSettings reducer shared in suite-common.
  * All migrations that were done on discoveryConfig are moved here
  */
-export const migrateDiscoveryConfigToWalletSettings = (
-    oldEnabledDiscoveryNetworkSymbols: NetworkSymbol[],
-): NetworkSymbol[] =>
-    pipe(
-        oldEnabledDiscoveryNetworkSymbols,
-        migrateEnabledDiscoveryNetworkSymbols,
-        migrateDiscoveryDeprecateNetworks,
+const migrateDiscoveryConfigToWalletSettings = (
+    discoveryConfig: object,
+): NetworkSymbol[] | undefined => {
+    if (!('enabledDiscoveryNetworkSymbols' in discoveryConfig)) {
+        return undefined;
+    }
+
+    if (!Array.isArray(discoveryConfig.enabledDiscoveryNetworkSymbols)) {
+        return undefined;
+    }
+
+    return pipe(
+        discoveryConfig.enabledDiscoveryNetworkSymbols,
+        migrateBscNetworkSymbol,
+        filterUnknownNetworkSymbols,
     );
+};
+
+export const initialMigrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: unknown) => {
+    // This is supposed to be initial migration from an empty state.
+    if (typeof walletSettingsState !== 'undefined') return undefined;
+
+    const storage = await initMmkvStorage();
+    const appSettings = await getStoredState({
+        key: 'appSettings',
+        storage,
+    });
+    const discoveryConfig = await getStoredState({
+        key: 'discoveryConfig',
+        storage,
+    });
+
+    if (!appSettings && !discoveryConfig) return undefined;
+
+    const newState = {} as Partial<WalletSettings> & PersistedState;
+
+    if (appSettings) {
+        const localCurrency = migrateLocalCurrency(appSettings);
+        const bitcoinAmountUnit = migrateBitcoinAmountUnit(appSettings);
+
+        if (localCurrency) {
+            newState.localCurrency = localCurrency;
+        }
+        if (bitcoinAmountUnit) {
+            newState.bitcoinAmountUnit = bitcoinAmountUnit;
+        }
+    }
+
+    if (discoveryConfig) {
+        const enabledNetworks = migrateDiscoveryConfigToWalletSettings(discoveryConfig);
+
+        if (enabledNetworks) {
+            newState.enabledNetworks = enabledNetworks;
+        }
+    }
+
+    return newState;
+};
