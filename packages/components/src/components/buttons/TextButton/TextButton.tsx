@@ -1,28 +1,55 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
 import styled, { DefaultTheme, useTheme } from 'styled-components';
 
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { CSSColor, borders, spacingsPx, typography } from '@trezor/theme';
 
-import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import {
-    AllowedButtonFrameProps,
-    ButtonProps,
-    allowedButtonFrameProps,
-    getIcon,
-} from '../Button/Button';
-import {
-    ButtonSize,
-    ButtonVariant,
-    IconAlignment,
-    getIconColor,
-    getIconSize,
-} from '../buttonStyleUtils';
+import { IconAlignment, getIconColor, getIconSize } from '../buttonStyleUtils';
 
-const mapVariantToColor: Record<ButtonVariant, string> = {
+export const allowedTextButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export type AllowedTextButtonFrameProps = Pick<
+    FrameProps,
+    (typeof allowedTextButtonFrameProps)[number]
+>;
+
+export const textButtonSizes = ['small', 'large'] as const;
+export type TextButtonSize = (typeof textButtonSizes)[number];
+
+export const textButtonVariants = [
+    'primary',
+    'tertiary',
+    'info',
+    'warning',
+    'destructive',
+] as const;
+export type TextButtonVariant = (typeof textButtonVariants)[number];
+
+type GetIconProps = {
+    icon?: IconName | React.ReactElement;
+    size?: number;
+    color?: CSSColor;
+};
+
+export const getIcon = ({ icon, size, color }: GetIconProps) => {
+    if (!icon) return null;
+    if (typeof icon === 'string') {
+        return <Icon name={icon as IconName} size={size} color={color} />;
+    }
+
+    return icon;
+};
+
+const mapVariantToColor: Record<TextButtonVariant, string> = {
     primary: 'textPrimaryDefault',
     tertiary: 'textSubdued',
     info: 'textAlertBlue',
@@ -30,7 +57,7 @@ const mapVariantToColor: Record<ButtonVariant, string> = {
     destructive: 'textAlertRed',
 };
 
-const mapVariantToHoverColor: Record<ButtonVariant, string> = {
+const mapVariantToHoverColor: Record<TextButtonVariant, string> = {
     primary: 'textPrimaryPressed',
     tertiary: 'textPrimaryPressed',
     info: 'textPrimaryPressed',
@@ -39,10 +66,10 @@ const mapVariantToHoverColor: Record<ButtonVariant, string> = {
 };
 
 const TextButtonContainer = styled.button<
-    TransientProps<AllowedButtonFrameProps> & {
-        $size: ButtonSize;
+    TransientProps<AllowedTextButtonFrameProps> & {
+        $size: TextButtonSize;
         $iconAlignment: IconAlignment;
-        $variant: ButtonVariant;
+        $variant: TextButtonVariant;
         $isUnderlined: boolean;
     }
 >`
@@ -90,10 +117,25 @@ const TextButtonContainer = styled.button<
     }
 `;
 
-export type TextButtonProps = Omit<ButtonProps, 'iconSize' | 'isSubtle' | 'children'> & {
-    children?: React.ReactNode;
-    isUnderlined?: boolean;
-};
+type SelectedHTMLButtonProps = Pick<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    'onClick' | 'onMouseOver' | 'onMouseLeave' | 'type' | 'tabIndex'
+>;
+
+export type TextButtonProps = SelectedHTMLButtonProps &
+    AllowedTextButtonFrameProps & {
+        icon?: IconName;
+        iconAlignment?: IconAlignment;
+        size?: TextButtonSize;
+        isDisabled?: boolean;
+        isLoading?: boolean;
+        variant?: TextButtonVariant;
+        children?: React.ReactNode;
+        isUnderlined?: boolean;
+        className?: string;
+        'data-testid'?: string;
+        title?: string;
+    };
 
 export const TextButton = ({
     icon,
@@ -103,11 +145,18 @@ export const TextButton = ({
     isUnderlined = false,
     isLoading = false,
     children,
+    onClick,
     variant = 'primary',
-    margin,
+    'data-testid': dataTestId,
+    className,
+    tabIndex,
+    type = 'button',
+    title,
+    onMouseOver,
+    onMouseLeave,
     ...rest
 }: TextButtonProps) => {
-    const frameProps = pickAndPrepareFrameProps({ margin, ...rest }, allowedButtonFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedTextButtonFrameProps);
     const theme = useTheme();
     const IconComponent = getIcon({
         icon,
@@ -124,8 +173,15 @@ export const TextButton = ({
             disabled={isDisabled || isLoading}
             $variant={variant}
             $isUnderlined={isUnderlined}
+            data-testid={dataTestId}
+            onClick={onClick}
+            className={className}
+            tabIndex={tabIndex}
+            type={type}
+            onMouseOver={onMouseOver}
+            onMouseLeave={onMouseLeave}
+            title={title}
             {...frameProps}
-            {...rest}
         >
             {!isLoading && icon && IconComponent}
             {isLoading && Loader}

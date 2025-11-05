@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button } from '@trezor/components';
+import { NewButton } from '@trezor/components';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { getField } from '../components/Method';
@@ -72,9 +72,9 @@ export const Settings = () => {
         <SettingsContent>
             {/* @ts-expect-error: actions is simplified for this case */}
             {fields.map(field => getField(field, { actions }))}
-            <Button onClick={actions.onSubmitInit} data-testid="@submit-button">
+            <NewButton onClick={actions.onSubmitInit} data-testid="@submit-button">
                 {submitButton}
-            </Button>
+            </NewButton>
             {initError && (
                 <ErrorMessage data-testid="@settings/init-error">
                     Init error: {initError}
