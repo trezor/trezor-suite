@@ -2,10 +2,12 @@ import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
+import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
+    calculateRewards,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-utils';
@@ -61,7 +63,10 @@ export const EmptyStakingCard = () => {
 
     const potentialRewards = useMemo(() => {
         const totalBalance = new BigNumber(stakingBalance || '0').plus(accountBalance).toString();
-        const amount = new BigNumber(totalBalance).multipliedBy(apy / 100);
+        const amount = calculateRewards(
+            getNetworkAdjustedStakingBalance(totalBalance, account),
+            apy,
+        );
 
         return CryptoAmountFormatter.format(amount.toString(), {
             symbol: account?.symbol,
@@ -71,6 +76,7 @@ export const EmptyStakingCard = () => {
             maxDisplayedDecimals: 8,
         });
     }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
+    const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
 
     const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
 
@@ -158,7 +164,7 @@ export const EmptyStakingCard = () => {
                             />
                         </H3>
                         <Paragraph variant="tertiary" maxWidth={700}>
-                            {!hasEnoughBalanceForStaking ? (
+                            {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
                                 <Translation
                                     id={
                                         isCardano
