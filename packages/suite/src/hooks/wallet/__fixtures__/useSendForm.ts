@@ -1756,7 +1756,6 @@ type FeeChangeFixture = {
 export const feeChange: FeeChangeFixture[] = [
     {
         description: 'BTC fee changes',
-        skip: false,
         store: {
             send: {
                 drafts: getDraft(),
@@ -1790,6 +1789,10 @@ export const feeChange: FeeChangeFixture[] = [
             },
         },
         actionSequence: [
+            {
+                type: 'click',
+                element: 'outputs.0.setMax',
+            },
             {
                 type: 'click',
                 element: '@wallet/fees/collapsible-fees-toggle',
@@ -2137,28 +2140,32 @@ export const feeChange: FeeChangeFixture[] = [
         actionSequence: [
             {
                 type: 'click',
+                element: 'outputs.0.setMax',
+            },
+            {
+                type: 'click',
                 element: '@wallet/fees/collapsible-fees-toggle',
             },
             {
                 type: 'click',
                 element: '@wallet/fees/select-custom-fee',
                 result: {
-                    getAccountInfoCalls: 1,
+                    getAccountInfoCalls: 2,
                     formValues: {
                         selectedFee: 'custom' as const,
                         feePerUnit: '12',
                     },
                     composedLevels: {
                         normal: {
-                            type: 'error', // not enough to cover reserve
+                            type: 'final',
                         },
                     },
                     errors: {
-                        outputs: [
-                            {
-                                amount: { type: 'compose' }, // AMOUNT_IS_LESS_THAN_RESERVE
-                            },
-                        ],
+                        // outputs: [
+                        //     {
+                        //         amount: { type: 'compose' }, // AMOUNT_IS_LESS_THAN_RESERVE
+                        //     },
+                        // ],
                     },
                 },
             },
@@ -2167,7 +2174,7 @@ export const feeChange: FeeChangeFixture[] = [
                 element: 'feePerUnit',
                 value: '', // reset value
                 result: {
-                    getAccountInfoCalls: 1,
+                    getAccountInfoCalls: 2,
                     formValues: {
                         feePerUnit: '',
                     },
@@ -2182,7 +2189,7 @@ export const feeChange: FeeChangeFixture[] = [
                 element: 'feePerUnit',
                 value: '10',
                 result: {
-                    getAccountInfoCalls: 2,
+                    getAccountInfoCalls: 3,
                     formValues: {
                         feePerUnit: '10',
                     },
@@ -2203,7 +2210,7 @@ export const feeChange: FeeChangeFixture[] = [
             },
         ],
         finalResult: {
-            getAccountInfoCalls: 2,
+            getAccountInfoCalls: 3,
         },
     },
 ];

@@ -10,6 +10,7 @@ import { ElevationUp } from '../ElevationContext/ElevationContext';
 type HeaderProps = {
     $paddingType: PaddingType;
     $collapsible: boolean;
+    $hoverEffect: boolean;
 };
 
 const Header = styled.header<HeaderProps>`
@@ -18,7 +19,8 @@ const Header = styled.header<HeaderProps>`
 
     &:hover {
         ${Toggle} {
-            opacity: ${({ $collapsible }) => ($collapsible ? 0.5 : 1)};
+            opacity: ${({ $hoverEffect, $collapsible }) =>
+                $collapsible && $hoverEffect ? 0.5 : 1};
         }
     }
 `;
@@ -28,6 +30,7 @@ export interface CollapsibleHeaderProps {
     fillType: FillType;
     children: ReactNode;
     collapsible: boolean;
+    hoverEffect: boolean;
 }
 
 export function CollapsibleHeader({
@@ -35,9 +38,10 @@ export function CollapsibleHeader({
     fillType,
     children,
     collapsible,
+    hoverEffect,
 }: CollapsibleHeaderProps) {
     return (
-        <Header $paddingType={paddingType} $collapsible={collapsible}>
+        <Header $paddingType={paddingType} $collapsible={collapsible} $hoverEffect={hoverEffect}>
             {fillType === 'none' ? children : <ElevationUp>{children}</ElevationUp>}
         </Header>
     );

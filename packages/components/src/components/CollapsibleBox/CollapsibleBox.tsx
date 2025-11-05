@@ -55,6 +55,7 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     'data-testid-toggle'?: string;
     defaultIsOpen?: boolean;
     collapsible?: boolean;
+    headerHoverEffect?: boolean;
 } & Pick<
         CollapsibleHeaderContentProps,
         | 'heading'
@@ -127,6 +128,7 @@ export const CollapsibleBox = ({
     'data-testid': dataTest,
     'data-testid-toggle': dataTestToggleId = '@collapsible-box/toggle',
     collapsible = true,
+    headerHoverEffect = true,
     ...rest
 }: CollapsibleBoxProps) => {
     const { elevation } = useElevation();
@@ -149,11 +151,13 @@ export const CollapsibleBox = ({
                             setIsOpen(!isOpen);
                         }
                     }}
+                    disabled={!collapsible}
                 >
                     <CollapsibleHeader
                         paddingType={paddingType}
                         fillType={fillType}
                         collapsible={collapsible}
+                        hoverEffect={headerHoverEffect}
                     >
                         <CollapsibleHeaderContent
                             isOpen={isOpen}

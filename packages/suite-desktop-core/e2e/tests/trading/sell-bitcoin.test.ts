@@ -130,8 +130,9 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
                 });
 
                 await test.step(`Fill in a sell form with ${feeType} fee`, async () => {
-                    await feeSwitchFunction();
                     await tradingPage.fillSellForm({ cryptoAmount });
+                    await tradingPage.fees.openCollapsibleFees();
+                    await feeSwitchFunction();
                     feeRate = await tradingPage.fees.getBitcoinFeeRate(feeType);
                 });
 

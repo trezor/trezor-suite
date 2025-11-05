@@ -32,3 +32,4 @@ export * from './hooks/useExcludedUtxos';
 export * from './hooks/useFilteredUtxos';
 export * from './cardanoStakingUtils';
 export * from './amountUtils';
+export * from './bigNumberUtils';

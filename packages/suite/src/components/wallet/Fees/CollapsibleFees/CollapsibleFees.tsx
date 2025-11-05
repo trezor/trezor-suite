@@ -16,6 +16,7 @@ import { CustomFee } from './CustomFee/CustomFee';
 import { MaximumFee } from './MaximumFee';
 import { StandardFee } from './StandardFee/StandardFee';
 import { FeesContext, FeesContextType } from '../context/FeesContext';
+import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 
 export type CollapsibleFeesProps = {
     networkType: NetworkType;
@@ -55,6 +56,12 @@ export function CollapsibleFees({
 
     const theme = useTheme();
 
+    const txMaxFee = useTransactionMaxFee({
+        networkSymbol,
+        composedLevels,
+        selectedFeeLevel,
+    });
+
     if (!selectedFeeLevel) {
         return null;
     }
@@ -84,11 +91,12 @@ export function CollapsibleFees({
                 overflow="unset"
                 toggleComponent={
                     composedLevels === null ? null : (
-                        <MaximumFee typographyStyle={headerTypographyStyle} />
+                        <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
                     )
                 }
-                collapsible={supportsAdjustableFees}
+                collapsible={supportsAdjustableFees && txMaxFee !== null}
                 data-testid-toggle="@wallet/fees/collapsible-fees-toggle"
+                headerHoverEffect={false}
             >
                 <Column gap={spacings.md}>
                     <Column gap={spacings.md}>
@@ -96,7 +104,7 @@ export function CollapsibleFees({
                         {isCustomFee && <CustomFee showCurrentFee={!rbfForm} />}
                     </Column>
 
-                    <Row justifyContent="center">
+                    <Row justifyContent="center" margin={{ bottom: spacings.xs }}>
                         {isCustomFee && (
                             <Button
                                 intent="neutral"

@@ -14,6 +14,7 @@ export class Fees {
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
     readonly collapsibleFeesToggle: Locator;
+    readonly maxFeeLoading: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
     readonly maxFeeFiat: Locator;
@@ -25,6 +26,7 @@ export class Fees {
 
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
+        this.maxFeeLoading = this.page.getByTestId('@trading/quote/maximum-fee-amount-loading');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
         this.maxFeeFiat = this.page.getByTestId('@trading/quote/maximum-fee-fiat-amount');
@@ -67,6 +69,17 @@ export class Fees {
 
         if (isExpanded === 'true') {
             return;
+        }
+
+        // Wait for maximum fee to be calculated
+        await this.maxFeeLoading.waitFor({ state: 'hidden' });
+
+        const isDisabled = await this.collapsibleFeesToggle.getAttribute('aria-disabled');
+
+        if (isDisabled === 'true') {
+            throw new Error(
+                `Can't open collapsible fees because it is disabled. Make sure 'to' and 'amount' fields are filled so that maximum fee is calculated.`,
+            );
         }
 
         await expect(this.collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'false');
