@@ -329,12 +329,11 @@ export const Select = ({
 
     const [selectedOption, setSelectedOption] = useState<Option | undefined>(rest.value);
 
-    const { cspNonce } = window;
-
     // Todo: hack to workaround the issue, see: https://github.com/JedWatson/react-select/issues/4631
     const cache: EmotionCache = createCache({
         key: 'react-select-nonce-hack',
-        nonce: cspNonce ?? '',
+        // window may be undefined during SSR, for example in Connect Explorer
+        nonce: typeof window !== 'undefined' && window?.cspNonce ? window.cspNonce : '',
     });
 
     const handleOnChange = useCallback<Required<ReactSelectProps<Option>>['onChange']>(
