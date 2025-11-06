@@ -60,7 +60,6 @@ export const CollapsibleBox: StoryObj<typeof meta> = {
         toggleLabel: {
             type: 'string',
         },
-        toggleComponent: { control: { disable: true } },
         toggleIconName: {
             options: ['none', ...variables.ICONS],
             mapping: {

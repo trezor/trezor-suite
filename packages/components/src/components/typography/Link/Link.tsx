@@ -73,7 +73,6 @@ type LinkProps = AllowedLinkTextProps & {
     icon?: IconName;
     color?: string;
     'data-testid'?: string;
-    as?: 'a' | 'button';
 };
 
 const Link = ({
@@ -87,7 +86,6 @@ const Link = ({
     className,
     variant,
     typographyStyle = 'inherit',
-    as = 'a',
     ...rest
 }: LinkProps) => {
     const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);
@@ -96,7 +94,6 @@ const Link = ({
 
     return (
         <A
-            as={as}
             href={href}
             target={target || '_blank'}
             rel="noreferrer noopener"
