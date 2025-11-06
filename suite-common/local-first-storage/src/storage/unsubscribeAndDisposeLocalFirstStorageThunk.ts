@@ -1,3 +1,5 @@
+import { OwnerId } from '@evolu/common';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -5,7 +7,6 @@ import { typedObjectValues } from '@trezor/utils';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import { localFirstStorageProvider, subscriptionStorage } from './sharedObjects';
-import { createOwnerIdFromEvoluKeys } from '../evoluUtils';
 
 type UnsubscribeLocalFirstStorageThunkParams = {
     device: TrezorDevice;
@@ -34,7 +35,8 @@ export const unsubscribeAndDisposeLocalFirstStorageThunk = createThunk<
             return;
         }
 
-        const ownerIdResult = createOwnerIdFromEvoluKeys(evoluKeys);
+        const ownerIdResult = OwnerId.from(evoluKeys.ownerId);
+
         if (!ownerIdResult.ok) {
             return rejectWithValue(ownerIdResult.error);
         }

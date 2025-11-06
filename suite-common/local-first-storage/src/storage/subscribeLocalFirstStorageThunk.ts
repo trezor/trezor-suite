@@ -41,7 +41,10 @@ export const subscribeLocalFirstStorageThunk = createThunk<
         const evoluKeys = reselectedDevice?.localFirstStorageSecret?.evoluKeys;
 
         if (evoluKeys === undefined) {
-            console.error('Evolu: Keys set to reselectedDevice');
+            console.error(
+                'Evolu: Keys set to reselectedDevice',
+                reselectedDevice?.localFirstStorageSecret,
+            );
 
             return;
         }
