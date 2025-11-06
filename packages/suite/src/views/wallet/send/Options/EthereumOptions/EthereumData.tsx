@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
 
-import styled from 'styled-components';
-
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { Icon, Textarea } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Card, Column, H4, IconButton, Row, Textarea } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
@@ -14,22 +11,6 @@ import { useSendFormContext } from 'src/hooks/wallet';
 const inputAsciiName = 'ethereumDataAscii';
 const inputHexName = 'transactionData';
 const inputAmountName = 'outputs.0.amount';
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    align-items: flex-end;
-`;
-
-const Space = styled.div`
-    display: flex;
-    justify-content: center;
-    align-self: center;
-    padding-top: ${spacingsPx.lg};
-    min-width: 65px;
-`;
 
 type EthereumDataProps = {
     close: () => void;
@@ -103,43 +84,51 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
     }, [amount, hexValue, trigger]);
 
     return (
-        <Wrapper>
-            <Textarea
-                inputState={getInputState(asciiError)}
-                data-testid={inputAsciiName}
-                defaultValue={asciiValue}
-                maxLength={formInputsMaxLength.ethData}
-                bottomText={asciiError?.message || null}
-                label={<Translation id="DATA_ETH" />}
-                innerRef={asciiRef}
-                {...asciiField}
-                characterCount={{
-                    current: asciiValue?.length,
-                    max: formInputsMaxLength.ethData,
-                }}
-            />
-            <Space> = </Space>
-            <Textarea
-                inputState={getInputState(hexError)}
-                data-testid={inputHexName}
-                defaultValue={hexValue}
-                maxLength={formInputsMaxLength.ethData}
-                bottomText={hexError?.message || null}
-                labelRight={
-                    <Icon
-                        size={20}
-                        name="x"
+        <Card>
+            <Column gap={12}>
+                <Row justifyContent="space-between">
+                    <H4 typographyStyle="body">
+                        <Translation id="DATA_ETH" />
+                    </H4>
+                    <IconButton
+                        intent="neutral"
+                        priority="secondary"
+                        icon="x"
+                        size="small"
                         data-testid="send/close-ethereum-data"
                         onClick={handleClose}
                     />
-                }
-                innerRef={hexRef}
-                {...hexField}
-                characterCount={{
-                    current: hexValue?.length,
-                    max: formInputsMaxLength.ethData * 2,
-                }}
-            />
-        </Wrapper>
+                </Row>
+                <Row gap={16}>
+                    <Textarea
+                        inputState={getInputState(asciiError)}
+                        data-testid={inputAsciiName}
+                        defaultValue={asciiValue}
+                        maxLength={formInputsMaxLength.ethData}
+                        bottomText={asciiError?.message || null}
+                        innerRef={asciiRef}
+                        {...asciiField}
+                        characterCount={{
+                            current: asciiValue?.length,
+                            max: formInputsMaxLength.ethData,
+                        }}
+                    />
+                    <>=</>
+                    <Textarea
+                        inputState={getInputState(hexError)}
+                        data-testid={inputHexName}
+                        defaultValue={hexValue}
+                        maxLength={formInputsMaxLength.ethData}
+                        bottomText={hexError?.message || null}
+                        innerRef={hexRef}
+                        {...hexField}
+                        characterCount={{
+                            current: hexValue?.length,
+                            max: formInputsMaxLength.ethData * 2,
+                        }}
+                    />
+                </Row>
+            </Column>
+        </Card>
     );
 };

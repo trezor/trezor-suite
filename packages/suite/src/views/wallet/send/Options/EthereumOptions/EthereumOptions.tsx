@@ -1,34 +1,11 @@
-import styled from 'styled-components';
-
 import { FormOptions } from '@suite-common/wallet-types';
-import { Button, Tooltip } from '@trezor/components';
+import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { EthereumData } from './EthereumData';
 import { OnOffSwitcher } from '../OnOffSwitcher';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-start;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin-right: 8px;
-
-    & > div {
-        display: inline-flex;
-    }
-`;
 
 export const EthereumOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
@@ -46,39 +23,38 @@ export const EthereumOptions = () => {
     const toggleBroadcast = () => toggle('broadcast');
 
     return (
-        <Wrapper>
-            <Left>
+        <Column gap={16}>
+            <Row gap={8}>
                 {!dataEnabled && !tokenValue && (
                     <Tooltip content={<Translation id="DATA_ETH_ADD_TOOLTIP" />} cursor="pointer">
-                        <StyledButton
+                        <Button
                             intent="neutral"
                             priority="secondary"
-                            size="small"
                             iconLeft="database"
                             data-testid="send/open-ethereum-data"
                             onClick={toggleData}
                         >
                             <Translation id="DATA_ETH_ADD" />
-                        </StyledButton>
+                        </Button>
                     </Tooltip>
                 )}
-
                 <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
-                    <StyledButton
+                    <Button
                         intent="neutral"
                         priority="secondary"
-                        size="small"
                         iconLeft="broadcast"
                         data-testid="send/broadcast"
                         onClick={toggleBroadcast}
                     >
-                        <Translation id="BROADCAST" />
-                        <OnOffSwitcher isOn={broadcastEnabled} />
-                    </StyledButton>
+                        <Row>
+                            <Translation id="BROADCAST" />
+                            <OnOffSwitcher isOn={broadcastEnabled} />
+                        </Row>
+                    </Button>
                 </Tooltip>
-            </Left>
+            </Row>
 
             {dataEnabled && <EthereumData close={toggleData} />}
-        </Wrapper>
+        </Column>
     );
 };
