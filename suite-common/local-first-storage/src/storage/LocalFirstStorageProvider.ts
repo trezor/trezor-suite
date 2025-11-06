@@ -1,23 +1,23 @@
 import {
-    EncryptionKey,
     EvoluDeps,
     OwnerId,
+    OwnerSecret,
     SimpleName,
-    WriteKey,
     createEvolu,
-    createIdFromString,
-    getOrThrow,
+    createOwnerWebSocketTransport,
     hexToBytes,
 } from '@evolu/common';
 
 import { EvoluKeys } from '@suite-common/suite-types';
 
+import { createAppOwnerFromTrezorNode } from '../evoluUtils';
 import { Schema } from '../schema';
 import { LocalFirstStorage } from '../storage';
 
-// This is a way how to force change of the SQL files.
-// This shall NEVER change in production!!!
-const VERSION = 2;
+// This is a way how to force change of the SQL files. It was useful for development
+// so not everybody had to delete SQLite file manually:
+// See: https://www.evolu.dev/docs/faq#how-to-delete-opfs-sqlite-in-browser
+const VERSION = 3;
 
 type CreateEvoluInstanceProps = {
     relayUrl: string;
@@ -26,9 +26,27 @@ type CreateEvoluInstanceProps = {
 };
 
 const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
-    const evoluOwnerId = getOrThrow(OwnerId.from(createIdFromString(evoluKeys.ownerId)));
+    const ownerResult = OwnerSecret.from(
+        hexToBytes(evoluKeys.ownerSecret)
+            // Get only [0, 32] Slip21 Node Data (Node Key [32, 64] is irrelevant for Evolu)
+            .slice(0, 32),
+    );
 
-    const sanitizedOwnerId = evoluOwnerId.replaceAll('_', '-');
+    if (!ownerResult.ok) {
+        console.error(ownerResult.error);
+
+        throw ownerResult.error;
+    }
+
+    const owner = createAppOwnerFromTrezorNode(ownerResult.value);
+
+    if (!owner.ok) {
+        console.error(owner.error);
+
+        throw owner.error;
+    }
+
+    const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
     const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${sanitizedOwnerId}`);
 
     if (!databaseName.ok) {
@@ -39,18 +57,8 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
     const evolu = createEvolu(evoluDeps)(Schema, {
         name: databaseName.value,
-        syncUrl: relayUrl,
-        initialAppOwner: {
-            type: 'AppOwner',
-            id: evoluOwnerId,
-            encryptionKey: getOrThrow(EncryptionKey.from(hexToBytes(evoluKeys.encryptionKey))),
-            writeKey: getOrThrow(
-                WriteKey.from(
-                    // Evolu uses only the first 16 bytes as write key
-                    hexToBytes(evoluKeys.writeKey).slice(0, 16),
-                ),
-            ),
-        },
+        transports: [createOwnerWebSocketTransport({ url: relayUrl, ownerId: owner.value.id })],
+        externalAppOwner: owner.value,
     });
 
     evolu.subscribeError(() => {

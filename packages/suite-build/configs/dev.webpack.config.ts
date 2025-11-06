@@ -18,8 +18,12 @@ const config: webpack.Configuration = {
     devtool: 'eval-source-map',
     entry: ['webpack-plugin-serve/client'],
     output: {
-        filename: 'js/[name].js',
-        chunkFilename: 'js/[id].js',
+        // This builds JS directly `dist/` (instead `dist/js/`)
+        // without this, Evolu worker import won't (for unknow reason) work
+        // Todo: Issue is probably in combination of @evolu/sqlite-wasm which wraps `mjs` files and our webpack config
+        filename: '[name].js',
+        chunkFilename: '[id].js',
+        // ---
     },
     watchOptions: {
         // reduce number of file watchers; for HMR it is not necessary to watch both source code & node_modules

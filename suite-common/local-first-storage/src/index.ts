@@ -34,3 +34,4 @@ export {
 } from './labeling/labelingReducer';
 export type { LabelingState } from './labeling/labelingReducer';
 export { processMetadataMessageThunk } from './labeling/processMetadataMessageThunk';
+export { createAppOwnerFromTrezorNode } from './evoluUtils';

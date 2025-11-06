@@ -1,6 +1,9 @@
 // Todo: This is here so "solve" the "Error: No "exports" main defined in /home/user/workspace/trezor/trezor-suite/node_modules/@evolu/common/package.json"
 //       For running the e2e tests in Playwright
+// See: https://github.com/trezor/trezor-suite/issues/22316
 const loadEvoluCommon = async () => await import('@evolu/common');
+const loadLocalFistStorage = async () =>
+    await import('@suite-common/local-first-storage/src/evoluUtils');
 
 import { createThunk } from '@suite-common/redux-utils';
 import { EvoluKeys, TrezorDevice, asDeviceEvoluOwnerId } from '@suite-common/suite-types';
@@ -50,30 +53,55 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             });
 
             if (result.success) {
-                const { deriveSlip21Node, bytesToHex, hexToBytes } = await loadEvoluCommon();
+                const { hexToBytes, OwnerSecret } = await loadEvoluCommon();
 
-                // Slip21 path from Trezor Device: ["TREZOR", "Evolu"]
-                const evoluNode = hexToBytes(result.payload.data);
+                const ownerResult = OwnerSecret.from(
+                    hexToBytes(result.payload.data)
+                        // Get only [0, 32] Slip21 Node Data (Node Key [32, 64] is irrelevant for Evolu)
+                        .slice(0, 32),
+                );
+
+                if (!ownerResult.ok) {
+                    console.error('Evolu: ownerResult error', ownerResult.error);
+
+                    throw ownerResult.error;
+                }
+
+                const { createAppOwnerFromTrezorNode } = await loadLocalFistStorage();
+
+                const ownerIdResult = createAppOwnerFromTrezorNode(ownerResult.value);
+
+                if (!ownerIdResult.ok) {
+                    console.error('Evolu: ownerIdResult error', ownerIdResult.error);
+
+                    throw ownerIdResult.error;
+                }
 
                 const evoluKeys: EvoluKeys = {
-                    ownerId: asDeviceEvoluOwnerId(
-                        bytesToHex(deriveSlip21Node('Owner Id', evoluNode).slice(32, 64)),
-                    ),
-                    writeKey: bytesToHex(deriveSlip21Node('Write Key', evoluNode).slice(32, 64)),
-                    encryptionKey: bytesToHex(
-                        deriveSlip21Node('Encryption Key', evoluNode).slice(32, 64),
-                    ),
+                    ownerId: asDeviceEvoluOwnerId(ownerIdResult.value.id),
+                    ownerSecret: result.payload.data,
                 };
 
                 // This also sets the `isRetrieving` flag to `false`
                 dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys }));
             } else {
+                console.error('Evolu: TrezorConnect.evoluGetNode(...) rejected: ', result.payload);
+
+                dispatch(
+                    deviceActions.setLocalFirstStorageSecretRetrieving({
+                        device,
+                        isRetrieving: false,
+                    }),
+                );
+
                 return rejectWithValue(result.payload);
             }
-        } finally {
+        } catch (e) {
             dispatch(
                 deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: false }),
             );
+
+            throw e;
         }
     },
 );
