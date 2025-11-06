@@ -1,13 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { NATIVE_LANGUAGES } from '@suite-common/suite-types';
 import { Select, SelectItemType } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { LocaleTag, Translation, selectUserSelectedLocaleTag, setLocale } from '@suite-native/intl';
+import {
+    LANGUAGES,
+    LocaleTag,
+    Translation,
+    selectUserSelectedLocaleTag,
+    setLocale,
+} from '@suite-native/intl';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 
-const languageItems = Object.entries(NATIVE_LANGUAGES).map(
+const languageItems = Object.entries(LANGUAGES).map(
     ([localeCode, language]) =>
         ({
             value: localeCode,
@@ -23,15 +27,10 @@ languageItems.unshift({
 export const LanguageSelector = () => {
     const dispatch = useDispatch();
     const userSelectedLocaleTag = useSelector(selectUserSelectedLocaleTag);
-    const isLocalizationEnabled = useFeatureFlag(FeatureFlag.IsLocalizationEnabled);
 
     const handleSelectLanguage = (localeCode: LocaleTag) => {
         dispatch(setLocale(localeCode));
     };
-
-    if (!isLocalizationEnabled) {
-        return null;
-    }
 
     return (
         <PreferencesSettingsCard

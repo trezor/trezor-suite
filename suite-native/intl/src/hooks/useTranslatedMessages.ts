@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { NativeLocale, isSupportedNativeLocale } from '@suite-common/suite-types';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-
 import { messages as defaultMessages } from '../messages';
+import { NativeLocale, isOfficiallySupportedNativeLocale } from '../types';
 import { flatten } from '../utils';
 
 const LANGUAGE_TRANSLATIONS_MAP = {
@@ -20,16 +18,14 @@ type UseTranslatedMessagesProps = {
 
 export const useTranslatedMessages = ({ locale }: UseTranslatedMessagesProps) => {
     const [messages, setMessages] = useState<{ [key: string]: string }>({});
-    const isLocalizationEnabled = useFeatureFlag(FeatureFlag.IsLocalizationEnabled);
 
     useEffect(() => {
-        const localizedMessages =
-            isLocalizationEnabled && isSupportedNativeLocale(locale)
-                ? LANGUAGE_TRANSLATIONS_MAP[locale]
-                : {};
+        const localizedMessages = isOfficiallySupportedNativeLocale(locale)
+            ? LANGUAGE_TRANSLATIONS_MAP[locale]
+            : {};
 
         setMessages({ ...englishFallback, ...localizedMessages });
-    }, [locale, isLocalizationEnabled]);
+    }, [locale]);
 
     return messages;
 };
