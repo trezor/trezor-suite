@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import './globalPolyfills';
+import './reanimatedLoggerFix';
 
 import { registerRootComponent } from 'expo';
 
