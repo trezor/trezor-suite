@@ -161,6 +161,31 @@ export const factory = <
 
     getNonce: params => call({ ...params, method: 'getNonce' }),
 
+    moneroGetAddress: params =>
+        call({
+            ...params,
+            method: 'moneroGetAddress',
+            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
+        }),
+
+    moneroGetWatchKey: params =>
+        call({
+            ...params,
+            method: 'moneroGetWatchKey',
+        }),
+
+    moneroKeyImageSync: params =>
+        call({
+            ...params,
+            method: 'moneroKeyImageSync',
+        }),
+
+    moneroSignTransaction: params =>
+        call({
+            ...params,
+            method: 'moneroSignTransaction',
+        }),
+
     nemGetAddress: params =>
         call({
             ...params,
