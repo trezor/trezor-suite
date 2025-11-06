@@ -47,7 +47,7 @@ const Item = styled.div`
     width: 100%;
 `;
 
-type BaseItemProps = {
+export type BaseItemProps = {
     height: number;
 };
 

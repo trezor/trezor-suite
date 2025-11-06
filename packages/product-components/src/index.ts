@@ -12,6 +12,7 @@ export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceIm
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export { CoinLogo } from './components/CoinLogo/CoinLogo';
+export { isCoinSymbol } from './components/CoinLogo/coins';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTabs';
