@@ -1,9 +1,7 @@
 import { useMemo, useRef } from 'react';
 
-import styled from 'styled-components';
-
 import { TranslationKey } from '@suite-common/intl-types';
-import { Box, Card, IconButton, Modal } from '@trezor/components';
+import { Card, Modal } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { DeviceAnimation } from '@trezor/product-components';
@@ -30,10 +28,6 @@ import {
 } from 'src/selectors/suite/suiteSelectors';
 
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
-
-const AnimationContainer = styled.div`
-    position: relative;
-`;
 
 type DontSeeYourTrezorModalProps = {
     onClose: () => void;
@@ -120,26 +114,15 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         }
     };
 
-    const handleReplayClick = () => {
-        const video = videoRef.current;
-        if (video) {
-            video.currentTime = 0;
-            video.play();
-        }
-    };
-
     if (isBluetoothMode) {
         return (
             <Modal
                 heading={<Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />}
                 description={<Translation id="TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED" />}
-                onCancel={handlePrimaryCta}
+                onCancel={onClose}
                 size="tiny"
                 bottomContent={
-                    <>
-                        <Modal.Button onClick={handlePrimaryCta}>
-                            <Translation id="TR_BLUETOOTH_SCAN_AGAIN" />
-                        </Modal.Button>
+                    allowPairAgain ? (
                         <Modal.Button
                             intent="neutral"
                             priority="secondary"
@@ -147,28 +130,18 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                         >
                             <Translation id={tertiaryButtonTranslation} />
                         </Modal.Button>
-                    </>
+                    ) : undefined
                 }
             >
-                <AnimationContainer>
-                    <DeviceAnimation
-                        ref={videoRef}
-                        type="PAIRING_MODE"
-                        deviceModelInternal={DeviceModelInternal.T3W1}
-                        width="368px"
-                        height="368px"
-                        shape="ROUNDED"
-                    />
-                    <Box position={{ type: 'absolute', bottom: '8px', left: '8px' }}>
-                        <IconButton
-                            icon="arrowClockwiseFilled"
-                            intent="neutral"
-                            size="small"
-                            onClick={handleReplayClick}
-                            priority="secondary"
-                        />
-                    </Box>
-                </AnimationContainer>
+                <DeviceAnimation
+                    ref={videoRef}
+                    type="PAIRING_MODE"
+                    deviceModelInternal={DeviceModelInternal.T3W1}
+                    width={368}
+                    height={368}
+                    shape="ROUNDED"
+                    loop
+                />
             </Modal>
         );
     }
