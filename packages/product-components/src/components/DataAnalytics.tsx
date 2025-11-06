@@ -1,26 +1,17 @@
 import { JSX, ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { Button, Card, Center, Column, Icon, List, Row, Switch, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Card } from './Card/Card';
-import { Center, Column, Row } from './Flex/Flex';
-import { Icon } from './Icon/Icon';
-import { List } from './List/List';
-import { Button } from './buttons/Button/Button';
-import { Switch } from './form/Switch/Switch';
-import { Text } from './typography/Text/Text';
-
-interface DataAnalyticsProps {
+type DataAnalyticsProps = {
     onConfirm: (trackingEnabled: boolean) => void;
     analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
     tosLink?: (chunks: ReactNode[]) => JSX.Element;
     className?: string;
     isInitialTrackingEnabled?: boolean;
-}
+};
 
-// This component is used in connect-ui, therefore it's located in this library,
-// although in the future it should be moved elsewhere.
 export const DataAnalytics = ({
     onConfirm,
     analyticsLink,

@@ -37,7 +37,6 @@ export {
     CollapsibleBox,
     type CollapsibleBoxProps,
 } from './components/CollapsibleBox/CollapsibleBox';
-export * from './components/DataAnalytics';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';
 export * from './components/ElevationContext/ElevationContext';

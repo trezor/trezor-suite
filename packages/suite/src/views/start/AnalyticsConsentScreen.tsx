@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { analytics } from '@suite-common/analytics';
-import { DataAnalytics } from '@trezor/components';
+import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
 import { TrezorLink } from '../../components/suite';
