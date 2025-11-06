@@ -37,16 +37,26 @@ export const strip = (str: string): string => {
     return padLeftEven(str);
 };
 
-interface EvmApprovalTxData {
-    type: Exclude<EvmTransactionPurpose, 'transfer'>;
-    spender: string;
+interface EvmTxData {
+    type: EvmTransactionPurpose;
     amount: string;
 }
 
-export const getEvmApprovalTxData = (data?: string): EvmApprovalTxData | null => {
+interface EvmTxApprovalData extends EvmTxData {
+    spender: string;
+}
+
+interface EvmTxTransferData extends EvmTxData {
+    recipient: string;
+}
+
+const normalizeHex = (data: string) =>
+    data.toLowerCase().startsWith('0x') ? data.toLowerCase() : `0x${data.toLowerCase()}`;
+
+export const getEvmApprovalTxData = (data?: string): EvmTxApprovalData | null => {
     if (!data) return null;
 
-    const dataWithPrefix = data.toLowerCase().startsWith('0x') ? data : `0x${data}`;
+    const dataWithPrefix = normalizeHex(data);
     const dataLowercase = dataWithPrefix.toLowerCase();
     try {
         const approvalPrefix = sha3('approve(address,uint256)')?.slice(0, 10);
@@ -59,7 +69,7 @@ export const getEvmApprovalTxData = (data?: string): EvmApprovalTxData | null =>
         if (typeof decodedData[0] !== 'string' || typeof decodedData[1] !== 'bigint') return null;
 
         return {
-            type: decodedData[1] === 0n ? 'revoke' : 'approval',
+            type: decodedData[1] === 0n ? 'revoke' : 'approve',
             spender: decodedData[0].toLowerCase(),
             amount: decodedData[1].toString(),
         };
@@ -68,13 +78,46 @@ export const getEvmApprovalTxData = (data?: string): EvmApprovalTxData | null =>
     }
 };
 
+export const getEvmTransferTxData = (data?: string): EvmTxTransferData | null => {
+    if (!data) return null;
+
+    const d = normalizeHex(data);
+
+    try {
+        const transferPrefix = sha3('transfer(address,uint256)')?.slice(0, 10); // '0xa9059cbb'
+        if (!transferPrefix || !d.startsWith(transferPrefix)) return null;
+
+        const decoded = decodeParameters(['address', 'uint256'], d.slice(10)); // [to, amount]
+
+        if (typeof decoded[0] !== 'string' || typeof decoded[1] !== 'bigint') return null;
+
+        return {
+            type: 'transfer',
+            recipient: decoded[0].toLowerCase(),
+            amount: decoded[1].toString(),
+        };
+    } catch {
+        return null;
+    }
+};
+
 export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
-    if (!data) return 'transfer';
+    // no data -> no method > no text signature
+    if (!data) {
+        return '';
+    }
 
-    const result = getEvmApprovalTxData(data);
-    if (result === null) return 'transfer';
+    const tokenTransferTxData = getEvmTransferTxData(data);
+    if (tokenTransferTxData?.type) {
+        return tokenTransferTxData.type;
+    }
 
-    return result.type;
+    const approvalTxData = getEvmApprovalTxData(data);
+    if (approvalTxData?.type) {
+        return approvalTxData.type;
+    }
+
+    return 'unknown';
 };
 
 export const isEvmApprovalTx = (data?: string): boolean => {
@@ -82,6 +125,12 @@ export const isEvmApprovalTx = (data?: string): boolean => {
 
     return result !== null;
 };
+
+export type EvmApprovalPurpose = Extract<EvmTransactionPurpose, 'approve' | 'revoke'>;
+
+export const isEvmApprovalTxByTextSignature = (
+    textSignature?: EvmTransactionPurpose,
+): textSignature is EvmApprovalPurpose => textSignature === 'approve' || textSignature === 'revoke';
 
 export const ensureHexPrefix = (hex?: string): string => {
     if (!hex) return '';

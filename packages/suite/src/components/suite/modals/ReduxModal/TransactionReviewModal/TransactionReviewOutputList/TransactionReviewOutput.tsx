@@ -8,8 +8,10 @@ import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
+    EvmApprovalPurpose,
     findAccountsByAddress,
     isApprovalFlowSupported,
+    isEvmApprovalTxByTextSignature,
     isTestnet,
 } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
@@ -64,11 +66,8 @@ const getStakeTranslations = (
     return translations[stakeType];
 };
 
-const approvalStrings: Record<
-    Exclude<EvmTransactionPurpose, 'transfer'>,
-    Record<'value' | 'label', TranslationKey>
-> = {
-    approval: {
+const approvalStrings: Record<EvmApprovalPurpose, Record<'value' | 'label', TranslationKey>> = {
+    approve: {
         value: 'TR_APPROVE_DESCRIPTION',
         label: 'TR_APPROVE_TITLE',
     },
@@ -81,15 +80,17 @@ const approvalStrings: Record<
 const getTranslationValues = (
     networkType: NetworkType,
     stakeType?: StakeType,
-    evmApprovalType?: Exclude<EvmTransactionPurpose, 'transfer'>,
+    evmTxType?: EvmTransactionPurpose,
     device?: TrezorDevice,
 ): Record<'value' | 'label', TranslationKey> | null => {
-    if (evmApprovalType && !isApprovalFlowSupported(device)) {
+    const isEvmApproval = isEvmApprovalTxByTextSignature(evmTxType);
+
+    if (isEvmApproval && !isApprovalFlowSupported(device)) {
         return null;
     }
 
-    if (evmApprovalType) {
-        return approvalStrings[evmApprovalType];
+    if (isEvmApproval) {
+        return approvalStrings[evmTxType];
     }
 
     if (stakeType) {
@@ -102,12 +103,12 @@ const getTranslationValues = (
 const getContractTitle = (
     networkType: NetworkType,
     isApprovalFlowSupported: boolean,
-    evmApprovalType?: Exclude<EvmTransactionPurpose, 'transfer'>,
+    evmTxType?: EvmTransactionPurpose,
 ): TranslationKey => {
-    if (evmApprovalType && isApprovalFlowSupported) {
-        return evmApprovalType === 'approval'
-            ? 'TR_CONTRACT_APPROVE_TITLE'
-            : 'TR_CONTRACT_REVOKE_TITLE';
+    const isEvmApproval = isEvmApprovalTxByTextSignature(evmTxType);
+
+    if (isEvmApproval && isApprovalFlowSupported) {
+        return evmTxType === 'approve' ? 'TR_CONTRACT_APPROVE_TITLE' : 'TR_CONTRACT_REVOKE_TITLE';
     }
 
     return networkType === 'solana' ? 'TR_TOKEN' : 'TR_CONTRACT_ADDRESS';
@@ -119,15 +120,11 @@ const getOutputTitle = (
     value: string,
     isRbf: boolean,
     stakeType: StakeType | undefined,
-    evmApprovalType: Exclude<EvmTransactionPurpose, 'transfer'> | undefined,
+    evmTxType?: EvmTransactionPurpose,
     device?: TrezorDevice,
 ): ReactNode | undefined => {
-    const translation = getTranslationValues(networkType, stakeType, evmApprovalType, device);
-    const contractTitle = getContractTitle(
-        networkType,
-        isApprovalFlowSupported(device),
-        evmApprovalType,
-    );
+    const translation = getTranslationValues(networkType, stakeType, evmTxType, device);
+    const contractTitle = getContractTitle(networkType, isApprovalFlowSupported(device), evmTxType);
 
     switch (type) {
         case 'locktime': {
@@ -170,11 +167,7 @@ const getOutputTitle = (
         case 'approve_data':
             return (
                 <Translation
-                    id={
-                        evmApprovalType === 'approval'
-                            ? 'TR_APPROVE_DATA_TITLE'
-                            : 'TR_REVOKE_DATA_TITLE'
-                    }
+                    id={evmTxType === 'approve' ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE'}
                 />
             );
         case 'recipient_name':
@@ -194,7 +187,7 @@ interface GetOutputLinesParams {
     label?: string;
     symbol: NetworkSymbol;
     stakeType?: StakeType;
-    evmTxType?: Exclude<EvmTransactionPurpose, 'transfer'>;
+    evmTxType?: EvmTransactionPurpose;
     device?: TrezorDevice;
     token?: ReviewOutput['token'];
     translationString: TranslationFunction;
@@ -282,7 +275,8 @@ const getOutputLines = ({
                 return defaultOutput;
             }
 
-            if (evmTxType) {
+            const isEvmApproval = isEvmApprovalTxByTextSignature(evmTxType);
+            if (isEvmApproval) {
                 return [
                     {
                         id: 'data',
@@ -332,7 +326,7 @@ const getOutputLines = ({
             ];
         case 'approve_data': {
             const isMaxApproval = new BigNumber(value).eq(UINT256_MAX);
-            const isApprovalTx = evmTxType === 'approval';
+            const isApprovalTx = evmTxType === 'approve';
             const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
             const getValue = () => {
                 if (!isApprovalTx && token?.symbol) {
@@ -408,7 +402,7 @@ export const TransactionReviewOutput = ({
         value,
         isRbf,
         stakeType,
-        evmTxType !== 'transfer' ? evmTxType : undefined,
+        evmTxType,
         device,
     );
 
@@ -420,7 +414,7 @@ export const TransactionReviewOutput = ({
         label,
         symbol,
         stakeType,
-        evmTxType: evmTxType !== 'transfer' ? evmTxType : undefined,
+        evmTxType,
         device,
         token,
         translationString,

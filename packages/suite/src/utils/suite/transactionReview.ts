@@ -52,7 +52,7 @@ export const getTransactionReviewModalActionTranslation = ({
         const transactionPurpose = getEvmTransactionTextSignature(precomposedForm.transactionData);
 
         switch (transactionPurpose) {
-            case 'approval':
+            case 'approve':
                 return {
                     id:
                         source === 'heading'

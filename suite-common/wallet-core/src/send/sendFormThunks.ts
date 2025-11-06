@@ -364,7 +364,7 @@ export const pushSendFormTransactionThunk = createThunk<
 
                 dispatch(
                     notificationsActions.addToast({
-                        type: evmApprovalData.type === 'approval' ? 'tx-approved' : 'tx-revoked',
+                        type: evmApprovalData.type === 'approve' ? 'tx-approved' : 'tx-revoked',
                         isInfiniteApproval,
                         formattedAmount: amount,
                         tokenSymbol: token.symbol?.toUpperCase(),

@@ -205,7 +205,7 @@ export interface RbfTransactionParamsBitcoin {
     locktime?: number;
 }
 
-export type EvmTransactionPurpose = 'transfer' | 'approval' | 'revoke';
+export type EvmTransactionPurpose = 'transfer' | 'approve' | 'revoke' | 'unknown' | '';
 
 export interface RbfTransactionParamsEthereum {
     type: 'ethereum';
