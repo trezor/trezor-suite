@@ -1,0 +1,470 @@
+import { Bundle } from '@trezor/connect/src/types';
+import { MoneroSignTransaction } from '@trezor/connect/src/types/api/monero';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { Param } from '../../../components/Param';
+import signTransaction from '../../../data/methods/monero/signTransaction.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Sign Monero Transaction', legacyConfig: signTransaction[0] },
+        {
+            title: 'Advanced schema',
+            method: 'moneroSignTransaction',
+            schema: MoneroSignTransaction,
+        },
+        {
+            title: 'Advanced bundle',
+            method: 'moneroSignTransaction',
+            schema: Bundle(MoneroSignTransaction),
+        },
+    ]}
+/>
+
+## Monero Sign Transaction
+
+Sign a Monero transaction using RingCT protocol with CLSAG signatures.
+
+```javascript
+const result = await TrezorConnect.moneroSignTransaction(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### MoneroSignTransaction
+
+<Param name="path" type="string | Array<number>" required={true}>
+    minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`). [read
+    more](/details/path)
+</Param>
+
+<Param name="networkType" type="MoneroNetworkType" required={true}>
+    Monero network type: `0` = MAINNET, `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN
+</Param>
+
+<Param name="tsx_data" type="MoneroTransactionData" required={true}>
+    Transaction metadata and outputs
+</Param>
+
+<Param name="inputs" type="Array<MoneroTransactionSourceEntry>" required={true}>
+    UTXOs being spent (with ring members)
+</Param>
+
+#### MoneroTransactionData
+
+Transaction-level parameters:
+
+<Param name="version" type="number" required={true}>
+    Transaction version (typically 2)
+</Param>
+
+<Param name="unlock_time" type="number" required={true}>
+    Block height or timestamp when outputs become spendable (0 = immediately)
+</Param>
+
+<Param name="mixin" type="number" required={true}>
+    Number of decoy outputs per input (ring size - 1). Monero network typically requires 10+
+</Param>
+
+<Param name="fee" type="number" required={true}>
+    Transaction fee in atomic units (1 XMR = 1e12 atomic units)
+</Param>
+
+<Param name="account" type="number" required={true}>
+    Account index (default: 0)
+</Param>
+
+<Param name="num_inputs" type="number" required={true}>
+    Number of inputs in the transaction
+</Param>
+
+<Param name="client_version" type="number" required={true}>
+    Client version identifier
+</Param>
+
+<Param name="hard_fork" type="number" required={true}>
+    Hard fork version
+</Param>
+
+<Param name="outputs" type="Array<MoneroTransactionDestinationEntry>" required={true}>
+    Destination outputs
+</Param>
+
+<Param name="rsig_data" type="MoneroTransactionRsigData" required={true}>
+    Range proof data for Bulletproofs
+</Param>
+
+<Param name="payment_id" type="string" required={false}>
+    Payment ID (hex string, 16 or 64 chars)
+</Param>
+
+<Param name="minor_indices" type="Array<number>" required={false}>
+    Subaddress minor indices used
+</Param>
+
+<Param name="integrated_indices" type="Array<number>" required={false}>
+    Indices of integrated address outputs
+</Param>
+
+<Param name="change_dts" type="MoneroTransactionDestinationEntry" required={false}>
+    Change output (return to sender)
+</Param>
+
+<Param name="monero_version" type="string" required={false}>
+    Monero version string
+</Param>
+
+<Param name="chunkify" type="boolean" required={false}>
+    Enable chunked processing
+</Param>
+
+#### MoneroTransactionDestinationEntry
+
+Output/destination details:
+
+<Param name="amount" type="number" required={true}>
+    Amount in atomic units (1 XMR = 1e12)
+</Param>
+
+<Param name="addr" type="MoneroAccountPublicAddress" required={true}>
+    Destination address
+</Param>
+
+<Param name="is_subaddress" type="boolean" required={true}>
+    Whether destination is a subaddress
+</Param>
+
+<Param name="original" type="string" required={true}>
+    Original address string
+</Param>
+
+<Param name="is_integrated" type="boolean" required={true}>
+    Whether this is an integrated address
+</Param>
+
+#### MoneroAccountPublicAddress
+
+<Param name="spend_public_key" type="string" required={true}>
+    Spend public key (64 hex chars)
+</Param>
+
+<Param name="view_public_key" type="string" required={true}>
+    View public key (64 hex chars)
+</Param>
+
+#### MoneroTransactionSourceEntry
+
+Input/UTXO with ring members:
+
+<Param name="outputs" type="Array<MoneroOutputEntry>" required={true}>
+    Ring members (mixin + 1 outputs)
+</Param>
+
+<Param name="real_output" type="number" required={true}>
+    Index of the real output within the ring
+</Param>
+
+<Param name="real_out_tx_key" type="string" required={true}>
+    Transaction public key for real output (64 hex chars)
+</Param>
+
+<Param name="real_out_additional_tx_keys" type="Array<string>" required={true}>
+    Additional TX public keys (each 64 hex chars)
+</Param>
+
+<Param name="real_output_in_tx_index" type="number" required={true}>
+    Output index within its transaction
+</Param>
+
+<Param name="amount" type="number" required={true}>
+    Output amount in atomic units
+</Param>
+
+<Param name="rct" type="boolean" required={true}>
+    Whether this is a RingCT output (true for modern transactions)
+</Param>
+
+<Param name="mask" type="string" required={true}>
+    Amount blinding factor/mask (64 hex chars)
+</Param>
+
+<Param name="subaddr_minor" type="number" required={true}>
+    Subaddress minor index
+</Param>
+
+<Param name="multisig_kLRki" type="MoneroMultisigKLRki" required={false}>
+    Multisig data (advanced)
+</Param>
+
+#### MoneroOutputEntry
+
+Ring member (decoy or real output):
+
+<Param name="idx" type="number" required={true}>
+    Global output index on blockchain
+</Param>
+
+<Param name="key" type="object" required={true}>
+    Output public key data
+</Param>
+
+<div style={{ marginLeft: 30 }}>
+    <Param name="dest" type="string" required={true}>
+        Destination/stealth public key (64 hex chars)
+    </Param>
+    <Param name="commitment" type="string" required={true}>
+        Pedersen commitment (64 hex chars)
+    </Param>
+</div>
+
+#### MoneroTransactionRsigData
+
+Range proof data (Bulletproofs):
+
+<Param name="rsig_type" type="number" required={true}>
+    Range signature type
+</Param>
+
+<Param name="bp_version" type="number" required={true}>
+    Bulletproof version
+</Param>
+
+<Param name="grouping" type="Array<number>" required={true}>
+    Output grouping for batched range proofs
+</Param>
+
+<Param name="offload_type" type="number" required={false}>
+    Offload computation type
+</Param>
+
+<Param name="mask" type="string" required={false}>
+    Mask value (hex)
+</Param>
+
+<Param name="rsig" type="string" required={false}>
+    Range signature data (hex)
+</Param>
+
+<Param name="rsig_parts" type="Array<string>" required={false}>
+    Range signature parts (hex strings)
+</Param>
+
+#### MoneroMultisigKLRki
+
+Multisig key data (advanced usage):
+
+<Param name="K" type="string" required={false}>
+    K value (hex)
+</Param>
+
+<Param name="L" type="string" required={false}>
+    L value (hex)
+</Param>
+
+<Param name="R" type="string" required={false}>
+    R value (hex)
+</Param>
+
+<Param name="ki" type="string" required={false}>
+    Key image (hex)
+</Param>
+
+### Example
+
+#### Minimal Example (Only Required Fields)
+
+```javascript
+TrezorConnect.moneroSignTransaction({
+    // REQUIRED: Hardened Monero account path (minimum 3 components)
+    path: "m/44'/128'/0'",
+
+    // REQUIRED: Network type
+    networkType: 0, // 0=MAINNET, 1=TESTNET, 2=STAGENET, 3=FAKECHAIN
+
+    // REQUIRED: Transaction data with outputs
+    tsx_data: {
+        version: 1,
+        unlock_time: 0,
+        mixin: 15,
+        fee: 10000000,
+        account: 0,
+        num_inputs: 1,
+        client_version: 3,
+        hard_fork: 16,
+        outputs: [
+            {
+                amount: 1000000000000, // 1.0 XMR in atomic units
+                addr: {
+                    spend_public_key:
+                        'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+                    view_public_key:
+                        'fedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321',
+                },
+                is_subaddress: false,
+                original: 'address_string_here',
+                is_integrated: false,
+            },
+        ],
+        rsig_data: {
+            rsig_type: 1,
+            bp_version: 4,
+            grouping: [],
+        },
+    },
+
+    // REQUIRED: At least one input with ring members
+    inputs: [
+        {
+            outputs: [
+                // Ring member 1 (real output)
+                {
+                    idx: 12345,
+                    key: {
+                        dest: '1111111111111111111111111111111111111111111111111111111111111111',
+                        commitment:
+                            '2222222222222222222222222222222222222222222222222222222222222222',
+                    },
+                },
+                // Ring member 2 (decoy)
+                {
+                    idx: 12346,
+                    key: {
+                        dest: '3333333333333333333333333333333333333333333333333333333333333333',
+                        commitment:
+                            '4444444444444444444444444444444444444444444444444444444444444444',
+                    },
+                },
+                // ... add more ring members (typically 11 total for mixin=10)
+            ],
+            real_output: 0,
+            real_out_tx_key: 'tx_public_key_64_chars',
+            real_out_additional_tx_keys: [],
+            real_output_in_tx_index: 1,
+            amount: 1010000000,
+            rct: true,
+            mask: 'amount_mask_64_chars',
+            subaddr_minor: 0,
+        },
+    ],
+});
+```
+
+### Result
+
+[MoneroSignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+
+The result contains the complete signed transaction data ready for broadcast:
+
+```javascript
+{
+    success: true,
+    payload: {
+        signatures: [
+            'signature_hex_1...',
+            'signature_hex_2...',
+            // ... one signature per input
+        ],
+        tx_prefix_hash: 'prefix_hash_hex...',
+        rv: {
+            txn_fee: 10000000000, // optional
+            message: 'message_hex...', // optional
+            rv_type: 5, // optional - RCT type (e.g., CLSAGBulletproofPlus)
+        },
+        cout_key: 'cout_key_hex...', // optional
+        salt: 'salt_hex...', // optional
+        rand_mult: 'rand_mult_hex...', // optional
+        tx_enc_keys: 'encrypted_keys_hex...', // optional
+        opening_key: 'opening_key_hex...', // optional
+        pseudo_outs: [
+            'pseudo_out_hex_1...',
+            'pseudo_out_hex_2...',
+            // ... one pseudo_out per input
+        ],
+    }
+}
+```
+
+#### Response Fields
+
+<Param name="signatures" type="Array<string>" required={true}>
+    Array of CLSAG signatures (one per input)
+</Param>
+
+<Param name="tx_prefix_hash" type="string" required={true}>
+    Keccak hash of transaction prefix
+</Param>
+
+<Param name="rv" type="object" required={true}>
+    RingCT signature data
+</Param>
+
+<div style={{ marginLeft: 30 }}>
+    <Param name="txn_fee" type="number" required={false}>
+        Transaction fee
+    </Param>
+    <Param name="message" type="string" required={false}>
+        Commitment to fee
+    </Param>
+    <Param name="rv_type" type="number" required={false}>
+        RCT signature type (5 = CLSAG with Bulletproof+)
+    </Param>
+</div>
+
+<Param name="cout_key" type="string" required={false}>
+    Encrypted output key
+</Param>
+
+<Param name="salt" type="string" required={false}>
+    Encryption salt
+</Param>
+
+<Param name="rand_mult" type="string" required={false}>
+    Random multiplier
+</Param>
+
+<Param name="tx_enc_keys" type="string" required={false}>
+    Encrypted transaction keys
+</Param>
+
+<Param name="opening_key" type="string" required={false}>
+    Key for decrypting transaction data
+</Param>
+
+<Param name="pseudo_outs" type="Array<string>" required={true}>
+    Array of pseudo output commitments (one per input, used in RingCT balance proof)
+</Param>
+
+#### Transaction Construction
+
+Use the response to construct a complete Monero transaction:
+
+```javascript
+const signedTx = result.payload;
+
+// Construct transaction for broadcast
+const moneroTx = {
+    version: 2,
+    unlock_time: 0,
+    vin: constructInputs(signedTx), // Build TxinToKey structures
+    vout: constructOutputs(signedTx), // Build outputs with range proofs
+    extra: constructExtra(signedTx), // Transaction extra data
+    rct_signatures: {
+        type: signedTx.rv.rv_type,
+        txnFee: signedTx.rv.txn_fee,
+        ecdhInfo: constructEcdhInfo(signedTx),
+        outPk: constructOutPk(signedTx),
+        p: {
+            bulletproofs: constructBulletproofs(signedTx),
+            CLSAGs: signedTx.signatures.map(sig => decodeCLSAG(sig)),
+            pseudoOuts: constructPseudoOuts(signedTx),
+        },
+    },
+};
+
+// Serialize and broadcast
+const txHex = serializeMoneroTransaction(moneroTx);
+broadcastToNetwork(txHex);
+```
