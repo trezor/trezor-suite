@@ -129,6 +129,7 @@ const usedIcons = [
     'starFilled',
     'swap',
     'textAa',
+    'tag',
     'tiktokLogo',
     'timer',
     'translate',
