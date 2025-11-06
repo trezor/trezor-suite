@@ -991,6 +991,12 @@ export const messages = {
                     subtitle:
                         'Only choosing coins that you use will shorten loading times when connecting your Trezor.',
                 },
+                labeling: {
+                    title: 'Labeling',
+                    subtitle: 'Name your wallets, accounts and more',
+                    screenSubtitle:
+                        'Name your wallets, personalize accounts, and label transactions. ',
+                },
                 advanced: {
                     title: 'Advanced',
                     subtitle: 'Expert features for power users ',
@@ -1006,6 +1012,13 @@ export const messages = {
                     add: 'Add WalletConnect',
                 },
             },
+        },
+        secureSync: {
+            title: 'Secure sync (required)',
+            description:
+                'Secure sync keeps your data consistent across all of your devices. Data is stored locally and only synced with devices you authorize.',
+            enable: 'Enable',
+            disable: 'Disable',
         },
         faq: {
             title: 'Get help',
