@@ -1,27 +1,9 @@
-import styled from 'styled-components';
-
-import { Button, Tooltip } from '@trezor/components';
+import { Button, Row, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { OnOffSwitcher } from '../OnOffSwitcher';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-start;
-`;
-
-const Inline = styled.span`
-    display: inline-flex;
-`;
 
 export const MiscNetworkOptions = () => {
     const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
@@ -30,26 +12,23 @@ export const MiscNetworkOptions = () => {
     const broadcastEnabled = options.includes('broadcast');
 
     return (
-        <Wrapper>
-            <Left>
-                <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
-                    <Button
-                        intent="neutral"
-                        priority="secondary"
-                        size="small"
-                        iconLeft="broadcast"
-                        onClick={() => {
-                            toggleOption('broadcast');
-                            composeTransaction();
-                        }}
-                    >
-                        <Inline>
-                            <Translation id="BROADCAST" />
-                            <OnOffSwitcher isOn={broadcastEnabled} />
-                        </Inline>
-                    </Button>
-                </Tooltip>
-            </Left>
-        </Wrapper>
+        <Row>
+            <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
+                <Button
+                    intent="neutral"
+                    priority="secondary"
+                    iconLeft="broadcast"
+                    onClick={() => {
+                        toggleOption('broadcast');
+                        composeTransaction();
+                    }}
+                >
+                    <Row>
+                        <Translation id="BROADCAST" />
+                        <OnOffSwitcher isOn={broadcastEnabled} />
+                    </Row>
+                </Button>
+            </Tooltip>
+        </Row>
     );
 };

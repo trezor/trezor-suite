@@ -495,6 +495,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             margin={{ left: spacings.md }}
                             icon="x"
                             intent="neutral"
+                            size="small"
                             priority="secondary"
                             data-testid={`outputs.${outputId}.remove`}
                             onClick={() => {
