@@ -5,7 +5,6 @@
         {
             "path": "../../suite-common/suite-types"
         },
-        { "path": "../feature-flags" },
         { "path": "../../packages/utils" }
     ]
 }

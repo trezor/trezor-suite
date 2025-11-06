@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { NativeLocale } from '@suite-common/suite-types';
+import { SupportedLanguage, isOfficiallySupportedLanguage, isSupportedLanguage } from './types';
 
-export type LocaleTag = NativeLocale | 'system';
+export type LocaleTag = SupportedLanguage | 'system';
 
 export type LocaleState = {
     localeTag: LocaleTag;
@@ -28,7 +28,20 @@ export const localeSlice = createSlice({
     },
 });
 
-export const selectUserSelectedLocaleTag = (state: LocaleSliceRootState) => state.locale.localeTag;
-
 export const { setLocale } = localeSlice.actions;
 export const localeReducer = localeSlice.reducer;
+
+export const selectUserSelectedLocaleTag = (state: LocaleSliceRootState) => state.locale.localeTag;
+
+export const selectIsLanguageLocaleSupported = (
+    state: LocaleSliceRootState,
+    systemLocaleTag: string,
+) => {
+    const userSelectedLocaleTag = selectUserSelectedLocaleTag(state);
+
+    if (userSelectedLocaleTag === 'system') {
+        return isOfficiallySupportedLanguage(systemLocaleTag);
+    }
+
+    return isSupportedLanguage(userSelectedLocaleTag);
+};

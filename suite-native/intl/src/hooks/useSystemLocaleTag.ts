@@ -3,11 +3,9 @@ import { AppState, AppStateStatus } from 'react-native';
 
 import { getLocales } from 'expo-localization';
 
-const readSystemLocale = () => {
-    const locale = getLocales();
+import { DEFAULT_LOCALE } from '../languages';
 
-    return locale[0].languageTag;
-};
+const readSystemLocale = () => getLocales()[0].languageTag ?? DEFAULT_LOCALE;
 
 export const useSystemLocaleTag = () => {
     const [systemLanguage, setSystemLanguage] = useState(readSystemLocale());

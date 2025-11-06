@@ -13,7 +13,6 @@ let store: TestStore;
 
 const setNewStoreMockup = async (preloadedState: PreloadedState) => {
     store = await initStore({
-        featureFlags: { isLocalizationEnabled: true },
         ...preloadedState,
     });
 };
@@ -28,8 +27,8 @@ describe(useFormattedGraphHeaderValues.name, () => {
         jest.clearAllMocks();
     });
 
-    it('parses balance amount correctly with valid input - english locale + USD', async () => {
-        setNewStoreMockup({
+    it('should parse balance amount correctly with valid input - english locale + USD', async () => {
+        await setNewStoreMockup({
             locale: { localeTag: 'en-US' },
             wallet: { settings: { localCurrency: 'usd' } },
         });
@@ -84,7 +83,6 @@ describe(useFormattedGraphHeaderValues.name, () => {
         await setNewStoreMockup({
             locale: { localeTag: 'en-US' },
             wallet: { settings: { localCurrency: 'czk' } },
-            featureFlags: { isLocalizationEnabled: true },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('0.99');
         expect(result.current).toEqual({
