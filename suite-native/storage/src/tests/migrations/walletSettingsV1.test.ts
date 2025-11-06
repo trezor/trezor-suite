@@ -3,6 +3,8 @@ import { getStoredState } from 'redux-persist';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
+import { initialMigrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
+
 jest.mock('../../storage', () => ({
     initMmkvStorage: jest.fn().mockResolvedValue({}),
 }));
@@ -10,8 +12,6 @@ jest.mock('../../storage', () => ({
 jest.mock('redux-persist', () => ({
     getStoredState: jest.fn(),
 }));
-
-import { initialMigrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
 
 const mockGetStoredState = getStoredState as jest.MockedFunction<typeof getStoredState>;
 

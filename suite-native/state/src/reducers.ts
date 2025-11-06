@@ -48,6 +48,7 @@ import {
     migrateAccountBnbToBsc,
     migrateAccountLabel,
     migrateAccountsDeprecateNetworks,
+    migrateAutoEjectToWalletSettings,
     migrateDeviceState,
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
@@ -114,6 +115,7 @@ export const prepareRootReducers = async () => {
         version: 1,
         migrations: {
             1: initialMigrateAppSettingsAndDiscoveryConfig,
+            2: migrateAutoEjectToWalletSettings,
         },
     });
 
