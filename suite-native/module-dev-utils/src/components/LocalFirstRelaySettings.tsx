@@ -4,7 +4,7 @@ import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     disposeAllLocalFirstStorageThunk,
     labelingActions,
-    selectIsLocalFirstStorageEnabled,
+    selectIsFeatureLocalFirstStorageAvailable,
     selectLocalFirstStorageRelayUrl,
 } from '@suite-common/local-first-storage';
 import { yup } from '@suite-common/validators';
@@ -17,7 +17,9 @@ const DEFAULT_CUSTOM_RELAY_URL = '';
 
 export const LocalFirstRelaySettings = () => {
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
-    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
+    const isFeatureLocalFirstStorageEnabled = useSelector(
+        selectIsFeatureLocalFirstStorageAvailable,
+    );
     const dispatch = useDispatch();
     const { showToast } = useToast();
 
@@ -41,10 +43,10 @@ export const LocalFirstRelaySettings = () => {
     });
 
     const handleLocalFirstEnableToggle = () => {
-        const originalIsLocalFirstStorageEnabled = isLocalFirstStorageEnabled;
+        const originalIsLocalFirstStorageEnabled = isFeatureLocalFirstStorageEnabled;
         dispatch(
-            labelingActions.updateLocalFirstStorageEnabled({
-                isEnabled: !isLocalFirstStorageEnabled,
+            labelingActions.updateIsFeatureLocalFirstStorageAvailable({
+                isShownInSettings: !isFeatureLocalFirstStorageEnabled,
             }),
         );
 
@@ -74,9 +76,9 @@ export const LocalFirstRelaySettings = () => {
         <Card>
             <VStack paddingTop="sp16">
                 <HStack justifyContent="space-between">
-                    <Text variant="highlight">Enable Local First Storage (Evolu)</Text>
+                    <Text variant="highlight">Enable Suite Sync in settings (Evolu)</Text>
                     <CheckBox
-                        isChecked={isLocalFirstStorageEnabled}
+                        isChecked={isFeatureLocalFirstStorageEnabled}
                         onChange={handleLocalFirstEnableToggle}
                     />
                 </HStack>
