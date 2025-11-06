@@ -45,6 +45,7 @@ export const LocalFirstStorageSettings = () => {
         // We need to dispose of all Evolu instances and create new
         // as they do not support the Relay URL change
         dispatch(disposeAllLocalFirstStorageThunk());
+        // TODO ideally get rid of initSuiteLocalFirstStorageThunk
         dispatch(initSuiteLocalFirstStorageThunk());
 
         // Fake it, to make some UI interaction for the user
