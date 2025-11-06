@@ -1,19 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export interface Timer {
-    timeSpent: {
-        seconds: number;
-    };
-    resetCount: number;
-    isStopped: boolean;
-    isLoading: boolean;
-    stop: () => void;
-    reset: () => void;
-    loading: () => void;
-}
+import { Timer } from './Timer';
 
-export const useTimer = (): Timer => {
-    const [timeSpent, setTimeSpent] = useState(0);
+const ZeroTimeSpent = { seconds: 0 } as const;
+
+/**
+ * Timer which ticks every X seconds until stopped. Default tick interval is 1 second.
+ */
+export const useTimer = (timeoutInSeconds: number = 1): Timer => {
+    const [timeSpent, setTimeSpent] = useState<{ seconds: number }>(ZeroTimeSpent);
     const [isLoading, setIsLoading] = useState(false);
     const [isStopped, setIsStopped] = useState(false);
     const [resetCount, setResetCount] = useState(0);
@@ -24,18 +19,18 @@ export const useTimer = (): Timer => {
         }
 
         const interval = setInterval(() => {
-            setTimeSpent(prevTime => prevTime + 1);
-        }, 1000);
+            setTimeSpent(prev => ({ seconds: prev.seconds + timeoutInSeconds }));
+        }, timeoutInSeconds * 1000);
 
         return () => {
             clearInterval(interval);
         };
-    }, [isLoading, isStopped]);
+    }, [isLoading, isStopped, timeoutInSeconds]);
 
     const reset = useCallback(() => {
         setIsLoading(false);
         setResetCount(prev => prev + 1);
-        setTimeSpent(0);
+        setTimeSpent(ZeroTimeSpent);
         setIsStopped(false);
     }, []);
 
@@ -44,13 +39,13 @@ export const useTimer = (): Timer => {
     }, []);
 
     const loading = useCallback(() => {
-        setTimeSpent(0);
+        setTimeSpent(ZeroTimeSpent);
         setIsLoading(true);
         setIsStopped(false);
     }, []);
 
     return {
-        timeSpent: { seconds: timeSpent },
+        timeSpent,
         resetCount,
         isStopped,
         isLoading,
