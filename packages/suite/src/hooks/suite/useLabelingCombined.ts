@@ -1,14 +1,9 @@
-import {
-    disposeAllLocalFirstStorageThunk,
-    labelingActions,
-    selectIsFeatureLocalFirstStorageAvailable,
-    selectIsLocalFirstStorageDebugEnabled,
-    selectIsLocalFirstStorageEnabled,
-} from '@suite-common/local-first-storage';
+import { evoluWebDeps } from '@evolu/web';
+
+import { useLocalFirstStorage } from '@suite-common/local-first-storage';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -22,6 +17,10 @@ type UseLabelingCombinedParams = {
     deviceStaticSessionId: StaticSessionId | undefined;
 };
 
+/**
+ * @deprecated This hook is obsolete. Once legacy metadata labeling is removed -> use only the hook
+ * `useLocalFirstStorage` from `suite-common/local-first-storage`.
+ */
 export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombinedParams) => {
     const dispatch = useDispatch();
 
@@ -31,53 +30,39 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
             : undefined,
     );
 
-    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
-    const isLocalFirstStorageDebugEnabled = useSelector(selectIsLocalFirstStorageDebugEnabled);
-    const isFeatureLocalFirstStorageAvailable = useSelector(
-        selectIsFeatureLocalFirstStorageAvailable,
-    );
+    const {
+        isLocalFirstStorageEnabled,
+        isLocalFirstStorageDebugEnabled,
+        isFeatureLocalFirstStorageAvailable,
+        toggleIsFeatureLocalFirstStorageAvailable,
+        disableLocalFirstStorageIfNeeded,
+        enableLocalFirstStorageIfNeeded: enableLocalFirstStorageIfNeededCommon,
+    } = useLocalFirstStorage({
+        device,
+    });
 
     const legacyMetadataState = useSelector(state => state.metadata);
-
-    const toggleIsFeatureLocalFirstStorageAvailable = () => {
-        dispatch(
-            labelingActions.updateIsFeatureLocalFirstStorageAvailable({
-                isShownInSettings: !isFeatureLocalFirstStorageAvailable,
-            }),
-        );
-    };
 
     const legacyDisableIfNeeded = () => {
         if (legacyMetadataState.enabled) dispatch(metadataActions.disableMetadata());
     };
 
-    const localFirstDisableIfNeeded = () => {
-        if (isLocalFirstStorageEnabled) {
-            dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: false }));
-            dispatch(disposeAllLocalFirstStorageThunk());
-        }
-    };
-
-    const localFirstEnableIfNeeded = () => {
+    const enableLocalFirstStorageIfNeeded = () => {
         // Enabling Evolu implicitly disables Legacy Labeling
         if (legacyMetadataState.enabled) legacyDisableIfNeeded();
 
-        if (!isLocalFirstStorageEnabled) {
-            dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
-            dispatch(initSuiteLocalFirstStorageThunk());
-
-            analytics.report({
-                type: EventType.SettingsGeneralLabelingProvider,
-                payload: {
-                    provider: 'evolu',
-                },
-            });
-        }
+        enableLocalFirstStorageIfNeededCommon(evoluWebDeps);
+        analytics.report({
+            type: EventType.SettingsGeneralLabelingProvider,
+            payload: {
+                provider: 'evolu',
+            },
+        });
     };
 
     const legacyEnableIfNeeded = () => {
         if (!legacyMetadataState.enabled) {
-            localFirstDisableIfNeeded(); // Enabling Legacy Labeling implicitly disables Evolu
+            disableLocalFirstStorageIfNeeded(); // Enabling Legacy Labeling implicitly disables Evolu
             dispatch(metadataLabelingActions.init(true));
         }
     };
@@ -94,8 +79,8 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         isEvoluSupportedByDevice,
         isLocalFirstStorageDebugEnabled,
         hasDeviceLocalFirstStorageKeys,
-        localFirstEnableIfNeeded,
-        localFirstDisableIfNeeded,
+        enableLocalFirstStorageIfNeeded,
+        disableLocalFirstStorageIfNeeded,
 
         /** Legacy Labeling */
         legacyMetadataState,
