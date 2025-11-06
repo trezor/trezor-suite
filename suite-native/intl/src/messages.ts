@@ -84,7 +84,6 @@ export const messages = {
     moduleHome: {
         graphIgnoredNetworks:
             '{networksString} and all related tokens are reflected in the balance, but not in the graph.',
-
         emptyState: {
             emptyDevice: {
                 title: 'Your wallet is empty',
@@ -205,7 +204,6 @@ export const messages = {
                         'To unpair fully, make sure you remove your Trezor from your phone’s Bluetooth settings. If not, you might have trouble pairing it again in the future.',
                     ios: 'If not, you might have trouble pairing it again in the future.',
                 },
-
                 primaryButton: 'Open system settings',
                 secondaryButton: 'Device removed',
             },
@@ -346,6 +344,7 @@ export const messages = {
             },
             orSeparator: 'OR',
             addButton: 'Add new',
+            addNewButton: 'Add new',
         },
         selectAccountTypeScreen: {
             title: 'Select <symbol></symbol> account type',
@@ -1007,7 +1006,6 @@ export const messages = {
                                 title: 'For cabled connections:',
                             },
                             wireless: {
-                                title: 'For wireless connections:',
                                 '0': 'Check the devices are in close proximity',
                                 '1': 'Make sure bluetooth is enabled on both devices',
                                 '2': 'Remove old Trezor device Bluetooth connections',
@@ -1015,6 +1013,7 @@ export const messages = {
                                 '4': 'Turn Bluetooth on/off again on your mobile device',
                                 '5': 'Forget and re-pair the devices',
                                 '6': 'Update Trezor firmware and your mobile device OS',
+                                title: 'For wireless connections:',
                             },
                             footer: 'If you’re still having issues, contact <link>Trezor Support</link>.',
                         },
@@ -1042,8 +1041,6 @@ export const messages = {
                     '3': {
                         question: 'My Trezor device can’t connect',
                         answer: {
-                            subtitle:
-                                'If you’re having trouble connecting your Trezor and your mobile device, try the following:',
                             '0': 'Check the devices are in close proximity',
                             '1': 'Make sure bluetooth is enabled on both devices',
                             '2': 'Remove old Trezor device Bluetooth connections',
@@ -1051,6 +1048,8 @@ export const messages = {
                             '4': 'Turn Bluetooth on/off again on your mobile device',
                             '5': 'Forget and re-pair the devices',
                             '6': 'Update Trezor firmware and your mobile device OS',
+                            subtitle:
+                                'If you’re having trouble connecting your Trezor and your mobile device, try the following:',
                             footer: 'If you’re still having issues, contact <link>Trezor Support</link>.',
                         },
                     },
@@ -2209,6 +2208,9 @@ export const messages = {
                 swap: 'Swap',
                 approveAndSwap: 'Approve and swap',
             },
+            countryOfResidence: 'Country of residence',
+            noCountryOfResidence: 'No country of residence selected',
+            selectedCountryOfResidence: 'Selected country of residence',
         },
         selectFiat: {
             sell: {
@@ -2564,6 +2566,12 @@ export const messages = {
                 outOfRangeError: 'Slippage must be between 0.01% and 50%',
             },
         },
+        countrySheet: {
+            title: 'Country of residence',
+            emptyTitle: 'Country not found',
+            emptyDescription: 'Check the spelling or browse the list to select an option.',
+            searchInputPlaceholder: 'Search country',
+        },
     },
     notifications: {
         transaction: {
@@ -2591,9 +2599,11 @@ export const messages = {
             updateToVersionAvailable: 'Update to version {firmwareVersion} available',
             updateButton: 'Update',
         },
-
         firmwareInfoScreen: {
-            title: { update: 'Firmware update', install: 'Firmware installation' },
+            title: {
+                update: 'Firmware update',
+                install: 'Firmware installation',
+            },
             subtitle: "Firmware is your Trezor's operating system",
             list: {
                 item1: {
@@ -2653,18 +2663,18 @@ export const messages = {
                 },
             },
             trezorFacts: {
+                '1': 'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
+                '2': 'Trezor launched the world’s first hardware wallet in 2014.',
+                '3': 'Founders Stick & Slush started Trezor as a side project in 2011.',
+                '4': 'Trezor means “vault” in Czech, reflecting its focus on security.',
+                '5': 'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
+                '6': 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
+                '7': 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
+                '8': 'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
+                '9': 'Trezor began controlling its own chip supply chain in 2023 for better security.',
+                '10': 'Trezor has sold wallets in over 150 countries.',
+                '11': 'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
                 title: 'Did you know?',
-                1: 'Trezor was founded in Prague by SatoshiLabs and is still proudly independent today.',
-                2: 'Trezor launched the world’s first hardware wallet in 2014.',
-                3: 'Founders Stick & Slush started Trezor as a side project in 2011.',
-                4: 'Trezor means “vault” in Czech, reflecting its focus on security.',
-                5: 'Trezor’s hardware and firmware are fully open-source for maximum transparency.',
-                6: 'Trezor’s initial prototypes were created on Raspberry Pi boards.',
-                7: 'Trezor helped establish key wallet standards like BIP-39 and BIP-44.',
-                8: 'Trezor’s co-founder Marek “Slush” Palatinus also created the first Bitcoin mining pool.',
-                9: 'Trezor began controlling its own chip supply chain in 2023 for better security.',
-                10: 'Trezor has sold wallets in over 150 countries.',
-                11: 'Trezor’s Safe 5 Freedom Edition, limited to 2,100 units, launched in Jan 2025.',
             },
             confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
             retryButton: 'Retry',
