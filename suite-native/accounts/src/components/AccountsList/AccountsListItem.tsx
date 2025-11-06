@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -13,7 +12,7 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
+import { useAccountLabel } from '@suite-native/labeling';
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
     TokensRootState,
@@ -77,8 +76,6 @@ export const AccountsListItem = ({
         selectAccountFiatBalance(state, account.key, accountHasStaking),
     );
 
-    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
-
     const handleOnPress = useCallback(() => {
         onPress?.({
             account,
@@ -97,6 +94,11 @@ export const AccountsListItem = ({
         [account.symbol, isNativeCoinOnly],
     );
 
+    const accountLabel = useAccountLabel({
+        accountKey: account.key,
+        deviceState: account.deviceState,
+    });
+
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
     const shouldShowAccountLabel = !doesCoinSupportTokens || !isNativeCoinOnly;
     const shouldShowTokenBadge = accountHasAnyTokens && !isNativeCoinOnly;
@@ -113,11 +115,7 @@ export const AccountsListItem = ({
             icon={icon}
             title={
                 shouldShowAccountLabel ? (
-                    <AccountLabel
-                        walletDescriptor={walletDescriptor}
-                        accountKey={account.key}
-                        fallbackLabel={account.accountLabel}
-                    />
+                    accountLabel
                 ) : (
                     <NetworkDisplaySymbolNameFormatter value={account.symbol} />
                 )

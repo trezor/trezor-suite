@@ -63,8 +63,8 @@ export const selectAccountLabels = ({
 
 type SelectAccountLabelParams = {
     state: WithLabelingState;
-    walletDescriptor: WalletDescriptor;
-    accountKey: AccountKey;
+    walletDescriptor: WalletDescriptor | null;
+    accountKey: AccountKey | null;
 };
 
 export const selectAccountLabel = ({
@@ -72,6 +72,10 @@ export const selectAccountLabel = ({
     walletDescriptor,
     accountKey,
 }: SelectAccountLabelParams): string | null => {
+    if (walletDescriptor === null || accountKey === null) {
+        return null;
+    }
+
     const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 
     const walletLabelState = state.labeling.walletsLabels[walletDescriptor];
