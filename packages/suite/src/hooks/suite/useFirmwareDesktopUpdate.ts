@@ -1,18 +1,63 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { type FirmwareUpdateProps, useFirmwareInstallation } from '@suite-common/firmware';
+import {
+    type FirmwareUpdateProps,
+    selectFirmware,
+    useFirmwareInstallation,
+} from '@suite-common/firmware';
 import { selectIsDeviceConnectedViaBluetoothLowOnBattery } from '@suite-common/wallet-core';
+import { UI } from '@trezor/connect';
 
 import { useSelector } from './useSelector';
 
+const INTERVAL_CHECK_SLOW_INSTALLATION_MS = 1_000;
+const TIME_THRESHOLD_SLOW_INSTALLATION_MS = 30_000;
+const PERCENTAGE_THRESHOLD_SLOW_INSTALLATION = 20;
+
 export const useFirmwareDesktopUpdate = () => {
     const [showLowBatteryModal, setShowLowBatteryModal] = useState(false);
+    const firmware = useSelector(selectFirmware);
     const isDeviceConnectedViaBluetoothLowOnBattery = useSelector(
         selectIsDeviceConnectedViaBluetoothLowOnBattery,
     );
 
     const { firmwareUpdate, originalDevice, reconnectEvent, pinRequested, ...rest } =
         useFirmwareInstallation();
+
+    const [isSlow, setIsSlow] = useState(false);
+    const [startTime, setStartTime] = useState<null | number>(null);
+
+    useEffect(() => {
+        if (
+            !startTime &&
+            firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
+            firmware.uiEvent.payload.operation === 'start-flashing'
+        ) {
+            setStartTime(new Date().getTime());
+        }
+    }, [firmware.uiEvent, startTime]);
+
+    useEffect(() => {
+        if (!startTime || isSlow) {
+            return;
+        }
+
+        const interval = setInterval(() => {
+            const now = new Date().getTime();
+
+            if (now - startTime > TIME_THRESHOLD_SLOW_INSTALLATION_MS) {
+                if (
+                    firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS &&
+                    firmware.uiEvent.payload.progress < PERCENTAGE_THRESHOLD_SLOW_INSTALLATION
+                ) {
+                    setIsSlow(true);
+                    clearInterval(interval);
+                }
+            }
+        }, INTERVAL_CHECK_SLOW_INSTALLATION_MS);
+
+        return () => clearInterval(interval);
+    }, [startTime, isSlow, firmware.uiEvent]);
 
     const desktopFirmwareUpdate = (arg: FirmwareUpdateProps) => {
         if (isDeviceConnectedViaBluetoothLowOnBattery) {
@@ -41,5 +86,6 @@ export const useFirmwareDesktopUpdate = () => {
         reconnectEvent,
         showReconnectPrompt: rest.showReconnectPrompt || restartingToNormalWithPinProtection,
         pinRequested: pinRequested || restartingToNormalWithPinProtection,
+        isSlow,
     };
 };
