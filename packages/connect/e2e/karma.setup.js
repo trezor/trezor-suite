@@ -20,7 +20,10 @@ jasmine.getEnv().beforeAll(() => {
                         if (Array.isArray(obj[key])) {
                             match[key] = jasmine.arrayContaining(
                                 obj[key].map(item => {
-                                    if (typeof item === 'object') {
+                                    if (
+                                        typeof item === 'object' &&
+                                        typeof item.expectedObject !== 'function' // matcher inside array
+                                    ) {
                                         return jasmine.objectContaining(nested(item));
                                     }
 
