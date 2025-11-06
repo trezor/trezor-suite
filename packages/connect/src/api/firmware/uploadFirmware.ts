@@ -85,6 +85,14 @@ export const uploadFirmware = async ({
         const length = payload.byteLength;
         let progress = 0;
         let response = await typedCall('FirmwareErase', ['FirmwareRequest', 'Success'], { length });
+        // We are starting the flashing process.
+        postMessage(
+            createUiMessage(UI.FIRMWARE_PROGRESS, {
+                device: device.toMessageObject(),
+                operation: 'start-flashing',
+                progress,
+            }),
+        );
         while (response.type !== 'Success') {
             // NOTE: offset and message are present in T2
             const start = response.message.offset;

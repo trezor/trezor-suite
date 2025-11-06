@@ -308,7 +308,7 @@ export interface FirmwareProgress {
     type: typeof UI_REQUEST.FIRMWARE_PROGRESS;
     payload: {
         device: Device;
-        operation: 'downloading' | 'flashing';
+        operation: 'downloading' | 'flashing' | 'start-flashing';
         progress: number;
     };
 }
