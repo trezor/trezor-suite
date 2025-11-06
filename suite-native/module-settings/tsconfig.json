@@ -29,7 +29,6 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
-        { "path": "../feature-flags" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
