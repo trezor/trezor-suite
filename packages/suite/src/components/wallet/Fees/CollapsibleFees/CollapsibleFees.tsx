@@ -1,13 +1,11 @@
 import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { useTheme } from 'styled-components';
-
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { FormState } from '@suite-common/wallet-types';
-import { Button, CollapsibleBox, Column, Link, Row } from '@trezor/components';
-import { TypographyStyle, spacings } from '@trezor/theme';
+import { Button, Collapsible, Column, Row, TextButton } from '@trezor/components';
+import { TypographyStyle } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -53,8 +51,6 @@ export function CollapsibleFees({
         [feeInfo.levels, selectedFee],
     );
 
-    const theme = useTheme();
-
     if (!selectedFeeLevel) {
         return null;
     }
@@ -70,58 +66,55 @@ export function CollapsibleFees({
                 composedLevels,
             }}
         >
-            <CollapsibleBox
-                heading={
+            <Collapsible gap={20}>
+                <Row justifyContent="space-between" gap={12}>
                     <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
-                }
-                hasDivider={false}
-                toggleIconName="caretDown"
-                toggleIconSize="mediumLarge"
-                toggleIconVariant="default"
-                fillType="none"
-                paddingType="none"
-                headingSize="large"
-                overflow="unset"
-                toggleComponent={
-                    composedLevels === null ? null : (
-                        <MaximumFee typographyStyle={headerTypographyStyle} />
-                    )
-                }
-                collapsible={supportsAdjustableFees}
-                data-testid-toggle="@wallet/fees/collapsible-fees-toggle"
-            >
-                <Column gap={spacings.md}>
-                    <Column gap={spacings.md}>
-                        {!isCustomFee && <StandardFee />}
-                        {isCustomFee && <CustomFee showCurrentFee={!rbfForm} />}
-                    </Column>
+                    <Collapsible.Toggle data-testid="@wallet/fees/collapsible-fees-toggle">
+                        <Row gap={10}>
+                            {composedLevels === null ? null : (
+                                <MaximumFee typographyStyle={headerTypographyStyle} />
+                            )}
+                            {supportsAdjustableFees && (
+                                <Collapsible.ToggleIcon iconName="caretDown" size="mediumLarge" />
+                            )}
+                        </Row>
+                    </Collapsible.Toggle>
+                </Row>
+                {supportsAdjustableFees && (
+                    <Collapsible.Content>
+                        <Column gap={16}>
+                            <Column gap={16}>
+                                {!isCustomFee && <StandardFee />}
+                                {isCustomFee && <CustomFee showCurrentFee={!rbfForm} />}
+                            </Column>
 
-                    <Row justifyContent="center">
-                        {isCustomFee && (
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={() => changeFeeLevel('normal')}
-                                data-testid="@wallet/fees/select-standard-fee"
-                            >
-                                <Translation id="FEE_LEVEL_STANDARD" />
-                            </Button>
-                        )}
-                        {!isCustomFee && hasNormalFeeLevel && (
-                            <Link
-                                variant="underline"
-                                typographyStyle="hint"
-                                onClick={() => changeFeeLevel('custom')}
-                                as="button"
-                                color={theme.textSubdued}
-                                data-testid="@wallet/fees/select-custom-fee"
-                            >
-                                <Translation id="FEE_LEVEL_ADVANCED" />
-                            </Link>
-                        )}
-                    </Row>
-                </Column>
-            </CollapsibleBox>
+                            <Row justifyContent="center">
+                                {isCustomFee && (
+                                    <Button
+                                        intent="neutral"
+                                        priority="secondary"
+                                        onClick={() => changeFeeLevel('normal')}
+                                        data-testid="@wallet/fees/select-standard-fee"
+                                    >
+                                        <Translation id="FEE_LEVEL_STANDARD" />
+                                    </Button>
+                                )}
+                                {!isCustomFee && hasNormalFeeLevel && (
+                                    <TextButton
+                                        onClick={() => changeFeeLevel('custom')}
+                                        data-testid="@wallet/fees/select-custom-fee"
+                                        variant="tertiary"
+                                        size="small"
+                                        isUnderlined
+                                    >
+                                        <Translation id="FEE_LEVEL_ADVANCED" />
+                                    </TextButton>
+                                )}
+                            </Row>
+                        </Column>
+                    </Collapsible.Content>
+                )}
+            </Collapsible>
         </FeesContext.Provider>
     );
 }
