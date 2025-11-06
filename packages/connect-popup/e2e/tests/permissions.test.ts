@@ -4,7 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { setConnectSettings, waitAndClick } from '../support/helpers';
 
-const url = process.env.URL || 'http://localhost:8088/';
+const url = 'https://dev.suite.sldev.cz/connect/local-permissions/';
 const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';
 
 let popup: Page;

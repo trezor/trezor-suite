@@ -13834,6 +13834,7 @@ __metadata:
     "@playwright/test": "npm:^1.55.0"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/dom-utils": "workspace:^"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13978,9 +13979,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/dom-utils@workspace:*, @trezor/dom-utils@workspace:packages/dom-utils":
+"@trezor/dom-utils@workspace:*, @trezor/dom-utils@workspace:^, @trezor/dom-utils@workspace:packages/dom-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/dom-utils@workspace:packages/dom-utils"
+  dependencies:
+    "@trezor/utils": "workspace:^"
   languageName: unknown
   linkType: soft
 

@@ -61,6 +61,7 @@ const getExtensionPage = async () => {
             process.env.HEADLESS === 'true' ? `--headless=new` : '', // the new headless arg for chrome v109+. Use '--headless=chrome' as arg for browsers v94-108.
             `--disable-extensions-except=${pathToExtension}`,
             `--load-extension=${pathToExtension}`,
+            `--disable-local-network-access-check`,
         ],
     });
 
@@ -96,9 +97,17 @@ export const getContexts = async (
     isWebExtension: boolean,
 ) => {
     if (!isWebExtension) {
+        const browser = await chromium.launch({
+            headless: false,
+            args: [`--disable-local-network-access-check`],
+        });
+
+        const context = await browser.newContext();
+        const page = await context.newPage();
+
         return {
             explorerUrl: originalUrl,
-            explorerPage: originalPage,
+            explorerPage: page,
         };
     }
     const { page, url, browserContext } = await getExtensionPage();

@@ -13,6 +13,9 @@
             "path": "../connect-common"
         },
         {
+            "path": "../dom-utils"
+        },
+        {
             "path": "../utils"
         },
         {

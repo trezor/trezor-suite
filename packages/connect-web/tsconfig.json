@@ -24,6 +24,7 @@
     "references": [
         { "path": "../connect" },
         { "path": "../connect-common" },
+        { "path": "../dom-utils" },
         { "path": "../utils" },
         { "path": "../websocket-client" },
         { "path": "../eslint" },

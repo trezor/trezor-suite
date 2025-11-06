@@ -74,6 +74,10 @@ export const init = async (settings: ConnectSettings) => {
         instance.id = 'trezorconnect';
     }
 
+    // this does not seem to make any difference (works without this), although here https://docs.google.com/document/d/1QQkqehw8umtAgz5z0um7THx-aoU251p705FbIQjDuGs they state:
+    // _Making a local network request from inside of an iframe requires that the embedding document specify the local-network-access permissions policy flag on the iframe._
+    instance.setAttribute('allow', 'local-network-access');
+
     let src: string;
     if (settings.env === 'web') {
         const manifestString = settings.manifest ? JSON.stringify(settings.manifest) : 'undefined'; // note: btoa(undefined) === btoa('undefined') === "dW5kZWZpbmVk"
@@ -90,7 +94,7 @@ export const init = async (settings: ConnectSettings) => {
     }
     instance.setAttribute('src', src);
     if (navigator.usb) {
-        instance.setAttribute('allow', 'usb');
+        instance.setAttribute('allow', instance.getAttribute('allow') + '; usb');
     }
 
     origin = getOrigin(instance.src);

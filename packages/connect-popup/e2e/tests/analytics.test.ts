@@ -4,7 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { waitAndClick } from '../support/helpers';
 
-const url = process.env.URL || 'http://localhost:8088/';
+const url = process.env.URL || 'https://dev.suite.sldev.cz/connect/local-permissions/';
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();

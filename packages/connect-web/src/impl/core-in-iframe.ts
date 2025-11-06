@@ -29,6 +29,7 @@ import type {
 } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
+import { waitForPermissionGranted } from '@trezor/dom-utils/src/localNetworkAccessPermission';
 import { DeferredManager, createDeferredManager } from '@trezor/utils/src/createDeferredManager';
 
 import { parseConnectSettings } from '../connectSettings';
@@ -192,10 +193,27 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
 
         await iframe.init(this._settings);
 
+        // with iframe, it makes sense to check that we are able to communicate with trezor-bridge before we open popup.
+        const permissionResult = await waitForPermissionGranted(() => {
+            // in theory, bridge can live on 2 ports now, 21325 is considered legacy but is more likely to happen in this setup
+            // old standalone bridge installed, no suite-desktop running
+            fetch('http://127.0.0.1:21325/', { method: 'POST' }).catch(() => {});
+            fetch('http://127.0.0.1:21328/', { method: 'POST' }).catch(() => {});
+        });
+
+        // iframe mode does not support webusb so at this moment we are pretty sure that iframe mode will not work
+
+        // todo: maybe we should throw throw ERRORS.TypedError('Transport_Missing'); to force fallback to popup mode?
+
+        if (!permissionResult) {
+            throw ERRORS.TypedError('Browser_LocalNetworkPermissionMissing');
+        }
+
         if (this._settings.coreMode === 'auto') {
             // Checking bridge availability
             const { promiseId, promise } = this._messagePromises.create();
             this._log.debug('coreMode = auto, Checking bridge availability');
+
             iframe.postMessage({ id: promiseId, type: TRANSPORT.GET_INFO });
             const response = await promise;
             this._log.debug('Bridge availability response', response);
