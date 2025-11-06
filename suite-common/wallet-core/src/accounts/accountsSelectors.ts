@@ -121,7 +121,7 @@ export const selectDeviceMainnetAccounts = createMemoizedSelector(
 );
 
 export const selectAccountByKey = createMemoizedSelector(
-    [selectAccounts, (_state: AccountsRootState, accountKey?: AccountKey) => accountKey],
+    [selectAccounts, (_state: AccountsRootState, accountKey?: AccountKey | null) => accountKey],
     (accounts, accountKey) => {
         if (!accountKey) return null;
 

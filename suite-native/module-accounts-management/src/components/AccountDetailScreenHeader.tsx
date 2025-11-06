@@ -1,10 +1,9 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { Account } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { AccountLabel } from '@suite-native/labeling';
+import { useAccountLabel } from '@suite-native/labeling';
 import {
     AccountsStackParamList,
     RootStackParamList,
@@ -25,17 +24,16 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => {
-    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+    const accountLabel = useAccountLabel({
+        accountKey: account?.key ?? null,
+        deviceState: account?.deviceState ?? null,
+    });
 
     return (
         <HStack alignItems="center">
             <CryptoIconWithNetwork symbol={account.symbol} size="small" />
             <Text variant="highlight" adjustsFontSizeToFit numberOfLines={1}>
-                <AccountLabel
-                    walletDescriptor={walletDescriptor}
-                    accountKey={account.key}
-                    fallbackLabel={account.accountLabel}
-                />
+                {accountLabel}
             </Text>
         </HStack>
     );

@@ -8,11 +8,10 @@ import {
     selectFormattedAccountType,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { AccountLabel } from '@suite-native/labeling';
+import { useAccountLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -66,22 +65,18 @@ export const AccountSettingsScreen = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, accountKey),
     );
+    const accountLabel = useAccountLabel({
+        accountKey: account?.key ?? null,
+        deviceState: account?.deviceState ?? null,
+    });
 
     if (!account) return null;
-
-    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
 
     return (
         <Screen
             header={
                 <ScreenHeader
-                    title={
-                        <AccountLabel
-                            walletDescriptor={walletDescriptor}
-                            accountKey={account.key}
-                            fallbackLabel={account.accountLabel}
-                        />
-                    }
+                    title={<Text>{accountLabel}</Text>}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }
