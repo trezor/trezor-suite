@@ -13,6 +13,7 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
+import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import {
     TradingRootState,
     selectBuyQuotesByPaymentMethodNative,
@@ -106,18 +107,20 @@ export const BuyProviderPicker = () => {
 
     return (
         <>
-            <OverviewRow
-                title={translate('moduleTrading.tradingScreen.provider')}
-                noBottomBorder
-                onPress={handleProviderPress}
-                testID={PROVIDER_PICKER_TEST_ID}
-                noCaret={isLoading}
-                warning={
-                    isLoading ? undefined : translate('moduleTrading.tradingScreen.kycWarning')
-                }
-            >
-                <BuyProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
-            </OverviewRow>
+            <ResidenceCheckAwareAnimatedBox>
+                <OverviewRow
+                    title={translate('moduleTrading.tradingScreen.provider')}
+                    noBottomBorder
+                    onPress={handleProviderPress}
+                    testID={PROVIDER_PICKER_TEST_ID}
+                    noCaret={isLoading}
+                    warning={
+                        isLoading ? undefined : translate('moduleTrading.tradingScreen.kycWarning')
+                    }
+                >
+                    <BuyProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
+                </OverviewRow>
+            </ResidenceCheckAwareAnimatedBox>
             <ProviderSheet
                 quotes={quotes}
                 isVisible={isSheetVisible}
