@@ -1,3 +1,4 @@
+import { ed25519 } from '@noble/curves/ed25519.js';
 import * as crypto from 'crypto';
 
 import { getSubtleCrypto } from '@trezor/crypto-utils';
@@ -15,12 +16,12 @@ import { AlgorithmName, parseCertificate } from './x509certificate';
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
 // The only common format of publicKey is PEM.
 const verifySignatureP256: VerifySignature = async (rawKey, data, signature) => {
+    const signer = crypto.createVerify('sha256');
+    signer.update(Buffer.from(data));
+
+    const SubtleCrypto = getSubtleCrypto();
+
     try {
-        const signer = crypto.createVerify('sha256');
-        signer.update(Buffer.from(data));
-
-        const SubtleCrypto = getSubtleCrypto();
-
         // get ECDSA P-256 (secp256r1) key from RAW key
         const ecPubKey = await SubtleCrypto.importKey(
             'raw',
@@ -42,25 +43,20 @@ const verifySignatureP256: VerifySignature = async (rawKey, data, signature) => 
         return signer.verify({ key }, Buffer.from(signature));
     } catch {
         // invalid inputs shall be considered unsuccessful verification, rather than runtime error
-        // (e.g. attempting to verify a Ed25519 signature signature here)
+        // (e.g. calling this with a P-256 signature and an Ed25519 key)
         return false;
     }
 };
 
-// Verifies Ed25519 signature using SubtleCrypto (browser or Node.js)
-const verifySignatureEd25519: VerifySignature = async (rawKey, data, signature) => {
+// Verifies Ed25519 signature using @noble/curves, because SubtleCrypto Ed25519 is still not broadly supported.
+// We can revert to SubtleCrypto when we stop supporting Chromium < 137 https://caniuse.com/mdn-api_subtlecrypto_sign_ed25519
+// Also must be verified react-native javascript runtime (unknown support matrix).
+const verifySignatureEd25519: VerifySignature = (rawKey, data, signature) => {
     try {
-        const SubtleCrypto = getSubtleCrypto();
-        // get Ed25519 key from RAW key
-        const edPubKey = await SubtleCrypto.importKey('raw', rawKey, { name: 'Ed25519' }, true, [
-            'verify',
-        ]);
-
-        // Verify signature
-        return await SubtleCrypto.verify({ name: 'Ed25519' }, edPubKey, signature, data);
+        return ed25519.verify(signature, data, rawKey);
     } catch {
         // invalid inputs shall be considered unsuccessful verification, rather than runtime error
-        // (e.g. attempting to verify a P-256 signature signature here)
+        // @noble/hashes correctly returns false when calling this with an Ed25519 signature and a P-256 key, but malformed signature sometimes throws
         return false;
     }
 };

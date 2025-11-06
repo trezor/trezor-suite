@@ -7,7 +7,7 @@ export type VerifySignature = (
     rawKey: Buffer,
     data: Uint8Array,
     signature: Uint8Array,
-) => Promise<boolean>;
+) => boolean | Promise<boolean>;
 
 export type VerifyAuthenticityProofParams = {
     challenge: Buffer;
