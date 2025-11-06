@@ -2,11 +2,16 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+    WithLabelingState,
+    selectAccountLabel as selectAccountLabelLocalFirst,
+} from '@suite-common/local-first-storage';
+import {
     AccountsRootState,
     accountsActions,
     selectAccountByKey,
     selectAccountLabel,
 } from '@suite-common/wallet-core';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import {
     AccountFormValues,
     AccountLabelFieldHint,
@@ -16,6 +21,7 @@ import {
 import { Box, Button, InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useIsLabelingEnabled } from '@suite-native/labeling';
 
 type AccountRenameFormProps = {
     accountKey: string;
@@ -29,10 +35,20 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         selectAccountByKey(state, accountKey),
     );
     const inputRef = useRef<InputType>(null);
+    const isLabelingEnabled = useIsLabelingEnabled();
 
-    const accountLabel = useSelector((state: AccountsRootState) =>
+    const { walletDescriptor } = account ? parseDeviceStaticSessionId(account.deviceState) : {};
+    const localFirstLabel = useSelector((state: WithLabelingState) =>
+        walletDescriptor
+            ? selectAccountLabelLocalFirst({ state, walletDescriptor, accountKey })
+            : null,
+    );
+
+    const storeLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
+
+    const accountLabel = isLabelingEnabled ? localFirstLabel : storeLabel;
 
     const form = useAccountLabelForm(accountLabel ?? undefined);
     const {
