@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -30,10 +28,6 @@ const getUpdateStateMessage = (state: UpdateState) => {
     }
 };
 
-const Container = styled.span`
-    display: inline-flex;
-`;
-
 const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
     const appVersion = process.env.VERSION || '';
     const dispatch = useDispatch();
@@ -57,23 +51,25 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
             <Translation
                 id="TR_YOUR_CURRENT_VERSION"
                 values={{
-                    version: (
-                        <Container>
-                            {isDesktop() ? (
-                                <Button
-                                    onClick={() => {
-                                        openChangelog();
-                                    }}
-                                    {...commonButtonProps}
-                                >
-                                    {buttonLabel}
-                                </Button>
-                            ) : (
-                                <Button href={url} iconRight="arrowUpRight" {...commonButtonProps}>
-                                    {buttonLabel}
-                                </Button>
-                            )}
-                        </Container>
+                    version: isDesktop() ? (
+                        <Button
+                            onClick={() => {
+                                openChangelog();
+                            }}
+                            margin={{ left: 4 }}
+                            {...commonButtonProps}
+                        >
+                            {buttonLabel}
+                        </Button>
+                    ) : (
+                        <Button
+                            href={url}
+                            iconRight="arrowUpRight"
+                            margin={{ left: 4 }}
+                            {...commonButtonProps}
+                        >
+                            {buttonLabel}
+                        </Button>
                     ),
                 }}
             />
