@@ -22,7 +22,7 @@ import {
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
 import { ExchangeFormType } from '@suite-native/trading-types';
-import { useTimer } from '@trezor/react-utils';
+import { useNullTimer } from '@trezor/react-utils';
 
 import { useExchangeAnalyticReportCallback } from './useExchangeAnalyticReportCallback';
 import { clearExchangeFormQuoteData } from './useExchangeForm';
@@ -39,7 +39,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const dispatch = useDispatch();
-    const timer = useTimer();
+    const timer = useNullTimer();
 
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);

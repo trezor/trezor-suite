@@ -26,10 +26,12 @@ jest.mock('@trezor/react-utils', () => {
     return {
         ...originalModule,
         useDebounce: () => (fn: () => unknown) => fn(),
-        useTimer: () => ({
-            ...originalModule.useTimer(),
-            timeSpent: { seconds: mockTimeSpent },
-        }),
+        useTimer: () => {
+            const timer = originalModule.useNullTimer();
+            timer.timeSpent.seconds = mockTimeSpent;
+
+            return timer;
+        },
     };
 });
 
