@@ -11264,7 +11264,7 @@ __metadata:
     react: "npm:19.1.0"
     react-intl: "npm:^7.1.11"
     react-native: "npm:0.81.4"
-    react-native-ble-plx: "npm:3.5.0"
+    react-native-ble-plx: "patch:react-native-ble-plx@npm%3A3.5.0#~/.yarn/patches/react-native-ble-plx-npm-3.5.0-c98fd0ae25.patch"
     react-native-edge-to-edge: "npm:1.7.0"
     react-native-gesture-handler: "npm:2.29.0"
     react-native-get-random-values: "npm:^1.11.0"
@@ -14628,7 +14628,7 @@ __metadata:
   dependencies:
     "@trezor/transport": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    react-native-ble-plx: "npm:3.5.0"
+    react-native-ble-plx: "patch:react-native-ble-plx@npm%3A3.5.0#~/.yarn/patches/react-native-ble-plx-npm-3.5.0-c98fd0ae25.patch"
   languageName: unknown
   linkType: soft
 
@@ -38476,6 +38476,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/f807e82d45220eeb5ba3aacaf13fddd9e11395337b8b2b99fe468cc154fefdce501efefcb1421b6bcf0f0e602e82ce535ff8dc3b1d1e57aca85fd6507bc7ea2e
+  languageName: node
+  linkType: hard
+
+"react-native-ble-plx@patch:react-native-ble-plx@npm%3A3.5.0#~/.yarn/patches/react-native-ble-plx-npm-3.5.0-c98fd0ae25.patch":
+  version: 3.5.0
+  resolution: "react-native-ble-plx@patch:react-native-ble-plx@npm%3A3.5.0#~/.yarn/patches/react-native-ble-plx-npm-3.5.0-c98fd0ae25.patch::version=3.5.0&hash=196fdb"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/40e5ac41b1951ecdaafe052715ad46ef8a87cc746659362d2dd2254730c8a3a9fa41119fd346970a2f077873c3d0b16505dc42d16aa0af494c1f9494568fb077
   languageName: node
   linkType: hard
 
