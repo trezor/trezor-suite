@@ -17,6 +17,7 @@ export const MODULES = [
     'cardano',
     'eos',
     'ethereum',
+    'monero',
     'nem',
     'ripple',
     'solana',

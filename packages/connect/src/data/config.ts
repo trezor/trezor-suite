@@ -344,5 +344,19 @@ export const config: Config = {
                 T3T1: '2.9.2',
             },
         },
+        {
+            capabilities: ['monero'],
+            methods: [
+                'moneroGetAddress',
+                'moneroGetWatchKey',
+                'moneroKeyImageSync',
+                'moneroSignTransaction',
+            ],
+            min: {
+                T1B1: '0',
+                T2T1: '2.5.3',
+                T2B1: '2.5.3',
+            },
+        },
     ],
 };

@@ -5633,6 +5633,733 @@
                 }
             }
         },
+        "MoneroNetworkType": {
+            "values": {
+                "MAINNET": 0,
+                "TESTNET": 1,
+                "STAGENET": 2,
+                "FAKECHAIN": 3
+            }
+        },
+        "MoneroGetAddress": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                },
+                "network_type": {
+                    "type": "MoneroNetworkType",
+                    "id": 3,
+                    "options": {
+                        "default": "MAINNET"
+                    }
+                },
+                "account": {
+                    "type": "uint32",
+                    "id": 4
+                },
+                "minor": {
+                    "type": "uint32",
+                    "id": 5
+                },
+                "payment_id": {
+                    "type": "bytes",
+                    "id": 6
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 7
+                }
+            }
+        },
+        "MoneroAddress": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroGetWatchKey": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "network_type": {
+                    "type": "MoneroNetworkType",
+                    "id": 2,
+                    "options": {
+                        "default": "MAINNET"
+                    }
+                }
+            }
+        },
+        "MoneroWatchKey": {
+            "fields": {
+                "watch_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "MoneroSubAddressIndicesList": {
+            "fields": {
+                "account": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 1
+                },
+                "minor_indices": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 2
+                }
+            }
+        },
+        "MoneroTransferDetails": {
+            "fields": {
+                "out_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "tx_pub_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "additional_tx_pub_keys": {
+                    "rule": "repeated",
+                    "type": "bytes",
+                    "id": 3
+                },
+                "internal_output_index": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 4
+                },
+                "sub_addr_major": {
+                    "type": "uint32",
+                    "id": 5
+                },
+                "sub_addr_minor": {
+                    "type": "uint32",
+                    "id": 6
+                }
+            }
+        },
+        "MoneroExportedKeyImage": {
+            "fields": {
+                "iv": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "blob": {
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
+        "MoneroKeyImageExportInitRequest": {
+            "fields": {
+                "num": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 1
+                },
+                "hash": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 3,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "network_type": {
+                    "type": "MoneroNetworkType",
+                    "id": 4,
+                    "options": {
+                        "default": "MAINNET"
+                    }
+                },
+                "subs": {
+                    "rule": "repeated",
+                    "type": "MoneroSubAddressIndicesList",
+                    "id": 5
+                }
+            }
+        },
+        "MoneroKeyImageExportInitAck": {
+            "fields": {}
+        },
+        "MoneroKeyImageSyncStepRequest": {
+            "fields": {
+                "tdis": {
+                    "rule": "repeated",
+                    "type": "MoneroTransferDetails",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroKeyImageSyncStepAck": {
+            "fields": {
+                "kis": {
+                    "rule": "repeated",
+                    "type": "MoneroExportedKeyImage",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroKeyImageSyncFinalRequest": {
+            "fields": {}
+        },
+        "MoneroKeyImageSyncFinalAck": {
+            "fields": {
+                "enc_key": {
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroOutputEntry": {
+            "fields": {
+                "idx": {
+                    "type": "uint64",
+                    "id": 1
+                },
+                "key": {
+                    "type": "MoneroRctKeyPublic",
+                    "id": 2
+                }
+            }
+        },
+        "MoneroRctKeyPublic": {
+            "fields": {
+                "dest": {
+                    "type": "bytes",
+                    "id": 1,
+                    "rule": "required"
+                },
+                "commitment": {
+                    "type": "bytes",
+                    "id": 2,
+                    "rule": "required"
+                }
+            }
+        },
+        "MoneroMultisigKLRki": {
+            "fields": {
+                "K": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "L": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "R": {
+                    "type": "bytes",
+                    "id": 3
+                },
+                "ki": {
+                    "type": "bytes",
+                    "id": 4
+                }
+            }
+        },
+        "MoneroTransactionSourceEntry": {
+            "fields": {
+                "outputs": {
+                    "type": "MoneroOutputEntry",
+                    "id": 1,
+                    "rule": "repeated"
+                },
+                "real_output": {
+                    "type": "uint64",
+                    "id": 2
+                },
+                "real_out_tx_key": {
+                    "type": "bytes",
+                    "id": 3
+                },
+                "real_out_additional_tx_keys": {
+                    "type": "bytes",
+                    "id": 4,
+                    "rule": "repeated"
+                },
+                "real_output_in_tx_index": {
+                    "type": "uint64",
+                    "id": 5
+                },
+                "amount": {
+                    "type": "uint64",
+                    "id": 6
+                },
+                "rct": {
+                    "type": "bool",
+                    "id": 7
+                },
+                "mask": {
+                    "type": "bytes",
+                    "id": 8
+                },
+                "multisig_kLRki": {
+                    "type": "MoneroMultisigKLRki",
+                    "id": 9
+                },
+                "subaddr_minor": {
+                    "type": "uint32",
+                    "id": 10
+                }
+            }
+        },
+        "MoneroAccountPublicAddress": {
+            "fields": {
+                "spend_public_key": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "view_public_key": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "MoneroTransactionDestinationEntry": {
+            "fields": {
+                "amount": {
+                    "type": "uint64",
+                    "id": 1
+                },
+                "addr": {
+                    "type": "MoneroAccountPublicAddress",
+                    "id": 2
+                },
+                "is_subaddress": {
+                    "type": "bool",
+                    "id": 3
+                },
+                "original": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "is_integrated": {
+                    "type": "bool",
+                    "id": 5
+                }
+            }
+        },
+        "MoneroTransactionRsigData": {
+            "fields": {
+                "rsig_type": {
+                    "type": "uint32",
+                    "id": 1
+                },
+                "offload_type": {
+                    "type": "uint32",
+                    "id": 2
+                },
+                "grouping": {
+                    "type": "uint64",
+                    "id": 3,
+                    "rule": "repeated",
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "mask": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "rsig": {
+                    "type": "bytes",
+                    "id": 5
+                },
+                "rsig_parts": {
+                    "type": "bytes",
+                    "id": 6,
+                    "rule": "repeated"
+                },
+                "bp_version": {
+                    "type": "uint32",
+                    "id": 7
+                }
+            }
+        },
+        "MoneroTransactionData": {
+            "fields": {
+                "version": {
+                    "type": "uint32",
+                    "id": 1
+                },
+                "payment_id": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "unlock_time": {
+                    "type": "uint64",
+                    "id": 3
+                },
+                "outputs": {
+                    "type": "MoneroTransactionDestinationEntry",
+                    "id": 4,
+                    "rule": "repeated"
+                },
+                "change_dts": {
+                    "type": "MoneroTransactionDestinationEntry",
+                    "id": 5
+                },
+                "num_inputs": {
+                    "type": "uint32",
+                    "id": 6
+                },
+                "mixin": {
+                    "type": "uint32",
+                    "id": 7
+                },
+                "fee": {
+                    "type": "uint64",
+                    "id": 8
+                },
+                "account": {
+                    "type": "uint32",
+                    "id": 9
+                },
+                "minor_indices": {
+                    "type": "uint32",
+                    "id": 10,
+                    "rule": "repeated"
+                },
+                "rsig_data": {
+                    "type": "MoneroTransactionRsigData",
+                    "id": 11
+                },
+                "integrated_indices": {
+                    "type": "uint32",
+                    "id": 12,
+                    "rule": "repeated"
+                },
+                "client_version": {
+                    "type": "uint32",
+                    "id": 13
+                },
+                "hard_fork": {
+                    "type": "uint32",
+                    "id": 14
+                },
+                "monero_version": {
+                    "type": "bytes",
+                    "id": 15
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 16
+                }
+            }
+        },
+        "MoneroRingCtSig": {
+            "fields": {
+                "txn_fee": {
+                    "type": "uint64",
+                    "id": 1
+                },
+                "message": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "rv_type": {
+                    "type": "uint32",
+                    "id": 3
+                }
+            }
+        },
+        "MoneroTransactionInitRequest": {
+            "fields": {
+                "version": {
+                    "type": "uint32",
+                    "id": 1
+                },
+                "address_n": {
+                    "type": "uint32",
+                    "id": 2,
+                    "rule": "repeated",
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "network_type": {
+                    "type": "MoneroNetworkType",
+                    "id": 3
+                },
+                "tsx_data": {
+                    "type": "MoneroTransactionData",
+                    "id": 4
+                }
+            }
+        },
+        "MoneroTransactionInitAck": {
+            "fields": {
+                "hmacs": {
+                    "type": "bytes",
+                    "id": 1,
+                    "rule": "repeated"
+                },
+                "rsig_data": {
+                    "type": "MoneroTransactionRsigData",
+                    "id": 2
+                }
+            }
+        },
+        "MoneroTransactionSetInputRequest": {
+            "fields": {
+                "src_entr": {
+                    "type": "MoneroTransactionSourceEntry",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroTransactionSetInputAck": {
+            "fields": {
+                "vini": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "vini_hmac": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "pseudo_out": {
+                    "type": "bytes",
+                    "id": 3
+                },
+                "pseudo_out_hmac": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "pseudo_out_alpha": {
+                    "type": "bytes",
+                    "id": 5
+                },
+                "spend_key": {
+                    "type": "bytes",
+                    "id": 6
+                }
+            }
+        },
+        "MoneroTransactionInputViniRequest": {
+            "fields": {
+                "src_entr": {
+                    "type": "MoneroTransactionSourceEntry",
+                    "id": 1
+                },
+                "vini": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "vini_hmac": {
+                    "type": "bytes",
+                    "id": 3
+                },
+                "pseudo_out": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "pseudo_out_hmac": {
+                    "type": "bytes",
+                    "id": 5
+                },
+                "orig_idx": {
+                    "type": "uint32",
+                    "id": 6
+                }
+            }
+        },
+        "MoneroTransactionInputViniAck": {
+            "fields": {}
+        },
+        "MoneroTransactionAllInputsSetRequest": {
+            "fields": {}
+        },
+        "MoneroTransactionAllInputsSetAck": {
+            "fields": {
+                "rsig_data": {
+                    "type": "MoneroTransactionRsigData",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroTransactionSetOutputRequest": {
+            "fields": {
+                "dst_entr": {
+                    "type": "MoneroTransactionDestinationEntry",
+                    "id": 1
+                },
+                "dst_entr_hmac": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "rsig_data": {
+                    "type": "MoneroTransactionRsigData",
+                    "id": 3
+                },
+                "is_offloaded_bp": {
+                    "type": "bool",
+                    "id": 4
+                }
+            }
+        },
+        "MoneroTransactionSetOutputAck": {
+            "fields": {
+                "tx_out": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "vouti_hmac": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "rsig_data": {
+                    "type": "MoneroTransactionRsigData",
+                    "id": 3
+                },
+                "out_pk": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "ecdh_info": {
+                    "type": "bytes",
+                    "id": 5
+                }
+            }
+        },
+        "MoneroTransactionAllOutSetRequest": {
+            "fields": {
+                "rsig_data": {
+                    "type": "MoneroTransactionRsigData",
+                    "id": 1
+                }
+            }
+        },
+        "MoneroTransactionAllOutSetAck": {
+            "fields": {
+                "extra": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "tx_prefix_hash": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "rv": {
+                    "type": "MoneroRingCtSig",
+                    "id": 4
+                },
+                "full_message_hash": {
+                    "type": "bytes",
+                    "id": 5
+                }
+            }
+        },
+        "MoneroTransactionSignInputRequest": {
+            "fields": {
+                "src_entr": {
+                    "type": "MoneroTransactionSourceEntry",
+                    "id": 1
+                },
+                "vini": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "vini_hmac": {
+                    "type": "bytes",
+                    "id": 3
+                },
+                "pseudo_out": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "pseudo_out_hmac": {
+                    "type": "bytes",
+                    "id": 5
+                },
+                "pseudo_out_alpha": {
+                    "type": "bytes",
+                    "id": 6
+                },
+                "spend_key": {
+                    "type": "bytes",
+                    "id": 7
+                },
+                "orig_idx": {
+                    "type": "uint32",
+                    "id": 8
+                }
+            }
+        },
+        "MoneroTransactionSignInputAck": {
+            "fields": {
+                "signature": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "pseudo_out": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
+        "MoneroTransactionFinalRequest": {
+            "fields": {}
+        },
+        "MoneroTransactionFinalAck": {
+            "fields": {
+                "cout_key": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "salt": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "rand_mult": {
+                    "type": "bytes",
+                    "id": 3
+                },
+                "tx_enc_keys": {
+                    "type": "bytes",
+                    "id": 4
+                },
+                "opening_key": {
+                    "type": "bytes",
+                    "id": 5
+                }
+            }
+        },
         "RippleGetAddress": {
             "fields": {
                 "address_n": {
@@ -7015,6 +7742,32 @@
                 "CardanoMessageDataRequest": 339,
                 "CardanoMessageDataResponse": 340,
                 "CardanoMessageSignature": 341,
+                "MoneroGetAddress": 540,
+                "MoneroAddress": 541,
+                "MoneroGetWatchKey": 542,
+                "MoneroWatchKey": 543,
+                "MoneroKeyImageExportInitRequest": 530,
+                "MoneroKeyImageExportInitAck": 531,
+                "MoneroKeyImageSyncStepRequest": 532,
+                "MoneroKeyImageSyncStepAck": 533,
+                "MoneroKeyImageSyncFinalRequest": 534,
+                "MoneroKeyImageSyncFinalAck": 535,
+                "MoneroTransactionInitRequest": 501,
+                "MoneroTransactionInitAck": 502,
+                "MoneroTransactionSetInputRequest": 503,
+                "MoneroTransactionSetInputAck": 504,
+                "MoneroTransactionInputViniRequest": 507,
+                "MoneroTransactionInputViniAck": 508,
+                "MoneroTransactionAllInputsSetRequest": 509,
+                "MoneroTransactionAllInputsSetAck": 510,
+                "MoneroTransactionSetOutputRequest": 511,
+                "MoneroTransactionSetOutputAck": 512,
+                "MoneroTransactionAllOutSetRequest": 513,
+                "MoneroTransactionAllOutSetAck": 514,
+                "MoneroTransactionSignInputRequest": 515,
+                "MoneroTransactionSignInputAck": 516,
+                "MoneroTransactionFinalRequest": 517,
+                "MoneroTransactionFinalAck": 518,
                 "RippleGetAddress": 400,
                 "RippleAddress": 401,
                 "RippleSignTx": 402,

@@ -64,6 +64,12 @@ const groups = {
         includeFilter:
             'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
     },
+    monero: {
+        name: 'monero',
+        pattern: 'methods',
+        includeFilter:
+            'moneroGetAddress,moneroGetWatchKey,moneroKeyImageSync,moneroSignTransaction',
+    },
     nem: {
         name: 'nem',
         pattern: 'methods',

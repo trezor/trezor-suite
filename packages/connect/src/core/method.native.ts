@@ -7,6 +7,7 @@ const moduleMethods = {
     cardano: require('../api/cardano/api'),
     eos: require('../api/eos/api'),
     ethereum: require('../api/ethereum/api'),
+    monero: require('../api/monero/api'),
     nem: require('../api/nem/api'),
     ripple: require('../api/ripple/api'),
     solana: require('../api/solana/api'),
