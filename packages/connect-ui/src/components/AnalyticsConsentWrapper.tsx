@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
-import { DataAnalytics, animations } from '@trezor/components';
+import { animations } from '@trezor/components';
 import { analytics } from '@trezor/connect-analytics';
+import { DataAnalytics } from '@trezor/product-components';
 
 const Wrapper = styled.div`
     animation: ${animations.FADE_IN} 0.15s ease-in-out;
