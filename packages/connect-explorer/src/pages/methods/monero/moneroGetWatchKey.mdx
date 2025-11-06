@@ -1,0 +1,88 @@
+import { Bundle } from '@trezor/connect/src/types';
+import { MoneroGetWatchKey } from '@trezor/connect/src/types/api/monero';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+import getWatchKey from '../../../data/methods/monero/getWatchKey';
+
+<ApiPlayground
+    options={[
+        { title: 'Export watch-only credentials', legacyConfig: getWatchKey[0] },
+        { title: 'Advanced schema', method: 'moneroGetWatchKey', schema: MoneroGetWatchKey },
+        {
+            title: 'Advanced bundle',
+            method: 'moneroGetWatchKey',
+            schema: Bundle(MoneroGetWatchKey),
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: "minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`). [read more](/details/path)",
+    networkType:
+        'Monero network type: `0` = MAINNET (default), `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN',
+};
+
+## Monero Get Watch Key
+
+Export Monero watch-only credentials (private view key and address) for a given BIP44 path.
+The private view key allows external wallet software to scan the Monero blockchain for incoming transactions and calculate balances without exposing spending keys.
+
+User is presented with a description of the requested key and asked to confirm the export on Trezor.
+
+```javascript
+const result = await TrezorConnect.moneroGetWatchKey(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### MoneroGetWatchKey
+
+<ParamsTable schema={MoneroGetWatchKey} descriptions={paramDescriptions} />
+
+### Example
+
+Export watch-only credentials for first Monero account on mainnet:
+
+```javascript
+TrezorConnect.moneroGetWatchKey({
+    path: "m/44'/128'/0'",
+});
+```
+
+Export watch-only credentials for testnet:
+
+```javascript
+TrezorConnect.moneroGetWatchKey({
+    path: "m/44'/128'/0'",
+    networkType: 1, // TESTNET
+});
+```
+
+### Result
+
+[MoneroWatchKey type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        watch_key: string,   // Private view key (hex-encoded)
+        address: string,     // Monero address (human-readable string)
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
