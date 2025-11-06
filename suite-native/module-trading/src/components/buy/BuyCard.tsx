@@ -23,12 +23,20 @@ const BUY_CARD_TEST_ID = '@trading/buyCard';
 
 const buySectionStyle = prepareNativeStyle<{ bottomBorder: boolean }>(
     ({ borders, colors, spacings }, { bottomBorder }) => ({
-        borderBottomWidth: bottomBorder ? borders.widths.small : 0,
+        borderBottomWidth: 0,
         borderBottomColor: colors.backgroundSurfaceElevation0,
         paddingHorizontal: spacings.sp12,
         paddingTop: spacings.sp16,
         paddingBottom: spacings.sp12,
         gap: spacings.sp8,
+        extend: [
+            {
+                condition: bottomBorder,
+                style: {
+                    borderBottomWidth: borders.widths.small,
+                },
+            },
+        ],
     }),
 );
 
