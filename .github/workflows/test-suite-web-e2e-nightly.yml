@@ -1,7 +1,8 @@
 name: "[Test] Nightly Suite Web e2e tests"
 # Nightly scheduled check on develop branch
 # Builds/deploys the web app to dev.suite.sldev.cz/suite-web/develop/web
-# Runs full e2e test suite for Suite Web
+# Runs full e2e test suite for Suite Web with T3T1 and T3W1 emulators
+# Runs full e2e test suite for Suite Web against FW built nightly from main branch with T3T1 and T3W1 emulators
 # Runs database migration tests
 
 permissions:
@@ -59,4 +60,107 @@ jobs:
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           currents-tags: "nightly"
+          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
+  run-e2e-suite-web-tests-t3w1:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+
+      - name: Run Playwright E2E Tests
+        uses: ./.github/actions/run-e2e-tests
+        env:
+          EMULATOR_MODEL: T3W1
+        with:
+          project: "web"
+          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
+          test-group: ${{ matrix.TEST_GROUP }}
+          additional-grep-invert: "@specificModel"
+          fail-fast: false
+          currents-project-id: "Og0NOQ"
+          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-tags: "T3W1"
+          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+  
+  run-e2e-suite-web-tests-fw-canary:
+    if: github.repository == 'trezor/trezor-suite' && ${{ always() && !cancelled() }} # make sure this job runs even if others fail
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+      - run-e2e-suite-web-tests # This ensures that the main web tests complete before running the firmware canary tests
+      - run-e2e-suite-web-tests-t3w1
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+
+      - name: Run Playwright E2E Tests
+        uses: ./.github/actions/run-e2e-tests
+        env:
+          CANARY_FIRMWARE: "true"
+        with:
+          project: "web"
+          base-url: "https://dev.suite.sldev.cz/suite-web/fw-canary-788b960e2c6b5112230ded6129d69538/web/"
+          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
+          test-group: ${{ matrix.TEST_GROUP }}
+          fail-fast: false
+          additional-grep-invert: "@specificFirmware|@group=trading"
+          currents-project-id: "Og0NOQ"
+          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-tags: "fw-canary"
+          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
+  run-e2e-suite-web-tests-fw-canary-t3w1:
+    if: github.repository == 'trezor/trezor-suite' && ${{ always() && !cancelled() }} # make sure this job runs even if others fail
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+      - run-e2e-suite-web-tests # This ensures that the main web tests complete before running the firmware canary tests
+      - run-e2e-suite-web-tests-t3w1
+    strategy:
+      fail-fast: false
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+
+      - name: Run Playwright E2E Tests
+        uses: ./.github/actions/run-e2e-tests
+        env:
+          EMULATOR_MODEL: T3W1
+          CANARY_FIRMWARE: "true"
+        with:
+          project: "web"
+          base-url: "https://dev.suite.sldev.cz/suite-web/fw-canary-788b960e2c6b5112230ded6129d69538/web/"
+          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
+          test-group: ${{ matrix.TEST_GROUP }}
+          fail-fast: false
+          additional-grep-invert: "@specificFirmware|@group=trading"
+          currents-project-id: "Og0NOQ"
+          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-tags: "T3W1,fw-canary"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
