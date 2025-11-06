@@ -14,7 +14,7 @@ export const useReloadTimer = ({
     isEnabled = true,
     refreshLimitSeconds = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
 }: UseReloadTimerProps) => {
-    const timer = useTimer();
+    const timer = useTimer(refreshLimitSeconds);
     const {
         timeSpent: { seconds },
         resetCount,
