@@ -9,7 +9,11 @@ import type {
     StakeFormState,
 } from '@suite-common/wallet-types';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
-import { findAccountsByAddress, getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
+import {
+    findAccountsByAddress,
+    getEvmTransactionTextSignature,
+    isEvmApprovalTx,
+} from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -88,11 +92,13 @@ export const TransactionReviewOutputList = ({
         lastButtonRequestCode,
     });
 
-    const { trading } = precomposedForm;
+    const { trading: isTrading } = precomposedForm;
 
     const isFirstStep = buttonRequestsCount <= 1;
 
     const isStaking = stakeType;
+
+    const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
 
     const isInternalTransfer =
         isFirstOutputAddress &&
@@ -116,7 +122,8 @@ export const TransactionReviewOutputList = ({
         isFirstOutputAddress &&
         isFirstStep &&
         !isStaking &&
-        !trading &&
+        !isApprovalTx &&
+        !isTrading &&
         !isInternalTransfer &&
         !signedTx
     ) {
@@ -160,7 +167,7 @@ export const TransactionReviewOutputList = ({
                                 })}
                                 account={account}
                                 isRbf={isRbfAction}
-                                isTrading={!!trading}
+                                isTrading={!!isTrading}
                                 stakeType={stakeType}
                                 evmTxType={getEvmTransactionTextSignature(
                                     precomposedForm.transactionData,

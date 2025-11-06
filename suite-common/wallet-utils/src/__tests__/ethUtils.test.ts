@@ -2,6 +2,7 @@ import {
     decimalToHex,
     getEvmApprovalTxData,
     getEvmTransactionTextSignature,
+    getEvmTransferTxData,
     hexToDecimal,
     padLeftEven,
     sanitizeHex,
@@ -59,7 +60,7 @@ describe('eth utils', () => {
             const result = getEvmApprovalTxData(approveData);
 
             expect(result).toEqual({
-                type: 'approval',
+                type: 'approve',
                 spender: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
                 amount: '1000000000000000000',
             });
@@ -86,7 +87,7 @@ describe('eth utils', () => {
                 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'; // max uint256
 
             const result = getEvmApprovalTxData(maxApprovalData);
-            expect(result?.type).toBe('approval');
+            expect(result?.type).toBe('approve');
         });
 
         it('should handle data without 0x prefix', () => {
@@ -97,7 +98,7 @@ describe('eth utils', () => {
 
             const result = getEvmApprovalTxData(dataWithoutPrefix);
 
-            expect(result?.type).toEqual('approval');
+            expect(result?.type).toEqual('approve');
         });
 
         it('should handle uppercase hex data', () => {
@@ -108,17 +109,46 @@ describe('eth utils', () => {
 
             expect(getEvmApprovalTxData(uppercaseData)?.type).toBe('revoke');
         });
+
+        it('returns null for invalid hex input', () => {
+            expect(getEvmApprovalTxData('0xZZZ')).toBeNull();
+            expect(getEvmApprovalTxData('ZZZ')).toBeNull();
+        });
+
+        it('returns null for data shorter than selector', () => {
+            expect(getEvmApprovalTxData('0x09')).toBeNull();
+            expect(getEvmApprovalTxData('09')).toBeNull();
+        });
+
+        it('returns null for selector present but parameters too short', () => {
+            const tooShort = '0x095ea7b3' + '00'.repeat(10); // way less than 2 * 32 bytes
+            expect(getEvmApprovalTxData(tooShort)).toBeNull();
+        });
+
+        it('returns null when decoded parameter types are invalid (garbage after selector)', () => {
+            // not enough bytes to form valid address+uint256
+            const invalidParams = '0x095ea7b3' + 'ff'.repeat(31);
+            expect(getEvmApprovalTxData(invalidParams)).toBeNull();
+        });
+
+        it('handles uppercase without 0x prefix', () => {
+            const data =
+                '095EA7B3' +
+                '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
+                '0000000000000000000000000000000000000000000000000DE0B6B3A7640000';
+            expect(getEvmApprovalTxData(data)?.type).toBe('approve');
+        });
     });
 
     describe('getEvmTransactionTextSignature', () => {
-        it('should return "transfer" when data is undefined or empty string', () => {
-            expect(getEvmTransactionTextSignature(undefined)).toBe('transfer');
-            expect(getEvmTransactionTextSignature('')).toBe('transfer');
+        it('should return "" when data is undefined or empty string', () => {
+            expect(getEvmTransactionTextSignature(undefined)).toBe('');
+            expect(getEvmTransactionTextSignature('')).toBe('');
         });
 
         it('should return "transfer" for non-approval transaction data', () => {
             const randomData = '0xa9059cbb000000000000000000000000742d35cc6634c0532925a3b8d40e5';
-            expect(getEvmTransactionTextSignature(randomData)).toBe('transfer');
+            expect(getEvmTransactionTextSignature(randomData)).toBe('unknown');
         });
 
         it('should return "approval" for approve transaction with non-zero amount', () => {
@@ -127,7 +157,7 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000'; // amount (32 bytes) - 1 ETH in wei
 
-            expect(getEvmTransactionTextSignature(approveData)).toBe('approval');
+            expect(getEvmTransactionTextSignature(approveData)).toBe('approve');
         });
 
         it('should return "revoke" for approve transaction with zero amount', () => {
@@ -145,17 +175,17 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
                 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'; // max uint256
 
-            expect(getEvmTransactionTextSignature(maxApprovalData)).toBe('approval');
+            expect(getEvmTransactionTextSignature(maxApprovalData)).toBe('approve');
         });
 
-        it('should return "transfer" for data that starts with approve selector but is too short', () => {
+        it('should return "unknown" for data that starts with approve selector but is too short', () => {
             const shortData = '0x095ea7b3';
-            expect(getEvmTransactionTextSignature(shortData)).toBe('transfer');
+            expect(getEvmTransactionTextSignature(shortData)).toBe('unknown');
         });
 
-        it('should return "transfer" for data that starts with approve selector but has invalid parameters', () => {
+        it('should return "unknown" for data that starts with approve selector but has invalid parameters', () => {
             const invalidData = '0x095ea7b3' + '000000000000000000000000742d35cc';
-            expect(getEvmTransactionTextSignature(invalidData)).toBe('transfer');
+            expect(getEvmTransactionTextSignature(invalidData)).toBe('unknown');
         });
 
         it('should handle data without 0x prefix', () => {
@@ -164,7 +194,7 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
-            expect(getEvmTransactionTextSignature(dataWithoutPrefix)).toBe('approval');
+            expect(getEvmTransactionTextSignature(dataWithoutPrefix)).toBe('approve');
         });
 
         it('should handle uppercase hex data', () => {
@@ -176,13 +206,104 @@ describe('eth utils', () => {
             expect(getEvmTransactionTextSignature(uppercaseData)).toBe('revoke');
         });
 
-        it('should return "transfer" for similar but different function selectors', () => {
+        it('should return "unknown" text signature for unknown method call', () => {
             const similarData =
                 '0x095ea7b4' +
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
-            expect(getEvmTransactionTextSignature(similarData)).toBe('transfer');
+            expect(getEvmTransactionTextSignature(similarData)).toBe('unknown');
+        });
+
+        it('returns "transfer" for valid transfer call', () => {
+            const data =
+                '0xa9059cbb' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
+                '00000000000000000000000000000000000000000000000000000000000003e8';
+            expect(getEvmTransactionTextSignature(data)).toBe('transfer');
+        });
+
+        it('returns "unknown" for selector-only transfer (too short)', () => {
+            expect(getEvmTransactionTextSignature('0xa9059cbb')).toBe('unknown');
+        });
+
+        it('returns "unknown" for "0x" input (not empty but no known selector)', () => {
+            expect(getEvmTransactionTextSignature('0x')).toBe('unknown');
+        });
+
+        it('returns "unknown" for random data not matching known selectors', () => {
+            const random =
+                '0x12345678' +
+                '0000000000000000000000001111111111111111111111111111111111111111' +
+                '0000000000000000000000000000000000000000000000000000000000000001';
+            expect(getEvmTransactionTextSignature(random)).toBe('unknown');
+        });
+
+        it('handles uppercase without 0x prefix for transfer', () => {
+            const upperNoPrefix =
+                'A9059CBB' +
+                '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
+                '00000000000000000000000000000000000000000000000000000000000003E8';
+            expect(getEvmTransactionTextSignature(upperNoPrefix)).toBe('transfer');
+        });
+    });
+
+    describe('getEvmTransferTxData', () => {
+        it('returns transfer for valid ERC-20 transfer', () => {
+            const data =
+                '0xa9059cbb' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // to
+                '00000000000000000000000000000000000000000000000000000000000003e8'; // 1000
+            const res = getEvmTransferTxData(data);
+            expect(res).toEqual({
+                type: 'transfer',
+                recipient: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
+                amount: '1000',
+            });
+        });
+
+        it('handles zero-amount transfer', () => {
+            const data =
+                '0xa9059cbb' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
+                '0000000000000000000000000000000000000000000000000000000000000000';
+            const res = getEvmTransferTxData(data);
+            expect(res).toEqual({
+                type: 'transfer',
+                recipient: '0x742d35cc6634c0532925a3b8d40e592e43a73654',
+                amount: '0',
+            });
+        });
+
+        it('returns null for data without 0x prefix (still valid)', () => {
+            const noPrefix =
+                'a9059cbb' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
+                '00000000000000000000000000000000000000000000000000000000000003e8';
+            const res = getEvmTransferTxData(noPrefix);
+            expect(res?.type).toBe('transfer');
+        });
+
+        it('handles uppercase hex (with 0X prefix)', () => {
+            const upper =
+                '0XA9059CBB' +
+                '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
+                '00000000000000000000000000000000000000000000000000000000000003E8';
+            expect(getEvmTransferTxData(upper)?.type).toBe('transfer');
+        });
+
+        it('returns null for selector only (too short)', () => {
+            expect(getEvmTransferTxData('0xa9059cbb')).toBeNull();
+        });
+
+        it('returns null for invalid hex payload', () => {
+            expect(
+                getEvmTransferTxData(
+                    '0xa9059cbb' +
+                        '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
+                        'GGGG000000000000000000000000000000000000000000000000000000000000',
+                ),
+            ).toBeNull();
         });
     });
 });
