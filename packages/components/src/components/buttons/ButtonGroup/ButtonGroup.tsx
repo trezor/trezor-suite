@@ -13,7 +13,7 @@ import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 import { ButtonProps } from '../Button/Button';
 import { IconButtonProps } from '../IconButton/IconButton';
 import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
-import { addAlphaToHex, mapSizeToBorderRadius } from '../utils';
+import { mapSizeToBorderRadius } from '../utils';
 
 export const allowedButtonGroupFrameProps = [
     'margin',
@@ -28,11 +28,12 @@ export type AllowedButtonGroupFrameProps = Pick<
 >;
 
 const Container = styled.div<TransientProps<AllowedButtonGroupFrameProps> & { $size: ButtonSize }>`
-    position: relative;
     display: flex;
+    gap: 2px;
+    align-items: stretch;
 
     :is(button, a) {
-        border-radius: 0;
+        border-radius: 4px;
 
         &:active {
             transform: none !important;
@@ -49,22 +50,6 @@ const Container = styled.div<TransientProps<AllowedButtonGroupFrameProps> & { $s
     > :last-child :is(button, a) {
         border-top-right-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
         border-bottom-right-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
-    }
-
-    > :is(button, a):not(:last-child),
-    :not(:last-child) :is(button, a) {
-        position: relative;
-
-        &::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: ${({ theme }) => addAlphaToHex(theme.baseFillElementNeutralDark, 0.09)};
-            pointer-events: none;
-        }
     }
 
     ${withFrameProps}
