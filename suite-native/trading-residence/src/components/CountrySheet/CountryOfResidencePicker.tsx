@@ -55,6 +55,7 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                 title={translate('tradingResidence.locationSettings.countryOfResidence')}
                 onPress={showSheet}
                 testID={testID}
+                noBottomBorder
             >
                 {selectedValue ? (
                     <HStack>

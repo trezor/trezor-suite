@@ -1,10 +1,16 @@
 import { useSelector } from 'react-redux';
 
 import { TradingType } from '@suite-common/trading';
-import { CountryOfResidencePicker } from '@suite-native/trading-residence';
+import {
+    CountryOfResidencePicker,
+    type CountryOfResidencePickerProps,
+} from '@suite-native/trading-residence';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 
-export type TradingCountryOfResidencePickerProps = {
+export type TradingCountryOfResidencePickerProps = Omit<
+    CountryOfResidencePickerProps,
+    'context'
+> & {
     context: Exclude<TradingType, 'exchange'>;
     testID: string;
 };
