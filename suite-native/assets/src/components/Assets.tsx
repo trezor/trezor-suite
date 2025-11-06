@@ -71,8 +71,13 @@ export const Assets = () => {
                         entering={isLoading ? FadeInDown : undefined}
                         layout={LinearTransition}
                         key={symbol}
+                        testID={`@assets/asset-item/${symbol}`}
                     >
-                        <AssetItem cryptoCurrencySymbol={symbol} onPress={setSelectedAssetSymbol} />
+                        <AssetItem
+                            cryptoCurrencySymbol={symbol}
+                            onPress={setSelectedAssetSymbol}
+                            testID={`@assets/asset-item/${symbol}`}
+                        />
                     </Animated.View>
                 ))}
                 {isLoading && <DiscoveryAssetsLoader isListEmpty={deviceNetworks.length < 1} />}

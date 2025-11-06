@@ -1,12 +1,17 @@
+import { expect as detoxExpect } from 'detox';
+
 import { conditionalDescribe } from '@suite-common/test-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config/src/networksConfig';
 
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDevicePrompt } from '../pageObjects/devicePromptActions';
-import { onHome } from '../pageObjects/homeActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { openApp, prepareTrezorEmulator } from '../support/setup';
-import { getModelFromEnv, waitForVisible } from '../support/utils';
+import { getModelFromEnv, scrollUntilVisible, waitForVisible,  } from '../support/utils';
+
+const coins: NetworkSymbol[] = ['btc', 'eth', 'ada', 'etc', 'xrp', 'ltc', 'bch', 'doge', 'zec'];
 
 conditionalDescribe(
     device.getPlatform() === 'android',
@@ -26,10 +31,15 @@ conditionalDescribe(
             }
 
             await onCoinEnabling.waitForInitScreen();
-            await onCoinEnabling.handleCoinEnablingInit(['btc', 'eth']);
+            await onCoinEnabling.handleCoinEnablingInit(coins);
             await waitForVisible(by.text('Connected'));
-            await onHome.scrollScreenToBottom();
-            await waitForVisible(by.text('Bitcoin'));
+            for (const coin of coins) {
+                const networkName = networks[coin].name;
+                const coinTextElement = element(by.id(`@assets/asset-item/${coin}/title`));
+                await scrollUntilVisible(coinTextElement);
+                await detoxExpect(coinTextElement).toBeVisible();
+                await detoxExpect(coinTextElement).toHaveText(networkName);
+            }
         });
     },
 );
