@@ -36,4 +36,5 @@ export const NETWORK_ICONS: Record<NetworkSymbol | LegacyNetworkSymbol, string> 
     nmc: require('../../images/networks/nmc.svg'),
     vtc: require('../../images/networks/vtc.svg'),
     btg: require('../../images/networks/btg.svg'),
+    xmr: require('../../images/networks/xmr.svg'),
 };
