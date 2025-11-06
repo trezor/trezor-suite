@@ -14,6 +14,7 @@
 @evolu/common
 @evolu/react-native
 @evolu/web
+@noble/curves
 @sentry/browser
 @sentry/core
 @sentry/electron
