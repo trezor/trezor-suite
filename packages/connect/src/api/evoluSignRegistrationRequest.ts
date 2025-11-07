@@ -4,7 +4,10 @@ import { Assert } from '@trezor/schema-utils';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 
-export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.EvoluGetNode> {
+export default class EvoluSignRegistrationRequest extends AbstractMethod<
+    'evoluSignRegistrationRequest',
+    PROTO.EvoluSignRegistrationRequest
+> {
     hasBundle?: boolean;
 
     init() {
@@ -13,20 +16,26 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
 
         const { payload } = this;
 
-        Assert(PROTO.EvoluGetNode, payload);
+        Assert(PROTO.EvoluSignRegistrationRequest, payload);
 
         this.params = {
+            challenge_from_server: payload.challenge_from_server,
+            size_to_acquire: payload.size_to_acquire,
             proof_of_delegated_identity: payload.proof_of_delegated_identity,
         };
     }
 
     get info() {
-        return 'Evolu get node';
+        return 'Evolu sign registration request';
     }
 
     async run() {
         const cmd = this.device.getCommands();
-        const response = await cmd.typedCall('EvoluGetNode', 'EvoluNode', this.params);
+        const response = await cmd.typedCall(
+            'EvoluSignRegistrationRequest',
+            'EvoluRegistrationRequest',
+            this.params,
+        );
 
         return response.message;
     }

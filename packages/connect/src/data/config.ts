@@ -335,7 +335,11 @@ export const config: Config = {
         },
         {
             capabilities: ['evolu'],
-            methods: ['evoluGetNode'],
+            methods: [
+                'evoluGetNode',
+                'evoluSignRegistrationRequest',
+                'evoluGetDelegatedIdentityKey',
+            ],
             min: {
                 T1B1: '0',
                 T2T1: '2.9.2',

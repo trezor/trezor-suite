@@ -4,7 +4,10 @@ import { Assert } from '@trezor/schema-utils';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 
-export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.EvoluGetNode> {
+export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
+    'evoluGetDelegatedIdentityKey',
+    PROTO.EvoluGetDelegatedIdentityKey
+> {
     hasBundle?: boolean;
 
     init() {
@@ -13,20 +16,25 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
 
         const { payload } = this;
 
-        Assert(PROTO.EvoluGetNode, payload);
+        Assert(PROTO.EvoluGetDelegatedIdentityKey, payload);
 
         this.params = {
-            proof_of_delegated_identity: payload.proof_of_delegated_identity,
+            thp_credential: payload.thp_credential,
+            host_static_public_key: payload.host_static_public_key,
         };
     }
 
     get info() {
-        return 'Evolu get node';
+        return 'Evolu get delegated identity key';
     }
 
     async run() {
         const cmd = this.device.getCommands();
-        const response = await cmd.typedCall('EvoluGetNode', 'EvoluNode', this.params);
+        const response = await cmd.typedCall(
+            'EvoluGetDelegatedIdentityKey',
+            'EvoluDelegatedIdentityKey',
+            this.params,
+        );
 
         return response.message;
     }
