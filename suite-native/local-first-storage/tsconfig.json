@@ -8,6 +8,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        { "path": "../alerts" }
+        { "path": "../alerts" },
+        { "path": "../intl" }
     ]
 }
