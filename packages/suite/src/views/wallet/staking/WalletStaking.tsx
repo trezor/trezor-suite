@@ -3,16 +3,13 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-import { CardanoStakingDashboard } from './components/CardanoStakingDashboard';
 import { NewCardanoStakingDashboard } from './components/CardanoStakingDashboard/NewCardanoStakingDashboard';
 import { EthStakingDashboard } from './components/EthStakingDashboard/components/EthStakingDashboard';
 import { SolStakingDashboard } from './components/SolStakingDashboard/SolStakingDashboard';
 
 export const WalletStaking = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} />;
@@ -21,11 +18,7 @@ export const WalletStaking = () => {
     if (hasNetworkFeatures(selectedAccount.account, 'staking')) {
         switch (selectedAccount.account.networkType) {
             case 'cardano':
-                return isDebugModeActive ? (
-                    <NewCardanoStakingDashboard selectedAccount={selectedAccount} />
-                ) : (
-                    <CardanoStakingDashboard selectedAccount={selectedAccount} />
-                );
+                return <NewCardanoStakingDashboard selectedAccount={selectedAccount} />;
             case 'ethereum':
                 return <EthStakingDashboard selectedAccount={selectedAccount} />;
             case 'solana':
