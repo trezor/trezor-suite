@@ -261,7 +261,7 @@ export const AssetsView = () => {
                     )}
                 </>
             ) : (
-                <Card paddingType="none" overflow="hidden">
+                <Card paddingType="none">
                     <AssetTable
                         assetsData={assetsData}
                         discoveryInProgress={discoveryInProgress}
@@ -269,6 +269,7 @@ export const AssetsView = () => {
                         baseCurrencyCode={baseCurrencyCode}
                         currentFiatRates={currentFiatRates}
                     />
+
                     {isError && (
                         <InfoMessage>
                             <Icon

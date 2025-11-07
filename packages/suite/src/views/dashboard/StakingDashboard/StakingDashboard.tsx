@@ -173,7 +173,7 @@ export const StakingDashboard = () => {
             defaultCollapsed={collapsed}
             onCollapseChange={onCollapseChange}
         >
-            <Card paddingType="none" overflow="hidden">
+            <Card paddingType="none">
                 <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
                     <Table.Header>
                         <Table.Row>

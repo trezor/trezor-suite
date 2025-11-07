@@ -159,7 +159,7 @@ export const UsedAddresses = ({
     const actionHideVisible = limit > DEFAULT_LIMIT;
 
     return (
-        <Card overflow="hidden" paddingType="none">
+        <Card paddingType="none">
             <Column gap={spacings.md}>
                 <Table margin={{ top: spacings.xs, bottom: spacings.xs }}>
                     <Table.Header>
