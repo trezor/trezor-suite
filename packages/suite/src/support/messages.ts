@@ -5344,6 +5344,15 @@ export default defineMessages({
         defaultMessage:
             'Send and receive transactions on the {networkNames} {count, plural, one {network} other {networks}}.',
     },
+    TR_EXPERIMENTAL_SUITE_SYNC_TITLE: {
+        id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
+        defaultMessage: 'Suite Sync',
+    },
+    TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION',
+        defaultMessage:
+            'Sync your labels across multiple devices using local-first encrypted storage.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',
