@@ -6,6 +6,7 @@ import { useLocalFirstStorage } from '@suite-common/local-first-storage';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Card, CardWithIconLayout, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useLocalFirstStorageAlerts } from '@suite-native/local-first-storage';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const toggleCardStyle = prepareNativeStyle(utils => ({
@@ -17,16 +18,15 @@ const toggleCardStyle = prepareNativeStyle(utils => ({
 export const ToggleLabelingCard = () => {
     const { applyStyle } = useNativeStyles();
 
+    const { showLocalFirstStorageDisableConfirmationAlert } = useLocalFirstStorageAlerts();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const {
-        isLocalFirstStorageEnabled,
-        enableLocalFirstStorageIfNeeded,
-        disableLocalFirstStorageIfNeeded,
-    } = useLocalFirstStorage({ device: selectedDevice });
+    const { isLocalFirstStorageEnabled, enableLocalFirstStorageIfNeeded } = useLocalFirstStorage({
+        device: selectedDevice,
+    });
 
     const toggleLocalFirstStorage = () =>
         isLocalFirstStorageEnabled
-            ? disableLocalFirstStorageIfNeeded()
+            ? showLocalFirstStorageDisableConfirmationAlert()
             : enableLocalFirstStorageIfNeeded(evoluReactNativeDeps);
 
     return (

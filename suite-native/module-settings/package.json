@@ -35,6 +35,7 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
+        "@suite-native/local-first-storage": "workspace:*",
         "@suite-native/module-connect-popup": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
