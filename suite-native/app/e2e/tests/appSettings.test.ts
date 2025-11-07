@@ -16,6 +16,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
+        await onHome.scrollScreenToBottom();
     });
 
     it('Localization - Currency', async () => {

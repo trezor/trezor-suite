@@ -29,10 +29,6 @@ export class TradingActions {
         return element(by.id(this.getTestId(suffix)));
     }
 
-    async scrollScreenToBottom() {
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
-    }
-
     async closeBottomSheet() {
         await element(by.id('@bottom-sheet/header/close-button')).tap();
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
