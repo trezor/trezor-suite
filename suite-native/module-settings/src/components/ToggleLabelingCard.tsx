@@ -1,7 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { labelingActions } from '@suite-common/local-first-storage';
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage/src/labeling/labelingSelectors';
+import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
+
+import { useLocalFirstStorage } from '@suite-common/local-first-storage';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Card, CardWithIconLayout, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -13,18 +15,19 @@ const toggleCardStyle = prepareNativeStyle(utils => ({
 }));
 
 export const ToggleLabelingCard = () => {
-    const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
 
-    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
+    const selectedDevice = useSelector(selectSelectedDevice);
+    const {
+        isLocalFirstStorageEnabled,
+        enableLocalFirstStorageIfNeeded,
+        disableLocalFirstStorageIfNeeded,
+    } = useLocalFirstStorage({ device: selectedDevice });
 
-    const toggleLocalFirstStorage = () => {
-        dispatch(
-            labelingActions.updateLocalFirstStorageEnabled({
-                isEnabled: !isLocalFirstStorageEnabled,
-            }),
-        );
-    };
+    const toggleLocalFirstStorage = () =>
+        isLocalFirstStorageEnabled
+            ? disableLocalFirstStorageIfNeeded()
+            : enableLocalFirstStorageIfNeeded(evoluReactNativeDeps);
 
     return (
         <CardWithIconLayout

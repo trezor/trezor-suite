@@ -34,4 +34,4 @@ export {
 } from './labeling/labelingReducer';
 export type { LabelingState } from './labeling/labelingReducer';
 export { processMetadataMessageThunk } from './labeling/processMetadataMessageThunk';
-export { useLocalFirstStorage } from './labeling/hooks/useLabeling';
+export { useLocalFirstStorage } from './labeling/hooks/useLocalFirstStorage';

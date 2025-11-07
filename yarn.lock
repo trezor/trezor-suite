@@ -11935,8 +11935,12 @@ __metadata:
   dependencies:
     "@evolu/react-native": "npm:^12.0.1-preview.9"
     "@suite-common/local-first-storage": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/intl": "workspace:*"
     expo: "npm:~54.0.20"
     expo-sqlite: "npm:^16.0.8"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -12492,6 +12496,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.9.1"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/local-first-storage": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

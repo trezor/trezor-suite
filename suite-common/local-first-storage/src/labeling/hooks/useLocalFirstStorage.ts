@@ -13,13 +13,13 @@ import {
     selectIsLocalFirstStorageEnabled,
 } from '../labelingSelectors';
 
-export type UseLabelingCombinedParams = {
+export type UseLocalStorageParams = {
     // This needs to be passed, as labeling can be attached to remembered wallets
     // and different devices can have different states (FW versions)
     device: TrezorDevice | undefined;
 };
 
-export const useLocalFirstStorage = ({ device }: UseLabelingCombinedParams) => {
+export const useLocalFirstStorage = ({ device }: UseLocalStorageParams) => {
     const dispatch = useDispatch();
 
     const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
@@ -46,7 +46,7 @@ export const useLocalFirstStorage = ({ device }: UseLabelingCombinedParams) => {
     const enableLocalFirstStorageIfNeeded = (deps: EvoluDeps) => {
         if (!isLocalFirstStorageEnabled) {
             dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
-            dispatch(initLocalFirstStorageThunkFactory(deps));
+            dispatch(initLocalFirstStorageThunkFactory(deps)());
         }
     };
 
