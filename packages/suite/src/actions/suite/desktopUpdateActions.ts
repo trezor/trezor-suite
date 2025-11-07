@@ -126,10 +126,7 @@ export const installUpdate =
         }
     };
 
-export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) => {
-    // TODO: Properly display error
-    console.error('auto-updater', err);
-
+export const error = () => (dispatch: Dispatch, getState: GetState) => {
     const { state, latest, allowPrerelease } = getState().desktopUpdate;
 
     // Ignore displaying errors while checking

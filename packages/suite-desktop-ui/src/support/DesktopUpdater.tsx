@@ -51,7 +51,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         desktopApi.on('update/not-available', params => dispatch(notAvailable(params)));
         desktopApi.on('update/downloaded', params => dispatch(ready(params)));
         desktopApi.on('update/downloading', params => dispatch(downloading(params)));
-        desktopApi.on('update/error', params => dispatch(error(params)));
+        desktopApi.on('update/error', () => dispatch(error()));
 
         // Initial check for updates
         desktopApi.checkForUpdates({ isManual: false });

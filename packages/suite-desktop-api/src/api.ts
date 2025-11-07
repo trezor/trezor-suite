@@ -53,7 +53,7 @@ export interface RendererChannels {
     'update/checking': void;
     'update/available': UpdateInfo;
     'update/not-available': UpdateInfo;
-    'update/error': Error;
+    'update/error': void;
     'update/downloading': UpdateProgress;
     'update/downloaded': UpdateInfo;
     'update/allow-prerelease': boolean;
