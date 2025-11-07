@@ -4,6 +4,7 @@ import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
+import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
 // import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
@@ -94,7 +95,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.setSendCryptoAmount('10');
             await tradingExchangeActions.waitForQuotesToLoad();
 
-            await tradingExchangeActions.scrollScreenToBottom();
+            await onHome.scrollScreenToBottom();
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 

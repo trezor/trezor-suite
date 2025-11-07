@@ -17,8 +17,12 @@ class HomeActions {
         await waitForElementByIdToBeVisible('@home/portfolio/graph');
     }
 
-    async tapSyncCoinsButton() {
+    async scrollScreenToBottom() {
         await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
+    }
+
+    async tapSyncCoinsButton() {
+        await this.scrollScreenToBottom();
         await element(by.id('@home/portfolio/sync-coins-button')).tap();
 
         await detoxExpect(element(by.id('@screen/SelectNetwork'))).toBeVisible();
