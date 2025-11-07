@@ -5,7 +5,7 @@ import {
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import { Account } from '@suite-common/wallet-types';
+import { Account, StakeType } from '@suite-common/wallet-types';
 import { Column, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -19,6 +19,7 @@ type UseProgressLabelsData = {
     isStakePending: boolean;
     selectedAccount?: Account;
     solStakingAccountStatus?: string | null;
+    pendingTxStakeType?: StakeType;
 };
 
 export const useProgressLabelsData = ({
@@ -28,7 +29,9 @@ export const useProgressLabelsData = ({
     isStakePending,
     selectedAccount,
     solStakingAccountStatus,
+    pendingTxStakeType,
 }: UseProgressLabelsData) => {
+    const isUnstake = pendingTxStakeType === 'unstake';
     const ethereumProgressLabelsData: ProgressLabelData[] = useMemo(
         () => [
             {
@@ -176,7 +179,11 @@ export const useProgressLabelsData = ({
                 })(),
                 children: (
                     <Column>
-                        <Translation id="TR_STAKE_ACTIVATION_PERIOD" />
+                        {isUnstake ? (
+                            <Translation id="TR_STAKE_DEACTIVATION_PERIOD" />
+                        ) : (
+                            <Translation id="TR_STAKE_ACTIVATION_PERIOD" />
+                        )}
 
                         <Paragraph typographyStyle="label" variant="tertiary">
                             <Translation
@@ -214,7 +221,7 @@ export const useProgressLabelsData = ({
                 ),
             },
         ],
-        [isStakeConfirming, isStakePending],
+        [isStakeConfirming, isStakePending, isUnstake],
     );
 
     switch (selectedAccount?.networkType) {

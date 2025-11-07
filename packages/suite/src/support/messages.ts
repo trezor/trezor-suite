@@ -9503,6 +9503,10 @@ export default defineMessages({
         id: 'TR_STAKE_ACTIVATION_PERIOD',
         defaultMessage: 'Activation period',
     },
+    TR_STAKE_DEACTIVATION_PERIOD: {
+        id: 'TR_STAKE_DEACTIVATION_PERIOD',
+        defaultMessage: 'Deactivation period',
+    },
     TR_STAKE_INSTANTLY: {
         id: 'TR_STAKE_INSTANTLY',
         defaultMessage: 'Instantly',
