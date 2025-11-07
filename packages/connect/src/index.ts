@@ -237,3 +237,5 @@ export default TrezorConnect;
 // allowed only here
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 export * from './exports';
+
+// blabla test change

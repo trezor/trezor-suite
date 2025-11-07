@@ -383,3 +383,5 @@ export type {
     TransactionDetail,
     Utxo,
 } from '@trezor/blockchain-link-types/src/common';
+
+// meaningless change
