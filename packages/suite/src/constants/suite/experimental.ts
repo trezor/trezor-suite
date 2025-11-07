@@ -1,4 +1,5 @@
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { labelingActions } from '@suite-common/local-first-storage';
 import { Route } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';
@@ -16,7 +17,8 @@ export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
     | 'nft-section'
-    | 'experimental-networks';
+    | 'experimental-networks'
+    | 'suite-sync';
 
 export type ExperimentalFeatureConfig = {
     title: ExtendedMessageDescriptor;
@@ -67,6 +69,17 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 networkNames: experimentalNetworkNames.join(', '),
                 count: experimentalNetworks.length,
             },
+        },
+    },
+    'suite-sync': {
+        title: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE' },
+        description: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION' },
+        onToggle: ({ newValue, dispatch }) => {
+            dispatch(
+                labelingActions.updateIsFeatureLocalFirstStorageAvailable({
+                    isShownInSettings: newValue,
+                }),
+            );
         },
     },
 };

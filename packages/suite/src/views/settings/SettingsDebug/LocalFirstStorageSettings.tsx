@@ -18,14 +18,11 @@ import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 export const LocalFirstStorageSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const {
-        isLocalFirstStorageDebugEnabled,
-        toggleIsFeatureLocalFirstStorageAvailable,
-        isFeatureLocalFirstStorageAvailable,
-    } = useLabelingCombined({
-        // In debug, there may not be any device selected and it is in fact irrelevant
-        deviceStaticSessionId: undefined,
-    });
+    const { isLocalFirstStorageDebugEnabled, isFeatureLocalFirstStorageAvailable } =
+        useLabelingCombined({
+            // In debug, there may not be any device selected and it is in fact irrelevant
+            deviceStaticSessionId: undefined,
+        });
 
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
 
@@ -58,18 +55,12 @@ export const LocalFirstStorageSettings = () => {
 
     return (
         <SettingsSection title="Local First Storage">
-            <SectionItem>
-                <TextColumn
-                    title="Local First Storage (Evolu)"
-                    description="This enables Local First Storage (Evolu) for labeling in the application settings. This is an experimental feature."
-                />
-                <ActionColumn>
-                    <Checkbox
-                        isChecked={isFeatureLocalFirstStorageAvailable}
-                        onClick={toggleIsFeatureLocalFirstStorageAvailable}
-                    />
-                </ActionColumn>
-            </SectionItem>
+            {!isFeatureLocalFirstStorageAvailable && (
+                <p>
+                    Enable Local First Storage is disabled. To use Local First Storage (Evolu),
+                    enable Suite Sync experimental feature in the Experimental settings section.
+                </p>
+            )}
             {isFeatureLocalFirstStorageAvailable && (
                 <>
                     <SectionItem>
