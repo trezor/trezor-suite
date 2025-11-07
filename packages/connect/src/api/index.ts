@@ -25,6 +25,8 @@ export { default as changePin } from './changePin';
 export { default as changeWipeCode } from './changeWipeCode';
 export { default as cipherKeyValue } from './cipherKeyValue';
 export { default as evoluGetNode } from './evoluGetNode';
+export { default as evoluSignRegistrationRequest } from './evoluSignRegistrationRequest';
+export { default as evoluGetDelegatedIdentityKey } from './evoluGetDelegatedIdentityKey';
 export { default as composeTransaction } from './composeTransaction';
 // export { default as disableWebUSB } from './disableWebUSB';
 // export { default as dispose } from './dispose';

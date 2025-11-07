@@ -113,6 +113,11 @@ export const factory = <
     cipherKeyValue: params => call({ ...params, method: 'cipherKeyValue' }),
 
     evoluGetNode: params => call({ ...params, method: 'evoluGetNode' }),
+    evoluGetDelegatedIdentityKey: params =>
+        call({ ...params, method: 'evoluGetDelegatedIdentityKey' }),
+
+    evoluSignRegistrationRequest: params =>
+        call({ ...params, method: 'evoluSignRegistrationRequest' }),
 
     composeTransaction: params => call({ ...params, method: 'composeTransaction' }),
 

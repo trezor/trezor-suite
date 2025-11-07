@@ -2175,7 +2175,12 @@ export const EthereumTypedDataSignature = Type.Object(
 );
 
 export type EvoluGetNode = Static<typeof EvoluGetNode>;
-export const EvoluGetNode = Type.Object({}, { $id: 'EvoluGetNode' });
+export const EvoluGetNode = Type.Object(
+    {
+        proof_of_delegated_identity: Type.ArrayBuffer(),
+    },
+    { $id: 'EvoluGetNode' },
+);
 
 export type EvoluNode = Static<typeof EvoluNode>;
 export const EvoluNode = Type.Object(
@@ -2183,6 +2188,42 @@ export const EvoluNode = Type.Object(
         data: Type.String(),
     },
     { $id: 'EvoluNode' },
+);
+
+export type EvoluSignRegistrationRequest = Static<typeof EvoluSignRegistrationRequest>;
+export const EvoluSignRegistrationRequest = Type.Object(
+    {
+        challenge_from_server: Type.ArrayBuffer(),
+        size_to_acquire: Type.Number(),
+        proof_of_delegated_identity: Type.ArrayBuffer(),
+    },
+    { $id: 'EvoluSignRegistrationRequest' },
+);
+
+export type EvoluRegistrationRequest = Static<typeof EvoluRegistrationRequest>;
+export const EvoluRegistrationRequest = Type.Object(
+    {
+        certificate_chain: Type.Array(Type.String()),
+        signature: Type.String(),
+    },
+    { $id: 'EvoluRegistrationRequest' },
+);
+
+export type EvoluGetDelegatedIdentityKey = Static<typeof EvoluGetDelegatedIdentityKey>;
+export const EvoluGetDelegatedIdentityKey = Type.Object(
+    {
+        thp_credential: Type.Optional(Type.ArrayBuffer()),
+        host_static_public_key: Type.Optional(Type.ArrayBuffer()),
+    },
+    { $id: 'EvoluGetDelegatedIdentityKey' },
+);
+
+export type EvoluDelegatedIdentityKey = Static<typeof EvoluDelegatedIdentityKey>;
+export const EvoluDelegatedIdentityKey = Type.Object(
+    {
+        private_key: Type.Uint8Array(),
+    },
+    { $id: 'EvoluDelegatedIdentityKey' },
 );
 
 export enum Enum_BackupType {
@@ -4228,6 +4269,10 @@ export const MessageType = Type.Object(
         EthereumTypedDataSignature,
         EvoluGetNode,
         EvoluNode,
+        EvoluSignRegistrationRequest,
+        EvoluRegistrationRequest,
+        EvoluGetDelegatedIdentityKey,
+        EvoluDelegatedIdentityKey,
         Initialize,
         GetFeatures,
         RecoveryDevice,

@@ -1414,10 +1414,28 @@ export type EthereumTypedDataSignature = {
     address: string;
 };
 
-export type EvoluGetNode = {};
+export type EvoluGetNode = {
+    proof_of_delegated_identity: ArrayBuffer;
+};
 
 export type EvoluNode = {
     data: string;
+};
+
+export type EvoluGetDelegatedIdentityKey = {
+    address_n: number[];
+    thp_credential?: ArrayBuffer;
+    host_static_public_key?: ArrayBuffer;
+};
+
+export type EvoluDelegatedIdentityKey = {
+    private_key: Uint8Array;
+};
+
+export type EvoluSignRegistrationRequest = {
+    address_n: number[];
+    encoded_network?: ArrayBuffer;
+    chunkify?: boolean;
 };
 
 export enum Enum_BackupType {
@@ -2787,6 +2805,9 @@ export type MessageType = {
     EthereumTypedDataSignature: EthereumTypedDataSignature;
     EvoluGetNode: EvoluGetNode;
     EvoluNode: EvoluNode;
+    EvoluSignRegistrationRequest: EvoluSignRegistrationRequest;
+    EvoluGetDelegatedIdentityKey: EvoluGetDelegatedIdentityKey;
+    EvoluDelegatedIdentityKey: EvoluDelegatedIdentityKey;
     Initialize: Initialize;
     GetFeatures: GetFeatures;
     RecoveryDevice: RecoveryDevice;

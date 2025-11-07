@@ -4276,7 +4276,13 @@
             }
         },
         "EvoluGetNode": {
-            "fields": {}
+            "fields": {
+                "proof_of_delegated_identity": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
         },
         "EvoluNode": {
             "fields": {
@@ -4284,6 +4290,63 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 1
+                }
+            }
+        },
+        "EvoluGetDelegatedIdentityKey": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                }
+            }
+        },
+        "EvoluDelegatedIdentityKey": {
+            "fields": {
+                "private_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "EvoluSignRegistrationRequest": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "encoded_network": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
+                }
+            }
+        },
+        "EvoluRegistrationRequest": {
+            "fields": {
+                "certificate_chain": {
+                    "rule": "repeated",
+                    "type": "string",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "signature": {
+                    "type": "string",
+                    "id": 2
                 }
             }
         },
@@ -8019,7 +8082,11 @@
                 "SolanaSignTx": 904,
                 "SolanaTxSignature": 905,
                 "EvoluGetNode": 2100,
-                "EvoluNode": 2101
+                "EvoluNode": 2101,
+                "EvoluSignRegistrationRequest": 2102,
+                "EvoluRegistrationRequest": 2103,
+                "EvoluGetDelegatedIdentityKey": 2104,
+                "EvoluDelegatedIdentityKey": 2105
             }
         }
     }
