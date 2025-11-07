@@ -64,14 +64,9 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
             throw new Error(`importResult is empty! Cannot load "${connectCorePath}js/core.js"`);
         }
 
-        const { initCoreState, initTransport } = importResult;
+        const { initCoreState } = importResult;
 
         if (!initCoreState) return;
-
-        if (initTransport) {
-            this._log.debug('initiating transport with settings: ', this._settings);
-            await initTransport(this._settings);
-        }
 
         this._coreManager = initCoreState();
 

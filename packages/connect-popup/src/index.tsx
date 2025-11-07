@@ -474,7 +474,7 @@ const initCoreInPopup = async (
     // dynamically load core module
     reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
 
-    const { initCoreState, initTransport } = await import(
+    const { initCoreState } = await import(
         // @ts-expect-error - core is built in a separate build step.
         /* webpackIgnore: true */ `./core.js`
     ).catch(_err => {
@@ -520,15 +520,6 @@ const initCoreInPopup = async (
 
     setState({ core });
     log.debug('initiated core');
-
-    // init transport - deprecated, here for backward compatibility
-    if (initTransport) {
-        log.debug('initiating transport with settings: ', payload.settings);
-        reactEventBus.dispatch({ type: 'loading', message: 'initiating transport' });
-        await initTransport(payload.settings);
-        if (disposed) return;
-    }
-    log.debug('initiated transport');
 
     // done, in popup, we are ready to handle incoming messages
     // todo: would it make sense to unify this with IFRAME.LOADED?
