@@ -227,9 +227,13 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
             }
 
             if (errors.length > 0) {
+                errors.forEach(error =>
+                    console.error(`There was a JS exception during test run.`, error),
+                );
+
                 throw new Error(
                     `There was a JS exception during test run.
-                    \n${errors.map(error => `${error.message}\n${error.stack}`).join('\n-----\n')}`,
+                    \n${errors.map(error => JSON.stringify(error)).join('\n-----\n')}`,
                 );
             }
         },
