@@ -113,7 +113,12 @@ export const TransactionReviewModalBody = ({
     );
 
     if (!device) return null;
-    if (!account || !precomposedTx || !precomposedForm) {
+    if (
+        !account ||
+        !precomposedTx ||
+        !precomposedForm ||
+        (account.networkType === 'cardano' && isStakeState(txInfoState))
+    ) {
         // TODO: special case for Connect Popup
         return <ConfirmActionModal device={device} />;
     }
