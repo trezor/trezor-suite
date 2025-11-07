@@ -27,6 +27,14 @@ export enum EventType {
     DeviceUpdateFirmware = 'device-update-firmware',
     DeviceSetupCompleted = 'device-setup-completed',
 
+    DeviceConnectionConnectButton = 'device-connection/connect-button',
+    DeviceConnectionConnectModal = 'device-connection/connect-modal',
+    DeviceConnectionHintModal = 'device-connection/hint-modal',
+    DeviceConnectionDeviceFound = 'device-connection/device-found',
+    DeviceConnectionDevicePaired = 'device-connection/device-paired',
+    DeviceConnectionDeviceConfirmation = 'device-connection/device-confirmation',
+    OnboardingSetupStart = 'onboarding/setup-start',
+
     FirmwareValidateHashError = 'firmware-validate-hash-error',
     FirmwareValidateHashMismatch = 'firmware-validate-hash-mismatch',
 

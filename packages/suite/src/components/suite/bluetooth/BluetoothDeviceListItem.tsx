@@ -8,6 +8,7 @@ import {
 } from '@suite-common/bluetooth';
 import { Button, Row } from '@trezor/components';
 import { BluetoothDeviceId } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
@@ -81,7 +82,15 @@ const ActionButton = ({
     const isClickable = connectionStatus?.component === 'button';
     const isLoading = connectionStatus?.component === 'loader';
 
-    const handleOnClick = () => onConnect(device.id);
+    const handleOnClick = () => {
+        analytics.report({
+            type: EventType.DeviceConnectionDeviceFound,
+            payload: {
+                option: 'connect',
+            },
+        });
+        onConnect(device.id);
+    };
 
     if (isGhostDevice) {
         return (

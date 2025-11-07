@@ -3,6 +3,7 @@ import { useTheme } from 'styled-components';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import {
     selectIsManualPairingRequired,
@@ -168,7 +169,17 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <Modal.ModalBase data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
                 <ConnectModalContent isBluetoothMode={false}>
                     {isDesktop() && (
-                        <Button iconLeft="bluetooth" onClick={toggleBluetoothMode} intent="info">
+                        <Button
+                            iconLeft="bluetooth"
+                            onClick={() => {
+                                analytics.report({
+                                    type: EventType.DeviceConnectionConnectModal,
+                                    payload: {},
+                                });
+                                toggleBluetoothMode();
+                            }}
+                            intent="info"
+                        >
                             <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
                         </Button>
                     )}

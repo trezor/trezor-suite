@@ -7,6 +7,7 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
+import { connectThpDeviceThunk } from '@suite-common/thp';
 import {
     WALLET_SETTINGS,
     deviceActions,
@@ -55,6 +56,7 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 const analyticsMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
         const prevRouterUrl = api.getState().router.url;
+
         // pass action
         next(action);
 
@@ -81,6 +83,15 @@ const analyticsMiddleware =
         }
 
         switch (action.type) {
+            case connectThpDeviceThunk.fulfilled.type: {
+                analytics.report({
+                    type: EventType.DeviceConnectionDeviceConfirmation,
+                    payload: {
+                        option: 'confirmed',
+                    },
+                });
+                break;
+            }
             case deviceActions.addAuthorizedDevice.type:
                 analytics.report({
                     type: EventType.SelectWalletType,

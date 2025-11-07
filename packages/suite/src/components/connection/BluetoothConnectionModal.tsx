@@ -1,4 +1,5 @@
 import { Modal } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { Translation } from 'src/components/suite/Translation';
@@ -19,6 +20,18 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
     const { handlePairingCancel, onReScanClick, selectedDevice } =
         useConnectionGlobalModalContext();
     const connectingDevices = useSelector(selectConnectingDevices);
+
+    const handleClose = () => {
+        if (selectedDevice) {
+            analytics.report({
+                type: EventType.DeviceConnectionDeviceFound,
+                payload: {
+                    option: 'close',
+                },
+            });
+        }
+        onClose();
+    };
 
     if (
         selectedDevice !== undefined &&
@@ -47,7 +60,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
     ) {
         return (
             <Modal
-                onCancel={onClose}
+                onCancel={handleClose}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
                 size="small"
@@ -59,7 +72,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
 
     return (
         <Modal
-            onCancel={onClose}
+            onCancel={handleClose}
             heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
             description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
             size="small"
