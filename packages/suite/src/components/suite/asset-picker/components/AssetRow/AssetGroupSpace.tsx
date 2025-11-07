@@ -1,15 +1,21 @@
-import styled from 'styled-components';
+import { memo } from 'react';
 
-import { ASSET_ROW_HEIGHTS, AssetRowProps } from '../../constants';
+import styled from 'styled-components';
 
 const RowSpace = styled.div<{ height: number }>`
     height: ${({ height }) => height}px;
 `;
 
-interface AssetGroupSpaceProps {
-    type: Extract<AssetRowProps['type'], 'group-space-md' | 'group-space-lg'>;
+type AssetGroupSpaceSize = 'md' | 'lg';
+export interface AssetGroupSpaceProps {
+    size: AssetGroupSpaceSize;
 }
 
-export function AssetGroupSpace({ type }: AssetGroupSpaceProps) {
-    return <RowSpace height={ASSET_ROW_HEIGHTS[type]} />;
-}
+export const ASSET_ROW_HEIGHTS_BY_SIZE = {
+    md: 24,
+    lg: 32,
+} as const satisfies Record<AssetGroupSpaceSize, number>;
+
+export const AssetGroupSpace = memo(function AssetGroupSpaceInner({ size }: AssetGroupSpaceProps) {
+    return <RowSpace height={ASSET_ROW_HEIGHTS_BY_SIZE[size]} />;
+});

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useTheme } from 'styled-components';
 
@@ -9,12 +9,13 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_VERIFY_TREZOR_SUITE_ADDRESSES_URL } from '@trezor/urls';
 
 import {
-    AssetRow,
+    AssetRowAccount,
     AssetSearchWithNetworkFilter,
     AssetsList,
     AssetsListEmpty,
     AssetsModal,
 } from 'src/components/suite/asset-picker/components';
+import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks/useDataFingerprint';
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { AddAccountButton } from 'src/components/wallet/WalletLayout/AccountsMenu/AddAccountButton';
@@ -22,12 +23,14 @@ import { useDevice } from 'src/hooks/suite';
 import { Account, AccountItemType } from 'src/types/wallet';
 
 import { useAccountsOptions } from './hooks/useAccountsOptions';
-import { useFilterAccounts } from './hooks/useFilterAccounts';
+import { FilteredAccountOption, useFilterAccounts } from './hooks/useFilterAccounts';
 
 type GlobalReceiveModalProps = {
     onCancel: (filledSearch: boolean) => void;
     onSubmit: (account: Account, type: AccountItemType, filledSearch: boolean) => void;
 };
+
+const LIST_HEIGHT = 500;
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
     const { device } = useDevice();
@@ -39,6 +42,18 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const [networkSymbol, setNetworkSymbol] = useState<NetworkSymbol | undefined>(undefined);
     const accountsOptions = useAccountsOptions();
     const filteredAccounts = useFilterAccounts(accountsOptions, { networkSymbol, search });
+    const filteredAccountsFingerprint = useDataFingerprint(filteredAccounts);
+
+    const renderItem = useCallback(
+        (item: FilteredAccountOption) => (
+            <AssetRowAccount
+                variant="to-account"
+                account={item.account}
+                onClick={account => onSubmit(account, 'coin', search.length > 0)}
+            />
+        ),
+        [onSubmit, search],
+    );
 
     return (
         <>
@@ -70,25 +85,19 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                 <Divider />
 
                 <AssetsListEmpty
-                    isEmpty={filteredAccounts.accounts.length === 0}
+                    isEmpty={filteredAccounts.length === 0}
                     heading={
                         search.length > 0
                             ? 'TR_ACCOUNT_SEARCH_NO_RESULTS'
                             : 'TR_ACCOUNT_NO_ACCOUNTS'
                     }
-                    height={400}
+                    height={LIST_HEIGHT}
                 >
                     <AssetsList
-                        items={filteredAccounts.accounts}
-                        itemsFingerprint={filteredAccounts.fingerprint}
-                        renderItem={item => (
-                            <AssetRow
-                                type="account"
-                                data={item}
-                                onClick={account => onSubmit(account, 'coin', search.length > 0)}
-                            />
-                        )}
-                        height={400}
+                        items={filteredAccounts}
+                        itemsFingerprint={filteredAccountsFingerprint}
+                        renderItem={renderItem}
+                        height={LIST_HEIGHT}
                     />
                 </AssetsListEmpty>
 

@@ -1,32 +1,37 @@
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    NetworkSymbolExtended,
+    NetworkType,
+    getDisplaySymbol,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
+import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { AssetLogo, type AssetLogoProps } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 
-import { AssetRowAssetDataProps } from '../../constants';
-
-type AssetImageProps = Pick<
-    AssetRowAssetDataProps,
-    'networkSymbol' | 'coingeckoId' | 'contractAddress' | 'symbol'
-> & {
+type AssetImageProps = {
+    networkSymbol: NetworkSymbolExtended;
+    networkType: NetworkType;
+    contractAddress?: string;
+    symbol: string;
     size?: AssetLogoProps['size'];
 };
 
 export function AssetImage({
-    coingeckoId,
+    networkType,
     contractAddress,
     networkSymbol,
     symbol,
     size = 40,
 }: AssetImageProps) {
+    if (!contractAddress && isNetworkSymbol(networkSymbol)) {
+        return <CoinLogo symbol={networkSymbol} size={size} type="tokenWithNetwork" />;
+    }
+
     return (
         <AssetLogo
             size={size}
-            coingeckoId={coingeckoId}
-            contractAddress={
-                contractAddress
-                    ? getContractAddressForNetworkSymbol(networkSymbol, contractAddress)
-                    : undefined
-            }
+            coingeckoId={networkType}
+            contractAddress={getAssetLogoContractAddresses(networkSymbol, contractAddress)}
             placeholder={getDisplaySymbol(symbol, contractAddress)}
         />
     );

@@ -627,6 +627,35 @@ export const areTokenFiatRatesLoading = (
         );
     });
 
+type GetTokenFiatBalanceParams = {
+    accountSymbol: NetworkSymbol;
+    token: TokenInfo;
+    baseCurrencyCode: BaseCurrencyCode;
+    rates?: RatesByKey;
+};
+
+export function getTokenFiatBalance({
+    accountSymbol,
+    token,
+    baseCurrencyCode,
+    rates,
+}: GetTokenFiatBalanceParams): BaseCurrencyAmount {
+    const tokenFiatRateKey = getFiatRateKey(
+        accountSymbol,
+        baseCurrencyCode,
+        token.contract as TokenAddress,
+    );
+
+    const tokenFiatRate = rates?.[tokenFiatRateKey];
+
+    return asBaseCurrencyAmount(
+        toFiatCurrency({
+            amount: token.balance ?? '0',
+            rate: tokenFiatRate?.rate ?? 0,
+        }) ?? new BigNumber(0),
+    );
+}
+
 export const getAccountTokensFiatBalance = (
     account: Account,
     baseCurrencyCode: BaseCurrencyCode,
@@ -635,19 +664,14 @@ export const getAccountTokensFiatBalance = (
 ): BaseCurrencyAmount =>
     asBaseCurrencyAmount(
         (tokens ?? []).reduce((total, token) => {
-            const tokenFiatRateKey = getFiatRateKey(
-                account.symbol,
+            const tokenFiatBalance = getTokenFiatBalance({
+                accountSymbol: account.symbol,
+                token,
                 baseCurrencyCode,
-                token.contract as TokenAddress,
-            );
+                rates,
+            });
 
-            const tokenFiatRate = rates?.[tokenFiatRateKey];
-
-            return tokenFiatRate?.rate && token.balance
-                ? total.plus(
-                      toFiatCurrency({ amount: token.balance, rate: tokenFiatRate.rate }) ?? 0,
-                  )
-                : total;
+            return total.plus(tokenFiatBalance);
         }, new BigNumber(0)),
     );
 
@@ -1265,3 +1289,45 @@ export const prepareNewAccountPayload = async ({
         backendType,
     };
 };
+
+interface FiatBalanceInDescComparatorProps {
+    accountA: Account;
+    accountB: Account;
+    baseCurrencyCode: BaseCurrencyCode;
+    fiatRates: RatesByKey;
+}
+
+export function accountsFiatBalanceInDescOrderComparator({
+    accountA,
+    accountB,
+    baseCurrencyCode,
+    fiatRates,
+}: FiatBalanceInDescComparatorProps) {
+    const accountAFiatBalance =
+        getAccountFiatBalance({
+            account: accountA,
+            baseCurrencyCode,
+            rates: fiatRates,
+            shouldIncludeTokens: true,
+            shouldIncludeStaking: false,
+        }) ?? new BigNumber(0);
+
+    const accountBFiatBalance =
+        getAccountFiatBalance({
+            account: accountB,
+            baseCurrencyCode,
+            rates: fiatRates,
+            shouldIncludeTokens: true,
+            shouldIncludeStaking: false,
+        }) ?? new BigNumber(0);
+
+    if (accountBFiatBalance.gt(accountAFiatBalance)) {
+        return 1;
+    }
+
+    if (accountAFiatBalance.gt(accountBFiatBalance)) {
+        return -1;
+    }
+
+    return 0;
+}

@@ -22,3 +22,7 @@ export function createCoinImageName<
 export function createCoinImageNameLegacy(name: string, quality: CoinImageQuality) {
     return `${encodeURIComponent(name)}${quality !== '1x' ? `@${quality}` : ''}.webp` as const;
 }
+
+export function concatCoinImageName(coingeckoId: string, contractAddress?: string) {
+    return contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
+}

@@ -16,6 +16,7 @@ import { sleep } from './utils/sleep';
 import {
     COIN_IMAGE_QUALITIES,
     COIN_IMAGE_SIZES,
+    concatCoinImageName,
     createCoinImageName,
     createCoinImageNameLegacy,
 } from '../src/coinImages';
@@ -89,10 +90,10 @@ const updateIcon = async (coin: CoinListData) => {
         for (const size of COIN_IMAGE_SIZES) {
             const finalImageBuffer = await resizeImage(originImageBuffer, size);
 
+            // TODO: Ditch the quaility, just append the size to the file name
             for (const quality of COIN_IMAGE_QUALITIES) {
                 for (const [platform, contract] of platforms) {
-                    const name = `${platform}--${contract}`;
-
+                    const name = concatCoinImageName(platform, contract);
                     const fileName = createCoinImageName(name, { size, quality });
                     console.log(`Writing image (${coin.id}):`, fileName);
                     await writeImage(fileName, finalImageBuffer);

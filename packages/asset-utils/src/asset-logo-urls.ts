@@ -4,7 +4,8 @@ import {
     CoinImageQuality,
     CoinImageSize,
     ICONS_URL_BASE,
-    createCoinImageNameLegacy,
+    concatCoinImageName,
+    createCoinImageName,
 } from '@suite-common/icons/src/index';
 
 export interface GetAssetLogoUrlParams {
@@ -18,9 +19,10 @@ export const getAssetLogoUrl = ({
     coingeckoId,
     contractAddress,
     quality = '1x',
+    size = 24,
 }: GetAssetLogoUrlParams) => {
-    const name = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
-    const fileName = createCoinImageNameLegacy(name, quality);
+    const name = concatCoinImageName(coingeckoId, contractAddress);
+    const fileName = createCoinImageName(name, { quality, size });
 
     return `${ICONS_URL_BASE}/${fileName}` as const;
 };

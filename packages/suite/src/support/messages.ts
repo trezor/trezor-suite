@@ -3237,6 +3237,10 @@ export default defineMessages({
         defaultMessage: 'Receive {networkDisplaySymbol} including tokens',
         id: 'TR_RECEIVE_NETWORK_INCLUDING_TOKENS',
     },
+    TR_SEND_SEARCH: {
+        defaultMessage: 'Search account',
+        id: 'TR_SEND_SEARCH',
+    },
     TR_BUY_NETWORK: {
         defaultMessage: 'Buy {networkDisplaySymbol}',
         id: 'TR_BUY_NETWORK',

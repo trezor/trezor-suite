@@ -1,69 +1,73 @@
+import { memo } from 'react';
+
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
-import { AssetRowAccountDataProps } from '../../../constants';
 import { AssetImage } from '../AssetImage';
 import { ItemClickableContainer } from '../ItemClickableContainer';
+import { AccountAmount } from './AccountAmount';
 
-type AssetRowAccountProps = Pick<AssetRowAccountDataProps, 'account'> & {
+export const ASSET_ROW_ACCOUNT_HEIGHT = 68;
+
+export type AssetRowAccountProps = {
+    account: Account;
     'data-testid'?: string;
     onClick: (account: Account) => void;
+
+    variant: 'to-account' | 'from-account';
 };
 
-export function AssetRowAccount({
+export const AssetRowAccount = memo(function AssetRowAccountInner({
     'data-testid': dataTestId,
     account,
     onClick,
+    variant,
 }: AssetRowAccountProps) {
-    const accountBalance = subunitsToUnits({
-        value: asAmountSubunit(new BigNumber(account.balance)),
-        symbol: account.symbol,
-    });
-
     return (
         <ItemClickableContainer onClick={() => onClick(account)}>
-            <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center">
-                <AssetImage
-                    size={40}
-                    symbol={account.symbol}
-                    networkSymbol={account.symbol}
-                    coingeckoId={account.networkType}
-                />
-                <Text variant="default" typographyStyle="body">
-                    <AccountLabel
-                        account={account}
-                        accountTypeBadgeSize="medium"
-                        showAccountTypeBadge
+            {variant === 'to-account' && (
+                <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center">
+                    <AssetImage
+                        size={40}
+                        symbol={account.symbol}
+                        networkSymbol={account.symbol}
+                        networkType={account.networkType}
                     />
-                </Text>
-            </Row>
+                    <Text variant="default" typographyStyle="body">
+                        <AccountLabel
+                            account={account}
+                            accountTypeBadgeSize="medium"
+                            showAccountTypeBadge={true}
+                        />
+                    </Text>
+                </Row>
+            )}
 
-            <Column alignItems="flex-end">
-                <Text variant="default" typographyStyle="body">
-                    <FormattedCryptoAmount
+            {variant === 'from-account' && (
+                <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center">
+                    <AssetImage
+                        size={40}
                         symbol={account.symbol}
-                        value={accountBalance}
-                        isBalance
+                        networkSymbol={account.symbol}
+                        networkType={account.networkType}
                     />
-                </Text>
-                <Text variant="tertiary" typographyStyle="hint">
-                    <BaseCurrencyValue
-                        symbol={account.symbol}
-                        amount={accountBalance}
-                        fiatAmountFormatterOptions={{
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0,
-                        }}
-                    />
-                </Text>
-            </Column>
+
+                    <Column alignItems="flex-start" justifyContent="flex-start">
+                        <Text variant="default" typographyStyle="body">
+                            {getNetwork(account.symbol).name}
+                        </Text>
+                        <Text variant="tertiary" typographyStyle="hint">
+                            {getDisplaySymbol(account.symbol)}
+                        </Text>
+                    </Column>
+                </Row>
+            )}
+
+            <AccountAmount account={account} />
         </ItemClickableContainer>
     );
-}
+});
