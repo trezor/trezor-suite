@@ -84,18 +84,15 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                     dispatch(markDeviceAsRecentlyConnectedThunk(device));
                 },
                 [UI.INVALID_PIN_ATTEMPTS_DEPLETED]: () => {
-                    dispatch(
-                        modalActions.openModal({
-                            type: UI.INVALID_PIN_ATTEMPTS_DEPLETED,
-                        }),
-                    );
+                    dispatch(modalActions.openModal({ type: UI.INVALID_PIN_ATTEMPTS_DEPLETED }));
                     dispatch(modalActions.preserve());
                 },
             }),
         ).unwrap();
     } catch (err) {
         dispatch({ type: SUITE.ERROR, error: err.message });
-        throw err;
+
+        return;
     }
 
     // 7. init backends
