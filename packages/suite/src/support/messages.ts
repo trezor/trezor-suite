@@ -9558,6 +9558,10 @@ export default defineMessages({
         id: 'TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT',
         defaultMessage: 'Receive deposit in account',
     },
+    TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY: {
+        id: 'TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY',
+        defaultMessage: 'Instantly',
+    },
     TR_STAKE_YOUR_DEPOSIT_IS_RETURNED: {
         id: 'TR_STAKE_YOUR_DEPOSIT_IS_RETURNED',
         defaultMessage: 'Your deposit of 2 {networkDisplaySymbol} is returned',

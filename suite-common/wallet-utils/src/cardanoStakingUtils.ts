@@ -5,6 +5,7 @@ import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import {
     Account,
     PoolsResponse,
+    StakeType,
     SupportedCardanoNetworkSymbols,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
@@ -75,3 +76,9 @@ export const getAdaAccountTotalStakingBalance = (account: Account) =>
               symbol: account.symbol,
           }).toString()
         : null;
+
+export const subtypeToStakeTypeMap: { [key: string]: StakeType } = {
+    stake_delegation: 'stake',
+    stake_deregistration: 'unstake',
+    withdrawal: 'claim',
+};

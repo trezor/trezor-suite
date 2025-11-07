@@ -3,12 +3,14 @@ import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     StakeRootState,
+    selectAccountPendingStakeTypeTransactions,
     selectAccountStakeTypeTransactions,
     selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
 import {
     getStakingAccountCurrentStatus,
     getStakingDataForNetwork,
+    getTxStakeType,
     isPending,
 } from '@suite-common/wallet-utils';
 import {
@@ -141,6 +143,11 @@ export const StakingCard = ({
 
     const solStakingAccountStatus = getStakingAccountCurrentStatus(selectedAccount);
 
+    const lastPendingStakeTypeTransaction = useSelector(state =>
+        selectAccountPendingStakeTypeTransactions(state, selectedAccount?.key || ''),
+    )[0];
+    const pendingTxStakeType = getTxStakeType(lastPendingStakeTypeTransaction);
+
     const progressLabelsData = useProgressLabelsData({
         daysToAddToPool,
         isDaysToAddToPoolShown,
@@ -148,7 +155,11 @@ export const StakingCard = ({
         isStakePending,
         selectedAccount,
         solStakingAccountStatus,
+        pendingTxStakeType,
     });
+
+    const shouldShowProgressLabels =
+        (isStakeConfirming || isTxStatusShown) && pendingTxStakeType !== 'claim';
 
     const dispatch = useDispatch();
 
@@ -204,9 +215,7 @@ export const StakingCard = ({
     return (
         <Card data-testid="@wallet/staking/card">
             <Column flex="1" gap={spacings.xxl}>
-                {(isStakeConfirming || isTxStatusShown) && (
-                    <ProgressLabels labels={progressLabelsData} />
-                )}
+                {shouldShowProgressLabels && <ProgressLabels labels={progressLabelsData} />}
 
                 <Grid columns={isBelowLaptop ? 1 : 2} gap={spacings.xxl}>
                     {isStakePending && !isCardanoNetworkType && (

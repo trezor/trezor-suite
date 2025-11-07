@@ -93,7 +93,7 @@ const STAKE_SIGNATURE = '0x3a29dbae';
 const UNSTAKE_SIGNATURE = '0x76ec871c';
 const CLAIM_SIGNATURE = '0x33986ffa';
 
-export const signatureToStakeNameMap: { [key: string]: StakeType } = {
+export const signatureToStakeTypeMap: { [key: string]: StakeType } = {
     [STAKE_SIGNATURE]: 'stake',
     [UNSTAKE_SIGNATURE]: 'unstake',
     [CLAIM_SIGNATURE]: 'claim',
@@ -120,7 +120,7 @@ export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType 
     if (!dataHex) return null;
     const signature = getSignatureByEthereumDataHex(dataHex);
 
-    return isStakeTypeTx(signature) ? signatureToStakeNameMap[signature] : null;
+    return isStakeTypeTx(signature) ? signatureToStakeTypeMap[signature] : null;
 };
 
 export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {
