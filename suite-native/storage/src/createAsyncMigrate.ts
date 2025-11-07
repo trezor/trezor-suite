@@ -1,43 +1,27 @@
 import { DEFAULT_VERSION, PersistedState } from 'redux-persist';
 
-// unknown is here just for explicitness, it's the same as PersistedState
-export type UnknownPersistedState = unknown & PersistedState;
+import { MigrationsManifest } from './migrationTypes';
 
-export type MigrationsManifest = {
-    [key: number]: (
-        state: UnknownPersistedState,
-    ) => UnknownPersistedState | Promise<UnknownPersistedState> | undefined;
-};
-
-type MigratedState<TReducerInitialState> =
-    | (Partial<TReducerInitialState> & PersistedState)
-    | undefined;
+type MigratedState<TReducerInitialState> = Partial<TReducerInitialState> & PersistedState;
 
 /**
  * This is a replacement of createMigrate helper from redux-persist that allows to use async migrations
- * and also allows initial migration from empty state.
+ * and also allows migration with empty persisted state (if you need to get the initial data from other source).
  *
  * Debug config is not implemented, but it can be added if needed.
  */
 export const createAsyncMigrate =
     <TReducerInitialState>(migrations: MigrationsManifest) =>
     async (
-        oldState: UnknownPersistedState,
+        oldState: PersistedState,
         currentVersion: number,
     ): Promise<MigratedState<TReducerInitialState>> => {
-        if (
-            !oldState &&
-            // If migration for version 1 exists, undefined oldState is allowed - do not early return.
-            // Migration for version 1 is considered as "initial migration" from an empty state.
-            !migrations[1]
-        ) {
-            return Promise.resolve(undefined);
+        if (!oldState) {
+            // This allows to use migration that gets the initial data from other sources.
+            oldState = { _persist: { version: DEFAULT_VERSION /* -1 */, rehydrated: true } };
         }
 
-        const inboundVersion: number =
-            oldState?._persist?.version !== undefined
-                ? oldState._persist.version
-                : DEFAULT_VERSION; /* -1 */
+        const inboundVersion: number = oldState._persist?.version ?? DEFAULT_VERSION;
 
         if (inboundVersion === currentVersion) {
             // `as` because we do no migration here
