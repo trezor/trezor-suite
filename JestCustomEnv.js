@@ -13,6 +13,11 @@ class CustomEnvironment extends NodeEnvironment {
             }
         });
     }
+
+    async teardown() {
+        process.removeAllListeners('warning');
+        await super.teardown();
+    }
 }
 
 module.exports = CustomEnvironment;
