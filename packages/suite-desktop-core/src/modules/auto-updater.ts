@@ -1,3 +1,4 @@
+import { captureMessage } from '@sentry/electron/main';
 import {
     CancellationToken,
     ProgressInfo,
@@ -9,10 +10,10 @@ import { unlinkSync } from 'fs';
 
 import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { HandshakeElectron } from '@trezor/suite-desktop-api';
-import { bytesToHumanReadable } from '@trezor/utils';
+import { bytesToHumanReadable, serializeError } from '@trezor/utils';
 
 import { getSwitchValue, hasSwitch } from '../libs/process-switches';
-import { verifySignature } from '../libs/update-checker';
+import { getSignatureFile, verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
 import { app, ipcMain } from '../typed-electron';
 import { ModuleInit, mainThreadEmitter } from './module';
@@ -161,8 +162,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     });
 
     autoUpdater.on('error', (err: Error) => {
+        captureMessage(serializeError(err));
         logger.error(SERVICE_NAME, `An error happened: ${err.toString()}`);
-        mainWindowProxy.getInstance()?.webContents.send('update/error', err);
+        mainWindowProxy.getInstance()?.webContents.send('update/error');
     });
 
     autoUpdater.on('download-progress', (progressObj: ProgressInfo) => {
@@ -188,11 +190,27 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
         mainWindowProxy.getInstance()?.webContents.send('update/downloading', { verifying: true });
 
+        const abortUpdate = () => {
+            autoUpdater.autoInstallOnAppQuit = false;
+            unlinkSync(downloadedFile);
+            logger.info(SERVICE_NAME, `Unlink downloaded file ${downloadedFile}`);
+            mainWindowProxy.getInstance()?.webContents.send('update/error');
+        };
+
         try {
+            // Find the right signature for the downloaded file
+            const signatureFile = await getSignatureFile({ downloadedFile, feedURL });
+            // If fetching of signature file has failed, abort the update, but do not log it as an error
+            if (signatureFile === null) {
+                abortUpdate();
+
+                return;
+            }
+
             // check downloaded file
             await verifySignature({
                 downloadedFile,
-                feedURL,
+                signatureFile,
             });
 
             logger.info(SERVICE_NAME, 'Signature of update file is valid');
@@ -203,12 +221,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                 downloadedFile,
             });
         } catch (err) {
-            autoUpdater.autoInstallOnAppQuit = false;
-            unlinkSync(downloadedFile);
-            mainWindowProxy.getInstance()?.webContents.send('update/error', err);
-
+            captureMessage(serializeError(err));
+            abortUpdate();
             logger.error(SERVICE_NAME, `Signature check of update file failed: ${err.message}`);
-            logger.info(SERVICE_NAME, `Unlink downloaded file ${downloadedFile}`);
         }
 
         logger.info(
