@@ -37,6 +37,11 @@ export type EvoluKeys = {
     ownerSecret: string; // hex
 };
 
+export type DelegatedKey = string & Branded<'DelegatedKey'>; // hex-encoded P-256 private key string
+
+export const asDelegatedKey = (privateKey: Uint8Array<ArrayBufferLike> | string): DelegatedKey =>
+    String(privateKey) as DelegatedKey;
+
 export interface ExtendedDevice {
     useEmptyPassphrase?: boolean;
     remember?: boolean; // device should be remembered
@@ -54,6 +59,7 @@ export interface ExtendedDevice {
         isRetrieving: boolean; // To prevent consequential call of the TrezorConnect.evoluGetNode(...)
         evoluKeys: EvoluKeys | undefined;
     };
+    delegatedKey?: DelegatedKey | null;
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice
