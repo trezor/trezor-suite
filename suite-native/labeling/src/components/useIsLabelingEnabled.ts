@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage';
+import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/local-first-storage';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 
 export const useIsLabelingEnabled = () => {
-    const isFeatureFlagOn = useSelector(selectIsLocalFirstStorageEnabled);
+    const isFeatureFlagOn = useSelector(selectIsFeatureLocalFirstStorageAvailable);
 
     const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
 
