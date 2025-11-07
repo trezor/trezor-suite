@@ -199,3 +199,8 @@ export type Features = PROTO.Features;
 export type DisplayRotation = PROTO.DisplayRotation;
 
 export type StrictFeatures = Features & FeaturesNarrowing;
+
+export type ProofOfDelegatedIdentity = ArrayBuffer & Branded<'ProofOfDelegatedIdentity'>;
+
+export const asProofOfDelegatedIdentity = (value: ArrayBufferLike): ProofOfDelegatedIdentity =>
+    value as ProofOfDelegatedIdentity;

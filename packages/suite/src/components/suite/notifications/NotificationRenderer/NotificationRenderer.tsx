@@ -185,6 +185,8 @@ export const NotificationRenderer = ({
             );
         case 'coin-scheme-protocol':
             return <CoinProtocolRenderer render={render} notification={notification} />;
+        case 'suite-sync-keys-error':
+            return error(render, notification, 'SUITE_SYNC_KEY_RETRIEVAL_FAILED');
         case 'tx-received':
             return (
                 <TransactionRenderer

@@ -4005,6 +4005,10 @@ export default defineMessages({
         defaultMessage:
             'Unknown protocol scheme: "{scheme}". Try again or enter the address manually.',
     },
+    SUITE_SYNC_KEY_RETRIEVAL_FAILED: {
+        id: 'SUITE_SYNC_KEY_RETRIEVAL_FAILED',
+        defaultMessage: 'Trezor Sync key retrieval failed, reconnect the device and try again.',
+    },
     TOAST_COIN_SCHEME_PROTOCOL: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL',
         description: 'Required for current notifications. Do not change.',

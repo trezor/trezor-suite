@@ -695,6 +695,15 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 createInstance(state, payload.device);
             })
             .addCase(
+                deviceActions.setLocalFirstDelegatedKey,
+                (state, { payload: { device, delegatedKey } }) => {
+                    if (!device.features) return;
+                    const index = deviceUtils.findInstanceIndex(state.devices, device);
+                    if (!state.devices[index]) return;
+                    state.devices[index].delegatedKey = delegatedKey;
+                },
+            )
+            .addCase(
                 deviceActions.setLocalFirstStorageSecret,
                 (state, { payload: { device, evoluKeys } }) => {
                     if (!device.features) return;

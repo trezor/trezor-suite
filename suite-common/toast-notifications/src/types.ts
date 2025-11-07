@@ -146,6 +146,9 @@ export type ToastPayload = (
           amount?: number;
       }
     | {
+          type: 'trezor-sync-keys-error';
+      }
+    | {
           type: 'tor-toggle-error';
           error: TranslationKey;
       }
