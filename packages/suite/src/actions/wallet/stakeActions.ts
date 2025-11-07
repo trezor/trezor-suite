@@ -279,6 +279,10 @@ export const signTransaction =
             }),
         );
 
+        if (account?.networkType === 'cardano') {
+            return dispatch(pushTransaction(formValues.stakeType));
+        }
+
         // Open a deferred modal and get the decision
         const decision = await dispatch(
             modalActions.openDeferredModal({ type: 'review-transaction' }),
