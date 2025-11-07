@@ -68,6 +68,6 @@ export type CardanoStaking = {
     isStakingDisabled: boolean;
 };
 
-export const supportedCardanoNetworkSymbols = ['ada', 'tada'] as const;
+export const supportedCardanoNetworkSymbols = ['ada'] as const;
 
 export type SupportedCardanoNetworkSymbols = (typeof supportedCardanoNetworkSymbols)[number];

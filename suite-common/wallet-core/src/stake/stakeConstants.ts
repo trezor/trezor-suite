@@ -1,16 +1,18 @@
 import {
+    SupportedCardanoNetworkSymbols,
     SupportedEthereumNetworkSymbol,
     SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 
 export const EVERSTAKE_ENDPOINT_PREFIX: Record<
-    SupportedEthereumNetworkSymbol | SupportedSolanaNetworkSymbols,
+    SupportedEthereumNetworkSymbol | SupportedSolanaNetworkSymbols | SupportedCardanoNetworkSymbols,
     string
 > = {
     eth: 'https://eth-api-b2c.everstake.one/api/v1',
     thod: 'https://eth-api-b2c-stage.everstake.one/api/v1',
     sol: 'https://dashboard-api.everstake.one',
     dsol: 'https://dashboard-api.everstake.one',
+    ada: 'https://dashboard-api.everstake.one',
 };
 
 export const EVERSTAKE_REWARDS_SOLANA_ENPOINT =
