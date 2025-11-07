@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
+import {
+    selectHasRunningDiscovery,
+    selectIsDeviceAuthorized,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
 import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
 import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, Button, HStack, VStack } from '@suite-native/atoms';
@@ -20,6 +24,7 @@ import {
 
 import { FirmwareUpdateAlert } from './FirmwareUpdateAlert';
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
+import { ReferralButton } from './ReferralButton';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -30,6 +35,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
     );
+    const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
 
     const showTransferButtons = isDeviceAuthorized && !hasDiscovery;
     const showReceiveButton = !hasFirmwareAuthenticityCheckHardFailed;
@@ -50,35 +56,37 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     return (
         <VStack spacing="sp32" marginTop="sp8">
             <FirmwareUpdateAlert />
-
             <AnimatedVStack spacing="sp32" layout={LinearTransition}>
                 <PortfolioGraph ref={ref} />
-                <VStack spacing="sp24" marginHorizontal="sp16">
-                    {showTransferButtons && (
-                        <HStack spacing="sp16" justifyContent="space-between">
-                            {showReceiveButton && (
-                                <Button
-                                    flex={1}
-                                    data-testID="@home/portfolio/receive-button"
-                                    onPress={handleReceive}
-                                    viewLeft="arrowDown"
-                                >
-                                    <Translation id="moduleHome.buttons.receive" />
-                                </Button>
-                            )}
-                            {showSendButton && (
-                                <Button
-                                    flex={1}
-                                    data-testID="@home/portfolio/send-button"
-                                    onPress={handleSend}
-                                    viewLeft="arrowUp"
-                                >
-                                    <Translation id="moduleHome.buttons.send" />
-                                </Button>
-                            )}
-                        </HStack>
-                    )}
-                    <Assets />
+                <VStack spacing="sp64" marginHorizontal="sp16">
+                    <VStack spacing="sp24">
+                        {showTransferButtons && (
+                            <HStack spacing="sp16" justifyContent="space-between">
+                                {showReceiveButton && (
+                                    <Button
+                                        flex={1}
+                                        data-testID="@home/portfolio/receive-button"
+                                        onPress={handleReceive}
+                                        viewLeft="arrowDown"
+                                    >
+                                        <Translation id="moduleHome.buttons.receive" />
+                                    </Button>
+                                )}
+                                {showSendButton && (
+                                    <Button
+                                        flex={1}
+                                        data-testID="@home/portfolio/send-button"
+                                        onPress={handleSend}
+                                        viewLeft="arrowUp"
+                                    >
+                                        <Translation id="moduleHome.buttons.send" />
+                                    </Button>
+                                )}
+                            </HStack>
+                        )}
+                        <Assets />
+                    </VStack>
+                    {!isPortfolioTracker && <ReferralButton />}
                 </VStack>
             </AnimatedVStack>
         </VStack>

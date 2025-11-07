@@ -147,6 +147,7 @@ const usedIcons = [
     'trezorSafe5',
     'trezorSafe5Filled',
     'twitterLogo',
+    'users',
     'wallet',
     'walletConnect',
     'warning',

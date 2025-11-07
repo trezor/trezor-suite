@@ -558,4 +558,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               location: 'untrustedReseller' | 'securitySeal';
           };
+      }
+    | {
+          type: EventType.ReferralButtonPress;
       };

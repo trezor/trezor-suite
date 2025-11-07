@@ -116,6 +116,7 @@ export const messages = {
         buttons: {
             receive: 'Receive',
             send: 'Send',
+            referral: 'Earn $20 per Referral',
         },
         rememberModeModal: {
             title: 'Enable view-only to check balances after you disconnect your Trezor',
