@@ -47,6 +47,7 @@ const initialState: WalletSettingsState = {
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     mevProtection: true,
+    networkReserve: true,
     isAutoForgetDeviceDataEnabled: false,
     isAutoEjectEnabled: false,
 };
@@ -59,6 +60,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'hideSuspiciousTransactions',
     'bitcoinAmountUnit',
     'mevProtection',
+    'networkReserve',
     'isAutoForgetDeviceDataEnabled',
     'isAutoEjectEnabled',
 ];
@@ -97,8 +99,14 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
         );
         builder.addCase(
             WALLET_SETTINGS.SET_MEV_PROTECTION,
-            (state, action: walletSettingsActions.SetMevProtectionAction) => {
+            (state, action: ReturnType<typeof walletSettingsActions.setMevProtection>) => {
                 state.mevProtection = action.payload;
+            },
+        );
+        builder.addCase(
+            WALLET_SETTINGS.SET_NETWORK_RESERVE,
+            (state, action: ReturnType<typeof walletSettingsActions.setNetworkReserve>) => {
+                state.networkReserve = action.payload;
             },
         );
         builder.addCase(WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS, state => {
@@ -169,6 +177,9 @@ export const selectIsBaseCurrencyInSats = (state: WalletSettingsRootState) => {
     return isBaseCurrencyWithSats(baseCurrency) && areSatsAmountUnit;
 };
 
+export const selectIsNetworkReserveEnabled = (state: WalletSettingsRootState) =>
+    state.wallet.settings.networkReserve;
+
 export const selectIsMevProtectionEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.mevProtection;
 
@@ -186,4 +197,10 @@ export const selectIsMevProtectionSettingsVisible = createMemoizedSelector(
         enabledNetworks.some(enabledNetwork =>
             MEV_PROTECTION_SUPPORTED_NETWORK_SYMBOLS.includes(enabledNetwork),
         ),
+);
+
+export const selectIsNetworkReserveSettingsVisible = createMemoizedSelector(
+    [selectEnabledNetworks],
+    enabledNetworks =>
+        enabledNetworks.some(enabledNetwork => !!getNetwork(enabledNetwork)?.nativeTokenReserve),
 );

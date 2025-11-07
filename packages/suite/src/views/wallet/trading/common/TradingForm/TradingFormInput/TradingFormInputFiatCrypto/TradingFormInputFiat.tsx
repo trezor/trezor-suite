@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FieldErrors, UseControllerProps, UseFormReturn } from 'react-hook-form';
 
 import {
@@ -5,9 +6,10 @@ import {
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TradingBuyFormProps,
+    getNetworkReserve,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
     buildCurrencyShortOption,
@@ -29,12 +31,12 @@ import {
     TradingFormInputFiatCryptoProps,
     TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';
-import { validateDecimals, validateMin } from 'src/utils/suite/validation';
+import { validateDecimals, validateMin, validateNetworkReserve } from 'src/utils/suite/validation';
 import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { tradingGetRoundedFiatAmount } from 'src/utils/wallet/trading/tradingUtils';
+import { getFeeInUnits, tradingGetRoundedFiatAmount } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
 export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
@@ -46,6 +48,7 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
 }: TradingFormInputFiatCryptoProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const locale = useSelector(selectLanguage);
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const context = useTradingFormContext();
     const { account, amountLimits, network } = context;
@@ -57,10 +60,40 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
         getValues,
     } = methods as unknown as UseFormReturn<TradingAllFormProps>;
 
-    const tokenAddress = getValues('sendCryptoSelect')?.contractAddress as TokenAddress | undefined;
+    const sendCryptoSelect = getValues('sendCryptoSelect');
+    const tokenAddress = sendCryptoSelect?.contractAddress as TokenAddress | undefined;
 
     const { fiatAmount } = useFiatFromCryptoValue({
         amount: account.formattedBalance || '',
+        symbol: account.symbol,
+        tokenAddress,
+        rateType: 'current',
+    });
+
+    const networkReserve = getNetworkReserve({
+        symbol: account.symbol,
+        contractAddress: tokenAddress,
+        isEnabled: isNetworkReserveEnabled,
+    });
+
+    const { fiatAmount: networkReserveFiatAmount } = useFiatFromCryptoValue({
+        amount: networkReserve || '',
+        symbol: account.symbol,
+        tokenAddress,
+        rateType: 'current',
+    });
+
+    const feeInUnits =
+        isTradingSellContext(context) || isTradingExchangeContext(context)
+            ? getFeeInUnits({
+                  symbol: account.symbol,
+                  composedLevels: context.composedLevels,
+                  selectedFee: context.composedTransactionInfo?.selectedFee,
+              })
+            : undefined;
+
+    const { fiatAmount: feeFiatAmount } = useFiatFromCryptoValue({
+        amount: feeInUnits?.toString() || '',
         symbol: account.symbol,
         tokenAddress,
         rateType: 'current',
@@ -82,6 +115,18 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
             ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.amount
             : undefined;
 
+    const isNetworkReserveError =
+        (isTradingExchangeContext(context) || isTradingSellContext(context)) &&
+        fiatInputError?.type === 'networkReserve';
+    const setShowReserveBanner =
+        isTradingExchangeContext(context) || isTradingSellContext(context)
+            ? context.setShowReserveBanner
+            : undefined;
+
+    useEffect(() => {
+        setShowReserveBanner?.(isNetworkReserveError);
+    }, [isNetworkReserveError, setShowReserveBanner]);
+
     const fiatInputRules: UseControllerProps['rules'] = {
         ...(isTradingExchangeContext(context)
             ? {
@@ -96,6 +141,13 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
                               return translationString('AMOUNT_IS_NOT_ENOUGH');
                           }
                       },
+                      networkReserve: isNetworkReserveEnabled
+                          ? validateNetworkReserve(translationString, {
+                                reserve: networkReserveFiatAmount?.toString(),
+                                balance: fiatAmount?.toString(),
+                                fee: feeFiatAmount?.toString(),
+                            })
+                          : () => undefined,
                       minFiat: () => {
                           if (
                               cryptoAmount &&
@@ -138,6 +190,17 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
                   validate: {
                       min: validateMin(translationString),
                       decimals: validateDecimals(translationString, { decimals: 2 }),
+                      ...(isTradingSellContext(context)
+                          ? {
+                                networkReserve: isNetworkReserveEnabled
+                                    ? validateNetworkReserve(translationString, {
+                                          reserve: networkReserveFiatAmount?.toString(),
+                                          balance: fiatAmount?.toString(),
+                                          fee: feeFiatAmount?.toString(),
+                                      })
+                                    : () => undefined,
+                            }
+                          : {}),
                       minFiat: (value: string) => {
                           if (
                               value &&

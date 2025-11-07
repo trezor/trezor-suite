@@ -1,5 +1,9 @@
+import { useEffect } from 'react';
+
+import { getNetworkReserve } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
@@ -25,8 +29,11 @@ import {
     validateDecimals,
     validateInteger,
     validateMin,
+    validateNetworkReserve,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
+import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingNetworkReserveBanner } from 'src/views/wallet/trading/common/TradingForm/TradingNetworkReserveBanner';
 
 import { BaseCurrencyInput } from './BaseCurrencyInput';
 import { SendMaxSwitch } from './SendMaxSwitch';
@@ -44,18 +51,23 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         feeInfo,
         control,
         getDefaultValue,
+        getValues,
         handleAmountChange,
         formState: { errors },
         setMax,
         composeTransaction,
         getCurrentFiatRate,
         watch,
+        composedLevels,
+        showReserveBanner,
+        setShowReserveBanner,
     } = useSendFormContext();
     const { symbol, tokens } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const { isBelowLaptop } = useLayoutSize();
 
     const locale = useSelector(selectLanguage);
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const amountName = `outputs.${outputId}.amount` as const;
     const tokenInputName = `outputs.${outputId}.token`;
@@ -102,6 +114,18 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
     const handleInputChange = (value: string) => handleAmountChange({ outputId, value });
 
+    const feeInUnits = getFeeInUnits({
+        symbol: account.symbol,
+        composedLevels,
+        selectedFee: getValues().selectedFee,
+    });
+
+    const isNetworkReserveError = error?.type === 'networkReserve';
+
+    useEffect(() => {
+        setShowReserveBanner(isNetworkReserveError);
+    }, [isNetworkReserveError, setShowReserveBanner]);
+
     const cryptoAmountRules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
@@ -133,6 +157,17 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                 areSatsUsed: !!shouldSendInSats,
                 contractAddress: tokenValue,
             }),
+            networkReserve: isNetworkReserveEnabled
+                ? validateNetworkReserve(translationString, {
+                      reserve: getNetworkReserve({
+                          symbol: account.symbol,
+                          contractAddress: tokenValue,
+                          isEnabled: isNetworkReserveEnabled,
+                      }),
+                      balance: account.formattedBalance,
+                      fee: feeInUnits?.toString(),
+                  })
+                : () => undefined,
         },
     };
 
@@ -222,6 +257,13 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     </BaseCurrencyValue>
                 )}
             </Flex>
+
+            {showReserveBanner && (
+                <TradingNetworkReserveBanner
+                    symbol={network.symbol}
+                    contractAddress={tokenValue ?? undefined}
+                />
+            )}
 
             {isLowAnonymity && (
                 <Banner icon margin={{ top: spacings.sm }}>

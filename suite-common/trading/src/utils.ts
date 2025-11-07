@@ -439,3 +439,94 @@ export const getTradingPrefilledFromAccountData = (
         key,
     };
 };
+
+interface GetNetworkReserveProps {
+    symbol: NetworkSymbol;
+    contractAddress: string | undefined | null;
+    isEnabled?: boolean;
+}
+
+/**
+ * Reserve defined in networksConfig.ts applies to the native token only
+ */
+export const getNetworkReserve = ({
+    symbol,
+    contractAddress,
+    isEnabled,
+}: GetNetworkReserveProps) => {
+    if ((!!contractAddress && contractAddress !== CONTRACT_ADDRESS_FOR_NATIVE_TOKEN) || !isEnabled)
+        return undefined;
+    const network = getNetwork(symbol);
+
+    return network.nativeTokenReserve;
+};
+
+interface GetCryptoAmountWithReserveProps {
+    symbol: NetworkSymbol;
+    contractAddress: string | undefined | null;
+    balance: string;
+    amount: string;
+    fee?: string;
+    isNetworkReserveEnabled?: boolean;
+}
+
+export const getCryptoAmountWithReserve = ({
+    symbol,
+    contractAddress,
+    balance,
+    amount,
+    fee = '0',
+    isNetworkReserveEnabled,
+}: GetCryptoAmountWithReserveProps) => {
+    const networkReserve = getNetworkReserve({
+        symbol,
+        contractAddress,
+        isEnabled: isNetworkReserveEnabled,
+    });
+    if (!networkReserve) return amount;
+
+    const accountBalance = new BigNumber(balance);
+    const reservePlusFee = new BigNumber(networkReserve).plus(fee);
+
+    if (accountBalance.minus(amount).gt(reservePlusFee)) {
+        return amount;
+    }
+
+    const maxAmount = accountBalance.minus(reservePlusFee);
+
+    return maxAmount.lt(0) ? '0' : maxAmount.toString();
+};
+
+interface GetCryptoMaxAmountWithReserveProps {
+    symbol: NetworkSymbol;
+    contractAddress: string | undefined | null;
+    balance: string;
+    amount: string;
+    fee?: string;
+    isNetworkReserveEnabled?: boolean;
+}
+
+export const getCryptoMaxAmountWithReserve = ({
+    symbol,
+    contractAddress,
+    balance,
+    amount,
+    fee = '0',
+    isNetworkReserveEnabled,
+}: GetCryptoMaxAmountWithReserveProps) => {
+    const networkReserve = getNetworkReserve({
+        symbol,
+        contractAddress,
+        isEnabled: isNetworkReserveEnabled,
+    });
+    if (!networkReserve) return amount;
+
+    const accountBalance = new BigNumber(balance);
+    const reservePlusFee = new BigNumber(networkReserve).plus(fee);
+
+    if (new BigNumber(amount).plus(reservePlusFee).gt(accountBalance)) {
+        return accountBalance.minus(reservePlusFee).toString();
+    }
+
+    return amount;
+};

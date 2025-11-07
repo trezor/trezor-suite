@@ -1,0 +1,61 @@
+import { getNetworkReserve } from '@suite-common/trading';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
+import { Banner } from '@trezor/components';
+
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite/Translation';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+
+interface TradingNetworkReserveBannerProps {
+    symbol: NetworkSymbol;
+    contractAddress?: string;
+}
+
+export const TradingNetworkReserveBanner = ({
+    symbol,
+    contractAddress,
+}: TradingNetworkReserveBannerProps) => {
+    const dispatch = useDispatch();
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
+
+    const onManageClick = () => {
+        dispatch(
+            goto('settings-index', {
+                preserveParams: true,
+                anchor: SettingsAnchor.NetworkReserve,
+            }),
+        );
+    };
+
+    if (!isNetworkReserveEnabled) return null;
+
+    const networkReserve = getNetworkReserve({
+        symbol,
+        contractAddress,
+        isEnabled: isNetworkReserveEnabled,
+    });
+    if (!networkReserve) return null;
+
+    const network = getNetwork(symbol);
+
+    return (
+        <Banner
+            intent="info"
+            rightContent={
+                <Banner.Button onClick={onManageClick}>
+                    <Translation id="TR_NETWORK_RESERVE_MANAGE" />
+                </Banner.Button>
+            }
+        >
+            <Translation
+                id="TR_NETWORK_RESERVE_BANNER"
+                values={{
+                    amount: networkReserve,
+                    displaySymbol: network.displaySymbol,
+                }}
+            />
+        </Banner>
+    );
+};

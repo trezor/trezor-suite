@@ -178,6 +178,8 @@ export interface TradingSellFormContextProps
     sendTransaction: () => Promise<boolean>;
     selectQuote: (quote: SellFiatTrade) => void;
     methods: UseFormReturn<TradingSellFormProps>;
+    showReserveBanner: boolean;
+    setShowReserveBanner: (showReserveBanner: boolean) => void;
 }
 
 export type TradingExchangeConfirmTradeProps = {
@@ -250,6 +252,9 @@ export interface TradingExchangeFormContextProps
     isApproval: boolean;
     setIsApproval: (isApproval: boolean) => void;
     methods: UseFormReturn<TradingExchangeFormProps>;
+
+    showReserveBanner: boolean;
+    setShowReserveBanner: (showReserveBanner: boolean) => void;
 }
 
 export type TradingExchangeApprovalType = 'APPROVE' | 'REVOKE';
@@ -320,6 +325,9 @@ export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormPro
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
     setAccountOnChange: (account: Account) => void;
     setComposedLevels: (levels: PrecomposedLevels | PrecomposedLevelsCardano | undefined) => void;
+    composedLevels: PrecomposedLevels | PrecomposedLevelsCardano | undefined;
+    composedTransactionInfo: TradingComposedTransactionInfo;
+    setShowReserveBanner: (showReserveBanner: boolean) => void;
 }
 
 export interface TradingUseFormActionsReturnProps {
@@ -340,6 +348,7 @@ export interface TradingUseComposeTransactionProps<T extends TradingSellExchange
     network: Network;
     methods: UseFormReturn<T>;
     values: T;
+    setShowReserveBanner: (showReserveBanner: boolean) => void;
 }
 
 export interface TradingUseComposeTransactionStateProps {

@@ -219,6 +219,7 @@ export const networks = {
         coingeckoId: 'base',
         tradeCryptoId: 'base--0x0000000000000000000000000000000000000000',
         caipId: 'eip155:8453',
+        nativeTokenReserve: '0.0002',
     },
     op: {
         symbol: 'op',
@@ -254,6 +255,7 @@ export const networks = {
         coingeckoId: 'optimistic-ethereum',
         tradeCryptoId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
         caipId: 'eip155:10',
+        nativeTokenReserve: '0.0002',
     },
     avax: {
         symbol: 'avax',
@@ -319,6 +321,7 @@ export const networks = {
         coingeckoId: 'solana',
         tradeCryptoId: 'solana',
         caipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        nativeTokenReserve: '0.003',
     },
     ada: {
         // icarus derivation

@@ -20,6 +20,7 @@ import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/Trad
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
 
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
+import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 
 export const TradingSellFormInputs = () => {
@@ -33,6 +34,7 @@ export const TradingSellFormInputs = () => {
         shouldSendInSats,
         getValues,
         changeFeeLevel,
+        showReserveBanner,
     } = context;
     const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
     const output = outputs[0];
@@ -82,6 +84,13 @@ export const TradingSellFormInputs = () => {
                         </Row>
                     )}
                 </Column>
+
+                {showReserveBanner && (
+                    <TradingNetworkReserveBanner
+                        symbol={account.symbol}
+                        contractAddress={tokenAddress}
+                    />
+                )}
             </Column>
             <Divider margin={0} />
             <Fees

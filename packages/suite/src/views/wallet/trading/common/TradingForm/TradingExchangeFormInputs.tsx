@@ -25,6 +25,7 @@ import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/Trad
 import { TradingFormSwitcherExchangeRates } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherExchangeRates';
 
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
+import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
@@ -43,6 +44,7 @@ export const TradingExchangeFormInputs = () => {
         setValue,
         changeFeeLevel,
         shouldSendInSats,
+        showReserveBanner,
     } = context;
     const { rateType, sendCryptoSelect, receiveCryptoSelect, outputs, amountInCrypto } =
         getValues();
@@ -118,6 +120,14 @@ export const TradingExchangeFormInputs = () => {
                         </Row>
                     )}
                 </Column>
+
+                {showReserveBanner && (
+                    <TradingNetworkReserveBanner
+                        symbol={account.symbol}
+                        contractAddress={tokenAddress}
+                    />
+                )}
+
                 <TradingFormInputCryptoSelect<TradingExchangeFormProps>
                     placeholder="TR_SELECT_TOKEN"
                     label="TR_TO"

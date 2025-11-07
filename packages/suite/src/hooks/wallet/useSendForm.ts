@@ -100,6 +100,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const [state, setState] = useState<UseSendFormState>(
         getStateFromProps({ selectedAccount, localCurrency, online, metadataEnabled }),
     );
+
+    const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
+
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
 
@@ -185,6 +188,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         updateContext,
         setLoading,
         setAmount: sendFormUtils.setAmount,
+        setShowReserveBanner,
     });
 
     const changeHandlers = useSendFormChangeHandlers({
@@ -416,6 +420,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...sendFormUtils,
         ...sendFormOutputs,
         ...changeHandlers,
+        showReserveBanner,
+        setShowReserveBanner,
     };
 };
 

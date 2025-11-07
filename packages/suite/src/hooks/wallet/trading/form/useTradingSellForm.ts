@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { BankAccount, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
@@ -86,6 +86,9 @@ export const useTradingSellForm = ({
     const paymentMethods = useSelector(selectTradingPaymentMethods);
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
+
+    const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
+
     const [accountKey, setAccountKey] = useTradingAccountKey({
         type,
         tradingAccountKey,
@@ -197,6 +200,7 @@ export const useTradingSellForm = ({
         network,
         values: values as TradingSellFormProps,
         methods,
+        setShowReserveBanner,
     });
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
@@ -235,6 +239,9 @@ export const useTradingSellForm = ({
             dispatch(tradingSellActions.setTradingAccountKey(newAccount.key));
             setAccountKey(newAccount.key);
         },
+        composedLevels,
+        composedTransactionInfo,
+        setShowReserveBanner,
     });
 
     const getCommonFunctions = async (quote: SellFiatTrade) => {
@@ -618,5 +625,7 @@ export const useTradingSellForm = ({
         goToOffers,
         selectQuote,
         sendTransaction,
+        showReserveBanner,
+        setShowReserveBanner,
     };
 };
