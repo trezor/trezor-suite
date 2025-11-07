@@ -384,10 +384,6 @@ export const selectIsFirmwareUpgradable = createMemoizedSelector(
     deviceReleaseInfo => deviceReleaseInfo?.isNewer ?? false,
 );
 
-export const selectDeviceFirmwareVersion = createMemoizedSelector([selectSelectedDevice], device =>
-    getFirmwareVersion(device),
-);
-
 export const selectDeviceFirmwareVersionArray = createMemoizedSelector(
     [selectSelectedDevice],
     device => getFirmwareVersionArray(device),

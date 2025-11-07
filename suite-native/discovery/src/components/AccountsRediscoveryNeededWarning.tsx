@@ -5,6 +5,7 @@ import {
     WalletCoreCompoundRootState,
     selectDeviceModelById,
     selectIsDeviceConnected,
+    selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
     selectShouldAccountsBeRediscovered,
     selectShouldRediscover,
@@ -34,10 +35,18 @@ export const AccountsRediscoveryNeededWarning = ({
         selectShouldAccountsBeRediscovered(state, device?.state?.staticSessionId),
     );
 
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+
     const shouldUserBePromptedToReconnectDevice =
         !shouldRediscover && !shouldAccountsBeRediscovered;
 
-    if (shouldUserBePromptedToReconnectDevice || !deviceModel || isDeviceConnected) return null;
+    if (
+        shouldUserBePromptedToReconnectDevice ||
+        !deviceModel ||
+        isDeviceConnected ||
+        isPortfolioTrackerDevice
+    )
+        return null;
 
     return (
         <Box padding={hasPadding ? 'sp8' : undefined}>
