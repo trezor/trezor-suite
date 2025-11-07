@@ -17,6 +17,7 @@
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
+        { "path": "../local-first-storage" },
         { "path": "../../packages/connect" }
     ]
 }
