@@ -102,7 +102,6 @@ export enum EventType {
     SettingsDeviceChangeHapticFeedback = 'settings/device/change-haptic-feedback',
     SettingsDeviceChangeBrightness = 'settings/device/change-brightness',
     SettingsMultiShareBackup = 'settings/device/multi-share-backup',
-    SettingsDeviceWipe = 'settings/device/wipe',
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
 
     SettingsGeneralBioAuth = 'settings/general/bio-auth',

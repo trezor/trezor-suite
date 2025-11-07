@@ -42,6 +42,7 @@ export type SuiteSharedAnalyticsEvent =
           };
       }
     | { type: EventType.SettingsDeviceChangeLabel }
+    | { type: EventType.SettingsDeviceWipe }
     | {
           type: EventType.ConnectPopupInit;
       }

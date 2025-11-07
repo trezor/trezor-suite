@@ -8,6 +8,7 @@ export enum EventType {
     WalletConnectError = 'wallet-connect/error',
 
     SettingsDeviceChangeLabel = 'settings/device/change-label',
+    SettingsDeviceWipe = 'settings/device/wipe',
 
     ConnectPopupInit = 'connect-popup/init',
     ConnectPopupPermissions = 'connect-popup/permissions',
