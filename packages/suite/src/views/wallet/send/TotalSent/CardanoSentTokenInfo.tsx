@@ -34,7 +34,7 @@ export const CardanoSentTokenInfo = () => {
             .map(token => [token.symbol?.toUpperCase(), tokenAmountsMap.get(token.contract)]);
     }, [tokens, formOutputs]);
 
-    if (networkType !== 'cardano' && !hasTransactionInfo) return null;
+    if (networkType !== 'cardano' || !hasTransactionInfo) return null;
 
     return sentTokenList?.map(([tokenSymbol, amount]) => (
         <FormattedCryptoAmount
