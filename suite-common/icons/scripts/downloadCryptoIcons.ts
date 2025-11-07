@@ -56,7 +56,7 @@ const updateIcon = async (coin: CoinListData) => {
     try {
         new URL(coinData.image.large);
     } catch {
-        console.error('Invalid url:', coinData.image.large);
+        console.error(`Invalid url (${coin.id}):`, coinData.image.large);
 
         return;
     }
@@ -64,7 +64,7 @@ const updateIcon = async (coin: CoinListData) => {
     const originImage = await fetch(coinData.image.large);
     if (!originImage.ok) {
         console.error(
-            'Invalid image:',
+            `Invalid image (${coin.id}):`,
             coinData.image.large,
             originImage.status,
             originImage.statusText,
@@ -88,11 +88,13 @@ const updateIcon = async (coin: CoinListData) => {
                     const name = `${platform}--${contract}`;
 
                     const fileName = createCoinImageName(name, { size, quality });
+                    console.log(`Writing image (${coin.id}):`, fileName);
                     writeImageSync(fileName, finalImageBuffer);
 
                     // Make sure it's backwards compatible for older versions of the Trezor Suite
                     if (size === 24) {
                         const fileNameLegacy = createCoinImageNameLegacy(name, quality);
+                        console.log(`Writing image - legacy (${coin.id}):`, fileNameLegacy);
                         writeImageSync(fileNameLegacy, finalImageBuffer);
                     }
                 });
@@ -100,17 +102,19 @@ const updateIcon = async (coin: CoinListData) => {
                 const name = coinData.id;
 
                 const fileName = createCoinImageName(name, { size, quality });
+                console.log(`Writing image (${coin.id}):`, fileName);
                 writeImageSync(fileName, finalImageBuffer);
 
                 // Make sure it's backwards compatible for older versions of the Trezor Suite
                 if (size === 24) {
                     const fileNameLegacy = createCoinImageNameLegacy(name, quality);
+                    console.log(`Writing image - legacy (${coin.id}):`, fileNameLegacy);
                     writeImageSync(fileNameLegacy, finalImageBuffer);
                 }
             }
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error(`Error (${coin.id}):`, error);
     }
 };
 
