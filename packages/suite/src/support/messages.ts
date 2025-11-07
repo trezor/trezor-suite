@@ -6473,7 +6473,7 @@ export default defineMessages({
     },
     TR_LABELING_SECURE_SYNC: {
         id: 'TR_LABELING_SECURE_SYNC',
-        defaultMessage: 'Secure Sync (recommended)',
+        defaultMessage: 'Suite Sync (recommended)',
     },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
@@ -10648,11 +10648,11 @@ export default defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
-        defaultMessage: 'Turn on Secure Sync to use labels',
+        defaultMessage: 'Turn on Suite Sync to use labels',
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION',
-        defaultMessage: 'Secure Sync keeps your data up to date on all your devices.',
+        defaultMessage: 'Suite Sync keeps your data up to date on all your devices.',
     },
     TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
@@ -10668,7 +10668,7 @@ export default defineMessages({
     },
     TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
         id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
-        defaultMessage: 'Labels created with Secure Sync can’t be migrated',
+        defaultMessage: 'Labels created with Suite Sync can’t be migrated',
     },
     TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
         id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
