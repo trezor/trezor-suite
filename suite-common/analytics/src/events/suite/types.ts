@@ -621,7 +621,6 @@ export type SuiteAnalyticsEvent =
               value?: number;
           };
       }
-    | { type: EventType.SettingsDeviceWipe }
     | {
           type: EventType.SettingsDeviceChangePassphraseProtection;
           payload: {
