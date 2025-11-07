@@ -1,16 +1,18 @@
+import { ReactNode, memo } from 'react';
+
 import { Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
+export const ASSET_ROW_GROUP_LABEL_HEIGHT = 24;
 
-import { AssetRowGroupLabelDataProps } from '../../constants';
+export type AssetGroupLabelProps = {
+    label: ReactNode;
+};
 
-export type AssetGroupLabelProps = AssetRowGroupLabelDataProps;
-
-export function AssetGroupLabel({ label }: AssetGroupLabelProps) {
+export const AssetGroupLabel = memo(function AssetGroupLabelInner({ label }: AssetGroupLabelProps) {
     return (
         <Text typographyStyle="hint" variant="default" margin={{ bottom: spacings.xxs }}>
-            <Translation id={label} />
+            {label}
         </Text>
     );
-}
+});

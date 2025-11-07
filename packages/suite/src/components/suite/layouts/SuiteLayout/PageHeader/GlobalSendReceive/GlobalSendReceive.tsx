@@ -6,7 +6,7 @@ import { LocalAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
 import { AccountItemType } from 'src/types/wallet';
 
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
-import { GlobalSendModal } from './GlobalSendModal';
+import { GlobalSendModal } from './GlobalSendModal/GlobalSendModal';
 import { GlobalSendReceiveButtons } from './GlobalSendReceiveButtons';
 import { useGlobalSendReceiveAnalytics } from './hooks/useGlobalSendReceiveAnalytics';
 import { useGlobalSendReceiveModal } from './hooks/useGlobalSendReceiveModal';

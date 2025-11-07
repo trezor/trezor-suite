@@ -5,10 +5,9 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
-import { asBaseCurrencyAmount, getAccountFiatBalance } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { accountsFiatBalanceInDescOrderComparator } from '@suite-common/wallet-utils';
 
-import { ASSET_ROW_HEIGHTS } from 'src/components/suite/asset-picker/constants';
+import { ASSET_ROW_ACCOUNT_HEIGHT } from 'src/components/suite/asset-picker/components';
 import { useSelector } from 'src/hooks/suite';
 
 export function useAccountsOptions() {
@@ -18,41 +17,27 @@ export function useAccountsOptions() {
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
-    return useMemo(
-        () =>
-            accounts
-                .map(account => {
-                    const accountFiatBalance =
-                        getAccountFiatBalance({
-                            account,
-                            baseCurrencyCode,
-                            rates: fiatRagesRef.current,
-                            shouldIncludeTokens: false,
-                            shouldIncludeStaking: false,
-                        }) ?? new BigNumber(0);
+    return useMemo(() => {
+        const fiatRates = fiatRagesRef.current;
 
-                    return {
-                        accountFiatBalance: asBaseCurrencyAmount(accountFiatBalance),
-                        account,
-                    };
-                })
-                .toSorted(function sortByFiatBalanceInDescOrder(itemA, itemB) {
-                    if (itemB.accountFiatBalance.gt(itemA.accountFiatBalance)) {
-                        return 1;
-                    }
+        if (!fiatRates) {
+            return [];
+        }
 
-                    if (itemA.accountFiatBalance.gt(itemB.accountFiatBalance)) {
-                        return -1;
-                    }
-
-                    return 0;
-                })
-                .map(({ account }) => ({
-                    account,
-                    height: ASSET_ROW_HEIGHTS['account'],
-                })),
-        [accounts, baseCurrencyCode],
-    );
+        return accounts
+            .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
+                return accountsFiatBalanceInDescOrderComparator({
+                    accountA,
+                    accountB,
+                    baseCurrencyCode,
+                    fiatRates,
+                });
+            })
+            .map(account => ({
+                account,
+                height: ASSET_ROW_ACCOUNT_HEIGHT,
+            }));
+    }, [accounts, baseCurrencyCode]);
 }
 
 export type AccountOption = ReturnType<typeof useAccountsOptions>[number];
