@@ -7,6 +7,7 @@ import { Box, Card, IconButton, Modal } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { DeviceAnimation } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -104,6 +105,13 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
     }, [isBluetoothMode, allowPairAgain]);
 
     const handlePrimaryCta = () => {
+        analytics.report({
+            type: EventType.DeviceConnectionHintModal,
+            payload: {
+                option: 'again',
+            },
+        });
+
         if (isBluetoothMode) {
             onReScanClick();
         }
@@ -112,9 +120,23 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
 
     const handleTertiaryCta = () => {
         if (isBluetoothMode) {
+            analytics.report({
+                type: EventType.DeviceConnectionHintModal,
+                payload: {
+                    option: allowPairAgain ? 'notWorking' : 'close',
+                },
+            });
+
             if (allowPairAgain) toggleShouldPairAgain();
             toggleShowHints();
         } else {
+            analytics.report({
+                type: EventType.DeviceConnectionHintModal,
+                payload: {
+                    option: 'close',
+                },
+            });
+
             openTrezorSupport();
             onClose();
         }
