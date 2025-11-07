@@ -5,7 +5,7 @@ import {
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import { Account } from '@suite-common/wallet-types';
+import { Account, StakeType } from '@suite-common/wallet-types';
 import { Column, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -19,6 +19,7 @@ type UseProgressLabelsData = {
     isStakePending: boolean;
     selectedAccount?: Account;
     solStakingAccountStatus?: string | null;
+    pendingTxStakeType?: StakeType;
 };
 
 export const useProgressLabelsData = ({
@@ -28,7 +29,10 @@ export const useProgressLabelsData = ({
     isStakePending,
     selectedAccount,
     solStakingAccountStatus,
+    pendingTxStakeType,
 }: UseProgressLabelsData) => {
+    const isUnstake = pendingTxStakeType === 'unstake';
+
     const ethereumProgressLabelsData: ProgressLabelData[] = useMemo(
         () => [
             {
@@ -153,68 +157,78 @@ export const useProgressLabelsData = ({
     );
 
     const cardanoProgressLabelsData: ProgressLabelData[] = useMemo(
-        () => [
-            {
-                id: 0,
-                progressState: (() => {
-                    if (isStakeConfirming) return 'active';
+        () =>
+            [
+                {
+                    id: 0,
+                    progressState: (() => {
+                        if (isStakeConfirming) return 'active';
 
-                    return 'done';
-                })(),
-                children: isStakeConfirming ? (
-                    <Translation id="TR_TX_CONFIRMING" />
-                ) : (
-                    <Translation id="TR_TX_CONFIRMED" />
-                ),
-            },
-            {
-                id: 1,
-                progressState: (() => {
-                    if (isStakePending && !isStakeConfirming) return 'active';
+                        return 'done';
+                    })(),
+                    children: isStakeConfirming ? (
+                        <Translation id="TR_TX_CONFIRMING" />
+                    ) : (
+                        <Translation id="TR_TX_CONFIRMED" />
+                    ),
+                },
+                !isUnstake && {
+                    id: 1,
+                    progressState: (() => {
+                        if (isStakePending && !isStakeConfirming) return 'active';
 
-                    return 'stale';
-                })(),
-                children: (
-                    <Column>
-                        <Translation id="TR_STAKE_ACTIVATION_PERIOD" />
+                        return 'stale';
+                    })(),
+                    children: (
+                        <Column>
+                            <Translation id="TR_STAKE_ACTIVATION_PERIOD" />
+                            {!isUnstake && (
+                                <Paragraph typographyStyle="label" variant="tertiary">
+                                    <Translation
+                                        id="TR_UP_TO_DAYS"
+                                        values={{
+                                            count: CARDANO_ACTIVATION_PERIOD_DAYS,
+                                        }}
+                                    />
+                                </Paragraph>
+                            )}
+                        </Column>
+                    ),
+                },
+                {
+                    id: 2,
+                    progressState: (() => {
+                        if (!isStakePending && !isStakeConfirming) {
+                            return 'active';
+                        }
 
-                        <Paragraph typographyStyle="label" variant="tertiary">
-                            <Translation
-                                id="TR_UP_TO_DAYS"
-                                values={{
-                                    count: CARDANO_ACTIVATION_PERIOD_DAYS,
-                                }}
-                            />
-                        </Paragraph>
-                    </Column>
-                ),
-            },
-            {
-                id: 2,
-                progressState: (() => {
-                    if (!isStakePending && !isStakeConfirming) {
-                        return 'active';
-                    }
+                        return 'stale';
+                    })(),
+                    children: (
+                        <Column>
+                            {isUnstake ? (
+                                <Translation id="TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT" />
+                            ) : (
+                                <Translation id="TR_STAKE_STAKED_AND_EARNING" />
+                            )}
 
-                    return 'stale';
-                })(),
-                children: (
-                    <Column>
-                        <Translation id="TR_STAKE_STAKED_AND_EARNING" />
-
-                        <Paragraph typographyStyle="label" variant="tertiary">
-                            <Translation
-                                id="TR_UP_TO_DAYS"
-                                values={{
-                                    count: CARDANO_EPOCH_DAYS,
-                                }}
-                            />
-                        </Paragraph>
-                    </Column>
-                ),
-            },
-        ],
-        [isStakeConfirming, isStakePending],
+                            <Paragraph typographyStyle="label" variant="tertiary">
+                                {isUnstake ? (
+                                    <Translation id="TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY" />
+                                ) : (
+                                    <Translation
+                                        id="TR_UP_TO_DAYS"
+                                        values={{
+                                            count: CARDANO_EPOCH_DAYS,
+                                        }}
+                                    />
+                                )}
+                            </Paragraph>
+                        </Column>
+                    ),
+                },
+            ].filter(Boolean) as ProgressLabelData[],
+        [isStakeConfirming, isStakePending, isUnstake],
     );
 
     switch (selectedAccount?.networkType) {

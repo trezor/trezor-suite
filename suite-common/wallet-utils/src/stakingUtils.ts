@@ -25,7 +25,12 @@ import {
     SOLANA_EPOCH_DAYS,
     UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
-import { Account, PrecomposedLevels, StakingPoolExtended } from '@suite-common/wallet-types';
+import {
+    Account,
+    PrecomposedLevels,
+    StakingPoolExtended,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -34,11 +39,13 @@ import { subunitsToUnits } from './amountUtils';
 import {
     getAdaAccountTotalStakingBalance,
     isSupportedAdaStakingNetworkSymbol,
+    subtypeToStakeTypeMap,
 } from './cardanoStakingUtils';
 import {
     getAccountEverstakeStakingPool,
     getEthAccountTotalStakingBalance,
     isSupportedEthStakingNetworkSymbol,
+    signatureToStakeTypeMap,
 } from './ethereumStakingUtils';
 import {
     getSolAccountTotalStakingBalance,
@@ -223,4 +230,20 @@ export const calculateRewards = (amount: string, apyPercent: number, days = 365)
     const currentRewards = new BigNumber(amount).multipliedBy(factor).toString();
 
     return currentRewards;
+};
+
+export const getTxStakeType = (tx: WalletAccountTransaction) => {
+    const signature = tx?.ethereumSpecific?.parsedData?.methodId;
+
+    if (signature) {
+        return signatureToStakeTypeMap[signature];
+    }
+
+    if (tx?.solanaSpecific?.stakeOperation) {
+        return tx?.solanaSpecific.stakeOperation?.type;
+    }
+
+    if (tx?.cardanoSpecific?.subtype) {
+        return subtypeToStakeTypeMap[tx?.cardanoSpecific.subtype];
+    }
 };
