@@ -37,17 +37,6 @@ export const All: StoryObj<typeof meta> = {
                     data-testid="trezor-logo-vertical-black"
                 />
                 <TrezorLogo type="symbol" width="50px" data-testid="trezor-logo-symbol-black" />
-                <TrezorLogo type="suite" width="200px" data-testid="trezor-suite-logo-black" />
-                <TrezorLogo
-                    type="suite_square"
-                    width="50px"
-                    data-testid="trezor-suite-square-logo-white"
-                />
-                <TrezorLogo
-                    type="suite_compact"
-                    width="200px"
-                    data-testid="trezor-suite-compact-logo-white"
-                />
             </LogoWrapper>
         </StoryColumn>
     ),

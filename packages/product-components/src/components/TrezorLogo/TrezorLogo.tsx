@@ -2,42 +2,46 @@ import { ReactSVG } from 'react-svg';
 
 import styled, { useTheme } from 'styled-components';
 
+import {
+    FrameProps,
+    FramePropsKeys,
+    type TransientProps,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '@trezor/components';
+
 import { LOGOS } from './trezorLogos';
 
-export type TrezorLogoType =
-    | 'horizontal'
-    | 'vertical'
-    | 'symbol'
-    | 'suite'
-    | 'suite_square'
-    | 'suite_compact';
+export const allowedTrezorLogoFrameProps = [
+    'margin',
+    'width',
+    'height',
+] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedTrezorLogoFrameProps)[number]>;
 
-const SvgWrapper = styled.div<{
-    $width?: string | number;
-    $height?: string | number;
-}>`
-    width: ${({ $width }) => $width};
-    height: ${({ $height }) => $height};
+export const trezorLogoTypes = ['horizontal', 'vertical', 'symbol'] as const;
+type TrezorLogoType = (typeof trezorLogoTypes)[number];
+
+const SvgWrapper = styled.div<TransientProps<AllowedFrameProps>>`
+    ${withFrameProps};
 `;
 
-export interface TrezorLogoProps {
+export type TrezorLogoProps = AllowedFrameProps & {
     type: TrezorLogoType;
-    width?: string | number;
-    height?: string | number;
     'data-testid'?: string;
-}
+};
 
 const Loading = () => <span className="loading" />;
 
 export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: TrezorLogoProps) => {
+    const frameProps = pickAndPrepareFrameProps(
+        { ...rest, width, height },
+        allowedTrezorLogoFrameProps,
+    );
     const theme = useTheme();
 
     return (
-        <SvgWrapper
-            $width={typeof width === 'number' ? `${width}px` : width}
-            $height={typeof height === 'number' ? `${height}px` : height}
-            {...rest}
-        >
+        <SvgWrapper {...frameProps}>
             <ReactSVG
                 src={LOGOS[type.toUpperCase()]}
                 beforeInjection={(svg: SVGElement) => {
