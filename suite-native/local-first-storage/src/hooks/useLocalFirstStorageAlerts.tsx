@@ -27,13 +27,14 @@ export const useLocalFirstStorageAlerts = () => {
         });
     };
 
-    const showLocalFirstStorageEnableConfirmationAlert = () => {
+    const showLocalFirstStorageEnableConfirmationAlert = (onSuccess: () => void) => {
         showAlert({
             title: <Translation id="labeling.enableAlert.title" />,
             description: <Translation id="labeling.enableAlert.description" />,
             primaryButtonTitle: <Translation id="labeling.enableAlert.cta" />,
             onPressPrimaryButton: () => {
                 enableLocalFirstStorageIfNeeded(evoluReactNativeDeps);
+                onSuccess();
             },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
         });
