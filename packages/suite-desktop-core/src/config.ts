@@ -42,6 +42,8 @@ export const allowedDomains = [
     'xrplcluster.com', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     'xrpl.ws', // XRP Ledger cluster, hosted by XRP Ledger Foundation
     's2.ripple.com', // XRP Ledger cluster, hosted by Ripple
+    'github.com', // TODO resolve better
+    'githubusercontent.com', // TODO resolve better
     ...(isDevEnv === true ? allowedDomainsDev : []),
 ];
 

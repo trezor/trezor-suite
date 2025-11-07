@@ -261,7 +261,7 @@ export abstract class BaseProcess {
         return this.supportedSystems.includes(system);
     }
 
-    private getPlatformInfo() {
+    protected getPlatformInfo() {
         const { arch } = process;
         const platform = this.getPlatform();
         const ext = platform === 'win' ? '.exe' : '';
