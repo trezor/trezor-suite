@@ -67,7 +67,10 @@ export const save: {
     }
 };
 
-export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
+export const read: {
+    (directory: string, name: string, encoding: 'utf-8'): Promise<InvokeResult<string>>;
+    (directory: string, name: string, encoding?: undefined): Promise<InvokeResult<Buffer>>;
+} = async (directory, name, encoding) => {
     const dir = path.join(app.getPath('userData'), directory);
     const file = path.join(dir, name);
 
@@ -78,11 +81,25 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
     }
 
     try {
-        const payload = await fs.promises.readFile(file, 'utf-8');
+        const payload: any = await fs.promises.readFile(file, encoding);
 
         return { success: true, payload };
     } catch (error) {
         global.logger.error('user-data', `Read failed: ${error.message}`);
+
+        return { success: false, error: error.message, code: error.code };
+    }
+};
+
+export const remove = async (directory: string, name: string) => {
+    const file = path.join(app.getPath('userData'), directory, name);
+
+    try {
+        await fs.promises.unlink(file);
+
+        return { success: true };
+    } catch (error) {
+        global.logger.error('user-data', `Remove file failed: ${error.message}`);
 
         return { success: false, error: error.message, code: error.code };
     }

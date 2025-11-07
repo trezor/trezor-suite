@@ -27,7 +27,7 @@ export const init: ModuleInit = () => {
         validateIpcMessage({ ipcEvent });
 
         logger.info(SERVICE_NAME, `Reading metadata from ${DATA_DIR}/${message.file}`);
-        const resp = await read(DATA_DIR, message.file);
+        const resp = await read(DATA_DIR, message.file, 'utf-8');
 
         return resp;
     });
