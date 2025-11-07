@@ -825,7 +825,7 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.DeviceConnectionHintModal;
           payload: {
-              option: 'again' | 'notWorking' | 'close';
+              option: 'notWorking' | 'close';
           };
       }
     | {
