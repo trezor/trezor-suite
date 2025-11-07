@@ -16,6 +16,9 @@ type GlobalSendReceiveModalBaseProps = {
     additionalAction?: React.ReactNode;
 };
 
+/**
+ * @deprecated
+ */
 export const GlobalSendReceiveModalBase = ({
     heading,
     onCancel,

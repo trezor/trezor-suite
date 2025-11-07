@@ -3220,6 +3220,15 @@ export default defineMessages({
         defaultMessage: 'Select an account to receive funds',
         id: 'TR_RECEIVE_SELECT_ACCOUNT',
     },
+    TR_RECEIVE_DESCRIPTION: {
+        defaultMessage:
+            'Tokens exist on multiple networks, so be sure to select the correct one. <a>Learn more</a>',
+        id: 'TR_RECEIVE_DESCRIPTION',
+    },
+    TR_RECEIVE_SEARCH: {
+        defaultMessage: 'Search account',
+        id: 'TR_RECEIVE_SEARCH',
+    },
     TR_RECEIVE_NETWORK: {
         defaultMessage: 'Receive {networkDisplaySymbol}',
         id: 'TR_RECEIVE_NETWORK',
