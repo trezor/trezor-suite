@@ -1,11 +1,15 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    SupportedCardanoNetworkSymbols,
     SupportedEthereumNetworkSymbol,
     SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 import {
+    getCardanoStakingSymbols,
     getSolanaStakingSymbols,
     getStakingSymbols,
+    isSupportedAdaStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isTestnet,
 } from '@suite-common/wallet-utils';
@@ -80,10 +84,21 @@ export const fetchEverstakeData = createThunk<
     }
 });
 
+const getStakingInfoEndpointParams = (symbol: NetworkSymbol) => {
+    if (isSupportedSolStakingNetworkSymbol(symbol)) {
+        return `name=solana`;
+    }
+    if (isSupportedAdaStakingNetworkSymbol(symbol)) {
+        return `name=cardano`;
+    }
+
+    return '';
+};
+
 export const fetchEverstakeStakingInfo = createThunk<
     { apy: number },
     {
-        symbol: SupportedSolanaNetworkSymbols;
+        symbol: SupportedSolanaNetworkSymbols | SupportedCardanoNetworkSymbols;
         endpointType: EverstakeAssetEndpointType;
     },
     { rejectValue: string }
@@ -94,7 +109,7 @@ export const fetchEverstakeStakingInfo = createThunk<
 
         const endpointSuffix = EVERSTAKE_ASSET_ENDPOINT_TYPES[endpointType];
         const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[symbol];
-        const endpointParams = isSupportedSolStakingNetworkSymbol(symbol) ? `name=solana` : '';
+        const endpointParams = getStakingInfoEndpointParams(symbol);
 
         try {
             const assetResponse = await fetch(
@@ -187,9 +202,14 @@ export const initStakeDataThunk = createThunk(
 
         const ethereumBasedNetworksWithStaking = getStakingSymbols(mergedNetworks);
         const solanaBasedNetworksWithStaking = getSolanaStakingSymbols(mergedNetworks);
+        const cardanoBasedNetworksWithStaking = getCardanoStakingSymbols(mergedNetworks);
 
         const createPromises = (
-            networks: (SupportedSolanaNetworkSymbols | SupportedEthereumNetworkSymbol)[],
+            networks: (
+                | SupportedSolanaNetworkSymbols
+                | SupportedEthereumNetworkSymbol
+                | SupportedCardanoNetworkSymbols
+            )[],
             endpointTypes: typeof EverstakeEndpointType | typeof EverstakeAssetEndpointType,
         ) =>
             networks
@@ -204,7 +224,10 @@ export const initStakeDataThunk = createThunk(
                             data?.lastSuccessfulFetchTimestamp <= fiveMinutesAgo;
 
                         if (shouldRefetch) {
-                            if (isSupportedSolStakingNetworkSymbol(symbol)) {
+                            if (
+                                isSupportedSolStakingNetworkSymbol(symbol) ||
+                                isSupportedAdaStakingNetworkSymbol(symbol)
+                            ) {
                                 if (!address) return null;
 
                                 return dispatch(
@@ -228,8 +251,12 @@ export const initStakeDataThunk = createThunk(
             solanaBasedNetworksWithStaking,
             EverstakeAssetEndpointType,
         );
+        const adaPromises = createPromises(
+            cardanoBasedNetworksWithStaking,
+            EverstakeAssetEndpointType,
+        );
 
-        return Promise.all([...ethPromises, ...solPromises]);
+        return Promise.all([...ethPromises, ...solPromises, ...adaPromises]);
     },
 );
 

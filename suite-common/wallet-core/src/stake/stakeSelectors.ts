@@ -31,7 +31,7 @@ export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSy
     }
 
     if (isSupportedAdaStakingNetworkSymbol(symbol)) {
-        return BACKUP_CARDANO_APY;
+        return data?.[symbol]?.stakingInfo?.data?.apy || BACKUP_CARDANO_APY;
     }
 
     return data?.[symbol]?.poolStats?.data.ethApy || BACKUP_ETH_APY;
