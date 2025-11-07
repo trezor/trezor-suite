@@ -26,6 +26,7 @@ type Base = AllowedAnimationPrimitiveFrameProps & {
     loop?: boolean;
     shape?: Shape;
     onEnded?: () => void;
+    autoPlay?: boolean;
     className?: string;
     onVideoMouseOver?: MouseEventHandler<HTMLVideoElement>;
 };
@@ -51,6 +52,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             loop = false,
             shape,
             onVideoMouseOver: onMouseOver,
+            autoPlay = true,
             onEnded,
             ...rest
         } = props;
@@ -65,7 +67,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         const withThemeVariant = (base: string) => `${base}_${variant}.webm`;
         const basePath = `videos/device/${modelDir}`;
         const rerenderKey = `${modelDir}_${type.toLowerCase()}_${variant}`;
-        const commonVideoProps = { loop, videoRef, onMouseOver, rerenderKey, onEnded };
+        const commonVideoProps = { loop, videoRef, onMouseOver, rerenderKey, onEnded, autoPlay };
 
         const content = (() => {
             switch (type) {
