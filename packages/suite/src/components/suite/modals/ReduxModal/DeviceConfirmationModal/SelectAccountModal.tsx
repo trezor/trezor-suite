@@ -61,7 +61,10 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
         p2sh: <Translation id="TR_LEGACY_SEGWIT_ACCOUNTS" />,
         p2pkh: <Translation id="TR_LEGACY_ACCOUNTS" />,
     };
-    const filteredAccounts = accounts?.filter(account => account.type === selectedAccountType);
+    const indexedAccounts = accounts?.map((account, index) => ({ ...account, index }));
+    const filteredAccounts = indexedAccounts?.filter(
+        account => account.type === selectedAccountType,
+    );
 
     return (
         <ConnectModalBackdrop onClick={close} canSwitchDevice>
@@ -113,7 +116,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>
-                                {filteredAccounts?.map((account, index) => {
+                                {filteredAccounts?.map(account => {
                                     const symbol = data.coinInfo.shortcut.toLowerCase();
                                     const suiteAccount = suiteAccounts.find(
                                         a =>
@@ -124,8 +127,8 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                     return (
                                         <Table.Row
                                             key={account.descriptor}
-                                            onClick={() => confirm(index)}
-                                            data-testid={`@select-account-modal/accounts/${account.type}/${index}`}
+                                            onClick={() => confirm(account.index)}
+                                            data-testid={`@select-account-modal/accounts/${account.type}/${account.index}`}
                                         >
                                             <Table.Cell>
                                                 <Row gap={spacings.sm}>
