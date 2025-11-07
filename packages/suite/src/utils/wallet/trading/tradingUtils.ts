@@ -10,18 +10,22 @@ import {
 } from '@suite-common/trading';
 import {
     Network,
+    NetworkSymbol,
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
     getNetworkFeatures,
     getNetworkType,
 } from '@suite-common/wallet-config';
+import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import {
+    asAmountSubunit,
     getContractAddressForNetworkSymbol,
     sortByCoin,
     substituteBip43Path,
+    subunitsToUnits,
 } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { Route, TrezorDevice } from 'src/types/suite';
@@ -390,4 +394,33 @@ export const getTradeTypeByRoute = (
     if (routeName?.startsWith('wallet-trading-exchange')) {
         return 'exchange';
     }
+};
+
+interface GetFeeInUnitsProps {
+    symbol: NetworkSymbol;
+    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
+    selectedFee?: FeeLevel['label'];
+}
+
+export const getFeeInUnits = ({
+    symbol,
+    composedLevels,
+    selectedFee = 'normal',
+}: GetFeeInUnitsProps): string => {
+    if (!composedLevels) return '0';
+
+    const selectedFeeLevel = composedLevels[selectedFee];
+
+    if (selectedFeeLevel.type !== 'final' && selectedFeeLevel.type !== 'nonfinal') {
+        return '0';
+    }
+
+    const { fee } = selectedFeeLevel;
+
+    const feeInUnits = subunitsToUnits({
+        value: asAmountSubunit(new BigNumber(fee)),
+        symbol,
+    }).toString();
+
+    return feeInUnits;
 };

@@ -30,6 +30,11 @@ export const setMevProtection = createAction(
     }),
 );
 
+export const setNetworkReserve = createAction(
+    WALLET_SETTINGS.SET_NETWORK_RESERVE,
+    (enabled: boolean) => ({ payload: enabled }),
+);
+
 export const toggleHideSuspiciousTransactions = createAction(
     WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
 );
@@ -52,11 +57,6 @@ export type ChangeCoinVisibilityAction = {
     };
 };
 
-export type SetMevProtectionAction = {
-    type: typeof WALLET_SETTINGS.SET_MEV_PROTECTION;
-    payload: boolean;
-};
-
 export type SetHideBalanceAction = {
     type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE;
     toggled: boolean;
@@ -73,10 +73,11 @@ export type WalletSettingsAction =
     | ReturnType<typeof toggleHideSuspiciousTransactions>
     | ReturnType<typeof setAutoForgetDeviceData>
     | ReturnType<typeof setAutoEjectEnabled>
+    | ReturnType<typeof setMevProtection>
+    | ReturnType<typeof setNetworkReserve>
     | ChangeCoinVisibilityAction
     | SetHideBalanceAction
-    | SetBitcoinAmountUnitsAction
-    | SetMevProtectionAction;
+    | SetBitcoinAmountUnitsAction;
 
 export const setDiscreetMode = (toggled: boolean): WalletSettingsAction => ({
     type: WALLET_SETTINGS.SET_HIDE_BALANCE,

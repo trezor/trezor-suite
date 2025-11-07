@@ -100,6 +100,8 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             setDraftSaveRequest: Dispatch<SetStateAction<boolean>>;
             // UTXO selection
             utxoSelection: UtxoSelectionContext;
+            showReserveBanner: boolean;
+            setShowReserveBanner: (show: boolean) => void;
         };
 
 export type RbfLabelsToBeUpdated = Record<

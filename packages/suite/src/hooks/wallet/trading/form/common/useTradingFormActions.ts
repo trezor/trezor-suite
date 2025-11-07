@@ -14,9 +14,14 @@ import {
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     cryptoIdToSymbol,
+    getCryptoAmountWithReserve,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectAccounts,
+    selectIsNetworkReserveEnabled,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
@@ -37,6 +42,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import {
     getAddressAndTokenFromAccountOptionsGroupProps,
+    getFeeInUnits,
     getTradingNetworkDecimals,
     tradingGetSortedAccounts,
 } from 'src/utils/wallet/trading/tradingUtils';
@@ -58,12 +64,16 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     composeRequest,
     setAccountOnChange,
     setComposedLevels,
+    composedLevels,
+    composedTransactionInfo,
+    setShowReserveBanner,
 }: TradingUseFormActionsProps<T>): TradingUseFormActionsReturnProps => {
     const dispatch = useDispatch();
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accountsSorted = tradingGetSortedAccounts({
         accounts,
         deviceState: device?.state?.staticSessionId,
@@ -88,6 +98,12 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     });
     const networkDecimals = getTradingNetworkDecimals({
         sendCryptoSelect,
+    });
+
+    const feeInUnits = getFeeInUnits({
+        symbol: account.symbol,
+        composedLevels,
+        selectedFee: composedTransactionInfo?.selectedFee,
     });
 
     const setFractionButton = (fraction: number | undefined) => {
@@ -195,7 +211,21 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             ? convertAmountUnitsToSubunits(amount, networkDecimals)
             : amount;
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
-        setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
+
+        const cryptoAmountWithReserve = isNetworkReserveEnabled
+            ? getCryptoAmountWithReserve({
+                  symbol: account.symbol,
+                  contractAddress: tokenAddress,
+                  balance: account.formattedBalance,
+                  amount: cryptoInputValue,
+                  fee: feeInUnits?.toString(),
+                  isNetworkReserveEnabled,
+              })
+            : cryptoInputValue;
+
+        setShowReserveBanner(cryptoAmountWithReserve !== cryptoInputValue);
+
+        setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoAmountWithReserve, { shouldDirty: true });
         setFractionButton(divisor);
     };
 

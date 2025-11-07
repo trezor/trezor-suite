@@ -1,7 +1,7 @@
 import { FormattedList } from 'react-intl';
 
 import { networksCollection } from '@suite-common/wallet-config';
-import { WALLET_SETTINGS, selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
+import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -19,19 +19,16 @@ export const MevProtection = () => {
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
 
-    function handleSwitchChange() {
+    const handleSwitchChange = () => {
         const nextIsMevProtectionEnabled = !isMevProtectionEnabled;
 
-        dispatch({
-            type: WALLET_SETTINGS.SET_MEV_PROTECTION,
-            payload: nextIsMevProtectionEnabled,
-        });
+        dispatch(setMevProtection(nextIsMevProtectionEnabled));
 
         analytics.report({
             type: EventType.SettingsGeneralMevProtection,
             payload: { value: nextIsMevProtectionEnabled },
         });
-    }
+    };
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.MevProtection}>

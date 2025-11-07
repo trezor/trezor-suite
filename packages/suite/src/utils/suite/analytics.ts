@@ -91,6 +91,7 @@ export const getSuiteReadyPayload = async (
         experimentVariants: experimentVariants.map(({ name, variant }) => `${name}:${variant}`),
 
         mevProtection: state.wallet.settings.mevProtection,
+        networkReserve: state.wallet.settings.networkReserve,
     };
 };
 

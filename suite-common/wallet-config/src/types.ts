@@ -130,6 +130,7 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     coingeckoId?: string;
     tradeCryptoId?: string;
     caipId?: string; // CAIP-2 chain id, used by WalletConnect
+    nativeTokenReserve?: string;
 };
 export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 

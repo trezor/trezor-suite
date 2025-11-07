@@ -39,6 +39,7 @@ export type SuiteAnalyticsEventSuiteReady = {
         isAutomaticUpdateEnabled: boolean;
         experimentVariants: string[];
         mevProtection: boolean;
+        networkReserve: boolean;
     };
 };
 
@@ -713,6 +714,12 @@ export type SuiteAnalyticsEvent =
       }
     | {
           type: EventType.SettingsGeneralMevProtection;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsGeneralNetworkReserve;
           payload: {
               value: boolean;
           };

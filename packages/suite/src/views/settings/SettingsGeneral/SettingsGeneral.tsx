@@ -3,6 +3,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
     selectIsMevProtectionSettingsVisible,
+    selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 
@@ -39,6 +40,7 @@ import { Experimental } from './Experimental';
 import { Labeling } from './Labeling';
 import { Language } from './Language';
 import { MevProtection } from './MevProtection';
+import { NetworkReserve } from './NetworkReserve';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
 import { StoreDeviceData } from './StoreDeviceData';
@@ -72,6 +74,7 @@ export const SettingsGeneral = () => {
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
+    const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -125,6 +128,12 @@ export const SettingsGeneral = () => {
             {isMevProtectionSettingsVisible && (
                 <SettingsSection title={<Translation id="TR_SECURITY" />} icon="shield">
                     <MevProtection />
+                </SettingsSection>
+            )}
+
+            {isNetworkReserveSettingsVisible && (
+                <SettingsSection title={<Translation id="TR_NETWORKS" />} icon="graph">
+                    <NetworkReserve />
                 </SettingsSection>
             )}
 

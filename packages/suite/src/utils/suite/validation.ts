@@ -242,3 +242,26 @@ export const validateReserveOrBalance =
 
         return undefined;
     };
+
+interface ValidateNetworkReserveOptions {
+    reserve?: string;
+    balance?: string;
+    fee?: string;
+}
+
+export const validateNetworkReserve =
+    (
+        translationString: TranslationFunction,
+        { reserve, balance, fee = '0' }: ValidateNetworkReserveOptions,
+    ) =>
+    (value: string) => {
+        if (!reserve || !balance) return undefined;
+
+        const accountBalance = new BigNumber(balance);
+        const networkReserve = new BigNumber(reserve);
+        const networkFee = new BigNumber(fee);
+
+        if (new BigNumber(value).gt(accountBalance.minus(networkReserve).minus(networkFee))) {
+            return translationString('AMOUNT_EXCEEDS_NETWORK_RESERVE');
+        }
+    };

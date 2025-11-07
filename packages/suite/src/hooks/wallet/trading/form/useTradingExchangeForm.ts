@@ -107,6 +107,7 @@ export const useTradingExchangeForm = ({
     // used for disabling approve/revoke controls when
     // quotes are scheduled to refresh after changing swap form inputs
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
+    const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
     const isTradingTermsDismissed = useSelector(state =>
         selectIsTradingTermsDismissed(state, type),
@@ -231,6 +232,7 @@ export const useTradingExchangeForm = ({
         network,
         values: values as TradingExchangeFormProps,
         methods,
+        setShowReserveBanner,
     });
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
@@ -268,6 +270,9 @@ export const useTradingExchangeForm = ({
         setAccountOnChange: newAccount => {
             dispatch(tradingExchangeActions.setTradingAccountKey(newAccount.key));
         },
+        composedLevels,
+        composedTransactionInfo,
+        setShowReserveBanner,
     });
 
     const selectQuote = async (quote: ExchangeTrade) => {
@@ -942,5 +947,7 @@ export const useTradingExchangeForm = ({
         setIsLoadingQuote,
         isApproval,
         setIsApproval,
+        showReserveBanner,
+        setShowReserveBanner,
     };
 };

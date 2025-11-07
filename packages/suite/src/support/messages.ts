@@ -2818,6 +2818,19 @@ export default defineMessages({
         defaultMessage: 'Available on {supportedNetworks}.',
         id: 'TR_MEV_AVAILABLE_ON',
     },
+    TR_NETWORKS: {
+        defaultMessage: 'Networks',
+        id: 'TR_NETWORKS',
+    },
+    TR_NETWORK_RESERVE: {
+        defaultMessage: 'Network reserve',
+        id: 'TR_NETWORK_RESERVE',
+    },
+    TR_NETWORK_RESERVE_DESCRIPTION: {
+        defaultMessage:
+            'We reserve a small amount of native token on {supportedNetworks} to cover extra network fees when you send, swap, or sell your assets.',
+        id: 'TR_NETWORK_RESERVE_DESCRIPTION',
+    },
     TR_CONFIRM_AUTO_EJECT: {
         defaultMessage: 'Enable auto-eject',
         id: 'TR_CONFIRM_AUTO_EJECT',
@@ -5886,6 +5899,10 @@ export default defineMessages({
         defaultMessage:
             'Insufficient {networkDisplaySymbol} to cover the transaction fee ({feeAmount} {networkDisplaySymbol}).',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
+    },
+    AMOUNT_EXCEEDS_NETWORK_RESERVE: {
+        defaultMessage: 'Not enough funds left after we reserve for network fees',
+        id: 'AMOUNT_EXCEEDS_NETWORK_RESERVE',
     },
     REMAINING_BALANCE_LESS_THAN_RENT: {
         defaultMessage:
@@ -10828,6 +10845,16 @@ export default defineMessages({
     TR_SIMULATION_NO_ASSETS: {
         id: 'TR_SIMULATION_NO_ASSETS',
         defaultMessage: 'No changes to your assets were detected.',
+    },
+    TR_NETWORK_RESERVE_BANNER: {
+        id: 'TR_NETWORK_RESERVE_BANNER',
+        defaultMessage:
+            'We reserve up to {amount} {displaySymbol} in case extra network fees apply.',
+    },
+    TR_NETWORK_RESERVE_MANAGE: {
+        defaultMessage: 'Manage',
+        description: 'Link to manage network reserve.',
+        id: 'TR_NETWORK_RESERVE_MANAGE',
     },
     TR_EXCHANGE_DETAIL_FEEDBACK_TITLE: {
         id: 'TR_EXCHANGE_DETAIL_FEEDBACK_TITLE',

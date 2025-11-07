@@ -1,0 +1,53 @@
+import { FormattedList } from 'react-intl';
+
+import { networksCollection } from '@suite-common/wallet-config';
+import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
+import { Switch } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
+
+import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
+import { ActionColumn, TextColumn } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+
+export const NetworkReserve = () => {
+    const dispatch = useDispatch();
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
+
+    const supportedNetworks = networksCollection
+        .filter(network => !!network.nativeTokenReserve)
+        .map(network => network.name);
+
+    const handleSwitchChange = () => {
+        const nextIsNetworkReserveEnabled = !isNetworkReserveEnabled;
+
+        dispatch(setNetworkReserve(nextIsNetworkReserveEnabled));
+
+        analytics.report({
+            type: EventType.SettingsGeneralNetworkReserve,
+            payload: { value: nextIsNetworkReserveEnabled },
+        });
+    };
+
+    return (
+        <SettingsSectionItem anchorId={SettingsAnchor.NetworkReserve}>
+            <TextColumn
+                title={<Translation id="TR_NETWORK_RESERVE" />}
+                description={
+                    <Translation
+                        id="TR_NETWORK_RESERVE_DESCRIPTION"
+                        values={{
+                            supportedNetworks: (
+                                <FormattedList type="conjunction" value={supportedNetworks} />
+                            ),
+                        }}
+                    />
+                }
+            />
+            <ActionColumn>
+                <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />
+            </ActionColumn>
+        </SettingsSectionItem>
+    );
+};

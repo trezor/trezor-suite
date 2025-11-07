@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FieldErrors } from 'react-hook-form';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -6,10 +7,12 @@ import {
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
+    getNetworkReserve,
     useTradingInfo,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import { getInputState } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
@@ -33,6 +36,7 @@ import {
     validateDecimals,
     validateInteger,
     validateMin,
+    validateNetworkReserve,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
 import {
@@ -41,6 +45,7 @@ import {
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
+    getFeeInUnits,
     getTradingNetworkDecimals,
     tradingGetAccountLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
@@ -56,9 +61,20 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
+    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const context = useTradingFormContext();
     const { amountLimits, account, network } = context;
+
+    const feeInUnits =
+        isTradingSellContext(context) || isTradingExchangeContext(context)
+            ? getFeeInUnits({
+                  symbol: account.symbol,
+                  composedLevels: context.composedLevels,
+                  selectedFee: context.composedTransactionInfo?.selectedFee,
+              })
+            : undefined;
+
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const {
@@ -89,6 +105,18 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
         network,
     });
 
+    const isNetworkReserveError =
+        (isTradingExchangeContext(context) || isTradingSellContext(context)) &&
+        cryptoInputError?.type === 'networkReserve';
+    const setShowReserveBanner =
+        isTradingExchangeContext(context) || isTradingSellContext(context)
+            ? context.setShowReserveBanner
+            : undefined;
+
+    useEffect(() => {
+        setShowReserveBanner?.(isNetworkReserveError);
+    }, [isNetworkReserveError, setShowReserveBanner]);
+
     const cryptoInputRules = {
         validate: {
             min: validateMin(translationString),
@@ -99,7 +127,6 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
                 areSatsUsed: !!shouldSendInSats,
                 formatter: CryptoAmountFormatter,
             }),
-
             ...(!isTradingBuyContext(context)
                 ? {
                       reserveOrBalance: validateReserveOrBalance(translationString, {
@@ -107,6 +134,17 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
                           areSatsUsed: !!shouldSendInSats,
                           contractAddress: (getValues() as FormState).outputs?.[0]?.token,
                       }),
+                      networkReserve: isNetworkReserveEnabled
+                          ? validateNetworkReserve(translationString, {
+                                reserve: getNetworkReserve({
+                                    symbol: account.symbol,
+                                    contractAddress,
+                                    isEnabled: isNetworkReserveEnabled,
+                                }),
+                                balance: account.formattedBalance,
+                                fee: feeInUnits?.toString(),
+                            })
+                          : () => undefined,
                   }
                 : {}),
         },
