@@ -5,7 +5,7 @@ import { useDevice } from 'src/hooks/suite';
 import { LocalAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
 import { AccountItemType } from 'src/types/wallet';
 
-import { GlobalReceiveModal } from './GlobalReceiveModal';
+import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
 import { GlobalSendModal } from './GlobalSendModal';
 import { GlobalSendReceiveButtons } from './GlobalSendReceiveButtons';
 import { useGlobalSendReceiveAnalytics } from './hooks/useGlobalSendReceiveAnalytics';

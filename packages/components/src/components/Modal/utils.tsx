@@ -5,6 +5,7 @@ import { FlexAlignItems, FlexJustifyContent } from '../Flex/FlexProp';
 export const mapModalSizeToWidth = (size: ModalSize) => {
     const widthMap: Record<ModalSize, number> = {
         tiny: 400,
+        little: 480,
         small: 600,
         medium: 680,
         large: 760,
