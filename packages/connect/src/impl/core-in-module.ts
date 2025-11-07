@@ -205,29 +205,6 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         });
     }
 
-    private initSettings = (settings: Partial<ConnectSettings> = {}) => {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            ...settings,
-            popup: false,
-        });
-
-        if (!this._settings.manifest) {
-            throw ERRORS.TypedError('Init_ManifestMissing');
-        }
-
-        if (!this._settings.transports?.length) {
-            // default fallback for node
-            this._settings.transports = ['BridgeTransport'];
-        }
-    };
-
-    public initCore() {
-        this.initSettings({ lazyLoad: false });
-
-        return this._coreManager.getOrInit(this._settings, this.boundOnCoreEvent);
-    }
-
     public async call(params: CallMethodPayload) {
         try {
             const { promiseId, promise } = this._messagePromises.create();
