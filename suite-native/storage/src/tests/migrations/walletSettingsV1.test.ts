@@ -31,7 +31,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({
             localCurrency: 'czk',
@@ -49,7 +49,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({});
     });
@@ -65,7 +65,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({
             localCurrency: 'czk',
@@ -83,7 +83,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({
             bitcoinAmountUnit: 3,
@@ -101,7 +101,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({});
     });
@@ -117,7 +117,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({});
     });
@@ -140,7 +140,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({
             enabledNetworks: ['btc', 'eth', 'bsc', 'test'],
@@ -171,22 +171,14 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
             return Promise.resolve(undefined);
         });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
 
         expect(migratedState).toEqual({
             enabledNetworks: ['btc', 'eth', 'test', 'bsc'],
         });
     });
 
-    it('should not migrate if both appSettings and discoveryConfig are missing', async () => {
-        mockGetStoredState.mockImplementation(() => Promise.resolve(undefined));
-
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(undefined);
-
-        expect(migratedState).toEqual(undefined); // undefined means nothing to migrate, initial state will be used
-    });
-
-    it('should not migrate if it is not an initial migration (something already persisted)', async () => {
+    it('should keep previous state if both appSettings and discoveryConfig are missing', async () => {
         mockGetStoredState.mockImplementation(() => Promise.resolve(undefined));
 
         const walletSettingsState = { someProperty: 'value' };
@@ -194,6 +186,6 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
         const migratedState =
             await initialMigrateAppSettingsAndDiscoveryConfig(walletSettingsState);
 
-        expect(migratedState).toEqual(undefined); // undefined means nothing to migrate, initial state will be used
+        expect(migratedState).toEqual(walletSettingsState);
     });
 });

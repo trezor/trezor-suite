@@ -82,9 +82,6 @@ const migrateDiscoveryConfigToWalletSettings = (
 };
 
 export const initialMigrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: unknown) => {
-    // This is supposed to be initial migration from an empty state.
-    if (typeof walletSettingsState !== 'undefined') return undefined;
-
     const storage = await initMmkvStorage();
     const appSettings = await getStoredState({
         key: 'appSettings',
@@ -95,9 +92,9 @@ export const initialMigrateAppSettingsAndDiscoveryConfig = async (walletSettings
         storage,
     });
 
-    if (!appSettings && !discoveryConfig) return undefined;
+    const newState = walletSettingsState as Partial<WalletSettings> & PersistedState;
 
-    const newState = {} as Partial<WalletSettings> & PersistedState;
+    if (!appSettings && !discoveryConfig) return newState;
 
     if (appSettings) {
         const localCurrency = migrateLocalCurrency(appSettings);

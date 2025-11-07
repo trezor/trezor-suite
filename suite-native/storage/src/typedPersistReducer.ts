@@ -3,7 +3,8 @@ import { Transform, persistReducer } from 'redux-persist';
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
-import { MigrationsManifest, createAsyncMigrate } from './createAsyncMigrate';
+import { createAsyncMigrate } from './createAsyncMigrate';
+import { MigrationsManifest } from './migrationTypes';
 import { initMmkvStorage } from './storage';
 
 export const preparePersistReducer = async <TReducerInitialState>({

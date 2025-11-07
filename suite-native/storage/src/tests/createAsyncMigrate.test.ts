@@ -13,16 +13,19 @@ describe('createAsyncMigrate', () => {
     });
 
     describe('empty state handling', () => {
-        it('should return undefined when oldState is null and no migration for version 1', async () => {
+        const emptyPersistedState = {
+            _persist: { rehydrated: true, version: -1 },
+        };
+        it('should return empty persisted state when oldState is null and no migration for version 1', async () => {
             const migrations = {};
             const migrate = createAsyncMigrate(migrations);
             // @ts-expect-error
             const result = await migrate(null, 0);
 
-            expect(result).toBeUndefined();
+            expect(result).toEqual(emptyPersistedState);
         });
 
-        it('should run initial migration when oldState is null and migration for version 1 exists', async () => {
+        it('should run migration when oldState is null and migration for version 1 exists', async () => {
             const mockMigration = jest.fn().mockResolvedValue({ migrated: true });
             const migrations = {
                 '1': mockMigration,
@@ -31,7 +34,7 @@ describe('createAsyncMigrate', () => {
             // @ts-expect-error
             const result = await migrate(null, 1);
 
-            expect(mockMigration).toHaveBeenCalledWith(null);
+            expect(mockMigration).toHaveBeenCalledWith(emptyPersistedState);
             expect(result).toEqual({ migrated: true });
         });
     });
