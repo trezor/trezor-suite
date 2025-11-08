@@ -2,7 +2,10 @@ class DeviceManagerActions {
     async tapDeviceSwitch() {
         const deviceSwitch = element(by.id('@device-manager/device-switch'));
 
-        await waitFor(deviceSwitch).toBeVisible().withTimeout(30000);
+        await waitFor(deviceSwitch).toBeVisible().withTimeout(30_000);
+        await waitFor(element(by.id('@screen/ConnectingDevice')))
+            .not.toBeVisible()
+            .withTimeout(30_000);
         await deviceSwitch.tap();
     }
 

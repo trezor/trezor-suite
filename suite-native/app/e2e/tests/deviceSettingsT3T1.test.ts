@@ -8,19 +8,19 @@ import { onDeviceAuthenticitySuccess } from '../pageObjects/deviceAuthenticitySu
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
-import { appIsFullyLoaded } from '../support/utils';
 
 const preloadedStateT3T1 = preparePreloadedReduxState(
     onboardingCompletedState,
     regtestDiscoveryFinishedStateT3T1,
 );
 
-conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () => {
-    describe('Tests with T3T1 device model [@specificModel]', () => {
+conditionalDescribe(
+    device.getPlatform() === 'android',
+    'Device settings T3T1 [@specificModel]',
+    () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateT3T1 } });
             await prepareTrezorEmulator({ model: 'T3T1' });
-            await appIsFullyLoaded();
 
             await onDeviceManager.tapDeviceSwitch();
             await onDeviceManager.tapDeviceSettingsButton();
@@ -100,5 +100,5 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device settings', () =>
 
             await onDeviceSettings.passCheckBackupFlow();
         });
-    });
-});
+    },
+);

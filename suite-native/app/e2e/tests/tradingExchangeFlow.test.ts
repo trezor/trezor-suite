@@ -1,5 +1,5 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
 import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
@@ -29,19 +29,9 @@ const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => {
     describe('with portfolio tracker [@noDevice]', () => {
         beforeEach(async () => {
-            await openApp({
-                newInstance: true,
-                args: {
-                    preloadedState: preloadedStateWithoutTrezor,
-                },
-                wipeData: true,
-            });
+            await openApp({ args: { preloadedState: preloadedStateWithoutTrezor } });
             await onTabBar.navigateToTrade();
             await tradingExchangeActions.tapTradingSectionHeaderTab();
-        });
-
-        afterEach(async () => {
-            await device.terminateApp();
         });
 
         it('should display info card', async () => {
@@ -50,12 +40,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
     });
 
     conditionalDescribe(isCIRun || passphrase, 'with device connected [@fixT3W1]', () => {
-        const openSwapForm = async () => {
-            await onTabBar.navigateToTrade();
-            await tradingExchangeActions.tapTradingSectionHeaderTab();
-            await tradingExchangeActions.waitForTradeDataToLoad();
-        };
-
         beforeAll(() => {
             if (!passphrase) {
                 throw new Error(
@@ -65,27 +49,10 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
         });
 
         beforeEach(async () => {
-            await openApp({
-                newInstance: true,
-                args: {
-                    preloadedState: preloadedStateWithTrezor,
-                },
-                wipeData: true,
-            });
-            await prepareTrezorEmulator({
-                seed: MNEMONICS.mnemonic_academic,
-            });
-
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
+            await prepareTrezorEmulator({ seed: MNEMONICS.mnemonic_academic });
             await onPassphrase.openPassphraseWallet(passphrase);
-            await openSwapForm();
-        });
-
-        afterEach(async () => {
-            await TrezorUserEnvLink.stopEmu();
-        });
-
-        afterAll(async () => {
-            await device.terminateApp();
+            await tradingExchangeActions.openSwapForm();
         });
 
         it('Basic exchange USDC to USDT', async () => {

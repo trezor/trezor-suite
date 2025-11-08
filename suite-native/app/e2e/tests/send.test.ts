@@ -20,7 +20,6 @@ import {
     preparePreloadedReduxState,
     prepareTrezorEmulator,
 } from '../support/setup';
-import { appIsFullyLoaded } from '../support/utils';
 
 const SEND_FORM_ERROR_MESSAGES = {
     invalidAddress: 'The address format is incorrect.',
@@ -85,7 +84,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow. 
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
-        await appIsFullyLoaded();
 
         await onHome.waitForScreen();
         await onTabBar.navigateToMyAssets();

@@ -17,7 +17,7 @@ import {
     preparePreloadedReduxState,
     prepareTrezorEmulator,
 } from '../support/setup';
-import { appIsFullyLoaded, wait } from '../support/utils';
+import { wait } from '../support/utils';
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
@@ -84,7 +84,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3
         beforeEach(async () => {
             await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator();
-            await appIsFullyLoaded();
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
@@ -121,7 +120,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3
         beforeEach(async () => {
             await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator({ passphrase_protection: true });
-            await appIsFullyLoaded();
         });
 
         it('Open empty passphrase wallet', async () => {

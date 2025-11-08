@@ -25,7 +25,7 @@ const preloadedState = preparePreloadedReduxState(
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'Receive [@fixT3W1]', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
     });

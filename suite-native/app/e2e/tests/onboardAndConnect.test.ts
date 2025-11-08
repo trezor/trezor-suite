@@ -10,7 +10,7 @@ conditionalDescribe(
     device.getPlatform() === 'android',
     'Go through onboarding and connect Trezor. [@fixT3W1]',
     () => {
-        beforeAll(async () => {
+        beforeEach(async () => {
             await openApp({});
             await prepareTrezorEmulator();
         });
