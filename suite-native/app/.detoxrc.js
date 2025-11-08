@@ -1,12 +1,15 @@
 /** @type {Detox.DetoxConfig} */
 module.exports = {
+    session: {
+        debugSynchronization: 30_000,
+    },
     testRunner: {
         args: {
             $0: 'jest',
             config: 'e2e/jest.config.js',
         },
         jest: {
-            setupTimeout: 120000,
+            setupTimeout: 120_000,
         },
     },
     apps: {

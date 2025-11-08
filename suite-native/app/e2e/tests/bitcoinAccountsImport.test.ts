@@ -8,12 +8,9 @@ import { openApp, preparePreloadedReduxState } from '../support/setup';
 const preloadedState = preparePreloadedReduxState(onboardingCompletedState);
 
 describe('Import Bitcoin network accounts. [@noDevice]', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onTabBar.navigateToMyAssets();
-    });
-
-    beforeEach(async () => {
         await onMyAssets.addAccount();
     });
 

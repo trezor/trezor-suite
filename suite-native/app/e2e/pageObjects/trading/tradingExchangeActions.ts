@@ -2,6 +2,7 @@ import { expect as detoxExpect } from 'detox';
 
 import { TradingFormActions } from './TradingFormActions';
 import { waitForElementByIdToBeVisible } from '../../support/utils';
+import { onTabBar } from '../tabBarActions';
 
 class TradingExchangeActions extends TradingFormActions {
     constructor() {
@@ -20,6 +21,12 @@ class TradingExchangeActions extends TradingFormActions {
         await detoxExpect(element(by.text('Rate'))).toBeVisible();
         await detoxExpect(element(by.text('Provider'))).toBeVisible();
         await detoxExpect(this.getElementById('continue-button')).toBeVisible();
+    }
+
+    async openSwapForm() {
+        await onTabBar.navigateToTrade();
+        await this.tapTradingSectionHeaderTab();
+        await this.waitForTradeDataToLoad();
     }
 }
 

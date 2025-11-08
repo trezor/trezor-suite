@@ -1,6 +1,5 @@
 import { expect as jestExpect } from '@jest/globals';
 import { exec } from 'child_process';
-import http from 'http';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
@@ -12,18 +11,15 @@ import { deviceAutoEjectState } from '../fixtures/deviceAutoEjectState';
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { DeepLinkServer } from '../support/deepLinkServer';
 import {
     getModelFromEnv,
     openApp,
     preparePreloadedReduxState,
     prepareTrezorEmulator,
 } from '../support/setup';
-import { appIsFullyLoaded } from '../support/utils';
 
-const SERVER_PORT = 8080;
-const SERVER_URL = `http://localhost:${SERVER_PORT}`;
-
-let server: http.Server | undefined;
+const deepLinkServer = new DeepLinkServer();
 
 const openUriScheme = (url: string, platformToOpen: 'android') => {
     const command = `npx uri-scheme open '${url.replace(/'/g, '%27')}' --${platformToOpen} --raw`;
@@ -52,28 +48,13 @@ conditionalDescribe(
     'Deeplink connect popup. [@fixT3W1]',
     () => {
         beforeAll(async () => {
-            await new Promise(resolve => {
-                server = http.createServer((req, res) => {
-                    if (req.url) {
-                        const url = new URL(req.url, SERVER_URL);
-                        TrezorConnect.handleDeeplink(url.href);
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'text/plain');
-                        res.end('Callback URL received successfully!\n');
-                    }
-                });
+            await deepLinkServer.start();
+            await device.reverseTcpPort(deepLinkServer.port);
+        });
 
-                server.listen(SERVER_PORT, 'localhost', () => {
-                    // eslint-disable-next-line no-console
-                    console.info(`Server running at ${SERVER_URL}`);
-                    resolve(null);
-                });
-            });
-            await device.reverseTcpPort(SERVER_PORT);
-
+        beforeEach(async () => {
             await openApp({ args: { preloadedState } });
             await prepareTrezorEmulator();
-
             // This `TrezorConnect` instance here is pretending to be the integrator or @trezor/connect-mobile
             await TrezorConnect.init({
                 manifest: {
@@ -84,20 +65,13 @@ conditionalDescribe(
                 deeplinkOpen: url => {
                     openUriScheme(url, 'android');
                 },
-                deeplinkCallbackUrl: `${SERVER_URL}/connect/`,
+                deeplinkCallbackUrl: `${deepLinkServer.url}/connect/`,
                 connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
             });
-            await appIsFullyLoaded();
         });
 
         afterAll(async () => {
-            await new Promise(resolve => {
-                if (server) {
-                    server.close(() => {
-                        resolve(null);
-                    });
-                }
-            });
+            await deepLinkServer.stop();
         });
 
         it('Handle deeplink', async () => {
