@@ -303,7 +303,6 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.PassphraseMismatchAlert]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm]: undefined;
     [AuthorizeDeviceStackRoutes.CoinEnablingInit]: undefined;
 };

@@ -29,7 +29,6 @@
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../thp" },
-        { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },

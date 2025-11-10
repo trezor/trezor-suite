@@ -157,7 +157,6 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
-    PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
     PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
     CoinEnablingInit = 'CoinEnablingInit',
 }

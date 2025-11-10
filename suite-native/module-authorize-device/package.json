@@ -35,7 +35,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/thp": "workspace:*",
-        "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",

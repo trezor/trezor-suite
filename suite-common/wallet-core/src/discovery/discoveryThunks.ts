@@ -267,26 +267,6 @@ export const runDiscoveryThunk = createThunk(
             let { isAddingHiddenWallet } = discovery;
 
             assertDeviceIsAcquired(device);
-            if (isAddingHiddenWallet && device.features && !device.features.passphrase_protection) {
-                dispatch(
-                    discoveryActions.updateDiscovery(
-                        { status: 'passphrase-enable-on-device' },
-                        device.path,
-                    ),
-                );
-                const response = await TrezorConnect.applySettings({
-                    device,
-                    use_passphrase: true,
-                });
-
-                if (!response.success) {
-                    dispatch(
-                        discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path),
-                    );
-
-                    return;
-                }
-            }
 
             if (isAddingHiddenWallet) {
                 dispatch(
