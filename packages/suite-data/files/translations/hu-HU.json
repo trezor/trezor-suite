@@ -1502,7 +1502,6 @@
   "TR_REQUESTED_NETWORKS": "Igényelt hálózatok",
   "TR_REQUIRED_FIELD": "Kötelező",
   "TR_RESTARTING_TREZOR": "Trezor újraindítása",
-  "TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED": "Trezor újraindítása. Add meg a PIN-kódot, ha szükséges.",
   "TR_RESTORE_EXISTING_WALLET": "Tárca helyreállítása",
   "TR_RESUME": "Folytatás",
   "TR_RESUMING": "Folytatás",
