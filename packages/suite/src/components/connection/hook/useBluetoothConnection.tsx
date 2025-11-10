@@ -70,7 +70,6 @@ export const useBluetoothConnection = ({
             if (result.success) {
                 analytics.report({
                     type: EventTypeShared.DeviceConnectionDevicePaired,
-                    payload: {},
                 });
                 dispatch(setConnectionModal(false));
             } else {

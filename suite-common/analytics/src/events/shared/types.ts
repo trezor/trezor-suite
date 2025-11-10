@@ -77,7 +77,6 @@ export type SuiteSharedAnalyticsEvent =
       }
     | {
           type: EventType.DeviceConnectionDevicePaired;
-          payload: {};
       }
     | {
           type: EventType.DeviceConnectionDeviceConfirmation;
