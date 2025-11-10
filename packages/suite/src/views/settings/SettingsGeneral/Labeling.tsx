@@ -84,7 +84,7 @@ export const Labeling = () => {
         analytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
-                value,
+                value: value === 'secure-sync' ? 'evolu' : value,
             },
         });
     };
