@@ -29,15 +29,11 @@ export type AllowedButtonGroupFrameProps = Pick<
 
 const Container = styled.div<TransientProps<AllowedButtonGroupFrameProps> & { $size: ButtonSize }>`
     display: flex;
-    gap: 2px;
+    gap: 1px;
     align-items: stretch;
 
     :is(button, a) {
         border-radius: 4px;
-
-        &:active {
-            transform: none !important;
-        }
     }
 
     > :is(button, a):first-child,
