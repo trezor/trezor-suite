@@ -1,7 +1,6 @@
 import { HTMLAttributes, ReactElement, Ref, forwardRef, useEffect, useState } from 'react';
 
-import { Box, Column, H3, IconButton, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
     heading: ReactElement;
@@ -36,9 +35,9 @@ export const DashboardSection = forwardRef(
 
         return (
             <div ref={ref} {...rest}>
-                <Column data-testid={dataTestId} gap={spacings.md}>
-                    <Column width="100%" gap={spacings.xs}>
-                        <Box>
+                <Collapsible isOpen={!collapsed}>
+                    <Column data-testid={dataTestId} gap={16}>
+                        <Column width="100%" gap={2}>
                             <Row as="header" justifyContent="space-between">
                                 {heading && (
                                     <H3>
@@ -48,19 +47,20 @@ export const DashboardSection = forwardRef(
 
                                 {actions && <div>{actions}</div>}
                                 {collapsible && (
-                                    <IconButton
-                                        icon={collapsed ? 'caretDown' : 'caretUp'}
-                                        intent="neutral"
-                                        priority="secondary"
-                                        onClick={() => setCollapsed(prev => !prev)}
-                                    ></IconButton>
+                                    <Collapsible.Toggle onClick={() => setCollapsed(prev => !prev)}>
+                                        <IconButton
+                                            icon={collapsed ? 'caretDown' : 'caretUp'}
+                                            intent="neutral"
+                                            priority="secondary"
+                                        />
+                                    </Collapsible.Toggle>
                                 )}
                             </Row>
                             {subheading && <Text variant="tertiary">{subheading}</Text>}
-                        </Box>
+                        </Column>
+                        <Collapsible.Content>{children}</Collapsible.Content>
                     </Column>
-                    {!collapsed && children}
-                </Column>
+                </Collapsible>
             </div>
         );
     },
