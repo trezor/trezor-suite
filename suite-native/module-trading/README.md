@@ -81,6 +81,7 @@ graph TD
     module-trading --> trading-residence
     trading-residence --> trading-state
     trading-residence --> trading-atoms
+    trading-residence --> trading-consts
     trading-state --> trading-atoms
     trading-state -.-> trading-fixtures
     trading-state --> trading-consts

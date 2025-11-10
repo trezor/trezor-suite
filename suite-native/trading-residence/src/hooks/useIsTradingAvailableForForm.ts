@@ -1,4 +1,4 @@
-import { tradingCountriesWhitelistSet } from '@suite-native/trading-atoms';
+import { tradingCountriesWhitelistSet } from '@suite-native/trading-consts';
 
 import { useFormCountryCode } from './useFormCountryCode';
 
