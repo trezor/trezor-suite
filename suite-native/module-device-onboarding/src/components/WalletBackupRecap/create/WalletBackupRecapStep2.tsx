@@ -2,7 +2,7 @@ import { useDerivedValue } from 'react-native-reanimated';
 
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { useIsMultiline } from '@suite-native/helpers';
-import { Translation } from '@suite-native/intl';
+import { Translation, useLocale } from '@suite-native/intl';
 import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
 import { Underline } from './Underline';
@@ -15,9 +15,13 @@ const CURRENT_STEP_INDEX = 1;
 export const WalletBackupRecapStep2 = ({
     currentStepIndex,
 }: WalletBackupTutorialNumberedStepProps) => {
+    const locale = useLocale();
     const isFocused = useDerivedValue(() => currentStepIndex.value === CURRENT_STEP_INDEX);
 
-    const { onTextLayout, isMultiline } = useIsMultiline('titleMedium');
+    const { onTextLayout, numberOfLines } = useIsMultiline('titleMedium');
+
+    // We can be sure that the underline word `Never` is at the beginning of the sentence for english locale only.
+    const isUnderlineVisible = numberOfLines === 2 && locale === 'en-US';
 
     return (
         <SwipeableWalkthroughStep
@@ -33,13 +37,10 @@ export const WalletBackupRecapStep2 = ({
                     <Box>
                         <Box alignSelf="center">
                             <Text variant="titleMedium" textAlign="center" onLayout={onTextLayout}>
-                                <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.titleUnderlined" />
+                                <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.title" />
                             </Text>
-                            {!isMultiline && <Underline isFocused={isFocused} />}
+                            {isUnderlineVisible && <Underline isFocused={isFocused} />}
                         </Box>
-                        <Text variant="titleMedium" textAlign="center">
-                            <Translation id="moduleDeviceOnboarding.walletBackupRecapScreen.step2.titleRegular" />
-                        </Text>
                     </Box>
                 </VStack>
             </WalletRecapStepContent>

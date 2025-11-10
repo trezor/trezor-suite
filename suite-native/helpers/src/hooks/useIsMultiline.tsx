@@ -6,6 +6,7 @@ import { NativeTypographyStyle } from '@trezor/theme';
 
 export const useIsMultiline = (fontType: NativeTypographyStyle = 'titleMedium') => {
     const [isMultiline, setIsMultiline] = useState<boolean | null>(false);
+    const [numberOfLines, setNumberOfLines] = useState<number | null>(null);
     const {
         utils: { typography },
     } = useNativeStyles();
@@ -18,8 +19,9 @@ export const useIsMultiline = (fontType: NativeTypographyStyle = 'titleMedium') 
     const onTextLayout = (event: LayoutChangeEvent) => {
         const { height } = event.nativeEvent.layout;
         const numOfLines = Math.floor(height / scaledLineHeight);
+        setNumberOfLines(numOfLines);
         setIsMultiline(numOfLines > 1);
     };
 
-    return { onTextLayout, isMultiline };
+    return { onTextLayout, isMultiline, numberOfLines };
 };

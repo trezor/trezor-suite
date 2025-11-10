@@ -13,8 +13,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const containerStyle = prepareNativeStyle(() => ({
     position: 'absolute',
-    bottom: 3,
-    left: 0,
+    bottom: 38,
+    left: 9,
     zIndex: -1,
 }));
 

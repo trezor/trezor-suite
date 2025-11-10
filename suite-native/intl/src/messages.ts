@@ -1631,8 +1631,7 @@ export const messages = {
             },
             step2: {
                 callout: 'Securing your wallet backup',
-                titleRegular: 'backup anywhere digital',
-                titleUnderlined: 'Never store your wallet',
+                title: 'Never store your wallet\nbackup anywhere digital',
             },
             step3: {
                 callout: 'Storing your wallet backup',
