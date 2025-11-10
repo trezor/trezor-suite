@@ -1,16 +1,9 @@
-// Todo: This is here so "solve" the "Error: No "exports" main defined in /home/user/workspace/trezor/trezor-suite/node_modules/@evolu/common/package.json"
-//       For running the e2e tests in Playwright
-// See: https://github.com/trezor/trezor-suite/issues/22316
-const loadEvoluCommon = async () => await import('@evolu/common');
-const loadLocalFistStorage = async () =>
-    await import('@suite-common/local-first-storage/src/evoluUtils');
-
 import { createThunk } from '@suite-common/redux-utils';
 import { EvoluKeys, TrezorDevice, asDeviceEvoluOwnerId } from '@suite-common/suite-types';
+import { DEVICE_MODULE_PREFIX, deviceActions, selectDevices } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
-import { selectDevices } from './deviceSelectors';
+import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
 
 type InitCipherKeyThunkParams = {
     device: TrezorDevice;
@@ -29,6 +22,8 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
 
         if (
             device === undefined ||
+            device.state === undefined ||
+            device.instance === undefined ||
             device.localFirstStorageSecret?.evoluKeys !== undefined ||
             // We are already getting the keys in different "await"
             // This may happen if selectedDeviceThunk is called concurrently.
@@ -49,36 +44,22 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
                     state: device.state,
                     instance: device.instance,
                 },
-                useEmptyPassphrase: device.useEmptyPassphrase,
+                useEmptyPassphrase: device.useEmptyPassphrase ?? false,
             });
 
             if (result.success) {
-                const { hexToBytes, OwnerSecret } = await loadEvoluCommon();
+                const appOwnerResult = createEvoluAppOwnerFromTrezorData({
+                    data: result.payload.data,
+                });
 
-                const ownerResult = OwnerSecret.from(
-                    hexToBytes(result.payload.data)
-                        // Get only [0, 32] Slip21 Node Data (Node Key [32, 64] is irrelevant for Evolu)
-                        .slice(0, 32),
-                );
+                if (!appOwnerResult.ok) {
+                    console.error('Evolu: appOwnerResult error', appOwnerResult.error);
 
-                if (!ownerResult.ok) {
-                    console.error('Evolu: ownerResult error', ownerResult.error);
-
-                    throw ownerResult.error;
-                }
-
-                const { createAppOwnerFromTrezorNode } = await loadLocalFistStorage();
-
-                const ownerIdResult = createAppOwnerFromTrezorNode(ownerResult.value);
-
-                if (!ownerIdResult.ok) {
-                    console.error('Evolu: ownerIdResult error', ownerIdResult.error);
-
-                    throw ownerIdResult.error;
+                    throw appOwnerResult.error;
                 }
 
                 const evoluKeys: EvoluKeys = {
-                    ownerId: asDeviceEvoluOwnerId(ownerIdResult.value.id),
+                    ownerId: asDeviceEvoluOwnerId(appOwnerResult.value.id),
                     ownerSecret: result.payload.data,
                 };
 

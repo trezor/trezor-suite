@@ -10992,7 +10992,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
-    "@evolu/common": "npm:^6.0.1-preview.28"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.9.1"
     "@suite-common/bluetooth": "workspace:*"

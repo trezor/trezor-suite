@@ -1,17 +1,15 @@
 import {
     EvoluDeps,
     OwnerId,
-    OwnerSecret,
     SimpleName,
     createEvolu,
     createOwnerWebSocketTransport,
-    hexToBytes,
 } from '@evolu/common';
 
 import { EvoluKeys } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 
-import { createAppOwnerFromTrezorNode } from '../evoluUtils';
+import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
 import { Schema } from '../schema';
 import { LocalFirstStorage } from '../storage';
 
@@ -27,19 +25,7 @@ type CreateEvoluInstanceProps = {
 };
 
 const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
-    const ownerResult = OwnerSecret.from(
-        hexToBytes(evoluKeys.ownerSecret)
-            // Get only [0, 32] Slip21 Node Data (Node Key [32, 64] is irrelevant for Evolu)
-            .slice(0, 32),
-    );
-
-    if (!ownerResult.ok) {
-        console.error(ownerResult.error);
-
-        throw ownerResult.error;
-    }
-
-    const owner = createAppOwnerFromTrezorNode(ownerResult.value);
+    const owner = createEvoluAppOwnerFromTrezorData({ data: evoluKeys.ownerSecret });
 
     if (!owner.ok) {
         console.error(owner.error);
