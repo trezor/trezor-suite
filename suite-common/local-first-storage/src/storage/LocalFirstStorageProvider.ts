@@ -9,6 +9,7 @@ import {
 } from '@evolu/common';
 
 import { EvoluKeys } from '@suite-common/suite-types';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 import { createAppOwnerFromTrezorNode } from '../evoluUtils';
 import { Schema } from '../schema';
@@ -71,8 +72,10 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
 type SuiteOwnerId = string;
 
-// The `https://evolu.suite.sldev.cz/evolu/` MUST have the last `/` in the URL.
-export const DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL = 'https://evolu.suite.sldev.cz/evolu/';
+// The `https://suite-sync.trezor.io/` MUST have the last `/` in the URL.
+export const DEFAULT_SUITE_SYNC_RELAY_URL = isDevEnv
+    ? 'https://evolu.suite.sldev.cz/evolu/'
+    : 'https://suite-sync.trezor.io/';
 
 export class LocalFirstStorageProvider {
     private storages = new Map<SuiteOwnerId, LocalFirstStorage>();
@@ -88,7 +91,7 @@ export class LocalFirstStorageProvider {
         if (storage === undefined) {
             const relayUrl =
                 this.relayUrl === null || this.relayUrl.trim() === ''
-                    ? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL
+                    ? DEFAULT_SUITE_SYNC_RELAY_URL
                     : this.relayUrl;
 
             const evolu = createEvoluInstance({
