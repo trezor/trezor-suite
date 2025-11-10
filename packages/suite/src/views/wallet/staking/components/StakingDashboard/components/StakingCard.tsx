@@ -158,6 +158,9 @@ export const StakingCard = ({
         pendingTxStakeType,
     });
 
+    const shouldShowProgressLabels =
+        isStakeConfirming || isTxStatusShown || pendingTxStakeType !== 'claim';
+
     const dispatch = useDispatch();
 
     const openStakeModal = () => {
@@ -212,9 +215,7 @@ export const StakingCard = ({
     return (
         <Card data-testid="@wallet/staking/card">
             <Column flex="1" gap={spacings.xxl}>
-                {(isStakeConfirming || isTxStatusShown) && (
-                    <ProgressLabels labels={progressLabelsData} />
-                )}
+                {shouldShowProgressLabels && <ProgressLabels labels={progressLabelsData} />}
 
                 <Grid columns={isBelowLaptop ? 1 : 2} gap={spacings.xxl}>
                     {isStakePending && !isCardanoNetworkType && (
