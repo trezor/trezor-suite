@@ -39,7 +39,7 @@ export const TouchableSwitchRow = ({
     };
 
     return (
-        <Card borderColor="borderElevation1" noPadding testID={testID}>
+        <Card borderColor="borderElevation1" noPadding>
             <TouchableOpacity
                 onPress={handleChange}
                 accessibilityLabel={accessibilityLabel}
