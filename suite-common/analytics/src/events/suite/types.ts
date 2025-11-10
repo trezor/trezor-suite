@@ -845,7 +845,7 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.OnboardingSetupStart;
+          type: EventType.DeviceSetupStarted;
           payload: {
               deviceModel: DeviceModelInternal;
           };
