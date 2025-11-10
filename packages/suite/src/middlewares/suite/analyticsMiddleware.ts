@@ -27,7 +27,7 @@ import {
     hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -85,7 +85,7 @@ const analyticsMiddleware =
         switch (action.type) {
             case connectThpDeviceThunk.fulfilled.type: {
                 analytics.report({
-                    type: EventType.DeviceConnectionDeviceConfirmation,
+                    type: EventTypeShared.DeviceConnectionDeviceConfirmation,
                     payload: {
                         option: 'confirmed',
                     },
