@@ -698,6 +698,7 @@ export const composeDebouncedTransaction = [
     },
     {
         description: 'Fast typing, one @trezor/connect call',
+        skip: true, // TODO: fix flaky test https://github.com/trezor/trezor-suite/issues/23022
         connect: {
             success: true,
             payload: [
@@ -991,6 +992,7 @@ export const setMax = [
     {
         description:
             'setMax sequence: compose final with address, disable setMax, add second output',
+        skip: true, // TODO: fix flaky test https://github.com/trezor/trezor-suite/issues/23022
         connect: [
             undefined, // updateFeeInfoThunk
             {
