@@ -14,4 +14,8 @@ export enum EventType {
     ConnectPopupPermissions = 'connect-popup/permissions',
     ConnectPopupCall = 'connect-popup/call',
     ConnectPopupError = 'connect-popup/error',
+
+    DeviceConnectionDeviceFound = 'device-connection/device-found',
+    DeviceConnectionDevicePaired = 'device-connection/device-paired',
+    DeviceConnectionDeviceConfirmation = 'device-connection/device-confirmation',
 }

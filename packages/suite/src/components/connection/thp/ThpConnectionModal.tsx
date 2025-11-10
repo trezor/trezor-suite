@@ -1,6 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -15,7 +15,7 @@ export const ThpConnectionModal = ({ device }: ThpConnectionModalProps) => {
 
     const onCancel = () => {
         analytics.report({
-            type: EventType.DeviceConnectionDeviceConfirmation,
+            type: EventTypeShared.DeviceConnectionDeviceConfirmation,
             payload: {
                 option: 'close',
             },
