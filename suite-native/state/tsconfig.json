@@ -50,6 +50,7 @@
         { "path": "../firmware" },
         { "path": "../graph" },
         { "path": "../intl" },
+        { "path": "../local-first-storage" },
         { "path": "../message-system" },
         { "path": "../module-send" },
         { "path": "../sentry" },

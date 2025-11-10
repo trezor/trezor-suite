@@ -1,5 +1,3 @@
-import { evoluWebDeps } from '@evolu/web';
-
 import { useLocalFirstStorage } from '@suite-common/local-first-storage';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
@@ -51,13 +49,13 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         // Enabling Evolu implicitly disables Legacy Labeling
         if (legacyMetadataState.enabled) legacyDisableIfNeeded();
 
-        enableLocalFirstStorageIfNeededCommon(evoluWebDeps);
         analytics.report({
             type: EventType.SettingsGeneralLabelingProvider,
             payload: {
                 provider: 'evolu',
             },
         });
+        enableLocalFirstStorageIfNeededCommon();
     };
 
     const legacyEnableIfNeeded = () => {

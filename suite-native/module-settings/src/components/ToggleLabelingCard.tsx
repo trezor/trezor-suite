@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
-
 import { useLocalFirstStorage } from '@suite-common/local-first-storage';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Card, CardWithIconLayout, HStack, Switch, Text, VStack } from '@suite-native/atoms';
@@ -27,7 +25,7 @@ export const ToggleLabelingCard = () => {
     const toggleLocalFirstStorage = () =>
         isLocalFirstStorageEnabled
             ? showLocalFirstStorageDisableConfirmationAlert()
-            : enableLocalFirstStorageIfNeeded(evoluReactNativeDeps);
+            : enableLocalFirstStorageIfNeeded();
 
     return (
         <CardWithIconLayout

@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
-
 import { useLocalFirstStorage } from '@suite-common/local-first-storage';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
@@ -33,7 +31,7 @@ export const useLocalFirstStorageAlerts = () => {
             description: <Translation id="labeling.enableAlert.description" />,
             primaryButtonTitle: <Translation id="labeling.enableAlert.cta" />,
             onPressPrimaryButton: () => {
-                enableLocalFirstStorageIfNeeded(evoluReactNativeDeps);
+                enableLocalFirstStorageIfNeeded();
                 onSuccess();
             },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
