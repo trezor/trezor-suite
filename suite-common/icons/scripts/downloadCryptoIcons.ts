@@ -156,6 +156,6 @@ async function ensureDirectoryExists(path: string) {
             break;
         }
 
-        await sleep((60 / RATE_LIMIT_PER_MINUTE) * 1000);
+        await sleep(Math.ceil((60 / RATE_LIMIT_PER_MINUTE) * 1000));
     }
 })();
