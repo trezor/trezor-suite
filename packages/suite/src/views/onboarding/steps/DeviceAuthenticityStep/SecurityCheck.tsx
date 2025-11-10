@@ -167,13 +167,6 @@ const SecurityCheckContent = ({
 
     const toggleView = () => setIsFailed(current => !current);
     const handleContinueButtonClick = () => {
-        analytics.report({
-            type: EventType.OnboardingSetupStart,
-            payload: {
-                deviceModel,
-            },
-        });
-
         if (shouldAuthenticateSelectedDevice) {
             goToDeviceAuthentication();
         } else {
@@ -183,7 +176,7 @@ const SecurityCheckContent = ({
 
     const handleSetupButtonClick = () => {
         analytics.report({
-            type: EventType.OnboardingSetupStart,
+            type: EventType.DeviceSetupStarted,
             payload: {
                 deviceModel,
             },
