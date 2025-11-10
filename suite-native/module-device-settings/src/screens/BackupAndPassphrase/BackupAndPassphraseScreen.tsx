@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import {
     selectIsDeviceBackupUnfinished,
     selectIsDeviceInitialized,
-    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -13,7 +12,6 @@ import { CheckBackupCard } from './CheckBackupCard';
 import { PassphraseCard } from './PassphraseCard';
 
 export const BackupAndPassphraseScreen = () => {
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isCheckBackupAvailable = isDeviceInitialized && !isDeviceBackupUnfinished;
@@ -29,7 +27,7 @@ export const BackupAndPassphraseScreen = () => {
         >
             <VStack spacing="sp16">
                 {isCheckBackupAvailable && <CheckBackupCard />}
-                {!isPortfolioTrackerDevice && <PassphraseCard />}
+                <PassphraseCard />
             </VStack>
         </Screen>
     );
