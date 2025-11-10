@@ -96,7 +96,7 @@ describe('residenceSelectors', () => {
             },
         );
 
-        it.each<TradingCountryCode | undefined>([undefined, 'unknown', 'SK'])(
+        it.each<TradingCountryCode | undefined>([undefined, 'unknown', 'ZM'])(
             'should return false for non-whitelisted country [%s] and FF enabled',
             countryCode => {
                 const state = {

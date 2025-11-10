@@ -12,10 +12,15 @@ describe('useIsTradingAvailableForForm', () => {
         });
 
     it.each<[boolean, TradingCountryCode | undefined]>([
-        [false, 'CU'],
-        [false, 'SK'],
+        // Cuba is sanctioned, therefore form falls back to expo-localization country (PL)
+        [true, 'CU'],
+        // Zambia is not whitelisted
+        [false, 'ZM'],
+        // Worldwide is not whitelisted
         [false, 'unknown'],
-        [false, undefined],
+        // Falls back to expo-localization country (PL)
+        [true, undefined],
+        // US is whitelisted
         [true, 'US'],
     ])('should be [%s] for country [%s]', async (expectedValue, country) => {
         const preloadedState: PreloadedState = {
