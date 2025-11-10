@@ -50,7 +50,10 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
 
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
-            await prepareTrezorEmulator({ seed: MNEMONICS.mnemonic_academic });
+            await prepareTrezorEmulator({
+                seed: MNEMONICS.mnemonic_academic,
+                passphrase_protection: true,
+            });
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingExchangeActions.openSwapForm();
         });

@@ -29,7 +29,7 @@ export const PassphraseCard = () => {
 
     if (!device) return null;
 
-    const handleTogglePassphrase = async () => {
+    const togglePassphrase = async () => {
         navigation.navigate(BackupAndPassphraseStackRoutes.ContinueOnTrezor);
         const response = await TrezorConnect.applySettings({
             device: {
@@ -51,12 +51,12 @@ export const PassphraseCard = () => {
     return (
         <TouchableSwitchRow
             isChecked={isPassphraseEnabled}
-            onChange={handleTogglePassphrase}
-            iconName="password"
+            onChange={togglePassphrase}
+            icon="password"
             accessibilityLabel="passphrase"
             text={<Translation id="moduleDeviceSettings.passphrase.title" />}
-            testID="@device-passphrase/passphrase"
             description={<Translation id="moduleDeviceSettings.passphrase.description" />}
+            testID="@device-passphrase/passphrase"
         />
     );
 };

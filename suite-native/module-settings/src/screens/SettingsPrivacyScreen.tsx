@@ -54,7 +54,7 @@ const DiscreetModeSwitchRow = () => {
                     <DiscreetTextExample />
                 </Box>
             }
-            iconName="eyeSlash"
+            icon="eyeSlash"
             isChecked={isDiscreetMode}
             onChange={handleSetDiscreetMode}
         />
@@ -76,7 +76,7 @@ const AnalyticsSwitchRow = () => {
     return (
         <TouchableSwitchRow
             text={<Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.title" />}
-            iconName="database"
+            icon="database"
             accessibilityLabel="analytics"
             description={
                 <Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.subtitle" />
@@ -97,7 +97,7 @@ const BiometricsSwitchRow = () => {
             onChange={toggleBiometricsOption}
             accessibilityLabel="biometrics"
             text={<Translation id="moduleSettings.privacyAndSecurity.biometrics.title" />}
-            iconName={Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint'}
+            icon={Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint'}
             description={<Translation id="moduleSettings.privacyAndSecurity.biometrics.subtitle" />}
         />
     );

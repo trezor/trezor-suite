@@ -28,10 +28,6 @@ class PassphraseModule {
         await element(by.id('@passphrase/confirmButton')).tap();
     }
 
-    public async expectEnablePassphraseOnDeviceRequest() {
-        await waitForElementByIdToBeVisible('@screen/PassphraseEnableOnDevice');
-    }
-
     public async allowPassphraseOnEmu() {
         if (getModelFromEnv() === 'T3W1') {
             await TrezorUserEnvLink.pressYes();
@@ -84,9 +80,6 @@ class PassphraseModule {
 
     public async openPassphraseWallet(passphrase: string) {
         await this.openNewPassphraseFlow();
-
-        await this.expectEnablePassphraseOnDeviceRequest();
-        await this.allowPassphraseOnEmu();
 
         await this.expectEnterPassphraseScreen();
         await this.enterPassphrase(passphrase);
