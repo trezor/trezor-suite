@@ -34,6 +34,7 @@ export const preparePersistReducer = async <TReducerInitialState>({
         migrate: createAsyncMigrate<TReducerInitialState>(migrations ?? {}),
         transforms,
         stateReconciler: (mergeLevel === 2 ? autoMergeLevel2 : autoMergeLevel1) as any,
+        timeout: 0, // Disable default 5s timeout to prevent occasional data loss.
     };
 
     return persistReducer(persistConfig, reducer);
