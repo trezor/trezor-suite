@@ -7,6 +7,7 @@ import {
 } from '@suite-common/local-first-storage';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
@@ -64,6 +65,13 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         if (!isLocalFirstStorageEnabled) {
             dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
             dispatch(initSuiteLocalFirstStorageThunk());
+
+            analytics.report({
+                type: EventType.SettingsGeneralLabelingProvider,
+                payload: {
+                    provider: 'evolu',
+                },
+            });
         }
     };
 
