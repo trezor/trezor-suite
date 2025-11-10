@@ -56,7 +56,7 @@ export const PageHeader = ({ children }: PageHeaderProps) => {
             <PageName />
 
             {routeName === 'suite-index' && hasAccounts && (
-                <Row gap={8}>
+                <Row gap={12}>
                     <HeaderDropdown />
                     <TradeActions />
                     <GlobalSendReceive />

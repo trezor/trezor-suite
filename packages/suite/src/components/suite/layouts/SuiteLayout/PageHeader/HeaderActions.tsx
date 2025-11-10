@@ -25,7 +25,7 @@ export const HeaderActions = () => {
     const isDeviceConnected = device?.connected && device?.available;
 
     return (
-        <Row gap={8} alignItems="center">
+        <Row gap={12} alignItems="center">
             <HeaderDropdown isDisabled={isAccountLoading} showSignAndVerify />
 
             {isTradingAvailable && <TradeActions selectedAccount={selectedAccount} />}
