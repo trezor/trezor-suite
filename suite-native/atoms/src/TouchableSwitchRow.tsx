@@ -10,12 +10,12 @@ import { Switch } from './Switch';
 import { Text } from './Text';
 
 type TouchableSwitchRowProps = {
+    icon: IconName;
+    accessibilityLabel: string;
+    text: ReactNode;
+    description?: ReactNode;
     isChecked: boolean;
     onChange: (value: boolean) => void;
-    text: ReactNode;
-    accessibilityLabel: string;
-    description?: ReactNode;
-    iconName: IconName;
     testID?: string;
 };
 
@@ -26,12 +26,12 @@ export const TouchableSwitchRowDescription = ({ children }: { children: ReactNod
 );
 
 export const TouchableSwitchRow = ({
-    isChecked,
-    onChange,
+    icon,
+    accessibilityLabel,
     text,
     description,
-    accessibilityLabel,
-    iconName,
+    isChecked,
+    onChange,
     testID,
 }: TouchableSwitchRowProps) => {
     const handleChange = () => {
@@ -48,7 +48,7 @@ export const TouchableSwitchRow = ({
             >
                 <HStack margin="sp16" spacing="sp12">
                     <Box marginVertical="sp2">
-                        <Icon name={iconName} size="mediumLarge" />
+                        <Icon name={icon} size="mediumLarge" />
                     </Box>
                     <HStack justifyContent="space-between" flex={1}>
                         <VStack flex={1} spacing="sp2">
@@ -57,7 +57,11 @@ export const TouchableSwitchRow = ({
                                 {description}
                             </Text>
                         </VStack>
-                        <Switch testID={testID} isChecked={isChecked} onChange={handleChange} />
+                        <Switch
+                            testID={testID}
+                            isChecked={isChecked}
+                            onChange={() => onChange(!isChecked)}
+                        />
                     </HStack>
                 </HStack>
             </TouchableOpacity>

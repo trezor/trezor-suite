@@ -83,15 +83,13 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3
     describe.skip('with passphrase not allowed on Trezor', () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState } });
-            await prepareTrezorEmulator();
+            await prepareTrezorEmulator({ passphrase_protection: true });
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
         });
 
         it('Open empty passphrase wallet', async () => {
             const passphrase = 'E2E:empty wallet';
             await onPassphrase.openNewPassphraseFlow();
-            await onPassphrase.expectEnablePassphraseOnDeviceRequest();
-            await onPassphrase.allowPassphraseOnEmu();
             await enterPassphraseFlow(passphrase);
             await emptyPassphraseFlow(passphrase);
             await expectEmptyWallet();
@@ -100,16 +98,12 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3
         it('Open passphrase wallet with funds', async () => {
             const passphrase = 'E2E:existing wallet';
             await onPassphrase.openNewPassphraseFlow();
-            await onPassphrase.expectEnablePassphraseOnDeviceRequest();
-            await onPassphrase.allowPassphraseOnEmu();
             await enterPassphraseFlow(passphrase);
             await expectNonEmptyWallet();
         });
 
         it('close passphrase flow', async () => {
             await onPassphrase.openNewPassphraseFlow();
-            await onPassphrase.expectEnablePassphraseOnDeviceRequest();
-            await onPassphrase.allowPassphraseOnEmu();
             await onPassphrase.closePassphraseFlow();
             await wait(1000);
             await detoxExpect(element(by.id('@screen/PassphraseForm'))).not.toExist();

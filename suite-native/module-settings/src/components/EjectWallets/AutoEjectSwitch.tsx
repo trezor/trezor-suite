@@ -74,7 +74,7 @@ export const AutoEjectSwitch = () => {
             accessibilityLabel="autoEjectToggle"
             text={<Translation id="moduleSettings.viewOnly.autoEject.switch.title" />}
             description={<Translation id="moduleSettings.viewOnly.autoEject.switch.description" />}
-            iconName="eject"
+            icon="eject"
             testID="@settings/auto-eject-toggle"
         />
     );
