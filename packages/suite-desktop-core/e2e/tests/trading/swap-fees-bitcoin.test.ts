@@ -28,8 +28,6 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
     test('Swap custom fees for Bitcoin', async ({ page, tradingPage, devicePrompt }) => {
         let feeRate: string;
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.fees.switchToCustom();
-            await tradingPage.fees.customInput.fill(customFee);
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sendCurrency: 'bitcoin',
@@ -39,7 +37,12 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
                 receiveNetwork: 'ethereum',
                 receiveAddress,
             });
+            await tradingPage.fees.switchToCustom();
+            await tradingPage.fees.customInput.fill(customFee);
             feeRate = await tradingPage.fees.getBitcoinFeeRate('custom');
+
+            // Wait for TX precomposition to avoid
+            await new Promise(resolve => setTimeout(resolve, 2500));
         });
 
         await test.step('Continue Swap flow towards Send section', async () => {
