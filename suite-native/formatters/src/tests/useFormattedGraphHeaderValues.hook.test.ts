@@ -76,7 +76,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         expect(result.current).toEqual({
             currencySymbol: '€',
             wholeNumber: '2,000',
-            decimalNumber: '',
+            decimalNumber: '.00',
         });
     });
 
