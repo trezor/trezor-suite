@@ -13020,6 +13020,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
+    "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-localization: "npm:~17.0.7"
