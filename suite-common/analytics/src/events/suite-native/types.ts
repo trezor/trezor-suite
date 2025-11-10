@@ -247,9 +247,6 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.PassphraseDuplicate;
       }
     | {
-          type: EventType.PassphraseNotEnabled;
-      }
-    | {
           type: EventType.PassphraseArticleOpened;
       }
     | {
