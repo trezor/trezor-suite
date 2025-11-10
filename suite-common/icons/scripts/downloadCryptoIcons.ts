@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import fs from 'fs';
+import fs from 'fs/promises';
 import { join } from 'path';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import sharp from 'sharp';
@@ -20,10 +20,10 @@ import {
     createCoinImageNameLegacy,
 } from '../src/coinImages';
 
-function writeImageSync(fileName: string, imageBuffer: Buffer) {
+async function writeImage(fileName: string, imageBuffer: Buffer) {
     const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
 
-    fs.writeFileSync(destinationFile, Buffer.from(imageBuffer));
+    await fs.writeFile(destinationFile, Buffer.from(imageBuffer));
 }
 
 async function resizeImage(imageBuffer: ArrayBuffer, size: number) {
@@ -75,41 +75,41 @@ const updateIcon = async (coin: CoinListData) => {
 
     try {
         const originImageBuffer = await originImage.arrayBuffer();
-
         const platforms = Object.entries(coinData.platforms).filter(
-            ([platform, contract]) => platform && contract,
+            // filter out platforms that don't have a contract address (e.g. KASPY had instead of contract address some debug message which caused "too long name" error)
+            ([platform, contract]) => platform && contract && contract.startsWith('0x'),
         );
 
         for (const size of COIN_IMAGE_SIZES) {
             const finalImageBuffer = await resizeImage(originImageBuffer, size);
 
             for (const quality of COIN_IMAGE_QUALITIES) {
-                platforms.forEach(([platform, contract]) => {
+                for (const [platform, contract] of platforms) {
                     const name = `${platform}--${contract}`;
 
                     const fileName = createCoinImageName(name, { size, quality });
                     console.log(`Writing image (${coin.id}):`, fileName);
-                    writeImageSync(fileName, finalImageBuffer);
+                    await writeImage(fileName, finalImageBuffer);
 
                     // Make sure it's backwards compatible for older versions of the Trezor Suite
                     if (size === 24) {
                         const fileNameLegacy = createCoinImageNameLegacy(name, quality);
                         console.log(`Writing image - legacy (${coin.id}):`, fileNameLegacy);
-                        writeImageSync(fileNameLegacy, finalImageBuffer);
+                        await writeImage(fileNameLegacy, finalImageBuffer);
                     }
-                });
+                }
 
                 const name = coinData.id;
 
                 const fileName = createCoinImageName(name, { size, quality });
                 console.log(`Writing image (${coin.id}):`, fileName);
-                writeImageSync(fileName, finalImageBuffer);
+                await writeImage(fileName, finalImageBuffer);
 
                 // Make sure it's backwards compatible for older versions of the Trezor Suite
                 if (size === 24) {
                     const fileNameLegacy = createCoinImageNameLegacy(name, quality);
                     console.log(`Writing image - legacy (${coin.id}):`, fileNameLegacy);
-                    writeImageSync(fileNameLegacy, finalImageBuffer);
+                    await writeImage(fileNameLegacy, finalImageBuffer);
                 }
             }
         }
@@ -117,6 +117,14 @@ const updateIcon = async (coin: CoinListData) => {
         console.error(`Error (${coin.id}):`, error);
     }
 };
+
+async function ensureDirectoryExists(path: string) {
+    try {
+        await fs.access(path);
+    } catch {
+        await fs.mkdir(path, { recursive: true });
+    }
+}
 
 (async () => {
     const startedAt = Date.now();
@@ -132,7 +140,7 @@ const updateIcon = async (coin: CoinListData) => {
         (a, b) => (updatedIcons[a.id]?.updatedAt ?? 0) - (updatedIcons[b.id]?.updatedAt ?? 0),
     );
 
-    fs.mkdirSync(FILES_CRYPTOICONS_PATH, { recursive: true });
+    await ensureDirectoryExists(FILES_CRYPTOICONS_PATH);
 
     for (const coin of coins) {
         await updateIcon(coin);
@@ -141,7 +149,7 @@ const updateIcon = async (coin: CoinListData) => {
             updatedAt: Math.floor(Date.now() / 1000),
         };
 
-        fs.writeFileSync(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
+        await fs.writeFile(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
 
         if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
             console.log('Run limit reached');
