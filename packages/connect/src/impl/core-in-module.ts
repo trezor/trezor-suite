@@ -52,11 +52,19 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     private async initCoreManager() {
         const { connectSrc } = this._settings;
-        const { initCoreState, initTransport } = await import(
-            /* webpackIgnore: true */ `${connectSrc}js/core.js`
-        ).catch(_err => {
-            this._log.error('_err', _err);
+
+        const connectCorePath = `${connectSrc}js/core.js`;
+
+        const importResult = await import(/* webpackIgnore: true */ connectCorePath).catch(_err => {
+            this._log.error(`_err: Cannot load "${connectCorePath}"`, _err);
         });
+
+        if (!importResult) {
+            this._log.error(`importResult is empty! Cannot load "${connectCorePath}"`);
+            throw new Error(`importResult is empty! Cannot load "${connectCorePath}js/core.js"`);
+        }
+
+        const { initCoreState, initTransport } = importResult;
 
         if (!initCoreState) return;
 
