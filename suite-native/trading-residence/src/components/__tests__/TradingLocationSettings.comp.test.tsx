@@ -20,7 +20,7 @@ describe('TradingLocationSettings', () => {
         });
 
         expect(getByText('Test Children')).toBeOnTheScreen();
-        expect(getByText("Trading isn't available")).toBeOnTheScreen();
+        expect(getByText('Trading is available')).toBeOnTheScreen();
         expect(getByText('Country of residence')).toBeOnTheScreen();
         expect(getByText('🇵🇱 Poland')).toBeOnTheScreen();
     });
