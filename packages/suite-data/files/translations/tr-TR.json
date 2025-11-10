@@ -1538,7 +1538,6 @@
   "TR_REQUESTED_NETWORKS": "Talep edilen ağlar",
   "TR_REQUIRED_FIELD": "Gerekli",
   "TR_RESTARTING_TREZOR": "Trezor yeniden başlatılıyor",
-  "TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED": "Trezor yeniden başlatılıyor. İstenirse PIN girin.",
   "TR_RESTORE_EXISTING_WALLET": "Cüzdanı kurtar",
   "TR_RESUME": "Devam et",
   "TR_RESUMING": "Devam ediliyor",
