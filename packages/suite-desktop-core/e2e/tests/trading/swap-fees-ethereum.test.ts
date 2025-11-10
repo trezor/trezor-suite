@@ -38,11 +38,6 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
 
     test('Swap custom fees for Ethereum', async ({ page, tradingPage, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.fees.setEthereumCustomFees({
-                gasLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-            });
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sendCurrency: 'ethereum',
@@ -52,6 +47,14 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
                 receiveNetwork: 'bitcoin',
                 receiveAddress,
             });
+            await tradingPage.fees.setEthereumCustomFees({
+                gasLimit,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+            });
+
+            // Wait for TX precomposition to avoid
+            await new Promise(resolve => setTimeout(resolve, 2500));
         });
 
         await test.step('Continue Swap flow towards Send section', async () => {

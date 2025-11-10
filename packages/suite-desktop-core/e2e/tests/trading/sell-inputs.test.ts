@@ -60,9 +60,6 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
         });
 
         await test.step('Try all % inputs for Bitcoin', async () => {
-            await tradingPage.fees.switchToCustom();
-            await tradingPage.fees.customInput.fill(customFeeRate.toString());
-
             for (const percentage of [10, 25, 50]) {
                 await test.step(`${percentage}% of BTC balance`, async () => {
                     await tradingPage.cryptoInputFractionButtons
@@ -75,6 +72,8 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                     });
                 });
             }
+            await tradingPage.fees.switchToCustom();
+            await tradingPage.fees.customInput.fill(customFeeRate.toString());
 
             await test.step('Max of BTC balance', async () => {
                 await tradingPage.cryptoInputFractionButtons
