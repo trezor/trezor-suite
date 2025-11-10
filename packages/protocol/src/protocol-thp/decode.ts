@@ -17,6 +17,7 @@ import { getHandshakeHash, getTrezorState } from './crypto/pairing';
 import { getIvFromNonce } from './crypto/tools';
 import { ThpDeviceProperties, ThpError, ThpMessageResponse } from './messages';
 import { clearControlBit, readThpHeader } from './utils';
+import { MESSAGE_TYPE } from '../protocol-v2/constants';
 
 type ThpMessage = ReturnType<TransportProtocolDecode> & {
     magic: number;
@@ -120,7 +121,7 @@ const readProtobufMessage = (
     return protobufDecoder(messageType, messagePayload) as ThpMessageResponse;
 };
 
-const decodeReadAck = (): ThpMessageResponse => ({
+const decodeReadAck = (): Extract<ThpMessageResponse, { type: 'ThpAck' }> => ({
     type: 'ThpAck',
     message: {},
 });
@@ -131,7 +132,7 @@ const decodeReadAck = (): ThpMessageResponse => ({
 // [magic | channel | len* | error | crc     ]
 // [42    | 1222    | 0005 | 02    | 70303cfa]
 // *len includes error+crc
-const decodeThpError = (payload: Buffer): ThpMessageResponse => {
+const decodeThpError = (payload: Buffer): Extract<ThpMessageResponse, { type: 'ThpError' }> => {
     const [errorType] = payload;
 
     const error = (() => {
@@ -154,10 +155,7 @@ const decodeThpError = (payload: Buffer): ThpMessageResponse => {
         message: error ?? `Unknown ThpError ${errorType}`,
     };
 
-    return {
-        type: 'ThpError',
-        message,
-    };
+    return { type: 'ThpError', message };
 };
 
 const validateCrc = (decodedMessage: ReturnType<TransportProtocolDecode>) => {
@@ -186,13 +184,19 @@ const validateCrc = (decodedMessage: ReturnType<TransportProtocolDecode>) => {
 
 // Decode protocol-v2 message from thp send process: ThpAck or ThpError
 export const decodeSendAck = (decodedMessage: MessageV2) => {
-    validateCrc(decodedMessage);
-
     const header = readThpHeader(decodedMessage.header);
     const magic = clearControlBit(header.magic);
+
+    if (magic === THP_CONTROL_BYTE_ENCRYPTED) {
+        return { type: MESSAGE_TYPE } as const;
+    }
+
+    validateCrc(decodedMessage);
+
     if (magic === THP_ERROR_HEADER_BYTE) {
         return decodeThpError(decodedMessage.payload);
     }
+
     if (magic === THP_READ_ACK_HEADER_BYTE) {
         return decodeReadAck();
     }
