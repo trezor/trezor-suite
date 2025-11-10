@@ -264,7 +264,9 @@ describe('useSendForm hook', () => {
     });
 
     fixtures.setMax.forEach(f => {
-        it(
+        // Add conditional test execution
+        const testFn = f.skip ? it.skip : it;
+        testFn(
             f.description,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
@@ -294,7 +296,9 @@ describe('useSendForm hook', () => {
     });
 
     fixtures.composeDebouncedTransaction.forEach(f => {
-        it(
+        // Add conditional test execution
+        const testFn = f.skip ? it.skip : it;
+        testFn(
             f.description,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
