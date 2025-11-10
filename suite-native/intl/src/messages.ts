@@ -528,6 +528,12 @@ export const messages = {
                     goToSettingsButton: 'Go to Bluetooth settings',
                     pairAgainButton: 'Pair again',
                 },
+                title: 'Unable to pair your Trezor?',
+                altTitle: 'We couldn’t find your Trezor',
+                hint1: 'Make sure your Trezor is turned on and unlocked.',
+                hint2: 'Try manually pairing your Trezor:\nGo to your Trezor’s Menu > Pair & Connect > Pair new device',
+                scanAgainButton: 'Scan again',
+                stillNotWorkingButton: 'It’s still not working',
             },
             pinMatrix: {
                 title: 'Enter PIN',
@@ -1157,7 +1163,7 @@ export const messages = {
                 },
                 '5': {
                     question:
-                        'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite?',
+                        'Why does the balance in Trezor Suite on desktop differ from the balance in the mobile app?',
                     answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
                 },
             },
