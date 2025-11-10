@@ -10,6 +10,13 @@ import {
     selectLocalFirstStorageRelayUrl,
 } from '../labeling/labelingSelectors';
 
+export const initLocalFirstStorageThunk = createThunk<void, void, void>(
+    `${LOCAL_FIRST_STORAGE_PREFIX}/initLocalFirstStorageThunk`,
+    (_, { dispatch, extra }) => {
+        dispatch(extra.thunks.initLocalFirstStorage());
+    },
+);
+
 export const initLocalFirstStorageThunkFactory = (evoluDeps: EvoluDeps) =>
     createThunk<void, void, void>(
         `${LOCAL_FIRST_STORAGE_PREFIX}/initLocalFirstStorageThunk`,

@@ -25,6 +25,7 @@ import {
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
+import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -77,6 +78,7 @@ export const extraDependencies: ExtraDependencies = {
         // `@suite-common/local-first-storage` depends on `wallet-core`
         subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
         unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
+        initLocalFirstStorage: initSuiteLocalFirstStorageThunk,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>

@@ -1,11 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { EvoluDeps } from '@evolu/common';
-
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { disposeAllLocalFirstStorageThunk } from '../../storage/disposeAllLocalFirstStorageThunk';
-import { initLocalFirstStorageThunkFactory } from '../../storage/initLocalFirstStorageThunk';
+import { initLocalFirstStorageThunk } from '../../storage/initLocalFirstStorageThunk';
 import { labelingActions } from '../labelingActions';
 import {
     selectIsFeatureLocalFirstStorageAvailable,
@@ -43,10 +41,10 @@ export const useLocalFirstStorage = ({ device }: UseLocalStorageParams) => {
         }
     };
 
-    const enableLocalFirstStorageIfNeeded = (deps: EvoluDeps) => {
+    const enableLocalFirstStorageIfNeeded = () => {
         if (!isLocalFirstStorageEnabled) {
             dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
-            dispatch(initLocalFirstStorageThunkFactory(deps)());
+            dispatch(initLocalFirstStorageThunk());
         }
     };
 
