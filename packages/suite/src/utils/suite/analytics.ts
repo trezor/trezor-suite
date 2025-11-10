@@ -25,6 +25,18 @@ import { AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
 
+const resolveLabelingType = (state: AppState): 'legacy' | 'evolu' | string => {
+    if (state.metadata.enabled) {
+        return (
+            state.metadata.providers.find(
+                p => p.clientId === state.metadata.selectedProvider.labels,
+            )?.type || 'legacy'
+        );
+    }
+
+    return state.labeling.isLocalFirstStorageEnabled ? 'evolu' : '';
+};
+
 // redact transaction id from account transaction anchor
 export const redactTransactionIdFromAnchor = (anchor?: string) => {
     if (!anchor) {
@@ -56,12 +68,7 @@ export const getSuiteReadyPayload = async (
         screenHeight: getScreenHeight(),
         platformLanguages: getPlatformLanguages().join(','),
         tor: getIsTorEnabled(state.suite.torStatus),
-        // todo: duplicated with suite/src/utils/suite/logUtils
-        labeling: state.metadata.enabled
-            ? state.metadata.providers.find(
-                  p => p.clientId === state.metadata.selectedProvider.labels,
-              )?.type || 'missing-provider'
-            : '',
+        labeling: resolveLabelingType(state),
         rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
         theme: state.suite.settings.theme.variant,
