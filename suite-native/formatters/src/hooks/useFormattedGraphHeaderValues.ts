@@ -3,52 +3,89 @@ import { useSelector } from 'react-redux';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { useLocale } from '@suite-native/intl';
 
-const FIAT_CURRENCY_DECIMALS_LENGTH = 2;
-const BTC_CURRENCY_DECIMALS_LENGTH = 0;
+const MAX_DECIMALS_LENGTH = 2;
 
-const getFormattedWholeNumber = (value: Intl.NumberFormatPart[]) =>
-    value
-        .filter(part => part.type === 'integer' || part.type === 'group')
-        ?.reduce((acc, part) => acc + part.value, '') ?? null;
+const getFormattedWholeNumber = ({ value, locale }: { value: string; locale: string }) => {
+    const formatter = new Intl.NumberFormat(locale);
 
-const getFormattedDecimalNumber = (value: Intl.NumberFormatPart[]) => {
-    const decimalDigits = value.find(part => part.type === 'fraction')?.value ?? null;
-    const decimalSeparator = value.find(part => part.type === 'decimal')?.value ?? '.';
-
-    return decimalDigits ? `${decimalSeparator}${decimalDigits}` : '';
+    return formatter.format(Number(value));
 };
 
-const getFormattedCurrencySymbol = (value: Intl.NumberFormatPart[], isSatsValue: boolean) =>
-    isSatsValue ? 'sat' : (value.find(part => part.type === 'currency')?.value ?? null);
+const getDecimalSeparator = (locale: string) => {
+    const formatter = new Intl.NumberFormat(locale, { minimumFractionDigits: 1 });
 
-export const useFormattedGraphHeaderValues = (value?: string) => {
+    // we can not use formatter.formatToParts because it is not supported on iOS
+    // for this reason we need to use a regex on a dummy 0.1 value to get the decimal separator.
+    const formattedValue = formatter.format(Number(0.1));
+    const numericRegex = /[\d]+/g;
+    const cleanedDecimalSeparator = formattedValue.replace(numericRegex, '');
+
+    return cleanedDecimalSeparator;
+};
+
+const getFormattedDecimalNumber = ({
+    value = '00',
+    locale,
+    isSatsValue,
+}: {
+    value: string | undefined;
+    locale: string;
+    isSatsValue: boolean;
+}) => {
+    if (isSatsValue) {
+        return '';
+    }
+
+    const decimalSeparator = getDecimalSeparator(locale);
+
+    return `${decimalSeparator}${value.slice(0, MAX_DECIMALS_LENGTH)}`;
+};
+
+const getFormattedCurrencySymbol = ({
+    locale,
+    currency,
+    isSatsValue,
+}: {
+    locale: string;
+    currency: string;
+    isSatsValue: boolean;
+}) => {
+    if (isSatsValue) {
+        return 'sat';
+    }
+
+    const formatter = new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currencyDisplay: 'symbol',
+        currency,
+        maximumFractionDigits: 0,
+    });
+
+    // we can not use formatter.formatToParts because it is not supported on iOS
+    // for this reason we need to use a regex on a dummy 0 value to get the currency symbol
+    const formattedValue = formatter.format(0);
+    const regex = /[\s0]+/g;
+    const cleanedCurrencySymbol = formattedValue.replace(regex, '');
+
+    return cleanedCurrencySymbol;
+};
+
+export const useFormattedGraphHeaderValues = (value: string = '0') => {
     const locale = useLocale();
     const baseCurrency = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
 
     const isSatsValue = isBaseCurrencyInSats && baseCurrency === 'btc';
-    const minimumFractionDigits =
-        baseCurrency === 'btc' && !isBaseCurrencyInSats
-            ? FIAT_CURRENCY_DECIMALS_LENGTH
-            : BTC_CURRENCY_DECIMALS_LENGTH;
-    const maximumFractionDigits = isBaseCurrencyInSats
-        ? BTC_CURRENCY_DECIMALS_LENGTH
-        : FIAT_CURRENCY_DECIMALS_LENGTH;
-
-    const formatter = new Intl.NumberFormat(locale, {
-        currency: baseCurrency,
-        style: 'currency',
-        currencyDisplay: 'symbol',
-        minimumFractionDigits,
-        maximumFractionDigits,
-    });
 
     const numericValue = isSatsValue ? Number(value) * 100_000_000 : Number(value);
-    const formattedValueParts = formatter.formatToParts(numericValue);
+    const [integerPart, decimalPart] = numericValue
+        .toFixed(MAX_DECIMALS_LENGTH)
+        .toString()
+        .split('.');
 
     return {
-        wholeNumber: getFormattedWholeNumber(formattedValueParts),
-        currencySymbol: getFormattedCurrencySymbol(formattedValueParts, isSatsValue),
-        decimalNumber: getFormattedDecimalNumber(formattedValueParts),
+        currencySymbol: getFormattedCurrencySymbol({ locale, currency: baseCurrency, isSatsValue }),
+        wholeNumber: getFormattedWholeNumber({ value: integerPart, locale }),
+        decimalNumber: getFormattedDecimalNumber({ value: decimalPart, locale, isSatsValue }),
     };
 };
