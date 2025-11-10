@@ -18,7 +18,6 @@ export const getAssetLogoUrl = ({
     coingeckoId,
     contractAddress,
     quality = '1x',
-    size = 24,
 }: GetAssetLogoUrlParams) => {
     const name = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
     const fileName = createCoinImageNameLegacy(name, quality);

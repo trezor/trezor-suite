@@ -32,10 +32,7 @@ export function useNetworksTabs(options: SelectAssetOptionCurrencyProps[]) {
 
         return options.filter(
             option =>
-                option.coingeckoId === activeTab.coingeckoId &&
-                option.symbol === activeTab.symbol &&
-                // E.g. Don't show Solana network in Solana tab
-                option.ticker !== activeTab.displaySymbol,
+                option.coingeckoId === activeTab.coingeckoId && option.symbol === activeTab.symbol,
         );
     }, [activeTab, options]);
 

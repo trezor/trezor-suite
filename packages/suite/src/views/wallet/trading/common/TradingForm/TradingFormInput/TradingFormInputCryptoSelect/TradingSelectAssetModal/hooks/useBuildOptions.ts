@@ -130,20 +130,6 @@ function getTokenBalance({
     };
 }
 
-function orderAssetOptionsByFiatBalanceInDesc(
-    assetA: SelectAssetOptionCurrencyProps,
-    assetB: SelectAssetOptionCurrencyProps,
-) {
-    if (
-        assetA.tokenBalance?.fiatAmount?.gt(assetB.tokenBalance?.fiatAmount ?? '0') ||
-        (assetA.tokenBalance?.baseAmount && !assetB.tokenBalance?.baseAmount)
-    ) {
-        return -1;
-    }
-
-    return 0;
-}
-
 /**
  * Take all `TradingCryptoSelectOptionProps[]`:
  * 1. Select only `currency` options
@@ -197,9 +183,7 @@ export function useBuildOptions(
             })
             .filter(option => option !== null);
 
-        return sortTokensByFiatBalanceInDesc
-            ? filteredOptions.toSorted(orderAssetOptionsByFiatBalanceInDesc)
-            : filteredOptions;
+        return filteredOptions;
     }, [
         rawOptions,
         currentRates,
