@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { EventTypeShared, analytics } from '@suite-native/analytics';
 import {
+    BluetoothDevice,
     BluetoothDeviceList,
     selectNearbyBluetoothDevices,
     selectNearbyPairableBluetoothDevices,
@@ -30,6 +32,19 @@ export const ConnectBluetoothDeviceScreen = () => {
     const nearbyBluetoothDevices = useSelector(selectNearbyBluetoothDevices);
     const nearbyPairableBluetoothDevices = useSelector(selectNearbyPairableBluetoothDevices);
 
+    const handleDeviceButtonPress = useCallback(
+        (device: BluetoothDevice) => {
+            analytics.report({
+                type: EventTypeShared.DeviceConnectionDeviceFound,
+                payload: {
+                    option: 'connect',
+                },
+            });
+            connectBluetoothDevice(device);
+        },
+        [connectBluetoothDevice],
+    );
+
     useEffect(() => {
         if (nearbyBluetoothDevices.length === 0) {
             navigation.goBack();
@@ -41,7 +56,7 @@ export const ConnectBluetoothDeviceScreen = () => {
             <BluetoothDeviceList
                 variant="connect"
                 devices={nearbyPairableBluetoothDevices}
-                onDeviceButtonPress={connectBluetoothDevice}
+                onDeviceButtonPress={handleDeviceButtonPress}
             />
         </Screen>
     );
