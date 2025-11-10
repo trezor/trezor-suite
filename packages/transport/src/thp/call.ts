@@ -26,6 +26,7 @@ export const callThpMessage = async ({
 
     // read and send ThpAck
     const receiveResult = await receiveThpMessage({
+        firstReadResult: sendResult.payload,
         thpState,
         apiWrite,
         apiRead,

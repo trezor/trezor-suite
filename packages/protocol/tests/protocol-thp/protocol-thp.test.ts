@@ -105,7 +105,7 @@ describe('protocol-thp', () => {
         const unexpected = decodeSendAck(decodeV2(Buffer.from('40ffff0004f9215951', 'hex')));
         expect(unexpected).toBe(undefined);
 
-        expect(() => decodeSendAck(decodeV2(Buffer.from('40ffff000499999999', 'hex')))).toThrow(
+        expect(() => decodeSendAck(decodeV2(Buffer.from('2812340004e98c8598', 'hex')))).toThrow(
             'Invalid CRC',
         );
     });

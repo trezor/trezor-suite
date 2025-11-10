@@ -340,7 +340,10 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                 return writeResult;
             }
 
-            return createProtocolMessageResponse(writeResult, protocolName);
+            return createProtocolMessageResponse(
+                { success: true, payload: undefined } as const,
+                protocolName,
+            );
         }
 
         const writeResult = await writeUtil({ path, data, signal, protocol });
