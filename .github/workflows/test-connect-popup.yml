@@ -95,44 +95,6 @@ jobs:
       runWebextension: true
       runCoreInPopup: true
 
-  popup-pages:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      testName: popup-pages.test
-      serverHostname: dev.suite.sldev.cz
-
-  browser-support:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      testName: browser-support.test
-      serverHostname: dev.suite.sldev.cz
-
-  permissions:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      testName: permissions.test
-      serverHostname: dev.suite.sldev.cz
-
-  transport:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      testName: transport.test
-      serverHostname: dev.suite.sldev.cz
-
-  # Disabling it for now since after adding testnet 4 as default it is failing and
-  # it runs not in our code so we cannot update it.
-  # unchained:
-  #   needs: [build-deploy]
-  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
-  #   with:
-  #     testName: unchained.test
-  #     serverHostname: dev.suite.sldev.cz
-  #     runWeb: ${{ github.event_name == 'schedule' }}
-
   webextension-examples:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
@@ -140,4 +102,3 @@ jobs:
       testName: webextension-example.test
       serverHostname: dev.suite.sldev.cz
       runWebextension: true
-      runWeb: false

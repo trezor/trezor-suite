@@ -16,11 +16,6 @@ on:
         type: "boolean"
         required: false
         default: false
-      runWeb:
-        description: "Flag to indicate whether to run the web job"
-        type: "boolean"
-        required: false
-        default: true
       runCoreInPopup:
         description: "Flag to indicate whether to run the core-in-popup job"
         type: "boolean"
@@ -33,64 +28,7 @@ on:
         default: false
 
 jobs:
-  web:
-    name: web
-    runs-on: ubuntu-latest
-    if: ${{ inputs.runWeb }}
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Extract branch name
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-
-      - name: Install dependencies
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/connect-popup
-
-      - name: Run connect popup test
-        env:
-          URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          CI_JOB_NAME: ${{ inputs.testName }}-${{ github.run_attempt }}
-        run: |
-          ./docker/docker-connect-popup-ci.sh ${{ inputs.testName }}
-
-      - name: Prepare static overview
-        if: ${{ inputs.buildOverview }}
-        run: |
-          echo "Preparing static overview"
-          mkdir -p tmp_overview_directory
-          cp -R ./packages/connect-popup/e2e/screenshots/* tmp_overview_directory/
-          cp packages/connect-popup/connect-popup-overview.html  tmp_overview_directory/connect-popup-overview.html
-
-      - name: Upload static overview artifact
-        uses: actions/upload-artifact@v4
-        if: ${{ inputs.buildOverview }}
-        with:
-          name: core-in-popup-static-overview-${{ inputs.testName }}-${{ github.run_attempt }}
-          path: |
-            tmp_overview_directory/
-
-      - name: Upload artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-test-artifacts-${{ inputs.testName }}-${{ github.run_attempt }}-${{ github.run_id }}
-          path: |
-            packages/connect-popup/test-results
-
-      - name: Check Test Success
-        run: |
-          # If there is `test-results` it means it has failed.
-          if [ -f "packages/connect-popup/test-results" ]; then
-            echo "Tests failed"
-            exit 1
-          fi
+  # note: testing of iframe has been removed since iframe is now deprecated
 
   webextension:
     name: webextension
