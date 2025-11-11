@@ -1,6 +1,7 @@
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
+import { TR_ALLOW_ANALYTICS } from '../../../../suite-data/files/translations/es-ES.json';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -27,7 +28,7 @@ const testCases = [
     {
         testName: 'Dark Spanish',
         userPreferences: { locale: 'es-ES', colorScheme: ColorScheme.Dark },
-        text: 'Recogida de datos anónimos',
+        text: TR_ALLOW_ANALYTICS,
         textColor: colorVariants.dark.textDefault,
         bodyBackgroundColor: colorVariants.dark.backgroundSurfaceElevation0,
     },
