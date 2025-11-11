@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 9, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 7],
+    "min_firmware_version": [2, 8, 3],
+    "bootloader_version": [2, 1, 10],
+    "firmware_revision": "acd56d0113a547e9b5983510b0ce9de079e30e05",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3b1/translation-T3B1-cs-CZ-2.9.1.bin",
+        "de-DE": "firmware/translations/t3b1/translation-T3B1-de-DE-2.9.1.bin",
+        "es-ES": "firmware/translations/t3b1/translation-T3B1-es-ES-2.9.1.bin",
+        "fr-FR": "firmware/translations/t3b1/translation-T3B1-fr-FR-2.9.1.bin",
+        "pt-BR": "firmware/translations/t3b1/translation-T3B1-pt-BR-2.9.1.bin"
+    },
+    "url": "firmware/t3b1/trezor-t3b1-2.9.1-bitcoinonly.bin",
+    "fingerprint": "7588c0d41586268562837b8b302b8a4825fbec24ef94921e55ce820ff6dc2da6",
+    "changelog": "* Make space between value and unit non-breakable.\n* Fix crash on first boot.\n* Other small improvements and bug fixes."
+}

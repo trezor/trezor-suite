@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 9, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 6],
+    "min_firmware_version": [2, 7, 2],
+    "bootloader_version": [2, 1, 10],
+    "firmware_revision": "acd56d0113a547e9b5983510b0ce9de079e30e05",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.9.1.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.9.1.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.9.1.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.9.1.bin",
+        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.9.1.bin"
+    },
+    "url": "firmware/t3t1/trezor-t3t1-2.9.1-bitcoinonly.bin",
+    "fingerprint": "f19a88717e8eb7eb75ead0be5b5a0f1a129e2827658e587310fe285826138b2d",
+    "changelog": "* Limit swipe detection to the component's bounds.\n* Make space between value and unit non-breakable.\n* Do not hide the shown PIN until the touch is released.\n* Fix incomplete disabling of haptics.\n* Other small improvements and bug fixes."
+}
