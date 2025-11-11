@@ -65,7 +65,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                                 {showReceiveButton && (
                                     <Button
                                         flex={1}
-                                        data-testID="@home/portfolio/receive-button"
+                                        testID="@home/portfolio/receive-button"
                                         onPress={handleReceive}
                                         viewLeft="arrowDown"
                                     >
@@ -75,7 +75,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                                 {showSendButton && (
                                     <Button
                                         flex={1}
-                                        data-testID="@home/portfolio/send-button"
+                                        testID="@home/portfolio/send-button"
                                         onPress={handleSend}
                                         viewLeft="arrowUp"
                                     >

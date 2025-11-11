@@ -113,15 +113,9 @@ class DeviceOnboardingActions {
     }
 
     async skipFirmwareUpdate() {
-        const testId = '@firmware/skip-button';
-        try {
-            await waitForVisible(by.id(testId));
-            await element(by.id(testId)).tap();
-        } catch {
-            console.warn(
-                'SKIPPING FIRMWARE UPDATE: Firmware update was not displayed, it is already latest version.',
-            );
-        }
+        const skipFirmwareUpdateButton = element(by.id('@firmware/skip-button'));
+        await waitForVisible(skipFirmwareUpdateButton);
+        await skipFirmwareUpdateButton.tap();
     }
 
     async enterTHPPairingCode() {
