@@ -2873,7 +2873,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
         defaultMessage:
-            'All wallets will be ejected. Trezor Suite will automatically restart once the process is complete',
+            'All wallets will be automatically ejected when your Trezor is disconnected.',
     },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
@@ -7765,11 +7765,11 @@ export default defineMessages({
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
-        defaultMessage: 'Activate assets',
+        defaultMessage: 'Activate coins',
     },
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
-        defaultMessage: 'Select which assets to show in Trezor Suite. You can change this anytime.',
+        defaultMessage: 'Select which coins to show in Trezor Suite. You can change this anytime.',
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
@@ -9397,7 +9397,7 @@ export default defineMessages({
     },
     TR_STAKING_NEW_PROVIDER_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
-        defaultMessage: 'Earn ~{apy}% APY with new provider',
+        defaultMessage: 'Earn ~{apy}% APY with our new provider',
     },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
