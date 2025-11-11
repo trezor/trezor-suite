@@ -43,37 +43,43 @@ async function resizeImage(imageBuffer: ArrayBuffer, size: number) {
         : lossLessImageBuffer;
 }
 
-const updateIcon = async (coin: CoinListData) => {
-    console.log('Start icon updating for:', coin.id);
-
-    const coinData = await getCoinData(coin.id);
-    if (!coinData) {
-        console.error('No coin data for:', coin.id);
-
-        return;
-    }
-
+function isValidUrl(url: string): boolean {
     try {
-        new URL(coinData.image.large);
+        new URL(url);
+
+        return true;
     } catch {
-        console.error(`Invalid url (${coin.id}):`, coinData.image.large);
-
-        return;
+        return false;
     }
+}
 
-    const originImage = await fetch(coinData.image.large);
-    if (!originImage.ok) {
-        console.error(
-            `Invalid image (${coin.id}):`,
-            coinData.image.large,
-            originImage.status,
-            originImage.statusText,
-        );
-
-        return;
-    }
-
+const updateIcon = async (coin: CoinListData) => {
     try {
+        const coinData = await getCoinData(coin.id);
+        if (!coinData) {
+            console.error('No coin data for:', coin.id);
+
+            return;
+        }
+
+        if (!isValidUrl(coinData.image.large)) {
+            console.error(`Invalid url (${coin.id}):`, coinData.image.large);
+
+            return;
+        }
+
+        const originImage = await fetch(coinData.image.large);
+        if (!originImage.ok) {
+            console.error(
+                `Invalid image (${coin.id}):`,
+                coinData.image.large,
+                originImage.status,
+                originImage.statusText,
+            );
+
+            return;
+        }
+
         const originImageBuffer = await originImage.arrayBuffer();
         const platforms = Object.entries(coinData.platforms).filter(
             // filter out platforms that don't have a contract address (e.g. KASPY had instead of contract address some debug message which caused "too long name" error)
@@ -146,7 +152,10 @@ async function ensureDirectoryExists(path: string) {
 
     await ensureDirectoryExists(FILES_CRYPTOICONS_PATH);
 
-    for (const coin of coins) {
+    for (let i = 0; i < coins.length; i++) {
+        const coin = coins[i];
+
+        console.log(`${i + 1}/${coins.length}: Start icon updating for ${coin.id}`);
         await updateIcon(coin);
 
         updatedIcons[coin.id] = {
@@ -156,7 +165,7 @@ async function ensureDirectoryExists(path: string) {
         await fs.writeFile(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
 
         if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
-            console.log('Run limit reached');
+            console.log(`${i + 1 / coins.length}: Run limit reached`);
             break;
         }
 
