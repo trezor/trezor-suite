@@ -2,6 +2,7 @@
 export { disposeAllLocalFirstStorageThunk } from './storage/disposeAllLocalFirstStorageThunk';
 export { initLocalFirstStorageThunkFactory } from './storage/initLocalFirstStorageThunk';
 export { subscribeLocalFirstStorageThunk } from './storage/subscribeLocalFirstStorageThunk';
+export { changeRelayUrlThunk } from './storage/changeRelayUrlThunk';
 export { unsubscribeAndDisposeLocalFirstStorageThunk } from './storage/unsubscribeAndDisposeLocalFirstStorageThunk';
 export { DEFAULT_SUITE_SYNC_RELAY_URL as DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL } from './storage/LocalFirstStorageProvider';
 
@@ -36,6 +37,8 @@ export const labelingActions = {
         labelingActionsImported.updateLocalFirstStorageDebugEnabled,
     updateIsFeatureLocalFirstStorageAvailable:
         labelingActionsImported.updateIsFeatureLocalFirstStorageAvailable,
+
+    /** @deprecated This is exported only for the `storageMiddleware`, do not use anywhere else! */
     setLocalFirstStorageRelayUrl: labelingActionsImported.setLocalFirstStorageRelayUrl,
 };
 

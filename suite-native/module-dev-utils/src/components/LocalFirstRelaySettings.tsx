@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
+    changeRelayUrlThunk,
     disposeAllLocalFirstStorageThunk,
     labelingActions,
     selectIsFeatureLocalFirstStorageAvailable,
@@ -33,9 +34,7 @@ export const LocalFirstRelaySettings = () => {
     });
 
     const onSubmit = form.handleSubmit(values => {
-        dispatch(
-            labelingActions.setLocalFirstStorageRelayUrl({ url: values.localFirstStorageRelayUrl }),
-        );
+        dispatch(changeRelayUrlThunk({ relayUrl: values.localFirstStorageRelayUrl }));
         showToast({
             message: 'Local First Storage relay URL updated',
             variant: 'success',
@@ -58,14 +57,8 @@ export const LocalFirstRelaySettings = () => {
     };
 
     const handleResetToDefault = () => {
-        dispatch(
-            labelingActions.setLocalFirstStorageRelayUrl({
-                url: DEFAULT_CUSTOM_RELAY_URL,
-            }),
-        );
-        form.reset({
-            localFirstStorageRelayUrl: DEFAULT_CUSTOM_RELAY_URL,
-        });
+        dispatch(changeRelayUrlThunk({ relayUrl: DEFAULT_CUSTOM_RELAY_URL }));
+        form.reset({ localFirstStorageRelayUrl: DEFAULT_CUSTOM_RELAY_URL });
         showToast({
             message: 'Local First Storage relay URL reset to default',
             variant: 'success',
