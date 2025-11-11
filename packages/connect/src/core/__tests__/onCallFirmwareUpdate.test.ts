@@ -536,24 +536,4 @@ describe('onCallFirmwareUpdate', () => {
 
         await deviceList.dispose();
     });
-
-    // NOTE: this test fails because there are no official releases for T3W1, should be removed after release
-    it('T3W1: failed from config', async () => {
-        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
-        const t3 = { internal_model: 'T3W1' };
-
-        await waitForDeviceList([
-            // GetFeatures before reboot
-            buildFixture('0037', { ...t3 }),
-        ]);
-
-        await expect(() =>
-            onCallFirmwareUpdate({
-                params: {},
-                context,
-            }),
-        ).rejects.toThrow('device.firmwareReleaseConfigInfo is not set');
-
-        await deviceList.dispose();
-    });
 });
