@@ -99,6 +99,22 @@ export const validateCryptoLimits =
             }
 
             if (amountLimits.maxCrypto && new BigNumber(value).gt(maxCrypto)) {
+                if (minCrypto.lte(new BigNumber(value))) {
+                    const missingAmount = new BigNumber(value).minus(maxCrypto);
+
+                    return translationString(
+                        'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO',
+                        {
+                            missingAmount: formatter.format(missingAmount.toString(), {
+                                isBalance: true,
+                                symbol: currency,
+                                shouldRedactNumbers: false,
+                                maxDisplayedDecimals: 18,
+                            }),
+                        },
+                    );
+                }
+
                 return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
                     maximum: formatter.format(amountLimits.maxCrypto, {
                         isBalance: true,
@@ -152,6 +168,18 @@ export const validateFiatLimits =
             }
 
             if (amountLimits.maxFiat && new BigNumber(value).gt(amountLimits.maxFiat)) {
+                if (new BigNumber(amountLimits.minCrypto ?? '0').lte(new BigNumber(value))) {
+                    const missingAmount = new BigNumber(value).minus(amountLimits.maxFiat);
+
+                    return translationString(
+                        'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT',
+                        {
+                            missingAmount: missingAmount.toString(),
+                            currency: localCurrency.toUpperCase(),
+                        },
+                    );
+                }
+
                 return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT', {
                     maximum: amountLimits.maxFiat,
                     currency: localCurrency.toUpperCase(),
