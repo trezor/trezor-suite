@@ -105,6 +105,19 @@ export const StakeInputs = () => {
             .lte(stakingLimits.MIN_AMOUNT_FOR_STAKING);
     };
 
+    const balance = new BigNumber(account.formattedBalance || '0');
+    const maxCrypto = new BigNumber(amountLimits?.maxCrypto ?? '0');
+
+    const isBalanceBelowMinStake = balance.lt(
+        stakingLimits.MIN_AMOUNT_FOR_STAKING.plus(stakingLimits.MIN_BALANCE_FOR_FEE_BUFFER),
+    );
+
+    const missingAmount =
+        balance.gte(stakingLimits.MIN_AMOUNT_FOR_STAKING) &&
+        maxCrypto.lte(stakingLimits.MIN_AMOUNT_FOR_STAKING)
+            ? stakingLimits.MIN_AMOUNT_FOR_STAKING.minus(amountLimits?.maxCrypto ?? '0')
+            : null;
+
     const tooltip = (
         <Translation
             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
@@ -115,8 +128,17 @@ export const StakeInputs = () => {
         />
     );
 
-    const isBalanceBelowMinStake = new BigNumber(account.formattedBalance || '0').lt(
-        stakingLimits.MIN_AMOUNT_FOR_STAKING.plus(stakingLimits.MIN_BALANCE_FOR_FEE_BUFFER),
+    const maxTooltip = missingAmount && (
+        <Translation
+            id="TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO"
+            values={{
+                missingAmount: CryptoAmountFormatter.format(missingAmount.toString(), {
+                    isBalance: true,
+                    symbol: account.symbol,
+                    maxDisplayedDecimals: network.decimals,
+                }),
+            }}
+        />
     );
 
     return (
@@ -208,8 +230,8 @@ export const StakeInputs = () => {
                     {
                         id: 'TR_FRACTION_BUTTONS_MAX',
                         children: <Translation id="TR_FRACTION_BUTTONS_MAX" />,
-                        tooltip: isBalanceBelowMinStake && tooltip,
-                        isDisabled: isBalanceBelowMinStake,
+                        tooltip: maxTooltip || (isBalanceBelowMinStake && tooltip),
+                        isDisabled: isBalanceBelowMinStake || !!missingAmount,
                         onClick: () => setMax(),
                     },
                 ]}
