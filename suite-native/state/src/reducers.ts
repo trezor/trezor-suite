@@ -101,10 +101,14 @@ export const prepareRootReducers = async () => {
         key: 'trading',
         version: 2,
         migrations: {
-            2: (oldState: any /* FIXME */) => ({
-                ...oldState,
-                residence: tradingInitialState.residence,
-            }),
+            2: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+
+                return {
+                    ...oldState,
+                    residence: tradingInitialState.residence,
+                };
+            },
         },
     });
 
@@ -304,6 +308,8 @@ export const prepareRootReducers = async () => {
         version: 3,
         migrations: {
             2: (oldState: any /* FIXME */) => {
+                if (!oldState?.wallet) return oldState;
+
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountBnbToBsc(oldStateWallet.accounts);
 
@@ -326,6 +332,8 @@ export const prepareRootReducers = async () => {
                 return migratedState;
             },
             3: (oldState: any /* FIXME */) => {
+                if (!oldState?.wallet) return oldState;
+
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountsDeprecateNetworks(oldStateWallet.accounts);
                 const migratedTransactions = migrateTransactionsDeprecateNetworks(
