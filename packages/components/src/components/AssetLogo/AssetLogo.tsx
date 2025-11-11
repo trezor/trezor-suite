@@ -76,7 +76,7 @@ export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
     coingeckoId: string,
     contractAddress: string[] | undefined,
 ) => {
-    const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol;
+    const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol.toLowerCase();
 
     const addresses = ([] as Array<string | undefined>)
         .concat(contractAddress ?? [])
