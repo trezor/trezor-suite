@@ -5,7 +5,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 interface ReadMoreLinkProps {
-    url: keyof Omit<typeof URLS, 'TOR_URLS'>;
+    url: keyof Omit<typeof URLS, 'TOR_URLS' | 'SUITE_TRADING_REDIRECT_DEEPLINKS'>;
     linkLabel?: ExtendedMessageDescriptor['id'];
     message?: ExtendedMessageDescriptor['id'];
 }
