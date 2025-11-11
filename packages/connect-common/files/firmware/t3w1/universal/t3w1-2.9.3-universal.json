@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 9, 3],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 13],
+    "min_firmware_version": [2, 9, 3],
+    "bootloader_version": [2, 1, 14],
+    "firmware_revision": "0bd923c78990d8d58f82fe18660e57399aafc0f1",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3w1/translation-T3W1-cs-CZ-2.9.3.bin",
+        "de-DE": "firmware/translations/t3w1/translation-T3W1-de-DE-2.9.3.bin",
+        "es-ES": "firmware/translations/t3w1/translation-T3W1-es-ES-2.9.3.bin",
+        "fr-FR": "firmware/translations/t3w1/translation-T3W1-fr-FR-2.9.3.bin",
+        "pt-BR": "firmware/translations/t3w1/translation-T3W1-pt-BR-2.9.3.bin"
+    },
+    "url": "firmware/t3w1/trezor-t3w1-2.9.3.bin",
+    "fingerprint": "7069b1bc408b4d250cc4409e7a1bcdceb10c458b8c2b5e6b70ec32432c41d9b2",
+    "changelog": "* Public release of TS7 firmware."
+}
