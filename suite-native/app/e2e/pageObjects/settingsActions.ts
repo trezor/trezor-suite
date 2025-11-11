@@ -1,3 +1,4 @@
+import { LocaleTag } from '@suite-native/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
@@ -34,6 +35,22 @@ class SettingsActions {
         );
         await waitForVisible(discreetModeToggleElement);
         await discreetModeToggleElement.tap();
+    }
+
+    async changeLanguage(localeTag: LocaleTag) {
+        const languageSelectorTriggerElement = element(
+            by.id('@settings/localization/language-selector'),
+        );
+        await waitForVisible(languageSelectorTriggerElement);
+        await languageSelectorTriggerElement.tap();
+
+        await wait(1000); // wait for the language selector to open
+
+        const languageSelectorItemElement = element(by.id(`@select/item/${localeTag}`));
+        await scrollUntilVisible(languageSelectorItemElement, '@bottom-sheet/scroll-view');
+
+        await languageSelectorItemElement.tap();
+        await wait(1000); // wait for the language selector to close
     }
 
     async changeLocalizationCurrency(currencyCode: BaseCurrencyCode) {
