@@ -1,12 +1,11 @@
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
-import { Column, Text } from '@trezor/components';
+import { Column, LoadingContent, Text } from '@trezor/components';
 import { TypographyStyle } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
-import { InlineLoader } from './InlineLoader';
 import { useFeesContext } from '../context/FeesContext';
 import { TransactionMaxFee } from './hooks/useTransactionMaxFee';
 
@@ -21,21 +20,25 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
 
     if (!txMaxFee) {
         return (
-            <InlineLoader
-                loading={areFeesLoading}
+            <LoadingContent
+                size={20}
+                isLoading={areFeesLoading}
                 data-testid="@trading/quote/maximum-fee-amount-loading"
+                slideContent={false}
             >
                 <Text variant="tertiary" typographyStyle={typographyStyle}>
                     <Translation id="TO_BE_CALCULATED" />
                 </Text>
-            </InlineLoader>
+            </LoadingContent>
         );
     }
 
     return (
-        <InlineLoader
-            loading={areFeesLoading}
+        <LoadingContent
+            size={20}
+            isLoading={areFeesLoading}
             data-testid="@trading/quote/maximum-fee-amount-loading"
+            slideContent={false}
         >
             <Column alignItems="flex-end">
                 <Text variant="default" typographyStyle={typographyStyle}>
@@ -60,6 +63,6 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
                     />
                 </Text>
             </Column>
-        </InlineLoader>
+        </LoadingContent>
     );
 }
