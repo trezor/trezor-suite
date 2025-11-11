@@ -123,6 +123,7 @@ export interface EthereumSignTypedData<T extends EthereumSignTypedDataTypes> {
     metamask_v4_compat: boolean;
     domain_separator_hash?: undefined;
     message_hash?: undefined;
+    show_message_hash?: boolean;
 }
 export const EthereumSignTypedData = Type.Object({
     path: DerivationPath,
@@ -130,6 +131,7 @@ export const EthereumSignTypedData = Type.Object({
     metamask_v4_compat: Type.Boolean(),
     domain_separator_hash: Type.Optional(Type.Undefined()),
     message_hash: Type.Optional(Type.Undefined()),
+    show_message_hash: Type.Optional(Type.Boolean()),
 });
 
 /**
@@ -145,6 +147,7 @@ export interface EthereumSignTypedHash<T extends EthereumSignTypedDataTypes> {
     domain_separator_hash: string;
     /** Not required for domain-only signing, when EIP712Domain is the `primaryType` */
     message_hash?: string;
+    show_message_hash?: boolean;
 }
 export const EthereumSignTypedHash = Type.Object({
     path: DerivationPath,
@@ -152,6 +155,7 @@ export const EthereumSignTypedHash = Type.Object({
     metamask_v4_compat: Type.Boolean(),
     domain_separator_hash: Type.String(),
     message_hash: Type.Optional(Type.String()),
+    show_message_hash: Type.Optional(Type.Boolean()),
 });
 
 // ethereumVerifyMessage
