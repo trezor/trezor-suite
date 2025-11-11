@@ -1007,7 +1007,7 @@ export const messages = {
                     title: 'Labeling',
                     subtitle: 'Name your wallets, accounts and more',
                     screenSubtitle:
-                        'Name your wallets, personalize accounts, and label transactions. ',
+                        'Name your wallets, personalize accounts, and label transactions.',
                 },
                 advanced: {
                     title: 'Advanced',

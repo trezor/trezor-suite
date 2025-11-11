@@ -8,7 +8,7 @@ export const SettingsLabelingScreen = () => (
         header={
             <DynamicScreenHeader
                 title={<Translation id="moduleSettings.items.features.labeling.title" />}
-                subtitle="Name your wallets, personalize accounts, and label transactions. "
+                subtitle={<Translation id="moduleSettings.items.features.labeling.subtitle" />}
             />
         }
     >
