@@ -140,6 +140,10 @@ async function ensureDirectoryExists(path: string) {
         (a, b) => (updatedIcons[a.id]?.updatedAt ?? 0) - (updatedIcons[b.id]?.updatedAt ?? 0),
     );
 
+    const newIconsCount = coins.length - Object.keys(updatedIcons).length;
+
+    console.log(`Total coins: ${coins.length}, new icons: ${newIconsCount}`);
+
     await ensureDirectoryExists(FILES_CRYPTOICONS_PATH);
 
     for (const coin of coins) {
