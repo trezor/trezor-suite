@@ -2452,6 +2452,13 @@ export const messages = {
             paymentMethods: {
                 bankTransfer: 'Bank Transfer',
                 creditCard: 'Credit/Debit Card',
+                sepa: 'SEPA',
+                ach: 'Automated Clearing House',
+                skrill: 'Skrill',
+                neteller: 'Neteller',
+                payid: 'PayID',
+                dcinterac: 'Interac',
+                fasterPayment: 'Faster Payment System',
             },
             bankAccount: 'Bank account',
             verified: 'Verified',

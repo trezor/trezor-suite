@@ -63,7 +63,7 @@ export const sellBanxa = {
     tradedCoins: ['bitcoin', 'ethereum'] as CryptoId[],
     tradedFiatCurrencies: ['EUR', 'USD', 'AUD'],
     supportedCountries: ['AU', 'EU', 'US'],
-    paymentMethods: ['bankTransfer', 'creditCard'],
+    paymentMethods: ['bankTransfer', 'creditCard', 'SEPA'],
     statusUrl: 'https://checkout.banxa.com/sell/status/{{orderId}}',
     supportUrl: 'https://banxa.com/support',
     flow: 'BANK_ACCOUNT',
