@@ -68,22 +68,21 @@ const resolvedLogoCache = new Map<string, LogoCandidate>();
 const failedAddressesCache = new Set<string>();
 
 const makeCacheKey = (coingeckoId: string, addressesKey: string) =>
-    `${coingeckoId.toLowerCase()}::${addressesKey}`;
+    `${coingeckoId}::${addressesKey}`;
 
-const makeAddressKey = (coingeckoId: string, address: string) =>
-    `${coingeckoId.toLowerCase()}::${address.toLowerCase()}`;
+const makeAddressKey = (coingeckoId: string, address: string) => `${coingeckoId}::${address}`;
 
 export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
     coingeckoId: string,
     contractAddress: string[] | undefined,
 ) => {
-    const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol.toLowerCase();
+    const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol;
 
     const addresses = ([] as Array<string | undefined>)
         .concat(contractAddress ?? [])
         .map(addr => addr ?? ZERO_ADDRESS);
 
-    const hasNative = addresses.some(addr => addr.toLowerCase() === ZERO_ADDRESS);
+    const hasNative = addresses.some(addr => addr === ZERO_ADDRESS);
 
     const shouldUseTradeId = hasNative && !!mainNetworkSymbol && isNetworkSymbol(mainNetworkSymbol);
 
