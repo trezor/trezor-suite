@@ -18,12 +18,13 @@ type GlobalSendReceiveButtonsProps = {
 export const GlobalSendReceiveButtons = ({
     setActiveModal,
     intent,
+    priority,
 }: GlobalSendReceiveButtonsProps) => {
     const btcOnlyFw = useSelector(selectHasBitcoinOnlyFirmware);
 
     return (
         <ExperimentalFeatureFlag feature="global-send-receive" featureFlagDisabled={btcOnlyFw}>
-            <ButtonGroup size="small">
+            <ButtonGroup intent={intent} priority={priority}>
                 <HeaderActionButton
                     key="wallet-send"
                     icon="arrowUp"
@@ -33,7 +34,6 @@ export const GlobalSendReceiveButtons = ({
                         analytics.report({ type: EventType.DashboardSendModal });
                     }}
                     data-testid="@wallet/menu/wallet-global-send"
-                    intent={intent}
                 >
                     <Translation id="TR_NAV_SEND" />
                 </HeaderActionButton>
@@ -47,7 +47,6 @@ export const GlobalSendReceiveButtons = ({
                         analytics.report({ type: EventType.DashboardReceiveModal });
                     }}
                     data-testid="@wallet/menu/wallet-global-receive"
-                    intent={intent}
                 >
                     <Translation id="TR_NAV_RECEIVE" />
                 </HeaderActionButton>
