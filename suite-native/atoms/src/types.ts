@@ -3,7 +3,8 @@ export type TestProps = {
     ['data-test']?: never;
     ['data-testid']?: never;
     ['data-testId']?: never;
-    ['data-testID']?: string;
+    ['data-testID']?: never;
+    ['testID']?: string;
 };
 
 export type SurfaceElevation = '0' | '1';

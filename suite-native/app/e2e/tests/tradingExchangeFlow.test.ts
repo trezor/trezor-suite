@@ -12,6 +12,7 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
 // import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { waitForVisible } from '../support/utils';
 
 const preloadedStateWithoutTrezor = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
@@ -54,6 +55,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
+            await waitForVisible(by.id('@home/portfolio/receive-button'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingExchangeActions.openSwapForm();
         });

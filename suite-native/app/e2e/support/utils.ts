@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 const isIndexableNativeElement = (
     v: Detox.IndexableNativeElement | Detox.NativeMatcher,
 ): v is Detox.IndexableNativeElement => {
@@ -16,6 +18,28 @@ export const wait = async (ms: number) => {
     await new Promise(resolve => setTimeout(resolve, ms));
 };
 
+function pruneToAppStack(invocationStack: string): string {
+    const thisFile = path.normalize(__filename);
+    const lines = invocationStack.split('\n');
+    const kept: string[] = [];
+
+    for (const l of lines) {
+        const m = l.match(/\s+at (?:.+ \()?(.*?):\d+:\d+\)?/);
+        if (!m) continue;
+        const file = path.normalize(m[1]);
+        if (
+            file.includes('node:') ||
+            file.includes(`${path.sep}node_modules${path.sep}`) ||
+            file === thisFile
+        ) {
+            continue;
+        }
+        kept.push(l);
+    }
+
+    return kept.length ? ['Error'].concat(kept).join('\n') : invocationStack;
+}
+
 export const waitForVisible = async (
     elementOrMatcher: Detox.IndexableNativeElement | Detox.NativeMatcher,
     { timeout = 30_000 }: { timeout?: number } = {},
@@ -23,7 +47,15 @@ export const waitForVisible = async (
     const target = isIndexableNativeElement(elementOrMatcher)
         ? elementOrMatcher
         : element(elementOrMatcher);
-    await waitFor(target).toBeVisible().withTimeout(timeout);
+    const invocationStack = new Error().stack || '';
+    try {
+        await waitFor(target).toBeVisible().withTimeout(timeout);
+    } catch (error) {
+        const details = `waitForVisible(): target not visible after ${timeout}ms`;
+        const appStackError = new Error(details, { cause: error as Error });
+        appStackError.stack = `${appStackError.name}: ${appStackError.message}\n${pruneToAppStack(invocationStack)}`;
+        throw appStackError;
+    }
 };
 
 export const appIsFullyLoaded = async () => {

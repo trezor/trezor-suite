@@ -58,7 +58,7 @@ export const XpubHintBottomSheet = ({
                 </VStack>
                 <Box marginTop="sp32">
                     <Button
-                        data-testID="@accounts-import/xpub-help-modal/confirm-btn"
+                        testID="@accounts-import/xpub-help-modal/confirm-btn"
                         onPress={handleClose}
                     >
                         <Translation id="generic.buttons.gotIt" />

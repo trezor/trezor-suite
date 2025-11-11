@@ -15,10 +15,12 @@ import {
 } from '../support/setup';
 import { wait } from '../support/utils';
 
-const proceedToCreateOrRecoverCrossroads = async () => {
+const proceedToCreateOrRecoverCrossroads = async (options?: { skipFirmwareUpdate?: boolean }) => {
     await onDeviceOnboarding.waitForUninitializedDeviceLanding();
     await onDeviceOnboarding.dismissTheUninitializedDeviceLanding();
-    await onDeviceOnboarding.skipFirmwareUpdate();
+    if (options?.skipFirmwareUpdate) {
+        await onDeviceOnboarding.skipFirmwareUpdate();
+    }
 
     await TrezorUserEnvLink.pressYes();
 
