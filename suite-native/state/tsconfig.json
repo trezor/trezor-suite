@@ -55,6 +55,7 @@
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },
+        { "path": "../thp" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/protobuf" },

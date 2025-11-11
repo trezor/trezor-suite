@@ -42,6 +42,7 @@
         "@suite-native/sentry": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
+        "@suite-native/thp": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/protobuf": "workspace:^",

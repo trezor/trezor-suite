@@ -11,6 +11,7 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
+import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
 
@@ -28,6 +29,7 @@ const middlewares: Middleware[] = [
     prepareDeviceMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
     sendFormMiddleware,
+    thpMiddleware,
     prepareTradingMiddleware(extraDependencies),
     preparePushNotificationMiddleware(extraDependencies),
 ];
