@@ -152,7 +152,7 @@ export const selectShouldAccountsBeRediscovered = (
             const lastAccount = accounts.reduce((last, current) =>
                 current.index > last.index ? current : last,
             );
-            if (lastAccount.failed || lastAccount.empty) return true;
+            if (lastAccount.failed || !lastAccount.empty) return true;
 
             return false;
         });
