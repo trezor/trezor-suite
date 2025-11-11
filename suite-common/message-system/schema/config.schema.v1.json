@@ -749,6 +749,10 @@
                 "ZM",
                 "ZW"
             ]
+        },
+        "tradingType": {
+            "type": "string",
+            "enum": ["buy", "sell", "exchange"]
         }
     }
 }
