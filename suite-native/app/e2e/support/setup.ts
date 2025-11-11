@@ -28,6 +28,7 @@ const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     isDebugKeysAllowed: true,
     isTradingBuyEnabled: true,
     areDebugOnlyNetworksEnabled: true,
+    isTradingResidenceCheckEnabled: false,
 };
 
 const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
