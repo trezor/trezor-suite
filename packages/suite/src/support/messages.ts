@@ -2873,7 +2873,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
         defaultMessage:
-            'All wallets will be automatically ejected when your Trezor is disconnected.',
+            'All wallets will be ejected. Trezor Suite will automatically restart once the process is complete',
     },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
