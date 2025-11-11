@@ -4,6 +4,8 @@ export type WithThpState = {
     thp: ThpState;
 };
 
+export const selectThp = (state: WithThpState) => state.thp;
+
 export const selectIsThpInProgress = (state: WithThpState) => state.thp.step !== null;
 
 export const selectThpStep = (state: WithThpState) => state.thp.step;

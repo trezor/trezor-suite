@@ -1,6 +1,8 @@
+import { selectKnownDevices } from '@suite-common/bluetooth';
 import { MetadataState } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils/';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
@@ -124,39 +126,45 @@ export const saveCoinjoinDebugSettings = () => (_dispatch: Dispatch, getState: G
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
 };
 
-export const saveThpCredentials = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { credentials, staticKey } = getState().thp;
-    db.addItem('thp', { credentials, staticKey }, 'value', true);
-};
+export const saveThpCredentials = createThunk(
+    `${STORAGE.MODULE_PREFIX}/saveThpCredentials`,
+    async (_, { getState }) => {
+        if (!db.isAccessible()) return;
+        const { credentials, staticKey } = selectThp(getState());
+        await db.addItem('thp', { credentials, staticKey }, 'value', true);
+    },
+);
 
-export const saveKnownDevices = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { knownDevices } = getState().bluetooth;
+export const saveKnownDevices = createThunk(
+    `${STORAGE.MODULE_PREFIX}/saveKnownDevices`,
+    async (_, { getState }) => {
+        if (!db.isAccessible()) return;
+        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
 
-    db.addItem(
-        'bluetooth',
-        {
-            knownDevices: knownDevices.map(
-                (it): DesktopBluetoothDevice => ({
-                    id: it.id,
-                    name: it.name,
-                    macAddress: it.macAddress,
-                    manufacturerData: it.manufacturerData,
-                    lastUpdatedTimestamp: it.lastUpdatedTimestamp,
-                    paired: it.paired,
-                    rssi: it.rssi,
-                    deviceId: it.deviceId,
+        await db.addItem(
+            'bluetooth',
+            {
+                knownDevices: knownDevices.map(
+                    (it): DesktopBluetoothDevice => ({
+                        id: it.id,
+                        name: it.name,
+                        macAddress: it.macAddress,
+                        manufacturerData: it.manufacturerData,
+                        lastUpdatedTimestamp: it.lastUpdatedTimestamp,
+                        paired: it.paired,
+                        rssi: it.rssi,
+                        deviceId: it.deviceId,
 
-                    // Those fields are reset to prevent some state-inconsistency and UI flickering
-                    connectionStatus: { type: 'disconnected' },
-                }),
-            ),
-        },
-        'value',
-        true,
-    );
-};
+                        // Those fields are reset to prevent some state-inconsistency and UI flickering
+                        connectionStatus: { type: 'disconnected' },
+                    }),
+                ),
+            },
+            'value',
+            true,
+        );
+    },
+);
 
 export const saveAccountFormDraft =
     (prefix: FormDraftKeyPrefix, accountKey: string) => (_: Dispatch, getState: GetState) => {
