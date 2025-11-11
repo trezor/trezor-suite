@@ -25,7 +25,7 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 - `git lfs pull`
 - `nvm install`
 - `yarn`
-- `yarn build:libs`
+- `yarn build:essential`
 
 It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
 
