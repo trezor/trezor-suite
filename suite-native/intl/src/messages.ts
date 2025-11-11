@@ -802,8 +802,7 @@ export const messages = {
         },
         checkBackup: {
             title: 'Check wallet backup',
-            subtitle:
-                'A valid backup is necessary to recover a lost, stolen, or damaged Trezor. We recommended to check your backup regularly.',
+            subtitle: 'Check the validity of your backup',
         },
         authenticity: {
             title: 'Device authenticity',
