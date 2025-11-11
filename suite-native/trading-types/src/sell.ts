@@ -1,4 +1,4 @@
-import type { SellFiatTrade } from 'invity-api';
+import type { SellCryptoPaymentMethod, SellFiatTrade } from 'invity-api';
 
 import type { UseFormReturn } from '@suite-native/forms';
 
@@ -7,6 +7,16 @@ import type {
     FormWithFiatCurrencyValues,
     FormWithSendAccountValues,
 } from './general';
+
+export type ExtendedSellCryptoPaymentMethod =
+    | SellCryptoPaymentMethod
+    | 'sepa'
+    | 'ach'
+    | 'skrill'
+    | 'neteller'
+    | 'payid'
+    | 'dcinterac'
+    | 'fasterPayment';
 
 export type SellFormValues = BaseFormValues<
     'cryptoStringAmount' | 'fiatStringAmount',
