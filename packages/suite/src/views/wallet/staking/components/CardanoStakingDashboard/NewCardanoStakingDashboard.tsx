@@ -8,7 +8,7 @@ import {
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -47,6 +47,7 @@ export const NewCardanoStakingDashboard = ({
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
+    const isStakedWithEverstake = isCardanoStakedWithEverstake(account) || hasPendingTx;
 
     const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
 
@@ -76,7 +77,7 @@ export const NewCardanoStakingDashboard = ({
                                 >
                                     <ClaimCard />
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
-                                        <ApyCard apy={apy} />
+                                        <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
                                         <PayoutCard
                                             nextRewardPayout={CARDANO_EPOCH_DAYS}
                                             daysToAddToPool={CARDANO_EPOCH_DAYS}
