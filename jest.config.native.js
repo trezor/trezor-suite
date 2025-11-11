@@ -16,7 +16,12 @@ module.exports = {
     testMatch,
     testPathIgnorePatterns,
     watchPathIgnorePatterns,
-    moduleNameMapper,
+    moduleNameMapper: {
+        ...moduleNameMapper,
+        '^@evolu/common/evolu$': '<rootDir>/../../suite-native/test-utils/src/evoluMock.ts',
+        '^@evolu/react-native/expo-sqlite$':
+            '<rootDir>/../../suite-native/test-utils/src/evoluMock.ts',
+    },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
 
