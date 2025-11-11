@@ -25271,15 +25271,15 @@ __metadata:
   linkType: hard
 
 "expo-sqlite@npm:^16.0.8":
-  version: 16.0.8
-  resolution: "expo-sqlite@npm:16.0.8"
+  version: 16.0.9
+  resolution: "expo-sqlite@npm:16.0.9"
   dependencies:
     await-lock: "npm:^2.2.2"
   peerDependencies:
     expo: "*"
     react: "*"
     react-native: "*"
-  checksum: 10/925e4a9cc6e271076c3a2bd3c8f6589e6675c0b0cdbe3b89ab8643bf39a34f3018f17358d9b8f4414122bc8e5363bf716cb6221ae426ae57623737cc6ff0b12b
+  checksum: 10/468d2e0bc42556e5b6b046d9d99f2d376b646b0b073b60cd3996b62021621696c8ed0b9f555277baedd9ae96c2f61409988628d20a67ebbb786440357eb90bd2
   languageName: node
   linkType: hard
 
