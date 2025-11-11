@@ -39,6 +39,10 @@ class TabBarActions {
 
         await detoxExpect(element(by.id('@screen/Trading'))).toBeVisible();
     }
+
+    async assertHomeTabBarItemTitle(title: string) {
+        await detoxExpect(element(by.id('@tabBar/HomeStack/title'))).toHaveText(title);
+    }
 }
 
 export const onTabBar = new TabBarActions();

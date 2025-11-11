@@ -67,6 +67,7 @@ export const TabBarItem = ({
                         variant="label"
                         textAlign="center"
                         color={isFocused ? 'textPrimaryDefault' : 'textDisabled'}
+                        testID={`@tabBar/${testID}/title`}
                     >
                         {title}
                     </Text>

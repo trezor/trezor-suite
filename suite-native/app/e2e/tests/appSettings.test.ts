@@ -1,5 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
+import CS_TRANSLATIONS from '@suite-native/intl/translations/cs-CZ.json';
+import EN_TRANSLATIONS from '@suite-native/intl/translations/en-US.json';
 import { PROTO } from '@trezor/connect';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
@@ -41,6 +43,17 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onTabBar.navigateToHome();
 
         await detoxExpect(element(by.text('0 sat'))).toBeVisible();
+    });
+
+    it('Localization - Language', async () => {
+        await onTabBar.assertHomeTabBarItemTitle(EN_TRANSLATIONS['navigation.tabs.home']);
+        await onTabBar.navigateToSettings();
+        await onSettings.tapPreferences();
+        await onSettings.changeLanguage('cs-CZ');
+        await onTabBar.tapBackButton();
+        await onTabBar.navigateToHome();
+
+        await onTabBar.assertHomeTabBarItemTitle(CS_TRANSLATIONS['navigation.tabs.home']);
     });
 
     it('Privacy & Security - Discreet Mode', async () => {
