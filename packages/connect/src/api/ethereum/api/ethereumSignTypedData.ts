@@ -99,6 +99,13 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 );
             }
         }
+
+        if (payload.show_message_hash !== undefined) {
+            this.params.show_message_hash = payload.show_message_hash;
+        } else if (this.params.data.primaryType === 'SafeTx') {
+            // Show hashes for Safe transactions by default unless specified otherwise
+            this.params.show_message_hash = true;
+        }
     }
 
     async initAsync() {
@@ -127,6 +134,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                     'should_show_struct',
                     'should_show_array',
                     'confirm_typed_value',
+                    'confirm_message_hash',
                     'confirm_empty_typed_message',
                     'confirm_typed_data_final',
                 ].includes(name)) ||
@@ -191,6 +199,9 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 primary_type: primaryType as string,
                 metamask_v4_compat,
                 definitions,
+                show_message_hash: this.params.show_message_hash
+                    ? this.params.message_hash
+                    : undefined,
             },
         );
 
