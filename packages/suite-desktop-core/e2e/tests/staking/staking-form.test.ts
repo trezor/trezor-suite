@@ -60,14 +60,20 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
 
                     await expect
                         .soft(stakingSection.cryptoInputBottomText)
-                        .toHaveText('Minimum is 0.1 ETH', { timeout: 15_000 });
+                        .toHaveTranslation('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
+                            values: { minimum: '0.1 ETH' },
+                            timeout: 15_000,
+                        });
                 });
 
                 await test.step('Too many decimal digits', async () => {
                     await stakingSection.cryptoInput.fill('0.0000000000000000001');
                     await expect
                         .soft(stakingSection.cryptoInputBottomText)
-                        .toHaveText('Maximum 18 decimals allowed', { timeout: 15_000 });
+                        .toHaveTranslation('AMOUNT_IS_NOT_IN_RANGE_DECIMALS', {
+                            values: { decimals: '18' },
+                            timeout: 15_000,
+                        });
                 });
 
                 await test.step('Not enough funds', async () => {
@@ -115,9 +121,9 @@ test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
                         .click();
                     await expect
                         .soft(stakingSection.withdrawalWarning)
-                        .toHaveText(
-                            'We’ve left 0.03 ETH in your account so you can pay for withdrawal fees.',
-                        );
+                        .toHaveTranslation('TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL', {
+                            values: { amount: '0.03', networkDisplaySymbol: 'ETH' },
+                        });
                     const expectedMax = new BigNumber(ethereumStakingBalance!)
                         .minus(WITHDRAWAL_BUFFER)
                         .minus(MOCKED_FEE_AMOUNT);

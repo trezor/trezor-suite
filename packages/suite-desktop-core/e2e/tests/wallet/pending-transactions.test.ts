@@ -107,10 +107,14 @@ test.describe(
                 );
                 await expect(
                     pendingTransactionsAccount1.getByTestId('@transaction-item/0/heading'),
-                ).toContainText('Sending REGTEST to myself');
+                ).toContainTranslation('TR_SENDING_SYMBOL_TO_SELF', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
                 await expect(
                     pendingTransactionsAccount1.getByTestId('@transaction-item/1/heading'),
-                ).toContainText('Sending REGTEST');
+                ).toContainTranslation('TR_SENDING_SYMBOL', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
             });
 
             await test.step('Verify account #2 has 1 pending transaction (receive)', async () => {
@@ -122,7 +126,9 @@ test.describe(
                 );
                 await expect(
                     pendingTransactionsAccount2.getByTestId('@transaction-item/0/heading'),
-                ).toContainText('Receiving REGTEST');
+                ).toContainTranslation('TR_RECEIVING_SYMBOL', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
             });
 
             await test.step('Generate empty Block and verify account #1 transaction has NOT changed', async () => {
@@ -139,10 +145,14 @@ test.describe(
                 );
                 await expect(
                     pendingTransactionsAccount1AfterMine.getByTestId('@transaction-item/0/heading'),
-                ).toContainText('Sending REGTEST to myself');
+                ).toContainTranslation('TR_SENDING_SYMBOL_TO_SELF', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
                 await expect(
                     pendingTransactionsAccount1AfterMine.getByTestId('@transaction-item/1/heading'),
-                ).toContainText('Sending REGTEST');
+                ).toContainTranslation('TR_SENDING_SYMBOL', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
             });
 
             await test.step('Mine the "not-self" transaction', async () => {
@@ -160,7 +170,9 @@ test.describe(
                     pendingTransactionsAccount1AfterMine2.getByTestId(
                         '@transaction-item/0/heading',
                     ),
-                ).toContainText('Sending REGTEST to myself');
+                ).toContainTranslation('TR_SENDING_SYMBOL_TO_SELF', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
                 await expect(page.getByTestId('@transaction-group/pending/count')).toContainText(
                     '1',
                 );
@@ -173,7 +185,9 @@ test.describe(
                 );
                 await expect(
                     confirmedTransactionsAccount1.getByTestId('@transaction-item/0/heading'),
-                ).toContainText('Sent REGTEST');
+                ).toContainTranslation('TR_SENT_SYMBOL', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
             });
 
             await test.step('Verify receive pending transaction on account #2 is now mined as well', async () => {
@@ -185,7 +199,9 @@ test.describe(
                 );
                 await expect(
                     confirmedTransactionsAccount2.getByTestId('@transaction-item/0/heading'),
-                ).toContainText('Received REGTEST');
+                ).toContainTranslation('TR_RECEIVED_SYMBOL', {
+                    values: { multiple: 'false', symbol: 'REGTEST' },
+                });
             });
 
             await test.step('Verify account #3 is visible', async () => {

@@ -1,6 +1,7 @@
-import { Locator, Page, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import { step } from '../common';
+import { expect } from '../testExtends/customMatchers';
 
 export class RecoveryModal {
     readonly selectRecoveryButton = (type: 'standard' | 'advanced') =>
@@ -38,9 +39,7 @@ export class RecoveryModal {
 
     @step()
     async verifyDryCheckPrompt() {
-        await expect(this.header).toHaveText('Check wallet backup', { timeout: 30_000 });
-        await expect(this.prompt).toHaveText(
-            'Enter the words directly on your Trezor device in the correct order.',
-        );
+        await expect(this.header).toHaveTranslation('TR_CHECK_RECOVERY_SEED', { timeout: 30_000 });
+        await expect(this.prompt).toHaveTranslation('TR_ENTER_SEED_WORDS_ON_DEVICE');
     }
 }

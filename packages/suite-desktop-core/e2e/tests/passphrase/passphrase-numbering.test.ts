@@ -20,9 +20,17 @@ test.describe('Passphrase numbering', { tag: ['@group=passphrase'] }, () => {
 
         await test.step('verify wallet labels are correct', async () => {
             await dashboardPage.openDeviceSwitcher();
-            await expect(dashboardPage.walletAtIndex(0)).toContainText('Standard wallet');
-            await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
-            await expect(dashboardPage.walletAtIndex(2)).toContainText('Passphrase wallet #2');
+            await expect(dashboardPage.walletAtIndex(0)).toContainTranslation(
+                'TR_NO_PASSPHRASE_WALLET',
+            );
+            await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
+                'TR_PASSPHRASE_WALLET',
+                { values: { id: '1' } },
+            );
+            await expect(dashboardPage.walletAtIndex(2)).toContainTranslation(
+                'TR_PASSPHRASE_WALLET',
+                { values: { id: '2' } },
+            );
         });
 
         await test.step('eject standard and the first passphrase wallet', async () => {
@@ -38,9 +46,17 @@ test.describe('Passphrase numbering', { tag: ['@group=passphrase'] }, () => {
 
         await test.step('verify passphrase wallet labels are correct', async () => {
             await dashboardPage.openDeviceSwitcher();
-            await expect(dashboardPage.walletAtIndex(0)).toContainText('Passphrase wallet #2');
-            await expect(dashboardPage.walletAtIndex(1)).toContainText('Standard wallet');
-            await expect(dashboardPage.walletAtIndex(2)).toContainText('Passphrase wallet #3');
+            await expect(dashboardPage.walletAtIndex(0)).toContainTranslation(
+                'TR_PASSPHRASE_WALLET',
+                { values: { id: '2' } },
+            );
+            await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
+                'TR_NO_PASSPHRASE_WALLET',
+            );
+            await expect(dashboardPage.walletAtIndex(2)).toContainTranslation(
+                'TR_PASSPHRASE_WALLET',
+                { values: { id: '3' } },
+            );
         });
     });
 });

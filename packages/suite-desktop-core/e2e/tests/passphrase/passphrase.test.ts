@@ -169,7 +169,12 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
 
             await dashboardPage.modal.waitFor({ state: 'detached' });
             await dashboardPage.openDeviceSwitcher();
-            await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
+            await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
+                'TR_PASSPHRASE_WALLET',
+                {
+                    values: { id: '1' },
+                },
+            );
         });
     });
 });

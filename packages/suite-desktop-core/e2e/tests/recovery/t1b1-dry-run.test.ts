@@ -42,9 +42,7 @@ test.describe(
                 await recoveryModal.initDryCheck('standard', 24);
                 await trezorInput.enterPinOnBlindMatrix(pin);
                 await trezorInput.inputMnemonicT1B1(mnemonic);
-                await expect(devicePrompt.modal).toContainText(
-                    "Follow the instructions on your Trezor's screen",
-                );
+                await expect(devicePrompt.modal).toContainTranslation('TR_CONFIRM_ACTION_ON_YOUR');
                 await trezorUserEnvLink.pressYes();
                 await expect(recoveryModal.successTitle).toHaveText(
                     'Wallet backup checked successfully',

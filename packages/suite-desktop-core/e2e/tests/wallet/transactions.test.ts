@@ -1,12 +1,14 @@
+import messages from '@trezor/suite/src/support/messages';
+
 import { expect, test } from '../../support/fixtures';
 import { graphRangeOptions } from '../../support/pageObjects/dashboardPage';
 
 const rangeData: { range: graphRangeOptions; label: string }[] = [
-    { range: 'day', label: '1 day' },
-    { range: 'week', label: '1 week' },
-    { range: 'month', label: '1 month' },
-    { range: 'year', label: '1 year' },
-    { range: 'all', label: 'All' },
+    { range: 'day', label: messages['TR_DATE_DAY_LONG'].defaultMessage },
+    { range: 'week', label: messages['TR_DATE_WEEK_LONG'].defaultMessage },
+    { range: 'month', label: messages['TR_DATE_MONTH_LONG'].defaultMessage },
+    { range: 'year', label: messages['TR_DATE_YEAR_LONG'].defaultMessage },
+    { range: 'all', label: messages['TR_ALL'].defaultMessage },
 ];
 
 test.describe('Account transactions overview', { tag: ['@group=wallet'] }, () => {

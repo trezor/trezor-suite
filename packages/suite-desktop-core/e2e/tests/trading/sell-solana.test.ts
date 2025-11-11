@@ -23,7 +23,6 @@ const formattedCryptoAmount = `${cryptoAmount} SOL`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
 const formattedAddress = formatAddress(sellWatchSolana.destinationAddress);
-const toastText = `${formattedCryptoAmount} sent from Solana #1`;
 
 test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({
@@ -108,11 +107,15 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Trade in progress...');
+            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                'TR_SELL_DETAIL_PENDING_TITLE',
+            );
             await expect(
                 page.getByRole('link', { name: "Open partner's support site" }),
             ).toBeVisible();
-            await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
+            await expect(page.getByTestId('@toast/tx-sent')).toContainTranslation('TOAST_TX_SENT', {
+                values: { amount: formattedCryptoAmount, account: 'Solana #1' },
+            });
         });
 
         await test.step('Wait 30s for watch refresh and status change to Success', async () => {

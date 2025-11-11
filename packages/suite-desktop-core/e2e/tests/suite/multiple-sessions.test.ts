@@ -48,10 +48,12 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
 
             await test.step('Take Bridge session back', async () => {
                 await dashboardPage.solveIssuesButton.click();
-                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveText('Connected');
+                await expect(dashboardPage.deviceStatusOnSwitchDevice).toHaveTranslation(
+                    'TR_CONNECTED',
+                );
                 await expect(dashboardPage.walletAtIndex(0)).toBeVisible();
                 await dashboardPage.deviceSwitchingCloseButton.click();
-                await expect(dashboardPage.deviceStatus).toHaveText('Connected');
+                await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_CONNECTED');
             });
 
             await test.step('Reload inactive suite session', async () => {
@@ -107,7 +109,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             );
             await onboardingPageTwo.completeOnboarding();
             const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);
-            await expect(dashboardPageTwo.deviceStatus).toHaveText('Connected');
+            await expect(dashboardPageTwo.deviceStatus).toHaveTranslation('TR_CONNECTED');
             await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE');
 
             await pageTwo.close();

@@ -143,7 +143,7 @@ export class SettingsPage {
         const notInSettings = !(await this.settingsHeader.isVisible());
         if (notInSettings) {
             await this.settingsMenuButton.click();
-            await expect(this.settingsHeader).toHaveText('Settings', { timeout: 10000 });
+            await expect(this.settingsHeader).toHaveTranslation('TR_SETTINGS', { timeout: 10000 });
         }
         const tabNavigation: { [key: string]: () => Promise<void> } = {
             application: () => this.applicationTabButton.click(),

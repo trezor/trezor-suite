@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect-web';
+import messages from '@trezor/suite/src/support/messages';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -39,8 +40,8 @@ test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () =
             });
 
             await expect(connectPermissionsModal.processParagraph).toHaveText('node');
-            await expect(connectPermissionsModal.rememberCheckbox).toHaveText(
-                'Always allow for this app',
+            await expect(connectPermissionsModal.rememberCheckbox).toHaveTranslation(
+                'TR_CONNECT_MODAL_REMEMBER',
             );
             await connectPermissionsModal.rememberCheckbox.click();
             await connectPermissionsModal.confirmButton.click();
@@ -58,7 +59,8 @@ test.describe('TrezorConnect', { tag: ['@group=connect', '@desktopOnly'] }, () =
             await page.getByTestId(`@settings/connect-apps/0/dropdown`).click();
 
             // todo: it looks like data-test is not passed down to list items in dropdown
-            await page.getByText('Forget').click();
+            const forgetButtonTranslation = messages['TR_FORGET'].defaultMessage;
+            await page.getByText(forgetButtonTranslation).click();
             await page.getByTestId('@settings/connect-apps/no-apps').waitFor({ state: 'visible' });
 
             // permissions modal appears again

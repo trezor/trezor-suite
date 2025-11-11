@@ -85,7 +85,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             ).toBeDisabled();
             await expect(
                 page.getByTestId('@connect-address-confirmation/verify-button/1'),
-            ).toHaveText('Verifying');
+            ).toHaveTranslation('TR_VERIFYING');
 
             // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
             await page.waitForTimeout(1000);
@@ -108,7 +108,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             ).toBeDisabled();
             await expect(
                 page.getByTestId('@connect-address-confirmation/verify-button/0'),
-            ).toHaveText('Verifying');
+            ).toHaveTranslation('TR_VERIFYING');
 
             // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
             await page.waitForTimeout(1000);

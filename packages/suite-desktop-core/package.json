@@ -81,6 +81,7 @@
         "glob": "^11.0.3",
         "jest-diff": "^29.7.0",
         "lodash": "^4.17.21",
+        "react-intl": "^7.1.14",
         "terser-webpack-plugin": "^5.3.14",
         "tsx": "^4.20.3",
         "webpack": "5.102.1",

@@ -117,7 +117,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
             });
 
         await test.step('Verify fees on modal and emulator', async () => {
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(`Gas limit: ${gasLimit}`);
+            await expect(devicePrompt.ethereumGasLimit).toHaveText(`${messages['TR_GAS_LIMIT'].defaultMessage}: ${gasLimit}`);
             await expect(devicePrompt.ethereumFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
             await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
                 `${maxPriorityFeePerGasRounded} Gwei`,
