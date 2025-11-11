@@ -21,6 +21,7 @@
     "blockTime": 1751723496,
     "value": "0",
     "fees": "25293986739000",
+    "rbf": true,
     "ethereumSpecific": {
         "status": -1,
         "nonce": 1,
