@@ -17,7 +17,7 @@ export function roundToNonZeroFractionDigits(
     }
 
     // Get the fractional part as a string without scientific notation
-    const [, fractionDigits] = value.toString().split('.');
+    const [, fractionDigits = ''] = value.toString().split('.');
 
     // Find index (1-based) of the 4th non-zero digit after the decimal point
     let nonZeroDigits = 0;
@@ -39,5 +39,5 @@ export function roundToNonZeroFractionDigits(
     }
 
     // Round *up* at the calculated decimal place
-    return value.decimalPlaces(decimalPlaces, BigNumber.ROUND_UP);
+    return value.decimalPlaces(decimalPlaces);
 }
