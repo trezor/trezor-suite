@@ -22,12 +22,6 @@ const config: webpack.Configuration = {
     target: 'browserslist:Chrome >= 138',
     entry: [path.join(baseDirUI, 'src', 'index.tsx')],
     output: {
-        // This builds JS directly `dist/` (instead `dist/js/`)
-        // without this, Evolu worker import won't (for unknow reason) work
-        // Todo: Issue is probably in combination of @evolu/sqlite-wasm which wraps `mjs` files and our webpack config
-        filename: '[name].[contenthash:8].js',
-        chunkFilename: '[id].[contenthash:8].js',
-        // ---
         path: path.join(baseDir, 'build'),
         publicPath: './',
     },
