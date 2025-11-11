@@ -77,7 +77,7 @@ test.describe(
                         .click();
                     await expect(
                         page.locator('[data-test="@theme/color-scheme-select/input"]'),
-                    ).toContainText('Dark');
+                    ).toContainTranslation('TR_COLOR_SCHEME_DARK');
                 });
 
                 await test.step('Add passphrase wallet', async () => {
@@ -140,8 +140,11 @@ test.describe(
                             .getByTestId('@menu/switch-device')
                             .getByTestId('@deviceStatus-disconnected'),
                     ).toBeVisible();
-                    await expect(dashboardPage.walletAtIndex(0)).toContainText(
-                        'Passphrase wallet #1',
+                    await expect(dashboardPage.walletAtIndex(0)).toContainTranslation(
+                        'TR_PASSPHRASE_WALLET',
+                        {
+                            values: { id: '1' },
+                        },
                     );
                 });
 

@@ -1,4 +1,6 @@
 /* eslint-disable playwright/no-standalone-expect */
+import { createIntl, createIntlCache } from 'react-intl';
+
 import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
 import { diff } from 'jest-diff';
 import { isEqual } from 'lodash';
@@ -13,6 +15,7 @@ type LineFormats = 'fourTetragrams' | 'fullLine';
 
 const DISPLAY_CHAR_LIMIT = 18;
 const STRING_UP_TO_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT}}`, 'g');
+const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
 
 const compareTextAndNumber = async (
     locator: Locator,
@@ -89,18 +92,6 @@ export const splitStringByDisplayLimit = (text: string) => {
     // Add a newline item into array after each item except the last one
     return splitLines.flatMap((line, index) =>
         index < splitLines.length - 1 ? [line.trim(), '\n'] : [line.trim()],
-    );
-};
-
-const applyPlaceholderValues = (
-    template: string,
-    placeholderValues: string[] | undefined,
-): string => {
-    if (!placeholderValues || placeholderValues.length === 0) return template;
-    let i = 0;
-
-    return template.replace(/\{[^}]+\}/g, () =>
-        i < placeholderValues.length ? placeholderValues[i++] : '',
     );
 };
 
@@ -216,15 +207,26 @@ export const expect = baseExpect.extend({
     async toHaveTranslation(
         locator: Locator,
         translationKey: TranslationKey,
-        // Some translations have placeholders like 'Maximum {decimals} decimals allowed'
-        options?: { isValue?: boolean; placeholderValues?: string[]; timeout?: number },
+        // Use ICU values for placeholders (e.g., { amount, symbol, days })
+        options?: {
+            isValueElement?: boolean;
+            values?: Record<string, string | number>;
+            timeout?: number;
+        },
     ) {
-        const expectedTranslation = applyPlaceholderValues(
-            messages[translationKey].defaultMessage,
-            options?.placeholderValues,
-        );
+        const template = messages[translationKey].defaultMessage;
+        const values = options?.values;
+        const expectedTranslation =
+            values && Object.keys(values).length > 0
+                ? String(
+                      intlEn.formatMessage(
+                          { id: translationKey, defaultMessage: template },
+                          options.values,
+                      ),
+                  )
+                : template;
 
-        if (options?.isValue) {
+        if (options?.isValueElement) {
             await baseExpect(locator).toHaveValue(expectedTranslation, {
                 timeout: options?.timeout,
             });
@@ -243,14 +245,25 @@ export const expect = baseExpect.extend({
     async toContainTranslation(
         locator: Locator,
         translationKey: TranslationKey,
-        // Some translations have placeholders like 'Maximum {decimals} decimals allowed'
-        options?: { isValue?: boolean; placeholderValues?: string[]; timeout?: number },
+        // Use ICU values for placeholders (e.g., { amount, symbol, days })
+        options?: {
+            isValueElement?: boolean;
+            values?: Record<string, string | number>;
+            timeout?: number;
+        },
     ) {
-        const expectedTranslation = applyPlaceholderValues(
-            messages[translationKey].defaultMessage,
-            options?.placeholderValues,
-        );
-        if (options?.isValue) {
+        const template = messages[translationKey].defaultMessage;
+        const values = options?.values;
+        const expectedTranslation =
+            values && Object.keys(values).length > 0
+                ? String(
+                      intlEn.formatMessage(
+                          { id: translationKey, defaultMessage: template },
+                          options.values,
+                      ),
+                  )
+                : template;
+        if (options?.isValueElement) {
             await baseExpect
                 .poll(async () => await locator.inputValue(), {
                     timeout: options?.timeout,

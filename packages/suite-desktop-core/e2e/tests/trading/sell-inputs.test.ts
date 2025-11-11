@@ -43,7 +43,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                 await expect
                     .soft(tradingPage.cryptoInputBottomText)
                     .toHaveTranslation('AMOUNT_IS_NOT_IN_RANGE_DECIMALS', {
-                        placeholderValues: ['8'],
+                        values: { decimals: '8' },
                         timeout: 15_000,
                     });
             });

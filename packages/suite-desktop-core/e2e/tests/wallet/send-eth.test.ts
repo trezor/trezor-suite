@@ -1,4 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
+import messages from '@trezor/suite/src/support/messages';
 import { BigNumber } from '@trezor/utils';
 
 import { formatAddress } from '../../support/common';
@@ -73,7 +74,8 @@ test.describe('Send Eth', { tag: ['@group=wallet'] }, () => {
 
         await test.step('Verify Total including fee', async () => {
             await devicePrompt.waitForPromptAndClick();
-            await expect(devicePrompt.ethereumGasLimit).toHaveText(`Gas limit: ${gasLimit}`);
+            const gasLimitTranslation = `${messages['TR_GAS_LIMIT'].defaultMessage}: ${gasLimit}`;
+            await expect(devicePrompt.ethereumGasLimit).toHaveText(gasLimitTranslation);
             await expect(devicePrompt.ethereumFeeRate).toHaveText(`${maxFeePerGasRounded} Gwei`);
             await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
                 `${maxPriorityFeePerGasRounded} Gwei`,

@@ -64,7 +64,12 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
                 await dashboardPage.openDeviceSwitcher();
             }
 
-            await expect(dashboardPage.walletAtIndex(1)).toContainText('Passphrase wallet #1');
+            await expect(dashboardPage.walletAtIndex(1)).toContainTranslation(
+                'TR_PASSPHRASE_WALLET',
+                {
+                    values: { id: '1' },
+                },
+            );
         });
 
         await test.step('Displaying receive address should prompt for passphrase', async () => {

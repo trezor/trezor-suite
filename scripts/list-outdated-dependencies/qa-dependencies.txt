@@ -22,4 +22,5 @@ jest-expo
 jest-extended
 jest-junit
 jest-watch-typeahead
+react-intl
 ts-jest

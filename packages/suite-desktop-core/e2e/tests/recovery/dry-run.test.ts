@@ -45,8 +45,8 @@ test.describe('Recovery - dry run', { tag: ['@group=device-management'] }, () =>
 
             await test.step('Verify success in suite', async () => {
                 await trezorUserEnvLink.pressYes();
-                await expect(recoveryModal.successTitle).toHaveText(
-                    'Wallet backup checked successfully',
+                await expect(recoveryModal.successTitle).toHaveTranslation(
+                    'TR_SEED_CHECK_SUCCESS_TITLE',
                 );
             });
         },
@@ -95,8 +95,8 @@ test.describe('Recovery - dry run', { tag: ['@group=device-management'] }, () =>
                 await trezorUserEnvLink.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
                 await trezorUserEnvLink.pressYes();
-                await expect(recoveryModal.successTitle).toHaveText(
-                    'Wallet backup checked successfully',
+                await expect(recoveryModal.successTitle).toHaveTranslation(
+                    'TR_SEED_CHECK_SUCCESS_TITLE',
                 );
             });
         },
@@ -139,8 +139,8 @@ test.describe('Recovery - dry run', { tag: ['@group=device-management'] }, () =>
                 await trezorUserEnvLink.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
                 await trezorUserEnvLink.pressYes();
-                await expect(recoveryModal.successTitle).toHaveText(
-                    'Wallet backup checked successfully',
+                await expect(recoveryModal.successTitle).toHaveTranslation(
+                    'TR_SEED_CHECK_SUCCESS_TITLE',
                 );
             });
         },

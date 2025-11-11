@@ -81,8 +81,9 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await stakingSection.acknowledgeCheckbox.click();
                 await stakingSection.confirmAndStakeButton.click();
 
-                await expect(devicePrompt.outputValueOf('data')).toHaveText(
-                    'Stake ETH on Everstake?',
+                await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(
+                    'TR_STAKE_ON_EVERSTAKE',
+                    { values: { symbol: 'ETH' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Stake' },
@@ -138,7 +139,9 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
 
             await test.step('Verify pending transaction', async () => {
                 await expect(stakingSection.pendingTransactionText).toBeVisible();
-                await expect(stakingSection.transactionStatus).toHaveText('Confirming transaction');
+                await expect(stakingSection.transactionStatus).toHaveTranslation(
+                    'TR_TX_CONFIRMING',
+                );
                 await stakingSection.expectProgressIndicatorsToMatchPhase('pendingTransaction');
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
@@ -168,7 +171,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     ],
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
-                await expect(stakingSection.transactionStatus).toHaveText('Transaction confirmed');
+                await expect(stakingSection.transactionStatus).toHaveTranslation('TR_TX_CONFIRMED');
                 await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
                 await stakingSection.expectStakingAmounts({
                     pending: '0.100204158497493752',
@@ -207,11 +210,17 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
             });
 
             await test.step('Verify banner about instant staking', async () => {
-                await expect(stakingSection.instantBannerHeader).toHaveText(
-                    '0.100204158497493752 ETH staked instantly!',
+                await expect(stakingSection.instantBannerHeader).toHaveTranslation(
+                    'TR_STAKING_AMOUNT_STAKED_INSTANTLY',
+                    {
+                        values: { amount: '0.100204158497493752', symbol: 'ETH' },
+                    },
                 );
-                await expect(stakingSection.instantBannerParagraph).toHaveText(
-                    "You've instantly staked 0.100204158497493752 ETH. The remaining ETH will be staked within 1 day.",
+                await expect(stakingSection.instantBannerParagraph).toHaveTranslation(
+                    'TR_STAKING_INSTANTLY_STAKED',
+                    {
+                        values: { amount: '0.100204158497493752', symbol: 'ETH', days: '1' },
+                    },
                 );
                 await stakingSection.instantBannerGotItButton.click();
                 await expect(stakingSection.instantBanner).toBeHidden();

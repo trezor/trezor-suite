@@ -68,14 +68,24 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.stakingDashboardCard).toBeHidden();
                 await expect(stakingSection.stakingEmptyCard).toBeVisible();
-                await expect(stakingSection.stakingEmptyCard).toContainText('Stake ETH');
+                await expect(stakingSection.stakingEmptyCard).toContainTranslation(
+                    'TR_STAKE_STAKE_TOKEN',
+                    {
+                        values: { symbol: 'ETH' },
+                    },
+                );
             });
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.startStakingButton.click();
-                await expect(page.getByTestId('@modal/header')).toHaveText('Staking in a nutshell');
+                await expect(page.getByTestId('@modal/header')).toHaveTranslation(
+                    'TR_STAKE_STAKING_IN_A_NUTSHELL',
+                );
                 await stakingSection.continueButton.click();
-                await expect(page.getByTestId('@modal/header')).toHaveText('Stake ETH');
+                await expect(page.getByTestId('@modal/header')).toHaveTranslation(
+                    'TR_STAKE_STAKE_TOKEN',
+                    { values: { symbol: 'ETH' } },
+                );
                 await stakingSection.everstakeAcknowledgeCheckbox.click();
                 await stakingSection.confirmButton.click();
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText('1,234 ETH');
@@ -87,8 +97,9 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await stakingSection.acknowledgeCheckbox.click();
                 await stakingSection.confirmAndStakeButton.click();
 
-                await expect(devicePrompt.outputValueOf('data')).toHaveText(
-                    'Stake ETH on Everstake?',
+                await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(
+                    'TR_STAKE_ON_EVERSTAKE',
+                    { values: { symbol: 'ETH' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Stake' },
@@ -144,7 +155,9 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
 
             await test.step('Verify pending transaction', async () => {
                 await expect(stakingSection.pendingTransactionText).toBeVisible();
-                await expect(stakingSection.transactionStatus).toHaveText('Confirming transaction');
+                await expect(stakingSection.transactionStatus).toHaveTranslation(
+                    'TR_TX_CONFIRMING',
+                );
                 await stakingSection.expectProgressIndicatorsToMatchPhase('pendingTransaction');
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
@@ -174,7 +187,7 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     ],
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
-                await expect(stakingSection.transactionStatus).toHaveText('Transaction confirmed');
+                await expect(stakingSection.transactionStatus).toHaveTranslation('TR_TX_CONFIRMED');
                 await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
                 await stakingSection.expectStakingAmounts({
                     pending: '0.100204158497493752',

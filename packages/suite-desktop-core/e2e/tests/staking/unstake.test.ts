@@ -63,8 +63,9 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
 
             await test.step('Initiate unstaking and confirm on device', async () => {
                 await stakingSection.unstakeButton.click();
-                await expect(devicePrompt.outputValueOf('data')).toHaveText(
-                    'Unstake ETH from Everstake?',
+                await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(
+                    'TR_UNSTAKE_FROM_EVERSTAKE',
+                    { values: { symbol: 'ETH' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Unstake' },
@@ -176,8 +177,9 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
             await test.step('Finish claiming', async () => {
                 await expect(stakingSection.claimModalAmount).toHaveText('3,234 ETH');
                 await stakingSection.claimModalButton.click();
-                await expect(devicePrompt.outputValueOf('data')).toHaveText(
-                    'Claim ETH from Everstake?',
+                await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(
+                    'TR_CLAIM_FROM_EVERSTAKE',
+                    { values: { symbol: 'ETH' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Claim' },

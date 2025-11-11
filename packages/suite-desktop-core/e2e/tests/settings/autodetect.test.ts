@@ -1,7 +1,8 @@
+import messages from '@trezor/suite/src/support/messages';
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-import { TR_ALLOW_ANALYTICS } from '../../../../suite-data/files/translations/es-ES.json';
+import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '../../../../suite-data/files/translations/es-ES.json';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -14,21 +15,21 @@ const testCases = [
     {
         testName: 'Light English',
         userPreferences: { colorScheme: ColorScheme.Light },
-        text: 'Anonymous data collection',
+        text: messages['TR_ONBOARDING_DATA_COLLECTION_HEADING'].defaultMessage,
         textColor: colorVariants.standard.textDefault,
         bodyBackgroundColor: colorVariants.standard.backgroundSurfaceElevation0,
     },
     {
         testName: 'Dark English',
         userPreferences: { colorScheme: ColorScheme.Dark },
-        text: 'Anonymous data collection',
+        text: messages['TR_ONBOARDING_DATA_COLLECTION_HEADING'].defaultMessage,
         textColor: colorVariants.dark.textDefault,
         bodyBackgroundColor: colorVariants.dark.backgroundSurfaceElevation0,
     },
     {
         testName: 'Dark Spanish',
         userPreferences: { locale: 'es-ES', colorScheme: ColorScheme.Dark },
-        text: TR_ALLOW_ANALYTICS,
+        text: SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING,
         textColor: colorVariants.dark.textDefault,
         bodyBackgroundColor: colorVariants.dark.backgroundSurfaceElevation0,
     },

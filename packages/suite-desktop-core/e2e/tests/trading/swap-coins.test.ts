@@ -1,5 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
-import messages from '@trezor/suite/src/support/messages';
+import type { TranslationKey } from '@trezor/suite/src/components/suite/Translation';
 
 import {
     getCompanyNameFromList,
@@ -13,11 +13,17 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 // In beforeEach, We set initial status to 'SENDING'
 const transactionStates = [
-    { transactionStatus: 'CONFIRMING', displayedText: 'Pending' },
-    { transactionStatus: 'CONVERTING', displayedText: 'Converting' },
+    {
+        transactionStatus: 'CONFIRMING',
+        displayedText: 'TR_EXCHANGE_STATUS_CONFIRMING',
+    },
+    {
+        transactionStatus: 'CONVERTING',
+        displayedText: 'TR_EXCHANGE_DETAIL_CONVERTING_TITLE',
+    },
     {
         transactionStatus: 'SUCCESS',
-        displayedText: messages['TR_EXCHANGE_DETAIL_SUCCESS_TITLE'].defaultMessage,
+        displayedText: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
     },
 ];
 
@@ -125,18 +131,20 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(tradingPage.transactionDetailStatus).toHaveText('Pending');
+            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                'TR_EXCHANGE_STATUS_CONFIRMING',
+            );
             await expect(page.getByTestId('@toast/tx-exchange')).toHaveTranslation(
                 'TOAST_TX_EXCHANGE_BROADCASTED',
                 {
-                    placeholderValues: [
+                    values: {
                         sendAmount,
-                        'SOL',
-                        'Solana #1',
+                        sendAsset: 'SOL',
+                        sendAccount: 'Solana #1',
                         receiveAmount,
-                        'BTC',
-                        'Bitcoin #1',
-                    ],
+                        receiveAsset: 'BTC',
+                        receiveAccount: 'Bitcoin #1',
+                    },
                 },
             );
         });
@@ -157,7 +165,9 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                     status: transactionStatus,
                     sendAddress,
                 });
-                await expect(tradingPage.transactionDetailStatus).toHaveText(displayedText);
+                await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                    displayedText as TranslationKey,
+                );
             });
         }
 

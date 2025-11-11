@@ -103,8 +103,8 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
             await expect.soft(watchRequestPromise).toHavePayload(invityRequest.buyWatchPayload, {
                 omit: ['partnerData', 'orderId', 'paymentId'],
             });
-            await expect(tradingPage.transactionDetailStatus).toHaveText(
-                'Waiting for your payment...',
+            await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
+                'TR_BUY_DETAIL_SUBMITTED_TITLE',
             );
             await expect(tradingPage.proceedToPayButton).toBeVisible();
         });

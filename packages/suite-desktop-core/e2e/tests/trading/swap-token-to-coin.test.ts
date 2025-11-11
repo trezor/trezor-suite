@@ -75,14 +75,14 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=trading', '@webOnl
             await expect(page.getByTestId('@toast/tx-exchange')).toHaveTranslation(
                 'TOAST_TX_EXCHANGE_BROADCASTED',
                 {
-                    placeholderValues: [
+                    values: {
                         sendAmount,
-                        'USDT',
-                        'Solana #1',
+                        sendAsset: 'USDT',
+                        sendAccount: 'Solana #1',
                         receiveAmount,
-                        'BTC',
-                        'Bitcoin #1',
-                    ],
+                        receiveAsset: 'BTC',
+                        receiveAccount: 'Bitcoin #1',
+                    },
                 },
             );
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(

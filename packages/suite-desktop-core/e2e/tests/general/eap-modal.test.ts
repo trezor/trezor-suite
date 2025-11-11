@@ -20,6 +20,8 @@ test(
 
         await settingsPage.navigateTo('application');
         await settingsPage.joinEarlyAccessProgram();
-        await expect(settingsPage.earlyAccessJoinButton).toHaveText('Opt out');
+        await expect(settingsPage.earlyAccessJoinButton).toHaveTranslation(
+            'TR_EARLY_ACCESS_DISABLE',
+        );
     },
 );
