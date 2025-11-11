@@ -11,6 +11,12 @@ import { ModuleInitBackground } from './module';
 
 export const SERVICE_NAME = 'http-receiver';
 
+export const TRADING_REDIRECT_PATHS = [
+    '/buy-redirect',
+    '/sell-redirect',
+    '/exchange-redirect',
+] as const;
+
 export const initBackground: ModuleInitBackground = ({
     mainWindowProxy,
     mainThreadEmitter,
@@ -61,7 +67,8 @@ export const initBackground: ModuleInitBackground = ({
         ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
             validateIpcMessage({ ipcEvent });
             try {
-                if (pathname === '/buy-redirect') {
+                // For trading redirect routes, return deeplink URL instead of localhost
+                if (TRADING_REDIRECT_PATHS.some(path => path === pathname)) {
                     receiver.activateRoute(pathname);
 
                     return `trezorsuite:/${pathname}`;
