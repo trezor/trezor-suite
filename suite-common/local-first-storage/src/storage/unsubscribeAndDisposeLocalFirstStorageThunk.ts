@@ -18,7 +18,7 @@ export const unsubscribeAndDisposeLocalFirstStorageThunk = createThunk<
     void
 >(
     `${LOCAL_FIRST_STORAGE_PREFIX}/unsubscribeLocalFirstStorageThunk`,
-    ({ device }, { rejectWithValue }) => {
+    async ({ device }, { rejectWithValue }) => {
         if (localFirstStorageProvider === null) {
             throw new Error("initLocalFirstStorageThunk() must be called before this!'");
         }
@@ -46,6 +46,6 @@ export const unsubscribeAndDisposeLocalFirstStorageThunk = createThunk<
         typedObjectValues(subscriptionStorage[walletDescriptor]).forEach(callback => callback?.());
 
         delete subscriptionStorage[walletDescriptor];
-        localFirstStorageProvider.deleteStorage(ownerIdResult.value);
+        await localFirstStorageProvider.deleteStorage(ownerIdResult.value);
     },
 );

@@ -68,6 +68,7 @@ export const updateIsFeatureLocalFirstStorageAvailable = createAction(
 );
 
 // Todo: this shall be in LocalFirstStorage reducer, not labeling
+/** @deprecated this shall be called only from `changeRelayUrlThunk`, use the thunk only */
 export const setLocalFirstStorageRelayUrl = createAction(
     `${LABELING_PREFIX}/set-local-first-storage-relay-url`,
     (payload: { url: string | null }) => ({ payload }),
