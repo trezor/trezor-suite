@@ -1,15 +1,19 @@
 import { FuseV1Options, FuseVersion, flipFuses } from '@electron/fuses';
-import type { Hooks } from 'app-builder-lib';
 import path from 'node:path';
+/**
+ * @typedef {import('app-builder-lib').Hooks} Hooks
+ */
 
 // copied from https://github.com/electron-userland/electron-builder/blob/04be5699c664e6a93e093b820a16ad516355b5c7/packages/app-builder-lib/src/platformPackager.ts#L430-L434
+/* @type {{ darwin: string, win32: string, linux: string }} */
 const binaryExtensionByPlaformNameMap = {
     darwin: '.app',
     win32: '.exe',
     linux: '',
-} as const;
+};
 
-const afterPackHookSetElectronFuses: Hooks['afterPack'] = async context => {
+/** @type {Hooks['afterPack']} **/
+const afterPackHookSetElectronFuses = async context => {
     const { electronPlatformName, appOutDir } = context;
 
     /*

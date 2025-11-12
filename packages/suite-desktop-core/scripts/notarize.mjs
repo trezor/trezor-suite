@@ -1,7 +1,10 @@
 import { notarize } from '@electron/notarize';
-import type { Hooks } from 'app-builder-lib';
+/**
+ * @typedef {import('app-builder-lib').Hooks} Hooks
+ */
 
-const notarizeAfterSignHook: Hooks['afterSign'] = context => {
+/** @type {Hooks['afterSign']} **/
+const notarizeAfterSignHook = context => {
     const { electronPlatformName, appOutDir } = context;
 
     if (electronPlatformName !== 'darwin') {

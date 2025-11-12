@@ -1,9 +1,13 @@
-import type { CustomWindowsSign } from 'app-builder-lib';
 import { execSync } from 'node:child_process';
 
-// electron-builder TS requires the function to return Promise, but jsign MUST be called with execSync!
+/**
+ * @typedef {import('app-builder-lib').CustomWindowsSign} CustomWindowsSign
+ */
+
+// electron-builder type declaration requires the function to return Promise, but jsign MUST be called with execSync!
+/** @type {CustomWindowsSign} */
 // eslint-disable-next-line require-await
-const signWindows: CustomWindowsSign = async configuration => {
+const signWindows = async configuration => {
     // Check if IS_CODESIGN_BUILD is set and true
     if (!process.env.IS_CODESIGN_BUILD || process.env.IS_CODESIGN_BUILD.toLowerCase() !== 'true') {
         console.log('This is DEV build, not signing');
