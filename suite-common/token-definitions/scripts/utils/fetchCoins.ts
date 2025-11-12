@@ -161,24 +161,29 @@ const options = {
 
 export const fetchAllCoins = async (): Promise<CoinData[]> => {
     const params = new URLSearchParams({ include_platform: String(true) });
-    const res = await fetch(`${COIN_LIST_URL}?${params.toString()}`, options);
 
-    if (!res.ok) {
-        let msg = `status: ${res.status}`;
-        try {
-            const { error } = await res.json();
-            if (error) msg = `${error}, ${msg}`;
-        } catch {
-            // ignore JSON parse error
+    try {
+        const res = await fetch(`${COIN_LIST_URL}?${params.toString()}`, options);
+
+        if (!res.ok) {
+            let msg = `status: ${res.status}`;
+            try {
+                const { error } = await res.json();
+                if (error) msg = `${error}, ${msg}`;
+            } catch {
+                // ignore JSON parse error
+            }
+            throw new Error(`CoinGecko coins/list failed: ${msg}`);
         }
 
-        throw new Error(`CoinGecko coins/list failed: ${msg}`);
+        const data: CoinData[] = await res.json();
+        console.log('Number of coin records fetched (ALL):', data.length);
+
+        return data;
+    } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        throw new Error(`fetchAllCoins error: ${message}`);
     }
-
-    const data: CoinData[] = await res.json();
-    console.log('Number of coin records fetched (ALL):', data.length);
-
-    return data;
 };
 
 export const buildCoinDataForPlatform = async (
