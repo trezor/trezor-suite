@@ -15,14 +15,14 @@ export const TradingCoinLogo = ({
     className,
 }: TradingCoinLogoProps) => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
-    const symbol = cryptoIdToSymbolAndContractAddress(cryptoId).coinSymbol;
+    const { cryptoIdToNativeCoinSymbol } = useTradingInfo();
+    const networkSymbol = cryptoIdToNativeCoinSymbol(cryptoId);
 
     return (
         <Wrapper className={className}>
             <AssetLogo
                 coingeckoId={networkId}
-                contractAddress={getAssetLogoContractAddresses(symbol, contractAddress)}
+                contractAddress={getAssetLogoContractAddresses(networkSymbol, contractAddress)}
                 size={size}
                 placeholder={networkId.toUpperCase()}
                 margin={margin}
