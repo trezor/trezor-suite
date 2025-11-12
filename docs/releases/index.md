@@ -2,7 +2,7 @@
 
 This chapter contains information about the release process.
 
-- [adding new firmwares](./adding-new-firmwares.md)
+- [bundling new firmwares](./bundling-new-firmwares.md)
 - [desktop updates](./desktop_updates.md)
 - [environments](./environments.md)
 - [signing binaries windows](./signing-binaries-win.md)

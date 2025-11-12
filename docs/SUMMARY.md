@@ -6,7 +6,7 @@
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)
 - [Releases](./releases/index.md)
-    - [adding new firmwares](./releases/adding-new-firmwares.md)
+    - [bundling new firmwares](./releases/bundling-new-firmwares.md)
     - [desktop updates](./releases/desktop_updates.md)
     - [environments](./releases/environments.md)
     - [signing binaries windows](./releases/signing-binaries-win.md)
