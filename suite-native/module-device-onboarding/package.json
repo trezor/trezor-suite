@@ -11,6 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@animatereactnative/marquee": "^0.5.2",
         "@gorhom/bottom-sheet": "5.2.6",
         "@react-navigation/core": "7.12.4",
         "@react-navigation/native": "7.1.18",
@@ -48,7 +49,6 @@
         "expo-haptics": "~15.0.7",
         "expo-linear-gradient": "~15.0.7",
         "jotai": "2.15.0",
-        "lottie-react-native": "7.3.4",
         "react": "19.1.0",
         "react-native": "0.81.4",
         "react-native-reanimated": "~4.1.3",

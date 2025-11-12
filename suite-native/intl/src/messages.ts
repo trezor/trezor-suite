@@ -2,7 +2,6 @@
 // 1. Never use dynamic keys IDs for example: translate(`module.graph.coin.${symbol}`) instead map it to static key: { btc: translate('module.graph.coin.btc') }
 // 2. Don't split string because of formatting or nested components use Rich Text Formatting instead https://formatjs.io/docs/react-intl/components#rich-text-formatting
 // 3. Always wrap keys per module/screen/feature for example: module.graph.legend
-
 export const messages = {
     generic: {
         trezorSuite: 'Trezor Suite',
@@ -1534,6 +1533,11 @@ export const messages = {
             step2: {
                 callout: 'When do you need your wallet backup?',
                 title: 'You’ll need it if your Trezor gets...',
+                risks: {
+                    stolen: 'Stolen',
+                    lost: 'Lost',
+                    damaged: 'Damaged',
+                },
             },
             step3: {
                 callout: 'How do your wallet backup and Trezor differ?',
