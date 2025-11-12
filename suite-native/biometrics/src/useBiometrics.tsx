@@ -30,6 +30,7 @@ export const useBiometrics = () => {
     const { isUserAuthenticated, setIsUserAuthenticated } = useIsUserAuthenticated();
     const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const appState = useRef(AppState.currentState);
+    const isAuthenticatingRef = useRef(false);
     const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
     const [isBiometricsAuthenticationAllowed, setIsBiometricsAuthenticationAllowed] =
         useState(true);
@@ -82,13 +83,19 @@ export const useBiometrics = () => {
     const requestAuthenticationCheck = () => setIsBiometricsAuthenticationAllowed(true);
 
     const doAuthentication = useCallback(async () => {
-        const result = await authenticate();
+        if (isAuthenticatingRef.current) return;
+        isAuthenticatingRef.current = true;
 
-        setIsBiometricsAuthenticationAllowed(false);
+        try {
+            const result = await authenticate();
 
-        if (result?.success) {
-            setIsUserAuthenticated(true);
-            setIsBiometricsOverlayVisible(false);
+            if (result?.success) {
+                setIsUserAuthenticated(true);
+                setIsBiometricsOverlayVisible(false);
+            }
+        } finally {
+            setIsBiometricsAuthenticationAllowed(false);
+            isAuthenticatingRef.current = false;
         }
     }, [setIsBiometricsOverlayVisible, setIsUserAuthenticated]);
 
