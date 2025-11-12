@@ -176,7 +176,7 @@ export const TransactionReviewSummary = ({
             </Row>
             {networkType === 'solana' && isDebug && (
                 <Row margin={{ top: spacings.xs }} gap={spacings.xs}>
-                    <Badge variant="warning" size="small">
+                    <Badge intent="warning" size="small">
                         <Translation id="TR_DEBUG_ONLY" />
                     </Badge>
                     <Note iconName="computerTower">

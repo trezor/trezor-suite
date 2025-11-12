@@ -160,7 +160,7 @@ export const StakingDashboard = () => {
                 <>
                     <Translation id="TR_STAKING_DASHBOARD_TITLE" />
                     <Badge
-                        variant={isStakingActive ? 'primary' : 'tertiary'}
+                        intent={isStakingActive ? 'brand' : 'neutral'}
                         margin={{ left: spacings.sm }}
                     >
                         <Translation

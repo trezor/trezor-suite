@@ -41,7 +41,7 @@ export const TransactionReviewOutputTimer = ({
                 >
                     <Translation id="TR_RETRY" />
                 </Button>
-                <Badge variant="warning">
+                <Badge intent="warning">
                     <TimerBox>
                         {isSending ? (
                             <Translation id="TR_CONFIRMING_TX" />

@@ -161,19 +161,19 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             <Row gap={spacings.sm}>
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'VALID' && (
-                                        <Badge variant="info" icon="shieldCheckFilled">
+                                        <Badge intent="info" iconLeft="shieldCheckFilled">
                                             <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
                                         </Badge>
                                     )}
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'UNKNOWN' && (
-                                        <Badge variant="warning" icon="shieldWarningFilled">
+                                        <Badge intent="warning" iconLeft="shieldWarningFilled">
                                             <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
                                         </Badge>
                                     )}
                                 {(pendingProposal.isScam ||
                                     pendingProposal.validation === 'INVALID') && (
-                                    <Badge variant="destructive" icon="shieldWarningFilled">
+                                    <Badge intent="critical" iconLeft="shieldWarningFilled">
                                         <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
                                     </Badge>
                                 )}

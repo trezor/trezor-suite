@@ -268,7 +268,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
                                 heading={
                                     <Row gap={spacings.xs}>
                                         <Translation id="TR_EXCHANGE_APPROVAL_DATA" />
-                                        <Badge variant="warning" size="small">
+                                        <Badge intent="warning" size="small">
                                             <Translation id="TR_DEBUG_ONLY" />
                                         </Badge>
                                     </Row>

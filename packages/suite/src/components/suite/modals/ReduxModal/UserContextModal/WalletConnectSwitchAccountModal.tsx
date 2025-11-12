@@ -99,7 +99,6 @@ export const WalletConnectSwitchAccountModal = ({
                                 accountType={account.accountType}
                                 networkType={account.networkType}
                                 size="small"
-                                onElevation
                             />
                         </Row>
                     )}
