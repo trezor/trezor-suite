@@ -1,7 +1,7 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
-import { ReviewOutput } from '@suite-common/wallet-types';
+import { Account, ReviewOutput } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
@@ -78,34 +78,42 @@ export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
 
 type DiscoveryAccountsParam = Parameters<TrezorConnect['discoverAccounts']>[0]['coins'];
 
+const getDeviceAccountsPerEnabledNetwork = (
+    state: WalletCoreCompoundRootState,
+    deviceState: StaticSessionId,
+): { symbol: NetworkSymbol; accounts: Account[] | undefined }[] => {
+    const symbols = selectEnabledSupportedNetworks(state);
+    const knownAccounts = selectAccountsByDeviceState(state, deviceState);
+    const discoverableAccounts = knownAccounts.filter(isAccountDiscoverable);
+    const symbolMap = arrayToDictionary(discoverableAccounts, acc => acc.symbol, true);
+
+    return symbols.map(symbol => ({ symbol, accounts: symbolMap[symbol] }));
+};
+
+const getLastAccountsPerAccountType = (accounts: Account[]) =>
+    Object.entries(arrayToDictionary(accounts, acc => acc.accountType, true)).map(
+        ([type, accs]) => ({
+            type,
+            // account with the highest index
+            lastAccount: accs.reduce((last, current) =>
+                current.index > last.index ? current : last,
+            ),
+        }),
+    );
+
 export const selectDiscoveryAccountsParam = (
     state: WalletCoreCompoundRootState,
     deviceState: StaticSessionId,
     knownOnly?: boolean,
-): DiscoveryAccountsParam => {
-    const symbols = selectEnabledSupportedNetworks(state);
-    const knownAccounts = selectAccountsByDeviceState(state, deviceState);
-    const discoverableAccounts = knownAccounts.filter(isAccountDiscoverable);
-
-    const symbolMap = arrayToDictionary(discoverableAccounts, acc => acc.symbol, true);
-
-    return symbols.map(symbol => {
-        const symbolAccounts = symbolMap[symbol];
+): DiscoveryAccountsParam =>
+    getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
         const { networkType } = networks[symbol];
         const identity = tryGetAccountIdentity({ networkType, deviceState });
 
         // undiscovered network; discover as a whole
-        if (!symbolAccounts) return { symbol, identity };
+        if (!accounts) return { symbol, identity };
 
-        // discovered network; separate by account type
-        const typeMap = arrayToDictionary(symbolAccounts, acc => acc.accountType, true);
-
-        const known = Object.entries(typeMap).map(([type, accs]) => {
-            // account with the highest index
-            const lastAccount = accs.reduce((last, current) =>
-                current.index > last.index ? current : last,
-            );
-
+        const known = getLastAccountsPerAccountType(accounts).map(({ type, lastAccount }) => {
             // last account is a failed one; try to discover it again
             if (lastAccount.failed) return { type, skip: lastAccount.index };
             // last account is a used one; skip it and try to discover next one
@@ -116,48 +124,19 @@ export const selectDiscoveryAccountsParam = (
 
         return { symbol, identity, known, knownOnly } as DiscoveryAccountsParam[number];
     });
-};
 
 export const selectShouldAccountsBeRediscovered = (
     state: WalletCoreCompoundRootState,
     deviceState?: StaticSessionId,
-): boolean | null => {
-    if (!deviceState) return null;
-
-    const networkSymbols = selectEnabledSupportedNetworks(state);
-    const deviceDiscoveredAccounts = selectAccountsByDeviceState(state, deviceState);
-    const discoverableAccounts = deviceDiscoveredAccounts.filter(isAccountDiscoverable);
-
-    const networkSymbolToAccountsMap = arrayToDictionary(
-        discoverableAccounts,
-        acc => acc.symbol,
-        true,
+) =>
+    !!deviceState &&
+    getDeviceAccountsPerEnabledNetwork(state, deviceState).some(
+        ({ accounts }) =>
+            !accounts ||
+            getLastAccountsPerAccountType(accounts).some(
+                ({ lastAccount }) => lastAccount.failed || !lastAccount.empty,
+            ),
     );
-
-    return networkSymbols.some(symbol => {
-        const networkSymbolsAccounts = networkSymbolToAccountsMap[symbol];
-
-        // undiscovered network; needs discovery
-        if (!networkSymbolsAccounts) return true;
-
-        // discovered network; check each account type
-        const networkSymbolAccountTypeToAccountMap = arrayToDictionary(
-            networkSymbolsAccounts,
-            acc => acc.accountType,
-            true,
-        );
-
-        return Object.values(networkSymbolAccountTypeToAccountMap).some(accounts => {
-            // account with the highest index
-            const lastAccount = accounts.reduce((last, current) =>
-                current.index > last.index ? current : last,
-            );
-            if (lastAccount.failed || !lastAccount.empty) return true;
-
-            return false;
-        });
-    });
-};
 
 const selectShouldRediscoverHelper = (
     state: WalletCoreCompoundRootState,
