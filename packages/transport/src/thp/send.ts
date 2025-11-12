@@ -42,7 +42,7 @@ export const sendThpMessage = async ({
 
     // ThpAck is expected.
     // set expectedResponses to ThpAck
-    thpState.setExpectedResponses([0x20, ...expectedResponses]); // THP_READ_ACK_HEADER_BYTE
+    thpState.setExpectedResponses([0x20]); // THP_READ_ACK_HEADER_BYTE
 
     let attempt = 0;
 
