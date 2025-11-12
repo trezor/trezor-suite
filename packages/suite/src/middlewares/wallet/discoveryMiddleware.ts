@@ -62,6 +62,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             changeNetworks.match(action) ||
+            accountsActions.updateAccount.match(action) || // empty account can become nonempty
             accountsActions.changeAccountVisibility.match(action)
         ) {
             if (isDeviceReady && isUIReady) {
