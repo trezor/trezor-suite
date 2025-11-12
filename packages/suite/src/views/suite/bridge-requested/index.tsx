@@ -54,7 +54,7 @@ export const BridgeRequested = () => {
             <Modal
                 variant="warning"
                 size="small"
-                heading={<Translation id="TR_BRIDGE" />}
+                heading={<Translation id="TR_TREZOR_CONNECT" />}
                 onBackClick={() => setConfirmGoToWallet(false)}
                 bottomContent={
                     <>
