@@ -37,5 +37,8 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "tsx": "^4.20.3"
     }
 }
