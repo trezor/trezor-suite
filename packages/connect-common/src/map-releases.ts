@@ -70,6 +70,7 @@ export const firmwareAssets = {
             't2b1-2.8.10-bitcoinonly': require('../files/firmware/t2b1/bitcoinonly/t2b1-2.8.10-bitcoinonly.json'),
             't2b1-2.8.7-bitcoinonly': require('../files/firmware/t2b1/bitcoinonly/t2b1-2.8.7-bitcoinonly.json'),
             't2b1-2.8.9-bitcoinonly': require('../files/firmware/t2b1/bitcoinonly/t2b1-2.8.9-bitcoinonly.json'),
+            't2b1-2.9.1-bitcoinonly': require('../files/firmware/t2b1/bitcoinonly/t2b1-2.9.1-bitcoinonly.json'),
         },
         universal: {
             't2b1-2.6.3-universal': require('../files/firmware/t2b1/universal/t2b1-2.6.3-universal.json'),
@@ -80,6 +81,7 @@ export const firmwareAssets = {
             't2b1-2.8.10-universal': require('../files/firmware/t2b1/universal/t2b1-2.8.10-universal.json'),
             't2b1-2.8.7-universal': require('../files/firmware/t2b1/universal/t2b1-2.8.7-universal.json'),
             't2b1-2.8.9-universal': require('../files/firmware/t2b1/universal/t2b1-2.8.9-universal.json'),
+            't2b1-2.9.1-universal': require('../files/firmware/t2b1/universal/t2b1-2.9.1-universal.json'),
         },
     },
     t2t1: {
@@ -112,6 +114,7 @@ export const firmwareAssets = {
             't2t1-2.8.7-bitcoinonly': require('../files/firmware/t2t1/bitcoinonly/t2t1-2.8.7-bitcoinonly.json'),
             't2t1-2.8.8-bitcoinonly': require('../files/firmware/t2t1/bitcoinonly/t2t1-2.8.8-bitcoinonly.json'),
             't2t1-2.8.9-bitcoinonly': require('../files/firmware/t2t1/bitcoinonly/t2t1-2.8.9-bitcoinonly.json'),
+            't2t1-2.9.1-bitcoinonly': require('../files/firmware/t2t1/bitcoinonly/t2t1-2.9.1-bitcoinonly.json'),
         },
         universal: {
             't2t1-2.0.10-universal': require('../files/firmware/t2t1/universal/t2t1-2.0.10-universal.json'),
@@ -151,6 +154,7 @@ export const firmwareAssets = {
             't2t1-2.8.7-universal': require('../files/firmware/t2t1/universal/t2t1-2.8.7-universal.json'),
             't2t1-2.8.8-universal': require('../files/firmware/t2t1/universal/t2t1-2.8.8-universal.json'),
             't2t1-2.8.9-universal': require('../files/firmware/t2t1/universal/t2t1-2.8.9-universal.json'),
+            't2t1-2.9.1-universal': require('../files/firmware/t2t1/universal/t2t1-2.9.1-universal.json'),
         },
     },
     t3b1: {
@@ -159,12 +163,14 @@ export const firmwareAssets = {
             't3b1-2.8.3-bitcoinonly': require('../files/firmware/t3b1/bitcoinonly/t3b1-2.8.3-bitcoinonly.json'),
             't3b1-2.8.7-bitcoinonly': require('../files/firmware/t3b1/bitcoinonly/t3b1-2.8.7-bitcoinonly.json'),
             't3b1-2.8.9-bitcoinonly': require('../files/firmware/t3b1/bitcoinonly/t3b1-2.8.9-bitcoinonly.json'),
+            't3b1-2.9.1-bitcoinonly': require('../files/firmware/t3b1/bitcoinonly/t3b1-2.9.1-bitcoinonly.json'),
         },
         universal: {
             't3b1-2.8.10-universal': require('../files/firmware/t3b1/universal/t3b1-2.8.10-universal.json'),
             't3b1-2.8.3-universal': require('../files/firmware/t3b1/universal/t3b1-2.8.3-universal.json'),
             't3b1-2.8.7-universal': require('../files/firmware/t3b1/universal/t3b1-2.8.7-universal.json'),
             't3b1-2.8.9-universal': require('../files/firmware/t3b1/universal/t3b1-2.8.9-universal.json'),
+            't3b1-2.9.1-universal': require('../files/firmware/t3b1/universal/t3b1-2.9.1-universal.json'),
         },
     },
     t3t1: {
@@ -176,6 +182,7 @@ export const firmwareAssets = {
             't3t1-2.8.3-bitcoinonly': require('../files/firmware/t3t1/bitcoinonly/t3t1-2.8.3-bitcoinonly.json'),
             't3t1-2.8.7-bitcoinonly': require('../files/firmware/t3t1/bitcoinonly/t3t1-2.8.7-bitcoinonly.json'),
             't3t1-2.8.9-bitcoinonly': require('../files/firmware/t3t1/bitcoinonly/t3t1-2.8.9-bitcoinonly.json'),
+            't3t1-2.9.1-bitcoinonly': require('../files/firmware/t3t1/bitcoinonly/t3t1-2.9.1-bitcoinonly.json'),
         },
         universal: {
             't3t1-2.7.2-universal': require('../files/firmware/t3t1/universal/t3t1-2.7.2-universal.json'),
@@ -185,6 +192,15 @@ export const firmwareAssets = {
             't3t1-2.8.3-universal': require('../files/firmware/t3t1/universal/t3t1-2.8.3-universal.json'),
             't3t1-2.8.7-universal': require('../files/firmware/t3t1/universal/t3t1-2.8.7-universal.json'),
             't3t1-2.8.9-universal': require('../files/firmware/t3t1/universal/t3t1-2.8.9-universal.json'),
+            't3t1-2.9.1-universal': require('../files/firmware/t3t1/universal/t3t1-2.9.1-universal.json'),
+        },
+    },
+    t3w1: {
+        bitcoinonly: {
+            't3w1-2.9.3-bitcoinonly': require('../files/firmware/t3w1/bitcoinonly/t3w1-2.9.3-bitcoinonly.json'),
+        },
+        universal: {
+            't3w1-2.9.3-universal': require('../files/firmware/t3w1/universal/t3w1-2.9.3-universal.json'),
         },
     },
 };

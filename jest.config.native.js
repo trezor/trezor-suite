@@ -16,7 +16,12 @@ module.exports = {
     testMatch,
     testPathIgnorePatterns,
     watchPathIgnorePatterns,
-    moduleNameMapper,
+    moduleNameMapper: {
+        ...moduleNameMapper,
+        '^@evolu/common/evolu$': '<rootDir>/../../suite-native/test-utils/src/evoluMock.ts',
+        '^@evolu/react-native/expo-sqlite$':
+            '<rootDir>/../../suite-native/test-utils/src/evoluMock.ts',
+    },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
 
@@ -24,7 +29,7 @@ module.exports = {
         '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],
     },
     transformIgnorePatterns: [
-        'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@shopify/react-native-skia|@noble|@evolu|nanoid|msgpackr|@gorhom)',
+        'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@shopify/react-native-skia|@noble|@scure|@evolu|nanoid|msgpackr|@gorhom)',
     ],
     setupFiles: [
         '<rootDir>/../../node_modules/@shopify/react-native-skia/jestSetup.js',

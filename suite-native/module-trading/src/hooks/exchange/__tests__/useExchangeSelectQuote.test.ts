@@ -20,17 +20,6 @@ import * as approvalStatusUtils from '../../../utils/general/approvalStatusUtils
 import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
-const mockTimerReturn = {
-    start: jest.fn(),
-    stop: jest.fn(),
-    reset: jest.fn(),
-    isRunning: false,
-};
-
-jest.mock('@trezor/react-utils', () => ({
-    useTimer: () => mockTimerReturn,
-}));
-
 const mockTokenSupportsIncreasingAllowance = jest.fn();
 
 jest.mock('@suite-common/trading', () => ({
@@ -204,7 +193,7 @@ describe('useExchangeSelectQuote', () => {
                     type: 'selectQuoteThunkMock',
                     payload: expect.objectContaining({
                         quote: expect.objectContaining({ quoteId: exchangeQuotes[1]?.quoteId }),
-                        timer: mockTimerReturn,
+                        timer: expect.objectContaining({ timeSpent: { seconds: 0 } }),
                     }),
                 }),
             );
@@ -226,7 +215,7 @@ describe('useExchangeSelectQuote', () => {
                     type: 'selectQuoteThunkMock',
                     payload: expect.objectContaining({
                         quote: expect.objectContaining({ swapSlippage: '1.5' }),
-                        timer: mockTimerReturn,
+                        timer: expect.objectContaining({ timeSpent: { seconds: 0 } }),
                     }),
                 }),
             );

@@ -3,16 +3,18 @@ import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, DiscreetCanvas, VStack, useDiscreetMode } from '@suite-native/atoms';
+import {
+    Box,
+    DiscreetCanvas,
+    TouchableSwitchRow,
+    TouchableSwitchRowDescription,
+    VStack,
+    useDiscreetMode,
+} from '@suite-native/atoms';
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles';
-
-import {
-    TouchableSwitchRow,
-    TouchableSwitchRowDescription,
-} from '../components/TouchableSwitchRow';
 
 const DiscreetTextExample = () => {
     const { utils } = useNativeStyles();
@@ -52,7 +54,7 @@ const DiscreetModeSwitchRow = () => {
                     <DiscreetTextExample />
                 </Box>
             }
-            iconName="eyeSlash"
+            icon="eyeSlash"
             isChecked={isDiscreetMode}
             onChange={handleSetDiscreetMode}
         />
@@ -74,12 +76,10 @@ const AnalyticsSwitchRow = () => {
     return (
         <TouchableSwitchRow
             text={<Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.title" />}
-            iconName="database"
+            icon="database"
             accessibilityLabel="analytics"
             description={
-                <TouchableSwitchRowDescription>
-                    <Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.subtitle" />
-                </TouchableSwitchRowDescription>
+                <Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.subtitle" />
             }
             isChecked={isAnalyticsEnabled}
             onChange={handleAnalyticsChange}
@@ -97,12 +97,8 @@ const BiometricsSwitchRow = () => {
             onChange={toggleBiometricsOption}
             accessibilityLabel="biometrics"
             text={<Translation id="moduleSettings.privacyAndSecurity.biometrics.title" />}
-            iconName={Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint'}
-            description={
-                <TouchableSwitchRowDescription>
-                    <Translation id="moduleSettings.privacyAndSecurity.biometrics.subtitle" />
-                </TouchableSwitchRowDescription>
-            }
+            icon={Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint'}
+            description={<Translation id="moduleSettings.privacyAndSecurity.biometrics.subtitle" />}
         />
     );
 };

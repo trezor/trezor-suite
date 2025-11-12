@@ -37,6 +37,7 @@ import {
     isTokenTransferMatchesSearch,
 } from './accountUtils';
 import { asBaseCurrencyAmount } from './baseCurrency';
+import { getEvmApprovalTxData, getEvmTransactionTextSignature } from './ethUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
 import { toFiatCurrency } from '../src/fiatConverterUtils';
@@ -608,32 +609,60 @@ const getEthereumRbfParams = (
         account.networkType !== 'ethereum' ||
         tx.type === 'recv' ||
         !tx.ethereumSpecific ||
-        !isPending(tx)
-    )
+        !isPending(tx) ||
+        !tx.rbf
+    ) {
         return; // ignore non rbf and mined transactions
+    }
 
     const { vout } = tx.details;
-    // The standard transfer method ERC-20 tokens is limited to sending to one recipient per tx
-    // TODO: limit this method just for standard transfers
-    const token = tx.tokens[0];
-
-    const output = token
-        ? {
-              address: token.to,
-              token: token.contract,
-              amount: token.amount,
-              formattedAmount: convertAmountSubunitsToUnits(token.amount, token.decimals),
-          }
-        : {
-              address: vout[0].addresses![0],
-              amount: vout[0].value!,
-              formattedAmount: formatNetworkAmount(vout[0].value!, account.symbol),
-          };
 
     const { data, nonce, gasPrice, maxFeePerGas, maxPriorityFeePerGas } = tx.ethereumSpecific;
 
     // ignore empty calldata represented as '0x'
     const transactionData = !data || data === '0x' ? '' : data;
+
+    const txSignature = getEvmTransactionTextSignature(transactionData);
+
+    const toAddress = vout[0].addresses![0];
+
+    let output;
+    switch (txSignature) {
+        case 'transfer': {
+            const token = tx.tokens[0];
+
+            output = {
+                address: token.to,
+                token: token.contract,
+                amount: token.amount,
+                formattedAmount: convertAmountSubunitsToUnits(token.amount, token.decimals),
+            };
+            break;
+        }
+        case 'approve':
+        case 'revoke': {
+            const approvalData = getEvmApprovalTxData(data);
+
+            const token = account.tokens?.find(t => t.contract === toAddress);
+
+            output = {
+                address: toAddress,
+                token: toAddress, // approval is send to token address
+                amount: approvalData?.amount || '0',
+                formattedAmount: convertAmountSubunitsToUnits(
+                    approvalData?.amount || '0',
+                    token?.decimals || 0,
+                ),
+            };
+            break;
+        }
+        default:
+            output = {
+                address: toAddress,
+                amount: vout[0].value!,
+                formattedAmount: formatNetworkAmount(vout[0].value!, account.symbol),
+            };
+    }
 
     return {
         type: 'ethereum',
@@ -645,7 +674,7 @@ const getEthereumRbfParams = (
             },
         ],
         ethereumNonce: nonce,
-        transactionData,
+        transactionData: txSignature === 'transfer' ? '' : transactionData,
         gasPrice: gasPrice ? fromWei(gasPrice, 'gwei') : '',
         maxFeePerGas: maxFeePerGas ? fromWei(maxFeePerGas, 'gwei') : '',
         maxPriorityFeePerGas: maxPriorityFeePerGas ? fromWei(maxPriorityFeePerGas, 'gwei') : '',
@@ -714,8 +743,16 @@ const getBitcoinRbfParams = (
 export const getRbfParams = (
     tx: AccountTransaction,
     account: Account,
-): WalletAccountTransaction['rbfParams'] =>
-    getBitcoinRbfParams(tx, account) || getEthereumRbfParams(tx, account);
+): WalletAccountTransaction['rbfParams'] => {
+    switch (account.networkType) {
+        case 'bitcoin':
+            return getBitcoinRbfParams(tx, account);
+        case 'ethereum':
+            return getEthereumRbfParams(tx, account);
+        default:
+            return undefined;
+    }
+};
 
 /**
  * Attaches fields from the account (descriptor, deviceState, symbol) to the tx object

@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { getNetwork, getNetworkByCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
-import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { getAssetLogoUrl, resolveAssetLogoSize } from '@trezor/asset-utils';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetInitials } from './AssetInitials';
@@ -18,7 +18,7 @@ import {
 import { TransientProps } from '../../utils/transientProps';
 import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 
-export const allowedAssetLogoSizes = [20, 24];
+export const allowedAssetLogoSizes = [20, 24, 32, 40] as const;
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
 
 export const allowedAssetLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -27,12 +27,14 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedAssetLogoFrameProps)[nu
 export type AssetLogoProps = AllowedFrameProps & {
     size: AssetLogoSize;
     coingeckoId: string;
-    contractAddress?: string;
+    contractAddress?: string[];
     shouldTryToFetch?: boolean;
     placeholderWithTooltip?: boolean;
     placeholder: string;
     'data-testid'?: string;
 };
+
+type LogoCandidate = { address: string; src: string; srcSet: string };
 
 const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number }>`
     ${({ $size }) => `
@@ -60,26 +62,37 @@ const ElevatedLogo = (props: LogoProps) => {
     return <Logo {...props} $elevation={elevation} />;
 };
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+const resolvedLogoCache = new Map<string, LogoCandidate>();
+const failedAddressesCache = new Set<string>();
+
+const makeCacheKey = (coingeckoId: string, addressesKey: string) =>
+    `${coingeckoId}::${addressesKey}`;
+
+const makeAddressKey = (coingeckoId: string, address: string) => `${coingeckoId}::${address}`;
+
 export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
     coingeckoId: string,
-    contractAddress: string | undefined,
+    contractAddress: string[] | undefined,
 ) => {
     const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol.toLowerCase();
 
-    if (
-        contractAddress === '0x0000000000000000000000000000000000000000' &&
-        mainNetworkSymbol &&
-        isNetworkSymbol(mainNetworkSymbol)
-    ) {
-        return {
-            coingeckoId: getNetwork(mainNetworkSymbol).tradeCryptoId ?? coingeckoId,
-            contractAddress: undefined,
-        };
-    }
+    const addresses = ([] as Array<string | undefined>)
+        .concat(contractAddress ?? [])
+        .map(addr => addr ?? ZERO_ADDRESS);
+
+    const hasNative = addresses.some(addr => addr === ZERO_ADDRESS);
+
+    const shouldUseTradeId = hasNative && !!mainNetworkSymbol && isNetworkSymbol(mainNetworkSymbol);
+
+    const resolvedCoingeckoId = shouldUseTradeId
+        ? (getNetwork(mainNetworkSymbol).tradeCryptoId ?? coingeckoId)
+        : coingeckoId;
 
     return {
-        coingeckoId,
-        contractAddress,
+        coingeckoId: resolvedCoingeckoId,
+        contractAddresses: addresses.length ? addresses : [ZERO_ADDRESS],
     };
 };
 
@@ -93,45 +106,110 @@ export const AssetLogo = ({
     'data-testid': dataTest,
     ...rest
 }: AssetLogoProps) => {
-    const [isPlaceholder, setIsPlaceholder] = useState(!shouldTryToFetch);
-    const { coingeckoId: coingeckoIdLogo, contractAddress: contractAddressLogo } =
-        getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddress);
+    const normalizedAddresses = useMemo(
+        () => getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddress),
+        [coingeckoId, contractAddress],
+    );
+    const { coingeckoId: coingeckoIdLogo, contractAddresses } = normalizedAddresses;
 
-    const logoUrl = getAssetLogoUrl({
-        coingeckoId: coingeckoIdLogo,
-        contractAddress: contractAddressLogo,
-    });
-    const logoUrl2x = getAssetLogoUrl({
-        coingeckoId: coingeckoIdLogo,
-        contractAddress: contractAddressLogo,
-        quality: '@2x',
-    });
+    const canonicalAddresses = useMemo(() => {
+        const set = new Set<string>();
+        for (const addr of contractAddresses) {
+            if (addr) set.add(addr);
+        }
+
+        return Array.from(set).sort();
+    }, [contractAddresses]);
+
+    const addressesKey = useMemo(() => canonicalAddresses.join('|'), [canonicalAddresses]);
+
+    const cacheKey = useMemo(
+        () => makeCacheKey(coingeckoIdLogo, addressesKey),
+        [coingeckoIdLogo, addressesKey],
+    );
+
+    const [candidateIndex, setCandidateIndex] = useState(0);
+
+    const candidates = useMemo<LogoCandidate[]>(() => {
+        if (!shouldTryToFetch || !canonicalAddresses.length) return [];
+
+        const filtered = canonicalAddresses.filter(
+            address => !failedAddressesCache.has(makeAddressKey(coingeckoIdLogo, address)),
+        );
+
+        const hasNative = filtered.some(addr => addr === ZERO_ADDRESS);
+
+        return filtered.map(address => {
+            const url1x = getAssetLogoUrl({
+                coingeckoId: coingeckoIdLogo,
+                contractAddress: !hasNative ? address : undefined,
+                quality: '1x',
+                size: resolveAssetLogoSize(size),
+            });
+            const url2x = getAssetLogoUrl({
+                coingeckoId: coingeckoIdLogo,
+                contractAddress: !hasNative ? address : undefined,
+                quality: '2x',
+                size: resolveAssetLogoSize(size),
+            });
+
+            return { address, src: url1x, srcSet: `${url1x} 1x, ${url2x} 2x` };
+        });
+    }, [shouldTryToFetch, canonicalAddresses, coingeckoIdLogo, size]);
+
+    const hasCandidates = candidates.length > 0;
+    const currentIndex = hasCandidates ? Math.min(candidateIndex, candidates.length - 1) : -1;
+    const current = hasCandidates ? candidates[currentIndex] : undefined;
+    const showPlaceholder = !hasCandidates;
+
+    useEffect(() => {
+        const cachedResult = resolvedLogoCache.get(cacheKey);
+        if (!cachedResult) {
+            setCandidateIndex(0);
+
+            return;
+        }
+
+        const idx = candidates.findIndex(
+            c => c.src === cachedResult.src && c.srcSet === cachedResult.srcSet,
+        );
+        setCandidateIndex(idx >= 0 ? idx : 0);
+    }, [cacheKey, candidates]);
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
 
-    const handleError = () => {
-        setIsPlaceholder(true);
+    const handleLoadError = () => {
+        if (!current) return;
+
+        failedAddressesCache.add(makeAddressKey(coingeckoIdLogo, current.address));
+        setCandidateIndex(prev => Math.min(prev + 1, candidates.length - 1));
     };
-    useEffect(() => {
-        setIsPlaceholder(!shouldTryToFetch);
-    }, [shouldTryToFetch]);
+
+    const handleOnLoad = () => {
+        if (!current) return;
+
+        resolvedLogoCache.set(cacheKey, current);
+    };
 
     return (
         <Container $size={size} {...frameProps}>
-            {isPlaceholder && (
+            {showPlaceholder && (
                 <AssetInitials size={size} withTooltip={placeholderWithTooltip}>
                     {placeholder}
                 </AssetInitials>
             )}
-            {!isPlaceholder && (
+            {!showPlaceholder && current && (
                 <ElevationUp>
                     <ElevatedLogo
-                        src={logoUrl}
-                        srcSet={`${logoUrl} 1x, ${logoUrl2x} 2x`}
+                        src={current.src}
+                        srcSet={current.srcSet}
+                        loading="lazy"
+                        decoding="async"
                         $size={size}
-                        onError={handleError}
                         data-testid={dataTest}
                         alt={placeholder}
+                        onLoad={handleOnLoad}
+                        onError={handleLoadError}
                     />
                 </ElevationUp>
             )}

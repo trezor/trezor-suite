@@ -2,7 +2,6 @@ import { wait } from '../../support/utils';
 
 export class TradingActions {
     readonly DOUBLE_LONG_TIMEOUT = 60_000;
-    readonly LONG_TIMEOUT = 30_000;
     readonly SHORT_TIMEOUT = 5_000;
     readonly BOTTOM_SHEET_ANIMATION_DURATION = 1_000;
 
@@ -27,10 +26,6 @@ export class TradingActions {
 
     getElementById(suffix: string) {
         return element(by.id(this.getTestId(suffix)));
-    }
-
-    async scrollScreenToBottom() {
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
     }
 
     async closeBottomSheet() {

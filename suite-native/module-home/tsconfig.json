@@ -26,12 +26,14 @@
         { "path": "../graph" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/urls" },
         { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]

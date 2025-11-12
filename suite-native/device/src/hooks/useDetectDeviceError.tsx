@@ -240,7 +240,8 @@ export const useDetectDeviceError = () => {
             shouldFactoryResetBeVisible &&
             !isFirmwareInstallationRunning &&
             !wasDeviceEjectedByUser &&
-            isOnboardingFinished
+            isOnboardingFinished &&
+            navigationContainerRef.isReady()
         ) {
             navigationContainerRef.reset({
                 index: 0,

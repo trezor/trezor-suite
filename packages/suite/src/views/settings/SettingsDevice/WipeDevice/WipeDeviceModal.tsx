@@ -5,7 +5,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -35,7 +35,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
 
         if (isFulfilled(response)) {
             analytics.report({
-                type: EventType.SettingsDeviceWipe,
+                type: EventTypeShared.SettingsDeviceWipe,
             });
             if (appRoute === 'settings') {
                 // redirect to the index to close the settings and show initial device setup

@@ -1,3 +1,7 @@
+import { expect as detoxExpect } from 'detox';
+
+import CS_TRANSLATIONS from '@suite-native/intl/translations/cs-CZ.json';
+import EN_TRANSLATIONS from '@suite-native/intl/translations/en-US.json';
 import { PROTO } from '@trezor/connect';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
@@ -16,38 +20,40 @@ describe('App Settings - without device interactions [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
+        await onHome.scrollScreenToBottom();
     });
 
     it('Localization - Currency', async () => {
-        await waitFor(element(by.text(/^.*\$.*$/i)))
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await detoxExpect(element(by.text(/^.*\$.*$/i))).toBeVisible();
         await onTabBar.navigateToSettings();
         await onSettings.tapPreferences();
         await onSettings.changeLocalizationCurrency('czk');
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
 
-        await waitFor(element(by.text(/^.*CZK.*$/i)))
-            .toBeVisible()
-            .withTimeout(10000);
+        await detoxExpect(element(by.text(/^.*CZK.*$/i))).toBeVisible();
     });
 
     it('Localization - Bitcoin Units', async () => {
-        await waitFor(element(by.text('0 BTC')))
-            .toBeVisible()
-            .withTimeout(10000);
-
+        await detoxExpect(element(by.text('0 BTC'))).toBeVisible();
         await onTabBar.navigateToSettings();
         await onSettings.tapPreferences();
         await onSettings.changeBitcoinUnits(PROTO.AmountUnit.SATOSHI);
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
 
-        await waitFor(element(by.text('0 sat')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await detoxExpect(element(by.text('0 sat'))).toBeVisible();
+    });
+
+    it('Localization - Language', async () => {
+        await onTabBar.assertHomeTabBarItemTitle(EN_TRANSLATIONS['navigation.tabs.home']);
+        await onTabBar.navigateToSettings();
+        await onSettings.tapPreferences();
+        await onSettings.changeLanguage('cs-CZ');
+        await onTabBar.tapBackButton();
+        await onTabBar.navigateToHome();
+
+        await onTabBar.assertHomeTabBarItemTitle(CS_TRANSLATIONS['navigation.tabs.home']);
     });
 
     it('Privacy & Security - Discreet Mode', async () => {

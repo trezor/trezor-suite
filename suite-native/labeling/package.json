@@ -16,9 +16,11 @@
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/local-first-storage": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "19.1.0",
         "react-redux": "9.2.0"

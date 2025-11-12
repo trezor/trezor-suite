@@ -48,6 +48,10 @@ export type LoadingContentProps = {
     isLoading?: boolean;
     size?: number;
     isSuccessful?: boolean;
+    /**
+     * If true, `children` will slide to the right when loading starts and are initially placed at -{size}px.
+     */
+    slideContent?: boolean;
 };
 
 export const LoadingContent = ({
@@ -55,6 +59,7 @@ export const LoadingContent = ({
     isLoading = false,
     size = 25,
     isSuccessful = true,
+    slideContent = true,
 }: LoadingContentProps) => {
     const [isSpinnerVisible, setIsSpinnerVisible] = useState(false);
 
@@ -78,9 +83,13 @@ export const LoadingContent = ({
                     />
                 )}
             </LoaderCell>
-            <ContentCell $isLoading={isLoading} $size={size}>
-                {children}
-            </ContentCell>
+            {slideContent ? (
+                <ContentCell $isLoading={isLoading} $size={size}>
+                    {children}
+                </ContentCell>
+            ) : (
+                children
+            )}
         </LoadingWrapper>
     );
 };

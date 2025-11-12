@@ -248,7 +248,7 @@ export const TransactionReviewModalBodyInner = ({
                 }
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
                 description={
-                    !areDetailsVisible && (
+                    areDetailsVisible ? null : (
                         <TransactionReviewSummary
                             tx={precomposedTx}
                             account={account}
@@ -271,23 +271,24 @@ export const TransactionReviewModalBodyInner = ({
                     )
                 }
                 bottomContent={
-                    <TransactionReviewModalBottomContent
-                        decision={decision}
-                        isSending={isSending}
-                        onSend={setIsSending}
-                        onCancel={onCancel}
-                        handleTryAgain={handleTryAgain}
-                        txInfoState={txInfoState}
-                        areDetailsVisible={areDetailsVisible}
-                        actionTranslation={actionTranslation('button')}
-                        isTxExpired={isTxExpired}
-                        hasTxExpired={hasTxExpired}
-                        stakeType={stakeType || undefined}
-                        isRbfConfirmedError={isRbfConfirmedError}
-                        account={account}
-                        precomposedForm={precomposedForm}
-                        outputs={outputs}
-                    />
+                    areDetailsVisible ? null : (
+                        <TransactionReviewModalBottomContent
+                            decision={decision}
+                            isSending={isSending}
+                            onSend={setIsSending}
+                            onCancel={onCancel}
+                            handleTryAgain={handleTryAgain}
+                            txInfoState={txInfoState}
+                            actionTranslation={actionTranslation('button')}
+                            isTxExpired={isTxExpired}
+                            hasTxExpired={hasTxExpired}
+                            stakeType={stakeType || undefined}
+                            isRbfConfirmedError={isRbfConfirmedError}
+                            account={account}
+                            precomposedForm={precomposedForm}
+                            outputs={outputs}
+                        />
+                    )
                 }
                 size="small"
             >
@@ -300,6 +301,7 @@ export const TransactionReviewModalBodyInner = ({
                     reviewStep={reviewStep}
                     isRbfConfirmedError={isRbfConfirmedError}
                     onTryAgain={handleTryAgain}
+                    areDetailsVisible={areDetailsVisible}
                 />
             </Modal.ModalBase>
         </ConnectModalBackdrop>

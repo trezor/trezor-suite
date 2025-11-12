@@ -782,7 +782,7 @@ export default defineMessages({
     TR_INSTALLATION_FW_SLOW_TIP_BANNER: {
         id: 'TR_INSTALLATION_FW_SLOW_TIP_BANNER',
         defaultMessage:
-            'Firmware installation is taking longer than usual. This may be cause by other connected bluetooth devices. Consider disconnecting them.',
+            'Firmware installation is taking longer than expected. Try disconnecting other Bluetooth devices to improve speed.',
     },
     TR_SELL_STATUS_ERROR: {
         defaultMessage: 'Rejected',
@@ -2632,12 +2632,6 @@ export default defineMessages({
         description: 'Main text on firmware page for devices without firmware',
         id: 'TR_FIRMWARE_SUBHEADING_NONE',
     },
-    TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE: {
-        defaultMessage:
-            "Your device is ready for the latest firmware update to keep it secure. If you're a Bitcoin enthusiast, a Bitcoin-only firmware is also available.",
-        description: 'Main text on firmware page for Bitcoin-only devices without firmware',
-        id: 'TR_FIRMWARE_SUBHEADING_NONE_BITCOIN_ONLY_DEVICE',
-    },
     TR_FIRMWARE_SUBHEADING_UNKNOWN: {
         defaultMessage:
             'Your Trezor ships without firmware for security reasons. To start using it safely, install the latest firmware. Bitcoin-only user? We recommend the <button>{bitcoinOnly} firmware</button>.',
@@ -2645,15 +2639,16 @@ export default defineMessages({
             'Main text on firmware page for devices in bootloader mode, i.e. when Suite cannot determine current firmware type',
         id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN',
     },
+    TR_FIRMWARE_SUBHEADING_BITCOIN_ONLY_DEVICE: {
+        defaultMessage:
+            'Your Trezor ships without firmware for security reasons. To start using it safely, install the latest Bitcoin-only firmware.',
+        description: 'Main text on firmware page for Bitcoin-only devices without firmware',
+        id: 'TR_FIRMWARE_SUBHEADING_BITCOIN_ONLY_DEVICE',
+    },
     TR_FIRMWARE_SUBHEADING_BITCOIN: {
         defaultMessage: 'A lightweight firmware supporting Bitcoin-only operations.',
         description: 'Explanation of Bitcoin-only firmware in onboarding',
         id: 'TR_FIRMWARE_SUBHEADING_BITCOIN',
-    },
-    TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE: {
-        defaultMessage: 'A lightweight firmware supporting Bitcoin-only operations.',
-        description: 'Explanation of Bitcoin-only firmware in onboarding for Bitcoin-only devices',
-        id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN_BITCOIN_ONLY_DEVICE',
     },
     TR_CHANGE_FIRMWARE_TYPE_ANYTIME: {
         defaultMessage: 'You can change your firmware type in Settings anytime.',
@@ -3040,6 +3035,10 @@ export default defineMessages({
         defaultMessage: 'Tokens',
         id: 'TR_NAV_TOKENS',
     },
+    TR_NAV_INACTIVE_TOKENS: {
+        defaultMessage: 'Inactive tokens',
+        id: 'TR_NAV_INACTIVE_TOKENS',
+    },
     TR_NAV_COLLECTIONS: {
         defaultMessage: 'Collections',
         id: 'TR_NAV_COLLECTIONS',
@@ -3204,7 +3203,7 @@ export default defineMessages({
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
     },
     TR_RECEIVE: {
-        defaultMessage: 'Receive',
+        defaultMessage: 'Select an account to receive funds',
         id: 'TR_RECEIVE',
     },
     TR_RECEIVE_NETWORK: {
@@ -4549,6 +4548,23 @@ export default defineMessages({
         id: 'TR_INACTIVE_COINS',
         defaultMessage: 'Available assets to activate',
     },
+    TR_ACTIVATE: {
+        id: 'TR_ACTIVATE',
+        defaultMessage: 'Activate',
+    },
+    TR_ACTIVATE_TOKEN: {
+        id: 'TR_ACTIVATE_TOKEN',
+        defaultMessage: 'Activate {token}',
+    },
+    TR_TOKEN_ACTIVATION_DESCRIPTION: {
+        id: 'TR_TOKEN_ACTIVATION_DESCRIPTION',
+        defaultMessage:
+            'To receive {token} on the {network} network, you must first activate the asset. Doing so will increase your reserved balance by {reserve}.',
+    },
+    TR_INACTIVE_TOKENS_EMPTY: {
+        id: 'TR_INACTIVE_TOKENS_EMPTY',
+        defaultMessage: 'No inactive tokens',
+    },
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Activate assets',
@@ -5309,6 +5325,15 @@ export default defineMessages({
         defaultMessage:
             'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
     },
+    TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE: {
+        id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE',
+        defaultMessage: 'Global send & receive',
+    },
+    TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION',
+        defaultMessage:
+            'Send and receive transactions from your dashboard directly to any account.',
+    },
     TR_GO_TO_EXP_FEATURE: {
         id: 'TR_GO_TO_EXP_FEATURE',
         defaultMessage: 'Open',
@@ -5348,6 +5373,15 @@ export default defineMessages({
         id: 'TR_EXPERIMENTAL_NETWORKS_DESCRIPTION',
         defaultMessage:
             'Send and receive transactions on the {networkNames} {count, plural, one {network} other {networks}}.',
+    },
+    TR_EXPERIMENTAL_SUITE_SYNC_TITLE: {
+        id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
+        defaultMessage: 'Suite Sync',
+    },
+    TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION',
+        defaultMessage:
+            'Sync your labels across multiple devices using local-first encrypted storage.',
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
@@ -5622,6 +5656,14 @@ export default defineMessages({
     TR_TOKEN: {
         id: 'TR_TOKEN',
         defaultMessage: 'Token',
+    },
+    TR_ISSUER: {
+        id: 'TR_ISSUER',
+        defaultMessage: 'Issuer',
+    },
+    TR_ISSUER_ADDRESS: {
+        id: 'TR_ISSUER_ADDRESS',
+        defaultMessage: 'Issuer address',
     },
     TR_TOKENS: {
         id: 'TR_TOKENS',
@@ -6469,7 +6511,7 @@ export default defineMessages({
     },
     TR_LABELING_SECURE_SYNC: {
         id: 'TR_LABELING_SECURE_SYNC',
-        defaultMessage: 'Secure Sync (recommended)',
+        defaultMessage: 'Suite Sync (recommended)',
     },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
@@ -7360,7 +7402,7 @@ export default defineMessages({
     },
     TR_INITIAL_RECONNECT_DEVICE_DESCRIPTION: {
         id: 'TR_INITIAL_RECONNECT_DEVICE_DESCRIPTION',
-        defaultMessage: 'Disconnect and connect device to continue.',
+        defaultMessage: 'Disconnect and reconnect your device to continue.',
     },
     TR_DEVICE_CONNECTED_BOOTLOADER: {
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER',
@@ -7723,11 +7765,11 @@ export default defineMessages({
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
-        defaultMessage: 'Activate assets',
+        defaultMessage: 'Activate coins',
     },
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
-        defaultMessage: 'Select which assets to show in Trezor Suite. You can change this anytime.',
+        defaultMessage: 'Select which coins to show in Trezor Suite. You can change this anytime.',
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
@@ -7745,11 +7787,11 @@ export default defineMessages({
     },
     TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE: {
         id: 'TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE',
-        defaultMessage: 'Your Trezor needs to be in pairing mode',
+        defaultMessage: 'Your Trezor needs to be in pairing mode to continue.',
     },
     TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED: {
         id: 'TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED',
-        defaultMessage: 'This window will close as soon as your Trezor is paired.',
+        defaultMessage: 'This window will close automatically once your Trezor is paired.',
     },
     TR_STILL_NOT_WORKING: {
         id: 'TR_STILL_NOT_WORKING',
@@ -9355,7 +9397,7 @@ export default defineMessages({
     },
     TR_STAKING_NEW_PROVIDER_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
-        defaultMessage: 'Start earning rewards with Everstake',
+        defaultMessage: 'Earn ~{apy}% APY with our new provider',
     },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
@@ -9373,7 +9415,7 @@ export default defineMessages({
     TR_STAKING_REWARDS_NETWORK_FEE_WARNING: {
         id: 'TR_STAKING_REWARDS_NETWORK_FEE_WARNING',
         defaultMessage:
-            'Network fee is higher than your rewards. Consider waiting until your rewards grow before claiming.',
+            'The network fee currently exceeds your rewards. Consider waiting until your rewards increase before claiming.',
     },
     TR_STAKING_NEW_PROVIDER: {
         id: 'TR_STAKING_NEW_PROVIDER',
@@ -9489,7 +9531,7 @@ export default defineMessages({
     TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
         id: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
         defaultMessage:
-            'All your available {networkDisplaySymbol} is staked. Newly received {networkDisplaySymbol} activates after two epochs.',
+            'All your available {networkDisplaySymbol} is currently staked. Any new {networkDisplaySymbol} you receive will become active after two epochs.',
     },
     TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED: {
         id: 'TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED',
@@ -9502,7 +9544,7 @@ export default defineMessages({
     },
     TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER: {
         id: 'TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER',
-        defaultMessage: 'Keep earning rewards with your current provider for ~{days} days',
+        defaultMessage: 'Keep earning rewards with your current provider for ~{days} days.',
     },
     TR_STAKE_ACTIVATION_PERIOD: {
         id: 'TR_STAKE_ACTIVATION_PERIOD',
@@ -9515,6 +9557,10 @@ export default defineMessages({
     TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT: {
         id: 'TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT',
         defaultMessage: 'Receive deposit in account',
+    },
+    TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY: {
+        id: 'TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY',
+        defaultMessage: 'Instantly',
     },
     TR_STAKE_YOUR_DEPOSIT_IS_RETURNED: {
         id: 'TR_STAKE_YOUR_DEPOSIT_IS_RETURNED',
@@ -10032,10 +10078,19 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
         defaultMessage: 'This Passphrase wallet is empty',
     },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE_ERROR: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE_ERROR',
+        defaultMessage: "Passphrase wallet couldn't be loaded",
+    },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION',
         defaultMessage:
             "This Passphrase wallet is empty and hasn't been used before. Do you want to open it?",
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR',
+        defaultMessage:
+            'Your wallet may appear empty until the internet connection is restored. Do you want to open it?',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON',
@@ -10043,7 +10098,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION',
-        defaultMessage: 'Expecting a passphrase wallet with funds?',
+        defaultMessage: 'Expecting a Passphrase wallet with funds?',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON',
@@ -10393,7 +10448,7 @@ export default defineMessages({
     TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT: {
         id: 'TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT',
         defaultMessage:
-            'Your system does not support automatic pairing via Trezor Suite. Please open your System Bluetooth Settings, find your Trezor device and pair it there.',
+            'Your system doesn’t support automatic pairing via Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.',
     },
     TR_DONE: {
         id: 'TR_DONE',
@@ -10635,11 +10690,11 @@ export default defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
-        defaultMessage: 'Turn on Secure Sync to use labels',
+        defaultMessage: 'Turn on Suite Sync to use labels',
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION',
-        defaultMessage: 'Secure Sync keeps your data up to date on all your devices.',
+        defaultMessage: 'Suite Sync keeps your data up to date on all your devices.',
     },
     TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
@@ -10655,7 +10710,7 @@ export default defineMessages({
     },
     TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
         id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
-        defaultMessage: 'Labels created with Secure Sync can’t be migrated',
+        defaultMessage: 'Labels created with Suite Sync can’t be migrated',
     },
     TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
         id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
@@ -10929,5 +10984,14 @@ export default defineMessages({
     TR_PUBLIC_KEYS: {
         id: 'TR_PUBLIC_KEYS',
         defaultMessage: 'Public keys',
+    },
+    TR_ERROR_LOADING_TOKENS: {
+        id: 'TR_ERROR_LOADING_TOKENS',
+        defaultMessage: 'Failed to load tokens',
+    },
+    TR_LOCAL_NETWORK_ACCESS_PERMISSION_WARNING: {
+        id: 'TR_LOCAL_NETWORK_ACCESS_PERMISSION_WARNING',
+        defaultMessage:
+            'In order to use all features of Trezor Suite web version please allow local network access in your browser settings.',
     },
 } as const);

@@ -1,23 +1,22 @@
 import {
-    EncryptionKey,
     EvoluDeps,
     OwnerId,
     SimpleName,
-    WriteKey,
     createEvolu,
-    createIdFromString,
-    getOrThrow,
-    hexToBytes,
+    createOwnerWebSocketTransport,
 } from '@evolu/common';
 
 import { EvoluKeys } from '@suite-common/suite-types';
+import { isDevEnv } from '@suite-common/suite-utils';
 
+import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
 import { Schema } from '../schema';
 import { LocalFirstStorage } from '../storage';
 
-// This is a way how to force change of the SQL files.
-// This shall NEVER change in production!!!
-const VERSION = 2;
+// This is a way how to force change of the SQL files. It was useful for development
+// so not everybody had to delete SQLite file manually:
+// See: https://www.evolu.dev/docs/faq#how-to-delete-opfs-sqlite-in-browser
+const VERSION = 3;
 
 type CreateEvoluInstanceProps = {
     relayUrl: string;
@@ -26,9 +25,15 @@ type CreateEvoluInstanceProps = {
 };
 
 const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
-    const evoluOwnerId = getOrThrow(OwnerId.from(createIdFromString(evoluKeys.ownerId)));
+    const owner = createEvoluAppOwnerFromTrezorData({ data: evoluKeys.ownerSecret });
 
-    const sanitizedOwnerId = evoluOwnerId.replaceAll('_', '-');
+    if (!owner.ok) {
+        console.error(owner.error);
+
+        throw owner.error;
+    }
+
+    const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
     const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${sanitizedOwnerId}`);
 
     if (!databaseName.ok) {
@@ -39,18 +44,8 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
     const evolu = createEvolu(evoluDeps)(Schema, {
         name: databaseName.value,
-        syncUrl: relayUrl,
-        initialAppOwner: {
-            type: 'AppOwner',
-            id: evoluOwnerId,
-            encryptionKey: getOrThrow(EncryptionKey.from(hexToBytes(evoluKeys.encryptionKey))),
-            writeKey: getOrThrow(
-                WriteKey.from(
-                    // Evolu uses only the first 16 bytes as write key
-                    hexToBytes(evoluKeys.writeKey).slice(0, 16),
-                ),
-            ),
-        },
+        transports: [createOwnerWebSocketTransport({ url: relayUrl, ownerId: owner.value.id })],
+        externalAppOwner: owner.value,
     });
 
     evolu.subscribeError(() => {
@@ -63,8 +58,10 @@ const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInst
 
 type SuiteOwnerId = string;
 
-// The `https://evolu.suite.sldev.cz/evolu/` MUST have the last `/` in the URL.
-export const DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL = 'https://evolu.suite.sldev.cz/evolu/';
+// The `https://suite-sync.trezor.io/` MUST have the last `/` in the URL.
+export const DEFAULT_SUITE_SYNC_RELAY_URL = isDevEnv
+    ? 'https://evolu.suite.sldev.cz/evolu/'
+    : 'https://suite-sync.trezor.io/';
 
 export class LocalFirstStorageProvider {
     private storages = new Map<SuiteOwnerId, LocalFirstStorage>();
@@ -80,7 +77,7 @@ export class LocalFirstStorageProvider {
         if (storage === undefined) {
             const relayUrl =
                 this.relayUrl === null || this.relayUrl.trim() === ''
-                    ? DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL
+                    ? DEFAULT_SUITE_SYNC_RELAY_URL
                     : this.relayUrl;
 
             const evolu = createEvoluInstance({

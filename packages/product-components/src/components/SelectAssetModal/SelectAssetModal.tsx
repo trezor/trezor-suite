@@ -56,7 +56,6 @@ export const SelectAssetModal = ({
     searchInput,
     noItemsAvailablePlaceholder,
     'data-testid': dataTestId,
-    renderOptionBalance,
 }: SelectAssetModalProps) => {
     const intl = useIntl();
 
@@ -96,11 +95,10 @@ export const SelectAssetModal = ({
                     badge={badge}
                     shouldTryToFetch={shouldTryToFetch}
                     handleClick={onSelectAsset}
-                    balance={renderOptionBalance(option)}
                 />
             );
         },
-        [dataTestId, onSelectAsset, renderOptionBalance],
+        [dataTestId, onSelectAsset],
     );
 
     return (

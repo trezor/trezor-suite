@@ -1,18 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { NATIVE_LANGUAGES } from '@suite-common/suite-types';
 import { Select, SelectItemType } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { LanguageOption, Translation, selectLanguage, setLanguage } from '@suite-native/intl';
+import {
+    LANGUAGES,
+    LocaleTag,
+    Translation,
+    selectUserSelectedLocaleTag,
+    setLocale,
+} from '@suite-native/intl';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 
-const languageItems = Object.entries(NATIVE_LANGUAGES).map(
+const languageItems = Object.entries(LANGUAGES).map(
     ([localeCode, language]) =>
         ({
             value: localeCode,
             label: language.name,
-        }) as SelectItemType<LanguageOption>,
+        }) as SelectItemType<LocaleTag>,
 );
 
 languageItems.unshift({
@@ -22,16 +26,11 @@ languageItems.unshift({
 
 export const LanguageSelector = () => {
     const dispatch = useDispatch();
-    const language = useSelector(selectLanguage);
-    const isLocalizationEnabled = useFeatureFlag(FeatureFlag.IsLocalizationEnabled);
+    const userSelectedLocaleTag = useSelector(selectUserSelectedLocaleTag);
 
-    const handleSelectLanguage = (localeCode: LanguageOption) => {
-        dispatch(setLanguage(localeCode));
+    const handleSelectLanguage = (localeCode: LocaleTag) => {
+        dispatch(setLocale(localeCode));
     };
-
-    if (!isLocalizationEnabled) {
-        return null;
-    }
 
     return (
         <PreferencesSettingsCard
@@ -39,11 +38,11 @@ export const LanguageSelector = () => {
             title={<Translation id="moduleSettings.preferences.languageLabel" />}
         >
             <Select
-                selectValue={language}
+                selectValue={userSelectedLocaleTag}
                 selectLabel={<Translation id="moduleSettings.preferences.languageLabel" />}
                 items={languageItems}
                 onSelectItem={handleSelectLanguage}
-                testID="@settings/localization/bitcoin-units-selector"
+                testID="@settings/localization/language-selector"
             />
         </PreferencesSettingsCard>
     );

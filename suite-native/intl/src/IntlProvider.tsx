@@ -3,16 +3,16 @@ import { IntlProvider as ReactIntlProvider } from 'react-intl';
 // Polyfill to support plural syntax
 import 'intl-pluralrules';
 
-import { DEFAULT_LANGUAGE } from './constants';
-import { useLanguage } from './hooks/useLanguage';
+import { useLocale } from './hooks/useLocale';
 import { useTranslatedMessages } from './hooks/useTranslatedMessages';
+import { DEFAULT_LOCALE } from './languages';
 
 export const IntlProvider = ({ children }: { children: React.ReactNode }) => {
-    const language = useLanguage();
-    const messages = useTranslatedMessages({ language });
+    const locale = useLocale();
+    const messages = useTranslatedMessages();
 
     return (
-        <ReactIntlProvider locale={language} defaultLocale={DEFAULT_LANGUAGE} messages={messages}>
+        <ReactIntlProvider locale={locale} defaultLocale={DEFAULT_LOCALE} messages={messages}>
             {children}
         </ReactIntlProvider>
     );

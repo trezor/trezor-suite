@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
+    calculateRewards,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
     isSupportedStakingNetworkSymbol,
@@ -52,15 +54,18 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const stakingBalance = stakingData?.depositedBalance ?? '0';
 
     const potentialRewards = useMemo(() => {
-        const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
-        const amount = new BigNumber(totalBalance).multipliedBy(apy / 100);
+        const totalBalance = new BigNumber(stakingBalance || '0').plus(accountBalance).toString();
+        const amount = calculateRewards(
+            getNetworkAdjustedStakingBalance(totalBalance, account),
+            apy,
+        );
 
-        return CryptoAmountFormatter.format(amount.toString(), {
+        return CryptoAmountFormatter.format(amount, {
             symbol: account.symbol,
             isBalance: true,
             withSymbol: false,
-            maxDisplayedDecimals: 8,
             isEllipsisAppended: false,
+            maxDisplayedDecimals: 8,
         });
     }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
 
@@ -142,6 +147,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const hasEnoughBalanceForStaking = new BigNumber(accountBalance).gte(
         stakingLimits.MIN_AMOUNT_FOR_STAKING,
     );
+    const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
 
     return (
         <Card>
@@ -159,7 +165,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                         </H4>
 
                         <Paragraph variant="tertiary" typographyStyle="hint">
-                            {!hasEnoughBalanceForStaking ? (
+                            {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
                                 <Translation
                                     id="TR_STAKING_BANNER_DETAIL_TEXT_EMPTY"
                                     values={{ displaySymbol }}

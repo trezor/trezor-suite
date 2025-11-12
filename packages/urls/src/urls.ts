@@ -285,7 +285,7 @@ export const UNINSTALL_BRIDGE_URL: Url = withPlatformUtm(
 );
 
 export const EXPERIMENTAL_FEATURES_KB_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/a/experimental-features-in-trezor-suite',
+    'https://trezor.io/guides/trezor-suite/experimental-features-in-trezor-suite',
 );
 
 // =====================

@@ -41,6 +41,7 @@ export enum EventType {
     PassphraseFlowFinished = 'passphrase/flow_finished',
     PassphraseAddHiddenWallet = 'passphrase/add_hidden_wallet',
     PassphraseExit = 'passphrase/exit',
+    ReferralButtonPress = 'referral/button_press',
     CoinEnablingInitState = 'coin-enabling/init_state',
     SendAddressFilled = 'send/address_filled',
     SendAmountInputSwitched = 'send/amount_input_switched',

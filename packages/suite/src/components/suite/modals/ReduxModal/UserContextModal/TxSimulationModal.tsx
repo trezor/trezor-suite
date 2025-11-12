@@ -15,7 +15,11 @@ import { Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
-import { asBaseCurrencyAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import {
+    asBaseCurrencyAmount,
+    getAssetLogoContractAddresses,
+    getConvertedOrDefaultFeeInfo,
+} from '@suite-common/wallet-utils';
 import {
     AssetLogo,
     Banner,
@@ -70,7 +74,7 @@ const TxSimulationAsset = ({
             return (
                 <AssetLogo
                     coingeckoId={network.coingeckoId}
-                    contractAddress={asset.address.toLowerCase()}
+                    contractAddress={getAssetLogoContractAddresses(network.symbol, asset.address)}
                     size={32}
                     shouldTryToFetch={true}
                     placeholder={asset.name ?? asset.symbol}

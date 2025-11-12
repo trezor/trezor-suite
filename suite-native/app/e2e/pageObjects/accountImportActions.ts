@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { onTabBar } from './tabBarActions';
-import { inputTextToElement, scrollUntilVisible } from '../support/utils';
+import { inputTextToElement, scrollUntilVisible, waitForVisible } from '../support/utils';
 
 class AccountImportActions {
     async importAccountAndVerifyVisibility({
@@ -30,7 +30,7 @@ class AccountImportActions {
         );
         await scrollUntilVisible(coinItemElement);
         await coinItemElement.tap();
-        await detoxExpect(element(by.id('`@screen/XpubScan`')));
+        await detoxExpect(element(by.id('@screen/XpubScan'))).toBeVisible();
     }
 
     async submitXpub({ xpub, isValid }: { xpub: string; isValid: boolean }) {
@@ -42,9 +42,7 @@ class AccountImportActions {
         await xpubSubmitButton.tap();
 
         if (isValid) {
-            await waitFor(element(by.id('@screen/AccountImportSummary')))
-                .toBeVisible()
-                .withTimeout(20000); // it may take a while to load data from blockchain
+            await waitForVisible(by.id('@screen/AccountImportSummary'));
         }
     }
 
@@ -58,8 +56,7 @@ class AccountImportActions {
         const confirmButton = element(by.id('@account-import/coin-synced/confirm-button'));
         await scrollUntilVisible(confirmButton);
         await confirmButton.tap();
-
-        await detoxExpect(element(by.id('@screen/Home')));
+        await detoxExpect(element(by.id('@screen/Accounts'))).toBeVisible();
     }
 }
 

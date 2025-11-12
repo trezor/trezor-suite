@@ -3,6 +3,7 @@ import { AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
+import { EventTypeShared, analytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
@@ -81,7 +82,11 @@ export const useBluetoothAdapter = () => {
                             deviceId: asBluetoothDeviceId(event.deviceId),
                         }),
                     );
-                    if (event.connectionStatus.type === 'pairing-canceled') {
+                    if (['paired', 'connected'].includes(event.connectionStatus.type)) {
+                        analytics.report({
+                            type: EventTypeShared.DeviceConnectionDevicePaired,
+                        });
+                    } else if (event.connectionStatus.type === 'pairing-canceled') {
                         showToast({
                             message: translate('bluetooth.toasts.pairingCanceled'),
                             variant: 'default',

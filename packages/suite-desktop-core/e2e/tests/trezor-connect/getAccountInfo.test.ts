@@ -30,8 +30,8 @@ test.describe('TrezorConnect.getAccountInfo', { tag: ['@group=connect', '@deskto
 
         await connectPermissionsModal.confirmButton.click();
 
-        await page.getByTestId('@select-account-modal/subtab/p2sh').click();
-        await page.getByTestId(`@select-account-modal/accounts/p2sh/1`).click();
+        await page.getByTestId('@select-account-modal/subtab/p2wpkh').click();
+        await page.getByTestId(`@select-account-modal/accounts/p2wpkh/1`).click();
 
         expect(await res).toMatchObject({ success: true });
 

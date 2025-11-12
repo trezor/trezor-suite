@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
+import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/local-first-storage';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -20,6 +21,9 @@ import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
+    const isFeatureLocalFirstStorageAvailable = useSelector(
+        selectIsFeatureLocalFirstStorageAvailable,
+    );
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
@@ -50,6 +54,15 @@ export const FeaturesSettings = () => {
                 isDisabled={hasDiscovery}
                 testID="@settings/coin-enabling"
             />
+            {isFeatureLocalFirstStorageAvailable && (
+                <AppSettingsCardWithIconLayout
+                    icon="tag"
+                    title={<Translation id="moduleSettings.items.features.labeling.title" />}
+                    subtitle={<Translation id="moduleSettings.items.features.labeling.subtitle" />}
+                    onPress={() => navigateTo(SettingsStackRoutes.SettingsLabeling)}
+                    testID="@settings/labeling"
+                />
+            )}
             <AppSettingsCardWithIconLayout
                 icon="shieldWarning"
                 title={<Translation id="moduleSettings.items.features.advanced.title" />}

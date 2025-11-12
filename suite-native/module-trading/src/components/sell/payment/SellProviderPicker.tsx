@@ -1,4 +1,3 @@
-import { StretchInY, StretchOutY } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
@@ -11,11 +10,11 @@ import {
     selectTradingSellProviders,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
+import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import { TradingRootState, selectSellQuotesByPaymentMethod } from '@suite-native/trading-state';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
@@ -27,11 +26,6 @@ type SellProviderPickerRightProps = {
     isLoading: boolean;
     selectedValue: SellFiatTrade | undefined;
 };
-
-const pickerStyle = prepareNativeStyle(({ borders, colors }) => ({
-    borderTopWidth: borders.widths.small,
-    borderTopColor: colors.backgroundSurfaceElevation0,
-}));
 
 const SellProviderPickerRight = ({ isLoading, selectedValue }: SellProviderPickerRightProps) => {
     const { translate } = useTranslate();
@@ -65,7 +59,6 @@ const SellProviderPickerRight = ({ isLoading, selectedValue }: SellProviderPicke
 
 export const SellProviderPicker = () => {
     const { translate } = useTranslate();
-    const { applyStyle } = useNativeStyles();
     const form = useSellFormContext();
     const providers = useSelector(selectTradingSellProviders);
     const isLoading = useSelector(selectTradingSellIsLoading);
@@ -111,11 +104,7 @@ export const SellProviderPicker = () => {
 
     return (
         <>
-            <AnimatedBox
-                style={applyStyle(pickerStyle)}
-                entering={StretchInY}
-                exiting={StretchOutY}
-            >
+            <ResidenceCheckAwareAnimatedBox>
                 <OverviewRow
                     title={translate('moduleTrading.tradingScreen.provider')}
                     onPress={handleProviderPress}
@@ -128,7 +117,7 @@ export const SellProviderPicker = () => {
                 >
                     <SellProviderPickerRight isLoading={isLoading} selectedValue={selectedValue} />
                 </OverviewRow>
-            </AnimatedBox>
+            </ResidenceCheckAwareAnimatedBox>
             <ProviderSheet
                 quotes={quotes}
                 isVisible={isSheetVisible}

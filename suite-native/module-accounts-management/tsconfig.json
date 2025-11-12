@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/graph" },
         {
+            "path": "../../suite-common/local-first-storage"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -28,6 +31,7 @@
         { "path": "../banner-flags" },
         { "path": "../device" },
         { "path": "../device-manager" },
+        { "path": "../discovery" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },

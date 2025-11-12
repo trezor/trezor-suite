@@ -30,6 +30,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     public eventEmitter = new EventEmitter();
     protected _settings: ConnectSettings;
     private ws: WebsocketClient<{}>;
+    private localNetworkPermissionState: PermissionState | 'unknown' = 'unknown';
 
     public constructor() {
         this._settings = parseConnectSettings();
@@ -87,6 +88,19 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     }
 
     public async init(settings: Partial<ConnectSettingsPublic>): Promise<void> {
+        const permission = await navigator.permissions
+            .query({
+                // @ts-expect-error outdated type definitions
+                name: 'local-network-access',
+            })
+            .catch(() => undefined);
+        if (permission) {
+            this.localNetworkPermissionState = permission.state;
+            permission.onchange = () => {
+                this.localNetworkPermissionState = permission.state;
+            };
+        }
+
         const newSettings = parseConnectSettings({
             ...this._settings,
             ...settings,
@@ -109,13 +123,23 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         return await this.connect();
     }
 
+    private error(err: Error): Error {
+        if (err instanceof WebsocketError) {
+            if (this.localNetworkPermissionState === 'denied') {
+                return ERRORS.TypedError('Browser_LocalNetworkPermissionMissing');
+            } else {
+                return ERRORS.TypedError('Desktop_ConnectionMissing', err.message);
+            }
+        }
+
+        return err;
+    }
+
     private async connect(): Promise<void> {
         try {
             await this.ws.connect();
         } catch (err) {
-            throw err instanceof WebsocketError
-                ? ERRORS.TypedError('Desktop_ConnectionMissing', err.message)
-                : err;
+            throw this.error(err);
         }
     }
 
@@ -151,11 +175,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         } catch (err) {
             return {
                 success: false,
-                payload: ERRORS.serializeError(
-                    err instanceof WebsocketError
-                        ? ERRORS.TypedError('Desktop_ConnectionMissing', err.message)
-                        : err,
-                ),
+                payload: ERRORS.serializeError(this.error(err)),
             };
         }
     }

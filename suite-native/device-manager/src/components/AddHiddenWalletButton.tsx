@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     runDiscoveryThunk,
-    selectIsDeviceProtectedByPassphrase,
     selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -42,7 +41,6 @@ export const AddHiddenWalletButton = () => {
     const { applyStyle } = useNativeStyles();
 
     const device = useSelector(selectSelectedDevice);
-    const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
 
     const { setIsDeviceManagerVisible } = useDeviceManager();
 
@@ -60,17 +58,9 @@ export const AddHiddenWalletButton = () => {
         );
         dispatch(runDiscoveryThunk(device));
 
-        // If passphrase is not enabled on the device, we need to show the enable screen first
-        if (!isPassphraseEnabledOnDevice) {
-            analytics.report({ type: EventType.PassphraseNotEnabled });
-            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice,
-            });
-        } else {
-            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
-            });
-        }
+        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.PassphraseForm,
+        });
     };
 
     return (

@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { TradingFormActions } from './TradingFormActions';
-import { wait, waitForElementByIdToBeVisible } from '../../support/utils';
+import { wait, waitForVisible } from '../../support/utils';
 
 class TradingBuyActions extends TradingFormActions {
     constructor() {
@@ -9,11 +9,8 @@ class TradingBuyActions extends TradingFormActions {
     }
 
     async waitForQuotesToLoad() {
-        await waitForElementByIdToBeVisible(this.getTestId('fiat-amount-input'), this.LONG_TIMEOUT);
-        await waitForElementByIdToBeVisible(
-            this.getTestId('crypto-amount-input'),
-            this.LONG_TIMEOUT,
-        );
+        await waitForVisible(this.getElementById('fiat-amount-input'));
+        await waitForVisible(this.getElementById('crypto-amount-input'));
     }
 
     async viewPaymentMethods() {
@@ -22,10 +19,7 @@ class TradingBuyActions extends TradingFormActions {
         await this.expectSheetHeaderTitle('Payment method');
         await element(by.label('Close')).tap();
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
-        await waitForElementByIdToBeVisible(
-            this.getTestId('payment-method-picker'),
-            this.SHORT_TIMEOUT,
-        );
+        await waitForVisible(this.getElementById('payment-method-picker'));
     }
 
     async expectValidBuyForm() {
@@ -35,9 +29,9 @@ class TradingBuyActions extends TradingFormActions {
     }
 
     async closePaymentWebview() {
-        await waitForElementByIdToBeVisible('@screen/TradingWebView', this.LONG_TIMEOUT);
+        await waitForVisible(by.id('@screen/TradingWebView'));
         await element(by.id('@trading/webview/close')).tap();
-        await waitForElementByIdToBeVisible('@screen/Trading', this.SHORT_TIMEOUT);
+        await waitForVisible(by.id('@screen/Trading'));
     }
 }
 

@@ -14,6 +14,7 @@
 @evolu/common
 @evolu/react-native
 @evolu/web
+@noble/curves
 @sentry/browser
 @sentry/core
 @sentry/electron
@@ -63,6 +64,7 @@ openpgp
 prettier
 react-native-ble-plx
 react-native-mmkv
+react-freeze
 simple-git
 sort-package-json
 typescript-eslint

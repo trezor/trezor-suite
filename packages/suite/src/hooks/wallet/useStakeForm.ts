@@ -374,7 +374,11 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
     };
 
     const onSubmit = () => {
-        setIsConfirmModalOpen(true);
+        if (network.networkType === 'cardano') {
+            signTx();
+        } else {
+            setIsConfirmModalOpen(true);
+        }
     };
 
     const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking();

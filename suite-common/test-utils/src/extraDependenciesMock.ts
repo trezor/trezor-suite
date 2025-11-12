@@ -70,6 +70,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
         subscribeLocalFirstStorage: mockThunk('subscribeLocalFirstStorage'),
         unsubscribeAndDisposeLocalFirstStorage: mockThunk('unsubscribeLocalFirstStorage'),
+        initLocalFirstStorage: mockThunk('initLocalFirstStorage'),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(

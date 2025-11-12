@@ -1,4 +1,4 @@
-import { useFormContext } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useFetchFeesOnce, useRefetchFees } from '@suite-common/wallet-core';
@@ -10,8 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 
 function useIsRefetchDisabled() {
     const modal = useSelector(state => state.modal);
-    const { getValues } = useFormContext<FormState>();
-    const setMaxOutputId = getValues('setMaxOutputId');
+    const setMaxOutputId = useWatch<FormState, 'setMaxOutputId'>({ name: 'setMaxOutputId' });
 
     if (setMaxOutputId !== undefined) {
         return true;

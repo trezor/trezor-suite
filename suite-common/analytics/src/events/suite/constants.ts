@@ -26,6 +26,12 @@ export enum EventType {
     DeviceDisconnect = 'device-disconnect',
     DeviceUpdateFirmware = 'device-update-firmware',
     DeviceSetupCompleted = 'device-setup-completed',
+    DeviceSetupStarted = 'device-setup-started',
+
+    DeviceConnectionConnectButton = 'device-connection/connect-button',
+    DeviceConnectionConnectModal = 'device-connection/connect-modal',
+    DeviceConnectionHintModal = 'device-connection/hint-modal',
+    // The rest of device-connection events are in shared constants.
 
     FirmwareValidateHashError = 'firmware-validate-hash-error',
     FirmwareValidateHashMismatch = 'firmware-validate-hash-mismatch',
@@ -102,7 +108,6 @@ export enum EventType {
     SettingsDeviceChangeHapticFeedback = 'settings/device/change-haptic-feedback',
     SettingsDeviceChangeBrightness = 'settings/device/change-brightness',
     SettingsMultiShareBackup = 'settings/device/multi-share-backup',
-    SettingsDeviceWipe = 'settings/device/wipe',
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
 
     SettingsGeneralBioAuth = 'settings/general/bio-auth',

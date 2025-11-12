@@ -51,6 +51,7 @@
         "nx:build:libs": "yarn nx affected --target=build:lib",
         "nx:type-check": "yarn nx affected --target=type-check",
         "nx:test-unit": "yarn nx affected --target=test:unit",
+        "nx:test-memory-heavy": "yarn nx affected --target=test:unit:memory-heavy",
         "nx:lint:styles": "yarn nx affected --target=lint:styles",
         "nx:format": "yarn nx format:check",
         "_______ Commands _______": "Useful commands and scripts.",

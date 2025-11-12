@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 9, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 0, 0],
+    "min_firmware_version": [2, 0, 8],
+    "bootloader_version": [2, 1, 8],
+    "firmware_revision": "acd56d0113a547e9b5983510b0ce9de079e30e05",
+    "translations": {
+        "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.9.1.bin",
+        "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.9.1.bin",
+        "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.9.1.bin",
+        "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.9.1.bin",
+        "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.9.1.bin"
+    },
+    "url": "firmware/t2t1/trezor-t2t1-2.9.1-bitcoinonly.bin",
+    "fingerprint": "77b53ba1e381fcf8ce0868e8d158484e57ef22de1389b60df0a287199b92c14f",
+    "changelog": "* Limit swipe detection to the component's bounds.\n* Make space between value and unit non-breakable.\n* Do not hide the shown PIN until the touch is released.\n* Other small improvements and bug fixes."
+}

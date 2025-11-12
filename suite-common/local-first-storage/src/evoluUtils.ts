@@ -1,8 +1,3 @@
-import { OwnerId, Query, createIdFromString } from '@evolu/common';
-
-import { EvoluKeys } from '@suite-common/suite-types';
+import { Query } from '@evolu/common';
 
 export type UnwrapQuery<T> = T extends Query<infer U> ? U : T;
-
-export const createOwnerIdFromEvoluKeys = (evoluKeys: EvoluKeys) =>
-    OwnerId.from(createIdFromString(evoluKeys.ownerId));

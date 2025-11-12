@@ -16,5 +16,6 @@ export const LoadingContent: StoryObj<typeof meta> = {
     args: {
         size: 25,
         isLoading: true,
+        slideContent: true,
     },
 };

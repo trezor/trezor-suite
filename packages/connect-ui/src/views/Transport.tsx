@@ -7,25 +7,13 @@ import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
 import { View } from '../components/View';
 import imageSrc from '../images/man_with_laptop.svg';
+import { openDeeplinkWithWebFallback } from '../utils/openDeeplinkWithWebFallback';
 
 export type TransportEventProps = Extract<UiEvent, { type: 'ui-no_transport' }>;
 
 export const Transport = () => {
     const windowFocused = useWindowFocus();
-    const handleOpenSuite = () => {
-        // trigger deep link using iframe (to avoid beforeUnload and avoid opening new blank tab)
-        const iframeDeeplink = document.createElement('iframe');
-        iframeDeeplink.src = SUITE_BRIDGE_DEEPLINK;
-        iframeDeeplink.style.display = 'none';
-        document.body.appendChild(iframeDeeplink);
 
-        // fallback in case deeplink does not work
-        window.setTimeout(() => {
-            if (!windowFocused.current) return;
-
-            window.open(SUITE_URL);
-        }, 500);
-    };
     // @ts-expect-error usb is not included in types here
     const wouldSupportWebUSB = window.navigator.usb?.getDevices !== undefined;
 
@@ -59,14 +47,18 @@ export const Transport = () => {
             }
             image={<Image imageSrc={imageSrc} />}
             buttons={
-                <>
-                    <Button intent="brand" iconRight="arrowUpRight" onClick={handleOpenSuite}>
-                        <FormattedMessage
-                            id="TR_OPEN_TREZOR_SUITE_DESKTOP"
-                            defaultMessage="Open Trezor Suite desktop app"
-                        />
-                    </Button>
-                </>
+                <Button
+                    intent="brand"
+                    iconRight="arrowUpRight"
+                    onClick={() =>
+                        openDeeplinkWithWebFallback(windowFocused, SUITE_BRIDGE_DEEPLINK, SUITE_URL)
+                    }
+                >
+                    <FormattedMessage
+                        id="TR_OPEN_TREZOR_SUITE_DESKTOP"
+                        defaultMessage="Open Trezor Suite desktop app"
+                    />
+                </Button>
             }
         />
     );

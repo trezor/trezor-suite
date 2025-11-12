@@ -19,6 +19,7 @@ type CardWithIconLayoutProps = {
     title: ReactNode;
     children: ReactNode;
     alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
+    testID?: string;
 };
 
 export const CardWithIconLayout = ({
@@ -26,11 +27,12 @@ export const CardWithIconLayout = ({
     title,
     children,
     alertBoxProps,
+    testID,
 }: CardWithIconLayoutProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Card borderColor="borderElevation1" noPadding>
+        <Card borderColor="borderElevation1" noPadding testID={testID}>
             <HStack margin="sp16" spacing="sp12">
                 <Box marginVertical="sp2">
                     <Icon name={icon} size="mediumLarge" />

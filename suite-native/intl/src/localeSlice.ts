@@ -1,11 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { NativeLocale } from '@suite-common/suite-types';
+import { SupportedLanguage, isOfficiallySupportedLanguage, isSupportedLanguage } from './types';
 
-export type LanguageOption = NativeLocale | 'system';
+export type LocaleTag = SupportedLanguage | 'system';
 
 export type LocaleState = {
-    language: LanguageOption;
+    localeTag: LocaleTag;
 };
 
 export type LocaleSliceRootState = {
@@ -13,22 +13,35 @@ export type LocaleSliceRootState = {
 };
 
 export const localeInitialState: LocaleState = {
-    language: 'system',
+    localeTag: 'system',
 };
 
-export const localePersistWhitelist: Array<keyof LocaleState> = ['language'];
+export const localePersistWhitelist: Array<keyof LocaleState> = ['localeTag'];
 
 export const localeSlice = createSlice({
     name: 'locale',
     initialState: localeInitialState,
     reducers: {
-        setLanguage: (state, { payload }: PayloadAction<LanguageOption>) => {
-            state.language = payload;
+        setLocale: (state, { payload }: PayloadAction<LocaleTag>) => {
+            state.localeTag = payload;
         },
     },
 });
 
-export const selectLanguage = (state: LocaleSliceRootState) => state.locale.language;
-
-export const { setLanguage } = localeSlice.actions;
+export const { setLocale } = localeSlice.actions;
 export const localeReducer = localeSlice.reducer;
+
+export const selectUserSelectedLocaleTag = (state: LocaleSliceRootState) => state.locale.localeTag;
+
+export const selectIsLanguageLocaleSupported = (
+    state: LocaleSliceRootState,
+    systemLocaleTag: string,
+) => {
+    const userSelectedLocaleTag = selectUserSelectedLocaleTag(state);
+
+    if (userSelectedLocaleTag === 'system') {
+        return isOfficiallySupportedLanguage(systemLocaleTag);
+    }
+
+    return isSupportedLanguage(userSelectedLocaleTag);
+};

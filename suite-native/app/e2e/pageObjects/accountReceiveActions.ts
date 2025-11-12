@@ -1,14 +1,16 @@
 import { expect as detoxExpect } from 'detox';
 
+import { waitForVisible } from '../support/utils';
+
 class AccountReceiveActions {
     async waitForScreen() {
-        await waitFor(element(by.id('@screen/ReceiveAccount'))).toBeVisible();
+        await waitForVisible(by.id('@screen/ReceiveAccount'));
     }
 
     async tapShowAddressButton() {
         const showAddressButton = element(by.id('@receive/show-address-button'));
 
-        await waitFor(showAddressButton).toBeVisible().withTimeout(30000);
+        await waitForVisible(showAddressButton);
         await showAddressButton.tap();
 
         // button should be hidden after tap
@@ -18,7 +20,7 @@ class AccountReceiveActions {
     async verifyReceiveAddress(address: string) {
         const receiveAddressText = element(by.id('@receive/confirmed-receive-address'));
 
-        await waitFor(receiveAddressText).toBeVisible().withTimeout(30000);
+        await waitForVisible(receiveAddressText);
         await detoxExpect(receiveAddressText).toHaveText(address);
     }
 }

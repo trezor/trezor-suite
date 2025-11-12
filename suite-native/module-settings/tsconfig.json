@@ -6,6 +6,9 @@
             "path": "../../suite-common/analytics"
         },
         {
+            "path": "../../suite-common/local-first-storage"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -29,10 +32,10 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
-        { "path": "../feature-flags" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../local-first-storage" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../settings" },

@@ -14,6 +14,7 @@ export class Fees {
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
     readonly collapsibleFeesToggle: Locator;
+    readonly maxFeeLoading: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
     readonly maxFeeFiat: Locator;
@@ -25,6 +26,7 @@ export class Fees {
 
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
+        this.maxFeeLoading = this.page.getByTestId('@trading/quote/maximum-fee-amount-loading');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
         this.maxFeeFiat = this.page.getByTestId('@trading/quote/maximum-fee-fiat-amount');
@@ -69,6 +71,19 @@ export class Fees {
             return;
         }
 
+        // Wait for maximum fee to be calculated
+        await this.maxFeeLoading.waitFor({ state: 'hidden', timeout: 5000 });
+
+        const isDisabled = await this.collapsibleFeesToggle.getAttribute('aria-disabled');
+
+        if (isDisabled === 'true') {
+            console.error(
+                new Error(
+                    `Can't open collapsible fees because it is disabled. Make sure 'to' and 'amount' fields are filled so that maximum fee is calculated.`,
+                ),
+            );
+        }
+
         await expect(this.collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'false');
         await this.collapsibleFeesToggle.click();
         await expect(this.collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'true');
@@ -92,7 +107,7 @@ export class Fees {
 
     @step()
     async expectBitcoinFeeCalculated() {
-        this.openCollapsibleFees();
+        await this.openCollapsibleFees();
 
         const feePattern = /[≈~]\s*\$\s*\d+\.\d+/;
         await expect(this.valueOnCard('economy')).toHaveText(feePattern);
@@ -102,7 +117,7 @@ export class Fees {
 
     @step()
     async expectEthereumFeeCalculated() {
-        this.openCollapsibleFees();
+        await this.openCollapsibleFees();
 
         const feePattern = /\d+\.\d+\s*Gwei/;
         await expect(this.rateOnCard('low')).toHaveText(feePattern);

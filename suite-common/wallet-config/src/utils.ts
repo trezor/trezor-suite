@@ -133,3 +133,12 @@ export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol) => {
 
     return network.displaySymbolName || network.name;
 };
+
+export const getNetworkDecimals = (symbol: NetworkSymbolExtended) => {
+    const lowerCasedSymbol = symbol.toLowerCase();
+    if (isNetworkSymbol(lowerCasedSymbol)) {
+        return getNetwork(lowerCasedSymbol).decimals;
+    }
+
+    return undefined;
+};

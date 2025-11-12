@@ -54,7 +54,7 @@ export const TokensTable = ({
     }, [dispatch]);
 
     return (
-        <Card paddingType="none" overflow="hidden">
+        <Card paddingType="none">
             {tokensWithBalance.length === 0 && tokensWithoutBalance.length === 0 && searchQuery ? (
                 <NoSearchResults />
             ) : (

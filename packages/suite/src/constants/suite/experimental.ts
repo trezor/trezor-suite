@@ -1,4 +1,5 @@
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { labelingActions } from '@suite-common/local-first-storage';
 import { Route } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';
@@ -16,7 +17,9 @@ export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
     | 'nft-section'
-    | 'experimental-networks';
+    | 'global-send-receive'
+    | 'experimental-networks'
+    | 'suite-sync';
 
 export type ExperimentalFeatureConfig = {
     title: ExtendedMessageDescriptor;
@@ -53,6 +56,10 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         title: { id: 'TR_EXPERIMENTAL_NFT_SECTION' },
         description: { id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION' },
     },
+    'global-send-receive': {
+        title: { id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE' },
+        description: { id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION' },
+    },
     'experimental-networks': {
         title: {
             id: 'TR_EXPERIMENTAL_NETWORKS',
@@ -67,6 +74,17 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 networkNames: experimentalNetworkNames.join(', '),
                 count: experimentalNetworks.length,
             },
+        },
+    },
+    'suite-sync': {
+        title: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE' },
+        description: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION' },
+        onToggle: ({ newValue, dispatch }) => {
+            dispatch(
+                labelingActions.updateIsFeatureLocalFirstStorageAvailable({
+                    isShownInSettings: newValue,
+                }),
+            );
         },
     },
 };

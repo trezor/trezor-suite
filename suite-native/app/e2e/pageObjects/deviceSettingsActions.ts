@@ -1,13 +1,12 @@
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { scrollUntilVisible, wait, waitForElementByIdToBeVisible } from '../support/utils';
+import { scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
 const insertSeed = async (seed: string = MNEMONICS.mnemonic_immune) => {
     const seedWords = seed.split(' ');
-
-    await seedWords.forEach(async word => {
+    for (const word of seedWords) {
         await TrezorUserEnvLink.inputEmu(word);
-    });
+    }
 };
 
 export const redirectToDeviceAuthenticityScreenButton = element(
@@ -16,43 +15,31 @@ export const redirectToDeviceAuthenticityScreenButton = element(
 
 class DeviceSettingsActions {
     async waitForSettingsScreen() {
-        await waitFor(element(by.id('@screen/DeviceSettings')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.id('@screen/DeviceSettings'));
     }
 
     async waitForHomeScreenAndUninitializedTitle() {
-        await waitFor(element(by.id('@screen/Home')))
-            .toBeVisible()
-            .withTimeout(10000);
-        await waitFor(element(by.id('@homescreen/uninitializedConnectedDeviceText')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.id('@screen/Home'));
+        await waitForVisible(by.id('@homescreen/uninitializedConnectedDeviceText'));
     }
 
     async waitForPinProtectionScreen() {
-        await waitFor(element(by.id('@screen/PinProtection')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.id('@screen/PinProtection'));
     }
 
     async waitForWipeDeviceContinueOnTrezor() {
-        await waitFor(element(by.id('@screen/ContinueOnTrezor')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.id('@screen/ContinueOnTrezor'));
     }
 
     async waitForDeviceAuthenticityScreen() {
-        await waitFor(element(by.id('@screen/DeviceAuthenticity')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.id('@screen/DeviceAuthenticity'));
     }
 
     async redirectToPinProtectionScreen() {
         const redirectToPinScreenButton = element(
             by.id('@device-pin-protection/redirectToPinScreen'),
         );
-        await waitFor(redirectToPinScreenButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(redirectToPinScreenButton);
         await redirectToPinScreenButton.tap();
     }
 
@@ -62,12 +49,10 @@ class DeviceSettingsActions {
     }
 
     async tapEnablePinProtectionButton() {
-        await waitFor(element(by.id('@screen/PinProtection')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.id('@screen/PinProtection'));
 
         const enablePinProtectionButton = element(by.id('@device-pin-protection/enable-button'));
-        await waitFor(enablePinProtectionButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(enablePinProtectionButton);
 
         await enablePinProtectionButton.tap();
     }
@@ -75,21 +60,21 @@ class DeviceSettingsActions {
     async tapChangePinProtectionButton() {
         const changePinProtectionButton = element(by.id('@device-pin-protection/change-button'));
 
-        await waitFor(changePinProtectionButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(changePinProtectionButton);
         await changePinProtectionButton.tap();
     }
 
     async tapDisablePinProtectionButton() {
         const disablePinProtectionButton = element(by.id('@device-pin-protection/disable-button'));
 
-        await waitFor(disablePinProtectionButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(disablePinProtectionButton);
         await disablePinProtectionButton.tap();
     }
 
     async tapChangeDeviceNameButton() {
         const changeDeviceNameButton = element(by.id('@device-name/change-button'));
 
-        await waitFor(changeDeviceNameButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(changeDeviceNameButton);
         await changeDeviceNameButton.tap();
     }
 
@@ -100,6 +85,13 @@ class DeviceSettingsActions {
     }
 
     async tapDeviceCheckBackupButton() {
+        const backupAndPassphrase = element(
+            by.id('@device-backupAndPassphrase/redirectToBackupAndPassphraseScreen'),
+        );
+
+        await scrollUntilVisible(backupAndPassphrase);
+        await backupAndPassphrase.tap();
+
         const deviceCheckBackup = element(
             by.id('@device-check-backup/redirectToDeviceCheckBackupScreen'),
         );
@@ -117,13 +109,13 @@ class DeviceSettingsActions {
 
     async tapUpdateFirmwareBottomSheet() {
         const updateFirmwareButton = element(by.id('@device-firmware/update-button'));
-        await waitFor(updateFirmwareButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(updateFirmwareButton);
         await updateFirmwareButton.tap();
     }
 
     async tapCheckBackupButtonFromFirmwareUpdate() {
         const checkBackupButton = element(by.id('@device-firmware/sheet/check-backup'));
-        await waitFor(checkBackupButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(checkBackupButton);
         await checkBackupButton.tap();
     }
 
@@ -131,7 +123,7 @@ class DeviceSettingsActions {
         const changeDeviceNameInput = element(by.id('@device-name/input'));
         const changeDeviceNameSubmitButton = element(by.id('@device-name/submit-button'));
 
-        await waitFor(changeDeviceNameInput).toBeVisible().withTimeout(10000);
+        await waitForVisible(changeDeviceNameInput);
         await changeDeviceNameInput.tap();
         await changeDeviceNameInput.replaceText(value);
         await changeDeviceNameSubmitButton.tap();
@@ -139,28 +131,28 @@ class DeviceSettingsActions {
 
     async tapCheckAuthenticityButton() {
         const checkDeviceAuthenticityButton = element(by.id('@device-authenticity/check-button'));
-        await waitFor(checkDeviceAuthenticityButton).toBeVisible().withTimeout(5_000);
+        await waitForVisible(checkDeviceAuthenticityButton);
         await checkDeviceAuthenticityButton.tap();
     }
 
-    async confirmStepperItems(items: number) {
+    async confirmStepperItems(count: number) {
         const confirmButton = element(by.id('@cardStepper/confirm-button'));
 
-        for (let i = 0; i < items; i++) {
-            await waitFor(confirmButton).toBeVisible().withTimeout(10000);
+        for (let i = 0; i < count; i++) {
+            await waitForVisible(confirmButton);
             await confirmButton.tap();
         }
     }
 
     async goToNextDeviceCheckBackupTutorialStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/checkBackupTutorialStep${step}/nextButton`;
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async tapDeviceCheckBackupContinueButton() {
         const continueButton = element(by.id('@device-check-backup/continue-button'));
-        await waitFor(continueButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(continueButton);
         await continueButton.tap();
     }
 
@@ -175,9 +167,7 @@ class DeviceSettingsActions {
         await insertSeed();
         await TrezorUserEnvLink.pressYes();
 
-        await waitFor(element(by.text('Your backup is valid')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.text('Your backup is valid'));
     }
 }
 

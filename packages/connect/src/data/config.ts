@@ -272,6 +272,16 @@ export const config: Config = {
             },
         },
         {
+            capabilities: ['tropicDeviceAuthentication'],
+            min: {
+                // devices that don't support 'authenticateDevice' don't have to be listed here
+                T2B1: '0',
+                T3B1: '0',
+                T3T1: '0',
+                T3W1: '2.9.3',
+            },
+        },
+        {
             capabilities: ['getFirmwareHash'],
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
@@ -332,6 +342,20 @@ export const config: Config = {
                 T2B1: '2.9.2',
                 T3B1: '2.9.2',
                 T3T1: '2.9.2',
+            },
+        },
+        {
+            capabilities: ['monero'],
+            methods: [
+                'moneroGetAddress',
+                'moneroGetWatchKey',
+                'moneroKeyImageSync',
+                'moneroSignTransaction',
+            ],
+            min: {
+                T1B1: '0',
+                T2T1: '2.5.3',
+                T2B1: '2.5.3',
             },
         },
     ],

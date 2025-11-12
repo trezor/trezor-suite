@@ -55,6 +55,9 @@ export const ERROR_CODES = {
     Failure_EntropyCheck: '', // message from verifyEntropy process
 
     Deeplink_VersionMismatch: 'Not compatible with current version of the app',
+
+    Browser_LocalNetworkPermissionMissing:
+        'Local network permission is missing. Please allow local network access in browser settings.',
 } as const;
 
 type TypedErrorCode = keyof typeof ERROR_CODES;

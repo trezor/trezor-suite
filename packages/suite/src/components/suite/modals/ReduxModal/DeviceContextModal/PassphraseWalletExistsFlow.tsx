@@ -48,6 +48,7 @@ export const PassphraseWalletExistsFlow = ({
             case 'empty-wallet':
                 return (
                     <PassphraseWalletIsEmpty
+                        accountFailed={discovery.accountFailed}
                         onCancel={onCancel}
                         onNext={() => {
                             // Navigate to best practices

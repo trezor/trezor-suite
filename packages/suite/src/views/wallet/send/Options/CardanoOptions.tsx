@@ -1,43 +1,21 @@
-import styled from 'styled-components';
-
-import { Button, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Button, Row } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
-
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: flex-end;
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        flex-direction: column-reverse;
-        gap: ${spacingsPx.sm};
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const AddRecipientButton = styled(Button)`
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        width: 100%;
-    }
-`;
-
 export const CardanoOptions = () => {
     const { addOutput } = useSendFormContext();
 
     return (
-        <Wrapper>
-            <AddRecipientButton
+        <Row justifyContent="flex-end">
+            <Button
                 intent="neutral"
                 priority="secondary"
-                size="small"
                 iconLeft="plus"
                 data-testid="add-output"
                 onClick={addOutput}
             >
                 <Translation id="RECIPIENT_ADD" />
-            </AddRecipientButton>
-        </Wrapper>
+            </Button>
+        </Row>
     );
 };

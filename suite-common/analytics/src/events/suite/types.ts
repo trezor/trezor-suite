@@ -1,4 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
 import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
@@ -621,7 +622,6 @@ export type SuiteAnalyticsEvent =
               value?: number;
           };
       }
-    | { type: EventType.SettingsDeviceWipe }
     | {
           type: EventType.SettingsDeviceChangePassphraseProtection;
           payload: {
@@ -706,6 +706,8 @@ export type SuiteAnalyticsEvent =
                   | 'missing-provider'
                   | 'inMemoryTest'
                   | 'closed'
+                  | 'evolu'
+                  | 'legacy'
                   | ''; // Todo: 'sdCard' not implemented yet
           };
       }
@@ -810,5 +812,27 @@ export type SuiteAnalyticsEvent =
           type: EventType.AutostartModal;
           payload: {
               action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now';
+          };
+      }
+    | {
+          type: EventType.DeviceConnectionConnectButton;
+          payload: {
+              option: 'dashboard' | 'dropdown';
+          };
+      }
+    | {
+          type: EventType.DeviceConnectionConnectModal;
+          payload: {};
+      }
+    | {
+          type: EventType.DeviceConnectionHintModal;
+          payload: {
+              option: 'notWorking' | 'close';
+          };
+      }
+    | {
+          type: EventType.DeviceSetupStarted;
+          payload: {
+              deviceModel: DeviceModelInternal;
           };
       };

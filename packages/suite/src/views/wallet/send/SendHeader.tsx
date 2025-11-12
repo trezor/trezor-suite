@@ -103,7 +103,6 @@ export const SendHeader = () => {
                 {isDirty && (
                     <ClearButtonWrapper>
                         <Button
-                            size="small"
                             intent="neutral"
                             priority="secondary"
                             onClick={resetContext}

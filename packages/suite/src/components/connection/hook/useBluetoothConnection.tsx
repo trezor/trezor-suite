@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { BluetoothDeviceId } from '@trezor/connect';
+import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConnectDeviceThunk';
@@ -67,6 +68,9 @@ export const useBluetoothConnection = ({
             const result = await dispatch(bluetoothConnectDeviceThunk({ deviceId })).unwrap();
 
             if (result.success) {
+                analytics.report({
+                    type: EventTypeShared.DeviceConnectionDevicePaired,
+                });
                 dispatch(setConnectionModal(false));
             } else {
                 // Error handling is managed in bluetoothConnectDeviceThunk

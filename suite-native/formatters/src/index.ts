@@ -3,7 +3,6 @@ export { CoinToFiatAmountFormatter } from './components/CoinToFiatAmountFormatte
 export { CryptoToFiatAmountFormatter } from './components/CryptoToFiatAmountFormatter';
 export { AccountAddressFormatter } from './components/AccountAddressFormatter';
 export { BaseCurrencyAmountLargeFormatter } from './components/BaseCurrencyAmountLargeFormatter';
-export { CryptoAmountLargeFormatter } from './components/CryptoAmountLargeFormatter';
 export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';
 export { BaseCurrencyAmountFormatter } from './components/BaseCurrencyAmountFormatter';
@@ -15,4 +14,5 @@ export { SignValueFormatter } from './components/SignValueFormatter';
 export { FeeFormatter } from './components/FeeFormatter';
 export { useFiatFromCryptoValue } from './hooks/useFiatFromCryptoValue';
 export { useCryptoFiatConverters } from './hooks/useCryptoFiatConverters';
-export { formatNumberWithThousandCommas, convertTokenValueToDecimal } from './utils';
+export { useFormattedGraphHeaderValues } from './hooks/useFormattedGraphHeaderValues';
+export { convertTokenValueToDecimal } from './utils';

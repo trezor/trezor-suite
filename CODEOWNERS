@@ -31,9 +31,9 @@
 
 /packages/coinjoin @marekrjpolak @szymonlesisz
 
-/packages/components @trezor/suite-engagement
+/packages/components @trezor/suite-engagement @seibei-iguchi @jvaclavik
 
-/packages/product-components @trezor/suite-engagement
+/packages/product-components @trezor/suite-engagement @seibei-iguchi @jvaclavik
 
 /packages/connect @mroz22 @szymonlesisz @martykan @marekrjpolak
 

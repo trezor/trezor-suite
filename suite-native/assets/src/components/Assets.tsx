@@ -9,6 +9,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 import { OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
+import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import {
     AppTabsParamList,
     AppTabsRoutes,
@@ -64,6 +65,7 @@ export const Assets = () => {
     return (
         <>
             <AnimatedCard noPadding layout={LinearTransition}>
+                <AccountsRediscoveryNeededWarning hasPadding />
                 {deviceNetworks.map(symbol => (
                     <Animated.View
                         entering={isLoading ? FadeInDown : undefined}

@@ -5,6 +5,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
+import { EventTypeShared, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
@@ -49,6 +50,9 @@ export const useWipeDevice = () => {
         });
 
         if (response.success && isFulfilled(response.payload)) {
+            analytics.report({
+                type: EventTypeShared.SettingsDeviceWipe,
+            });
             navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
                 screen: DeviceSettingsStackRoutes.WipeDeviceStack,
                 params: {

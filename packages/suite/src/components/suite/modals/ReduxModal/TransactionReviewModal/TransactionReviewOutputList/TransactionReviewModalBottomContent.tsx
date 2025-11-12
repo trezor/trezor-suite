@@ -28,7 +28,6 @@ type TransactionReviewModalBottomContentProps = {
     onCancel: () => void;
     handleTryAgain: (close: boolean) => void;
     txInfoState: SendState | StakeState;
-    areDetailsVisible: boolean;
     actionTranslation: ExtendedMessageDescriptor;
     isTxExpired: boolean;
     hasTxExpired: boolean;
@@ -47,7 +46,6 @@ export const TransactionReviewModalBottomContent = ({
     onCancel,
     handleTryAgain,
     txInfoState,
-    areDetailsVisible,
     actionTranslation,
     isTxExpired,
     hasTxExpired,
@@ -150,10 +148,6 @@ export const TransactionReviewModalBottomContent = ({
                 </Modal.Button>
             </>
         );
-    }
-
-    if (areDetailsVisible) {
-        return null;
     }
 
     if (connectPopupCall?.state === 'ongoing') {

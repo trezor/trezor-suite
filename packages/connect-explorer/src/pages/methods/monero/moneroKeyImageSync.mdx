@@ -1,0 +1,143 @@
+import { Bundle } from '@trezor/connect/src/types';
+import { MoneroKeyImageSync } from '@trezor/connect/src/types/api/monero';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+import keyImageSync from '../../../data/methods/monero/keyImageSync.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Sync key images', legacyConfig: keyImageSync[0] },
+        { title: 'Advanced schema', method: 'moneroKeyImageSync', schema: MoneroKeyImageSync },
+        {
+            title: 'Advanced bundle',
+            method: 'moneroKeyImageSync',
+            schema: Bundle(MoneroKeyImageSync),
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: "minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`). [read more](/details/path)",
+    networkType:
+        'Monero network type: `0` = MAINNET (default), `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN',
+    subs: 'Subaddress indices to sync',
+    tdis: 'Transfer details (UTXOs) to export key images for',
+    account: 'Major subaddress index',
+    minor_indices: 'Minor subaddress indices',
+    out_key: 'Output public key (64 hex chars = 32 bytes)',
+    tx_pub_key: 'Transaction public key (64 hex chars = 32 bytes)',
+    additional_tx_pub_keys:
+        'Additional transaction public keys for multi-output transactions (each 64 hex chars). Can be array or comma-separated string',
+    internal_output_index: 'Output index within the transaction (used in hash computation)',
+    sub_addr_major: 'Major subaddress index (default: 0)',
+    sub_addr_minor: 'Minor subaddress index (default: 0)',
+};
+
+## Monero Key Image Sync
+
+Export Monero key images for transaction outputs (UTXOs) to enable spent output tracking.
+The device returns **encrypted** key images that must be decrypted by your wallet software using the provided encryption key. The key images are encrypted using ChaCha20-Poly1305 for security.
+
+```javascript
+const result = await TrezorConnect.moneroKeyImageSync(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### MoneroKeyImageSync
+
+<ParamsTable schema={MoneroKeyImageSync} descriptions={paramDescriptions} />
+
+**Important Notes:**
+
+- All keys must be exactly 64 hexadecimal characters (32 bytes)
+- The `internal_output_index` is included in the cryptographic hash commitment
+- `additional_tx_pub_keys` should only be provided for multi-output transactions (typically empty for 2-output transactions)
+
+### Example
+
+Export key images for UTXOs from a Monero testnet transaction:
+
+```javascript
+TrezorConnect.moneroKeyImageSync({
+    path: "m/44'/128'/0'", // All components must be hardened
+    networkType: 1, // 0=MAINNET, 1=TESTNET, 2=STAGENET
+    tdis: [
+        {
+            out_key: '0a09ab658fca97610a38b8a5c206a0709db435341c31a9d40150df7e52440ac6',
+            tx_pub_key: 'da13cd8f4cc2c4f769d88b734d71cfdc0e43d01a20eb7bff6553fd67cb2ed37e',
+            additional_tx_pub_keys: [],
+            internal_output_index: 1,
+            sub_addr_major: 0,
+            sub_addr_minor: 0,
+        },
+    ],
+});
+```
+
+#### Example with Multiple Outputs
+
+```javascript
+TrezorConnect.moneroKeyImageSync({
+    path: "m/44'/128'/0'",
+    tdis: [
+        {
+            out_key: 'abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+            tx_pub_key: 'fedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321',
+            internal_output_index: 0,
+            sub_addr_major: 0,
+            sub_addr_minor: 0,
+        },
+        {
+            out_key: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+            tx_pub_key: '0987654321fedcba0987654321fedcba0987654321fedcba0987654321fedcba',
+            additional_tx_pub_keys: [
+                'aabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccddaabbccdd',
+            ],
+            internal_output_index: 1,
+            sub_addr_major: 0,
+            sub_addr_minor: 1,
+        },
+    ],
+});
+```
+
+### Result
+
+[MoneroKeyImageSyncResult type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/monero/index.ts)
+
+The result contains encrypted key images. Each key image is encrypted using ChaCha20-Poly1305 AEAD.
+
+```javascript
+{
+    success: true,
+    payload: {
+        key_images: [
+            {
+                iv: string,         // 12-byte initialization vector/nonce
+                key_image: string,  // Encrypted blob
+            },
+            // ... more key images
+        ],
+        signature: string,  // 32-byte encryption key
+    }
+}
+```
+
+### Decryption
+
+To use the key images, decrypt each one with ChaCha20-Poly1305 using the **same** encryption key:
+
+```javascript
+// The signature field contains the encryption key
+const encryptionKey = result.payload.signature;
+
+// Decrypt each key image
+result.payload.key_images.forEach(ki => {
+    const decrypted = chacha20poly1305_decrypt(ki.key_image, encryptionKey, ki.iv);
+});
+```

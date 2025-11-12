@@ -36,8 +36,8 @@ export const Labeling = () => {
         legacyMetadataState,
         legacyEnableIfNeeded,
         legacyDisableIfNeeded,
-        localFirstDisableIfNeeded,
-        localFirstEnableIfNeeded,
+        disableLocalFirstStorageIfNeeded,
+        enableLocalFirstStorageIfNeeded,
         isEvoluSupportedByDevice,
         isLocalFirstStorageEnabled,
     } = useLabelingCombined({
@@ -65,15 +65,15 @@ export const Labeling = () => {
         switch (value) {
             case 'off':
                 legacyDisableIfNeeded();
-                localFirstDisableIfNeeded();
+                disableLocalFirstStorageIfNeeded();
                 break;
 
             case 'secure-sync':
-                localFirstEnableIfNeeded();
+                enableLocalFirstStorageIfNeeded();
                 break;
 
             case 'legacy':
-                localFirstDisableIfNeeded();
+                disableLocalFirstStorageIfNeeded();
                 legacyEnableIfNeeded();
                 break;
 
@@ -84,7 +84,7 @@ export const Labeling = () => {
         analytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
-                value,
+                value: value === 'secure-sync' ? 'evolu' : value,
             },
         });
     };
@@ -121,7 +121,7 @@ export const Labeling = () => {
                 <LabelingSwitchToLegacyModal
                     onClose={() => setLegacyModalWarningVisible(false)}
                     onSwitch={() => {
-                        localFirstDisableIfNeeded();
+                        disableLocalFirstStorageIfNeeded();
                         legacyEnableIfNeeded();
                         setLegacyModalWarningVisible(false);
                     }}

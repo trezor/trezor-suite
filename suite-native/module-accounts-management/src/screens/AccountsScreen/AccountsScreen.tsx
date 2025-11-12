@@ -7,7 +7,9 @@ import {
     OnSelectAccount,
     SearchableAccountsListHeader,
 } from '@suite-native/accounts';
+import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
+import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
@@ -48,6 +50,9 @@ export const AccountsScreen = () => {
                 onSearchInputChange={handleFilterChange}
                 flowType="accounts"
             />
+            <Box marginTop="sp12">
+                <AccountsRediscoveryNeededWarning />
+            </Box>
             <AccountsList
                 onSelectAccount={handleSelectAccount}
                 filterValue={accountsFilterValue}

@@ -1,3 +1,4 @@
+import { expect as jestExpect } from '@jest/globals';
 import { resolveConfig } from 'detox/internals';
 
 import { LaunchArguments } from '@suite-native/config';
@@ -27,6 +28,7 @@ const INITIAL_LAUNCH_ARGS: LaunchArguments = {
     isDebugKeysAllowed: true,
     isTradingBuyEnabled: true,
     areDebugOnlyNetworksEnabled: true,
+    isTradingResidenceCheckEnabled: false,
 };
 
 const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
@@ -139,12 +141,11 @@ export const prepareTrezorEmulator = async ({
     args,
 }: PrepareTrezorEmulatorProps & { args?: LaunchArguments } = {}) => {
     if (platform === 'android') {
-        // We need to restart the bridge and emulator to ensure a clean state
-        await TrezorUserEnvLink.stopEmu();
-        await TrezorUserEnvLink.stopBridge();
-        await TrezorUserEnvLink.disconnect();
+        const { currentTestName, testPath } = jestExpect.getState();
+        await TrezorUserEnvLink.logTestDetails(
+            ` - - - STARTING TEST ${currentTestName} (${testPath})`,
+        );
         await TrezorUserEnvLink.connect();
-
         const fwVersion = getFwVersion(model, version);
         // start with latest officially released firmware (necessary to pass the firmware checks)
         await TrezorUserEnvLink.startEmu({ model, version: fwVersion, wipe: true });

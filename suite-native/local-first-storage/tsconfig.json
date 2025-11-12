@@ -4,6 +4,11 @@
     "references": [
         {
             "path": "../../suite-common/local-first-storage"
-        }
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../alerts" },
+        { "path": "../intl" }
     ]
 }

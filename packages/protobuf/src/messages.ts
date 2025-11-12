@@ -1939,6 +1939,254 @@ export type NEMDecryptedMessage = {
     payload: string;
 };
 
+export enum MoneroNetworkType {
+    MAINNET = 0,
+    TESTNET = 1,
+    STAGENET = 2,
+    FAKECHAIN = 3,
+}
+
+export type MoneroGetAddress = {
+    address_n: number[];
+    show_display?: boolean;
+    network_type?: MoneroNetworkType;
+    account?: number;
+    minor?: number;
+    payment_id?: string;
+    chunkify?: boolean;
+};
+
+export type MoneroAddress = {
+    address: string;
+};
+
+export type MoneroGetWatchKey = {
+    address_n: number[];
+    network_type?: MoneroNetworkType;
+};
+
+export type MoneroWatchKey = {
+    watch_key: string;
+    address: string;
+};
+
+export type MoneroSubAddressIndicesList = {
+    account: number;
+    minor_indices: number[];
+};
+
+export type MoneroKeyImageExportInitRequest = {
+    num: UintType;
+    hash: Uint8Array;
+    address_n: number[];
+    network_type?: MoneroNetworkType;
+    subs: MoneroSubAddressIndicesList[];
+};
+
+export type MoneroKeyImageExportInitAck = Record<string, never>;
+
+export type MoneroTransferDetails = {
+    out_key: Uint8Array;
+    tx_pub_key: Uint8Array;
+    additional_tx_pub_keys: Uint8Array[];
+    internal_output_index: UintType;
+    sub_addr_major?: number;
+    sub_addr_minor?: number;
+};
+
+export type MoneroKeyImageSyncStepRequest = {
+    tdis: MoneroTransferDetails[];
+};
+
+export type MoneroExportedKeyImage = {
+    iv?: string;
+    blob?: string;
+};
+
+export type MoneroKeyImageSyncStepAck = {
+    kis: MoneroExportedKeyImage[];
+};
+
+export type MoneroKeyImageSyncFinalRequest = Record<string, never>;
+
+export type MoneroKeyImageSyncFinalAck = {
+    enc_key?: string;
+};
+
+// Monero Transaction nested types
+export type MoneroRctKeyPublic = {
+    dest: string;
+    commitment: string;
+};
+
+export type MoneroOutputEntry = {
+    idx: number;
+    key: MoneroRctKeyPublic;
+};
+
+export type MoneroMultisigKLRki = {
+    K?: string;
+    L?: string;
+    R?: string;
+    ki?: string;
+};
+
+export type MoneroTransactionSourceEntry = {
+    outputs: MoneroOutputEntry[];
+    real_output: number;
+    real_out_tx_key: string;
+    real_out_additional_tx_keys: string[];
+    real_output_in_tx_index: number;
+    amount: number;
+    rct: boolean;
+    mask: string;
+    multisig_kLRki?: MoneroMultisigKLRki;
+    subaddr_minor: number;
+};
+
+export type MoneroAccountPublicAddress = {
+    spend_public_key: string;
+    view_public_key: string;
+};
+
+export type MoneroTransactionDestinationEntry = {
+    amount: number;
+    addr: MoneroAccountPublicAddress;
+    is_subaddress: boolean;
+    original: string;
+    is_integrated: boolean;
+};
+
+export type MoneroTransactionRsigData = {
+    rsig_type: number;
+    offload_type?: number;
+    grouping: number[];
+    mask: string;
+    rsig?: string;
+    rsig_parts?: string[];
+    bp_version: number;
+};
+
+export type MoneroTransactionData = {
+    version: number;
+    payment_id?: string;
+    unlock_time: string | number;
+    outputs: MoneroTransactionDestinationEntry[];
+    change_dts?: MoneroTransactionDestinationEntry;
+    num_inputs: number;
+    mixin: number;
+    fee: number;
+    account: number;
+    minor_indices?: number[];
+    integrated_indices?: number[];
+    rsig_data: MoneroTransactionRsigData;
+    client_version: number;
+    hard_fork: number;
+    monero_version?: string;
+    chunkify?: boolean;
+};
+
+export type MoneroRingCtSig = {
+    txn_fee?: string | number;
+    message?: string;
+    rv_type?: number;
+};
+
+// Monero Transaction Protocol Messages
+export type MoneroTransactionInitRequest = {
+    version: number;
+    address_n: number[];
+    network_type: MoneroNetworkType;
+    tsx_data: MoneroTransactionData;
+};
+
+export type MoneroTransactionInitAck = {
+    hmacs: string[];
+    rsig_data?: MoneroTransactionRsigData;
+};
+
+export type MoneroTransactionSetInputRequest = {
+    src_entr: MoneroTransactionSourceEntry;
+};
+
+export type MoneroTransactionSetInputAck = {
+    vini: string;
+    vini_hmac: string;
+    pseudo_out: string;
+    pseudo_out_hmac: string;
+    pseudo_out_alpha: string;
+    spend_key: string;
+};
+
+export type MoneroTransactionInputViniRequest = {
+    src_entr: MoneroTransactionSourceEntry;
+    vini: string;
+    vini_hmac: string;
+    pseudo_out: string;
+    pseudo_out_hmac: string;
+    orig_idx: number;
+};
+
+export type MoneroTransactionInputViniAck = Record<string, never>;
+
+export type MoneroTransactionAllInputsSetRequest = Record<string, never>;
+
+export type MoneroTransactionAllInputsSetAck = {
+    rsig_data?: MoneroTransactionRsigData;
+};
+
+export type MoneroTransactionSetOutputRequest = {
+    dst_entr: MoneroTransactionDestinationEntry;
+    dst_entr_hmac: string;
+    rsig_data?: MoneroTransactionRsigData;
+    is_offloaded_bp?: boolean;
+};
+
+export type MoneroTransactionSetOutputAck = {
+    tx_out?: string;
+    vouti_hmac?: string;
+    rsig_data?: MoneroTransactionRsigData;
+    out_pk?: string;
+    ecdh_info?: string;
+};
+
+export type MoneroTransactionAllOutSetRequest = {
+    rsig_data?: MoneroTransactionRsigData;
+};
+
+export type MoneroTransactionAllOutSetAck = {
+    extra: string;
+    tx_prefix_hash: string;
+    rv: MoneroRingCtSig;
+    full_message_hash: string;
+};
+
+export type MoneroTransactionSignInputRequest = {
+    src_entr: MoneroTransactionSourceEntry;
+    vini: string;
+    vini_hmac: string;
+    pseudo_out: string;
+    pseudo_out_hmac: string;
+    pseudo_out_alpha: string;
+    spend_key: string;
+    orig_idx: number;
+};
+
+export type MoneroTransactionSignInputAck = {
+    signature: string;
+    pseudo_out: string;
+};
+
+export type MoneroTransactionFinalRequest = Record<string, never>;
+
+export type MoneroTransactionFinalAck = {
+    cout_key?: string;
+    salt?: string;
+    rand_mult?: string;
+    tx_enc_keys?: string;
+    opening_key?: string;
+};
+
 export type RippleGetAddress = {
     address_n: number[];
     show_display?: boolean;
@@ -2546,6 +2794,32 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
+    MoneroGetAddress: MoneroGetAddress;
+    MoneroAddress: MoneroAddress;
+    MoneroGetWatchKey: MoneroGetWatchKey;
+    MoneroWatchKey: MoneroWatchKey;
+    MoneroKeyImageExportInitRequest: MoneroKeyImageExportInitRequest;
+    MoneroKeyImageExportInitAck: MoneroKeyImageExportInitAck;
+    MoneroKeyImageSyncStepRequest: MoneroKeyImageSyncStepRequest;
+    MoneroKeyImageSyncStepAck: MoneroKeyImageSyncStepAck;
+    MoneroKeyImageSyncFinalRequest: MoneroKeyImageSyncFinalRequest;
+    MoneroKeyImageSyncFinalAck: MoneroKeyImageSyncFinalAck;
+    MoneroTransactionInitRequest: MoneroTransactionInitRequest;
+    MoneroTransactionInitAck: MoneroTransactionInitAck;
+    MoneroTransactionSetInputRequest: MoneroTransactionSetInputRequest;
+    MoneroTransactionSetInputAck: MoneroTransactionSetInputAck;
+    MoneroTransactionInputViniRequest: MoneroTransactionInputViniRequest;
+    MoneroTransactionInputViniAck: MoneroTransactionInputViniAck;
+    MoneroTransactionAllInputsSetRequest: MoneroTransactionAllInputsSetRequest;
+    MoneroTransactionAllInputsSetAck: MoneroTransactionAllInputsSetAck;
+    MoneroTransactionSetOutputRequest: MoneroTransactionSetOutputRequest;
+    MoneroTransactionSetOutputAck: MoneroTransactionSetOutputAck;
+    MoneroTransactionAllOutSetRequest: MoneroTransactionAllOutSetRequest;
+    MoneroTransactionAllOutSetAck: MoneroTransactionAllOutSetAck;
+    MoneroTransactionSignInputRequest: MoneroTransactionSignInputRequest;
+    MoneroTransactionSignInputAck: MoneroTransactionSignInputAck;
+    MoneroTransactionFinalRequest: MoneroTransactionFinalRequest;
+    MoneroTransactionFinalAck: MoneroTransactionFinalAck;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;

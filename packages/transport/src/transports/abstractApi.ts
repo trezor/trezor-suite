@@ -373,9 +373,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     if (sendResult.error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
                     }
+
+                    return sendResult;
                 }
 
-                return sendResult;
+                return { success: true, payload: undefined } as const;
             },
             { signal, graceful: true, timeout },
         );

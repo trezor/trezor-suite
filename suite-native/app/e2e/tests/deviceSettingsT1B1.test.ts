@@ -5,7 +5,7 @@ import { regtestDiscoveryFinishedStateT1B1 } from '../fixtures/regtestDiscoveryF
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
-import { appIsFullyLoaded } from '../support/utils';
+import { waitForVisible } from '../support/utils';
 
 const preloadedStateT1B1 = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -14,23 +14,18 @@ const preloadedStateT1B1 = preparePreloadedReduxState(
 
 conditionalDescribe(
     device.getPlatform() === 'android',
-    'Device Settings - Tests with T1B1 device model [@specificModel]',
+    'Device Settings T1B1 [@specificModel]',
     () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateT1B1 } });
             await prepareTrezorEmulator({ model: 'T1B1' });
-            await appIsFullyLoaded();
-
             await onDeviceManager.tapDeviceSwitch();
             await onDeviceManager.tapDeviceSettingsButton();
         });
 
         test('Device Check Backup with unsupported Device Model', async () => {
             await onDeviceSettings.tapDeviceCheckBackupButton();
-
-            await waitFor(element(by.text('To check your backup, use the web application.')))
-                .toBeVisible()
-                .withTimeout(10000);
+            await waitForVisible(by.text('To check your backup, use the web application.'));
         });
     },
 );

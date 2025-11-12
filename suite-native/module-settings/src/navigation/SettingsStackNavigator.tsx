@@ -10,6 +10,7 @@ import { SettingsTradingLocationScreen } from '@suite-native/trading-residence';
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
+import { SettingsLabelingScreen } from '../screens/SettingsLabelingScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
 import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
@@ -46,6 +47,11 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsCoinEnabling }}
             name={SettingsStackRoutes.SettingsCoinEnabling}
             component={SettingsCoinEnablingScreen}
+        />
+        <SettingsStack.Screen
+            options={{ title: SettingsStackRoutes.SettingsLabeling }}
+            name={SettingsStackRoutes.SettingsLabeling}
+            component={SettingsLabelingScreen}
         />
         <SettingsStack.Screen
             name={SettingsStackRoutes.SettingsDeviceChecks}

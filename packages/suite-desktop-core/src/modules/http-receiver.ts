@@ -61,6 +61,13 @@ export const initBackground: ModuleInitBackground = ({
         ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
             validateIpcMessage({ ipcEvent });
             try {
+                if (pathname === '/buy-redirect') {
+                    receiver.activateRoute(pathname);
+
+                    return `trezorsuite:/${pathname}`;
+                }
+
+                // For other routes, return the HTTP address
                 const address = receiver.getRouteAddress(pathname);
                 if (address) {
                     receiver.activateRoute(pathname);

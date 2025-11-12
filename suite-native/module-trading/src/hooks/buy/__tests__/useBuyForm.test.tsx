@@ -474,8 +474,8 @@ describe('useBuyForm', () => {
         it.each([
             ['0.01', false, 'Minimum is 0.1 BTC'],
             ['3', false, 'Maximum is 2 BTC'],
-            ['10', true, 'Minimum is 10000000 sat'],
-            ['300000000', true, 'Maximum is 200000000 sat'],
+            ['10', true, 'Minimum is 10,000,000 sat'],
+            ['300000000', true, 'Maximum is 200,000,000 sat'],
         ])(
             'should display crypto error for amount %s',
             async (amount, amountInSats, expectedValue) => {

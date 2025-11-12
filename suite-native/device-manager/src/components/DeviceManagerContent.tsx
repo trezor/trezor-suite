@@ -10,6 +10,7 @@ import {
     selectDeviceThunk,
     selectHasRunningDiscovery,
     selectIsDeviceInitialized,
+    selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -54,6 +55,7 @@ export const DeviceManagerContent = () => {
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
@@ -92,7 +94,7 @@ export const DeviceManagerContent = () => {
     const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
 
     const isAddHiddenWalletButtonVisible =
-        !hasDiscovery && device?.connected && isDeviceInitialized;
+        !hasDiscovery && device?.connected && isDeviceInitialized && isPassphraseEnabledOnDevice;
 
     const isDeviceListVisible = isChangeDeviceRequested || isPortfolioTrackerDevice;
 

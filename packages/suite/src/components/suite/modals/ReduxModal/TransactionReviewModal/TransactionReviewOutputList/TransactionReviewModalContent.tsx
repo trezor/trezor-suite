@@ -33,7 +33,7 @@ type TransactionReviewModalContentProps = {
     onTryAgain: (cancel: boolean) => void;
     reviewStep: number;
     serializedTx?: SerializedTx;
-    areDetailsVisible?: boolean;
+    areDetailsVisible: boolean;
     isRbfConfirmedError?: boolean;
 };
 

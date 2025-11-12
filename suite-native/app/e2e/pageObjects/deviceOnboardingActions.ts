@@ -1,78 +1,78 @@
 import { BackupType } from '@suite-common/suite-types';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { scrollUntilVisible, waitForElementByIdToBeVisible } from '../support/utils';
+import { scrollUntilVisible, waitForVisible } from '../support/utils';
 
 class DeviceOnboardingActions {
     async selectCreateWalletOption() {
         const buttonId = '@deviceOnboarding/CreateOrRecoverCrossroadsScreen/createWalletBtn';
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async selectRecoverWalletOption() {
         const buttonId = '@deviceOnboarding/CreateOrRecoverCrossroadsScreen/recoverWalletBtn';
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async confirmRecoveryInstructions() {
         const buttonId = '@deviceOnboarding/RecoveryInstructionsScreen/continueButton';
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async waitForCreateOrRecoverCrossroadsScreen() {
-        await waitForElementByIdToBeVisible('@screen/CreateOrRecoverCrossroads');
+        await waitForVisible(by.id('@screen/CreateOrRecoverCrossroads'));
     }
 
     async waitForCreateWalletLoadingScreen() {
-        await waitForElementByIdToBeVisible('@screen/CreateWalletLoading');
+        await waitForVisible(by.id('@screen/CreateWalletLoading'));
     }
 
     async waitForWalletBackupTutorialScreen() {
-        await waitForElementByIdToBeVisible('@screen/WalletBackupTutorial');
+        await waitForVisible(by.id('@screen/WalletBackupTutorial'));
     }
 
     async waitForWalletCreationScreen() {
-        await waitForElementByIdToBeVisible('@screen/WalletCreation');
+        await waitForVisible(by.id('@screen/WalletCreation'));
     }
 
     async gotToNextWalletBackupTutorialStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupTutorialStep${step}/nextButton`;
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async goToNextWalletBackupRecapStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletBackupRecapStep${step}/nextButton`;
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async goToNextWalletRecoveryRecapStep(step: number) {
         const buttonId = `@swipeableWalkthroughStep/walletRecoveryRecapStep${step}/nextButton`;
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async waitForWalletBackupRecapScreen() {
-        await waitForElementByIdToBeVisible('@screen/WalletBackupRecap');
+        await waitForVisible(by.id('@screen/WalletBackupRecap'));
     }
 
     async waitForWalletRecoveryRecapScreen() {
-        await waitForElementByIdToBeVisible('@screen/WalletRecoveryRecap');
+        await waitForVisible(by.id('@screen/WalletRecoveryRecap'));
     }
 
     async openWalletBackupTypeMenu() {
         const buttonId = '@deviceOnboarding/WalletBackupTutorialStep5/moreOptionsButton';
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
     async validateSelectedBackupType(selectedType: BackupType) {
-        await waitForElementByIdToBeVisible(
-            `onboarding/WalletBackupTutorialStep5/selectedType=${selectedType}`,
+        await waitForVisible(
+            by.id(`onboarding/WalletBackupTutorialStep5/selectedType=${selectedType}`),
         );
     }
 
@@ -89,22 +89,22 @@ class DeviceOnboardingActions {
 
     async pressHoldToConfirmButton() {
         const buttonId = '@holdToConfirmButton';
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         const holdToConfirmButton = element(by.id(buttonId));
         await holdToConfirmButton.longPress(3000);
     }
 
     async waitForUninitializedDeviceLanding() {
-        await waitForElementByIdToBeVisible('@screen/UninitializedDeviceLanding');
+        await waitForVisible(by.id('@screen/UninitializedDeviceLanding'));
     }
 
     async waitForDeviceAuthenticitySuccess() {
-        await waitForElementByIdToBeVisible('@screen/DeviceAuthenticitySuccess');
+        await waitForVisible(by.id('@screen/DeviceAuthenticitySuccess'));
     }
 
     async dismissDeviceAuthenticitySuccess() {
         const buttonId = '@device-authenticity/continue-button';
-        await waitForElementByIdToBeVisible(buttonId);
+        await waitForVisible(by.id(buttonId));
         await element(by.id(buttonId)).tap();
     }
 
@@ -115,7 +115,7 @@ class DeviceOnboardingActions {
     async skipFirmwareUpdate() {
         const testId = '@firmware/skip-button';
         try {
-            await waitForElementByIdToBeVisible(testId, 5000);
+            await waitForVisible(by.id(testId));
             await element(by.id(testId)).tap();
         } catch {
             console.warn(
@@ -125,10 +125,13 @@ class DeviceOnboardingActions {
     }
 
     async enterTHPPairingCode() {
-        await waitForElementByIdToBeVisible('@screen/ThpCodeEntry');
+        await waitForVisible(by.id('@screen/ThpCodeEntry'));
         const screenContent = await TrezorUserEnvLink.getScreenContent();
         const screenContentBody = screenContent.body as string;
-        const code = screenContentBody.match(/(\d\s*){6}$/)?.[0].replace(/\s+/g, '') ?? '';
+        const code = screenContentBody.match(/(\d\s*){6}$/)?.[0].replace(/\s+/g, '');
+        if (!code) {
+            throw new Error(`Screen content did not contain pairing code\n${screenContentBody}`);
+        }
         await element(by.id('@thpSecurityCode/Input')).replaceText(code);
     }
 }

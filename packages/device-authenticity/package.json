@@ -33,6 +33,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
+        "@noble/curves": "^1.9.7",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/schema-utils": "workspace:*",

@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-09-07T15:05:42.979Z",
-    "sequence": 1,
+    "timestamp": "2025-10-14T10:53:22Z",
+    "sequence": 4,
     "releases": {
         "T1B1": {
             "bitcoin-only": {
@@ -37,7 +37,7 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t2b1/bitcoinonly/t2b1-2.8.10-bitcoinonly.json"
+                "releasePath": "firmware/t2b1/bitcoinonly/t2b1-2.9.1-bitcoinonly.json"
             },
             "universal": {
                 "firmware_type": "universal",
@@ -48,7 +48,7 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t2b1/universal/t2b1-2.8.10-universal.json"
+                "releasePath": "firmware/t2b1/universal/t2b1-2.9.1-universal.json"
             }
         },
         "T2T1": {
@@ -61,7 +61,7 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t2t1/bitcoinonly/t2t1-2.8.10-bitcoinonly.json"
+                "releasePath": "firmware/t2t1/bitcoinonly/t2t1-2.9.1-bitcoinonly.json"
             },
             "universal": {
                 "firmware_type": "universal",
@@ -72,7 +72,7 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t2t1/universal/t2t1-2.8.10-universal.json"
+                "releasePath": "firmware/t2t1/universal/t2t1-2.9.1-universal.json"
             }
         },
         "T3B1": {
@@ -85,7 +85,7 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t3b1/bitcoinonly/t3b1-2.8.10-bitcoinonly.json"
+                "releasePath": "firmware/t3b1/bitcoinonly/t3b1-2.9.1-bitcoinonly.json"
             },
             "universal": {
                 "firmware_type": "universal",
@@ -96,7 +96,7 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t3b1/universal/t3b1-2.8.10-universal.json"
+                "releasePath": "firmware/t3b1/universal/t3b1-2.9.1-universal.json"
             }
         },
         "T3T1": {
@@ -109,7 +109,7 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t3t1/bitcoinonly/t3t1-2.8.10-bitcoinonly.json"
+                "releasePath": "firmware/t3t1/bitcoinonly/t3t1-2.9.1-bitcoinonly.json"
             },
             "universal": {
                 "firmware_type": "universal",
@@ -120,7 +120,31 @@
                     },
                     "rollout_probability": 100
                 },
-                "releasePath": "firmware/t3t1/universal/t3t1-2.8.10-universal.json"
+                "releasePath": "firmware/t3t1/universal/t3t1-2.9.1-universal.json"
+            }
+        },
+        "T3W1": {
+            "bitcoin-only": {
+                "firmware_type": "bitcoin-only",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.10.2",
+                        "min_suite_native_version": "25.10.2"
+                    },
+                    "rollout_probability": 100
+                },
+                "releasePath": "firmware/t3w1/bitcoinonly/t3w1-2.9.3-bitcoinonly.json"
+            },
+            "universal": {
+                "firmware_type": "universal",
+                "conditions": {
+                    "environment": {
+                        "min_suite_version": "25.10.2",
+                        "min_suite_native_version": "25.10.2"
+                    },
+                    "rollout_probability": 100
+                },
+                "releasePath": "firmware/t3w1/universal/t3w1-2.9.3-universal.json"
             }
         }
     },

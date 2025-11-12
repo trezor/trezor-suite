@@ -23,6 +23,7 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../discovery" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },

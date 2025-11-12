@@ -274,23 +274,16 @@ const synchronizeSentTransactionThunk = createThunk(
                 }),
             );
         } else if (selectedAccount.networkType === 'ethereum') {
-            const pendingAccount = getPendingAccount({
-                account: selectedAccount,
-                tx: precomposedTransaction,
-                txid,
-            });
-            if (pendingAccount) {
-                // manually add fake pending tx as we don't have the data about mempool txs
-                dispatch(
-                    addFakePendingEvmTxThunk({
-                        precomposedTransaction,
-                        precomposedForm,
-                        txid,
-                        account: selectedAccount,
-                    }),
-                );
-                dispatch(accountsActions.updateAccount(pendingAccount));
-            }
+            // manually add fake pending tx as we don't have the data about mempool txs
+            dispatch(
+                addFakePendingEvmTxThunk({
+                    precomposedTransaction,
+                    precomposedForm,
+                    txid,
+                    account: selectedAccount,
+                }),
+            );
+            dispatch(accountsActions.updateAccount(selectedAccount));
         } else {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
@@ -364,7 +357,7 @@ export const pushSendFormTransactionThunk = createThunk<
 
                 dispatch(
                     notificationsActions.addToast({
-                        type: evmApprovalData.type === 'approval' ? 'tx-approved' : 'tx-revoked',
+                        type: evmApprovalData.type === 'approve' ? 'tx-approved' : 'tx-revoked',
                         isInfiniteApproval,
                         formattedAmount: amount,
                         tokenSymbol: token.symbol?.toUpperCase(),

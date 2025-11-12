@@ -90,8 +90,8 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             symbol: account.symbol,
             isBalance: true,
             withSymbol,
-            maxDisplayedDecimals: 8,
             isEllipsisAppended: false,
+            maxDisplayedDecimals: 8,
         });
 
     const state = useMemo(() => {

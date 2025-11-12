@@ -1,12 +1,10 @@
 import { onDeviceConnecting } from './deviceConnectingActions';
 import { onHome } from './homeActions';
-import { scrollUntilVisible } from '../support/utils';
+import { scrollUntilVisible, waitForVisible } from '../support/utils';
 
 class CoinEnablingActions {
     async waitForInitScreen() {
-        await waitFor(element(by.id('@screen/CoinEnablingInit')))
-            .toBeVisible()
-            .withTimeout(10000);
+        await waitForVisible(by.id('@screen/CoinEnablingInit'));
     }
 
     async toggleNetwork(symbol: string) {

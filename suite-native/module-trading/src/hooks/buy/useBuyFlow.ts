@@ -23,7 +23,7 @@ import {
 } from '@suite-native/navigation';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { BuyFormType } from '@suite-native/trading-types';
-import { useTimer } from '@trezor/react-utils';
+import { useNullTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
@@ -59,7 +59,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         'receiveAccount',
     ]);
 
-    const timer = useTimer();
+    const timer = useNullTimer();
     const navigation = useNavigation<NavigationProps>();
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();

@@ -78,7 +78,9 @@ export const ConfirmValueModal = ({
 
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const localFirstAddressLabels = useSelector(state =>
-        selectAddressLabels({ state, deviceStaticSessionId: account!.deviceState }),
+        account
+            ? selectAddressLabels({ state, deviceStaticSessionId: account.deviceState })
+            : undefined,
     );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
@@ -205,7 +207,7 @@ export const ConfirmValueModal = ({
                                                 entityKey: account.key,
                                                 defaultValue: value,
                                                 value:
-                                                    localFirstAddressLabels.find(
+                                                    localFirstAddressLabels?.find(
                                                         it => it.address === value,
                                                     )?.label ?? addressLabels[value],
                                             }}

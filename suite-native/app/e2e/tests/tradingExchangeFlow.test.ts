@@ -1,9 +1,10 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
 import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
+import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
 // import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
@@ -28,19 +29,9 @@ const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => {
     describe('with portfolio tracker [@noDevice]', () => {
         beforeEach(async () => {
-            await openApp({
-                newInstance: true,
-                args: {
-                    preloadedState: preloadedStateWithoutTrezor,
-                },
-                wipeData: true,
-            });
+            await openApp({ args: { preloadedState: preloadedStateWithoutTrezor } });
             await onTabBar.navigateToTrade();
             await tradingExchangeActions.tapTradingSectionHeaderTab();
-        });
-
-        afterEach(async () => {
-            await device.terminateApp();
         });
 
         it('should display info card', async () => {
@@ -49,12 +40,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
     });
 
     conditionalDescribe(isCIRun || passphrase, 'with device connected [@fixT3W1]', () => {
-        const openSwapForm = async () => {
-            await onTabBar.navigateToTrade();
-            await tradingExchangeActions.tapTradingSectionHeaderTab();
-            await tradingExchangeActions.waitForTradeDataToLoad();
-        };
-
         beforeAll(() => {
             if (!passphrase) {
                 throw new Error(
@@ -64,27 +49,13 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
         });
 
         beforeEach(async () => {
-            await openApp({
-                newInstance: true,
-                args: {
-                    preloadedState: preloadedStateWithTrezor,
-                },
-                wipeData: true,
-            });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
             await prepareTrezorEmulator({
                 seed: MNEMONICS.mnemonic_academic,
+                passphrase_protection: true,
             });
-
             await onPassphrase.openPassphraseWallet(passphrase);
-            await openSwapForm();
-        });
-
-        afterEach(async () => {
-            await TrezorUserEnvLink.stopEmu();
-        });
-
-        afterAll(async () => {
-            await device.terminateApp();
+            await tradingExchangeActions.openSwapForm();
         });
 
         it('Basic exchange USDC to USDT', async () => {
@@ -94,7 +65,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.setSendCryptoAmount('10');
             await tradingExchangeActions.waitForQuotesToLoad();
 
-            await tradingExchangeActions.scrollScreenToBottom();
+            await onHome.scrollScreenToBottom();
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 

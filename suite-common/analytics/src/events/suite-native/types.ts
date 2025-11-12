@@ -247,9 +247,6 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.PassphraseDuplicate;
       }
     | {
-          type: EventType.PassphraseNotEnabled;
-      }
-    | {
           type: EventType.PassphraseArticleOpened;
       }
     | {
@@ -558,4 +555,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               location: 'untrustedReseller' | 'securitySeal';
           };
+      }
+    | {
+          type: EventType.ReferralButtonPress;
       };

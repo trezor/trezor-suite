@@ -79,3 +79,4 @@ export * from './AnimatedDoubleView/AnimatedDoubleView';
 export * from './AnimatedDoubleView/AnimatedDoubleInput';
 
 export { useDebugView } from './DebugView';
+export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';

@@ -11,11 +11,6 @@ import { BigNumber, createLazy } from '@trezor/utils';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 
-const BASE_INFO = {
-    BASE_RESERVE: utils.toStroops('0.5'), // 0.5 XLM, https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/accounts#base-reserves
-    MINIMUM_RESERVE: utils.toStroops('1'), // 1 XLM
-};
-
 type Context = ContextType<Horizon.Server> & {
     getTokenMetadata: () => Promise<TokenDetailByMint>;
 };
@@ -40,8 +35,8 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         base_reserve_in_stroops: baseReserveInStroops,
     } = await fetchLatestLedger(api);
 
-    BASE_INFO.BASE_RESERVE = new BigNumber(baseReserveInStroops);
-    BASE_INFO.MINIMUM_RESERVE = BASE_INFO.BASE_RESERVE.times(2);
+    utils.BASE_INFO.BASE_RESERVE = new BigNumber(baseReserveInStroops);
+    utils.BASE_INFO.MINIMUM_RESERVE = utils.BASE_INFO.BASE_RESERVE.times(2);
 
     const serverInfo = {
         url: api.serverURL.toString(),
@@ -79,7 +74,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         misc: {
             // default misc
             stellarSequence: '0',
-            reserve: BASE_INFO.MINIMUM_RESERVE.toString(),
+            reserve: utils.BASE_INFO.MINIMUM_RESERVE.toString(),
         },
     };
 
@@ -97,8 +92,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     // Account is not empty, we can fill the account object with the data
     // https://developers.stellar.org/docs/learn/fundamentals/lumens#minimum-balance
-    const reserve = BASE_INFO.MINIMUM_RESERVE.plus(
-        BASE_INFO.BASE_RESERVE.times(info.subentry_count),
+    const reserve = utils.BASE_INFO.MINIMUM_RESERVE.plus(
+        utils.BASE_INFO.BASE_RESERVE.times(info.subentry_count),
     );
     account.misc = {
         stellarSequence: info.sequence,
@@ -116,8 +111,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     account.availableBalance = new BigNumber(account.balance)
         .minus(reserve)
         .minus(sellingLiabilities)
-        .minus(BASE_INFO.BASE_RESERVE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
-        .plus(BASE_INFO.BASE_RESERVE.times(info.num_sponsored))
+        .minus(utils.BASE_INFO.BASE_RESERVE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
+        .plus(utils.BASE_INFO.BASE_RESERVE.times(info.num_sponsored))
         .toString();
 
     // Tokens balance

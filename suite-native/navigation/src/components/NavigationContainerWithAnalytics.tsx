@@ -58,6 +58,8 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
     };
 
     const handleStateChange = () => {
+        if (!navigationContainerRef.isReady()) return;
+
         const previousRouteName = routeNameRef.current;
         const currentRouteName = navigationContainerRef.getCurrentRoute()?.name;
 

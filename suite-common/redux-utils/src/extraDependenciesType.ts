@@ -58,6 +58,7 @@ export type ExtraDependencies = {
         // This needs to be over `extra` to prevent circular dependency
         subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
         unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
+        initLocalFirstStorage: SuiteCompatibleThunk<void>;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras

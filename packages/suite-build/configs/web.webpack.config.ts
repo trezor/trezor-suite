@@ -10,6 +10,7 @@ import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
 const baseDir = getPathForProject('web');
+
 const config: webpack.Configuration = {
     target: 'browserslist',
     entry: [path.join(baseDir, 'src', 'index.ts')],

@@ -1,4 +1,5 @@
 import {
+    VerifyAuthenticityProofResult,
     deviceAuthenticityBlacklistConfig,
     deviceAuthenticityConfig,
     getRandomChallenge,
@@ -53,25 +54,32 @@ export default class AuthenticateDevice extends AbstractMethod<
             blacklistConfig,
         } as const;
 
-        // when this method is called, optiga is currently always expected to be there
-        const optigaResult = await verifyAuthenticityProof({
-            ...commonParams,
-            certificates: message.optiga_certificates,
-            signature: message.optiga_signature,
-        });
+        const getOptigaResult = async (): Promise<VerifyAuthenticityProofResult> => {
+            const { optiga_signature: signature, optiga_certificates: certificates } = message;
+            const isAvailable = signature !== undefined && certificates.length > 0;
+            if (isAvailable) {
+                return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
+            }
 
-        // Tropic check is still is optional = not enforced
-        // TODO make it compulsory for T3W1 which is expected to have it https://github.com/trezor/trezor-suite/issues/22448
-        const { tropic_signature } = message;
-        const isTropicAvailable =
-            tropic_signature !== undefined && message.tropic_certificates.length > 0;
-        const tropicResult = isTropicAvailable
-            ? await verifyAuthenticityProof({
-                  ...commonParams,
-                  certificates: message.tropic_certificates,
-                  signature: tropic_signature,
-              })
-            : null;
+            // all devices capable of 'authenticateDevice' (see src/data/config.ts) have Optiga, so it's always required
+            return { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' };
+        };
+
+        const getTropicResult = async (): Promise<VerifyAuthenticityProofResult | null> => {
+            const { tropic_signature: signature, tropic_certificates: certificates } = message;
+            const isAvailable = signature !== undefined && certificates.length > 0;
+            const isRequired = !this.device.unavailableCapabilities['tropicDeviceAuthentication'];
+            if (isAvailable) {
+                return await verifyAuthenticityProof({ ...commonParams, certificates, signature });
+            }
+            if (isRequired) {
+                return { valid: false, error: 'RESPONSE_PAYLOAD_MISSING' };
+            }
+
+            return null;
+        };
+        const optigaResult = await getOptigaResult();
+        const tropicResult = await getTropicResult();
 
         return { optigaResult, tropicResult };
     }

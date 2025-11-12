@@ -31,6 +31,7 @@ jest.mock('@suite-native/navigation', () => {
         navigationContainerRef: {
             navigate: jest.fn(),
             reset: jest.fn(),
+            isReady: jest.fn().mockReturnValue(true),
         },
         checkIsActiveRouteAnyOf: jest.fn().mockReturnValue(false),
         checkIsDeviceOnboardingFocused: jest.fn().mockReturnValue(false),

@@ -26,7 +26,7 @@ describe('Trade Buy [@noDevice]', () => {
         await tradingBuyActions.selectCountry('Polan', '🇵🇱 Poland');
         await tradingBuyActions.setFiatAmount('100');
 
-        await tradingBuyActions.scrollScreenToBottom();
+        await onHome.scrollScreenToBottom();
         await tradingBuyActions.viewPaymentMethods();
         await tradingBuyActions.viewProviders();
         await tradingBuyActions.expectValidBuyForm();

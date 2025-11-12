@@ -20,7 +20,6 @@ import { PassphraseMismatchAlert } from '../components/passphrase/PassphraseMism
 import { PinScreen } from '../screens/connect/PinScreen';
 import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
 import { PassphraseEmptyWalletScreen } from '../screens/passphrase/PassphraseEmptyWalletScreen';
-import { PassphraseEnableOnDeviceScreen } from '../screens/passphrase/PassphraseEnableOnDeviceScreen';
 import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
 import { PassphraseFormScreen } from '../screens/passphrase/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from '../screens/passphrase/PassphraseLoadingScreen';
@@ -99,13 +98,6 @@ export const PassphraseStackNavigator = () => {
                             </PassphraseMismatchAlert>
                         );
                     }}
-                />
-            )}
-
-            {passphraseState === 'passphrase-enable-on-device' && (
-                <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice}
-                    component={PassphraseEnableOnDeviceScreen}
                 />
             )}
             {passphraseState === 'passphrase-checking-on-device' && (

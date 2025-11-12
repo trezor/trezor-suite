@@ -1,0 +1,149 @@
+import { Bundle } from '@trezor/connect/src/types';
+import { MoneroGetAddress } from '@trezor/connect/src/types/api/monero';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import getAddress from '../../../data/methods/monero/getAddress';
+
+<ApiPlayground
+    options={[
+        { title: 'Export address', legacyConfig: getAddress[0] },
+        { title: 'Export multiple addresses', legacyConfig: getAddress[1] },
+        { title: 'Advanced schema', method: 'moneroGetAddress', schema: MoneroGetAddress },
+        { title: 'Advanced bundle', method: 'moneroGetAddress', schema: Bundle(MoneroGetAddress) },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: "minimum length is `3`. All components must be hardened (e.g., `m/44'/128'/0'`). [read more](/details/path)",
+    address: 'address for validation (read `Handle button request` section below)',
+    showOnTrezor: 'determines if address will be displayed on device. Default is set to `true`',
+    networkType:
+        'Monero network type: `0` = MAINNET (default), `1` = TESTNET, `2` = STAGENET, `3` = FAKECHAIN',
+    account: 'Account index for subaddress derivation',
+    minor: 'Minor index for subaddress derivation',
+    paymentId: 'Payment ID (hex string, 16 or 64 chars) for integrated address generation',
+    chunkify:
+        'determines if address will be shown in chunks of 4 characters. Default is set to `false`',
+};
+
+## Monero Get Address
+
+Display requested Monero address derived by given BIP44 path on device and returns it to caller.
+User is presented with a description of the requested key and asked to confirm the export on Trezor.
+
+```javascript
+const result = await TrezorConnect.moneroGetAddress(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### MoneroGetAddress
+
+<ParamsTable schema={MoneroGetAddress} descriptions={paramDescriptions} />
+
+#### Bundle(MoneroGetAddress)
+
+<Param name="bundle" type="`Array` of Objects with above schema" />
+
+### Example
+
+Display Monero address of first account on mainnet:
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+});
+```
+
+Display Monero testnet address:
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+    networkType: 1, // TESTNET
+});
+```
+
+Get a Monero subaddress (account 0, minor 5):
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+    account: 0,
+    minor: 5,
+});
+```
+
+Generate an integrated address with payment ID:
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+    paymentId: '1234567890abcdef', // 16 hex chars for short payment ID
+});
+```
+
+Return a bundle of Monero addresses without displaying them on device:
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    bundle: [
+        { path: "m/44'/128'/0'", showOnTrezor: false }, // account 1
+        { path: "m/44'/128'/1'", showOnTrezor: false }, // account 2
+        { path: "m/44'/128'/2'", showOnTrezor: false }, // account 3
+    ],
+});
+```
+
+Validate address using custom UI inside the web application:
+
+```javascript
+TrezorConnect.moneroGetAddress({
+    path: "m/44'/128'/0'",
+    address: '4AxYyVr...',
+});
+```
+
+### Result
+
+Result with only one address
+
+```javascript
+{
+    success: true,
+    payload: {
+        address: string,     // Monero address (human-readable string)
+        path: Array<number>, // hardended path
+        serializedPath: string,
+    }
+}
+```
+
+Result with bundle of addresses
+
+```javascript
+{
+    success: true,
+    payload: [
+        { address: string, path: Array<number>, serializedPath: string }, // account 1
+        { address: string, path: Array<number>, serializedPath: string }, // account 2
+        { address: string, path: Array<number>, serializedPath: string }  // account 3
+    ]
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

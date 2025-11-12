@@ -1,10 +1,39 @@
-import { Icon, Input } from '@trezor/components';
+import styled from 'styled-components';
 
-interface SearchAssetProps {
+import { Icon, Input, Select } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+
+import { CoinLogo } from '../CoinLogo/CoinLogo';
+import { SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
+
+const SelectWrapper = styled.div`
+    /* stylelint-disable selector-class-pattern */
+    .react-select__value-container {
+        justify-content: flex-end;
+    }
+
+    .react-select__control {
+        &:focus,
+        &:focus-within {
+            border-color: transparent;
+        }
+    }
+    /* stylelint-enable selector-class-pattern */
+`;
+
+const Option = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xs};
+`;
+
+export interface SearchAssetProps {
     searchPlaceholder: string;
     search: string;
     setSearch: (value: string) => void;
     'data-testid'?: string;
+    selectConfig?: SearchAssetSelectConfig;
+    autoFocus?: boolean;
 }
 
 export const SearchAsset = ({
@@ -12,16 +41,44 @@ export const SearchAsset = ({
     search,
     setSearch,
     'data-testid': dataTestId,
-}: SearchAssetProps) => (
-    <Input
-        data-testid={dataTestId}
-        placeholder={searchPlaceholder}
-        value={search}
-        onChange={event => setSearch(event.target.value)}
-        onClear={() => setSearch('')}
-        showClearButton="always"
-        leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
-        // eslint-disable-next-line jsx-a11y/no-autofocus
-        autoFocus
-    />
-);
+    selectConfig,
+    autoFocus = true,
+}: SearchAssetProps) => {
+    const { options, selectedOption } = useNetworkSelect(selectConfig);
+
+    const networkSelect = selectConfig ? (
+        <SelectWrapper>
+            <Select
+                options={options}
+                value={selectedOption}
+                onChange={option => selectConfig.onChange(option.value)}
+                size="small"
+                formatOptionLabel={option => (
+                    <Option>
+                        {option.value && (
+                            <CoinLogo size={20} symbol={option.value} type="network" />
+                        )}
+                        <span>{option.label}</span>
+                    </Option>
+                )}
+                width="auto"
+                minValueWidth="170px"
+                isRenderedInModal
+            />
+        </SelectWrapper>
+    ) : undefined;
+
+    return (
+        <Input
+            data-testid={dataTestId}
+            placeholder={searchPlaceholder}
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+            onClear={() => setSearch('')}
+            leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
+            rightContent={networkSelect}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus={autoFocus}
+        />
+    );
+};

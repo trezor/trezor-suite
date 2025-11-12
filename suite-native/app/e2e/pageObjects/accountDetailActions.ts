@@ -1,10 +1,10 @@
 import { expect as detoxExpect } from 'detox';
 
+import { waitForVisible } from '../support/utils';
+
 class AccountDetailActions {
     async waitForScreen() {
-        await waitFor(element(by.id('@screen/AccountDetail')))
-            .toBeVisible()
-            .withTimeout(5000);
+        await waitForVisible(by.id('@screen/AccountDetail'));
     }
 
     async openSettings() {
@@ -19,7 +19,7 @@ class AccountDetailActions {
 
     async openReceive() {
         const receiveButton = element(by.id('@account-detail/receive-button'));
-        await waitFor(receiveButton).toBeVisible().withTimeout(10000);
+        await waitForVisible(receiveButton);
         await receiveButton.tap();
     }
 }

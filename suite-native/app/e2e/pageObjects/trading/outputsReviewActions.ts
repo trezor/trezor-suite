@@ -3,6 +3,7 @@ import { expect as detoxExpect } from 'detox';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { TradingActions } from './TradingActions';
+import { waitForVisible } from '../../support/utils';
 
 class OutputsReviewActions extends TradingActions {
     constructor() {
@@ -14,20 +15,16 @@ class OutputsReviewActions extends TradingActions {
     }
 
     async expectOutputsReviewScreenToBeVisible() {
-        await waitFor(this.getScreen()).toBeVisible().withTimeout(this.SHORT_TIMEOUT);
+        await waitForVisible(this.getScreen());
     }
 
     async expectAndConfirmRecipientAddress() {
-        await waitFor(element(by.text('Recipient address')))
-            .toBeVisible()
-            .withTimeout(this.DOUBLE_LONG_TIMEOUT);
+        await waitForVisible(by.text('Recipient address'), { timeout: this.DOUBLE_LONG_TIMEOUT });
         await TrezorUserEnvLink.pressYes();
     }
 
     async expectAndConfirmTotalFee() {
-        await waitFor(element(by.text('Total including fee')))
-            .toBeVisible()
-            .withTimeout(this.SHORT_TIMEOUT);
+        await waitForVisible(by.text('Total including fee'));
         await detoxExpect(element(by.text('Amount'))).toBeVisible();
         await detoxExpect(element(by.text('Maximum fee'))).toBeVisible();
         await TrezorUserEnvLink.pressYes();
@@ -38,9 +35,7 @@ class OutputsReviewActions extends TradingActions {
     }
 
     async expectSendTransactionButton() {
-        await waitFor(this.getElementById('footer/submit-button'))
-            .toBeVisible()
-            .withTimeout(this.SHORT_TIMEOUT);
+        await waitForVisible(this.getElementById('footer/submit-button'));
     }
 
     async cancelTransaction() {

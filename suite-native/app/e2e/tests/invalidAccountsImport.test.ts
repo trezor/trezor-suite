@@ -33,7 +33,9 @@ describe('Import invalid accounts [@noDevice]', () => {
         await goToBtcImportXpubScreen();
         await onAccountImport.submitXpub({ xpub: xpubs.btc.legacySegwit, isValid: true });
 
-        await detoxExpect(element(by.id('@account-import/summary/account-already-imported')));
+        await detoxExpect(
+            element(by.id('@account-import/summary/account-already-imported')),
+        ).toBeVisible();
     });
 
     it('Import BTC receive address', async () => {
@@ -42,6 +44,6 @@ describe('Import invalid accounts [@noDevice]', () => {
         await onAccountImport.selectCoin({ networkSymbol: 'btc' });
         await onAccountImport.submitXpub({ xpub: btcReceiveAddress, isValid: false });
 
-        await detoxExpect(element(by.id('@alert-sheet/error/invalidXpub')));
+        await detoxExpect(element(by.text('This is your receive address'))).toBeVisible();
     });
 });

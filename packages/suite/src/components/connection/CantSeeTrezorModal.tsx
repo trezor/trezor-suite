@@ -1,12 +1,10 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
-import styled from 'styled-components';
-
-import { TranslationKey } from '@suite-common/intl-types';
-import { Box, Card, IconButton, Modal } from '@trezor/components';
+import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { DeviceAnimation } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -29,11 +27,8 @@ import {
     selectTransportOfType,
 } from 'src/selectors/suite/suiteSelectors';
 
+import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
-
-const AnimationContainer = styled.div`
-    position: relative;
-`;
 
 type DontSeeYourTrezorModalProps = {
     onClose: () => void;
@@ -50,11 +45,9 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         isBluetoothMode,
         toggleShouldPairAgain,
         toggleShowHints,
-        onReScanClick,
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
     } = useConnectionGlobalModalContext();
-    const videoRef = useRef<HTMLVideoElement>(null);
 
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
@@ -95,80 +88,52 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         return cableItem;
     }, [isBluetoothMode, cableItem]);
 
-    const tertiaryButtonTranslation: TranslationKey = useMemo(() => {
-        if (isBluetoothMode) {
-            return allowPairAgain ? 'TR_STILL_NOT_WORKING' : 'TR_CANCEL';
-        }
-
-        return 'TR_CONTACT_TREZOR_SUPPORT';
-    }, [isBluetoothMode, allowPairAgain]);
-
-    const handlePrimaryCta = () => {
-        if (isBluetoothMode) {
-            onReScanClick();
-        }
-        toggleShowHints();
-    };
-
-    const handleTertiaryCta = () => {
-        if (isBluetoothMode) {
-            if (allowPairAgain) toggleShouldPairAgain();
-            toggleShowHints();
-        } else {
-            openTrezorSupport();
-            onClose();
-        }
-    };
-
-    const handleReplayClick = () => {
-        const video = videoRef.current;
-        if (video) {
-            video.currentTime = 0;
-            video.play();
-        }
-    };
-
     if (isBluetoothMode) {
         return (
             <Modal
-                heading={<Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />}
-                description={<Translation id="TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED" />}
-                onCancel={handlePrimaryCta}
+                onCancel={onClose}
                 size="tiny"
                 bottomContent={
-                    <>
-                        <Modal.Button onClick={handlePrimaryCta}>
-                            <Translation id="TR_BLUETOOTH_SCAN_AGAIN" />
-                        </Modal.Button>
+                    allowPairAgain && (
                         <Modal.Button
                             intent="neutral"
                             priority="secondary"
-                            onClick={handleTertiaryCta}
+                            onClick={() => {
+                                analytics.report({
+                                    type: EventType.DeviceConnectionHintModal,
+                                    payload: {
+                                        option: 'notWorking',
+                                    },
+                                });
+                                toggleShouldPairAgain();
+                                toggleShowHints();
+                            }}
                         >
-                            <Translation id={tertiaryButtonTranslation} />
+                            <Translation id="TR_STILL_NOT_WORKING" />
                         </Modal.Button>
-                    </>
+                    )
                 }
             >
-                <AnimationContainer>
-                    <DeviceAnimation
-                        ref={videoRef}
-                        type="PAIRING_MODE"
-                        deviceModelInternal={DeviceModelInternal.T3W1}
-                        width="368px"
-                        height="368px"
-                        shape="ROUNDED"
-                    />
-                    <Box position={{ type: 'absolute', bottom: '8px', left: '8px' }}>
-                        <IconButton
-                            icon="arrowClockwiseFilled"
-                            intent="neutral"
-                            size="small"
-                            onClick={handleReplayClick}
-                            priority="secondary"
+                <Column gap={32}>
+                    <H3 typographyStyle="titleMedium" align="center" textWrap="balance">
+                        <Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />
+                    </H3>
+                    <Paragraph
+                        variant="tertiary"
+                        typographyStyle="hint"
+                        align="center"
+                        textWrap="pretty"
+                    >
+                        <Translation id="TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED" />
+                    </Paragraph>
+                    <AnimationCard aspectRatio="1">
+                        <DeviceAnimation
+                            type="PAIRING_MODE"
+                            deviceModelInternal={DeviceModelInternal.T3W1}
+                            loop
                         />
-                    </Box>
-                </AnimationContainer>
+                    </AnimationCard>
+                </Column>
             </Modal>
         );
     }
@@ -176,12 +141,19 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
     return (
         <Modal
             bottomContent={
-                <Modal.Button intent="neutral" priority="secondary" onClick={handleTertiaryCta}>
-                    <Translation id={tertiaryButtonTranslation} />
+                <Modal.Button
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={() => {
+                        openTrezorSupport();
+                        onClose();
+                    }}
+                >
+                    <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
                 </Modal.Button>
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
-            onCancel={handlePrimaryCta}
+            onCancel={toggleShowHints}
             variant="info"
         >
             <Card paddingType="large">

@@ -1,0 +1,19 @@
+{
+    "required": false,
+    "version": [2, 9, 1],
+    "min_bridge_version": [2, 0, 7],
+    "min_bootloader_version": [2, 1, 6],
+    "min_firmware_version": [2, 7, 2],
+    "bootloader_version": [2, 1, 10],
+    "firmware_revision": "acd56d0113a547e9b5983510b0ce9de079e30e05",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.9.1.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.9.1.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.9.1.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.9.1.bin",
+        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.9.1.bin"
+    },
+    "url": "firmware/t3t1/trezor-t3t1-2.9.1.bin",
+    "fingerprint": "2db8a9aace0557a348237c0a2d2fb44249714d7e2002f253ed06446701f7658a",
+    "changelog": "* Add support for signing arbitrary messages in Cardano.\n* Provider contract address in ETH approve.\n* Add support for displaying the message hash when signing Ethereum EIP-712 typed data.\n* Allow using Ethereum mainnet addresses on all non-Ethereum networks.\n* Improved Stellar transaction signing interface for a more streamlined user experience.\n* Limit swipe detection to the component's bounds.\n* Make space between value and unit non-breakable.\n* Do not hide the shown PIN until the touch is released.\n* Fixed Solana signature failure.\n* Fix incomplete disabling of haptics.\n* Other small improvements and bug fixes."
+}

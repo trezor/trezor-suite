@@ -34,13 +34,3 @@ export const LANGUAGES = {
 } as const satisfies Record<string, LocaleInfo>;
 
 export type Locale = keyof typeof LANGUAGES;
-
-export const NATIVE_LANGUAGES = {
-    'en-US': LANGUAGES['en-US'],
-    'cs-CZ': LANGUAGES['cs-CZ'],
-};
-
-export type NativeLocale = keyof typeof NATIVE_LANGUAGES;
-
-export const isSupportedNativeLocale = (locale: string): locale is NativeLocale =>
-    locale in NATIVE_LANGUAGES;

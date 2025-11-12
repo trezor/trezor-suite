@@ -3,7 +3,7 @@ import {
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { tradingCountriesWhitelistSet } from '@suite-native/trading-atoms';
+import { tradingCountriesWhitelistSet } from '@suite-native/trading-consts';
 import { TradingResidenceRootState } from '@suite-native/trading-types';
 
 export const selectTradingResidenceCountry = (state: TradingResidenceRootState) =>

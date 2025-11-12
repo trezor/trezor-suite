@@ -34,8 +34,7 @@ export const asDeviceEvoluOwnerId = (value: string) => value as DeviceEvoluOwner
 
 export type EvoluKeys = {
     ownerId: DeviceEvoluOwnerId;
-    writeKey: string;
-    encryptionKey: string;
+    ownerSecret: string; // hex
 };
 
 export interface ExtendedDevice {

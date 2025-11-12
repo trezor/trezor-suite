@@ -150,6 +150,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 crw: 'update-required',
                 eos: 'no-support',
                 maid: 'no-capability',
+                monero: 'no-support',
                 pol: 'update-required',
                 omni: 'no-capability',
                 op: 'update-required',
@@ -187,6 +188,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 base: 'update-required',
                 bsc: 'update-required',
                 maid: 'no-capability',
+                monero: 'update-required',
                 pol: 'update-required',
                 omni: 'no-capability',
                 op: 'update-required',
@@ -229,6 +231,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 sol: 'no-capability',
                 dsol: 'no-capability',
                 thod: 'update-required',
+                tropicDeviceAuthentication: 'no-support',
                 tsep: 'update-required',
                 usdt: 'no-capability',
                 vtc: 'no-support',
@@ -317,6 +320,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evolu: 'update-required',
                 slip24: 'update-required',
                 tutorial: 'no-support',
+                monero: 'update-required',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });
@@ -345,6 +349,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evolu: 'no-support',
                 slip24: 'no-support',
                 tutorial: 'no-support',
+                monero: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });
@@ -374,6 +379,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 evolu: 'no-support',
                 slip24: 'no-support',
                 tutorial: 'no-support',
+                monero: 'no-support',
                 ...T1B1_UPDATE_REQUIRED,
             });
         });

@@ -111,6 +111,7 @@ export interface SuiteSettings {
 
 export interface TransportState extends InstallerInfo {
     transports: TransportInfo[];
+    error?: string;
 }
 
 export interface SuiteState {
@@ -379,12 +380,12 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             }
             case TRANSPORT.ERROR: {
-                const { udev, apiType } = action.payload;
+                const { udev, apiType, error } = action.payload;
                 const transports =
                     !draft.transport || !apiType
                         ? (draft.transport?.transports ?? [])
                         : draft.transport.transports?.filter(t => t.apiType !== apiType);
-                draft.transport = { udev, transports };
+                draft.transport = { udev, transports, error };
                 break;
             }
             case SUITE.ONLINE_STATUS:

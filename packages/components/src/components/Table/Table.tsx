@@ -2,13 +2,7 @@ import { ReactNode, createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    Elevation,
-    TypographyStyle,
-    borders,
-    mapElevationToBackgroundToken,
-    mapElevationToBorder,
-} from '@trezor/theme';
+import { TypographyStyle, mapElevationToBackgroundToken } from '@trezor/theme';
 
 import { TableBody } from './TableBody';
 import { TableCell } from './TableCell';
@@ -52,12 +46,9 @@ const Container = styled.table<TransientProps<AllowedFrameProps>>`
     ${withFrameProps}
 `;
 
-const ScrollContainer = styled.div<{ $elevation: Elevation }>`
+const ScrollContainer = styled.div`
     overflow: auto hidden;
     -webkit-overflow-scrolling: touch;
-
-    border-radius: ${borders.radii.md};
-    border: 1px solid ${({ theme, $elevation }) => mapElevationToBorder({ theme, $elevation })};
 `;
 
 export type TableProps = AllowedFrameProps &
@@ -81,12 +72,12 @@ export const Table = ({
     typographyStyle = 'body',
 }: TableProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowRight } = useScrollShadow();
-    const { elevation, parentElevation } = useElevation();
+    const { parentElevation } = useElevation();
 
     return (
         <TableContext.Provider value={{ isRowHighlightedOnHover, hasBorders, typographyStyle }}>
             <ShadowContainer>
-                <ScrollContainer onScroll={onScroll} ref={scrollElementRef} $elevation={elevation}>
+                <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                     <Container {...makePropsTransient({ margin })}>
                         {colWidths && (
                             <colgroup>
@@ -99,7 +90,9 @@ export const Table = ({
                     </Container>
                 </ScrollContainer>
                 <ShadowRight
-                    backgroundColor={mapElevationToBackgroundToken({ $elevation: parentElevation })}
+                    backgroundColor={mapElevationToBackgroundToken({
+                        $elevation: parentElevation,
+                    })}
                     style={{
                         borderRadius: '16px',
                     }}

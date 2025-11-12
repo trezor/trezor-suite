@@ -21,7 +21,7 @@ export interface TransactionReviewDetailsProps {
 const prettify = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
 export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetailsProps) => {
-    if (tx.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
+    if (tx.inputs.length === 0) return null; // only for BTC-like and ADA (UTXO-based chains), TODO ETH and other account-based?
 
     return (
         <Card>

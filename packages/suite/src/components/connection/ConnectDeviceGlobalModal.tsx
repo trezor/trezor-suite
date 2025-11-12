@@ -1,8 +1,9 @@
 import { useTheme } from 'styled-components';
 
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
-import { Box, Button, Column, Modal, Row, Spinner, Text } from '@trezor/components';
+import { Box, Button, Column, H3, Modal, Row, Spinner, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import {
     selectIsManualPairingRequired,
@@ -45,21 +46,12 @@ type ConnectModalContentProps = {
 };
 
 const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentProps) => (
-    <Column
-        alignItems="center"
-        gap={32}
-        maxHeight="calc(80vh - 86px)"
-        overflow="hidden"
-        margin={{ top: 12, bottom: 0 }}
-    >
-        <Text typographyStyle="titleMedium" align="center">
+    <Column alignItems="center" gap={32} overflow="hidden">
+        <H3 typographyStyle="titleMedium" align="center" textWrap="balance">
             <Translation id="TR_CONNECT_UNLOCK_YOUR_DEVICE" />
-        </Text>
+        </H3>
         {children}
-
-        <Box margin={{ top: 8 }}>
-            <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
-        </Box>
+        <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
     </Column>
 );
 
@@ -94,7 +86,19 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     }
 
     if (showHints) {
-        return <CantSeeTrezorModal onClose={onCancel} />;
+        return (
+            <CantSeeTrezorModal
+                onClose={() => {
+                    analytics.report({
+                        type: EventType.DeviceConnectionHintModal,
+                        payload: {
+                            option: 'close',
+                        },
+                    });
+                    onCancel();
+                }}
+            />
+        );
     }
 
     // handle Bluetooth adapter non ideal status cases
@@ -149,7 +153,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                     onBackClick={toggleBluetoothMode}
                 >
                     <ConnectModalContent isBluetoothMode={true}>
-                        <Row gap={8} alignItems="center" justifyContent="center" height={50}>
+                        <Row gap={8} alignItems="center" justifyContent="center" height={36}>
                             <Spinner size={16} bodyColor={theme.iconAlertBlue} isGrey={false} />
                             <Text variant="info">
                                 <Translation id="TR_SCAN_TREZORS_NEARBY" />
@@ -168,7 +172,17 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <Modal.ModalBase data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
                 <ConnectModalContent isBluetoothMode={false}>
                     {isDesktop() && (
-                        <Button iconLeft="bluetooth" onClick={toggleBluetoothMode} intent="info">
+                        <Button
+                            iconLeft="bluetooth"
+                            onClick={() => {
+                                analytics.report({
+                                    type: EventType.DeviceConnectionConnectModal,
+                                    payload: {},
+                                });
+                                toggleBluetoothMode();
+                            }}
+                            intent="info"
+                        >
                             <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
                         </Button>
                     )}

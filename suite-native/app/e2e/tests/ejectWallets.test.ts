@@ -16,7 +16,6 @@ import {
     preparePreloadedReduxState,
     prepareTrezorEmulator,
 } from '../support/setup';
-import { appIsFullyLoaded } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
@@ -35,7 +34,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets [@fixT3W1
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await prepareTrezorEmulator();
-        await appIsFullyLoaded();
     });
 
     it('Eject single wallet with disconnected device', async () => {

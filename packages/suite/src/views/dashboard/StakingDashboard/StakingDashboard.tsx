@@ -59,6 +59,15 @@ export const StakingDashboard = () => {
     const isAdaStakingDisabled = !!adaStakingMessageSystem.isStakingDisabled;
 
     const accounts = useSelector(selectVisibleDeviceAccounts);
+
+    if (!accounts.some(account => account.networkType !== 'bitcoin')) {
+        return null;
+    }
+
+    if (isEthStakingDisabled && isSolStakingDisabled) {
+        return null;
+    }
+
     const stakingAccounts = accounts.filter(
         account =>
             (account.symbol === 'eth' && !isEthStakingDisabled) ||
@@ -145,10 +154,6 @@ export const StakingDashboard = () => {
         dispatch(setStakingDashboardCollapsed(collapsed));
     };
 
-    if (isEthStakingDisabled && isSolStakingDisabled) {
-        return null;
-    }
-
     return (
         <DashboardSection
             heading={
@@ -173,7 +178,7 @@ export const StakingDashboard = () => {
             defaultCollapsed={collapsed}
             onCollapseChange={onCollapseChange}
         >
-            <Card paddingType="none" overflow="hidden">
+            <Card paddingType="none">
                 <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
                     <Table.Header>
                         <Table.Row>

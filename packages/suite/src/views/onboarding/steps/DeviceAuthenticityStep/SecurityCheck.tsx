@@ -18,7 +18,8 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
-import { models } from '@trezor/device-utils';
+import { DeviceModelInternal, models } from '@trezor/device-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { breakpoints, spacings } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
@@ -137,6 +138,7 @@ const SecurityCheckContent = ({
     const { isBelowTablet } = useLayoutSize();
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectSelectedDevice);
+    const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
     const { contentWidth } = useResponsiveContext();
     const [isFailed, setIsFailed] = useState(false);
@@ -164,10 +166,22 @@ const SecurityCheckContent = ({
         : getNoFirmwareChecklist(isBelowTablet);
 
     const toggleView = () => setIsFailed(current => !current);
-    const handleContinueButtonClick = () =>
-        shouldAuthenticateSelectedDevice ? goToDeviceAuthentication() : goToSuiteOrNextDevice();
+    const handleContinueButtonClick = () => {
+        if (shouldAuthenticateSelectedDevice) {
+            goToDeviceAuthentication();
+        } else {
+            goToSuiteOrNextDevice();
+        }
+    };
 
     const handleSetupButtonClick = () => {
+        analytics.report({
+            type: EventType.DeviceSetupStarted,
+            payload: {
+                deviceModel,
+            },
+        });
+
         if (isRecoveryInProgress) {
             rerun();
         } else if (isOnboardingActive) {

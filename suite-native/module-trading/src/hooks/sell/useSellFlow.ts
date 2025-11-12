@@ -22,7 +22,7 @@ import {
 } from '@suite-native/navigation';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { SellFormType } from '@suite-native/trading-types';
-import { useTimer } from '@trezor/react-utils';
+import { useNullTimer } from '@trezor/react-utils';
 
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
 import { useConsent } from '../general/useConsent';
@@ -49,7 +49,7 @@ export const useSellFlow = ({ watch }: SellFormType): SellFlowReturn => {
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigation = useNavigation<NavigationProps>();
-    const timer = useTimer();
+    const timer = useNullTimer();
     const candidateQuote = watch('quote');
     const isLoading = useSelector(selectTradingSellIsLoading);
     const sellInfo = useSelector(selectTradingSellInfo);

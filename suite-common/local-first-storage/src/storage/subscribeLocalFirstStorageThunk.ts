@@ -1,9 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { initEvoluKeysThunk, selectDevices } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
+import { initEvoluKeysThunk } from './initEvoluKeysThunk';
 import { subscribeLabelingUpdatesThunk } from '../labeling/subscribeLabelingUpdatesThunk';
 
 type SubscribeLocalFirstStorageThunkParams = {
@@ -41,7 +42,10 @@ export const subscribeLocalFirstStorageThunk = createThunk<
         const evoluKeys = reselectedDevice?.localFirstStorageSecret?.evoluKeys;
 
         if (evoluKeys === undefined) {
-            console.error('Evolu: Keys set to reselectedDevice');
+            console.error(
+                'Evolu: Keys set to reselectedDevice',
+                reselectedDevice?.localFirstStorageSecret,
+            );
 
             return;
         }

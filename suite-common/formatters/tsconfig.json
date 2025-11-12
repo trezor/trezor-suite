@@ -5,6 +5,7 @@
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
             "path": "../../packages/blockchain-link-types"

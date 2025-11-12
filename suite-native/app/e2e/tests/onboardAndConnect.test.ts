@@ -1,3 +1,5 @@
+import { expect as detoxExpect } from 'detox';
+
 import { conditionalDescribe } from '@suite-common/test-utils';
 
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
@@ -10,7 +12,7 @@ conditionalDescribe(
     device.getPlatform() === 'android',
     'Go through onboarding and connect Trezor. [@fixT3W1]',
     () => {
-        beforeAll(async () => {
+        beforeEach(async () => {
             await openApp({});
             await prepareTrezorEmulator();
         });
@@ -23,11 +25,10 @@ conditionalDescribe(
                 await onDeviceOnboarding.enterTHPPairingCode();
             }
 
-            await waitFor(element(by.id('@screen/CoinEnablingInit')))
-                .toBeVisible()
-                .withTimeout(10000);
-
+            await onCoinEnabling.waitForInitScreen();
             await onCoinEnabling.handleCoinEnablingInit(['btc', 'eth']);
+            const bitcoinTextElement = element(by.text('Bitcoin'));
+            await detoxExpect(bitcoinTextElement).toBeVisible();
         });
     },
 );

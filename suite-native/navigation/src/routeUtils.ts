@@ -30,11 +30,14 @@ export const checkIsRouteAnyOf = (routeList: string[], route?: string): boolean 
     return routeList.includes(route);
 };
 
-export const checkIsActiveRouteAnyOf = (routeList: string[]): boolean =>
-    checkIsRouteAnyOf(
+export const checkIsActiveRouteAnyOf = (routeList: string[]): boolean => {
+    if (!navigationContainerRef.isReady()) return false;
+
+    return checkIsRouteAnyOf(
         routeList,
         getActiveRouteName(navigationContainerRef.getState() as AppNavigationState),
     );
+};
 
 export const checkIsDeviceOnboardingFocused = () => {
     const DEVICE_ONBOARDING_ROUTES = [

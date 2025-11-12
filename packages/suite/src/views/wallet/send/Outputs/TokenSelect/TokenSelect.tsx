@@ -10,6 +10,7 @@ import {
 import { selectExplorer } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
+    getAssetLogoContractAddresses,
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     hasNetworkFeatures,
@@ -118,10 +119,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
             <Card fillType="default" paddingType="normal" onClick={onOpenSelectAssetModal}>
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={spacings.sm}>
-                        {networkTokenContractAddress ? (
+                        {selectedToken ? (
                             <AssetLogo
                                 coingeckoId={getCoingeckoId(account.symbol)!}
-                                contractAddress={networkTokenContractAddress}
+                                contractAddress={getAssetLogoContractAddresses(
+                                    account.symbol,
+                                    selectedToken?.contract,
+                                )}
                                 size={24}
                                 placeholder={(
                                     selectedToken?.symbol || account.symbol

@@ -1,10 +1,11 @@
 import { bech32 } from 'bech32';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
 import {
     Account,
     PoolsResponse,
+    StakeType,
     SupportedCardanoNetworkSymbols,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
@@ -18,6 +19,18 @@ export function isSupportedAdaStakingNetworkSymbol(
 ): symbol is SupportedCardanoNetworkSymbols {
     return isArrayMember(symbol, supportedCardanoNetworkSymbols);
 }
+
+export const getCardanoStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
+    networkSymbols.reduce((acc, networkSymbol) => {
+        if (
+            isSupportedAdaStakingNetworkSymbol(networkSymbol) &&
+            getNetworkFeatures(networkSymbol).includes('staking')
+        ) {
+            acc.push(networkSymbol);
+        }
+
+        return acc;
+    }, [] as SupportedCardanoNetworkSymbols[]);
 
 export const isCardanoStakedWithEverstake = (account: Account) => {
     if (!account) return false;
@@ -75,3 +88,9 @@ export const getAdaAccountTotalStakingBalance = (account: Account) =>
               symbol: account.symbol,
           }).toString()
         : null;
+
+export const subtypeToStakeTypeMap: { [key: string]: StakeType } = {
+    stake_delegation: 'stake',
+    stake_deregistration: 'unstake',
+    withdrawal: 'claim',
+};

@@ -1,1 +1,1 @@
-export { getAssetLogoUrl } from './asset-logo-urls';
+export * from './asset-logo-urls';

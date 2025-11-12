@@ -7,10 +7,9 @@ import {
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
+import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
-
-import { TouchableSwitchRow, TouchableSwitchRowDescription } from '../TouchableSwitchRow';
 
 export const AutoEjectSwitch = () => {
     const dispatch = useDispatch();
@@ -74,12 +73,8 @@ export const AutoEjectSwitch = () => {
             onChange={handleToggleAutoEject}
             accessibilityLabel="autoEjectToggle"
             text={<Translation id="moduleSettings.viewOnly.autoEject.switch.title" />}
-            description={
-                <TouchableSwitchRowDescription>
-                    <Translation id="moduleSettings.viewOnly.autoEject.switch.description" />
-                </TouchableSwitchRowDescription>
-            }
-            iconName="eject"
+            description={<Translation id="moduleSettings.viewOnly.autoEject.switch.description" />}
+            icon="eject"
             testID="@settings/auto-eject-toggle"
         />
     );

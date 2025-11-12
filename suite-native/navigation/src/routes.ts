@@ -77,6 +77,7 @@ export enum AccountsImportStackRoutes {
 export enum DeviceSettingsStackRoutes {
     DeviceSettings = 'DeviceSettings',
     PinProtection = 'PinProtection',
+    BackupAndPassphraseStack = 'BackupAndPassphraseStack',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     FirmwareUpdateStack = 'FirmwareUpdateStack',
     DeviceAuthenticity = 'DeviceAuthenticity',
@@ -131,6 +132,11 @@ export enum DeviceNameStackRoutes {
     DeviceNameLoadingScreen = 'DeviceNameLoadingScreen',
 }
 
+export enum BackupAndPassphraseStackRoutes {
+    BackupAndPassphrase = 'BackupAndPassphrase',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+}
+
 export enum AuthorizeDeviceStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
@@ -151,7 +157,6 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
-    PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
     PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
     CoinEnablingInit = 'CoinEnablingInit',
 }
@@ -197,6 +202,7 @@ export enum SettingsStackRoutes {
     SettingsViewOnly = 'SettingsViewOnly',
     SettingsSupport = 'SettingsSupport',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
+    SettingsLabeling = 'SettingsLabeling',
     SettingsDeviceChecks = 'SettingsDeviceChecks',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',

@@ -77,7 +77,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
 
     return (
-        <Row gap={8}>
+        <Row gap={12}>
             <AppNavigationTooltip>
                 <ConditionalRender container="content" minWidth={breakpoints.laptop}>
                     <HeaderActionButton

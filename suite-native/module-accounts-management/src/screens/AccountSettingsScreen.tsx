@@ -5,13 +5,13 @@ import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountByKey,
-    selectAccountLabel,
     selectFormattedAccountType,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useAccountLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -62,13 +62,13 @@ export const AccountSettingsScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, accountKey),
-    );
-
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, accountKey),
     );
+    const accountLabel = useAccountLabel({
+        accountKey: account?.key ?? null,
+        deviceState: account?.deviceState ?? null,
+    });
 
     if (!account) return null;
 
@@ -76,7 +76,7 @@ export const AccountSettingsScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    title={accountLabel ?? undefined}
+                    title={<Text>{accountLabel}</Text>}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }
