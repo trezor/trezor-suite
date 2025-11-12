@@ -65,11 +65,7 @@ const rootReducer = combineReducers({
 
 export type AppState = ReturnType<typeof rootReducer>;
 
-const loggerExcludedActions = [
-    addLog.type,
-    accountsActions.updateAccount.type,
-    accountsActions.updateAccountRefreshTimestamp.type,
-];
+const loggerExcludedActions = [addLog.type, accountsActions.updateAccountRefreshTimestamp.type];
 
 const getCustomMiddleware = () => {
     const middleware = [
