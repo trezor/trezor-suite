@@ -205,17 +205,15 @@ export const calculateOutputAmount = (
     stakeType: StakeType,
     totalSpent?: string,
 ) => {
-    const accountBalance = new BigNumber(account.balance ?? '0');
-
-    let amount: BigNumber;
+    let amount;
 
     switch (stakeType) {
         case 'stake':
         case 'unstake':
-            amount = accountBalance.minus(totalSpent ?? '0');
+            amount = new BigNumber(account.availableBalance ?? '0').minus(totalSpent ?? '0');
             break;
         case 'claim':
-            amount = accountBalance.minus(account.availableBalance ?? '0');
+            amount = new BigNumber(account.balance ?? '0').minus(account.availableBalance ?? '0');
             break;
         default:
             return '0';
