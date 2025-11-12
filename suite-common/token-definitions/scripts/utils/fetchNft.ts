@@ -1,5 +1,9 @@
 /* eslint-disable no-console */
-import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/tokenDefinitionsTypes';
+import {
+    AdvancedTokenStructure,
+    SimpleTokenStructure,
+    TokenStructureType,
+} from '../../src/tokenDefinitionsTypes';
 import { NFTS_PER_PAGE, NFT_LIST_URL } from '../constants';
 import { NftData } from '../types';
 
@@ -17,6 +21,7 @@ const fetchNftPage = async (page: number, assetPlatformId: string): Promise<NftD
 
     try {
         const response = await fetch(`${NFT_LIST_URL}?${params.toString()}`, options);
+
         if (!response.ok) {
             const { error } = await response.json();
 
@@ -29,7 +34,7 @@ const fetchNftPage = async (page: number, assetPlatformId: string): Promise<NftD
     }
 };
 
-export const fetchNftData = async (assetPlatformId: string, structure: string) => {
+export const fetchNftData = async (assetPlatformId: string, structure: TokenStructureType) => {
     console.log('Start fetching NFT data for:', assetPlatformId, 'platform');
 
     let page = 1;
@@ -37,24 +42,20 @@ export const fetchNftData = async (assetPlatformId: string, structure: string) =
 
     while (true) {
         const data = await fetchNftPage(page, assetPlatformId);
-
         allData = allData.concat(data);
         page++;
-
-        if (data.length < NFTS_PER_PAGE) {
-            break;
-        }
+        if (data.length < NFTS_PER_PAGE) break;
     }
 
     console.log('Number of NFT records fetched:', allData.length);
 
-    if (structure === 'advanced') {
+    if (structure === TokenStructureType.ADVANCED) {
         return allData.reduce<AdvancedTokenStructure>((acc, { contract_address, symbol, name }) => {
             acc[contract_address] = { symbol, name };
 
             return acc;
         }, {});
-    } else {
-        return [...new Set(allData.map(item => item.contract_address))] as SimpleTokenStructure;
     }
+
+    return [...new Set(allData.map(item => item.contract_address))] as SimpleTokenStructure;
 };

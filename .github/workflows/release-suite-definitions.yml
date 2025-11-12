@@ -42,26 +42,10 @@ jobs:
         run: |
           yarn install
           cd suite-common/token-definitions
-          yarn nfts simple ethereum
-          yarn nfts simple polygon-pos
-          yarn nfts simple binance-smart-chain
-          yarn nfts simple optimistic-ethereum
-          yarn nfts simple base
-          yarn nfts simple arbitrum-one
-          yarn nfts simple avalanche
-          yarn coins simple ethereum
-          yarn coins simple ethereum-classic
-          yarn coins simple polygon-pos
-          yarn coins simple binance-smart-chain
-          yarn coins simple optimistic-ethereum
-          yarn coins simple base
-          yarn coins simple arbitrum-one
-          yarn coins simple avalanche
-          yarn coins simple cardano
-          yarn coins simple solana
-          yarn coins advanced solana
-          yarn coins simple stellar
-          yarn coins advanced stellar
+
+          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche
+          yarn coins simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche cardano solana stellar
+          yarn coins advanced solana stellar
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.event.inputs.environment == 'production-definitions' && github.ref == 'refs/heads/develop' }}
@@ -71,26 +55,10 @@ jobs:
         run: |
           yarn install
           cd suite-common/token-definitions
-          yarn nfts simple ethereum
-          yarn nfts simple polygon-pos
-          yarn nfts simple binance-smart-chain
-          yarn nfts simple optimistic-ethereum
-          yarn nfts simple base
-          yarn nfts simple arbitrum-one
-          yarn nfts simple avalanche
-          yarn coins simple ethereum
-          yarn coins simple ethereum-classic
-          yarn coins simple polygon-pos
-          yarn coins simple binance-smart-chain
-          yarn coins simple optimistic-ethereum
-          yarn coins simple base
-          yarn coins simple arbitrum-one
-          yarn coins simple avalanche
-          yarn coins simple cardano
-          yarn coins simple solana
-          yarn coins advanced solana
-          yarn coins simple stellar
-          yarn coins advanced stellar
+
+          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche
+          yarn coins simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche cardano solana stellar
+          yarn coins advanced solana stellar
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.ref == 'refs/heads/develop' }}

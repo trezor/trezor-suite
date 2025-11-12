@@ -3,67 +3,119 @@ import fs from 'fs';
 import { join } from 'path';
 
 import { DEFINITIONS_FILENAME_SUFFIX, FILES_PATH } from './constants';
-import { fetchCoinData } from './utils/fetchCoins';
+import { buildCoinDataForPlatform, fetchAllCoins } from './utils/fetchCoins';
 import { fetchNftData } from './utils/fetchNft';
 import { signData } from './utils/sign';
 import { validateStructure } from './utils/validate';
-import { TokenStructure } from '../src/tokenDefinitionsTypes';
+import { DefinitionType, TokenStructure, TokenStructureType } from '../src/tokenDefinitionsTypes';
+
+const writeDefinitionFiles = (
+    assetPlatformId: string,
+    type: DefinitionType,
+    structure: TokenStructureType,
+    data: TokenStructure,
+) => {
+    const fileName = `${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}`;
+    fs.mkdirSync(FILES_PATH, { recursive: true });
+    const signedData = signData(data);
+    fs.writeFileSync(join(FILES_PATH, `${fileName}.jws`), signedData);
+    fs.writeFileSync(join(FILES_PATH, `${fileName}.json`), JSON.stringify(data));
+    console.log('JSON definitions saved to ', join(FILES_PATH, fileName, '.[jws,json]'));
+};
+
+const countRecords = (data: TokenStructure, structure: TokenStructureType) =>
+    structure === TokenStructureType.SIMPLE
+        ? (data as string[]).length
+        : Object.keys(data as Record<string, unknown>).length;
+
+const printSummary = (
+    type: DefinitionType,
+    structure: TokenStructureType,
+    counts: Record<string, number>,
+) => {
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const total = entries.reduce((sum, [, n]) => sum + n, 0);
+
+    console.log('\n==================== SUMMARY ====================');
+    console.log(`Type: ${type}, Structure: ${structure}`);
+    for (const [platform, n] of entries) {
+        console.log(`${platform.padEnd(22, ' ')} : ${n}`);
+    }
+    console.log('-----------------------------------------------');
+    console.log(`TOTAL records: ${total}`);
+    console.log('================================================\n');
+};
 
 const main = async () => {
     const argv = process.argv.slice(2);
 
-    const type: string = argv[0];
-    const structure: string = argv[1];
-    const assetPlatformId: string = argv[2];
+    const rawType = argv[0];
+    const rawStructure = argv[1];
+    const assetPlatformIds = argv.slice(2);
 
-    if (!type || !['nft', 'coin'].includes(type)) {
-        throw new Error('Missing type, please specify "nft" or "coin"');
+    if (!rawType || !Object.values(DefinitionType).includes(rawType as DefinitionType)) {
+        throw new Error('Missing or invalid type, please specify "nft" or "coin"');
+    }
+    if (
+        !rawStructure ||
+        !Object.values(TokenStructureType).includes(rawStructure as TokenStructureType)
+    ) {
+        throw new Error('Missing or invalid structure, please specify "simple" or "advanced"');
     }
 
-    if (!structure || !['simple', 'advanced'].includes(structure)) {
-        throw new Error('Missing structure, please specify "simple" or "advanced"');
-    }
+    const type = rawType as DefinitionType;
+    const structure = rawStructure as TokenStructureType;
 
-    if (!assetPlatformId) {
+    if (!assetPlatformIds.length) {
         throw new Error(
-            'Missing platform id. Please enter "ethereum", "polygon-pos" or any other from https://pro-api.coingecko.com/api/v3/asset_platforms',
+            'Missing platform id(s). Provide one or more (e.g. "ethereum polygon-pos").',
         );
     }
 
-    let data: TokenStructure;
-    if (type === 'nft') {
-        data = await fetchNftData(assetPlatformId, structure);
-    } else {
-        data = await fetchCoinData(assetPlatformId, structure);
+    console.log(
+        `Type: ${type}, structure: ${structure}, platforms: ${assetPlatformIds.join(', ')}`,
+    );
+
+    const counts: Record<string, number> = {};
+
+    if (type === DefinitionType.COIN) {
+        const allCoins = await fetchAllCoins();
+
+        for (const assetPlatformId of assetPlatformIds) {
+            console.log('Building coin data for:', assetPlatformId);
+            const data = await buildCoinDataForPlatform(allCoins, assetPlatformId, structure);
+
+            const length = countRecords(data, structure);
+            console.log('Records for specific platform:', length);
+            if (!length)
+                throw new Error(`No definitions available for platform: ${assetPlatformId}`);
+
+            validateStructure(data, structure);
+            writeDefinitionFiles(assetPlatformId, type, structure, data);
+            counts[assetPlatformId] = length;
+        }
     }
 
-    if (structure === 'simple') {
-        const { length } = data;
-        console.log('Records for specific platform:', length);
+    if (type === DefinitionType.NFT) {
+        for (const assetPlatformId of assetPlatformIds) {
+            console.log('Fetching NFT data for:', assetPlatformId);
+            const data = await fetchNftData(assetPlatformId, structure);
 
-        if (!length) {
-            throw new Error(`No definitions available for platform: ${assetPlatformId}`);
-        }
-    } else {
-        const { length } = Object.keys(data);
-        console.log('Records for specific platform:', length);
+            const length = countRecords(data, structure);
+            console.log('Records for specific platform:', length);
+            if (!length)
+                throw new Error(`No definitions available for platform: ${assetPlatformId}`);
 
-        if (!length) {
-            throw new Error(`No definitions available for platform: ${assetPlatformId}`);
+            validateStructure(data, structure);
+            writeDefinitionFiles(assetPlatformId, type, structure, data);
+            counts[assetPlatformId] = length;
         }
     }
 
-    validateStructure(data, structure);
-
-    const fileName = `${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}`;
-
-    fs.mkdirSync(FILES_PATH, { recursive: true });
-
-    const signedData = signData(data);
-    fs.writeFileSync(join(FILES_PATH, `${fileName}.jws`), signedData);
-    fs.writeFileSync(join(FILES_PATH, `${fileName}.json`), JSON.stringify(data));
-
-    console.log('JSON definitions saved to ', join(FILES_PATH, fileName, '.[jws,json]'));
+    printSummary(type, structure, counts);
 };
 
-main();
+main().catch(err => {
+    console.error(err);
+    process.exit(1);
+});
