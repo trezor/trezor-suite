@@ -8,7 +8,6 @@ type AccountTypeBadgeProps = {
     accountType?: AccountType;
     path?: Bip43Path;
     networkType?: NetworkType;
-    onElevation?: boolean;
     size?: BadgeSize;
     shouldDisplayNormalType?: boolean;
 };
@@ -18,7 +17,6 @@ export const AccountTypeBadge = ({
     path,
     networkType,
     size = 'medium',
-    onElevation = false,
     shouldDisplayNormalType = false,
 }: AccountTypeBadgeProps) => {
     if (!accountType || !networkType) {
@@ -32,8 +30,6 @@ export const AccountTypeBadge = ({
     const accountTypeName = getAccountTypeName({ path, accountType, networkType });
 
     return (
-        <Badge size={size} onElevation={onElevation}>
-            {accountTypeName ? <Translation id={accountTypeName} /> : null}
-        </Badge>
+        <Badge size={size}>{accountTypeName ? <Translation id={accountTypeName} /> : null}</Badge>
     );
 };

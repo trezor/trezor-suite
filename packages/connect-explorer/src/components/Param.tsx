@@ -89,12 +89,12 @@ export const Param = (props: ParamProps) => {
                     )}
                 </ParamType>
                 {props.required === true && (
-                    <Badge cursor="default" variant="primary">
+                    <Badge cursor="default" intent="brand">
                         Required
                     </Badge>
                 )}
                 {props.required === false && (
-                    <Badge cursor="default" variant="tertiary">
+                    <Badge cursor="default" intent="neutral">
                         Optional
                     </Badge>
                 )}
