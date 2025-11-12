@@ -52,6 +52,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@animatereactnative/marquee@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@animatereactnative/marquee@npm:0.5.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-gesture-handler: ">=2.0.0"
+    react-native-reanimated: ">=2.2.0"
+  checksum: 10/19116d43f16c4525a771fc2d250ee88431ef7dca88d21b15434e391246d59d9d1a8be0dffc81ee992215d3c1a281e29c083035343ef471bd2c1c69dd522f5a95
+  languageName: node
+  linkType: hard
+
 "@apidevtools/json-schema-ref-parser@npm:^11.5.5":
   version: 11.9.0
   resolution: "@apidevtools/json-schema-ref-parser@npm:11.9.0"
@@ -12286,6 +12298,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-device-onboarding@workspace:suite-native/module-device-onboarding"
   dependencies:
+    "@animatereactnative/marquee": "npm:^0.5.2"
     "@gorhom/bottom-sheet": "npm:5.2.6"
     "@react-navigation/core": "npm:7.12.4"
     "@react-navigation/native": "npm:7.1.18"
@@ -12323,7 +12336,6 @@ __metadata:
     expo-haptics: "npm:~15.0.7"
     expo-linear-gradient: "npm:~15.0.7"
     jotai: "npm:2.15.0"
-    lottie-react-native: "npm:7.3.4"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~4.1.3"

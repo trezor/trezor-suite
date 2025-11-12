@@ -1,3 +1,4 @@
+@animatereactnative/marquee
 @crowdin/cli
 @floating-ui/react
 @formatjs/cli
