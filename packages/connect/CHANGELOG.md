@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.6.5-beta.1
+# 9.6.5-beta.2
 
 This release introduces Monero support in Trezor Connect and enhances Trezor Suite Web for use as a Trezor Connect popup.
 
