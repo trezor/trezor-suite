@@ -14,24 +14,14 @@ import {
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { DayHeader } from './DayHeader';
 
-const TransactionsGroupWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-
-    & + & {
-        margin-top: 36px;
-    }
-
-    > * + * {
-        margin-top: 8px;
-    }
-`;
+const TransactionsGroupWrapper = styled.div``;
 
 interface TransactionsGroupProps {
     dateKey: string;
@@ -99,16 +89,18 @@ export const TransactionsGroup = ({
             onMouseLeave={() => setIsHovered(false)}
             {...rest}
         >
-            <DayHeader
-                dateKey={dateKey}
-                symbol={symbol}
-                isHovered={isHovered}
-                totalAmount={totalAmountPerDay}
-                totalFiatAmountPerDay={totalFiatAmountPerDay}
-                localCurrency={baseCurrencyCode}
-                isMissingFiatRates={isMissingFiatRates}
-            />
-            {children}
+            <Column gap={10}>
+                <DayHeader
+                    dateKey={dateKey}
+                    symbol={symbol}
+                    isHovered={isHovered}
+                    totalAmount={totalAmountPerDay}
+                    totalFiatAmountPerDay={totalFiatAmountPerDay}
+                    localCurrency={baseCurrencyCode}
+                    isMissingFiatRates={isMissingFiatRates}
+                />
+                {children}
+            </Column>
         </TransactionsGroupWrapper>
     );
 };

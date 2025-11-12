@@ -1,23 +1,16 @@
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 
 export const HeaderWrapper = styled.div`
     display: flex;
-    position: sticky;
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    top: ${SUBPAGE_NAV_HEIGHT};
     align-items: center;
     justify-content: space-between;
     flex: 1;
-    padding-top: 8px;
-    padding-bottom: 8px;
     padding-right: 24px;
-    z-index: ${zIndices.secondaryStickyBar};
 `;
 
 export const Col = styled(HiddenPlaceholder)`
