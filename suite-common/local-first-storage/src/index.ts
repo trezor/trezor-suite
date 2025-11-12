@@ -26,7 +26,19 @@ export {
 } from './labeling/labelingSelectors';
 export { findAccountLabel, findOutputLabel, findAddressLabel } from './labeling/selectorUtils';
 export type { WithLabelingState } from './labeling/labelingSelectors';
-export { labelingActions } from './labeling/labelingActions';
+
+import { labelingActions as labelingActionsImported } from './labeling/labelingActions';
+
+// Todo: this shall be in LocalFirstStorage reducer, not labeling
+export const labelingActions = {
+    updateLocalFirstStorageEnabled: labelingActionsImported.updateLocalFirstStorageEnabled,
+    updateLocalFirstStorageDebugEnabled:
+        labelingActionsImported.updateLocalFirstStorageDebugEnabled,
+    updateIsFeatureLocalFirstStorageAvailable:
+        labelingActionsImported.updateIsFeatureLocalFirstStorageAvailable,
+    setLocalFirstStorageRelayUrl: labelingActionsImported.setLocalFirstStorageRelayUrl,
+};
+
 export {
     prepareLabelingReducer,
     initialLabelingState,

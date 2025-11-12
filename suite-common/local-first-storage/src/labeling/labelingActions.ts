@@ -5,11 +5,13 @@ import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-t
 
 export const LABELING_PREFIX = '@suite/labeling';
 
+/** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
 export const setWalletLabel = createAction(
     `${LABELING_PREFIX}/set-device-label`,
     (payload: { walletDescriptor: WalletDescriptor; label: string | null }) => ({ payload }),
 );
 
+/** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
 export const setAccountLabel = createAction(
     `${LABELING_PREFIX}/set-account-label`,
     (payload: {
@@ -22,6 +24,7 @@ export const setAccountLabel = createAction(
     }),
 );
 
+/** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
 export const setAddressLabel = createAction(
     `${LABELING_PREFIX}/set-address-label`,
     (payload: { walletDescriptor: WalletDescriptor; address: string; label: string | null }) => ({
@@ -29,6 +32,7 @@ export const setAddressLabel = createAction(
     }),
 );
 
+/** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
 export const setOutputLabel = createAction(
     `${LABELING_PREFIX}/set-output-label`,
     (payload: {
@@ -39,26 +43,31 @@ export const setOutputLabel = createAction(
     }) => ({ payload }),
 );
 
+/** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
 export const clearAllLabels = createAction(
     `${LABELING_PREFIX}/clear-all-labels`,
     (payload: { walletDescriptor: WalletDescriptor }) => ({ payload }),
 );
 
+// Todo: this shall be in LocalFirstStorage reducer, not labeling
 export const updateLocalFirstStorageEnabled = createAction(
     `${LABELING_PREFIX}/update-locale-first-storage-enabled`,
     (payload: { isEnabled: boolean }) => ({ payload }),
 );
 
+// Todo: this shall be in LocalFirstStorage reducer, not labeling
 export const updateLocalFirstStorageDebugEnabled = createAction(
     `${LABELING_PREFIX}/update-locale-first-storage-debug-enabled`,
     (payload: { isEnabled: boolean }) => ({ payload }),
 );
 
+// Todo: this shall be in LocalFirstStorage reducer, not labeling
 export const updateIsFeatureLocalFirstStorageAvailable = createAction(
     `${LABELING_PREFIX}/update-show-locale-first-storage`,
     (payload: { isShownInSettings: boolean }) => ({ payload }),
 );
 
+// Todo: this shall be in LocalFirstStorage reducer, not labeling
 export const setLocalFirstStorageRelayUrl = createAction(
     `${LABELING_PREFIX}/set-local-first-storage-relay-url`,
     (payload: { url: string | null }) => ({ payload }),
@@ -70,6 +79,8 @@ export const labelingActions = {
     setAddressLabel,
     setOutputLabel,
     clearAllLabels,
+
+    // Todo: this shall be in LocalFirstStorage reducer, not labeling
     updateLocalFirstStorageEnabled,
     updateLocalFirstStorageDebugEnabled,
     updateIsFeatureLocalFirstStorageAvailable,
