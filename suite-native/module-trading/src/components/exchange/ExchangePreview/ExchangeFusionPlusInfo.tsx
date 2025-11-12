@@ -2,9 +2,7 @@ import { memo } from 'react';
 
 import { BulletListItem, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-
-import { TradeInfoHeader } from '../../TradeInfo/TradeInfoHeader';
-import { TradeInfoRow } from '../../TradeInfo/TradeInfoRow';
+import { TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';
 
 export const ExchangeFusionPlusInfo = memo(() => (
     <Card noPadding>

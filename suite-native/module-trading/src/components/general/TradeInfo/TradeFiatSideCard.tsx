@@ -4,11 +4,10 @@ import type { SellCryptoPaymentMethod } from 'invity-api';
 
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FiatCurrencyIcon } from './FiatCurrencyIcon';
-import { TradeInfoHeader } from '../TradeInfo/TradeInfoHeader';
-import { TradeInfoRow } from '../TradeInfo/TradeInfoRow';
+import { FiatCurrencyIcon } from '../FiatCurrencyIcon';
 
 export type TradeFiatSideCardProps = {
     paymentMethod: SellCryptoPaymentMethod;

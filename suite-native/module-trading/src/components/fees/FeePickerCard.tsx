@@ -13,9 +13,9 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { TradeInfoHeader } from '@suite-native/trading-atoms';
 
 import { FeePicker } from './FeePicker';
-import { TradeInfoHeader } from '../TradeInfo/TradeInfoHeader';
 import { ProviderReceiveAddress } from '../general/ProviderReceiveAddress';
 
 type FeePickerCardProps = {

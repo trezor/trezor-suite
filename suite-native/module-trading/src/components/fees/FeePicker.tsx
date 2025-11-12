@@ -3,8 +3,7 @@ import { HStack, Text } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-
-import { TradeInfoRow } from '../TradeInfo/TradeInfoRow';
+import { TradeInfoRow } from '@suite-native/trading-atoms';
 
 type FeePickerProps = {
     fee: string;

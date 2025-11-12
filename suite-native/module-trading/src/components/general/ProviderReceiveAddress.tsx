@@ -14,8 +14,7 @@ import { AccountsRootState, selectAccountNetworkType } from '@suite-common/walle
 import { Text, VStack } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
-
-import { TradeInfoRow } from '../TradeInfo/TradeInfoRow';
+import { TradeInfoRow } from '@suite-native/trading-atoms';
 
 export const ProviderReceiveAddress = ({ trade }: { trade: ExchangeTrade | SellFiatTrade }) => {
     const { translate } = useTranslate();

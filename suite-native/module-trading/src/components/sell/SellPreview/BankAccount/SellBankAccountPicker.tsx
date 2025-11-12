@@ -10,11 +10,11 @@ import {
 } from '@suite-common/trading';
 import { AnimatedCard, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { TradeInfoHeader } from '@suite-native/trading-atoms';
 
 import { SellBankAccountItem } from './SellBankAccountItem';
 import { SellBankAccountSheet } from './SellBankAccountSheet';
 import { useWatchTrade } from '../../../../hooks/general/useWatchTrade';
-import { TradeInfoHeader } from '../../../TradeInfo/TradeInfoHeader';
 
 type SellBankAccountPickerProps = {
     orderId: string | undefined;

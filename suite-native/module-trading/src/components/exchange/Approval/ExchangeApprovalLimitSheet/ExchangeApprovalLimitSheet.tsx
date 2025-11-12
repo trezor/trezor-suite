@@ -78,6 +78,7 @@ export const ExchangeApprovalLimitSheet = memo(
                 ref={bottomSheetRef}
                 onDismiss={onDismiss}
                 title={<Translation id="moduleTrading.exchangeApprovalLimitSheet.title" />}
+                testID="ExchangeApproval/LimitSheet"
                 isCloseDisplayed
             >
                 <VStack spacing="sp12" paddingBottom="sp12">

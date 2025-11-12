@@ -4,9 +4,8 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { TradeSideCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
-
-import { TradeSideCard } from '../../general/TradeSideCard';
 
 export type ExchangeFromAccountTradePreviewCardProps = {
     quote?: ExchangeTrade;
@@ -25,7 +24,7 @@ export const ExchangeFromAccountTradePreviewCard = ({
 
     return (
         <TradeSideCard
-            account={fromAccount}
+            accountLabel={fromAccount.accountLabel}
             cryptoId={quote.send}
             amount={
                 <Text variant="hint" color="textAlertRed">
