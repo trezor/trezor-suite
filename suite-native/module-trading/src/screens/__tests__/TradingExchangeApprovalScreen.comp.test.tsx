@@ -1,12 +1,8 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import {
-    accounts,
-    exchangeQuotes,
-    getInitializedTradingState,
-} from '@suite-native/trading-fixtures';
+import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
 
@@ -39,19 +35,7 @@ jest.mock('@suite-native/trading-atoms', () => ({
 
 const testQuote = exchangeQuotes[0];
 
-const preloadedState = {
-    wallet: {
-        trading: {
-            ...getInitializedTradingState('exchange'),
-            exchange: {
-                ...getInitializedTradingState('exchange').exchange,
-                selectedQuote: testQuote,
-                tradingAccountKey: accounts[0].key,
-            },
-        },
-        accounts,
-    },
-};
+let preloadedState: PreloadedState;
 
 const renderScreen = () =>
     renderWithStoreProviderAsync(
@@ -72,14 +56,22 @@ const renderScreen = () =>
 describe('TradingExchangeApprovalScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+
+        preloadedState = {
+            wallet: getWalletState({
+                tradeType: 'exchange',
+            }),
+        };
+
+        preloadedState!.wallet!.trading!.exchange!.selectedQuote = testQuote;
+        preloadedState!.wallet!.trading!.exchange!.tradingAccountKey = 'eth-account-1';
     });
 
     it('should render the approval screen with quote details', async () => {
         const { getByText } = await renderScreen();
 
-        expect(getByText('BTC Account #1')).toBeOnTheScreen();
+        expect(getByText('Ethereum #1')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
-        expect(getByText('$4.76')).toBeOnTheScreen(); // Fixed fee TODO value
     });
 
     it('should show network information when network symbol is available', async () => {

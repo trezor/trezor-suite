@@ -3,7 +3,7 @@ import type { SellFiatTrade } from 'invity-api';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { TradeFiatSideCard } from '../../general/TradeFiatSideCard';
+import { TradeFiatSideCard } from '../../general/TradeInfo/TradeFiatSideCard';
 
 export type SellToFiatTradePreviewCardProps = {
     quote?: SellFiatTrade;

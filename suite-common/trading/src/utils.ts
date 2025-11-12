@@ -84,9 +84,9 @@ export const cryptoIdToNetwork = (cryptoId: CryptoId): Network | undefined =>
 export const cryptoIdToSymbol = (cryptoId: CryptoId): NetworkSymbol | undefined =>
     cryptoIdToNetwork(cryptoId)?.symbol;
 
-export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId) => {
+export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | undefined) => {
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
-    if (!network) {
+    if (!network || !cryptoId) {
         return { symbol: undefined, contractAddress: undefined };
     }
     const { symbol } = network;

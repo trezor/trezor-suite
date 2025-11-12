@@ -1,5 +1,7 @@
+import type { CryptoId } from 'invity-api';
+
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     SellFromAccountTradePreviewCard,
@@ -18,9 +20,7 @@ describe('SellFromAccountTradePreviewCard', () => {
 
         return renderWithStoreProviderAsync(
             <SellFromAccountTradePreviewCard fromStringValue="0.0233" {...props} />,
-            {
-                preloadedState,
-            },
+            { preloadedState },
         );
     };
 
@@ -32,7 +32,7 @@ describe('SellFromAccountTradePreviewCard', () => {
 
     it('should render nothing when account is not found', async () => {
         const { toJSON } = await renderSellFromAccountTradePreviewCard(
-            { quote: sellQuotes[0] },
+            { cryptoId: 'bitcoin' as CryptoId },
             'unknown-account-key',
         );
 
@@ -41,7 +41,7 @@ describe('SellFromAccountTradePreviewCard', () => {
 
     it('should render TradeSideCard otherwise', async () => {
         const { getByText } = await renderSellFromAccountTradePreviewCard({
-            quote: sellQuotes[0],
+            cryptoId: 'bitcoin' as CryptoId,
         });
 
         expect(getByText('From')).toBeOnTheScreen();

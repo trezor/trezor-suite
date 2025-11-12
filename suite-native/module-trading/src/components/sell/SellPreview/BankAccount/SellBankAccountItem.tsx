@@ -4,9 +4,8 @@ import { sellUtils } from '@suite-common/trading';
 import { HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TradeInfoRow } from '@suite-native/trading-atoms';
 import { exhaustive } from '@trezor/type-utils';
-
-import { TradeInfoRow } from '../../../TradeInfo/TradeInfoRow';
 
 export type AccessoryType = 'caret' | 'select' | 'none';
 
