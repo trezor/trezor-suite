@@ -23,7 +23,6 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
         if (
             device === undefined ||
             device.state === undefined ||
-            device.instance === undefined ||
             device.localFirstStorageSecret?.evoluKeys !== undefined ||
             // We are already getting the keys in different "await"
             // This may happen if selectedDeviceThunk is called concurrently.
@@ -42,7 +41,7 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
                 device: {
                     path: device.path,
                     state: device.state,
-                    instance: device.instance,
+                    ...(device.instance !== undefined ? { instance: device.instance } : {}),
                 },
                 useEmptyPassphrase: device.useEmptyPassphrase ?? false,
             });
