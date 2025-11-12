@@ -14015,6 +14015,7 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    tsx: "npm:^4.20.3"
   languageName: unknown
   linkType: soft
 
