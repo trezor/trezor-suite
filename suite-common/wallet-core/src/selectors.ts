@@ -134,7 +134,7 @@ export const selectShouldAccountsBeRediscovered = (
         ({ accounts }) =>
             !accounts ||
             getLastAccountsPerAccountType(accounts).some(
-                ({ lastAccount }) => lastAccount.failed || !lastAccount.empty,
+                ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
             ),
     );
 
