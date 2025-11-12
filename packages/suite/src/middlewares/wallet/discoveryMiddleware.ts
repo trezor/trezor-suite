@@ -67,8 +67,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         ) {
             if (isDeviceReady && isUIReady) {
                 const shouldRediscover = selectShouldRediscover(getState(), device);
-                const noDiscoveryYet = device?.state?.staticSessionId === undefined;
-                if (noDiscoveryYet || shouldRediscover) {
+                if (shouldRediscover) {
                     dispatch(startOrRestartDiscoveryThunk());
                 }
             }

@@ -125,30 +125,14 @@ export const selectDiscoveryAccountsParam = (
         return { symbol, identity, known, knownOnly } as DiscoveryAccountsParam[number];
     });
 
-export const selectShouldAccountsBeRediscovered = (
+export const selectShowRediscoverButton = (
     state: WalletCoreCompoundRootState,
-    deviceState?: StaticSessionId,
-) =>
-    !!deviceState &&
-    getDeviceAccountsPerEnabledNetwork(state, deviceState).some(
-        ({ accounts }) =>
-            !accounts ||
-            getLastAccountsPerAccountType(accounts).some(
-                ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
-            ),
-    );
-
-const selectShouldRediscoverHelper = (
-    state: WalletCoreCompoundRootState,
-    device: TrezorDevice | undefined,
-    allowUndiscovered: boolean,
+    device?: TrezorDevice,
 ) => {
     const staticSessionId = device?.state?.staticSessionId;
     if (!staticSessionId) return false;
 
     if (selectHasRunningDiscovery(state)) return false;
-
-    if (allowUndiscovered && !device.discovered) return true;
 
     const symbols = selectEnabledSupportedNetworks(state);
     const accounts = selectAccountsByDeviceState(state, staticSessionId);
@@ -157,13 +141,25 @@ const selectShouldRediscoverHelper = (
     return symbols.some(symbol => !discoveredNetworks.has(symbol));
 };
 
-export const selectShowRediscoverButton = (
+export const selectShouldRediscover = (
     state: WalletCoreCompoundRootState,
-    device?: TrezorDevice,
-) => selectShouldRediscoverHelper(state, device, false);
+    device: TrezorDevice,
+) => {
+    if (selectHasRunningDiscovery(state)) return false;
 
-export const selectShouldRediscover = (state: WalletCoreCompoundRootState, device?: TrezorDevice) =>
-    selectShouldRediscoverHelper(state, device, true);
+    const staticSessionId = device.state?.staticSessionId;
+    if (!staticSessionId) return true;
+
+    if (!device.discovered) return true;
+
+    return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
+        ({ accounts }) =>
+            !accounts ||
+            getLastAccountsPerAccountType(accounts).some(
+                ({ lastAccount }) => !lastAccount.failed && !lastAccount.empty,
+            ),
+    );
+};
 
 export const selectAccountsToBeForgotten = (
     state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,

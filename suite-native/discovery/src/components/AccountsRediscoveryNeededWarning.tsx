@@ -7,7 +7,6 @@ import {
     selectIsDeviceConnected,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
-    selectShouldAccountsBeRediscovered,
     selectShouldRediscover,
 } from '@suite-common/wallet-core';
 import { Box, InlineAlertBox } from '@suite-native/atoms';
@@ -28,17 +27,13 @@ export const AccountsRediscoveryNeededWarning = ({
         selectDeviceModelById(state, device?.id),
     );
 
-    const shouldRediscover = useSelector((state: WalletCoreCompoundRootState) =>
-        selectShouldRediscover(state, device),
-    );
-    const shouldAccountsBeRediscovered = useSelector((state: WalletCoreCompoundRootState) =>
-        selectShouldAccountsBeRediscovered(state, device?.state?.staticSessionId),
+    const shouldRediscover = useSelector(
+        (state: WalletCoreCompoundRootState) => device && selectShouldRediscover(state, device),
     );
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const shouldUserBePromptedToReconnectDevice =
-        !shouldRediscover && !shouldAccountsBeRediscovered;
+    const shouldUserBePromptedToReconnectDevice = !shouldRediscover;
 
     if (
         shouldUserBePromptedToReconnectDevice ||
