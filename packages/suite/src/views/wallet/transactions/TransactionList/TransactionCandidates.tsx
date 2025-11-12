@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Card, IMAGES, variables } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
 
 import TooltipSymbol from 'src/components/suite/TooltipSymbol';
 import { Translation } from 'src/components/suite/Translation';
@@ -13,8 +12,6 @@ import { useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 const Header = styled.div`
-    position: sticky;
-    top: ${SUBPAGE_NAV_HEIGHT};
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 24px;
@@ -22,7 +19,6 @@ const Header = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    z-index: ${zIndices.secondaryStickyBar};
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
