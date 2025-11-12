@@ -1,0 +1,69 @@
+import { DefaultTheme } from 'styled-components';
+
+import { CSSColor, Color, TypographyStyle } from '@trezor/theme';
+
+import { BadgeIntent, BadgeSize } from './types';
+import { Padding } from '../../utils/frameProps';
+
+export const mapIntentToBackgroundColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {
+    const colorMap: Record<BadgeIntent, Color> = {
+        brand: 'backgroundPrimarySubtleOnElevation0',
+        neutral: 'backgroundNeutralSubtleOnElevation0',
+        info: 'backgroundAlertBlueSubtleOnElevation0',
+        warning: 'backgroundAlertYellowSubtleOnElevation0',
+        critical: 'backgroundAlertRedSubtleOnElevation0',
+    };
+
+    return theme[colorMap[intent]];
+};
+
+export const mapIntentToTextColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {
+    const colorMap: Record<BadgeIntent, Color> = {
+        brand: 'textPrimaryDefault',
+        neutral: 'textSubdued',
+        info: 'textAlertBlue',
+        warning: 'textAlertYellow',
+        critical: 'textAlertRed',
+    };
+
+    return theme[colorMap[intent]];
+};
+
+export const mapIntentToIconColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {
+    const colorMap: Record<BadgeIntent, Color> = {
+        brand: 'iconPrimaryDefault',
+        neutral: 'iconSubdued',
+        info: 'iconAlertBlue',
+        warning: 'iconAlertYellow',
+        critical: 'iconAlertRed',
+    };
+
+    return theme[colorMap[intent]];
+};
+
+export const mapSizeToPadding = (size: BadgeSize): Padding => {
+    const paddingMap: Record<BadgeSize, Padding> = {
+        small: { vertical: 0, horizontal: 8 },
+        medium: { vertical: 2, horizontal: 10 },
+    };
+
+    return paddingMap[size];
+};
+
+export const mapSizeToIconSize = (size: BadgeSize): number => {
+    const sizes: Record<BadgeSize, number> = {
+        small: 12,
+        medium: 16,
+    };
+
+    return sizes[size];
+};
+
+export const mapSizeToTypographyStyle = (size: BadgeSize): TypographyStyle => {
+    const styles: Record<BadgeSize, TypographyStyle> = {
+        small: 'label',
+        medium: 'hint',
+    };
+
+    return styles[size];
+};

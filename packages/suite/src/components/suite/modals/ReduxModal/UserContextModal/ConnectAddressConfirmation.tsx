@@ -160,8 +160,8 @@ export const ConnectAddressConfirmation = () => {
                                         </Paragraph>
                                         {address.validated === 'valid' && (
                                             <Badge
-                                                variant="primary"
-                                                icon="check"
+                                                intent="brand"
+                                                iconLeft="check"
                                                 size="small"
                                                 data-testid={`@connect-address-confirmation/verified-badge/${index}`}
                                             >
@@ -170,8 +170,8 @@ export const ConnectAddressConfirmation = () => {
                                         )}
                                         {address.validated === 'failed' && (
                                             <Badge
-                                                variant="warning"
-                                                icon="warning"
+                                                intent="warning"
+                                                iconLeft="warning"
                                                 size="small"
                                                 data-testid={`@connect-address-confirmation/error-badge/${index}`}
                                             >

@@ -47,17 +47,17 @@ export const WalletConnectList = () => {
                                 <Text>{session.peer.metadata.name}</Text>
                                 <Text variant="tertiary">{session.peer.metadata.url}</Text>
                                 {session.validation === 'VALID' && (
-                                    <Badge variant="info" icon="shieldCheckFilled">
+                                    <Badge intent="info" iconLeft="shieldCheckFilled">
                                         <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
                                     </Badge>
                                 )}
                                 {session.validation === 'UNKNOWN' && (
-                                    <Badge variant="warning" icon="shieldWarningFilled">
+                                    <Badge intent="warning" iconLeft="shieldWarningFilled">
                                         <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
                                     </Badge>
                                 )}
                                 {session.validation === 'INVALID' && (
-                                    <Badge variant="destructive" icon="shieldWarningFilled">
+                                    <Badge intent="critical" iconLeft="shieldWarningFilled">
                                         <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
                                     </Badge>
                                 )}

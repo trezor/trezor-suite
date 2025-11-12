@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Badge as BadgeComponent, BadgeProps, allowedBadgeFrameProps, badgeSizes } from './Badge';
+import { Badge as BadgeComponent, allowedBadgeFrameProps } from './Badge';
+import { badgeIntents, badgeSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof BadgeComponent> = {
@@ -11,30 +12,21 @@ export default meta;
 
 export const Badge: StoryObj<typeof meta> = {
     args: {
-        children: 'Badge label',
-        isDisabled: false,
-        variant: 'primary',
-        size: 'tiny',
+        children: 'Placeholder',
+        intent: 'brand',
+        size: 'small',
         ...getFramePropsStory(allowedBadgeFrameProps).args,
     },
     argTypes: {
-        isDisabled: { control: 'boolean' },
-        variant: {
+        intent: {
             control: {
-                type: 'radio',
+                type: 'select',
             },
-            options: [
-                'primary',
-                'tertiary',
-                'destructive',
-                'warning',
-                'info',
-                undefined,
-            ] satisfies BadgeProps['variant'][],
+            options: badgeIntents,
         },
         size: {
             control: {
-                type: 'radio',
+                type: 'select',
             },
             options: badgeSizes,
         },

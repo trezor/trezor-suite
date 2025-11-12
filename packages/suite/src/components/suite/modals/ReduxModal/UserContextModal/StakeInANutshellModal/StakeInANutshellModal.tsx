@@ -221,7 +221,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
                         heading={
                             <Row gap={spacings.xs}>
                                 <Text variant="tertiary">{heading}</Text>
-                                <Badge size="tiny">{badge}</Badge>
+                                <Badge size="small">{badge}</Badge>
                             </Row>
                         }
                         fillType="none"

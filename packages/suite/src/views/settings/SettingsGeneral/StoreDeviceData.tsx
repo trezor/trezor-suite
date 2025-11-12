@@ -94,7 +94,7 @@ export const StoreDeviceDataModal = ({ onCancel }: ModalProps) => {
                                 <H4 typographyStyle="body">
                                     <Translation id="TR_STORE_DEVICE_DATA_MODAL_DISABLED" />
                                 </H4>
-                                <Badge variant="tertiary" size="tiny">
+                                <Badge intent="neutral" size="small">
                                     <Translation id="TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE" />
                                 </Badge>
                             </Row>

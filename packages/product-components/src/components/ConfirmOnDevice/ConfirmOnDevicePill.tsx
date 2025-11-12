@@ -43,6 +43,7 @@ export const ConfirmOnDevicePill = ({ isConfirmed, ...props }: ConfirmOnDevicePr
                     borderRadius={20}
                     borderWidth={1}
                     borderColor={theme.baseBorderSurfaceModeless}
+                    // TODO: Use new shadow tokens
                     shadow={theme.boxShadowElevated}
                     data-testid="@prompts/confirm-on-device"
                     onClick={e => e.stopPropagation()}

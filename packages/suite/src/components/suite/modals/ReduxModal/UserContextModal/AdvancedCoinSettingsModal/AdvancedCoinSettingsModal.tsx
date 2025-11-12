@@ -124,11 +124,11 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                             <Translation id="TR_EXPLORER" />
 
                             {usesCustomExplorer ? (
-                                <Badge variant="warning">
+                                <Badge intent="warning">
                                     <Translation id="TR_EXPLORER_CUSTOM" />
                                 </Badge>
                             ) : (
-                                <Badge variant="primary">
+                                <Badge intent="brand">
                                     <Translation id="TR_EXPLORER_DEFAULT" />
                                 </Badge>
                             )}

@@ -9,10 +9,9 @@ export const DefaultTag = () => {
 
     return (
         <Badge
-            variant="primary"
-            inline
+            intent="brand"
             margin={{ left: spacings.xs }}
-            size={isBelowTablet ? 'tiny' : undefined}
+            size={isBelowTablet ? 'small' : undefined}
         >
             <Text typographyStyle="hint">
                 <Translation id="TR_ONBOARDING_BACKUP_TYPE_DEFAULT" />

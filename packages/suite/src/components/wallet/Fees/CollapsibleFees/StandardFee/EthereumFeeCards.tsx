@@ -97,7 +97,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                         tooltipContent={
                             isDebug && isEip1559(fee) ? (
                                 <>
-                                    <Badge variant="warning" size="small" inline>
+                                    <Badge intent="warning" size="small">
                                         <Translation id="TR_DEBUG_ONLY" />
                                     </Badge>
                                     <Grid
@@ -130,7 +130,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                         <Text variant="tertiary" typographyStyle="hint">
                             <Translation id="TR_GAS_LIMIT" />:
                         </Text>
-                        <Badge variant="warning" size="small">
+                        <Badge intent="warning" size="small">
                             <Translation id="TR_DEBUG_ONLY" />
                         </Badge>
                     </Row>

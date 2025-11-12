@@ -132,7 +132,7 @@ export const ActionsContainer = ({
                         )}
                         {isJustSaved && (
                             <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
-                                <Badge icon="check" variant="primary">
+                                <Badge iconLeft="check" intent="brand">
                                     <FormattedMessage id="TR_SAVED" defaultMessage="Saved" />
                                 </Badge>
                             </Row>

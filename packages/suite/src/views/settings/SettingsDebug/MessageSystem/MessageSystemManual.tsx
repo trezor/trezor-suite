@@ -26,8 +26,8 @@ const FIELDS = {
             description: 'Severity level of the message',
             allowed: (
                 <>
-                    <Badge variant="info">info</Badge> <Badge variant="warning">warning</Badge>{' '}
-                    <Badge variant="destructive">critical</Badge>
+                    <Badge intent="info">info</Badge> <Badge intent="warning">warning</Badge>{' '}
+                    <Badge intent="critical">critical</Badge>
                 </>
             ),
         },
@@ -37,10 +37,10 @@ const FIELDS = {
             description: 'Where the message will appear',
             allowed: (
                 <>
-                    <Badge variant="tertiary">banner</Badge>
-                    <Badge variant="tertiary">context</Badge>
-                    <Badge variant="tertiary">modal</Badge>
-                    <Badge variant="tertiary">feature</Badge>
+                    <Badge intent="neutral">banner</Badge>
+                    <Badge intent="neutral">context</Badge>
+                    <Badge intent="neutral">modal</Badge>
+                    <Badge intent="neutral">feature</Badge>
                 </>
             ),
         },
