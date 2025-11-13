@@ -9010,10 +9010,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/babel-plugin-component-annotate@npm:2.22.7":
-  version: 2.22.7
-  resolution: "@sentry/babel-plugin-component-annotate@npm:2.22.7"
-  checksum: 10/20862d90185499fc9b0aa0644f890d7ba822c282d742f9adfce0ed0dcbec37af9cc47abf3a0da0a08c4bb259fa633e5c68879c944f9b59adddad42cea668e4bf
+"@sentry/babel-plugin-component-annotate@npm:2.23.1":
+  version: 2.23.1
+  resolution: "@sentry/babel-plugin-component-annotate@npm:2.23.1"
+  checksum: 10/976dce2c238a069648ba70e91071dd36319d486b144fa65ebb84c8e630590c681051cf8faa2d384c2c01dc32519544ff1eb460d073e14e611f9db7c2a1aa75de
   languageName: node
   linkType: hard
 
@@ -9037,19 +9037,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/bundler-plugin-core@npm:2.22.7":
-  version: 2.22.7
-  resolution: "@sentry/bundler-plugin-core@npm:2.22.7"
+"@sentry/bundler-plugin-core@npm:2.23.1":
+  version: 2.23.1
+  resolution: "@sentry/bundler-plugin-core@npm:2.23.1"
   dependencies:
     "@babel/core": "npm:^7.18.5"
-    "@sentry/babel-plugin-component-annotate": "npm:2.22.7"
+    "@sentry/babel-plugin-component-annotate": "npm:2.23.1"
     "@sentry/cli": "npm:2.39.1"
     dotenv: "npm:^16.3.1"
     find-up: "npm:^5.0.0"
     glob: "npm:^9.3.2"
     magic-string: "npm:0.30.8"
     unplugin: "npm:1.0.1"
-  checksum: 10/c9fd63c496504a770ea7280d14b3593a85df71d381fab0eb0ad47669dcd9b9872dadbb4f10fe11161f50cb5a0e51ff05a627a654b8f57dac7cf5e67aa4976ffe
+  checksum: 10/4bd6900e0eb2376294436b25cf3d3ecc549500b0b85e8e740a2b5b10800965836140032815c69fde8cb5e643de3547ad6807b77feb7ce06d8e86b6e45dc581c7
   languageName: node
   linkType: hard
 
@@ -9381,15 +9381,15 @@ __metadata:
   linkType: hard
 
 "@sentry/webpack-plugin@npm:^2.22.7":
-  version: 2.22.7
-  resolution: "@sentry/webpack-plugin@npm:2.22.7"
+  version: 2.23.1
+  resolution: "@sentry/webpack-plugin@npm:2.23.1"
   dependencies:
-    "@sentry/bundler-plugin-core": "npm:2.22.7"
+    "@sentry/bundler-plugin-core": "npm:2.23.1"
     unplugin: "npm:1.0.1"
     uuid: "npm:^9.0.0"
   peerDependencies:
     webpack: ">=4.40.0"
-  checksum: 10/bec3e879a7e101aa53d98d17b133d352f5fa04f506fd71de058023f2563e2fc9e406bdb30d631a7d78f3d18da820639581469d888257adac021991f5843512ff
+  checksum: 10/adf7b1061abb720e924d8c3df3b4ac2e04aedd3248fad9b8e5c5b087a92f90dc423b8f28fd8a8bf1ced72700697f1c22bae3252d9fc2538f919fc0b37c3f5af5
   languageName: node
   linkType: hard
 
@@ -14294,7 +14294,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: "npm:38.0.0"
+    electron: "npm:39.0.0"
   languageName: unknown
   linkType: soft
 
@@ -14348,7 +14348,7 @@ __metadata:
     "@types/ws": "npm:^8.5.13"
     chalk: "npm:^4.1.2"
     dotenv: "npm:^16.4.7"
-    electron: "npm:38.0.0"
+    electron: "npm:39.0.0"
     electron-devtools-installer: "npm:^4.0.0"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
@@ -14413,7 +14413,7 @@ __metadata:
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
     blake-hash: "npm:^2.0.0"
-    electron: "npm:38.0.0"
+    electron: "npm:39.0.0"
     electron-builder: "npm:26.0.3"
     openpgp: "npm:^6.2.2"
     usb: "npm:^2.15.0"
@@ -20639,7 +20639,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:38.0.0"
+    electron: "npm:39.0.0"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -20649,7 +20649,7 @@ __metadata:
   resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
   dependencies:
     "@trezor/eslint": "workspace:*"
-    electron: "npm:38.0.0"
+    electron: "npm:39.0.0"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -23079,16 +23079,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:38.0.0":
-  version: 38.0.0
-  resolution: "electron@npm:38.0.0"
+"electron@npm:39.0.0":
+  version: 39.0.0
+  resolution: "electron@npm:39.0.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/a245bf63fae60d1db85acddbe5787750e4d07acb273a1a5058163aee427fe07e52100b0d5a1e6b41efbdc1b398b6e7ec0fb3df75672e9148e95b31309d0c8f3a
+  checksum: 10/c2bb9f84bd06d12a90c650b2741ee618426e1ce20be18ff3708bf5f373e942e75e6a8cade94c15d96a06077f7f1fae6709b95f53784456d1db09f493928b47f3
   languageName: node
   linkType: hard
 
