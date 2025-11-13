@@ -99,7 +99,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
         await test.step('Try all % inputs on Solana', async () => {
             await page.selectDropdownOptionWithRetry(
                 tradingPage.accountDropdown,
-                tradingPage.accountOption('solana'),
+                tradingPage.accountOption('solana').first(),
             );
             await expect(tradingPage.swapAmountInputCurrencyTicker).toHaveText('SOL');
 
