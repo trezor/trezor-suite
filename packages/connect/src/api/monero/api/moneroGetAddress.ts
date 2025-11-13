@@ -125,11 +125,28 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         const responses: Address[] = [];
 
         for (let i = 0; i < this.params.length; i++) {
-            const response = await this._call(this.params[i]);
+            const batch = this.params[i];
+            // silently get address and compare with requested address
+            // or display as default inside popup
+            if (batch.show_display) {
+                const silent = await this._call({
+                    ...batch,
+                    show_display: false,
+                });
+                if (typeof batch.address === 'string') {
+                    if (batch.address !== silent.address) {
+                        throw ERRORS.TypedError('Method_AddressNotMatch');
+                    }
+                } else {
+                    batch.address = silent.address;
+                }
+            }
+
+            const response = await this._call(batch);
             responses.push({
                 address: response.address,
-                path: this.params[i].address_n,
-                serializedPath: getSerializedPath(this.params[i].address_n),
+                path: batch.address_n,
+                serializedPath: getSerializedPath(batch.address_n),
             });
 
             this.progress++;

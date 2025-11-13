@@ -19,6 +19,7 @@ const tdiFields = [
         label: 'Additional TX Public Keys (optional, comma-separated hex)',
         type: 'input',
         value: '',
+        optional: true,
     },
     {
         name: 'internal_output_index',
@@ -31,12 +32,14 @@ const tdiFields = [
         label: 'Subaddress Major (optional)',
         type: 'number',
         value: 0,
+        optional: true,
     },
     {
         name: 'sub_addr_minor',
         label: 'Subaddress Minor (optional)',
         type: 'number',
         value: 0,
+        optional: true,
     },
 ];
 
