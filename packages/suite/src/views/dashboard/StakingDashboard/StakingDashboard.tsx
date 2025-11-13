@@ -64,7 +64,7 @@ export const StakingDashboard = () => {
         return null;
     }
 
-    if (isEthStakingDisabled && isSolStakingDisabled) {
+    if (isEthStakingDisabled && isSolStakingDisabled && isAdaStakingDisabled) {
         return null;
     }
 

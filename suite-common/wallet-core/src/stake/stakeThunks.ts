@@ -1,14 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import {
     SupportedCardanoNetworkSymbols,
     SupportedEthereumNetworkSymbol,
     SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 import {
-    getCardanoStakingSymbols,
-    getSolanaStakingSymbols,
-    getStakingSymbols,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isTestnet,
@@ -32,7 +29,6 @@ import {
     TotalStakeRewardsByAccount,
     ValidatorsQueue,
 } from './stakeTypes';
-import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsSelectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
@@ -190,20 +186,21 @@ export const fetchEverstakeRewards = createThunk<
 
 export const initStakeDataThunk = createThunk(
     `${STAKE_MODULE}/initStakeDataThunk`,
-    (_, { getState, dispatch, extra }) => {
-        //because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
-        const accountsNetworks = selectAllNetworkSymbolsOfVisibleAccounts(getState());
-        const { account } = extra.selectors.selectSelectedAccount(getState());
-        const address = account?.descriptor;
+    (_, { getState, dispatch }) => {
+        // because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
 
-        //also join with enabled networks in case account was not yet discovered, but network is already enabled
         const enabledNetworks = selectEnabledNetworks(getState());
-        const mergedNetworks = [...new Set([...accountsNetworks, ...enabledNetworks])];
 
-        const ethereumBasedNetworksWithStaking = getStakingSymbols(mergedNetworks);
-        const solanaBasedNetworksWithStaking = getSolanaStakingSymbols(mergedNetworks);
-        const cardanoBasedNetworksWithStaking = getCardanoStakingSymbols(mergedNetworks);
+        if (
+            !networksCollection.some(
+                network =>
+                    network.networkType !== 'bitcoin' && enabledNetworks.includes(network.symbol),
+            )
+        ) {
+            return;
+        }
 
+        // TODO: change to accept only mainnet
         const createPromises = (
             networks: (
                 | SupportedSolanaNetworkSymbols
@@ -228,8 +225,6 @@ export const initStakeDataThunk = createThunk(
                                 isSupportedSolStakingNetworkSymbol(symbol) ||
                                 isSupportedAdaStakingNetworkSymbol(symbol)
                             ) {
-                                if (!address) return null;
-
                                 return dispatch(
                                     fetchEverstakeStakingInfo({
                                         symbol,
@@ -246,15 +241,9 @@ export const initStakeDataThunk = createThunk(
                 )
                 .filter(Boolean);
 
-        const ethPromises = createPromises(ethereumBasedNetworksWithStaking, EverstakeEndpointType);
-        const solPromises = createPromises(
-            solanaBasedNetworksWithStaking,
-            EverstakeAssetEndpointType,
-        );
-        const adaPromises = createPromises(
-            cardanoBasedNetworksWithStaking,
-            EverstakeAssetEndpointType,
-        );
+        const ethPromises = createPromises(['eth'], EverstakeEndpointType);
+        const solPromises = createPromises(['sol'], EverstakeAssetEndpointType);
+        const adaPromises = createPromises(['ada'], EverstakeAssetEndpointType);
 
         return Promise.all([...ethPromises, ...solPromises, ...adaPromises]);
     },
