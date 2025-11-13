@@ -15,7 +15,9 @@
         "build:ui": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack/ui.webpack.config.ts",
         "build:js": "yarn g:rimraf -rf dist && yarn build:node && yarn build:ui",
         "build": "yarn build:js",
-        "build:lib": "yarn build:js"
+        "build:lib": "yarn build:js",
+        "start": "node dist/bin.js",
+        "dev": "yarn build:lib && node dist/bin.js"
     },
     "devDependencies": {
         "@types/json-stable-stringify": "^1",

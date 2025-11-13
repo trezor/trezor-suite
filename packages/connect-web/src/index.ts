@@ -86,8 +86,7 @@ const impl = new TrezorConnectDynamic<
         if (!isCoreModeDisabled && isCoreModeAuto && IFRAME_ERRORS.includes(errorCode)) {
             // Check if WebUSB is available and enabled
             const webUsbUnavailableInBrowser = !(navigator as any)?.usb;
-            const webUsbDisabledInSettings =
-                impl.lastSettings?.transports?.includes('WebUsbTransport') === false;
+            const webUsbDisabledInSettings = impl.lastSettings?.apiTypes?.includes('usb') === false;
             if (
                 errorCode === 'Transport_Missing' &&
                 (webUsbUnavailableInBrowser || webUsbDisabledInSettings)

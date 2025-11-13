@@ -101,9 +101,9 @@ const initSettings = (settings: Partial<ConnectSettings> = {}) => {
         throw ERRORS.TypedError('Init_ManifestMissing');
     }
 
-    if (!_settings.transports?.length) {
+    if (!_settings.apiTypes?.length) {
         // default fallback for node
-        _settings.transports = ['BridgeTransport'];
+        _settings.apiTypes = ['usb'];
     }
 };
 
@@ -150,7 +150,7 @@ const call: CallMethod = async params => {
     }
 };
 
-const setTransports = (payload: Pick<ConnectSettings, 'transports'>) => {
+const setTransports = (payload: Pick<ConnectSettings, 'apiTypes'>) => {
     const core = coreManager.get();
     if (!core) {
         throw ERRORS.TypedError('Init_NotInitialized');

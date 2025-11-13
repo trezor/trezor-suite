@@ -70,7 +70,7 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
 
     assertDeviceListConnected(deviceList);
 
-    const isWebUsb = deviceList.getActiveTransports().some(t => t.type === 'WebUsbTransport');
+    const isWebUsb = deviceList.getActiveTransports().some(t => t?.type === 'WebUsbTransport');
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
     const isUsingPopup = DataManager.getSettings('popup');
@@ -472,11 +472,11 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage } = context;
     const responseID = message.id;
-    const { origin, env, useCoreInPopup, transports } = DataManager.getSettings();
+    const { origin, env, useCoreInPopup, apiTypes } = DataManager.getSettings();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
-        deviceList.init({ transports });
+        deviceList.init({ apiTypes });
     }
     await deviceList.pendingConnection();
 
@@ -934,7 +934,7 @@ const handleDeviceSelectionChanges = (context: CoreContext, interruptDevice?: De
     const promiseExists = uiPromises.exists(UI.RECEIVE_DEVICE);
     if (promiseExists && deviceList.isConnected()) {
         const onlyDevice = deviceList.getOnlyDevice();
-        const isWebUsb = deviceList.getActiveTransports().some(t => t.type === 'WebUsbTransport');
+        const isWebUsb = deviceList.getActiveTransports().some(t => t?.type === 'WebUsbTransport');
 
         if (onlyDevice && !isWebUsb) {
             // there is only one device. use it
@@ -1085,17 +1085,15 @@ export class Core extends EventEmitter {
 
             case TRANSPORT.DISABLE_WEBUSB: {
                 const settings = DataManager.getSettings();
-                const transports = settings.transports?.filter(t => t !== 'WebUsbTransport');
-                if (transports && !transports.includes('BridgeTransport')) {
-                    transports.unshift('BridgeTransport');
-                }
-                settings.transports = transports;
+                // When disabling WebUSB, ensure only UDP is available if USB was enabled
+                const apiTypes = settings.apiTypes?.filter(t => t !== 'usb') || ['udp'];
+                settings.apiTypes = apiTypes;
 
                 resetTransports(this.getCoreContext());
                 break;
             }
             case TRANSPORT.SET_TRANSPORTS:
-                DataManager.getSettings().transports = message.payload.transports;
+                DataManager.getSettings().apiTypes = message.payload.apiTypes;
                 resetTransports(this.getCoreContext());
                 break;
 
@@ -1251,11 +1249,11 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect, coreMode } =
+        const { apiTypes, pendingTransportEvent, transportReconnect, coreMode } =
             DataManager.getSettings();
 
         try {
-            this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+            this.deviceList.init({ apiTypes, pendingTransportEvent, transportReconnect });
         } catch (error) {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             throttlePromise.reject(error);
@@ -1275,10 +1273,10 @@ export class Core extends EventEmitter {
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = DataManager.getSettings();
+    const { apiTypes, pendingTransportEvent, transportReconnect } = DataManager.getSettings();
 
     try {
-        await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+        await deviceList.init({ apiTypes, pendingTransportEvent, transportReconnect });
     } catch (error) {
         // do nothing
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));

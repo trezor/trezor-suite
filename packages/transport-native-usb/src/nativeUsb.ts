@@ -1,20 +1,24 @@
 import { WebUSB } from '@trezor/react-native-usb';
-import { AbstractApiTransport, Transport as AbstractTransport, UsbApi } from '@trezor/transport';
+import { UnifiedTransport, UsbApi } from '@trezor/transport';
+import { UnifiedTransportParams } from '@trezor/transport/src/transports/unified';
 
-export class NativeUsbTransport extends AbstractApiTransport {
-    public name = 'NativeUsbTransport' as const;
+export class NativeUsbTransport extends UnifiedTransport {
+    // Note: name is 'UnifiedTransport' from parent class
 
-    constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
+    constructor(params: Omit<UnifiedTransportParams, 'apis'>) {
         const { logger, ...rest } = params;
 
         super({
-            api: new UsbApi({
-                usbInterface: new WebUSB(),
-                logger:
-                    process.env.EXPO_PUBLIC_IS_NATIVE_USB_LOGGER_ENABLED === 'true'
-                        ? console
-                        : logger,
-            }),
+            apis: [
+                new UsbApi({
+                    usbInterface: new WebUSB(),
+                    logger:
+                        process.env.EXPO_PUBLIC_IS_NATIVE_USB_LOGGER_ENABLED === 'true'
+                            ? console
+                            : logger,
+                    debugLink: false,
+                }),
+            ],
             logger,
             ...rest,
         });

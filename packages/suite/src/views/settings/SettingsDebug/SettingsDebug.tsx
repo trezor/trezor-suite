@@ -70,7 +70,7 @@ export const SettingsDebug = () => {
                     <TransportBackends />
                 </SettingsSection>
             )}
-            <SettingsSection title="Transport clients">
+            <SettingsSection title="Transport">
                 <Transport />
             </SettingsSection>
             {isDesktop() && (

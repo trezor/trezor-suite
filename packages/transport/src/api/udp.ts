@@ -1,5 +1,3 @@
-import UDP from 'dgram';
-
 import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiAwaitedResult, AbstractApiConstructorParams } from './abstract';
@@ -7,6 +5,24 @@ import { DEVICE_TYPE } from '../constants';
 import * as ERRORS from '../errors';
 import { DescriptorApiLevel, PathInternal } from '../types';
 import { readMessageBuffer } from '../utils/readMessageBuffer';
+
+// Define types locally to avoid importing from dgram in browser environments
+type RemoteInfo = {
+    address: string;
+    family: 'IPv4' | 'IPv6';
+    port: number;
+    size: number;
+};
+
+type SocketType = {
+    send(msg: Buffer, port: number, address: string, callback: (error: Error | null) => void): void;
+    addListener(event: 'message', listener: (msg: Buffer, rinfo: RemoteInfo) => void): void;
+    addListener(event: 'error', listener: (err: Error) => void): void;
+    removeListener(event: 'message', listener: (msg: Buffer, rinfo: RemoteInfo) => void): void;
+    removeListener(event: 'error', listener: (err: Error) => void): void;
+    removeAllListeners(): void;
+    close(): void;
+};
 
 const PING = Buffer.from('PINGPING');
 const PONG = Buffer.from('PONGPONG');
@@ -16,12 +32,10 @@ export class UdpApi extends AbstractApi {
 
     protected devices: DescriptorApiLevel[] = [];
     private listenAbortController = new AbortController();
-    protected interface = UDP.createSocket({
-        type: 'udp4',
-        signal: this.listenAbortController.signal,
-    });
+    protected interface?: SocketType;
     private debugLink?: boolean;
     private readBuffer: ReturnType<typeof readMessageBuffer>;
+    private interfacePromise?: Promise<SocketType>;
 
     constructor({
         logger,
@@ -30,8 +44,36 @@ export class UdpApi extends AbstractApi {
         super({ logger, type: 'udp' });
         this.debugLink = debugLink;
         this.readBuffer = readMessageBuffer();
+    }
 
-        const onMessage = (message: Buffer, info: UDP.RemoteInfo) => {
+    private async getInterface(): Promise<SocketType> {
+        if (this.interface) {
+            return this.interface;
+        }
+
+        if (!this.interfacePromise) {
+            this.interfacePromise = this.initInterface();
+        }
+
+        return this.interfacePromise;
+    }
+
+    private async initInterface(): Promise<SocketType> {
+        // Dynamic import to avoid loading dgram in browser environments
+        if (typeof window !== 'undefined') {
+            throw new Error('UDP transport is not supported in browser environment');
+        }
+        // todo: looool
+        // Dynamic module name to prevent webpack from trying to resolve at build time
+        const moduleName = ['d', 'g', 'r', 'a', 'm'].join('');
+        const dgram = await import(/* webpackIgnore: true */ moduleName);
+
+        this.interface = dgram.default.createSocket({
+            type: 'udp4',
+            signal: this.listenAbortController.signal,
+        });
+
+        const onMessage = (message: Buffer, info: RemoteInfo) => {
             if (message.compare(PONG) === 0) {
                 return;
             }
@@ -40,12 +82,15 @@ export class UdpApi extends AbstractApi {
             this.readBuffer.onMessage(id, message);
             this.logger?.debug('udp: globalOnMessage log:', message.toString('hex'));
         };
-        this.interface.addListener('message', onMessage);
+        this.interface!.addListener('message', onMessage);
+
+        return this.interface!;
     }
 
-    listen() {
+    async listen() {
         if (this.listening) return;
         this.listening = true;
+        await this.getInterface();
         this.listenLoop();
     }
 
@@ -57,8 +102,10 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public write(path: string, buffer: Buffer, signal?: AbortSignal) {
+    public async write(path: string, buffer: Buffer, signal?: AbortSignal) {
         const [hostname, port] = path.split(':');
+
+        const iface = await this.getInterface();
 
         return new Promise<AbstractApiAwaitedResult<'write'>>(resolve => {
             const listener = () => {
@@ -80,7 +127,7 @@ export class UdpApi extends AbstractApi {
                 buffer.copy(chunk);
             }
 
-            this.interface.send(chunk, Number.parseInt(port, 10), hostname, err => {
+            iface.send(chunk, Number.parseInt(port, 10), hostname, (err: Error | null) => {
                 signal?.removeEventListener('abort', listener);
 
                 if (signal?.aborted) {
@@ -113,11 +160,12 @@ export class UdpApi extends AbstractApi {
             throw new Error(ERRORS.ABORTED_BY_SIGNAL);
         }
 
+        const iface = await this.getInterface();
         const pinged = new Promise<boolean>(resolve => {
             /* eslint-disable @typescript-eslint/no-use-before-define */
             const onClear = () => {
-                this.interface.removeListener('error', onError);
-                this.interface.removeListener('message', onMessage);
+                iface.removeListener('error', onError);
+                iface.removeListener('message', onMessage);
                 clearTimeout(timeout);
                 signal?.removeEventListener('abort', onError);
             };
@@ -126,7 +174,7 @@ export class UdpApi extends AbstractApi {
                 resolve(false);
                 onClear();
             };
-            const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
+            const onMessage = (message: Buffer, _info: RemoteInfo) => {
                 if (message.compare(PONG) === 0) {
                     resolve(true);
                     onClear();
@@ -134,8 +182,8 @@ export class UdpApi extends AbstractApi {
             };
 
             signal?.addEventListener('abort', onError);
-            this.interface.addListener('error', onError);
-            this.interface.addListener('message', onMessage);
+            iface.addListener('error', onError);
+            iface.addListener('message', onMessage);
 
             // TODO temporarily increased from 1s to 4s until success screen is solved on fw side
             const timeout = setTimeout(onError, 4000);
@@ -210,8 +258,10 @@ export class UdpApi extends AbstractApi {
     }
 
     public dispose() {
-        this.interface.removeAllListeners();
-        this.interface.close();
+        if (this.interface) {
+            this.interface.removeAllListeners();
+            this.interface.close();
+        }
         this.listening = false;
         this.listenAbortController.abort();
     }

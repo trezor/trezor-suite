@@ -33,7 +33,7 @@ export type TransportEvent =
 
 export interface TransportSetTransports {
     type: typeof TRANSPORT.SET_TRANSPORTS;
-    payload: Pick<ConnectSettings, 'transports'>;
+    payload: Pick<ConnectSettings, 'apiTypes'>;
 }
 
 export interface TransportDisableWebUSB {

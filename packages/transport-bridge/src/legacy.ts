@@ -10,7 +10,6 @@ import {
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { UsbApi } from '@trezor/transport/src/api/usb';
-import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { callThpMessage, receiveThpMessage, sendThpMessage } from '@trezor/transport/src/thp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
@@ -26,11 +25,17 @@ import { error, success, unknownError } from '@trezor/transport/src/utils/result
 import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
 import { Log } from '@trezor/utils';
 
-export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
+// apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log
+export const createLegacyBridge = ({
+    apiArg,
+    logger,
+    sessionsClient,
+}: {
+    apiArg: 'usb' | 'udp' | AbstractApi;
+    logger?: Log;
+    sessionsClient: SessionsClient;
+}) => {
     let api: AbstractApi;
-
-    const sessionsBackground = new SessionsBackground();
-    const sessionsClient = new SessionsClient(sessionsBackground);
 
     if (apiArg === 'usb' && logger?.enabled) {
         // https://libusb.sourceforge.io/api-1.0/group__libusb__lib.html#ga2d6144203f0fc6d373677f6e2e89d2d2
@@ -410,7 +415,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     };
 
     const dispose = () => {
-        sessionsBackground.dispose();
+        sessionsClient.dispose();
         api.dispose();
         sessionsClient.dispose();
     };

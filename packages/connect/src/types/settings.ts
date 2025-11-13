@@ -1,7 +1,7 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
-import type { Transport } from '@trezor/transport';
+import type { Transport, ApiType } from '@trezor/transport';
 import { PartialRecord } from '@trezor/type-utils';
 
 import type { FirmwareUpdateSource } from '../types/firmware';
@@ -24,7 +24,7 @@ export type LocalFirmwares = { firmwareDir: string; firmwareList: string[] };
 // omit transports which are not implemented in @trezor/connect
 type KnownTransport = Exclude<
     Transport['name'],
-    'NativeUsbTransport' | 'BluetoothTransport' | 'NativeBluetoothTransport'
+    'NativeUsbTransport' | 'BluetoothTransport' | 'NativeBluetoothTransport' | 'UnifiedTransport'
 >;
 export type ThpSettings = {
     hostName?: string; // displayed on Trezor during pairing process.
@@ -45,7 +45,7 @@ export interface ConnectSettingsPublic {
     debug?: boolean;
     popup?: boolean;
     transportReconnect?: boolean;
-    transports?: ConnectSettingsTransport[];
+    apiTypes?: ApiType[]; // Specify which API types to use: 'usb', 'udp', 'bluetooth'
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;

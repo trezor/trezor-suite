@@ -1,24 +1,14 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import { TRANSPORT, Transport } from '@trezor/transport';
-import type { ApiType as TransportApiType } from '@trezor/transport/src/types';
+import { SessionsBackground, SessionsClient, TRANSPORT, Transport } from '@trezor/transport';
 import { Descriptor } from '@trezor/transport/src/types';
-import {
-    TypedEmitter,
-    arrayDistinct,
-    createDeferred,
-    getSynchronize,
-    isNotUndefined,
-    resolveAfter,
-    typedObjectKeys,
-} from '@trezor/utils';
+import { TypedEmitter, createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { DEVICE, DecodedTrezorPushNotification, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
 import { ConnectSettings, DeviceUniquePath, StaticSessionId, asDeviceUniquePath } from '../types';
 import { createTransportList } from './TransportList';
-import { TransportManager } from './TransportManager';
 import { initLog } from '../utils/debug';
 
 const createAuthPenaltyManager = (priority: number) => {
@@ -49,11 +39,12 @@ const createAuthPenaltyManager = (priority: number) => {
     return { get, add, remove, clear };
 };
 
-const getTransportInfo = (transport: Transport) => ({
-    apiType: transport.apiType,
-    type: transport.name,
-    version: transport.version,
-    outdated: transport.isOutdated,
+const getTransportInfo = (transport: Transport): TransportInfo => ({
+    // todo: I don't like this, imho fallback shouldn't be needed here.
+    apiType: transport?.apiType ?? 'usb',
+    type: transport?.name ?? 'UnifiedTransport',
+    version: transport?.version ?? '',
+    outdated: transport?.isOutdated ?? false,
 });
 
 interface DeviceListEvents {
@@ -90,14 +81,17 @@ type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | 'manifest'
 };
 type InitParams = Pick<
     ConnectSettings,
-    'transports' | 'pendingTransportEvent' | 'transportReconnect'
->;
+    'apiTypes' | 'pendingTransportEvent' | 'transportReconnect'
+> & {
+    // For testing only: inject transports directly instead of creating them
+    _transports?: Transport[];
+};
 
 export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
-    private readonly transportManagers: Partial<Record<TransportApiType, TransportManager>> = {};
+    // Single unified transport managing all API types
+    private transport?: Transport;
+    private transportReconnect = false;
 
-    // array of transport that might be used in this environment
-    private transports: Transport[] = [];
     private devices: Device[] = [];
     private deviceCounter = Date.now();
 
@@ -106,26 +100,17 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private updateTransports;
 
-    private getConnectedTransports() {
-        return Object.values(this.transportManagers)
-            .map(manager => manager.get())
-            .filter(isNotUndefined);
-    }
-
     isConnected(): this is DeviceList {
-        return !!this.getConnectedTransports().length;
+        return !!this.transport;
     }
 
     pendingConnection() {
-        const pending = Object.values(this.transportManagers)
-            .map(manager => manager.pending())
-            .filter(isNotUndefined);
-
-        if (pending.length) return Promise.all(pending).then(() => {});
+        // Transport initialization is synchronous now
+        return undefined;
     }
 
     getActiveTransports() {
-        return this.getConnectedTransports().map(getTransportInfo);
+        return this.transport ? [getTransportInfo(this.transport)] : [];
     }
 
     constructor({ messages, priority, debug, manifest }: ConstructorParams) {
@@ -135,10 +120,15 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
+
+        const sessionsBackground = new SessionsBackground();
+        const sessionsClient = new SessionsClient(sessionsBackground);
+
         this.updateTransports = createTransportList({
             messages,
             logger: transportLogger,
             id: manifest?.appName || manifest?.appUrl || 'unknown app',
+            sessionsClient,
         });
     }
 
@@ -154,7 +144,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         if (!stillConnected) {
             return;
         }
-
         this.devices.push(device);
 
         device.lifecycle.on(DEVICE.CONNECT, () => this.emit(DEVICE.CONNECT, device));
@@ -179,36 +168,56 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.emit(device.isUnacquired() ? DEVICE.CONNECT_UNACQUIRED : DEVICE.CONNECT, device);
     }
 
-    private getOrCreateTransportManager(apiType: TransportApiType) {
-        if (!this.transportManagers[apiType]) {
-            const manager = new TransportManager(this.initializeTransport.bind(this));
-            manager.on(TRANSPORT.START, transport =>
-                this.emit(TRANSPORT.START, getTransportInfo(transport)),
+    async init({
+        apiTypes,
+        transportReconnect,
+        pendingTransportEvent,
+        _transports,
+    }: InitParams = {}) {
+        this.transportReconnect = transportReconnect ?? false;
+
+        // For tests: use injected transport if provided
+        if (_transports && _transports.length > 0) {
+            this.transport = _transports[0];
+        } else {
+            // Create or update transport
+            const transports = await this.updateTransports(
+                this.transport ? [this.transport] : [],
+                apiTypes,
             );
-            manager.on(TRANSPORT.ERROR, error => this.emit(TRANSPORT.ERROR, { apiType, error }));
-            this.transportManagers[apiType] = manager;
+            this.transport = transports[0];
         }
 
-        return this.transportManagers[apiType];
-    }
+        if (!this.transport) {
+            this.emit(TRANSPORT.ERROR, { error: 'No transport available' });
+            return;
+        }
 
-    async init({ transports, transportReconnect, pendingTransportEvent }: InitParams = {}) {
-        // throws when unknown transport is requested, in that case nothing is changed
-        this.transports = this.updateTransports(this.transports, transports);
+        try {
+            const initResult = await this.transport.init();
+            if (!initResult.success) {
+                throw new Error(initResult.error);
+            }
 
-        const promises = this.transports
-            .map(t => t.apiType)
-            .concat(typedObjectKeys(this.transportManagers))
-            .filter(arrayDistinct)
-            .map(apiType =>
-                this.getOrCreateTransportManager(apiType).init({
-                    transports: this.transports.filter(t => t.apiType === apiType),
-                    transportReconnect,
-                    pendingTransportEvent,
-                }),
+            await this.initializeTransport(
+                this.transport,
+                pendingTransportEvent ?? false,
+                new AbortController().signal,
             );
+            this.emit(TRANSPORT.START, getTransportInfo(this.transport));
+        } catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : 'Transport initialization failed';
+            this.emit(TRANSPORT.ERROR, { error: errorMessage });
 
-        await Promise.all(promises);
+            // If reconnection is enabled, retry after delay
+            if (this.transportReconnect) {
+                setTimeout(
+                    () => this.init({ apiTypes, transportReconnect, pendingTransportEvent }),
+                    1000,
+                );
+            }
+        }
     }
 
     private async initializeTransport(
@@ -225,6 +234,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
          * where transport.acquire, transport.release is called
          */
         transport.on(TRANSPORT.DEVICE_CONNECTED, d => this.onDeviceConnected(d, transport));
+        transport.listen();
 
         // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
         // event until we read descriptors for the first time
@@ -237,7 +247,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const descriptors = enumerateResult.payload;
 
         transport.handleDescriptorsChange(descriptors);
-        transport.listen();
 
         if (pendingTransportEvent && descriptors.length) {
             await this.waitForDevices(transport, signal);
@@ -314,20 +323,19 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     async dispose() {
         this.removeAllListeners();
 
-        const promises = Object.values(this.transportManagers).map(manager => manager.dispose());
-
-        await Promise.all(promises);
+        if (this.transport) {
+            this.transport.stop();
+            this.transport = undefined;
+        }
     }
 
     async enumerate() {
-        const promises = this.getConnectedTransports().map(async transport => {
-            const res = await transport.enumerate();
-            if (res.success) {
-                transport.handleDescriptorsChange(res.payload);
-            }
-        });
+        if (!this.transport) return;
 
-        await Promise.all(promises);
+        const res = await this.transport.enumerate();
+        if (res.success) {
+            this.transport.handleDescriptorsChange(res.payload);
+        }
     }
 
     addAuthPenalty(device: Device) {

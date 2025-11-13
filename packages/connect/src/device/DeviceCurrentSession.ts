@@ -147,6 +147,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         protocol: this.device.protocol,
                         thpState: this.device.getThpState(),
                         signal: abort,
+                        apiType: this.device.descriptor.apiType,
                     }),
                 { timeout: 500 },
             ).catch(() => {});
@@ -330,6 +331,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             session: this.session,
             protocol: this.device.protocol,
             thpState: this.device.getThpState(),
+            apiType: this.device.descriptor.apiType,
             ...options,
         });
 
@@ -353,6 +355,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             session: this.session,
             protocol: this.device.protocol,
             thpState: this.device.getThpState(),
+            apiType: this.device.descriptor.apiType,
             ...options,
         });
 
@@ -366,6 +369,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             session: this.session,
             protocol: this.device.protocol,
             thpState: this.device.getThpState(),
+            apiType: this.device.descriptor.apiType,
             ...options,
         });
 

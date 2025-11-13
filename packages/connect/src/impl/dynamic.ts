@@ -136,9 +136,9 @@ export class TrezorConnectDynamic<
         }
     }
 
-    public setTransports({ transports }: SetTransports) {
-        this.lastSettings = { ...this.lastSettings, transports } as typeof this.lastSettings;
-        this.getTarget().setTransports({ transports });
+    public setTransports({ apiTypes }: SetTransports) {
+        this.lastSettings = { ...this.lastSettings, apiTypes } as typeof this.lastSettings;
+        this.getTarget().setTransports({ apiTypes });
     }
 
     public async call(params: CallMethodPayload) {

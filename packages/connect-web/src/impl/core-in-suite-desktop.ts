@@ -115,8 +115,8 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         }
 
         // defaults
-        if (!newSettings.transports?.length) {
-            newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
+        if (!newSettings.apiTypes?.length) {
+            newSettings.apiTypes = ['usb', 'udp'];
         }
         this._settings = newSettings;
 

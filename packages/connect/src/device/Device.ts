@@ -246,7 +246,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.sessionAcquired = null;
 
-        transport.on(TRANSPORT.STOPPED, this.onTransportStopped);
+        transport.on(TRANSPORT.STOPPED, () => {
+            console.log('==== Transport stopped for device', this.transportPath);
+            this.onTransportStopped();
+        });
         transport.deviceEvents.on(this.descriptor.path, this.onTransportDeviceEvent);
     }
 
@@ -308,7 +311,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const previous = this.transport.getDescriptor(this.descriptor.path)?.session ?? null;
 
         this.acquirePromise = this.transport
-            .acquire({ input: { path: this.descriptor.path, previous } })
+            .acquire({
+                input: { path: this.descriptor.path, previous },
+                apiType: this.descriptor.apiType,
+            })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
             .then(result => {
                 if (result.success) {
@@ -351,6 +357,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 .subscribe({
                     path: this.descriptor.id,
                     channels: ['battery-level', 'trezor-push-notification'],
+                    apiType: this.descriptor.apiType,
                 })
                 .then(result => {
                     if (result.success) {
@@ -383,7 +390,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const sessionPromise = this.getSessionChangePromise();
 
         this.releasePromise = this.transport
-            .release({ session: this.sessionAcquired, path: this.descriptor.path })
+            .release({
+                session: this.sessionAcquired,
+                path: this.descriptor.path,
+                apiType: this.descriptor.apiType,
+            })
             .then(result => this.waitAndCompareSession(result, sessionPromise))
             .then(result => {
                 if (result.success) {

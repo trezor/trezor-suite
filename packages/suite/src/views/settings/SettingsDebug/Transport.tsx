@@ -3,45 +3,54 @@ import { useMemo } from 'react';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { ArrayElement } from '@trezor/type-utils';
+import type { ApiType } from '@trezor/transport';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { DebugModeOptions } from 'src/reducers/suite/suiteReducer';
 import { selectActiveTransports } from 'src/selectors/suite/suiteSelectors';
 
-type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
+type Transport = 'usb' | 'udp' | 'bluetooth';
 
 type TransportMenuItem = {
     name: Transport;
+    label: string;
     description: string;
     active?: boolean;
     checked: boolean;
 };
 
-const TRANSPORTS_WEB = ['BridgeTransport', 'WebUsbTransport'] as const;
-const TRANSPORTS_DESKTOP = ['BridgeTransport', 'NodeUsbTransport', 'UdpTransport'] as const;
-const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
-    BridgeTransport:
-        'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21328/ or https://localhost:21325/.\
-        This is the most general transport that may be used for both desktop and web version of Trezor Suite.',
-    WebUsbTransport: 'Similar to NodeUsbTransport but using WebUSB API. Supported only in Chrome.',
-    NodeUsbTransport: 'Direct access to usb using node.js implementation.',
-    UdpTransport: 'Direct communication with emulators over udp.',
+const TRANSPORTS_WEB: Transport[] = ['usb'];
+const TRANSPORTS_DESKTOP: Transport[] = ['usb', 'udp'];
+const TRANSPORT_INFO: Record<Transport, { label: string; description: string }> = {
+    usb: {
+        label: 'USB',
+        description:
+            'USB transport for connecting to Trezor devices. Uses WebUSB in browsers or native USB in desktop apps. Can connect through Trezor Bridge (http://127.0.0.1:21328/ or https://localhost:21325/) or directly.',
+    },
+    udp: {
+        label: 'UDP (Emulator)',
+        description: 'Direct communication with emulators over UDP protocol.',
+    },
+    bluetooth: {
+        label: 'Bluetooth',
+        description: 'Wireless connection to Trezor devices via Bluetooth.',
+    },
 };
 
 const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[] => {
     const activeTransports = useSelector(selectActiveTransports);
-    const debugTransports = useSelector(state => state.suite.settings.debug.transports);
+    const debugTransports = useSelector(state => state.suite.settings.debug.apiTypes);
 
     return useMemo(
         () =>
             transports.map(type => ({
                 name: type,
-                description: TRANSPORT_DESCRIPTIONS[type],
-                active: activeTransports.some(a => a.type === type),
-                checked: debugTransports?.includes(type),
+                label: TRANSPORT_INFO[type].label,
+                description: TRANSPORT_INFO[type].description,
+                // UnifiedTransport handles all transport types, so mark as active if any transport is active
+                active: activeTransports.length > 0,
+                checked: debugTransports?.includes(type) ?? false,
             })),
         [transports, activeTransports, debugTransports],
     );
@@ -56,8 +65,8 @@ export const Transport = () => {
         <>
             <SectionItem data-testid="@settings/debug/transport">
                 <TextColumn
-                    title="Transport clients"
-                    description="You may override TrezorConnect default settings here. Select your preferred transport clients that are to be used. You will need to reload after changes"
+                    title="Transport apis"
+                    description="You may override TrezorConnect default settings here. Select your preferred transport apis that are to be used. You will need to reload after changes"
                 />
             </SectionItem>
             {/* todo: make it drag and drop sortable */}
@@ -67,7 +76,7 @@ export const Transport = () => {
                     data-testid={`@settings/debug/transport/${transport.name}`}
                 >
                     <TextColumn
-                        title={`${transport.name}${transport.active ? ' (Active)' : ''}`}
+                        title={`${transport.label}${transport.active ? ' (Active)' : ''}`}
                         description={transport.description}
                     />
                     <ActionColumn>
@@ -77,8 +86,10 @@ export const Transport = () => {
                                 const nextTransports = items
                                     .filter(t => (t.name === transport.name) !== t.checked)
                                     .map(t => t.name);
-                                dispatch(setDebugMode({ transports: nextTransports }));
-                                TrezorConnect.setTransports({ transports: nextTransports });
+                                dispatch(setDebugMode({ apiTypes: nextTransports }));
+                                // Use the selected apiTypes directly (they're already ApiType values)
+                                const apiTypes: ApiType[] = nextTransports;
+                                TrezorConnect.setTransports({ apiTypes });
                             }}
                         />
                     </ActionColumn>

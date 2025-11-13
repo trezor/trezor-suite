@@ -65,7 +65,7 @@ describe('DeviceList', () => {
         await expect(() =>
             list.init({
                 // @ts-expect-error
-                transports: ['FooBarTransport'],
+                _transports: ['FooBarTransport'],
             }),
         ).rejects.toThrow('unexpected type: FooBarTransport');
     });
@@ -74,14 +74,14 @@ describe('DeviceList', () => {
         await expect(() =>
             list.init({
                 // @ts-expect-error
-                transports: [{}, () => {}, [], String, 1, 'meow-non-existent'],
+                _transports: [{}, () => {}, [], String, 1, 'meow-non-existent'],
             }),
         ).rejects.toThrow('DeviceList.init: transports[] of unexpected type');
     });
 
     it('.init() accepts transports in form of transport class', async () => {
         const classConstructor = createTestTransportClass();
-        await expect(list.init({ transports: [classConstructor] })).resolves.not.toThrow();
+        await expect(list.init({ _transports: [classConstructor] })).resolves.not.toThrow();
     });
 
     it('.init() throws async error from transport.init()', async () => {
@@ -94,7 +94,7 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await list.pendingConnection();
@@ -111,7 +111,7 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await list.pendingConnection();
@@ -124,7 +124,7 @@ describe('DeviceList', () => {
             openDevice: () => Promise.resolve({ success: false, error: 'wrong previous session' }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
@@ -136,7 +136,7 @@ describe('DeviceList', () => {
             openDevice: () => Promise.resolve({ success: false, error: 'device not found' }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         expect(eventsSpy).toHaveBeenCalledTimes(1);
@@ -152,7 +152,7 @@ describe('DeviceList', () => {
                 }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
@@ -167,7 +167,7 @@ describe('DeviceList', () => {
             }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         // note: acquire - release - connect should be ok.
@@ -201,7 +201,7 @@ describe('DeviceList', () => {
             type: 'usb2',
         });
 
-        list.init({ transports: [transportA, transportB], pendingTransportEvent: true });
+        list.init({ _transports: [transportA, transportB], pendingTransportEvent: true });
 
         await list.pendingConnection();
 
@@ -218,7 +218,7 @@ describe('DeviceList', () => {
     it('.init() without pendingTransportEvent (device connected after start)', async () => {
         const transport = createTestTransport();
 
-        list.init({ transports: [transport] });
+        list.init({ _transports: [transport] });
         await list.pendingConnection();
         // transport start emitted almost immediately (after first enumerate)
         expect(eventsSpy).toHaveBeenCalledTimes(1);
@@ -241,7 +241,7 @@ describe('DeviceList', () => {
             },
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         // emit TRANSPORT.CHANGE 3 times
@@ -284,7 +284,7 @@ describe('DeviceList', () => {
             },
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ _transports: [transport], pendingTransportEvent: true });
         await list.pendingConnection();
 
         const device = list.getOnlyDevice();

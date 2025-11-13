@@ -1,11 +1,12 @@
-import { AbstractApiTransport, Transport as AbstractTransport } from '@trezor/transport';
+import { UnifiedTransport } from '@trezor/transport';
 
 import { BluetoothApi } from './api/BluetoothApi';
+import { UnifiedTransportParams } from '@trezor/transport/src/transports/unified';
 
-export class NativeBluetoothTransport extends AbstractApiTransport {
-    public name = 'NativeBluetoothTransport' as const;
+export class NativeBluetoothTransport extends UnifiedTransport {
+    // Note: name is 'UnifiedTransport' from parent class
 
-    constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
+    constructor(params: Omit<UnifiedTransportParams, 'apis'>) {
         const { logger, ...rest } = params;
 
         const api = new BluetoothApi({
@@ -21,6 +22,6 @@ export class NativeBluetoothTransport extends AbstractApiTransport {
             this.emit('battery-level', event);
         });
 
-        super({ api, ...rest });
+        super({ ...rest, apis: [api], logger });
     }
 }

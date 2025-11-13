@@ -11,6 +11,7 @@
 
 import { TimerId } from '@trezor/type-utils';
 import { Deferred, TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
+import { WebsocketClient, WebsocketResponse } from '@trezor/websocket-client';
 
 import type {
     AcquireDoneRequest,
@@ -28,6 +29,41 @@ import type { Descriptor, PathInternal, Success } from '../types';
 import { PathPublic, Session } from '../types';
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
+
+type WebsocketSessionsEvents = {
+    'sessions-descriptors': Descriptor[];
+    'sessions-releaseRequest': Descriptor;
+};
+
+/**
+ * WebSocket client that handles sessions-specific server-initiated events.
+ * Extends WebsocketClient to emit custom events for sessions updates.
+ */
+class SessionsWebsocketClient extends WebsocketClient<WebsocketSessionsEvents> {
+    protected onMessage(message: WebsocketResponse) {
+        try {
+            const data = JSON.parse(message.toString());
+
+            // Handle server-initiated events (no RPC id field)
+            if (!data.id && data.type) {
+                switch (data.type) {
+                    case 'sessions-descriptors':
+                        this.emit('sessions-descriptors', data.payload);
+                        return;
+                    case 'sessions-releaseRequest':
+                        this.emit('sessions-releaseRequest', data.payload);
+                        return;
+                }
+            }
+
+            // Fall through to default RPC response handling
+            super.onMessage(message);
+        } catch (error) {
+            // If parsing fails, let parent handle it
+            super.onMessage(message);
+        }
+    }
+}
 
 // in nodeusb, enumeration operation takes ~3 seconds
 const lockDuration = 1000 * 4;
@@ -55,17 +91,75 @@ export class SessionsBackground
     private lastSessionId = 0;
     private lastPathId = 0;
 
+    // WebSocket proxy support
+    private wsClient?: SessionsWebsocketClient;
+    private wsUrl?: string;
+
+    constructor(wsUrl?: string) {
+        super();
+        if (wsUrl) {
+            this.wsUrl = wsUrl;
+            this.initializeWebSocket();
+        }
+    }
+
+    /**
+     * Expose lightweight debug info for diagnostics.
+     * (Intentionally read-only snapshot; does not leak private mutable state.)
+     */
+    public getDebugInfo() {
+        return {
+            wsUrl: this.wsUrl,
+            wsConnected: this.wsClient?.isConnected() ?? false,
+            descriptorsCount: Object.keys(this.descriptors).length,
+            lastSessionId: this.lastSessionId,
+            locksQueueSize: this.locksQueue.length,
+            descriptors: Object.values(this.descriptors).map(d => ({
+                path: d.path,
+                session: d.session,
+                sessionOwner: d.sessionOwner,
+            })),
+        };
+    }
+
+    /**
+     * Initialize WebSocket connection.
+     * Runs asynchronously in the background. WebsocketClient handles reconnection automatically via keepAlive.
+     */
+    private async initializeWebSocket() {
+        if (!this.wsUrl) return;
+
+        try {
+            this.wsClient = new SessionsWebsocketClient({
+                url: this.wsUrl,
+                timeout: 20000,
+                pingTimeout: 50000,
+                keepAlive: true, // Automatic reconnection handled by base class
+            });
+
+            // Forward server events to local listeners
+            this.wsClient.on('sessions-descriptors', descriptors => {
+                this.emit('descriptors', descriptors);
+            });
+            this.wsClient.on('sessions-releaseRequest', descriptor => {
+                this.emit('releaseRequest', descriptor);
+            });
+
+            await this.wsClient.connect();
+        } catch (error) {
+            // WebSocket not available initially, will use local mode
+            // keepAlive in WebsocketClient will handle reconnection automatically
+        }
+    }
+
     public async handleMessage<M extends HandleMessageParams>(
         message: M,
     ): Promise<HandleMessageResponse<M>> {
         let result;
+        const isWsConnected = this.wsClient?.isConnected() ?? false;
 
         try {
-            // future:
-            // once we decide that we want to have sessions synchronization also between browser tabs and
-            // desktop application, here should go code that will check if some "master" sessions background
-            // is alive (websocket server in suite desktop). If yes, it will simply forward request
-
+            // Always execute locally to keep state in sync
             switch (message.type) {
                 case 'handshake':
                     result = this.handshake();
@@ -100,6 +194,23 @@ export class SessionsBackground
 
             result = JSON.parse(JSON.stringify({ ...result, id: message.id }));
 
+            // If WebSocket is connected, also send to remote server (fire and forget)
+            // This keeps the remote server in sync but we use local result
+            if (isWsConnected) {
+                const method = `sessions.${message.type}`;
+                const params = 'payload' in message ? [message.payload] : [];
+
+                this.wsClient
+                    ?.sendMessage({
+                        method,
+                        params,
+                    })
+                    .catch(() => {
+                        // Ignore errors - local state is authoritative and already returned
+                        // Server will re-sync when client reconnects
+                    });
+            }
+
             return result;
         } catch (err) {
             // if you are running this in a Sharedworker, you will find logs from here in chrome://inspect/#workers
@@ -112,7 +223,9 @@ export class SessionsBackground
                 id: message.type,
             } as HandleMessageResponse<M>;
         } finally {
-            if (result && result.success && result.payload) {
+            // Only emit events when WebSocket is NOT connected (local mode)
+            // When WebSocket is connected, server will broadcast events to all clients
+            if (!isWsConnected && result && result.success && result.payload) {
                 if ('descriptors' in result.payload) {
                     const { descriptors } = result.payload;
                     this.emit('descriptors', descriptors);
@@ -315,6 +428,13 @@ export class SessionsBackground
     }
 
     dispose() {
+        // Clean up WebSocket
+        if (this.wsClient) {
+            this.wsClient.disconnect();
+            this.wsClient = undefined;
+        }
+
+        // Clean up local state
         this.locksQueue.forEach(lock => clearTimeout(lock.id));
         this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
         this.descriptors = {};

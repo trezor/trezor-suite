@@ -2,7 +2,6 @@ import { loadDefinitions, parseConfigure } from '@trezor/protobuf';
 import { PROTOCOL_MALFORMED, ThpState, TransportProtocol } from '@trezor/protocol';
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
-import type { BridgeCommonErrors } from './bridge';
 import { OpenDeviceChannel } from '../api/abstract';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
@@ -76,7 +75,11 @@ export type ReadWriteError =
 
 type TransportEvents = {
     [TRANSPORT.DEVICE_CONNECTED]: Descriptor;
-    [TRANSPORT.ERROR]: BridgeCommonErrors | typeof ERRORS.API_DISCONNECTED; // BluetoothApi disconnected
+    [TRANSPORT.ERROR]:
+        | typeof ERRORS.HTTP_ERROR
+        | typeof ERRORS.WRONG_RESULT_TYPE
+        | typeof ERRORS.UNEXPECTED_ERROR
+        | typeof ERRORS.API_DISCONNECTED; // BluetoothApi disconnected
     [TRANSPORT.STOPPED]: void;
     [TRANSPORT.SEND_MESSAGE_PROGRESS]: number;
     [TRANSPORT.TREZOR_PUSH_NOTIFICATION]: { id: string; data: number[] };
@@ -94,6 +97,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         | 'NodeUsbTransport'
         | 'WebUsbTransport'
         | 'UdpTransport'
+        | 'UnifiedTransport'
         | 'NativeUsbTransport' // implementation in @trezor/transport-native
         | 'BluetoothTransport' // implementation in @trezor/transport-bluetooth
         | 'NativeBluetoothTransport'; // implementation in @trezor/transport-native-bluetooth
@@ -201,7 +205,9 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
     /**
      * Acquire session
      */
-    abstract acquire(params: { input: AcquireInput } & AbortableParam): AsyncResultWithTypedError<
+    abstract acquire(
+        params: { input: AcquireInput; apiType?: 'usb' | 'bluetooth' | 'udp' } & AbortableParam,
+    ): AsyncResultWithTypedError<
         Session,
         // webusb
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
@@ -222,7 +228,9 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
     /**
      * Release session
      */
-    abstract release(params: ReleaseInput & AbortableParam): AsyncResultWithTypedError<
+    abstract release(
+        params: ReleaseInput & { apiType?: 'usb' | 'bluetooth' | 'udp' } & AbortableParam,
+    ): AsyncResultWithTypedError<
         null,
         | typeof ERRORS.SESSION_NOT_FOUND
         // bridge
@@ -245,10 +253,12 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
      * For transports with native access (webusb), this informs lower transport layer
      * that device is not going to be used anymore
      */
-    abstract releaseDevice(session: Session): AsyncResultWithTypedError<void, string>;
+    abstract releaseDevice(
+        session: Session & { apiType?: 'usb' | 'bluetooth' | 'udp' },
+    ): AsyncResultWithTypedError<void, string>;
 
     /** Synchronous variant of release; should be used when disposing */
-    abstract releaseSync(session: Session): void;
+    abstract releaseSync(session: Session & { apiType?: 'usb' | 'bluetooth' | 'udp' }): void;
 
     /**
      * Encode data and write it to transport layer
@@ -261,6 +271,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
             data: Record<string, unknown>;
             protocol?: TransportProtocol;
             thpState?: ThpState;
+            apiType?: 'usb' | 'bluetooth' | 'udp';
         } & AbortableParam,
     ): AsyncResultWithTypedError<undefined, ReadWriteError>;
 
@@ -273,6 +284,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
             session: Session;
             protocol?: TransportProtocol;
             thpState?: ThpState;
+            apiType?: 'usb' | 'bluetooth' | 'udp';
         } & AbortableParam,
     ): AsyncResultWithTypedError<MessageResponse, ReadWriteError>;
 
@@ -286,6 +298,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
             data: Record<string, unknown>;
             protocol?: TransportProtocol;
             thpState?: ThpState;
+            apiType?: 'usb' | 'bluetooth' | 'udp';
         } & AbortableParam,
     ): AsyncResultWithTypedError<MessageResponse, ReadWriteError>;
 
@@ -296,6 +309,7 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         path: any;
         channels: OpenDeviceChannel[];
         signal?: AbortSignal;
+        apiType?: 'usb' | 'bluetooth' | 'udp';
     }): AsyncResultWithTypedError<Record<OpenDeviceChannel, boolean>, ReadWriteError> {
         // Return a rejected promise to indicate this feature is not supported by this transport by default.
         return Promise.reject(new Error(`${this.name} does not support the 'subscribe' method.`));
@@ -332,10 +346,10 @@ export abstract class AbstractTransport extends TypedEmitter<TransportEvents> {
         // present descriptors
         this.descriptors
             .filter(d => !newDescriptors.has(getKey(d)))
-            .forEach(descriptor =>
+            .forEach(descriptor => {
                 // descriptor in present batch but not in incoming -> disconnected device
-                this.deviceEvents.emit(descriptor.path, { type: TRANSPORT.DEVICE_DISCONNECTED }),
-            );
+                this.deviceEvents.emit(descriptor.path, { type: TRANSPORT.DEVICE_DISCONNECTED });
+            });
 
         // incoming descriptors
         nextDescriptors.forEach(descriptor => {

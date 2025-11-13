@@ -187,8 +187,8 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         this._settings.lazyLoad = true;
 
         // defaults for connect-web
-        if (!this._settings.transports?.length) {
-            this._settings.transports = ['BridgeTransport', 'WebUsbTransport'];
+        if (!this._settings.apiTypes?.length) {
+            this._settings.apiTypes = ['usb'];
         }
 
         if (!this._coreManager) {
@@ -199,14 +199,14 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         this._log.enabled = !!this._settings.debug;
     }
 
-    public setTransports({ transports }: SetTransports) {
-        if (!transports?.length) {
-            transports = ['BridgeTransport', 'WebUsbTransport'];
+    public setTransports({ apiTypes }: SetTransports) {
+        if (!apiTypes?.length) {
+            apiTypes = ['usb', 'udp'];
         }
-        this._settings = parseConnectSettings({ ...this._settings, transports });
+        this._settings = parseConnectSettings({ ...this._settings, apiTypes });
         this.handleCoreMessage({
             type: TRANSPORT.SET_TRANSPORTS,
-            payload: { transports },
+            payload: { apiTypes },
         });
     }
 
@@ -221,9 +221,9 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
-        if (!this._settings.transports?.length) {
+        if (!this._settings.apiTypes?.length) {
             // default fallback for node
-            this._settings.transports = ['BridgeTransport'];
+            this._settings.apiTypes = ['usb', 'udp'];
         }
     };
 

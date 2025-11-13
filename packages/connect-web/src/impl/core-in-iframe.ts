@@ -167,8 +167,8 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
         }
 
         // defaults for connect-web
-        if (!this._settings.transports?.length) {
-            this._settings.transports = ['BridgeTransport', 'WebUsbTransport'];
+        if (!this._settings.apiTypes?.length) {
+            this._settings.apiTypes = ['usb'];
         }
         if (!this._settings.coreMode) {
             this._settings.coreMode = 'auto';
@@ -202,7 +202,7 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
             if (
                 response.payload === undefined &&
                 navigator.usb &&
-                this._settings.transports?.includes('WebUsbTransport')
+                this._settings.apiTypes?.includes('usb')
             ) {
                 throw ERRORS.TypedError('Transport_Missing');
             }

@@ -93,8 +93,8 @@ export class CoreInPopup implements ConnectFactoryDependencies<ConnectSettingsWe
         });
 
         // defaults
-        if (!newSettings.transports?.length) {
-            newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
+        if (!newSettings.apiTypes?.length) {
+            newSettings.apiTypes = ['usb'];
         }
         newSettings.useCoreInPopup = true;
         if (typeof window !== 'undefined' && window?.location?.origin) {

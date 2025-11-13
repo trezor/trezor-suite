@@ -63,7 +63,7 @@ export const TransportBackends = () => {
             <SectionItem data-testid="@settings/debug/processes/runOnStartUp">
                 <TextColumn
                     title="Run on startup"
-                    description="This is useful for testing of other Transport clients"
+                    description="This is useful for testing of other Transport apis"
                 />
                 <ActionColumn>
                     <Checkbox

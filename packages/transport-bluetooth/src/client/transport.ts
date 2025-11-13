@@ -1,15 +1,14 @@
-import { AbstractTransportParams } from '@trezor/transport/src/transports/abstract';
-import { AbstractApiTransport } from '@trezor/transport/src/transports/abstractApi';
+import { UnifiedTransport, UnifiedTransportParams } from '@trezor/transport/src/transports/unified';
 
 import { BluetoothApi } from './bluetooth-api';
 import { TrezorBluetoothSettings } from './types';
 
-// implementation of @trezor/transport/src/transports/abstractApi
+// implementation of @trezor/transport/src/transports/unified
 
-type BluetoothTransportParams = Omit<AbstractTransportParams, 'api'> & TrezorBluetoothSettings;
+type BluetoothTransportParams = Omit<UnifiedTransportParams, 'apis'> & TrezorBluetoothSettings;
 
-export class BluetoothTransport extends AbstractApiTransport {
-    public name = 'BluetoothTransport' as const;
+export class BluetoothTransport extends UnifiedTransport {
+    // Note: name is 'UnifiedTransport' from parent class
     private wsApi: BluetoothApi;
 
     constructor(params: BluetoothTransportParams) {
@@ -32,7 +31,7 @@ export class BluetoothTransport extends AbstractApiTransport {
         });
 
         super({
-            api,
+            apis: [api],
             logger,
             ...rest,
         });

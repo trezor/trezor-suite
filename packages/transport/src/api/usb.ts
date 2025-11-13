@@ -191,6 +191,7 @@ export class UsbApi extends AbstractApi {
                 () => this.synchronizeGetDevices(() => this.usbInterface.getDevices()),
                 { signal },
             );
+            console.log('devices', devices);
 
             this.devices = await this.createDevices(devices, signal);
 
@@ -282,7 +283,7 @@ export class UsbApi extends AbstractApi {
         // note: why for instead of scheduleAction from @trezor/utils with attempts param. this.openInternal does not throw
         // I would need to throw artificially which is not nice.
         for (let i = 0; i < 5; i++) {
-            this.logger?.debug(`usb: openDevice attempt ${i}`);
+            this.logger?.debug(`usb: openDevice attempt ${i}, path: ${path}`);
             const res = await this.openInternal(path, options);
             if (res.success || options.signal?.aborted) {
                 return res;

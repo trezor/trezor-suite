@@ -22,7 +22,6 @@ const initialSettings: ConnectSettings = {
     popup: false,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     webusbSrc: `${DEFAULT_DOMAIN}webusb.html`,
-    transports: undefined,
     pendingTransportEvent: true,
     env: 'node',
     lazyLoad: false,
@@ -114,10 +113,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.firmwareUpdateSource === 'string') {
         settings.firmwareUpdateSource = input.firmwareUpdateSource;
-    }
-
-    if (Array.isArray(input.transports)) {
-        settings.transports = input.transports;
     }
 
     if (typeof input.popup === 'boolean') {

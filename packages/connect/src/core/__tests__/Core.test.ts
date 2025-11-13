@@ -3,12 +3,8 @@ import { parseConnectSettings } from '../../data/connectSettings';
 import { ConnectSettings } from '../../types/settings';
 import { initCoreState } from '../index';
 
-// import { createTestTransport } from '../../device/__tests__/DeviceList.test';
-const { createTestTransport } = global.JestMocks;
-
 const getSettings = (partial: Partial<ConnectSettings> = {}) =>
     parseConnectSettings({
-        transports: [createTestTransport()],
         transportReconnect: false,
         ...partial,
     });

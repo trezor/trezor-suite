@@ -2,8 +2,9 @@ import * as messages from '@trezor/protobuf/messages.json';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import { UsbApi } from '../src/api/usb';
-import { AbstractApiTransport } from '../src/transports/abstractApi';
+import { UnifiedTransport } from '../src/transports/unified';
 import { PathPublic, Session } from '../src/types';
+import { SessionsBackground, SessionsClient } from '../src';
 
 // create devices otherwise returned from navigator.usb.getDevices
 const createMockedDevice = (optional = {}) => ({
@@ -43,6 +44,9 @@ class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
 }
 
+const sessionsBackground = new SessionsBackground();
+const sessionsClient = new SessionsClient(sessionsBackground);
+
 // we cant directly use abstract class (UsbTransport)
 const initTest = async () => {
     // create usb api with navigator.usb mock
@@ -50,7 +54,8 @@ const initTest = async () => {
         usbInterface: createUsbMock(),
     });
     const transport = new TestUsbTransport({
-        api: testUsbApi,
+        sessionsClient,
+        apis: testUsbApi,
         messages,
         id: 'test',
     });
@@ -85,9 +90,10 @@ describe('Usb', () => {
             });
 
             const transport = new TestUsbTransport({
-                api: testUsbApi,
+                apis: testUsbApi,
                 id: 'test',
                 messages: {},
+                sessionsClient,
             });
 
             await transport.init();

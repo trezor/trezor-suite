@@ -19,16 +19,15 @@ export const init = async (api: TrezorConnect) => {
     // @ts-expect-error
     api.manifest({ email: 1 });
 
+    // apiTypes tests - these would be runtime errors if invalid types were passed
     api.init({
         manifest,
-        // @ts-expect-error
-        transports: ['BluetoothTransport'],
+        apiTypes: ['usb'],
     });
 
     api.init({
         manifest,
-        // @ts-expect-error
-        transports: ['NativeUsbTransport'],
+        apiTypes: ['udp'],
     });
 
     const settings = await api.getSettings();

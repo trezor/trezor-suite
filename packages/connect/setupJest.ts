@@ -2,7 +2,7 @@
 
 import { firmwareAssets } from '@trezor/connect-common';
 import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
-import { AbstractApiTransport, UsbApi } from '@trezor/transport';
+import { UnifiedTransport, UsbApi } from '@trezor/transport';
 import { versionUtils } from '@trezor/utils';
 
 import { type Features } from './src/types';
@@ -31,11 +31,11 @@ const createTransportApi = (override = {}) =>
     }) as unknown as UsbApi;
 
 export const createTestTransportClass = (apiMethods = {}): any =>
-    class TestTransport extends AbstractApiTransport {
+    class TestTransport extends UnifiedTransport {
         name = 'TestTransport' as any;
 
-        constructor(params: ConstructorParameters<typeof AbstractApiTransport>[0]) {
-            super({ ...params, api: createTransportApi(apiMethods) });
+        constructor(params: ConstructorParameters<typeof UnifiedTransport>[0]) {
+            super({ ...params, apis: createTransportApi(apiMethods) });
         }
     };
 

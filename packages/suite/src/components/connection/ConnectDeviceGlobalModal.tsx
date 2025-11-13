@@ -18,7 +18,6 @@ import { BluetoothManualPairingModal } from './BluetoothManualPairingModal';
 import { CantSeeTrezorModal } from './CantSeeTrezorModal';
 import { CableConnectionAnimation } from './DeviceConnectionAnimation';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
-import { selectHasTransportOfType } from '../../selectors/suite/suiteSelectors';
 import { WebUsbButton } from '../suite/WebUsbButton';
 import { BluetoothDeviceList } from '../suite/bluetooth/BluetoothDeviceList';
 import { UnpairBluetoothDeviceFromOsModal } from '../suite/bluetooth/UnpairBluetoothDeviceFromOsModal';
@@ -57,7 +56,6 @@ const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentP
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
     const theme = useTheme();
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {
         toggleBluetoothMode,
         toggleShowHints,
@@ -186,7 +184,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                             <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
                         </Button>
                     )}
-                    {isWebUsbTransport && <WebUsbButton intent="brand" size="medium" />}
+                    <WebUsbButton intent="brand" size="medium" />
                 </ConnectModalContent>
             </Modal.ModalBase>
         </Modal.Backdrop>
