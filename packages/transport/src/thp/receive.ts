@@ -17,11 +17,9 @@ export type ReceiveThpMessageProps = {
     signal?: AbortSignal;
     graceful?: boolean;
     logger?: Logger;
-    firstReadResult?: Awaited<ReturnType<AbstractApi['read']>>;
 };
 
 export const receiveThpMessage = async ({
-    firstReadResult,
     thpState,
     skipAck,
     apiRead,
@@ -42,19 +40,9 @@ export const receiveThpMessage = async ({
             graceful,
             logger,
         });
-
-        let firstRead = !!firstReadResult;
-        const getFirstResult = () => {
-            if (firstRead && firstReadResult) {
-                firstRead = false;
-
-                return Promise.resolve(firstReadResult);
-            }
-        };
-
         const expectedHeaders = protocolThp.getExpectedHeaders(thpState);
         const message = await receive(
-            () => getFirstResult() ?? apiReadWithExpectedHeaders(expectedHeaders),
+            () => apiReadWithExpectedHeaders(expectedHeaders),
             protocolV2,
         );
         if (!message.success) {
