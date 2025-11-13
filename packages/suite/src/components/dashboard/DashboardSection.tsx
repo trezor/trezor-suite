@@ -2,6 +2,8 @@ import { HTMLAttributes, ReactElement, Ref, forwardRef, useEffect, useState } fr
 
 import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
 
+import { useCurrentRef } from 'src/hooks/general/useCurrentRef';
+
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
     heading: ReactElement;
     subheading?: ReactElement;
@@ -28,10 +30,11 @@ export const DashboardSection = forwardRef(
         ref: Ref<HTMLDivElement>,
     ) => {
         const [collapsed, setCollapsed] = useState(defaultCollapsed);
+        const collapseChangeRef = useCurrentRef(onCollapseChange);
 
         useEffect(() => {
-            onCollapseChange?.(collapsed);
-        }, [collapsed, onCollapseChange]);
+            collapseChangeRef.current?.(collapsed);
+        }, [collapseChangeRef, collapsed]);
 
         return (
             <div ref={ref} {...rest}>

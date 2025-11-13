@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react';
 
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -19,7 +20,11 @@ import {
     ASSET_ROW_TOKEN_HEIGHT,
 } from 'src/components/suite/asset-picker/components';
 import { useSelector } from 'src/hooks/suite';
-import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
+import {
+    enhanceTokensWithRates,
+    getTokens,
+    sortTokensWithRates,
+} from 'src/utils/wallet/tokenUtils';
 
 export type AccountWithTokensOption =
     | {
@@ -52,6 +57,7 @@ export function useAccountWithTokensOptions(
     const fiatRates = useSelector(selectCurrentFiatRates);
     const fiatRagesRef = useRef(fiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const tokenDefinitions = useSelector(selectTokenDefinitions);
 
     return useMemo(() => {
         const fiatRates = fiatRagesRef.current;
@@ -72,15 +78,27 @@ export function useAccountWithTokensOptions(
                     fiatRates,
                 });
             })
-            .map(account => ({
-                ...account,
-                tokens: enhanceTokensWithRates(
-                    account.tokens,
+            .map(account => {
+                const { shownWithBalance } = getTokens({
+                    tokens: account.tokens ?? [],
+                    symbol: account.symbol,
+                    tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
+                });
+
+                const tokensWithRates = enhanceTokensWithRates(
+                    shownWithBalance,
                     baseCurrencyCode,
                     account.symbol,
                     fiatRates,
-                ).sort(sortTokensWithRates),
-            }));
+                );
+
+                const sortedTokensByFiatBalance = tokensWithRates.sort(sortTokensWithRates);
+
+                return {
+                    ...account,
+                    tokens: sortedTokensByFiatBalance,
+                };
+            });
 
         const accountsWithTokensOptions: AccountWithTokensOption[] = [];
 
@@ -102,5 +120,5 @@ export function useAccountWithTokensOptions(
         }
 
         return accountsWithTokensOptions;
-    }, [accounts, baseCurrencyCode, networkSymbol]);
+    }, [accounts, baseCurrencyCode, networkSymbol, tokenDefinitions]);
 }
