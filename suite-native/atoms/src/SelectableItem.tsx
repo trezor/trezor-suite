@@ -53,6 +53,7 @@ type SelectableItemProps = {
     content?: ReactNode;
     isSelected: boolean;
     isDefault: boolean;
+    testID?: string;
     onSelected: () => void;
 };
 

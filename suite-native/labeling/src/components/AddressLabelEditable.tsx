@@ -4,7 +4,7 @@ import {
     WithLabelingState,
     selectAddressLabel,
     updateAddressLabelThunk,
-} from '@suite-common/local-first-storage';
+} from '@suite-common/suite-sync';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';

@@ -3,7 +3,11 @@ import * as toml from 'toml';
 
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
-import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/tokenDefinitionsTypes';
+import {
+    AdvancedTokenStructure,
+    SimpleTokenStructure,
+    TokenStructureType,
+} from '../../src/tokenDefinitionsTypes';
 import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
 import { CoinData } from '../types';
 
@@ -150,65 +154,69 @@ const fetchStellarTokenRating = async (contractAddress: string): Promise<number 
     }
 };
 
-export const fetchCoinData = async (assetPlatformId: string, structure: string) => {
-    console.log('Start fetching coin data for:', assetPlatformId, 'platform');
+const options = {
+    method: 'GET',
+    headers: { 'x-cg-pro-api-key': process.env.COINGECKO_API_KEY! },
+};
 
-    const params = new URLSearchParams({
-        include_platform: true.toString(),
-    });
+export const fetchAllCoins = async (): Promise<CoinData[]> => {
+    const params = new URLSearchParams({ include_platform: String(true) });
 
-    const options = {
-        method: 'GET',
-        headers: { 'x-cg-pro-api-key': process.env.COINGECKO_API_KEY! },
-    };
-
-    let data: CoinData[];
     try {
-        const response = await fetch(`${COIN_LIST_URL}?${params.toString()}`, options);
-        if (!response.ok) {
-            const { error } = await response.json();
+        const res = await fetch(`${COIN_LIST_URL}?${params.toString()}`, options);
 
-            throw new Error(`${error}, status: ${response.status}`);
+        if (!res.ok) {
+            let msg = `status: ${res.status}`;
+            try {
+                const { error } = await res.json();
+                if (error) msg = `${error}, ${msg}`;
+            } catch {
+                // ignore JSON parse error
+            }
+            throw new Error(`CoinGecko coins/list failed: ${msg}`);
         }
 
-        data = await response.json();
-    } catch (error) {
-        throw new Error(error);
+        const data: CoinData[] = await res.json();
+        console.log('Number of coin records fetched (ALL):', data.length);
+
+        return data;
+    } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        throw new Error(`fetchAllCoins error: ${message}`);
     }
+};
 
-    console.log('Number of coin records fetched:', data.length);
-
-    if (structure === 'advanced') {
+export const buildCoinDataForPlatform = async (
+    allCoins: CoinData[],
+    assetPlatformId: string,
+    structure: TokenStructureType,
+): Promise<AdvancedTokenStructure | SimpleTokenStructure> => {
+    if (structure === TokenStructureType.ADVANCED) {
         const result: AdvancedTokenStructure = {};
 
-        for (const { platforms, symbol, name } of data) {
+        for (const { platforms, symbol, name } of allCoins) {
             const contractAddress = getContractAddress(assetPlatformId, platforms);
-            if (contractAddress) {
-                result[contractAddress] = { symbol, name };
+            if (!contractAddress) continue;
 
-                // For Stellar, add `home_domain` and `rating` if available
-                if (assetPlatformId === 'stellar') {
-                    const homeDomain = await getStellarHomeDomain(contractAddress);
-                    if (homeDomain) {
-                        result[contractAddress].home_domain = homeDomain;
-                    }
+            result[contractAddress] = { symbol, name };
 
-                    const rating = await fetchStellarTokenRating(contractAddress);
-                    if (rating !== undefined) {
-                        result[contractAddress].rating = rating;
-                    }
-                }
+            if (assetPlatformId === 'stellar') {
+                const homeDomain = await getStellarHomeDomain(contractAddress);
+                if (homeDomain) result[contractAddress].home_domain = homeDomain;
+
+                const rating = await fetchStellarTokenRating(contractAddress);
+                if (rating !== undefined) result[contractAddress].rating = rating;
             }
         }
 
         return result;
-    } else {
-        return [
-            ...new Set(
-                data
-                    .map(item => getContractAddress(assetPlatformId, item.platforms))
-                    .filter(item => item),
-            ),
-        ] as SimpleTokenStructure;
     }
+
+    return [
+        ...new Set(
+            allCoins
+                .map(item => getContractAddress(assetPlatformId, item.platforms))
+                .filter(Boolean),
+        ),
+    ] as SimpleTokenStructure;
 };

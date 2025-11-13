@@ -4,8 +4,8 @@ import type { DBSchema } from 'idb';
 
 import { AnalyticsState } from '@suite-common/analytics';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { LabelingSettings } from '@suite-common/local-first-storage';
 import type { MessageState } from '@suite-common/message-system';
+import { LabelingSettings } from '@suite-common/suite-sync';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,

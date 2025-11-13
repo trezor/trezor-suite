@@ -2,12 +2,11 @@ import { useState } from 'react';
 
 import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
-    disposeAllLocalFirstStorageThunk,
+    changeRelayUrlThunk,
     labelingActions,
     selectLocalFirstStorageRelayUrl,
-} from '@suite-common/local-first-storage';
+} from '@suite-common/suite-sync';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
-import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 import { spacings } from '@trezor/theme';
 
 import { SettingsSection } from 'src/components/settings/SettingsSection';
@@ -40,12 +39,7 @@ export const LocalFirstStorageSettings = () => {
 
     const onRelayUrlSave = () => {
         setIsLoading(true);
-        dispatch(labelingActions.setLocalFirstStorageRelayUrl({ url: relayUrl }));
-
-        // We need to dispose of all Evolu instances and create new
-        // as they do not support the Relay URL change
-        dispatch(disposeAllLocalFirstStorageThunk());
-        dispatch(initSuiteLocalFirstStorageThunk());
+        dispatch(changeRelayUrlThunk({ relayUrl }));
 
         // Fake it, to make some UI interaction for the user
         setTimeout(() => {

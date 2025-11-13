@@ -160,7 +160,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                     <ExchangeNameOfferColumn>
                         {tagsExist && (
                             <Row alignItems="center" flexWrap="wrap" gap={spacings.xs}>
-                                {tag && <Badge variant="tertiary">{tag}</Badge>}
+                                {tag && <Badge intent="neutral">{tag}</Badge>}
                                 {infoNote && (
                                     <Text typographyStyle="label" color={theme.textSubdued}>
                                         {infoNote}

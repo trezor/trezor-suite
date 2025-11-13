@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/local-first-storage';
+import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';

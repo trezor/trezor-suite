@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 
 import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage';
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/suite-sync';
 import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useLocalFirstStorageAlerts } from '@suite-native/local-first-storage';
+import { useLocalFirstStorageAlerts } from '@suite-native/suite-sync';
 
 import { useIsLabelingEnabled } from './useIsLabelingEnabled';
 

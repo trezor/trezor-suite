@@ -34,7 +34,7 @@ export interface AutodetectSettings {
     theme: boolean;
 }
 
-export type SuiteLifecycle =
+type SuiteLifecycle =
     | { status: 'initial' }
     | { status: 'loading' }
     | { status: 'ready' }

@@ -1,12 +1,12 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { createThunk } from '@suite-common/redux-utils';
 import {
     processMetadataMessageThunk,
     selectIsLocalFirstStorageEnabled,
-} from '@suite-common/local-first-storage';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { createThunk } from '@suite-common/redux-utils';
+} from '@suite-common/suite-sync';
 import {
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,

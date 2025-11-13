@@ -1,10 +1,11 @@
+import { View } from 'react-native';
+
 import {
     NetworkDisplaySymbol,
     NetworkSymbol,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { CryptoIcon, CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
@@ -40,13 +41,13 @@ export const CryptoIconWithNetwork = ({
     const iconSymbol = contractAddress ? symbol : displaySymbol;
 
     return (
-        <Box style={{ width: cryptoIconSizes[size], height: cryptoIconSizes[size] }}>
+        <View style={{ width: cryptoIconSizes[size], height: cryptoIconSizes[size] }}>
             <CryptoIcon symbol={iconSymbol} contractAddress={contractAddress} size={size} />
             {shouldShowNetwork && (
-                <Box style={applyStyle(networkWrapperStyle, { size })}>
+                <View style={applyStyle(networkWrapperStyle, { size })}>
                     <NetworkIcon symbol={symbol} size={size} />
-                </Box>
+                </View>
             )}
-        </Box>
+        </View>
     );
 };

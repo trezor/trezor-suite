@@ -19,7 +19,6 @@ import {
     Card,
     Column,
     Grid,
-    Icon,
     IconName,
     InfoItem,
     Paragraph,
@@ -295,11 +294,8 @@ export const StakingCard = ({
                                     }
                                 >
                                     {!isCardanoNetworkType && (
-                                        <Badge variant="primary" size="small">
-                                            <Row gap={spacings.xxs} alignItems="center">
-                                                <Translation id="TR_STAKE_RESTAKED_BADGE" />
-                                                <Icon name="info" size="small" variant="primary" />
-                                            </Row>
+                                        <Badge intent="brand" iconRight="info" size="small">
+                                            <Translation id="TR_STAKE_RESTAKED_BADGE" />
                                         </Badge>
                                     )}
                                 </Tooltip>

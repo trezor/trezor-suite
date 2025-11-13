@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { selectOutputLabels } from '@suite-common/local-first-storage';
+import { selectOutputLabels } from '@suite-common/suite-sync';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectBaseCurrency,

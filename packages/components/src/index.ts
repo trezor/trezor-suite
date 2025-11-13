@@ -17,7 +17,7 @@ export { hexToRgba } from '../../utils/src/hexToRgba';
 export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo';
 export * from './components/Flag/Flag';
 export * from './components/AutoScalingInput/AutoScalingInput';
-export * from './components/Badge/Badge';
+export { Badge, type BadgeProps, type BadgeSize } from './components/Badge/Badge';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export { Button, type ButtonProps } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
@@ -117,7 +117,6 @@ export * from './constants/keyboardEvents';
 export * from './utils/useScrollShadow';
 export * from './utils/transientProps';
 export { useMediaQuery } from './utils/useMediaQuery';
-export { getSafeWindowSize } from './utils/getSafeWindowSize';
 
 export { intermediaryTheme } from './config/colors';
 export type { SuiteThemeColors } from './config/colors';

@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/local-first-storage",
+    "name": "@suite-native/suite-sync",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@evolu/react-native": "^12.0.1-preview.9",
-        "@suite-common/local-first-storage": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/intl": "workspace:*",

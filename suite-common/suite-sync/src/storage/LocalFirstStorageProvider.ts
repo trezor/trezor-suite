@@ -71,7 +71,7 @@ export class LocalFirstStorageProvider {
         private evoluDeps: EvoluDeps,
     ) {}
 
-    getStorage(evoluKeys: EvoluKeys) {
+    getStorage(evoluKeys: EvoluKeys): LocalFirstStorage {
         let storage = this.storages.get(evoluKeys.ownerId);
 
         if (storage === undefined) {
@@ -93,10 +93,8 @@ export class LocalFirstStorageProvider {
         return storage;
     }
 
-    deleteStorage(ownerId: OwnerId) {
-        // Evolu does not support proper disconnect and disposal yet. This is a workaround.
-        // this.storages.get(secret)?._resetAppOwner();
-
+    async deleteStorage(ownerId: OwnerId) {
+        await this.storages.get(ownerId)?.dispose();
         this.storages.delete(ownerId);
     }
 }

@@ -1,4 +1,4 @@
-import { useLocalFirstStorage } from '@suite-common/local-first-storage';
+import { useLocalFirstStorage } from '@suite-common/suite-sync';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';

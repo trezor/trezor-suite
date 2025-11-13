@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectWalletLabel } from '@suite-common/local-first-storage';
+import { selectWalletLabel } from '@suite-common/suite-sync';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,

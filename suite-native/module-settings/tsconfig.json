@@ -6,10 +6,10 @@
             "path": "../../suite-common/analytics"
         },
         {
-            "path": "../../suite-common/local-first-storage"
+            "path": "../../suite-common/suite-constants"
         },
         {
-            "path": "../../suite-common/suite-constants"
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-types"
@@ -35,11 +35,11 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../local-first-storage" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../storage" },
+        { "path": "../suite-sync" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../trading-residence" },

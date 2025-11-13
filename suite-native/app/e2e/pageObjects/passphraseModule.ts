@@ -78,7 +78,10 @@ class PassphraseModule {
         await detoxExpect(element(by.id(subheaderTestID))).toHaveText(expectedText);
     }
 
-    public async openPassphraseWallet(passphrase: string) {
+    public async openPassphraseWallet(
+        passphrase: string,
+        options?: { dismissDuplicatePassphraseAlert: boolean },
+    ) {
         await this.openNewPassphraseFlow();
 
         await this.expectEnterPassphraseScreen();
@@ -87,13 +90,9 @@ class PassphraseModule {
         await this.expectConfirmPassphraseOnDeviceRequest();
         await this.confirmPassphraseOnEmu();
 
-        try {
-            // If trying to open an already open passphrase wallet, just confirm the alert.
+        if (options?.dismissDuplicatePassphraseAlert) {
             await waitForVisible(by.text('Passphrase duplicate'));
             await element(by.id('@alert-sheet/primary-button')).tap();
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            // Newly opened wallet, do nothing.
         }
     }
 }

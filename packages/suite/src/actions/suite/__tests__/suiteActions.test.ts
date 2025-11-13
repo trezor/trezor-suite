@@ -2,7 +2,7 @@
 // data provided by TrezorConnect are mocked
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { prepareLabelingReducer } from '@suite-common/local-first-storage';
+import { prepareLabelingReducer } from '@suite-common/suite-sync';
 import { testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,

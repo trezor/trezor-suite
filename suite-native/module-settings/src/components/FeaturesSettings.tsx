@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
-import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/local-first-storage';
+import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/suite-sync';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

@@ -86,7 +86,7 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
                     return (
                         <Button
                             key={address}
-                            data-testID={`@accounts-import/sync-coins/dev-xpub/${symbol}${testIdSuffix}`}
+                            testID={`@accounts-import/sync-coins/dev-xpub/${symbol}${testIdSuffix}`}
                             onPress={() => onSelect({ xpubAddress: address })}
                             colorScheme="tertiaryElevation0"
                         >
@@ -100,7 +100,7 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
 
     return (
         <Button
-            data-testID={`@accounts-import/sync-coins/dev-xpub/${symbol}`}
+            testID={`@accounts-import/sync-coins/dev-xpub/${symbol}`}
             onPress={() => onSelect({ xpubAddress: xpub })}
             colorScheme="tertiaryElevation0"
         >

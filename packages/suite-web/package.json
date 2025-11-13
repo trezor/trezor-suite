@@ -25,9 +25,9 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
+        "@suite/suite-sync": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/eslint": "workspace:*",
-        "@trezor/suite-local-first-storage": "workspace:*",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
         "postcss-styled-syntax": "^0.7.1",

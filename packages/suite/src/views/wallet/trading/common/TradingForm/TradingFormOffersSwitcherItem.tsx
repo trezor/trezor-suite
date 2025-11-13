@@ -46,7 +46,7 @@ export const TradingFormOffersSwitcherItem = ({
         <Row gap={spacings.xs} flex="1">
             <TradingUtilsProvider providers={providers} exchange={quote.exchange} />
             {isBestRate && (
-                <Badge variant="primary" size="small">
+                <Badge intent="brand" size="small">
                     <Translation id="TR_TRADING_BEST_RATE" />
                 </Badge>
             )}

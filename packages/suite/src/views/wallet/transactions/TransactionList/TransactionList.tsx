@@ -8,7 +8,7 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
-import { SkeletonStack } from '@trezor/components';
+import { Column, SkeletonStack } from '@trezor/components';
 import { arrayPartition } from '@trezor/utils';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -161,59 +161,61 @@ export const TransactionList = ({
             }
             data-testid="@wallet/accounts/transaction-list"
         >
-            {account.accountType === 'coinjoin' && !isSearching && (
-                <TransactionCandidates accountKey={account.key} />
-            )}
+            <Column gap={32}>
+                {account.accountType === 'coinjoin' && !isSearching && (
+                    <TransactionCandidates accountKey={account.key} />
+                )}
 
-            {/* TODO: show this skeleton also while searching in txs */}
-            {isLoading ||
-            (!areAllTransactionsLoaded && searchQuery && searchedTransactions.length === 0) ? (
-                <SkeletonStack $col $childMargin="0px 0px 16px 0px">
-                    <SkeletonTransactionItem />
-                    <SkeletonTransactionItem />
-                    <SkeletonTransactionItem />
-                </SkeletonStack>
-            ) : (
-                <>
-                    {areTransactionsAvailable && <NoSearchResults />}
-                    {!areTransactionsAvailable &&
-                        (customNoTransactions &&
-                        confirmedTxs.length === 0 &&
-                        pendingTxs.length === 0 ? (
-                            customNoTransactions
-                        ) : (
-                            <>
-                                {pendingTxs.length > 0 && (
-                                    <PendingGroupHeader txsCount={pendingTxs.length} />
-                                )}
-                                <TransactionGroupedList
-                                    transactionGroups={pendingTxsByDate}
-                                    symbol={symbol}
-                                    account={account}
-                                    isPending={true}
-                                />
-                                <TransactionGroupedList
-                                    transactionGroups={confirmedTxsByDate}
-                                    symbol={symbol}
-                                    account={account}
-                                    isPending={false}
-                                />
-                            </>
-                        ))}
-                </>
-            )}
+                {/* TODO: show this skeleton also while searching in txs */}
+                {isLoading ||
+                (!areAllTransactionsLoaded && searchQuery && searchedTransactions.length === 0) ? (
+                    <SkeletonStack $col $childMargin="0px 0px 16px 0px">
+                        <SkeletonTransactionItem />
+                        <SkeletonTransactionItem />
+                        <SkeletonTransactionItem />
+                    </SkeletonStack>
+                ) : (
+                    <Column gap={40}>
+                        {areTransactionsAvailable && <NoSearchResults />}
+                        {!areTransactionsAvailable &&
+                            (customNoTransactions &&
+                            confirmedTxs.length === 0 &&
+                            pendingTxs.length === 0 ? (
+                                customNoTransactions
+                            ) : (
+                                <>
+                                    {pendingTxs.length > 0 && (
+                                        <PendingGroupHeader txsCount={pendingTxs.length} />
+                                    )}
+                                    <TransactionGroupedList
+                                        transactionGroups={pendingTxsByDate}
+                                        symbol={symbol}
+                                        account={account}
+                                        isPending={true}
+                                    />
+                                    <TransactionGroupedList
+                                        transactionGroups={confirmedTxsByDate}
+                                        symbol={symbol}
+                                        account={account}
+                                        isPending={false}
+                                    />
+                                </>
+                            ))}
+                    </Column>
+                )}
 
-            {showPagination && (
-                <Pagination
-                    hasPages={!isRippleOrStellar}
-                    currentPage={currentPage}
-                    isLastPage={isLastRippleOrStellarPage}
-                    perPage={perPage}
-                    totalItems={totalItems}
-                    onPageSelected={onPageSelected}
-                    explicitNavigation
-                />
-            )}
+                {showPagination && (
+                    <Pagination
+                        hasPages={!isRippleOrStellar}
+                        currentPage={currentPage}
+                        isLastPage={isLastRippleOrStellarPage}
+                        perPage={perPage}
+                        totalItems={totalItems}
+                        onPageSelected={onPageSelected}
+                        explicitNavigation
+                    />
+                )}
+            </Column>
         </DashboardSection>
     );
 };

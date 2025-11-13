@@ -12,7 +12,7 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.6",
         "@reduxjs/toolkit": "2.9.1",
-        "@suite-common/local-first-storage": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -20,7 +20,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/local-first-storage": "workspace:*",
+        "@suite-native/suite-sync": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "19.1.0",
         "react-redux": "9.2.0"

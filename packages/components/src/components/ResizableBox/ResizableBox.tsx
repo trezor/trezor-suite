@@ -67,6 +67,19 @@ const MINIMAL_BOX_SIZE = 1;
 const REACTIVE_AREA_WIDTH = 16;
 const BORDER_WIDTH = 4;
 
+type ResizePointerEvent = MouseEvent | TouchEvent;
+
+const getPageCoords = (e: ResizePointerEvent) => {
+    if (e instanceof MouseEvent) {
+        return { x: e.pageX, y: e.pageY };
+    }
+
+    const touch = e.touches[0] || e.changedTouches[0];
+    if (!touch) return null;
+
+    return { x: touch.pageX, y: touch.pageY };
+};
+
 const Resizers = styled.div<ResizersProps>`
     width: ${({ $width }) => ($width ? `${$width}px` : 'auto')};
     min-width: ${({ $minWidth }) => ($minWidth ? `${$minWidth}px` : 'auto')};
@@ -329,15 +342,17 @@ export const ResizableBox = ({
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleResize = useCallback(
-        (e: MouseEvent) => {
+        (e: ResizePointerEvent) => {
             if (!direction || !resizeCooldown()) return;
+
+            const coords = getPageCoords(e);
+            if (!coords) return;
+
+            const { x: mouseX, y: mouseY } = coords;
 
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
             rafRef.current = requestAnimationFrame(() => {
-                const mouseX = e.pageX;
-                const mouseY = e.pageY;
-
                 const difX = mouseX - x - effectiveWidth;
                 const difY = mouseY - y - heightState;
 
@@ -399,7 +414,8 @@ export const ResizableBox = ({
     useEffect(() => {
         if (!isResizing) return;
 
-        window.addEventListener('mousemove', handleResize);
+        window.addEventListener('mousemove', handleResize as (e: MouseEvent) => void);
+        window.addEventListener('touchmove', handleResize as (e: TouchEvent) => void);
 
         const currentDirection = direction;
 
@@ -411,10 +427,15 @@ export const ResizableBox = ({
         };
 
         window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('touchend', handleMouseUp);
+        window.addEventListener('touchcancel', handleMouseUp);
 
         return () => {
-            window.removeEventListener('mousemove', handleResize);
+            window.removeEventListener('mousemove', handleResize as (e: MouseEvent) => void);
+            window.removeEventListener('touchmove', handleResize as (e: TouchEvent) => void);
             window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('touchend', handleMouseUp);
+            window.removeEventListener('touchcancel', handleMouseUp);
 
             if (rafRef.current) {
                 cancelAnimationFrame(rafRef.current);
@@ -457,6 +478,7 @@ export const ResizableBox = ({
 
     const getHandlerProps = (handlerDirection: Direction) => ({
         onMouseDown: handleMouseDown(handlerDirection),
+        onTouchStart: handleMouseDown(handlerDirection),
         onMouseOver: handleMouseOver(handlerDirection),
         onMouseOut: handleMouseOut,
         $highlightDirection: highlightDirection,

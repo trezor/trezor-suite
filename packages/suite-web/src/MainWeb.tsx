@@ -6,7 +6,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { History, createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
+import { initSuiteLocalFirstStorageThunk } from '@suite/suite-sync';
 
 import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';

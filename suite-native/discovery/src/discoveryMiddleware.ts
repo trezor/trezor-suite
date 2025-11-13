@@ -58,6 +58,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             action.type === DEVICE.CONNECT ||
             deviceActions.selectDevice.match(action) ||
             changeCoinVisibility.fulfilled.match(action) ||
+            accountsActions.updateAccount.match(action) || // empty account can become nonempty
             accountsActions.changeAccountVisibility.match(action) ||
             createAndBackupWalletThunk.fulfilled.match(action) ||
             recoverWalletThunk.fulfilled.match(action)
@@ -71,8 +72,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 isDeviceAcquired(device)
             ) {
                 const shouldRediscover = selectShouldRediscover(getState(), device);
-                const noDiscoveryYet = device?.state?.staticSessionId === undefined;
-                if (noDiscoveryYet || shouldRediscover) {
+                if (shouldRediscover) {
                     dispatch(startOrRestartDiscoveryThunk());
                 }
             }

@@ -16,10 +16,9 @@ const UpgradableToMultiTag = () => {
 
     return (
         <Badge
-            variant="tertiary"
-            inline
+            intent="neutral"
             margin={{ left: spacings.xs }}
-            size={isBelowTablet ? 'tiny' : undefined}
+            size={isBelowTablet ? 'small' : undefined}
         >
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI" />
         </Badge>
@@ -31,10 +30,9 @@ const AdvancedTag = () => {
 
     return (
         <Badge
-            variant="tertiary"
-            inline
+            intent="neutral"
             margin={{ left: spacings.xs }}
-            size={isBelowTablet ? 'tiny' : undefined}
+            size={isBelowTablet ? 'small' : undefined}
         >
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_ADVANCED" />
         </Badge>

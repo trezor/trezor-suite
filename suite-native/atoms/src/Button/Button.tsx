@@ -367,7 +367,10 @@ export const Button = ({
             ]}
         >
             {isLoading ? (
-                <Animated.View entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}>
+                <Animated.View
+                    testID={`${pressableProps.testID}/loading`}
+                    entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}
+                >
                     <Loader color={textColor} />
                 </Animated.View>
             ) : (
@@ -380,6 +383,7 @@ export const Button = ({
                         />
                     )}
                     <Text
+                        testID={`${pressableProps.testID}/text`}
                         textAlign="center"
                         variant={buttonToTextSizeMap[size]}
                         color={textColor}

@@ -18,7 +18,7 @@ export const InfoRow = ({ heading, subheading, content, isExpanded = false }: In
                 {heading}
                 {content &&
                     (content.isBadge ? (
-                        <Badge size="tiny">{content.text}</Badge>
+                        <Badge size="small">{content.text}</Badge>
                     ) : (
                         <Paragraph variant="tertiary" typographyStyle="hint" textWrap="nowrap">
                             {content.text}

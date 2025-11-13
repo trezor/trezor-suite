@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { useLocalFirstStorage } from '@suite-common/local-first-storage';
+import { useLocalFirstStorage } from '@suite-common/suite-sync';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';

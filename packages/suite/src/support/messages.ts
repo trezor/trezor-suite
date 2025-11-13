@@ -1060,6 +1060,16 @@ export default defineMessages({
         defaultMessage: 'Maximum is {maximum} {currency}',
         id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT',
     },
+    TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO: {
+        defaultMessage:
+            'Balance is enough for the minimum, but not enough to cover network fees. Missing {missingAmount}',
+        id: 'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO',
+    },
+    TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT: {
+        defaultMessage:
+            'Balance is enough for the minimum, but not enough to cover network fees. Missing {missingAmount} {currency}',
+        id: 'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT',
+    },
     TR_BUY_STATUS_PENDING_GO_TO_GATEWAY: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY',

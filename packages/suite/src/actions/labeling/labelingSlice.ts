@@ -1,9 +1,9 @@
+import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     LabelingState,
     initialLabelingState as commonInitialState,
     prepareLabelingReducer,
-} from '@suite-common/local-first-storage';
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+} from '@suite-common/suite-sync';
 
 import { Action } from 'src/types/suite';
 

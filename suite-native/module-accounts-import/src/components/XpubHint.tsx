@@ -38,7 +38,7 @@ export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
             <TextButton
                 viewLeft="question"
                 onPress={handleOpen}
-                data-testID="@accounts-import/sync-coins/xpub-help-link"
+                testID="@accounts-import/sync-coins/xpub-help-link"
             >
                 {buttonTitle}
             </TextButton>

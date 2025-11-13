@@ -10,17 +10,8 @@ class SendOutputsReviewActions {
     }
 
     async confirmTransactionOutputs() {
-        let isTransactionReviewInProgress = true;
-        do {
-            await TrezorUserEnvLink.pressYes();
-
-            try {
-                await waitForVisible(sendButton);
-                isTransactionReviewInProgress = false;
-            } catch {
-                // continue loop, there are more outputs to review
-            }
-        } while (isTransactionReviewInProgress);
+        await TrezorUserEnvLink.pressYes();
+        await waitForVisible(sendButton);
     }
 
     async clickSendTransaction() {

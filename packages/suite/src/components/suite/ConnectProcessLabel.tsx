@@ -21,7 +21,7 @@ export const ConnectProcessLabel = ({
     if (process.warning) {
         return (
             <Tooltip content={process.fullPath}>
-                <Badge variant="warning" icon="warning">
+                <Badge intent="warning" iconLeft="warning">
                     <Text data-testid={dataTest}>{process.name}</Text>
                 </Badge>
             </Tooltip>
@@ -29,7 +29,7 @@ export const ConnectProcessLabel = ({
     }
 
     return (
-        <Badge variant="tertiary">
+        <Badge intent="neutral">
             <Row gap={spacings.xs}>
                 {process.icon ? (
                     <AppIcon src={process.icon} alt="Process icon" />

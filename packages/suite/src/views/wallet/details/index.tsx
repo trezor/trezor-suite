@@ -112,7 +112,6 @@ const Details = () => {
                             shouldDisplayNormalType
                             path={account.path}
                             networkType={account.networkType}
-                            onElevation={true}
                         />
                         <Paragraph typographyStyle="label" textWrap="nowrap">
                             (<Translation id={accountTypeTech} />)

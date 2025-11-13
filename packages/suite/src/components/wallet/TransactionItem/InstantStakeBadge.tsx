@@ -1,25 +1,16 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import styled from 'styled-components';
-
 import { getInstantStakeType } from '@suite-common/staking';
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Badge, Icon } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Badge, Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
-
-const Wrapper = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    align-items: center;
-`;
 
 const getTranslationId = (instantStakeType: StakeType) => {
     switch (instantStakeType) {
@@ -63,12 +54,11 @@ export const InstantStakeBadge = memo(({ transaction, symbol }: InstantStakeBadg
     const amount = internalTx.amount && formatNetworkAmount(internalTx.amount, symbol);
 
     return (
-        <Badge size="tiny">
-            <Wrapper>
-                <Icon name="lightning" size={spacings.sm} />
+        <Badge size="small" iconLeft="lightning">
+            <Row gap={4}>
                 <FormattedCryptoAmount value={amount} symbol={symbol} />
                 <Translation id={translationId} />
-            </Wrapper>
+            </Row>
         </Badge>
     );
 });

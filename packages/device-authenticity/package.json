@@ -1,6 +1,6 @@
 {
     "name": "@trezor/device-authenticity",
-    "version": "1.0.0",
+    "version": "1.0.1-beta.1",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/device-authenticity",
     "description": "Utils for authenticity verification of trezor device secure element response.",
@@ -20,7 +20,6 @@
     "main": "src/index",
     "files": [
         "lib/",
-        "libESM",
         "!**/*.map"
     ],
     "scripts": {
@@ -38,5 +37,8 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "tsx": "^4.20.3"
     }
 }

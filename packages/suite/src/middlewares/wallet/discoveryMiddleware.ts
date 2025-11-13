@@ -62,12 +62,12 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             changeNetworks.match(action) ||
+            accountsActions.updateAccount.match(action) || // empty account can become nonempty
             accountsActions.changeAccountVisibility.match(action)
         ) {
             if (isDeviceReady && isUIReady) {
                 const shouldRediscover = selectShouldRediscover(getState(), device);
-                const noDiscoveryYet = device?.state?.staticSessionId === undefined;
-                if (noDiscoveryYet || shouldRediscover) {
+                if (shouldRediscover) {
                     dispatch(startOrRestartDiscoveryThunk());
                 }
             }

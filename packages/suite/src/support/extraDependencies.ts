@@ -2,12 +2,13 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
+import { initSuiteLocalFirstStorageThunk } from '@suite/suite-sync';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
+import { ExtraDependencies, LocationPushState, To } from '@suite-common/redux-utils';
 import {
     subscribeLocalFirstStorageThunk,
     unsubscribeAndDisposeLocalFirstStorageThunk,
-} from '@suite-common/local-first-storage';
-import { ExtraDependencies, LocationPushState, To } from '@suite-common/redux-utils';
+} from '@suite-common/suite-sync';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -25,7 +26,6 @@ import {
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -75,7 +75,7 @@ export const extraDependencies: ExtraDependencies = {
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
 
         // This needs to be over `extra` to prevent circular dependency,
-        // `@suite-common/local-first-storage` depends on `wallet-core`
+        // `@suite-common/suite-sync` depends on `wallet-core`
         subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
         unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
         initLocalFirstStorage: initSuiteLocalFirstStorageThunk,

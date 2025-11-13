@@ -3,10 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/local-first-storage"
+            "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/redux-utils"
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-utils"

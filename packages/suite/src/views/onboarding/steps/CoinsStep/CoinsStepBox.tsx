@@ -67,7 +67,7 @@ export const CoinsStepBox = (props: OnboardingCardProps) => {
                         heading={
                             <Row gap={12}>
                                 <Translation id="TR_TOR" />
-                                <Badge variant="tertiary" inline size="tiny">
+                                <Badge intent="neutral" size="small">
                                     <Translation id="TR_ONBOARDING_ADVANCED" />
                                 </Badge>
                             </Row>
