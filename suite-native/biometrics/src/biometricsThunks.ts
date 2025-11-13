@@ -13,7 +13,7 @@ import {
 } from './biometricsSlice';
 import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
 
-enum AuthenticateError {
+export enum AuthenticateError {
     BiometricsNotAvailable = 'biometrics-not-available',
     AuthenticationFailed = 'authentication-failed',
     AuthenticationAlreadyInProgress = 'authentication-already-in-progress',

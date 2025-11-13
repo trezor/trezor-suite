@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AppState, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,59 +16,24 @@ import { authenticate } from './biometricsThunks';
 /**
  * The time period for which is user not asked to be authenticated again if returns back to the app.
  */
-const KEEP_LOGGED_IN_TIMEOUT = 30_000;
+const KEEP_LOGGED_IN_TIMEOUT = 3_000;
 
 export const useBiometrics = () => {
     const dispatch = useDispatch();
     const isAuthenticatingRef = useRef(false);
     const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
 
-    const [shouldAutoAuthenticate, setShouldAutoAuthenticate] = useState(true);
-
-    // Keeps track of the current AppState - not only needed for biometrics, but useful for it
-    const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
     const appState = useRef(AppState.currentState);
     const goneToBackgroundAtTimestamp = useRef<null | number>(null);
 
     const isUserAuthenticated = useSelector(selectIsUserAuthenticated);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
-    useEffect(() => {
-        const subscription = AppState.addEventListener('change', nextAppState => {
-            switch (nextAppState) {
-                case 'active':
-                    if (
-                        // Revoke user authentication if the timeout has run out.
-                        appState.current === 'background' &&
-                        goneToBackgroundAtTimestamp.current &&
-                        goneToBackgroundAtTimestamp.current < Date.now() - KEEP_LOGGED_IN_TIMEOUT
-                    ) {
-                        dispatch(setIsUserAuthenticated(false));
-                    } else if (isUserAuthenticated) {
-                        dispatch(setIsBiometricsOverlayVisible(false));
-                    }
-                    break;
-
-                case 'background':
-                    dispatch(setIsBiometricsOverlayVisible(true));
-                    setShouldAutoAuthenticate(true);
-                    goneToBackgroundAtTimestamp.current = Date.now();
-                    break;
-
-                case 'inactive':
-                    dispatch(setIsBiometricsOverlayVisible(true));
-                    break;
-
-                default:
-                    return;
-            }
-
-            appState.current = nextAppState;
-            setAppStateVisible(appState.current);
-        });
-
-        return () => subscription.remove();
-    }, [isBiometricsOptionEnabled, setShouldAutoAuthenticate, isUserAuthenticated, dispatch]);
+    const cancelAndroidAuth = useCallback(() => {
+        if (Platform.OS === 'android' && isBiometricsOptionEnabled) {
+            LocalAuthentication.cancelAuthenticate();
+        }
+    }, [isBiometricsOptionEnabled]);
 
     const doAuthentication = useCallback(async () => {
         if (isAuthenticatingRef.current) return;
@@ -84,35 +49,64 @@ export const useBiometrics = () => {
             }
         } finally {
             isAuthenticatingRef.current = false;
-            setShouldAutoAuthenticate(false);
         }
     }, [dispatch]);
 
-    // Request authentication check whenever the authentication state changes
-    // or when biometrics is enabled in settings (isBiometricsOptionEnabled)
-    // and also when app state changes
-    // and if auth allowance changes
     useEffect(() => {
-        // if appState is not active we want to cancel the flow by returning
-        if (appState.current !== 'active') {
-            // and on android also cancel the auth
-            if (Platform.OS === 'android' && isBiometricsOptionEnabled) {
-                LocalAuthentication.cancelAuthenticate();
+        const handleAppStateChange = (nextAppState: string) => {
+            // console.log('handleAppStateChange#1', nextAppState);
+            switch (nextAppState) {
+                case 'active':
+                    if (
+                        // Revoke user authentication if the timeout has run out.
+                        appState.current === 'background' &&
+                        goneToBackgroundAtTimestamp.current &&
+                        goneToBackgroundAtTimestamp.current < Date.now() - KEEP_LOGGED_IN_TIMEOUT
+                    ) {
+                        // console.log('handleAppStateChange#2', nextAppState);
+                        dispatch(setIsUserAuthenticated(false));
+                        doAuthentication();
+                    } else if (isUserAuthenticated) {
+                        // console.log('handleAppStateChange#3', nextAppState);
+                        dispatch(setIsBiometricsOverlayVisible(false));
+                    } else if (shouldUserBeAuthenticated) {
+                        // console.log('handleAppStateChange#4', nextAppState);
+                        dispatch(setIsUserAuthenticated(false));
+                        doAuthentication();
+                    }
+                    break;
+
+                case 'background':
+                    cancelAndroidAuth();
+                    dispatch(setIsBiometricsOverlayVisible(true));
+                    goneToBackgroundAtTimestamp.current = Date.now();
+                    break;
+
+                case 'inactive':
+                    cancelAndroidAuth();
+                    dispatch(setIsBiometricsOverlayVisible(true));
+                    break;
+
+                default:
+                    return;
             }
+            appState.current = nextAppState;
+        };
 
-            return;
-        }
+        // Authentication on mount
+        handleAppStateChange(AppState.currentState);
 
-        if (shouldUserBeAuthenticated && shouldAutoAuthenticate) {
-            doAuthentication();
-        }
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+        return () => subscription.remove();
     }, [
-        shouldUserBeAuthenticated,
-        appStateVisible,
         isBiometricsOptionEnabled,
-        shouldAutoAuthenticate,
+        isUserAuthenticated,
+        dispatch,
+        cancelAndroidAuth,
         doAuthentication,
+        shouldUserBeAuthenticated,
     ]);
 
-    return { shouldAutoAuthenticate, doAuthentication };
+    return { doAuthentication };
 };
