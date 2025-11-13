@@ -4579,6 +4579,22 @@ export default defineMessages({
         defaultMessage:
             'To receive {token} on the {network} network, you must first activate the asset. Doing so will increase your reserved balance by {reserve}.',
     },
+    TR_ACTIVATE_MANUALLY: {
+        id: 'TR_ACTIVATE_MANUALLY',
+        defaultMessage: 'Activate manually',
+    },
+    TR_ACTIVATE_TOKEN_MANUALLY: {
+        id: 'TR_ACTIVATE_TOKEN_MANUALLY',
+        defaultMessage: 'Activate token manually',
+    },
+    TR_ASSET_CODE: {
+        id: 'TR_ASSET_CODE',
+        defaultMessage: 'Asset code',
+    },
+    TR_ASSET_CODE_INVALID: {
+        id: 'TR_ASSET_CODE_INVALID',
+        defaultMessage: 'Invalid asset code. Enter a valid asset code.',
+    },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
         defaultMessage: 'No inactive tokens',
@@ -5134,6 +5150,10 @@ export default defineMessages({
         id: 'TR_I_AM_IN_SAFE_PRIVATE_OR',
         defaultMessage: "I'm in a safe, private space.",
     },
+    TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION: {
+        id: 'TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION',
+        defaultMessage: 'You can activate any token if you know its asset code and issuer address.',
+    },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
         defaultMessage:
@@ -5673,6 +5693,10 @@ export default defineMessages({
     TR_ISSUER_ADDRESS: {
         id: 'TR_ISSUER_ADDRESS',
         defaultMessage: 'Issuer address',
+    },
+    TR_ISSUER_ADDRESS_INVALID: {
+        id: 'TR_ISSUER_ADDRESS_INVALID',
+        defaultMessage: 'Invalid issuer address. Enter a valid address.',
     },
     TR_TOKENS: {
         id: 'TR_TOKENS',
