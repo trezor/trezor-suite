@@ -7,7 +7,7 @@
     "include": [".", "**/*.json"],
     "references": [
         {
-            "path": "../../suite-common/local-first-storage"
+            "path": "../../suite-common/suite-sync"
         }
     ]
 }

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAddressLabel } from '@suite-common/local-first-storage';
+import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import { AccountAddress } from '@suite-native/trading-atoms';
 import { ReceiveAccount } from '@suite-native/trading-types';

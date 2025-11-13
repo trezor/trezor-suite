@@ -48,7 +48,6 @@
         { "path": "../formatters-config" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../local-first-storage" },
         { "path": "../message-system" },
         { "path": "../module-accounts-import" },
         {
@@ -77,6 +76,7 @@
         { "path": "../settings" },
         { "path": "../state" },
         { "path": "../storage" },
+        { "path": "../suite-sync" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../trading-residence" },

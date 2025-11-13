@@ -2,10 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    processMetadataMessageThunk,
-    selectShouldOfferSecureSync,
-} from '@suite-common/local-first-storage';
+import { processMetadataMessageThunk, selectShouldOfferSecureSync } from '@suite-common/suite-sync';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';

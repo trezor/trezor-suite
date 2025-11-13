@@ -4,12 +4,12 @@ import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
-import { prepareLabelingReducer } from '@suite-common/local-first-storage';
 import { logsSlice } from '@suite-common/logger';
 import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
+import { prepareLabelingReducer } from '@suite-common/suite-sync';
 import { prepareThpReducer } from '@suite-common/thp';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { updateAccountLabelThunk } from '@suite-common/local-first-storage';
+import { updateAccountLabelThunk } from '@suite-common/suite-sync';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     AccountFormValues,

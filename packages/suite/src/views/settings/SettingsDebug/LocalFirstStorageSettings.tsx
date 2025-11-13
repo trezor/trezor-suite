@@ -5,7 +5,7 @@ import {
     changeRelayUrlThunk,
     labelingActions,
     selectLocalFirstStorageRelayUrl,
-} from '@suite-common/local-first-storage';
+} from '@suite-common/suite-sync';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

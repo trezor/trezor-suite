@@ -9,9 +9,6 @@
             "path": "../../suite-common/geolocation"
         },
         {
-            "path": "../../suite-common/local-first-storage"
-        },
-        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -19,6 +16,9 @@
         },
         {
             "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-utils"

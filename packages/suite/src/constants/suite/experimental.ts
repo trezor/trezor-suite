@@ -1,5 +1,5 @@
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { labelingActions } from '@suite-common/local-first-storage';
+import { labelingActions } from '@suite-common/suite-sync';
 import { Route } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';

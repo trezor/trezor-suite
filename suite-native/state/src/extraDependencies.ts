@@ -2,18 +2,18 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     selectIsLocalFirstStorageEnabled,
     subscribeLocalFirstStorageThunk,
     unsubscribeAndDisposeLocalFirstStorageThunk,
-} from '@suite-common/local-first-storage';
-import { ExtraDependencies } from '@suite-common/redux-utils';
+} from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
-import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-storage';
 import { reportSecurityCheck } from '@suite-native/sentry';
+import { initNativeLocalFirstStorageThunk } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
@@ -63,7 +63,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {
         // This needs to be over `extra` to prevent circular dependency,
-        // `@suite-common/local-first-storage` depends on `wallet-core`
+        // `@suite-common/suite-sync` depends on `wallet-core`
         subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
         unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,

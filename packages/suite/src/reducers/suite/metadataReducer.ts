@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage';
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/suite-sync';
 import {
     AccountsRootState,
     DeviceReducerState,

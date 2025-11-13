@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-local-first-storage",
+    "name": "@suite/suite-sync",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,6 +11,6 @@
     },
     "dependencies": {
         "@evolu/web": "^1.0.1-preview.7",
-        "@suite-common/local-first-storage": "workspace:*"
+        "@suite-common/suite-sync": "workspace:*"
     }
 }

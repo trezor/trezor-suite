@@ -1,6 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { LabelingState } from '@suite-common/local-first-storage';
+import { LabelingState } from '@suite-common/suite-sync';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';

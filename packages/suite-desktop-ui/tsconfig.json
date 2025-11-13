@@ -13,15 +13,13 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite/suite-sync" },
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../ipc-proxy" },
         { "path": "../suite" },
         { "path": "../suite-analytics" },
         { "path": "../suite-desktop-api" },
-        {
-            "path": "../suite-local-first-storage"
-        },
         { "path": "../theme" },
         { "path": "../urls" },
         { "path": "../utils" }

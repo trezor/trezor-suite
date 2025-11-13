@@ -1,6 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
-// TODO: currently, message-system index mustn't be imported directly, else @suite-common/local-first-storage:type-check will fail
+// TODO: currently, message-system index mustn't be imported directly, else @suite-common/suite-sync:type-check will fail
 // That's because tsconfig.json in local-first-storage "infects" its upstream packages with exactOptionalPropertyTypes (it shouldn't).
 // Probably caused by circular deps?
 import { selectIsFeatureEnabled } from '@suite-common/message-system/src/messageSystemSelectors';

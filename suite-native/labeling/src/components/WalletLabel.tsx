@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectWalletLabel } from '@suite-common/local-first-storage';
+import { WithLabelingState, selectWalletLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
