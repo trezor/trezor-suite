@@ -42,7 +42,7 @@ export const SearchAsset = ({
     setSearch,
     'data-testid': dataTestId,
     selectConfig,
-    autoFocus = true,
+    autoFocus = false,
 }: SearchAssetProps) => {
     const { options, selectedOption } = useNetworkSelect(selectConfig);
 

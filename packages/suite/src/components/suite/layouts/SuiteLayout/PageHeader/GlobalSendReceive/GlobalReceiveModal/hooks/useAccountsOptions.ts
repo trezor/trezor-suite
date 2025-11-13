@@ -6,6 +6,7 @@ import {
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
 import { accountsFiatBalanceInDescOrderComparator } from '@suite-common/wallet-utils';
+import { useCurrentRef } from '@trezor/react-utils';
 
 import { ASSET_ROW_ACCOUNT_HEIGHT } from 'src/components/suite/asset-picker/components';
 import { useSelector } from 'src/hooks/suite';
@@ -13,18 +14,19 @@ import { useSelector } from 'src/hooks/suite';
 export function useAccountsOptions() {
     const accounts = useSelector(selectAllAccountsToList);
     const fiatRates = useSelector(selectCurrentFiatRates);
-    const fiatRagesRef = useRef(fiatRates);
+    const fiatRatesRef = useRef(fiatRates);
+    const accountsRef = useCurrentRef(accounts);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     return useMemo(() => {
-        const fiatRates = fiatRagesRef.current;
+        const fiatRates = fiatRatesRef.current;
 
         if (!fiatRates) {
             return [];
         }
 
-        return accounts
+        return accountsRef.current
             .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
                 return accountsFiatBalanceInDescOrderComparator({
                     accountA,
@@ -37,7 +39,7 @@ export function useAccountsOptions() {
                 account,
                 height: ASSET_ROW_ACCOUNT_HEIGHT,
             }));
-    }, [accounts, baseCurrencyCode]);
+    }, [accountsRef, baseCurrencyCode, fiatRatesRef]);
 }
 
 export type AccountOption = ReturnType<typeof useAccountsOptions>[number];

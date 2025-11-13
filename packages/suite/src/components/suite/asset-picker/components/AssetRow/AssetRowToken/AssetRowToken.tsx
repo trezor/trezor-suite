@@ -1,25 +1,25 @@
-import { memo } from 'react';
-
 import { Account } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { AssetAmount } from './AssetAmount';
-import { AssetDetails } from './AssetDetails';
+import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
+
 import { AssetImage } from '../AssetImage';
 import { ItemClickableContainer } from '../ItemClickableContainer';
+import { AssetAmount } from './AssetAmount';
+import { AssetDetails } from './AssetDetails';
 
 export const ASSET_ROW_TOKEN_HEIGHT = 68;
 
 export type AssetRowTokenProps = {
-    token: TokenInfo;
+    token: TokensWithRates;
     account: Account;
-    onClick: (token: TokenInfo, account: Account) => void;
+    onClick: (token: TokensWithRates, account: Account) => void;
     'data-testid'?: string;
 };
 
-export const AssetRowToken = memo(function AssetRowTokenInner({
+export function AssetRowToken({
     token,
     account,
     'data-testid': dataTestId,
@@ -47,11 +47,11 @@ export const AssetRowToken = memo(function AssetRowTokenInner({
             {token.balance && (
                 <AssetAmount
                     symbol={token.symbol!}
-                    // fiatAmount={fiatAmount}
+                    fiatAmount={token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined}
                     contractAddress={token.contract}
                     amount={token.balance}
                 />
             )}
         </ItemClickableContainer>
     );
-});
+}

@@ -6,29 +6,39 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { SearchAsset } from '@trezor/product-components';
 
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 
 export interface AssetSearchWithNetworkFilterProps {
     placeholder: TranslationKey;
-    onSearch: (search: string) => void;
-    onNetworkFilter: (networkFilter: NetworkSymbol | undefined) => void;
 }
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
     placeholder,
-    onSearch,
-    onNetworkFilter,
 }: AssetSearchWithNetworkFilterProps) {
-    const [search, setSearch] = useState('');
-    const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(undefined);
-    const enabledNetworks = useSelector(selectEnabledNetworks);
-    const { translationString } = useTranslation();
+    const { search: defaultSearch, networkSymbol: defaultNetwork } = useSelector(
+        globalSendReceiveFilters.selectors.selectFilters,
+    );
 
-    useDebounce(() => onSearch(search), 200, [search, onSearch]);
+    const [search, setSearch] = useState(defaultSearch);
+    const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(defaultNetwork);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
+
+    const { translationString } = useTranslation();
+    const dispatch = useDispatch();
+
+    useDebounce(
+        () => {
+            dispatch(globalSendReceiveFilters.actions.setSearch(search));
+        },
+        100,
+        [search, dispatch],
+    );
 
     useEffect(() => {
-        onNetworkFilter(networkFilter);
-    }, [networkFilter, onNetworkFilter]);
+        setSearch('');
+        dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkFilter));
+    }, [dispatch, networkFilter]);
 
     return (
         <SearchAsset

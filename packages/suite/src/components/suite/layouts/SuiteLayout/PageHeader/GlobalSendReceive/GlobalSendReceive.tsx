@@ -3,7 +3,8 @@ import { memo } from 'react';
 import { Account } from '@suite-common/wallet-types';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useDevice } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { AccountItemType } from 'src/types/wallet';
 
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
@@ -16,6 +17,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { device } = useDevice();
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
+    const dispatch = useDispatch();
 
     const buttonIntent = device?.connected && device?.available ? 'brand' : 'neutral';
     const buttonPriority = device?.connected && device?.available ? 'primary' : 'secondary';
@@ -37,11 +39,13 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const handleSendCancel = (filledSearch: boolean) => {
         sendAnalytics.close(filledSearch);
         closeModal();
+        dispatch(globalSendReceiveFilters.actions.resetFilters());
     };
 
     const handleReceiveCancel = (filledSearch: boolean) => {
         receiveAnalytics.close(filledSearch);
         closeModal();
+        dispatch(globalSendReceiveFilters.actions.resetFilters());
     };
 
     return (

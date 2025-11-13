@@ -4,19 +4,16 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { changeNetworks, deviceActions } from '@suite-common/wallet-core';
 
 import { ACCOUNT_SEARCH } from 'src/actions/wallet/constants';
-import { Action } from 'src/types/suite';
-import { Account as AccountType } from 'src/types/wallet';
+import { Action, AppState } from 'src/types/suite';
 
 export interface State {
-    coinFilter: AccountType['symbol'] | undefined;
+    coinFilter: NetworkSymbol | undefined;
     searchString: string | undefined;
-    selectedNetwork: NetworkSymbol | undefined;
 }
 
 export const initialState: State = {
     coinFilter: undefined,
     searchString: undefined,
-    selectedNetwork: undefined,
 };
 
 const accountSearchReducer = (state: State = initialState, action: Action): State =>
@@ -49,3 +46,5 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
     });
 
 export default accountSearchReducer;
+
+export const selectAccountSearch = (state: AppState) => state.wallet.accountSearch;
