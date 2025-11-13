@@ -76,7 +76,14 @@ export const PortfolioCard = memo(() => {
         dashboardGraphHidden,
     });
 
-    const goToReceive = () => dispatch(goto('wallet-receive'));
+    const goToReceive = () => {
+        if (accounts.length > 1) {
+            dispatch(goto('suite-index', { params: { modal: 'receive' } }));
+        } else {
+            dispatch(goto('wallet-receive'));
+        }
+    };
+
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
 
     const header =
