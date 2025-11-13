@@ -46,7 +46,7 @@
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "react": "19.1.0",
-        "react-hook-form": "^7.64.0",
+        "react-hook-form": "^7.66.0",
         "react-native": "0.81.4",
         "react-native-reanimated": "~3.19.3",
         "react-redux": "9.2.0"
