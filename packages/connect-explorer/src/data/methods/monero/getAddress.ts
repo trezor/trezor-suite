@@ -12,6 +12,7 @@ const batch = [
         label: 'Show on Trezor',
         type: 'checkbox',
         value: true,
+        optional: true,
     },
     {
         name: 'networkType',
@@ -24,24 +25,28 @@ const batch = [
             { value: 2, label: 'STAGENET' },
             { value: 3, label: 'FAKECHAIN' },
         ],
+        optional: true,
     },
     {
         name: 'account',
         label: 'Account index (optional)',
         type: 'number',
         value: 0,
+        optional: true,
     },
     {
         name: 'minor',
         label: 'Minor index (optional)',
         type: 'number',
         value: 0,
+        optional: true,
     },
     {
         name: 'paymentId',
         label: 'Payment ID (optional, hex)',
         type: 'input',
         value: '',
+        optional: true,
     },
     {
         name: 'chunkify',
