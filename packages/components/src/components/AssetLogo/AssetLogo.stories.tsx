@@ -18,10 +18,10 @@ export default meta;
 export const AssetLogo: StoryObj<AssetLogoProps> = {
     args: {
         size: 24,
-        coingeckoId: 'binance-smart-chain',
-        contractAddress: ['0x0203d275d2a65030889af45ed91d472be3948b92'],
+        coingeckoId: 'ethereum',
+        contractAddress: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
         shouldTryToFetch: true,
-        placeholder: 'CATWIFHAT',
+        placeholder: 'USDC',
         ...getFramePropsStory(allowedAssetLogoFrameProps).args,
     },
     argTypes: {

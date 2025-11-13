@@ -13,7 +13,7 @@ const Center = styled.div`
 `;
 
 const meta: Meta<typeof CoinLogoComponent> = {
-    title: 'CoinLogos',
+    title: 'CoinLogo',
     component: CoinLogoComponent,
 };
 export default meta;
@@ -25,7 +25,8 @@ export const CoinLogo: StoryObj<CoinLogoProps> = {
         </Center>
     ),
     args: {
-        symbol: 'ada',
+        symbol: 'base',
+        type: 'tokenWithNetwork',
     },
     argTypes: {
         size: {

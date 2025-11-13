@@ -38,3 +38,8 @@ export const NETWORK_ICONS: Record<NetworkSymbol | LegacyNetworkSymbol, string> 
     btg: require('../../images/networks/btg.svg'),
     xmr: require('../../images/networks/xmr.svg'),
 };
+
+export const isNetworkSymbol = (
+    networkSymbol: string,
+): networkSymbol is NetworkSymbol | LegacyNetworkSymbol =>
+    Object.prototype.hasOwnProperty.call(NETWORK_ICONS, networkSymbol);

@@ -1,10 +1,18 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
+import { networksCollection } from '@suite-common/wallet-config';
 import { StoryColumn } from '@trezor/components';
 
 import { COINS, isCoinSymbol } from './coins';
+import { NETWORK_ICONS, isNetworkSymbol } from './networks';
 import { CoinLogo } from '../../index';
+
+const Heading = styled.h2`
+    margin-bottom: 2px;
+`;
+
+const SubHeading = styled.p``;
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
@@ -27,27 +35,73 @@ const Icon = styled.div`
 `;
 
 const meta: Meta<typeof CoinLogo> = {
-    title: 'CoinLogos',
+    title: 'CoinLogo',
 };
 export default meta;
 
 export const All: StoryObj = {
     render: () => (
-        <StoryColumn minWidth={700}>
-            <WrapperIcons>
-                {Object.keys(COINS).map(coinSymbol => (
-                    <Icon key={coinSymbol}>
-                        <CoinName>{coinSymbol}</CoinName>
-                        {isCoinSymbol(coinSymbol) && (
-                            <CoinLogo
-                                symbol={coinSymbol}
-                                data-testid={`coin-${coinSymbol}`}
-                                size={64}
-                            />
-                        )}
-                    </Icon>
-                ))}
-            </WrapperIcons>
-        </StoryColumn>
+        <>
+            <StoryColumn minWidth={700}>
+                <Heading>Token</Heading>
+                <SubHeading>Network circle SVG icons</SubHeading>
+                <WrapperIcons>
+                    {Object.keys(COINS).map(coinSymbol => (
+                        <Icon key={coinSymbol}>
+                            <CoinName>{coinSymbol}</CoinName>
+                            {isCoinSymbol(coinSymbol) && (
+                                <CoinLogo
+                                    symbol={coinSymbol}
+                                    data-testid={`coin-${coinSymbol}`}
+                                    size={64}
+                                />
+                            )}
+                        </Icon>
+                    ))}
+                </WrapperIcons>
+            </StoryColumn>
+            <StoryColumn minWidth={700}>
+                <Heading>Network</Heading>
+                <SubHeading>Network squared SVG icons</SubHeading>
+                <WrapperIcons>
+                    {Object.keys(NETWORK_ICONS).map(network => (
+                        <Icon key={network}>
+                            <CoinName>{network}</CoinName>
+                            {isNetworkSymbol(network) && (
+                                <CoinLogo
+                                    symbol={network}
+                                    data-testid={`network-${network}`}
+                                    type="network"
+                                    size={64}
+                                />
+                            )}
+                        </Icon>
+                    ))}
+                </WrapperIcons>
+            </StoryColumn>
+            <StoryColumn minWidth={700}>
+                <Heading>Token with network</Heading>
+                <SubHeading>
+                    Native token SVG icon with network SVG icon. Only applicable for L2 networks.
+                </SubHeading>
+                <WrapperIcons>
+                    {networksCollection
+                        .filter(network => network.settlementLayer)
+                        .map(network => (
+                            <Icon key={network.symbol}>
+                                <CoinName>{network.symbol}</CoinName>
+                                {isCoinSymbol(network.symbol) && (
+                                    <CoinLogo
+                                        symbol={network.symbol}
+                                        data-testid={`l2-network-${network}`}
+                                        type="tokenWithNetwork"
+                                        size={64}
+                                    />
+                                )}
+                            </Icon>
+                        ))}
+                </WrapperIcons>
+            </StoryColumn>
+        </>
     ),
 };
