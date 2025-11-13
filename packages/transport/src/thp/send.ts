@@ -42,7 +42,7 @@ export const sendThpMessage = async ({
 
     // ThpAck is expected.
     // set expectedResponses to ThpAck
-    thpState.setExpectedResponses([0x20, ...expectedResponses]); // THP_READ_ACK_HEADER_BYTE
+    thpState.setExpectedResponses([0x20]); // THP_READ_ACK_HEADER_BYTE
 
     let attempt = 0;
 
@@ -114,10 +114,7 @@ export const sendThpMessage = async ({
         // set expectedResponses as they will be used in receiveThpMessage
         thpState.setExpectedResponses(expectedResponses);
 
-        const firstReadResult =
-            decodedResult?.type === 'TrezorHostProtocolMessage' ? result : undefined;
-
-        return success(firstReadResult);
+        return success(undefined);
     } catch (err) {
         logger?.error(`sendThpMessage error ${err.message}`);
 
