@@ -6,12 +6,12 @@ import { selectIsBiometricsOverlayVisible } from '../biometricsSlice';
 
 export const BiometricsModalRenderer = () => {
     const isBiometricsOverlayVisible = useSelector(selectIsBiometricsOverlayVisible);
-    const { isBiometricsAuthenticationAllowed, requestAuthenticationCheck } = useBiometrics();
+    const { shouldAutoAuthenticate, doAuthentication } = useBiometrics();
 
     return isBiometricsOverlayVisible ? (
         <BiometricOverlay
-            isBiometricsAuthButtonVisible={!isBiometricsAuthenticationAllowed}
-            onBiometricAuthPress={requestAuthenticationCheck}
+            isBiometricsAuthButtonVisible={!shouldAutoAuthenticate}
+            onBiometricAuthPress={doAuthentication}
         />
     ) : null;
 };

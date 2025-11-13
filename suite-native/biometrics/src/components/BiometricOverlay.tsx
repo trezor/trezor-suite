@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, iconSizes } from '@suite-native/icons';
@@ -6,6 +7,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { BiometricsIcon } from './BiometricsIcon';
+import { selectShouldUserBeAuthenticated } from '../biometricsSlice';
 
 const overlayWrapperStyle = prepareNativeStyle(utils => ({
     ...StyleSheet.absoluteFillObject,
@@ -33,6 +35,13 @@ export const BiometricOverlay = ({
     onBiometricAuthPress,
 }: BiometricOverlayProps) => {
     const { applyStyle } = useNativeStyles();
+    const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
+
+    const triggerManualAuthentication = () => {
+        if (shouldUserBeAuthenticated) {
+            onBiometricAuthPress();
+        }
+    };
 
     return (
         <>
@@ -41,7 +50,7 @@ export const BiometricOverlay = ({
             </Box>
             {isBiometricsAuthButtonVisible && (
                 <PressableOpacity
-                    onPress={onBiometricAuthPress}
+                    onPress={triggerManualAuthentication}
                     style={applyStyle(bottomWrapperStyle)}
                 >
                     <BiometricsIcon iconSize={iconSizes.extraLarge} showShadow />

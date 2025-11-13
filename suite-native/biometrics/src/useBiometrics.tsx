@@ -7,6 +7,7 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import {
     selectIsBiometricsEnabled,
     selectIsUserAuthenticated,
+    selectShouldUserBeAuthenticated,
     setIsBiometricsOverlayVisible,
     setIsUserAuthenticated,
 } from './biometricsSlice';
@@ -22,8 +23,7 @@ export const useBiometrics = () => {
     const isAuthenticatingRef = useRef(false);
     const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
 
-    const [isBiometricsAuthenticationAllowed, setIsBiometricsAuthenticationAllowed] =
-        useState(true);
+    const [shouldAutoAuthenticate, setShouldAutoAuthenticate] = useState(true);
 
     // Keeps track of the current AppState - not only needed for biometrics, but useful for it
     const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
@@ -31,8 +31,8 @@ export const useBiometrics = () => {
     const goneToBackgroundAtTimestamp = useRef<null | number>(null);
 
     const isUserAuthenticated = useSelector(selectIsUserAuthenticated);
+    const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
-    // Monitors AppState and adjust the authentication state accordingly.
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
             switch (nextAppState) {
@@ -51,7 +51,7 @@ export const useBiometrics = () => {
 
                 case 'background':
                     dispatch(setIsBiometricsOverlayVisible(true));
-                    setIsBiometricsAuthenticationAllowed(true);
+                    setShouldAutoAuthenticate(true);
                     goneToBackgroundAtTimestamp.current = Date.now();
                     break;
 
@@ -68,14 +68,7 @@ export const useBiometrics = () => {
         });
 
         return () => subscription.remove();
-    }, [
-        isBiometricsOptionEnabled,
-        setIsBiometricsAuthenticationAllowed,
-        isUserAuthenticated,
-        dispatch,
-    ]);
-
-    const requestAuthenticationCheck = () => setIsBiometricsAuthenticationAllowed(true);
+    }, [isBiometricsOptionEnabled, setShouldAutoAuthenticate, isUserAuthenticated, dispatch]);
 
     const doAuthentication = useCallback(async () => {
         if (isAuthenticatingRef.current) return;
@@ -91,7 +84,7 @@ export const useBiometrics = () => {
             }
         } finally {
             isAuthenticatingRef.current = false;
-            setIsBiometricsAuthenticationAllowed(false);
+            setShouldAutoAuthenticate(false);
         }
     }, [dispatch]);
 
@@ -110,20 +103,16 @@ export const useBiometrics = () => {
             return;
         }
 
-        if (
-            isBiometricsOptionEnabled &&
-            !isUserAuthenticated &&
-            isBiometricsAuthenticationAllowed
-        ) {
+        if (shouldUserBeAuthenticated && shouldAutoAuthenticate) {
             doAuthentication();
         }
     }, [
+        shouldUserBeAuthenticated,
         appStateVisible,
-        isUserAuthenticated,
         isBiometricsOptionEnabled,
-        isBiometricsAuthenticationAllowed,
+        shouldAutoAuthenticate,
         doAuthentication,
     ]);
 
-    return { isBiometricsAuthenticationAllowed, requestAuthenticationCheck };
+    return { shouldAutoAuthenticate, doAuthentication };
 };

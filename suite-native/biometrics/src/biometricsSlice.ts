@@ -44,5 +44,8 @@ export const selectIsBiometricsEnabled = (state: BiometricsSliceRootState) =>
 export const selectIsBiometricsOverlayVisible = (state: BiometricsSliceRootState) =>
     selectIsBiometricsEnabled(state) && state.biometrics.isBiometricsOverlayVisible;
 
+export const selectShouldUserBeAuthenticated = (state: BiometricsSliceRootState) =>
+    selectIsBiometricsEnabled(state) && !state.biometrics.isUserAuthenticated;
+
 export const { setIsUserAuthenticated, toggleEnableBiometrics, setIsBiometricsOverlayVisible } =
     biometricsSlice.actions;
