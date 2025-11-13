@@ -25,15 +25,18 @@ export const biometricsPersistWhitelist: Array<keyof BiometricsSliceState> = [
     'isBiometricsEnabled',
 ];
 
-export const authenticate = createThunk(`biometrics/authenticate`, async () => {
-    const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
+export const authenticate = createThunk(
+    `biometrics/authenticate`,
+    async (_, { rejectWithValue }) => {
+        const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
-    if (isBiometricsAvailable) {
+        if (!isBiometricsAvailable) return rejectWithValue('biometrics-not-available');
+
         const result = await LocalAuthentication.authenticateAsync();
 
         return result;
-    }
-});
+    },
+);
 
 export const biometricsSlice = createSlice({
     name: 'biometrics',
