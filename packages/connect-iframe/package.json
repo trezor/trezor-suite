@@ -19,7 +19,7 @@
         "@trezor/connect-common": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.27.1",
+        "@babel/preset-typescript": "^7.28.5",
         "@trezor/bundler-security": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@types/jest": "29.5.12",

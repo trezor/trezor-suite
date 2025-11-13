@@ -35,7 +35,7 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.27.1",
+        "@babel/preset-react": "^7.28.5",
         "@storybook/addon-docs": "^9.0.16",
         "@storybook/addon-links": "^9.0.16",
         "@storybook/react": "^9.0.16",
