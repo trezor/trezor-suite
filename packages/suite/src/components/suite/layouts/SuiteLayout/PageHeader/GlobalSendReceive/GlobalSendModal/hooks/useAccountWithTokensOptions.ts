@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -19,6 +19,7 @@ import {
     ASSET_ROW_ACCOUNT_HEIGHT,
     ASSET_ROW_TOKEN_HEIGHT,
 } from 'src/components/suite/asset-picker/components';
+import { useCurrentRef } from 'src/hooks/general/useCurrentRef';
 import { useSelector } from 'src/hooks/suite';
 import {
     enhanceTokensWithRates,
@@ -55,9 +56,12 @@ export function useAccountWithTokensOptions(
 ): AccountWithTokensOption[] {
     const accounts = useSelector(selectAllAccountsToList);
     const fiatRates = useSelector(selectCurrentFiatRates);
-    const fiatRagesRef = useRef(fiatRates);
+    const fiatRagesRef = useCurrentRef(fiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
+
+    // Accounts are constantly being updated in Redux. So take only current snapshot to avoid re-renders -> perf. issue and loosing scroll position
+    const accountsRef = useCurrentRef(accounts);
 
     return useMemo(() => {
         const fiatRates = fiatRagesRef.current;
@@ -66,7 +70,7 @@ export function useAccountWithTokensOptions(
             return [];
         }
 
-        const networkAccounts = filterAccountsByNetworkSymbol(accounts, networkSymbol);
+        const networkAccounts = filterAccountsByNetworkSymbol(accountsRef.current, networkSymbol);
         const accountsWithPositiveBalance = selectAccountsWithPositiveBalance(networkAccounts);
 
         const accountsAndTokensSortedByFiatBalance = accountsWithPositiveBalance
@@ -120,5 +124,5 @@ export function useAccountWithTokensOptions(
         }
 
         return accountsWithTokensOptions;
-    }, [accounts, baseCurrencyCode, networkSymbol, tokenDefinitions]);
+    }, [accountsRef, baseCurrencyCode, fiatRagesRef, networkSymbol, tokenDefinitions]);
 }

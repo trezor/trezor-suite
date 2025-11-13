@@ -37,15 +37,12 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const [search, setSearch] = useState('');
     const [networkSymbol, setNetworkSymbol] = useState<NetworkSymbol | undefined>(undefined);
 
-    const t0 = performance.now();
     const accountsWithTokens = useAccountWithTokensOptions(networkSymbol);
     const filteredAccountsWithTokens = useFilterAccountsWithTokens(accountsWithTokens, {
         search,
     });
     const fingerprintWithTokens = useDataFingerprint(filteredAccountsWithTokens);
     const globalSendListItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
-    const t1 = performance.now();
-    console.log('time', t1 - t0);
 
     const submitRef = useCurrentRef(onSubmit);
     const searchRef = useCurrentRef(search);

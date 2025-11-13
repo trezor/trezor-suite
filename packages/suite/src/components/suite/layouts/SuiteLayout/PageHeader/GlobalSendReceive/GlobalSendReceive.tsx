@@ -1,8 +1,9 @@
+import { memo } from 'react';
+
 import { Account } from '@suite-common/wallet-types';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useDevice } from 'src/hooks/suite';
-import { LocalAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
 import { AccountItemType } from 'src/types/wallet';
 
 import { GlobalReceiveModal } from './GlobalReceiveModal/GlobalReceiveModal';
@@ -11,7 +12,7 @@ import { GlobalSendReceiveButtons } from './GlobalSendReceiveButtons';
 import { useGlobalSendReceiveAnalytics } from './hooks/useGlobalSendReceiveAnalytics';
 import { useGlobalSendReceiveModal } from './hooks/useGlobalSendReceiveModal';
 
-export const GlobalSendReceive = () => {
+export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { device } = useDevice();
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
@@ -53,18 +54,11 @@ export const GlobalSendReceive = () => {
                 priority={buttonPriority}
             />
             {activeModal === 'send' && (
-                <LocalAccountSearchProvider>
-                    <GlobalSendModal onCancel={handleSendCancel} onSubmit={handleSendSubmit} />
-                </LocalAccountSearchProvider>
+                <GlobalSendModal onCancel={handleSendCancel} onSubmit={handleSendSubmit} />
             )}
             {activeModal === 'receive' && (
-                <LocalAccountSearchProvider>
-                    <GlobalReceiveModal
-                        onCancel={handleReceiveCancel}
-                        onSubmit={handleReceiveSubmit}
-                    />
-                </LocalAccountSearchProvider>
+                <GlobalReceiveModal onCancel={handleReceiveCancel} onSubmit={handleReceiveSubmit} />
             )}
         </AppNavigationTooltip>
     );
-};
+});
