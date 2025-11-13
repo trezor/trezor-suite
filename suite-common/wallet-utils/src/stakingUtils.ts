@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
+    CARDANO_STAKING_REGISTRATION_DEPOSIT,
     MAX_CARDANO_AMOUNT_FOR_STAKING,
     MAX_ETH_AMOUNT_FOR_STAKING,
     MAX_SOL_AMOUNT_FOR_STAKING,
@@ -83,6 +84,7 @@ export type StakingLimits = {
     MIN_FOR_WITHDRAWALS: BigNumber;
     MIN_BALANCE_FOR_FEE_BUFFER: BigNumber;
     MIN_BALANCE_FOR_STAKING: BigNumber;
+    MIN_AMOUNT_FOR_STAKING_DASHBOARD: BigNumber;
 };
 
 export const getStakingLimitsByNetworkSymbol = (
@@ -95,6 +97,7 @@ export const getStakingLimitsByNetworkSymbol = (
         case 'eth':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_ETH_AMOUNT_FOR_STAKING,
+                MIN_AMOUNT_FOR_STAKING_DASHBOARD: MIN_ETH_AMOUNT_FOR_STAKING,
                 MAX_AMOUNT_FOR_STAKING: MAX_ETH_AMOUNT_FOR_STAKING,
                 MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_FEE_BUFFER: MIN_ETH_BALANCE_FOR_FEE_BUFFER,
@@ -105,6 +108,7 @@ export const getStakingLimitsByNetworkSymbol = (
         case 'sol':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_SOL_AMOUNT_FOR_STAKING,
+                MIN_AMOUNT_FOR_STAKING_DASHBOARD: MIN_SOL_AMOUNT_FOR_STAKING,
                 MAX_AMOUNT_FOR_STAKING: MAX_SOL_AMOUNT_FOR_STAKING,
                 MIN_FOR_WITHDRAWALS: MIN_SOL_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_FEE_BUFFER: MIN_SOL_BALANCE_FOR_FEE_BUFFER,
@@ -115,6 +119,9 @@ export const getStakingLimitsByNetworkSymbol = (
         case 'ada':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_CARDANO_AMOUNT_FOR_STAKING,
+                MIN_AMOUNT_FOR_STAKING_DASHBOARD: MIN_CARDANO_AMOUNT_FOR_STAKING.plus(
+                    CARDANO_STAKING_REGISTRATION_DEPOSIT,
+                ),
                 MAX_AMOUNT_FOR_STAKING: MAX_CARDANO_AMOUNT_FOR_STAKING,
                 MIN_FOR_WITHDRAWALS: MIN_CARDANO_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_FEE_BUFFER: MIN_ETH_BALANCE_FOR_FEE_BUFFER,
