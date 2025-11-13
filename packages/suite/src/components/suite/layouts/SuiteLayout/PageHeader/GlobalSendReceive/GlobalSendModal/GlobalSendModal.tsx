@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -16,6 +16,7 @@ import {
     AssetsModal,
 } from 'src/components/suite/asset-picker/components';
 import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks';
+import { useCurrentRef } from 'src/hooks/general/useCurrentRef';
 import { AccountItemType } from 'src/types/wallet';
 
 import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
@@ -29,16 +30,6 @@ type GlobalSendModalProps = {
     onCancel: (filledSearch: boolean) => void;
     onSubmit: (account: Account, type: AccountItemType, filledSearch: boolean) => void;
 };
-
-function useCurrentRef<T>(value: T) {
-    const ref = useRef<T>(null);
-
-    useEffect(() => {
-        ref.current = value;
-    }, [value]);
-
-    return ref;
-}
 
 const LIST_HEIGHT = 500;
 
