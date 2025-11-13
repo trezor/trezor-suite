@@ -2,15 +2,17 @@ import { useSelector } from 'react-redux';
 
 import { useBiometrics } from '../useBiometrics';
 import { BiometricOverlay } from './BiometricOverlay';
-import { selectIsBiometricsOverlayVisible } from '../biometricsSlice';
+import { selectBiometricsError, selectIsBiometricsOverlayVisible } from '../biometricsSlice';
 
 export const BiometricsModalRenderer = () => {
     const isBiometricsOverlayVisible = useSelector(selectIsBiometricsOverlayVisible);
-    const { shouldAutoAuthenticate, doAuthentication } = useBiometrics();
+    const biometricsError = useSelector(selectBiometricsError);
+
+    const { doAuthentication } = useBiometrics();
 
     return isBiometricsOverlayVisible ? (
         <BiometricOverlay
-            isBiometricsAuthButtonVisible={!shouldAutoAuthenticate}
+            isBiometricsAuthButtonVisible={!!biometricsError}
             onBiometricAuthPress={doAuthentication}
         />
     ) : null;
