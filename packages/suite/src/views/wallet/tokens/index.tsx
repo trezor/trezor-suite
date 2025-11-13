@@ -6,6 +6,8 @@ import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Route } from 'src/components/suite/Route';
+import { ActivateTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ActivateTokenModal';
+import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
@@ -18,6 +20,8 @@ import { InactiveTokensTable } from './inactive-tokens/InactiveTokensTable';
 
 export const Tokens = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [showManualInput, setShowManualInput] = useState(false);
+    const [manualTokenContract, setManualTokenContract] = useState<string | null>(null);
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const dispatch = useDispatch();
@@ -38,6 +42,28 @@ export const Tokens = () => {
         return <WalletLayout title="TR_TOKENS" account={selectedAccount} />;
     }
 
+    const handleManualActivation = () => {
+        setShowManualInput(true);
+    };
+
+    const handleManualTokenSubmit = (assetCode: string, assetIssuer: string) => {
+        const contractAddress = `${assetCode}-${assetIssuer}`;
+        setManualTokenContract(contractAddress);
+        setShowManualInput(false);
+    };
+
+    const closeManualInput = () => {
+        setShowManualInput(false);
+    };
+
+    const closeManualActivateModal = () => {
+        setManualTokenContract(null);
+    };
+
+    // Show manual activation button only on inactive tokens tab for Stellar network
+    const showManualActivationButton =
+        routeName === 'wallet-tokens-inactive' && selectedAccount.account.networkType === 'stellar';
+
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount}>
             <Column gap={spacings.lg}>
@@ -45,6 +71,8 @@ export const Tokens = () => {
                     selectedAccount={selectedAccount}
                     searchQuery={searchQuery}
                     setSearchQuery={setSearchQuery}
+                    onManualActivation={handleManualActivation}
+                    showManualActivation={showManualActivationButton}
                 />
                 <Route name="wallet-tokens">
                     <CoinsTable selectedAccount={selectedAccount} searchQuery={searchQuery} />
@@ -62,6 +90,21 @@ export const Tokens = () => {
                     />
                 </Route>
             </Column>
+
+            {showManualInput && (
+                <StellarTokenInputModal
+                    onSubmit={handleManualTokenSubmit}
+                    onCancel={closeManualInput}
+                />
+            )}
+
+            {manualTokenContract && (
+                <ActivateTokenModal
+                    symbol={selectedAccount.account.symbol}
+                    contractAddress={manualTokenContract}
+                    onCancel={closeManualActivateModal}
+                />
+            )}
         </WalletLayout>
     );
 };

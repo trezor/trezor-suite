@@ -4,7 +4,7 @@ import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { NetworkType } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { IconButton, IconName, InputButton, Row, SubTabs } from '@trezor/components';
+import { Button, IconButton, IconName, InputButton, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -69,6 +69,8 @@ interface TokensNavigationProps {
     searchQuery: string;
     setSearchQuery: Dispatch<SetStateAction<string>>;
     isNft?: boolean;
+    onManualActivation?: () => void;
+    showManualActivation?: boolean;
 }
 
 export const TokensNavigation = ({
@@ -76,6 +78,8 @@ export const TokensNavigation = ({
     searchQuery,
     setSearchQuery,
     isNft = false,
+    onManualActivation,
+    showManualActivation = false,
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const [isExpanded, setExpanded] = useState(false);
@@ -133,6 +137,16 @@ export const TokensNavigation = ({
                 ))}
             </SubTabs>
             <Row gap={spacings.sm}>
+                {showManualActivation && onManualActivation && (
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        size="medium"
+                        onClick={onManualActivation}
+                    >
+                        <Translation id="TR_ACTIVATE_MANUALLY" />
+                    </Button>
+                )}
                 <InputButton
                     placeholder={translationString(
                         isNft ? 'TR_SEARCH_COLLECTIONS' : 'TR_SEARCH_TOKENS',
