@@ -3025,13 +3025,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/common@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@ethereumjs/common@npm:10.0.0"
+"@ethereumjs/common@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@ethereumjs/common@npm:10.1.0"
   dependencies:
-    "@ethereumjs/util": "npm:^10.0.0"
+    "@ethereumjs/util": "npm:^10.1.0"
     eventemitter3: "npm:^5.0.1"
-  checksum: 10/fc56c436f2452867d41ee880d50bd7cad7188369657dd76c23a2d2171a945a53e11a4d61c4935838c3c1b9d800d2707e61fd74fe3c21800e9f0e0e0fa7581ab6
+  checksum: 10/7843e3c8490bd076e6b4f5696a7395b0c082c1745e00d180caa19a636012c3220c22dd970298a6c07fc603e8435311bf0db372d3718295bedefe07d2d83428fb
   languageName: node
   linkType: hard
 
@@ -3045,12 +3045,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/rlp@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@ethereumjs/rlp@npm:10.0.0"
+"@ethereumjs/rlp@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@ethereumjs/rlp@npm:10.1.0"
   bin:
     rlp: bin/rlp.cjs
-  checksum: 10/3232f40ecc8dcd440994194925f9b8e74bf8f5eb995f98db9715b924358485ad5f332d529776537cc57e0c3393d1f0955014edbaefffa6935d4919de5f47c47d
+  checksum: 10/6c2f5450b0172315679032e345fb27c0d60481297e1b13cb3f710c99b96f3379004bd287f46351b3afea3d495b91b451bfbdd92f3b61c0872c3986f22f233b08
   languageName: node
   linkType: hard
 
@@ -3072,15 +3072,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/tx@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@ethereumjs/tx@npm:10.0.0"
+"@ethereumjs/tx@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@ethereumjs/tx@npm:10.1.0"
   dependencies:
-    "@ethereumjs/common": "npm:^10.0.0"
-    "@ethereumjs/rlp": "npm:^10.0.0"
-    "@ethereumjs/util": "npm:^10.0.0"
+    "@ethereumjs/common": "npm:^10.1.0"
+    "@ethereumjs/rlp": "npm:^10.1.0"
+    "@ethereumjs/util": "npm:^10.1.0"
     ethereum-cryptography: "npm:^3.2.0"
-  checksum: 10/e8dcc31109b921a4e8abd09b735fcc6e26baee80715f55b1caf870189450ebf3b896690487ed22e7408db476080eef655aafdb3551af8cd126743ebf2c46dbb6
+  checksum: 10/37a814aadcea02d71a71cd095eacd406d10b27449fc6d7e0ce1e440fbcac9163dc15d4f2df19c90e3e3263bb39b9851df796b64006e6872c99e955aed7da34e9
   languageName: node
   linkType: hard
 
@@ -3096,13 +3096,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@ethereumjs/util@npm:10.0.0"
+"@ethereumjs/util@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "@ethereumjs/util@npm:10.1.0"
   dependencies:
-    "@ethereumjs/rlp": "npm:^10.0.0"
+    "@ethereumjs/rlp": "npm:^10.1.0"
     ethereum-cryptography: "npm:^3.2.0"
-  checksum: 10/9fa6f50a87978bcbcc8555762089b594dd5d28816dcbbfd24b226c929ee689eb860cb4e7d0385d3a3fcd83a146d8db42a9f17587818296d0964d5a3a1f9039a6
+  checksum: 10/3d244759249b67052671cfebf42aa157fe629a234643ea6b0ee1b869cd0722585516dbe284c9d4980af320e6b072fd0e85b33579035e2dd2f3e5f814dce48458
   languageName: node
   linkType: hard
 
@@ -13958,8 +13958,8 @@ __metadata:
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
     "@babel/preset-typescript": "npm:^7.27.1"
-    "@ethereumjs/common": "npm:^10.0.0"
-    "@ethereumjs/tx": "npm:^10.0.0"
+    "@ethereumjs/common": "npm:^10.1.0"
+    "@ethereumjs/tx": "npm:^10.1.0"
     "@fivebinaries/coin-selection": "npm:3.0.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@noble/hashes": "npm:^1.6.1"
