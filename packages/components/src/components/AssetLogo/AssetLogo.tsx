@@ -129,6 +129,7 @@ export const AssetLogo = ({
     );
 
     const [candidateIndex, setCandidateIndex] = useState(0);
+    const [showPlaceholder, setShowPlaceholder] = useState(!shouldTryToFetch);
 
     const candidates = useMemo<LogoCandidate[]>(() => {
         if (!shouldTryToFetch || !canonicalAddresses.length) return [];
@@ -158,14 +159,20 @@ export const AssetLogo = ({
     }, [shouldTryToFetch, canonicalAddresses, coingeckoIdLogo, size]);
 
     const hasCandidates = candidates.length > 0;
-    const currentIndex = hasCandidates ? Math.min(candidateIndex, candidates.length - 1) : -1;
-    const current = hasCandidates ? candidates[currentIndex] : undefined;
-    const showPlaceholder = !hasCandidates;
+    const hasValidIndex = candidateIndex >= 0 && candidateIndex < candidates.length;
+    const current = hasCandidates && hasValidIndex ? candidates[candidateIndex] : undefined;
 
     useEffect(() => {
+        if (!hasCandidates) {
+            setShowPlaceholder(true);
+
+            return;
+        }
+
         const cachedResult = resolvedLogoCache.get(cacheKey);
         if (!cachedResult) {
             setCandidateIndex(0);
+            setShowPlaceholder(false);
 
             return;
         }
@@ -174,7 +181,8 @@ export const AssetLogo = ({
             c => c.src === cachedResult.src && c.srcSet === cachedResult.srcSet,
         );
         setCandidateIndex(idx >= 0 ? idx : 0);
-    }, [cacheKey, candidates]);
+        setShowPlaceholder(false);
+    }, [cacheKey, candidates, hasCandidates]);
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
 
@@ -182,7 +190,13 @@ export const AssetLogo = ({
         if (!current) return;
 
         failedAddressesCache.add(makeAddressKey(coingeckoIdLogo, current.address));
-        setCandidateIndex(prev => Math.min(prev + 1, candidates.length - 1));
+
+        const nextIndex = candidateIndex + 1;
+        if (nextIndex >= candidates.length) {
+            setShowPlaceholder(true);
+        } else {
+            setCandidateIndex(nextIndex);
+        }
     };
 
     const handleOnLoad = () => {
