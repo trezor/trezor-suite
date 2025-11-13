@@ -1,8 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import styled, { useTheme } from 'styled-components';
-
 import { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
@@ -13,16 +11,15 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     Card,
     Column,
-    H2,
     Icon,
     InfoItem,
+    Note,
     Row,
     SkeletonRectangle,
-    variables,
+    Text,
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import {
@@ -40,44 +37,6 @@ import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 import { TradingButton } from '../TradingButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const WarningIcon = styled(Icon)`
-    padding-left: ${spacingsPx.xxs};
-    padding-bottom: ${spacingsPx.xxxs};
-`;
-
-const FiatAmount = styled.div`
-    display: flex;
-    align-content: flex-end;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const IntegerValue = styled(H2)`
-    font-variant-numeric: tabular-nums;
-    line-height: 34px;
-    letter-spacing: 0.565px;
-`;
-
-const CoinAmount = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
-    display: inline-block;
-    margin-top: ${spacingsPx.xs};
-    font-variant-numeric: tabular-nums;
-    ${typography.hint};
-`;
-
-const FailedContainer = styled.div`
-    color: ${({ theme }) => theme.textAlertRed};
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xs};
-
-    ${typography.hint}
-    ${variables.SCREEN_QUERY.MOBILE} {
-        border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
-    }
-`;
-
 type AmountComponentProps = {
     failed: boolean;
     cryptoValue: AmountUnit;
@@ -86,32 +45,28 @@ type AmountComponentProps = {
     shallDisplayBaseCurrency: boolean;
 };
 
-const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountComponentProps) => {
-    const theme = useTheme();
-
-    return !failed ? (
-        <Column>
-            <FiatAmount data-testid={`@dashboard/asset/${symbol}/fiat-amount`}>
+const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountComponentProps) =>
+    !failed ? (
+        <Column gap={4}>
+            <Row data-testid={`@dashboard/asset/${symbol}/fiat-amount`}>
                 <FiatHeader
                     symbol={symbol}
                     amount={cryptoValue}
                     size="medium"
                     localCurrency={localCurrency}
                 />
-            </FiatAmount>
-            <CoinAmount>
+            </Row>
+            <Text typographyStyle="hint" variant="tertiary">
                 <AmountUnitSwitchWrapper symbol={symbol}>
                     <CoinBalance value={cryptoValue} symbol={symbol} />
                 </AmountUnitSwitchWrapper>
-            </CoinAmount>
+            </Text>
         </Column>
     ) : (
-        <FailedContainer>
-            <WarningIcon name="warning" color={theme.iconAlertRed} size={14} />
+        <Note variant="destructive" iconName="warning">
             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
-        </FailedContainer>
+        </Note>
     );
-};
 
 type AssetCardProps = {
     network: Network;
@@ -203,8 +158,8 @@ export const AssetCard = ({
             onClick={handleCardClick}
             data-testid={`@dashboard/asset-item/${symbol}`}
         >
-            <Column justifyContent="space-between" height="100%">
-                <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
+            <Column justifyContent="space-between" height="100%" gap={20} padding={{ top: 8 }}>
+                <Column gap={40} flex="1" margin={{ horizontal: 8 }}>
                     <Row justifyContent="space-between">
                         <AssetCardInfo
                             network={network}
@@ -233,7 +188,7 @@ export const AssetCard = ({
                 )}
                 {shallDisplayBaseCurrency && (
                     <Card data-testid="@dashboard/asset/bottom-info">
-                        <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.md}>
+                        <Row justifyContent="space-between" flexWrap="wrap" gap={16}>
                             <InfoItem
                                 data-testid="@dashboard/asset/exchange-rate"
                                 label={<Translation id="TR_EXCHANGE_RATE" />}
@@ -249,7 +204,7 @@ export const AssetCard = ({
                                 <TrendTicker symbol={symbol} />
                             </InfoItem>
 
-                            <Row gap={spacings.xs}>
+                            <Row gap={8}>
                                 {isStakeNetwork && (
                                     <TradingButton
                                         symbol={symbol}
@@ -283,19 +238,15 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
 
     return (
         <Card>
-            <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
+            <Column gap={40} flex="1" margin={8}>
                 <Row justifyContent="space-between">
                     <AssetCardInfoSkeleton animate={animate} />
                 </Row>
                 <Column>
-                    <FiatAmount>
-                        <IntegerValue>
-                            <SkeletonRectangle animate={animate} width={95} height={32} />
-                        </IntegerValue>
-                    </FiatAmount>
-                    <CoinAmount>
-                        <SkeletonRectangle animate={animate} width={50} height={16} />
-                    </CoinAmount>
+                    <Row>
+                        <SkeletonRectangle animate={animate} width={95} height={32} />
+                    </Row>
+                    <SkeletonRectangle animate={animate} width={50} height={16} />
                 </Column>
             </Column>
             <Card>

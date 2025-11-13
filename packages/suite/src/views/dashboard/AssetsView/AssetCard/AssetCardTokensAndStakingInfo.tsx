@@ -1,7 +1,6 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -24,16 +23,13 @@ export const AssetCardTokensAndStakingInfo = ({
     shouldRenderTokens,
     accounts,
 }: AssetCardTokensAndStakingInfoProps) => (
-    <Column>
-        <Divider strokeWidth={1} margin={{ vertical: spacings.xs }} />
+    <Column gap={10}>
+        <Divider strokeWidth={1} margin={0} />
         {shouldRenderStaking && (
-            <Row
-                justifyContent="space-between"
-                margin={{ horizontal: spacings.xs, bottom: spacings.xs }}
-            >
-                <Row gap={spacings.xs}>
-                    <Icon name="piggyBankFilled" variant="tertiary" />
-                    <Text typographyStyle="body" variant="tertiary">
+            <Row justifyContent="space-between" margin={{ horizontal: 8 }}>
+                <Row gap={8}>
+                    <Icon name="piggyBankFilled" size={20} variant="tertiary" />
+                    <Text typographyStyle="hint" variant="tertiary">
                         <Translation id="TR_NAV_STAKING" />
                     </Text>
                 </Row>
@@ -45,28 +41,29 @@ export const AssetCardTokensAndStakingInfo = ({
                             </Text>
                         </HiddenPlaceholder>
                         <HiddenPlaceholder>
-                            <BaseCurrencyValue amount={assetStakingBalance} symbol={symbol} />
+                            <Text typographyStyle="hint">
+                                <BaseCurrencyValue amount={assetStakingBalance} symbol={symbol} />
+                            </Text>
                         </HiddenPlaceholder>
                     </>
                 )}
             </Row>
         )}
         {shouldRenderTokens && (
-            <Row
-                justifyContent="space-between"
-                margin={{ horizontal: spacings.xs, bottom: spacings.xs }}
-            >
-                <Row gap={spacings.xs}>
+            <Row justifyContent="space-between" margin={{ horizontal: 8 }}>
+                <Row gap={8}>
                     <TokenIconSetWrapper accounts={accounts} symbol={symbol} />
-                    <Text typographyStyle="body" variant="tertiary">
+                    <Text typographyStyle="hint" variant="tertiary">
                         <Translation id="TR_NAV_TOKENS" />
                     </Text>
                 </Row>
-                <BaseCurrencyValue
-                    amount={tokensFiatBalance ?? '0'}
-                    symbol={symbol}
-                    shouldConvert={false}
-                />
+                <Text typographyStyle="hint">
+                    <BaseCurrencyValue
+                        amount={tokensFiatBalance ?? '0'}
+                        symbol={symbol}
+                        shouldConvert={false}
+                    />
+                </Text>
             </Row>
         )}
     </Column>

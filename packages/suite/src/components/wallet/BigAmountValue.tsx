@@ -2,30 +2,19 @@ import styled from 'styled-components';
 
 import { Locale } from '@suite-common/suite-types';
 import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/wallet-utils';
-import { typography } from '@trezor/theme';
+import { Row, Text } from '@trezor/components';
 
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 
 import { useSelector } from '../../hooks/suite';
 
-const ValueWrapper = styled.div`
-    display: flex;
-    align-items: flex-end;
-`;
-
-const WholeValue = styled.div<{ $size: 'large' | 'medium' }>`
-    ${({ $size }) => ($size === 'large' ? typography.titleLarge : typography.titleMedium)};
-    color: ${({ theme }) => theme.textDefault};
+const WholeValue = styled.span`
     font-variant-numeric: tabular-nums;
 `;
 
-const DecimalValue = styled.div<{ $size: 'large' | 'medium' }>`
-    ${typography.hint};
+const DecimalValue = styled.span`
     font-variant-numeric: tabular-nums;
-    align-self: flex-end;
     letter-spacing: 0.565px;
-    margin-bottom: ${({ $size }) => `${$size === 'large' ? '6px' : '2px'}`};
-    color: ${({ theme }) => theme.textSubdued};
 `;
 
 type BigAmountValueProps = {
@@ -50,16 +39,20 @@ export const BigAmountValue = ({
     const shouldRedactNumbers = useShouldRedactNumbers();
 
     return (
-        <ValueWrapper data-testid={dataTestId}>
-            <WholeValue $size={size}>
-                {shouldRedactNumbers ? redactNumericalSubstring(whole) : whole}
-            </WholeValue>
+        <Row alignItems="baseline" data-testid={dataTestId}>
+            <Text typographyStyle={size === 'large' ? 'titleLarge' : 'titleMedium'}>
+                <WholeValue>
+                    {shouldRedactNumbers ? redactNumericalSubstring(whole) : whole}
+                </WholeValue>
+            </Text>
             {!shouldRedactNumbers && (
-                <DecimalValue $size={size}>
-                    {separator}
-                    {fractional}
-                </DecimalValue>
+                <Text typographyStyle="hint" variant="tertiary">
+                    <DecimalValue>
+                        {separator}
+                        {fractional}
+                    </DecimalValue>
+                </Text>
             )}
-        </ValueWrapper>
+        </Row>
     );
 };
