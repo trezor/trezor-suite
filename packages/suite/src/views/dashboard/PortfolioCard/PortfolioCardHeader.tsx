@@ -20,6 +20,7 @@ export type PortfolioCardHeaderProps = {
     isWalletError: boolean;
     isDiscoveryRunning?: boolean;
     showGraphControls: boolean;
+    passphraseEntryCanceled: boolean;
     receiveClickHandler: () => void;
 };
 
@@ -32,6 +33,7 @@ export const PortfolioCardHeader = ({
     isWalletError,
     isDiscoveryRunning,
     showGraphControls,
+    passphraseEntryCanceled,
     receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
     const accounts = useSelector(selectAllAccountsToList);
@@ -44,7 +46,7 @@ export const PortfolioCardHeader = ({
     );
 
     let actions = null;
-    if (!isWalletLoading && !isWalletError) {
+    if (!isWalletLoading && !isWalletError && !passphraseEntryCanceled) {
         if (isWalletEmpty) {
             actions = (
                 <Button
