@@ -2,14 +2,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 
-import { disposeAllLocalFirstStorageThunk } from '../../storage/disposeAllLocalFirstStorageThunk';
-import { initLocalFirstStorageThunk } from '../../storage/initLocalFirstStorageThunk';
-import { labelingActions } from '../labelingActions';
+import { disposeAllLocalFirstStorageThunk } from './disposeAllLocalFirstStorageThunk';
+import { initLocalFirstStorageThunk } from './initLocalFirstStorageThunk';
+import { suiteSyncActions } from './suiteSyncActions';
 import {
     selectIsFeatureLocalFirstStorageAvailable,
     selectIsLocalFirstStorageDebugEnabled,
     selectIsLocalFirstStorageEnabled,
-} from '../labelingSelectors';
+} from './suiteSyncSelectors';
 
 export type UseLocalStorageParams = {
     // This needs to be passed, as labeling can be attached to remembered wallets
@@ -28,7 +28,7 @@ export const useLocalFirstStorage = ({ device }: UseLocalStorageParams) => {
 
     const toggleIsFeatureLocalFirstStorageAvailable = () => {
         dispatch(
-            labelingActions.updateIsFeatureLocalFirstStorageAvailable({
+            suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable({
                 isShownInSettings: !isFeatureLocalFirstStorageAvailable,
             }),
         );
@@ -36,14 +36,14 @@ export const useLocalFirstStorage = ({ device }: UseLocalStorageParams) => {
 
     const disableLocalFirstStorageIfNeeded = () => {
         if (isLocalFirstStorageEnabled) {
-            dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: false }));
+            dispatch(suiteSyncActions.updateLocalFirstStorageEnabled({ isEnabled: false }));
             dispatch(disposeAllLocalFirstStorageThunk());
         }
     };
 
     const enableLocalFirstStorageIfNeeded = () => {
         if (!isLocalFirstStorageEnabled) {
-            dispatch(labelingActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
+            dispatch(suiteSyncActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
             dispatch(initLocalFirstStorageThunk());
         }
     };

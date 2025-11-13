@@ -14,7 +14,6 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { DesktopDeviceRootState } from 'src/actions/device/deviceSlice';
-import { DesktopLabelingRootState } from 'src/actions/labeling/labelingSlice';
 import {
     METADATA,
     METADATA_LABELING,
@@ -25,6 +24,7 @@ import {
     DEFAULT_ACCOUNT_METADATA,
     DEFAULT_WALLET_METADATA,
 } from 'src/actions/suite/constants/metadataLabelingConstants';
+import { DesktopSuiteSyncRootState } from 'src/actions/suiteSync/suiteSyncSlice';
 import { Action, TrezorDevice } from 'src/types/suite';
 import {
     AccountLabels,
@@ -53,7 +53,7 @@ type MetadataRootState = {
 } & DesktopDeviceRootState &
     SuiteRootState &
     AccountsRootState &
-    DesktopLabelingRootState;
+    DesktopSuiteSyncRootState;
 
 const metadataReducer = (state = initialState, action: Action): MetadataState =>
     produce(state, draft => {

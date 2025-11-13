@@ -1,4 +1,3 @@
-import { DeviceRootState } from '@suite-common/wallet-core';
 import type { AccountKey, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
@@ -9,25 +8,6 @@ import { findAccountLabel, findAddressLabel, findOutputLabel } from './selectorU
 export type WithLabelingState = {
     labeling: LabelingState;
 };
-
-export type WithLabelingAndDeviceState = WithLabelingState & DeviceRootState;
-
-export const selectIsLocalFirstStorageEnabled = (state: WithLabelingState): boolean =>
-    state.labeling.isLocalFirstStorageEnabled;
-
-export const selectIsLocalFirstStorageDebugEnabled = (state: WithLabelingState): boolean =>
-    state.labeling.isLocalFirstStorageDebugEnabled;
-
-export const selectIsFeatureLocalFirstStorageAvailable = (state: WithLabelingState): boolean =>
-    state.labeling.isFeatureLocalFirstStorageAvailable;
-
-export const selectLocalFirstStorageRelayUrl = (state: WithLabelingState) =>
-    state.labeling.localFirstStorageRelayUrl;
-
-export const selectShouldOfferSecureSync = (state: WithLabelingAndDeviceState): boolean =>
-    state.device.selectedDevice?.unavailableCapabilities?.evolu === undefined &&
-    state.labeling.isFeatureLocalFirstStorageAvailable &&
-    !state.labeling.isLocalFirstStorageEnabled;
 
 type SelectWalletLabelParams = {
     state: WithLabelingState;

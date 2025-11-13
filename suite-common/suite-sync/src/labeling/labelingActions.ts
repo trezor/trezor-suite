@@ -49,41 +49,10 @@ export const clearAllLabels = createAction(
     (payload: { walletDescriptor: WalletDescriptor }) => ({ payload }),
 );
 
-// Todo: this shall be in LocalFirstStorage reducer, not labeling
-export const updateLocalFirstStorageEnabled = createAction(
-    `${LABELING_PREFIX}/update-locale-first-storage-enabled`,
-    (payload: { isEnabled: boolean }) => ({ payload }),
-);
-
-// Todo: this shall be in LocalFirstStorage reducer, not labeling
-export const updateLocalFirstStorageDebugEnabled = createAction(
-    `${LABELING_PREFIX}/update-locale-first-storage-debug-enabled`,
-    (payload: { isEnabled: boolean }) => ({ payload }),
-);
-
-// Todo: this shall be in LocalFirstStorage reducer, not labeling
-export const updateIsFeatureLocalFirstStorageAvailable = createAction(
-    `${LABELING_PREFIX}/update-show-locale-first-storage`,
-    (payload: { isShownInSettings: boolean }) => ({ payload }),
-);
-
-// Todo: this shall be in LocalFirstStorage reducer, not labeling
-/** @deprecated this shall be called only from `changeRelayUrlThunk`, use the thunk only */
-export const setLocalFirstStorageRelayUrl = createAction(
-    `${LABELING_PREFIX}/set-local-first-storage-relay-url`,
-    (payload: { url: string | null }) => ({ payload }),
-);
-
 export const labelingActions = {
     setWalletLabel,
     setAccountLabel,
     setAddressLabel,
     setOutputLabel,
     clearAllLabels,
-
-    // Todo: this shall be in LocalFirstStorage reducer, not labeling
-    updateLocalFirstStorageEnabled,
-    updateLocalFirstStorageDebugEnabled,
-    updateIsFeatureLocalFirstStorageAvailable,
-    setLocalFirstStorageRelayUrl,
 };

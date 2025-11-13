@@ -6,7 +6,7 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
-import { labelingActions } from '@suite-common/suite-sync';
+import { suiteSyncActions } from '@suite-common/suite-sync';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
 import { TokenManagementAction } from '@suite-common/token-definitions';
@@ -178,13 +178,13 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (
                 isAnyOf(
-                    labelingActions.updateLocalFirstStorageDebugEnabled,
-                    labelingActions.updateLocalFirstStorageEnabled,
-                    labelingActions.updateIsFeatureLocalFirstStorageAvailable,
-                    labelingActions.setLocalFirstStorageRelayUrl,
+                    suiteSyncActions.updateLocalFirstStorageDebugEnabled,
+                    suiteSyncActions.updateLocalFirstStorageEnabled,
+                    suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable,
+                    suiteSyncActions.setLocalFirstStorageRelayUrl,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveLabelingSettings());
+                api.dispatch(storageActions.saveSuiteSyncSettings());
             }
 
             if (deviceActions.setRememberDevice.match(action)) {

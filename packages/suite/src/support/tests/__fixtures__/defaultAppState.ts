@@ -1,10 +1,11 @@
 import { FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { MetadataState } from '@suite-common/metadata-types';
+import { initialLabelingState } from '@suite-common/suite-sync';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialState } from 'src/actions/device/deviceSlice';
-import { initialLabelingState } from 'src/actions/labeling/labelingSlice';
+import { initialSuiteSyncState } from 'src/actions/suiteSync/suiteSyncSlice';
 import { BackupState } from 'src/reducers/backup/backupReducer';
 import { OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { AppState } from 'src/reducers/store';
@@ -26,6 +27,7 @@ export const initialAppState: AppState = {
         credentials: [],
     },
     labeling: initialLabelingState,
+    suiteSync: initialSuiteSyncState,
     window: {
         isVisible: true,
         isBelowMobile: false,

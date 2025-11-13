@@ -477,20 +477,21 @@ export const saveMetadataSettings = () => async (_dispatch: Dispatch, getState: 
     });
 };
 
-export const saveLabelingSettings = () => (_dispatch: Dispatch, getState: GetState) => {
+export const saveSuiteSyncSettings = () => (_dispatch: Dispatch, getState: GetState) => {
     if (!db.isAccessible()) return;
 
-    const { labeling } = getState();
+    const { suiteSync } = getState();
 
     return db.addItem(
-        'labelingSettings',
+        'suiteSyncSettings',
         {
-            isFeatureLocalFirstStorageAvailable: labeling.isFeatureLocalFirstStorageAvailable,
-            isLocalFirstStorageEnabled: labeling.isLocalFirstStorageEnabled,
-            isLocalFirstStorageDebugEnabled: labeling.isLocalFirstStorageDebugEnabled,
-            localFirstStorageRelayUrl: labeling.localFirstStorageRelayUrl,
+            isFeatureLocalFirstStorageAvailable:
+                suiteSync.settings.isFeatureLocalFirstStorageAvailable,
+            isLocalFirstStorageEnabled: suiteSync.settings.isLocalFirstStorageEnabled,
+            isLocalFirstStorageDebugEnabled: suiteSync.settings.isLocalFirstStorageDebugEnabled,
+            localFirstStorageRelayUrl: suiteSync.settings.localFirstStorageRelayUrl,
         },
-        'labelingSettings',
+        'suiteSyncSettings',
         true,
     );
 };

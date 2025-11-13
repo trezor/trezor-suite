@@ -1,6 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { LabelingState } from '@suite-common/suite-sync';
+import { LabelingState, SuiteSyncState } from '@suite-common/suite-sync';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';
@@ -415,11 +415,18 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
         labeling: createReducer(
             {
                 walletsLabels: {},
-                isFeatureLocalFirstStorageAvailable: false,
-                isLocalFirstStorageEnabled: false,
-                isLocalFirstStorageDebugEnabled: false,
-                localFirstStorageRelayUrl: null,
             } satisfies LabelingState,
+            state => state,
+        ),
+        suiteSync: createReducer(
+            {
+                settings: {
+                    isFeatureLocalFirstStorageAvailable: false,
+                    isLocalFirstStorageEnabled: false,
+                    isLocalFirstStorageDebugEnabled: false,
+                    localFirstStorageRelayUrl: null,
+                },
+            } satisfies SuiteSyncState,
             state => state,
         ),
         connectPopup: createReducer({}, () => ({})),

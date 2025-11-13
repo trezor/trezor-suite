@@ -1,10 +1,21 @@
-// Local Storage initialization ond disposal
+// Suite Sync
 export { disposeAllLocalFirstStorageThunk } from './storage/disposeAllLocalFirstStorageThunk';
 export { initLocalFirstStorageThunkFactory } from './storage/initLocalFirstStorageThunk';
 export { subscribeLocalFirstStorageThunk } from './storage/subscribeLocalFirstStorageThunk';
 export { changeRelayUrlThunk } from './storage/changeRelayUrlThunk';
 export { unsubscribeAndDisposeLocalFirstStorageThunk } from './storage/unsubscribeAndDisposeLocalFirstStorageThunk';
 export { DEFAULT_SUITE_SYNC_RELAY_URL as DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL } from './storage/LocalFirstStorageProvider';
+export { suiteSyncActions } from './storage/suiteSyncActions';
+export { prepareSuiteSyncReducer, initialSuiteSyncState } from './storage/suiteSyncReducer';
+export type { SuiteSyncState, SuiteSyncSettings } from './storage/suiteSyncReducer';
+export {
+    selectIsLocalFirstStorageDebugEnabled,
+    selectIsLocalFirstStorageEnabled,
+    selectLocalFirstStorageRelayUrl,
+    selectShouldOfferSecureSync,
+    selectIsFeatureLocalFirstStorageAvailable,
+} from './storage/suiteSyncSelectors';
+export { useLocalFirstStorage } from './storage/useLocalFirstStorage';
 
 // Labeling
 export { updateWalletLabelThunk } from './labeling/updateWalletLabelThunk';
@@ -19,34 +30,10 @@ export {
     selectAccountLabel,
     selectOutputLabels,
     selectOutputLabel,
-    selectIsLocalFirstStorageDebugEnabled,
-    selectIsLocalFirstStorageEnabled,
-    selectLocalFirstStorageRelayUrl,
-    selectShouldOfferSecureSync,
-    selectIsFeatureLocalFirstStorageAvailable,
 } from './labeling/labelingSelectors';
 export { findAccountLabel, findOutputLabel, findAddressLabel } from './labeling/selectorUtils';
 export type { WithLabelingState } from './labeling/labelingSelectors';
-
-import { labelingActions as labelingActionsImported } from './labeling/labelingActions';
-
-// Todo: this shall be in LocalFirstStorage reducer, not labeling
-export const labelingActions = {
-    updateLocalFirstStorageEnabled: labelingActionsImported.updateLocalFirstStorageEnabled,
-    updateLocalFirstStorageDebugEnabled:
-        labelingActionsImported.updateLocalFirstStorageDebugEnabled,
-    updateIsFeatureLocalFirstStorageAvailable:
-        labelingActionsImported.updateIsFeatureLocalFirstStorageAvailable,
-
-    /** @deprecated This is exported only for the `storageMiddleware`, do not use anywhere else! */
-    setLocalFirstStorageRelayUrl: labelingActionsImported.setLocalFirstStorageRelayUrl,
-};
-
-export {
-    prepareLabelingReducer,
-    initialLabelingState,
-    type LabelingSettings,
-} from './labeling/labelingReducer';
+export { prepareLabelingReducer, initialLabelingState } from './labeling/labelingReducer';
 export type { LabelingState } from './labeling/labelingReducer';
 export { processMetadataMessageThunk } from './labeling/processMetadataMessageThunk';
-export { useLocalFirstStorage } from './labeling/hooks/useLocalFirstStorage';
+export { labelingActions } from './labeling/labelingActions';
