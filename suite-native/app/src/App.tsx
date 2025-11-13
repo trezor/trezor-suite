@@ -12,7 +12,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
 import { applicationInit } from '@suite-native/app-init';
-import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
+import { selectIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { configureNetInfo } from '@suite-native/connection-status';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
@@ -56,7 +56,7 @@ const AppComponent = () => {
     const formattersConfig = useFormattersConfig();
     const isApplicationInitDispatchedRef = useRef(false);
     const isAppReady = useSelector(selectIsAppReady);
-    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+    const isBiometricsOverlayVisible = useSelector(selectIsBiometricsOverlayVisible);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 

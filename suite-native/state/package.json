@@ -34,6 +34,7 @@
         "@suite-common/walletconnect": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/banner-flags": "workspace:*",
+        "@suite-native/biometrics": "workspace:*",
         "@suite-native/blockchain": "workspace:*",
         "@suite-native/bluetooth": "workspace:*",
         "@suite-native/config": "workspace:*",

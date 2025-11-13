@@ -11737,6 +11737,7 @@ __metadata:
   resolution: "@suite-native/biometrics@workspace:suite-native/biometrics"
   dependencies:
     "@suite-common/dependency-injection": "workspace:*"
+    "@reduxjs/toolkit": "npm:2.11.2"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -11749,6 +11750,7 @@ __metadata:
     react: "npm:19.2.4"
     react-native: "npm:0.83.2"
     react-native-svg: "npm:15.15.3"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -13625,6 +13627,7 @@ __metadata:
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/banner-flags": "workspace:*"
+    "@suite-native/biometrics": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"
     "@suite-native/config": "workspace:*"

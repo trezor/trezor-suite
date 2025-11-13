@@ -1,9 +1,11 @@
-import { useIsBiometricsOverlayVisible } from '../biometricsAtoms';
+import { useSelector } from 'react-redux';
+
 import { useBiometrics } from '../useBiometrics';
 import { BiometricOverlay } from './BiometricOverlay';
+import { selectIsBiometricsOverlayVisible } from '../biometricsSlice';
 
 export const BiometricsModalRenderer = () => {
-    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+    const isBiometricsOverlayVisible = useSelector(selectIsBiometricsOverlayVisible);
     const { isBiometricsAuthenticationAllowed, requestAuthenticationCheck } = useBiometrics();
 
     return isBiometricsOverlayVisible ? (
