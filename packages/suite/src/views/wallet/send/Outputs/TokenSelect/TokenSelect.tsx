@@ -20,8 +20,8 @@ import { AssetLogo, Card, Column, IconButton, Row, Text } from '@trezor/componen
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
+import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { AddressRow } from 'src/components/suite/copy/AddressRow';
@@ -49,7 +49,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
-    const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
+    const sendFormPrefillContractAddress = useSelector(state => state.suite.prefillFields.sendForm);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const tokenContractAddress = watch(tokenInputName);
@@ -80,18 +80,18 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive, isDebugModeActive]);
 
     useEffect(() => {
-        if (sendFormPrefill) {
-            setValue(tokenInputName, sendFormPrefill, { shouldValidate: true, shouldDirty: true });
+        if (sendFormPrefillContractAddress) {
+            setValue(tokenInputName, sendFormPrefillContractAddress, {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
             setDraftSaveRequest(true);
 
             return () => {
-                dispatch({
-                    type: SUITE.SET_SEND_FORM_PREFILL,
-                    payload: '',
-                });
+                dispatch(setSendFormPrefill({ contractAddress: undefined }));
             };
         }
-    }, [sendFormPrefill, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
+    }, [sendFormPrefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
     const selectedToken = useMemo(
         () => account.tokens?.find(token => token.contract === tokenContractAddress),

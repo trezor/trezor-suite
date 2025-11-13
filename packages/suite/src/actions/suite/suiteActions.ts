@@ -19,6 +19,13 @@ import { isOnionUrl } from 'src/utils/suite/tor';
 
 import { SUITE } from './constants';
 
+export const setSendFormPrefill = createAction<
+    { contractAddress: string | undefined },
+    typeof SUITE.SET_SEND_FORM_PREFILL
+>(SUITE.SET_SEND_FORM_PREFILL);
+
+type SetSendFormPrefillAction = ReturnType<typeof setSendFormPrefill>;
+
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
@@ -79,10 +86,6 @@ export type SuiteAction =
           isCollapsed: boolean;
       }
     | {
-          type: typeof SUITE.SET_SEND_FORM_PREFILL;
-          payload: string;
-      }
-    | {
           type: typeof SUITE.SET_TRANSACTION_HISTORY_PREFILL;
           payload: string;
       }
@@ -105,7 +108,8 @@ export type SuiteAction =
     | {
           type: typeof SUITE.SET_IS_COINS_FILTER_VISIBLE;
           payload: { isCoinsFilterVisible: boolean };
-      };
+      }
+    | SetSendFormPrefillAction;
 
 export const appChanged = createAction(SUITE.APP_CHANGED, (payload: AppState['router']['app']) => ({
     payload,

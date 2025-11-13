@@ -44,6 +44,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
+import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import {
     Address,
@@ -451,10 +452,11 @@ export const TokenRow = ({
                                         key="token-send"
                                         icon="arrowUp"
                                         onClick={() => {
-                                            dispatch({
-                                                type: SUITE.SET_SEND_FORM_PREFILL,
-                                                payload: token.contract,
-                                            });
+                                            dispatch(
+                                                setSendFormPrefill({
+                                                    contractAddress: token.contract,
+                                                }),
+                                            );
                                             dispatch(
                                                 sendFormActions.removeDraft({
                                                     accountKey: account.key,

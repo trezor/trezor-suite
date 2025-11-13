@@ -344,7 +344,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case SUITE.SET_SEND_FORM_PREFILL:
-                draft.prefillFields.sendForm = action.payload;
+                draft.prefillFields.sendForm = action.payload.contractAddress;
                 break;
 
             case SUITE.SET_TRANSACTION_HISTORY_PREFILL:
