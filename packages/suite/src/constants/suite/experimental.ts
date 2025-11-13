@@ -17,7 +17,6 @@ export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
     | 'nft-section'
-    | 'global-send-receive'
     | 'experimental-networks'
     | 'suite-sync';
 
@@ -55,10 +54,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'nft-section': {
         title: { id: 'TR_EXPERIMENTAL_NFT_SECTION' },
         description: { id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION' },
-    },
-    'global-send-receive': {
-        title: { id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE' },
-        description: { id: 'TR_EXPERIMENTAL_GLOBAL_SEND_RECEIVE_DESCRIPTION' },
     },
     'experimental-networks': {
         title: {
