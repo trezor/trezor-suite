@@ -5,6 +5,7 @@ import { Account } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Divider } from '@trezor/components';
 
+import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
@@ -17,7 +18,7 @@ import {
 } from 'src/components/suite/asset-picker/components';
 import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks';
 import { useCurrentRef } from 'src/hooks/general/useCurrentRef';
-import { AccountItemType } from 'src/types/wallet';
+import { useDispatch } from 'src/hooks/suite';
 
 import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
 import { useFilterAccountsWithTokens } from './hooks/useFilterAccountsWithTokens';
@@ -28,12 +29,13 @@ import {
 
 type GlobalSendModalProps = {
     onCancel: (filledSearch: boolean) => void;
-    onSubmit: (account: Account, type: AccountItemType, filledSearch: boolean) => void;
+    onSubmit: (account: Account, filledSearch: boolean) => void;
 };
 
 const LIST_HEIGHT = 500;
 
 export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
+    const dispatch = useDispatch();
     const [search, setSearch] = useState('');
     const [networkSymbol, setNetworkSymbol] = useState<NetworkSymbol | undefined>(undefined);
 
@@ -49,16 +51,16 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     const handleAccountClick = useCallback(
         (account: Account) => {
-            submitRef.current?.(account, 'coin', Boolean(searchRef.current?.length));
+            submitRef.current?.(account, Boolean(searchRef.current?.length));
         },
         [submitRef, searchRef],
     );
     const handleTokenClick = useCallback(
-        (_: TokenInfo, account: Account) => {
-            // TODO: add 'token' type
-            submitRef.current?.(account, 'tokens', Boolean(searchRef.current?.length));
+        (token: TokenInfo, account: Account) => {
+            submitRef.current?.(account, Boolean(searchRef.current?.length));
+            dispatch(setSendFormPrefill({ contractAddress: token.contract }));
         },
-        [submitRef, searchRef],
+        [submitRef, searchRef, dispatch],
     );
 
     const renderItem = useCallback(

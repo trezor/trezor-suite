@@ -20,9 +20,9 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const buttonIntent = device?.connected && device?.available ? 'brand' : 'neutral';
     const buttonPriority = device?.connected && device?.available ? 'primary' : 'secondary';
 
-    const handleSendSubmit = (account: Account, type: AccountItemType, filledSearch: boolean) => {
+    const handleSendSubmit = (account: Account, filledSearch: boolean) => {
         sendAnalytics.account(filledSearch);
-        closeModal(type === 'tokens' ? 'wallet-tokens' : 'wallet-send', account);
+        closeModal('wallet-send', account);
     };
 
     const handleReceiveSubmit = (
