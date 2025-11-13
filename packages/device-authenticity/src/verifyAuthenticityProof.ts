@@ -111,6 +111,7 @@ export const verifyAuthenticityProof = async ({
     allowDebugKeys,
     config,
     blacklistConfig,
+    challengePrefix = 'AuthenticateDevice:',
 }: VerifyAuthenticityProofParams): Promise<VerifyAuthenticityProofResult> => {
     // Parse config with given device model, type of secure element and debug mode.
     const allRootPubKeys = getRootPubKeys({
@@ -198,10 +199,10 @@ export const verifyAuthenticityProof = async ({
     );
 
     // 5. validate that the signature from AuthenticityProof was created using prefixed challenge **and** if DEVICES pubKey is not on blacklist
-    const challengePrefix = Buffer.from('AuthenticateDevice:');
+    const challengePrefixBuffer = Buffer.from(challengePrefix);
     const prefixedChallenge = Buffer.concat([
-        bufferUtils.getChunkSize(challengePrefix.length),
-        challengePrefix,
+        bufferUtils.getChunkSize(challengePrefixBuffer.length),
+        challengePrefixBuffer,
         bufferUtils.getChunkSize(challenge.length),
         challenge,
     ]);
