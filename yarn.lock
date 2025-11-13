@@ -14282,7 +14282,7 @@ __metadata:
     fs-extra: "npm:^11.3.1"
     postcss-loader: "npm:^8.1.1"
     semver: "npm:^7.7.1"
-    simple-git: "npm:^3.28.0"
+    simple-git: "npm:^3.29.0"
     style-loader: "npm:^4.0.0"
     tsx: "npm:^4.20.3"
     webpack: "npm:5.102.1"
@@ -40978,14 +40978,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:^3.28.0":
-  version: 3.28.0
-  resolution: "simple-git@npm:3.28.0"
+"simple-git@npm:^3.29.0":
+  version: 3.29.0
+  resolution: "simple-git@npm:3.29.0"
   dependencies:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
     debug: "npm:^4.4.0"
-  checksum: 10/2582e6c1c50db8aa0b7d07ed0f0f86eb4ea647e6b33d1596cf44e509c7b658372da9db1dcbea626e7d71e30e8d826a84410bbc73c5d1066f2526724a31836f81
+  checksum: 10/dd062c302ce4660d0844fd897b2b1b7e8c9e1d29cd9ffcde6790ddfc77bd4e45a79e8f4c7ba5e19deb33f05646ab60b18516a53b82e66c64fff224ae490441d7
   languageName: node
   linkType: hard
 
