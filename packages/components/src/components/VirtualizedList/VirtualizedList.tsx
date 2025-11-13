@@ -41,6 +41,8 @@ const Container = styled.div<ContainerProps>`
 `;
 const Content = styled.div`
     position: relative;
+    overflow: hidden;
+    will-change: contents;
 `;
 const Item = styled.div`
     position: absolute;
@@ -197,7 +199,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     useEffect(() => {
         const container = containerRef.current;
         if (container) {
-            container.addEventListener('scroll', handleScroll);
+            container.addEventListener('scroll', handleScroll, { passive: true });
 
             return () => container.removeEventListener('scroll', handleScroll);
         }
