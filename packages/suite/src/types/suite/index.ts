@@ -37,23 +37,24 @@ import type { SuiteAction } from 'src/actions/suite/suiteActions';
 import type { WindowAction } from 'src/actions/suite/windowActions';
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 import type { AppState } from 'src/reducers/store';
+import { GlobalSendReceiveAction } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { WalletAction } from 'src/types/wallet';
 
 import { bluetoothSlice } from '../../actions/bluetooth/desktopBluetoothReducer';
 
 // reexport
+export type {
+    AcquiredDevice,
+    ButtonRequest,
+    ExtendedDevice,
+    TrezorDevice,
+    UnknownDevice,
+    UnreadableDevice,
+} from '@suite-common/suite-types';
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
 export type { AppState } from 'src/reducers/store';
 export type { PrerequisiteType } from 'src/utils/suite/prerequisites';
 export type { Route };
-export type {
-    ButtonRequest,
-    ExtendedDevice,
-    AcquiredDevice,
-    UnknownDevice,
-    UnreadableDevice,
-    TrezorDevice,
-} from '@suite-common/suite-types';
 
 type FilteredDeviceEvents = FilterOutFromUnionByTypeProperty<
     DeviceEvent,
@@ -131,7 +132,10 @@ export type Action =
     | TransactionAction
     | TrezorConnectEvents
     | WalletAction
-    | WindowAction;
+    | WindowAction
+    | BioAuthAction
+    | FeeAction
+    | GlobalSendReceiveAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 

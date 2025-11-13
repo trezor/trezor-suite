@@ -113,4 +113,8 @@ export const initialAppState: AppState = {
         bioAuthAvailable: null,
         hasEverValidatedBioAuth: false,
     },
+    globalSendReceiveFilters: {
+        search: '',
+        networkSymbol: undefined,
+    },
 };

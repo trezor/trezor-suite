@@ -24,7 +24,7 @@ export function AssetImage({
     size = 40,
 }: AssetImageProps) {
     if (!contractAddress && isNetworkSymbol(networkSymbol)) {
-        return <CoinLogo symbol={networkSymbol} size={size} type="tokenWithNetwork" />;
+        return <CoinLogo symbol={networkSymbol} size={size} type="token" />;
     }
 
     return (

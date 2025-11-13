@@ -1,8 +1,7 @@
 import { HTMLAttributes, ReactElement, Ref, forwardRef, useEffect, useState } from 'react';
 
 import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
-
-import { useCurrentRef } from 'src/hooks/general/useCurrentRef';
+import { useCurrentRef } from '@trezor/react-utils';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
     heading: ReactElement;

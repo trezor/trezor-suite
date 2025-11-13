@@ -11,8 +11,6 @@ import {
     UPDATED_ICONS_LIST_FILE,
 } from './constants';
 import { CoinListData } from './types';
-import { getCoinData, getCoinList, getUpdatedIconsList } from './utils/fetchCoins';
-import { sleep } from './utils/sleep';
 import {
     COIN_IMAGE_QUALITIES,
     COIN_IMAGE_SIZES,
@@ -20,6 +18,8 @@ import {
     createCoinImageName,
     createCoinImageNameLegacy,
 } from '../src/coinImages';
+import { getCoinData, getCoinList, getUpdatedIconsList } from './utils/fetchCoins';
+import { sleep } from './utils/sleep';
 
 async function writeImage(fileName: string, imageBuffer: Buffer) {
     const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
@@ -90,7 +90,6 @@ const updateIcon = async (coin: CoinListData) => {
         for (const size of COIN_IMAGE_SIZES) {
             const finalImageBuffer = await resizeImage(originImageBuffer, size);
 
-            // TODO: Ditch the quaility, just append the size to the file name
             for (const quality of COIN_IMAGE_QUALITIES) {
                 for (const [platform, contract] of platforms) {
                     const name = concatCoinImageName(platform, contract);

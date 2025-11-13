@@ -116,7 +116,7 @@ export const AccountsList = ({
 
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { isSidebarCollapsed } = useResponsiveContext();
-    const { coinFilter, searchString, selectedNetwork } = useAccountSearch();
+    const { coinFilter, searchString } = useAccountSearch();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
@@ -125,7 +125,7 @@ export const AccountsList = ({
     }
 
     const filteredAccounts =
-        searchString || coinFilter || selectedNetwork
+        searchString || coinFilter
             ? accounts.filter(account => {
                   const { key, accountType, symbol, index } = account;
                   const accountLabelOld = Object.prototype.hasOwnProperty.call(accountLabels, key)
@@ -140,10 +140,6 @@ export const AccountsList = ({
                           accountDescriptor,
                           networkSymbol,
                       })?.label ?? accountLabelOld;
-
-                  if (selectedNetwork && networkSymbol !== selectedNetwork) {
-                      return false;
-                  }
 
                   return accountSearchFn(account, searchString, coinFilter, accountLabel);
               })

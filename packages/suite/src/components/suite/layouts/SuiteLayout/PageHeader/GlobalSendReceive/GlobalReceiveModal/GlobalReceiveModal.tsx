@@ -1,8 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Divider, Link, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -19,7 +18,8 @@ import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks/useD
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { AddAccountButton } from 'src/components/wallet/WalletLayout/AccountsMenu/AddAccountButton';
-import { useDevice } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { Account, AccountItemType } from 'src/types/wallet';
 
 import { useAccountsOptions } from './hooks/useAccountsOptions';
@@ -38,21 +38,20 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
 
     const theme = useTheme();
 
-    const [search, setSearch] = useState('');
-    const [networkSymbol, setNetworkSymbol] = useState<NetworkSymbol | undefined>(undefined);
     const accountsOptions = useAccountsOptions();
-    const filteredAccounts = useFilterAccounts(accountsOptions, { networkSymbol, search });
+    const filteredAccounts = useFilterAccounts(accountsOptions);
     const filteredAccountsFingerprint = useDataFingerprint(filteredAccounts);
+    const filledSearch = useSelector(globalSendReceiveFilters.selectors.filledSearch);
 
     const renderItem = useCallback(
         (item: FilteredAccountOption) => (
             <AssetRowAccount
-                variant="to-account"
+                variant="receive-to-account"
                 account={item.account}
-                onClick={account => onSubmit(account, 'coin', search.length > 0)}
+                onClick={account => onSubmit(account, 'coin', filledSearch)}
             />
         ),
-        [onSubmit, search],
+        [onSubmit, filledSearch],
     );
 
     return (
@@ -74,22 +73,16 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                         ),
                     },
                 }}
-                onClose={() => onCancel(search.length > 0)}
+                onClose={() => onCancel(filledSearch)}
             >
-                <AssetSearchWithNetworkFilter
-                    onNetworkFilter={setNetworkSymbol}
-                    onSearch={setSearch}
-                    placeholder="TR_RECEIVE_SEARCH"
-                />
+                <AssetSearchWithNetworkFilter placeholder="TR_RECEIVE_SEARCH" />
 
                 <Divider />
 
                 <AssetsListEmpty
                     isEmpty={filteredAccounts.length === 0}
                     heading={
-                        search.length > 0
-                            ? 'TR_ACCOUNT_SEARCH_NO_RESULTS'
-                            : 'TR_ACCOUNT_NO_ACCOUNTS'
+                        filledSearch ? 'TR_ACCOUNT_SEARCH_NO_RESULTS' : 'TR_ACCOUNT_NO_ACCOUNTS'
                     }
                     height={LIST_HEIGHT}
                 >
@@ -112,7 +105,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                 type: EventType.DashboardReceiveModalOptions,
                                 payload: {
                                     option: 'addAccount',
-                                    filledSearch: search.length > 0,
+                                    filledSearch,
                                 },
                             });
                         }}
@@ -127,7 +120,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                     device={device}
                     onCancel={acccountModal.closeModal}
                     onAddAccount={account => {
-                        onSubmit(account, 'coin', search.length > 0);
+                        onSubmit(account, 'coin', filledSearch);
                     }}
                 />
             )}

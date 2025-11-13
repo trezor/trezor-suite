@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useThrottle } from 'react-use';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -12,16 +13,16 @@ import {
     accountsFiatBalanceInDescOrderComparator,
     findAccountsByNetwork,
 } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils';
+import { useCurrentRef } from '@trezor/react-utils';
 
 import {
     ASSET_ROW_ACCOUNT_HEIGHT,
     ASSET_ROW_TOKEN_HEIGHT,
 } from 'src/components/suite/asset-picker/components';
-import { useCurrentRef } from 'src/hooks/general/useCurrentRef';
 import { useSelector } from 'src/hooks/suite';
+import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import {
+    TokensWithRates,
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
@@ -36,7 +37,7 @@ export type AccountWithTokensOption =
     | {
           type: 'token';
           account: Account;
-          token: TokenInfo;
+          token: TokensWithRates;
           height: number;
       };
 
@@ -47,33 +48,27 @@ function filterAccountsByNetworkSymbol(
     return networkSymbol ? findAccountsByNetwork(networkSymbol, accounts) : accounts;
 }
 
-function selectAccountsWithPositiveBalance(accounts: Account[]): Account[] {
-    return accounts.filter(account => new BigNumber(account.availableBalance).gt(0));
-}
-
-export function useAccountWithTokensOptions(
-    networkSymbol: NetworkSymbol | undefined,
-): AccountWithTokensOption[] {
+export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
+    const networkSymbol = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
     const accounts = useSelector(selectAllAccountsToList);
     const fiatRates = useSelector(selectCurrentFiatRates);
-    const fiatRagesRef = useCurrentRef(fiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
 
-    // Accounts are constantly being updated in Redux. So take only current snapshot to avoid re-renders -> perf. issue and loosing scroll position
-    const accountsRef = useCurrentRef(accounts);
+    // Accounts are constantly being updated in Redux. So throttle them to significantly reduce re-renders
+    const throttledAccounts = useThrottle(accounts, 500);
+    const fiatRatesRef = useCurrentRef(fiatRates);
 
     return useMemo(() => {
-        const fiatRates = fiatRagesRef.current;
+        const fiatRates = fiatRatesRef.current;
 
         if (!fiatRates) {
             return [];
         }
 
-        const networkAccounts = filterAccountsByNetworkSymbol(accountsRef.current, networkSymbol);
-        const accountsWithPositiveBalance = selectAccountsWithPositiveBalance(networkAccounts);
+        const networkAccounts = filterAccountsByNetworkSymbol(throttledAccounts, networkSymbol);
 
-        const accountsAndTokensSortedByFiatBalance = accountsWithPositiveBalance
+        const accountsAndTokensSortedByFiatBalance = networkAccounts
             .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
                 return accountsFiatBalanceInDescOrderComparator({
                     accountA,
@@ -124,5 +119,5 @@ export function useAccountWithTokensOptions(
         }
 
         return accountsWithTokensOptions;
-    }, [accountsRef, baseCurrencyCode, fiatRagesRef, networkSymbol, tokenDefinitions]);
+    }, [throttledAccounts, baseCurrencyCode, fiatRatesRef, networkSymbol, tokenDefinitions]);
 }

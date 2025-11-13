@@ -44,7 +44,7 @@ export function useInsertGroupLabelsAndSpaces(
                         list.push({
                             type: 'group-label',
                             label: (
-                                <AccountLabel account={item.account} showAccountTypeBadge={false} />
+                                <AccountLabel account={item.account} showAccountTypeBadge={true} />
                             ),
                             height: ASSET_ROW_GROUP_LABEL_HEIGHT,
                         });

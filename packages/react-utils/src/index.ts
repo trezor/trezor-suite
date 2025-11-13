@@ -10,3 +10,4 @@ export { useAsyncClickHandler } from './hooks/useAsyncClickHandler';
 export { usePreviousDefined } from './hooks/usePreviousDefined';
 export { useTextareaCursorPosition } from './hooks/useTextareaCursorPosition';
 export * from './hooks/timer';
+export * from './hooks/useCurrentRef';

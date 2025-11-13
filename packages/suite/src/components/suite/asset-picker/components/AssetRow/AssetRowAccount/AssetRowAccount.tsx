@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
@@ -18,10 +16,10 @@ export type AssetRowAccountProps = {
     'data-testid'?: string;
     onClick: (account: Account) => void;
 
-    variant: 'to-account' | 'from-account';
+    variant: 'receive-to-account' | 'send-from-account';
 };
 
-export const AssetRowAccount = memo(function AssetRowAccountInner({
+export function AssetRowAccount({
     'data-testid': dataTestId,
     account,
     onClick,
@@ -29,7 +27,7 @@ export const AssetRowAccount = memo(function AssetRowAccountInner({
 }: AssetRowAccountProps) {
     return (
         <ItemClickableContainer onClick={() => onClick(account)}>
-            {variant === 'to-account' && (
+            {variant === 'receive-to-account' && (
                 <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center">
                     <AssetImage
                         size={40}
@@ -47,7 +45,7 @@ export const AssetRowAccount = memo(function AssetRowAccountInner({
                 </Row>
             )}
 
-            {variant === 'from-account' && (
+            {variant === 'send-from-account' && (
                 <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center">
                     <AssetImage
                         size={40}
@@ -70,4 +68,4 @@ export const AssetRowAccount = memo(function AssetRowAccountInner({
             <AccountAmount account={account} />
         </ItemClickableContainer>
     );
-});
+}

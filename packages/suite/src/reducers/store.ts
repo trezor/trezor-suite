@@ -10,37 +10,38 @@ import {
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
+import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { addLog } from '@suite-common/logger';
+import { prepareThpReducer } from '@suite-common/thp';
+import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { accountsActions } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
-import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
-import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { prepareThpReducer } from '@suite-common/thp';
-import { accountsActions } from '@suite-common/wallet-core';
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
 
+import backupMiddlewares from 'src/middlewares/backup';
+import onboardingMiddlewares from 'src/middlewares/onboarding';
+import recoveryMiddlewares from 'src/middlewares/recovery';
 import { suiteMiddlewares } from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';
-import onboardingMiddlewares from 'src/middlewares/onboarding';
-import backupMiddlewares from 'src/middlewares/backup';
-import recoveryMiddlewares from 'src/middlewares/recovery';
-import suiteReducers from 'src/reducers/suite';
-import walletReducers from 'src/reducers/wallet';
+import backupReducers from 'src/reducers/backup';
 import onboardingReducers from 'src/reducers/onboarding';
 import recoveryReducers from 'src/reducers/recovery';
-import backupReducers from 'src/reducers/backup';
+import suiteReducers from 'src/reducers/suite';
+import walletReducers from 'src/reducers/wallet';
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
-import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
-import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
-import { desktopReducer } from './desktop';
-import { prepareBioAuthReducer } from './bioAuth';
-import { extraDependencies } from '../support/extraDependencies';
-import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
 import { geolocationReducer } from '@suite-common/geolocation';
-import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { prepareLabelingReducer } from '@suite-common/suite-sync';
+import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
+import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
+import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
+import { extraDependencies } from '../support/extraDependencies';
+import { prepareBioAuthReducer } from './bioAuth';
+import { desktopReducer } from './desktop';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -64,6 +65,7 @@ const rootReducer = combineReducers({
     labeling: labelingReducer,
     suiteSync: suiteSyncReducer,
     geolocation: geolocationReducer,
+    globalSendReceiveFilters: globalSendReceiveFilters.reducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
