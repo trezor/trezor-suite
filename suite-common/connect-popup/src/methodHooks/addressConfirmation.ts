@@ -15,6 +15,7 @@ const methodsAddress = [
     'tezosGetAddress',
     'eosGetAddress',
     'stellarGetAddress',
+    'moneroGetAddress',
 ];
 const methodsPublicKey = [
     'getPublicKey',
