@@ -155,10 +155,16 @@ export const ActivateTokenModal = ({
                         onClick={handleSubmit(handleActivate)}
                         isDisabled={isActivating}
                         isLoading={isActivating}
+                        intent="brand"
                     >
                         <Translation id="TR_CONTINUE" />
                     </Button>
-                    <Button onClick={onCancel} isDisabled={isActivating}>
+                    <Button
+                        onClick={onCancel}
+                        isDisabled={isActivating}
+                        intent="neutral"
+                        priority="secondary"
+                    >
                         <Translation id="TR_CANCEL" />
                     </Button>
                 </Row>
