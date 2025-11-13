@@ -6,6 +6,7 @@ import {
     Networks,
     Operation,
     Transaction as StellarTransaction,
+    StrKey,
     TransactionBuilder,
     extractBaseAddress,
 } from '@stellar/stellar-sdk';
@@ -334,3 +335,7 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
 
     return data;
 };
+
+export const isValidAssetCode = (code: string): boolean => /^[a-zA-Z0-9]{1,12}$/.test(code);
+
+export const isValidAddress = (address: string): boolean => StrKey.isValidEd25519PublicKey(address);
