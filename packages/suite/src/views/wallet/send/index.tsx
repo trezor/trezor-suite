@@ -3,7 +3,7 @@ import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/local-first-storage';
+import { selectIsLocalFirstStorageEnabled } from '@suite-common/suite-sync';
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';

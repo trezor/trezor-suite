@@ -30,7 +30,7 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
-import { initSuiteLocalFirstStorageThunk } from '@trezor/suite-local-first-storage';
+import { initSuiteLocalFirstStorageThunk } from '@suite/suite-sync';
 import { type History, createMemoryHistory } from 'history';
 import { createRouterServices } from 'src/support/extraDependencies';
 import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';

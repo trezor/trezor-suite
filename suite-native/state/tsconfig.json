@@ -12,15 +12,15 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        {
-            "path": "../../suite-common/local-first-storage"
-        },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
         },
         {
             "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/test-utils"
@@ -50,12 +50,12 @@
         { "path": "../firmware" },
         { "path": "../graph" },
         { "path": "../intl" },
-        { "path": "../local-first-storage" },
         { "path": "../message-system" },
         { "path": "../module-send" },
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },
+        { "path": "../suite-sync" },
         { "path": "../thp" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },

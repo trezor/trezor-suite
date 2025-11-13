@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/local-first-storage"
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/validators"
@@ -20,7 +20,7 @@
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../local-first-storage" },
+        { "path": "../suite-sync" },
         { "path": "../../packages/connect" }
     ]
 }

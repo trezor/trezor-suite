@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
-import { selectAccountLabel } from '@suite-common/local-first-storage';
+import { selectAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';

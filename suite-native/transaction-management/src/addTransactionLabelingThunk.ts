@@ -1,8 +1,5 @@
-import {
-    selectIsLocalFirstStorageEnabled,
-    updateOutputLabelThunk,
-} from '@suite-common/local-first-storage';
 import { createThunk } from '@suite-common/redux-utils';
+import { selectIsLocalFirstStorageEnabled, updateOutputLabelThunk } from '@suite-common/suite-sync';
 import { selectPrecomposedSendForm, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';

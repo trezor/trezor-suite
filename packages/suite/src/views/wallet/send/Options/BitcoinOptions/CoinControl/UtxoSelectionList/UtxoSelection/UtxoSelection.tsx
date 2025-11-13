@@ -2,7 +2,7 @@ import { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { selectAddressLabels, selectOutputLabels } from '@suite-common/local-first-storage';
+import { selectAddressLabels, selectOutputLabels } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Row, Spinner, Text, TextButton, Tooltip } from '@trezor/components';

@@ -1,4 +1,4 @@
-import { findAccountLabel, selectAccountLabels } from '@suite-common/local-first-storage';
+import { findAccountLabel, selectAccountLabels } from '@suite-common/suite-sync';
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';

@@ -7,7 +7,7 @@
         },
         { "path": "../../suite-common/graph" },
         {
-            "path": "../../suite-common/local-first-storage"
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/token-definitions"

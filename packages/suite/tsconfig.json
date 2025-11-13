@@ -45,9 +45,6 @@
         {
             "path": "../../suite-common/intl-types"
         },
-        {
-            "path": "../../suite-common/local-first-storage"
-        },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -68,6 +65,9 @@
         },
         {
             "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-types"
@@ -113,6 +113,7 @@
         {
             "path": "../../suite/idb-migration-utils"
         },
+        { "path": "../../suite/suite-sync" },
         { "path": "../address-validator" },
         { "path": "../analytics" },
         { "path": "../blockchain-link" },
@@ -134,9 +135,6 @@
         { "path": "../suite-analytics" },
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
-        {
-            "path": "../suite-local-first-storage"
-        },
         { "path": "../suite-storage" },
         { "path": "../theme" },
         { "path": "../transport-bluetooth" },

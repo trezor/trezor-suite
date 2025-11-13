@@ -1,5 +1,5 @@
 import { evoluWebDeps } from '@evolu/web';
 
-import { initLocalFirstStorageThunkFactory } from '@suite-common/local-first-storage';
+import { initLocalFirstStorageThunkFactory } from '@suite-common/suite-sync';
 
 export const initSuiteLocalFirstStorageThunk = initLocalFirstStorageThunkFactory(evoluWebDeps);

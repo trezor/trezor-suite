@@ -7,11 +7,11 @@ import {
     labelingActions,
     selectIsFeatureLocalFirstStorageAvailable,
     selectLocalFirstStorageRelayUrl,
-} from '@suite-common/local-first-storage';
+} from '@suite-common/suite-sync';
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
-import { initNativeLocalFirstStorageThunk } from '@suite-native/local-first-storage';
+import { initNativeLocalFirstStorageThunk } from '@suite-native/suite-sync';
 import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';

@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { useLocalFirstStorage } from '@suite-common/local-first-storage';
+import { useLocalFirstStorage } from '@suite-common/suite-sync';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useLocalFirstStorageAlerts } from '@suite-native/local-first-storage';
+import { useLocalFirstStorageAlerts } from '@suite-native/suite-sync';
 
 export const ToggleLabelingCard = () => {
     const { showLocalFirstStorageDisableConfirmationAlert } = useLocalFirstStorageAlerts();

@@ -12,7 +12,7 @@
         },
         { "path": "../connect" },
         { "path": "../suite" },
-        { "path": "../eslint" },
-        { "path": "../suite-local-first-storage" }
+        { "path": "../../suite/suite-sync" },
+        { "path": "../eslint" }
     ]
 }
