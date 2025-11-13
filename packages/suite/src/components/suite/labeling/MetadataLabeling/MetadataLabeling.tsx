@@ -8,8 +8,8 @@ import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
-import { updateShowEnableLocalFirstStorageModal } from 'src/actions/labeling/labelingSlice';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
+import { updateShowEnableLocalFirstStorageModal } from 'src/actions/suiteSync/suiteSyncSlice';
 import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {

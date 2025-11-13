@@ -34,7 +34,7 @@ const resolveLabelingType = (state: AppState): 'legacy' | 'evolu' | string => {
         );
     }
 
-    return state.labeling.isLocalFirstStorageEnabled ? 'evolu' : '';
+    return state.suiteSync.settings.isLocalFirstStorageEnabled ? 'evolu' : '';
 };
 
 // redact transaction id from account transaction anchor

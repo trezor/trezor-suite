@@ -4,9 +4,9 @@ import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     changeRelayUrlThunk,
     disposeAllLocalFirstStorageThunk,
-    labelingActions,
     selectIsFeatureLocalFirstStorageAvailable,
     selectLocalFirstStorageRelayUrl,
+    suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
@@ -44,7 +44,7 @@ export const LocalFirstRelaySettings = () => {
     const handleLocalFirstEnableToggle = () => {
         const originalIsLocalFirstStorageEnabled = isFeatureLocalFirstStorageEnabled;
         dispatch(
-            labelingActions.updateIsFeatureLocalFirstStorageAvailable({
+            suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable({
                 isShownInSettings: !isFeatureLocalFirstStorageEnabled,
             }),
         );

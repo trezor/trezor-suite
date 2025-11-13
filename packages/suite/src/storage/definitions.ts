@@ -5,7 +5,7 @@ import type { DBSchema } from 'idb';
 import { AnalyticsState } from '@suite-common/analytics';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
-import { LabelingSettings } from '@suite-common/suite-sync';
+import { SuiteSyncSettings } from '@suite-common/suite-sync';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,
@@ -140,9 +140,9 @@ export interface SuiteDBSchema extends DBSchema {
         key: 'state';
         value: MetadataState;
     };
-    labelingSettings: {
-        key: 'labelingSettings';
-        value: LabelingSettings;
+    suiteSyncSettings: {
+        key: 'suiteSyncSettings';
+        value: SuiteSyncSettings;
     };
     messageSystem: {
         key: string;

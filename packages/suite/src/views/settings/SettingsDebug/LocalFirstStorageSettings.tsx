@@ -3,8 +3,8 @@ import { useState } from 'react';
 import {
     DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
     changeRelayUrlThunk,
-    labelingActions,
     selectLocalFirstStorageRelayUrl,
+    suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -31,7 +31,7 @@ export const LocalFirstStorageSettings = () => {
 
     const handleToggleLocalFirstStorageDebug = () => {
         dispatch(
-            labelingActions.updateLocalFirstStorageDebugEnabled({
+            suiteSyncActions.updateLocalFirstStorageDebugEnabled({
                 isEnabled: !isLocalFirstStorageDebugEnabled,
             }),
         );

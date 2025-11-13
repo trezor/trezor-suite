@@ -1,5 +1,5 @@
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { labelingActions } from '@suite-common/suite-sync';
+import { suiteSyncActions } from '@suite-common/suite-sync';
 import { Route } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';
@@ -81,7 +81,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         description: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION' },
         onToggle: ({ newValue, dispatch }) => {
             dispatch(
-                labelingActions.updateIsFeatureLocalFirstStorageAvailable({
+                suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable({
                     isShownInSettings: newValue,
                 }),
             );

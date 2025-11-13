@@ -1,37 +1,37 @@
 import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    LabelingState,
-    initialLabelingState as commonInitialState,
-    prepareLabelingReducer,
+    SuiteSyncState,
+    initialSuiteSyncState as commonInitialState,
+    prepareSuiteSyncReducer,
 } from '@suite-common/suite-sync';
 
 import { Action } from 'src/types/suite';
 
 import { STORAGE } from '../suite/constants';
 
-export type DesktopLabelingState = LabelingState & {
+export type DesktopSuiteSyncState = SuiteSyncState & {
     showEnableLocalFirstStorageModal: boolean;
 };
 
-export const initialLabelingState: DesktopLabelingState = {
+export const initialSuiteSyncState: DesktopSuiteSyncState = {
     ...commonInitialState,
     showEnableLocalFirstStorageModal: false,
 };
 
-export type DesktopLabelingRootState = {
-    labeling: DesktopLabelingState;
+export type DesktopSuiteSyncRootState = {
+    suiteSync: DesktopSuiteSyncState;
 };
 
-export const labelingSlice = createSliceWithExtraDeps({
-    name: 'labeling',
-    initialState: initialLabelingState,
+export const suiteSyncSlice = createSliceWithExtraDeps({
+    name: 'suiteSync',
+    initialState: initialSuiteSyncState,
     reducers: {
         updateShowEnableLocalFirstStorageModal: (state, action) => {
             state.showEnableLocalFirstStorageModal = action.payload.show;
         },
     },
     extraReducers: (builder, extra) => {
-        const commonReducer = prepareLabelingReducer(extra);
+        const commonReducer = prepareSuiteSyncReducer(extra);
 
         builder
             .addCase(STORAGE.LOAD, (state, action) => {
@@ -39,9 +39,15 @@ export const labelingSlice = createSliceWithExtraDeps({
 
                 if (
                     actionWithPayload.type === STORAGE.LOAD &&
-                    actionWithPayload.payload.labelingSettings
+                    actionWithPayload.payload.suiteSyncSettings
                 ) {
-                    return { ...state, ...actionWithPayload.payload.labelingSettings };
+                    return {
+                        ...state,
+                        settings: {
+                            ...state.settings,
+                            ...actionWithPayload.payload.suiteSyncSettings,
+                        },
+                    } satisfies SuiteSyncState;
                 }
             })
             .addDefaultCase((state, action) => {
@@ -50,4 +56,4 @@ export const labelingSlice = createSliceWithExtraDeps({
     },
 });
 
-export const { updateShowEnableLocalFirstStorageModal } = labelingSlice.actions;
+export const { updateShowEnableLocalFirstStorageModal } = suiteSyncSlice.actions;

@@ -9,7 +9,7 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { prepareLabelingReducer } from '@suite-common/suite-sync';
+import { prepareLabelingReducer, prepareSuiteSyncReducer } from '@suite-common/suite-sync';
 import { prepareThpReducer } from '@suite-common/thp';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
@@ -82,6 +82,7 @@ const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 const labelingReducer = prepareLabelingReducer(extraDependencies);
+const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -261,43 +262,39 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
-    const labelingPersistedReducer = await preparePersistReducer({
-        reducer: labelingReducer,
-        persistedKeys: [
-            'localFirstStorageRelayUrl',
-            'isLocalFirstStorageEnabled',
-            'isLocalFirstStorageDebugEnabled',
-            'isFeatureLocalFirstStorageAvailable',
-        ],
-        key: 'labeling',
+    const suiteSyncPersistedReducer = await preparePersistReducer({
+        reducer: suiteSyncReducer,
+        persistedKeys: ['settings'],
+        key: 'suiteSync',
         version: 1,
     });
 
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
-            app: appReducer,
             analytics: analyticsPersistedReducer,
+            app: appReducer,
             appSettings: appSettingsPersistedReducer,
-            wallet: walletPersistedReducer,
-            featureFlags: featureFlagsPersistedReducer,
             bannerFlags: bannerFlagsPersistedReducer,
-            graph: graphReducer,
+            bluetooth: bluetoothPersistedReducer,
+            connectPopup: connectPopupPersistedReducer,
             device: devicePersistedReducer,
             deviceAuthorization: deviceAuthorizationReducer,
             deviceOnboarding: deviceOnboardingReducer,
+            featureFlags: featureFlagsPersistedReducer,
             firmware: firmwarePersistedReducer,
-            nativeFirmware: nativeFirmwareReducer,
-            logs: logsSlice.reducer,
-            notifications: notificationsReducer,
-            messageSystem: messageSystemPersistedReducer,
-            tokenDefinitions: tokenDefinitionsReducer,
-            connectPopup: connectPopupPersistedReducer,
-            walletConnect: walletConnectReducer,
-            bluetooth: bluetoothPersistedReducer,
             geolocation: geolocationReducer,
-            thp: thpPersistedReducer,
+            graph: graphReducer,
+            labeling: labelingReducer,
             locale: localePersistedReducer,
-            labeling: labelingPersistedReducer,
+            logs: logsSlice.reducer,
+            messageSystem: messageSystemPersistedReducer,
+            nativeFirmware: nativeFirmwareReducer,
+            notifications: notificationsReducer,
+            suiteSync: suiteSyncPersistedReducer,
+            thp: thpPersistedReducer,
+            tokenDefinitions: tokenDefinitionsReducer,
+            wallet: walletPersistedReducer,
+            walletConnect: walletConnectReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

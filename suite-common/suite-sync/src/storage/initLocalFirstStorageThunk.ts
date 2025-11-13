@@ -8,7 +8,7 @@ import { setLocalFirstStorageProvider } from './sharedObjects';
 import {
     selectIsLocalFirstStorageEnabled,
     selectLocalFirstStorageRelayUrl,
-} from '../labeling/labelingSelectors';
+} from './suiteSyncSelectors';
 
 export const initLocalFirstStorageThunk = createThunk<void, void, void>(
     `${LOCAL_FIRST_STORAGE_PREFIX}/initLocalFirstStorageThunk`,
