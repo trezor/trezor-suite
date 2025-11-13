@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import {
-    authenticate,
     selectIsBiometricsEnabled,
     selectIsUserAuthenticated,
     setIsBiometricsOverlayVisible,
     setIsUserAuthenticated,
 } from './biometricsSlice';
+import { authenticate } from './biometricsThunks';
 
 /**
  * The time period for which is user not asked to be authenticated again if returns back to the app.
@@ -19,9 +19,8 @@ const KEEP_LOGGED_IN_TIMEOUT = 30_000;
 
 export const useBiometrics = () => {
     const dispatch = useDispatch();
-
-    const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
     const isAuthenticatingRef = useRef(false);
+    const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
 
     const [isBiometricsAuthenticationAllowed, setIsBiometricsAuthenticationAllowed] =
         useState(true);
@@ -80,6 +79,7 @@ export const useBiometrics = () => {
 
     const doAuthentication = useCallback(async () => {
         if (isAuthenticatingRef.current) return;
+
         isAuthenticatingRef.current = true;
 
         try {
@@ -90,8 +90,8 @@ export const useBiometrics = () => {
                 dispatch(setIsBiometricsOverlayVisible(false));
             }
         } finally {
-            setIsBiometricsAuthenticationAllowed(false);
             isAuthenticatingRef.current = false;
+            setIsBiometricsAuthenticationAllowed(false);
         }
     }, [dispatch]);
 
