@@ -1,40 +1,37 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import {
-    useIsBiometricsEnabled,
-    useIsBiometricsOverlayVisible,
-    useIsUserAuthenticated,
-} from './biometricsAtoms';
-import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
+    authenticate,
+    selectIsBiometricsEnabled,
+    selectIsUserAuthenticated,
+    setIsBiometricsOverlayVisible,
+    setIsUserAuthenticated,
+} from './biometricsSlice';
 
 /**
  * The time period for which is user not asked to be authenticated again if returns back to the app.
  */
 const KEEP_LOGGED_IN_TIMEOUT = 30_000;
 
-export const authenticate = async () => {
-    const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
-
-    if (isBiometricsAvailable) {
-        const result = await LocalAuthentication.authenticateAsync();
-
-        return result;
-    }
-};
-
 export const useBiometrics = () => {
-    const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const { isUserAuthenticated, setIsUserAuthenticated } = useIsUserAuthenticated();
-    const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
-    const appState = useRef(AppState.currentState);
+    const dispatch = useDispatch();
+
+    const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
     const isAuthenticatingRef = useRef(false);
-    const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
+
     const [isBiometricsAuthenticationAllowed, setIsBiometricsAuthenticationAllowed] =
         useState(true);
+
+    // Keeps track of the current AppState - not only needed for biometrics, but useful for it
+    const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
+    const appState = useRef(AppState.currentState);
     const goneToBackgroundAtTimestamp = useRef<null | number>(null);
+
+    const isUserAuthenticated = useSelector(selectIsUserAuthenticated);
 
     // Monitors AppState and adjust the authentication state accordingly.
     useEffect(() => {
@@ -47,20 +44,20 @@ export const useBiometrics = () => {
                         goneToBackgroundAtTimestamp.current &&
                         goneToBackgroundAtTimestamp.current < Date.now() - KEEP_LOGGED_IN_TIMEOUT
                     ) {
-                        setIsUserAuthenticated(false);
+                        dispatch(setIsUserAuthenticated(false));
                     } else if (isUserAuthenticated) {
-                        setIsBiometricsOverlayVisible(false);
+                        dispatch(setIsBiometricsOverlayVisible(false));
                     }
                     break;
 
                 case 'background':
-                    setIsBiometricsOverlayVisible(true);
+                    dispatch(setIsBiometricsOverlayVisible(true));
                     setIsBiometricsAuthenticationAllowed(true);
                     goneToBackgroundAtTimestamp.current = Date.now();
                     break;
 
                 case 'inactive':
-                    setIsBiometricsOverlayVisible(true);
+                    dispatch(setIsBiometricsOverlayVisible(true));
                     break;
 
                 default:
@@ -74,10 +71,9 @@ export const useBiometrics = () => {
         return () => subscription.remove();
     }, [
         isBiometricsOptionEnabled,
-        setIsUserAuthenticated,
-        setIsBiometricsOverlayVisible,
-        isUserAuthenticated,
         setIsBiometricsAuthenticationAllowed,
+        isUserAuthenticated,
+        dispatch,
     ]);
 
     const requestAuthenticationCheck = () => setIsBiometricsAuthenticationAllowed(true);
@@ -87,17 +83,17 @@ export const useBiometrics = () => {
         isAuthenticatingRef.current = true;
 
         try {
-            const result = await authenticate();
+            const result = await dispatch(authenticate()).unwrap();
 
             if (result?.success) {
-                setIsUserAuthenticated(true);
-                setIsBiometricsOverlayVisible(false);
+                dispatch(setIsUserAuthenticated(true));
+                dispatch(setIsBiometricsOverlayVisible(false));
             }
         } finally {
             setIsBiometricsAuthenticationAllowed(false);
             isAuthenticatingRef.current = false;
         }
-    }, [setIsBiometricsOverlayVisible, setIsUserAuthenticated]);
+    }, [dispatch]);
 
     // Request authentication check whenever the authentication state changes
     // or when biometrics is enabled in settings (isBiometricsOptionEnabled)
@@ -126,8 +122,6 @@ export const useBiometrics = () => {
         isUserAuthenticated,
         isBiometricsOptionEnabled,
         isBiometricsAuthenticationAllowed,
-        setIsUserAuthenticated,
-        setIsBiometricsOverlayVisible,
         doAuthentication,
     ]);
 
