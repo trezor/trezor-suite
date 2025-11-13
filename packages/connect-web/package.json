@@ -48,7 +48,7 @@
         "@trezor/websocket-client": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.27.1",
+        "@babel/preset-typescript": "^7.28.5",
         "@playwright/browser-chromium": "^1.55.0",
         "@playwright/browser-firefox": "^1.55.0",
         "@playwright/browser-webkit": "^1.55.0",

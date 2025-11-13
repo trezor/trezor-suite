@@ -103,7 +103,7 @@
         "jws": "^4.0.0"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.27.1",
+        "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/jws": "^3.2.10",
