@@ -2,6 +2,10 @@ import pluginImport from 'eslint-plugin-import';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+/**
+ * @typedef {import('eslint').Linter.Config} Config
+ */
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -17,6 +21,7 @@ export const globalNoExtraneousDependenciesDevDependencies = [
     '**/*e2e/**', // Todo: This shall be only in packages that has e2e tests
 ];
 
+/** @type {Config[]} */
 export const importConfig = [
     pluginImport.flatConfigs.recommended,
     {

@@ -1,5 +1,9 @@
 import pluginJs from '@eslint/js';
+/**
+ * @typedef {import('eslint').Linter.Config} Config
+ */
 
+/** @type {Config[]} */
 export const javascriptConfig = [
     pluginJs.configs.recommended,
     {

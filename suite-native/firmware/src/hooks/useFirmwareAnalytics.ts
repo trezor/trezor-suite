@@ -43,6 +43,7 @@ export const useFirmwareAnalytics = ({
     // Use refs to avoid any re-renders because of analytics and to make useCallback dependencies stable
     // so it won't trigger any useEffect which could interfere with other business logic.
     const analyticsPayload = useRef<FirmwareUpdatePayload>(prepareAnalyticsPayload());
+    // eslint-disable-next-line react-hooks/purity
     const timeStarted = useRef<number>(Date.now());
 
     useEffect(() => {

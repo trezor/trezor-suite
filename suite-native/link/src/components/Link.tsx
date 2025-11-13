@@ -64,11 +64,13 @@ export const Link = ({
     }));
 
     const handlePressIn = (e: GestureResponderEvent) => {
+        // eslint-disable-next-line react-hooks/immutability
         isPressed.value = withTiming(IS_PRESSED_VALUE, { duration: ANIMATION_DURATION });
         e.stopPropagation();
     };
 
     const handlePressOut = (e: GestureResponderEvent) => {
+        // eslint-disable-next-line react-hooks/immutability
         isPressed.value = withTiming(IS_NOT_PRESSED_VALUE, { duration: ANIMATION_DURATION });
         if (href) openLink(href);
 

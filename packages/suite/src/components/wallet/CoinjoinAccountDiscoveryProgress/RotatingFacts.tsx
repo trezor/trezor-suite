@@ -53,6 +53,8 @@ const factsCount = FACTS.length;
 const selectNextHint = (currentIndex: number) => (currentIndex + 1) % factsCount;
 
 export const RotatingFacts = () => {
+    // Intentionally impure, non-deterministic rendering
+    // eslint-disable-next-line react-hooks/purity
     const firstHintIndex = Math.floor(Math.random() * (factsCount - 1));
     const [factIndex, setFactIndex] = useState(firstHintIndex);
 

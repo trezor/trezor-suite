@@ -25,6 +25,7 @@ export function SelectionDot({
 
     const setIsActive = useCallback(
         (active: boolean) => {
+            // eslint-disable-next-line react-hooks/immutability
             circleRadius.value = withSpring(active ? CIRCLE_RADIUS : 0, {
                 mass: 1,
                 stiffness: 1000,

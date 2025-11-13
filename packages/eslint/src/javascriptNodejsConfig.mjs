@@ -1,3 +1,8 @@
+/**
+ * @typedef {import('eslint').Linter.Config} Config
+ */
+
+/** @type {Config[]} */
 export const javascriptNodejsConfig = [
     {
         // These rules are specific to JavaScript running on Node.js.

@@ -73,6 +73,7 @@ export const SwipeableWalkthroughStep = ({
 
     const handleNextButtonPress = () => {
         if (currentStepIndex.value < totalSteps - 1) {
+            // eslint-disable-next-line react-hooks/immutability
             currentStepIndex.value += 1;
         }
     };

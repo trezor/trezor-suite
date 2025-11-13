@@ -1,5 +1,9 @@
 import pluginJest from 'eslint-plugin-jest';
+/**
+ * @typedef {import('eslint').Linter.Config} Config
+ */
 
+/** @type {Config[]} */
 export const jestConfig = [
     pluginJest.configs['flat/recommended'],
     {

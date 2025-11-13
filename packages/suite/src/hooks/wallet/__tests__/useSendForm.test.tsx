@@ -92,6 +92,7 @@ interface TestCallback {
 // getContextValues returns actual state of SendFormContext
 const Component = ({ callback }: { callback: TestCallback }) => {
     const values = useSendFormContext();
+    // eslint-disable-next-line react-hooks/immutability
     callback.getContextValues = () => values;
 
     // NOTE: rendering briefly explanation:

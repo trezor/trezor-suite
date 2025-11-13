@@ -35,6 +35,7 @@ function HeadingLink({
         if (!id) return;
         const heading = obRef.current;
         if (!heading) return;
+        // eslint-disable-next-line react-hooks/immutability
         slugs.set(heading, [id, (context.index += 1)]);
         observer?.observe(heading);
 
