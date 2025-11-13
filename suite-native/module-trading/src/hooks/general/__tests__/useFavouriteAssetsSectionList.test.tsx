@@ -29,7 +29,10 @@ describe('useFavouriteAssetsSectionList', () => {
             },
         };
 
-        const ret = renderHook(({ assets }) => useFavouriteAssetsSectionList(assets), {
+        const ret = renderHook<
+            ReturnType<typeof useFavouriteAssetsSectionList>,
+            { assets: TradeableAsset[] }
+        >(({ assets }) => useFavouriteAssetsSectionList(assets), {
             wrapper: ({ children }) => (
                 <StoreProviderForTests preloadedState={preloadedState}>
                     {children}
