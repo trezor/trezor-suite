@@ -1,10 +1,12 @@
 import { memo, useEffect, useState } from 'react';
+import { useDebounce } from 'react-use';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { SearchAsset } from '@trezor/product-components';
 
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 
 export interface AssetSearchWithNetworkFilterProps {
     placeholder: TranslationKey;
@@ -12,21 +14,17 @@ export interface AssetSearchWithNetworkFilterProps {
     onNetworkFilter: (networkFilter: NetworkSymbol | undefined) => void;
 }
 
-/**
- * TODO: Once this PR is merged: https://github.com/trezor/trezor-suite/pull/22926, use the updated `SearchAsset` component.
- */
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
     placeholder,
     onSearch,
     onNetworkFilter,
 }: AssetSearchWithNetworkFilterProps) {
     const [search, setSearch] = useState('');
-    const [networkFilter] = useState<NetworkSymbol | undefined>(undefined);
+    const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(undefined);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const { translationString } = useTranslation();
 
-    useEffect(() => {
-        onSearch(search);
-    }, [search, onSearch]);
+    useDebounce(() => onSearch(search), 200, [search, onSearch]);
 
     useEffect(() => {
         onNetworkFilter(networkFilter);
@@ -37,6 +35,15 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
             searchPlaceholder={translationString(placeholder)}
             search={search}
             setSearch={setSearch}
+            selectConfig={{
+                networks: enabledNetworks,
+                selectedNetwork: networkFilter,
+                onChange: setNetworkFilter,
+                includeAllOption: true,
+                allLabel: translationString('TR_ALL_NETWORKS', {
+                    networkCount: enabledNetworks?.length,
+                }),
+            }}
         />
     );
 });

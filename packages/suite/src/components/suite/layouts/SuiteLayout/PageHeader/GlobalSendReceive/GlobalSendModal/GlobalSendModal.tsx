@@ -54,7 +54,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
         [submitRef, searchRef],
     );
     const handleTokenClick = useCallback(
-        (token: TokenInfo, account: Account) => {
+        (_: TokenInfo, account: Account) => {
             // TODO: add 'token' type
             submitRef.current?.(account, 'tokens', Boolean(searchRef.current?.length));
         },

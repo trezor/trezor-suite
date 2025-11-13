@@ -27,10 +27,10 @@ export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
             : networkOptions;
     }, [networks, includeAllOption, allLabel]);
 
-    const selectedOption =
-        selectedNetwork === undefined
-            ? options.find(option => option.value === undefined)
-            : options.find(option => option.value === selectedNetwork);
+    const selectedOption = useMemo(
+        () => options.find(option => option.value === selectedNetwork),
+        [options, selectedNetwork],
+    );
 
     return { options, selectedOption };
 };
