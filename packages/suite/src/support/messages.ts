@@ -4569,7 +4569,7 @@ export default defineMessages({
     TR_TOKEN_ACTIVATION_DESCRIPTION: {
         id: 'TR_TOKEN_ACTIVATION_DESCRIPTION',
         defaultMessage:
-            'To receive {token} on the {network} network, you must first activate the asset. Doing so will increase your reserved balance by {reserve}.',
+            'To receive {token} on the {network} network, you need to activate this asset first. This will increase your reserved balance by {reserve}.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
@@ -5391,7 +5391,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION',
         defaultMessage:
-            'Sync your labels across multiple devices using local-first encrypted storage.',
+            'Keep your wallet, account, and transaction labels updated in Trezor Suite on all your devices. Your data stays safe—only your Trezor can decrypt it.',
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
@@ -9061,7 +9061,7 @@ export default defineMessages({
     },
     TR_COINJOIN_RECEIVE_WARNING_TITLE: {
         id: 'TR_COINJOIN_RECEIVE_WARNING_TITLE',
-        defaultMessage: 'You should know',
+        defaultMessage: 'Good to know',
     },
     TR_UNECO_COINJOIN_RECEIVE_WARNING: {
         id: 'TR_UNECO_COINJOIN_RECEIVE_WARNING',
@@ -10100,7 +10100,7 @@ export default defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR',
         defaultMessage:
-            'Your wallet may appear empty until the internet connection is restored. Do you want to open it?',
+            "Your Passphrase wallet may appear empty until you're connected to the internet. Open it anyway?",
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON',
@@ -10863,7 +10863,7 @@ export default defineMessages({
     TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION: {
         id: 'TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION',
         defaultMessage:
-            'The following addresses from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
+            'The following accounts from {passphraseWalletLabel} on {deviceLabel} will be shared with {thirdParty}. Your private keys stay secure and are never exposed.',
     },
     TR_DYK_TITLE: {
         id: 'TR_DYK_TITLE',
@@ -11002,6 +11002,6 @@ export default defineMessages({
     TR_LOCAL_NETWORK_ACCESS_PERMISSION_WARNING: {
         id: 'TR_LOCAL_NETWORK_ACCESS_PERMISSION_WARNING',
         defaultMessage:
-            'In order to use all features of Trezor Suite web version please allow local network access in your browser settings.',
+            'To use all features of Trezor Suite for web, enable local network access in your browser settings.',
     },
 } as const);
