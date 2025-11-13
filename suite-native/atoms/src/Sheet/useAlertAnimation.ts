@@ -70,6 +70,7 @@ export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
     const openSheetAnimated = useCallback(() => {
         'worklet';
 
+        // eslint-disable-next-line react-hooks/immutability
         translatePanY.value = withTiming(0, {
             duration: 300,
             easing: Easing.out(Easing.cubic),

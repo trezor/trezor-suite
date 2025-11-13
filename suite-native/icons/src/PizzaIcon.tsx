@@ -26,6 +26,7 @@ export const usePizzaAnimation = ({
     const [displayedPizzaIndex, setDisplayedPizzaIndex] = useState<0 | PIZZA_INDEX>(1);
 
     const handleChangePizza = () => {
+        // eslint-disable-next-line react-hooks/immutability
         animationProgress.value = 0;
         setDisplayedPizzaIndex(currentPizzaIndex => ((currentPizzaIndex + 1) % 4) as PIZZA_INDEX);
         animationProgress.value = withTiming(percentage / 100, {

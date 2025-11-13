@@ -10,9 +10,13 @@ import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
 import { reactConfig } from './reactConfig.mjs';
 import { typescriptConfig } from './typescriptConfig.mjs';
+/**
+ * @typedef {import('eslint').Linter.Config} Config
+ */
 
 export { globalNoExtraneousDependenciesDevDependencies };
 
+/** @type {Config[]} */
 export const eslint = [
     {
         ignores: [
@@ -71,6 +75,7 @@ export const eslint = [
     },
 ];
 
+/** @type {Config} */
 export const playwrightEslint = {
     ...playwright.configs['flat/recommended'],
     files: ['e2e/**'],

@@ -15,6 +15,7 @@ export const CodeEditor = ({ code, codeChange, schema }: CodeEditorProps) => {
 
     const [codeKey, setCodeKey] = useState(0);
     const extensions = useMemo(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-render
         setCodeKey(prev => prev + 1);
 
         const patchedSchema = schema ? { ...schema } : { properties: {} };

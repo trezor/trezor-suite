@@ -96,6 +96,7 @@ export const TextButton = ({
     );
 
     const interpolatePressColor = () => {
+        // eslint-disable-next-line react-hooks/immutability
         animatedColor.value = interpolateColor(
             textPressedColorValue.value,
             [0, 1],

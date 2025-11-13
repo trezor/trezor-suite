@@ -1,5 +1,9 @@
 import pluginChaiFriendly from 'eslint-plugin-chai-friendly';
+/**
+ * @typedef {import('eslint').Linter.Config} Config
+ */
 
+/** @type {Config[]} */
 export const chaiFriendlyConfig = [
     {
         plugins: { 'chai-friendly': pluginChaiFriendly },

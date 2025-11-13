@@ -128,6 +128,7 @@ interface TestCallback {
 // getContextValues returns actual state of SendFormContext
 const Component = ({ callback }: { callback: TestCallback }) => {
     const values = useRbfContext();
+    // eslint-disable-next-line react-hooks/immutability
     callback.getContextValues = () => values;
 
     return values.isLoading ? <div>Loading</div> : null;

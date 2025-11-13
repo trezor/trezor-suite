@@ -10,6 +10,8 @@ export const useDisableIOSGesture = () => {
         nav?.setOptions({ gestureEnabled: enable });
         const parent = nav?.getParent?.();
         if (parent) {
+            // This code is OK, but the eslint plugin crashes on recursive calls
+            // eslint-disable-next-line react-hooks/immutability
             toggleGestures(parent, enable);
         }
     }, []);

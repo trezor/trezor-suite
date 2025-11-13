@@ -64,6 +64,7 @@ export const AccordionItem = ({
 
     const handlePress = () => {
         if (currentIndexOpened.value === index) {
+            // eslint-disable-next-line react-hooks/immutability
             currentIndexOpened.value = null;
         } else {
             currentIndexOpened.value = index;

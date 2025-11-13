@@ -273,6 +273,7 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 routeFromChildren,
             ]),
         );
+        // eslint-disable-next-line react-hooks/immutability
         item.children = Object.entries(menu.items || {}).map(([key, menuItem]) => {
             const routeMenuItem = routes[key] || {
                 name: key,

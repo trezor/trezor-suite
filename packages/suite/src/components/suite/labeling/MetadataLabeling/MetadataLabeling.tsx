@@ -451,6 +451,8 @@ export const MetadataLabeling = ({
             await dispatch(processMetadataMessageThunk({ payload, deviceStaticSessionId, value }));
 
             setShowSuccess(true);
+            // Intentional pattern how to use timers with useEffect
+            // eslint-disable-next-line react-hooks/immutability
             timeout = setTimeout(() => {
                 setShowSuccess(false);
             }, 2000);

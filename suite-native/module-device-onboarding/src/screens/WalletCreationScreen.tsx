@@ -70,6 +70,8 @@ export const WalletCreationScreen = () => {
             }
         }
         // repeat the attempt if error was not one of the DEFINITIVE_ERRORS
+        // This code is OK, but the eslint plugin crashes on recursive calls
+        // eslint-disable-next-line react-hooks/immutability
         handleCreateAndBackupWallet();
     }, [dispatch, walletBackupType, navigation, isEntropyCheckEnabled]);
 

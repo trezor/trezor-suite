@@ -85,6 +85,7 @@ export const SwipeableWalkthroughScreenHeader = ({
         if (currentStepIndex.value === 0) {
             onPressBack();
         } else {
+            // eslint-disable-next-line react-hooks/immutability
             currentStepIndex.value -= 1;
         }
     }, [currentStepIndex, onPressBack]);
