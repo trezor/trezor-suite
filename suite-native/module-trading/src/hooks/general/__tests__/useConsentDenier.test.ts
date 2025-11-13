@@ -7,15 +7,15 @@ describe('useConsentDenier', () => {
         initialValue: T,
         initialResolveConsent: (approved: false) => void,
     ) =>
-        renderHook(
-            ({ watchedValue, resolveConsent }) => useConsentDenier<T>(watchedValue, resolveConsent),
-            {
-                initialProps: {
-                    watchedValue: initialValue,
-                    resolveConsent: initialResolveConsent,
-                },
+        renderHook<
+            ReturnType<typeof useConsentDenier<T>>,
+            { watchedValue: T; resolveConsent: (approved: false) => void }
+        >(({ watchedValue, resolveConsent }) => useConsentDenier<T>(watchedValue, resolveConsent), {
+            initialProps: {
+                watchedValue: initialValue,
+                resolveConsent: initialResolveConsent,
             },
-        );
+        });
 
     it('should not call resolve callback on initial render', () => {
         const resolveConsentMock = jest.fn();

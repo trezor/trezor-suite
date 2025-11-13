@@ -12930,7 +12930,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-native/formatters-config": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@testing-library/react-native": "npm:13.3.0"
+    "@testing-library/react-native": "npm:13.3.3"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:19.1.0"
@@ -13348,9 +13348,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react-native@npm:13.3.0":
-  version: 13.3.0
-  resolution: "@testing-library/react-native@npm:13.3.0"
+"@testing-library/react-native@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@testing-library/react-native@npm:13.3.3"
   dependencies:
     jest-matcher-utils: "npm:^30.0.5"
     picocolors: "npm:^1.1.1"
@@ -13364,7 +13364,7 @@ __metadata:
   peerDependenciesMeta:
     jest:
       optional: true
-  checksum: 10/df2896df4db1d320ff58b4ed18f92f43ba9a7032b119a93fe2faf7d6f5c5bffa5e8eb159cf058c4dbef8253da79e85a3edf51d63ebb756efd968d9e3b3f78351
+  checksum: 10/06aaddabbba401f9f322607aba5db859e25aab0007366bab5f540199af3c6e479b4920acf95433153a3a3c557ab008374bb86de2c94c5489159ab8f0b9576a09
   languageName: node
   linkType: hard
 

@@ -16,7 +16,7 @@
         "@suite-common/formatters": "workspace:*",
         "@suite-native/formatters-config": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@testing-library/react-native": "13.3.0",
+        "@testing-library/react-native": "13.3.3",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.1.0",
