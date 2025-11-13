@@ -6,9 +6,9 @@ import {
     BottomSheetBackdrop,
     BottomSheetModal,
     BottomSheetProps,
-    BottomSheetFlashList as FlashList,
+    useBottomSheetScrollableCreator,
 } from '@gorhom/bottom-sheet';
-import { FlashListProps } from '@shopify/flash-list';
+import { FlashList, FlashListProps } from '@shopify/flash-list';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -90,6 +90,8 @@ export const BottomSheetFlashList = <TItem,>({
         }
     }, [isVisible]);
 
+    const BottomSheetListScrollComponent = useBottomSheetScrollableCreator();
+
     return (
         <BottomSheetModal
             ref={bottomSheetModalRef}
@@ -114,6 +116,7 @@ export const BottomSheetFlashList = <TItem,>({
             keyboardBehavior="fillParent"
         >
             <FlashList
+                renderScrollComponent={BottomSheetListScrollComponent}
                 key={flashListKey}
                 {...flashListProps}
                 contentContainerStyle={applyStyle(sheetContentContainerStyle, {
