@@ -88,7 +88,7 @@
         "crypto-browserify": "3.12.0",
         "socks-proxy-agent": "8.0.5",
         "stream-browserify": "^3.0.0",
-        "xrpl": "4.4.2"
+        "xrpl": "4.4.3"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
