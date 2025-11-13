@@ -39,6 +39,9 @@ export function AssetsList<T extends BaseItemProps>({
                 onScrollEnd={onScrollEnd}
                 listHeight={height}
                 listMinHeight={minHeight}
+                visibleItemsCount={20}
+                beforeAfterBufferCount={20}
+                loadMoreBufferCount={5}
             />
             <ShadowBottom backgroundColor={shadowColor} />
         </ShadowContainer>
