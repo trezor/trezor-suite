@@ -10808,8 +10808,8 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    core-js: "npm:^3.45.1"
-    fake-indexeddb: "npm:^6.2.2"
+    core-js: "npm:^3.46.0"
+    fake-indexeddb: "npm:^6.2.4"
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
   languageName: unknown
@@ -14189,7 +14189,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     cross-fetch: "npm:^4.0.0"
     fs-extra: "npm:^11.3.1"
-    minimatch: "npm:^10.0.3"
+    minimatch: "npm:^10.1.1"
     prettier: "npm:^3.6.2"
     semver: "npm:^7.7.1"
     sort-package-json: "npm:^3.4.0"
@@ -14243,7 +14243,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/webpack-bundle-analyzer": "npm:^4.7.0"
-    "@types/webpack-plugin-serve": "npm:^1.4.6"
+    "@types/webpack-plugin-serve": "npm:^1.4.7"
     "@vitejs/plugin-react": "npm:^4.7.0"
     babel-loader: "npm:^10.0.0"
     babel-plugin-styled-components: "npm:^2.1.4"
@@ -14443,7 +14443,7 @@ __metadata:
     "@trezor/suite": "workspace:*"
     "@types/react": "npm:^19.0.0"
     "@types/react-dom": "npm:^19.0.0"
-    core-js: "npm:^3.45.1"
+    core-js: "npm:^3.46.0"
     history: "npm:^5.3.0"
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.1.0"
@@ -16283,9 +16283,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webpack-plugin-serve@npm:^1.4.6":
-  version: 1.4.6
-  resolution: "@types/webpack-plugin-serve@npm:1.4.6"
+"@types/webpack-plugin-serve@npm:^1.4.7":
+  version: 1.4.7
+  resolution: "@types/webpack-plugin-serve@npm:1.4.7"
   dependencies:
     "@types/connect-history-api-fallback": "npm:*"
     "@types/express": "npm:*"
@@ -16295,7 +16295,7 @@ __metadata:
     "@types/node": "npm:*"
     globby: "npm:^11.0.1"
     http-proxy-middleware: "npm:^1.0.0"
-  checksum: 10/b60c5b0b7b3536df55b0c9028550702b7588ebc3607ececd09df96ea7d731c12ebb8f3d7a74240ef90c17930fd1fcdd402d7680754f0088ed695e036a9e8c539
+  checksum: 10/57628d2ca9dc79783f097574f6b22a163019eba78437c6a033f211d951b13c023a4fccd7082b7ade6f9524e16f29b40e74adb38315121bc2a30222dd3791e292
   languageName: node
   linkType: hard
 
@@ -20864,10 +20864,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.30.2, core-js@npm:^3.45.1":
-  version: 3.45.1
-  resolution: "core-js@npm:3.45.1"
-  checksum: 10/b9dca79b1af8bb4f0d4af0752ea98d694fe157abaf55513fd4084df32dfd4398f0fc57898b32cdb643c1cecb87b9231c2a2ce535797c80ae328eac6d6078ee61
+"core-js@npm:^3.30.2, core-js@npm:^3.46.0":
+  version: 3.46.0
+  resolution: "core-js@npm:3.46.0"
+  checksum: 10/82993ca487c6cbbf8bbf00e45eeb9705eb63dc2f9c90d7f35696733efbc3f4b52426e1f8dbef0f0b68ea16caa21e4f44cc5490e08120e1cad4a72b031ed8adaa
   languageName: node
   linkType: hard
 
@@ -25449,10 +25449,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fake-indexeddb@npm:^6.2.2":
-  version: 6.2.2
-  resolution: "fake-indexeddb@npm:6.2.2"
-  checksum: 10/b2dd94419ebc836bf8b68badf653fbba878a73ea775f4c0fbcc55ee1a5d67fbf4be469388fd8044c80e11e8c5be37bc697131ec2747191e3d4569e009e0bb403
+"fake-indexeddb@npm:^6.2.4":
+  version: 6.2.4
+  resolution: "fake-indexeddb@npm:6.2.4"
+  checksum: 10/5160c3f4209c0c785aa30e4efdd6d49496dadd9bffbc2bc7d65f68aa94fbcdd0611c7bc0fcf82a64e514d38e8708b336ccf358dc784672787630653a7417c8a7
   languageName: node
   linkType: hard
 
@@ -34312,12 +34312,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^10.0.0, minimatch@npm:^10.0.3":
-  version: 10.0.3
-  resolution: "minimatch@npm:10.0.3"
+"minimatch@npm:^10.0.0, minimatch@npm:^10.0.3, minimatch@npm:^10.1.1":
+  version: 10.1.1
+  resolution: "minimatch@npm:10.1.1"
   dependencies:
     "@isaacs/brace-expansion": "npm:^5.0.0"
-  checksum: 10/d5b8b2538b367f2cfd4aeef27539fddeee58d1efb692102b848e4a968a09780a302c530eb5aacfa8c57f7299155fb4b4e85219ad82664dcef5c66f657111d9b8
+  checksum: 10/110f38921ea527022e90f7a5f43721838ac740d0a0c26881c03b57c261354fb9a0430e40b2c56dfcea2ef3c773768f27210d1106f1f2be19cde3eea93f26f45e
   languageName: node
   linkType: hard
 
