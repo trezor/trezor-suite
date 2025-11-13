@@ -43,6 +43,7 @@ export class UsbApi extends AbstractApi {
      */
     private synchronizeResetDevice = getSynchronize();
     private deviceResetMap: Record<string, boolean> = {};
+    private devicePendingTransferIn = new Map<USBDevice, Promise<USBInTransferResult>>();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger, type: 'usb' });
@@ -201,6 +202,18 @@ export class UsbApi extends AbstractApi {
         }
     }
 
+    private getTransferIn(device: USBDevice) {
+        let pending = this.devicePendingTransferIn.get(device);
+        if (!pending) {
+            pending = device
+                .transferIn(this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID, this.chunkSize)
+                .finally(() => this.devicePendingTransferIn.delete(device));
+            this.devicePendingTransferIn.set(device, pending);
+        }
+
+        return pending;
+    }
+
     public async read(path: string, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
@@ -209,14 +222,10 @@ export class UsbApi extends AbstractApi {
 
         try {
             this.logger?.debug('usb: device.transferIn');
-            const res = await this.abortableMethod(
-                () =>
-                    device.transferIn(
-                        this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
-                        this.chunkSize,
-                    ),
-                { signal, onAbort: () => this.resetDevice(path) },
-            );
+            const res = await this.abortableMethod(() => this.getTransferIn(device), {
+                signal,
+                onAbort: () => this.resetDevice(path),
+            });
             this.logger?.debug(
                 `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}.`,
             );
