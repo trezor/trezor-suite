@@ -461,6 +461,7 @@ export class TradingPage {
     async fillSwapForm(params: {
         amount: string;
         sendCurrency: string;
+        accountIndex?: number;
         sendTicker: string;
         receiveCurrency: string;
         receiveSymbol: NetworkSymbol;
@@ -471,7 +472,7 @@ export class TradingPage {
     }) {
         await this.page.selectDropdownOptionWithRetry(
             this.swapFromAccountInput,
-            this.swapFromAccountOption(params.sendCurrency),
+            this.swapFromAccountOption(params.sendCurrency).nth(params.accountIndex ?? 0),
         );
         await this.selectAccount(params.receiveCurrency, params.receiveSymbol);
         // We should not fill in amount until account change takes effect = correct ticker is displayed
