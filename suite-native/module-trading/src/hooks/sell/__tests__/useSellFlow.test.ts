@@ -50,6 +50,18 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: () => mockNavigation,
 }));
 
+jest.mock('../../general/useTradingTransaction', () => ({
+    useTradingTransaction: () => ({
+        txnErrorString: null,
+        composeRequest: jest.fn(),
+        fetchFeesAndCompose: jest.fn(),
+        signAndSendTransaction: jest.fn(),
+        serializedTx: undefined,
+        resolveTransactionSendConsent: jest.fn(),
+        isTransactionSendConsentRequested: false,
+    }),
+}));
+
 describe('useSellFlow', () => {
     let store: TestStore;
 
