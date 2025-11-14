@@ -17,4 +17,6 @@ export * from './selectors/tradingSelectors';
 export * from './selectors/settingsSelectors';
 export * from './thunks';
 export * from './hooks/useTradingInfo';
+export * from './hooks/useTradingDetail';
+export * from './types/tradingDetail';
 export * from './currency';

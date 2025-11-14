@@ -5,7 +5,7 @@ import { TradingDetailBuy } from 'src/views/wallet/trading/common/TradingDetail/
 
 const TradingBuyDetailComponent = ({ selectedAccount }: UseTradingProps) => {
     const tradingDetailContext = useTradingDetail({
-        selectedAccount,
+        account: selectedAccount.account,
         tradeType: 'buy',
     });
 
