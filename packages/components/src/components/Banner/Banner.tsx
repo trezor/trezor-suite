@@ -1,36 +1,24 @@
 import { ReactNode } from 'react';
 
-import styled, { css, useTheme } from 'styled-components';
-
-import { Elevation, borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import { useTheme } from 'styled-components';
 
 import { BannerButton } from './BannerButton';
 import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
-import { DEFAULT_VARIANT } from './consts';
-import { BannerVariant } from './types';
+import { DEFAULT_INTENT } from './consts';
+import { BannerIntent } from './types';
 import {
-    mapVariantToBackgroundColor,
-    mapVariantToIcon,
-    mapVariantToIconColor,
-    mapVariantToTextColor,
+    mapIntentToBackgroundColor,
+    mapIntentToIcon,
+    mapIntentToIconColor,
+    mapIntentToTextColor,
 } from './utils';
-import { variables } from '../../config';
-import { uiAlignments } from '../../config/types';
-import { SCREEN_SIZE } from '../../config/variables';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
-import { useMediaQuery } from '../../utils/useMediaQuery';
-import { useElevation } from '../ElevationContext/ElevationContext';
+import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
-import { FlexAlignItems } from '../Flex/FlexProp';
-import { Icon, IconName, IconSize } from '../Icon/Icon';
+import { Icon, IconName } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
+import { Text } from '../typography/Text/Text';
 
 export const allowedBannerFrameProps = [
     'margin',
@@ -40,142 +28,67 @@ export const allowedBannerFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
 
-export const iconVerticalAlignments = uiAlignments;
-export type IconVerticalAlignment = (typeof iconVerticalAlignments)[number];
-
 export type BannerProps = AllowedFrameProps & {
     children: ReactNode;
-    className?: string;
-    variant?: BannerVariant;
+    intent?: BannerIntent;
     rightContent?: ReactNode;
-    iconAlignment?: IconVerticalAlignment;
     icon?: IconName | true;
-    width?: string;
-    iconSize?: IconSize | number;
-    filled?: boolean;
     'data-testid'?: string;
     isLoading?: boolean;
 };
 
-type WrapperParams = TransientProps<AllowedFrameProps> & {
-    $iconAlignment?: IconVerticalAlignment;
-    $variant: BannerVariant;
-    $withIcon?: boolean;
-    $elevation: Elevation;
-    $filled: boolean;
-};
-
-export const mapVerticalAlignmentToAlignItems = (
-    verticalAlignment: IconVerticalAlignment,
-): FlexAlignItems => {
-    const alignItemsMap: Record<IconVerticalAlignment, FlexAlignItems> = {
-        start: 'flex-start',
-        center: 'center',
-        end: 'flex-end',
-    };
-
-    return alignItemsMap[verticalAlignment];
-};
-
-const Wrapper = styled.div<WrapperParams>`
-    align-items: ${({ $iconAlignment }) =>
-        $iconAlignment ? mapVerticalAlignmentToAlignItems($iconAlignment) : 'center'};
-    ${({ $filled }) =>
-        $filled
-            ? css<WrapperParams>`
-                  background: ${mapVariantToBackgroundColor};
-                  border-radius: ${borders.radii.xs};
-              `
-            : ''}
-    color: ${mapVariantToTextColor};
-    display: flex;
-    ${typography.hint}
-    gap: ${spacingsPx.sm};
-    padding: ${spacingsPx.sm} ${spacingsPx.lg};
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        align-items: ${({ $iconAlignment }) =>
-            $iconAlignment ? mapVerticalAlignmentToAlignItems($iconAlignment) : 'flex-start'};
-    }
-
-    ${withFrameProps}
-`;
-
 export const Banner = ({
     children,
-    className,
-    variant = DEFAULT_VARIANT,
-    iconAlignment,
+    intent = DEFAULT_INTENT,
     icon,
-    iconSize = 20,
-    filled = true,
     rightContent,
     'data-testid': dataTest,
     isLoading = false,
+    width = '100%',
     ...rest
 }: BannerProps) => {
     const theme = useTheme();
-    const { elevation } = useElevation();
 
     const withIcon = icon !== undefined;
-
-    const isMobile = useMediaQuery(`(max-width: ${SCREEN_SIZE.SM})`);
-
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    const ContentComponent = ({ children }: { children: ReactNode }) => {
-        const commonProps = {
-            justifyContent: 'space-between' as const,
-            flex: '1' as const,
-        };
-
-        return isMobile ? (
-            <Column gap={spacings.sm} {...commonProps}>
-                {children}
-            </Column>
-        ) : (
-            <Row alignItems="center" gap={spacings.md} {...commonProps}>
-                {children}
-            </Row>
-        );
-    };
     const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps);
 
     return (
-        <Wrapper
-            $iconAlignment={iconAlignment}
-            $variant={variant}
-            $withIcon={withIcon}
-            className={className}
-            $elevation={elevation}
-            $filled={filled}
+        <Box
+            as="section"
+            backgroundColor={mapIntentToBackgroundColor(intent, theme)}
+            borderRadius={8}
             data-testid={dataTest}
+            width={width}
             {...frameProps}
         >
-            {isLoading && <Spinner size={22} />}
-            {!isLoading && withIcon && (
-                <Icon
-                    size={iconSize}
-                    name={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}
-                    // Todo: unify variants
-                    color={mapVariantToIconColor({
-                        $variant: variant,
-                        theme,
-                        $elevation: elevation,
-                    })}
-                />
-            )}
-
-            <ContentComponent>
-                <Column alignItems="flex-start">
-                    <span>{children}</span>
-                </Column>
-                {rightContent && (
-                    <BannerContext.Provider value={{ variant }}>
-                        {rightContent}
-                    </BannerContext.Provider>
+            <Row gap={16} padding={{ vertical: 12, horizontal: 20 }}>
+                {isLoading && <Spinner size={20} />}
+                {!isLoading && withIcon && (
+                    <Icon
+                        size={20}
+                        name={icon === true ? mapIntentToIcon(intent) : icon}
+                        color={mapIntentToIconColor(intent, theme)}
+                    />
                 )}
-            </ContentComponent>
-        </Wrapper>
+
+                <Row flex="1" flexWrap="wrap" gap={10}>
+                    <Column flex="1 1 300px" maxWidth="100%">
+                        <Text
+                            as="div"
+                            typographyStyle="hint"
+                            color={mapIntentToTextColor(intent, theme)}
+                        >
+                            {children}
+                        </Text>
+                    </Column>
+                    {rightContent && (
+                        <BannerContext.Provider value={{ intent }}>
+                            {rightContent}
+                        </BannerContext.Provider>
+                    )}
+                </Row>
+            </Row>
+        </Box>
     );
 };
 

@@ -30,7 +30,7 @@ export const DeviceRecoveryMode = () => {
                     <Translation id="TR_CONTINUE" />
                 </Banner.Button>
             }
-            variant="warning"
+            intent="warning"
             items={[
                 {
                     key: 'recovery-mode',

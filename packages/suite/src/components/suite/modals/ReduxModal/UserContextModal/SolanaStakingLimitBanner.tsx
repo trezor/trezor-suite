@@ -91,7 +91,7 @@ export const SolanaStakingLimitBanner = ({
     if (!isAccountLimitExeeded) return null;
 
     return (
-        <Banner variant="info">
+        <Banner intent="info">
             <Translation
                 id={
                     type === 'claim'

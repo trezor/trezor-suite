@@ -331,7 +331,7 @@ export const TradingFormApproval = ({
                                         <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON" />
                                     </Button>
 
-                                    <Banner variant="warning" icon="warning">
+                                    <Banner intent="warning" icon="warning">
                                         <Translation id="TR_EXCHANGE_APPROVAL_FORM_REVOKE_BANNER" />
                                     </Banner>
                                 </>

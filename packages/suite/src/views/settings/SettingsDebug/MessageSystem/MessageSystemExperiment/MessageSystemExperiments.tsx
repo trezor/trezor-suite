@@ -81,7 +81,7 @@ export const MessageSystemExperiments = ({
                     onToggleActive={() => setShowActive(prev => !prev)}
                 />
                 {filteredExperiments.length === 0 && (
-                    <Banner variant="warning">No experiments.</Banner>
+                    <Banner intent="warning">No experiments.</Banner>
                 )}
 
                 {filteredExperiments.map(({ experiment: rawExperiment, conditions }, index) => {

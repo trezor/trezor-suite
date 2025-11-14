@@ -65,7 +65,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
 
     return (
         <Banner
-            variant={message.variant === 'critical' ? 'destructive' : message.variant}
+            intent={message.variant}
             rightContent={
                 <Row gap={8}>
                     {actionConfig && (
@@ -80,7 +80,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
                         <Banner.IconButton
                             icon="x"
                             onClick={dismissalConfig.onClick}
-                            isSubtle
+                            priority="secondary"
                             data-testid={dismissalConfig['data-testid']}
                         />
                     )}

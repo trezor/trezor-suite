@@ -52,7 +52,7 @@ export const FirmwareInstallation = ({
             <Column gap={16}>
                 {isDeviceNotSelected && (
                     <Banner
-                        variant="info"
+                        intent="info"
                         icon="trezorDevicesFilled"
                         rightContent={
                             <Banner.Button
@@ -70,7 +70,7 @@ export const FirmwareInstallation = ({
                     </Banner>
                 )}
                 {displayIsSlow && (
-                    <Banner variant="info" icon="bluetooth">
+                    <Banner intent="info" icon="bluetooth">
                         <Translation id="TR_INSTALLATION_FW_SLOW_TIP_BANNER" />
                     </Banner>
                 )}

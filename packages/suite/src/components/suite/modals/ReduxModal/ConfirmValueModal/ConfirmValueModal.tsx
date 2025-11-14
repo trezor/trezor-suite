@@ -150,7 +150,7 @@ export const ConfirmValueModal = ({
             >
                 <Column gap={spacings.md}>
                     {!device?.connected && (
-                        <Banner icon="warning" variant="warning">
+                        <Banner icon="warning" intent="warning">
                             <Paragraph typographyStyle="hint">
                                 <Translation
                                     id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
@@ -163,7 +163,7 @@ export const ConfirmValueModal = ({
                         </Banner>
                     )}
                     {(account?.networkType === 'ripple' || account?.networkType === 'stellar') && (
-                        <Banner variant="info" icon="info">
+                        <Banner intent="info" icon="info">
                             <Translation
                                 id="DESTINATION_TAG_BANNER_RECEIVE"
                                 values={{

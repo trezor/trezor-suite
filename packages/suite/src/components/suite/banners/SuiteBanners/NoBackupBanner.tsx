@@ -15,7 +15,7 @@ export const NoBackup = () => {
     return (
         <Banner
             icon
-            variant="destructive"
+            intent="critical"
             rightContent={
                 <Banner.Button
                     onClick={() => dispatch(goto('backup-index'))}

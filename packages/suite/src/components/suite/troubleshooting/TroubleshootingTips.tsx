@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react';
 
 import {
     Banner,
-    BannerVariant,
+    BannerIntent,
     Box,
     Button,
     Card,
@@ -34,7 +34,7 @@ type TroubleshootingTipsBaseProps = {
     initiallyIsOpen?: boolean;
     'data-testid'?: string;
     toggleText?: ReactNode;
-    variant?: BannerVariant;
+    intent?: BannerIntent;
     items: TroubleshootingTipsItem[];
 };
 
@@ -45,7 +45,7 @@ export const TroubleshootingTips = ({
     ctaLabel,
     initiallyIsOpen,
     toggleText,
-    variant = 'warning',
+    intent = 'warning',
     'data-testid': dataTest,
 }: TroubleshootingTipsBaseProps) => {
     // @TODO isn't `labelRow` duplicate information? If not, where to show it?
@@ -64,7 +64,7 @@ export const TroubleshootingTips = ({
         const { isBelowMobile } = useLayoutSize();
 
         return (
-            <Banner rightContent={cta} variant={variant} minWidth={isBelowMobile ? undefined : 400}>
+            <Banner rightContent={cta} intent={intent} minWidth={isBelowMobile ? undefined : 400}>
                 {ctaLabel ?? label}
             </Banner>
         );

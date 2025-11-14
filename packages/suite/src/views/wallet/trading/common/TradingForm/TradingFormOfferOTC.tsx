@@ -111,7 +111,7 @@ export const TradingFormOfferOTC = () => {
     }
 
     return (
-        <Banner variant="info">
+        <Banner intent="info">
             <Text margin={{ bottom: spacings.xxs }}>
                 <Translation
                     id={

@@ -23,7 +23,7 @@ const DisconnectedNotification = ({
 
     return (
         <Banner
-            variant="warning"
+            intent="warning"
             rightContent={
                 <Banner.Button onClick={reconnect} isLoading={isReconnecting}>
                     <Translation id="TR_CONNECT" />

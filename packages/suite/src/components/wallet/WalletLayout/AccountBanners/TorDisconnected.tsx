@@ -19,7 +19,7 @@ export const TorDisconnected = () => {
 
     return (
         <Banner
-            variant="warning"
+            intent="warning"
             rightContent={
                 <Banner.Button onClick={handleButtonClick} isLoading={isTorLoading}>
                     {isTorLoading ? (

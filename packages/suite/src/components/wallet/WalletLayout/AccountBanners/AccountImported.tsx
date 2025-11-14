@@ -9,7 +9,7 @@ type AccountImportedProps = {
 
 export const AccountImported = ({ account }: AccountImportedProps) =>
     account?.imported ? (
-        <Banner variant="info">
+        <Banner intent="info">
             <Translation id="TR_ACCOUNT_IMPORTED_ANNOUNCEMENT" />
         </Banner>
     ) : null;

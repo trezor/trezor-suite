@@ -68,7 +68,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                     </Row>
                 </>
             )}
-            <Banner variant="info" icon="info" iconAlignment="start">
+            <Banner intent="info" icon="info">
                 <Translation
                     id={
                         isUpdateProviderFlow

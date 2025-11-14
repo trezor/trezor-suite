@@ -19,7 +19,7 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
 
     return (
         <Banner
-            variant="info"
+            intent="info"
             icon="cube"
             rightContent={
                 <Banner.Button iconRight="arrowUpRight" size="small" href={href}>

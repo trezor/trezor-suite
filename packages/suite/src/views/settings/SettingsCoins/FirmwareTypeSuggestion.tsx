@@ -22,9 +22,8 @@ export const FirmwareTypeSuggestion = () => {
 
     return (
         <Banner
-            variant="info"
+            intent="info"
             icon="currencyBtc"
-            iconSize="extraLarge"
             rightContent={
                 <Banner.Button onClick={handleClose}>
                     <Translation id="TR_GOT_IT" />

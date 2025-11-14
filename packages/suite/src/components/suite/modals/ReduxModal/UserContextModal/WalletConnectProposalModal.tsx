@@ -258,7 +258,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     noNetworksActivated ||
                     selectableAccounts.length === 0) && (
                     <Banner
-                        variant="warning"
+                        intent="warning"
                         rightContent={
                             <BannerButton
                                 onClick={() => handleGoToCoinSettings()}
@@ -288,13 +288,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     />
                 )}
                 {pendingProposal.validation === 'INVALID' && (
-                    <Banner variant="destructive">
+                    <Banner intent="critical">
                         <Translation id="TR_WALLETCONNECT_UNABLE_TO_VERIFY" />
                     </Banner>
                 )}
 
                 {pendingProposal.expired && (
-                    <Banner variant="warning">
+                    <Banner intent="warning">
                         <Translation id="TR_WALLETCONNECT_REQUEST_EXPIRED" />
                     </Banner>
                 )}

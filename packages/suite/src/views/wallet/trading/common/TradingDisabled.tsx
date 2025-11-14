@@ -22,7 +22,7 @@ export const TradingDisabled = ({ type, content }: TradingDisabledProps) => {
     const { translationString } = useTranslation();
 
     return (
-        <Banner icon="warning" variant="warning">
+        <Banner icon="warning" intent="warning">
             {content ?? (
                 <Translation
                     id="TR_TRADING_DISABLED_DEFAULT"

@@ -62,7 +62,7 @@ export const FirmwareInitial = () => {
 
     return (
         <Column gap={16}>
-            <Banner variant="info" icon="info">
+            <Banner intent="info" icon="info">
                 <Translation
                     id={getDescription({
                         /**

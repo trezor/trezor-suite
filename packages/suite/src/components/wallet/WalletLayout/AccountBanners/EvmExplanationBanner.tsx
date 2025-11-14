@@ -42,7 +42,7 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
     return (
         <CloseableBanner
             onClose={close}
-            variant="info"
+            intent="info"
             title={
                 <Translation
                     id="TR_EVM_EXPLANATION_TITLE"

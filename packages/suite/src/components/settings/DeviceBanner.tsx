@@ -25,9 +25,8 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     return (
         <Banner
             data-testid="@settings/device/disconnected-device-banner"
-            variant="warning"
+            intent="warning"
             icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
-            iconSize="extraLarge"
             rightContent={
                 <Row gap={12}>
                     {deviceConnectedButNotAcquired && <AcquireDeviceButton />}

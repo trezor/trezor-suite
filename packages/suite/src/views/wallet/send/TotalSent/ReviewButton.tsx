@@ -159,7 +159,7 @@ export const ReviewButton = () => {
     return (
         <Container>
             {showCoinControlWarning && (
-                <Banner variant="destructive">
+                <Banner intent="critical">
                     <Checkbox
                         variant="destructive"
                         isChecked={anonymityWarningChecked}

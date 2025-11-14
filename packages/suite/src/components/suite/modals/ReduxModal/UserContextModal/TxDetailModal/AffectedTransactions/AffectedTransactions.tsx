@@ -34,7 +34,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
             }
         >
             <Column gap={spacings.md}>
-                <Banner variant="warning">
+                <Banner intent="warning">
                     <Translation id="TR_AFFECTED_TXS" />
                 </Banner>
                 <Table>

@@ -11,9 +11,8 @@ export const EnterOnDeviceStep = ({
     deviceModelInternal: DeviceModelInternal;
 }) => (
     <Banner
-        variant="info"
+        intent="info"
         icon={mapTrezorModelToIcon[deviceModelInternal]}
-        iconSize="extraLarge"
         margin={{ top: spacings.xs }}
     >
         <Paragraph>

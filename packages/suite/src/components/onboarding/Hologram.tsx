@@ -1,39 +1,16 @@
 import { useRef } from 'react';
 
-import styled from 'styled-components';
-
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { getPackagingUrl } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Banner, Image, Row, variables } from '@trezor/components';
+import { Column, Image, Paragraph, Row } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
-import { typography } from '@trezor/theme';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-
-const HologramSubHeading = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-bottom: 16px;
-`;
-
-const AnimationWrapper = styled.div`
-    margin: 8px 0;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledWarning = styled(Banner)`
-    ${typography.hint}
-
-    a {
-        color: ${({ theme }) => theme.backgroundAlertYellowBold};
-        ${typography.hint}
-    }
-`;
 
 export const Hologram = () => {
     const device = useSelector(selectSelectedDevice);
@@ -57,40 +34,36 @@ export const Hologram = () => {
     };
 
     return (
-        <>
-            <HologramSubHeading>
+        <Column gap={24}>
+            <Paragraph>
                 <Translation id="TR_HOLOGRAM_STEP_SUBHEADING" />
-                {isOldT2B1Packaging && (
-                    <>
-                        <br />
-                        <Translation id="TR_HOLOGRAM_T2B1_NEW_SEAL" />
-                    </>
-                )}
-            </HologramSubHeading>
-
+            </Paragraph>
+            {isOldT2B1Packaging && (
+                <Paragraph>
+                    <Translation id="TR_HOLOGRAM_T2B1_NEW_SEAL" />
+                </Paragraph>
+            )}
             {isT1B1 ? (
-                <AnimationWrapper>
-                    <DeviceAnimation
-                        type="HOLOGRAM"
-                        shape="ROUNDED-SMALL"
-                        loop
-                        width="100%"
-                        deviceModelInternal={DeviceModelInternal.T1B1}
-                        onVideoMouseOver={() => {
-                            // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again
-                            // As a quick workaround user can hover a mouse to play it again
-                            hologramRef.current?.play();
-                        }}
-                        ref={hologramRef}
-                    />
-                </AnimationWrapper>
+                <DeviceAnimation
+                    type="HOLOGRAM"
+                    shape="ROUNDED-SMALL"
+                    loop
+                    width="100%"
+                    deviceModelInternal={DeviceModelInternal.T1B1}
+                    onVideoMouseOver={() => {
+                        // If the video is placed in tooltip it stops playing after tooltip minimizes and won't start again
+                        // As a quick workaround user can hover a mouse to play it again
+                        hologramRef.current?.play();
+                    }}
+                    ref={hologramRef}
+                />
             ) : (
-                <Row justifyContent="center" margin={{ top: 20, bottom: 40 }}>
+                <Row justifyContent="center">
                     <Image isFilterActive={false} image={`TREZOR_${getDeviceModel()}_HOLOGRAM`} />
                 </Row>
             )}
 
-            <StyledWarning>
+            <Paragraph>
                 <Translation
                     id="TR_SECURITY_CHECK_HOLOGRAM"
                     values={{
@@ -111,7 +84,7 @@ export const Hologram = () => {
                         ),
                     }}
                 />
-            </StyledWarning>
-        </>
+            </Paragraph>
+        </Column>
     );
 };

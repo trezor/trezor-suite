@@ -148,7 +148,7 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
         >
             <Column gap={spacings.sm} margin={{ top: spacings.xs, bottom: spacings.lg }}>
                 {banners.map(({ icon, message }, index) => (
-                    <Banner icon={icon} variant="info" key={index}>
+                    <Banner icon={icon} intent="info" key={index}>
                         {message}
                     </Banner>
                 ))}

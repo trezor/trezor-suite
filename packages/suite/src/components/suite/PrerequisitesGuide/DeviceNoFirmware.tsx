@@ -23,7 +23,7 @@ export const DeviceNoFirmware = () => {
                     <Translation id="TR_GO_TO_ONBOARDING" />
                 </Banner.Button>
             }
-            variant="info"
+            intent="info"
             items={[
                 {
                     key: 'device-firmware-missing',

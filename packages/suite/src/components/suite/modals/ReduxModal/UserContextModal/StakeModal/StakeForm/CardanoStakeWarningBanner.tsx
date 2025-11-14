@@ -18,7 +18,7 @@ export const CardanoStakeWarningBanner = ({
     if (!isCardanoStakingDisabled) return;
 
     return (
-        <Banner variant="destructive" icon="warning">
+        <Banner intent="critical" icon="warning">
             <Translation
                 id="TR_STAKE_NOT_ENOUGH_FUNDS_WARNING"
                 values={{

@@ -10,7 +10,7 @@ import { Translation } from '../../Translation';
  * 3] have webusb disabled in debug settings or be using Firefox browser.
  */
 export const LocalNetworkAccessPermission = () => (
-    <Banner icon variant="info">
+    <Banner icon intent="info">
         <Translation id="TR_LOCAL_NETWORK_ACCESS_PERMISSION_WARNING" />
     </Banner>
 );

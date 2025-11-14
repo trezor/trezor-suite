@@ -71,7 +71,7 @@ export const BluetoothSelectedDevice = ({
         <Card>
             <OkComponent device={device} />
             {showHint && (
-                <Banner variant="info" icon="info" margin={{ top: 16 }}>
+                <Banner intent="info" icon="info" margin={{ top: 16 }}>
                     <Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />
                 </Banner>
             )}

@@ -52,7 +52,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
 
         return false;
     })?.filter(child => !!child);
-    const variant = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'primary';
+    const intent = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'brand';
 
     let updatedMessage: string[] | undefined;
     if (message?.[0]) {
@@ -61,7 +61,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
         updatedMessage[0] = updatedMessage[0].replace(REGEX, '');
     } else {
         // If the object does not have the expected format, log an error but display the component anyway.
-        console.error('Unexpected variant of Guide hint.');
+        console.error('Unexpected intent of Guide hint.');
     }
 
     // Clone the children to avoid mutating them and prevent weird bugs.
@@ -77,7 +77,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
     });
 
     return (
-        <StyledBanner icon variant={variant}>
+        <StyledBanner icon intent={intent}>
             {clonedChildren}
         </StyledBanner>
     );

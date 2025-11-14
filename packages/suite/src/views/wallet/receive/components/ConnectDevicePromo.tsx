@@ -21,10 +21,9 @@ const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => 
 
     return (
         <Banner
-            variant="warning"
+            intent="warning"
             data-testid="@warning/trezorNotConnected"
             icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
-            iconSize="extraLarge"
         >
             <H4>{title}</H4>
             <Paragraph>{description}</Paragraph>

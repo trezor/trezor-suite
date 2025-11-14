@@ -115,7 +115,7 @@ export const PinMatrix = ({
         <Column gap={spacings.md}>
             {showExplanation && (
                 <Banner
-                    variant="info"
+                    intent="info"
                     icon="password"
                     rightContent={
                         <Banner.Button href={learnMoreUrl} iconRight="arrowUpRight" size="small">

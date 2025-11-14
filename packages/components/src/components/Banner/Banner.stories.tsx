@@ -1,72 +1,31 @@
 import { Meta, StoryObj } from '@storybook/react';
-import styled from 'styled-components';
 
 import { allowedBannerFrameProps } from './Banner';
-import { Banner as BannerComponent, Row, iconVerticalAlignments, variables } from '../../index';
+import { Banner as BannerComponent, variables } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 20px;
-`;
+import { Row } from '../Flex/Flex';
 
 const meta: Meta<typeof BannerComponent> = {
     title: 'Banner',
     component: BannerComponent,
-    render: ({ children, ...rest }) => (
-        <Wrapper>
-            <BannerComponent {...rest} variant="primary">
-                {children}
-            </BannerComponent>
-            <BannerComponent {...rest} variant="tertiary">
-                {children}
-            </BannerComponent>
-            <BannerComponent {...rest} variant="warning">
-                {children}
-            </BannerComponent>
-            <BannerComponent {...rest} variant="destructive">
-                {children}
-            </BannerComponent>
-            <BannerComponent {...rest} variant="info">
-                {children}
-            </BannerComponent>
-        </Wrapper>
-    ),
 };
 export default meta;
 
 export const Banner: StoryObj<typeof meta> = {
     args: {
-        children: 'Insert text here.',
-        filled: true,
+        children:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         isLoading: false,
-        variant: 'warning',
-        icon: undefined,
-        iconSize: 20,
-        rightContent: <BannerComponent.Button>Click</BannerComponent.Button>,
+        intent: undefined,
+        icon: true,
+        rightContent: 'button',
         ...getFramePropsStory(allowedBannerFrameProps).args,
     },
     argTypes: {
-        className: {
-            control: false,
-        },
         icon: {
             options: [undefined, true, ...variables.ICONS],
             control: {
                 type: 'select',
-            },
-        },
-        iconAlignment: {
-            options: [undefined, ...Object.values(iconVerticalAlignments)],
-            control: {
-                type: 'select',
-            },
-        },
-        iconSize: {
-            control: {
-                type: 'number',
             },
         },
         rightContent: {
@@ -75,16 +34,16 @@ export const Banner: StoryObj<typeof meta> = {
                 nothing: undefined,
                 button: <BannerComponent.Button>Button</BannerComponent.Button>,
                 combinedButtons: (
-                    <Row gap={8}>
-                        <BannerComponent.Button>Button 1</BannerComponent.Button>
-                        <BannerComponent.IconButton icon="x" isSubtle />
+                    <Row gap={10}>
+                        <BannerComponent.Button>Button</BannerComponent.Button>
+                        <BannerComponent.IconButton icon="x" priority="secondary" />
                     </Row>
                 ),
                 iconButton: <BannerComponent.IconButton icon="x" />,
                 iconButtons: (
-                    <Row gap={8}>
+                    <Row gap={10}>
                         <BannerComponent.IconButton icon="x" />
-                        <BannerComponent.IconButton icon="asterisk" isSubtle />
+                        <BannerComponent.IconButton icon="asterisk" priority="secondary" />
                     </Row>
                 ),
             },

@@ -29,7 +29,7 @@ export const SolanaLimitedHistoryBanner = () => {
     return (
         <CloseableBanner
             onClose={handleClose}
-            variant="info"
+            intent="info"
             title={<Translation id="TR_SOLANA_LIMIT_HISTORY_TITLE" />}
             hasIcon={true}
         >

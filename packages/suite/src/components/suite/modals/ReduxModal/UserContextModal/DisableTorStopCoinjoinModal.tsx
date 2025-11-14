@@ -41,7 +41,7 @@ export const DisableTorStopCoinjoinModal = ({
             }
         >
             <Column gap={spacings.xl}>
-                <Banner variant="warning" icon="torBrowser" iconSize="large">
+                <Banner intent="warning" icon="torBrowser">
                     <Paragraph typographyStyle="body">
                         <Translation
                             id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"

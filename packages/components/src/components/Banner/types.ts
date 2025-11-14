@@ -1,5 +1,5 @@
-import { UIVariant } from '../../config/types';
+import { UIIntent } from '../../config/types';
 
-export const bannerVariants = ['primary', 'info', 'warning', 'destructive', 'tertiary'] as const;
+export const bannerIntents = ['brand', 'info', 'warning', 'critical', 'neutral'] as const;
 
-export type BannerVariant = Extract<UIVariant, (typeof bannerVariants)[number]>;
+export type BannerIntent = Extract<UIIntent, (typeof bannerIntents)[number]>;

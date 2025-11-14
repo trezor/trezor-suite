@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite/Translation';
 export const MultiShareBackupInProgress = () => (
     <TroubleshootingTips
         label={<Translation id="TR_MULTI_SHARE_BACKUP_IN_PROGRESS" />}
-        variant="info"
+        intent="info"
         items={[
             {
                 key: 'multi-share-backup-in-progress',

@@ -8,7 +8,7 @@ export const FirmwareWipeWarning = () => {
     };
 
     return (
-        <Banner variant="destructive" icon="warning">
+        <Banner intent="critical" icon="warning">
             <Paragraph>
                 <Translation id="TR_FIRMWARE_SWITCH_WARNING_1" values={warningTranslationValues} />{' '}
                 <Translation id="TR_FIRMWARE_SWITCH_WARNING_2" values={warningTranslationValues} />
