@@ -21,6 +21,7 @@ export type PortfolioCardHeaderProps = {
     isDiscoveryRunning?: boolean;
     showGraphControls: boolean;
     passphraseEntryCanceled: boolean;
+    hasMultipleAccounts: boolean;
     receiveClickHandler: () => void;
 };
 
@@ -34,6 +35,7 @@ export const PortfolioCardHeader = ({
     isDiscoveryRunning,
     showGraphControls,
     passphraseEntryCanceled,
+    hasMultipleAccounts,
     receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
     const accounts = useSelector(selectAllAccountsToList);
@@ -55,7 +57,9 @@ export const PortfolioCardHeader = ({
                     minWidth={120}
                     size="large"
                 >
-                    <Translation id="TR_RECEIVE" />
+                    <Translation
+                        id={hasMultipleAccounts ? 'TR_RECEIVE_SELECT_ACCOUNT' : 'TR_RECEIVE'}
+                    />
                 </Button>
             );
         } else if (showGraphControls) {

@@ -3213,8 +3213,12 @@ export default defineMessages({
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
     },
     TR_RECEIVE: {
-        defaultMessage: 'Select an account to receive funds',
+        defaultMessage: 'Receive',
         id: 'TR_RECEIVE',
+    },
+    TR_RECEIVE_SELECT_ACCOUNT: {
+        defaultMessage: 'Select an account to receive funds',
+        id: 'TR_RECEIVE_SELECT_ACCOUNT',
     },
     TR_RECEIVE_NETWORK: {
         defaultMessage: 'Receive {networkDisplaySymbol}',

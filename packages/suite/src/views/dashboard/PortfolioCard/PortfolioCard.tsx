@@ -39,6 +39,7 @@ export const PortfolioCard = memo(() => {
     const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
 
     const passphraseEntryCanceled = accounts.length === 0 && discoveryStatus === undefined;
+    const hasMultipleAccounts = accounts.length > 1;
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)
     // 1. DashboardGraph gets mounted
@@ -90,7 +91,7 @@ export const PortfolioCard = memo(() => {
     });
 
     const goToReceive = () => {
-        if (accounts.length > 1) {
+        if (hasMultipleAccounts) {
             dispatch(goto('suite-index', { params: { modal: 'receive' } }));
         } else {
             dispatch(goto('wallet-receive'));
@@ -111,6 +112,7 @@ export const PortfolioCard = memo(() => {
                 isWalletError={isWalletError}
                 isDiscoveryRunning={isDiscoveryRunning}
                 passphraseEntryCanceled={passphraseEntryCanceled}
+                hasMultipleAccounts={hasMultipleAccounts}
                 receiveClickHandler={goToReceive}
             />
         );
