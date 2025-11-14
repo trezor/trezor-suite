@@ -19,6 +19,7 @@ import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { SellFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
+import { clearSellFormQuoteData } from './useSellForm';
 import { useConsent } from '../general/useConsent';
 import { useConsentDenier } from '../general/useConsentDenier';
 
@@ -36,10 +37,11 @@ type SellSelectQuoteReturn = {
     cancelLegalTermsConsent: () => void;
 };
 
-export const useSellSelectQuote = ({ watch }: SellFormType): SellSelectQuoteReturn => {
+export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const timer = useNullTimer();
+    const { watch } = form;
     const candidateQuote = watch('quote');
     const isLoading = useSelector(selectTradingSellIsLoading);
     const sellInfo = useSelector(selectTradingSellInfo);
@@ -81,6 +83,7 @@ export const useSellSelectQuote = ({ watch }: SellFormType): SellSelectQuoteRetu
         const nextStep = () => {
             // bank account and txn handling will be done in the next step
             navigation.navigate(TradingStackRoutes.TradingSellPreview);
+            clearSellFormQuoteData(form);
         };
 
         await dispatch(
@@ -95,11 +98,12 @@ export const useSellSelectQuote = ({ watch }: SellFormType): SellSelectQuoteRetu
     }, [
         candidateQuote,
         isLoading,
-        navigation,
+        sellInfo?.providerInfos,
         dispatch,
         timer,
         waitForLegalTermsConsent,
-        sellInfo,
+        navigation,
+        form,
     ]);
 
     return {

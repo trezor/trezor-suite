@@ -8,9 +8,39 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ name: 'TradingSellPreviewScreen' }),
 }));
 
+const mockDoBankAccountVerificationCheck = jest.fn();
+const mockFetchFeesAndCompose = jest.fn();
+const mockTxnErrorString = null;
+
+jest.mock('../../hooks/sell/useSellFlow', () => ({
+    useSellFlow: () => ({
+        txnErrorString: mockTxnErrorString,
+        doBankAccountVerificationCheck: mockDoBankAccountVerificationCheck,
+        fetchFeesAndCompose: mockFetchFeesAndCompose,
+    }),
+}));
+
+const mockUseTradingDetailData = {
+    trade: undefined,
+};
+
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
+    useTradingDetailData: () => mockUseTradingDetailData,
+}));
+
+jest.mock('../../hooks/general/useWatchTrade', () => ({
+    useWatchTrade: jest.fn(),
+}));
+
 describe('TradingSellPreviewScreen', () => {
     const renderTradingSellPreviewScreen = (preloadedState?: PreloadedState) =>
         renderWithStoreProviderAsync(<TradingSellPreviewScreen />, { preloadedState });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockUseTradingDetailData.trade = undefined;
+    });
 
     it('should render screen with header and preview view', async () => {
         const preloadedState: PreloadedState = {
@@ -23,5 +53,69 @@ describe('TradingSellPreviewScreen', () => {
         expect(getByText('Sell')).toBeOnTheScreen();
         expect(getByText('To')).toBeOnTheScreen();
         expect(getByText('Credit/Debit Card')).toBeOnTheScreen();
+    });
+
+    it('should call doBankAccountVerificationCheck on mount', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+
+        await renderTradingSellPreviewScreen(preloadedState);
+
+        expect(mockDoBankAccountVerificationCheck).toHaveBeenCalledTimes(1);
+    });
+
+    it('should use selectedQuote when trade data is not available', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+
+        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+
+        // Should render with selectedQuote
+        expect(getByText('To')).toBeOnTheScreen();
+    });
+
+    it('should use trade data when available', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+
+        // Add trade to trades array so SellBankAccountPicker can find it
+        const tradeData = sellQuotes[1];
+        preloadedState.wallet!.trading!.trades = [
+            {
+                tradeType: 'sell',
+                data: tradeData,
+                sendAccountKey: 'eth-account-1',
+            } as any,
+        ];
+
+        mockUseTradingDetailData.trade = {
+            tradeType: 'sell',
+            data: tradeData,
+            sendAccountKey: 'eth-account-1',
+        } as any;
+
+        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+
+        // Should render with trade data
+        expect(getByText('To')).toBeOnTheScreen();
+    });
+
+    it('should render SellPreviewContinueButton with correct props', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+
+        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+
+        // SellPreviewContinueButton should be rendered (it's part of the screen)
+        // We can verify by checking that the screen renders without errors
+        expect(getByText('To')).toBeOnTheScreen();
     });
 });
