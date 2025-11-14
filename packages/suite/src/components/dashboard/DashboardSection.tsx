@@ -58,7 +58,7 @@ export const DashboardSection = forwardRef(
                             </Row>
                             {subheading && <Text variant="tertiary">{subheading}</Text>}
                         </Column>
-                        <Collapsible.Content>{children}</Collapsible.Content>
+                        <Collapsible.Content overflow="unset">{children}</Collapsible.Content>
                     </Column>
                 </Collapsible>
             </div>
