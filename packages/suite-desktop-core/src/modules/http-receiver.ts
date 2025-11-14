@@ -67,14 +67,6 @@ export const initBackground: ModuleInitBackground = ({
         ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
             validateIpcMessage({ ipcEvent });
             try {
-                // For trading redirect routes, return deeplink URL instead of localhost
-                if (TRADING_REDIRECT_PATHS.some(path => path === pathname)) {
-                    receiver.activateRoute(pathname);
-
-                    return `trezorsuite:/${pathname}`;
-                }
-
-                // For other routes, return the HTTP address
                 const address = receiver.getRouteAddress(pathname);
                 if (address) {
                     receiver.activateRoute(pathname);
