@@ -231,6 +231,8 @@ export const useProgressLabelsData = ({
         [isStakeConfirming, isStakePending, isUnstake],
     );
 
+    if (pendingTxStakeType === 'claim') return [];
+
     switch (selectedAccount?.networkType) {
         case 'ethereum':
             return ethereumProgressLabelsData;
