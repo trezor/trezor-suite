@@ -19,6 +19,10 @@ export const serializeDevice = (device: AcquiredDevice): DeviceWithEmptyPath => 
     // instead persisted on `persistentDeviceData` as part of the effort to unlink device from wallet
     thp: undefined,
     bluetoothProps: undefined,
+    localFirstStorageSecret: {
+        evoluKeys: device.localFirstStorageSecret?.evoluKeys,
+        isRetrieving: false,
+    },
 });
 
 /**

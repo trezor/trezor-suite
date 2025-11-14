@@ -21,8 +21,20 @@ import { DeviceStateActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type DeviceReducerState = {
+    /**
+     * This represents list of WALLETS! But they are actually
+     * merged with DEVICE data. `TrezorDevice` is combined Wallet+Device.
+     *
+     * We partially persist this to remember WALLET data.
+     */
     devices: TrezorDevice[];
+
+    /**
+     * Because we have `devices` as merged DEVICE+WALLET we persist
+     * data that are DEVICE only here to separate them.
+     */
     persistentDeviceData: PersistentDeviceData[]; // is an array since there is not a single primary id, device can be matched by various criteria
+
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     dismissedSecurityChecks?: {
@@ -456,7 +468,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
  * Set `remember` field for a single device instance
  * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
- * @param {boolean} remember
+ * @param {boolean} shouldRemember
  */
 const remember = (draft: DeviceReducerState, device: TrezorDevice, shouldRemember: boolean) => {
     // only acquired devices
@@ -585,7 +597,7 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     // do not persist data for bootloader devices
     if (device.features.device_id === null) return;
 
-    const newPersistentData: PersistentDeviceData = {
+    const newPersistentData: Omit<PersistentDeviceData, 'delegatedKey'> = {
         device_id: device.features.device_id,
         internal_model: device.features.internal_model,
         fw_vendor: device.features.fw_vendor,
@@ -608,7 +620,10 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
             ...newPersistentData,
         };
     } else {
-        draft.persistentDeviceData.push(newPersistentData);
+        draft.persistentDeviceData.push({
+            ...newPersistentData,
+            delegatedKey: null,
+        });
     }
 };
 
@@ -686,6 +701,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     const data = state.persistentDeviceData.find(
                         persistentDeviceData => persistentDeviceData.device_id === deviceId,
                     );
+
                     // expected to exist; device must have been connected or changed for this action to happen
                     if (data === undefined) return;
                     data.lastEntropyCheckResult = { success };
@@ -696,11 +712,14 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             })
             .addCase(
                 deviceActions.setLocalFirstDelegatedKey,
-                (state, { payload: { device, delegatedKey } }) => {
-                    if (!device.features) return;
-                    const index = deviceUtils.findInstanceIndex(state.devices, device);
-                    if (!state.devices[index]) return;
-                    state.devices[index].delegatedKey = delegatedKey;
+                (state, { payload: { deviceId, delegatedKey } }) => {
+                    const data = state.persistentDeviceData.find(
+                        persistentDeviceData => persistentDeviceData.device_id === deviceId,
+                    );
+
+                    // expected to exist; device must have been connected or changed for this action to happen
+                    if (data === undefined) return;
+                    data.delegatedKey = delegatedKey;
                 },
             )
             .addCase(

@@ -56,7 +56,8 @@ export interface ExtendedDevice {
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
     localFirstStorageSecret?: {
-        isRetrieving: boolean; // To prevent consequential call of the TrezorConnect.evoluGetNode(...)
+        // To prevent consequential call of the TrezorConnect.evoluGetNode(...)
+        isRetrieving: boolean;
         evoluKeys: EvoluKeys | undefined;
     };
     delegatedKey?: DelegatedKey | null;
@@ -90,6 +91,7 @@ export type AuthorizedDevice = AcquiredDevice & {
 export type DeviceWithEmptyPath = Omit<AcquiredDevice, 'path'> & { path: '' };
 
 type PersistedDeviceKey = UnionSubset<keyof AcquiredDevice, 'thp' | 'bluetoothProps'>;
+
 type PersistedFeatureKey = UnionSubset<
     keyof Features,
     | 'device_id'
@@ -100,10 +102,12 @@ type PersistedFeatureKey = UnionSubset<
     | 'label'
     | 'initialized'
 >;
+
 export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
     Pick<Features, PersistedFeatureKey> & {
         firmwareVersion: VersionArray | null;
         lastConnectedVia: 'bluetooth' | 'usb' | null;
         lastEntropyCheckResult?: { success: boolean };
+        delegatedKey: DelegatedKey | null;
         // TODO move deviceAuthenticity to this object and newly introduce persistence
     };

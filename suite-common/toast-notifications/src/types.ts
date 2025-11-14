@@ -93,7 +93,7 @@ export type ToastPayload = (
               | 'could-not-parse-csv'
               | 'thp-credentials-reset'
               | 'sign-transaction-timeout'
-              | "suite-sync-keys-error";
+              | 'suite-sync-keys-error';
       }
     | SentTransactionNotification
     | ApproveTransactionNotification
@@ -147,7 +147,7 @@ export type ToastPayload = (
           amount?: number;
       }
     | {
-          type: 'trezor-sync-keys-error';
+          type: 'suite-sync-keys-error';
       }
     | {
           type: 'tor-toggle-error';
