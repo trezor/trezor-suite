@@ -129,6 +129,8 @@ abstract class GitHubReporterBase implements LoggingFunctions {
     }
 
     protected async initiateOctokitESM(): Promise<void> {
+        this.log('GitHub reporter started. Initializing Octokit (ESM)...');
+        this.initState = InitializationState.IN_PROGRESS;
         try {
             const OctokitModule = await import('@octokit/rest');
             this._octokit = new OctokitModule.Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -140,6 +142,8 @@ abstract class GitHubReporterBase implements LoggingFunctions {
     }
 
     protected async initiateOctokitCommonJS(): Promise<void> {
+        this.log('GitHub reporter started. Initializing Octokit (CommonJS)...');
+        this.initState = InitializationState.IN_PROGRESS;
         try {
             const importDynamic = new Function('specifier', 'return import(specifier)');
             const octokitModule = await importDynamic('@octokit/rest');
@@ -147,13 +151,12 @@ abstract class GitHubReporterBase implements LoggingFunctions {
         } catch (error) {
             this.initState = InitializationState.FAILED;
             this.logError('Failed to initialize Octokit.');
-            throw error;
+            throw error; // Critical error, rethrow to stop execution
         }
     }
 
     protected init() {
         this.log('GitHub reporter started. Initializing GitHub client...');
-        this.initState = InitializationState.IN_PROGRESS;
         const initPromise = (async () => {
             try {
                 this._issueRequests = new IssueRequests(this.octokit);
@@ -221,6 +224,12 @@ abstract class GitHubReporterBase implements LoggingFunctions {
             this.log('No pending operations to wait for');
         }
 
+        if (this.initState !== 'COMPLETED') {
+            this.logError(
+                `Conclude(): Initialization not completed successfully. State: ${this.initState}`,
+            );
+            throw new Error('GitHub reporter finished with failure (not initialized)');
+        }
         if (this.failedTestFilenames.length > 0) {
             this.logInstructionsForRerun();
             throw new Error('GitHub reporter finished with failure');
