@@ -21,10 +21,8 @@ import {
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { useExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
-import {
-    TradingExchangeSignAndSendTransactionProps,
-    useExchangeFlow,
-} from '../exchange/useExchangeFlow';
+import { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
+import { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
 
 type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<
     TradingStackParamList,
@@ -32,17 +30,25 @@ type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationPro
     AppTabsParamList
 >;
 
-export const useTradingOutputsReviewScreenControls = (orderId: string, accountKey: AccountKey) => {
+export type UseTradingOutputsReviewScreenControlsProps = Pick<
+    UseTradingTransactionReturnProps,
+    'signAndSendTransaction'
+> & {
+    orderId: string;
+    accountKey: AccountKey;
+};
+
+export const useTradingOutputsReviewScreenControls = ({
+    orderId,
+    accountKey,
+    signAndSendTransaction,
+}: UseTradingOutputsReviewScreenControlsProps) => {
     const allowAlertRef = useRef(true);
     const signingExecutedRef = useRef(false);
 
     const navigation = useNavigation<TradingOutputsReviewScreenNavigationProp>();
     const dispatch = useDispatch();
-    const {
-        signAndSendTransaction,
-        isTransactionSendConsentRequested: isConsentRequested,
-        resolveTransactionSendConsent: resolveConsent,
-    } = useExchangeFlow();
+
     const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
     const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert(accountKey);
 
@@ -108,8 +114,6 @@ export const useTradingOutputsReviewScreenControls = (orderId: string, accountKe
 
     return {
         isTransactionAlreadySigned,
-        isConsentRequested,
-        resolveConsent,
         confirmOnTrezorRef,
     };
 };
