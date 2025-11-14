@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Box, HStack, Loader, Text, VStack, buttonSizeToDimensionsMap } from '@suite-native/atoms';
+import { HStack, Loader, Text, VStack, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { selectBluetoothAdapterStatus } from '@suite-native/bluetooth';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -26,7 +26,7 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
     const bluetoothAdapterStatus = useSelector(selectBluetoothAdapterStatus);
 
     return (
-        <VStack paddingTop="sp16" spacing="sp32" flex={1}>
+        <VStack paddingTop="sp16" spacing="sp32" flex={1} justifyContent="space-between">
             <VStack spacing="sp32" alignItems="center">
                 <Text variant="titleMedium" textAlign="center">
                     <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.title" />
@@ -50,9 +50,7 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
                     )}
                 </HStack>
             </VStack>
-            <Box flex={1} alignItems="center">
-                <TurnOnDeviceAnimation />
-            </Box>
+            <TurnOnDeviceAnimation />
         </VStack>
     );
 };

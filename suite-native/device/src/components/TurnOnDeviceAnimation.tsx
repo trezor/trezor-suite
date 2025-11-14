@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useEventListener } from 'expo';
 
@@ -8,41 +8,20 @@ import { ThemeColorVariant } from '@trezor/theme';
 import { TrezorAnimation } from './TrezorAnimation';
 import { useMutedVideoPlayer } from '../hooks/useMutedVideoPlayer';
 
-type TurnOnDeviceAnimations = {
-    initAnimation: string;
-    loopAnimation: string;
-};
+const LOOP_DURATION = 4.5; // seconds
 
 const turnOnDeviceAnimations = {
-    debug: {
-        initAnimation: require('../assets/turn-on-device-standard-init.mp4'),
-        loopAnimation: require('../assets/turn-on-device-standard-loop.mp4'),
-    },
-    standard: {
-        initAnimation: require('../assets/turn-on-device-standard-init.mp4'),
-        loopAnimation: require('../assets/turn-on-device-standard-loop.mp4'),
-    },
-    dark: {
-        initAnimation: require('../assets/turn-on-device-dark-init.mp4'),
-        loopAnimation: require('../assets/turn-on-device-dark-loop.mp4'),
-    },
-} as const satisfies Record<ThemeColorVariant, TurnOnDeviceAnimations>;
+    debug: require('../assets/turn-on-device-standard.mp4'),
+    standard: require('../assets/turn-on-device-standard.mp4'),
+    dark: require('../assets/turn-on-device-dark.mp4'),
+} as const satisfies Record<ThemeColorVariant, string>;
 
 export const TurnOnDeviceAnimation = () => {
-    const { initAnimation, loopAnimation } = turnOnDeviceAnimations[useActiveColorScheme()];
-    const initVideoPlayer = useMutedVideoPlayer(initAnimation);
-    const loopVideoPlayer = useMutedVideoPlayer(loopAnimation, player => (player.loop = true));
+    const turnOnDeviceAnimation = turnOnDeviceAnimations[useActiveColorScheme()];
+    const videoPlayer = useMutedVideoPlayer(turnOnDeviceAnimation);
 
-    const [isLoopAnimationDisplayed, setIsLoopAnimationDisplayed] = useState(false);
-    useEventListener(initVideoPlayer, 'playToEnd', () => setIsLoopAnimationDisplayed(true));
+    // The final part of the video is looped.
+    useEventListener(videoPlayer, 'playToEnd', () => videoPlayer.seekBy(-LOOP_DURATION));
 
-    return (
-        <>
-            <TrezorAnimation player={initVideoPlayer} />
-            {isLoopAnimationDisplayed && (
-                // The loop animation has to be displayed over the init animation to avoid flickering while transitioning.
-                <TrezorAnimation player={loopVideoPlayer} />
-            )}
-        </>
-    );
+    return <TrezorAnimation player={videoPlayer} />;
 };
