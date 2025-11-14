@@ -21,6 +21,7 @@ type ErrorGeneric<ErrorType> = {
     message?: string;
 };
 
+// Todo: consider using Result from `@trezor/type-utils`
 export type ResultWithTypedError<T, E> = Success<T> | ErrorGeneric<E>;
 export type AsyncResultWithTypedError<T, E> = Promise<Success<T> | ErrorGeneric<E>>;
 
