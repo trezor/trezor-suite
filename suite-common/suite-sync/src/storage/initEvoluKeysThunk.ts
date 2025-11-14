@@ -42,7 +42,9 @@ const getProofOfDelegatedIdentity = (delegatedKey: DelegatedKey): ProofOfDelegat
     const messageDigest = sha256(prefixedMessageInBuffer);
     const signature = p256.sign(messageDigest, delegatedKey);
 
-    return asProofOfDelegatedIdentity(signature.toBytes('compact').buffer);
+    return asProofOfDelegatedIdentity(
+        Buffer.from(signature.toBytes('compact').buffer).toString('hex'),
+    );
 };
 
 type RetrieveEvoluNodeResult = {

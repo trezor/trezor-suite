@@ -2177,7 +2177,7 @@ export const EthereumTypedDataSignature = Type.Object(
 export type EvoluGetNode = Static<typeof EvoluGetNode>;
 export const EvoluGetNode = Type.Object(
     {
-        proof_of_delegated_identity: Type.ArrayBuffer(),
+        proof_of_delegated_identity: Type.String(),
     },
     { $id: 'EvoluGetNode' },
 );
@@ -2193,9 +2193,9 @@ export const EvoluNode = Type.Object(
 export type EvoluSignRegistrationRequest = Static<typeof EvoluSignRegistrationRequest>;
 export const EvoluSignRegistrationRequest = Type.Object(
     {
-        challenge_from_server: Type.ArrayBuffer(),
+        challenge_from_server: Type.String(),
         size_to_acquire: Type.Number(),
-        proof_of_delegated_identity: Type.ArrayBuffer(),
+        proof_of_delegated_identity: Type.String(),
     },
     { $id: 'EvoluSignRegistrationRequest' },
 );
@@ -2212,8 +2212,8 @@ export const EvoluRegistrationRequest = Type.Object(
 export type EvoluGetDelegatedIdentityKey = Static<typeof EvoluGetDelegatedIdentityKey>;
 export const EvoluGetDelegatedIdentityKey = Type.Object(
     {
-        thp_credential: Type.Optional(Type.ArrayBuffer()),
-        host_static_public_key: Type.Optional(Type.ArrayBuffer()),
+        thp_credential: Type.Optional(Type.String()),
+        host_static_public_key: Type.Optional(Type.String()),
     },
     { $id: 'EvoluGetDelegatedIdentityKey' },
 );
@@ -2221,7 +2221,7 @@ export const EvoluGetDelegatedIdentityKey = Type.Object(
 export type EvoluDelegatedIdentityKey = Static<typeof EvoluDelegatedIdentityKey>;
 export const EvoluDelegatedIdentityKey = Type.Object(
     {
-        private_key: Type.Uint8Array(),
+        private_key: Type.String(),
     },
     { $id: 'EvoluDelegatedIdentityKey' },
 );
@@ -2442,6 +2442,10 @@ export const Features = Type.Object(
         optiga_sec: Type.Optional(Type.Number()),
         soc: Type.Optional(Type.Number()),
         firmware_corrupted: Type.Optional(Type.Boolean()),
+        auto_lock_delay_battery_ms: Type.Optional(Type.Number()),
+        led: Type.Optional(Type.Boolean()),
+        usb_connected: Type.Optional(Type.Boolean()),
+        wireless_connected: Type.Optional(Type.Boolean()),
     },
     { $id: 'Features' },
 );
@@ -2807,6 +2811,17 @@ export const SetBrightness = Type.Object(
         value: Type.Optional(Type.Number()),
     },
     { $id: 'SetBrightness' },
+);
+
+export type GetSerialNumber = Static<typeof GetSerialNumber>;
+export const GetSerialNumber = Type.Object({}, { $id: 'GetSerialNumber' });
+
+export type SerialNumber = Static<typeof SerialNumber>;
+export const SerialNumber = Type.Object(
+    {
+        serial_number: Type.String(),
+    },
+    { $id: 'SerialNumber' },
 );
 
 export enum MoneroNetworkType {
@@ -4096,6 +4111,25 @@ export const TezosSignedTx = Type.Object(
     { $id: 'TezosSignedTx' },
 );
 
+export type TronGetAddress = Static<typeof TronGetAddress>;
+export const TronGetAddress = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        show_display: Type.Optional(Type.Boolean()),
+        chunkify: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'TronGetAddress' },
+);
+
+export type TronAddress = Static<typeof TronAddress>;
+export const TronAddress = Type.Object(
+    {
+        address: Type.String(),
+        mac: Type.Optional(Type.String()),
+    },
+    { $id: 'TronAddress' },
+);
+
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
@@ -4321,6 +4355,8 @@ export const MessageType = Type.Object(
         ShowDeviceTutorial,
         UnlockBootloader,
         SetBrightness,
+        GetSerialNumber,
+        SerialNumber,
         MoneroRctKeyPublic,
         MoneroOutputEntry,
         MoneroMultisigKLRki,
@@ -4433,6 +4469,8 @@ export const MessageType = Type.Object(
         TezosBallotOp,
         TezosSignTx,
         TezosSignedTx,
+        TronGetAddress,
+        TronAddress,
     },
     { $id: 'MessageType' },
 );
