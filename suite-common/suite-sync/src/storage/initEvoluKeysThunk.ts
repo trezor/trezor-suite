@@ -45,21 +45,18 @@ const getProofOfDelegatedIdentity = (delegatedKey: DelegatedKey): ProofOfDelegat
     return asProofOfDelegatedIdentity(signature.toBytes('compact').buffer);
 };
 
+type RetrieveEvoluNodeResult = {
+    message: string;
+    canceled: boolean;
+};
+
 const retrieveDelegatedIdentityKey = async (
     device: AcquiredDevice & { state: NonNullable<AcquiredDevice['state']> },
     currentDelegatedKey: DelegatedKey | null | undefined,
     options: {
         refreshKey?: boolean;
     } = {},
-): Promise<
-    Result<
-        DelegatedKey,
-        {
-            canceled: boolean;
-            message: string;
-        }
-    >
-> => {
+): Promise<Result<DelegatedKey, RetrieveEvoluNodeResult>> => {
     if (!currentDelegatedKey || options.refreshKey) {
         try {
             const result = await TrezorConnect.evoluGetDelegatedIdentityKey({
@@ -90,11 +87,6 @@ const retrieveDelegatedIdentityKey = async (
     }
 
     return ok(currentDelegatedKey);
-};
-
-type RetrieveEvoluNodeResult = {
-    message: string;
-    canceled: boolean;
 };
 
 const retrieveEvoluNode = async (
@@ -160,7 +152,12 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
         );
 
-        if (device === undefined || device.mode === 'bootloader' || device.mode === 'initialize') {
+        if (
+            device === undefined ||
+            device.mode === 'bootloader' ||
+            device.mode === 'initialize' ||
+            device.id === null
+        ) {
             return;
         }
 
@@ -192,7 +189,7 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
 
         dispatch(
             deviceActions.setLocalFirstDelegatedKey({
-                device,
+                deviceId: device.id,
                 delegatedKey: delegatedKeyResult.ok ? delegatedKeyResult.value : null,
             }),
         );
@@ -229,7 +226,7 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
 
             dispatch(
                 deviceActions.setLocalFirstDelegatedKey({
-                    device,
+                    deviceId: device.id,
                     delegatedKey: null,
                 }),
             );

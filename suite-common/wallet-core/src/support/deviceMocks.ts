@@ -14,4 +14,5 @@ export const defaultDevicePersistentData: PersistentDeviceData = {
     initialized: null,
     firmwareVersion: null,
     lastConnectedVia: null,
+    delegatedKey: null,
 };

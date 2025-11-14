@@ -150,8 +150,8 @@ const setLocalFirstStorageSecret = createAction(
 
 const setLocalFirstDelegatedKey = createAction(
     `${DEVICE_MODULE_PREFIX}/setLocalFirstDelegatedKey`,
-    ({ device, delegatedKey }: { device: TrezorDevice; delegatedKey: DelegatedKey | null }) => ({
-        payload: { device, delegatedKey },
+    ({ deviceId, delegatedKey }: { deviceId: string; delegatedKey: DelegatedKey | null }) => ({
+        payload: { deviceId, delegatedKey },
     }),
 );
 
