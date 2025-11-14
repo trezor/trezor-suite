@@ -8,10 +8,7 @@ import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
-import {
-    selectTradingSellInfo,
-    selectTradingSellQuotesRequest,
-} from '../../selectors/tradingSelectors';
+import { selectTradingSellInfo } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
 
 export type HandleSellTradeThunkProps = {
@@ -29,12 +26,17 @@ export const handleSellTradeThunk = createThunk(
         { dispatch, getState, fulfillWithValue },
     ) => {
         const sellInfo = selectTradingSellInfo(getState());
-        const quotesRequest = selectTradingSellQuotesRequest(getState());
+
         const provider =
             sellInfo?.providerInfos && trade.exchange
                 ? sellInfo.providerInfos[trade.exchange]
                 : undefined;
-        if (!quotesRequest || !provider) return;
+
+        if (!provider) {
+            console.warn('doSellTrade: No provider found');
+
+            return;
+        }
 
         const response = await invityAPI.doSellTrade({
             trade: { ...trade, refundAddress: getUnusedAddressFromAccount(account).address },

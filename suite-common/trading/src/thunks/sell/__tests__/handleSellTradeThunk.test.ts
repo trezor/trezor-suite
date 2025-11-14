@@ -83,7 +83,6 @@ describe('handleSellTradeThunk', () => {
 
     describe('should return undefined', () => {
         it.each([
-            ['when quotesRequest is undefined', { quotesRequest: undefined }, {}],
             ['when provider is undefined', { sellInfo: {} }, {}],
             [
                 'when quote`s provider was not found',
