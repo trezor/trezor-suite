@@ -1062,12 +1062,12 @@ export default defineMessages({
     },
     TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO: {
         defaultMessage:
-            'Balance is enough for the minimum, but not enough to cover network fees. Missing {missingAmount}',
+            'Your balance meets the minimum requirement, but it’s not enough to cover network fees. You’re short by {missingAmount}.',
         id: 'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_CRYPTO',
     },
     TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT: {
         defaultMessage:
-            'Balance is enough for the minimum, but not enough to cover network fees. Missing {missingAmount} {currency}',
+            'Your balance meets the minimum requirement, but it’s not enough to cover network fees. You’re short by {missingAmount} {currency}.',
         id: 'TR_STAKING_VALIDATION_ERROR_NOT_ENOUGH_FOR_FEES_FIAT',
     },
     TR_BUY_STATUS_PENDING_GO_TO_GATEWAY: {
@@ -10724,11 +10724,11 @@ export default defineMessages({
     },
     TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
         id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
-        defaultMessage: 'Labels created with Suite Sync can’t be migrated',
+        defaultMessage: 'Labels created with Suite Sync can’t be migrated.',
     },
     TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
         id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
-        defaultMessage: 'Legacy labeling doesn’t sync labels to mobile devices',
+        defaultMessage: 'Legacy labeling doesn’t sync labels to mobile devices.',
     },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',
