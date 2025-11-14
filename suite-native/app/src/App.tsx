@@ -12,7 +12,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
 import { applicationInit } from '@suite-native/app-init';
-import { selectIsBiometricsOverlayVisible } from '@suite-native/biometrics';
+import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { configureNetInfo } from '@suite-native/connection-status';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
@@ -56,7 +56,7 @@ const AppComponent = () => {
     const formattersConfig = useFormattersConfig();
     const isApplicationInitDispatchedRef = useRef(false);
     const isAppReady = useSelector(selectIsAppReady);
-    const isBiometricsOverlayVisible = useSelector(selectIsBiometricsOverlayVisible);
+    const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
@@ -80,7 +80,7 @@ const AppComponent = () => {
             {__DEV__ && <InitRosenitePlugin />}
             <BannersRenderer />
             <BottomSheetModalProvider>
-                <Freeze freeze={isBiometricsOverlayVisible}>
+                <Freeze freeze={shouldUserBeAuthenticated}>
                     <RootStackNavigator />
                 </Freeze>
             </BottomSheetModalProvider>

@@ -1,12 +1,12 @@
 import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 
-import { AuthenticateError, authenticate } from './biometricsThunks';
+import { AuthenticateError, authenticate, toggleBiometricsSettings } from './biometricsThunks';
 
 type BiometricsSliceState = {
     isUserAuthenticated: boolean;
     isBiometricsEnabled: boolean;
-    isBiometricsOverlayVisible: boolean;
     biometricsError: AuthenticateError | null;
+    isTogglingBiometrics: boolean;
 };
 
 type BiometricsSliceRootState = {
@@ -16,8 +16,8 @@ type BiometricsSliceRootState = {
 const biometricsSliceInitialState: BiometricsSliceState = {
     isUserAuthenticated: false,
     isBiometricsEnabled: false,
-    isBiometricsOverlayVisible: true,
     biometricsError: null,
+    isTogglingBiometrics: false,
 };
 
 export const biometricsPersistWhitelist: Array<keyof BiometricsSliceState> = [
@@ -34,9 +34,6 @@ export const biometricsSlice = createSlice({
         toggleEnableBiometrics: (state, { payload }: PayloadAction<boolean>) => {
             state.isBiometricsEnabled = payload;
         },
-        setIsBiometricsOverlayVisible: (state, { payload }: PayloadAction<boolean>) => {
-            state.isBiometricsOverlayVisible = state.isBiometricsEnabled ? payload : false;
-        },
     },
     extraReducers: builder => {
         builder
@@ -45,6 +42,15 @@ export const biometricsSlice = createSlice({
                     state.biometricsError = payload ?? null;
                 }
             })
+            .addCase(toggleBiometricsSettings.pending, state => {
+                state.isTogglingBiometrics = true;
+            })
+            .addMatcher(
+                isAnyOf(toggleBiometricsSettings.rejected, toggleBiometricsSettings.fulfilled),
+                state => {
+                    state.isTogglingBiometrics = false;
+                },
+            )
             .addMatcher(isAnyOf(authenticate.pending, authenticate.fulfilled), state => {
                 state.biometricsError = null;
             });
@@ -56,14 +62,13 @@ export const selectIsUserAuthenticated = (state: BiometricsSliceRootState) =>
 export const selectIsBiometricsEnabled = (state: BiometricsSliceRootState) =>
     state.biometrics.isBiometricsEnabled;
 
-export const selectIsBiometricsOverlayVisible = (state: BiometricsSliceRootState) =>
-    selectIsBiometricsEnabled(state) && state.biometrics.isBiometricsOverlayVisible;
-
 export const selectShouldUserBeAuthenticated = (state: BiometricsSliceRootState) =>
     selectIsBiometricsEnabled(state) && !state.biometrics.isUserAuthenticated;
 
 export const selectBiometricsError = (state: BiometricsSliceRootState) =>
     state.biometrics.biometricsError;
 
-export const { setIsUserAuthenticated, toggleEnableBiometrics, setIsBiometricsOverlayVisible } =
-    biometricsSlice.actions;
+export const selectIsTogglingBiometrics = (state: BiometricsSliceRootState) =>
+    state.biometrics.isTogglingBiometrics;
+
+export const { setIsUserAuthenticated, toggleEnableBiometrics } = biometricsSlice.actions;

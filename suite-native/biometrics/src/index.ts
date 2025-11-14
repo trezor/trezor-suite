@@ -1,4 +1,4 @@
-export * from './isBiometricsFeatureAvailable';
+export * from './biometricsUtils';
 export * from './biometricsSlice';
 export * from './useBiometrics';
 export * from './components/BiometricsModalRenderer';
