@@ -10,11 +10,11 @@ const ANIMATION_WIDTH = 2000;
 const ANIMATION_HEIGHT = 2667;
 
 const animationStyle = prepareNativeStyle(({ borders }) => ({
-    position: 'absolute',
+    flexShrink: 1,
+    alignSelf: 'center',
+    width: '100%',
     aspectRatio: ANIMATION_WIDTH / ANIMATION_HEIGHT,
     borderRadius: borders.radii.r16,
-    bottom: 0,
-    top: 0,
 }));
 
 type TrezorAnimationProps = {
