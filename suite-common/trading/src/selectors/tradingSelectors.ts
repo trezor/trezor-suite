@@ -27,6 +27,7 @@ import {
     cryptoIdToNetwork,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
+    isBuyTrade,
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
@@ -649,6 +650,9 @@ export const selectTradingExchangeTransactionId = (state: TradingRootState) =>
 export const selectTradingSellTransactionId = (state: TradingRootState) =>
     state.wallet.trading.sell.transactionId;
 
+export const selectTradingBuyTransactionId = (state: TradingRootState) =>
+    state.wallet.trading.buy.transactionId;
+
 export const selectTradingVerifiedAddress = (state: TradingRootState) =>
     state.wallet.trading.verifiedAddress;
 
@@ -667,5 +671,56 @@ export const selectTradingIsSlip24Allowed = createMemoizedSelectorWithDeviceAndA
         const isNetworkSupported = supportedNetworks.includes(account.networkType);
 
         return isSlip24Active && isFirmwareVersionSlip24Compatible && isNetworkSupported;
+    },
+);
+
+export const selectTradingDetailData = createMemoizedSelector(
+    [
+        selectTradingBuyInfo,
+        selectTradingSellInfo,
+        selectTradingExchangeInfo,
+        selectTradingBuyTransactionId,
+        selectTradingSellTransactionId,
+        selectTradingExchangeTransactionId,
+        selectTradingTrades,
+        (_: TradingRootState, tradeType: TradingType) => tradeType,
+    ],
+    (
+        buyInfo,
+        sellInfo,
+        exchangeInfo,
+        buyTransactionId,
+        sellTransactionId,
+        exchangeTransactionId,
+        trades,
+        tradeType,
+    ) => {
+        const infos = {
+            buy: buyInfo,
+            sell: sellInfo,
+            exchange: exchangeInfo,
+        };
+        const transactionIds = {
+            buy: buyTransactionId,
+            sell: sellTransactionId,
+            exchange: exchangeTransactionId,
+        };
+        const info = infos[tradeType];
+        const transactionId = transactionIds[tradeType];
+
+        const trade = trades.find(
+            t =>
+                t.tradeType === tradeType &&
+                (t.key == transactionId ||
+                    (tradeType === 'buy' &&
+                        isBuyTrade(t.data) &&
+                        t.data?.originalPaymentId === transactionId)),
+        );
+
+        return {
+            transactionId,
+            info,
+            trade,
+        };
     },
 );
