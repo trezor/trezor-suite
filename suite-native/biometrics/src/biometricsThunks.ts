@@ -7,16 +7,14 @@ import { EventType, analytics } from '@suite-native/analytics';
 
 import {
     selectIsBiometricsEnabled,
-    setIsBiometricsOverlayVisible,
     setIsUserAuthenticated,
     toggleEnableBiometrics,
 } from './biometricsSlice';
-import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
+import { getIsBiometricsFeatureAvailable } from './biometricsUtils';
 
 export enum AuthenticateError {
     BiometricsNotAvailable = 'biometrics-not-available',
     AuthenticationFailed = 'authentication-failed',
-    AuthenticationAlreadyInProgress = 'authentication-already-in-progress',
 }
 
 export const authenticate = createThunk<
@@ -25,7 +23,7 @@ export const authenticate = createThunk<
     {
         rejectValue: AuthenticateError;
     }
->(`biometrics/authenticate`, async (_, { rejectWithValue }) => {
+>(`biometrics/authenticate`, async (_, { rejectWithValue, dispatch }) => {
     const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
     if (!isBiometricsAvailable) return rejectWithValue(AuthenticateError.BiometricsNotAvailable);
@@ -35,6 +33,8 @@ export const authenticate = createThunk<
     if (!result.success) {
         return rejectWithValue(AuthenticateError.AuthenticationFailed);
     }
+
+    dispatch(setIsUserAuthenticated(true));
 
     return result;
 });
@@ -49,7 +49,7 @@ export const toggleBiometricsSettings = createThunk<
     void,
     { rejectValue: ToggleBiometricsError }
 >(`biometrics/toggleBiometricsSettings`, async (_, { getState, rejectWithValue, dispatch }) => {
-    const authResult = await dispatch(authenticate()).unwrap();
+    const authResult = await dispatch(authenticate());
 
     if (isRejected(authResult)) {
         if (authResult.payload === AuthenticateError.BiometricsNotAvailable) {
@@ -61,13 +61,11 @@ export const toggleBiometricsSettings = createThunk<
         }
     }
 
-    dispatch(setIsBiometricsOverlayVisible(false));
-
     const isBiometricsEnabled = selectIsBiometricsEnabled(getState());
 
     if (isBiometricsEnabled) {
         dispatch(toggleEnableBiometrics(false));
-        dispatch(setIsUserAuthenticated(false));
+        // dispatch(setIsUserAuthenticated(false));
         analytics.report({
             type: EventType.BiometricsChange,
             payload: { enabled: false, origin: 'settingsToggle' },
@@ -75,7 +73,7 @@ export const toggleBiometricsSettings = createThunk<
 
         return 'disabled';
     } else {
-        dispatch(setIsUserAuthenticated(true));
+        // dispatch(setIsUserAuthenticated(true));
         dispatch(toggleEnableBiometrics(true));
         analytics.report({
             type: EventType.BiometricsChange,

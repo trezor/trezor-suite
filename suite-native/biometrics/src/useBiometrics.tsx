@@ -1,28 +1,27 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { AppState, Platform } from 'react-native';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import {
     selectIsBiometricsEnabled,
+    selectIsTogglingBiometrics,
     selectIsUserAuthenticated,
     selectShouldUserBeAuthenticated,
-    setIsBiometricsOverlayVisible,
     setIsUserAuthenticated,
 } from './biometricsSlice';
 import { authenticate } from './biometricsThunks';
-
-/**
- * The time period for which is user not asked to be authenticated again if returns back to the app.
- */
-const KEEP_LOGGED_IN_TIMEOUT = 3_000;
+import { shouldRevokeAuth } from './biometricsUtils';
 
 export const useBiometrics = () => {
     const dispatch = useDispatch();
-    const isAuthenticatingRef = useRef(false);
     const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
+    const isTogglingBiometrics = useSelector(selectIsTogglingBiometrics);
 
+    // TODO can this be changed so that it's done same as settings toggling
+    const isAuthenticatingRef = useRef(false);
+    // TODO do we need this or can it be replaced with AppState.currentState directly?
     const appState = useRef(AppState.currentState);
     const goneToBackgroundAtTimestamp = useRef<null | number>(null);
 
@@ -41,50 +40,44 @@ export const useBiometrics = () => {
         isAuthenticatingRef.current = true;
 
         try {
-            const result = await dispatch(authenticate()).unwrap();
-
-            if (result?.success) {
-                dispatch(setIsUserAuthenticated(true));
-                dispatch(setIsBiometricsOverlayVisible(false));
-            }
+            await dispatch(authenticate());
         } finally {
             isAuthenticatingRef.current = false;
         }
     }, [dispatch]);
 
     useEffect(() => {
-        const handleAppStateChange = (nextAppState: string) => {
-            // console.log('handleAppStateChange#1', nextAppState);
+        const handleAppStateChange = (nextAppState: AppStateStatus) => {
+            const revokeAuth = shouldRevokeAuth(
+                appState.current,
+                goneToBackgroundAtTimestamp.current,
+            );
+
             switch (nextAppState) {
                 case 'active':
-                    if (
-                        // Revoke user authentication if the timeout has run out.
-                        appState.current === 'background' &&
-                        goneToBackgroundAtTimestamp.current &&
-                        goneToBackgroundAtTimestamp.current < Date.now() - KEEP_LOGGED_IN_TIMEOUT
-                    ) {
-                        // console.log('handleAppStateChange#2', nextAppState);
-                        dispatch(setIsUserAuthenticated(false));
+                    if (revokeAuth && shouldUserBeAuthenticated && !isAuthenticatingRef.current) {
                         doAuthentication();
-                    } else if (isUserAuthenticated) {
-                        // console.log('handleAppStateChange#3', nextAppState);
-                        dispatch(setIsBiometricsOverlayVisible(false));
-                    } else if (shouldUserBeAuthenticated) {
-                        // console.log('handleAppStateChange#4', nextAppState);
-                        dispatch(setIsUserAuthenticated(false));
-                        doAuthentication();
+                    } else if (!revokeAuth) {
+                        dispatch(setIsUserAuthenticated(true));
                     }
                     break;
 
                 case 'background':
                     cancelAndroidAuth();
-                    dispatch(setIsBiometricsOverlayVisible(true));
+                    dispatch(setIsUserAuthenticated(false));
                     goneToBackgroundAtTimestamp.current = Date.now();
                     break;
 
                 case 'inactive':
+                    // TODO iOS state only - could be removed
                     cancelAndroidAuth();
-                    dispatch(setIsBiometricsOverlayVisible(true));
+                    if (
+                        !isAuthenticatingRef.current &&
+                        !isTogglingBiometrics &&
+                        appState.current === 'active'
+                    ) {
+                        dispatch(setIsUserAuthenticated(false));
+                    }
                     break;
 
                 default:
@@ -100,11 +93,11 @@ export const useBiometrics = () => {
 
         return () => subscription.remove();
     }, [
-        isBiometricsOptionEnabled,
-        isUserAuthenticated,
-        dispatch,
         cancelAndroidAuth,
+        dispatch,
         doAuthentication,
+        isTogglingBiometrics,
+        isUserAuthenticated,
         shouldUserBeAuthenticated,
     ]);
 
