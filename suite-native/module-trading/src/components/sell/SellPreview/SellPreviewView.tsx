@@ -1,10 +1,10 @@
-import { memo, useState } from 'react';
+import { type ReactNode, memo, useState } from 'react';
 import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import type { BankAccount } from 'invity-api';
+import type { BankAccount, SellFiatTrade } from 'invity-api';
 
-import { selectTradingSellFormStep, selectTradingSellSelectedQuote } from '@suite-common/trading';
+import { selectTradingSellFormStep } from '@suite-common/trading';
 import { InlineAlertBox, VStack } from '@suite-native/atoms';
 
 import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
@@ -13,15 +13,16 @@ import { SellToFiatTradePreviewCard } from './SellToFiatTradePreviewCard';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
 
 export type SellPreviewViewProps = {
-    txnErrorString: string | null;
+    quote: SellFiatTrade | undefined;
+    txnErrorString: ReactNode;
 };
 
-export const SellPreviewView = memo(({ txnErrorString }: SellPreviewViewProps) => {
+export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewProps) => {
     const formStep = useSelector(selectTradingSellFormStep);
-    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
-    const { fromStringValue, toStringValue } = useChangeStringsExtractor(selectedQuote);
+
+    const { fromStringValue, toStringValue } = useChangeStringsExtractor(quote);
     const [selectedBankAccountIban, setSelectedBankAccountIban] = useState(
-        selectedQuote?.bankAccounts?.[0].bankAccount,
+        quote?.bankAccounts?.[0].bankAccount,
     );
 
     const isTxnError = !!txnErrorString;
@@ -41,13 +42,13 @@ export const SellPreviewView = memo(({ txnErrorString }: SellPreviewViewProps) =
                 </Animated.View>
             )}
             <SellFromAccountTradePreviewCard
-                cryptoId={selectedQuote?.cryptoCurrency}
+                cryptoId={quote?.cryptoCurrency}
                 fromStringValue={fromStringValue}
             />
-            <SellToFiatTradePreviewCard quote={selectedQuote} toStringValue={toStringValue} />
+            <SellToFiatTradePreviewCard quote={quote} toStringValue={toStringValue} />
             {showBankAccountPicker && (
                 <SellBankAccountPicker
-                    orderId={selectedQuote?.orderId}
+                    orderId={quote?.orderId}
                     selectedBankAccountIban={selectedBankAccountIban}
                     onBankAccountSelect={handleBankAccountSelect}
                 />
