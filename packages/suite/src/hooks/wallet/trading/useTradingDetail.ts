@@ -1,113 +1,44 @@
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import {
-    type TradingTransaction,
-    type TradingTransactionBuy,
     type TradingType,
-    selectTrading,
-    selectTradingBuyInfo,
-    selectTradingExchangeInfo,
-    selectTradingSellInfo,
-    tradingThunks,
+    type TradingUseDetailOutputProps,
+    type TradingUseDetailProps,
+    useTradingDetail as useTradingDetailCommon,
 } from '@suite-common/trading';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import {
-    TradingGetDetailDataProps,
-    TradingGetTypedTradeProps,
-    TradingTradeInfoMapProps,
-    TradingTradeMapProps,
-} from 'src/types/trading/trading';
-import {
-    TradingDetailContextValues,
-    TradingGetDetailDataOutputProps,
-    TradingUseDetailOutputProps,
-    TradingUseDetailProps,
-} from 'src/types/trading/tradingDetail';
+import type { TradingDetailContextValues } from 'src/types/trading/tradingDetail';
 
 import { useTradingFormAccount } from './form/useTradingFormAccount';
 
-const isBuyTrade = (trade: TradingTransaction): trade is TradingTransactionBuy =>
-    trade.tradeType === 'buy';
+/**
+ * Suite-specific wrapper around the common useTradingDetail hook
+ * Adds platform-specific functionality like server environment setup and trade watching
+ */
+export const useTradingDetail = <T extends TradingType>(
+    props: TradingUseDetailProps & { tradeType: T },
+): TradingUseDetailOutputProps<T> => {
+    const { tradeType, account: accountProps } = props;
+    const { account: formAccount } = useTradingFormAccount();
 
-const getTypedTrade = <T extends TradingType>({
-    trades,
-    tradeType,
-    transactionId,
-}: TradingGetTypedTradeProps): TradingTradeMapProps[T] | undefined => {
-    const trade = trades.find(
-        trade =>
-            trade.tradeType === tradeType &&
-            (trade.key == transactionId ||
-                (isBuyTrade(trade) && trade.data?.originalPaymentId === transactionId)),
+    // For exchange trades, use the account from the trading form context
+    // For buy/sell trades, use the account passed as a prop
+    const account = useMemo(
+        () => (tradeType === 'exchange' ? formAccount : accountProps),
+        [tradeType, formAccount, accountProps],
     );
 
-    if (!trade) {
-        return undefined;
-    }
+    const result = useTradingDetailCommon<T>({ tradeType });
 
-    return trade as TradingTradeMapProps[T];
-};
-
-const getTradingDetailData = <T extends TradingType>({
-    trading,
-    tradeType,
-    infos,
-}: TradingGetDetailDataProps): TradingGetDetailDataOutputProps<T> => {
-    const info = infos[tradeType] as TradingTradeInfoMapProps[T];
-
-    const { trades } = trading;
-    const { transactionId } = trading[tradeType];
-
-    const trade = getTypedTrade<T>({
-        trades,
-        tradeType,
-        transactionId,
-    });
-
-    return {
-        transactionId,
-        info,
-        trade,
-    };
-};
-
-export const useTradingDetail = <T extends TradingType>({
-    selectedAccount,
-    tradeType,
-}: TradingUseDetailProps): TradingUseDetailOutputProps<T> => {
-    const trading = useSelector(selectTrading);
-    const { account: exchangeAccount } = useTradingFormAccount();
-    const buyInfo = useSelector(selectTradingBuyInfo);
-    const sellInfo = useSelector(selectTradingSellInfo);
-    const exchangeInfo = useSelector(selectTradingExchangeInfo);
-    const { info, transactionId, trade } = getTradingDetailData<T>({
-        trading,
-        tradeType,
-        infos: {
-            buy: buyInfo,
-            sell: sellInfo,
-            exchange: exchangeInfo,
-        },
-    });
-
-    const account = tradeType === 'exchange' ? exchangeAccount : selectedAccount.account;
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: tradeType }));
-    }, [dispatch, tradeType]);
+    // Setup server environment from suite settings
     useServerEnvironment();
-    useTradingWatchTrade({ account, trade });
 
-    return {
-        account,
-        trade,
-        transactionId,
-        info,
-    };
+    // Watch for trade updates
+    useTradingWatchTrade({ account, trade: result.trade });
+
+    return { ...result, account };
 };
 
 export const TradingDetailContext = createContext<TradingDetailContextValues<any> | null>(null);
