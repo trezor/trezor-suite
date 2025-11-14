@@ -142,7 +142,7 @@ const setThpCredentials = createAction(
 
 const setLocalFirstStorageSecret = createAction(
     `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecret`,
-    ({ device, evoluKeys }: { device: TrezorDevice; evoluKeys: EvoluKeys }) => ({
+    ({ device, evoluKeys }: { device: TrezorDevice; evoluKeys: EvoluKeys | undefined }) => ({
         payload: { device, evoluKeys },
     }),
 );
