@@ -166,10 +166,20 @@ const pushTransaction =
 
             if (account.networkType === 'cardano') {
                 const base = { withdrawal: undefined, deposit: undefined };
-                const cardanoSpecific: WalletAccountTransaction['cardanoSpecific'] =
-                    stakeType === 'stake'
-                        ? { ...base, subtype: 'stake_delegation' }
-                        : { ...base, subtype: 'stake_deregistration' };
+                let cardanoSpecific: WalletAccountTransaction['cardanoSpecific'];
+
+                // TODO: missing stake_registration?
+                switch (stakeType) {
+                    case 'stake':
+                        cardanoSpecific = { ...base, subtype: 'stake_delegation' };
+                        break;
+                    case 'unstake':
+                        cardanoSpecific = { ...base, subtype: 'stake_deregistration' };
+                        break;
+                    case 'claim':
+                        cardanoSpecific = { ...base, subtype: 'withdrawal' };
+                        break;
+                }
 
                 dispatch(
                     addFakePendingCardanoTxThunk({
