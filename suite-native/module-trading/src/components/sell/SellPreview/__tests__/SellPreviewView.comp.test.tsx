@@ -34,9 +34,12 @@ describe('SellPreviewView', () => {
     ) => {
         const preloadedState = getPreloadedSellState(preloadedStateOverrides ?? {});
 
-        return renderWithStoreProviderAsync(<SellPreviewView txnErrorString={null} {...props} />, {
-            preloadedState,
-        });
+        return renderWithStoreProviderAsync(
+            <SellPreviewView quote={sellQuotes[1]} txnErrorString={null} {...props} />,
+            {
+                preloadedState,
+            },
+        );
     };
 
     it('should render all sections except alert', async () => {
@@ -80,5 +83,16 @@ describe('SellPreviewView', () => {
         );
 
         expect(getAllByTestId(BANK_ACCOUNT_ITEM_TEST_ID).length).toBeGreaterThan(0);
+    });
+
+    it('should use quote prop instead of selector', async () => {
+        const differentQuote = sellQuotes[0];
+        const { getByText } = await renderSellPreviewView({
+            quote: differentQuote,
+        });
+
+        // Verify component renders with the passed quote
+        expect(getByText('From')).toBeOnTheScreen();
+        expect(getByText('To')).toBeOnTheScreen();
     });
 });

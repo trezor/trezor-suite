@@ -26,8 +26,8 @@ jest.mock('../../../hooks/sell/useSellFormContext', () => ({
 }));
 
 describe('SellConfirmation', () => {
-    const mockUseSellSelectQuote = require('../../../hooks/sell/useSellSelectQuote')
-        .useSellSelectQuote;
+    const mockUseSellSelectQuote =
+        require('../../../hooks/sell/useSellSelectQuote').useSellSelectQuote;
 
     const renderConfirmation = () =>
         renderWithStoreProviderAsync(<SellConfirmation />, {
