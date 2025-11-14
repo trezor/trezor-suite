@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { isDevEnv, resolveStaticPath } from '@suite-common/suite-utils';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Icon, Link, variables } from '@trezor/components';
+import { Icon, Image, Link, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -29,12 +29,12 @@ const SectionHeader = styled.h3`
 `;
 
 const SectionButton = styled.button<{ $hasBackground?: boolean }>`
-    left: auto;
     cursor: pointer;
     border-radius: ${borders.radii.xs};
     width: 100%;
     margin: 0 0 10px;
     display: flex;
+    gap: 10px;
     align-items: center;
     padding: 13px;
     background: ${({ $hasBackground, theme }) =>
@@ -63,11 +63,6 @@ const Details = styled.div`
     justify-content: space-around;
 `;
 
-const ButtonImage = styled.img`
-    display: block;
-    margin-right: 10px;
-`;
-
 const DetailItem = styled.div`
     display: inline-flex;
     align-items: center;
@@ -81,7 +76,7 @@ const StyledIcon = styled(Icon)`
 const Label = styled.div`
     padding: 0 0 0 5px;
     text-align: left;
-    width: 100%;
+    flex-grow: 1;
 `;
 
 const LabelHeadline = styled.strong`
@@ -151,12 +146,7 @@ export const SupportFeedbackSelection = () => {
                         $hasBackground
                         data-testid="@guide/feedback/bug"
                     >
-                        <ButtonImage
-                            src={resolveStaticPath('images/png/recovery@2x.png')}
-                            width="48"
-                            height="48"
-                            alt=""
-                        />
+                        <Image image="RECOVERY_2x" width="48px" height="48px" />
                         <Label>
                             <LabelHeadline>
                                 <Translation id="TR_BUG" />
@@ -171,12 +161,7 @@ export const SupportFeedbackSelection = () => {
                         $hasBackground
                         data-testid="@guide/feedback/suggestion"
                     >
-                        <ButtonImage
-                            src={resolveStaticPath('images/png/understand@2x.png')}
-                            width="48"
-                            height="48"
-                            alt=""
-                        />
+                        <Image image="UNDERSTAND_2x" width="48px" height="48px" />
                         <Label>
                             <LabelHeadline>
                                 <Translation id="TR_SUGGESTION" />
