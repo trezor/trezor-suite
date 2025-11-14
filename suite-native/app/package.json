@@ -11,6 +11,7 @@
         "start": "expo start --dev-client",
         "type-check": "yarn g:tsc -b",
         "test:unit": "yarn g:jest src",
+        "test:perf": "reassure",
         "pods": "npx pod-install",
         "prebuild": "expo prebuild",
         "build:adhoc": "npx eas-cli build --profile adhoc",
@@ -168,6 +169,7 @@
         "babel-jest": "29.7.0",
         "babel-plugin-transform-remove-console": "^6.9.4",
         "babel-preset-expo": "~54.0.6",
+        "danger": "^13.0.5",
         "detox": "20.45.1",
         "dotenv": "^17.2.1",
         "expo-atlas": "0.4.3",
@@ -175,6 +177,7 @@
         "jest-junit": "^16.0.0",
         "react-native-get-random-values": "^1.11.0",
         "react-native-performance": "^5.1.4",
+        "reassure": "^1.4.0",
         "ts-jest": "29.4.1",
         "ts-node": "^10.9.2",
         "typescript": "5.8.3"

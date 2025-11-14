@@ -12,8 +12,8 @@ export type TestStore = Awaited<ReturnType<typeof initStore>>;
 
 type ReduxProviderProps = {
     children: ReactNode;
-    preloadedState: PreloadedState;
-    injectedStore?: TestStore;
+    preloadedState?: PreloadedState;
+    injectedStore?: TestStore | null;
 };
 
 export const STORE_WARMING_UP_MSG = 'Store is warming up...';
@@ -34,10 +34,10 @@ to pass `preloadedState` of `injectedStore` as a prop and without the `Persistor
  */
 export const StoreProviderForTests = ({
     children,
-    injectedStore,
+    injectedStore = null,
     preloadedState,
 }: ReduxProviderProps) => {
-    const [store, setStore] = useState<TestStore | null>(null);
+    const [store, setStore] = useState<TestStore | null>(injectedStore);
 
     useEffect(() => {
         if (injectedStore) {

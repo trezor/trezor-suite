@@ -103,7 +103,7 @@ export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(
         ),
 );
 
-const selectDeviceAssetsWithBalances = createMemoizedSelector(
+export const selectDeviceAssetsWithBalances = createMemoizedSelector(
     [
         selectVisibleDeviceAccounts,
         selectDeviceNetworksWithAssets,
@@ -181,7 +181,7 @@ export const selectAssetFiatValue = createMemoizedSelector(
     },
 );
 
-const selectAssetsFiatValuePercentage = createMemoizedSelector(
+export const selectAssetsFiatValuePercentage = createMemoizedSelector(
     [selectDeviceAssetsWithBalances],
     assets => {
         const percentages = calculateAssetsPercentage(assets.assets);
