@@ -114,10 +114,7 @@ export const useTradingBuyForm = ({
     const draftUpdated: TradingBuyFormProps | null = draft
         ? {
               ...draft,
-              fiatInput:
-                  draft.fiatInput && draft.fiatInput !== ''
-                      ? draft.fiatInput
-                      : buyInfo?.buyInfo?.defaultAmountsOfFiatCurrencies.get(suggestedFiatCurrency),
+              fiatInput: draft.fiatInput && draft.fiatInput !== '' ? draft.fiatInput : undefined,
               // remember only for offers page
               cryptoSelect: isPreviousRouteFromTradeSection
                   ? draft.cryptoSelect
@@ -150,11 +147,10 @@ export const useTradingBuyForm = ({
     const isReceiveAddressFormValid =
         Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
 
-    const isInitialDataLoading = !buyInfo || !buyInfo?.buyInfo;
-    const noProviders = !isInitialDataLoading && buyInfo?.buyInfo?.providers.length === 0;
+    const noProviders = buyInfo?.buyInfo?.providers.length === 0;
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
-    const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
+    const isFormLoading = formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 

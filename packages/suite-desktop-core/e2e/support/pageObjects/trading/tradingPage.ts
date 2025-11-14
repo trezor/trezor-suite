@@ -5,12 +5,12 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import messages from '@trezor/suite/src/support/messages';
 
+import { Fees } from './fees';
 import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
 import { calculatePercentageOfBalance, getCountryLabel, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
 import { DevicePrompt } from '../devicePrompt';
-import { Fees } from './fees';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 
@@ -379,7 +379,7 @@ export class TradingPage {
         selectReceiveAddress?: () => Promise<void>;
     }) {
         const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
-        await expect(inputField).not.toHaveValue('');
+        await expect(inputField).toHaveValue('');
         if (wantCrypto) {
             // The desired value is already set due to sideeffect of mocked response,
             // We clear it so we can intercept and verify request payload that is triggered by filling value.

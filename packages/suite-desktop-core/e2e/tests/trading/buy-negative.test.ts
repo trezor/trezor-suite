@@ -13,13 +13,14 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@we
     }) => {
         await walletPage.openTradingGlobalButton.click();
         // waits for trading form to load
-        await expect(tradingPage.youPayFiatInput).not.toHaveValue('');
+        await expect(tradingPage.youPayFiatInput).toHaveValue('');
         await tradingPage.selectFiatCurrency('eur');
 
         await test.step('Input amount above maximum', async () => {
             await page.route(invityEndpoint.buyQuotes, async route => {
                 await route.fulfill({ json: buyQuotesNegativeMax });
             });
+            await expect(page.getByText('Receive account')).toBeVisible();
             await tradingPage.youPayFiatInput.fill('1000000000');
             await expect(page.getByText('Maximum is 5000000 EUR')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
@@ -29,6 +30,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@we
             await page.route(invityEndpoint.buyQuotes, async route => {
                 await route.fulfill({ json: buyQuotesNegativeMin });
             });
+            await expect(page.getByText('Receive account')).toBeVisible();
             await tradingPage.youPayFiatInput.fill('0.01');
             await expect(page.getByText('Minimum is 96.61 EUR')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
@@ -38,6 +40,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@we
             await page.route(invityEndpoint.buyQuotes, async route => {
                 await route.fulfill({ json: {} });
             });
+            await expect(page.getByText('Receive account')).toBeVisible();
             await tradingPage.youPayFiatInput.fill('5000');
             await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
