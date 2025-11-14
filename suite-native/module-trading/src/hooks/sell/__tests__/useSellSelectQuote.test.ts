@@ -110,6 +110,55 @@ describe('useSellSelectQuote', () => {
 
             expect(result.current.isLegalTermsConsentRequested).toEqual(true);
         });
+
+        it('should clear form quote data when quote is selected and consent is given', async () => {
+            act(() => {
+                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setValue('cryptoStringAmount', '0.001');
+                sellForm.setValue('fiatStringAmount', '100');
+                sellForm.setValue('generalAlert', 'test error message');
+                store.dispatch(
+                    tradingSellActions.saveQuoteRequest({
+                        cryptoCurrency: sellQuotes[0].cryptoCurrency!,
+                        amountInCrypto: sellQuotes[0].amountInCrypto!,
+                        fiatCurrency: sellQuotes[0].fiatCurrency!,
+                    }),
+                );
+            });
+
+            const { result } = await renderUseSellSelectQuote();
+
+            act(() => {
+                result.current.selectQuote();
+            });
+
+            const { userConsent, nextStep } = capturedThunkArgs;
+
+            act(() => {
+                userConsent({
+                    provider: 'Banxa',
+                    cryptoCurrency: sellQuotes[0].cryptoCurrency,
+                });
+            });
+
+            expect(result.current.isLegalTermsConsentRequested).toEqual(true);
+
+            // Give consent to proceed
+            act(() => {
+                result.current.giveLegalTermsConsent();
+            });
+
+            // Call nextStep which should clear the form data
+            act(() => {
+                nextStep();
+            });
+
+            // Verify form values are cleared
+            expect(sellForm.watch('quote')).toBeUndefined();
+            expect(sellForm.watch('cryptoStringAmount')).toBeUndefined();
+            expect(sellForm.watch('fiatStringAmount')).toBeUndefined();
+            expect(sellForm.watch('generalAlert')).toBeUndefined();
+        });
     });
 
     describe('giveConsent', () => {

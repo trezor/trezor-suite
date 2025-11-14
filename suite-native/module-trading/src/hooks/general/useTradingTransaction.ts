@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -21,6 +21,7 @@ import {
     AccountsRootState,
     FeesRootState,
     FormDraftRootState,
+    SerializedTx,
     WalletSettingsRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
@@ -61,12 +62,29 @@ export type UseTradingTransactionProps = {
     triggerAnalyticsTradeConfirmation?: () => void;
 };
 
+export type UseTradingTransactionReturnProps = {
+    txnErrorString: ReactNode;
+    composeRequest: (props: TradingTransactionComposeProps) => Promise<unknown>;
+    fetchFeesAndCompose: () => Promise<void>;
+    signAndSendTransaction: (props: TradingTransactionSignAndSendProps) => Promise<boolean>;
+    signAndPushSendFormTransaction: (
+        props: TradingSignAndPushSendFormTransactionProps,
+    ) => Promise<TradingFulfillValue>;
+    serializedTx: SerializedTx | undefined;
+    resolveTransactionSendConsent: (approved: boolean) => void;
+    isTransactionSendConsentRequested: boolean;
+    waitForTransactionSendConsent: () => Promise<boolean>;
+    tokenDecimals: number | null;
+    shouldSendInSats: boolean;
+    isSlip24Active: boolean;
+};
+
 export const useTradingTransaction = ({
     tradeType,
     returnUrl,
     processResponseData,
     triggerAnalyticsTradeConfirmation,
-}: UseTradingTransactionProps) => {
+}: UseTradingTransactionProps): UseTradingTransactionReturnProps => {
     const dispatch = useDispatch();
 
     const sendAccountKey = useSelector((state: TradingRootState) =>
@@ -292,7 +310,14 @@ export const useTradingTransaction = ({
                 feeLimit: feeLimitDraft,
             });
         }
-    }, [selectedFee, composeRequest, feePerUnitDraft, feeLimitDraft, networkFeeInfo]);
+    }, [
+        selectedFee,
+        composeRequest,
+        feePerUnitDraft,
+        feeLimitDraft,
+        networkFeeInfo,
+        selectedQuote,
+    ]);
 
     return {
         txnErrorString,

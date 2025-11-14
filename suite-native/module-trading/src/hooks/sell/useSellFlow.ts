@@ -18,14 +18,9 @@ import {
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
+import { useTradingTransaction } from '../general/useTradingTransaction';
 
-type SellFlowReturn = {
-    doSellTrade: (trade: SellFiatTrade) => Promise<void>;
-    confirmTrade: (bankAccount: BankAccount) => Promise<void>;
-    doBankAccountVerificationCheck: () => Promise<void>;
-};
-
-export const useSellFlow = (): SellFlowReturn => {
+export const useSellFlow = () => {
     const dispatch = useDispatch();
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -85,6 +80,22 @@ export const useSellFlow = (): SellFlowReturn => {
         },
         [handleWebview, selectedQuote],
     );
+
+    const {
+        txnErrorString,
+        composeRequest,
+        fetchFeesAndCompose,
+        signAndSendTransaction,
+        serializedTx,
+        resolveTransactionSendConsent,
+        isTransactionSendConsentRequested,
+    } = useTradingTransaction({
+        tradeType: 'sell',
+        returnUrl: getCommonFunctions(selectedQuote)?.returnUrl,
+        processResponseData: getCommonFunctions(selectedQuote)?.processResponseData,
+        triggerAnalyticsTradeConfirmation:
+            getCommonFunctions(selectedQuote)?.triggerAnalyticsTradeConfirmation,
+    });
 
     const doSellTrade = useCallback(
         async (trade: SellFiatTrade) => {
@@ -163,6 +174,13 @@ export const useSellFlow = (): SellFlowReturn => {
     }, [selectedQuote, sellInfo, doSellTrade]);
 
     return {
+        txnErrorString,
+        composeRequest,
+        fetchFeesAndCompose,
+        signAndSendTransaction,
+        serializedTx,
+        resolveTransactionSendConsent,
+        isTransactionSendConsentRequested,
         doSellTrade,
         confirmTrade,
         doBankAccountVerificationCheck,

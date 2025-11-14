@@ -225,3 +225,10 @@ export const useSellForm = (): SellFormType => {
 
     return form;
 };
+
+export const clearSellFormQuoteData = (form: SellFormType) => {
+    form.setValue('quote', undefined);
+    form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
+    form.setValue('fiatStringAmount', undefined, { shouldValidate: true });
+    form.setValue('generalAlert', undefined);
+};
