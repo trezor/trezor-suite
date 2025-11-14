@@ -61,7 +61,7 @@
         "@playwright/browser-firefox": "^1.55.0",
         "@playwright/browser-webkit": "^1.55.0",
         "@playwright/test": "^1.55.0",
-        "@sentry/webpack-plugin": "^2.22.7",
+        "@sentry/webpack-plugin": "^4.6.0",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
