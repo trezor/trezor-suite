@@ -35,7 +35,7 @@ import { Timer } from '@trezor/react-utils';
 import { PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
-import { TradingState } from './reducers/tradingReducer';
+import type { TradingState } from './reducers/tradingReducer';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;
