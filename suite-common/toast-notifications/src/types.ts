@@ -92,7 +92,8 @@ export type ToastPayload = (
               | 'not-enough-funds-error'
               | 'could-not-parse-csv'
               | 'thp-credentials-reset'
-              | 'sign-transaction-timeout';
+              | 'sign-transaction-timeout'
+              | "suite-sync-keys-error";
       }
     | SentTransactionNotification
     | ApproveTransactionNotification
