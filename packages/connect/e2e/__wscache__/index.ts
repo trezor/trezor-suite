@@ -1,10 +1,9 @@
-const { createServer } = require('./server');
+export { createServer } from './server';
 
 // Change all "blockchain_link" urls to localhost.
-// This method is used in karma.plugin.js and jest.setup.js
-const transformCoinsJson = json => {
+export const transformCoinsJson = (json: any) => {
     Object.keys(json).forEach(key => {
-        json[key].forEach(coin => {
+        json[key].forEach((coin: any) => {
             if (coin.blockchain_link) {
                 // Skip for Solana, it uses a combination of HTTP and WebSocket, therefore it is not supported currently
                 if (coin.blockchain_link.type === 'solana') return;
@@ -17,5 +16,3 @@ const transformCoinsJson = json => {
 
     return json;
 };
-
-module.exports = { createServer, transformCoinsJson };

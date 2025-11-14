@@ -1,10 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // collect all json files
 // { [key: txhash] => json }
 
-const cacheFiles = (dir, cache = {}) => {
+const cacheFiles = (dir: string, cache: Record<string, any> = {}) => {
     const dirFiles = fs.readdirSync(dir);
     dirFiles.forEach(file => {
         const filePath = path.resolve(dir, file);
@@ -16,7 +16,7 @@ const cacheFiles = (dir, cache = {}) => {
             if (cache[key]) throw Error(`TX_CACHE duplicated key: ${key} file: ${file}`);
 
             try {
-                const rawJson = fs.readFileSync(filePath);
+                const rawJson = fs.readFileSync(filePath, 'utf-8');
                 const content = JSON.parse(rawJson);
                 cache[key] = {
                     ...content,
@@ -33,12 +33,12 @@ const cacheFiles = (dir, cache = {}) => {
 };
 
 // read cache directory
-const CACHE = cacheFiles(path.resolve(__dirname));
+export const CACHE = cacheFiles(path.resolve(__dirname));
 
 // txs: string[]; collection of requested tx shortened hashes
 // force: boolean; force cache usage for coins without public/default backends (like zcash testnet)
 
-const TX_CACHE = (txs, force = false) => {
+export const TX_CACHE = (txs: string[], force = false) => {
     if (process.env.TESTS_USE_TX_CACHE === 'false' && !force) return [];
 
     return txs.map(hash => {
@@ -48,9 +48,4 @@ const TX_CACHE = (txs, force = false) => {
 
         return CACHE[hash];
     });
-};
-
-module.exports = {
-    CACHE,
-    TX_CACHE,
 };

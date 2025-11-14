@@ -1,3 +1,5 @@
+import { inject } from 'vitest';
+
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import {
     EmuStartOptsType,
@@ -5,13 +7,11 @@ import {
     TrezorUserEnvLink,
     type TrezorUserEnvLinkClass,
 } from '@trezor/trezor-user-env-link';
-import { versionUtils } from '@trezor/utils';
+import * as versionUtils from '@trezor/utils/src/versionUtils';
 
 import TrezorConnect from '../src';
-import { UI } from '../src/events';
 
-const emulatorStartOpts: EmuStartOptsType =
-    (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};
+const emulatorStartOpts: EmuStartOptsType = inject('emulatorStartOpts');
 
 const emuStartType = emulatorStartOpts.type;
 const firmware: string | null =
@@ -158,15 +158,15 @@ export const initTrezorConnect = async (
         console.log('Transport started: ', event.version);
     });
 
-    TrezorConnect.on(UI.REQUEST_CONFIRMATION, () => {
+    TrezorConnect.on('ui-request_confirmation', () => {
         TrezorConnect.uiResponse({
-            type: UI.RECEIVE_CONFIRMATION,
+            type: 'ui-receive_confirmation',
             payload: true,
         });
     });
 
     if (autoConfirm) {
-        TrezorConnect.on(UI.REQUEST_BUTTON, e => {
+        TrezorConnect.on('ui-button', e => {
             if (e.code === 'ButtonRequest_PinEntry') return;
             setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
         });
@@ -258,16 +258,14 @@ export const skipTest = (rules: string[]) => {
 };
 
 export const conditionalTest = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? it.skip : xit;
-    const testMethod = skipTest(rules) ? skipMethod : it;
+    const testMethod = skipTest(rules) ? it.skip : it;
 
     // @ts-expect-error
     return testMethod(...args);
 };
 
 export const conditionalDescribe = (rules: string[], ...args: any) => {
-    const skipMethod = typeof jest !== 'undefined' ? describe.skip : xdescribe;
-    const testMethod = skipTest(rules) ? skipMethod : describe;
+    const testMethod = skipTest(rules) ? describe.skip : describe;
 
     // @ts-expect-error
     return testMethod(...args);

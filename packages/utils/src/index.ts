@@ -25,7 +25,7 @@ export * from './getLocaleSeparators';
 export * from './getMutex';
 export * from './getNumberFromPixelString';
 export * from './getRandomInt';
-export * from './getSynchronize';
+export { getSynchronize, type Synchronize } from './getSynchronize';
 export * from './getWeakRandomId';
 export * from './getWeakRandomInt';
 export * from './getWeakRandomNumberInRange';

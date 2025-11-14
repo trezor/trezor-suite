@@ -13,30 +13,10 @@ let controller: ReturnType<typeof getController> | undefined;
 // After the removal bip69, we sort inputs and outputs randomly
 // So we need to mock the source of randomness for all tests, so the fixtures are deterministic.
 
-// However, we run those test both in Node.js and in browser environment,
-// so we need to mock the source of randomness in both environments
-
-// This is mock of randomnes for Karma (web environment)
-if (typeof window !== 'undefined') {
-    window.crypto.getRandomValues = array => {
-        if (array instanceof Uint32Array) {
-            array[0] = 4;
-        }
-
-        return array;
-    };
-}
-
-// In Karma web environment, there is no `jest`, so we fake one
-if (typeof jest === 'undefined') {
-    globalThis.jest = { mock: () => undefined } as any;
-}
-
-// Jest.mock() MUST be called in global scope, if we put it into condition it won't work.
-jest.mock('@trezor/utils', () => ({
-    ...jest.requireActual('@trezor/utils'),
-    getRandomInt: (min: number, max: number) => min + (4 % max), // 4 is truly random number, I rolled the dice
-}));
+/*vi.mock('@trezor/utils', () => ({
+    ...vi.importActual('@trezor/utils'),
+    getWeakRandomInt: (min: number, max: number) => min + (4 % max), // 4 is truly random number, I rolled the dice
+}));*/
 
 const getFixtures = () => {
     const includedMethods = process.env.TESTS_INCLUDED_METHODS;

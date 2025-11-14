@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const rippleFixtures = {
+export const rippleFixtures = {
     server_info: () => ({
         status: 'success',
         type: 'response',
@@ -22,9 +22,9 @@ const rippleFixtures = {
             },
         },
     }),
-    account_info: (params, message) => {
+    account_info: (_params: any, message: any) => {
         const file = path.resolve(__dirname, `./getAccountInfo/${message.account}.json`);
-        const rawJson = fs.readFileSync(file);
+        const rawJson = fs.readFileSync(file, 'utf-8');
         const data = JSON.parse(rawJson);
 
         return data;
@@ -54,8 +54,4 @@ const rippleFixtures = {
         type: 'response',
         result: {},
     }),
-};
-
-module.exports = {
-    rippleFixtures,
 };

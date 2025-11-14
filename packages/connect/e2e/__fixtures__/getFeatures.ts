@@ -1,10 +1,10 @@
-// firmware should be always set. This tests actually tests the fact that
+import { inject } from 'vitest';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
-// @ts-expect-error (here might be bug)
-const firmware = emulatorStartOpts.version;
+const emulatorStartOpts = inject('emulatorStartOpts');
+const firmware: string | null =
+    'version' in emulatorStartOpts ? emulatorStartOpts.version || null : null;
 
 let major;
 let minor;

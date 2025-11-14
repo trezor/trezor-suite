@@ -1,7 +1,5 @@
-import { getVersion as getJestVersion, runCLI } from 'jest';
-import karma from 'karma';
-import path from 'path';
-import webpack from 'webpack';
+/* eslint-disable no-console */
+import type { TestProject } from 'vitest/node';
 
 import {
     EmuStartOptsType,
@@ -11,7 +9,8 @@ import {
 } from '@trezor/trezor-user-env-link';
 import { typedObjectKeys } from '@trezor/utils';
 
-import argv from './jest.config';
+import { CACHE } from './__txcache__';
+import { createServer } from './__wscache__';
 
 const firmwareArg = process.env.TESTS_FIRMWARE;
 const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
@@ -87,7 +86,16 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     return emulatorStartOpts;
 };
 
-(async () => {
+export async function setup({ provide }: TestProject) {
+    const testEnv = process.env.TEST_ENV;
+    if (!testEnv || !['node', 'web'].includes(testEnv)) {
+        throw new Error('no env specified (web or node)');
+    }
+    console.log(`Running tests in ${testEnv} environment`);
+    console.log('FW:', process.env.TESTS_FIRMWARE ?? 'latest');
+    console.log('Methods:', process.env.TESTS_INCLUDED_METHODS ?? 'All');
+    console.log('Pattern:', process.env.TESTS_PATTERN ?? '*');
+
     // Before actual tests start, establish connection with trezor-user-env
     await TrezorUserEnvLink.connect();
 
@@ -97,68 +105,23 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
         throw new Error('firmwares not loaded');
     }
     const emulatorStartOpts = getEmulatorOptions(TrezorUserEnvLink.firmwares);
+    provide('emulatorStartOpts', emulatorStartOpts);
 
-    argv.globals = {
-        emulatorStartOpts,
-    };
+    provide('txCache', CACHE);
 
-    // @ts-expect-error there is some mismatch between jest implementation and definitely typed package.
-    argv.runInBand = true;
+    // Always mock blockchain-link server unless it's explicitly required not to.
+    if (process.env.TESTS_USE_WS_CACHE === 'true') {
+        const WsCacheServer = await createServer();
 
-    if (process.env.TESTS_PATTERN) {
-        // @ts-expect-error
-        argv.testMatch = process.env.TESTS_PATTERN.split(' ').map(p => `**/${p}*`);
+        return () => {
+            WsCacheServer.close();
+        };
     }
+}
 
-    if (process.argv[2] === 'node') {
-        // eslint-disable-next-line no-console
-        console.log('jest version: ', getJestVersion());
-
-        if (process.env.TESTS_RANDOM === 'true') {
-            // @ts-expect-error
-            argv.showSeed = true;
-            // @ts-expect-error
-            argv.randomize = true;
-        }
-
-        // @ts-expect-error
-        const { results } = await runCLI(argv, [__dirname]).catch(err => {
-            console.error(err);
-            process.exit(1);
-        });
-
-        process.exit(results.numFailedTestSuites);
-    } else if (process.argv[2] === 'web') {
-        const { parseConfig } = karma.config;
-        const { Server } = karma;
-
-        parseConfig(
-            path.join(__dirname, 'karma.config.js'),
-            { port: 8099 },
-            { promiseConfig: true, throwErrors: true },
-        ).then(
-            karmaConfig => {
-                // @ts-expect-error
-                karmaConfig.webpack.plugins.push(
-                    new webpack.DefinePlugin({
-                        'process.env.emulatorStartOpts': JSON.stringify(
-                            // @ts-expect-error
-                            argv.globals.emulatorStartOpts,
-                        ),
-                    }),
-                );
-                const server = new Server(karmaConfig, exitCode => {
-                    process.exit(exitCode);
-                });
-                server.start();
-            },
-            rejectReason => {
-                // eslint-disable-next-line no-console
-                console.log('reject reason', rejectReason);
-                process.exit(1);
-            },
-        );
-    } else {
-        throw new Error('no env specified (web or node)');
+declare module 'vitest' {
+    export interface ProvidedContext {
+        emulatorStartOpts: EmuStartOptsType;
+        txCache: Record<string, any>;
     }
-})();
+}

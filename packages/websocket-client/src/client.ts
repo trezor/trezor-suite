@@ -238,7 +238,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     }
 
     isConnected() {
-        return this.ws?.readyState === WebSocket.OPEN;
+        return this.ws && this.ws?.readyState === WebSocket.OPEN;
     }
 
     private onClose() {

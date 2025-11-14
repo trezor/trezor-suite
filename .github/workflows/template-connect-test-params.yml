@@ -83,6 +83,9 @@ jobs:
       - if: ${{ inputs.testEnv == 'web' }}
         name: "Echo download path"
         run: echo ${{steps.download.outputs.download-path}}
+      - if: ${{ inputs.testEnv == 'web' }}
+        name: "Playwright"
+        run: npx playwright install --with-deps > /dev/null
 
       # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
       - if: ${{ inputs.testEnv == 'node' }}

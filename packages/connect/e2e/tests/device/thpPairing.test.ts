@@ -1,3 +1,5 @@
+import { vi } from 'vitest';
+
 import TrezorConnect, { ConnectSettings, Device } from '../../../src';
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 
@@ -41,7 +43,7 @@ describe('THP pairing', () => {
     };
 
     it('ThpPairing SkipPairing', async () => {
-        const spy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('on.button');
+        const spy = vi.fn();
         const device = await waitForDevice({ pairingMethods: ['SkipPairing'] });
         TrezorConnect.on('ui-request_thp_pairing', spy);
 
@@ -99,7 +101,7 @@ describe('THP pairing', () => {
             ],
         });
 
-        const pairingSpy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('pairing');
+        const pairingSpy = vi.fn();
         TrezorConnect.on('ui-request_thp_pairing', pairingSpy);
 
         const address = await TrezorConnect.getAddress({
@@ -114,8 +116,7 @@ describe('THP pairing', () => {
     it('ThpPairing with credentials (autoconnect: true)', async () => {
         const device = await waitForDevice({ pairingMethods: ['CodeEntry'] });
 
-        const credentialsSpy =
-            typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('credentials');
+        const credentialsSpy = vi.fn();
         TrezorConnect.on('device-thp_credentials_changed', credentialsSpy);
 
         TrezorConnect.on('ui-request_thp_pairing', async ({ nfcData }) => {

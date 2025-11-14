@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-const blockbookFixtures = {
-    getInfo: params => ({
+export const blockbookFixtures = {
+    getInfo: (params: any) => ({
         data: {
             name: 'Blockbook',
             shortcut: params.shortcut,
@@ -15,18 +15,16 @@ const blockbookFixtures = {
             version: '0.0.0-mocked',
         },
     }),
-    getAccountInfo: (params, message) => {
+    getAccountInfo: (_params: any, message: any) => {
         const file = path.resolve(__dirname, `./getAccountInfo/${message.params.descriptor}.json`);
-        const rawJson = fs.readFileSync(file);
+        const rawJson = fs.readFileSync(file, 'utf-8');
         const data = JSON.parse(rawJson);
 
         return {
             data,
         };
     },
-    estimateFee: (params, message) => ({
+    estimateFee: (_params: any, message: any) => ({
         data: message.params.blocks.map(() => ({ feePerUnit: '1000' })),
     }),
 };
-
-module.exports = { blockbookFixtures };
