@@ -158,7 +158,7 @@ export const StakingCard = ({
     });
 
     const shouldShowProgressLabels =
-        (isStakeConfirming || isTxStatusShown) && pendingTxStakeType !== 'claim';
+        (isStakeConfirming || isTxStatusShown) && progressLabelsData.length;
 
     const dispatch = useDispatch();
 
