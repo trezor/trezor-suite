@@ -2,6 +2,11 @@ import { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    DefinitionType,
+    TokenManagementAction,
+    tokenDefinitionsActions,
+} from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { fetchAndUpdateAccountThunk, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
@@ -119,6 +124,17 @@ export const ActivateTokenModal = ({
             if (activateTokenThunk.fulfilled.match(result)) {
                 // Success: refresh account and show notification
                 await dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+
+                // Automatically show the activated token in the "Tokens" tab after the user activates a token
+                dispatch(
+                    tokenDefinitionsActions.setTokenStatus({
+                        symbol: account.symbol,
+                        contractAddress,
+                        status: TokenManagementAction.SHOW,
+                        type: DefinitionType.COIN,
+                    }),
+                );
+
                 dispatch(
                     notificationsActions.addToast({
                         type: 'add-token-success',
