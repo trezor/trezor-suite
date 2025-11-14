@@ -243,7 +243,10 @@ export const getSuiteDevice = (
             ts: 0,
             buttonRequests: [],
             metadata: {},
-
+            localFirstStorageSecret: {
+                evoluKeys: undefined,
+                isRetrieving: false,
+            },
             ...dev,
             ...device,
             state: dev?.state
