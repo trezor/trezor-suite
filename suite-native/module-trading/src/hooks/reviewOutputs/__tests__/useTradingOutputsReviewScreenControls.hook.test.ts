@@ -12,11 +12,7 @@ import { transactionManagementActions } from '@suite-native/transaction-manageme
 import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 
-const mockUseExchangeFlow = {
-    signAndSendTransaction: jest.fn(() => Promise.resolve(true)),
-    isTransactionSendConsentRequested: false,
-    resolveTransactionSendConsent: jest.fn(),
-};
+const mockSignAndSendTransaction = jest.fn(() => Promise.resolve(true));
 
 const mockUseConfirmOnTrezorController = {
     confirmOnTrezorRef: { current: null },
@@ -27,10 +23,6 @@ const mockPopToTop = jest.fn();
 const mockPop = jest.fn();
 const mockUseOutputsReviewBackInterceptor = jest.fn();
 const mockShowAlert = jest.fn();
-
-jest.mock('../../exchange/useExchangeFlow', () => ({
-    useExchangeFlow: () => mockUseExchangeFlow,
-}));
 
 jest.mock('@suite-native/device', () => ({
     ...jest.requireActual('@suite-native/device'),
@@ -63,7 +55,12 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
     const renderUseTradingOutputsReviewScreenControls = () =>
         renderHookWithStoreProviderAsync(
-            () => useTradingOutputsReviewScreenControls('orderId', 'btc-account-1'),
+            () =>
+                useTradingOutputsReviewScreenControls({
+                    orderId: 'orderId',
+                    accountKey: 'btc-account-1',
+                    signAndSendTransaction: mockSignAndSendTransaction,
+                }),
             {
                 store,
             },
@@ -72,17 +69,6 @@ describe('useTradingOutputsReviewScreenControls', () => {
     beforeEach(async () => {
         jest.clearAllMocks();
         store = (await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) })).store;
-    });
-
-    it('should return values from useExchangeFlow', async () => {
-        const { result } = await renderUseTradingOutputsReviewScreenControls();
-
-        expect(result.current.isConsentRequested).toBe(
-            mockUseExchangeFlow.isTransactionSendConsentRequested,
-        );
-        expect(result.current.resolveConsent).toBe(
-            mockUseExchangeFlow.resolveTransactionSendConsent,
-        );
     });
 
     it('should return confirmOnTrezorRef', async () => {
@@ -97,7 +83,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         it('should call signAndSendTransaction on mount', async () => {
             await renderUseTradingOutputsReviewScreenControls();
 
-            expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledTimes(1);
+            expect(mockSignAndSendTransaction).toHaveBeenCalledTimes(1);
         });
 
         it('should not call closeSheet', async () => {
@@ -109,7 +95,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         it('should navigate to trade detail', async () => {
             await renderUseTradingOutputsReviewScreenControls();
 
-            expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledWith(
+            expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
                     nextStep: expect.any(Function),
                 }),
@@ -118,7 +104,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             // call the nextStep callback to simulate thunk behavior
             act(() => {
                 const { nextStep } = (
-                    mockUseExchangeFlow.signAndSendTransaction.mock.lastCall as unknown as [
+                    mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
                     ]
                 )[0];
@@ -138,7 +124,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         it('should display alert on thunk error', async () => {
             await renderUseTradingOutputsReviewScreenControls();
 
-            expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledWith(
+            expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
                     nextStep: expect.any(Function),
                 }),
@@ -147,7 +133,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             // call the onError callback to simulate thunk behavior
             act(() => {
                 const { onError } = (
-                    mockUseExchangeFlow.signAndSendTransaction.mock.lastCall as unknown as [
+                    mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
                     ]
                 )[0];
@@ -168,7 +154,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             await renderUseTradingOutputsReviewScreenControls();
 
-            expect(mockUseExchangeFlow.signAndSendTransaction).toHaveBeenCalledWith(
+            expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
                     nextStep: expect.any(Function),
                 }),
@@ -177,7 +163,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             // call the onError callback to simulate thunk behavior
             act(() => {
                 const { onError } = (
-                    mockUseExchangeFlow.signAndSendTransaction.mock.lastCall as unknown as [
+                    mockSignAndSendTransaction.mock.lastCall as unknown as [
                         TradingExchangeSignAndSendTransactionProps,
                     ]
                 )[0];
@@ -236,7 +222,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         it('should not call signAndSendTransaction', async () => {
             await renderUseTradingOutputsReviewScreenControls();
 
-            expect(mockUseExchangeFlow.signAndSendTransaction).not.toHaveBeenCalled();
+            expect(mockSignAndSendTransaction).not.toHaveBeenCalled();
         });
 
         it('should closeSheet', async () => {

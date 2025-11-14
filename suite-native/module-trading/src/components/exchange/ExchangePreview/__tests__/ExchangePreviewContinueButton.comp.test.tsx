@@ -113,7 +113,7 @@ describe('ExchangePreviewContinueButton', () => {
         expect(mockOnSignTransactionNavigation).not.toHaveBeenCalled();
     });
 
-    it('should navigate to TradingOutputsReview on continue press', async () => {
+    it('should navigate to TradingExchangeOutputsReview on continue press', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const mockOnSignTransactionNavigation = jest.fn();
         const { getByText } = await renderExchangePreviewContinueButton(
@@ -125,9 +125,8 @@ describe('ExchangePreviewContinueButton', () => {
 
         expect(consoleWarnSpy).not.toHaveBeenCalled();
         expect(mockNavigate).toHaveBeenCalledWith({
-            name: 'TradingOutputsReview',
+            name: 'TradingExchangeOutputsReview',
             params: {
-                tradingType: 'exchange',
                 accountKey: 'btc-account-1',
                 orderId: exchangeQuotes[0].orderId,
                 tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

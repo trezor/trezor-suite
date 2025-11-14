@@ -57,9 +57,8 @@ export const ExchangePreviewContinueButton = memo(
                 : undefined;
 
             navigation.navigate({
-                name: TradingStackRoutes.TradingOutputsReview,
+                name: TradingStackRoutes.TradingExchangeOutputsReview,
                 params: {
-                    tradingType: 'exchange',
                     accountKey: fromAccount.key,
                     tokenContract,
                     orderId: quote.orderId ?? '',

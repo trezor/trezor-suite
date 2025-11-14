@@ -11,7 +11,10 @@ import { TradingExchangePreviewScreen } from '../screens/TradingExchangePreviewS
 import { TradingExchangeRevokeScreen } from '../screens/TradingExchangeRevokeScreen';
 import { TradingFeesScreen } from '../screens/TradingFeesScreen';
 import { TradingHistoryScreen } from '../screens/TradingHistoryScreen';
-import { TradingOutputsReviewScreen } from '../screens/TradingOutputsReviewScreen';
+import {
+    TradingExchangeOutputsReviewScreen,
+    TradingSellOutputsReviewScreen,
+} from '../screens/TradingOutputsReviewScreen';
 import { TradingReceiveAccountsPickerScreen } from '../screens/TradingReceiveAccountsPickerScreen';
 import { TradingScreen } from '../screens/TradingScreen';
 import { TradingSellPreviewScreen } from '../screens/TradingSellPreviewScreen';
@@ -64,9 +67,14 @@ export const TradingStackNavigator = () => (
             component={TradingFeesScreen}
         />
         <TradingStack.Screen
-            options={{ title: TradingStackRoutes.TradingOutputsReview }}
-            name={TradingStackRoutes.TradingOutputsReview}
-            component={TradingOutputsReviewScreen}
+            options={{ title: TradingStackRoutes.TradingSellOutputsReview }}
+            name={TradingStackRoutes.TradingSellOutputsReview}
+            component={TradingSellOutputsReviewScreen}
+        />
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.TradingExchangeOutputsReview }}
+            name={TradingStackRoutes.TradingExchangeOutputsReview}
+            component={TradingExchangeOutputsReviewScreen}
         />
     </TradingStack.Navigator>
 );
