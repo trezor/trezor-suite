@@ -4293,15 +4293,48 @@
                 }
             }
         },
+        "EvoluSignRegistrationRequest": {
+            "fields": {
+                "challenge_from_server": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "size_to_acquire": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 2
+                },
+                "proof_of_delegated_identity": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
+        "EvoluRegistrationRequest": {
+            "fields": {
+                "certificate_chain": {
+                    "rule": "repeated",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
         "EvoluGetDelegatedIdentityKey": {
             "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
+                "thp_credential": {
+                    "type": "bytes",
+                    "id": 1
+                },
+                "host_static_public_key": {
+                    "type": "bytes",
+                    "id": 2
                 }
             }
         },
@@ -4311,42 +4344,6 @@
                     "rule": "required",
                     "type": "bytes",
                     "id": 1
-                }
-            }
-        },
-        "EvoluSignRegistrationRequest": {
-            "fields": {
-                "address_n": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "encoded_network": {
-                    "type": "bytes",
-                    "id": 2
-                },
-                "chunkify": {
-                    "type": "bool",
-                    "id": 3
-                }
-            }
-        },
-        "EvoluRegistrationRequest": {
-            "fields": {
-                "certificate_chain": {
-                    "rule": "repeated",
-                    "type": "string",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                },
-                "signature": {
-                    "type": "string",
-                    "id": 2
                 }
             }
         },
@@ -4628,6 +4625,22 @@
                 "firmware_corrupted": {
                     "type": "bool",
                     "id": 56
+                },
+                "auto_lock_delay_battery_ms": {
+                    "type": "uint32",
+                    "id": 57
+                },
+                "led": {
+                    "type": "bool",
+                    "id": 58
+                },
+                "usb_connected": {
+                    "type": "bool",
+                    "id": 59
+                },
+                "wireless_connected": {
+                    "type": "bool",
+                    "id": 60
                 }
             },
             "nested": {
@@ -5262,6 +5275,18 @@
             "fields": {
                 "value": {
                     "type": "uint32",
+                    "id": 1
+                }
+            }
+        },
+        "GetSerialNumber": {
+            "fields": {}
+        },
+        "SerialNumber": {
+            "fields": {
+                "serial_number": {
+                    "rule": "required",
+                    "type": "string",
                     "id": 1
                 }
             }
@@ -7836,6 +7861,39 @@
                 }
             }
         },
+        "TronGetAddress": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "show_display": {
+                    "type": "bool",
+                    "id": 2
+                },
+                "chunkify": {
+                    "type": "bool",
+                    "id": 3
+                }
+            }
+        },
+        "TronAddress": {
+            "fields": {
+                "address": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                },
+                "mac": {
+                    "type": "bytes",
+                    "id": 2
+                }
+            }
+        },
         "MessageType": {
             "options": {
                 "(has_bitcoin_only_values)": true,
@@ -7895,6 +7953,8 @@
                 "DataChunkRequest": 991,
                 "DataChunkAck": 992,
                 "SetBrightness": 993,
+                "GetSerialNumber": 996,
+                "SerialNumber": 997,
                 "SetU2FCounter": 63,
                 "GetNextU2FCounter": 80,
                 "NextU2FCounter": 81,
@@ -8086,7 +8146,9 @@
                 "EvoluSignRegistrationRequest": 2102,
                 "EvoluRegistrationRequest": 2103,
                 "EvoluGetDelegatedIdentityKey": 2104,
-                "EvoluDelegatedIdentityKey": 2105
+                "EvoluDelegatedIdentityKey": 2105,
+                "TronGetAddress": 2200,
+                "TronAddress": 2201
             }
         }
     }

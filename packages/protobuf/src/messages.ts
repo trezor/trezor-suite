@@ -1415,27 +1415,31 @@ export type EthereumTypedDataSignature = {
 };
 
 export type EvoluGetNode = {
-    proof_of_delegated_identity: ArrayBuffer;
+    proof_of_delegated_identity: string;
 };
 
 export type EvoluNode = {
     data: string;
 };
 
+export type EvoluSignRegistrationRequest = {
+    challenge_from_server: string;
+    size_to_acquire: number;
+    proof_of_delegated_identity: string;
+};
+
+export type EvoluRegistrationRequest = {
+    certificate_chain: string[];
+    signature: string;
+};
+
 export type EvoluGetDelegatedIdentityKey = {
-    address_n: number[];
-    thp_credential?: ArrayBuffer;
-    host_static_public_key?: ArrayBuffer;
+    thp_credential?: string;
+    host_static_public_key?: string;
 };
 
 export type EvoluDelegatedIdentityKey = {
-    private_key: Uint8Array;
-};
-
-export type EvoluSignRegistrationRequest = {
-    address_n: number[];
-    encoded_network?: ArrayBuffer;
-    chunkify?: boolean;
+    private_key: string;
 };
 
 export enum Enum_BackupType {
@@ -1606,6 +1610,10 @@ export type Features = {
     optiga_sec?: number;
     soc?: number;
     firmware_corrupted?: boolean;
+    auto_lock_delay_battery_ms?: number;
+    led?: boolean;
+    usb_connected?: boolean;
+    wireless_connected?: boolean;
 };
 
 export type LockDevice = {};
@@ -1819,6 +1827,12 @@ export type UnlockBootloader = {};
 
 export type SetBrightness = {
     value?: number;
+};
+
+export type GetSerialNumber = {};
+
+export type SerialNumber = {
+    serial_number: string;
 };
 
 export enum MoneroNetworkType {
@@ -2633,6 +2647,17 @@ export type TezosSignedTx = {
     operation_hash: string;
 };
 
+export type TronGetAddress = {
+    address_n: number[];
+    show_display?: boolean;
+    chunkify?: boolean;
+};
+
+export type TronAddress = {
+    address: string;
+    mac?: string;
+};
+
 // custom connect definitions
 export type MessageType = {
     TextMemo: TextMemo;
@@ -2806,6 +2831,7 @@ export type MessageType = {
     EvoluGetNode: EvoluGetNode;
     EvoluNode: EvoluNode;
     EvoluSignRegistrationRequest: EvoluSignRegistrationRequest;
+    EvoluRegistrationRequest: EvoluRegistrationRequest;
     EvoluGetDelegatedIdentityKey: EvoluGetDelegatedIdentityKey;
     EvoluDelegatedIdentityKey: EvoluDelegatedIdentityKey;
     Initialize: Initialize;
@@ -2856,6 +2882,8 @@ export type MessageType = {
     ShowDeviceTutorial: ShowDeviceTutorial;
     UnlockBootloader: UnlockBootloader;
     SetBrightness: SetBrightness;
+    GetSerialNumber: GetSerialNumber;
+    SerialNumber: SerialNumber;
     MoneroRctKeyPublic: MoneroRctKeyPublic;
     MoneroOutputEntry: MoneroOutputEntry;
     MoneroMultisigKLRki: MoneroMultisigKLRki;
@@ -2968,6 +2996,8 @@ export type MessageType = {
     TezosBallotOp: TezosBallotOp;
     TezosSignTx: TezosSignTx;
     TezosSignedTx: TezosSignedTx;
+    TronGetAddress: TronGetAddress;
+    TronAddress: TronAddress;
 };
 
 // @COPY from this marker to the EOF, types are copied into messages-schema
