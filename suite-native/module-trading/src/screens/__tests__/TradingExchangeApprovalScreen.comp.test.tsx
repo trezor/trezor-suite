@@ -1,7 +1,16 @@
 import { RouteProp } from '@react-navigation/native';
 
+import {
+    selectTradingExchangePreselectedQuote,
+    tradingExchangeActions,
+} from '@suite-common/trading';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    TestStore,
+    fireEvent,
+    initStore,
+    renderWithStoreProviderAsync,
+} from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';
@@ -35,36 +44,27 @@ jest.mock('@suite-native/trading-atoms', () => ({
 
 const testQuote = exchangeQuotes[0];
 
-let preloadedState: PreloadedState;
-
-const renderScreen = () =>
-    renderWithStoreProviderAsync(
-        <TradingExchangeApprovalScreen
-            route={
-                { params: { quote: testQuote } } as RouteProp<
-                    TradingStackParamList,
-                    TradingStackRoutes.TradingExchangeApproval
-                >
-            }
-            navigation={{} as any}
-        />,
-        {
-            preloadedState,
-        },
-    );
-
 describe('TradingExchangeApprovalScreen', () => {
-    beforeEach(() => {
+    let store: TestStore;
+
+    const renderScreen = () =>
+        renderWithStoreProviderAsync(
+            <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
+            { store },
+        );
+
+    beforeEach(async () => {
         jest.clearAllMocks();
 
-        preloadedState = {
+        const preloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
             }),
         };
 
-        preloadedState!.wallet!.trading!.exchange!.selectedQuote = testQuote;
-        preloadedState!.wallet!.trading!.exchange!.tradingAccountKey = 'eth-account-1';
+        store = await initStore(preloadedState);
+        store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
+        store.dispatch(tradingExchangeActions.setTradingAccountKey('eth-account-1'));
     });
 
     it('should render the approval screen with quote details', async () => {
@@ -100,5 +100,22 @@ describe('TradingExchangeApprovalScreen', () => {
 
         const buttons = getByText('Continue');
         expect(buttons).toBeTruthy();
+    });
+
+    it('should render nothing when no preselected quote is provided', async () => {
+        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+
+        const { toJSON } = await renderScreen();
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should clear preselected quote on unmount', async () => {
+        const { unmount } = await renderScreen();
+
+        unmount();
+
+        const preselectedQuote = selectTradingExchangePreselectedQuote(store.getState());
+        expect(preselectedQuote).toBeUndefined();
     });
 });

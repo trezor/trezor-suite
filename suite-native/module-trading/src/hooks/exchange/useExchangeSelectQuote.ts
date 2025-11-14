@@ -9,6 +9,7 @@ import {
     selectTradingExchangeIsLoading,
     selectTradingMaxSlippagePercentage,
     tokenSupportsIncreasingAllowance,
+    tradingExchangeActions,
 } from '@suite-common/trading';
 import {
     RootStackParamList,
@@ -108,9 +109,10 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                     const isIncreasingAllowanceSupported =
                         tokenSupportsIncreasingAllowance(contractAddress);
 
+                    dispatch(tradingExchangeActions.savePreselectedQuote(candidateQuote));
+
                     if (approvalStatus === 'needs_increase' && isIncreasingAllowanceSupported) {
                         return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
-                            quote: candidateQuote,
                             shouldIncreaseLimit: true,
                         });
                     }
@@ -122,9 +124,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
                         });
                     }
 
-                    return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {
-                        quote: candidateQuote,
-                    });
+                    return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {});
                 },
                 onCancel: () => {},
             }),

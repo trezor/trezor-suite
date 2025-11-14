@@ -5,7 +5,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 
-type ExchangeApprovalLimitCardProps = {
+export type ExchangeApprovalLimitCardProps = {
     title: ReactNode;
     description: ReactNode;
     symbol?: NetworkSymbol;
@@ -34,7 +34,7 @@ export const ExchangeApprovalLimitCard = memo(
                                 size="extraSmall"
                             />
                         )}
-                        <Text variant="callout">{title}</Text>
+                        {title}
                     </HStack>
                     <Radio value="option" isChecked={isChecked} onPress={onChange} />
                 </HStack>

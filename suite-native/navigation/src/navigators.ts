@@ -359,7 +359,6 @@ export type TradingStackParamList = {
         isApproved?: boolean;
     };
     [TradingStackRoutes.TradingExchangeApproval]: {
-        quote: ExchangeTrade;
         shouldIncreaseLimit?: boolean;
         isRevoked?: boolean;
     };

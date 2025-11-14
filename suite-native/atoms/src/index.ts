@@ -25,6 +25,7 @@ export * from './Sheet/BottomSheetFlashList';
 export * from './Sheet/BottomSheetGrabber';
 export * from './Sheet/useAlertAnimation';
 export * from './Button/Button';
+export * from './Button/AsyncButton';
 export * from './Button/IconButton';
 export * from './Button/TextButton';
 export * from './Select/Select';

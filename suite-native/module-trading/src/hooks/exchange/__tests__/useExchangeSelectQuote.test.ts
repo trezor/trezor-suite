@@ -335,6 +335,10 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
+            expect(dispatchSpy).not.toHaveBeenCalledWith({
+                type: '@trading-exchange/savePreselectedQuote',
+                payload: expect.anything(),
+            });
         });
 
         it('should navigate to TradingExchangePreview when approval status is "not_needed"', async () => {
@@ -382,8 +386,11 @@ describe('useExchangeSelectQuote', () => {
                 nextStep();
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeApproval', {
-                quote: exchangeQuotes[1],
+            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeApproval', {});
+
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: '@trading-exchange/savePreselectedQuote',
+                payload: exchangeQuotes[1],
             });
         });
 
@@ -410,8 +417,11 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangeApproval', {
-                quote: exchangeQuotes[1],
                 shouldIncreaseLimit: true,
+            });
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: '@trading-exchange/savePreselectedQuote',
+                payload: exchangeQuotes[1],
             });
         });
 

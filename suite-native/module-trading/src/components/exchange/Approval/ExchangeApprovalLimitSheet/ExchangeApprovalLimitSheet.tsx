@@ -9,13 +9,11 @@ import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
-import { BottomSheetModal, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';
+import { BottomSheetModal, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { ExchangeApprovalLimitCard } from './ExchangeApprovalLimitCard';
+import { TradingCoinAmountFormatter } from '../../../general/TradingCoinAmountFormatter';
 
 export type ExchangeApprovalLimitSheetProps = {
     isVisible: boolean;
@@ -56,23 +54,6 @@ export const ExchangeApprovalLimitSheet = memo(
             return null;
         }
 
-        const formattedLimitAmount =
-            !!coinSymbol &&
-            (isNetworkSymbol(coinSymbol) ? (
-                <CryptoAmountFormatter
-                    value={quote.sendStringAmount ?? '0'}
-                    symbol={coinSymbol}
-                    isBalance={false}
-                    variant="callout"
-                />
-            ) : (
-                <TokenAmountFormatter
-                    value={quote.sendStringAmount ?? '0'}
-                    tokenSymbol={coinSymbol as TokenSymbol}
-                    variant="callout"
-                />
-            ));
-
         return (
             <BottomSheetModal
                 ref={bottomSheetRef}
@@ -84,7 +65,9 @@ export const ExchangeApprovalLimitSheet = memo(
                 <VStack spacing="sp12" paddingBottom="sp12">
                     <ExchangeApprovalLimitCard
                         title={
-                            <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
+                            <Text variant="callout" color="textDefault">
+                                <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
+                            </Text>
                         }
                         description={
                             <Translation
@@ -102,7 +85,14 @@ export const ExchangeApprovalLimitSheet = memo(
                     />
 
                     <ExchangeApprovalLimitCard
-                        title={formattedLimitAmount}
+                        title={
+                            <TradingCoinAmountFormatter
+                                cryptoId={quote.send}
+                                amount={quote.sendStringAmount}
+                                variant="callout"
+                                color="textDefault"
+                            />
+                        }
                         description={
                             <Translation
                                 id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.description"

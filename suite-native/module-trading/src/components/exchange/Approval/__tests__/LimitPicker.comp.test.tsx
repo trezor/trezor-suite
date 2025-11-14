@@ -1,23 +1,37 @@
-import { renderWithStoreProviderAsync, userEvent, within } from '@suite-native/test-utils';
+import {
+    selectTradingExchangePreselectedQuote,
+    tradingExchangeActions,
+} from '@suite-common/trading';
+import {
+    TestStore,
+    initStore,
+    renderWithStoreProviderAsync,
+    userEvent,
+    within,
+} from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import { LimitPicker, LimitPickerProps } from '../LimitPicker';
+import { LimitPicker } from '../LimitPicker';
 
 describe('LimitPicker', () => {
-    const renderLimitPicker = (props: Partial<LimitPickerProps> = {}) => {
+    let store: TestStore;
+
+    const renderLimitPicker = () => renderWithStoreProviderAsync(<LimitPicker />, { store });
+
+    beforeEach(async () => {
         const preloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
             }),
         };
 
-        return renderWithStoreProviderAsync(<LimitPicker quote={exchangeQuotes[0]} {...props} />, {
-            preloadedState,
-        });
-    };
+        preloadedState!.wallet!.trading.exchange.preselectedQuote = exchangeQuotes[0];
 
-    it('should render Unlimited', async () => {
-        const { getByTestId } = await renderLimitPicker({});
+        store = await initStore(preloadedState);
+    });
+
+    it('should render Unlimited when no limit is specified', async () => {
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
 
@@ -25,10 +39,13 @@ describe('LimitPicker', () => {
         expect(
             within(picker).getByText(/^Approve unlimited USDC to skip future approval requests/),
         ).toBeOnTheScreen();
+        expect(selectTradingExchangePreselectedQuote(store.getState())).toEqual(
+            expect.objectContaining({ approvalType: 'INFINITE' }),
+        );
     });
 
-    it('should render selected value', async () => {
-        const { getByTestId } = await renderLimitPicker({});
+    it('should update limit when users selects new value', async () => {
+        const { getByTestId } = await renderLimitPicker();
 
         const picker = getByTestId('ExchangeApproval/LimitPicker');
         const sheet = getByTestId('ExchangeApproval/LimitSheet');
@@ -39,5 +56,16 @@ describe('LimitPicker', () => {
         expect(
             within(picker).getByText(/^Approve only the amount needed for this swap/),
         ).toBeOnTheScreen();
+        expect(selectTradingExchangePreselectedQuote(store.getState())).toEqual(
+            expect.objectContaining({ approvalType: 'MINIMAL' }),
+        );
+    });
+
+    it('should render nothing without quote', async () => {
+        store.dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+
+        const { toJSON } = await renderLimitPicker();
+
+        expect(toJSON()).toBeNull();
     });
 });
