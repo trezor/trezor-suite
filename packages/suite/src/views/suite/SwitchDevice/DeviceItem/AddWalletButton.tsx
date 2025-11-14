@@ -13,6 +13,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { isMacOs } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
@@ -78,8 +79,8 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                     <Column gap={spacings.xs}>
                         <Button
                             data-testid="@switch-device/add-new-hidden-wallet-button"
-                            intent="neutral"
-                            priority="primary"
+                            intent="brand"
+                            priority="secondary"
                             size="large"
                             iconLeft="plusCircleFilled"
                             width="100%"
@@ -106,7 +107,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                                     isExisting: true,
                                 })
                             }
-                            shortcut={!isLocked ? ['⌥', 'P'] : undefined}
+                            shortcut={!isLocked ? [isMacOs() ? '⌥' : 'Alt', 'P'] : undefined}
                         >
                             <Translation id="TR_OPEN_PREVIOUSLY_USED_WALLET" />
                         </Button>

@@ -6,6 +6,7 @@ import styled, { css } from 'styled-components';
 
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
+import { Row } from '../Flex/Flex';
 import { DROPDOWN_MENU } from '../Menu/menuStyle';
 import { Button } from '../buttons/Button/Button';
 
@@ -427,17 +428,6 @@ const StyledTimerange = styled.div`
     animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
 `;
 
-const Buttons = styled.div`
-    display: flex;
-    width: 100%;
-    padding: ${spacingsPx.sm};
-    justify-content: space-between;
-
-    & > * + * {
-        margin-left: ${spacingsPx.sm};
-    }
-`;
-
 const Calendar = styled.div`
     width: 345px;
     padding: ${spacingsPx.sm} ${spacingsPx.sm} 0;
@@ -647,19 +637,19 @@ const Timerange = (props: TimerangeProps) => {
                     locale={props.locale}
                 />
             </Calendar>
-            <Buttons>
-                <Button intent="neutral" priority="secondary" onClick={onCancel} width="100%">
+            <Row gap={12} padding={12}>
+                <Button flex="1" intent="neutral" priority="secondary" onClick={onCancel}>
                     {props.ctaCancel}
                 </Button>
                 <Button
+                    flex="1"
                     intent="brand"
                     isDisabled={!(state.startDate && state.endDate)}
                     onClick={onSubmit}
-                    width="100%"
                 >
                     {props.ctaSubmit}
                 </Button>
-            </Buttons>
+            </Row>
         </StyledTimerange>
     );
 };
