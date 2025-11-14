@@ -10,13 +10,13 @@ import { useGuideKeyboard } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
-    selectIsTransportInitialized,
     selectPrerequisite,
+    selectIsTransportInitialized,
 } from 'src/selectors/suite/suiteSelectors';
 import type { AppState } from 'src/types/suite';
 import { Onboarding } from 'src/views/onboarding';
-import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
+import { SuiteStart } from 'src/views/start/SuiteStart';
 
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
