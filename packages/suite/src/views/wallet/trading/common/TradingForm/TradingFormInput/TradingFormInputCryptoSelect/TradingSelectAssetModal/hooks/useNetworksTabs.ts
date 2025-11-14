@@ -32,7 +32,7 @@ export function useNetworksTabs(options: SelectAssetOptionCurrencyProps[]) {
 
         return options.filter(
             option =>
-                option.coingeckoId === activeTab.coingeckoId && option.symbol === activeTab.symbol,
+                option.coingeckoId === activeTab.coingeckoId || option.symbol === activeTab.symbol,
         );
     }, [activeTab, options]);
 
