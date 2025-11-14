@@ -62,7 +62,7 @@ export const useTradingBuyFormDefaultValues = (
     );
     const defaultValues = useMemo(
         () => ({
-            fiatInput: buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(suggestedFiatCurrency),
+            fiatInput: undefined,
             cryptoInput: undefined,
             currencySelect: defaultCurrency,
             cryptoSelect: defaultCrypto,
@@ -71,14 +71,7 @@ export const useTradingBuyFormDefaultValues = (
             amountInCrypto: false,
             receiveAddress: undefined,
         }),
-        [
-            buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,
-            defaultCountry,
-            defaultCrypto,
-            defaultCurrency,
-            defaultPaymentMethod,
-            suggestedFiatCurrency,
-        ],
+        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod],
     );
 
     return {
