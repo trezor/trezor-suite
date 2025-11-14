@@ -3,18 +3,13 @@ import { useSelector } from 'react-redux';
 
 import type { BankAccount } from 'invity-api';
 
-import {
-    TradingRootState,
-    selectTradingAccountKeyByTradeType,
-    selectTradingTradeByOrderId,
-} from '@suite-common/trading';
+import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
 import { AnimatedCard, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';
 
 import { SellBankAccountItem } from './SellBankAccountItem';
 import { SellBankAccountSheet } from './SellBankAccountSheet';
-import { useWatchTrade } from '../../../../hooks/general/useWatchTrade';
 
 type SellBankAccountPickerProps = {
     orderId: string | undefined;
@@ -53,15 +48,6 @@ export const SellBankAccountPicker = ({
         selectTradingTradeByOrderId(state, orderId),
     );
 
-    const accountKey = useSelector((state: TradingRootState) =>
-        selectTradingAccountKeyByTradeType(state, 'sell'),
-    );
-
-    useWatchTrade({
-        accountKey,
-        orderId,
-        isInProgress: true,
-    });
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     if (

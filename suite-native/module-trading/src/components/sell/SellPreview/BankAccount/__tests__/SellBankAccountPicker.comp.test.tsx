@@ -5,11 +5,6 @@ import { bankAccounts, getWalletState } from '@suite-native/trading-fixtures';
 
 import { SellBankAccountPicker } from '../SellBankAccountPicker';
 
-// Mock the useWatchTrade hook since it's complex and not the focus of this test
-jest.mock('../../../../../hooks/general/useWatchTrade', () => ({
-    useWatchTrade: jest.fn(),
-}));
-
 // Mock the SellBankAccountSheet component to isolate the picker component
 jest.mock('../SellBankAccountSheet', () => ({
     SellBankAccountSheet: jest.fn().mockImplementation(() => <div>Bank Account Sheet</div>),
