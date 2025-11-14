@@ -5,7 +5,7 @@ import { SENTRY_CONFIG } from '@suite-common/sentry';
 const ELECTRON_RENDERER_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,
     // BrowserSession is not present in Electron renderer process so we don't have to remove it
-    integrations: () => [captureConsoleIntegration({ levels: ['error'] })],
+    integrations: defaults => [...defaults, captureConsoleIntegration({ levels: ['error'] })],
 } as BrowserOptions;
 
 export const initSentry = () => {
