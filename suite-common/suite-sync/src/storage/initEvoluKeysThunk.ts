@@ -92,18 +92,15 @@ const retrieveDelegatedIdentityKey = async (
     return ok(currentDelegatedKey);
 };
 
+type RetrieveEvoluNodeResult = {
+    message: string;
+    canceled: boolean;
+};
+
 const retrieveEvoluNode = async (
     device: AcquiredDevice & { state: NonNullable<AcquiredDevice['state']> },
     delegatedKey: DelegatedKey,
-): Promise<
-    Result<
-        EvoluKeys,
-        {
-            message: string;
-            canceled: boolean;
-        }
-    >
-> => {
+): Promise<Result<EvoluKeys, RetrieveEvoluNodeResult>> => {
     const proofOfDelegatedIdentity = getProofOfDelegatedIdentity(delegatedKey);
     try {
         const result = await TrezorConnect.evoluGetNode({
