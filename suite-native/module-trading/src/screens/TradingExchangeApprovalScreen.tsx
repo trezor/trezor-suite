@@ -1,27 +1,27 @@
-import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     TradingRootState,
     selectTradingCoinSymbolByCryptoId,
+    selectTradingExchangePreselectedQuote,
     selectTradingProviderByNameAndTradeType,
+    tradingExchangeActions,
 } from '@suite-common/trading';
-import { Box, Button, InlineAlertBox, VStack } from '@suite-native/atoms';
+import { InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     RootStackParamList,
     Screen,
-    StackNavigationProps,
     StackToStackCompositeScreenProps,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 
+import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeApprovalDetailsCard } from '../components/exchange/Approval/ExchangeApprovalDetailsCard';
 import { ExchangeApprovalForCard } from '../components/exchange/Approval/ExchangeApprovalForCard';
-import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 
 type TradingExchangeApprovalScreenProps = StackToStackCompositeScreenProps<
     TradingStackParamList,
@@ -32,40 +32,29 @@ type TradingExchangeApprovalScreenProps = StackToStackCompositeScreenProps<
 export const TradingExchangeApprovalScreen = ({
     route: { params },
 }: TradingExchangeApprovalScreenProps) => {
-    const { quote, shouldIncreaseLimit, isRevoked } = params;
-    const navigation =
-        useNavigation<
-            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangeApproval>
-        >();
+    const { shouldIncreaseLimit, isRevoked } = params;
+    const dispatch = useDispatch();
+
+    const quote = useSelector(selectTradingExchangePreselectedQuote);
 
     const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(state, quote.exchange, 'exchange'),
+        selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'exchange'),
     );
 
     const coinSymbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
 
-    const { confirmTrade } = useExchangeFlow();
+    useEffect(
+        () => () => {
+            dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+        },
+        [dispatch],
+    );
 
-    const handleContinue = async () => {
-        const updatedQuote = {
-            ...quote,
-            // approvalType: selectedApprovalType, // TODO 22293
-        };
-
-        const success = await confirmTrade({
-            receiveAddress: quote.receiveAddress ?? '',
-            trade: updatedQuote,
-            approvalFlow: true,
-            nextStep: () => {},
-        });
-
-        if (success) {
-            // TODO
-            navigation.navigate(TradingStackRoutes.TradingExchangePreview, { isApproved: true });
-        }
-    };
+    if (!quote) {
+        return null;
+    }
 
     return (
         <Screen
@@ -107,14 +96,9 @@ export const TradingExchangeApprovalScreen = ({
                 )}
 
                 <ExchangeApprovalForCard />
-                <ExchangeApprovalDetailsCard quote={quote} />
+                <ExchangeApprovalDetailsCard />
             </VStack>
-
-            <Box paddingTop="sp20">
-                <Button onPress={handleContinue}>
-                    <Translation id="generic.buttons.continue" />
-                </Button>
-            </Box>
+            <ApprovalButton />
         </Screen>
     );
 };

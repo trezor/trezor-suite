@@ -1,47 +1,47 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { DexApprovalType, ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import type { ExchangeProviderInfo } from 'invity-api';
 
 import {
     type TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
+    selectTradingExchangePreselectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TradeInfoRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { TradeInfoRow } from '@suite-native/trading-atoms';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
+import { useApprovalTypeControls } from '../../../hooks/exchange/Approval/useApprovalTypeControls';
+import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
-export type LimitPickerProps = {
-    quote: ExchangeTrade;
-};
+export const LimitPicker = () => {
+    const quote = useSelector(selectTradingExchangePreselectedQuote);
 
-export const LimitPicker = ({ quote }: LimitPickerProps) => {
-    const [selectedApprovalType, setSelectedApprovalType] = useState<DexApprovalType>('INFINITE');
-    const { isSheetVisible, showSheet, hideSheet } = useBottomSheetControls();
+    const { approvalType, isSheetVisible, showSheet, hideSheet, handleApprovalTypeChange } =
+        useApprovalTypeControls(quote);
 
     const providerInfo = useSelector((state: TradingRootState) =>
-        selectTradingProviderByNameAndTradeType(state, quote.exchange, 'exchange'),
+        selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'exchange'),
     ) as ExchangeProviderInfo | undefined;
 
     const coinSymbol = useSelector((state: TradingRootState) =>
-        selectTradingCoinSymbolByCryptoId(state, quote.send),
+        selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
 
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(quote.send);
+    if (!quote?.send) {
+        return null;
+    }
 
-    const handleApprovalTypeChange = (newType: DexApprovalType) => {
-        setSelectedApprovalType(newType);
-        hideSheet();
-    };
+    const { send, sendStringAmount } = quote;
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
 
     // TODO 22293 those strings need update according to latest design
     const limitDescription =
-        selectedApprovalType === 'INFINITE' ? (
+        approvalType === 'INFINITE' ? (
             <Translation
                 id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.description"
                 values={{
@@ -72,13 +72,19 @@ export const LimitPicker = ({ quote }: LimitPickerProps) => {
                                     size="extraSmall"
                                 />
                             )}
-                            <Text variant="hint" color="textSubdued">
-                                {selectedApprovalType === 'INFINITE' ? (
+                            {approvalType === 'INFINITE' ? (
+                                <Text variant="hint" color="textSubdued">
                                     <Translation id="moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel" />
-                                ) : (
-                                    `${quote.sendStringAmount} ${coinSymbol}`
-                                )}
-                            </Text>
+                                </Text>
+                            ) : (
+                                <TradingCoinAmountFormatter
+                                    amount={sendStringAmount}
+                                    cryptoId={send}
+                                    variant="hint"
+                                    color="textSubdued"
+                                />
+                            )}
+
                             <Icon name="caretDown" size="medium" />
                         </HStack>
                     </HStack>
@@ -91,7 +97,7 @@ export const LimitPicker = ({ quote }: LimitPickerProps) => {
                 isVisible={isSheetVisible}
                 onDismiss={hideSheet}
                 onApprovalTypeSelect={handleApprovalTypeChange}
-                selectedApprovalType={selectedApprovalType}
+                selectedApprovalType={approvalType}
                 quote={quote}
             />
         </>

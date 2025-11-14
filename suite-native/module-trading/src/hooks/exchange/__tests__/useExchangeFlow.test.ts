@@ -1,3 +1,4 @@
+import { tradingExchangeActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
     PreloadedState,
@@ -205,17 +206,15 @@ describe('useExchangeFlow', () => {
         it('should return null when no trade is provided and no selectedQuote', async () => {
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
             // Mock the selector to return undefined for selectedQuote
-            const modifiedStore = await getInitializedStore();
-            modifiedStore.getState().wallet.trading.exchange.selectedQuote = undefined;
+            const store = await getInitializedStore();
+            store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-            const { result: modifiedResult } = await renderUseExchangeFlow({
-                store: modifiedStore,
-            });
+            const { result } = await renderUseExchangeFlow({ store });
 
             // The getCommonFunctions is called internally, but we can test its effect
             // by calling confirmTrade without a trade parameter
             const resultValue = await act(() =>
-                modifiedResult.current.confirmTrade({
+                result.current.confirmTrade({
                     receiveAddress: 'test-address',
                     trade: undefined,
                     approvalFlow: false,
@@ -243,6 +242,30 @@ describe('useExchangeFlow', () => {
                 await result.current.confirmTrade({
                     receiveAddress: 'test-address',
                     trade: mockTrade,
+                    approvalFlow: false,
+                    nextStep: jest.fn(),
+                });
+            });
+
+            // If we get here without errors, getCommonFunctions worked correctly
+            expect(true).toBe(true);
+        });
+
+        it('should return common functions when preselected quote is provided', async () => {
+            const store = await getInitializedStore();
+            store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+            store.dispatch(
+                tradingExchangeActions.savePreselectedQuote({
+                    exchange: 'test-exchange',
+                    orderId: 'test-order',
+                }),
+            );
+            const { result } = await renderUseExchangeFlow({ store });
+
+            // Test by calling confirmTrade which uses getCommonFunctions internally
+            await act(async () => {
+                await result.current.confirmTrade({
+                    receiveAddress: 'test-address',
                     approvalFlow: false,
                     nextStep: jest.fn(),
                 });

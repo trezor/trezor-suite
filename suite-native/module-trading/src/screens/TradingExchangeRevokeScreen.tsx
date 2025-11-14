@@ -9,15 +9,9 @@ import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Box, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
-import {
-    BaseCurrencyAmountFormatter,
-    CryptoAmountFormatter,
-    TokenAmountFormatter,
-} from '@suite-native/formatters';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -32,6 +26,8 @@ import {
 import { ProviderLogo, TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { BigNumber } from '@trezor/utils';
+
+import { TradingCoinAmountFormatter } from '../components/general/TradingCoinAmountFormatter';
 
 type TradingExchangeRevokeScreenProps = StackToStackCompositeScreenProps<
     TradingStackParamList,
@@ -58,7 +54,6 @@ export const TradingExchangeRevokeScreen = ({
         // TODO
         if (shouldIncreaseLimit) {
             return navigation.replace(TradingStackRoutes.TradingExchangeApproval, {
-                quote,
                 isRevoked: true,
             });
         }
@@ -167,23 +162,12 @@ export const TradingExchangeRevokeScreen = ({
                                 />
                             )}
                             <Text variant="hint" color="textSubdued">
-                                {!!coinSymbol &&
-                                    (isNetworkSymbol(coinSymbol) ? (
-                                        <CryptoAmountFormatter
-                                            value={quote.preapprovedStringAmount || '0'}
-                                            symbol={coinSymbol}
-                                            isBalance={false}
-                                            variant="hint"
-                                            color="textSubdued"
-                                        />
-                                    ) : (
-                                        <TokenAmountFormatter
-                                            value={quote.preapprovedStringAmount || '0'}
-                                            tokenSymbol={coinSymbol as TokenSymbol}
-                                            variant="hint"
-                                            color="textSubdued"
-                                        />
-                                    ))}
+                                <TradingCoinAmountFormatter
+                                    amount={quote.preapprovedStringAmount}
+                                    cryptoId={quote.send}
+                                    variant="hint"
+                                    color="textSubdued"
+                                />
                             </Text>
                         </HStack>
                     </TradeInfoRow>
@@ -199,23 +183,12 @@ export const TradingExchangeRevokeScreen = ({
                                     size="extraSmall"
                                 />
                             )}
-                            {!!coinSymbol &&
-                                (isNetworkSymbol(coinSymbol) ? (
-                                    <CryptoAmountFormatter
-                                        value={0}
-                                        symbol={coinSymbol}
-                                        isBalance={false}
-                                        variant="hint"
-                                        color="textSubdued"
-                                    />
-                                ) : (
-                                    <TokenAmountFormatter
-                                        value={0}
-                                        tokenSymbol={coinSymbol as TokenSymbol}
-                                        variant="hint"
-                                        color="textSubdued"
-                                    />
-                                ))}
+                            <TradingCoinAmountFormatter
+                                amount="0"
+                                cryptoId={quote.send}
+                                variant="hint"
+                                color="textSubdued"
+                            />
                         </HStack>
                     </TradeInfoRow>
                     <TradeInfoRow>

@@ -1,6 +1,6 @@
-import type { ExchangeTrade } from 'invity-api';
+import { useSelector } from 'react-redux';
 
-import { cryptoIdToSymbol } from '@suite-common/trading';
+import { cryptoIdToSymbol, selectTradingExchangePreselectedQuote } from '@suite-common/trading';
 import { Card } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';
@@ -9,11 +9,13 @@ import { LimitPicker } from './LimitPicker';
 import { FeePicker } from '../../fees/FeePicker';
 import { ProviderInfoRow } from '../../general/TradeInfo/ProviderInfoRow';
 
-export type ExchangeApprovalDetailsCardProps = {
-    quote: ExchangeTrade;
-};
+export const ExchangeApprovalDetailsCard = () => {
+    const quote = useSelector(selectTradingExchangePreselectedQuote);
 
-export const ExchangeApprovalDetailsCard = ({ quote }: ExchangeApprovalDetailsCardProps) => {
+    if (!quote) {
+        return null;
+    }
+
     // TODO 22293 - set real values
     const fee = '4.76';
     const areFeesLoading = false;
@@ -28,7 +30,7 @@ export const ExchangeApprovalDetailsCard = ({ quote }: ExchangeApprovalDetailsCa
                 }
             />
             <ProviderInfoRow exchange={quote.exchange} />
-            <LimitPicker quote={quote} />
+            <LimitPicker />
             <FeePicker
                 fee={fee}
                 symbol={networkSymbol}

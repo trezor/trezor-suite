@@ -7,6 +7,7 @@ import type { ExchangeTrade, FormResponse } from 'invity-api';
 import {
     TradingSendRejectedProps,
     exchangeThunks,
+    selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -40,6 +41,8 @@ export const useExchangeFlow = () => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const preSelectedQuote = useSelector(selectTradingExchangePreselectedQuote);
+    const quote = selectedQuote ?? preSelectedQuote;
 
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
 
@@ -62,7 +65,7 @@ export const useExchangeFlow = () => {
 
     const getCommonFunctions = useCallback(
         (trade?: ExchangeTrade) => {
-            const tradeToUse = trade ?? selectedQuote;
+            const tradeToUse = trade ?? quote;
 
             if (!tradeToUse) {
                 console.error('Trade or selectedQuote is required to getCommonFunctions');
@@ -95,7 +98,7 @@ export const useExchangeFlow = () => {
                 processResponseData,
             };
         },
-        [handleWebview, selectedQuote],
+        [handleWebview, quote],
     );
 
     const {
