@@ -129,6 +129,14 @@ export const RULE_PATCH = {
     'StellarPathPaymentStrictSendOp.paths': 'optional', // its valid to be undefined according to implementation/tests
     'ThpHandshakeCompletionReqNoisePayload.host_pairing_credential': 'optional',
     'ThpCredentialRequest.credential': 'optional',
+    'MoneroTransactionSetInputAck.vini': 'required',
+    'MoneroTransactionSetInputAck.vini_hmac': 'required',
+    'MoneroTransactionSetInputAck.pseudo_out': 'required',
+    'MoneroTransactionSetInputAck.pseudo_out_hmac': 'required',
+    'MoneroTransactionSetInputAck.pseudo_out_alpha': 'required',
+    'MoneroTransactionSetInputAck.spend_key': 'required',
+    'MoneroTransactionAllOutSetAck.tx_prefix_hash': 'required',
+    'MoneroTransactionAllOutSetAck.rv': 'required',
 };
 
 // custom types IN to trezor
@@ -260,6 +268,10 @@ export const TYPE_PATCH = {
     'TezosDelegationOp.delegate': 'Uint8Array',
     'TezosSignTx.branch': 'Uint8Array',
     'Features.recovery_type': 'RecoveryType',
+    'MoneroKeyImageExportInitRequest.hash': 'Uint8Array',
+    'MoneroTransferDetails.out_key': 'Uint8Array',
+    'MoneroTransferDetails.tx_pub_key': 'Uint8Array',
+    'MoneroTransferDetails.additional_tx_pub_keys': 'Uint8Array',
 };
 
 export const readPatch = (file: string) =>
