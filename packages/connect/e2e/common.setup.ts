@@ -179,6 +179,7 @@ export const initTrezorConnect = async (
             email: 'tests@connect.trezor.io',
         },
         transports: ['BridgeTransport'],
+        coreMode: 'iframe',
         debug: false,
         popup: false,
         pendingTransportEvent: true,
