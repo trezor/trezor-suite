@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite/Translation';
 export const DeviceUnknown = () => (
     <TroubleshootingTips
         label={<Translation id="TR_UNKNOWN_DEVICE" />}
-        variant="warning"
+        intent="warning"
         items={[
             {
                 key: 'device-unknown',

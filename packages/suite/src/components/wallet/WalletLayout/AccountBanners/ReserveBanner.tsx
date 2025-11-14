@@ -30,7 +30,7 @@ export const ReserveBanner = ({ account }: ReserveBannerProps) => {
 
     return bigBalance.isLessThan(bigReserve) ? (
         <Banner
-            variant="warning"
+            intent="warning"
             rightContent={
                 <Banner.Button href={learnMoreUrl}>
                     <Translation id="TR_LEARN_MORE" />

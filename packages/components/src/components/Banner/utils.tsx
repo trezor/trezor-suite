@@ -1,59 +1,53 @@
 import { DefaultTheme } from 'styled-components';
 
-import { CSSColor, Color, Elevation, mapElevationToBackgroundToken } from '@trezor/theme';
+import { CSSColor, Color } from '@trezor/theme';
 
-import { BannerVariant } from './types';
+import { BannerIntent } from './types';
 import { IconName } from '../Icon/Icon';
 
-type MapArgs = {
-    $variant: BannerVariant;
-    theme: DefaultTheme;
-    $elevation: Elevation;
-};
-
-export const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): CSSColor => {
-    const colorMap: Record<BannerVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation0',
+export const mapIntentToBackgroundColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
+    const colorMap: Record<BannerIntent, Color> = {
+        brand: 'backgroundPrimarySubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',
-        destructive: 'backgroundAlertRedSubtleOnElevation0',
-        tertiary: mapElevationToBackgroundToken({ $elevation }),
+        critical: 'backgroundAlertRedSubtleOnElevation0',
+        neutral: 'backgroundNeutralSubtleOnElevation0',
     };
 
-    return theme[colorMap[$variant]];
+    return theme[colorMap[intent]];
 };
 
-export const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
-    const colorMap: Record<BannerVariant, Color> = {
-        primary: 'textPrimaryDefault',
+export const mapIntentToTextColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
+    const colorMap: Record<BannerIntent, Color> = {
+        brand: 'textPrimaryDefault',
         info: 'textAlertBlue',
         warning: 'textAlertYellow',
-        destructive: 'textAlertRed',
-        tertiary: 'textSubdued',
+        critical: 'textAlertRed',
+        neutral: 'textSubdued',
     };
 
-    return theme[colorMap[$variant]];
+    return theme[colorMap[intent]];
 };
-export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
-    const colorMap: Record<BannerVariant, Color> = {
-        primary: 'iconPrimaryDefault',
+export const mapIntentToIconColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
+    const colorMap: Record<BannerIntent, Color> = {
+        brand: 'iconPrimaryDefault',
         info: 'iconAlertBlue',
         warning: 'iconAlertYellow',
-        destructive: 'iconAlertRed',
-        tertiary: 'iconSubdued',
+        critical: 'iconAlertRed',
+        neutral: 'iconSubdued',
     };
 
-    return theme[colorMap[$variant]];
+    return theme[colorMap[intent]];
 };
 
-export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconName => {
-    const iconMap: Record<BannerVariant, IconName> = {
-        primary: 'lightbulb',
+export const mapIntentToIcon = (intent: BannerIntent): IconName => {
+    const iconMap: Record<BannerIntent, IconName> = {
+        brand: 'lightbulb',
         info: 'info',
         warning: 'warning',
-        destructive: 'warning',
-        tertiary: 'info',
+        critical: 'warning',
+        neutral: 'info',
     };
 
-    return iconMap[$variant];
+    return iconMap[intent];
 };

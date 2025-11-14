@@ -15,7 +15,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
     return (
         <Banner
             icon
-            variant="warning"
+            intent="warning"
             rightContent={
                 <Row gap={8}>
                     <Banner.Button
@@ -35,7 +35,6 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                         <WarningComponent.IconButton
                             icon="x"
                             onClick={onDismiss}
-                            isSubtle
                             data-testid="@banner/safety-checks/dismiss"
                         />
                     )}

@@ -75,7 +75,7 @@ export const UnpairBluetoothDeviceFromOsModal = ({
                 <Translation id="TR_BLUETOOTH_REMOVE_FROM_BLUETOOTH_SETTINGS_DESCRIPTION" />
             </Paragraph>
             {hasDeeplinkFailed && (
-                <Banner variant="warning">
+                <Banner intent="warning">
                     <Translation id="TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS" />
                 </Banner>
             )}

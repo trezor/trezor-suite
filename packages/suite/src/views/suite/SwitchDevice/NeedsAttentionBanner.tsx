@@ -1,7 +1,7 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { DeviceStatus as ConnectedDeviceStatus, getStatus } from '@suite-common/suite-utils';
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
-import { Banner, BannerVariant } from '@trezor/components';
+import { Banner, BannerIntent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -61,9 +61,7 @@ const getDeviceNeedsAttentionMessage = (
     }
 };
 
-const getDeviceStatusWarningVariant = (
-    deviceStatus: ReturnType<typeof getStatus>,
-): BannerVariant => {
+const getDeviceStatusWarningIntent = (deviceStatus: ReturnType<typeof getStatus>): BannerIntent => {
     switch (deviceStatus) {
         case 'bootloader':
         case 'initialize':
@@ -74,7 +72,7 @@ const getDeviceStatusWarningVariant = (
             return 'info';
         case 'firmware-required':
         case 'firmware-corrupted':
-            return 'destructive';
+            return 'critical';
         default:
             return 'warning';
     }
@@ -92,7 +90,7 @@ export const NeedsAttentionBanner = ({
     onCancel,
 }: NeedsAttentionBannerProps) => {
     const deviceResolveIssueCTAMessage = getDeviceResolveStatusCTAMessage(deviceStatus);
-    const deviceStatusBannerVariant = getDeviceStatusWarningVariant(deviceStatus);
+    const deviceStatusBannerIntent = getDeviceStatusWarningIntent(deviceStatus);
     const deviceStatusMessage = getDeviceNeedsAttentionMessage(deviceStatus);
     const isLocked = useDevice().isLocked(true);
     const dispatch = useDispatch();
@@ -152,7 +150,7 @@ export const NeedsAttentionBanner = ({
 
     return (
         <Banner
-            variant={deviceStatusBannerVariant}
+            intent={deviceStatusBannerIntent}
             rightContent={
                 onIssueClick && (
                     <Banner.Button

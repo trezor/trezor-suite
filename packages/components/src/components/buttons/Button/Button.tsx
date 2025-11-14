@@ -149,7 +149,6 @@ export const Button = ({
                 )}
                 {iconLeft && !isLoading && <Icon name={iconLeft} {...iconProps} />}
                 <Box padding={{ horizontal: 4 }} overflow="hidden">
-                    {/* TODO: use variant/intent instead of color after refactoring Text and Icon components */}
                     <Text
                         as="div"
                         typographyStyle={mapSizeToTypographyStyle(size)}

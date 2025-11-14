@@ -54,7 +54,7 @@ export const UnstakeForm = () => {
                 <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
                     <Column gap={spacings.md}>
                         {canClaim && (
-                            <Banner variant="info">
+                            <Banner intent="info">
                                 <Translation
                                     id="TR_STAKE_CAN_CLAIM_WARNING"
                                     values={{
@@ -81,7 +81,7 @@ export const UnstakeForm = () => {
                             <Column gap={spacings.lg}>
                                 <UnstakeInputs />
                                 {showError && (
-                                    <Banner variant="destructive">{inputError?.message}</Banner>
+                                    <Banner intent="critical">{inputError?.message}</Banner>
                                 )}
                             </Column>
                         </>

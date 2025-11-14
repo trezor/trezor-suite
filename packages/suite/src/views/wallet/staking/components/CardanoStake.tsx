@@ -111,7 +111,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                             delegatingAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
                                 <Row>
                                     <CardanoColumn>
-                                        <Banner variant="info">
+                                        <Banner intent="info">
                                             <div>
                                                 <Translation id="TR_STAKING_NOT_ENOUGH_FUNDS" />
                                                 <br />

@@ -1,3 +1,3 @@
-import { BannerVariant } from './types';
+import { BannerIntent } from './types';
 
-export const DEFAULT_VARIANT = 'warning' as BannerVariant;
+export const DEFAULT_INTENT = 'warning' as BannerIntent;

@@ -35,7 +35,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
     return (
         <Banner
             icon
-            variant={variant === 'critical' ? 'destructive' : variant}
+            intent={variant}
             rightContent={
                 <Row gap={8}>
                     <MessageSystemButton cta={cta} id={id} />
@@ -43,7 +43,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
                         <Banner.IconButton
                             icon="x"
                             onClick={dismissalConfig.onClick}
-                            isSubtle
+                            priority="secondary"
                             data-testid={dismissalConfig['data-testid']}
                         />
                     )}

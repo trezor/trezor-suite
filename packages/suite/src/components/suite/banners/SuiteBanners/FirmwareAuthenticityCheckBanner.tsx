@@ -85,7 +85,7 @@ export const FirmwareAuthenticityCheckBanner = () => {
     return (
         <Banner
             icon
-            variant={useWarningVariant ? 'warning' : 'destructive'}
+            intent={useWarningVariant ? 'warning' : 'critical'}
             rightContent={hideBannerButtons ? null : <BannerButtons />}
         >
             <Translation id={message} />

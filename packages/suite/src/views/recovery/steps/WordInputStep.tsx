@@ -10,7 +10,7 @@ export const WordInputStep = () => (
             <Paragraph>
                 <Translation id="TR_ENTER_SEED_WORDS_INSTRUCTION" />
             </Paragraph>
-            <Banner variant="info" icon="question">
+            <Banner intent="info" icon="question">
                 <Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />
             </Banner>
             <WordInput />

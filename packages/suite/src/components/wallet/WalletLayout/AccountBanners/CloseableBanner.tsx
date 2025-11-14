@@ -7,7 +7,7 @@ import { Translation } from 'src/components/suite/Translation';
 
 interface Props {
     onClose: () => void;
-    variant: BannerProps['variant'];
+    intent: BannerProps['intent'];
     title: ReactNode;
     children: React.ReactNode;
     hasIcon?: boolean;
@@ -16,14 +16,14 @@ interface Props {
 
 export const CloseableBanner = ({
     onClose,
-    variant,
+    intent,
     title,
     children,
     hasIcon = false,
     margin,
 }: Props) => (
     <Banner
-        variant={variant}
+        intent={intent}
         rightContent={
             <Banner.Button onClick={onClose}>
                 <Translation id="TR_GOT_IT" />

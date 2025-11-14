@@ -67,7 +67,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
         >
             {onionBackends.length ? (
                 <Column gap={spacings.md}>
-                    <Banner variant="warning" icon="torBrowser">
+                    <Banner intent="warning" icon="torBrowser">
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_TITLE" />{' '}
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION" />
                     </Banner>

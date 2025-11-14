@@ -23,7 +23,7 @@ export const DeviceUpdateRequired = () => {
                     <Translation id="TR_JUST_INSTALL" />
                 </Banner.Button>
             }
-            variant="warning"
+            intent="warning"
             items={[
                 {
                     key: 'device-firmware-required',

@@ -71,7 +71,7 @@ export const DeviceUnreadable = () => {
                     values={{ error: selectedDevice?.error }}
                 />
             }
-            variant="warning"
+            intent="warning"
             items={items}
             data-testid="@connect-device-prompt/unreadable-unknown"
         />

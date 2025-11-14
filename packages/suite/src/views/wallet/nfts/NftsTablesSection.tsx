@@ -51,7 +51,7 @@ export const NftsTablesSection = ({
             <H3>
                 <Translation id="TR_COLLECTIONS_UNRECOGNIZED_BY_TREZOR" />
             </H3>
-            <Banner variant="warning" icon>
+            <Banner intent="warning" icon>
                 <Translation id="TR_NFT_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />
             </Banner>
             <NftsTable

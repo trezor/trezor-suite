@@ -98,7 +98,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     return (
         <Column gap={spacings.md}>
             <Banner
-                variant="info"
+                intent="info"
                 icon="question"
                 rightContent={
                     <Banner.Button href={learnMoreUrl} iconRight="arrowUpRight" size="small">

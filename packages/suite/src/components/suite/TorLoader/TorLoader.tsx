@@ -148,7 +148,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                     </Row>
                 </Card>
                 {!!torBootstrap?.isSlow && (
-                    <Banner variant="info" icon="clockClockwise">
+                    <Banner intent="info" icon="clockClockwise">
                         <Translation id="TR_TOR_IS_SLOW_MESSAGE" values={{ br: () => ' ' }} />
                     </Banner>
                 )}

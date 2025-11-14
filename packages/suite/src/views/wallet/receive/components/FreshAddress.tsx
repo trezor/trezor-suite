@@ -177,7 +177,7 @@ export const FreshAddress = ({
                 </Tooltip>
             </Row>
             {account.networkType === 'ethereum' && account.symbol !== 'eth' && (
-                <Banner icon variant="info" margin={{ top: spacings.xxl }}>
+                <Banner icon intent="info" margin={{ top: spacings.xxl }}>
                     <H4>
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"

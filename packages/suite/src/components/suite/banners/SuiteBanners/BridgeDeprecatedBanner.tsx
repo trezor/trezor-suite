@@ -10,7 +10,7 @@ export const BridgeDeprecated = () => {
     return (
         <Banner
             icon
-            variant="info"
+            intent="info"
             rightContent={
                 <Banner.Button
                     onClick={() => dispatch(goto('suite-bridge-deprecated'))}

@@ -31,7 +31,7 @@ export const DeviceTrezorHostProtocolPair = () => {
         <TroubleshootingTips
             label={<Translation id="TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION" />}
             cta={ctaButton}
-            variant="info"
+            intent="info"
             items={[]}
         />
     );

@@ -182,7 +182,7 @@ export const TxSimulationBanner = ({
     setDisclaimerAccepted: (value: boolean) => void;
 }) => (
     <Banner
-        variant={type === 'warning' ? 'warning' : 'destructive'}
+        intent={type === 'warning' ? 'warning' : 'critical'}
         data-testid="@tx-simulation-modal/error-banner"
     >
         <Column width="100%" padding={{ vertical: spacings.xxs }}>

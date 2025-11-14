@@ -93,7 +93,7 @@ export const CancelTransactionModal = ({
                             {error !== null ? (
                                 // This shall never happen, error like this always signal big in the code,
                                 // this is here just to make easier to detect and fix
-                                <Banner variant="destructive">
+                                <Banner intent="critical">
                                     Error: transaction cannot be canceled ({error})
                                 </Banner>
                             ) : null}

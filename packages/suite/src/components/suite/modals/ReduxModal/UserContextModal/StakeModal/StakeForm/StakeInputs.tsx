@@ -237,7 +237,7 @@ export const StakeInputs = () => {
                 ]}
             />
             {shouldShowAmountForWithdrawalWarning && (
-                <Banner data-testid="@staking/form/withdrawal-warning" variant="info" width="100%">
+                <Banner data-testid="@staking/form/withdrawal-warning" intent="info" width="100%">
                     <Translation
                         id={
                             isLessAmountForWithdrawalWarningShown
@@ -252,7 +252,7 @@ export const StakeInputs = () => {
                 </Banner>
             )}
             {showAdviceBanner && !isAmountForWithdrawalWarningShown && (
-                <Banner data-testid="@staking/form/withdrawal-warning" variant="info" width="100%">
+                <Banner data-testid="@staking/form/withdrawal-warning" intent="info" width="100%">
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{

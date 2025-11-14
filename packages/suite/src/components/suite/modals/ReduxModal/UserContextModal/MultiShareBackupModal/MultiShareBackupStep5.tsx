@@ -70,7 +70,7 @@ export const MultiShareBackupStep5 = () => (
             </H4>
 
             <Grid columns={2} gap={spacings.md}>
-                <Banner variant="primary" icon="trezorDevicesFilled">
+                <Banner intent="brand" icon="trezorDevicesFilled">
                     <Column>
                         <H4>
                             <Translation id="TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR" />
@@ -80,7 +80,7 @@ export const MultiShareBackupStep5 = () => (
                         </Paragraph>
                     </Column>
                 </Banner>
-                <Banner variant="warning" icon="recoverySeed">
+                <Banner intent="warning" icon="recoverySeed">
                     <Column>
                         <H4>
                             <Translation id="TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP" />

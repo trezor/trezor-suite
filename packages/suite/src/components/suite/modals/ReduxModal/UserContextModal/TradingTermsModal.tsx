@@ -187,7 +187,7 @@ export const TradingTermsModal = ({
                     </List.Item>
                 </List>
                 {/*
-                <Banner variant="tertiary">
+                <Banner intent="neutral">
                     <Checkbox
                         isChecked={dontShowAgain}
                         onClick={() => setDontShowAgain(prev => !prev)}

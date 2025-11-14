@@ -71,7 +71,7 @@ export const InstantStakeBanner = ({
         <Banner
             data-testid="@staking/instant-stake-banner"
             icon="lightning"
-            variant="tertiary"
+            intent="neutral"
             rightContent={
                 <Banner.Button
                     data-testid="@staking/instant-stake-banner/got-it-button"

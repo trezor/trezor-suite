@@ -167,7 +167,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                         {isCardanoNetworkType ? (
                             <>
                                 {shouldShowCardanoWarning && shouldShowCardanoClaimRewardsCard && (
-                                    <Banner variant="warning" icon="warning" iconAlignment="start">
+                                    <Banner intent="warning" icon="warning">
                                         <Translation id="TR_STAKING_REWARDS_NETWORK_FEE_WARNING" />
                                     </Banner>
                                 )}
@@ -265,7 +265,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                         )}
 
                         {errors[CRYPTO_INPUT] && (
-                            <Banner variant="destructive">{errors[CRYPTO_INPUT]?.message}</Banner>
+                            <Banner intent="critical">{errors[CRYPTO_INPUT]?.message}</Banner>
                         )}
                     </Column>
                 </form>

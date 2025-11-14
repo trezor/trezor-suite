@@ -14,7 +14,7 @@ export const DeviceUnavailable = () => {
 
     return (
         <Banner
-            variant="info"
+            intent="info"
             rightContent={
                 <Banner.Button onClick={handleButtonClick} isLoading={isLocked()}>
                     <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />

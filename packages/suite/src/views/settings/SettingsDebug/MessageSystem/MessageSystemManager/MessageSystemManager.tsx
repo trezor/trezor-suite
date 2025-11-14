@@ -1,25 +1,14 @@
 import { useMemo, useState } from 'react';
 
-import styled from 'styled-components';
-
 import {
     messageSystemActions,
     selectAllManuallyAddedMessageIds,
     selectAllValidMessages,
 } from '@suite-common/message-system';
 import { Action } from '@suite-common/suite-types';
-import {
-    Banner,
-    BannerVariant,
-    Button,
-    Column,
-    Divider,
-    Modal,
-    useElevation,
-} from '@trezor/components';
-import { mapVariantToBackgroundColor } from '@trezor/components/src/components/Banner/utils';
+import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { Elevation, borders, spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -29,14 +18,6 @@ import { CategoryFilterOption, MessageSystemManagerFilters } from './MessageSyst
 import { MessageSystemManagerInfo } from './MessageSystemManagerInfo';
 import { MessageSystemFormMessage } from '../MessageSystemForm/MessageSystemFormMessage';
 
-const MessageContainer = styled.div<{ $variant: BannerVariant; $elevation: Elevation }>`
-    display: flex;
-    gap: ${spacingsPx.sm};
-    background: ${mapVariantToBackgroundColor};
-    border-radius: ${borders.radii.sm};
-    padding: ${spacingsPx.sm};
-`;
-
 type MessageSystemManagerProps = {
     actions: Action[];
     onCloseModal: () => void;
@@ -45,7 +26,6 @@ type MessageSystemManagerProps = {
 export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemManagerProps) => {
     const allValidMessages = useSelector(selectAllValidMessages);
     const allManuallyAddedMessageIds = useSelector(selectAllManuallyAddedMessageIds);
-    const { elevation } = useElevation();
     const dispatch = useDispatch();
 
     const [showActive, setIsActive] = useState<boolean>(true);
@@ -93,51 +73,55 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                     selectedCategory={selectedCategory}
                     onCategoryChange={setSelectedCategory}
                 />
-                {filteredActions.length === 0 && <Banner variant="warning">No messages.</Banner>}
+                {filteredActions.length === 0 && <Banner intent="warning">No messages.</Banner>}
 
                 {filteredActions.map(({ message, conditions }, index) => (
-                    <MessageContainer
-                        key={`${message.id}-${index}`}
-                        $variant={message.variant === 'critical' ? 'destructive' : message.variant}
-                        $elevation={elevation}
-                    >
-                        <Column flex="1" gap={spacings.md}>
-                            <MessageSystemManagerDetail message={message} />
-                            <Divider color="backgroundNeutralBold" />
-                            <MessageSystemConditionGroup conditions={conditions} />
-                        </Column>
-                        <Column gap={spacings.xs}>
-                            <MessageSystemManagerInfo
-                                message={message}
-                                allValidMessages={allValidMessages}
-                                isInApp={!!allManuallyAddedMessageIds?.[message.id]}
-                            />
-                            <Column alignItems="flex-end" gap={spacings.xs}>
-                                <Button
-                                    size="small"
-                                    iconLeft="copy"
-                                    intent="brand"
-                                    onClick={() =>
-                                        copyToClipboard(
-                                            JSON.stringify({ conditions, message }, null, 2),
-                                        )
-                                    }
-                                >
-                                    Copy to clipboard
-                                </Button>
-                                {!!allManuallyAddedMessageIds?.[message.id] && (
-                                    <Button
-                                        size="small"
-                                        iconLeft="trash"
-                                        intent="critical"
-                                        onClick={() => removeMessage(message.id)}
-                                    >
-                                        Remove
-                                    </Button>
-                                )}
-                            </Column>
-                        </Column>
-                    </MessageContainer>
+                    <Banner key={`${message.id}-${index}`} intent={message.variant}>
+                        <Text as="div" variant="default">
+                            <Row gap={24} alignItems="flex-start">
+                                <Column flex="1" gap={spacings.md}>
+                                    <MessageSystemManagerDetail message={message} />
+                                    <Divider color="backgroundNeutralBold" />
+                                    <MessageSystemConditionGroup conditions={conditions} />
+                                </Column>
+                                <Column gap={spacings.xs}>
+                                    <MessageSystemManagerInfo
+                                        message={message}
+                                        allValidMessages={allValidMessages}
+                                        isInApp={!!allManuallyAddedMessageIds?.[message.id]}
+                                    />
+                                    <Column alignItems="flex-end" gap={spacings.xs}>
+                                        <Button
+                                            size="small"
+                                            iconLeft="copy"
+                                            intent="neutral"
+                                            onClick={() =>
+                                                copyToClipboard(
+                                                    JSON.stringify(
+                                                        { conditions, message },
+                                                        null,
+                                                        2,
+                                                    ),
+                                                )
+                                            }
+                                        >
+                                            Copy to clipboard
+                                        </Button>
+                                        {!!allManuallyAddedMessageIds?.[message.id] && (
+                                            <Button
+                                                size="small"
+                                                iconLeft="trash"
+                                                intent="critical"
+                                                onClick={() => removeMessage(message.id)}
+                                            >
+                                                Remove
+                                            </Button>
+                                        )}
+                                    </Column>
+                                </Column>
+                            </Row>
+                        </Text>
+                    </Banner>
                 ))}
             </Column>
         </Modal>

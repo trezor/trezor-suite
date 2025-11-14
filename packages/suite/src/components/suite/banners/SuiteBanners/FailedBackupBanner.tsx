@@ -21,7 +21,7 @@ export const FailedBackup = () => {
             {isModalOpen && <WipeDeviceModal onCancel={() => setIsModalOpen(false)} />}
             <Banner
                 icon
-                variant="destructive"
+                intent="critical"
                 data-testid="@notification/failed-backup"
                 rightContent={
                     <Banner.Button

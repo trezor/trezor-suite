@@ -1,10 +1,11 @@
 import { createContext, useContext } from 'react';
 
-import { BannerVariant } from './types';
+import { DEFAULT_INTENT } from './consts';
+import { BannerIntent } from './types';
 
 export const BannerContext = createContext<{
-    variant?: BannerVariant;
-}>({ variant: undefined });
+    intent?: BannerIntent;
+}>({ intent: DEFAULT_INTENT });
 
 export const useBannerContext = () => {
     const context = useContext(BannerContext);

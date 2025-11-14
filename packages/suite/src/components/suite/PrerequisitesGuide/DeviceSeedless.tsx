@@ -5,7 +5,7 @@ import { Translation } from 'src/components/suite/Translation';
 export const DeviceSeedless = () => (
     <TroubleshootingTips
         label={<Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />}
-        variant="info"
+        intent="info"
         items={[
             {
                 key: 'device-seedless',

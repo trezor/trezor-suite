@@ -24,7 +24,7 @@ export const CustomFeeTooLowBanner = memo(function CustomFeeTooLowBannerInner() 
             <Collapsible.Content>
                 <Banner
                     icon
-                    variant="warning"
+                    intent="warning"
                     rightContent={
                         <LearnMoreButton url={HELP_CENTER_TRANSACTION_FEES_URL} intent="warning" />
                     }
