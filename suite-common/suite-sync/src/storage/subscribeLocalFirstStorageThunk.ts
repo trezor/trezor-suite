@@ -1,14 +1,15 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import { initEvoluKeysThunk } from './initEvoluKeysThunk';
+import { isSuiteSyncSupportedByDevice } from '../device';
 import { subscribeLabelingUpdatesThunk } from '../labeling/subscribeLabelingUpdatesThunk';
 
 type SubscribeLocalFirstStorageThunkParams = {
-    device: TrezorDevice;
+    device: TrezorDeviceWithState;
 };
 
 export const subscribeLocalFirstStorageThunk = createThunk<
@@ -18,15 +19,11 @@ export const subscribeLocalFirstStorageThunk = createThunk<
 >(
     `${LOCAL_FIRST_STORAGE_PREFIX}/subscribeLocalFirstStorageThunk`,
     async ({ device }, { dispatch, getState }) => {
-        const deviceStaticSessionId = device.state?.staticSessionId;
-
-        if (deviceStaticSessionId === undefined) {
-            console.error(
-                'Evolu: cannot subscribe local first storage, missing deviceStaticSessionId',
-            );
-
+        if (!isSuiteSyncSupportedByDevice(device)) {
             return;
         }
+
+        const deviceStaticSessionId = device.state.staticSessionId;
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 

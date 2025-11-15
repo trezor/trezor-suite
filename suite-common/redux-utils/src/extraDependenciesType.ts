@@ -9,6 +9,7 @@ import {
     ReportSecurityCheckProps,
     Route,
     TrezorDevice,
+    TrezorDeviceWithState,
     UserContextPayload,
 } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -56,8 +57,10 @@ export type ExtraDependencies = {
         forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: BluetoothDeviceId }>;
 
         // This needs to be over `extra` to prevent circular dependency
-        subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
-        unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDevice }>;
+        subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDeviceWithState }>;
+        unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{
+            device: TrezorDeviceWithState;
+        }>;
         initLocalFirstStorage: SuiteCompatibleThunk<void>;
     };
     selectors: {

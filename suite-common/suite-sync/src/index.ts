@@ -16,6 +16,7 @@ export {
     selectIsFeatureLocalFirstStorageAvailable,
 } from './storage/suiteSyncSelectors';
 export { useLocalFirstStorage } from './storage/useLocalFirstStorage';
+export { isSuiteSyncSupportedByDevice } from './device';
 
 // Labeling
 export { updateWalletLabelThunk } from './labeling/updateWalletLabelThunk';

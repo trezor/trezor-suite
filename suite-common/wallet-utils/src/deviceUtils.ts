@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { TrezorDevice, TrezorDeviceWithState } from '@suite-common/suite-types';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
 import { Device, StaticSessionId } from '@trezor/connect';
 
@@ -27,3 +27,11 @@ export const shouldDeviceBeRemembered = ({
 
 export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
     !device?.unavailableCapabilities?.['evmApproval'];
+
+export const isTrezorDeviceWithState = (
+    device: TrezorDevice | undefined,
+): device is TrezorDeviceWithState =>
+    device !== undefined &&
+    device.state !== undefined &&
+    device.state !== null &&
+    device.state.staticSessionId !== undefined;

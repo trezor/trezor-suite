@@ -6355,9 +6355,9 @@ export default defineMessages({
         defaultMessage: 'Select how to sync your labels. Your data is encrypted by Trezor.',
         id: 'METADATA_MODAL_DESCRIPTION',
     },
-    FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU: {
-        id: 'FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU',
-        defaultMessage: "Upgrade your Trezor's firmware for Evolu storage.",
+    FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC: {
+        id: 'FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC',
+        defaultMessage: "Upgrade your Trezor's firmware for Suite Sync.",
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',

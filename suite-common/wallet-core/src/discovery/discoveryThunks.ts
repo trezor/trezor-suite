@@ -3,6 +3,7 @@ import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/su
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     AccountInfo,
     BundleProgress,
@@ -81,7 +82,8 @@ const initNewDeviceStateMetadataThunk = createThunk(
                 getState(),
                 staticSessionId,
             );
-            if (reselectDeviceForSecret !== undefined) {
+
+            if (isTrezorDeviceWithState(reselectDeviceForSecret)) {
                 dispatch(
                     extra.thunks.subscribeLocalFirstStorage({ device: reselectDeviceForSecret }),
                 );

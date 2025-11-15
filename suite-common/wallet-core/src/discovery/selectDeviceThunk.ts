@@ -1,6 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { Device } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
@@ -41,7 +42,7 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
         const isLocalFirstStorageEnabled =
             extra.selectors.selectIsLocalFirstStorageEnabled(getState());
 
-        if (trezorDevice?.state?.staticSessionId !== undefined && isLocalFirstStorageEnabled) {
+        if (isTrezorDeviceWithState(trezorDevice) && isLocalFirstStorageEnabled) {
             dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));
         }
     },
