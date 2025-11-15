@@ -27,7 +27,6 @@
 babel-jest
 babel-loader
 babel-plugin-transform-remove-console
-babel-preset-expo
 chalk
 copy-webpack-plugin
 core-js
@@ -49,6 +48,7 @@ eslint-plugin-local-rules
 eslint-plugin-mdx
 eslint-plugin-react
 eslint-plugin-react-hooks
+expo-sqlite
 express
 fake-indexeddb
 file-saver

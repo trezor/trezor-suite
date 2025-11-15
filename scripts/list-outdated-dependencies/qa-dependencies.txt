@@ -1,5 +1,4 @@
 chai
-@config-plugins/detox
 @currents/cmd
 @currents/playwright
 @jest/globals
@@ -18,7 +17,6 @@ jest
 jest-canvas-mock
 jest-diff
 jest-environment-node
-jest-expo
 jest-extended
 jest-junit
 jest-watch-typeahead

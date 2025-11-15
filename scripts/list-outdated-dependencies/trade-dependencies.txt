@@ -1,8 +1,7 @@
+@config-plugins/detox
 @expo/config-plugins
-@gorhom/bottom-sheet
 @mobily/ts-belt
 @types/react-native-get-random-values
-@react-native-async-storage/async-storage
 @react-native-community/cli
 @react-native-community/netinfo
 @react-native/babel-preset
@@ -24,6 +23,7 @@
 @types/invity-api
 @types/react
 @types/react-dom
+babel-preset-expo
 expo
 expo-atlas
 expo-build-properties
@@ -43,13 +43,13 @@ expo-local-authentication
 expo-localization
 expo-secure-store
 expo-splash-screen
-expo-sqlite
 expo-status-bar
 expo-system-ui
 expo-store-review
 expo-updates
 expo-video
 fs-extra
+jest-expo
 jotai
 metro-config
 node-libs-browser
