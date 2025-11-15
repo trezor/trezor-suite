@@ -9897,6 +9897,10 @@ export default defineMessages({
         id: 'TR_STAKE_CLAIM_AFTER_UNSTAKING',
         defaultMessage: 'You can claim once the unstaking period is complete.',
     },
+    TR_STAKE_UNSTAKE_WITH_REWARDS: {
+        id: 'TR_STAKE_UNSTAKE_WITH_REWARDS',
+        defaultMessage: 'Your rewards are automatically claimed when you unstake.',
+    },
     TR_STAKE_UNSTAKING_APPROXIMATE: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE',
         defaultMessage: 'Approximate amount of {symbol} available instantly',
