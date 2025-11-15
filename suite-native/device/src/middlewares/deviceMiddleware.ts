@@ -11,6 +11,7 @@ import {
     selectAccountsByDeviceState,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
@@ -54,7 +55,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             const { device } = action.payload;
             dispatch(handleDeviceDisconnect(action.payload.device));
 
-            if (device.state !== undefined) {
+            if (isTrezorDeviceWithState(device)) {
                 const accountsToRemove = selectAccountsByDeviceState(getState(), device.state);
                 dispatch(accountsActions.removeAccount(accountsToRemove));
                 dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));

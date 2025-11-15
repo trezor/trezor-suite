@@ -6,6 +6,7 @@ import {
     Features,
     KnownDevice,
     PROTO,
+    StaticSessionId,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
@@ -37,8 +38,14 @@ export type EvoluKeys = {
     ownerSecret: string; // hex
 };
 
+/**
+ * Private Key that is unique to the Device. It is created when device is initialized
+ * (so it is not known before). It is used as a "hot" key for Suite, where
+ * device delegates some signing capabilities to the Suite.
+ *
+ * Example of usage is the Suite Sync.
+ */
 export type DelegatedKey = string & Branded<'DelegatedKey'>; // hex-encoded P-256 private key string
-
 export const asDelegatedKey = (privateKey: Uint8Array<ArrayBufferLike> | string): DelegatedKey =>
     String(privateKey) as DelegatedKey;
 
@@ -111,3 +118,7 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
         delegatedKey: DelegatedKey | null;
         // TODO move deviceAuthenticity to this object and newly introduce persistence
     };
+
+export type TrezorDeviceWithState = AcquiredDevice & {
+    state: NonNullable<AcquiredDevice['state']> & { staticSessionId: StaticSessionId };
+};

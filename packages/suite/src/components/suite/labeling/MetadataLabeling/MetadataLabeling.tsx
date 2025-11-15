@@ -507,7 +507,7 @@ export const MetadataLabeling = ({
                 isLocalFirstStorageEnabled &&
                 !isEvoluSupportedByDevice && (
                     <Text variant="warning">
-                        <Translation id="FIRMWARE_NEEDS_UPGRADE_FOR_EVOLU" />
+                        <Translation id="FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC" />
                     </Text>
                 )
             }

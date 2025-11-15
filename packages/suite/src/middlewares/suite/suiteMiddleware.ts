@@ -11,6 +11,7 @@ import {
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';
 
 import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -91,7 +92,9 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
             const { device } = action.payload;
 
             dispatch(handleDeviceDisconnect(device));
-            dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));
+            if (isTrezorDeviceWithState(device)) {
+                dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));
+            }
         }
 
         switch (action.type) {

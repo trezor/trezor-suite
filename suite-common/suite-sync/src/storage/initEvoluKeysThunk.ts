@@ -7,11 +7,13 @@ import {
     DelegatedKey,
     EvoluKeys,
     TrezorDevice,
+    TrezorDeviceWithState,
     asDelegatedKey,
     asDeviceEvoluOwnerId,
 } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEVICE_MODULE_PREFIX, deviceActions, selectDevices } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect, { ProofOfDelegatedIdentity } from '@trezor/connect';
 import { asProofOfDelegatedIdentity } from '@trezor/connect/src/types/device';
 import { Result, err, ok } from '@trezor/type-utils';
@@ -25,11 +27,6 @@ type InitCipherKeyThunkParams = {
 
 const isCanceledErrorMessage = (errorMessage: string | null | undefined) =>
     Boolean(errorMessage?.toLocaleLowerCase().includes('cancelled'));
-
-const isDeviceWithState = (
-    device: TrezorDevice,
-): device is AcquiredDevice & { state: NonNullable<AcquiredDevice['state']> } =>
-    device.state !== undefined && device.state !== null;
 
 const getProofOfDelegatedIdentity = (delegatedKey: DelegatedKey): ProofOfDelegatedIdentity => {
     const header = Buffer.from('EvoluGetNode');
@@ -53,7 +50,7 @@ type RetrieveEvoluNodeResult = {
 };
 
 const retrieveDelegatedIdentityKey = async (
-    device: AcquiredDevice & { state: NonNullable<AcquiredDevice['state']> },
+    device: TrezorDeviceWithState,
     currentDelegatedKey: DelegatedKey | null | undefined,
     options: {
         refreshKey?: boolean;
@@ -143,27 +140,24 @@ const retrieveEvoluNode = async (
     }
 };
 
+// Todo: rename to initSuiteSync on something, separate SuiteSync and Evolu domains
 export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, void>(
     `${DEVICE_MODULE_PREFIX}/initEvoluKeysThunk`,
     async ({ device: originalDevice }, { dispatch, getState, rejectWithValue }) => {
-        if (originalDevice.state?.staticSessionId === undefined) {
-            return;
-        }
-
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
         );
 
         if (
             device === undefined ||
-            device.mode === 'bootloader' ||
-            device.mode === 'initialize' ||
-            device.id === null
+            device.id === null ||
+            !device.connected || // disconnected device cannot resolve Evolu-Keys
+            device.mode !== 'normal' // bootloader,
         ) {
             return;
         }
 
-        if (!isDeviceWithState(device)) {
+        if (!isTrezorDeviceWithState(device)) {
             console.warn('initEvoluKeysThunk: device.state is undefined');
 
             return rejectWithValue('Evolu: initEvoluKeysThunk: device.state is undefined');

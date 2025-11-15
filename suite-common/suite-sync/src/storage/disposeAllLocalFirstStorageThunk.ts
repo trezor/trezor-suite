@@ -1,5 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectDevices } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import { unsubscribeAndDisposeLocalFirstStorageThunk } from './unsubscribeAndDisposeLocalFirstStorageThunk';
@@ -12,7 +13,9 @@ export const disposeAllLocalFirstStorageThunk = createThunk<void, void, void>(
 
         const devices = selectDevices(getState());
         for (const device of devices) {
-            dispatch(unsubscribeAndDisposeLocalFirstStorageThunk({ device }));
+            if (isTrezorDeviceWithState(device)) {
+                dispatch(unsubscribeAndDisposeLocalFirstStorageThunk({ device }));
+            }
         }
     },
 );

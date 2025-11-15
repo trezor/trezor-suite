@@ -10,6 +10,7 @@ import {
     selectIsLocalFirstStorageDebugEnabled,
     selectIsLocalFirstStorageEnabled,
 } from './suiteSyncSelectors';
+import { isSuiteSyncSupportedByDevice } from '../device';
 
 export type UseLocalStorageParams = {
     // This needs to be passed, as labeling can be attached to remembered wallets
@@ -48,7 +49,7 @@ export const useLocalFirstStorage = ({ device }: UseLocalStorageParams) => {
         }
     };
 
-    const isEvoluSupportedByDevice = device?.unavailableCapabilities?.evolu === undefined;
+    const isEvoluSupportedByDevice = isSuiteSyncSupportedByDevice(device);
     const hasDeviceLocalFirstStorageKeys = device?.localFirstStorageSecret?.evoluKeys !== undefined;
 
     return {
