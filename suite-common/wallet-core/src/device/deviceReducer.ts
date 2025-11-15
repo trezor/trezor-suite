@@ -597,7 +597,7 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     // do not persist data for bootloader devices
     if (device.features.device_id === null) return;
 
-    const newPersistentData: Omit<PersistentDeviceData, 'delegatedKey'> = {
+    const newPersistentData: Omit<PersistentDeviceData, 'delegatedIdentityKey'> = {
         device_id: device.features.device_id,
         internal_model: device.features.internal_model,
         fw_vendor: device.features.fw_vendor,
@@ -622,7 +622,7 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     } else {
         draft.persistentDeviceData.push({
             ...newPersistentData,
-            delegatedKey: null,
+            delegatedIdentityKey: null,
         });
     }
 };
@@ -719,7 +719,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
 
                     // expected to exist; device must have been connected or changed for this action to happen
                     if (data === undefined) return;
-                    data.delegatedKey = delegatedKey;
+                    data.delegatedIdentityKey = delegatedKey;
                 },
             )
             .addCase(
