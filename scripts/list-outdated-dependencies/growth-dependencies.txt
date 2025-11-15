@@ -2,6 +2,7 @@
 @floating-ui/react
 @formatjs/cli
 @formatjs/intl
+@gorhom/bottom-sheet
 @originjs/vite-plugin-commonjs
 @storybook/addon-docs
 @storybook/addon-links
