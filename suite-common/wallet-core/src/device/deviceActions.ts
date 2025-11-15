@@ -3,7 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import {
     AcquiredDevice,
     ButtonRequest,
-    DelegatedKey,
+    DelegatedIdentityKey,
     EvoluKeys,
     ThpSuiteCredentials,
     TrezorDevice,
@@ -150,7 +150,13 @@ const setLocalFirstStorageSecret = createAction(
 
 const setLocalFirstDelegatedKey = createAction(
     `${DEVICE_MODULE_PREFIX}/setLocalFirstDelegatedKey`,
-    ({ deviceId, delegatedKey }: { deviceId: string; delegatedKey: DelegatedKey | null }) => ({
+    ({
+        deviceId,
+        delegatedKey,
+    }: {
+        deviceId: string;
+        delegatedKey: DelegatedIdentityKey | null;
+    }) => ({
         payload: { deviceId, delegatedKey },
     }),
 );

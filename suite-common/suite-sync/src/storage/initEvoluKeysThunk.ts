@@ -4,15 +4,20 @@ import { sha256 } from '@noble/hashes/sha2';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     AcquiredDevice,
-    DelegatedKey,
+    DelegatedIdentityKey,
     EvoluKeys,
     TrezorDevice,
     TrezorDeviceWithState,
-    asDelegatedKey,
+    asDelegatedIdentityKey,
     asDeviceEvoluOwnerId,
 } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { DEVICE_MODULE_PREFIX, deviceActions, selectDevices } from '@suite-common/wallet-core';
+import {
+    DEVICE_MODULE_PREFIX,
+    deviceActions,
+    selectDevices,
+    selectPersistentDeviceData,
+} from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect, { ProofOfDelegatedIdentity } from '@trezor/connect';
 import { asProofOfDelegatedIdentity } from '@trezor/connect/src/types/device';
@@ -28,7 +33,9 @@ type InitCipherKeyThunkParams = {
 const isCanceledErrorMessage = (errorMessage: string | null | undefined) =>
     Boolean(errorMessage?.toLocaleLowerCase().includes('cancelled'));
 
-const getProofOfDelegatedIdentity = (delegatedKey: DelegatedKey): ProofOfDelegatedIdentity => {
+const getProofOfDelegatedIdentity = (
+    delegatedKey: DelegatedIdentityKey,
+): ProofOfDelegatedIdentity => {
     const header = Buffer.from('EvoluGetNode');
 
     const prefixedMessageInBuffer = Buffer.concat([
@@ -49,14 +56,22 @@ type RetrieveEvoluNodeResult = {
     canceled: boolean;
 };
 
-const retrieveDelegatedIdentityKey = async (
-    device: TrezorDeviceWithState,
-    currentDelegatedKey: DelegatedKey | null | undefined,
-    options: {
+type RetrieveDelegatedIdentityKeyParams = {
+    device: TrezorDeviceWithState;
+    currentDelegatedKey: DelegatedIdentityKey | null | undefined;
+    options?: {
         refreshKey?: boolean;
-    } = {},
-): Promise<Result<DelegatedKey, RetrieveEvoluNodeResult>> => {
-    if (!currentDelegatedKey || options.refreshKey) {
+    };
+};
+
+const retrieveDelegatedIdentityKey = async ({
+    device,
+    currentDelegatedKey,
+    options = {},
+}: RetrieveDelegatedIdentityKeyParams): Promise<
+    Result<DelegatedIdentityKey, RetrieveEvoluNodeResult>
+> => {
+    if (!currentDelegatedKey || options.refreshKey !== undefined) {
         try {
             const result = await TrezorConnect.evoluGetDelegatedIdentityKey({
                 device: {
@@ -68,7 +83,7 @@ const retrieveDelegatedIdentityKey = async (
             });
 
             if (result.success) {
-                return ok(asDelegatedKey(result.payload.private_key));
+                return ok(asDelegatedIdentityKey(result.payload.private_key));
             }
 
             const canceled = isCanceledErrorMessage(result.payload.error);
@@ -90,7 +105,7 @@ const retrieveDelegatedIdentityKey = async (
 
 const retrieveEvoluNode = async (
     device: AcquiredDevice & { state: NonNullable<AcquiredDevice['state']> },
-    delegatedKey: DelegatedKey,
+    delegatedKey: DelegatedIdentityKey,
 ): Promise<Result<EvoluKeys, RetrieveEvoluNodeResult>> => {
     const proofOfDelegatedIdentity = getProofOfDelegatedIdentity(delegatedKey);
     try {
@@ -175,12 +190,17 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             );
         }
 
+        const persistedData = selectPersistentDeviceData(getState());
+        const devicePersistedData = persistedData.find(it => it.device_id === device.id);
+
         dispatch(
             deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: true }),
         );
 
-        const delegatedKeyResult = await retrieveDelegatedIdentityKey(device, device.delegatedKey, {
-            refreshKey: false,
+        const delegatedKeyResult = await retrieveDelegatedIdentityKey({
+            device,
+            currentDelegatedKey: devicePersistedData?.delegatedIdentityKey,
+            options: { refreshKey: false },
         });
 
         dispatch(
