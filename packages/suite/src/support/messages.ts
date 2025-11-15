@@ -8220,10 +8220,6 @@ export default defineMessages({
         id: 'TR_STAKE_DEREGISTERED',
         defaultMessage: 'Deregistration of a stake address',
     },
-    TR_STAKE_ENTIRE_BALANCE: {
-        id: 'TR_STAKE_ENTIRE_BALANCE',
-        defaultMessage: 'Entire balance',
-    },
     TR_STAKE_REGISTRATION_DEPOSIT: {
         id: 'TR_STAKE_REGISTRATION_DEPOSIT',
         defaultMessage: 'Registration deposit',

@@ -26,7 +26,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                     <Translation id="AMOUNT" />
                 </Paragraph>
                 <Paragraph typographyStyle="highlight">
-                    <Translation id="TR_STAKE_ENTIRE_BALANCE" />
+                    <Translation id="TR_STAKE_FULL_BALANCE" />
                 </Paragraph>
             </Row>
             {isUpdateProviderFlow ? (
