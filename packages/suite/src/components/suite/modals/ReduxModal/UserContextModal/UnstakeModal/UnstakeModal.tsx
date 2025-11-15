@@ -46,7 +46,13 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                         values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                     />
                 }
-                description={<Translation id="TR_STAKE_CLAIM_AFTER_UNSTAKING" />}
+                description={
+                    account.networkType === 'cardano' ? (
+                        <Translation id="TR_STAKE_UNSTAKE_WITH_REWARDS" />
+                    ) : (
+                        <Translation id="TR_STAKE_CLAIM_AFTER_UNSTAKING" />
+                    )
+                }
                 onCancel={onCancelClick}
                 bottomContent={<UnstakeButton />}
             >
