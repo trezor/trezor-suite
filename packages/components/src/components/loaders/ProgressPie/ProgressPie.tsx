@@ -2,11 +2,16 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { Elevation, mapElevationToBorder } from '@trezor/theme';
+
+import { useElevation } from '../../ElevationContext/ElevationContext';
+
 const Container = styled.div<{
     $valueInPercents: number;
     $size: number;
     $color?: string;
     $backgroundColor?: string;
+    $elevation: Elevation;
 }>`
     display: flex;
     justify-content: center;
@@ -14,9 +19,9 @@ const Container = styled.div<{
     width: ${({ $size }) => `${$size}px`};
     height: ${({ $size }) => `${$size}px`};
     border-radius: 50%;
-    background: ${({ theme, $valueInPercents, $color, $backgroundColor }) =>
-        `conic-gradient(${$color || theme.legacy.BG_GREEN} ${3.6 * $valueInPercents}deg, ${
-            $backgroundColor || theme.legacy.STROKE_GREY
+    background: ${({ theme, $valueInPercents, $color, $backgroundColor, $elevation }) =>
+        `conic-gradient(${$color || theme.backgroundPrimaryDefault} ${3.6 * $valueInPercents}deg, ${
+            $backgroundColor || mapElevationToBorder({ $elevation, theme })
         } 0)`};
 `;
 
@@ -36,14 +41,19 @@ export const ProgressPie = ({
     backgroundColor,
     className,
     color,
-}: ProgressPieProps) => (
-    <Container
-        $size={size}
-        $valueInPercents={valueInPercents}
-        $backgroundColor={backgroundColor}
-        $color={color}
-        className={className}
-    >
-        {children}
-    </Container>
-);
+}: ProgressPieProps) => {
+    const { elevation } = useElevation();
+
+    return (
+        <Container
+            $size={size}
+            $valueInPercents={valueInPercents}
+            $backgroundColor={backgroundColor}
+            $color={color}
+            className={className}
+            $elevation={elevation}
+        >
+            {children}
+        </Container>
+    );
+};

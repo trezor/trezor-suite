@@ -3,15 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { Object, type TSchema } from '@sinclair/typebox';
 import styled from 'styled-components';
 
-import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { CollapsibleBox, Select, Switch, useElevation, variables } from '@trezor/components';
+import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
 import { MethodState } from '../reducers/methodCommon';
 
-const ApiPlaygroundWrapper = styled.div`
+const ApiPlaygroundWrapper = styled.div<{ $elevation: Elevation }>`
     display: block;
     position: fixed;
     z-index: 10;
@@ -23,7 +23,7 @@ const ApiPlaygroundWrapper = styled.div`
     overscroll-behavior: contain;
     border-radius: 1rem;
     padding: 0;
-    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    border: 1px solid ${mapElevationToBorder};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
 
     @media (min-width: ${variables.SCREEN_SIZE.LG}) {
@@ -82,6 +82,8 @@ interface ApiPlaygroundProps {
     )[];
 }
 export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
+    const { elevation } = useElevation();
+
     const [selectedOption, setSelectedOption] = useState(0);
     const { method } = useSelector(state => ({
         method: state.method,
@@ -119,7 +121,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     }, [options]);
 
     return (
-        <ApiPlaygroundWrapper>
+        <ApiPlaygroundWrapper $elevation={elevation}>
             <CollapsibleBox
                 heading="Method testing tool"
                 paddingType="large"

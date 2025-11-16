@@ -240,7 +240,7 @@ const InnerWrapper = styled.div`
 `;
 
 const H = styled.h1`
-    color: ${intermediaryTheme.light.legacy.TYPE_RED};
+    color: ${intermediaryTheme.light.textAlertRed};
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;

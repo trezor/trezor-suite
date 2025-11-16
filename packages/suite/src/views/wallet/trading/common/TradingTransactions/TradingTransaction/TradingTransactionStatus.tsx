@@ -15,25 +15,25 @@ const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
         case 'TR_BUY_STATUS_ACTION_REQUIRED':
             return {
                 icon: 'clock',
-                color: theme.legacy.TYPE_ORANGE,
+                color: theme.textAlertYellow,
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY':
             return {
                 icon: 'clock',
-                color: theme.legacy.TYPE_ORANGE,
+                color: theme.textAlertYellow,
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_ERROR':
             return {
                 icon: 'x',
-                color: theme.legacy.TYPE_RED,
+                color: theme.textAlertRed,
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_SUCCESS':
             return {
                 icon: 'check',
-                color: theme.legacy.TYPE_GREEN,
+                color: theme.textPrimaryDefault,
                 statusMessageId: message,
             } as const;
         // no default
@@ -47,19 +47,19 @@ const getSellTradeData = (status: SellTradeStatus, theme: DefaultTheme) => {
         case 'TR_SELL_STATUS_PENDING':
             return {
                 icon: 'clock',
-                color: theme.legacy.TYPE_ORANGE,
+                color: theme.textAlertYellow,
                 statusMessageId: message,
             } as const;
         case 'TR_SELL_STATUS_ERROR':
             return {
                 icon: 'x',
-                color: theme.legacy.TYPE_RED,
+                color: theme.textAlertRed,
                 statusMessageId: message,
             } as const;
         case 'TR_SELL_STATUS_SUCCESS':
             return {
                 icon: 'check',
-                color: theme.legacy.TYPE_GREEN,
+                color: theme.textPrimaryDefault,
                 statusMessageId: message,
             } as const;
         // no default
@@ -74,25 +74,25 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: DefaultTheme) 
         case 'TR_EXCHANGE_STATUS_CONVERTING':
             return {
                 icon: 'clock',
-                color: theme.legacy.TYPE_ORANGE,
+                color: theme.textAlertYellow,
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_KYC':
             return {
                 icon: 'warning',
-                color: theme.legacy.TYPE_ORANGE,
+                color: theme.textAlertYellow,
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_ERROR':
             return {
                 icon: 'x',
-                color: theme.legacy.TYPE_RED,
+                color: theme.textAlertRed,
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_SUCCESS':
             return {
                 icon: 'check',
-                color: theme.legacy.TYPE_GREEN,
+                color: theme.textPrimaryDefault,
                 statusMessageId: message,
             } as const;
         // no default

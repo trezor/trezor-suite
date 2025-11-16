@@ -107,7 +107,7 @@ const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountC
         </Column>
     ) : (
         <FailedContainer>
-            <WarningIcon name="warning" color={theme.legacy.TYPE_RED} size={14} />
+            <WarningIcon name="warning" color={theme.iconAlertRed} size={14} />
             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
         </FailedContainer>
     );

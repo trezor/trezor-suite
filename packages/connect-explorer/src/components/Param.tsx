@@ -50,7 +50,7 @@ const ParamType = styled.div<{
     ${({ $isLink, theme }) =>
         $isLink &&
         `
-        color: ${theme.legacy.TYPE_GREEN};
+        color: ${theme.textPrimaryDefault};
         text-decoration: underline;
     `}
 `;

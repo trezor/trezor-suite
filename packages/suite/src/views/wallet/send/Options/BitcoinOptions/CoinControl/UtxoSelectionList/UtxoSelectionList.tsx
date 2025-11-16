@@ -4,17 +4,17 @@ import { transparentize } from 'polished';
 import styled from 'styled-components';
 
 import { selectAccountTransactions } from '@suite-common/wallet-core';
-import { Icon, IconName, variables } from '@trezor/components';
+import { Icon, IconName, useElevation, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { CSSColor } from '@trezor/theme';
+import { CSSColor, Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { UtxoSelection } from './UtxoSelection/UtxoSelection';
 
-const Wrapper = styled.section`
-    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+const Wrapper = styled.section<{ $elevation: Elevation }>`
+    border-bottom: 1px solid ${mapElevationToBorder};
     margin: 12px 0 16px;
     padding-bottom: 14px;
 `;
@@ -63,12 +63,13 @@ export const UtxoSelectionList = ({
     utxos,
     withHeader,
 }: UtxoSelectionListProps) => {
+    const { elevation } = useElevation();
     const { account } = useSendFormContext();
 
     const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
 
     return (
-        <Wrapper>
+        <Wrapper $elevation={elevation}>
             {withHeader && (
                 <Header>
                     <StyledIcon

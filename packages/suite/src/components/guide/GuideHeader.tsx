@@ -1,17 +1,20 @@
 import { JSX, useContext } from 'react';
 
-import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
-import { IconButton, variables } from '@trezor/components';
+import { IconButton, useElevation, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { typography, zIndices } from '@trezor/theme';
+import { Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
 import { ContentScrolledContext, HeaderBreadcrumb } from 'src/components/guide';
 import { useDispatch } from 'src/hooks/suite';
 
-const HeaderWrapper = styled.div<{ $noLabel?: boolean; $isScrolled: boolean }>`
+const HeaderWrapper = styled.div<{
+    $noLabel?: boolean;
+    $isScrolled: boolean;
+    $elevation: Elevation;
+}>`
     display: flex;
     align-items: center;
     padding: 12px 21px;
@@ -24,11 +27,11 @@ const HeaderWrapper = styled.div<{ $noLabel?: boolean; $isScrolled: boolean }>`
     white-space: nowrap;
     z-index: ${zIndices.base}; /* Prevents search bar from overlapping when scrolling */
 
-    ${({ $isScrolled }) =>
+    ${({ $isScrolled, $elevation, theme }) =>
         $isScrolled &&
         css`
-            box-shadow: 0 9px 27px 0 ${({ theme }) => transparentize(0.5, theme.legacy.STROKE_GREY)};
-            border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+            box-shadow: ${({ theme }) => theme.boxShadowBase};
+            border-bottom: 1px solid ${mapElevationToBorder({ theme, $elevation })};
         `}
 
     ${({ $noLabel }) =>
@@ -59,6 +62,7 @@ interface GuideHeaderProps {
 }
 
 export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) => {
+    const { elevation } = useElevation();
     const dispatch = useDispatch();
     const isScrolled = useContext(ContentScrolledContext);
 
@@ -82,7 +86,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
     };
 
     return (
-        <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled}>
+        <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled} $elevation={elevation}>
             {!useBreadcrumb && back && (
                 <>
                     <IconButton

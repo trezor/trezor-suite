@@ -4,7 +4,7 @@ import { TooltipProps } from 'recharts';
 import styled from 'styled-components';
 
 import { Row, variables } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { paletteV2, spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -48,11 +48,11 @@ interface WrapperProps {
 const CustomTooltipWrapper = styled.div<WrapperProps>`
     display: flex;
     flex-direction: column;
-    color: ${({ theme }) => theme.legacy.TYPE_WHITE};
+    color: ${paletteV2.globalWhiteAlpha1000};
     background: ${({ theme }) => theme.legacy.BG_TOOLTIP};
     padding: 8px 6px;
     border-radius: 4px;
-    box-shadow: 0 3px 14px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_BLACK_15};
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
     font-variant-numeric: tabular-nums;
     ${({ $positionX, $boxWidth }) =>
         $positionX >= $boxWidth - OFFSET_LIMIT_HORIZONTAL && `position: absolute; right: 0;`}

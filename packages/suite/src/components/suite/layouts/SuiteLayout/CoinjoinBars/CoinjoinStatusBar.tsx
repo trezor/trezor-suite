@@ -47,7 +47,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
             cursor: pointer;
 
             &:hover {
-                background: ${theme.legacy.BG_WHITE_ALT_HOVER};
+                background: ${theme.backgroundSurfaceElevation0};
                 ${ViewText} {
                     text-decoration: underline;
                     transform: translateX(-4px);
@@ -62,7 +62,7 @@ const StyledProgressPie = styled(ProgressPie)`
 `;
 
 const StatusText = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
+    color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 
 const Note = styled.span`

@@ -2,7 +2,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
+import { Divider, variables } from '@trezor/components';
 import { CoreRequestMessage, UI, UiEvent } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { spacingsPx } from '@trezor/theme';
@@ -25,12 +25,6 @@ const WalletsWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-`;
-
-const Divider = styled.div`
-    margin: 16px;
-    height: 1px;
-    background: ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 export type PassphraseEventProps = Extract<UiEvent, { type: 'ui-request_passphrase' }>;
@@ -94,7 +88,7 @@ export const Passphrase = (props: PassphraseProps) => {
                         type="standard"
                         onSubmit={onPassphraseSubmit}
                     />
-                    <Divider />
+                    <Divider margin={16} />
                     <PassphraseTypeCard
                         title={
                             <FormattedMessage

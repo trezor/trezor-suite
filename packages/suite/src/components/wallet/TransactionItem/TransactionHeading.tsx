@@ -63,10 +63,10 @@ const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ $isPhishingTransactio
 `;
 
 const HelpLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.legacy.TYPE_ORANGE};
+    color: ${({ theme }) => theme.textAlertYellow};
 
     path {
-        fill: ${({ theme }) => theme.legacy.TYPE_ORANGE};
+        fill: ${({ theme }) => theme.iconAlertYellow};
     }
 `;
 

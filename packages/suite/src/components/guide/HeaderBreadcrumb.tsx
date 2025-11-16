@@ -35,12 +35,12 @@ const BreadcrumbDelimiter = styled.span`
 `;
 
 const CategoryLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
+    color: ${({ theme }) => theme.textPrimaryDefault};
     transition: ${({ theme }) =>
         `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
 
     &:hover {
-        color: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, theme.legacy.TYPE_GREEN)};
+        color: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, theme.textPrimaryDefault)};
     }
 `;
 

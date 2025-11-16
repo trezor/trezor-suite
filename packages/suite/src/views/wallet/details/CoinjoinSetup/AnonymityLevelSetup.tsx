@@ -21,7 +21,7 @@ const Label = styled.span`
 
 const RedText = styled.span`
     margin-right: 2px;
-    color: ${({ theme }) => theme.legacy.TYPE_RED};
+    color: ${({ theme }) => theme.textAlertRed};
 `;
 
 const expandAnimation: Partial<MotionProps> = {

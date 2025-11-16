@@ -238,10 +238,7 @@ export const TransactionsGraph = memo(
                                 }}
                                 onMouseLeave={() => setHovered(-1)}
                             >
-                                <CartesianGrid
-                                    vertical={false}
-                                    stroke={theme.legacy.STROKE_LIGHT_GREY}
-                                />
+                                <CartesianGrid vertical={false} stroke={theme.borderFocus} />
 
                                 <XAxis
                                     // xAxisId="primary"
@@ -249,7 +246,7 @@ export const TransactionsGraph = memo(
                                     type="number"
                                     domain={calcXDomain(xTicks, data, selectedRange)}
                                     // width={10}
-                                    stroke={theme.legacy.STROKE_LIGHT_GREY}
+                                    stroke={theme.borderFocus}
                                     interval="preserveEnd"
                                     tick={<GraphXAxisTick selectedRange={selectedRange} />}
                                     ticks={xTicks}

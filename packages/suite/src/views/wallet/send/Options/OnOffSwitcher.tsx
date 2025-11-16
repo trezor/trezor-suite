@@ -11,11 +11,11 @@ const Option = styled.div`
 `;
 
 const On = styled(Option)`
-    color: ${({ theme }) => theme.legacy.BG_GREEN};
+    color: ${({ theme }) => theme.backgroundPrimaryDefault};
 `;
 
 const Off = styled(Option)`
-    color: ${({ theme }) => theme.legacy.TYPE_RED};
+    color: ${({ theme }) => theme.textAlertRed};
 `;
 
 const EqualSign = styled.div`

@@ -179,7 +179,7 @@ export const TradingOfferSellBankAccount = () => {
                                         <AccountVerified>
                                             <IconWrapper>
                                                 <Icon
-                                                    color={theme.legacy.TYPE_GREEN}
+                                                    color={theme.iconPrimaryDefault}
                                                     size={15}
                                                     name="check"
                                                 />
