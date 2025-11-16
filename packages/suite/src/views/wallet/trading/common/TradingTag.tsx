@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { borders } from '@trezor/theme';
+import { borders, paletteV2 } from '@trezor/theme';
 
 const TagRow = styled.div`
     display: flex;
@@ -10,8 +10,8 @@ const TagRow = styled.div`
 const Tag = styled.div`
     padding: 3px 8px 0;
     border-radius: ${borders.radii.xs};
-    background: ${({ theme }) => theme.legacy.TYPE_ORANGE};
-    color: ${({ theme }) => theme.legacy.TYPE_WHITE};
+    background: ${({ theme }) => theme.textAlertYellow};
+    color: ${paletteV2.globalWhiteAlpha1000};
     font-size: ${variables.FONT_SIZE.TINY};
     line-height: 21px;
     text-transform: capitalize;

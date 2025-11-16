@@ -1,7 +1,13 @@
 import styled from 'styled-components';
 
 import { H2 } from '@trezor/components';
-import { borders, typography } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    typography,
+} from '@trezor/theme';
 
 export const Heading = styled.div`
     padding-left: 5px;
@@ -59,13 +65,13 @@ export const Content = styled.div`
     width: 100%;
 `;
 
-export const Value = styled.div`
+export const Value = styled.div<{ $elevation: Elevation }>`
     ${typography.hint}
     color: ${({ theme }) => theme.textDefault};
     font-variant-numeric: tabular-nums slashed-zero;
     width: fit-content;
-    background: ${({ theme }) => theme.legacy.BG_LIGHT_GREY};
-    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    background: ${mapElevationToBackground};
+    border: 1px solid ${mapElevationToBorder};
     border-radius: ${borders.radii.xs};
     word-break: break-all;
     padding: 10px;

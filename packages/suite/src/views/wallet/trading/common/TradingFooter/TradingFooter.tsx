@@ -2,9 +2,16 @@ import { useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Icon, Image, Link, Row } from '@trezor/components';
+import { Icon, Image, Link, Row, useElevation } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
-import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBorder,
+    spacingsPx,
+    typography,
+    zIndices,
+} from '@trezor/theme';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -43,19 +50,19 @@ const FooterBox = styled.div`
     flex: 1;
     min-width: 345px;
     bottom: 30px;
-    box-shadow: 0 1px 2px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_BLACK_20};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
     z-index: ${zIndices.tooltip};
 
-    background: ${({ theme }) => theme.legacy.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     overflow: hidden;
 `;
 
-const Header = styled.div`
+const Header = styled.div<{ $elevation: Elevation }>`
     display: flex;
     justify-content: space-between;
     padding-bottom: 10px;
     margin-bottom: 10px;
-    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    border-bottom: 1px solid ${mapElevationToBorder};
 `;
 
 const BoxLeft = styled.div``;
@@ -107,6 +114,7 @@ const FooterText = styled(Text)`
 `;
 
 export const TradingFooter = () => {
+    const { elevation } = useElevation();
     const [toggled, setToggled] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const toggleRef = useRef<HTMLDivElement>(null);
@@ -127,7 +135,7 @@ export const TradingFooter = () => {
                     <Right>
                         {toggled && (
                             <FooterBox ref={menuRef}>
-                                <Header>
+                                <Header $elevation={elevation}>
                                     <BoxLeft>
                                         <TradingFooterLogoWrapper>
                                             <Link href={INVITY_URL} target="_blank">

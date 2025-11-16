@@ -33,7 +33,7 @@ const StyledContainer = styled(BaseToastContainer)`
         border-radius: ${borders.radii.xs};
         box-shadow: 0 2px 5px 0 rgb(0 0 0 / 19%);
         color: ${({ theme }) => theme.textDefault};
-        background: ${({ theme }) => theme.legacy.BG_WHITE};
+        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
         padding: 0;
         font-family:
             'TT Satoshi',

@@ -1,14 +1,19 @@
 import { MouseEvent } from 'react';
 
-import { transparentize } from 'polished';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Icon, variables } from '@trezor/components';
+import { Icon, useElevation, variables } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { CoinLogo } from '@trezor/product-components';
-import { typography } from '@trezor/theme';
+import {
+    Elevation,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    paletteV2,
+    typography,
+} from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -30,10 +35,7 @@ const SettingsWrapper = styled.div<{
         onClick &&
         css`
             &:hover {
-                background-color: ${transparentize(
-                    theme.legacy.HOVER_TRANSPARENTIZE_FILTER,
-                    theme.legacy.HOVER_PRIMER_COLOR,
-                )};
+                background-color: ${theme.backgroundTertiaryPressedOnElevation1};
             }
         `}
 
@@ -74,11 +76,12 @@ export const CoinWrapper = styled.button<{
     disabled: boolean; // intentionally not transient, button has disabled HTML Attribute
     $forceHover: boolean;
     $hasSettings: boolean;
+    $elevation: Elevation;
 }>`
     display: flex;
     place-items: center flex-start;
-    border: 1.5px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    background: ${({ theme }) => theme.legacy.BG_WHITE};
+    border: 1.5px solid ${mapElevationToBorder};
+    background: ${mapElevationToBackground};
     border-radius: 9999px;
     height: 47px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -98,9 +101,9 @@ export const CoinWrapper = styled.button<{
     ${getFocusShadowStyle()}
 
     &:hover {
-        background: ${({ theme }) => theme.legacy.BG_GREY_ALT};
+        background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
         border-color: ${({ theme, $toggled }) =>
-            $toggled ? theme.legacy.BG_GREEN_HOVER : theme.legacy.TYPE_LIGHTER_GREY};
+            $toggled ? theme.backgroundPrimaryPressed : theme.borderInputFocus};
     }
 
     ${({ disabled, $forceHover, $hasSettings, theme, $toggled }) =>
@@ -181,7 +184,7 @@ export const Coin = ({
     onToggle,
     onSettings,
 }: CoinProps) => {
-    const theme = useTheme();
+    const { elevation } = useElevation();
 
     const onSettingsClick =
         onSettings &&
@@ -199,11 +202,12 @@ export const Coin = ({
             onClick={onToggle}
             data-testid={`@settings/wallet/network/${symbol}`}
             data-active={toggled}
+            $elevation={elevation}
         >
             <ImageWrapper>
                 <CoinLogo size={24} symbol={symbol} type="token" />
                 <Check $visible={toggled}>
-                    <Icon size={8} color={theme.legacy.TYPE_WHITE} name="check" />
+                    <Icon size={8} color={paletteV2.globalWhiteAlpha1000} name="check" />
                 </Check>
             </ImageWrapper>
             {label ? (

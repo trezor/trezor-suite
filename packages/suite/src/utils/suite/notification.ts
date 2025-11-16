@@ -21,13 +21,13 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
 export const getVariantColor = (variant: NotificationViewProps['variant']) => {
     switch (variant) {
         case 'info':
-            return intermediaryTheme.light.legacy.TYPE_BLUE;
+            return intermediaryTheme.light.textAlertBlue;
         case 'warning':
-            return intermediaryTheme.light.legacy.TYPE_ORANGE;
+            return intermediaryTheme.light.textAlertYellow;
         case 'error':
-            return intermediaryTheme.light.legacy.TYPE_RED;
+            return intermediaryTheme.light.textAlertRed;
         case 'success':
-            return intermediaryTheme.light.legacy.TYPE_GREEN;
+            return intermediaryTheme.light.textPrimaryDefault;
         case 'transparent':
         default:
             return 'transparent';

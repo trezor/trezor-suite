@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import { Button, H2, Paragraph, variables } from '@trezor/components';
+import { Button, H2, Paragraph, useElevation, variables } from '@trezor/components';
+import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';
@@ -26,8 +27,9 @@ const Buttons = styled.div`
     }
 `;
 
-const Separator = styled.div`
-    background: ${({ theme }) => theme.legacy.STROKE_GREY};
+// @TODO refactor to Divider
+const Separator = styled.div<{ $elevation: Elevation }>`
+    background: ${mapElevationToBorder};
     height: 1px;
     margin: 30px 0;
     width: 80%;
@@ -51,39 +53,43 @@ type ErrorProps = {
     error: string;
 };
 
-export const Error = ({ error }: ErrorProps) => (
-    <Wrapper>
-        <H2>Error occurred</H2>
-        <Paragraph margin={{ bottom: 8 }} align="center">
-            It appears something is broken.
-        </Paragraph>
-        <ErrorMessage>{error}</ErrorMessage>
-        <Separator />
-        <Buttons>
-            <Button
-                iconLeft="repeat"
-                intent="neutral"
-                priority="secondary"
-                onClick={() => {
-                    reloadApp();
-                }}
-                margin={{ vertical: 6, horizontal: 12 }}
-            >
-                Reload window
-            </Button>
+export const Error = ({ error }: ErrorProps) => {
+    const { elevation } = useElevation();
 
-            <Button
-                iconLeft="repeat"
-                intent="neutral"
-                priority="secondary"
-                onClick={() => {
-                    db.removeDatabase();
-                    reloadApp();
-                }}
-                margin={{ vertical: 6, horizontal: 12 }}
-            >
-                Clear storage and reload
-            </Button>
-        </Buttons>
-    </Wrapper>
-);
+    return (
+        <Wrapper>
+            <H2>Error occurred</H2>
+            <Paragraph margin={{ bottom: 8 }} align="center">
+                It appears something is broken.
+            </Paragraph>
+            <ErrorMessage>{error}</ErrorMessage>
+            <Separator $elevation={elevation} />
+            <Buttons>
+                <Button
+                    iconLeft="repeat"
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={() => {
+                        reloadApp();
+                    }}
+                    margin={{ vertical: 6, horizontal: 12 }}
+                >
+                    Reload window
+                </Button>
+
+                <Button
+                    iconLeft="repeat"
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={() => {
+                        db.removeDatabase();
+                        reloadApp();
+                    }}
+                    margin={{ vertical: 6, horizontal: 12 }}
+                >
+                    Clear storage and reload
+                </Button>
+            </Buttons>
+        </Wrapper>
+    );
+};

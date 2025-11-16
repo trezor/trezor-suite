@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Banner, Card, Column, Icon } from '@trezor/components';
+import { Banner, Card, Column, Icon, useElevation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
@@ -31,6 +31,7 @@ interface CardanoStakeProps {
 }
 
 export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
+    const { elevation } = useElevation();
     const {
         address,
         delegate,
@@ -73,7 +74,12 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                                 <Translation id="TR_STAKING_STAKE_ADDRESS" />
                             </Title>
                             <HiddenPlaceholder>
-                                <Value data-testid="@cardano/staking/address">{address}</Value>
+                                <Value
+                                    $elevation={elevation}
+                                    data-testid="@cardano/staking/address"
+                                >
+                                    {address}
+                                </Value>
                             </HiddenPlaceholder>
                         </CardanoColumn>
                     </Content>
@@ -86,7 +92,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                                 <Title>
                                     <Translation id="TR_STAKING_DEPOSIT" />
                                 </Title>
-                                <Value>
+                                <Value $elevation={elevation}>
                                     {formatNetworkAmount(deposit || '0', account.symbol)}{' '}
                                     {getNetworkDisplaySymbol(account.symbol)}
                                 </Value>
@@ -97,7 +103,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                                 <Title>
                                     <Translation id="TR_STAKING_FEE" />
                                 </Title>
-                                <Value>
+                                <Value $elevation={elevation}>
                                     {formatNetworkAmount(fee || '0', account.symbol)}{' '}
                                     {getNetworkDisplaySymbol(account.symbol)}
                                 </Value>

@@ -48,7 +48,7 @@ const DiscoveryProgress = styled(ProgressBar)`
 const FactHeading = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.legacy.TYPE_ORANGE};
+    color: ${({ theme }) => theme.textAlertYellow};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
@@ -66,7 +66,7 @@ const StyledLottieAnimation = styled(LottieAnimation)`
 
     path {
         stroke: ${({ theme }) => theme.iconSubdued};
-        fill: ${({ theme }) => theme.legacy.BG_WHITE};
+        fill: ${({ theme }) => theme.iconDefaultInverted};
     }
 `;
 
@@ -101,7 +101,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                 <DiscoveryProgress max={1.01} value={progress} />
 
                 <FactHeading>
-                    <SparksIcon name="starFour" size={13} color={theme.legacy.TYPE_ORANGE} />
+                    <SparksIcon name="starFour" size={13} color={theme.iconAlertYellow} />
                     <Translation id="TR_LOADING_FACT_TITLE" />
                 </FactHeading>
 

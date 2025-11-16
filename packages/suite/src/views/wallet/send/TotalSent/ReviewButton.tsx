@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import { Banner, Button, Checkbox, Column, Tooltip, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { paletteV2, spacingsPx } from '@trezor/theme';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
@@ -30,7 +30,7 @@ const List = styled.ul`
 const TextButton = styled.button`
     background: none;
     border: none;
-    color: ${({ theme }) => theme.legacy.TYPE_WHITE};
+    color: ${paletteV2.globalWhiteAlpha1000};
     cursor: pointer;
     padding: 0;
     text-decoration: underline;

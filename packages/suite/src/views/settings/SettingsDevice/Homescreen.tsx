@@ -32,7 +32,7 @@ const Col = styled.div`
 `;
 
 const ValidationMessage = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_ORANGE};
+    color: ${({ theme }) => theme.textAlertYellow};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

@@ -16,7 +16,7 @@ const ClockIcon = styled(Icon)`
     position: absolute;
     top: -2px;
     right: 0;
-    background: ${({ theme }) => theme.legacy.BG_WHITE};
+    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     border-radius: 50%;
 `;
 
@@ -34,12 +34,12 @@ export const TransactionTypeIcon = ({ type, isPending, ...rest }: TransactionTyp
         <IconsWrapper $isJoint={isJoint} {...rest}>
             <Icon
                 name={getTxIcon(type)}
-                color={type === 'failed' ? theme.legacy.TYPE_RED : theme.textSubdued}
+                color={type === 'failed' ? theme.iconAlertRed : theme.textSubdued}
                 size={isJoint ? 20 : 24}
                 {...rest}
             />
 
-            {isPending && <ClockIcon name="clock" size={12} color={theme.legacy.TYPE_ORANGE} />}
+            {isPending && <ClockIcon name="clock" size={12} color={theme.iconAlertYellow} />}
         </IconsWrapper>
     );
 };

@@ -233,7 +233,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         <Translation id="TR_NOT_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                     }
                     icon="shieldWarning"
-                    iconColor={theme.legacy.TYPE_DARK_ORANGE}
+                    iconColor={theme.iconAlertYellow}
                     utxos={lowAnonymityUtxosOnPage}
                 />
             )}

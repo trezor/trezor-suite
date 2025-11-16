@@ -10,21 +10,21 @@ import {
 
 import styled from 'styled-components';
 
-import { Input, InputProps, variables } from '@trezor/components';
-import { typography } from '@trezor/theme';
+import { Input, InputProps, useElevation, variables } from '@trezor/components';
+import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 
 const LevelContainer = styled.div`
     width: 64px;
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const Level = styled(Input)`
+const Level = styled(Input)<{ $elevation: Elevation }>`
     input {
         background: none;
         height: 42px;
         padding: ${({ rightContent }) => !rightContent && '1px 12px 0 12px'};
-        border: 1.5px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-        color: ${({ theme }) => theme.legacy.TYPE_GREEN};
+        border: 1.5px solid ${mapElevationToBorder};
+        color: ${({ theme }) => theme.textPrimaryDefault};
         font-size: ${variables.FONT_SIZE.H3};
         text-align: center;
 
@@ -54,6 +54,7 @@ export const SliderInput = forwardRef<
     { setPreviousValue: (number: number) => void },
     SliderInputProps
 >(({ value, onChange, min, max, unit, className, ...props }, ref) => {
+    const { elevation } = useElevation();
     const [inputValue, setInputValue] = useState<number | ''>(value);
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -132,6 +133,7 @@ export const SliderInput = forwardRef<
                 onKeyDown={handleKeyDown}
                 rightContent={<InnerAddon onClick={focusInput}>{unit}</InnerAddon>}
                 innerRef={inputRef}
+                $elevation={elevation}
                 {...props}
             />
         </LevelContainer>

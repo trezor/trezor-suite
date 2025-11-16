@@ -136,7 +136,7 @@ export const MobileActionItem = ({
                 )}
                 {indicator === 'check' && (
                     <Indicator>
-                        <Icon name="check" size={10} color={theme.legacy.TYPE_GREEN} />
+                        <Icon name="check" size={10} color={theme.iconPrimaryDefault} />
                     </Indicator>
                 )}
             </>

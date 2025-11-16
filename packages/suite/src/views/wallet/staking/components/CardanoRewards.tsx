@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Column, Icon } from '@trezor/components';
+import { Card, Column, Icon, useElevation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
@@ -33,6 +33,8 @@ interface CardanoRewardsProps {
 }
 
 export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) => {
+    const { elevation } = useElevation();
+
     const {
         address,
         rewards,
@@ -77,7 +79,7 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
                                 <Translation id="TR_STAKING_STAKE_ADDRESS" />
                             </Title>
                             <HiddenPlaceholder>
-                                <Value>{address}</Value>
+                                <Value $elevation={elevation}>{address}</Value>
                             </HiddenPlaceholder>
                         </CardanoColumn>
                     </Content>
@@ -89,7 +91,7 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
                                 <Translation id="TR_STAKING_REWARDS" />
                             </Title>
                             <HiddenPlaceholder>
-                                <Value>
+                                <Value $elevation={elevation}>
                                     {formatNetworkAmount(rewards ?? '0', account.symbol)}{' '}
                                     {getNetworkDisplaySymbol(account.symbol)}
                                 </Value>
