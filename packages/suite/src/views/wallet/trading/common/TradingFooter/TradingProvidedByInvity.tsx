@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 export const TradingProvidedByInvity = () => (

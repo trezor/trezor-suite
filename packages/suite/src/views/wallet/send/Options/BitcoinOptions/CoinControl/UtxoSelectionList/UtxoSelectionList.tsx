@@ -33,7 +33,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

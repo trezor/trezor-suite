@@ -16,7 +16,7 @@ const Header = styled.div`
     padding-bottom: 8px;
     padding-right: 24px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
 `;
@@ -46,7 +46,7 @@ const Wrapper = styled(Card)`
 `;
 
 const Text = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -59,7 +59,7 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     height: 29px; /* to match the TransacitonItem component */
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 

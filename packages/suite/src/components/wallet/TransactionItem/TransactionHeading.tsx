@@ -55,7 +55,7 @@ const ChevronIconWrapper = styled.div<{ $show: boolean; $animate: boolean }>`
 
 const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ $isPhishingTransaction: boolean }>`
     color: ${({ theme, $isPhishingTransaction }) =>
-        $isPhishingTransaction ? theme.legacy.TYPE_LIGHT_GREY : theme.legacy.TYPE_DARK_GREY};
+        $isPhishingTransaction ? theme.textSubdued : theme.textDefault};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
@@ -178,7 +178,7 @@ export const TransactionHeading = ({
                 >
                     <Icon
                         size={nestedItemIsHovered || headingIsHovered ? 18 : 16}
-                        color={theme.legacy.TYPE_DARK_GREY}
+                        color={theme.textDefault}
                         name="caretRight"
                     />
                 </ChevronIconWrapper>

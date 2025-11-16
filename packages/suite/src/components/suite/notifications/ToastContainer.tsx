@@ -32,7 +32,7 @@ const StyledContainer = styled(BaseToastContainer)`
     .Toastify__toast {
         border-radius: ${borders.radii.xs};
         box-shadow: 0 2px 5px 0 rgb(0 0 0 / 19%);
-        color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.textDefault};
         background: ${({ theme }) => theme.legacy.BG_WHITE};
         padding: 0;
         font-family:

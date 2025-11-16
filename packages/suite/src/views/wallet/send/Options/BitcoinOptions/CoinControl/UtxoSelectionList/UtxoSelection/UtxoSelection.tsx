@@ -200,9 +200,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const unspendableTooltip = resolveUtxoSpendable({ utxo, coinjoinRegisteredUtxos });
     const isDisabled = unspendableTooltip !== null;
 
-    const utxoTagIconColor = isDisabled
-        ? theme.legacy.TYPE_LIGHT_GREY
-        : theme.legacy.TYPE_DARK_GREY;
+    const utxoTagIconColor = isDisabled ? theme.textSubdued : theme.textDefault;
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
     const showTransactionDetail: MouseEventHandler = e => {

@@ -83,7 +83,7 @@ const descriptionGridStyle = css`
 `;
 
 const Description = styled.p`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 

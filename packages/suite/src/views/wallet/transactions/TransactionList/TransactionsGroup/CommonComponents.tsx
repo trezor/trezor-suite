@@ -15,7 +15,7 @@ export const HeaderWrapper = styled.div`
 
 export const Col = styled(HiddenPlaceholder)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 

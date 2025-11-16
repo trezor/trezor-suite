@@ -21,7 +21,7 @@ import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
 
 const Heading = styled.h3`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin: 14px 0 4px;

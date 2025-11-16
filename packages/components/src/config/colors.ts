@@ -61,8 +61,6 @@ const THEME = {
             TYPE_DARK_ORANGE: '#B47229', // used in Warning, provides better contrast than TYPE_ORANGE, comes from Suite 2.0 design
             TYPE_BLUE: '#1d88c5',
             TYPE_RED: '#cd4949',
-            TYPE_DARK_GREY: '#1F1F1F',
-            TYPE_LIGHT_GREY: '#808080',
             TYPE_LIGHTER_GREY: '#bdbdbd',
             TYPE_WHITE: '#ffffff',
             TYPE_SECONDARY_TEXT: '#00854D',
@@ -129,8 +127,6 @@ const THEME = {
             TYPE_DARK_ORANGE: '#F7BF2F', // used in Warning, provides better contrast than TYPE_ORANGE, comnes from Suite 2.0 design
             TYPE_BLUE: '#197eaa',
             TYPE_RED: '#c65353',
-            TYPE_DARK_GREY: '#eaebed',
-            TYPE_LIGHT_GREY: '#959596',
             TYPE_LIGHTER_GREY: '#bdbdbd',
             TYPE_WHITE: '#fafafa',
             TYPE_SECONDARY_TEXT: '#ffffff',
@@ -198,8 +194,6 @@ const THEME = {
             TYPE_DARK_ORANGE: '#F7BF2F', // used in Warning, provides better contrast than TYPE_ORANGE, comnes from Suite 2.0 design
             TYPE_BLUE: '#197eaa',
             TYPE_RED: '#c65353',
-            TYPE_DARK_GREY: '#fafafa',
-            TYPE_LIGHT_GREY: '#8e8e8e',
             TYPE_LIGHTER_GREY: '#bdbdbd',
             TYPE_WHITE: '#fafafa',
 

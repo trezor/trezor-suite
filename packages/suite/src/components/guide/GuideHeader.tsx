@@ -47,7 +47,7 @@ const Label = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: center;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     padding: 0 15px;
     width: 100%;
 `;

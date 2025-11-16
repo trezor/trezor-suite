@@ -24,7 +24,7 @@ const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: left;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     padding: 0 0 11px;
     width: 100%;
 `;
@@ -41,7 +41,7 @@ const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component

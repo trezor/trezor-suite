@@ -20,18 +20,17 @@ const BreadcrumbWrapper = styled.span`
 `;
 
 const PreviousCategoryLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     transition: ${({ theme }) =>
         `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
 
     &:hover {
-        color: ${({ theme }) =>
-            darken(theme.legacy.HOVER_DARKEN_FILTER, theme.legacy.TYPE_LIGHT_GREY)};
+        color: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, theme.textSubdued)};
     }
 `;
 
 const BreadcrumbDelimiter = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     margin: 0 5px;
 `;
 

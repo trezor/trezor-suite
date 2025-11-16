@@ -26,7 +26,7 @@ const SPACING = 6;
 
 const ViewText = styled.div`
     margin-left: auto;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     transition: transform 0.15s ease-in-out;
 `;
 
@@ -66,7 +66,7 @@ const StatusText = styled.span`
 `;
 
 const Note = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Separator = styled.span`
