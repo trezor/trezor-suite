@@ -49,6 +49,9 @@ export class StakingSection {
     readonly withdrawalWarning: Locator;
     readonly fiatTicker: Locator;
     readonly cryptoTicker: Locator;
+    readonly stakedToast: Locator;
+    readonly unstakedToast: Locator;
+    readonly claimedToast: Locator;
 
     constructor(private readonly page: Page) {
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
@@ -111,6 +114,9 @@ export class StakingSection {
         this.withdrawalWarning = this.page.getByTestId('@staking/form/withdrawal-warning');
         this.fiatTicker = this.page.getByTestId('@staking/form/fiat-input/input-addon');
         this.cryptoTicker = this.page.getByTestId('@staking/form/crypto-input/input-addon');
+        this.stakedToast = this.page.getByTestId('@toast/tx-staked');
+        this.unstakedToast = this.page.getByTestId('@toast/tx-unstaked');
+        this.claimedToast = this.page.getByTestId('@toast/tx-claimed');
     }
 
     async expectProgressIndicatorsToMatchPhase(

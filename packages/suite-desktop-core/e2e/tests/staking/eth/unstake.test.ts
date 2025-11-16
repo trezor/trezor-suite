@@ -1,12 +1,12 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
-import ETH_UNSTAKE_CONFIRMED_TX from '../../fixtures/staking/eth-unstake-confirmed-tx.json';
-import ETH_UNSTAKE_PENDING_TX from '../../fixtures/staking/eth-unstake-pending-tx.json';
-import { skipFixture } from '../../support/common';
-import { expect, test } from '../../support/fixtures';
-import { createTestAnnotation } from '../../support/reporters/annotations';
-import { splitStringByDisplayLimit } from '../../support/testExtends/customMatchers';
+import ETH_BASE_TX from '../../../fixtures/staking/eth-base-tx.json';
+import ETH_UNSTAKE_CONFIRMED_TX from '../../../fixtures/staking/eth-unstake-confirmed-tx.json';
+import ETH_UNSTAKE_PENDING_TX from '../../../fixtures/staking/eth-unstake-pending-tx.json';
+import { skipFixture } from '../../../support/common';
+import { expect, test } from '../../../support/fixtures';
+import { createTestAnnotation } from '../../../support/reporters/annotations';
+import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
 
 test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
     test.use({
@@ -102,6 +102,10 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
+                await expect(stakingSection.unstakedToast).toContainTranslation(
+                    'TOAST_TX_UNSTAKED',
+                    { values: { amount: '3234 ETH' } },
+                );
             });
 
             await test.step('Verify pending transaction', async () => {
@@ -218,6 +222,9 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     ],
                 });
                 await devicePrompt.sendButton.click();
+                await expect(stakingSection.claimedToast).toContainTranslation('TOAST_TX_CLAIMED', {
+                    values: { amount: '3234 ETH' },
+                });
                 await expect(stakingSection.claimCard).toBeHidden();
                 await expect(walletPage.balanceOfAccount('eth').first()).toHaveText('4,468');
             });

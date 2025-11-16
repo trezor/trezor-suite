@@ -3,6 +3,7 @@ import { AnalyticsFixture } from './analytics';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
+import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/tradingMock';
 import { ModelFixture } from './modelFixture';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
@@ -38,6 +39,7 @@ type Fixtures = {
     indexedDb: IndexedDbFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
+    solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
     stakingSection: StakingSection;
@@ -102,6 +104,9 @@ const test = suiteBaseTest.extend<Fixtures>({
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
         blockbookMock.stop();
+    },
+    solanaStakingMock: async ({ page }, use) => {
+        await use(new SolanaStakingMock(page));
     },
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));
