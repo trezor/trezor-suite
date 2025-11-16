@@ -1,0 +1,171 @@
+{
+    "blockTime": 1758796808,
+    "meta": {
+        "computeUnitsConsumed": 30021,
+        "costUnits": 31409,
+        "err": null,
+        "fee": 5000,
+        "innerInstructions": [],
+        "logMessages": [
+            "Program ComputeBudget111111111111111111111111111111 invoke [ 1 ]",
+            "Program ComputeBudget111111111111111111111111111111 success",
+            "Program 11111111111111111111111111111111 invoke [ 1 ]",
+            "Program 11111111111111111111111111111111 success",
+            "Program Stake11111111111111111111111111111111111111 invoke [ 1 ]",
+            "Program log: Instruction: Initialize",
+            "Program Stake11111111111111111111111111111111111111 consumed 8684 of 199700 compute units",
+            "Program Stake11111111111111111111111111111111111111 success",
+            "Program Stake11111111111111111111111111111111111111 invoke [ 1 ]",
+            "Program log: Instruction: DelegateStake",
+            "Program Stake11111111111111111111111111111111111111 consumed 21037 of 191016 compute units",
+            "Program Stake11111111111111111111111111111111111111 success"
+        ],
+        "postBalances": [
+            201317987, 12605841, 1, 10000000000, 1, 1141440, 960480, 1169280, 1009200, 114979200
+        ],
+        "postTokenBalances": [],
+        "preBalances": [
+            213928828, 0, 1, 10000000000, 1, 1141440, 960480, 1169280, 1009200, 114979200
+        ],
+        "preTokenBalances": [],
+        "rewards": [],
+        "status": {
+            "Ok": null
+        }
+    },
+    "slot": 369150991,
+    "transaction": {
+        "message": {
+            "accountKeys": [
+                {
+                    "pubkey": "41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw",
+                    "signer": true,
+                    "source": "transaction",
+                    "writable": true
+                },
+                {
+                    "pubkey": "7XokGngi54KzoofSdrmk297pE43wtEqnsiSmDorU2ZBH",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": true
+                },
+                {
+                    "pubkey": "11111111111111111111111111111111",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                },
+                {
+                    "pubkey": "9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                },
+                {
+                    "pubkey": "ComputeBudget111111111111111111111111111111",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                },
+                {
+                    "pubkey": "Stake11111111111111111111111111111111111111",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                },
+                {
+                    "pubkey": "StakeConfig11111111111111111111111111111111",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                },
+                {
+                    "pubkey": "SysvarC1ock11111111111111111111111111111111",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                },
+                {
+                    "pubkey": "SysvarRent111111111111111111111111111111111",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                },
+                {
+                    "pubkey": "SysvarStakeHistory1111111111111111111111111",
+                    "signer": false,
+                    "source": "transaction",
+                    "writable": false
+                }
+            ],
+            "addressTableLookups": [],
+            "instructions": [
+                {
+                    "accounts": [],
+                    "data": "Fj2Eoy",
+                    "programId": "ComputeBudget111111111111111111111111111111",
+                    "stackHeight": 1
+                },
+                {
+                    "parsed": {
+                        "info": {
+                            "base": "41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw",
+                            "lamports": 12605841,
+                            "newAccount": "7XokGngi54KzoofSdrmk297pE43wtEqnsiSmDorU2ZBH",
+                            "owner": "Stake11111111111111111111111111111111111111",
+                            "seed": "everstake 1: 1758796793546",
+                            "source": "41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw",
+                            "space": 200
+                        },
+                        "type": "createAccountWithSeed"
+                    },
+                    "program": "system",
+                    "programId": "11111111111111111111111111111111",
+                    "stackHeight": 1
+                },
+                {
+                    "parsed": {
+                        "info": {
+                            "authorized": {
+                                "staker": "41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw",
+                                "withdrawer": "41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw"
+                            },
+                            "lockup": {
+                                "custodian": "11111111111111111111111111111111",
+                                "epoch": 0,
+                                "unixTimestamp": 0
+                            },
+                            "rentSysvar": "SysvarRent111111111111111111111111111111111",
+                            "stakeAccount": "7XokGngi54KzoofSdrmk297pE43wtEqnsiSmDorU2ZBH"
+                        },
+                        "type": "initialize"
+                    },
+                    "program": "stake",
+                    "programId": "Stake11111111111111111111111111111111111111",
+                    "stackHeight": 1
+                },
+                {
+                    "parsed": {
+                        "info": {
+                            "clockSysvar": "SysvarC1ock11111111111111111111111111111111",
+                            "stakeAccount": "7XokGngi54KzoofSdrmk297pE43wtEqnsiSmDorU2ZBH",
+                            "stakeAuthority": "41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw",
+                            "stakeConfigAccount": "StakeConfig11111111111111111111111111111111",
+                            "stakeHistorySysvar": "SysvarStakeHistory1111111111111111111111111",
+                            "voteAccount": "9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF"
+                        },
+                        "type": "delegate"
+                    },
+                    "program": "stake",
+                    "programId": "Stake11111111111111111111111111111111111111",
+                    "stackHeight": 1
+                }
+            ],
+            "recentBlockhash": "9j68Y5TmJdKjSQhGgPeaTnvxWHQB9Y8GDGwxwU1H5Q7o"
+        },
+        "signatures": [
+            "41ZJr1SqnXVXym6EKrvfELQWh4pPdPeUSrj1GvcPNq9eL7Dh7QyCQXS65yahU6QtoBBNnfEJNGQ7poWRe4Gbk2Zd"
+        ]
+    },
+    "version": 0
+}
