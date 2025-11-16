@@ -34,9 +34,11 @@ import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
 import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
+import { DevSelfAddress } from './DevSelfAddress';
 import { Translation } from '../../../../components/suite/Translation';
 
 type AddressProps = {
@@ -83,6 +85,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
         useState(false);
@@ -464,6 +467,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         }
                         values={{ index: recipientId }}
                     />
+                    {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
                 </p>
             }
             labelRight={
