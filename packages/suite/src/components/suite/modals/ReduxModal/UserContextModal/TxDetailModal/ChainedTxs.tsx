@@ -16,14 +16,14 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     padding: 0 20px;
 `;
 
 const Label = styled(Header)`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     padding: 12px 20px;
 `;
 

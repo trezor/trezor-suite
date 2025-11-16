@@ -10,7 +10,6 @@ import {
 
 import { InputSize, InputState } from './types';
 import { motionEasingStrings } from '../../config/motion';
-import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {
     small: 36,
@@ -101,19 +100,6 @@ export const InputWrapper = styled.div`
     display: flex;
     position: relative;
     width: 100%;
-`;
-
-export const LabelLeft = styled.label`
-    margin-bottom: 8px;
-    font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-export const RightLabel = styled.div`
-    display: flex;
-    align-items: center;
-    padding-left: 5px;
 `;
 
 export const LABEL_TRANSFORM = 'translate(0px, -10px) scale(0.75)';

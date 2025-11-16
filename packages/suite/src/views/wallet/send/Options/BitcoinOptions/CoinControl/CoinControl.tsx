@@ -248,7 +248,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     heading={<Translation id="TR_DUST" />}
                     description={<Translation id="TR_DUST_DESCRIPTION" />}
                     icon="info"
-                    iconColor={theme.legacy.TYPE_LIGHT_GREY}
+                    iconColor={theme.iconSubdued}
                     utxos={dustUtxosOnPage}
                 />
             )}

@@ -30,7 +30,7 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 10px;
     text-align: center;

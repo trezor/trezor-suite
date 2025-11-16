@@ -82,7 +82,7 @@ export const CoinWrapper = styled.button<{
     border-radius: 9999px;
     height: 47px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     cursor: pointer;
     transition:
         0.2s ease-in-out,

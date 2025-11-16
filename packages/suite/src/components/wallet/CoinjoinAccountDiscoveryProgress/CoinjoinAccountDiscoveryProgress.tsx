@@ -24,7 +24,7 @@ import { RotatingFacts } from './RotatingFacts';
 const Subheader = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-align: center;
@@ -65,7 +65,7 @@ const StyledLottieAnimation = styled(LottieAnimation)`
     margin: -32px -8px -32px -20px;
 
     path {
-        stroke: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+        stroke: ${({ theme }) => theme.iconSubdued};
         fill: ${({ theme }) => theme.legacy.BG_WHITE};
     }
 `;

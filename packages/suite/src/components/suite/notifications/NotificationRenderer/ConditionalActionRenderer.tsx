@@ -9,7 +9,7 @@ import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const Header = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     margin-top: 1px;
 `;
 

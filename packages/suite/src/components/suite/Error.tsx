@@ -44,7 +44,7 @@ const ErrorMessage = styled.span`
     max-width: 600px;
     font-family: Consolas, Menlo, Courier, monospace;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 type ErrorProps = {

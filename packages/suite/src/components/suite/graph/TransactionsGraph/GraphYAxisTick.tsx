@@ -43,7 +43,7 @@ export const GraphYAxisTick = ({
                 y={0}
                 dy={2}
                 textAnchor="start"
-                fill={theme.legacy.TYPE_LIGHT_GREY}
+                fill={theme.textSubdued}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {localCurrency && (

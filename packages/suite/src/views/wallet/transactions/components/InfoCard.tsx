@@ -11,7 +11,7 @@ import { Account } from 'src/types/wallet';
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     text-transform: uppercase;
     margin-bottom: 10px;
 `;
@@ -20,7 +20,7 @@ const Value = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     white-space: nowrap;
     line-height: 1.5;
 `;
@@ -28,7 +28,7 @@ const Value = styled.div`
 const SecondaryValueWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-variant-numeric: tabular-nums;
 
     /* margin-left: 1ch; */
@@ -43,7 +43,7 @@ const StyledFormattedValue = styled(FormattedCryptoAmount)`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     white-space: nowrap;
     line-height: 1.5;
 `;

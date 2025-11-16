@@ -41,7 +41,7 @@ const StepTitle = styled(H3)`
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StepDescription = styled(Paragraph)`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {

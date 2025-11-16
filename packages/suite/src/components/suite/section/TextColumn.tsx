@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 const Description = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     margin-bottom: 12px;
     margin-top: 12px;
     font-size: ${variables.FONT_SIZE.SMALL};

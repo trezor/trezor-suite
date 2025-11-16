@@ -24,7 +24,7 @@ const Section = styled.div`
 const SectionHeader = styled.h3`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     padding: 0 0 18px;
 `;
 
@@ -58,7 +58,7 @@ const Details = styled.div`
     padding: 10px 0 0;
     font-size: 10px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     display: flex;
     justify-content: space-around;
 `;
@@ -82,7 +82,7 @@ const Label = styled.div`
 const LabelHeadline = styled.strong`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -95,7 +95,7 @@ const LabelHeadline = styled.strong`
 const LabelSubheadline = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 export const SupportFeedbackSelection = () => {

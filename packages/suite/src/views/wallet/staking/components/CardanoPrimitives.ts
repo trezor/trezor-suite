@@ -30,7 +30,7 @@ export const Column = styled.div`
 
 export const Title = styled.div`
     display: flex;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     ${typography.highlight}
     align-items: center;
     margin-bottom: 16px;
@@ -45,7 +45,7 @@ export const Actions = styled.div`
 `;
 
 export const Text = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     margin-bottom: 8px;
     margin-top: 8px;
     ${typography.hint}
@@ -61,7 +61,7 @@ export const Content = styled.div`
 
 export const Value = styled.div`
     ${typography.hint}
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     font-variant-numeric: tabular-nums slashed-zero;
     width: fit-content;
     background: ${({ theme }) => theme.legacy.BG_LIGHT_GREY};

@@ -25,7 +25,7 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 30px;
     max-width: 310px;
@@ -45,7 +45,7 @@ const FixedRateHeader = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 const FixedRateMessage = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 interface PaymentSuccessfulProps {
     account: Account;

@@ -41,7 +41,7 @@ const Label = styled.div<{ $isBold: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${({ $isBold }) =>
         $isBold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     overflow: hidden;
     line-height: 16px;
     display: flex;
@@ -98,7 +98,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
                 <Icon
                     name="article"
                     size={20}
-                    color={theme.legacy.TYPE_LIGHT_GREY}
+                    color={theme.iconSubdued}
                     margin={{ right: spacings.md }}
                 />
                 {label}

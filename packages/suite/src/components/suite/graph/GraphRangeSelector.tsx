@@ -33,8 +33,7 @@ const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
     font-weight: ${({ $selected }) => ($selected ? 600 : 500)};
-    color: ${({ theme, $selected }) =>
-        $selected ? theme.legacy.TYPE_DARK_GREY : theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme, $selected }) => ($selected ? theme.textDefault : theme.textSubdued)};
     cursor: pointer;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
@@ -44,7 +43,7 @@ const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     }
 
     &:hover {
-        color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.textDefault};
     }
 
     ${({ $separated }) =>

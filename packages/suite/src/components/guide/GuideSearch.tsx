@@ -26,7 +26,7 @@ const NoResults = styled.p`
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const PreviewContent = styled.div`
@@ -34,11 +34,11 @@ const PreviewContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
 
     & > em {
         font-style: inherit;
-        color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.textDefault};
     }
 `;
 

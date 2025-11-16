@@ -40,7 +40,7 @@ const ItemIconWrapper = styled.div`
 
 const ItemText = styled.div`
     width: 100%;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 26px 0;

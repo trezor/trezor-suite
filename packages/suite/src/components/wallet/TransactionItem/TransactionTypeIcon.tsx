@@ -34,7 +34,7 @@ export const TransactionTypeIcon = ({ type, isPending, ...rest }: TransactionTyp
         <IconsWrapper $isJoint={isJoint} {...rest}>
             <Icon
                 name={getTxIcon(type)}
-                color={type === 'failed' ? theme.legacy.TYPE_RED : theme.legacy.TYPE_LIGHT_GREY}
+                color={type === 'failed' ? theme.legacy.TYPE_RED : theme.textSubdued}
                 size={isJoint ? 20 : 24}
                 {...rest}
             />
