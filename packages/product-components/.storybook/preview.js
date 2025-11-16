@@ -17,6 +17,7 @@ export const parameters = {
         showPanel: true,
         showInfo: true,
         panelPosition: 'right',
+        storySort: (a, b) => a.title.localeCompare(b.title, 'cs'),
     },
     theme: {
         base: 'light',
