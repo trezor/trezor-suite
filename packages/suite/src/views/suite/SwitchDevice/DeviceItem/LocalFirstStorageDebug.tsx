@@ -33,7 +33,7 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
 
         dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys: undefined }));
         dispatch(
-            deviceActions.setLocalFirstDelegatedKey({
+            deviceActions.setDelegatedIdentityKey({
                 deviceId: device.id,
                 delegatedKey: null,
             }),

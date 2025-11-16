@@ -711,7 +711,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 createInstance(state, payload.device);
             })
             .addCase(
-                deviceActions.setLocalFirstDelegatedKey,
+                deviceActions.setDelegatedIdentityKey,
                 (state, { payload: { deviceId, delegatedKey } }) => {
                     const data = state.persistentDeviceData.find(
                         persistentDeviceData => persistentDeviceData.device_id === deviceId,

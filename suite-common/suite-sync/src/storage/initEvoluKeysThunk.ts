@@ -204,7 +204,7 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
         });
 
         dispatch(
-            deviceActions.setLocalFirstDelegatedKey({
+            deviceActions.setDelegatedIdentityKey({
                 deviceId: device.id,
                 delegatedKey: delegatedKeyResult.ok ? delegatedKeyResult.value : null,
             }),
@@ -241,7 +241,7 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             }
 
             dispatch(
-                deviceActions.setLocalFirstDelegatedKey({
+                deviceActions.setDelegatedIdentityKey({
                     deviceId: device.id,
                     delegatedKey: null,
                 }),
