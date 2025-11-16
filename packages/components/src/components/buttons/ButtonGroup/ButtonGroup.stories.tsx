@@ -9,7 +9,7 @@ import { Button } from '../Button/Button';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
 const meta: Meta<ButtonGroupProps> = {
-    title: 'Buttons',
+    title: '🫵 Buttons',
     component: ButtonGroup,
 };
 export default meta;

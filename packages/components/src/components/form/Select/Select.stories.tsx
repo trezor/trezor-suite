@@ -16,7 +16,7 @@ const options = Object.keys(values)
     .map((k: string) => values[k]);
 
 const meta: Meta<typeof SelectComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     component: SelectComponent,
 };
 export default meta;

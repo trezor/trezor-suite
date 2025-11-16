@@ -6,7 +6,7 @@ import { useArgs } from 'storybook/preview-api';
 import { Textarea as TextareaComponent } from './Textarea';
 
 const meta: Meta<typeof TextareaComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     component: TextareaComponent,
 };
 export default meta;

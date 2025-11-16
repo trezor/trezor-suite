@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { FractionButton as FractionButtonComponent, FractionButtonProps } from './FractionButton';
 
 const meta: Meta<typeof FractionButtonComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     decorators: [
         (Story: React.FC) => (
             <IntlProvider locale="en">

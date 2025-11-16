@@ -28,7 +28,7 @@ const SELECT_OPTIONS = [
 ];
 
 const meta: Meta<typeof Input> = {
-    title: 'Form',
+    title: '✏️ Form',
 };
 export default meta;
 

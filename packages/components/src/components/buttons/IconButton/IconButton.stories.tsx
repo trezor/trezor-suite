@@ -10,7 +10,7 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
 const meta: Meta<IconButtonProps> = {
-    title: 'Buttons',
+    title: '🫵 Buttons',
     component: IconButtonComponent,
 };
 

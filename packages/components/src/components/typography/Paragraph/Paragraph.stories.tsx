@@ -6,7 +6,7 @@ import { TextProps, allowedTextFrameProps, allowedTextTextProps } from '../Text/
 import { getTextPropsStory } from '../utils';
 
 const meta: Meta<typeof P> = {
-    title: 'Typography',
+    title: '🅰️ Typography',
     component: P,
 };
 export default meta;

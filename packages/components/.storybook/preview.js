@@ -17,11 +17,15 @@ export const parameters = {
         showPanel: true,
         showInfo: true,
         panelPosition: 'right',
-        storySort: (a, b) => a.title.localeCompare(b.title, 'cs'),
+        storySort: {
+            order: ['🎨 Colors', '🫵 Buttons', '✏️ Form', '🅰️ Typography', '*'],
+            method: 'alphabetical',
+            locales: 'cs',
+        },
     },
     theme: {
         base: 'light',
     },
 };
 
-export const tags = ['autodocs'];
+// export const tags = ['autodocs'];
