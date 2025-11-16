@@ -2,6 +2,7 @@ export * from './borders';
 export * from './boxShadows';
 export * from './coinsColors';
 export * from './colors';
+export { colorsV2 } from './colorsV2';
 export * from './elevation';
 export * from './fontFamilies';
 export * from './fontWeights';
