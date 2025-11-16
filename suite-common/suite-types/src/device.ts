@@ -119,5 +119,6 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
     };
 
 export type TrezorDeviceWithState = AcquiredDevice & {
+    id: string;
     state: NonNullable<AcquiredDevice['state']> & { staticSessionId: StaticSessionId };
 };

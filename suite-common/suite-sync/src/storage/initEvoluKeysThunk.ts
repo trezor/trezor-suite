@@ -3,20 +3,19 @@ import { sha256 } from '@noble/hashes/sha2';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    AcquiredDevice,
     DelegatedIdentityKey,
     EvoluKeys,
     TrezorDevice,
     TrezorDeviceWithState,
-    asDelegatedIdentityKey,
     asDeviceEvoluOwnerId,
 } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DEVICE_MODULE_PREFIX,
     deviceActions,
+    isCanceledErrorMessage,
+    retrieveDelegatedIdentityKeyThunk,
     selectDevices,
-    selectPersistentDeviceData,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect, { ProofOfDelegatedIdentity } from '@trezor/connect';
@@ -29,9 +28,6 @@ import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTre
 type InitCipherKeyThunkParams = {
     device: TrezorDevice;
 };
-
-const isCanceledErrorMessage = (errorMessage: string | null | undefined) =>
-    Boolean(errorMessage?.toLocaleLowerCase().includes('cancelled'));
 
 const getProofOfDelegatedIdentity = (
     delegatedKey: DelegatedIdentityKey,
@@ -56,58 +52,12 @@ type RetrieveEvoluNodeResult = {
     canceled: boolean;
 };
 
-type RetrieveDelegatedIdentityKeyParams = {
-    device: TrezorDeviceWithState;
-    currentDelegatedKey: DelegatedIdentityKey | null | undefined;
-    options?: {
-        refreshKey?: boolean;
-    };
-};
-
-const retrieveDelegatedIdentityKey = async ({
-    device,
-    currentDelegatedKey,
-    options = {},
-}: RetrieveDelegatedIdentityKeyParams): Promise<
-    Result<DelegatedIdentityKey, RetrieveEvoluNodeResult>
-> => {
-    if (!currentDelegatedKey || options.refreshKey !== undefined) {
-        try {
-            const result = await TrezorConnect.evoluGetDelegatedIdentityKey({
-                device: {
-                    path: device.path,
-                    state: device.state,
-                    instance: device.instance ?? 0,
-                },
-                useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-            });
-
-            if (result.success) {
-                return ok(asDelegatedIdentityKey(result.payload.private_key));
-            }
-
-            const canceled = isCanceledErrorMessage(result.payload.error);
-
-            return err({
-                message: result.payload.error,
-                canceled,
-            });
-        } catch (e) {
-            return err({
-                message: String(e),
-                canceled: false,
-            });
-        }
-    }
-
-    return ok(currentDelegatedKey);
-};
-
 const retrieveEvoluNode = async (
-    device: AcquiredDevice & { state: NonNullable<AcquiredDevice['state']> },
+    device: TrezorDeviceWithState,
     delegatedKey: DelegatedIdentityKey,
 ): Promise<Result<EvoluKeys, RetrieveEvoluNodeResult>> => {
     const proofOfDelegatedIdentity = getProofOfDelegatedIdentity(delegatedKey);
+
     try {
         const result = await TrezorConnect.evoluGetNode({
             device: {
@@ -165,7 +115,6 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
 
         if (
             device === undefined ||
-            device.id === null ||
             !device.connected || // disconnected device cannot resolve Evolu-Keys
             device.mode !== 'normal' // bootloader,
         ) {
@@ -190,25 +139,13 @@ export const initEvoluKeysThunk = createThunk<void, InitCipherKeyThunkParams, vo
             );
         }
 
-        const persistedData = selectPersistentDeviceData(getState());
-        const devicePersistedData = persistedData.find(it => it.device_id === device.id);
-
         dispatch(
             deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: true }),
         );
 
-        const delegatedKeyResult = await retrieveDelegatedIdentityKey({
-            device,
-            currentDelegatedKey: devicePersistedData?.delegatedIdentityKey,
-            options: { refreshKey: false },
-        });
-
-        dispatch(
-            deviceActions.setDelegatedIdentityKey({
-                deviceId: device.id,
-                delegatedKey: delegatedKeyResult.ok ? delegatedKeyResult.value : null,
-            }),
-        );
+        const delegatedKeyResult = await dispatch(
+            retrieveDelegatedIdentityKeyThunk({ device }),
+        ).unwrap();
 
         if (!delegatedKeyResult.ok) {
             console.error('Evolu: retrieveDelegatedIdentityKey(...) failed: ', delegatedKeyResult);

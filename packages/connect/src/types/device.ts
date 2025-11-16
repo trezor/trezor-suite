@@ -136,7 +136,17 @@ export type BluetoothDeviceProps = {
 
 export type KnownDevice = BaseDevice & {
     type: 'acquired';
+
+    /**
+     * Identifier of the PHYSICAL device. It is par of the device.fetaures
+     * so it is known only fo `AcquiredDevice`. The `id` will change in case of Wipe Device.
+     *
+     * Example: F06CBD5EB27720C19FD01A0D
+     *
+     * Note: despite this is nullable, Acquired device shall always have it.
+     */
     id: string | null;
+
     /** @deprecated, use features.label instead */
     label: string;
     error?: typeof undefined;
