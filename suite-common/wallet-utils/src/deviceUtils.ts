@@ -32,6 +32,7 @@ export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,
 ): device is TrezorDeviceWithState =>
     device !== undefined &&
+    device.id !== null &&
     device.state !== undefined &&
     device.state !== null &&
     device.state.staticSessionId !== undefined;
