@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const meta: Meta<typeof RadioComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     component: RadioComponent,
 };
 export default meta;

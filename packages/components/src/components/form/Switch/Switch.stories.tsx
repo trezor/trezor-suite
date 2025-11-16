@@ -6,7 +6,7 @@ import { switchLabelPositions, switchSizes } from './types';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta<typeof SwitchComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
 };
 export default meta;
 

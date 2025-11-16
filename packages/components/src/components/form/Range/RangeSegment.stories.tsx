@@ -4,7 +4,7 @@ import { useArgs } from 'storybook/preview-api';
 import { Range as RangeComponent } from './Range';
 
 const meta: Meta<typeof RangeComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
 };
 export default meta;
 

@@ -19,7 +19,7 @@ const COLOR_BOX_WITH_HEX_WIDTH = 80;
 const GAP = 8;
 
 const meta: Meta<any> = {
-    title: 'Colors',
+    title: '🎨 Colors',
 };
 export default meta;
 

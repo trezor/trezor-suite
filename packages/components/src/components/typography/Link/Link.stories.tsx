@@ -4,7 +4,7 @@ import { Link as LinkComponent, LinkProps, allowedLinkTextProps } from '../../..
 import { getTextPropsStory } from '../utils';
 
 const meta: Meta<typeof LinkComponent> = {
-    title: 'Typography',
+    title: '🅰️ Typography',
     component: LinkComponent,
 };
 export default meta;

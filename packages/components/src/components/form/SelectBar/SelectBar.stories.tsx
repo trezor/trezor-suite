@@ -12,7 +12,7 @@ const options = [
 ];
 
 const meta: Meta<typeof SelectBarComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     component: SelectBarComponent,
     args: {
         label: 'fee',

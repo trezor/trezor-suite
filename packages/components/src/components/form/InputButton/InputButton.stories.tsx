@@ -6,7 +6,7 @@ import { InputButton as InputButtonComponent, InputButtonProps } from './InputBu
 import { variables } from '../../../config';
 
 const meta: Meta<typeof InputButtonComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     component: InputButtonComponent,
 };
 export default meta;

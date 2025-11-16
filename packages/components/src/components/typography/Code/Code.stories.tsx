@@ -1,16 +1,16 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Code } from './Code';
+import { Code as CodeComponent } from './Code';
 
 const meta: Meta = {
     title: 'Code',
-    component: Code,
+    component: CodeComponent,
 };
 
 export default meta;
-type Story = StoryObj<typeof Code>;
+type Story = StoryObj<typeof CodeComponent>;
 
-export const Default: Story = {
+export const Code: Story = {
     args: {
         children: 'ABC',
     },

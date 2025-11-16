@@ -11,7 +11,7 @@ import {
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta<typeof CheckboxComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     component: CheckboxComponent,
 };
 export default meta;

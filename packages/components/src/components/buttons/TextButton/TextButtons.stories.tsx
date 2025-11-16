@@ -6,7 +6,7 @@ import { TextButton } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 
 const meta: Meta<typeof TextButton> = {
-    title: 'Buttons',
+    title: '🫵 Buttons',
 };
 export default meta;
 

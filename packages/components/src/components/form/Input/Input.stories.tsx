@@ -13,7 +13,7 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../../typography/utils';
 
 const meta: Meta<typeof InputComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
     args: {
         value: 'Input',
         label: 'Label',

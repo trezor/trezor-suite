@@ -8,7 +8,7 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { SkeletonRectangle } from '../../skeletons/SkeletonRectangle';
 
 const meta: Meta<typeof FormCellComponent> = {
-    title: 'Form',
+    title: '✏️ Form',
 };
 export default meta;
 

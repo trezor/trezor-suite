@@ -12,7 +12,7 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { iconAlignments } from '../buttonStyleUtils';
 
 const meta: Meta<typeof TextButtonComponent> = {
-    title: 'Buttons',
+    title: '🫵 Buttons',
     component: TextButtonComponent,
 };
 export default meta;

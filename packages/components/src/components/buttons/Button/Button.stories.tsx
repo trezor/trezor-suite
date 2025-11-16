@@ -6,7 +6,7 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
 const meta: Meta<ButtonProps> = {
-    title: 'Buttons',
+    title: '🫵 Buttons',
     component: ButtonComponent,
 };
 

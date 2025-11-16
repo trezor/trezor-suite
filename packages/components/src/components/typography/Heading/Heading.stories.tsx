@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 `;
 
 const meta: Meta<typeof H1> = {
-    title: 'Typography',
+    title: '🅰️ Typography',
 };
 export default meta;
 

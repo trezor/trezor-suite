@@ -24,7 +24,7 @@ const BorderlessAutoScalingInput = styled(Input)`
 `;
 
 const meta: Meta = {
-    title: 'Form/AutoScalingInput',
+    title: '✏️ Form',
 };
 export default meta;
 
