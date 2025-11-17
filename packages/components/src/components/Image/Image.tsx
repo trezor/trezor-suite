@@ -57,10 +57,8 @@ const getSourceProps = (imageKey: ImageKey) => {
     return { src: resolveStaticPath(`${IMAGES_PATH}/${IMAGES[imageKey]}`) };
 };
 
-const StyledImage = styled.img<TransientProps<AllowedFrameProps & { isFilterActive?: boolean }>>`
+const StyledImage = styled.img<TransientProps<AllowedFrameProps>>`
     max-width: 100%;
-    filter: ${({ theme, $isFilterActive }) =>
-        $isFilterActive ? theme.legacy.IMAGE_FILTER : 'none'};
 
     ${withFrameProps}
 `;
@@ -78,11 +76,9 @@ export type ImageProps = AllowedFrameProps &
               image?: never;
               imageSrc: string;
           }
-    ) & { isFilterActive?: boolean };
+    );
 
-const getImageHTMLProps = (
-    imageProps: Omit<ImageProps, 'image' | 'imageSrc' | 'isFilterActive'>,
-): ImageHTMLProps =>
+const getImageHTMLProps = (imageProps: Omit<ImageProps, 'image' | 'imageSrc'>): ImageHTMLProps =>
     typedObjectEntries(imageProps).reduce<ImageHTMLProps>(
         (imageHTMLProps, [propKey, propValue]) => {
             if (!isArrayMember(propKey, allowedImageFrameProps)) {
@@ -94,17 +90,10 @@ const getImageHTMLProps = (
         {},
     );
 
-export const Image = ({ image, imageSrc, isFilterActive = false, ...rest }: ImageProps) => {
+export const Image = ({ image, imageSrc, ...rest }: ImageProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedImageFrameProps);
     const imageHTMLProps = getImageHTMLProps(rest);
     const sourceProps = image ? getSourceProps(image) : { src: imageSrc };
 
-    return (
-        <StyledImage
-            {...sourceProps}
-            {...imageHTMLProps}
-            {...frameProps}
-            $isFilterActive={isFilterActive}
-        />
-    );
+    return <StyledImage {...sourceProps} {...imageHTMLProps} {...frameProps} />;
 };

@@ -123,7 +123,7 @@ const ToastNotification = ({
                 <Icon
                     size={16}
                     name="x"
-                    hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
+                    hoverColor={theme.iconSubdued}
                     onClick={handleCancelClick}
                     data-testid={`${dataTestBase}/close`}
                     margin={{ left: spacings.md }}

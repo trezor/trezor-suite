@@ -11,14 +11,7 @@ import {
 } from 'date-fns';
 import styled, { css } from 'styled-components';
 
-import {
-    Popover,
-    PopoverPlacement,
-    PopoverRef,
-    Timerange,
-    intermediaryTheme,
-    variables,
-} from '@trezor/components';
+import { Popover, PopoverPlacement, PopoverRef, Timerange, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useGraph, useLocales } from 'src/hooks/suite';
@@ -49,7 +42,7 @@ const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     ${({ $separated }) =>
         $separated &&
         css`
-            border-left: 1px solid ${intermediaryTheme.light.legacy.TYPE_LIGHTER_GREY};
+            border-left: 1px solid ${({ theme }) => theme.borderElevation2};
             padding-left: 15px;
             margin-left: 15px;
             text-transform: capitalize;

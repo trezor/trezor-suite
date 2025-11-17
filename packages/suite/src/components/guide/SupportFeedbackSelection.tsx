@@ -6,7 +6,7 @@ import { Icon, Image, Link, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { borders } from '@trezor/theme';
+import { borders, transitions } from '@trezor/theme';
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { setView } from 'src/actions/suite/guideActions';
@@ -41,8 +41,7 @@ const SectionButton = styled.button<{ $hasBackground?: boolean }>`
         $hasBackground ? theme.backgroundSurfaceElevation1 : 'none'};
     border: 0;
 
-    transition: ${({ theme }) =>
-        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
+    transition: background ${transitions.speed.normal} ${transitions.type};
 
     &:hover {
         background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};

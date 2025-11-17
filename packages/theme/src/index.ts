@@ -15,3 +15,4 @@ export * from './types';
 export * from './typography';
 export * from './zIndices';
 export * from './breakpoints';
+export { transitions } from './transitions';

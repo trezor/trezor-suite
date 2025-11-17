@@ -59,7 +59,7 @@ export const Hologram = () => {
                 />
             ) : (
                 <Row justifyContent="center">
-                    <Image isFilterActive={false} image={`TREZOR_${getDeviceModel()}_HOLOGRAM`} />
+                    <Image image={`TREZOR_${getDeviceModel()}_HOLOGRAM`} />
                 </Row>
             )}
 

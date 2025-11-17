@@ -6,7 +6,7 @@ import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { Icon, variables } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { borders, spacings } from '@trezor/theme';
+import { borders, spacings, transitions } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -23,8 +23,7 @@ const NodeButton = styled.button`
     padding: 10px;
     cursor: pointer;
     line-height: 1.57;
-    transition: ${({ theme }) =>
-        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
+    transition: background ${transitions.speed.normal} ${transitions.type};
 
     &:hover,
     &:focus {

@@ -38,20 +38,6 @@ const THEME = {
 
             BG_GREY: '#f4f4f4',
             BG_TOOLTIP: '#212223',
-
-            TYPE_LIGHTER_GREY: '#bdbdbd',
-
-            GRADIENT_SLIDER_GREEN_START: '#2A9649',
-            GRADIENT_SLIDER_GREEN_END: '#95CDA5',
-            GRADIENT_SLIDER_YELLOW_START: '#C8B883',
-            GRADIENT_SLIDER_YELLOW_END: '#C8B882',
-            GRADIENT_SLIDER_RED_END: '#BF6767',
-
-            IMAGE_FILTER: 'none',
-
-            HOVER_DARKEN_FILTER: 0.06,
-            HOVER_TRANSITION_TIME: '150ms',
-            HOVER_TRANSITION_EFFECT: 'ease-out',
         },
     },
     dark: {
@@ -60,20 +46,6 @@ const THEME = {
 
             BG_GREY: '#18191a',
             BG_TOOLTIP: '#3a3b3c', // same as STROKE_GREY in dark theme
-
-            TYPE_LIGHTER_GREY: '#bdbdbd',
-
-            GRADIENT_SLIDER_GREEN_START: '#2A9649',
-            GRADIENT_SLIDER_GREEN_END: '#95CDA5',
-            GRADIENT_SLIDER_YELLOW_START: '#C8B883',
-            GRADIENT_SLIDER_YELLOW_END: '#C8B882',
-            GRADIENT_SLIDER_RED_END: '#BF6767',
-
-            IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
-
-            HOVER_DARKEN_FILTER: -0.04,
-            HOVER_TRANSITION_TIME: '150ms',
-            HOVER_TRANSITION_EFFECT: 'ease-out',
         },
     },
 } as const;

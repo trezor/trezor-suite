@@ -1,9 +1,9 @@
-import { darken } from 'polished';
 import styled from 'styled-components';
 
 import type { GuideCategory } from '@suite-common/suite-types';
 import { variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { transitions } from '@trezor/theme';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -21,11 +21,10 @@ const BreadcrumbWrapper = styled.span`
 
 const PreviousCategoryLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.textSubdued};
-    transition: ${({ theme }) =>
-        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
+    transition: background ${transitions.speed.normal} ${transitions.type};
 
     &:hover {
-        color: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, theme.textSubdued)};
+        color: ${({ theme }) => theme.backgroundNeutralSubdued};
     }
 `;
 
@@ -36,11 +35,10 @@ const BreadcrumbDelimiter = styled.span`
 
 const CategoryLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.textPrimaryDefault};
-    transition: ${({ theme }) =>
-        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
+    transition: background ${transitions.speed.normal} ${transitions.type};
 
     &:hover {
-        color: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, theme.textPrimaryDefault)};
+        color: ${({ theme }) => theme.textPrimaryPressed};
     }
 `;
 
