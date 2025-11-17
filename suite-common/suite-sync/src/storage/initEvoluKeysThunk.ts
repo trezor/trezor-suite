@@ -1,6 +1,3 @@
-import { p256 } from '@noble/curves/nist';
-import { sha256 } from '@noble/hashes/sha2';
-
 import { createThunk } from '@suite-common/redux-utils';
 import {
     DelegatedIdentityKey,
@@ -13,38 +10,21 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DEVICE_MODULE_PREFIX,
     deviceActions,
+    getProofOfDelegatedIdentity,
     isCanceledErrorMessage,
     retrieveDelegatedIdentityKeyThunk,
     selectDevices,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
-import TrezorConnect, { ProofOfDelegatedIdentity } from '@trezor/connect';
-import { asProofOfDelegatedIdentity } from '@trezor/connect/src/types/device';
+import TrezorConnect from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
-import { bufferUtils } from '@trezor/utils';
 
 import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
 
+const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
+
 type InitCipherKeyThunkParams = {
     device: TrezorDevice;
-};
-
-const getProofOfDelegatedIdentity = (
-    delegatedKey: DelegatedIdentityKey,
-): ProofOfDelegatedIdentity => {
-    const header = Buffer.from('EvoluGetNode');
-
-    const prefixedMessageInBuffer = Buffer.concat([
-        bufferUtils.getChunkSize(header.length),
-        header,
-    ]);
-
-    const messageDigest = sha256(prefixedMessageInBuffer);
-    const signature = p256.sign(messageDigest, delegatedKey);
-
-    return asProofOfDelegatedIdentity(
-        Buffer.from(signature.toBytes('compact').buffer).toString('hex'),
-    );
 };
 
 type RetrieveEvoluNodeResult = {
@@ -56,7 +36,10 @@ const retrieveEvoluNode = async (
     device: TrezorDeviceWithState,
     delegatedKey: DelegatedIdentityKey,
 ): Promise<Result<EvoluKeys, RetrieveEvoluNodeResult>> => {
-    const proofOfDelegatedIdentity = getProofOfDelegatedIdentity(delegatedKey);
+    const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+        delegatedKey,
+        header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
+    });
 
     try {
         const result = await TrezorConnect.evoluGetNode({

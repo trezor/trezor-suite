@@ -10748,8 +10748,6 @@ __metadata:
   resolution: "@suite-common/suite-sync@workspace:suite-common/suite-sync"
   dependencies:
     "@evolu/common": "npm:^6.0.1-preview.32"
-    "@noble/curves": "npm:^1.9.7"
-    "@noble/hashes": "npm:^1.6.1"
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -10961,6 +10959,8 @@ __metadata:
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@noble/curves": "npm:^1.9.7"
+    "@noble/hashes": "npm:^1.6.1"
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
