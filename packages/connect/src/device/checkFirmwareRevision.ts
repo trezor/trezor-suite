@@ -14,6 +14,7 @@ const isNodeJSOfflineError = (e: Error) => ['FetchError', 'AbortError'].includes
 const isReactNativeOfflineError = (e: Error) =>
     e.name === 'TypeError' && e.message.includes('Network request failed');
 const isAbortControllerTimeout = (e: Error) =>
+    e.message.includes('Aborted') ||
     e.name === 'AbortError' ||
     (e.name === 'TimeoutError' && e.message.includes('signal timed out'));
 
