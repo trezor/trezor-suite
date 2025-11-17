@@ -3785,9 +3785,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/common@npm:^6.0.1-preview.28":
-  version: 6.0.1-preview.28
-  resolution: "@evolu/common@npm:6.0.1-preview.28"
+"@evolu/common@npm:^6.0.1-preview.32":
+  version: 6.0.1-preview.32
+  resolution: "@evolu/common@npm:6.0.1-preview.32"
   dependencies:
     "@noble/ciphers": "npm:^2.0.0"
     "@noble/hashes": "npm:^2.0.0"
@@ -3795,7 +3795,7 @@ __metadata:
     kysely: "npm:^0.28.4"
     msgpackr: "npm:^1.11.5"
     random: "npm:^5.4.1"
-  checksum: 10/5d468c9386bd0410da783e85974fe4199c87faf004bff559d5a65541d35af7c4e2ec508297a38ba9cb360a0f4b0d95ab6c51cda29eedbce1a956472af78bbf65
+  checksum: 10/6cd1c84ca5d4ca05ee97b9626c44c465cdca4d9eb15207209d9a300b905b53da9f4979f8938e3fef6ebd5d7fca7941666f7eabd87209e83932749c6ffd406351
   languageName: node
   linkType: hard
 
@@ -10747,7 +10747,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync@workspace:suite-common/suite-sync"
   dependencies:
-    "@evolu/common": "npm:^6.0.1-preview.28"
+    "@evolu/common": "npm:^6.0.1-preview.32"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.6.1"
     "@reduxjs/toolkit": "npm:2.10.1"
