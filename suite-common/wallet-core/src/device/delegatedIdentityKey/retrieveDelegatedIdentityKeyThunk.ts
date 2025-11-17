@@ -7,9 +7,9 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 
-import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
-import { selectPersistentDeviceData } from './deviceSelectors';
-import { isCanceledErrorMessage } from './deviceUtils';
+import { DEVICE_MODULE_PREFIX, deviceActions } from '../deviceActions';
+import { selectPersistentDeviceData } from '../deviceSelectors';
+import { isCanceledErrorMessage } from '../deviceUtils';
 
 type RetrieveResult = {
     message: string;

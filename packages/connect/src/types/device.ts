@@ -138,7 +138,7 @@ export type KnownDevice = BaseDevice & {
     type: 'acquired';
 
     /**
-     * Identifier of the PHYSICAL device. It is par of the device.fetaures
+     * Identifier of the PHYSICAL device. It is part of the device.features
      * so it is known only fo `AcquiredDevice`. The `id` will change in case of Wipe Device.
      *
      * Example: F06CBD5EB27720C19FD01A0D
