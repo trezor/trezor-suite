@@ -100,7 +100,7 @@ describe('useBuyFlow', () => {
                     result.current.selectQuote();
                 });
 
-                const dispatchCall = dispatchSpy.mock.calls[0][0];
+                const dispatchCall = dispatchSpy.mock.calls[0][0] as any;
                 const { userConsent } = dispatchCall.payload;
 
                 act(() => {
@@ -128,7 +128,7 @@ describe('useBuyFlow', () => {
                     result.current.selectQuote();
                 });
 
-                const dispatchCall = dispatchSpy.mock.calls[0][0];
+                const dispatchCall = dispatchSpy.mock.calls[0][0] as any;
                 const { nextStep } = dispatchCall.payload;
 
                 act(() => {
@@ -153,7 +153,7 @@ describe('useBuyFlow', () => {
                     result.current.selectQuote();
                 });
 
-                const dispatchCall = dispatchSpy.mock.calls[0][0];
+                const dispatchCall = dispatchSpy.mock.calls[0][0] as any;
                 // simulate userConsent call (as we mock the thunk)
                 const { userConsent } = dispatchCall.payload;
                 act(() => {

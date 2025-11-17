@@ -38,6 +38,12 @@ export const mockThunk = (type: string) =>
         return thunkPayload;
     });
 
+export const mockOriginalReduxThunk = (type: string) => () => (thunkPayload: any) => {
+    mockedConsoleLog(`Calling not implemented thunk: ${type} and payload: `);
+
+    return thunkPayload;
+};
+
 export const mockSelector =
     <TReturn>(name: string, mockedReturnValue: TReturn, selectorArgs: any = {}) =>
     () => {
@@ -68,7 +74,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         initMetadata: mockThunk('initMetadata'),
         addAccountMetadata: mockThunk('addAccountMetadata'),
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
-        subscribeLocalFirstStorage: mockThunk('subscribeLocalFirstStorage'),
+        subscribeLocalFirstStorage: mockOriginalReduxThunk('subscribeLocalFirstStorage'),
         unsubscribeAndDisposeLocalFirstStorage: mockThunk('unsubscribeLocalFirstStorage'),
         initLocalFirstStorage: mockThunk('initLocalFirstStorage'),
     },

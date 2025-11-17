@@ -277,7 +277,8 @@ describe('useExchangeFlow', () => {
             });
 
             // simulate triggerAnalyticsTradeConfirmation call in thunk
-            const { triggerAnalyticsTradeConfirmation } = dispatchSpy.mock.lastCall![0].payload;
+            const { triggerAnalyticsTradeConfirmation } = (dispatchSpy.mock.lastCall![0] as any)
+                .payload;
             triggerAnalyticsTradeConfirmation();
 
             expect(analyticsSpy).toHaveBeenCalledWith({
