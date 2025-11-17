@@ -21,8 +21,14 @@ import {
     Manifest,
     StaticSessionId,
 } from '@trezor/connect';
+import { Ok } from '@trezor/type-utils';
 
-import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
+import {
+    ActionType,
+    OriginalReduxThunk,
+    SuiteCompatibleSelector,
+    SuiteCompatibleThunk,
+} from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -57,7 +63,10 @@ export type ExtraDependencies = {
         forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: BluetoothDeviceId }>;
 
         // This needs to be over `extra` to prevent circular dependency
-        subscribeLocalFirstStorage: SuiteCompatibleThunk<{ device: TrezorDeviceWithState }>;
+        subscribeLocalFirstStorage: OriginalReduxThunk<
+            { device: TrezorDeviceWithState },
+            Promise<Ok<void>>
+        >;
         unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{
             device: TrezorDeviceWithState;
         }>;

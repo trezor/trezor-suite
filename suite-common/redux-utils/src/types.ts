@@ -4,12 +4,20 @@ export interface AnyAction extends Action {
     [extraProps: string]: any;
 }
 
+/**
+ * Original thunk type in Redux before redux-toolkit
+ */
+export type OriginalReduxThunk<TPayload, TReturn = void> = (
+    payload: TPayload,
+) => ThunkAction<TReturn, any, any, AnyAction>;
+
 // This SuiteCompatible types should be used only in places where you need support
 // for both redux-toolkit and legacy redux stuff like it is in externalDependencies.
 // Primary you should use types like ActionCreatorWithPayload from redux-toolkit!
 export type SuiteCompatibleThunk<TPayload, TReturn = void> =
     | AsyncThunk<TReturn, TPayload, {}>
-    | ((payload: TPayload) => ThunkAction<TReturn, any, any, AnyAction>);
+    | OriginalReduxThunk<TPayload, TReturn>;
+
 export type SuiteCompatibleSelector<TReturn> = (state: any) => TReturn;
 
 export type ActionType = string;
