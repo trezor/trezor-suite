@@ -54,7 +54,7 @@ export const SecurityCheckLayout = ({
             );
         }
 
-        return <Image maxHeight={300} isFilterActive={false} image={image} />;
+        return <Image maxHeight={300} image={image} />;
     };
 
     const isContentBelowTablet = !!(contentWidth && contentWidth < breakpoints.tablet);

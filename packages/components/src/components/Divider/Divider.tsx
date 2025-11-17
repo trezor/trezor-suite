@@ -18,6 +18,7 @@ export const allowedDividerFrameProps = [
     'margin',
     'width',
     'overflow',
+    'height',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDividerFrameProps)[number]>;
 type DividerOrientation = 'horizontal' | 'vertical';

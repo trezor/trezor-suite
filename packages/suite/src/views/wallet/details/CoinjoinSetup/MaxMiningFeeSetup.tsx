@@ -1,5 +1,3 @@
-import { useTheme } from 'styled-components';
-
 import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -9,6 +7,13 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
+import {
+    GRADIENT_SLIDER_GREEN_END,
+    GRADIENT_SLIDER_GREEN_START,
+    GRADIENT_SLIDER_RED_END,
+    GRADIENT_SLIDER_YELLOW_END,
+    GRADIENT_SLIDER_YELLOW_START,
+} from './consts';
 
 const min = 1;
 const max = 500;
@@ -33,8 +38,6 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
 
     const dispatch = useDispatch();
 
-    const theme = useTheme();
-
     const updateMaxMiningFee = (value: number) => {
         dispatch(coinjoinAccountUpdateMaxMiningFee(accountKey, value));
     };
@@ -45,11 +48,11 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
     const trackStyle = {
         background: `\
             linear-gradient(90deg,\
-                ${theme.legacy.GRADIENT_SLIDER_RED_END} 0%,\
-                ${theme.legacy.GRADIENT_SLIDER_YELLOW_END} ${feeRateMedianPercentage / 1.1}%,\
-                ${theme.legacy.GRADIENT_SLIDER_YELLOW_START} ${feeRateMedianPercentage}%,\
-                ${theme.legacy.GRADIENT_SLIDER_GREEN_END} ${defaultMaxMiningFeePercentage}%,\
-                ${theme.legacy.GRADIENT_SLIDER_GREEN_START} 100%\
+                ${GRADIENT_SLIDER_RED_END} 0%,\
+                ${GRADIENT_SLIDER_YELLOW_END} ${feeRateMedianPercentage / 1.1}%,\
+                ${GRADIENT_SLIDER_YELLOW_START} ${feeRateMedianPercentage}%,\
+                ${GRADIENT_SLIDER_GREEN_END} ${defaultMaxMiningFeePercentage}%,\
+                ${GRADIENT_SLIDER_GREEN_START} 100%\
             );`,
     };
 

@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { Column, Divider, Icon } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacingsPx, typography, zIndices } from '@trezor/theme';
+import { spacingsPx, transitions, typography, zIndices } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -31,8 +31,7 @@ const FeedbackButton = styled.button`
     text-align: left;
     padding: 11px;
     background: none;
-    transition: ${({ theme }) =>
-        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
+    transition: background ${transitions.speed.normal} ${transitions.type};
 
     /* speficy position and z-index so that GuideButton does not interfere */
     position: relative;

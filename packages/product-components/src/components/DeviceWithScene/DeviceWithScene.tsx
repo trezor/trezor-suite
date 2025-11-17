@@ -63,7 +63,7 @@ const BASE_HEIGHT = 400;
 
 const Ghost = ({ rotate, x, y }: { rotate: number; x: string; y: string }) => (
     <GhostContainer $rotate={rotate} $x={x} $y={y}>
-        <Image image="GHOST" isFilterActive={false} width="80%" />
+        <Image image="GHOST" width="80%" />
     </GhostContainer>
 );
 

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Icon, Image, Link, Row, useElevation } from '@trezor/components';
+import { Divider, Icon, Image, Link, Row, useElevation } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import {
     Elevation,
@@ -103,12 +103,6 @@ const LearnMoreToggle = styled.div`
     ${linkStyle}
 `;
 
-const VerticalDivider = styled.div`
-    height: 12px;
-    border-left: 1px solid ${({ theme }) => theme.legacy.TYPE_LIGHTER_GREY};
-    margin: 0 8px;
-`;
-
 const FooterText = styled(Text)`
     padding-right: 10px;
 `;
@@ -162,7 +156,11 @@ export const TradingFooter = () => {
                         <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
                             <Translation id="TR_TERMS_OF_USE_INVITY" />
                         </StyledLink>
-                        <VerticalDivider />
+                        <Divider
+                            orientation="vertical"
+                            margin={{ vertical: 0, horizontal: 8 }}
+                            height={12}
+                        />
                         <LearnMoreToggle ref={toggleRef} onClick={() => setToggled(true)}>
                             <Translation id="TR_BUY_LEARN_MORE" />
                         </LearnMoreToggle>

@@ -89,7 +89,7 @@ const GetAppCard = () => (
     <Card>
         <Row gap={spacings.lg} alignItems="stretch">
             <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
-                <Image isFilterActive image="TRADING_DCA_INVITY_APP_QR" width={100} height={100} />
+                <Image image="TRADING_DCA_INVITY_APP_QR" width={100} height={100} />
             </TrezorLink>
             <Column justifyContent="center" gap={spacings.xxs}>
                 <StoreBadge url={TRADING_DOWNLOAD_INVITY_APP_URL} image="PLAY_STORE" />
