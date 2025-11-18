@@ -36,7 +36,7 @@
             pkgs.xorg.xhost
             pkgs.docker
             pkgs.docker-compose
-            pkgs.nodejs_22
+            pkgs.nodejs_24
             (pkgs.yarn.override { nodejs = null; })
             pkgs.python3
             pkgs.python3Packages.pip
