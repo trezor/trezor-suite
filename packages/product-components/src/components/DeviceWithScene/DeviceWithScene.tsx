@@ -74,7 +74,10 @@ export const DeviceWithScene = ({
     objectFit,
     ...rest
 }: DeviceWithSceneProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedDeviceWithSceneFrameProps);
+    const frameProps = pickAndPrepareFrameProps(
+        rest,
+        allowedDeviceWithSceneFrameProps,
+    ) as TransientProps<AllowedFrameProps>;
     const image = getLargeModelImagePath(deviceModel, unitColor);
 
     return (

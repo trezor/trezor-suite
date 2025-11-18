@@ -147,7 +147,10 @@ export const CollapsibleBox = ({
 }: CollapsibleBoxProps) => {
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
-    const frameProps = pickAndPrepareFrameProps(rest, allowedCollapsibleBoxFrameProps);
+    const frameProps = pickAndPrepareFrameProps(
+        rest,
+        allowedCollapsibleBoxFrameProps,
+    ) as TransientProps<AllowedFrameProps>;
 
     const headerContent = (
         <Row gap={spacings.xs} justifyContent="space-between">

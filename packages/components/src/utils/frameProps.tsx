@@ -103,6 +103,7 @@ export const pickAndPrepareFrameProps = <
 >(
     props: TProps,
     allowedFrameProps: KFP,
+    makeTransient: boolean = true,
 ) => {
     const selectedProps = allowedFrameProps.reduce<{
         [value in KFP[number]]: TProps[value];
@@ -111,7 +112,7 @@ export const pickAndPrepareFrameProps = <
         {} as { [value in KFP[number]]: TProps[value] },
     );
 
-    return makePropsTransient(selectedProps);
+    return makeTransient ? makePropsTransient(selectedProps) : selectedProps;
 };
 
 export const withFrameProps = ({
