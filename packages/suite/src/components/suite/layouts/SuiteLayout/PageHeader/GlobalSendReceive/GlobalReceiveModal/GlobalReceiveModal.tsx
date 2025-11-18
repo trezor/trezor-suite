@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
@@ -35,9 +35,9 @@ const LIST_HEIGHT = 500;
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
     const { device } = useDevice();
     const acccountModal = useModal(false);
-
     const theme = useTheme();
 
+    const listRef = useRef<HTMLDivElement>(null);
     const accountsOptions = useAccountsOptions();
     const filteredAccounts = useFilterAccounts(accountsOptions);
     const filteredAccountsFingerprint = useDataFingerprint(filteredAccounts);
@@ -75,7 +75,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                 }}
                 onClose={() => onCancel(filledSearch)}
             >
-                <AssetSearchWithNetworkFilter placeholder="TR_RECEIVE_SEARCH" />
+                <AssetSearchWithNetworkFilter placeholder="TR_RECEIVE_SEARCH" listRef={listRef} />
 
                 <Divider />
 
@@ -91,6 +91,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                         itemsFingerprint={filteredAccountsFingerprint}
                         renderItem={renderItem}
                         height={LIST_HEIGHT}
+                        ref={listRef}
                     />
                 </AssetsListEmpty>
 

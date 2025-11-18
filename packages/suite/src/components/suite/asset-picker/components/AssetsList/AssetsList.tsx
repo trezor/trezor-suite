@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, RefObject, useCallback, useState } from 'react';
 
 import { BaseItemProps, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken } from '@trezor/theme';
@@ -9,6 +9,7 @@ export interface AssetsListProps<T> {
     renderItem: (item: T, index: number) => ReactNode;
     height: string | number;
     minHeight?: string | number;
+    ref?: RefObject<HTMLDivElement | null>;
 }
 
 export const LIST_MIN_HEIGHT = 200;
@@ -19,9 +20,9 @@ export function AssetsList<T extends BaseItemProps>({
     renderItem,
     height,
     minHeight = LIST_MIN_HEIGHT,
+    ref,
 }: AssetsListProps<T>) {
-    const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
-        useScrollShadow();
+    const { onScroll, ShadowTop, ShadowBottom, ShadowContainer } = useScrollShadow(ref);
 
     const [end, setEnd] = useState(items.length);
     const onScrollEnd = useCallback(() => setEnd(end + 1000), [end]);
@@ -33,7 +34,7 @@ export function AssetsList<T extends BaseItemProps>({
             <VirtualizedList
                 items={items}
                 itemsFingerprint={itemsFingerprint}
-                ref={scrollElementRef}
+                ref={ref}
                 onScroll={onScroll}
                 renderItem={renderItem}
                 onScrollEnd={onScrollEnd}
@@ -42,6 +43,7 @@ export function AssetsList<T extends BaseItemProps>({
                 visibleItemsCount={20}
                 beforeAfterBufferCount={20}
                 loadMoreBufferCount={5}
+                resetScrollOnItemsChange={false}
             />
             <ShadowBottom backgroundColor={shadowColor} />
         </ShadowContainer>

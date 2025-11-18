@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled, { CSSObject, DefaultTheme } from 'styled-components';
 
@@ -64,8 +64,10 @@ const Gradient = styled.div<GradientProps>`
         mapDirectionToGradient({ $direction, $backgroundColor, $elevation, theme })};
 `;
 
-export const useScrollShadow = () => {
-    const scrollElementRef = useRef<HTMLDivElement>(null);
+export const useScrollShadow = (externalRef?: RefObject<HTMLDivElement | null>) => {
+    const internalRef = useRef<HTMLDivElement>(null);
+    const scrollElementRef = externalRef || internalRef;
+
     const [isScrolledToTop, setIsScrolledToTop] = useState(true);
     const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
     const [isScrolledToLeft, setIsScrolledToLeft] = useState(true);
@@ -81,7 +83,7 @@ export const useScrollShadow = () => {
             setIsScrolledToLeft(scrollLeft === 0);
             setIsScrolledToRight(Math.ceil(scrollLeft + clientWidth) >= scrollWidth);
         }
-    }, []);
+    }, [scrollElementRef]);
 
     const { elevation } = useElevation();
 
@@ -99,7 +101,7 @@ export const useScrollShadow = () => {
         return () => {
             observer.disconnect();
         };
-    }, [setShadows]);
+    }, [scrollElementRef, setShadows]);
 
     const onScroll = useCallback(setShadows, [setShadows]);
 

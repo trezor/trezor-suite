@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
-import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { TokenDefinitionsState, selectTokenDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -14,6 +14,7 @@ import {
     findAccountsByNetwork,
 } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import {
     ASSET_ROW_ACCOUNT_HEIGHT,
@@ -25,6 +26,7 @@ import {
     TokensWithRates,
     enhanceTokensWithRates,
     getTokens,
+    hasVisibleTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
@@ -48,6 +50,17 @@ function filterAccountsByNetworkSymbol(
     return networkSymbol ? findAccountsByNetwork(networkSymbol, accounts) : accounts;
 }
 
+function getAccountsWithPositiveBalanceOrVisibleTokens(
+    accounts: Account[],
+    tokenDefinitions: TokenDefinitionsState,
+): Account[] {
+    return accounts.filter(
+        account =>
+            new BigNumber(account.availableBalance).gt(0) ||
+            hasVisibleTokens(account.symbol, account.tokens, tokenDefinitions),
+    );
+}
+
 export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
     const networkSymbol = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
     const accounts = useSelector(selectAllAccountsToList);
@@ -68,7 +81,12 @@ export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
 
         const networkAccounts = filterAccountsByNetworkSymbol(throttledAccounts, networkSymbol);
 
-        const accountsAndTokensSortedByFiatBalance = networkAccounts
+        const accountsWithPositiveBalanceOrTokens = getAccountsWithPositiveBalanceOrVisibleTokens(
+            networkAccounts,
+            tokenDefinitions,
+        );
+
+        const accountsAndTokensSortedByFiatBalance = accountsWithPositiveBalanceOrTokens
             .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
                 return accountsFiatBalanceInDescOrderComparator({
                     accountA,

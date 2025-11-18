@@ -33,7 +33,11 @@ export function ItemClickableContainer({ children, onClick }: ItemClickableConta
                 onClick();
             }}
         >
-            <Row justifyContent="space-between" gap={spacings.sm}>
+            <Row
+                justifyContent="space-between"
+                gap={spacings.sm}
+                padding={{ horizontal: spacings.md }}
+            >
                 {children}
             </Row>
         </ClickableContainer>

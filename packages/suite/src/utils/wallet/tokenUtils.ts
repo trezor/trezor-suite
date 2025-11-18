@@ -164,7 +164,7 @@ export const getTokens = <
 
 export const hasVisibleTokens = (
     symbol: NetworkSymbol,
-    tokens: TokenInfo[],
+    tokens: TokenInfo[] | undefined,
     tokenDefinitions: Partial<TokenDefinitionsState>,
     isNft: boolean = false,
 ): boolean => {
