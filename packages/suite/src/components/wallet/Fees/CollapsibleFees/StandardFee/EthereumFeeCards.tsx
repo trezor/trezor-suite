@@ -39,7 +39,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
 
     const [cachedGasLimit, setCachedGasLimit] = useState<string | undefined>(undefined);
-    const transactionInfo = composedLevels?.[selectedFeeLevel.label];
+    const transactionInfo = selectedFeeLevel ? composedLevels?.[selectedFeeLevel.label] : null;
 
     useEffect(() => {
         if (transactionInfo && transactionInfo.type !== 'error' && transactionInfo.feeLimit) {
@@ -57,6 +57,10 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
 
         return undefined;
     };
+
+    if (!selectedFeeLevel) {
+        return null;
+    }
 
     return (
         <>
