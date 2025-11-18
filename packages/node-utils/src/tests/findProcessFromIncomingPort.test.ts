@@ -22,7 +22,7 @@ describe('findProcessFromIncomingPort', () => {
             if (process.platform === 'win32') {
                 expect(processInfo?.name).toEqual('Node.js');
             } else {
-                expect(processInfo?.name).toEqual('node');
+                expect(processInfo?.name).toEqual('MainThread');
             }
         } finally {
             server.close();
