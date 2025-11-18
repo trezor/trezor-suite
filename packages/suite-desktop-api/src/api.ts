@@ -1,4 +1,5 @@
 import {
+    BioAuthSettings,
     BootstrapTorEvent,
     BridgeSettings,
     ConnectPopupCall,
@@ -85,6 +86,10 @@ export interface RendererChannels {
     'power-monitor/suspend': void;
 
     'find:show': void;
+
+    'bio-auth/validation-status-changed': boolean;
+    'bio-auth/bio-auth-availability-changed': boolean;
+    'bio-auth/settings-changed': BioAuthSettings;
 }
 
 // Invocation from renderer process
@@ -122,6 +127,8 @@ export interface InvokeChannels {
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
     'system/open-settings': (settings: 'bluetooth' | 'bluetooth-permissions') => InvokeResult;
+    'bio-auth/set-bio-auth-settings': (settings: BioAuthSettings) => void;
+    'bio-auth/get-bio-auth-settings': () => BioAuthSettings;
     'bio-auth/is-bio-auth-available': () => boolean;
     'bio-auth/validate-bio-auth': ({ message }: { message: string }) =>
         | {
@@ -131,6 +138,7 @@ export interface InvokeChannels {
               success: false;
               message: string;
           };
+    'bio-auth/get-validation-status': () => boolean;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -202,6 +210,9 @@ export type DesktopApi = {
     //system
     openSystemSettings: DesktopApiInvoke<'system/open-settings'>;
     // bioAuth
+    setBioAuthSettings: DesktopApiInvoke<'bio-auth/set-bio-auth-settings'>;
+    getBioAuthSettings: DesktopApiInvoke<'bio-auth/get-bio-auth-settings'>;
     isBioAuthAvailable: DesktopApiInvoke<'bio-auth/is-bio-auth-available'>;
     validateBioAuth: DesktopApiInvoke<'bio-auth/validate-bio-auth'>;
+    getBioAuthStatus: DesktopApiInvoke<'bio-auth/get-validation-status'>;
 };

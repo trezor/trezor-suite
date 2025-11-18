@@ -48,5 +48,8 @@ const validChannels: Array<keyof RendererChannels> = [
     'connect-popup/cancel',
     'app/auto-start/popup-request',
     'power-monitor/suspend',
+    'bio-auth/validation-status-changed',
+    'bio-auth/bio-auth-availability-changed',
+    'bio-auth/settings-changed',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);

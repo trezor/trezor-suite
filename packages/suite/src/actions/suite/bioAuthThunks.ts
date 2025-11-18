@@ -1,176 +1,124 @@
-import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isMacOs, isWeb } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { TranslationFunction } from 'src/hooks/suite/useTranslation';
-import {
-    BLUR_LOCK_TIMEOUT_MS,
-    selectBioAuthEnabled,
-    selectBlurTimeoutId,
-    selectIsBioAuthAvailableStateKnown,
-    selectIsBioAuthValidationRequested,
-    selectIsBioAuthValidationRequired,
-    selectIsRequestingBioAuthChange,
-} from 'src/reducers/bioAuth';
 import { Dispatch } from 'src/types/suite';
 
 import { bioAuthActions } from './bioAuthActions';
-import * as storageActions from './storageActions';
 
 const BIO_AUTH_PREFIX = '@suite/bioAuth';
 
-export const bioAuthWindowBlurThunk = createThunk(
-    `${BIO_AUTH_PREFIX}/bioAuthWindowBlurThunk`,
-    (date: Date, { dispatch, getState }) => {
-        const blurTimeoutId = selectBlurTimeoutId(getState());
-        if (blurTimeoutId) {
-            clearTimeout(blurTimeoutId);
-        }
-
-        const timeoutId = setTimeout(() => {
-            dispatch(bioAuthActions.setBioAuthValidationRequired());
-        }, BLUR_LOCK_TIMEOUT_MS);
-
-        dispatch(
-            bioAuthActions.bioAuthWindowBlur({
-                blurDate: date.toUTCString(),
-                timeoutId,
-            }),
-        );
-    },
-);
-
-export const bioAuthWindowFocusThunk = createThunk(
-    `${BIO_AUTH_PREFIX}/bioAuthWindowFocusThunk`,
-    (date: Date, { dispatch, getState }) => {
-        const blurTimeoutId = selectBlurTimeoutId(getState());
-        if (blurTimeoutId) {
-            clearTimeout(blurTimeoutId);
-        }
-
-        const validationRequired = selectIsBioAuthValidationRequired(getState());
-
-        if (validationRequired) {
-            dispatch(bioAuthActions.setBioAuthValidationRequired());
-        }
-        dispatch(bioAuthActions.bioAuthWindowFocus(date.toUTCString()));
-    },
-);
-
 const KNOWN_ERROR_MESSAGES = ['Authentication canceled.', 'Authentication cancelled.'];
 
-const validateCall = (translationString: TranslationFunction) =>
-    desktopApi.validateBioAuth({
-        message: translationString(
-            isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
-        ),
-    });
-
-const handleError = (error: string, dispatch: Dispatch, translationString: TranslationFunction) => {
-    dispatch(bioAuthActions.bioAuthValidated(null));
-
+const handleError = (error: string, dispatch: Dispatch, message: string) => {
     if (KNOWN_ERROR_MESSAGES.some(message => error.includes(message))) {
         // NOTE: known error message
         return;
     }
-
     dispatch(
         notificationsActions.addToast({
             type: 'error',
-            error: translationString('TR_BIO_AUTH_FAILED'),
+            error: message,
         }),
     );
 };
 
+export const init = createThunk(`${BIO_AUTH_PREFIX}/init`, (_args, { dispatch }) => {
+    // settings
+    desktopApi.getBioAuthSettings().then(settings => {
+        console.log('get settings', settings);
+        dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
+    });
+    desktopApi.on('bio-auth/settings-changed', settings => {
+        console.log('bio-auth/settings-changed', settings);
+        dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
+    });
+
+    // api availability
+    desktopApi.isBioAuthAvailable().then(available => {
+        console.log('initial availability', available);
+        dispatch(bioAuthActions.setIsBioAuthAvailable(available));
+    });
+
+    // validation status
+    desktopApi.getBioAuthStatus().then(validated => {
+        console.log('initial validation status', validated);
+        dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
+    });
+    desktopApi.on('bio-auth/validation-status-changed', validated => {
+        console.log('validation status changed', validated);
+        dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
+    });
+    desktopApi.on('bio-auth/bio-auth-availability-changed', available => {
+        console.log('bio-auth availability changed', available);
+        dispatch(bioAuthActions.setIsBioAuthAvailable(available));
+    });
+});
+
+interface RequestBioAuthChangeThunkParams {
+    payload: boolean;
+    messageSuccess: string;
+    messageError: string;
+}
+
 export const requestBioAuthChangeThunk = createThunk(
     `${BIO_AUTH_PREFIX}/requestBioAuthChangeThunk`,
     async (
-        {
-            nextBioAuthEnabledValue,
-            translationString,
-        }: {
-            translationString: TranslationFunction;
-            nextBioAuthEnabledValue?: boolean;
-        },
-        { dispatch, getState },
+        { payload, messageSuccess, messageError }: RequestBioAuthChangeThunkParams,
+        { dispatch },
     ) => {
-        const prevBioEnabled = selectBioAuthEnabled(getState());
-        const isRequestingChange = selectIsRequestingBioAuthChange(getState());
-        const nextBioEnabled = nextBioAuthEnabledValue ?? !prevBioEnabled;
+        if (!(await desktopApi.isBioAuthAvailable())) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Biometric authentication not available',
+                }),
+            );
 
-        if (nextBioEnabled === prevBioEnabled) {
             return;
         }
 
-        if (isRequestingChange || selectIsBioAuthValidationRequested(getState())) {
-            return;
-        }
-
-        dispatch(bioAuthActions.requestBioAuthChange(nextBioEnabled));
-
-        try {
-            const result = await validateCall(translationString);
-
-            if (result.success) {
-                dispatch(bioAuthActions.setBioAuthEnabled(nextBioEnabled));
-                dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
-                // Persist bioAuthEnabled to storage
-                dispatch(storageActions.saveBioAuth());
-            } else {
-                return handleError(result.message, dispatch, translationString);
-            }
-        } finally {
-            dispatch(bioAuthActions.requestBioAuthChangeEnd());
+        const result = await desktopApi.validateBioAuth({
+            message: messageSuccess,
+        });
+        if (!result.success) {
+            return handleError(result.message, dispatch, messageError);
+        } else {
+            await desktopApi.setBioAuthSettings({ enabled: payload });
         }
     },
 );
+
+interface RequestBioAuthValidationThunkParams {
+    messageSuccess: string;
+    messageError: string;
+}
 
 export const requestBioAuthValidationThunk = createThunk(
     `${BIO_AUTH_PREFIX}/validateAuth`,
-    async (
-        { translationString }: { translationString: TranslationFunction },
-        { dispatch, getState },
-    ) => {
-        const isRequestingValidation = selectIsBioAuthValidationRequested(getState());
+    async ({ messageSuccess, messageError }: RequestBioAuthValidationThunkParams, { dispatch }) => {
+        if (!(await desktopApi.isBioAuthAvailable())) {
+            await desktopApi.setBioAuthSettings({ enabled: false });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Biometric authentication not available',
+                }),
+            );
 
-        if (isRequestingValidation) {
             return;
         }
 
-        dispatch(bioAuthActions.toggleBioAuthValidationRequested(true));
-        try {
-            const result = await validateCall(translationString);
+        dispatch(bioAuthActions.setCancelled(false));
 
-            if (result.success) {
-                dispatch(bioAuthActions.bioAuthValidated(new Date().toUTCString()));
-                const blurTimeoutId = selectBlurTimeoutId(getState());
-                if (blurTimeoutId) {
-                    clearTimeout(blurTimeoutId);
-                }
-            } else {
-                return handleError(result.message, dispatch, translationString);
-            }
-        } finally {
-            dispatch(bioAuthActions.toggleBioAuthValidationRequested(false));
+        const result = await desktopApi.validateBioAuth({
+            message: messageSuccess,
+        });
+        console.log('result of bio-auth validation', result);
+        if (!result.success) {
+            dispatch(bioAuthActions.setCancelled(true));
+
+            return handleError(result.message, dispatch, messageError);
         }
-    },
-);
-
-export const requestOnceBioAuthValidationThunk = createSingleInstanceThunk(
-    `${BIO_AUTH_PREFIX}/validateAuthOnce`,
-    ({ translationString }: { translationString: TranslationFunction }, { dispatch }) =>
-        dispatch(requestBioAuthValidationThunk({ translationString })),
-);
-
-export const checkBioAuthAvailableThunk = createThunk(
-    `${BIO_AUTH_PREFIX}/checkBioAuthAvailableThunk`,
-    async (_, { dispatch, getState }) => {
-        if (selectIsBioAuthAvailableStateKnown(getState()) || isWeb()) {
-            return;
-        }
-
-        const isAvailable = await desktopApi.isBioAuthAvailable();
-        dispatch(bioAuthActions.setBioAuthAvailable(isAvailable));
     },
 );

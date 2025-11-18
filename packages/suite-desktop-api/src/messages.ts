@@ -43,7 +43,9 @@ export type HandshakeEvent =
           message: string;
       };
 
-export type HandshakeClient = any;
+export type HandshakeClient = {
+    legacyBioAuthEnabled: boolean;
+};
 
 export type HandshakeInit = {
     statePatch?: Record<string, any>;
@@ -121,6 +123,10 @@ export type BridgeSettings = {
     doNotStartOnStartup: boolean;
     legacy?: boolean;
     newBridgeRollout?: number;
+};
+
+export type BioAuthSettings = {
+    enabled: boolean;
 };
 
 export type InvokeResult<Payload = undefined> =

@@ -276,8 +276,12 @@ describe('DesktopApi', () => {
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')
                 .mockImplementation(() => Promise.resolve({ success: true }));
-            const data = await api.loadModules(null);
-            expect(spy).toHaveBeenCalledWith('handshake/load-modules', null);
+            const data = await api.loadModules({
+                legacyBioAuthEnabled: false,
+            });
+            expect(spy).toHaveBeenCalledWith('handshake/load-modules', {
+                legacyBioAuthEnabled: false,
+            });
             expect(data.success).toBe(true);
 
             // @ts-expect-error param expected

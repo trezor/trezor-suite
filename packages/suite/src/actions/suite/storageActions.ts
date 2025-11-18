@@ -391,22 +391,6 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
     );
 };
 
-export const saveBioAuth = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
-    const { bioAuth } = getState();
-
-    // Store a minimal BioAuthState with only bioAuthEnabled set
-    // All other properties will use their default values when loaded
-    await db.addItem(
-        'bioAuth',
-        {
-            bioAuthEnabled: bioAuth.bioAuthEnabled,
-        },
-        'bioAuth',
-        true,
-    );
-};
-
 export const saveTokenManagement =
     (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
     async (_dispatch: Dispatch, getState: GetState) => {
