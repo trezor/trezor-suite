@@ -116,6 +116,24 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         );
     }
 
+    // Stellar trustline addition/removal
+    if (
+        transaction.stellarSpecific?.operationType === 'changeTrust' &&
+        transaction.stellarSpecific?.changeTrust
+    ) {
+        const translationId = transaction.stellarSpecific.changeTrust.isRemoval
+            ? 'TR_STELLAR_TRUSTLINE_REMOVED'
+            : 'TR_STELLAR_TRUSTLINE_ADDED';
+
+        return (
+            <BlurUrls
+                text={translationString(translationId, {
+                    assetCode: transaction.stellarSpecific.changeTrust.assetCode,
+                })}
+            />
+        );
+    }
+
     // Swap transaction - 2 tokens, token to native or native to token
     if (
         transaction.tokens.length === 2 ||
