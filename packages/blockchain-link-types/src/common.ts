@@ -166,6 +166,11 @@ export interface Transaction {
     stellarSpecific?: {
         memo?: string;
         feeSource: string; // who paid the fee for the transaction
+        operationType?: 'changeTrust';
+        changeTrust?: {
+            assetCode: string;
+            isRemoval: boolean;
+        };
     };
 }
 

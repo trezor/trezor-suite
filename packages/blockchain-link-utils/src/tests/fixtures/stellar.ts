@@ -1980,6 +1980,367 @@ export const fixtures = {
                 type: 'unknown',
             },
         },
+        {
+            description:
+                'transaction contains a change trust operation to establish trustline to an alpha4 asset',
+            input: {
+                descriptor: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                tx: {
+                    _links: {
+                        self: {
+                            href: 'https://horizon.stellar.org/transactions/6c9d041e08209d8c30163fff25dbda5930948550e450d46b61e916cc61365e8d',
+                        },
+                        account: {
+                            href: 'https://horizon.stellar.org/accounts/GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                        },
+                        ledger: {
+                            href: 'https://horizon.stellar.org/ledgers/59902229',
+                        },
+                        operations: {
+                            href: 'https://horizon.stellar.org/transactions/6c9d041e08209d8c30163fff25dbda5930948550e450d46b61e916cc61365e8d/operations{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        effects: {
+                            href: 'https://horizon.stellar.org/transactions/6c9d041e08209d8c30163fff25dbda5930948550e450d46b61e916cc61365e8d/effects{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        precedes: {
+                            href: 'https://horizon.stellar.org/transactions?order=asc\u0026cursor=257278114513059840',
+                        },
+                        succeeds: {
+                            href: 'https://horizon.stellar.org/transactions?order=desc\u0026cursor=257278114513059840',
+                        },
+                        transaction: {
+                            href: 'https://horizon.stellar.org/transactions/6c9d041e08209d8c30163fff25dbda5930948550e450d46b61e916cc61365e8d',
+                        },
+                    },
+                    id: '6c9d041e08209d8c30163fff25dbda5930948550e450d46b61e916cc61365e8d',
+                    paging_token: '257278114513059840',
+                    successful: true,
+                    hash: '6c9d041e08209d8c30163fff25dbda5930948550e450d46b61e916cc61365e8d',
+                    ledger_attr: 59902229,
+                    created_at: '2025-11-18T07:56:20Z',
+                    source_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    source_account_sequence: '235565581657440374',
+                    fee_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    fee_charged: '100',
+                    max_fee: '100',
+                    operation_count: 1,
+                    envelope_xdr:
+                        'AAAAAgAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAAGQDROWmAAAAdgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAABgAAAAFTSFgAAAAAAOU4yPc5k/yisQ3JgnYf5elRUkRRAx/QRyUoRX9N+j6kf/////////8AAAAAAAAAAdNHGSoAAABAWRLAHJXBgFNHdzCWKDsfdGjTZ1JXQEANf9oBsKbi4LASxM8EOmnTTo7hQKJy9/SW7lFBABaRXgPZiMkcjg9HCQ==',
+                    result_xdr: 'AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAAGAAAAAAAAAAA=',
+                    fee_meta_xdr:
+                        'AAAAAgAAAAMDkgkDAAAAAAAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAAABBnESAA0TlpgAAAHUAAAADAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAADAAAAAAOSCQMAAAAAaRwmPgAAAAAAAAABA5IJFQAAAAAAAAAALGPcPBJN4yfMSvAJiK+oRJKkKaPFTuC4YUguaNNHGSoAAAAAQZxEHANE5aYAAAB1AAAAAwAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAwAAAAADkgkDAAAAAGkcJj4AAAAA',
+                    memo_type: 'none',
+                    signatures: [
+                        'WRLAHJXBgFNHdzCWKDsfdGjTZ1JXQEANf9oBsKbi4LASxM8EOmnTTo7hQKJy9/SW7lFBABaRXgPZiMkcjg9HCQ==',
+                    ],
+                    preconditions: {
+                        timebounds: {
+                            min_time: '0',
+                        },
+                    },
+                },
+            },
+            expectedOutput: {
+                amount: '0',
+                blockHeight: 59902229,
+                blockTime: 1763452580,
+                details: {
+                    size: 0,
+                    totalInput: '0',
+                    totalOutput: '0',
+                    vin: [],
+                    vout: [],
+                },
+                fee: '100',
+                feeRate: undefined,
+                internalTransfers: [],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    operationType: 'changeTrust',
+                    changeTrust: {
+                        assetCode: 'SHX',
+                        isRemoval: false,
+                    },
+                },
+                targets: [],
+                tokens: [],
+                txid: '6c9d041e08209d8c30163fff25dbda5930948550e450d46b61e916cc61365e8d',
+                type: 'self',
+            },
+        },
+        {
+            description:
+                'transaction contains a change trust operation to remove a trustline to an alpha4 asset',
+            input: {
+                descriptor: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                tx: {
+                    _links: {
+                        self: {
+                            href: 'https://horizon.stellar.org/transactions/6dacdcb869436fd76d2b6134a266f1881006bf7f27ac908800b5ed0c2564fbc4',
+                        },
+                        account: {
+                            href: 'https://horizon.stellar.org/accounts/GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                        },
+                        ledger: {
+                            href: 'https://horizon.stellar.org/ledgers/59902231',
+                        },
+                        operations: {
+                            href: 'https://horizon.stellar.org/transactions/6dacdcb869436fd76d2b6134a266f1881006bf7f27ac908800b5ed0c2564fbc4/operations{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        effects: {
+                            href: 'https://horizon.stellar.org/transactions/6dacdcb869436fd76d2b6134a266f1881006bf7f27ac908800b5ed0c2564fbc4/effects{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        precedes: {
+                            href: 'https://horizon.stellar.org/transactions?order=asc\u0026cursor=257278123102982144',
+                        },
+                        succeeds: {
+                            href: 'https://horizon.stellar.org/transactions?order=desc\u0026cursor=257278123102982144',
+                        },
+                        transaction: {
+                            href: 'https://horizon.stellar.org/transactions/6dacdcb869436fd76d2b6134a266f1881006bf7f27ac908800b5ed0c2564fbc4',
+                        },
+                    },
+                    id: '6dacdcb869436fd76d2b6134a266f1881006bf7f27ac908800b5ed0c2564fbc4',
+                    paging_token: '257278123102982144',
+                    successful: true,
+                    hash: '6dacdcb869436fd76d2b6134a266f1881006bf7f27ac908800b5ed0c2564fbc4',
+                    ledger_attr: 59902231,
+                    created_at: '2025-11-18T07:56:31Z',
+                    source_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    source_account_sequence: '235565581657440375',
+                    fee_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    fee_charged: '100',
+                    max_fee: '100',
+                    operation_count: 1,
+                    envelope_xdr:
+                        'AAAAAgAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAAGQDROWmAAAAdwAAAAEAAAAAAAAAAAAAAABpHCfYAAAAAAAAAAEAAAAAAAAABgAAAAFTSFgAAAAAAOU4yPc5k/yisQ3JgnYf5elRUkRRAx/QRyUoRX9N+j6kAAAAAAAAAAAAAAAAAAAAAdNHGSoAAABAklRcuhmB2FAIEUzvILW5RFZsn50asQH+7odJGe9l10RNp5au1JKsg2UESjpxPcZQ1UjlQgJwoL/NIpQWH+JBCQ==',
+                    result_xdr: 'AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAAGAAAAAAAAAAA=',
+                    fee_meta_xdr:
+                        'AAAAAgAAAAMDkgkVAAAAAAAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAAABBnEQcA0TlpgAAAHYAAAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAADAAAAAAOSCRUAAAAAaRwmpAAAAAAAAAABA5IJFwAAAAAAAAAALGPcPBJN4yfMSvAJiK+oRJKkKaPFTuC4YUguaNNHGSoAAAAAQZxDuANE5aYAAAB2AAAABAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAwAAAAADkgkVAAAAAGkcJqQAAAAA',
+                    memo_type: 'none',
+                    signatures: [
+                        'klRcuhmB2FAIEUzvILW5RFZsn50asQH+7odJGe9l10RNp5au1JKsg2UESjpxPcZQ1UjlQgJwoL/NIpQWH+JBCQ==',
+                    ],
+                    preconditions: {
+                        timebounds: {
+                            min_time: '0',
+                            max_time: '1763452888',
+                        },
+                    },
+                },
+            },
+            expectedOutput: {
+                amount: '0',
+                blockHeight: 59902231,
+                blockTime: 1763452591,
+                details: {
+                    size: 0,
+                    totalInput: '0',
+                    totalOutput: '0',
+                    vin: [],
+                    vout: [],
+                },
+                fee: '100',
+                feeRate: undefined,
+                internalTransfers: [],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    operationType: 'changeTrust',
+                    changeTrust: {
+                        assetCode: 'SHX',
+                        isRemoval: true,
+                    },
+                },
+                targets: [],
+                tokens: [],
+                txid: '6dacdcb869436fd76d2b6134a266f1881006bf7f27ac908800b5ed0c2564fbc4',
+                type: 'self',
+            },
+        },
+        {
+            description:
+                'transaction contains a change trust operation to establish trustline to an alpha12 asset',
+            input: {
+                descriptor: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                tx: {
+                    _links: {
+                        self: {
+                            href: 'https://horizon.stellar.org/transactions/54e56078d6c0a2738b08de058a09cbf9e303b10936e34cbdc5b45f5feb889a07',
+                        },
+                        account: {
+                            href: 'https://horizon.stellar.org/accounts/GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                        },
+                        ledger: {
+                            href: 'https://horizon.stellar.org/ledgers/59904663',
+                        },
+                        operations: {
+                            href: 'https://horizon.stellar.org/transactions/54e56078d6c0a2738b08de058a09cbf9e303b10936e34cbdc5b45f5feb889a07/operations{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        effects: {
+                            href: 'https://horizon.stellar.org/transactions/54e56078d6c0a2738b08de058a09cbf9e303b10936e34cbdc5b45f5feb889a07/effects{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        precedes: {
+                            href: 'https://horizon.stellar.org/transactions?order=asc\u0026cursor=257288568462974976',
+                        },
+                        succeeds: {
+                            href: 'https://horizon.stellar.org/transactions?order=desc\u0026cursor=257288568462974976',
+                        },
+                        transaction: {
+                            href: 'https://horizon.stellar.org/transactions/54e56078d6c0a2738b08de058a09cbf9e303b10936e34cbdc5b45f5feb889a07',
+                        },
+                    },
+                    id: '54e56078d6c0a2738b08de058a09cbf9e303b10936e34cbdc5b45f5feb889a07',
+                    paging_token: '257288568462974976',
+                    successful: true,
+                    hash: '54e56078d6c0a2738b08de058a09cbf9e303b10936e34cbdc5b45f5feb889a07',
+                    ledger_attr: 59904663,
+                    created_at: '2025-11-18T11:47:19Z',
+                    source_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    source_account_sequence: '235565581657440376',
+                    fee_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    fee_charged: '100',
+                    max_fee: '34291',
+                    operation_count: 1,
+                    envelope_xdr:
+                        'AAAAAgAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAhfMDROWmAAAAeAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAABgAAAAJDRVRFUwAAAAAAAAAAAAAAo4oYfW1BE1599cmUdEgooEng4HwhM7tO2iGZnGfiwTZ//////////wAAAAAAAAAB00cZKgAAAEAzh5cZcVT9EXHB37QqKTWXvQVxEin4AzfkzENcMjBDdPSPw8FpzzY4w7pFK2i8g0DymO5PrUS1f3vSSxnTXbwJ',
+                    result_xdr: 'AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAAGAAAAAAAAAAA=',
+                    fee_meta_xdr:
+                        'AAAAAgAAAAMDkgkXAAAAAAAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAAABBnEO4A0TlpgAAAHcAAAADAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAADAAAAAAOSCRcAAAAAaRwmrwAAAAAAAAABA5ISlwAAAAAAAAAALGPcPBJN4yfMSvAJiK+oRJKkKaPFTuC4YUguaNNHGSoAAAAAQZxDVANE5aYAAAB3AAAAAwAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAwAAAAADkgkXAAAAAGkcJq8AAAAA',
+                    memo_type: 'none',
+                    signatures: [
+                        'M4eXGXFU/RFxwd+0Kik1l70FcRIp+AM35MxDXDIwQ3T0j8PBac82OMO6RStovINA8pjuT61EtX970ksZ0128CQ==',
+                    ],
+                    preconditions: {
+                        timebounds: {
+                            min_time: '0',
+                        },
+                    },
+                },
+            },
+            expectedOutput: {
+                amount: '0',
+                blockHeight: 59904663,
+                blockTime: 1763466439,
+                details: {
+                    size: 0,
+                    totalInput: '0',
+                    totalOutput: '0',
+                    vin: [],
+                    vout: [],
+                },
+                fee: '100',
+                feeRate: undefined,
+                internalTransfers: [],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    operationType: 'changeTrust',
+                    changeTrust: {
+                        assetCode: 'CETES',
+                        isRemoval: false,
+                    },
+                },
+                targets: [],
+                tokens: [],
+                txid: '54e56078d6c0a2738b08de058a09cbf9e303b10936e34cbdc5b45f5feb889a07',
+                type: 'self',
+            },
+        },
+        {
+            description:
+                'transaction contains a change trust operation to establish trustline to a liquidity pool share asset',
+            input: {
+                descriptor: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                tx: {
+                    _links: {
+                        self: {
+                            href: 'https://horizon.stellar.org/transactions/b62f60deea749e295190b57ba056c134ed9a91e32df13a3627c6bd2733d68a35',
+                        },
+                        account: {
+                            href: 'https://horizon.stellar.org/accounts/GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                        },
+                        ledger: {
+                            href: 'https://horizon.stellar.org/ledgers/59904747',
+                        },
+                        operations: {
+                            href: 'https://horizon.stellar.org/transactions/b62f60deea749e295190b57ba056c134ed9a91e32df13a3627c6bd2733d68a35/operations{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        effects: {
+                            href: 'https://horizon.stellar.org/transactions/b62f60deea749e295190b57ba056c134ed9a91e32df13a3627c6bd2733d68a35/effects{?cursor,limit,order}',
+                            templated: true,
+                        },
+                        precedes: {
+                            href: 'https://horizon.stellar.org/transactions?order=asc\u0026cursor=257288929240178688',
+                        },
+                        succeeds: {
+                            href: 'https://horizon.stellar.org/transactions?order=desc\u0026cursor=257288929240178688',
+                        },
+                        transaction: {
+                            href: 'https://horizon.stellar.org/transactions/b62f60deea749e295190b57ba056c134ed9a91e32df13a3627c6bd2733d68a35',
+                        },
+                    },
+                    id: 'b62f60deea749e295190b57ba056c134ed9a91e32df13a3627c6bd2733d68a35',
+                    paging_token: '257288929240178688',
+                    successful: true,
+                    hash: 'b62f60deea749e295190b57ba056c134ed9a91e32df13a3627c6bd2733d68a35',
+                    ledger_attr: 59904747,
+                    created_at: '2025-11-18T11:55:12Z',
+                    source_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    source_account_sequence: '235565581657440378',
+                    fee_account: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                    fee_charged: '100',
+                    max_fee: '100',
+                    operation_count: 1,
+                    envelope_xdr:
+                        'AAAAAgAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAAGQDROWmAAAAegAAAAEAAAAAAAAAAAAAAABpHF/KAAAAAAAAAAEAAAAAAAAABgAAAAMAAAAAAAAAAAAAAAFVU0RDAAAAADuZETgO/piLoKiQDrHP5E82b32+lGvtB3JA9/Yk3xXFAAAAHn//////////AAAAAAAAAAHTRxkqAAAAQE0q32m5qHb0sh+Z4J8NVL0hU1Vb8/M2b5ih/gvYkySuzntxgcRLzV3+kC5MFG6okevVEgaABDIskjpga1JFmwA=',
+                    result_xdr: 'AAAAAAAAAGQAAAAAAAAAAQAAAAAAAAAGAAAAAAAAAAA=',
+                    fee_meta_xdr:
+                        'AAAAAgAAAAMDkhKZAAAAAAAAAAAsY9w8Ek3jJ8xK8AmIr6hEkqQpo8VO4LhhSC5o00cZKgAAAABBnELwA0TlpgAAAHkAAAADAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAADAAAAAAOSEpkAAAAAaRxc0wAAAAAAAAABA5IS6wAAAAAAAAAALGPcPBJN4yfMSvAJiK+oRJKkKaPFTuC4YUguaNNHGSoAAAAAQZxCjANE5aYAAAB5AAAAAwAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAwAAAAADkhKZAAAAAGkcXNMAAAAA',
+                    memo_type: 'none',
+                    signatures: [
+                        'TSrfabmodvSyH5ngnw1UvSFTVVvz8zZvmKH+C9iTJK7Oe3GBxEvNXf6QLkwUbqiR69USBoAEMiySOmBrUkWbAA==',
+                    ],
+                    preconditions: {
+                        timebounds: {
+                            min_time: '0',
+                            max_time: '1763467210',
+                        },
+                    },
+                },
+            },
+            expectedOutput: {
+                amount: '0',
+                blockHeight: 59904747,
+                blockTime: 1763466912,
+                details: {
+                    size: 0,
+                    totalInput: '0',
+                    totalOutput: '0',
+                    vin: [],
+                    vout: [],
+                },
+                fee: '100',
+                feeRate: undefined,
+                internalTransfers: [],
+                stellarSpecific: {
+                    memo: undefined,
+                    feeSource: 'GAWGHXB4CJG6GJ6MJLYATCFPVBCJFJBJUPCU5YFYMFEC42GTI4MSU2JV',
+                },
+                targets: [],
+                tokens: [],
+                txid: 'b62f60deea749e295190b57ba056c134ed9a91e32df13a3627c6bd2733d68a35',
+                type: 'unknown',
+            },
+        },
     ],
     buildSendTransactoin: [
         {
