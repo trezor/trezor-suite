@@ -124,6 +124,36 @@ export const transformTransaction = (
                 nativeAmount = '0';
             }
             break;
+        case 'changeTrust': {
+            // Only support regular assets, not liquidity pool shares
+            if (
+                rawOp.line.getAssetType() !== 'credit_alphanum4' &&
+                rawOp.line.getAssetType() !== 'credit_alphanum12'
+            ) {
+                return baseTx;
+            }
+
+            if (descriptor !== fromAddress) {
+                return baseTx;
+            }
+
+            const line = rawOp.line as Asset;
+            const assetCode = line.getCode();
+            const isRemoval = new BigNumber(rawOp.limit).isZero();
+
+            return {
+                ...baseTx,
+                type: 'self',
+                stellarSpecific: {
+                    ...baseTx.stellarSpecific!,
+                    operationType: 'changeTrust',
+                    changeTrust: {
+                        assetCode,
+                        isRemoval,
+                    },
+                },
+            };
+        }
         default:
             // We only support createAccount and payment operations for now, so we consider it as a unknown type
             return baseTx;
