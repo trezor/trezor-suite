@@ -11205,6 +11205,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/suite-sync-quota-manager@workspace:suite-common/suite-sync-quota-manager":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/suite-sync-quota-manager@workspace:suite-common/suite-sync-quota-manager"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/suite-sync-storage@workspace:*, @suite-common/suite-sync-storage@workspace:suite-common/suite-sync-storage":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-storage@workspace:suite-common/suite-sync-storage"
