@@ -3265,7 +3265,7 @@ export default defineMessages({
     },
     TR_RECOVER_SUBHEADING_BUTTONS: {
         defaultMessage:
-            "The entire recovery process is completed on your Trezor's screen using the two-button pad.",
+            "The entire wallet recovery process is completed on your Trezor's screen using the two-button pad.",
         description: 'Subheading in recover page. Basic info about recovery',
         id: 'TR_RECOVER_SUBHEADING_BUTTONS',
     },
@@ -8216,7 +8216,7 @@ export default defineMessages({
     TR_STAKE_FUNDS_WARNING: {
         id: 'TR_STAKE_FUNDS_WARNING',
         defaultMessage:
-            'Your {networkDisplaySymbol} stays in your account while staked—you can send, swap, or spend it anytime.',
+            'Your {networkDisplaySymbol} stays in your account while staked. You can send, swap, or spend it anytime.',
     },
     TR_STAKE_NOT_ENOUGH_FUNDS_WARNING: {
         id: 'TR_STAKE_NOT_ENOUGH_FUNDS_WARNING',
