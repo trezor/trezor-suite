@@ -7,16 +7,34 @@ use crate::server::{
 use std::process::Command;
 
 #[cfg(target_os = "linux")]
-async fn get_adapter_info() -> Result<String, Box<dyn std::error::Error>> {
-    // look for LMP version 10+
-    let result1 = Command::new("bluetoothctl").arg("show").output();
-    // hciconfig is deprecated
-    let result2 = Command::new("hciconfig").arg("-a").output();
+fn is_bluetooth_service_running() -> bool {
+    Command::new("systemctl")
+        .arg("is-active")
+        .arg("--quiet")
+        .arg("bluetooth.service")
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
+}
 
-    match (result1, result2) {
-        (Ok(info1), Ok(_info2)) => Ok(String::from_utf8_lossy(&info1.stdout).to_string()),
-        (Ok(info1), Err(_)) => Ok(String::from_utf8_lossy(&info1.stdout).to_string()),
-        (Err(_), Ok(info2)) => Ok(String::from_utf8_lossy(&info2.stdout).to_string()),
+#[cfg(target_os = "linux")]
+async fn get_adapter_info() -> Result<String, Box<dyn std::error::Error>> {
+    let bluetoothctl = if is_bluetooth_service_running() {
+        match Command::new("bluetoothctl").arg("show").output() {
+            Ok(output) => Ok(String::from_utf8_lossy(&output.stdout).to_string()),
+            Err(err) => Err(err.to_string()),
+        }
+    } else {
+        Err("Service disabled".to_string())
+    };
+
+    // hciconfig is deprecated
+    let hciconfig = Command::new("hciconfig").arg("-a").output();
+
+    match (bluetoothctl, hciconfig) {
+        (Ok(info), Ok(_)) => Ok(info),
+        (Ok(info), Err(_)) => Ok(info),
+        (Err(_), Ok(info)) => Ok(String::from_utf8_lossy(&info.stdout).to_string()),
         (Err(error), Err(_)) => Err(error.into()),
     }
 }
