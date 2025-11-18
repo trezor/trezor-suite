@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { IMAGES, IMAGES_PATH, Image } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { resolveStaticPath } from '@trezor/env-utils';
 
 export const DEFAULT_CONNECT_DEVICE_NAME = 'T3T1-CONNECT-ON' as const;
 // component taken from native part of app, edit for desktop & web usage only for one model

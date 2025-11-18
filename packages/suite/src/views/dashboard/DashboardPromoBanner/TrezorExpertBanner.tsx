@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
+import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, colorVariants, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 

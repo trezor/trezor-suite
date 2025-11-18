@@ -1,6 +1,5 @@
 import { IMAGES_PATH } from '@trezor/components';
-
-import { resolveStaticPath } from '../../utils/resolveStaticPath';
+import { resolveStaticPath } from '@trezor/env-utils';
 
 export const LOGOS: { [key: string]: any } = {
     HORIZONTAL: resolveStaticPath(`${IMAGES_PATH}/logos/trezor_logo_horizontal.svg`),

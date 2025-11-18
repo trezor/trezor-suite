@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Card, IMAGES, variables } from '@trezor/components';
+import { resolveStaticPath } from '@trezor/env-utils';
 
 import TooltipSymbol from 'src/components/suite/TooltipSymbol';
 import { Translation } from 'src/components/suite/Translation';

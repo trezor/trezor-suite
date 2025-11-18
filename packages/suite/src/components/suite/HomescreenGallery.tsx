@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Grid } from '@trezor/components';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { resolveStaticPath } from '@trezor/env-utils';
 import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 

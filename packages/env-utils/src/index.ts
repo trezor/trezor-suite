@@ -38,3 +38,5 @@ export const {
     getJWSPublicKey,
     getFirmwareReleaseJwsPublicKey,
 } = envUtils;
+
+export { resolveStaticPath, resolveConnectPath } from './resolveStaticPath';
