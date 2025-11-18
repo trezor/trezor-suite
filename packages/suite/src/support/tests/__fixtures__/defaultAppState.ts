@@ -101,16 +101,9 @@ export const initialAppState: AppState = {
         pendingProposal: undefined,
     },
     bioAuth: {
-        initialNow: 0,
         bioAuthEnabled: false,
-        blurTimeoutId: null,
-        bioAuthEnabledNextValue: null,
-        lastBioAuthValidatedTimestamp: null,
-        lastWindowBlurTimestamp: null,
-        bioAuthValidationRequested: false,
+        bioAuthAvailable: false,
         bioAuthValidationRequired: false,
-        windowBlurred: false,
-        bioAuthAvailable: null,
-        hasEverValidatedBioAuth: false,
+        cancelled: false,
     },
 };

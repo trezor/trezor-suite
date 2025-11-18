@@ -15,6 +15,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import * as languageActions from 'src/actions/settings/languageActions';
+import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -135,7 +136,10 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     // 14. init wallet connect
     dispatch(walletConnectActions.walletConnectInitThunk());
-
-    // 15. backend connected, suite is ready to use
+    // 15. bio auth
+    if (isDesktop()) {
+        dispatch(bioAuthThunks.init());
+    }
+    // 16. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };

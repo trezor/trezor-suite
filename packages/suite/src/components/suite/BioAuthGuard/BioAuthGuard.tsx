@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -12,14 +12,6 @@ import {
     spacingsPx,
 } from '@trezor/theme';
 
-import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
-import {
-    bioAuthWindowBlurThunk,
-    bioAuthWindowFocusThunk,
-    checkBioAuthAvailableThunk,
-    requestBioAuthValidationThunk,
-    requestOnceBioAuthValidationThunk,
-} from 'src/actions/suite/bioAuthThunks';
 import { Translation } from 'src/components/suite/Translation';
 import {
     Body,
@@ -28,12 +20,8 @@ import {
     PageWrapper,
     Wrapper,
 } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import {
-    selectBioAuthEnabled,
-    selectHasEverValidatedBioAuth,
-    selectIsBioAuthValidationRequired,
-} from 'src/reducers/bioAuth';
+import { useDispatch } from 'src/hooks/suite';
+import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 
 const Container = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -50,19 +38,9 @@ const Container = styled.div<{ $elevation: Elevation }>`
     padding: ${spacingsPx.sm} ${spacingsPx.xxs};
 `;
 
-const BioAuthOverlay = () => {
-    const dispatch = useDispatch();
+const BioAuthOverlay = ({ onPrimaryButtonClick }: { onPrimaryButtonClick: () => void }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { elevation } = useElevation();
-    const { translationString } = useTranslation();
-
-    const hasEverValidatedBioAuth = useSelector(selectHasEverValidatedBioAuth);
-
-    useEffect(() => {
-        if (!hasEverValidatedBioAuth) {
-            dispatch(requestOnceBioAuthValidationThunk({ translationString }));
-        }
-    }, [hasEverValidatedBioAuth, dispatch, translationString]);
 
     return (
         <Wrapper ref={wrapperRef} data-testid="@suite-layout">
@@ -91,13 +69,7 @@ const BioAuthOverlay = () => {
                                     <Button
                                         width="100%"
                                         intent="brand"
-                                        onClick={() =>
-                                            dispatch(
-                                                requestBioAuthValidationThunk({
-                                                    translationString,
-                                                }),
-                                            )
-                                        }
+                                        onClick={() => onPrimaryButtonClick()}
                                     >
                                         <Translation id="TR_BIO_AUTH_UNLOCK" />
                                     </Button>
@@ -112,39 +84,62 @@ const BioAuthOverlay = () => {
 };
 
 export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
-    const isBioAuthValidationRequired = useSelector(state =>
-        selectIsBioAuthValidationRequired(state, new Date()),
-    );
-    const isBioAuthAvailable = useSelector(selectBioAuthEnabled);
+    const [isWindowFocused, setIsWindowFocused] = useState(true);
+
+    const {
+        isBioAuthAvailable,
+        isBioAuthEnabled,
+        isBioAuthValidationRequired,
+        requestBioAuthValidation,
+        isCallInProgress,
+        cancelled,
+    } = useBioAuthDesktopApi();
+
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(checkBioAuthAvailableThunk());
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (!isBioAuthAvailable) {
-            return;
-        }
-        dispatch(bioAuthActions.initBioAuth(performance.now()));
+        if (!isBioAuthEnabled) return;
+        if (!isBioAuthAvailable) return;
 
         const handleBlur = () => {
-            dispatch(bioAuthWindowBlurThunk(new Date()));
+            setIsWindowFocused(false);
         };
 
         const handleFocus = () => {
-            dispatch(bioAuthWindowFocusThunk(new Date()));
+            setIsWindowFocused(true);
         };
 
         window.addEventListener('blur', handleBlur);
-
         window.addEventListener('focus', handleFocus);
 
         return () => {
             window.removeEventListener('blur', handleBlur);
             window.removeEventListener('focus', handleFocus);
         };
-    }, [dispatch, isBioAuthAvailable]);
+    }, [dispatch, isBioAuthAvailable, isBioAuthEnabled]);
 
-    return isBioAuthValidationRequired ? <BioAuthOverlay /> : children;
+    useEffect(() => {
+        if (!isBioAuthEnabled) return;
+        if (!isBioAuthAvailable) return;
+        if (!isBioAuthValidationRequired) return;
+        if (!isWindowFocused) return;
+        if (isCallInProgress) return;
+        if (cancelled) return;
+
+        requestBioAuthValidation();
+    }, [
+        isBioAuthAvailable,
+        isBioAuthEnabled,
+        isBioAuthValidationRequired,
+        isWindowFocused,
+        isCallInProgress,
+        cancelled,
+        requestBioAuthValidation,
+    ]);
+
+    return isBioAuthEnabled && isBioAuthAvailable && isBioAuthValidationRequired ? (
+        <BioAuthOverlay onPrimaryButtonClick={requestBioAuthValidation} />
+    ) : (
+        children
+    );
 };

@@ -25,6 +25,7 @@ import { Store, WinBoundsCoords } from './libs/store';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './modules/auto-start';
+// todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
@@ -186,6 +187,9 @@ const init = async () => {
             mainThreadEmitter,
             cspNonce,
         });
+
+    // todo:
+    // @ts-expect-error ClientHanshake is no longer any. But I can't make loadmodules inner the same type since it called sooner
     const backgroundModulesResponse = await loadBackgroundModules(undefined);
 
     // Daemon mode with no UI
@@ -290,6 +294,15 @@ const init = async () => {
     ipcMain.handle('handshake/load-modules', (ipcEvent, payload) => {
         validateIpcMessage({ ipcEvent });
 
+        // one time back-wards compatibility migration from redux to electron store. this can be deleted after some time
+        // storageLoadBioAuth should be removed as well
+        if (
+            typeof store.getBioAuthSettings().enabled === 'undefined' &&
+            typeof payload.legacyBioAuthEnabled === 'boolean'
+        ) {
+            store.setBioAuthSettings({ enabled: payload.legacyBioAuthEnabled });
+        }
+
         return loadModulesResponse(payload);
     });
 
@@ -303,7 +316,10 @@ const init = async () => {
         cspNonce,
     });
 
-    const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule();
+    const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule({
+        mainWindowProxy,
+        store,
+    });
 
     loadBioAuthModule();
 

@@ -1,11 +1,5 @@
 export const SET_BIO_AUTH_ENABLED = '@bioAuth/set-bio-auth-enabled' as const;
-export const REQUEST_BIO_AUTH_CHANGE = '@bioAuth/request-bio-auth-change' as const;
-export const REQUEST_BIO_AUTH_CHANGE_END = '@bioAuth/request-bio-auth-change-end' as const;
-export const REQUEST_BIO_AUTH_VALIDATED = '@bioAuth/request-bio-auth-validated' as const;
-export const BIO_AUTH_WINDOW_BLUR = '@bioAuth/bio-auth-window-blur' as const;
-export const BIO_AUTH_WINDOW_FOCUS = '@bioAuth/bio-auth-window-focus' as const;
-export const TOGGLE_BIO_AUTH_VALIDATION_REQUESTED =
-    '@bioAuth/toggle-bio-auth-validation-requested' as const;
 export const SET_BIO_AUTH_AVAILABLE = '@bioAuth/set-bio-auth-available' as const;
-export const INIT_BIO_AUTH = '@bioAuth/init-bio-auth' as const;
-export const BIO_AUTH_VALIDATION_REQUIRED = '@bioAuth/bio-auth-validation-required' as const;
+export const SET_BIO_AUTH_VALIDATION_REQUIRED =
+    '@bioAuth/set-bio-auth-validation-required' as const;
+export const SET_BIO_AUTH_CANCELLED = '@bioAuth/set-bio-auth-cancelled' as const;

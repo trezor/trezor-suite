@@ -195,7 +195,11 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         connectPopupResponse: response => ipcRenderer.invoke('connect-popup/response', response),
 
         openSystemSettings: settings => ipcRenderer.invoke('system/open-settings', settings),
+        setBioAuthSettings: settings =>
+            ipcRenderer.invoke('bio-auth/set-bio-auth-settings', settings),
+        getBioAuthSettings: () => ipcRenderer.invoke('bio-auth/get-bio-auth-settings'),
         validateBioAuth: payload => ipcRenderer.invoke('bio-auth/validate-bio-auth', payload),
         isBioAuthAvailable: () => ipcRenderer.invoke('bio-auth/is-bio-auth-available'),
+        getBioAuthStatus: () => ipcRenderer.invoke('bio-auth/get-validation-status'),
     };
 };

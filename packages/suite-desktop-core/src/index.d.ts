@@ -140,3 +140,7 @@ declare type ConnectSettings = {
     autoStartDontAskAgain: boolean;
     hasUsedConnectWs: boolean;
 };
+
+declare type BioAuthSettings = {
+    enabled?: boolean;
+};

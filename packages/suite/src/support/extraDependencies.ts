@@ -226,6 +226,8 @@ export const extraDependencies: ExtraDependencies = {
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
             payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
+
+        // this is deprecated, bioAuth settings is now stored in electron store
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
 

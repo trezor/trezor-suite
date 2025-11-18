@@ -112,7 +112,9 @@ export const init = async (container: HTMLElement) => {
         });
     }
 
-    const loadModules = await desktopApi.loadModules(null);
+    const loadModules = await desktopApi.loadModules({
+        legacyBioAuthEnabled: store.getState()?.bioAuth?.bioAuthEnabled,
+    });
     if (!loadModules.success) {
         // loading failed, render error with theme provider without redux and do not continue
         root.render(<ErrorScreen error={loadModules.error} />);

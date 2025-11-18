@@ -21,6 +21,7 @@ export class Store {
         bridgeSettings: BridgeSettings;
         traySettings: TraySettings;
         connectSettings: ConnectSettings;
+        bioAuthSettings: BioAuthSettings;
     }>;
 
     private constructor() {
@@ -119,6 +120,23 @@ export class Store {
             ...this.store.get('connectSettings'),
             ...connectSettings,
         });
+    }
+
+    public getBioAuthSettings() {
+        // back-compatibility: previously stored in redux, now in electron store. this is the reason why we don't setup default explicitly but keep it undefined,
+        // after the first start of the application, this value should be set to the old stored value.
+        return this.store.get('bioAuthSettings', { enabled: undefined });
+    }
+
+    public setBioAuthSettings(bioAuthSettings: Partial<BioAuthSettings>) {
+        this.store.set('bioAuthSettings', {
+            ...this.store.get('bioAuthSettings'),
+            ...bioAuthSettings,
+        });
+    }
+
+    public onBioAuthSettingsChange(callback: OnDidChangeCallback<BioAuthSettings>) {
+        return this.store.onDidChange('bioAuthSettings', callback);
     }
 
     /** Deletes all items from the store. */
