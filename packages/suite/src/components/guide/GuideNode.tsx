@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Icon, variables } from '@trezor/components';
+import { resolveStaticPath } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings } from '@trezor/theme';
 

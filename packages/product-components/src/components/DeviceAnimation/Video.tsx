@@ -2,7 +2,7 @@ import { MouseEventHandler } from 'react';
 
 import styled from 'styled-components';
 
-import { resolveStaticPath } from '../../utils/resolveStaticPath';
+import { resolveStaticPath } from '@trezor/env-utils';
 const StyledVideo = styled.video`
     max-width: 100%;
     max-height: 100%;

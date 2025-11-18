@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { IMAGES, IMAGES_PATH, Image } from '@trezor/components';
+import { resolveStaticPath } from '@trezor/env-utils';
 
 const ImageWrapper = styled.div<{
     $maxHeight?: number;

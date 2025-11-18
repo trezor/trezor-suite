@@ -2,6 +2,7 @@ import { ImgHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
+import { resolveStaticPath } from '@trezor/env-utils';
 import { isArrayMember, typedObjectEntries } from '@trezor/utils';
 
 import { IMAGES, ImageType } from './images';
@@ -11,7 +12,6 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { resolveStaticPath } from '../../utils/resolveStaticPath';
 import { TransientProps } from '../../utils/transientProps';
 
 export const allowedImageFrameProps = [

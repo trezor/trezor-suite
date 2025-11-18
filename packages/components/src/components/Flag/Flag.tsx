@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
+import { resolveStaticPath } from '@trezor/env-utils';
+
 import { FLAGS } from './flags';
-import { resolveStaticPath } from '../../utils/resolveStaticPath';
 import { IMAGES_PATH } from '../Image/Image';
 
 export type FlagType = keyof typeof FLAGS;

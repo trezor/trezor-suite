@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { join } from 'path';
 
 import { GuideNode } from '@suite-common/suite-types';
-import { resolveStaticPath } from '@suite-common/suite-utils';
+import { resolveStaticPath } from '@trezor/env-utils';
 
 /** Removes the front-matter from beginning of a string. */
 const clean = (markdown: string): string => markdown.replace(/^---\n.*?\n---\n/s, '');

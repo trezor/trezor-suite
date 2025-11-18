@@ -7,9 +7,9 @@ import styled from 'styled-components';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { resolveStaticPath } from '@trezor/env-utils';
 
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
-import { resolveStaticPath } from '../../utils/resolveStaticPath';
 
 const StyledLottie = styled(Lottie)`
     width: 100%;
