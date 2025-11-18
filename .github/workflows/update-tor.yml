@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-tor:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       UPDATE_FILE: packages/suite-data/files/bin/tor/update.sh
     steps:
@@ -66,11 +66,16 @@ jobs:
         if: steps.check_crx.outputs.new_crx == 'true' || steps.check_arm.outputs.new_arm == 'true'
         run: |
           if [ "${{ steps.check_crx.outputs.new_crx }}" = "true" ]; then
-            sed -i "s/^CRX_VER=.*/CRX_VER=${{ steps.versions.outputs.crx_next }}/" "$UPDATE_FILE"
+            sed -i '' "s/^CRX_VER=.*/CRX_VER=${{ steps.versions.outputs.crx_next }}/" "$UPDATE_FILE"
           fi
           if [ "${{ steps.check_arm.outputs.new_arm }}" = "true" ]; then
-            sed -i "s/^CRX_LINUX_ARM_VER=.*/CRX_LINUX_ARM_VER=${{ steps.versions.outputs.arm_next }}/" "$UPDATE_FILE"
+            sed -i '' "s/^CRX_LINUX_ARM_VER=.*/CRX_LINUX_ARM_VER=${{ steps.versions.outputs.arm_next }}/" "$UPDATE_FILE"
           fi
+
+      - name: Run update.sh
+        if: steps.check_crx.outputs.new_crx == 'true' || steps.check_arm.outputs.new_arm == 'true'
+        run: |
+          bash "$UPDATE_FILE"
 
       - name: Build PR body
         id: pr_body
