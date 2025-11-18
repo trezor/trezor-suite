@@ -11,12 +11,12 @@ describe(resolveStaticPath.name, () => {
         process.env = { ...OLD_ENV };
     });
 
-    it('return static path', () => {
+    it('return default static path with empty ASSET_PREFIX', () => {
         process.env.ASSET_PREFIX = '';
         expect(resolveStaticPath('mypath')).toBe('./static/mypath');
     });
 
-    it('return static path even if ASSET_PREFIX is undefined', () => {
+    it('return default static path with undefined ASSET_PREFIX', () => {
         process.env.ASSET_PREFIX = undefined;
         expect(resolveStaticPath('mypath')).toBe('./static/mypath');
         expect(resolveStaticPath('/mypath')).toBe('./static/mypath');
