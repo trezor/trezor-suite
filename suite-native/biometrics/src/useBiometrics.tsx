@@ -5,27 +5,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import {
+    selectIsAuthenticating,
     selectIsBiometricsEnabled,
     selectIsTogglingBiometrics,
-    selectIsUserAuthenticated,
     selectShouldUserBeAuthenticated,
     setIsUserAuthenticated,
 } from './biometricsSlice';
-import { authenticate } from './biometricsThunks';
-import { shouldRevokeAuth } from './biometricsUtils';
+import { authenticateUserThunk } from './biometricsThunks';
+import { getShouldRevokeAuth } from './biometricsUtils';
 
 export const useBiometrics = () => {
     const dispatch = useDispatch();
     const isBiometricsOptionEnabled = useSelector(selectIsBiometricsEnabled);
-    const isTogglingBiometrics = useSelector(selectIsTogglingBiometrics);
 
-    // TODO can this be changed so that it's done same as settings toggling
-    const isAuthenticatingRef = useRef(false);
-    // TODO do we need this or can it be replaced with AppState.currentState directly?
-    const appState = useRef(AppState.currentState);
+    const isAuthenticating = useSelector(selectIsAuthenticating);
+    const isTogglingBiometricsInProgress = useSelector(selectIsTogglingBiometrics);
+    const previousAppState = useRef(AppState.currentState);
     const goneToBackgroundAtTimestamp = useRef<null | number>(null);
-
-    const isUserAuthenticated = useSelector(selectIsUserAuthenticated);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
     const cancelAndroidAuth = useCallback(() => {
@@ -34,48 +30,33 @@ export const useBiometrics = () => {
         }
     }, [isBiometricsOptionEnabled]);
 
-    const doAuthentication = useCallback(async () => {
-        if (isAuthenticatingRef.current) return;
+    const handleBiometricsAppStateChange = useCallback(
+        (nextAppState: AppStateStatus) => {
+            if (!isBiometricsOptionEnabled) {
+                return;
+            }
 
-        isAuthenticatingRef.current = true;
-
-        try {
-            await dispatch(authenticate());
-        } finally {
-            isAuthenticatingRef.current = false;
-        }
-    }, [dispatch]);
-
-    useEffect(() => {
-        const handleAppStateChange = (nextAppState: AppStateStatus) => {
-            const revokeAuth = shouldRevokeAuth(
-                appState.current,
-                goneToBackgroundAtTimestamp.current,
-            );
+            const shouldRevokeAuth = getShouldRevokeAuth(goneToBackgroundAtTimestamp.current);
 
             switch (nextAppState) {
                 case 'active':
-                    if (revokeAuth && shouldUserBeAuthenticated && !isAuthenticatingRef.current) {
-                        doAuthentication();
-                    } else if (!revokeAuth) {
+                    if (shouldRevokeAuth && shouldUserBeAuthenticated && !isAuthenticating) {
+                        dispatch(authenticateUserThunk());
+                    } else if (!shouldRevokeAuth) {
                         dispatch(setIsUserAuthenticated(true));
                     }
                     break;
 
                 case 'background':
+                    // Stop the authentication flow if user leaves the app.
                     cancelAndroidAuth();
                     dispatch(setIsUserAuthenticated(false));
                     goneToBackgroundAtTimestamp.current = Date.now();
                     break;
 
                 case 'inactive':
-                    // TODO iOS state only - could be removed
-                    cancelAndroidAuth();
-                    if (
-                        !isAuthenticatingRef.current &&
-                        !isTogglingBiometrics &&
-                        appState.current === 'active'
-                    ) {
+                    // This will prevent displaying the biometrics overlay when toggling biometrics settings
+                    if (previousAppState.current === 'active' && !isTogglingBiometricsInProgress) {
                         dispatch(setIsUserAuthenticated(false));
                     }
                     break;
@@ -83,23 +64,27 @@ export const useBiometrics = () => {
                 default:
                     return;
             }
-            appState.current = nextAppState;
-        };
 
+            previousAppState.current = nextAppState;
+        },
+        [
+            cancelAndroidAuth,
+            dispatch,
+            isAuthenticating,
+            isBiometricsOptionEnabled,
+            isTogglingBiometricsInProgress,
+            shouldUserBeAuthenticated,
+        ],
+    );
+
+    useEffect(() => {
         // Authentication on mount
-        handleAppStateChange(AppState.currentState);
+        handleBiometricsAppStateChange(AppState.currentState);
 
-        const subscription = AppState.addEventListener('change', handleAppStateChange);
+        const subscription = AppState.addEventListener('change', handleBiometricsAppStateChange);
 
         return () => subscription.remove();
-    }, [
-        cancelAndroidAuth,
-        dispatch,
-        doAuthentication,
-        isTogglingBiometrics,
-        isUserAuthenticated,
-        shouldUserBeAuthenticated,
-    ]);
+    }, [handleBiometricsAppStateChange]);
 
-    return { doAuthentication };
+    return { handleBiometricsAppStateChange };
 };
