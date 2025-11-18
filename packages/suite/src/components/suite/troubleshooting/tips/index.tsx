@@ -20,7 +20,7 @@ export const TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT: TroubleshootingTipsItem = {
     key: 'webusb-environment',
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE" />,
     description: <Translation id="TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION" />,
-    hide: !isWeb(),
+    hide: !isWeb() || 'usb' in navigator,
 };
 
 export const TROUBLESHOOTING_TIP_UNREADABLE_HID: TroubleshootingTipsItem = {
