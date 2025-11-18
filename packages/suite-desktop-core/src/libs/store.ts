@@ -143,4 +143,13 @@ export class Store {
     public clear() {
         this.store.clear();
     }
+
+    public setKeyValue<T>(key: string, value: T) {
+        console.log('Setting key value', key, value);
+        this.store.set(key, value);
+    }
+
+    public getKeyValue<T>(key: string, defaultValue?: T): T | undefined {
+        return this.store.get(key, defaultValue) as T | undefined;
+    }
 }

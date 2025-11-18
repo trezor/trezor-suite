@@ -139,6 +139,8 @@ export interface InvokeChannels {
               message: string;
           };
     'bio-auth/get-validation-status': () => boolean;
+    'bio-auth/encrypt-and-store': (params: { string: string; storageKey: string }) => void;
+    'bio-auth/decrypt-from-storage': (params: { storageKey: string }) => string;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -215,4 +217,6 @@ export type DesktopApi = {
     isBioAuthAvailable: DesktopApiInvoke<'bio-auth/is-bio-auth-available'>;
     validateBioAuth: DesktopApiInvoke<'bio-auth/validate-bio-auth'>;
     getBioAuthStatus: DesktopApiInvoke<'bio-auth/get-validation-status'>;
+    bioAuthEncryptAndStore: DesktopApiInvoke<'bio-auth/encrypt-and-store'>;
+    bioAuthDecryptFromStorage: DesktopApiInvoke<'bio-auth/decrypt-from-storage'>;
 };

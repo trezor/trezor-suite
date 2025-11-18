@@ -34,6 +34,7 @@ import { TrezorConnectLogs } from './TrezorConnectLogs';
 import { TriggerHighlight } from './TriggerHighlight';
 import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
+import { EncryptedStorage } from './EncryptedStorage';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -108,6 +109,7 @@ export const SettingsDebug = () => {
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <LocalFirstStorageSettings />
+            {isDesktop() && <EncryptedStorage />}
         </SettingsLayout>
     );
 };

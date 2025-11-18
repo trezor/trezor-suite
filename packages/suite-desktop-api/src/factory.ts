@@ -201,5 +201,10 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         validateBioAuth: payload => ipcRenderer.invoke('bio-auth/validate-bio-auth', payload),
         isBioAuthAvailable: () => ipcRenderer.invoke('bio-auth/is-bio-auth-available'),
         getBioAuthStatus: () => ipcRenderer.invoke('bio-auth/get-validation-status'),
+
+        bioAuthEncryptAndStore: ({ string, storageKey }) =>
+            ipcRenderer.invoke('bio-auth/encrypt-and-store', { string, storageKey }),
+        bioAuthDecryptFromStorage: ({ storageKey }) =>
+            ipcRenderer.invoke('bio-auth/decrypt-from-storage', { storageKey }),
     };
 };

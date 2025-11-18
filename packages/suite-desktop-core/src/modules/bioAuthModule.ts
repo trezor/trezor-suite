@@ -1,10 +1,9 @@
-import { systemPreferences } from 'electron';
+import { systemPreferences, safeStorage } from 'electron';
 
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { createWinHelloManager } from '@trezor/suite-desktop-native';
 import { TypedEmitter, serializeError } from '@trezor/utils';
-
 import { ipcMain } from '../typed-electron';
 import { Dependencies } from './module';
 
@@ -15,6 +14,7 @@ const MASTER_LOCK_TIMEOUT_MS = 24 * 60 * 60 * 1000;
 type ConstructorParams = {
     logger: ILogger;
     enabled: boolean;
+    store: Dependencies['store'];
 };
 
 abstract class BioAuth extends TypedEmitter<{
@@ -24,6 +24,7 @@ abstract class BioAuth extends TypedEmitter<{
         super();
         this.logger = params.logger;
         this.enabled = params.enabled;
+        this.store = params.store;
     }
     abstract isAvailable(): Promise<boolean>;
     abstract validate(
@@ -32,6 +33,7 @@ abstract class BioAuth extends TypedEmitter<{
     logger: ILogger;
     enabled: boolean;
     initialized?: boolean;
+    store: Dependencies['store'];
 
     init(): Promise<void> {
         this.initialized = true;
@@ -93,6 +95,31 @@ abstract class BioAuth extends TypedEmitter<{
 
     onFocused() {
         this.clearInvalidationTimeout('blur');
+    }
+
+    encryptAndStore(string: string, storageKey: string): Promise<void> {
+        if (!safeStorage.isEncryptionAvailable()) {
+            return Promise.reject(new Error('SafeStorage encryption is not available'));
+        }
+        const encrypted = safeStorage.encryptString(string);
+        this.logger.info('bioAuth', `Storing encrypted string: ${encrypted}`);
+        this.store.setKeyValue(storageKey, encrypted.toString('hex'));
+        return Promise.resolve();
+    }
+
+    async decryptFromStorage(storageKey: string): Promise<string> {
+        if (!safeStorage.isEncryptionAvailable()) {
+            return Promise.reject(new Error('SafeStorage encryption is not available'));
+        }
+        this.validated = 0;
+        const res = await this.validate('Allow suite to decrypt stored data');
+        if (!res.success) {
+            return Promise.reject(new Error('bio auth validation failed'));
+        }
+        const encrypted = this.store.getKeyValue<string>(storageKey);
+        const buffer = Buffer.from(encrypted || '', 'hex');
+        const decrypted = safeStorage.decryptString(buffer);
+        return Promise.resolve(decrypted);
     }
 
     dispose(): void {
@@ -182,14 +209,15 @@ export const initBioAuthModule = ({
 }) => {
     let bioAuth: BioAuth | undefined;
     let interval: NodeJS.Timeout;
+
     const onLoad = async () => {
         if (bioAuth) return;
         const { logger } = global;
         logger.info('bioAuth', `Loading. Enabled in store: ${store.getBioAuthSettings().enabled}`);
-
         const constructorParams = {
             logger,
             enabled: store.getBioAuthSettings().enabled || false,
+            store,
         };
         if (isMacOs()) {
             bioAuth = new BioAuthMac(constructorParams);
@@ -284,6 +312,24 @@ export const initBioAuthModule = ({
                         ?.webContents.send('bio-auth/bio-auth-availability-changed', value);
                 });
             }, 10_000);
+        });
+
+        ipcMain.handle('bio-auth/encrypt-and-store', (ipcEvent, params) => {
+            console.log('===================== encrypt-and-store called ==============', params);
+            //            validateIpcMessage({ ipcEvent });
+
+            if (!bioAuth) throw new Error('BioAuth module is not initialized');
+
+            return bioAuth.encryptAndStore(params.string, params.storageKey);
+        });
+
+        ipcMain.handle('bio-auth/decrypt-from-storage', (ipcEvent, params) => {
+            console.log('===================== decrypt-from-storage called ==============', params);
+            //            validateIpcMessage({ ipcEvent });
+
+            if (!bioAuth) throw new Error('BioAuth module is not initialized');
+
+            return bioAuth.decryptFromStorage(params.storageKey);
         });
     };
 
