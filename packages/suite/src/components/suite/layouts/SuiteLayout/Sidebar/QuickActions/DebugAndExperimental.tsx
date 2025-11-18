@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Column, Icon, getIconSize, iconSizes } from '@trezor/components';
+import { Column, Icon } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -29,7 +29,7 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
-                leftItem={<Icon name="atom" variant="warning" size={iconSizes.medium} />}
+                leftItem={<Icon name="atom" variant="warning" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -39,7 +39,7 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header={<Translation id="TR_EARLY_ACCESS" />}
-                leftItem={<Icon name="starFour" variant="info" size={iconSizes.medium} />}
+                leftItem={<Icon name="starFour" variant="info" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -49,9 +49,7 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header="Debug Mode"
-                leftItem={
-                    <Icon name="dotOutlineFilled" variant="destructive" size={iconSizes.medium} />
-                }
+                leftItem={<Icon name="dotOutlineFilled" variant="destructive" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -97,24 +95,20 @@ export const DebugAndExperimental = () => {
             }}
             onClick={handleEapClick}
         >
-            <Relative $size={getIconSize(iconSizes.medium)}>
+            <Relative $size={16}>
                 {isDebug && (
                     <Absolute>
-                        <Icon
-                            name="dotOutlineFilled"
-                            variant="destructive"
-                            size={iconSizes.medium}
-                        />
+                        <Icon name="dotOutlineFilled" variant="destructive" size={16} />
                     </Absolute>
                 )}
                 {isExperimental && (
                     <Absolute>
-                        <Icon name="atom" variant="warning" size={iconSizes.medium} />
+                        <Icon name="atom" variant="warning" size={16} />
                     </Absolute>
                 )}
                 {isEapEnabled && (
                     <Absolute>
-                        <Icon name="starFour" variant="info" size={iconSizes.medium} />
+                        <Icon name="starFour" variant="info" size={16} />
                     </Absolute>
                 )}
             </Relative>

@@ -8,7 +8,8 @@ import styled, { useTheme } from 'styled-components';
 import { IconName, icons } from '@suite-common/icons/src/icons';
 import { typography } from '@trezor/theme';
 
-import { Icon, IconProps, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
+import { Icon, IconProps, allowedIconFrameProps } from './Icon';
+import { iconSizes, iconVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';
 
@@ -119,7 +120,7 @@ export const AllIcons: StoryObj<typeof meta> = {
     render: Render,
     args: {
         color: undefined,
-        size: 'large',
+        size: 24,
         ...getFramePropsStory(allowedIconFrameProps).args,
     },
     argTypes: {

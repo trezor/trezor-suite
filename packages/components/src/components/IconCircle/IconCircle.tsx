@@ -13,7 +13,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { Icon, IconName, IconSize, getIconSize } from '../Icon/Icon';
+import { Icon, IconName } from '../Icon/Icon';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;
@@ -49,7 +49,7 @@ const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
 
 export type IconCircleProps = {
     name: IconName;
-    size?: IconSize | number;
+    size?: number;
     paddingType?: IconCirclePaddingType;
     hasBorder?: boolean;
     variant?: IconCircleVariant;
@@ -63,12 +63,11 @@ export const IconCircle = ({
     variant = 'primary',
     ...rest
 }: IconCircleProps) => {
-    const iconSize = getIconSize(size);
     const frameProps = pickAndPrepareFrameProps(rest, allowedIconCircleFrameProps);
 
     return (
         <IconCircleWrapper
-            $size={iconSize}
+            $size={size}
             $paddingType={paddingType}
             $hasBorder={hasBorder}
             $variant={variant}

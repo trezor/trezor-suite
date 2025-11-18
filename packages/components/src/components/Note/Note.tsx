@@ -18,7 +18,6 @@ export const noteVariants = [
     'info',
     'warning',
     'destructive',
-    'disabled',
 ] as const;
 export type NoteVariant = Extract<UIVariant, (typeof noteVariants)[number]>;
 

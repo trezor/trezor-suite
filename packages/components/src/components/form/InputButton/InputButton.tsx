@@ -19,17 +19,14 @@ import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Row } from '../../Flex/Flex';
 import { IconName } from '../../Icon/Icon';
 import { IconButton } from '../../buttons/IconButton/IconButton';
-import { mapElevationToButtonOnBackground } from '../../buttons/buttonStyleUtils';
 import { mapSizeToBorderRadius } from '../../buttons/utils';
 
 const Wrapper = styled.div<{ $elevation: Elevation; $isExpanded: boolean }>`
     position: relative;
     border-radius: ${mapSizeToBorderRadius('medium')};
     transition: background 0.2s ease;
-    background: ${({ theme, $elevation, $isExpanded }) =>
-        $isExpanded
-            ? mapElevationToButtonOnBackground({ elevation: $elevation, theme, state: 'normal' })
-            : 'none'};
+    background: ${({ theme, $isExpanded }) =>
+        $isExpanded ? theme.interactionBackgroundTertiaryDefaultNormalOnElevation0 : 'none'};
     overflow-x: hidden;
 `;
 

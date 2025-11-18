@@ -11,7 +11,8 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { ExclusiveColorOrVariant, getColorForIconVariant } from '../Icon/Icon';
+import { ExclusiveColorOrVariant } from '../Icon/Icon';
+import { mapVariantToColor } from '../Icon/utils';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;
@@ -40,9 +41,8 @@ const SubIconWrapper = styled.div<SubIconWrapperProps>`
     top: -${({ $iconOffset }) => $iconOffset}px;
 
     background-color: ${({ theme, $variant, $color }) =>
-        getColorForIconVariant({ theme, variant: $variant, color: $color })};
+        $color ?? mapVariantToColor(theme, false, $variant)};
     border-radius: ${borders.radii.full};
-    border: 1px solid ${({ theme }) => theme['borderElevationNegative']};
 `;
 
 export type ComponentWithSubIconProps = AllowedFrameProps &
@@ -69,17 +69,8 @@ export const ComponentWithSubIcon = ({
         return <Container {...frameProps}>{children}</Container>;
     }
 
-    const backgroundIconColor = getColorForIconVariant({
-        theme,
-        color,
-        variant,
-    });
-
-    const iconColor = getColorForIconVariant({
-        theme,
-        color,
-        variant,
-    });
+    const backgroundIconColor = color ?? mapVariantToColor(theme, false, variant);
+    const iconColor = color ?? mapVariantToColor(theme, false, variant);
 
     return (
         <Container {...frameProps}>

@@ -208,7 +208,7 @@ export const WalletInstance = ({
                                                 <Icon
                                                     data-testid={`${dataTestBase}/eject-button`}
                                                     name="eject"
-                                                    size={18}
+                                                    size={20}
                                                     variant="tertiary"
                                                     onClick={e => {
                                                         e.stopPropagation();

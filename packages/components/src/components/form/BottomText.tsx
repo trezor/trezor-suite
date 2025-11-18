@@ -60,7 +60,7 @@ export const BottomText = ({
             <Row gap={spacings.xxs}>
                 {iconComponent ??
                     (iconName && (
-                        <Icon name={iconName} size="medium" variant={variant as IconVariant} />
+                        <Icon name={iconName} size={16} variant={variant as IconVariant} />
                     ))}
                 <Text
                     data-testid={dataTestId}

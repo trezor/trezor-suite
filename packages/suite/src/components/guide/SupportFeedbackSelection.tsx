@@ -200,7 +200,7 @@ export const SupportFeedbackSelection = () => {
                         :&nbsp;
                         {!isDevEnv && appUpToDate ? (
                             <>
-                                <StyledIcon name="check" size={10} />
+                                <StyledIcon name="check" size={12} />
                                 <Translation id="TR_UP_TO_DATE" />
                             </>
                         ) : (
@@ -215,7 +215,7 @@ export const SupportFeedbackSelection = () => {
                         :&nbsp;
                         {firmwareUpToDate ? (
                             <>
-                                <StyledIcon name="check" size={10} />
+                                <StyledIcon name="check" size={12} />
                                 <Translation id="TR_UP_TO_DATE" />
                             </>
                         ) : (

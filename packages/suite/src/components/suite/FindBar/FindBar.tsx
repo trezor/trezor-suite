@@ -90,7 +90,7 @@ export const FindBarForm = ({ setIsVisible }: FindBarFormProps) => {
                                 height="100%"
                                 cursor="pointer"
                             >
-                                <Icon name="magnifyingGlass" size="small" />
+                                <Icon name="magnifyingGlass" size={12} />
                             </Row>
                         }
                         rightContent={

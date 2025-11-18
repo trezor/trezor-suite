@@ -24,6 +24,6 @@ type FloatingMenuProps = { onShowAnalyticsConsent: () => void };
 
 export const FloatingMenu = ({ onShowAnalyticsConsent }: FloatingMenuProps) => (
     <IconWrapper onClick={onShowAnalyticsConsent} data-testid="@analytics/settings">
-        <Icon name="gear" size={22} color={intermediaryTheme.light.textDefault} />
+        <Icon name="gear" size={24} color={intermediaryTheme.light.textDefault} />
     </IconWrapper>
 );

@@ -59,7 +59,7 @@ export const IOGroup = ({
         <GridWrapper>
             {hasInputs && hasOutputs && (
                 <IconWrapper>
-                    <Icon name="arrowRight" size="medium" variant="tertiary" />
+                    <Icon name="arrowRight" size={16} variant="tertiary" />
                 </IconWrapper>
             )}
             <Grid columns={2} gap={spacings.xxxxl} forceEqualColumns>

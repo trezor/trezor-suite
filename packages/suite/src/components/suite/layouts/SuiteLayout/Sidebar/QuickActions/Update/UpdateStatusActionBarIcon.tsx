@@ -8,8 +8,6 @@ import {
     IconSize,
     ManagedTooltipProps,
     Tooltip,
-    getIconSize,
-    iconSizes,
 } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
@@ -72,8 +70,8 @@ const SuiteIconRectangle = styled.div<SuiteIconRectangle>`
     align-items: center;
     justify-content: center;
     padding-left: 0.5px;
-    width: ${({ $size }) => getIconSize($size)}px;
-    height: ${({ $size }) => getIconSize($size)}px;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
 
     border-radius: ${borders.radii.xxs};
     background-color: ${({ $variant, theme }) => mapVariantToIconColor({ $variant, theme })};
@@ -83,8 +81,8 @@ const SuiteIconRectangle = styled.div<SuiteIconRectangle>`
 
 const Relative = styled.div<{ $size: IconSize }>`
     position: relative;
-    width: ${({ $size }) => getIconSize($size)}px;
-    height: ${({ $size }) => getIconSize($size)}px;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
 `;
 
 type UsbCableForTrezorIcon = {
@@ -98,7 +96,7 @@ const UsbCableForTrezorIcon = styled.div<UsbCableForTrezorIcon>`
 
     position: absolute;
     bottom: -4px;
-    left: ${({ $size }) => getIconSize($size) / 2 - 1}px;
+    left: ${({ $size }) => $size / 2 - 1}px;
 
     background-color: ${({ $variant, theme }) => mapVariantToIconColor({ $variant, theme })};
 `;
@@ -121,7 +119,7 @@ const DeviceUpdateIcon = ({ iconSize, updateStatus, variant }: DeviceUpdateIconP
             <Relative $size={iconSize}>
                 <Icon
                     name={mapTrezorModelToIcon[device.features.internal_model]}
-                    size={iconSizes.medium}
+                    size={16}
                     variant={variant}
                 />
                 <UsbCableForTrezorIcon $variant={variant} $size={iconSize} />
@@ -146,11 +144,7 @@ const SuiteUpdateIcon = ({ iconSize, updateStatus, variant }: SuiteUpdateIconPro
             $size={iconSize}
         >
             <Highlighted $isHighlighted={updateStatus !== 'up-to-date'}>
-                <Icon
-                    name="trezorLogo"
-                    size={iconSizes.small}
-                    color={theme['iconDefaultInverted']}
-                />
+                <Icon name="trezorLogo" size={12} color={theme['iconDefaultInverted']} />
             </Highlighted>
         </SuiteIconRectangle>
     );
@@ -176,7 +170,7 @@ export const UpdateStatusActionBarIcon = ({
 
     const updateSubIcon = mapUpdateStatusToIcon[updateStatus];
     const variant = mapUpdateStatusToVariant[updateStatus];
-    const iconSize: IconSize = 'medium';
+    const iconSize: IconSize = 16;
 
     const isDesktopSuite = isDesktop();
 
@@ -222,13 +216,7 @@ export const UpdateStatusActionBarIcon = ({
             <QuickActionButton onClick={handleClick}>
                 <ComponentWithSubIcon
                     variant={variant}
-                    icon={
-                        <Icon
-                            name={updateSubIcon}
-                            color={theme.iconDefaultInverted}
-                            size={iconSizes.extraSmall}
-                        />
-                    }
+                    icon={<Icon name={updateSubIcon} color={theme.iconDefaultInverted} size={8} />}
                 >
                     <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip}>
                         <UpdateIconGroup $variant={variant}>

@@ -180,7 +180,7 @@ export const TradingOfferSellBankAccount = () => {
                                             <IconWrapper>
                                                 <Icon
                                                     color={theme.iconPrimaryDefault}
-                                                    size={15}
+                                                    size={16}
                                                     name="check"
                                                 />
                                             </IconWrapper>

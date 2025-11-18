@@ -87,7 +87,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                 <FactHeading>
                     <Icon
                         name="starFour"
-                        size={13}
+                        size={12}
                         color={theme.iconAlertYellow}
                         margin={{ right: 4, bottom: 2 }}
                     />

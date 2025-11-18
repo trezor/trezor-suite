@@ -101,11 +101,7 @@ export const RadioCard = ({
             {isActive && (
                 <Box position={{ type: 'absolute', top: '-6px', right: '-6px' }}>
                     <IconBackground>
-                        <Icon
-                            name="checkCircleFilled"
-                            size="mediumLarge"
-                            color={theme.baseContentBrand}
-                        />
+                        <Icon name="checkCircleFilled" size={20} color={theme.baseContentBrand} />
                     </IconBackground>
                 </Box>
             )}

@@ -21,7 +21,13 @@ export { Badge, type BadgeProps, type BadgeSize } from './components/Badge/Badge
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export { Button, type ButtonProps } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
-export * from './components/Icon/Icon';
+export {
+    Icon,
+    type IconProps,
+    type IconName,
+    type IconSize,
+    type IconVariant,
+} from './components/Icon/Icon';
 export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TextButton/TextButton';

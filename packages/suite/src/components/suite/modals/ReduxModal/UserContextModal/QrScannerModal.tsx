@@ -91,7 +91,7 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
                                 gap={spacings.xxxl}
                                 alignItems="center"
                             >
-                                <Icon name="qrCode" size={100} />
+                                <Icon name="qrCode" size={48} />
                                 <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
                             </Column>
                         </Card>

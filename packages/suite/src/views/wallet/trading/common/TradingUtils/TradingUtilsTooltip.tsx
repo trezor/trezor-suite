@@ -20,7 +20,7 @@ export const TradingUtilsTooltip = ({ quote }: Pick<TradingOffersItemProps, 'quo
             <Tooltip content={<TradingUtilsTooltipFee quote={quote} />} placement="bottom">
                 <TooltipWrap>
                     <TooltipIcon>
-                        <Icon name="info" size="small" color={theme.textDefault} />
+                        <Icon name="info" size={12} color={theme.textDefault} />
                     </TooltipIcon>
                     <TooltipText>
                         <Translation id="TR_TRADING_FEES_INCLUDED" />
@@ -34,7 +34,7 @@ export const TradingUtilsTooltip = ({ quote }: Pick<TradingOffersItemProps, 'quo
         <Tooltip content={notIncludedContent} placement="bottom">
             <TooltipWrap>
                 <TooltipIcon>
-                    <Icon name="info" size="small" color={theme.textAlertYellow} />
+                    <Icon name="info" size={12} color={theme.textAlertYellow} />
                 </TooltipIcon>
                 <TooltipText $isYellow>
                     <Translation id="TR_TRADING_FEES_NOT_INCLUDED" />

@@ -82,7 +82,7 @@ export function CollapsibleFees({
                                 txMaxFee={txMaxFee}
                             />
                             {supportsAdjustableFees && (
-                                <Collapsible.ToggleIcon iconName="caretDown" size="mediumLarge" />
+                                <Collapsible.ToggleIcon iconName="caretDown" size={20} />
                             )}
                         </Row>
                     </Collapsible.Toggle>

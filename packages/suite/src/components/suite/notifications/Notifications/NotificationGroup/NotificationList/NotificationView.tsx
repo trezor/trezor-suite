@@ -74,7 +74,7 @@ export const NotificationView = ({
             </Column>
             {action?.onClick &&
                 (isBelowTablet ? (
-                    <Icon name="caretRight" onClick={action.onClick} size={18} />
+                    <Icon name="caretRight" onClick={action.onClick} size={20} />
                 ) : (
                     <Button
                         intent={mapActionVariantToIntent(action.variant)}

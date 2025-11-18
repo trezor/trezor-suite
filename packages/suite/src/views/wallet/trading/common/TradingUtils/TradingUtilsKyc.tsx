@@ -58,7 +58,7 @@ export const TradingUtilsKyc = ({
             <Tooltip content={kycPolicyTranslation} placement="bottom">
                 <TooltipWrap>
                     <TooltipIcon>
-                        <Icon name="info" size="small" color={theme.textAlertYellow} />
+                        <Icon name="info" size={12} color={theme.textAlertYellow} />
                     </TooltipIcon>
                     <TooltipText $isYellow>
                         <Translation id={kycTitle} />

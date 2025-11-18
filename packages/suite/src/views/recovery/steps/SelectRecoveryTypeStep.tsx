@@ -33,7 +33,7 @@ export const SelectRecoveryTypeStep = ({
                                         ? 'recoverySeedFilled'
                                         : 'trezorModelOneFilled'
                                 }
-                                size="extraLarge"
+                                size={32}
                                 variant="tertiary"
                             />
                             <Column gap={spacings.xxxs}>

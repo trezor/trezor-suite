@@ -1,5 +1,5 @@
 import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
-import { Icon, iconSizes } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 import { QuickActionButton } from './QuickActionButton';
 import { useDispatch, useSelector, useTranslation } from '../../../../../../hooks/suite';
@@ -22,7 +22,7 @@ export const HideBalances = () => {
             <Icon
                 name={isDiscreetModeActive ? 'eyeSlash' : 'eye'}
                 variant="tertiary"
-                size={iconSizes.medium}
+                size={16}
             />
         </QuickActionButton>
     );

@@ -1,13 +1,6 @@
 import { useTheme } from 'styled-components';
 
-import {
-    Column,
-    ComponentWithSubIcon,
-    Icon,
-    IconName,
-    IconVariant,
-    iconSizes,
-} from '@trezor/components';
+import { Column, ComponentWithSubIcon, Icon, IconName, IconVariant } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
@@ -60,7 +53,7 @@ const TorTooltip = ({ variant, iconName, torStatus }: TorTooltipProps) => (
             circleIconName={iconName}
             variant={variant}
             header={<Translation id="TR_TOR" />}
-            leftItem={<Icon name="torBrowser" size={iconSizes.medium} />}
+            leftItem={<Icon name="torBrowser" size={16} />}
         >
             <Translation id={torStatusTranslationMap[torStatus]} />
         </TooltipRow>
@@ -89,15 +82,9 @@ export const Tor = () => {
             >
                 <ComponentWithSubIcon
                     variant={variant}
-                    icon={
-                        <Icon
-                            name={iconName}
-                            color={theme.iconDefaultInverted}
-                            size={iconSizes.extraSmall}
-                        />
-                    }
+                    icon={<Icon name={iconName} color={theme.iconDefaultInverted} size={8} />}
                 >
-                    <Icon name="torBrowser" size={iconSizes.medium} variant="tertiary" />
+                    <Icon name="torBrowser" size={16} variant="tertiary" />
                 </ComponentWithSubIcon>
             </QuickActionButton>
         )

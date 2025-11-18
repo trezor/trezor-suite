@@ -50,7 +50,7 @@ export const DataAnalytics = ({
                     <Card>
                         <Column gap={spacings.lg}>
                             <List gap={spacings.md}>
-                                <List.Item bulletComponent={<Icon size="medium" name="eyeSlash" />}>
+                                <List.Item bulletComponent={<Icon size={16} name="eyeSlash" />}>
                                     <Column gap={spacings.xxxs} flex="1">
                                         <Text typographyStyle="callout">
                                             <FormattedMessage
@@ -66,7 +66,7 @@ export const DataAnalytics = ({
                                         </Text>
                                     </Column>
                                 </List.Item>
-                                <List.Item bulletComponent={<Icon size="medium" name="bug" />}>
+                                <List.Item bulletComponent={<Icon size={16} name="bug" />}>
                                     <Column gap={spacings.xxxs} flex="1">
                                         <Text typographyStyle="callout">
                                             <FormattedMessage

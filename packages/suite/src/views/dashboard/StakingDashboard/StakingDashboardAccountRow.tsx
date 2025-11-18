@@ -143,7 +143,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                         )}
                     </Column>
 
-                    <Icon name="arrowRight" variant="tertiary" size="mediumLarge" />
+                    <Icon name="arrowRight" variant="tertiary" size={20} />
                 </Row>
             </Table.Cell>
         );

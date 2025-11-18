@@ -86,7 +86,7 @@ export const CoinjoinProgressContent = ({
 
     const getProgressContent = () => {
         const iconConfig = {
-            size: 25,
+            size: 24 as const,
             color: theme.iconDefault,
         };
 

@@ -42,7 +42,7 @@ export const AuthenticateDeviceInititalStep = ({
             {items.map(({ icon, text }) => (
                 <List.Item
                     key={icon}
-                    bulletComponent={<Icon name={icon} size="extraLarge" variant="primary" />}
+                    bulletComponent={<Icon name={icon} size={32} variant="primary" />}
                 >
                     <Paragraph variant="tertiary">
                         <Translation id={text} />

@@ -48,7 +48,7 @@ const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
 export const CoinjoinExplanation = () => (
     <Card>
         <Heading>
-            <Icon name="question" margin={{ right: spacings.xxs }} size={15} />
+            <Icon name="question" margin={{ right: spacings.xxs }} size={16} />
             <Translation id="TR_COINJOIN_EXPLANATION_TITLE" />
         </Heading>
 

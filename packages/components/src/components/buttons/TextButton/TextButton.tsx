@@ -4,6 +4,7 @@ import styled, { DefaultTheme, useTheme } from 'styled-components';
 
 import { CSSColor, borders, spacingsPx, typography } from '@trezor/theme';
 
+import { UIAlignment } from '../../../config/types';
 import {
     FrameProps,
     FramePropsKeys,
@@ -12,14 +13,19 @@ import {
 } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon, IconName, IconSize } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { IconAlignment, getIconColor, getIconSize } from '../buttonStyleUtils';
 
 export const allowedTextButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 export type AllowedTextButtonFrameProps = Pick<
     FrameProps,
     (typeof allowedTextButtonFrameProps)[number]
+>;
+
+export const textButtonIconAlignments = ['start', 'end'] as const;
+export type TextButtonIconAlignment = Extract<
+    UIAlignment,
+    (typeof textButtonIconAlignments)[number]
 >;
 
 export const textButtonSizes = ['small', 'large'] as const;
@@ -34,9 +40,18 @@ export const textButtonVariants = [
 ] as const;
 export type TextButtonVariant = (typeof textButtonVariants)[number];
 
+const mapTextButtonSizeToIconSize = (size: TextButtonSize): IconSize => {
+    const sizeMap: Record<TextButtonSize, IconSize> = {
+        small: 16,
+        large: 20,
+    };
+
+    return sizeMap[size];
+};
+
 type GetIconProps = {
     icon?: IconName | React.ReactElement;
-    size?: number;
+    size?: IconSize;
     color?: CSSColor;
 };
 
@@ -65,10 +80,30 @@ const mapVariantToHoverColor: Record<TextButtonVariant, string> = {
     destructive: 'textPrimaryPressed',
 };
 
+const mapVariantToIconColor = (
+    variant: TextButtonVariant,
+    isDisabled: boolean,
+    theme: DefaultTheme,
+): CSSColor => {
+    if (isDisabled) {
+        return theme.iconDisabled;
+    }
+
+    const colorMap: Record<TextButtonVariant, CSSColor> = {
+        primary: theme.iconPrimaryDefault,
+        tertiary: theme.iconOnTertiary,
+        info: theme.iconAlertBlue,
+        warning: theme.iconAlertYellow,
+        destructive: theme.iconAlertRed,
+    };
+
+    return colorMap[variant];
+};
+
 const TextButtonContainer = styled.button<
     TransientProps<AllowedTextButtonFrameProps> & {
         $size: TextButtonSize;
-        $iconAlignment: IconAlignment;
+        $iconAlignment: TextButtonIconAlignment;
         $variant: TextButtonVariant;
         $isUnderlined: boolean;
     }
@@ -125,7 +160,7 @@ type SelectedHTMLButtonProps = Pick<
 export type TextButtonProps = SelectedHTMLButtonProps &
     AllowedTextButtonFrameProps & {
         icon?: IconName;
-        iconAlignment?: IconAlignment;
+        iconAlignment?: TextButtonIconAlignment;
         size?: TextButtonSize;
         isDisabled?: boolean;
         isLoading?: boolean;
@@ -158,13 +193,14 @@ export const TextButton = ({
 }: TextButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTextButtonFrameProps);
     const theme = useTheme();
+    const iconSize = mapTextButtonSizeToIconSize(size);
     const IconComponent = getIcon({
         icon,
-        size: getIconSize(size),
-        color: getIconColor({ variant, isDisabled, theme, isSubtle: true }),
+        size: iconSize,
+        color: mapVariantToIconColor(variant, isDisabled, theme),
     });
 
-    const Loader = <Spinner size={getIconSize(size)} />;
+    const Loader = <Spinner size={iconSize} />;
 
     return (
         <TextButtonContainer

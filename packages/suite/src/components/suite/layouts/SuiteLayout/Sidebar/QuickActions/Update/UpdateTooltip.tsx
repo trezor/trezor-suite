@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { Column, Icon, IconSize, getIconSize, iconSizes } from '@trezor/components';
+import { Column, Icon, IconSize } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
@@ -23,8 +23,8 @@ const SuiteIconRectangle = styled.div<{ $size: IconSize }>`
     align-items: center;
     justify-content: center;
     padding-left: 0.5px;
-    width: ${({ $size }) => getIconSize($size)}px;
-    height: ${({ $size }) => getIconSize($size)}px;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
 
     border-radius: 6px;
     background-color: ${({ theme }) => theme.iconDefault};
@@ -58,10 +58,7 @@ const DeviceRow = ({ updateStatus, onClick }: DeviceRowProps) => {
         <TooltipRow
             onClick={onClick}
             leftItem={
-                <Icon
-                    name={mapTrezorModelToIcon[device.features.internal_model]}
-                    size={iconSizes.medium}
-                />
+                <Icon name={mapTrezorModelToIcon[device.features.internal_model]} size={16} />
             }
             circleIconName={mapUpdateStatusToIcon[updateStatus]}
             variant={mapUpdateStatusToVariant[updateStatus]}
@@ -94,12 +91,8 @@ const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
         <TooltipRow
             onClick={onClick}
             leftItem={
-                <SuiteIconRectangle $size="medium">
-                    <Icon
-                        name="trezorLogo"
-                        size={iconSizes.small}
-                        color={theme.iconDefaultInverted}
-                    />
+                <SuiteIconRectangle $size={16}>
+                    <Icon name="trezorLogo" size={12} color={theme.iconDefaultInverted} />
                 </SuiteIconRectangle>
             }
             circleIconName={mapUpdateStatusToIcon[updateStatus]}

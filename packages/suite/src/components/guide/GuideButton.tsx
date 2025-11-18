@@ -46,7 +46,7 @@ export const GuideButton = () => {
                 $isGuideOpen={isGuideOpen}
                 $elevation={elevation}
             >
-                <Icon size={18} name="lightbulb" />
+                <Icon size={20} name="lightbulb" />
             </Wrapper>
         </FreeFocusInside>
     );

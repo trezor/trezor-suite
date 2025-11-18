@@ -1,6 +1,7 @@
 import { TypographyStyle } from '@trezor/theme';
 
 import { SubTabsSize } from './types';
+import { IconSize } from '../Icon/Icon';
 
 export const mapSizeToTypography = (size: SubTabsSize): TypographyStyle => {
     const typographyStyleMap: Record<SubTabsSize, TypographyStyle> = {
@@ -12,11 +13,11 @@ export const mapSizeToTypography = (size: SubTabsSize): TypographyStyle => {
     return typographyStyleMap[size];
 };
 
-export const mapSizeToIconSize = (size: SubTabsSize): number => {
-    const iconSizeMap: Record<SubTabsSize, number> = {
-        large: 22,
+export const mapSizeToIconSize = (size: SubTabsSize): IconSize => {
+    const iconSizeMap: Record<SubTabsSize, IconSize> = {
+        large: 24,
         medium: 20,
-        small: 18,
+        small: 16,
     };
 
     return iconSizeMap[size];

@@ -13,7 +13,5 @@ export const infoItemVariants = [
     'info',
     'warning',
     'destructive',
-    'purple',
-    'disabled',
 ] as const;
 export type InfoItemVariant = Extract<UIVariant, (typeof infoItemVariants)[number]>;

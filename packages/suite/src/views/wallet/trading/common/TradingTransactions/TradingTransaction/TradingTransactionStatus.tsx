@@ -129,7 +129,7 @@ export const TradingTransactionStatus = ({ trade }: TradingTransactionStatusProp
 
     return (
         <Row>
-            <Icon color={data.color} size={10} name={data.icon} margin={{ right: 4 }} />
+            <Icon color={data.color} size={12} name={data.icon} margin={{ right: 4 }} />
             <Text color={data.color} data-testid="@trading/transactions/status">
                 <Translation id={data.statusMessageId} />
             </Text>

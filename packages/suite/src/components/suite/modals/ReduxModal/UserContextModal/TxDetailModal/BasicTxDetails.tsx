@@ -87,7 +87,7 @@ export const BasicTxDetails = ({
                     <CoinLogo symbol={tx.symbol} size={48} type="tokenWithNetwork" />
                     <NestedIconWrapper $elevation={elevation}>
                         <Icon
-                            size={14}
+                            size={16}
                             variant={tx.type === 'failed' ? 'destructive' : 'default'}
                             name={getTxIcon(tx.type)}
                         />

@@ -252,7 +252,7 @@ export const AssetsView = () => {
                                 <Icon
                                     name="warning"
                                     color={theme.iconAlertRed}
-                                    size={14}
+                                    size={16}
                                     margin={{ right: spacings.xxs }}
                                 />
                                 <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
@@ -275,7 +275,7 @@ export const AssetsView = () => {
                             <Icon
                                 name="warning"
                                 color={theme.iconAlertRed}
-                                size={14}
+                                size={16}
                                 margin={{ right: spacings.xxs }}
                             />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />

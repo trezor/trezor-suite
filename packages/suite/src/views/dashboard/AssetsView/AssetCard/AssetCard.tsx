@@ -166,7 +166,7 @@ export const AssetCard = ({
                             assetsFiatBalances={assetsFiatBalances}
                             index={index}
                         />
-                        <Icon size={16} name="arrowRight" variant="disabled" />
+                        <Icon size={16} name="arrowRight" variant="tertiary" />
                     </Row>
                     <AmountComponent
                         symbol={symbol}

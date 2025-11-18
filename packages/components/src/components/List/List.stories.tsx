@@ -16,7 +16,7 @@ const meta: Meta<typeof ListComponent> = {
 export default meta;
 
 const iconProps = {
-    size: 'extraLarge',
+    size: 32,
     variant: 'primary',
 } as Partial<IconProps>;
 

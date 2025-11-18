@@ -40,7 +40,7 @@ export const CardanoRedelegate = ({ deviceModel }: CardanoRedelegateProps) => {
         <Card>
             <Column gap={spacings.xs} alignItems="center">
                 <Title>
-                    <Icon name="info" size={18} />
+                    <Icon name="info" size={20} />
                     <Heading>
                         <Translation
                             id={

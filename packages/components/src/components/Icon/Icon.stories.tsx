@@ -4,7 +4,8 @@ import { Meta, StoryObj } from '@storybook/react';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { icons } from '@suite-common/icons/src/icons';
 
-import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
+import { Icon as IconComponent, allowedIconFrameProps } from './Icon';
+import { iconSizes, iconVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof IconComponent> = {
@@ -16,9 +17,10 @@ export default meta;
 export const Icon: StoryObj<typeof IconComponent> = {
     args: {
         name: 'discover',
-        variant: 'primary',
-        size: 'large',
+        variant: undefined,
+        size: 24,
         color: undefined,
+        isDisabled: false,
         ...getFramePropsStory(allowedIconFrameProps).args,
     },
     argTypes: {
@@ -29,21 +31,23 @@ export const Icon: StoryObj<typeof IconComponent> = {
             },
         },
         variant: {
-            options: iconVariants,
+            options: [undefined, ...iconVariants],
             control: {
                 type: 'select',
+            },
+        },
+        isDisabled: {
+            control: {
+                type: 'boolean',
             },
         },
         color: {
             control: 'color',
         },
         size: {
-            options: Object.values(iconSizes),
+            options: iconSizes,
             control: {
                 type: 'select',
-                labels: Object.fromEntries(
-                    Object.entries(iconSizes).map(([key, value]) => [value, `${key}: ${value}`]),
-                ),
             },
         },
         ...getFramePropsStory(allowedIconFrameProps).argTypes,

@@ -176,7 +176,7 @@ export const TransactionHeading = ({
                     $animate={nestedItemIsHovered || headingIsHovered}
                 >
                     <Icon
-                        size={nestedItemIsHovered || headingIsHovered ? 18 : 16}
+                        size={nestedItemIsHovered || headingIsHovered ? 20 : 16}
                         color={theme.textDefault}
                         name="caretRight"
                     />

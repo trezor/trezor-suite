@@ -4,6 +4,7 @@ import { CSSColor, Color, TypographyStyle } from '@trezor/theme';
 
 import { BadgeIntent, BadgeSize } from './types';
 import { Padding } from '../../utils/frameProps';
+import { IconSize } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {
     const colorMap: Record<BadgeIntent, Color> = {
@@ -50,8 +51,8 @@ export const mapSizeToPadding = (size: BadgeSize): Padding => {
     return paddingMap[size];
 };
 
-export const mapSizeToIconSize = (size: BadgeSize): number => {
-    const sizes: Record<BadgeSize, number> = {
+export const mapSizeToIconSize = (size: BadgeSize): IconSize => {
+    const sizes: Record<BadgeSize, IconSize> = {
         small: 12,
         medium: 16,
     };

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Box, Image, iconSizes } from '@trezor/components';
+import { Box, Image } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -19,8 +19,8 @@ export const TradingIcon = ({ iconUrl }: TradingIconProps) => {
 
     return (
         <TradingIconWrapper $isDark={currentTheme === 'dark'}>
-            <Box margin={spacings.xxxs} height={iconSizes.mediumLarge}>
-                <Image imageSrc={iconUrl} width={iconSizes.mediumLarge} alt="" />
+            <Box margin={spacings.xxxs} height={20}>
+                <Image imageSrc={iconUrl} width={20} alt="" />
             </Box>
         </TradingIconWrapper>
     );

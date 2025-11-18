@@ -156,7 +156,7 @@ export const PassphraseTypeCardContent = ({
                                     autoFocus={!isAndroid()}
                                     rightContent={
                                         <Icon
-                                            size={18}
+                                            size={20}
                                             color={theme.iconSubdued}
                                             name={showPassword ? 'eyeSlash' : 'eye'}
                                             onClick={() => {

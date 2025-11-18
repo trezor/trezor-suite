@@ -1,6 +1,6 @@
 import { useTheme } from 'styled-components';
 
-import { ComponentWithSubIcon, Icon, iconSizes } from '@trezor/components';
+import { ComponentWithSubIcon, Icon } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -27,15 +27,9 @@ export const CustomBackend = () => {
             >
                 <ComponentWithSubIcon
                     variant="primary"
-                    icon={
-                        <Icon
-                            name="check"
-                            color={theme.iconDefaultInverted}
-                            size={iconSizes.extraSmall}
-                        />
-                    }
+                    icon={<Icon name="check" color={theme.iconDefaultInverted} size={8} />}
                 >
-                    <Icon name="database" size={iconSizes.medium} variant="tertiary" />
+                    <Icon name="database" size={16} variant="tertiary" />
                 </ComponentWithSubIcon>
             </QuickActionButton>
         )

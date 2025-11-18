@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 
-import styled from 'styled-components';
-
-import { Icon } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Column, Divider, Icon, Paragraph, Row } from '@trezor/components';
 import {
     HELP_CENTER_ADA_STAKING,
     HELP_CENTER_ETH_STAKING,
@@ -14,23 +11,6 @@ import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.md};
-    justify-content: space-between;
-    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
-    margin-top: ${spacingsPx.xxl};
-`;
-
-const Left = styled.div`
-    display: flex;
-    align-items: center;
-    color: ${({ theme }) => theme.textSubdued};
-    gap: ${spacingsPx.xs};
-`;
 
 export const EverstakeFooter = () => {
     const account = useSelector(selectSelectedAccount);
@@ -49,12 +29,17 @@ export const EverstakeFooter = () => {
     }, [account]);
 
     return (
-        <Wrapper>
-            <Left>
-                <Translation id="TR_STAKE_PROVIDED_BY" />{' '}
-                <Icon size={100} name="everstakeLogoText" variant="default" />
-            </Left>
-            {learnMoreLink && <LearnMoreButton url={learnMoreLink} />}
-        </Wrapper>
+        <Column>
+            <Divider />
+            <Row justifyContent="space-between">
+                <Row gap={8}>
+                    <Paragraph variant="tertiary">
+                        <Translation id="TR_STAKE_PROVIDED_BY" />
+                    </Paragraph>
+                    <Icon size={20} name="everstakeLogo" variant="default" />
+                </Row>
+                {learnMoreLink && <LearnMoreButton url={learnMoreLink} />}
+            </Row>
+        </Column>
     );
 };

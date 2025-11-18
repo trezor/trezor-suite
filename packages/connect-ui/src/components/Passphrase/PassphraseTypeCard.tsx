@@ -361,7 +361,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                 autoFocus={!isAndroid()}
                                 rightContent={
                                     <Icon
-                                        size={18}
+                                        size={20}
                                         color={theme.iconSubdued}
                                         name={showPassword ? 'eyeSlash' : 'eye'}
                                         onClick={() => {

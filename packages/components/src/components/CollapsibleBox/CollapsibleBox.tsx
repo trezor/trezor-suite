@@ -136,7 +136,7 @@ export const CollapsibleBox = ({
     heading,
     subHeading,
     headingSize = 'large',
-    toggleIconSize = headingSize,
+    toggleIconSize,
     toggleIconVariant,
     fillType = 'default',
     hasDivider = true,

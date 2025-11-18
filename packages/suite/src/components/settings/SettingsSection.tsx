@@ -36,7 +36,7 @@ export const SettingsSection = ({ title, icon, children, tooltipText }: Settings
                             }}
                         >
                             <Tooltip isInline content={tooltipText}>
-                                <Icon name="question" size="medium" />
+                                <Icon name="question" size={16} />
                             </Tooltip>
                         </Box>
                     )}

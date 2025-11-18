@@ -162,7 +162,7 @@ export const UpdateNotificationBanner = ({
                             </Text>
                         </Column>
                         <CloseIconBackground onClick={handleOnClose}>
-                            <Icon name="x" size="medium" />
+                            <Icon name="x" size={16} />
                         </CloseIconBackground>
                     </Row>
                 </Container>

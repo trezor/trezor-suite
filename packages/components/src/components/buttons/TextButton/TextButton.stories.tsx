@@ -4,12 +4,12 @@ import {
     TextButton as TextButtonComponent,
     TextButtonProps,
     allowedTextButtonFrameProps,
+    textButtonIconAlignments,
     textButtonSizes,
     textButtonVariants,
 } from './TextButton';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { iconAlignments } from '../buttonStyleUtils';
 
 const meta: Meta<typeof TextButtonComponent> = {
     title: '🫵 Buttons',
@@ -56,7 +56,7 @@ export const TextButton: StoryObj<TextButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: iconAlignments,
+            options: textButtonIconAlignments,
         },
         size: {
             control: {

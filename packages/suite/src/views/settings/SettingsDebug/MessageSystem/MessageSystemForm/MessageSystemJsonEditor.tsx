@@ -59,12 +59,12 @@ export const MessageSystemJsonEditor = ({
                 <Row gap={spacings.xs} margin={{ bottom: spacings.xs }}>
                     {isValid ? (
                         <>
-                            <Icon name="checkCircleFilled" variant="primary" size="extraLarge" />
+                            <Icon name="checkCircleFilled" variant="primary" size={32} />
                             <span>Config is valid</span>
                         </>
                     ) : (
                         <>
-                            <Icon name="xCircleFilled" variant="destructive" size="extraLarge" />
+                            <Icon name="xCircleFilled" variant="destructive" size={32} />
                             <span>Config is invalid</span>
                         </>
                     )}

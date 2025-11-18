@@ -3,6 +3,7 @@ import { DefaultTheme, RuleSet, css } from 'styled-components';
 import { BorderRadii, CSSColor, TypographyStyle } from '@trezor/theme';
 
 import { ButtonIntent, ButtonPriority, ButtonSize } from './types';
+import { IconSize } from '../Icon/Icon';
 
 const OPACITY_HOVER_STATE = 0.82;
 const OPACITY_ACTIVE_STATE = 0.74;
@@ -65,8 +66,8 @@ export const mapSizeToBorderRadius = (size: ButtonSize): BorderRadii => {
     return borderRadiusMap[size];
 };
 
-export const mapSizeToIconSize = (size: ButtonSize): number => {
-    const iconSizeMap: Record<ButtonSize, number> = {
+export const mapSizeToIconSize = (size: ButtonSize): IconSize => {
+    const iconSizeMap: Record<ButtonSize, IconSize> = {
         large: 20,
         medium: 16,
         small: 16,

@@ -64,7 +64,7 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
         <Card>
             <Column gap={spacings.xs} alignItems="center">
                 <StyledH2>
-                    <Icon name="check" size={25} />
+                    <Icon name="check" size={24} />
                     <Heading>
                         <Translation id="TR_STAKING_REWARDS_TITLE" />
                     </Heading>

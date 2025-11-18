@@ -94,7 +94,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                                                             id="TR_STAKE_REWARDS_BADGE"
                                                             values={{ count: reward.epoch }}
                                                         />
-                                                        <Icon name="info" size="small" />
+                                                        <Icon name="info" size={12} />
                                                     </Row>
                                                 </Badge>
                                             </Tooltip>

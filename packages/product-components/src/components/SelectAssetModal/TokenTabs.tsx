@@ -42,7 +42,7 @@ export const TokenTabs = ({ tabs, activeTokenTab, setActiveTokenTab }: TokenTabs
                             <Icon
                                 name={tab === 'tokens' ? 'coins' : 'eyeSlash'}
                                 variant={activeTokenTab === tab ? 'primary' : undefined}
-                                size="medium"
+                                size={16}
                             />
                             {label}
                         </Row>

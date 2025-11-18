@@ -120,7 +120,7 @@ export const PassphraseInputCard = ({
                             inputState={errorMessage ? 'error' : undefined}
                             rightContent={
                                 <Icon
-                                    size={18}
+                                    size={20}
                                     variant="tertiary"
                                     name={showPassword ? 'eyeClosed' : 'eye'}
                                     onClick={() => setShowPassword(!showPassword)}

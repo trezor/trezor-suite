@@ -141,7 +141,7 @@ export const Tooltip = ({
                         $cursor={frameProps.$cursor ?? 'inherit'}
                     >
                         {children}
-                        {hasIcon && <Icon name="question" size="medium" />}
+                        {hasIcon && <Icon name="question" size={16} />}
                     </Content>
                 </TooltipTrigger>
 

@@ -83,7 +83,7 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
                             <Icon
                                 name={item.icon}
                                 color={item.iconColor}
-                                size={item.iconSize ?? 26}
+                                size={item.iconSize ?? 24}
                             />
                         ) : (
                             item.deviceModelInternal && (

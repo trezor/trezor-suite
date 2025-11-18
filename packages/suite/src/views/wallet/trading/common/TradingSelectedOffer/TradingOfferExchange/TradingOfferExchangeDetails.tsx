@@ -123,7 +123,7 @@ export const TradingOfferExchangeDetails = ({
                                 {exchangeQuote.swapSlippage}%
                             </Text>
 
-                            <Icon name="pencilSimple" size="medium" variant="primary" />
+                            <Icon name="pencilSimple" size={16} variant="primary" />
                         </Row>
                     </InfoItem>
                 )}
@@ -208,7 +208,7 @@ export const TradingOfferExchangeDetails = ({
                         >
                             <Icon
                                 name={isMevProtectionEnabled ? 'check' : 'x'}
-                                size="medium"
+                                size={16}
                                 variant={isMevProtectionEnabled ? 'primary' : 'tertiary'}
                             />
                         </InfoItem>

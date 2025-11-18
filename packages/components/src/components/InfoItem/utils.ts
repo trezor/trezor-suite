@@ -16,19 +16,17 @@ export const mapVerticalAlignmentToAlignItems = (
     return alignItemsMap[verticalAlignment];
 };
 
-export const mapTypographyStyleToIconSize = (
-    typographyStyle: TypographyStyle,
-): IconSize | number => {
-    const iconSizeMap: Record<TypographyStyle, IconSize | number> = {
+export const mapTypographyStyleToIconSize = (typographyStyle: TypographyStyle): IconSize => {
+    const iconSizeMap: Record<TypographyStyle, IconSize> = {
         titleLarge: 48,
-        titleMedium: 'extraLarge',
-        titleSmall: 'large',
-        highlight: 'mediumLarge',
-        body: 'mediumLarge',
-        callout: 'medium',
-        hint: 'medium',
-        label: 'medium',
-        inherit: 'medium',
+        titleMedium: 32,
+        titleSmall: 24,
+        highlight: 20,
+        body: 20,
+        callout: 16,
+        hint: 16,
+        label: 16,
+        inherit: 16,
     };
 
     return iconSizeMap[typographyStyle];

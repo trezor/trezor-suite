@@ -59,10 +59,10 @@ export const BalancePrivacyBreakdown = () => {
                 return <Icon name="pause" size={12} />;
             }
 
-            return <Icon name="shuffle" size={15} />;
+            return <Icon name="shuffle" size={16} />;
         }
 
-        return <Icon name="x" size={15} />;
+        return <Icon name="x" size={16} />;
     };
 
     if (!currentAccount) {
@@ -85,7 +85,7 @@ export const BalancePrivacyBreakdown = () => {
                         <Translation id="TR_PRIVATE" />
                     </PrivateBalanceHeading>
                 }
-                headerIcon={<Icon name="check" size="medium" color={theme.iconPrimaryDefault} />}
+                headerIcon={<Icon name="check" size={16} color={theme.iconPrimaryDefault} />}
                 value={anonymized}
                 symbol={currentAccount?.symbol}
                 color={!isZero(anonymized || '0') ? theme.textPrimaryDefault : theme.textSubdued}

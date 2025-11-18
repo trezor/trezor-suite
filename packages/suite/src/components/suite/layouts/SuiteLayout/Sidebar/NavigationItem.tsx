@@ -111,7 +111,7 @@ export const NavItem = (props: NavigationItemProps) => {
         className,
         values,
         preserveParams,
-        iconSize = 'large',
+        iconSize = 24,
         itemsCount,
         isRounded = false,
         typographyStyle = 'body',

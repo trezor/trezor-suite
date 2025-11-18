@@ -44,7 +44,7 @@ export const NewProviderCard = () => {
     return (
         <Card paddingType="large">
             <Row alignItems="start" gap={spacings.xs}>
-                <Icon name="warning" variant="warning" size="extraLarge" />
+                <Icon name="warning" variant="warning" size={32} />
 
                 <Column gap={spacings.xxxl}>
                     <Column gap={spacings.xs}>

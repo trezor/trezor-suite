@@ -185,11 +185,7 @@ export const DropZone = ({
             >
                 <StyledInput {...getInputProps()} />
                 <Row gap={spacings.xs}>
-                    <Icon
-                        name={iconName}
-                        size="mediumLarge"
-                        variant={filename ? 'default' : 'tertiary'}
-                    />
+                    <Icon name={iconName} size={20} variant={filename ? 'default' : 'tertiary'} />
                     <Text typographyStyle="hint" variant={filename ? 'default' : 'tertiary'}>
                         {filename || <Translation id="TR_DROPZONE" />}
                     </Text>

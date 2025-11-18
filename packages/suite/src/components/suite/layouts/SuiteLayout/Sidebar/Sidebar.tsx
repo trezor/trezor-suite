@@ -76,7 +76,7 @@ const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
 
     return isCollapsed ? (
         <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
-            <Icon name="trezorLogo" size="large" pointerEvents="none" />
+            <Icon name="trezorLogo" size={24} pointerEvents="none" />
         </Box>
     ) : (
         <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>

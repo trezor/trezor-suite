@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Icon } from '@trezor/components';
@@ -56,7 +56,6 @@ const ToastNotification = ({
     notification: { type, id },
 }: ToastNotificationProps) => {
     const [isTall, setIsTall] = useState(false);
-    const theme = useTheme();
     const dispatch = useDispatch();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -123,7 +122,6 @@ const ToastNotification = ({
                 <Icon
                     size={16}
                     name="x"
-                    hoverColor={theme.iconSubdued}
                     onClick={handleCancelClick}
                     data-testid={`${dataTestBase}/close`}
                     margin={{ left: spacings.md }}
