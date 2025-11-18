@@ -50,7 +50,7 @@ export const Banner = ({
     const theme = useTheme();
 
     const withIcon = icon !== undefined;
-    const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps, false);
 
     return (
         <Box
@@ -58,8 +58,8 @@ export const Banner = ({
             backgroundColor={mapIntentToBackgroundColor(intent, theme)}
             borderRadius={8}
             data-testid={dataTest}
-            width={width}
             {...frameProps}
+            width={width}
         >
             <Row gap={16} padding={{ vertical: 12, horizontal: 20 }}>
                 {isLoading && <Spinner size={20} />}

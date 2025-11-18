@@ -105,7 +105,10 @@ export const Tooltip = ({
     disableFlip = false,
     ...rest
 }: TooltipProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedTooltipFrameProps);
+    const frameProps = pickAndPrepareFrameProps(
+        rest,
+        allowedTooltipFrameProps,
+    ) as TransientProps<AllowedFrameProps>;
 
     if (!content || !children) {
         return <>{children}</>;

@@ -132,7 +132,10 @@ export const Card = ({
 }: CardProps) => {
     const { elevation } = useElevation();
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
+    const frameProps = pickAndPrepareFrameProps(
+        rest,
+        allowedCardFrameProps,
+    ) as TransientAllowedFrameProps;
 
     const content = (
         <>
