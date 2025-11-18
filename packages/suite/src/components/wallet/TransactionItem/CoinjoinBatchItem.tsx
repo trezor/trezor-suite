@@ -40,7 +40,7 @@ const RoundRow = styled.div`
     cursor: pointer;
 
     &:hover {
-        background-color: ${({ theme }) => theme.legacy.BG_GREY};
+        background-color: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     }
 
     > div:first-child {

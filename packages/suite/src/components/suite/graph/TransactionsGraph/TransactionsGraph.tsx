@@ -279,7 +279,10 @@ export const TransactionsGraph = memo(
                                 <Tooltip
                                     position={{ y: 0, x: 0 }}
                                     wrapperStyle={{ zIndex: zIndices.tooltip }}
-                                    cursor={{ stroke: theme.legacy.BG_TOOLTIP, strokeWidth: 1 }}
+                                    cursor={{
+                                        stroke: theme.backgroundNeutralSubdued,
+                                        strokeWidth: 1,
+                                    }}
                                     content={
                                         variant === 'one-asset' ? (
                                             <GraphTooltipAccount

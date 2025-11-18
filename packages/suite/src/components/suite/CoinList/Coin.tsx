@@ -95,7 +95,7 @@ export const CoinWrapper = styled.button<{
     &:disabled {
         cursor: not-allowed;
         opacity: 0.5;
-        background: ${({ theme }) => theme.legacy.BG_GREY};
+        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     }
 
     ${getFocusShadowStyle()}

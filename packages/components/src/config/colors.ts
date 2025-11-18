@@ -30,39 +30,19 @@ export type SuiteThemeColors = CommonThemeProps &
     Partial<PropsOnlyInDarkTheme> &
     Partial<PropsOnlyInLightTheme>;
 
-/** @deprecated Do NOT export it! Use intermediaryTheme instead! */
-const THEME = {
-    light: {
-        legacy: {
-            THEME: 'light',
-
-            BG_GREY: '#f4f4f4',
-            BG_TOOLTIP: '#212223',
-        },
-    },
-    dark: {
-        legacy: {
-            THEME: 'dark',
-
-            BG_GREY: '#18191a',
-            BG_TOOLTIP: '#3a3b3c', // same as STROKE_GREY in dark theme
-        },
-    },
-} as const;
-
 export const intermediaryTheme = {
     light: {
-        ...THEME.light,
+        mode: 'light' as const,
         ...colorVariants.standard,
         ...boxShadows.standard,
     },
     dark: {
-        ...THEME.dark,
+        mode: 'dark' as const,
         ...colorVariants.dark,
         ...boxShadows.dark,
     },
     debug: {
-        ...THEME.light,
+        mode: 'light' as const,
         ...colorVariants.debug,
         ...boxShadows.standard,
     },

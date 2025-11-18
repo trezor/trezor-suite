@@ -35,7 +35,7 @@ const Description = styled.div`
 const FixedRate = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: ${({ theme }) => theme.legacy.BG_GREY};
+    background-color: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     padding: 14px 18px;
     border-radius: ${borders.radii.xs};
     margin-bottom: 30px;

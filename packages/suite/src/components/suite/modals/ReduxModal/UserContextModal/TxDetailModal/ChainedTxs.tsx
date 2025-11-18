@@ -37,7 +37,7 @@ const ChainedTransactionItem = styled(TransactionItem)`
     border-left: 0;
 
     &:hover {
-        background: ${({ theme }) => theme.legacy.BG_GREY};
+        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     }
 `;
 
@@ -48,7 +48,7 @@ const StyledAffectedTransactionItem = styled(AffectedTransactionItem)`
     border-radius: 12px;
 
     &:hover {
-        background: ${({ theme }) => theme.legacy.BG_GREY};
+        background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     }
 `;
 

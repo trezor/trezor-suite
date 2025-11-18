@@ -125,7 +125,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                 case 'PAIRING_MODE':
                     return (
                         <Video
-                            src={`${basePath}/pairing_mode_${theme.legacy.THEME}.webm`}
+                            src={`${basePath}/pairing_mode_${theme.mode}.webm`}
                             {...commonVideoProps}
                         />
                     );

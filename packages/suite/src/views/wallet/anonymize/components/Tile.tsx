@@ -12,7 +12,7 @@ const containerGridStyle = css`
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)`
-    background: ${({ theme }) => theme.legacy.BG_GREY};
+    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     box-shadow: none;
     display: block;
 

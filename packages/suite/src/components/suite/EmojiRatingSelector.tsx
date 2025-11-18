@@ -24,11 +24,11 @@ const Item = styled.button<{ $selected?: boolean; $elevation: Elevation }>`
                   })};
 
     background: ${({ $selected, theme }) =>
-        $selected ? theme.backgroundPrimaryDefault : theme.legacy.BG_GREY};
+        $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralBoldInverted};
 
     &:hover {
         background: ${({ $selected, theme }) =>
-            $selected ? theme.backgroundPrimaryDefault : theme.legacy.BG_GREY};
+            $selected ? theme.backgroundPrimaryDefault : theme.backgroundNeutralBoldInverted};
     }
 `;
 
