@@ -9728,6 +9728,14 @@ export default defineMessages({
         defaultMessage:
             'Only transactions from the past 12 months are available in this view. To explore older activity, use the blockchain explorer.',
     },
+    TR_STELLAR_TRUSTLINE_ADDED: {
+        id: 'TR_STELLAR_TRUSTLINE_ADDED',
+        defaultMessage: 'Established trustline to {assetCode}',
+    },
+    TR_STELLAR_TRUSTLINE_REMOVED: {
+        id: 'TR_STELLAR_TRUSTLINE_REMOVED',
+        defaultMessage: 'Removed trustline to {assetCode}',
+    },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
         defaultMessage:
