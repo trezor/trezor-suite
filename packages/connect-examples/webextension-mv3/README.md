@@ -1,6 +1,7 @@
 # Web extension manifest V3 example
 
 `@trezor/connect` running in an `html` page from the extension and communicating with `@trezor/popup` through `chrome.runtime` messages.
+This mode of integration is no longer recommended, please refer to the [webextension-mv3-sw](../webextension-mv3-sw/README.md) example instead.
 
 Tested in Chrome
 

@@ -158,10 +158,10 @@ export const setConnectSettings = async (
         connectSrc,
         isCoreInPopup,
     }: { trustedHost?: boolean; connectSrc?: string; isCoreInPopup?: boolean },
-    _isWebExtension: boolean,
+    isWebExtension: boolean,
 ) => {
     await explorerPage.goto(
-        formatUrl(explorerUrl, _isWebExtension ? `settings/index.html` : `settings`),
+        formatUrl(explorerUrl, isWebExtension ? `settings/index.html` : `settings`),
     );
     /*if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
@@ -175,7 +175,7 @@ export const setConnectSettings = async (
         await expect(input).toBeVisible();
         await input.fill(connectSrc);
     }
-    if (isCoreInPopup) {
+    if (isCoreInPopup || isWebExtension) {
         await waitAndClick(explorerPage, ['@select/coreMode/input']);
         await waitAndClick(explorerPage, ['@select/coreMode/option/popup']);
     }
