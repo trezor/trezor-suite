@@ -26,6 +26,7 @@
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

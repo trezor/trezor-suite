@@ -24,6 +24,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "framer-motion": "^12.23.3",
