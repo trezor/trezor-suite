@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { Modal, ModalSize } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -27,6 +28,10 @@ export function AssetsModal({
             onCancel={onClose}
             size={size}
             height="unset"
+            padding={{
+                horizontal: 0,
+                vertical: spacings.md,
+            }}
         >
             {children}
         </Modal>

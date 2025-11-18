@@ -11,7 +11,12 @@ export type AssetGroupLabelProps = {
 
 export const AssetGroupLabel = memo(function AssetGroupLabelInner({ label }: AssetGroupLabelProps) {
     return (
-        <Text typographyStyle="hint" variant="default" margin={{ bottom: spacings.xxs }}>
+        <Text
+            typographyStyle="hint"
+            variant="default"
+            margin={{ bottom: spacings.xxs, left: spacings.md }}
+            as="div"
+        >
             {label}
         </Text>
     );

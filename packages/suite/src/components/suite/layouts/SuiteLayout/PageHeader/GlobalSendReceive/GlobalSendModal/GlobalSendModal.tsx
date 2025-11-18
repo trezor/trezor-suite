@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
@@ -43,6 +43,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const globalSendListItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
 
     const submitRef = useCurrentRef(onSubmit);
+    const listRef = useRef<HTMLDivElement>(null);
     const filledSearch = useSelector(globalSendReceiveFilters.selectors.filledSearch);
 
     const handleAccountClick = useCallback(
@@ -92,7 +93,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     return (
         <AssetsModal heading={{ id: 'SEND_TRANSACTION' }} onClose={() => onCancel(filledSearch)}>
-            <AssetSearchWithNetworkFilter placeholder="TR_SEND_SEARCH" />
+            <AssetSearchWithNetworkFilter placeholder="TR_SEND_SEARCH" listRef={listRef} />
 
             <Divider />
 
@@ -106,6 +107,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                     itemsFingerprint={fingerprintWithTokens}
                     renderItem={renderItem}
                     height={LIST_HEIGHT}
+                    ref={listRef}
                 />
             </AssetsListEmpty>
         </AssetsModal>
