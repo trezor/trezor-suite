@@ -8,6 +8,8 @@ window.TrezorConnect.init({
         appUrl: 'http://your.application.com',
     },
     connectSrc: DEFAULT_SRC,
+    // coreMode is set only for purposes of legacy tests, do not use in production
+    coreMode: 'iframe',
 });
 
 const getAddressButton = document.getElementById('get-address');

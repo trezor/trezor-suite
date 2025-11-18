@@ -42,10 +42,14 @@ describe('TrezorConnect.init', () => {
     it('calling .init() multiple times', async () => {
         await TrezorConnect.init({
             manifest: { appName: 'a', appUrl: 'a', email: 'b' },
+            coreMode: 'iframe', // for connect-web
         });
 
         try {
-            await TrezorConnect.init({ manifest: { appName: 'a', appUrl: 'a', email: 'b' } });
+            await TrezorConnect.init({
+                manifest: { appName: 'a', appUrl: 'a', email: 'b' },
+                coreMode: 'iframe', // for connect-web
+            });
             throw new Error('Should not be resolved');
         } catch (error) {
             expect(error).toMatchObject({ code: 'Init_AlreadyInitialized' });
@@ -53,10 +57,9 @@ describe('TrezorConnect.init', () => {
     });
 
     it('calling multiple methods synchronously', async () => {
-        TrezorConnect.manifest({
-            appName: 'a',
-            appUrl: 'a',
-            email: 'b',
+        await TrezorConnect.init({
+            manifest: { appName: 'a', appUrl: 'a', email: 'b' },
+            coreMode: 'iframe', // for connect-web
         });
 
         const result = await Promise.all([
@@ -69,7 +72,10 @@ describe('TrezorConnect.init', () => {
     });
 
     it('init success', async () => {
-        await TrezorConnect.init({ manifest: { appName: 'a', appUrl: 'a', email: 'b' } });
+        await TrezorConnect.init({
+            manifest: { appName: 'a', appUrl: 'a', email: 'b' },
+            coreMode: 'iframe', // for connect-web
+        });
 
         const resp = await TrezorConnect.getCoinInfo({ coin: 'btc' });
         expect(resp).toMatchObject({
@@ -77,7 +83,8 @@ describe('TrezorConnect.init', () => {
         });
     });
 
-    it('manifest success', async () => {
+    // manifest doesn't allow us to control the coreMode, therefore the test won't run
+    it.skip('manifest success', async () => {
         TrezorConnect.manifest({
             appName: 'a',
             appUrl: 'a',

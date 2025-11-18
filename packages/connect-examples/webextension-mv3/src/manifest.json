@@ -16,6 +16,13 @@
             "js": ["./vendor/trezor-content-script.js"]
         }
     ],
+    "host_permissions": [
+        "*://connect.trezor.io/9/*",
+        "*://suite.corp.sldev.cz/*",
+        "*://localhost/*",
+        "*://staging-connect.trezor.io/*",
+        "*://dev.suite.sldev.cz/*"
+    ],
     "background": {
         "service_worker": "serviceWorker.js"
     }

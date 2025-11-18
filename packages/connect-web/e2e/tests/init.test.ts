@@ -42,7 +42,8 @@ fixtures.forEach(f => {
                         appName: 'Trezor Connect Example',
                         appUrl: 'http://your.application.com',
                     },
-                    connectSrc: '${f.params.connectSrc}'
+                    connectSrc: '${f.params.connectSrc}',
+                    coreMode: 'iframe'
                 });
         `,
         });
