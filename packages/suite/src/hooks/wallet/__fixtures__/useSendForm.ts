@@ -715,7 +715,6 @@ export const composeDebouncedTransaction = [
             ],
         },
         actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 100 }],
-        expectRerender: true, // The unit test will break otherwise
         finalResult: {
             composeTransactionCalls: 1,
             composedLevels: {

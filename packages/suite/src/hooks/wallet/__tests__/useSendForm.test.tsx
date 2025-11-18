@@ -372,18 +372,6 @@ describe('useSendForm hook', () => {
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
 
-                jest.mock('@trezor/react-utils', () => {
-                    const originalModule = jest.requireActual('@trezor/react-utils');
-
-                    return {
-                        ...originalModule,
-                        __esModule: true,
-                        useDebounce: () => async (fn: any) => {
-                            await fn();
-                        },
-                    };
-                });
-
                 const store = initStore(f.store as Args);
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
