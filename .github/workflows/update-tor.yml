@@ -7,6 +7,7 @@ on:
 
 jobs:
   update-tor:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: macos-latest
     env:
       UPDATE_FILE: packages/suite-data/files/bin/tor/update.sh
