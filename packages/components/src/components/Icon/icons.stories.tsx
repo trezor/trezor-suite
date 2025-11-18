@@ -92,7 +92,7 @@ const Render = (props: IconProps) => {
                     value={search}
                     onChange={event => setSearch(event.target.value)}
                     // eslint-disable-next-line jsx-a11y/no-autofocus
-                    autoFocus={theme.legacy.THEME === 'light'}
+                    autoFocus={theme.mode === 'light'}
                     onClear={() => setSearch('')}
                     showClearButton="always"
                 />

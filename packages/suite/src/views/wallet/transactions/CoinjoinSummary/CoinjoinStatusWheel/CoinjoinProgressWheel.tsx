@@ -91,7 +91,8 @@ const Wheel = styled.div<{
 
             &:active {
                 ${ProgressContentContainer} {
-                    background: ${({ theme }) => lighten(0.02, theme.legacy.BG_GREY)};
+                    background: ${({ theme }) =>
+                        lighten(0.02, theme.backgroundNeutralBoldInverted)};
                 }
             }
         `}
@@ -157,7 +158,7 @@ const Wheel = styled.div<{
             color: inherit;
 
             ${ProgressContentContainer} {
-                background: ${theme.legacy.BG_GREY};
+                background: ${theme.backgroundNeutralBoldInverted};
             }
         `}
 `;

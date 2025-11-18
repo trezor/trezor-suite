@@ -40,7 +40,7 @@ export const CodeEditor = ({ code, codeChange, schema }: CodeEditorProps) => {
             key={codeKey}
             value={code}
             extensions={extensions}
-            theme={theme.legacy.THEME}
+            theme={theme.mode}
             onChange={codeChange}
         />
     );

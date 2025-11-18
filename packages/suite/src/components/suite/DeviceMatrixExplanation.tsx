@@ -11,7 +11,7 @@ const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: ${({ theme }) => theme.legacy.BG_GREY};
+    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     padding: 20px 24px;
     margin-right: 34px;
     width: 100%;

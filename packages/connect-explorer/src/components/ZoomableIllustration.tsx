@@ -29,8 +29,7 @@ const ReactMediumImageZoomStyle = createGlobalStyle<{ $darkMode?: boolean }>`
 export const ZoomableIllustration = (props: ZoomableIllustrationProps) => {
     const router = useRouter();
     const theme = useTheme();
-    const { THEME } = theme.legacy;
-    const darkMode = props.$darkMode && THEME === 'dark';
+    const darkMode = props.$darkMode && theme.mode === 'dark';
 
     // Automatic absolute path handling
     const src = (props?.src as string)?.startsWith('/') ? router.basePath + props.src : props.src;

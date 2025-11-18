@@ -14,7 +14,7 @@ const Confirmed = styled.div`
     height: 60px;
     font-size: ${variables.FONT_SIZE.BIG};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${({ theme }) => theme.legacy.BG_GREY};
+    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
     align-items: center;
     justify-content: center;
     margin-top: 27px;

@@ -49,7 +49,7 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
     display: flex;
     flex-direction: column;
     color: ${paletteV2.globalWhiteAlpha1000};
-    background: ${({ theme }) => theme.legacy.BG_TOOLTIP};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation3};
     padding: 8px 6px;
     border-radius: 4px;
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
@@ -71,7 +71,7 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
         height: 0;
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;
-        border-top: 10px solid ${({ theme }) => theme.legacy.BG_TOOLTIP};
+        border-top: 10px solid ${({ theme }) => theme.backgroundNeutralSubdued};
     }
 `;
 

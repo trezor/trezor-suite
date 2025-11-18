@@ -287,7 +287,7 @@ export const Method = () => {
 
     const json = response ? (
         <Inspector
-            theme={theme.legacy.THEME === 'light' ? 'chromeLight' : 'chromeDark'}
+            theme={theme.mode === 'light' ? 'chromeLight' : 'chromeDark'}
             data={response}
             expandLevel={10}
             table={false}
