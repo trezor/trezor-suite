@@ -12,6 +12,8 @@ import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
+import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { SwitchDeviceContent } from 'src/views/suite/SwitchDevice/SwitchDevice';
 
 export const ConnectSelectDeviceModal = () => {
@@ -21,6 +23,7 @@ export const ConnectSelectDeviceModal = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const hasConnectedDevice = devices.some(d => d.connected);
     const selectedDeviceConnected = selectedDevice?.connected;
+
     const onCancel = () => {
         dispatch(connectPopupActions.finishCall());
     };
@@ -68,6 +71,9 @@ export const ConnectSelectDeviceModal = () => {
 export const ConnectErrorModal = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
+    const prerequisite = useSelector(selectPrerequisite);
+    const handleOpenSuite = useOpenSuiteDesktop();
+
     const onFinish = () => {
         dispatch(connectPopupActions.finishCall());
     };
@@ -84,8 +90,9 @@ export const ConnectErrorModal = () => {
         popupCall.error?.code === 'Device_Disconnected' ||
         popupCall.error?.code === 'Device_UsedElsewhere' ||
         popupCall.error?.code === 'Device_InvalidState';
+    const isNoTransportError = prerequisite === 'no-transport';
 
-    if (isDeviceReconnectError) return <ConnectSelectDeviceModal />;
+    if (isDeviceReconnectError && !prerequisite) return <ConnectSelectDeviceModal />;
 
     const getVariant = () => {
         if (isCancelled) return 'warning';
@@ -99,11 +106,14 @@ export const ConnectErrorModal = () => {
     };
     const getSubtitle = () => {
         if (isCancelled) return null;
+        if (isNoTransportError) return <Translation id="TR_NO_TRANSPORT" />;
 
         return <Translation id="TR_CONNECT_ERROR_GENERIC_DESCRIPTION" />;
     };
     const getErrorText = () => {
         if (isCancelled) return <Translation id="TR_CONNECT_ERROR_CANCELED" />;
+        if (isNoTransportError) return <Translation id="TR_BRIDGE_NEEDED_DESCRIPTION" />;
+
         if (popupCall.error?.error === UI_REQUEST.BOOTLOADER)
             return <Translation id="TR_DEVICE_IN_BOOTLOADER" />;
         if (popupCall.error?.error === UI_REQUEST.NOT_IN_BOOTLOADER)
@@ -128,14 +138,21 @@ export const ConnectErrorModal = () => {
             <Modal.ModalBase
                 variant="primary"
                 bottomContent={
-                    <Modal.Button
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={onFinish}
-                        size="medium"
-                    >
-                        <Translation id="TR_CLOSE" />
-                    </Modal.Button>
+                    <>
+                        {isNoTransportError && (
+                            <Modal.Button size="medium" onClick={handleOpenSuite}>
+                                <Translation id="TR_OPEN_TREZOR_SUITE_DESKTOP" />
+                            </Modal.Button>
+                        )}
+                        <Modal.Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={onFinish}
+                            size="medium"
+                        >
+                            <Translation id="TR_CLOSE" />
+                        </Modal.Button>
+                    </>
                 }
             >
                 <Column gap={spacings.xs}>
