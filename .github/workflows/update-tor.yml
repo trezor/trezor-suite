@@ -110,6 +110,6 @@ jobs:
           branch: chore/update-tor-binaries
           title: "Update TOR binaries"
           body: ${{ steps.pr_body.outputs.body }}
-          base: "develop"
+          base: ${{ github.ref_name }}
           delete-branch: true
           labels: tor, ci
