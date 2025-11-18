@@ -28,7 +28,7 @@ type CustomFeeProps = {
 
 export const CustomFee = ({ showCurrentFee }: CustomFeeProps) => {
     const { composedLevels, selectedFeeLevel, networkType } = useFeesContext();
-    const transactionInfo = composedLevels?.[selectedFeeLevel.label];
+    const transactionInfo = selectedFeeLevel ? composedLevels?.[selectedFeeLevel.label] : null;
     const cachedBytes =
         transactionInfo && transactionInfo.type !== 'error' && transactionInfo.bytes;
     const shouldShowTxSize =

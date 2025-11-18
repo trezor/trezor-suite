@@ -30,7 +30,7 @@ export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
     const locale = useLocales();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(networkSymbol);
-    const transactionInfo = composedLevels?.[selectedFeeLevel.label];
+    const transactionInfo = selectedFeeLevel ? composedLevels?.[selectedFeeLevel.label] : null;
 
     const getTimeEstimate = (fee: FeeOptionType) => {
         if (fee.blocks) {
@@ -39,6 +39,10 @@ export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
 
         return undefined;
     };
+
+    if (!selectedFeeLevel) {
+        return null;
+    }
 
     return (
         <>
@@ -82,7 +86,7 @@ export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
                 ))}
             </FeeCardsWrapper>
             <DustPreventionNotice
-                chosenFeePerByte={selectedFeeLevel.feePerUnit}
+                chosenFeePerByte={selectedFeeLevel!.feePerUnit}
                 composedFeePerByte={
                     transactionInfo?.type === 'final' ? transactionInfo.feePerByte : undefined
                 }

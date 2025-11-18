@@ -7,7 +7,7 @@ import { FeeLevel } from '@trezor/connect';
 export type FeesContextType = {
     networkSymbol: NetworkSymbol;
     networkType: NetworkType;
-    selectedFeeLevel: FeeLevel;
+    selectedFeeLevel?: FeeLevel;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano | null;
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;

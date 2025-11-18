@@ -58,10 +58,6 @@ export function CollapsibleFees({
         selectedFeeLevel,
     });
 
-    if (!selectedFeeLevel) {
-        return null;
-    }
-
     return (
         <FeesContext.Provider
             value={{
