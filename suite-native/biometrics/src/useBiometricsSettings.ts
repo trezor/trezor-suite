@@ -5,7 +5,7 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { useAlert } from '@suite-native/alerts';
 
-import { ToggleBiometricsError, toggleBiometricsSettings } from './biometricsThunks';
+import { AuthenticateError, toggleBiometricsSettingsThunk } from './biometricsThunks';
 
 export type BiometricsToggleResult = 'enabled' | 'disabled' | 'failed' | 'notAvailable';
 
@@ -14,10 +14,10 @@ export const useBiometricsSettings = () => {
     const dispatch = useDispatch();
 
     const toggleBiometricsOption = useCallback(async (): Promise<BiometricsToggleResult> => {
-        const authResult = await dispatch(toggleBiometricsSettings());
+        const authResult = await dispatch(toggleBiometricsSettingsThunk());
 
         if (isRejected(authResult)) {
-            if (authResult.payload === ToggleBiometricsError.NotAvailable) {
+            if (authResult.payload === AuthenticateError.BiometricsNotAvailable) {
                 await new Promise(resolve => {
                     showAlert({
                         title: 'Biometrics',

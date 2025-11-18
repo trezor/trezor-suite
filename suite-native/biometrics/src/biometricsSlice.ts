@@ -1,12 +1,17 @@
 import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 
-import { AuthenticateError, authenticate, toggleBiometricsSettings } from './biometricsThunks';
+import {
+    AuthenticateError,
+    authenticateUserThunk,
+    toggleBiometricsSettingsThunk,
+} from './biometricsThunks';
 
 type BiometricsSliceState = {
     isUserAuthenticated: boolean;
     isBiometricsEnabled: boolean;
     biometricsError: AuthenticateError | null;
-    isTogglingBiometrics: boolean;
+    isTogglingBiometricsSettingsOption: boolean;
+    isAuthenticatingUser: boolean;
 };
 
 type BiometricsSliceRootState = {
@@ -17,7 +22,8 @@ const biometricsSliceInitialState: BiometricsSliceState = {
     isUserAuthenticated: false,
     isBiometricsEnabled: false,
     biometricsError: null,
-    isTogglingBiometrics: false,
+    isTogglingBiometricsSettingsOption: false,
+    isAuthenticatingUser: false,
 };
 
 export const biometricsPersistWhitelist: Array<keyof BiometricsSliceState> = [
@@ -37,23 +43,36 @@ export const biometricsSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addCase(authenticate.rejected, (state, { payload }) => {
+            .addCase(authenticateUserThunk.pending, state => {
+                state.isAuthenticatingUser = true;
+                state.biometricsError = null;
+            })
+            .addCase(authenticateUserThunk.fulfilled, state => {
+                state.biometricsError = null;
+            })
+            .addCase(authenticateUserThunk.rejected, (state, { payload }) => {
                 if (payload === AuthenticateError.AuthenticationFailed) {
                     state.biometricsError = payload ?? null;
                 }
             })
-            .addCase(toggleBiometricsSettings.pending, state => {
-                state.isTogglingBiometrics = true;
+            .addCase(toggleBiometricsSettingsThunk.pending, state => {
+                state.isTogglingBiometricsSettingsOption = true;
             })
             .addMatcher(
-                isAnyOf(toggleBiometricsSettings.rejected, toggleBiometricsSettings.fulfilled),
+                isAnyOf(authenticateUserThunk.rejected, authenticateUserThunk.fulfilled),
                 state => {
-                    state.isTogglingBiometrics = false;
+                    state.isAuthenticatingUser = false;
                 },
             )
-            .addMatcher(isAnyOf(authenticate.pending, authenticate.fulfilled), state => {
-                state.biometricsError = null;
-            });
+            .addMatcher(
+                isAnyOf(
+                    toggleBiometricsSettingsThunk.rejected,
+                    toggleBiometricsSettingsThunk.fulfilled,
+                ),
+                state => {
+                    state.isTogglingBiometricsSettingsOption = false;
+                },
+            );
     },
 });
 
@@ -63,12 +82,15 @@ export const selectIsBiometricsEnabled = (state: BiometricsSliceRootState) =>
     state.biometrics.isBiometricsEnabled;
 
 export const selectShouldUserBeAuthenticated = (state: BiometricsSliceRootState) =>
-    selectIsBiometricsEnabled(state) && !state.biometrics.isUserAuthenticated;
+    selectIsBiometricsEnabled(state) && !selectIsUserAuthenticated(state);
 
 export const selectBiometricsError = (state: BiometricsSliceRootState) =>
     state.biometrics.biometricsError;
 
 export const selectIsTogglingBiometrics = (state: BiometricsSliceRootState) =>
-    state.biometrics.isTogglingBiometrics;
+    state.biometrics.isTogglingBiometricsSettingsOption;
+
+export const selectIsAuthenticating = (state: BiometricsSliceRootState) =>
+    state.biometrics.isAuthenticatingUser;
 
 export const { setIsUserAuthenticated, toggleEnableBiometrics } = biometricsSlice.actions;

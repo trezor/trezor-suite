@@ -8,12 +8,9 @@ export const BiometricsModalRenderer = () => {
     const biometricsError = useSelector(selectBiometricsError);
     const shouldUserBeAuthenticated = useSelector(selectShouldUserBeAuthenticated);
 
-    const { doAuthentication } = useBiometrics();
+    useBiometrics();
 
     return shouldUserBeAuthenticated ? (
-        <BiometricOverlay
-            isBiometricsAuthButtonVisible={!!biometricsError}
-            onBiometricAuthPress={doAuthentication}
-        />
+        <BiometricOverlay isBiometricsAuthButtonVisible={!!biometricsError} />
     ) : null;
 };

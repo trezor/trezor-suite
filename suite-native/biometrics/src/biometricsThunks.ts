@@ -17,7 +17,7 @@ export enum AuthenticateError {
     AuthenticationFailed = 'authentication-failed',
 }
 
-export const authenticate = createThunk<
+export const authenticateUserThunk = createThunk<
     LocalAuthenticationResult,
     void,
     {
@@ -40,32 +40,22 @@ export const authenticate = createThunk<
 });
 
 export type BiometricsToggleResult = 'enabled' | 'disabled';
-export enum ToggleBiometricsError {
-    NotAvailable = 'notAvailable',
-    Failed = 'failed',
-}
-export const toggleBiometricsSettings = createThunk<
+
+export const toggleBiometricsSettingsThunk = createThunk<
     BiometricsToggleResult,
     void,
-    { rejectValue: ToggleBiometricsError }
+    { rejectValue: AuthenticateError }
 >(`biometrics/toggleBiometricsSettings`, async (_, { getState, rejectWithValue, dispatch }) => {
-    const authResult = await dispatch(authenticate());
+    const authResult = await dispatch(authenticateUserThunk());
 
-    if (isRejected(authResult)) {
-        if (authResult.payload === AuthenticateError.BiometricsNotAvailable) {
-            return rejectWithValue(ToggleBiometricsError.NotAvailable);
-        }
-
-        if (authResult.payload === AuthenticateError.AuthenticationFailed) {
-            return rejectWithValue(ToggleBiometricsError.Failed);
-        }
+    if (isRejected(authResult) && authResult.payload) {
+        return rejectWithValue(authResult.payload);
     }
 
     const isBiometricsEnabled = selectIsBiometricsEnabled(getState());
 
     if (isBiometricsEnabled) {
         dispatch(toggleEnableBiometrics(false));
-        // dispatch(setIsUserAuthenticated(false));
         analytics.report({
             type: EventType.BiometricsChange,
             payload: { enabled: false, origin: 'settingsToggle' },
@@ -73,7 +63,6 @@ export const toggleBiometricsSettings = createThunk<
 
         return 'disabled';
     } else {
-        // dispatch(setIsUserAuthenticated(true));
         dispatch(toggleEnableBiometrics(true));
         analytics.report({
             type: EventType.BiometricsChange,
