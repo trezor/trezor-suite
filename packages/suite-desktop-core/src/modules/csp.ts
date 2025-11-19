@@ -12,11 +12,12 @@ type CreateCspRulesParams = {
     nonce: string;
 };
 
-const createCspRules = ({ nonce }: CreateCspRulesParams) => [
+// eslint-disable-next-line no-empty-pattern
+const createCspRules = ({}: CreateCspRulesParams) => [
     // Default to only own resources
     "default-src 'self'",
     "script-src 'self'",
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'unsafe-inline'`,
     // Allow all API calls (Can't be restricted bc of custom backends)
     'connect-src *',
     // Allow images from trezor.io
