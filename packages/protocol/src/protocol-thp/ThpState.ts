@@ -12,6 +12,8 @@ export type ThpStateSerialized = {
     channel: string; // 2 bytes as hex
     sendBit: ThpMessageSyncBit; // host synchronization bit
     recvBit: ThpMessageSyncBit; // device synchronization bit
+    sendAckBit: ThpMessageSyncBit; // host ack bit
+    recvAckBit: ThpMessageSyncBit; // device ack bit
     sendNonce: number; // host nonce
     recvNonce: number; // device nonce
     expectedResponses: number[]; // expected responses from the device
@@ -29,8 +31,10 @@ export class ThpState {
     private _handshakeCredentials?: ThpHandshakeCredentials;
     private _channel: Buffer = Buffer.alloc(0);
     private _sendBit: ThpMessageSyncBit = 0;
+    private _sendAckBit: ThpMessageSyncBit = 0;
     private _sendNonce: number = 0;
     private _recvBit: ThpMessageSyncBit = 0;
+    private _recvAckBit: ThpMessageSyncBit = 0;
     private _recvNonce: number = 1;
     private _expectedResponses: number[] = [];
     private _selectedMethod?: ThpPairingMethod;
@@ -136,6 +140,10 @@ export class ThpState {
         return this._sendBit;
     }
 
+    get sendAckBit() {
+        return this._sendAckBit;
+    }
+
     get sendNonce() {
         return this._sendNonce;
     }
@@ -144,8 +152,20 @@ export class ThpState {
         return this._recvBit;
     }
 
+    get recvAckBit() {
+        return this._recvAckBit;
+    }
+
     get recvNonce() {
         return this._recvNonce;
+    }
+
+    updateAckBit(type: 'send' | 'recv') {
+        if (type === 'send') {
+            this._sendAckBit = this._sendAckBit > 0 ? 0 : 1;
+        } else {
+            this._recvAckBit = this._recvAckBit > 0 ? 0 : 1;
+        }
     }
 
     updateSyncBit(type: 'send' | 'recv') {
@@ -170,6 +190,7 @@ export class ThpState {
             messageType,
         );
         if (updateSyncBit) {
+            this.updateAckBit(type);
             this.updateSyncBit(type);
         }
 
@@ -242,6 +263,8 @@ export class ThpState {
             channel: this.channel.toString('hex'),
             sendBit: this.sendBit,
             recvBit: this.recvBit,
+            sendAckBit: this.sendAckBit,
+            recvAckBit: this.recvAckBit,
             sendNonce: this.sendNonce,
             recvNonce: this.recvNonce,
             expectedResponses: this._expectedResponses.slice(0),
@@ -264,6 +287,8 @@ export class ThpState {
         [
             json.sendBit,
             json.recvBit,
+            json.sendAckBit,
+            json.recvAckBit,
             json.sendNonce,
             json.recvNonce,
             ...json.expectedResponses,
@@ -277,6 +302,8 @@ export class ThpState {
         this._expectedResponses = json.expectedResponses;
         this._sendBit = json.sendBit;
         this._recvBit = json.recvBit;
+        this._sendAckBit = json.sendAckBit;
+        this._recvAckBit = json.recvAckBit;
         this._sendNonce = json.sendNonce;
         this._recvNonce = json.recvNonce;
     }
@@ -297,8 +324,10 @@ export class ThpState {
         this._handshakeCredentials = undefined;
         this._channel = Buffer.alloc(0);
         this._sendBit = 0;
+        this._sendAckBit = 0;
         this._sendNonce = 0;
         this._recvBit = 0;
+        this._recvAckBit = 0;
         this._recvNonce = 1;
         this._expectedResponses = [];
         this._pairingCredentials = [];
