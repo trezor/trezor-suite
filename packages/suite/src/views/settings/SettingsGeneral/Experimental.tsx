@@ -64,7 +64,11 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
                         <Translation id="TR_GO_TO_EXP_FEATURE" />
                     </Button>
                 ) : (
-                    <Checkbox isChecked={checked} onClick={onChangeFeature} />
+                    <Checkbox
+                        isChecked={checked}
+                        onClick={onChangeFeature}
+                        data-testid={`@settings/experimental-features/${feature}-checkbox`}
+                    />
                 )}
             </ActionColumn>
         </Row>
@@ -134,6 +138,7 @@ export const Experimental = () => {
                     <Switch
                         isChecked={enabledFeatures !== undefined}
                         onChange={onSwitchExperimental}
+                        data-testid="@settings/experimental-features/toggle-switch"
                     />
                 </ActionColumn>
             </SectionItem>

@@ -28,6 +28,7 @@ export class DashboardPage {
     readonly confirmDeviceEjectButton: Locator;
     readonly addStandardWalletButton: Locator;
     readonly addHiddenWalletButton: Locator;
+    readonly addNewHiddenWalletButton: Locator;
     readonly hideBalanceButton: Locator;
     readonly portfolioFiatAmount: Locator;
     readonly deviceStatus: Locator;
@@ -63,6 +64,9 @@ export class DashboardPage {
         this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');
         this.addHiddenWalletButton = this.page.getByTestId(
             '@switch-device/add-hidden-wallet-button',
+        );
+        this.addNewHiddenWalletButton = this.page.getByTestId(
+            '@switch-device/add-new-hidden-wallet-button',
         );
         this.hideBalanceButton = this.page.getByTestId('@quickActions/hideBalances');
         this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
@@ -147,7 +151,7 @@ export class DashboardPage {
     @step()
     async addUnusedHiddenWallet(passphrase: string) {
         await this.addHiddenWalletButton.click();
-        await this.page.getByTestId('@switch-device/add-new-hidden-wallet-button').click();
+        await this.addNewHiddenWalletButton.click();
         await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();

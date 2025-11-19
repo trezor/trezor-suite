@@ -15160,6 +15160,7 @@ __metadata:
     "@playwright/browser-firefox": "npm:^1.55.0"
     "@playwright/browser-webkit": "npm:^1.55.0"
     "@playwright/test": "npm:^1.55.0"
+    "@scure/bip39": "npm:^1.5.1"
     "@solana-program/stake": "npm:^0.5.0"
     "@solana/addresses": "npm:^5.0.0"
     "@solana/kit": "npm:^5.0.0"

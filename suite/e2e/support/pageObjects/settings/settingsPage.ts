@@ -2,9 +2,11 @@ import { Locator, Page, test } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { LabelingSelectValue } from '@trezor/suite/src/constants/suite/labeling';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { CoinsTab } from './coinsTab';
+import { DebugTab } from './debugTab';
 import { DeviceTab } from './deviceTab';
 import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
@@ -46,6 +48,7 @@ export class SettingsPage {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
     readonly coins: CoinsTab;
     readonly device: DeviceTab;
+    readonly debugTab: DebugTab;
 
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
@@ -74,7 +77,7 @@ export class SettingsPage {
         this.page.getByTestId(`@settings/language-select/option/${language}`);
     readonly checkSeedButton: Locator;
     readonly metadataSelectInput: Locator;
-    readonly metadataSelectInputOption = (option: 'legacy' | 'off') =>
+    readonly metadataSelectInputOption = (option: LabelingSelectValue) =>
         this.page.getByTestId(`@settings/labeling-select/option/${option}`);
     readonly analyticsSwitch: Locator;
     readonly analyticsSwitchInput: Locator;
@@ -94,10 +97,14 @@ export class SettingsPage {
     readonly safetyChecksRadioButtonCheck = (check: boolean): Locator =>
         this.page.locator(`[data-testid*="@radio-button"][data-checked="${check}"]`);
     readonly settingsLoader: Locator;
+    readonly experimentalFeaturesSwitch: Locator;
+    readonly suiteSyncCheckbox: Locator;
+    readonly resetAppButton: Locator;
 
     constructor(private readonly page: Page) {
         this.coins = new CoinsTab(page);
         this.device = new DeviceTab(page);
+        this.debugTab = new DebugTab(page);
 
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.page.getByTestId('@settings/menu/title');
@@ -136,6 +143,13 @@ export class SettingsPage {
         this.safetyChecksButton = this.page.getByTestId('@settings/device/safety-checks-button');
         this.safetyChecksConfirmButton = this.page.getByTestId('@safety-checks-apply');
         this.settingsLoader = this.page.getByTestId('@settings/loader');
+        this.experimentalFeaturesSwitch = this.page.getByTestId(
+            '@settings/experimental-features/toggle-switch',
+        );
+        this.suiteSyncCheckbox = this.page.getByTestId(
+            '@settings/experimental-features/suite-sync-checkbox',
+        );
+        this.resetAppButton = this.page.getByTestId('@settings/reset-app-button');
     }
 
     @step()
@@ -268,6 +282,12 @@ export class SettingsPage {
             this.btcUnitsInputOption(units),
         );
         await expect(this.btcUnitsInput).toHaveText(units);
+    }
+
+    @step()
+    async enableExperimentalFeatures() {
+        await this.navigateTo('application');
+        await this.experimentalFeaturesSwitch.click();
     }
 
     @step()
