@@ -205,13 +205,14 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     const createProtocolMessageResponse = (
         response: Awaited<ReturnType<typeof readUtil>> | Awaited<ReturnType<typeof writeUtil>>,
         protocolName: BridgeProtocolMessage['protocol'],
+        thpState?: BridgeProtocolMessage['thpState'],
     ) => {
         if (response.success) {
             const body = 'payload' in response ? response.payload : '';
 
             return {
                 ...response,
-                payload: createProtocolMessage(body, protocolName),
+                payload: createProtocolMessage(body, protocolName, thpState),
             };
         }
 
@@ -279,6 +280,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                             .toString('hex'),
                     },
                     protocol.name,
+                    state.serialize(),
                 );
             }
 
@@ -340,7 +342,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                 return writeResult;
             }
 
-            return createProtocolMessageResponse(writeResult, protocolName);
+            return createProtocolMessageResponse(writeResult, protocolName, state.serialize());
         }
 
         const writeResult = await writeUtil({ path, data, signal, protocol });
@@ -397,6 +399,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
                             .toString('hex'),
                     },
                     protocolName,
+                    state.serialize(),
                 );
             }
 
