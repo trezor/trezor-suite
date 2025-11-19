@@ -1,9 +1,8 @@
 import { Account } from '@suite-common/wallet-types';
 import { getFirstFreshAddress, isUtxoBased } from '@suite-common/wallet-utils';
-import { Badge, Button, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
+import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 type DevSelfAddressProps = {
@@ -25,12 +24,7 @@ export const DevSelfAddress = ({ account, outputId }: DevSelfAddressProps) => {
 
     return (
         <Button size="small" priority="secondary" intent="neutral" onClick={fillSelfAddress}>
-            <Row gap={spacings.xs}>
-                To myself
-                <Badge intent="warning" size="small">
-                    <Translation id="TR_DEBUG_ONLY" />
-                </Badge>
-            </Row>
+            <DebugOnlyBadge>To myself</DebugOnlyBadge>
         </Button>
     );
 };

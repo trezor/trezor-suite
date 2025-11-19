@@ -5,11 +5,12 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
-import { Badge, Grid, Row, Text } from '@trezor/components';
+import { Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
+import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { Translation } from 'src/components/suite/Translation';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
@@ -101,9 +102,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                         tooltipContent={
                             isDebug && isEip1559(fee) ? (
                                 <>
-                                    <Badge intent="warning" size="small">
-                                        <Translation id="TR_DEBUG_ONLY" />
-                                    </Badge>
+                                    <DebugOnlyBadge />
                                     <Grid
                                         columns={2}
                                         gap={spacings.xs}
@@ -134,9 +133,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                         <Text variant="tertiary" typographyStyle="hint">
                             <Translation id="TR_GAS_LIMIT" />:
                         </Text>
-                        <Badge intent="warning" size="small">
-                            <Translation id="TR_DEBUG_ONLY" />
-                        </Badge>
+                        <DebugOnlyBadge />
                     </Row>
                     <Text variant="default" typographyStyle="hint">
                         {cachedGasLimit}

@@ -10,7 +10,6 @@ import {
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    Badge,
     Banner,
     Box,
     CollapsibleBox,
@@ -25,6 +24,7 @@ import { CoinLogo } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings } from '@trezor/theme';
 
+import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { Translation } from 'src/components/suite/Translation';
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -266,12 +266,9 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
                         {isDebug && selectedQuote.dexTx.data ? (
                             <CollapsibleBox
                                 heading={
-                                    <Row gap={spacings.xs}>
+                                    <DebugOnlyBadge>
                                         <Translation id="TR_EXCHANGE_APPROVAL_DATA" />
-                                        <Badge intent="warning" size="small">
-                                            <Translation id="TR_DEBUG_ONLY" />
-                                        </Badge>
-                                    </Row>
+                                    </DebugOnlyBadge>
                                 }
                             >
                                 <BreakableValue>{selectedQuote.dexTx.data}</BreakableValue>

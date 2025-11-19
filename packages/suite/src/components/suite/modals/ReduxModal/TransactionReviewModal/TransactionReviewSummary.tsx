@@ -10,13 +10,14 @@ import {
     isEip1559,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { Badge, Box, IconButton, Note, Row, Text } from '@trezor/components';
+import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { AccountLabel } from 'src/components/suite';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
+import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { Translation } from 'src/components/suite/Translation';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -176,9 +177,7 @@ export const TransactionReviewSummary = ({
             </Row>
             {networkType === 'solana' && isDebug && (
                 <Row margin={{ top: spacings.xs }} gap={spacings.xs}>
-                    <Badge intent="warning" size="small">
-                        <Translation id="TR_DEBUG_ONLY" />
-                    </Badge>
+                    <DebugOnlyBadge />
                     <Note iconName="computerTower">
                         CU Limit
                         {': '}

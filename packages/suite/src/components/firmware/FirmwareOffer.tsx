@@ -3,7 +3,7 @@ import {
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Badge, Column, H4, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { Column, H4, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -15,6 +15,7 @@ import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpda
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 import { selectIsDebugModeActive } from '../../selectors/suite/suiteSelectors';
+import { DebugOnlyBadge } from '../suite/DebugOnlyBadge';
 
 type FirmwareOfferProps = {
     isCustomFirmware?: boolean;
@@ -70,12 +71,9 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 (isDebugModeActive ? (
                     <Tooltip
                         content={
-                            <Row gap={spacings.xs}>
+                            <DebugOnlyBadge>
                                 <Text>{originalDevice.features.revision}</Text>
-                                <Badge intent="warning" size="small">
-                                    <Translation id="TR_DEBUG_ONLY" />
-                                </Badge>
-                            </Row>
+                            </DebugOnlyBadge>
                         }
                     >
                         <CurrentVersion />
@@ -116,12 +114,9 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                                 </MarkdownWithComponents>
                             ) : undefined}
                             {isDebugModeActive && (
-                                <Row gap={spacings.xs}>
+                                <DebugOnlyBadge>
                                     <Text>{release.firmware_revision}</Text>
-                                    <Badge intent="warning" size="small">
-                                        <Translation id="TR_DEBUG_ONLY" />
-                                    </Badge>
-                                </Row>
+                                </DebugOnlyBadge>
                             )}
                         </Column>
                     }
