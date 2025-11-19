@@ -13,13 +13,16 @@ interface AvailableProps {
     onCancel: () => void;
 }
 
+const DEFAULT_ASSET_PREFIX = '.';
+
 export const JustUpdated = ({ onCancel }: AvailableProps) => {
     const [changelog, setChangelog] = useState<string | null>(null);
     const theme = useTheme();
     const suiteCurrentVersion = process.env.VERSION || '';
 
     const getReleaseNotes = useCallback(async () => {
-        const releaseNotesPath = process.env.ASSET_PREFIX + '/release-notes.md';
+        const releaseNotesPath =
+            (process.env.ASSET_PREFIX || DEFAULT_ASSET_PREFIX) + '/release-notes.md';
         const result = await (await fetch(releaseNotesPath)).text();
         setChangelog(result);
     }, []);
