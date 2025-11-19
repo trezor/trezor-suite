@@ -64,6 +64,7 @@ export const DeviceHeader = ({
                             intent="neutral"
                             priority="secondary"
                             onClick={() => onCancel()}
+                            data-testid="@switch-device/close-button"
                         />
                     </Tooltip>
                 )}

@@ -61,6 +61,7 @@ export const SuiteSyncSettings = () => {
                 />
                 <ActionColumn>
                     <Checkbox
+                        data-testid="@settings/debug/suite-sync/checkbox"
                         isChecked={isFeatureSuiteSyncAvailable}
                         onClick={toggleIsFeatureSuiteSyncAvailable}
                     />
@@ -76,11 +77,13 @@ export const SuiteSyncSettings = () => {
                         <ActionColumn>
                             <Column gap={spacings.xxs}>
                                 <Input
+                                    data-testid="@settings/debug/suite-sync/relay-url-input"
                                     isDisabled={isLoading}
                                     value={relayUrl}
                                     onChange={e => setRelayUrl(e.target.value)}
                                     rightContent={
                                         <Button
+                                            data-testid="@settings/debug/suite-sync/save-button"
                                             isLoading={isLoading}
                                             onClick={onRelayUrlSave}
                                             size="small"

@@ -7,6 +7,8 @@ import { AccountMetadata } from './accountMetadata';
 import { AddressMetadata } from './addressMetadata';
 import { OutputMetadata } from './outputMetadata';
 import { WalletMetadata } from './walletMetadata';
+import { DashboardPage } from '../dashboardPage';
+import { SettingsPage } from '../settings/settingsPage';
 
 export class MetadataPage {
     readonly metadataModal: Locator;
@@ -20,6 +22,8 @@ export class MetadataPage {
 
     constructor(
         private readonly page: Page,
+        private readonly settingsPage: SettingsPage,
+        private readonly dashboardPage: DashboardPage,
         private readonly devicePrompt: DevicePrompt,
     ) {
         this.metadataModal = page.getByTestId('@modal/metadata-provider');
@@ -46,5 +50,30 @@ export class MetadataPage {
         await expect(this.metadataModal).not.toBeVisible({
             timeout: 30000,
         });
+    }
+
+    @step()
+    async enableSuiteSync() {
+        await this.settingsPage.navigateTo('debug');
+        await this.settingsPage.debugTab.suiteSyncCheckbox.click();
+        await this.settingsPage.debugTab.suiteSyncUrlInput.fill(
+            'https://suite-sync.suite.sldev.cz/evolu/',
+        );
+        await this.settingsPage.debugTab.suiteSyncUrlSaveButton.click();
+
+        await this.settingsPage.navigateTo('application');
+        await this.page.selectDropdownOptionWithRetry(
+            this.settingsPage.metadataSelectInput,
+            this.settingsPage.metadataSelectInputOption('secure-sync'),
+        );
+
+        await this.dashboardPage.openDeviceSwitcher();
+        await this.dashboardPage.addHiddenWalletButton.click();
+
+        await this.dashboardPage.addNewHiddenWalletButton.click(); // this triggers SLIP 21 evolu prompt for some reason
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+        await this.page.waitForTimeout(2000); // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
+        await this.page.getByTestId('@switch-device/close-button').click();
     }
 }

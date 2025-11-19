@@ -91,8 +91,8 @@ const test = suiteBaseTest.extend<Fixtures>({
     assetsSection: async ({ page }, use) => {
         await use(new AssetsSection(page));
     },
-    metadataPage: async ({ page, devicePrompt }, use) => {
-        await use(new MetadataPage(page, devicePrompt));
+    metadataPage: async ({ page, settingsPage, dashboardPage, devicePrompt }, use) => {
+        await use(new MetadataPage(page, settingsPage, dashboardPage, devicePrompt));
     },
     trezorInput: async ({ page }, use) => {
         await use(new TrezorInput(page));
