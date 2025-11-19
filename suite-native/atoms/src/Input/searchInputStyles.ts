@@ -12,7 +12,6 @@ export const inputStyle = prepareNativeStyle(utils => ({
     flex: 1,
     color: utils.colors.textOnTertiary,
     marginLeft: utils.spacings.sp16,
-    lineHeight: 0,
 }));
 
 export const inputWrapperStyle = prepareNativeStyle<InputStyleProps>(
