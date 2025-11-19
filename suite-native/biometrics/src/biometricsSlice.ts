@@ -12,6 +12,7 @@ type BiometricsSliceState = {
     biometricsError: AuthenticateError | null;
     isTogglingBiometricsSettingsOption: boolean;
     isAuthenticatingUser: boolean;
+    goneToBackgroundAtTimestamp: number | null;
 };
 
 type BiometricsSliceRootState = {
@@ -24,6 +25,7 @@ const biometricsSliceInitialState: BiometricsSliceState = {
     biometricsError: null,
     isTogglingBiometricsSettingsOption: false,
     isAuthenticatingUser: false,
+    goneToBackgroundAtTimestamp: null,
 };
 
 export const biometricsPersistWhitelist: Array<keyof BiometricsSliceState> = [
@@ -40,11 +42,13 @@ export const biometricsSlice = createSlice({
         toggleEnableBiometrics: (state, { payload }: PayloadAction<boolean>) => {
             state.isBiometricsEnabled = payload;
         },
+        changeGoneToBackgroundAtTimestamp: (state, { payload }: PayloadAction<number>) => {
+            state.goneToBackgroundAtTimestamp = payload;
+        },
     },
     extraReducers: builder => {
         builder
             .addCase(authenticateUserThunk.pending, state => {
-                state.isAuthenticatingUser = true;
                 state.biometricsError = null;
             })
             .addCase(authenticateUserThunk.fulfilled, state => {
@@ -58,12 +62,6 @@ export const biometricsSlice = createSlice({
             .addCase(toggleBiometricsSettingsThunk.pending, state => {
                 state.isTogglingBiometricsSettingsOption = true;
             })
-            .addMatcher(
-                isAnyOf(authenticateUserThunk.rejected, authenticateUserThunk.fulfilled),
-                state => {
-                    state.isAuthenticatingUser = false;
-                },
-            )
             .addMatcher(
                 isAnyOf(
                     toggleBiometricsSettingsThunk.rejected,
@@ -90,7 +88,8 @@ export const selectBiometricsError = (state: BiometricsSliceRootState) =>
 export const selectIsTogglingBiometrics = (state: BiometricsSliceRootState) =>
     state.biometrics.isTogglingBiometricsSettingsOption;
 
-export const selectIsAuthenticating = (state: BiometricsSliceRootState) =>
-    state.biometrics.isAuthenticatingUser;
+export const selectGoneToBackgroundAtTimestamp = (state: BiometricsSliceRootState) =>
+    state.biometrics.goneToBackgroundAtTimestamp;
 
-export const { setIsUserAuthenticated, toggleEnableBiometrics } = biometricsSlice.actions;
+export const { setIsUserAuthenticated, toggleEnableBiometrics, changeGoneToBackgroundAtTimestamp } =
+    biometricsSlice.actions;
