@@ -87,7 +87,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ context, model, onboardingPage, dashboardPage }, testInfo) => {
+        async ({ context, model, onboardingPage, dashboardPage, emulatorStartConf }, testInfo) => {
             await onboardingPage.completeOnboarding();
 
             const pageTwo = await context.newPage();
@@ -106,6 +106,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                 devicePromptTwo,
                 analyticsSectionTwo,
                 settingsPageTwo,
+                emulatorStartConf,
             );
             await onboardingPageTwo.completeOnboarding();
             const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);

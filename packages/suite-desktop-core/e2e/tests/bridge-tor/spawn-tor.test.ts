@@ -36,20 +36,20 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
 };
 
 test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly'] }, () => {
-    test('Tor loading screen: happy path', async ({}, testInfo) => {
+    test('Tor loading screen: happy path', async ({ emulatorStartConf }, testInfo) => {
         const suiteArgs = {
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         };
         test.setTimeout(timeout);
 
-        let suite = await launchSuite(suiteArgs);
+        let suite = await launchSuite(suiteArgs, emulatorStartConf);
 
         await turnOnTorInSettings(suite.window);
 
         suite.electronApp.close();
 
-        suite = await launchSuite(suiteArgs);
+        suite = await launchSuite(suiteArgs, emulatorStartConf);
 
         await suite.window.waitForSelector('[data-testid="@tor-loading-screen"]', {
             state: 'visible',
@@ -60,7 +60,9 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
         suite.electronApp.close();
     });
 
-    test('Tor loading screen: making sure that all the request go throw Tor', async ({}, testInfo) => {
+    test('Tor loading screen: making sure that all the request go throw Tor', async ({
+        emulatorStartConf,
+    }, testInfo) => {
         const suiteArgs = {
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
@@ -68,13 +70,13 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
 
         const networkAnalyzer = new NetworkAnalyzer();
 
-        let suite = await launchSuite(suiteArgs);
+        let suite = await launchSuite(suiteArgs, emulatorStartConf);
 
         await turnOnTorInSettings(suite.window);
 
         suite.electronApp.close();
 
-        suite = await launchSuite(suiteArgs);
+        suite = await launchSuite(suiteArgs, emulatorStartConf);
         // Start network analyzer after making sure tor is going to be running.
         networkAnalyzer.start();
 
@@ -92,20 +94,22 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
         suite.electronApp.close();
     });
 
-    test('Tor loading screen: disable tor while loading', async ({}, testInfo) => {
+    test('Tor loading screen: disable tor while loading', async ({
+        emulatorStartConf,
+    }, testInfo) => {
         const suiteArgs = {
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         };
         test.setTimeout(timeout);
 
-        let suite = await launchSuite(suiteArgs);
+        let suite = await launchSuite(suiteArgs, emulatorStartConf);
 
         await turnOnTorInSettings(suite.window);
 
         suite.electronApp.close();
 
-        suite = await launchSuite(suiteArgs);
+        suite = await launchSuite(suiteArgs, emulatorStartConf);
 
         await suite.window.waitForSelector('[data-testid="@tor-loading-screen"]', {
             state: 'visible',

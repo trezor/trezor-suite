@@ -2,7 +2,7 @@ import { ElectronApplication, Page, _electron as electron } from '@playwright/te
 import { createWriteStream, ensureDirSync } from 'fs-extra';
 import path from 'path';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { StartEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
 import { getModelFromEnv } from './helpers/modelFromEnv';
@@ -48,7 +48,7 @@ const formatErrorLogMessage = (data: string) => {
     return `${timestamp} - ${bold}${red}ERROR${unbold}: ${data}${reset}`;
 };
 
-const buildArgs = (params: LaunchSuiteParams) => {
+const buildArgs = (params: LaunchSuiteParams, emulatorStartConf: StartEmu) => {
     const args = [
         // This needs to be just path to the app root, so it is same as for production builds,
         // electron will resolve the path to app.js from the package.json => "main": "dist/app.js",
@@ -80,7 +80,7 @@ const buildArgs = (params: LaunchSuiteParams) => {
         args.push(removeUserDataArgument);
     }
 
-    if (process.env.CANARY_FIRMWARE) {
+    if (emulatorStartConf.version?.endsWith('-main')) {
         args.push(disableFirmwareRevisionChecksPatch);
     }
 
@@ -105,14 +105,17 @@ const setupLoggingToFile = (electronApp: ElectronApplication, params: LaunchSuit
     });
 };
 
-export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
+export const launchSuiteElectronApp = async (
+    params: LaunchSuiteParams,
+    emulatorStartConf: StartEmu,
+) => {
     if (!params.bridgeDaemon) {
         await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     }
 
     const electronApp = await electron.launch({
         cwd: appDir,
-        args: buildArgs(params),
+        args: buildArgs(params, emulatorStartConf),
         env: {
             ...process.env,
             PLAYWRIGHT_RUN: 'true',
@@ -127,8 +130,11 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     return electronApp;
 };
 
-export const launchSuite = async (params: LaunchSuiteParams): Promise<Suite> => {
-    const electronApp = await launchSuiteElectronApp(params);
+export const launchSuite = async (
+    params: LaunchSuiteParams,
+    emulatorStartConf: StartEmu,
+): Promise<Suite> => {
+    const electronApp = await launchSuiteElectronApp(params, emulatorStartConf);
     const window = await electronApp.firstWindow();
 
     return { electronApp, window };

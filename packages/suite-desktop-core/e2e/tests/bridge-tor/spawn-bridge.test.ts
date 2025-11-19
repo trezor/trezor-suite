@@ -26,12 +26,18 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
         await trezorUserEnvLink.stopBridge();
     });
 
-    test('App spawns bundled bridge and stops it after app quit', async ({ request }, testInfo) => {
-        const suite = await launchSuite({
-            bridgeDaemon: true,
-            artefactFolder: testInfo.outputDir,
-            viewport: testInfo.project.use.viewport!,
-        });
+    test('App spawns bundled bridge and stops it after app quit', async ({
+        request,
+        emulatorStartConf,
+    }, testInfo) => {
+        const suite = await launchSuite(
+            {
+                bridgeDaemon: true,
+                artefactFolder: testInfo.outputDir,
+                viewport: testInfo.project.use.viewport!,
+            },
+            emulatorStartConf,
+        );
         const title = await suite.window.title();
         enhancePage(suite.window);
         expect(title).toContain('Trezor Suite');
@@ -59,16 +65,20 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
 
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
         trezorUserEnvLink,
+        emulatorStartConf,
         model,
     }, testInfo) => {
-        await trezorUserEnvLink.startEmu({ wipe: true, model: model.model });
+        await trezorUserEnvLink.startEmu(emulatorStartConf);
         await trezorUserEnvLink.setupEmu({});
         await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
-        const suite = await launchSuite({
-            artefactFolder: testInfo.outputDir,
-            viewport: testInfo.project.use.viewport!,
-        });
+        const suite = await launchSuite(
+            {
+                artefactFolder: testInfo.outputDir,
+                viewport: testInfo.project.use.viewport!,
+            },
+            emulatorStartConf,
+        );
         enhancePage(suite.window);
         await suite.window.title();
 
@@ -81,6 +91,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
             devicePrompt,
             new AnalyticsSection(suite.window),
             new SettingsPage(suite.window),
+            emulatorStartConf,
         );
         await onboardingPage.completeOnboarding();
 
