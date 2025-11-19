@@ -102,6 +102,12 @@ const config = {
                     type: 'sourceFile',
                 };
             }
+            if (moduleName === 'uuid') {
+                return {
+                    filePath: require.resolve(rootNodeModulesPath + '/uuid/dist/index.js'),
+                    type: 'sourceFile',
+                };
+            }
             // Todo: ----- End of hack -----
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
