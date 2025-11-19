@@ -9,7 +9,7 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { AcquiredDevice } from 'src/types/suite';
 
 const Version = styled.div`
@@ -30,11 +30,11 @@ const VersionTooltip = styled(Tooltip)`
 
 const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {
     if (!device.firmwareReleaseConfigInfo?.isNewer) {
-        return 'TR_UP_TO_DATE';
+        return 'TR_REINSTALL';
     }
     switch (device.firmware) {
         case 'valid':
-            return 'TR_UP_TO_DATE';
+            return 'TR_REINSTALL';
         case 'required':
         case 'outdated':
             return 'TR_UPDATE_AVAILABLE';
@@ -51,6 +51,8 @@ interface FirmwareVersionProps {
 export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
+    const { translationString } = useTranslation();
+
     if (!device?.features) {
         return null;
     }
@@ -59,6 +61,10 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const { revision } = device.features;
     const changelogUrl = getChangelogUrl(device, revision);
     const githubButtonIcon = revision ? 'arrowUpRight' : undefined;
+    const githubButtonText =
+        device.firmware === 'valid'
+            ? `${currentFwVersion} (${translationString('TR_UP_TO_DATE').toLowerCase()})`
+            : currentFwVersion;
 
     const handleUpdate = () => {
         dispatch(goto('firmware-index', { params: { cancelable: true } }));
@@ -72,7 +78,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             iconRight={githubButtonIcon}
             isDisabled={!revision}
         >
-            {currentFwVersion}
+            {githubButtonText}
         </Button>
     );
 
