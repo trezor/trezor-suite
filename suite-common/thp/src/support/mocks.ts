@@ -33,6 +33,8 @@ export const createDeviceThp = (
     channel: 'channel-id',
     sendBit: 0,
     recvBit: 0,
+    sendAckBit: 0,
+    recvAckBit: 0,
     sendNonce: 1,
     recvNonce: 2,
     expectedResponses: [1],
