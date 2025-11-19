@@ -11,7 +11,7 @@ import {
 } from './constants';
 import { aesgcm, crc32 } from './crypto';
 import { getIvFromNonce } from './crypto/tools';
-import { addAckBit, addSequenceBit, getControlBit, isThpMessageName } from './utils';
+import { addAckBit, addSequenceBit, isThpMessageName } from './utils';
 
 // @trezor/protobuf encodeMessage without direct reference to protobuf root
 type ProtobufEncoder = (
@@ -191,32 +191,15 @@ export const encodeProtobufMessage = (
 // example: 2012340004d9fcce58
 // [magic | channel | len  | crc     ]
 // [20    | 1234    | 0004 | d9fcce58]
-const encodeReadAck = (channel: Buffer, syncBit: number) => {
+export const encodeAck = (state: ThpState) => {
     const length = Buffer.alloc(2);
     length.writeUInt16BE(CRC_LENGTH);
 
-    const magic = addAckBit(THP_READ_ACK_HEADER_BYTE, syncBit);
-    const message = Buffer.concat([magic, channel, length]);
+    const magic = addAckBit(THP_READ_ACK_HEADER_BYTE, state.recvAckBit);
+    const message = Buffer.concat([magic, state.channel, length]);
     const crc = crc32(message);
 
     return Buffer.concat([message, crc]);
-};
-
-export const encodeAck = (bytesOrState: Buffer | ThpState) => {
-    if (Buffer.isBuffer(bytesOrState)) {
-        // 1 byte
-        const magic = bytesOrState.readUInt8();
-        // sequence bit
-        const { ackBit } = getControlBit(magic);
-        // 2 bytes channel id
-        const channel = bytesOrState.subarray(1, 3);
-
-        return encodeReadAck(channel, ackBit);
-    }
-
-    const { channel, recvBit } = bytesOrState;
-
-    return encodeReadAck(channel, recvBit);
 };
 
 // Encode protocol-v2 message
