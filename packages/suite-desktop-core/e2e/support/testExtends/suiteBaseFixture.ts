@@ -42,14 +42,18 @@ const electronSetup = async (
     locale: string | undefined,
     colorScheme: any,
     electronConf: ElectronConf,
+    emulatorStartConf: StartEmu,
 ) => {
-    const suite = await launchSuite({
-        locale,
-        colorScheme,
-        artefactFolder: testInfo.outputDir,
-        viewport: testInfo.project.use.viewport!,
-        ...electronConf,
-    });
+    const suite = await launchSuite(
+        {
+            locale,
+            colorScheme,
+            artefactFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+            ...electronConf,
+        },
+        emulatorStartConf,
+    );
 
     await suite.window
         .context()
@@ -114,6 +118,18 @@ const webTeardown = async (page: Page, browserContext: BrowserContext, testInfo:
     }
 };
 
+const getDefaultEmuStartConf = (): StartEmuModelRequired => {
+    const model = getModelFromEnv();
+    const DefaultFirmwareMajorVersion = model === 'T1B1' ? 1 : 2;
+    const defaultFirmwareType = process.env.CANARY_FIRMWARE ? '-main' : '-latest';
+
+    return {
+        model,
+        wipe: true,
+        version: `${DefaultFirmwareMajorVersion}${defaultFirmwareType}`,
+    };
+};
+
 const trezorEnvSetup = async (
     testInfo: TestInfo,
     startEmulator: boolean,
@@ -149,7 +165,7 @@ const baseWithCurrents = mergeTests(base, currentsTest);
 const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
-    emulatorStartConf: { model: getModelFromEnv(), wipe: true },
+    emulatorStartConf: getDefaultEmuStartConf(),
     emulatorSetupConf: {},
     electronConf: {},
     ignoreJSExceptions: [],
@@ -185,7 +201,13 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
         );
 
         if (isDesktopProject(testInfo)) {
-            const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
+            const suite = await electronSetup(
+                testInfo,
+                locale,
+                colorScheme,
+                electronConf,
+                emulatorStartConf,
+            );
             enhancePage(suite.window);
             await use(suite.window);
             await electronTeardown(suite, testInfo, electronConf);

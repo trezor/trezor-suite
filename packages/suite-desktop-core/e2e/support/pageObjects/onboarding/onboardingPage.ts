@@ -1,6 +1,7 @@
 import { Locator, Page, TestInfo, expect } from '@playwright/test';
 
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+import { StartEmu } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, isWebProject, step } from '../../common';
 import { SeedType } from '../../enums/seedType';
@@ -47,6 +48,7 @@ export class OnboardingPage {
         private readonly devicePrompt: DevicePrompt,
         private readonly analyticsSection: AnalyticsSection,
         private readonly settingsPage: SettingsPage,
+        private readonly emulatorStartConf: StartEmu,
     ) {
         this.backup = new BackupSection(page, devicePrompt);
         this.firmware = new FirmwareSection(page);
@@ -252,7 +254,7 @@ export class OnboardingPage {
     @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
-        if (process.env.CANARY_FIRMWARE) {
+        if (this.emulatorStartConf.version?.endsWith('-main')) {
             await this.disableFirmwareRevisionCheck();
         }
 
