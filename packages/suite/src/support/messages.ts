@@ -11035,4 +11035,8 @@ export default defineMessages({
         defaultMessage:
             'In order to use all features of Trezor Suite web version please allow local network access in your browser settings.',
     },
+    TR_REINSTALL: {
+        id: 'TR_REINSTALL',
+        defaultMessage: 'Reinstall',
+    },
 } as const);
