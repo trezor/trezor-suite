@@ -1,3 +1,4 @@
+import { thp as protocolThp } from '@trezor/protocol';
 import { scheduleAction } from '@trezor/utils';
 
 import { success } from './result';
@@ -18,7 +19,7 @@ const ATTEMPT_ERROR = 'Unexpected chunk';
 
 async function readAndAssert<T extends Receiver>(
     receiver: T,
-    expectedHeaders?: Buffer[],
+    thpState?: protocolThp.ThpState,
     { signal, logger }: Options = {},
 ): ReturnType<AbstractApi['read']> {
     logger?.debug('readAndAssert start');
@@ -28,8 +29,9 @@ async function readAndAssert<T extends Receiver>(
         return chunk;
     }
 
+    const expectedHeaders = thpState ? protocolThp.getExpectedHeaders(thpState) : [];
     // if there are no expectedHeaders are set then each chunk is expected
-    if (!expectedHeaders || expectedHeaders.length === 0) {
+    if (expectedHeaders.length === 0) {
         logger?.debug('readAndAssert skip');
 
         return chunk;
@@ -64,10 +66,10 @@ async function readAndAssert<T extends Receiver>(
 // returns function: (expectedHeaders: Buffer[]) => ReturnType<AbstractApi['read']>
 // read until received chunk contains expected header and ignore other chunks
 export function readWithExpectedHeaders<T extends Receiver>(receiver: T, options: Options = {}) {
-    return (expectedHeaders?: Buffer[], signal?: AbortSignal) =>
+    return (thpState?: protocolThp.ThpState, signal?: AbortSignal) =>
         scheduleAction(
             attemptSignal =>
-                readAndAssert(receiver, expectedHeaders, { ...options, signal: attemptSignal }),
+                readAndAssert(receiver, thpState, { ...options, signal: attemptSignal }),
             {
                 signal: signal ?? options?.signal,
                 graceful: options?.graceful,

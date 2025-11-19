@@ -1,4 +1,4 @@
-import { thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
+import { thp as protocolThp } from '@trezor/protocol';
 
 import { readWithExpectedHeaders } from '../src/utils/readWithExpectedHeaders';
 
@@ -28,6 +28,8 @@ describe('readWithExpectedHeaders', () => {
             }),
     );
 
+    const thpState = new protocolThp.ThpState();
+
     it('read aborted', async () => {
         const abortController = new AbortController();
         const read = readWithExpectedHeaders(apiRead, {
@@ -35,7 +37,8 @@ describe('readWithExpectedHeaders', () => {
             graceful: true,
         });
 
-        const resultPromise = read([Buffer.alloc(3)]);
+        thpState.setExpectedResponses([0]);
+        const resultPromise = read(thpState);
         await new Promise(resolve => setTimeout(resolve, 1));
         abortController.abort();
         await expect(() => resultPromise).rejects.toThrow('Aborted by signal in API');
@@ -46,7 +49,8 @@ describe('readWithExpectedHeaders', () => {
             timeout: 7, // see default apiRead timeout
         });
 
-        const resultPromise = read([Buffer.alloc(3)]);
+        thpState.setExpectedResponses([0]);
+        const resultPromise = read(thpState);
 
         // error thrown from scheduleAction
         await expect(() => resultPromise).rejects.toThrow('Aborted by timeout');
@@ -65,17 +69,16 @@ describe('readWithExpectedHeaders', () => {
         const apiRead = jest.fn(() =>
             Promise.resolve({ success: true, payload: Buffer.alloc(64) } as const),
         );
-        const expectedHeaders = protocolV1.getHeaders(SUCCESS);
+        thpState.setExpectedResponses([SUCCESS.readInt8()]);
         const read = readWithExpectedHeaders(apiRead, { attempts: 7 });
         // error thrown from scheduleAction
-        await expect(() => read(expectedHeaders)).rejects.toThrow('Unexpected chunk');
+        await expect(() => read(thpState)).rejects.toThrow('Unexpected chunk');
         expect(apiRead).toHaveBeenCalledTimes(7);
     });
 
     it('success with expectedHeaders', async () => {
-        const expectedHeaders = protocolV1.getHeaders(SUCCESS);
-
-        const result = await readWithExpectedHeaders(apiRead)(expectedHeaders);
+        thpState.setExpectedResponses([SUCCESS.readInt8()]);
+        const result = await readWithExpectedHeaders(apiRead)(thpState);
         expect(result).toMatchObject({ success: true });
     });
 
@@ -85,8 +88,7 @@ describe('readWithExpectedHeaders', () => {
     });
 
     it('success. received at 5th attempt', async () => {
-        const expectedHeaders = protocolV1.getHeaders(SUCCESS);
-
+        thpState.setExpectedResponses([SUCCESS.readInt8()]);
         let attempt = 0;
         const apiRead = jest.fn(
             () =>
@@ -99,7 +101,7 @@ describe('readWithExpectedHeaders', () => {
                 }),
         );
 
-        const result = await readWithExpectedHeaders(apiRead)(expectedHeaders);
+        const result = await readWithExpectedHeaders(apiRead)(thpState);
 
         expect(apiRead).toHaveBeenCalledTimes(5);
         expect(result).toMatchObject({ success: true });
@@ -123,11 +125,9 @@ describe('readWithExpectedHeaders', () => {
         const thpState = new protocolThp.ThpState();
         thpState.setChannel(readResult.subarray(1, 3));
         thpState.setExpectedResponses([0x20]); // expect ThpAck
-        thpState.updateSyncBit('send'); // ThpAck is masked, data will start with "28" instead of "20"
+        thpState.sync('send', 'ThpAck'); // ThpAck is masked, data will start with "28" instead of "20"
 
-        const result = await readWithExpectedHeaders(apiRead)(
-            protocolThp.getExpectedHeaders(thpState),
-        );
+        const result = await readWithExpectedHeaders(apiRead)(thpState);
         expect(result).toMatchObject({ success: true });
     });
 });

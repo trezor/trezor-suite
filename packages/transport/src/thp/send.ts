@@ -68,18 +68,11 @@ export const sendThpMessage = async ({
                 logger?.debug(`sendThpMessage read ThpAck`);
 
                 // read until ThpAck or ThpError
-                return scheduleAction(
-                    signal =>
-                        apiReadWithExpectedHeaders(
-                            protocolThp.getExpectedHeaders(thpState),
-                            signal,
-                        ),
-                    {
-                        signal: attemptSignal,
-                        graceful,
-                        deadline: Date.now() + THP_ACK_DEADLINE,
-                    },
-                );
+                return scheduleAction(signal => apiReadWithExpectedHeaders(thpState, signal), {
+                    signal: attemptSignal,
+                    graceful,
+                    deadline: Date.now() + THP_ACK_DEADLINE,
+                });
             },
             {
                 signal,
