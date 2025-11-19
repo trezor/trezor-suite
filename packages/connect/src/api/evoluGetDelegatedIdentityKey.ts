@@ -1,4 +1,5 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { thp } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -18,10 +19,16 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
 
         Assert(PROTO.EvoluGetDelegatedIdentityKey, payload);
 
-        this.params = {
-            thp_credential: payload.thp_credential,
-            host_static_public_key: payload.host_static_public_key,
-        };
+        if (payload.thp !== undefined) {
+            const staticKey = Buffer.from(payload.thp.staticHostKey, 'hex');
+            const hostStaticKeys = thp.getCurve25519KeyPair(staticKey);
+            this.params = {
+                thp_credential: payload.thp.credential,
+                host_static_public_key: hostStaticKeys.publicKey.toString('hex'),
+            };
+        } else {
+            this.params = {};
+        }
     }
 
     get info() {
