@@ -117,24 +117,23 @@ export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
                 };
             });
 
-        const accountsWithTokensOptions: AccountWithTokensOption[] = [];
-
-        for (const account of accountsAndTokensSortedByFiatBalance) {
-            accountsWithTokensOptions.push({
-                type: 'account',
-                account,
-                height: ASSET_ROW_ACCOUNT_HEIGHT,
-            });
-
-            for (const token of account.tokens ?? []) {
-                accountsWithTokensOptions.push({
-                    type: 'token',
+        const accountsWithTokensOptions: AccountWithTokensOption[] =
+            accountsAndTokensSortedByFiatBalance.flatMap(account => [
+                {
+                    type: 'account',
                     account,
-                    token,
-                    height: ASSET_ROW_TOKEN_HEIGHT,
-                });
-            }
-        }
+                    height: ASSET_ROW_ACCOUNT_HEIGHT,
+                },
+                ...(account.tokens ?? []).map(
+                    token =>
+                        ({
+                            type: 'token',
+                            account,
+                            token,
+                            height: ASSET_ROW_TOKEN_HEIGHT,
+                        }) satisfies AccountWithTokensOption,
+                ),
+            ]);
 
         return accountsWithTokensOptions;
     }, [throttledAccounts, baseCurrencyCode, fiatRatesRef, networkSymbol, tokenDefinitions]);

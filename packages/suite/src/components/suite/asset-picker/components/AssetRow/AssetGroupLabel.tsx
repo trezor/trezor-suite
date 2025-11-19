@@ -1,4 +1,4 @@
-import { ReactNode, memo } from 'react';
+import { ReactNode } from 'react';
 
 import { Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -9,7 +9,7 @@ export type AssetGroupLabelProps = {
     label: ReactNode;
 };
 
-export const AssetGroupLabel = memo(function AssetGroupLabelInner({ label }: AssetGroupLabelProps) {
+export function AssetGroupLabel({ label }: AssetGroupLabelProps) {
     return (
         <Text
             typographyStyle="hint"
@@ -20,4 +20,4 @@ export const AssetGroupLabel = memo(function AssetGroupLabelInner({ label }: Ass
             {label}
         </Text>
     );
-});
+}

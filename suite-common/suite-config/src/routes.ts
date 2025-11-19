@@ -1,12 +1,12 @@
 // Steps to add route params:
 // 1. add params order here (example: wallet or suite-bridge)
-// 2. go to @suite-utils/router and create params validation function (example: validateWalletParams or validateModalAppParams)
+// 2. go to `packages/suite/src/utils/suite/router.ts` and create params validation function (example: validateWalletParams or validateModalAppParams)
 // 3. implement validation function in @suite-utils/router:getAppWithParams
-// 4. add params types to RouteParamsTypes (@suite-constants/routes)
+// 4. add params types to RouteParamsTypes (`packages/suite/src/constants/suite/routes.ts`)
 
 export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
-export const dashboardParams = ['modal'] as const;
+export const dashboardParams = ['modal', 'networkSymbol'] as const;
 
 export const routes = [
     {

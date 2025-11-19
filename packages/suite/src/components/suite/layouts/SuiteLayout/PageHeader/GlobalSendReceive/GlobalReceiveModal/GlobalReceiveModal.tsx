@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_VERIFY_TREZOR_SUITE_ADDRESSES_URL } from '@trezor/urls';
 
 import {
-    AssetRowAccount,
+    AssetRowReceiveToAccount,
     AssetSearchWithNetworkFilter,
     AssetsList,
     AssetsListEmpty,
@@ -45,8 +45,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
 
     const renderItem = useCallback(
         (item: FilteredAccountOption) => (
-            <AssetRowAccount
-                variant="receive-to-account"
+            <AssetRowReceiveToAccount
                 account={item.account}
                 onClick={account => onSubmit(account, 'coin', filledSearch)}
             />
@@ -75,7 +74,11 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                 }}
                 onClose={() => onCancel(filledSearch)}
             >
-                <AssetSearchWithNetworkFilter placeholder="TR_RECEIVE_SEARCH" listRef={listRef} />
+                <AssetSearchWithNetworkFilter
+                    placeholder="TR_RECEIVE_SEARCH"
+                    listRef={listRef}
+                    modal="receive"
+                />
 
                 <Divider />
 
