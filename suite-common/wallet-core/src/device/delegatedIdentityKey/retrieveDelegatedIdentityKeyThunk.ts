@@ -1,6 +1,8 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { TrezorDeviceWithState, asDelegatedIdentityKey } from '@suite-common/suite-types';
+// Circular issue, see: https://github.com/trezor/trezor-suite/issues/21553
+import { selectThp } from '@suite-common/thp/src/thpSelectors';
 import TrezorConnect from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
@@ -10,9 +12,15 @@ import { isCanceledErrorMessage } from '../deviceUtils';
 
 type RetrieveDelegatedIdentityKeyParams = {
     device: TrezorDeviceWithState;
+    thpStaticHostKey: string | undefined;
 };
 
-const retrieveDelegatedIdentityKey = async ({ device }: RetrieveDelegatedIdentityKeyParams) => {
+const retrieveDelegatedIdentityKey = async ({
+    device,
+    thpStaticHostKey,
+}: RetrieveDelegatedIdentityKeyParams) => {
+    const thpCredential = device.thp?.credentials?.[0].credential;
+
     const result = await TrezorConnect.evoluGetDelegatedIdentityKey({
         device: {
             path: device.path,
@@ -20,6 +28,13 @@ const retrieveDelegatedIdentityKey = async ({ device }: RetrieveDelegatedIdentit
             instance: device.instance ?? 0,
         },
         useEmptyPassphrase: device.useEmptyPassphrase ?? false,
+        thp:
+            thpStaticHostKey !== undefined && thpCredential !== undefined
+                ? {
+                      credential: thpCredential,
+                      staticHostKey: thpStaticHostKey,
+                  }
+                : undefined,
     });
 
     if (result.success) {
@@ -52,8 +67,10 @@ export const retrieveDelegatedIdentityKeyThunk =
         const devicePersistedData = persistedData.find(it => it.device_id === device.id);
         const currentDelegatedKey = devicePersistedData?.delegatedIdentityKey ?? null;
 
+        const thpStaticHostKey = selectThp(getState()).staticKey;
+
         if (currentDelegatedKey === null) {
-            const result = await retrieveDelegatedIdentityKey({ device });
+            const result = await retrieveDelegatedIdentityKey({ device, thpStaticHostKey });
 
             if (!result.ok) {
                 dispatch(

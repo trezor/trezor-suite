@@ -39,8 +39,10 @@ export type ThpState = {
     step: ThpStep;
     lastThpCode?: string;
     credentials: ThpSuiteCredentials[];
-    // staticKey for the application.
-    // this value is generated at first THP pairing and should never change. will be used for all future pairings
+
+    // StaticKey for the application.
+    // This value is generated at first THP pairing and should never change. will be used for all future pairings
+    // This is basically Identity of the Host
     staticKey?: string;
 };
 
