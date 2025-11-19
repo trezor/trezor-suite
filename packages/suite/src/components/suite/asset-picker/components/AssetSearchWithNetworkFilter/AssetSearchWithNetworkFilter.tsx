@@ -1,52 +1,36 @@
-import { RefObject, memo, useEffect, useState } from 'react';
-import { useDebounce } from 'react-use';
+import { RefObject, memo } from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import { useSelector, useTranslation } from 'src/hooks/suite';
+
+import { useNetworkFilter } from './hooks/useNetworkFilter';
+import { useSearchFilter } from './hooks/useSearchFilter';
 
 export interface AssetSearchWithNetworkFilterProps {
     placeholder: TranslationKey;
     listRef: RefObject<HTMLDivElement | null>;
+    modal: NonNullable<GlobalSendReceiveType>;
 }
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
     placeholder,
     listRef,
+    modal,
 }: AssetSearchWithNetworkFilterProps) {
-    const { search: defaultSearch, networkSymbol: defaultNetwork } = useSelector(
-        globalSendReceiveFilters.selectors.selectFilters,
-    );
-
-    const [search, setSearch] = useState(defaultSearch);
-    const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(defaultNetwork);
+    const [search, setSearch] = useSearchFilter();
+    const [networkFilter, setNetworkFilter] = useNetworkFilter({
+        modal,
+        listRef,
+        resetSearch: () => setSearch(''),
+    });
     const enabledNetworks = useSelector(selectEnabledNetworks);
-
     const { translationString } = useTranslation();
-    const dispatch = useDispatch();
-
-    useDebounce(
-        () => {
-            dispatch(globalSendReceiveFilters.actions.setSearch(search));
-        },
-        100,
-        [search, dispatch],
-    );
-
-    useEffect(() => {
-        setSearch('');
-        dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkFilter));
-
-        requestAnimationFrame(() => {
-            listRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-        });
-    }, [dispatch, listRef, networkFilter]);
 
     return (
         <Box padding={{ horizontal: spacings.md }}>

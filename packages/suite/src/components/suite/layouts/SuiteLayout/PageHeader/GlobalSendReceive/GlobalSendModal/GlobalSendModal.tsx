@@ -9,7 +9,7 @@ import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
-    AssetRowAccount,
+    AssetRowSendFromAccount,
     AssetRowToken,
     AssetSearchWithNetworkFilter,
     AssetsList,
@@ -71,8 +71,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
                 case 'account':
                     return (
-                        <AssetRowAccount
-                            variant="send-from-account"
+                        <AssetRowSendFromAccount
                             account={item.account}
                             onClick={handleAccountClick}
                         />
@@ -93,7 +92,11 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     return (
         <AssetsModal heading={{ id: 'SEND_TRANSACTION' }} onClose={() => onCancel(filledSearch)}>
-            <AssetSearchWithNetworkFilter placeholder="TR_SEND_SEARCH" listRef={listRef} />
+            <AssetSearchWithNetworkFilter
+                placeholder="TR_SEND_SEARCH"
+                listRef={listRef}
+                modal="send"
+            />
 
             <Divider />
 

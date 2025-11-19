@@ -1,11 +1,8 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
+import { useThrottle } from 'react-use';
 
-import {
-    selectAllAccountsToList,
-    selectBaseCurrency,
-    selectCurrentFiatRates,
-} from '@suite-common/wallet-core';
-import { accountsFiatBalanceInDescOrderComparator } from '@suite-common/wallet-utils';
+import { selectAllAccountsToList, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { ASSET_ROW_ACCOUNT_HEIGHT } from 'src/components/suite/asset-picker/components';
@@ -14,10 +11,8 @@ import { useSelector } from 'src/hooks/suite';
 export function useAccountsOptions() {
     const accounts = useSelector(selectAllAccountsToList);
     const fiatRates = useSelector(selectCurrentFiatRates);
-    const fiatRatesRef = useRef(fiatRates);
-    const accountsRef = useCurrentRef(accounts);
-
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const fiatRatesRef = useCurrentRef(fiatRates);
+    const throttledAccounts = useThrottle(accounts, 500);
 
     return useMemo(() => {
         const fiatRates = fiatRatesRef.current;
@@ -26,20 +21,11 @@ export function useAccountsOptions() {
             return [];
         }
 
-        return accountsRef.current
-            .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
-                return accountsFiatBalanceInDescOrderComparator({
-                    accountA,
-                    accountB,
-                    baseCurrencyCode,
-                    fiatRates,
-                });
-            })
-            .map(account => ({
-                account,
-                height: ASSET_ROW_ACCOUNT_HEIGHT,
-            }));
-    }, [accountsRef, baseCurrencyCode, fiatRatesRef]);
+        return sortByCoin(throttledAccounts).map(account => ({
+            account,
+            height: ASSET_ROW_ACCOUNT_HEIGHT,
+        }));
+    }, [throttledAccounts, fiatRatesRef]);
 }
 
 export type AccountOption = ReturnType<typeof useAccountsOptions>[number];

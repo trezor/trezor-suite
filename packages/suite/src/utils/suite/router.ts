@@ -1,8 +1,12 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { dashboardParams, modalAppParams } from '@suite-common/suite-config';
+import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
-import { getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
-import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
+import { yup } from '@suite-common/validators';
+import { NetworkSymbol, getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
+import {
+    WalletParams as CommonWalletParams,
+    GlobalSendReceiveType,
+} from '@suite-common/wallet-types';
 
 import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
 
@@ -104,22 +108,33 @@ const validateModalAppParams = (url: string, params?: Route['params']): ModalApp
     } as ModalAppParams;
 };
 
-export type DashboardParams = {
-    [key in (typeof dashboardParams)[number]]: string | boolean | undefined;
-};
+const dashboardParamsSchema = yup.object({
+    networkSymbol: yup.mixed<NetworkSymbol>().notRequired(),
+    modal: yup.mixed<NonNullable<GlobalSendReceiveType>>().oneOf(['send', 'receive']).required(),
+});
+
+export type DashboardParams = yup.InferType<typeof dashboardParamsSchema>;
+
+export function parseDashboardParams(params: unknown): DashboardParams | undefined {
+    try {
+        return dashboardParamsSchema.validateSync(params, { abortEarly: false, strict: true });
+    } catch {
+        return undefined;
+    }
+}
 
 const validateDashboardParams = (url: string): DashboardParams | undefined => {
     const stripped = stripPrefixedURL(url);
     const hashIndex = stripped.indexOf('#');
 
     const hash = hashIndex >= 0 ? stripped.slice(hashIndex + 1) : '';
-    const [modal] = hash.split('/').filter(Boolean);
+    const [modal, networkSymbol] = hash.split('/').filter(Boolean);
 
     if (modal === undefined) {
         return undefined;
     }
 
-    return { modal };
+    return parseDashboardParams({ modal, networkSymbol });
 };
 
 // Used in routerReducer
@@ -139,7 +154,7 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
             app: route.app,
             params: validateDashboardParams(url),
             route,
-        };
+        } as RouterAppWithParams;
     }
 
     if (route.app === 'wallet') {
