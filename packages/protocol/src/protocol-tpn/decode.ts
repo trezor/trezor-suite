@@ -17,6 +17,7 @@ export enum TrezorPushNotificationType {
     PIN_CHANGE = 7 /**< Pin changed on the device */,
     WIPE = 8 /**< Factory reset (wipe) invoked */,
     UNPAIR = 9 /**< BLE bonding for current connection deleted */,
+    NOTIFY_POWER_STATUS_CHANGE = 10 /**< Power status changed, i.e. charging started */,
 }
 
 export enum TrezorPushNotificationMode {
