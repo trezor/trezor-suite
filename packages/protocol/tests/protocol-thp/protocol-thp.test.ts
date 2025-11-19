@@ -66,20 +66,13 @@ describe('protocol-thp', () => {
     it('encode/decode ThpAck', () => {
         thpState.setChannel(Buffer.from('1234', 'hex'));
 
-        const encodeAsBytes1 = encodeAck(Buffer.from('201234', 'hex')); // ackByte: 0
-        expect(encodeAsBytes1.toString('hex')).toEqual('2012340004d9fcce58');
-        const encodeAsBytes2 = encodeAck(Buffer.from('281234', 'hex')); // ackByte: 1
-        expect(encodeAsBytes2.toString('hex')).toEqual('2812340004e98c8599');
-
         const encodeAsState1 = encodeAck(thpState); // ackByte: 0
         expect(encodeAsState1.toString('hex')).toEqual('2012340004d9fcce58');
 
-        thpState.updateSyncBit('recv');
+        thpState.sync('recv', 'ThpAck');
         const encodeAsState2 = encodeAck(thpState); // ackByte: 1
         expect(encodeAsState2.toString('hex')).toEqual('2812340004e98c8599');
 
-        expect(decode(decodeV2(encodeAsBytes1), protobufDecoder, thpState).type).toBe('ThpAck');
-        expect(decode(decodeV2(encodeAsBytes2), protobufDecoder, thpState).type).toBe('ThpAck');
         expect(decode(decodeV2(encodeAsState1), protobufDecoder, thpState).type).toBe('ThpAck');
         expect(decode(decodeV2(encodeAsState2), protobufDecoder, thpState).type).toBe('ThpAck');
     });

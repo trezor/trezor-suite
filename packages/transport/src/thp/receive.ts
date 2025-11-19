@@ -47,7 +47,7 @@ export const receiveThpMessage = async ({
 
         const isAckExpected = protocolThp.isAckExpected(thpState.expectedResponses || []);
         if (!skipAck && isAckExpected) {
-            const chunk = protocolThp.encodeAck(message.payload.header);
+            const chunk = protocolThp.encodeAck(thpState);
 
             logger?.debug(`receiveThpMessage send ThpAck`);
 
