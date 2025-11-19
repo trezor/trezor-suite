@@ -2,6 +2,10 @@ import type { Page, Route } from '@playwright/test';
 
 import { solanaUrlPattern } from './tradingMock';
 import transactionResponse from '../../fixtures/staking/sol-stake-transactionResponse.json';
+import {
+    SolanaStakingAccount,
+    solanaStakingAccounts,
+} from '../../fixtures/staking/sol-staking-accounts';
 import { step } from '../common';
 
 type JsonRequestBody = {
@@ -19,6 +23,7 @@ type SolanaRouteHandler = {
 export type SolanaRouteHandlers = Record<SolanaRouteMethod, SolanaRouteHandler>;
 
 export type SolanaRouteMethod =
+    | 'getEpochInfo'
     | 'getBalance'
     | 'sendTransaction'
     | 'simulateTransaction'
@@ -26,6 +31,8 @@ export type SolanaRouteMethod =
     | 'getSignaturesForAddress'
     | 'getTransaction'
     | 'getProgramAccounts';
+
+const BASE_EPOCH = 864; // chosen based of our mocked program accounts activation/deactivation epochs
 
 const fulfillWithResult = async (route: Route, body: JsonRequestBody, result: unknown) => {
     await route.fulfill({
@@ -38,6 +45,23 @@ const fulfillWithResult = async (route: Route, body: JsonRequestBody, result: un
 };
 
 const createDefaultHandlers = (): SolanaRouteHandlers => ({
+    // handler to freeze epoch info so stake warmup/withdraw/claim amount dont change over time
+    // their state is defined by relation between activationEpoch, deactivationEpoch and current epoch
+    getEpochInfo: {
+        enabled: true,
+        respond: async (route, body) => {
+            const slotIndex = 376284;
+            const slotsInEpoch = 432000;
+            await fulfillWithResult(route, body, {
+                absoluteSlot: BASE_EPOCH * slotsInEpoch + slotIndex,
+                blockHeight: 359120112,
+                epoch: BASE_EPOCH,
+                slotIndex,
+                slotsInEpoch,
+                transactionCount: 464794163561,
+            });
+        },
+    },
     // handler to mock initial SOL balance for staking
     getBalance: {
         enabled: true,
@@ -115,27 +139,12 @@ const createDefaultHandlers = (): SolanaRouteHandlers => ({
             await route.fulfill({ json: transactionResponse });
         },
     },
-    //handler to mock stake account info after staking
+    //handler to mock stake account info, starts empty
     getProgramAccounts: {
-        enabled: false,
+        enabled: true,
         predicate: params => params?.[0] === 'Stake11111111111111111111111111111111111111',
         respond: async (route, body) => {
-            await fulfillWithResult(route, body, [
-                {
-                    account: {
-                        data: [
-                            'AgAAAIDVIgAAAAAALLoqB9JwihwB0yi0PgwqY7NyafYZh7ClRRfrVgOgNbAsuioH0nCKHAHTKLQ+DCpjs3Jp9hmHsKVFF+tWA6A1sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHzgaQ+C+2FHX+u9FgXvIMNGqRZ3BtgpzkaZQ1xMJ4CuEYSdAAAAAABWAwAAAAAAAP//////////AAAAAAAA0D/KSY5NAAAAAAAAAAA=',
-                            'base64',
-                        ],
-                        executable: false,
-                        lamports: 12605841,
-                        owner: 'Stake11111111111111111111111111111111111111',
-                        rentEpoch: '18446744073709551615',
-                        space: 200,
-                    },
-                    pubkey: '7XokGngi54KzoofSdrmk297pE43wtEqnsiSmDorU2ZBH',
-                },
-            ]);
+            await fulfillWithResult(route, body, []);
         },
     },
 });
@@ -149,6 +158,7 @@ const hasEnabledHandler = (
 
 export class SolanaStakingMock {
     readonly handlers: SolanaRouteHandlers;
+    protected currentEpoch: number = BASE_EPOCH;
 
     constructor(
         private readonly page: Page,
@@ -176,11 +186,52 @@ export class SolanaStakingMock {
     }
 
     @step()
-    replaceRoute(method: SolanaRouteMethod, overrides: Partial<SolanaRouteHandler>) {
+    enableRoutesForTransactions() {
+        // necessary routes for sending and finalizing transactions
+        // cannot be enabled during discovery as they would interfere with it
+        this.enableRoutes(['sendTransaction', 'getSignaturesForAddress']);
+    }
+
+    @step()
+    async replaceRoute(method: SolanaRouteMethod, overrides: Partial<SolanaRouteHandler>) {
         this.handlers[method] = {
             ...this.getHandler(method),
             ...overrides,
         };
+        await this.routeSolana();
+    }
+
+    @step()
+    async setProgramAccounts(accounts: SolanaStakingAccount[]) {
+        await this.replaceRoute('getProgramAccounts', {
+            respond: async (route, body) => {
+                await fulfillWithResult(route, body, accounts);
+            },
+        });
+    }
+
+    @step()
+    async setEpoch(epoch: number) {
+        const slotIndex = 376284;
+        const slotsInEpoch = 432000;
+        await this.replaceRoute('getEpochInfo', {
+            respond: async (route, body) => {
+                await fulfillWithResult(route, body, {
+                    absoluteSlot: epoch * slotsInEpoch + slotIndex,
+                    blockHeight: 359120112,
+                    epoch,
+                    slotIndex,
+                    slotsInEpoch,
+                    transactionCount: 464794163561,
+                });
+            },
+        });
+        this.currentEpoch = epoch;
+    }
+
+    @step()
+    async advanceEpoch() {
+        await this.setEpoch(this.currentEpoch + 1);
     }
 
     private getHandler(method: SolanaRouteMethod): SolanaRouteHandler {
@@ -206,5 +257,25 @@ export class SolanaStakingMock {
         }
 
         await methodHandler.respond(route, body);
+    }
+
+    @step()
+    async setupStakedAccount() {
+        await this.setProgramAccounts([solanaStakingAccounts.activeFirst]);
+        const epochAfterActivation =
+            Number(
+                solanaStakingAccounts.activeFirstDecoded.state.fields[1].delegation
+                    .activationEpoch!,
+            ) + 1;
+        await this.setEpoch(epochAfterActivation);
+    }
+
+    @step()
+    async setupUnstakingAccount() {
+        await this.setProgramAccounts([solanaStakingAccounts.deactivating]);
+        const deactivationEpoch = Number(
+            solanaStakingAccounts.deactivatingDecoded.state.fields[1].delegation.deactivationEpoch!,
+        );
+        await this.setEpoch(deactivationEpoch);
     }
 }

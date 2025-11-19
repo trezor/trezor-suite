@@ -94,6 +94,7 @@ export const useProgressLabelsData = ({
         () => [
             {
                 id: 0,
+                'data-testid': '@staking/transaction-status',
                 progressState: (() => {
                     if (solStakingAccountStatus === 'inactive') return 'active';
 
@@ -107,6 +108,7 @@ export const useProgressLabelsData = ({
             },
             {
                 id: 1,
+                'data-testid': '@staking/adding-to-pool-status',
                 progressState: (() => {
                     if (solStakingAccountStatus === 'activating') return 'active';
                     if (solStakingAccountStatus !== 'activating') return 'done';
@@ -130,6 +132,7 @@ export const useProgressLabelsData = ({
             },
             {
                 id: 2,
+                'data-testid': '@staking/reward-status',
                 progressState: (() => {
                     if (solStakingAccountStatus === 'active') {
                         return 'active';

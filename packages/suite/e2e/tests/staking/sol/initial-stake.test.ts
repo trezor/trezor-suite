@@ -1,5 +1,6 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
+import { solanaStakingAccounts } from '../../../fixtures/staking/sol-staking-accounts';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
@@ -32,6 +33,7 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
         },
         async ({ page, walletPage, stakingSection, devicePrompt, solanaStakingMock }) => {
             await test.step('Check staking dashboard', async () => {
+                await page.clock.install();
                 await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.stakingDashboardCard).toBeHidden();
@@ -53,7 +55,7 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                 await stakingSection.everstakeAcknowledgeCheckbox.click();
                 await stakingSection.confirmButton.click();
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText('1,000 SOL');
-                await stakingSection.cryptoInput.fill('0.010322961');
+                await stakingSection.cryptoInput.fill('0.200953787');
             });
 
             await test.step('Initiate staking and confirm on device', async () => {
@@ -72,7 +74,7 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    '0.010322961 SOL',
+                    '0.200953787 SOL',
                 );
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
                     '0.00228788 SOL',
@@ -82,7 +84,7 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                     header: { title: 'Stake' },
                     body: [
                         ['Amount:'],
-                        splitStringByDisplayLimit('0.012605841 SOL'),
+                        splitStringByDisplayLimit('0.203236667 SOL'),
                         [' '],
                         ['Max fees and rent:'],
                         splitStringByDisplayLimit('0.00228788 SOL'),
@@ -92,28 +94,42 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                 await devicePrompt.waitForFinalPromptAndConfirm();
             });
 
-            solanaStakingMock.enableRoutes([
-                'sendTransaction',
-                'getSignaturesForAddress',
-                'getProgramAccounts',
-            ]);
-
-            await devicePrompt.sendButton.click();
-            await expect(stakingSection.stakedToast).toHaveTranslation('TOAST_TX_STAKED', {
-                values: {
-                    amount: '0.010322961 SOL',
-                    account: 'Solana #1',
-                },
+            await test.step('Stake', async () => {
+                solanaStakingMock.enableRoutesForTransactions();
+                await solanaStakingMock.setProgramAccounts([solanaStakingAccounts.activeFirst]);
+                await devicePrompt.sendButton.click();
+                await expect(stakingSection.stakedToast).toHaveTranslation('TOAST_TX_STAKED', {
+                    values: {
+                        amount: '0.200953787 SOL',
+                        account: 'Solana #1',
+                    },
+                });
             });
 
-            await stakingSection.expectStakingAmounts({
-                pending: 'hidden',
-                staked: '0.010322961',
-                rewards: '0',
-                unstaking: 'hidden',
+            await test.step('Verify pending on dashboard', async () => {
+                await stakingSection.expectStakingAmounts({
+                    pending: '0.200953787',
+                    staked: '0',
+                    rewards: '0',
+                    unstaking: 'hidden',
+                });
+                await expect(stakingSection.stakeMoreButton).toBeEnabled();
+                await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
+                await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
             });
-            await expect(stakingSection.stakeMoreButton).toBeEnabled();
-            await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
+
+            await test.step('Wait an epoch and amount moved from pending to staked', async () => {
+                await solanaStakingMock.advanceEpoch();
+                await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
+                await stakingSection.expectStakingAmounts({
+                    pending: 'hidden',
+                    staked: '0.200953787',
+                    rewards: '0',
+                    unstaking: 'hidden',
+                });
+                await expect(stakingSection.stakeMoreButton).toBeEnabled();
+                await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
+            });
         },
     );
 });

@@ -5,6 +5,7 @@ import { hexToRgba } from '@trezor/utils';
 
 export class StakingSection {
     readonly watchPeriod = '01:00';
+    readonly solanaEpochCachePeriod = '01:00:00';
     // Locators
     readonly stakingTabButton: Locator;
     readonly stakingDashboardCard: Locator;
