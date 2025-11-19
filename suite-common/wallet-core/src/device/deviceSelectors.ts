@@ -184,10 +184,28 @@ export const selectIsThpDevice = createMemoizedSelector(
 
 export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSelector(
     [selectIsDeviceConnectedViaBluetooth, selectDeviceFeatures],
-    (isDeviceConnectedViaBluetooth, features) =>
-        isDeviceConnectedViaBluetooth &&
-        typeof features?.soc === 'number' &&
-        features.soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
+    (isDeviceConnectedViaBluetooth, features) => {
+        const { usb_connected, wireless_connected, soc } = features || {};
+
+        // If not connected via Bluetooth, then there is no low battery.
+        if (!isDeviceConnectedViaBluetooth) {
+            return false;
+        }
+
+        // If it is connected via USB or wireless charger, we assume it's charging/fine,
+        if (usb_connected || wireless_connected) {
+            return false;
+        }
+
+        const isBatteryDataValid = typeof soc === 'number';
+
+        if (!isBatteryDataValid) {
+            // If we cannot read battery status, we assume the worst.
+            return true;
+        }
+
+        return soc < DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD;
+    },
 );
 
 export const selectDeviceBluetoothId = createMemoizedSelector(
