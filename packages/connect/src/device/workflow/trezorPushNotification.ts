@@ -72,6 +72,7 @@ export const trezorPushNotificationHandler = async ({ device, message }: TpnWork
     switch (type) {
         case TrezorPushNotificationType.SETTING_CHANGE:
         case TrezorPushNotificationType.PIN_CHANGE:
+        case TrezorPushNotificationType.NOTIFY_POWER_STATUS_CHANGE:
             if (!device.isUsed()) {
                 await device.acquire();
                 await device.getFeatures();
