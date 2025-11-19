@@ -458,20 +458,14 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             rightContent={<Icon name="qrCode" onClick={handleQrClick} />}
             label={<Translation id="RECIPIENT_ADDRESS" />}
             labelLeft={
-                <p>
-                    <Translation
-                        id={
-                            outputsCount > 1
-                                ? 'TR_SEND_RECIPIENT_ADDRESS'
-                                : 'TR_SEND_ADDRESS_SECTION'
-                        }
-                        values={{ index: recipientId }}
-                    />
-                    {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
-                </p>
+                <Translation
+                    id={outputsCount > 1 ? 'TR_SEND_RECIPIENT_ADDRESS' : 'TR_SEND_ADDRESS_SECTION'}
+                    values={{ index: recipientId }}
+                />
             }
             labelRight={
-                <Row>
+                <Row gap={spacings.md}>
+                    {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
                     {metadataEnabled && broadcastEnabled && (
                         <MetadataLabeling
                             variant="button"
@@ -496,7 +490,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     )}
                     {outputsCount > 1 && (
                         <IconButton
-                            margin={{ left: spacings.md }}
                             icon="x"
                             intent="neutral"
                             size="small"
