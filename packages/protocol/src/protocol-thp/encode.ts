@@ -207,11 +207,11 @@ export const encodeAck = (bytesOrState: Buffer | ThpState) => {
         // 1 byte
         const magic = bytesOrState.readUInt8();
         // sequence bit
-        const recvBit = getControlBit(magic);
+        const { ackBit } = getControlBit(magic);
         // 2 bytes channel id
         const channel = bytesOrState.subarray(1, 3);
 
-        return encodeReadAck(channel, recvBit);
+        return encodeReadAck(channel, ackBit);
     }
 
     const { channel, recvBit } = bytesOrState;

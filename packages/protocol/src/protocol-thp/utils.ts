@@ -31,11 +31,11 @@ export const addSequenceBit = (magic: number, seqBit: number) => {
 // clear 4th (ack) and 5th (sequence) bit
 export const clearControlBit = (magic: number) => magic & ~(1 << 3) & ~(1 << 4);
 
-export const getControlBit = (magic: number): ThpMessageSyncBit => {
-    const ackBit = (magic & (1 << 3)) === 0 ? 0 : 1;
-    const sequenceBit = (magic & (1 << 4)) === 0 ? 0 : 1;
+export const getControlBit = (magic: number) => {
+    const ackBit: ThpMessageSyncBit = (magic & (1 << 3)) === 0 ? 0 : 1;
+    const sequenceBit: ThpMessageSyncBit = (magic & (1 << 4)) === 0 ? 0 : 1;
 
-    return ackBit || sequenceBit;
+    return { ackBit, sequenceBit };
 };
 
 // transform protocol-v2 message header to ThpHeader object
@@ -43,13 +43,14 @@ export const readThpHeader = (bytes: Buffer) => {
     // 1 byte
     const magic = bytes.readUInt8();
     // sequence bit
-    const controlBit = getControlBit(magic);
+    const { ackBit, sequenceBit } = getControlBit(magic);
     // 2 bytes channel id
     const channel = bytes.subarray(1, 3);
 
     return {
         magic,
-        controlBit,
+        ackBit,
+        sequenceBit,
         channel,
     };
 };
@@ -101,7 +102,7 @@ export const getExpectedHeaders = (state: ThpState): Buffer[] =>
                 case THP_CONTINUATION_PACKET:
                     return Buffer.from([resp]); // THP_CONTINUATION_PACKET is not masked with sequence bit
                 case THP_READ_ACK_HEADER_BYTE:
-                    return addAckBit(resp, state.sendBit);
+                    return addAckBit(resp, state.sendAckBit);
                 default:
                     return addSequenceBit(resp, state.recvBit);
             }
@@ -130,7 +131,10 @@ export const isExpectedResponse = (bytes: Buffer, state: ThpState) => {
     for (let i = 0; i < expectedResponses.length; i++) {
         if (magic === expectedResponses[i]) {
             // continuation packet is not masked by controlBit
-            if (magic !== THP_CONTINUATION_PACKET && header.controlBit !== state?.recvBit) {
+            if (
+                magic !== THP_CONTINUATION_PACKET &&
+                (header.sequenceBit !== state?.recvBit || header.ackBit !== state?.recvAckBit)
+            ) {
                 console.warn('Unexpected control bit');
 
                 return false;
