@@ -171,6 +171,8 @@ export type KnownDevice = BaseDevice & {
     hid?: undefined;
     /** @deprecated  use descriptor.id in combination with descriptor.apiType */
     bluetoothProps?: BluetoothDeviceProps;
+    usb_connected?: boolean; // true if the device is powered/charged from USB, regardless of transport selection.
+    wireless_connected?: boolean;
 };
 
 export type UnknownDevice = BaseDevice & {
