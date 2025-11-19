@@ -162,7 +162,14 @@ module.exports = {
         artifactName: 'Trezor-Suite-${version}-linux-${arch}.${ext}',
         executableName: 'trezor-suite',
         category: 'Utility',
-        target: ['AppImage'],
+        target: ['AppImage', 'snap'],
+        description:
+            'Trezor Suite is a comprehensive app for securely managing cryptocurrency\nwith your Trezor device. It allows you to send, receive, and track digital\nassets.  Key features include explicit transaction confirmation on your\nTrezor hardware wallet, passphrase wallets for enhanced privacy, coin\ncontrol, staking rewards, and support for a wide range of coins and tokens.\nIt also integrates security features like Tor for private browsing and\nTaproot for enhanced Bitcoin privacy.\n\nFor the Trezor device to be detected, you need to have systemd 256.4 or\nnewer, or install udev rules on your system from the Trezor website.\n',
+    },
+    snap: {
+        plugs: ['default', 'raw-usb', 'bluez', 'camera'],
+        base: 'core22',
+        stagePackages: ['default', 'libpcre3'],
     },
     // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
     afterPack: '../suite-desktop-core/scripts/setElectronFuses.mjs',
