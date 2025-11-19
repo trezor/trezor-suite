@@ -3,7 +3,7 @@ import {
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Column, H4, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { Badge, Column, H4, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
@@ -70,7 +70,12 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 (isDebugModeActive ? (
                     <Tooltip
                         content={
-                            <Text variant="warning">DEV: {originalDevice.features.revision}</Text>
+                            <Row gap={spacings.xs}>
+                                <Text>{originalDevice.features.revision}</Text>
+                                <Badge intent="warning" size="small">
+                                    <Translation id="TR_DEBUG_ONLY" />
+                                </Badge>
+                            </Row>
                         }
                     >
                         <CurrentVersion />
@@ -111,7 +116,12 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                                 </MarkdownWithComponents>
                             ) : undefined}
                             {isDebugModeActive && (
-                                <Text variant="warning">DEV: {release.firmware_revision}</Text>
+                                <Row gap={spacings.xs}>
+                                    <Text>{release.firmware_revision}</Text>
+                                    <Badge intent="warning" size="small">
+                                        <Translation id="TR_DEBUG_ONLY" />
+                                    </Badge>
+                                </Row>
                             )}
                         </Column>
                     }
