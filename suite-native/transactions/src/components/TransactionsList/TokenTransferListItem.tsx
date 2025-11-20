@@ -80,7 +80,7 @@ export const TokenTransferListItemValues = ({
                 decimals={tokenTransfer.decimals}
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                isForcedDiscreetMode={isPhishingTransaction}
+                isPhishingTransaction={isPhishingTransaction}
                 variant="hint"
                 color="textSubdued"
             />
