@@ -6,8 +6,9 @@ import {
     allowedComponentWithSubIconFrameProps,
 } from './ComponentWithSubIcon';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { Icon, iconVariants } from '../Icon/Icon';
-import { Button } from '../buttons/Button/Button';
+import { Icon } from '../Icon/Icon';
+import { IconButton } from '../buttons/IconButton/IconButton';
+import { buttonIntents } from '../buttons/types';
 
 const meta: Meta<typeof ComponentWithSubIconComponent> = {
     title: 'ComponentWithSubIcon',
@@ -17,16 +18,18 @@ export default meta;
 
 export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
     args: {
-        icon: <Icon name="check" size="small" />,
-        variant: 'destructive',
-        children: <Button>Use Bitcoin</Button>,
-        iconPadding: 8,
+        icon: <Icon name="check" size={8} />,
+        intent: 'brand',
+        children: (
+            <IconButton icon="airTrafficControl" size="large" intent="neutral" priority="secondary" />
+        ),
+        iconPadding: 4,
         iconOffset: 4,
         ...getFramePropsStory(allowedComponentWithSubIconFrameProps).args,
     },
     argTypes: {
-        variant: {
-            options: iconVariants,
+        intent: {
+            options: buttonIntents,
             control: {
                 type: 'select',
             },

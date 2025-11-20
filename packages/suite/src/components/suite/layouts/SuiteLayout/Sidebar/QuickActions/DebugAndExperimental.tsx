@@ -1,7 +1,5 @@
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
-import { Column, Icon, getIconSize, iconSizes } from '@trezor/components';
+import { Box, Column, Icon } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -29,7 +27,7 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
-                leftItem={<Icon name="atom" variant="warning" size={iconSizes.medium} />}
+                leftItem={<Icon name="atom" variant="warning" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -39,7 +37,7 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header={<Translation id="TR_EARLY_ACCESS" />}
-                leftItem={<Icon name="starFour" variant="info" size={iconSizes.medium} />}
+                leftItem={<Icon name="starFour" variant="info" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -49,27 +47,13 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header="Debug Mode"
-                leftItem={
-                    <Icon name="dotOutlineFilled" variant="destructive" size={iconSizes.medium} />
-                }
+                leftItem={<Icon name="dotOutlineFilled" variant="destructive" size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
         )}
     </Column>
 );
-
-const Relative = styled.div<{ $size: number }>`
-    position: relative;
-    width: ${({ $size }) => $size}px;
-    height: ${({ $size }) => $size}px;
-`;
-
-const Absolute = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-`;
 
 export const DebugAndExperimental = () => {
     const dispatch = useDispatch();
@@ -96,28 +80,25 @@ export const DebugAndExperimental = () => {
                 ),
             }}
             onClick={handleEapClick}
-        >
-            <Relative $size={getIconSize(iconSizes.medium)}>
-                {isDebug && (
-                    <Absolute>
-                        <Icon
-                            name="dotOutlineFilled"
-                            variant="destructive"
-                            size={iconSizes.medium}
-                        />
-                    </Absolute>
-                )}
-                {isExperimental && (
-                    <Absolute>
-                        <Icon name="atom" variant="warning" size={iconSizes.medium} />
-                    </Absolute>
-                )}
-                {isEapEnabled && (
-                    <Absolute>
-                        <Icon name="starFour" variant="info" size={iconSizes.medium} />
-                    </Absolute>
-                )}
-            </Relative>
-        </QuickActionButton>
+            iconComponent={
+                <Box position={{ type: 'relative' }} width={16} height={16}>
+                    {isDebug && (
+                        <Box position={{ type: 'absolute', top: 0, left: 0 }}>
+                            <Icon name="dotOutlineFilled" variant="destructive" size={16} />
+                        </Box>
+                    )}
+                    {isExperimental && (
+                        <Box position={{ type: 'absolute', top: 0, left: 0 }}>
+                            <Icon name="atom" variant="warning" size={16} />
+                        </Box>
+                    )}
+                    {isEapEnabled && (
+                        <Box position={{ type: 'absolute', top: 0, left: 0 }}>
+                            <Icon name="starFour" variant="info" size={16} />
+                        </Box>
+                    )}
+                </Box>
+            }
+        />
     );
 };
