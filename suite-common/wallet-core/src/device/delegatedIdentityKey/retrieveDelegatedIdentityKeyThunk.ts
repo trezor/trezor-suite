@@ -3,56 +3,65 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { TrezorDeviceWithState, asDelegatedIdentityKey } from '@suite-common/suite-types';
 // Circular issue, see: https://github.com/trezor/trezor-suite/issues/21553
 import { selectThp } from '@suite-common/thp/src/thpSelectors';
-import TrezorConnect from '@trezor/connect';
+import type { TrezorConnect } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { deviceActions } from '../deviceActions';
 import { selectPersistentDeviceData } from '../deviceSelectors';
 import { isCanceledErrorMessage } from '../deviceUtils';
 
+type RetrieveDelegatedIdentityKey = {
+    connect: TrezorConnect;
+};
+
 type RetrieveDelegatedIdentityKeyParams = {
     device: TrezorDeviceWithState;
     thpStaticHostKey: string | undefined;
 };
 
-const retrieveDelegatedIdentityKey = async ({
-    device,
-    thpStaticHostKey,
-}: RetrieveDelegatedIdentityKeyParams) => {
-    const thpCredential = device.thp?.credentials?.[0].credential;
+const retrieveDelegatedIdentityKey =
+    (deps: RetrieveDelegatedIdentityKey) =>
+    async ({ device, thpStaticHostKey }: RetrieveDelegatedIdentityKeyParams) => {
+        const thpCredential = device.thp?.credentials?.[0].credential;
 
-    const result = await TrezorConnect.evoluGetDelegatedIdentityKey({
-        device: {
-            path: device.path,
-            state: device.state,
-            instance: device.instance ?? 0,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-        thp:
-            thpStaticHostKey !== undefined && thpCredential !== undefined
-                ? {
-                      credential: thpCredential,
-                      staticHostKey: thpStaticHostKey,
-                  }
-                : undefined,
-    });
+        const result = await deps.connect.evoluGetDelegatedIdentityKey({
+            device: {
+                path: device.path,
+                state: device.state,
+                instance: device.instance ?? 0,
+            },
+            useEmptyPassphrase: device.useEmptyPassphrase ?? false,
+            thp:
+                thpStaticHostKey !== undefined && thpCredential !== undefined
+                    ? {
+                          credential: thpCredential,
+                          staticHostKey: thpStaticHostKey,
+                      }
+                    : undefined,
+        });
 
-    if (result.success) {
-        return ok(asDelegatedIdentityKey(result.payload.private_key));
-    }
+        if (result.success) {
+            return ok(asDelegatedIdentityKey(result.payload.private_key));
+        }
 
-    if (isCanceledErrorMessage(result.payload.error)) {
-        return err({ type: 'DeviceCancelled' as const });
-    }
+        if (isCanceledErrorMessage(result.payload.error)) {
+            return err({ type: 'DeviceCancelled' as const });
+        }
 
-    return err({
-        type: 'DeviceError' as const,
-        message: result.payload.error,
-    });
-};
+        return err({
+            type: 'DeviceError' as const,
+            message: result.payload.error,
+        });
+    };
 
 type RetrieveDelegatedIdentityKeyThunkParams = {
     device: TrezorDeviceWithState;
+};
+
+type RetrieveDelegatedIdentityKeyThunkDeps = {
+    dispatch: Dispatch;
+    getState: () => any;
+    connect: TrezorConnect;
 };
 
 /**
@@ -61,19 +70,22 @@ type RetrieveDelegatedIdentityKeyThunkParams = {
  * This is part of the experiment here: https://github.com/trezor/trezor-suite/issues/23202
  */
 export const retrieveDelegatedIdentityKeyThunk =
-    ({ device }: RetrieveDelegatedIdentityKeyThunkParams) =>
-    async (dispatch: Dispatch, getState: () => any) => {
-        const persistedData = selectPersistentDeviceData(getState());
+    (deps: RetrieveDelegatedIdentityKeyThunkDeps) =>
+    async ({ device }: RetrieveDelegatedIdentityKeyThunkParams) => {
+        const persistedData = selectPersistentDeviceData(deps.getState());
         const devicePersistedData = persistedData.find(it => it.device_id === device.id);
         const currentDelegatedKey = devicePersistedData?.delegatedIdentityKey ?? null;
 
-        const thpStaticHostKey = selectThp(getState()).staticKey;
+        const thpStaticHostKey = selectThp(deps.getState()).staticKey;
 
         if (currentDelegatedKey === null) {
-            const result = await retrieveDelegatedIdentityKey({ device, thpStaticHostKey });
+            const result = await retrieveDelegatedIdentityKey({ connect: deps.connect })({
+                device,
+                thpStaticHostKey,
+            });
 
             if (!result.ok) {
-                dispatch(
+                deps.dispatch(
                     deviceActions.setDelegatedIdentityKey({
                         deviceId: device.id,
                         delegatedKey: null,
@@ -83,7 +95,7 @@ export const retrieveDelegatedIdentityKeyThunk =
                 return result;
             }
 
-            dispatch(
+            deps.dispatch(
                 deviceActions.setDelegatedIdentityKey({
                     deviceId: device.id,
                     delegatedKey: result.value,

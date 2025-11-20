@@ -15,65 +15,80 @@ import {
     selectDevices,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import type { TrezorConnect } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
 
+type RetrieveEvoluNodeDeps = {
+    connect: TrezorConnect;
+};
+
 type RetrieveEvoluNodeParams = {
     device: TrezorDeviceWithState;
     delegatedKey: DelegatedIdentityKey;
 };
 
-const retrieveEvoluNode = async ({ device, delegatedKey }: RetrieveEvoluNodeParams) => {
-    const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
-        delegatedKey,
-        header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
-    });
-
-    const result = await TrezorConnect.evoluGetNode({
-        device: {
-            path: device.path,
-            state: device.state,
-            instance: device.instance ?? 0,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-        proof_of_delegated_identity: proofOfDelegatedIdentity,
-    });
-
-    if (result.success) {
-        const appOwnerResult = createEvoluAppOwnerFromTrezorData({
-            data: result.payload.data,
+export const retrieveEvoluNode =
+    (deps: RetrieveEvoluNodeDeps) =>
+    async ({ device, delegatedKey }: RetrieveEvoluNodeParams) => {
+        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+            delegatedKey,
+            header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
         });
 
-        if (!appOwnerResult.ok) {
-            console.error('Evolu: appOwnerResult error', appOwnerResult);
+        const result = await deps.connect.evoluGetNode({
+            device: {
+                path: device.path,
+                state: device.state,
+                instance: device.instance ?? 0,
+            },
+            useEmptyPassphrase: device.useEmptyPassphrase ?? false,
+            proof_of_delegated_identity: proofOfDelegatedIdentity,
+        });
 
-            // We log the (unexpected) error, so we won't propagate it.
-            // This shall never happen under standard circumstances and if this happens
-            // something is terribly wrong (like Evolu BC Breaking Change)
-            return ok();
+        if (result.success) {
+            const appOwnerResult = createEvoluAppOwnerFromTrezorData({
+                data: result.payload.data,
+            });
+
+            if (!appOwnerResult.ok) {
+                console.error('Evolu: appOwnerResult error', appOwnerResult);
+
+                // We log the (unexpected) error, so we won't propagate it.
+                // This shall never happen under standard circumstances and if this happens
+                // something is terribly wrong (like Evolu BC Breaking Change)
+                return ok();
+            }
+
+            const evoluKeys: EvoluKeys = {
+                ownerId: asDeviceEvoluOwnerId(appOwnerResult.value.id),
+                ownerSecret: result.payload.data,
+            };
+
+            return ok(evoluKeys);
         }
 
-        const evoluKeys: EvoluKeys = {
-            ownerId: asDeviceEvoluOwnerId(appOwnerResult.value.id),
-            ownerSecret: result.payload.data,
-        };
+        if (isCanceledErrorMessage(result.payload.error)) {
+            return err({ type: 'DeviceCancelled' as const });
+        }
 
-        return ok(evoluKeys);
-    }
-
-    if (isCanceledErrorMessage(result.payload.error)) {
-        return err({ type: 'DeviceCancelled' as const });
-    }
-
-    return err({ type: 'DeviceError' as const, message: result.payload.error });
-};
+        return err({ type: 'DeviceError' as const, message: result.payload.error });
+    };
 
 type RefreshSuiteSyncKeysThunkParams = {
     device: TrezorDevice;
+};
+
+type RefreshSuiteSyncKeysThunkDeps = {
+    dispatch: Dispatch;
+    getState: () => any;
+
+    // Todo: there shall be interface, this is hack, but maybe its ok?
+    retrieveDelegatedIdentityKeyThunk: ReturnType<typeof retrieveDelegatedIdentityKeyThunk>;
+    retrieveEvoluNode: ReturnType<typeof retrieveEvoluNode>;
 };
 
 /**
@@ -82,9 +97,9 @@ type RefreshSuiteSyncKeysThunkParams = {
  * This is part of the experiment here: https://github.com/trezor/trezor-suite/issues/23202
  */
 export const refreshSuiteSyncKeysThunk =
-    ({ device: originalDevice }: RefreshSuiteSyncKeysThunkParams) =>
-    async (dispatch: Dispatch, getState: () => any) => {
-        const device = selectDevices(getState())?.find(
+    (deps: RefreshSuiteSyncKeysThunkDeps) =>
+    async ({ device: originalDevice }: RefreshSuiteSyncKeysThunkParams) => {
+        const device = selectDevices(deps.getState())?.find(
             it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
         );
 
@@ -102,28 +117,32 @@ export const refreshSuiteSyncKeysThunk =
             return ok(); // No action needed
         }
 
-        dispatch(
+        deps.dispatch(
             deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: true }),
         );
 
-        const delegatedKeyResult = await dispatch(retrieveDelegatedIdentityKeyThunk({ device }));
+        const delegatedKeyResult = await deps.retrieveDelegatedIdentityKeyThunk({
+            device,
+        });
 
         if (!delegatedKeyResult.ok) {
-            dispatch(
+            deps.dispatch(
                 deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: false }),
             );
 
             return delegatedKeyResult;
         }
 
-        const evoluNodeResult = await retrieveEvoluNode({
+        const evoluNodeResult = await deps.retrieveEvoluNode({
             device,
             delegatedKey: delegatedKeyResult.value,
         });
 
         if (!evoluNodeResult.ok) {
-            dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys: undefined }));
-            dispatch(
+            deps.dispatch(
+                deviceActions.setLocalFirstStorageSecret({ device, evoluKeys: undefined }),
+            );
+            deps.dispatch(
                 deviceActions.setDelegatedIdentityKey({ deviceId: device.id, delegatedKey: null }),
             );
 
@@ -131,7 +150,7 @@ export const refreshSuiteSyncKeysThunk =
         }
 
         // This also sets the `isRetrieving` flag to `false`
-        dispatch(
+        deps.dispatch(
             deviceActions.setLocalFirstStorageSecret({
                 device,
                 evoluKeys: evoluNodeResult.value ?? undefined,

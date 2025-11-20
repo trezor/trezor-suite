@@ -2,11 +2,12 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices } from '@suite-common/wallet-core';
+import { retrieveDelegatedIdentityKeyThunk, selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
 import { exhaustive, ok } from '@trezor/type-utils';
 
-import { refreshSuiteSyncKeysThunk } from './refreshSuiteSyncKeysThunk';
+import { refreshSuiteSyncKeysThunk, retrieveEvoluNode } from './refreshSuiteSyncKeysThunk';
 import { isSuiteSyncSupportedByDevice } from '../device';
 import { subscribeLabelingUpdatesThunk } from '../labeling/subscribeLabelingUpdatesThunk';
 
@@ -31,7 +32,19 @@ export const subscribeLocalFirstStorageThunk =
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
         if (device.localFirstStorageSecret?.evoluKeys === undefined) {
-            const result = await dispatch(refreshSuiteSyncKeysThunk({ device }));
+            // Todo: this Dependency Resolution will be pushed gradually up and up,
+            //       until it reaches the top-level of the app, where all dependencies
+            //       will be composed.
+            const result = await refreshSuiteSyncKeysThunk({
+                dispatch,
+                getState,
+                retrieveEvoluNode: retrieveEvoluNode({ connect: TrezorConnect }),
+                retrieveDelegatedIdentityKeyThunk: retrieveDelegatedIdentityKeyThunk({
+                    dispatch,
+                    getState,
+                    connect: TrezorConnect,
+                }),
+            })({ device });
 
             if (!result.ok) {
                 const errType = result.error.type;
