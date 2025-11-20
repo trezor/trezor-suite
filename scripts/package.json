@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "chalk": "^4.1.2",
+        "chalk": "^5.6.2",
         "cross-fetch": "^4.0.0",
         "fs-extra": "^11.3.1",
         "minimatch": "^10.1.1",

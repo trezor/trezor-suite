@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-const chalk = require('chalk');
-const fs = require('fs');
-const path = require('path');
-const prettier = require('prettier');
-const { optimize } = require('svgo');
+import chalk from 'chalk';
+import fs from 'fs';
+import path from 'path';
+import prettier from 'prettier';
+import { optimize } from 'svgo';
 
 const iconsFilePath = './src/icons.ts';
 const cryptoIconsPath = './src/cryptoIcons.ts';
@@ -54,7 +54,7 @@ const svgoConfig = {
 };
 
 const optimizeSvgAssets = assetsDirname => {
-    const assetsDir = path.join(__dirname, assetsDirname);
+    const assetsDir = path.join(import.meta.dirname, assetsDirname);
     const assetFileNames = fs.readdirSync(assetsDir);
 
     return assetFileNames
