@@ -47,19 +47,27 @@ export abstract class TradingFormActions extends TradingActions {
     }
 
     async selectCountry(countrySearch: string, country: string) {
-        await this.getElementById('country').tap();
+        const countryPicker = this.getElementById('country');
+        await waitForVisible(countryPicker, { timeout: this.SHORT_TIMEOUT });
+        await countryPicker.tap();
+
         await this.expectSheetHeaderTitle('Country of residence');
         await this.getSearchCountryElement().replaceText(countrySearch);
         await element(by.text(country)).tap();
+
         await waitFor(this.getElementById('country/value'))
             .toHaveText(country)
             .withTimeout(this.SHORT_TIMEOUT);
     }
 
     async selectReceiveAccount(accountName: string, derivationPath?: string) {
-        await this.getElementById('receive-account').tap();
+        const receiveAccountPicker = this.getElementById('receive-account');
+        await waitForVisible(receiveAccountPicker, { timeout: this.SHORT_TIMEOUT });
+        await receiveAccountPicker.tap();
+
         await waitForVisible(by.text(accountName));
         await element(by.text(accountName)).tap();
+
         if (derivationPath) {
             await waitForVisible(by.text(derivationPath));
             await element(by.text(derivationPath)).tap();
@@ -84,29 +92,39 @@ export abstract class TradingFormActions extends TradingActions {
 
     async setFiatAmount(amount: string) {
         await this.getFiatAmountElement().replaceText(amount);
+        await wait(100);
         await this.getFiatAmountElement().tapReturnKey();
         await this.waitForQuotesToLoad();
     }
 
     async setSendCryptoAmount(amount: string) {
         await this.getSendCryptoAmountElement().tap();
+        await wait(100);
         await this.getSendCryptoAmountElement().replaceText(amount);
+        await wait(100);
         await this.getSendCryptoAmountElement().tapReturnKey();
         await this.waitForQuotesToLoad();
     }
 
     async viewProviders() {
-        await this.getElementById('provider-picker').tap();
+        const providersPicker = this.getElementById('provider-picker');
+        await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
+        await providersPicker.tap();
+
         await this.expectSheetHeaderTitle('Providers');
         await element(by.label('Close')).tap();
-        await waitForVisible(this.getElementById('provider-picker'));
+        await waitForVisible(providersPicker);
     }
 
     async selectReceiveAsset(asset: string, network?: string) {
-        await this.getElementById('asset-receive-button').tap();
+        const receiveAssetButton = this.getElementById('asset-receive-button');
+        await waitForVisible(receiveAssetButton, { timeout: this.SHORT_TIMEOUT });
+        await receiveAssetButton.tap();
+
         await this.expectSheetHeaderTitle('Assets');
         await this.getSearchReceiveCryptoElement().tap();
         await this.getSearchReceiveCryptoElement().replaceText(asset.slice(0, -1));
+
         if (network) {
             const networkFilterTab = element(
                 by.text(network).withAncestor(by.id(this.getTestId('receive-asset-sheet/header'))),
@@ -114,6 +132,7 @@ export abstract class TradingFormActions extends TradingActions {
             await waitForVisible(networkFilterTab);
             await networkFilterTab.tap();
         }
+
         await waitForVisible(by.text(asset), { timeout: this.BOTTOM_SHEET_ANIMATION_DURATION });
         await element(by.text(asset)).tap();
 
@@ -139,9 +158,9 @@ export abstract class TradingFormActions extends TradingActions {
     async confirmTradingForm() {
         await this.openLegalSheet();
         await element(by.id('@bottom-sheet/scroll-view')).scrollTo('bottom', 0.5, 0.5);
-        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await this.waitForBottomSheetAnimation();
         await this.getElementById('confirm-button').tap();
-        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await this.waitForBottomSheetAnimation();
     }
 
     async tapTradingSectionHeaderTab() {

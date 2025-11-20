@@ -30,6 +30,14 @@ export class TradingActions {
 
     async closeBottomSheet() {
         await element(by.id('@bottom-sheet/header/close-button')).tap();
-        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await this.waitForBottomSheetAnimation();
+    }
+
+    waitForBottomSheetAnimation() {
+        return wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+    }
+
+    async scrollScreenToBottom() {
+        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
     }
 }

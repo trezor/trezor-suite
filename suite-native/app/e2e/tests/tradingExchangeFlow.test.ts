@@ -4,13 +4,12 @@ import { MNEMONICS } from '@trezor/trezor-user-env-link';
 import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
-import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
-// import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
-// import { outputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
+import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
+import { outputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
-// import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
+import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -55,7 +54,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
                 seed: MNEMONICS.mnemonic_academic,
                 passphrase_protection: true,
             });
-            await waitForVisible(by.id('@home/portfolio/receive-button'));
+            await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingExchangeActions.openSwapForm();
         });
@@ -67,7 +66,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.setSendCryptoAmount('10');
             await tradingExchangeActions.waitForQuotesToLoad();
 
-            await onHome.scrollScreenToBottom();
+            await tradingExchangeActions.scrollScreenToBottom();
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 
@@ -76,26 +75,25 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.expectValidExchangeForm();
             await tradingExchangeActions.confirmTradingForm();
 
-            // Fees are not being loaded on CI. Skipping the rest of the flow tests for now.
-            // await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
+            await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
 
-            // await exchangePreviewActions.waitForFeesToLoad();
-            // await exchangePreviewActions.scrollScreenToBottom();
-            // await exchangePreviewActions.goToFees();
+            await exchangePreviewActions.waitForFeesToLoad();
+            await exchangePreviewActions.scrollScreenToBottom();
+            await exchangePreviewActions.goToFees();
 
-            // await tradingFeeActions.expectFeesScreenToBeVisible();
-            // await tradingFeeActions.goBack();
+            await tradingFeeActions.expectFeesScreenToBeVisible();
+            await tradingFeeActions.goBack();
 
-            // await exchangePreviewActions.goToTransactionSigning();
+            await exchangePreviewActions.goToTransactionSigning();
 
-            // await outputsReviewActions.expectOutputsReviewScreenToBeVisible();
-            // await outputsReviewActions.expectAndConfirmRecipientAddress();
-            // await outputsReviewActions.expectAndConfirmTotalFee();
-            // await outputsReviewActions.signTransaction();
-            // await outputsReviewActions.expectSendTransactionButton();
-            // await outputsReviewActions.cancelTransaction();
+            await outputsReviewActions.expectOutputsReviewScreenToBeVisible();
+            await outputsReviewActions.expectAndConfirmRecipientAddress();
+            await outputsReviewActions.expectAndConfirmTotalFee();
+            await outputsReviewActions.signTransaction();
+            await outputsReviewActions.expectSendTransactionButton();
+            await outputsReviewActions.cancelTransaction();
 
-            // await tradingExchangeActions.waitForTradeDataToLoad();
+            await tradingExchangeActions.waitForTradeDataToLoad();
         });
     });
 });
