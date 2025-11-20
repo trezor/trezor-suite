@@ -11,7 +11,7 @@ import { spacings } from '@trezor/theme';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { SwitchDeviceContent } from 'src/views/suite/SwitchDevice/SwitchDevice';
@@ -23,6 +23,8 @@ export const ConnectSelectDeviceModal = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const hasConnectedDevice = devices.some(d => d.connected);
     const selectedDeviceConnected = selectedDevice?.connected;
+    const { isDiscoveryRunning } = useDiscovery();
+    const isLoading = isDiscoveryRunning;
 
     const onCancel = () => {
         dispatch(connectPopupActions.finishCall());
@@ -53,7 +55,7 @@ export const ConnectSelectDeviceModal = () => {
                 }
                 bottomContent={
                     selectedDeviceConnected && (
-                        <Modal.Button onClick={onResume} size="medium">
+                        <Modal.Button onClick={onResume} size="medium" isLoading={isLoading}>
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>
                     )
