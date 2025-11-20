@@ -1,6 +1,4 @@
-import styled from 'styled-components';
-
-import { Column, Icon } from '@trezor/components';
+import { Box, Column, Icon } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -57,18 +55,6 @@ const DebugAndExperimentalTooltip = ({
     </Column>
 );
 
-const Relative = styled.div<{ $size: number }>`
-    position: relative;
-    width: ${({ $size }) => $size}px;
-    height: ${({ $size }) => $size}px;
-`;
-
-const Absolute = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-`;
-
 export const DebugAndExperimental = () => {
     const dispatch = useDispatch();
 
@@ -94,24 +80,25 @@ export const DebugAndExperimental = () => {
                 ),
             }}
             onClick={handleEapClick}
-        >
-            <Relative $size={16}>
-                {isDebug && (
-                    <Absolute>
-                        <Icon name="dotOutlineFilled" variant="destructive" size={16} />
-                    </Absolute>
-                )}
-                {isExperimental && (
-                    <Absolute>
-                        <Icon name="atom" variant="warning" size={16} />
-                    </Absolute>
-                )}
-                {isEapEnabled && (
-                    <Absolute>
-                        <Icon name="starFour" variant="info" size={16} />
-                    </Absolute>
-                )}
-            </Relative>
-        </QuickActionButton>
+            iconComponent={
+                <Box position={{ type: 'relative' }} width={16} height={16}>
+                    {isDebug && (
+                        <Box position={{ type: 'absolute', top: 0, left: 0 }}>
+                            <Icon name="dotOutlineFilled" variant="destructive" size={16} />
+                        </Box>
+                    )}
+                    {isExperimental && (
+                        <Box position={{ type: 'absolute', top: 0, left: 0 }}>
+                            <Icon name="atom" variant="warning" size={16} />
+                        </Box>
+                    )}
+                    {isEapEnabled && (
+                        <Box position={{ type: 'absolute', top: 0, left: 0 }}>
+                            <Icon name="starFour" variant="info" size={16} />
+                        </Box>
+                    )}
+                </Box>
+            }
+        />
     );
 };

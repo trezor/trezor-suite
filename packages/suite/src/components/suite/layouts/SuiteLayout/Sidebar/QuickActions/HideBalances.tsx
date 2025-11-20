@@ -1,5 +1,4 @@
 import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
-import { Icon } from '@trezor/components';
 
 import { QuickActionButton } from './QuickActionButton';
 import { useDispatch, useSelector, useTranslation } from '../../../../../../hooks/suite';
@@ -7,7 +6,6 @@ import { useDispatch, useSelector, useTranslation } from '../../../../../../hook
 export const HideBalances = () => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-
     const isDiscreetModeActive = useSelector(selectIsDiscreteModeActive);
     const translationLabel = isDiscreetModeActive ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
 
@@ -18,12 +16,7 @@ export const HideBalances = () => {
             tooltip={{ content: translationString(translationLabel) }}
             onClick={handleDiscreetModeClick}
             data-testid="@quickActions/hideBalances"
-        >
-            <Icon
-                name={isDiscreetModeActive ? 'eyeSlash' : 'eye'}
-                variant="tertiary"
-                size={16}
-            />
-        </QuickActionButton>
+            iconName={isDiscreetModeActive ? 'eyeSlash' : 'eye'}
+        />
     );
 };

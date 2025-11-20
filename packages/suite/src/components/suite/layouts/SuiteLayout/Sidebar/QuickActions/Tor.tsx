@@ -1,6 +1,4 @@
-import { useTheme } from 'styled-components';
-
-import { Column, ComponentWithSubIcon, Icon, IconName, IconVariant } from '@trezor/components';
+import { ButtonIntent, Column, Icon, IconName, IconVariant } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
@@ -41,6 +39,15 @@ const torIconVariantMap: Record<TorStatus, IconVariant> = {
     [TorStatus.Slow]: 'info',
 };
 
+const torSubIconIntentMap: Record<TorStatus, ButtonIntent> = {
+    [TorStatus.Enabled]: 'brand',
+    [TorStatus.Disabled]: 'critical',
+    [TorStatus.Disabling]: 'critical',
+    [TorStatus.Enabling]: 'info',
+    [TorStatus.Error]: 'warning',
+    [TorStatus.Slow]: 'info',
+};
+
 type TorTooltipProps = {
     variant: IconVariant;
     iconName: IconName;
@@ -62,12 +69,10 @@ const TorTooltip = ({ variant, iconName, torStatus }: TorTooltipProps) => (
 
 export const Tor = () => {
     const dispatch = useDispatch();
-    const theme = useTheme();
 
     const { torStatus, isTorDisabled } = useSelector(selectTorState);
     const isTorIconVisible = isDesktop() && !isTorDisabled;
 
-    const variant = torIconVariantMap[torStatus];
     const iconName = torIconMap[torStatus];
 
     return (
@@ -75,18 +80,18 @@ export const Tor = () => {
             <QuickActionButton
                 tooltip={{
                     content: (
-                        <TorTooltip variant={variant} iconName={iconName} torStatus={torStatus} />
+                        <TorTooltip
+                            variant={torIconVariantMap[torStatus]}
+                            iconName={iconName}
+                            torStatus={torStatus}
+                        />
                     ),
                 }}
                 onClick={() => dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }))}
-            >
-                <ComponentWithSubIcon
-                    variant={variant}
-                    icon={<Icon name={iconName} color={theme.iconDefaultInverted} size={8} />}
-                >
-                    <Icon name="torBrowser" size={16} variant="tertiary" />
-                </ComponentWithSubIcon>
-            </QuickActionButton>
+                iconName="torBrowser"
+                subIconIntent={torSubIconIntentMap[torStatus]}
+                subIconName={iconName}
+            />
         )
     );
 };

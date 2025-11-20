@@ -1,10 +1,8 @@
 import { MouseEvent } from 'react';
 
 import { type Variants, motion } from 'framer-motion';
-import styled from 'styled-components';
 
-import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
-import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { Card, Column, ElevationContext, IconButton, Row, Text } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -17,31 +15,6 @@ import {
     mapSuiteUpdateToClick,
 } from './updateQuickActionTypes';
 import { Translation, TranslationKey } from '../../../../../Translation';
-
-type ContainerProps = { $elevation: Elevation };
-
-const Container = styled.div<ContainerProps>`
-    margin: ${spacingsPx.md};
-    display: flex;
-    flex-direction: column;
-    padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    background: ${mapElevationToBackground};
-    border-radius: ${borders.radii.sm};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    cursor: ${({ onClick }) => (onClick !== undefined ? 'pointer' : undefined)};
-`;
-
-const CloseIconBackground = styled.div`
-    width: 36px;
-    height: 36px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    border-radius: ${borders.radii.full};
-    cursor: ${({ onClick }) => (onClick !== undefined ? 'pointer' : undefined)};
-`;
 
 type UpdateNotificationBannerProps = {
     updateStatusDevice: UpdateStatusDevice;
@@ -109,7 +82,7 @@ export const UpdateNotificationBanner = ({
         }
     };
 
-    const handleOnClose = (e: MouseEvent<HTMLDivElement>) => {
+    const handleOnClose = (e: MouseEvent<HTMLButtonElement>) => {
         // Click on whole banner has onClick, so prevent the activation when closing the modal
         e.stopPropagation();
         onClose();
@@ -140,19 +113,21 @@ export const UpdateNotificationBanner = ({
     };
 
     return (
-        <ElevationContext baseElevation={1}>
+        <ElevationContext baseElevation={0}>
             <motion.div
                 variants={variants}
                 initial="initial"
                 exit="exit"
                 animate={['drop', 'shake']}
             >
-                <Container
-                    $elevation={1}
+                <Card
                     onClick={handleOnClick}
                     data-testid="@notification/update-notification-banner"
+                    margin={12}
+                    paddingType="small"
+                    width="auto"
                 >
-                    <Row justifyContent="stretch">
+                    <Row gap={12}>
                         <Column flex="1" alignItems="start">
                             <Text>
                                 <Translation id={translationHeader} />
@@ -161,11 +136,15 @@ export const UpdateNotificationBanner = ({
                                 <Translation id={translationCallToAction} />
                             </Text>
                         </Column>
-                        <CloseIconBackground onClick={handleOnClose}>
-                            <Icon name="x" size={16} />
-                        </CloseIconBackground>
+                        <IconButton
+                            intent="neutral"
+                            priority="secondary"
+                            icon="x"
+                            size="small"
+                            onClick={handleOnClose}
+                        />
                     </Row>
-                </Container>
+                </Card>
             </motion.div>
         </ElevationContext>
     );

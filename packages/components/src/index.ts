@@ -19,7 +19,7 @@ export * from './components/Flag/Flag';
 export * from './components/AutoScalingInput/AutoScalingInput';
 export { Badge, type BadgeProps, type BadgeSize } from './components/Badge/Badge';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
-export { Button, type ButtonProps } from './components/buttons/Button/Button';
+export { Button, type ButtonProps, type ButtonIntent } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
 export {
     Icon,

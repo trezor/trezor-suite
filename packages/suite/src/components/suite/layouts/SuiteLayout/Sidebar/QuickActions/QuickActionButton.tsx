@@ -1,40 +1,57 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
-import styled from 'styled-components';
-
-import { ManagedTooltipProps, Tooltip } from '@trezor/components';
-
-const Container = styled.div`
-    height: 44px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
+import {
+    ButtonIntent,
+    ComponentWithSubIcon,
+    Icon,
+    IconName,
+    ManagedTooltipProps,
+    Row,
+    Tooltip,
+} from '@trezor/components';
 
 type ActionButtonProps = {
     onClick?: () => void;
-    children: ReactNode;
+    subIconIntent?: ButtonIntent;
+    subIconName?: IconName;
     tooltip?: Partial<ManagedTooltipProps>;
     'data-testid'?: string;
     isOpen?: boolean;
-};
+} & (
+    | { iconComponent: React.ReactNode; iconName?: undefined }
+    | {
+          iconComponent?: undefined;
+          iconName: IconName;
+      }
+);
 
 export const QuickActionButton = ({
-    children,
     onClick,
     tooltip,
     'data-testid': dataTest,
     isOpen,
-}: ActionButtonProps) =>
-    tooltip ? (
+    iconComponent,
+    iconName,
+    subIconIntent,
+    subIconName,
+}: ActionButtonProps) => {
+    const icon = iconName ? <Icon name={iconName} size={16} variant="tertiary" /> : iconComponent;
+
+    return (
         <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip} isOpen={isOpen}>
-            <Container data-testid={dataTest} onClick={onClick}>
-                {children}
-            </Container>
+            <Row data-testid={dataTest} onClick={onClick} justifyContent="center">
+                {subIconName ? (
+                    <ComponentWithSubIcon
+                        intent={subIconIntent}
+                        icon={<Icon name={subIconName} size={8} />}
+                        iconOffset={8}
+                    >
+                        {icon}
+                    </ComponentWithSubIcon>
+                ) : (
+                    icon
+                )}
+            </Row>
         </Tooltip>
-    ) : (
-        <Container data-testid={dataTest} onClick={onClick}>
-            {children}
-        </Container>
     );
+};

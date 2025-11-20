@@ -1,7 +1,3 @@
-import { useTheme } from 'styled-components';
-
-import { ComponentWithSubIcon, Icon } from '@trezor/components';
-
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
@@ -10,7 +6,6 @@ import { QuickActionButton } from './QuickActionButton';
 import { useEnabledBackends } from '../../utils';
 
 export const CustomBackend = () => {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const enabledBackends = useEnabledBackends();
     const isCustomBackendIconVisible = enabledBackends.length > 0;
@@ -24,14 +19,10 @@ export const CustomBackend = () => {
             <QuickActionButton
                 tooltip={{ content: <NavBackends customBackends={enabledBackends} /> }}
                 onClick={handleClick}
-            >
-                <ComponentWithSubIcon
-                    variant="primary"
-                    icon={<Icon name="check" color={theme.iconDefaultInverted} size={8} />}
-                >
-                    <Icon name="database" size={16} variant="tertiary" />
-                </ComponentWithSubIcon>
-            </QuickActionButton>
+                iconName="database"
+                subIconIntent="brand"
+                subIconName="check"
+            />
         )
     );
 };
