@@ -132,3 +132,5 @@ export const Button = ({
         </Container>
     );
 };
+
+export type { ButtonIntent };

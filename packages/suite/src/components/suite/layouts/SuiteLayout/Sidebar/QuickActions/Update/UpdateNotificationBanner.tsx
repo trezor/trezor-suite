@@ -1,12 +1,10 @@
 import { MouseEvent } from 'react';
 
 import { type Variants, motion } from 'framer-motion';
-import styled from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
-import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { Card, Column, ElevationContext, IconButton, Row, Text } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -17,31 +15,6 @@ import {
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
 } from './updateQuickActionTypes';
-
-type ContainerProps = { $elevation: Elevation };
-
-const Container = styled.div<ContainerProps>`
-    margin: ${spacingsPx.md};
-    display: flex;
-    flex-direction: column;
-    padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    background: ${mapElevationToBackground};
-    border-radius: ${borders.radii.sm};
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
-    cursor: ${({ onClick }) => (onClick !== undefined ? 'pointer' : undefined)};
-`;
-
-const CloseIconBackground = styled.div`
-    width: 36px;
-    height: 36px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation2};
-    border-radius: ${borders.radii.full};
-    cursor: ${({ onClick }) => (onClick !== undefined ? 'pointer' : undefined)};
-`;
 
 type UpdateNotificationBannerProps = {
     updateStatusDevice: UpdateStatusDevice;
@@ -83,7 +56,7 @@ export const UpdateNotificationBanner = ({
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
 
     const translationHeader =
-        updateStatusSuite !== 'up-to-date' // Update suite first, because it will contain the newest firmware
+        updateStatusSuite !== 'up-to-date'
             ? mapSuiteUpdateStatusToHeaderTranslation[updateStatusSuite]
             : mapDeviceUpdateStatusToTranslation[updateStatusDevice];
 
@@ -108,8 +81,7 @@ export const UpdateNotificationBanner = ({
         }
     };
 
-    const handleOnClose = (e: MouseEvent<HTMLDivElement>) => {
-        // Click on whole banner has onClick, so prevent the activation when closing the modal
+    const handleOnClose = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         onClose();
     };
@@ -139,19 +111,16 @@ export const UpdateNotificationBanner = ({
     };
 
     return (
-        <ElevationContext baseElevation={1}>
-            <motion.div
-                variants={variants}
-                initial="initial"
-                exit="exit"
-                animate={['drop', 'shake']}
-            >
-                <Container
-                    $elevation={1}
+        <ElevationContext baseElevation={0}>
+            <motion.div variants={variants} initial="initial" exit="exit" animate={['drop', 'shake']}>
+                <Card
                     onClick={handleOnClick}
                     data-testid="@notification/update-notification-banner"
+                    margin={12}
+                    paddingType="small"
+                    width="auto"
                 >
-                    <Row justifyContent="stretch">
+                    <Row gap={12}>
                         <Column flex="1" alignItems="start">
                             <Text>
                                 <Translation id={translationHeader} />
@@ -160,11 +129,15 @@ export const UpdateNotificationBanner = ({
                                 <Translation id={translationCallToAction} />
                             </Text>
                         </Column>
-                        <CloseIconBackground onClick={handleOnClose}>
-                            <Icon name="x" size="medium" />
-                        </CloseIconBackground>
+                        <IconButton
+                            intent="neutral"
+                            priority="secondary"
+                            icon="x"
+                            size="small"
+                            onClick={handleOnClose}
+                        />
                     </Row>
-                </Container>
+                </Card>
             </motion.div>
         </ElevationContext>
     );

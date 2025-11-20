@@ -15,7 +15,7 @@ export { recolorLottieAnimation } from './components/animations/recolorLottieAni
 export * from './components/Flag/Flag';
 export { Badge, type BadgeProps, type BadgeSize, type BadgeIntent } from './components/Badge/Badge';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
-export { Button, type ButtonProps } from './components/buttons/Button/Button';
+export { Button, type ButtonProps, type ButtonIntent } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
 export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
