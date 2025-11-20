@@ -5,6 +5,7 @@
 import type {
     ThpCredentialResponse,
     ThpDeviceProperties,
+    ThpPairingMethod,
     ThpProtobufMessageType,
 } from './protobufTypes';
 
@@ -66,7 +67,7 @@ export type ThpMessageType = ThpProtobufMessageType & {
 };
 
 export type ThpHandshakeCredentials = {
-    pairingMethods: ThpDeviceProperties['pairing_methods'];
+    pairingMethods: ThpPairingMethod[];
     handshakeHash: Buffer;
     handshakeCommitment: Buffer;
     codeEntryChallenge: Buffer;
