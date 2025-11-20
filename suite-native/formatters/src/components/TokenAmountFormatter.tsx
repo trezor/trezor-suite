@@ -10,7 +10,7 @@ type TokenAmountFormatterProps = {
     tokenSymbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     decimals?: number;
-    isForcedDiscreetMode?: boolean;
+    isPhishingTransaction?: boolean;
 } & FormatterProps<number | string> &
     TextProps;
 
@@ -21,11 +21,14 @@ export const TokenAmountFormatter = ({
     decimals = 0,
     variant = 'hint',
     color = 'textSubdued',
+    isPhishingTransaction = false,
     ...rest
 }: TokenAmountFormatterProps) => {
-    const decimalValue = convertTokenValueToDecimal(value, decimals);
-    const { CryptoAmountFormatter: formatter } = useFormatters();
+    // Phishing transactions values may be equal to empty string, so we replace it with 0.
+    // These values are hidden by discreet mode , so the exact value does not matter anyway.
+    const decimalValue = isPhishingTransaction ? 0 : convertTokenValueToDecimal(value, decimals);
 
+    const { CryptoAmountFormatter: formatter } = useFormatters();
     const formattedValue = formatter.format(decimalValue.toString(), {
         symbol: tokenSymbol ?? undefined,
     });
@@ -36,6 +39,7 @@ export const TokenAmountFormatter = ({
             isDiscreetText={isDiscreetText}
             variant={variant}
             color={color}
+            isForcedDiscreetMode={isPhishingTransaction}
             {...rest}
         />
     );
