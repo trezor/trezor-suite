@@ -112,10 +112,13 @@ test.describe(
                 await page.getByTestId('@onboarding/recovery/start-button').click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await trezorUserEnvLink.selectNumOfWordsEmu(20);
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             });
 
             await test.step('Enter first Shamir share', async () => {
@@ -135,13 +138,16 @@ test.describe(
                 // which means you confirm too early if you don't wait
                 await page.waitForTimeout(3_000);
                 await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             });
 
             await test.step('Enter second Shamir share', async () => {
                 for (const word of shareTwoOfThree) {
                     await trezorUserEnvLink.inputEmu(word);
                 }
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                 await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             });
 
             await test.step('Finish onboarding', async () => {

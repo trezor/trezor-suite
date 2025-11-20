@@ -31,7 +31,7 @@ test.describe(
                     priority: TestPriority.High,
                 }),
             },
-            async ({ settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
+            async ({ page, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
                 await test.step('Initiate recovery dry run in settings', async () => {
                     await settingsPage.checkSeedButton.click();
                     await recoveryModal.userUnderstandsCheckbox.click();
@@ -41,14 +41,20 @@ test.describe(
 
                 await test.step('Do the recover dry run on emulator', async () => {
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.inputEmu('1');
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.selectNumOfWordsEmu(12);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                 });
 
                 await test.step('Verify success in suite', async () => {
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await expect(recoveryModal.successTitle).toHaveText(
                         'Wallet backup checked successfully',
                     );
@@ -76,10 +82,15 @@ test.describe(
 
                 await test.step('Partially complete the dry run on emulator', async () => {
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.inputEmu('1');
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.selectNumOfWordsEmu(12);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.inputEmu('all');
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                 });
 
                 await test.step('Simulate disconnect', async () => {
@@ -96,9 +107,13 @@ test.describe(
 
                 await test.step('Complete the dry run on emulator', async () => {
                     await trezorUserEnvLink.selectNumOfWordsEmu(12);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await expect(recoveryModal.successTitle).toHaveText(
                         'Wallet backup checked successfully',
                     );
@@ -126,10 +141,15 @@ test.describe(
 
                 await test.step('Partially complete the dry run on emulator', async () => {
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.inputEmu('1');
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.selectNumOfWordsEmu(12);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.inputEmu('all');
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                 });
 
                 await test.step('Reload suite and check recovery dry run is reinitialized', async () => {
@@ -139,9 +159,13 @@ test.describe(
 
                 await test.step('Complete the dry run on emulator', async () => {
                     await trezorUserEnvLink.selectNumOfWordsEmu(12);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await trezorUserEnvLink.pressYes();
+                    await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                     await expect(recoveryModal.successTitle).toHaveText(
                         'Wallet backup checked successfully',
                     );
