@@ -13758,7 +13758,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     "@types/node-fetch": "npm:^2.6.12"
-    cross-fetch: "npm:^4.0.0"
+    cross-fetch: "npm:^4.1.0"
     golomb: "npm:1.2.0"
     n64: "npm:^0.2.10"
     node-fetch: "npm:^2.6.4"
@@ -14183,7 +14183,7 @@ __metadata:
     bs58: "npm:^6.0.0"
     bs58check: "npm:^4.0.0"
     cbor: "npm:^10.0.10"
-    cross-fetch: "npm:^4.0.0"
+    cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.0"
     jest: "npm:29.7.0"
     jws: "npm:^4.0.0"
@@ -14440,7 +14440,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@types/semver": "npm:^7.7.0"
     chalk: "npm:^5.6.2"
-    cross-fetch: "npm:^4.0.0"
+    cross-fetch: "npm:^4.1.0"
     fs-extra: "npm:^11.3.1"
     minimatch: "npm:^10.1.1"
     prettier: "npm:^3.6.2"
@@ -14975,7 +14975,7 @@ __metadata:
     "@types/node": "npm:22.13.10"
     "@types/sharedworker": "npm:^0.0.143"
     "@types/w3c-web-usb": "npm:^1.0.10"
-    cross-fetch: "npm:^4.0.0"
+    cross-fetch: "npm:^4.1.0"
     jest: "npm:29.7.0"
     tsx: "npm:^4.20.3"
     usb: "npm:^2.15.0"
@@ -14990,7 +14990,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
-    cross-fetch: "npm:^4.0.0"
+    cross-fetch: "npm:^4.1.0"
     ts-node: "npm:^10.9.2"
     typescript: "npm:5.8.3"
   languageName: unknown
@@ -21364,12 +21364,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "cross-fetch@npm:4.0.0"
+"cross-fetch@npm:^4.0.0, cross-fetch@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "cross-fetch@npm:4.1.0"
   dependencies:
-    node-fetch: "npm:^2.6.12"
-  checksum: 10/e231a71926644ef122d334a3a4e73d9ba3ba4b480a8a277fb9badc434c1ba905b3d60c8034e18b348361a09afbec40ba9371036801ba2b675a7b84588f9f55d8
+    node-fetch: "npm:^2.7.0"
+  checksum: 10/07624940607b64777d27ec9c668ddb6649e8c59ee0a5a10e63a51ce857e2bbb1294a45854a31c10eccb91b65909a5b199fcb0217339b44156f85900a7384f489
   languageName: node
   linkType: hard
 
@@ -35547,7 +35547,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.7.0, node-fetch@npm:^2.5.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.4, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
+"node-fetch@npm:2.7.0, node-fetch@npm:^2.5.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.4, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
