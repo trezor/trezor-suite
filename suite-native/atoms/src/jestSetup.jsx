@@ -9,3 +9,7 @@ jest.mock('./Skeleton/BoxSkeleton', () => ({
 jest.mock('./HoldToConfirmButton', () => ({
     HoldToConfirmButton: props => <MockView {...props} testID="HoldToConfirmButton" />,
 }));
+
+jest.mock('./DiscreetText/DiscreetCanvas', () => ({
+    DiscreetCanvas: () => null,
+}));

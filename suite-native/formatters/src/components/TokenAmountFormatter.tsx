@@ -6,7 +6,7 @@ import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { convertTokenValueToDecimal } from '../utils';
 
-type TokenAmountFormatterProps = {
+export type TokenAmountFormatterProps = {
     tokenSymbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     decimals?: number;
