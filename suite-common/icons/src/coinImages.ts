@@ -1,28 +1,60 @@
 export const ICONS_URL_BASE = 'https://data.trezor.io/suite/icons/coins';
 
-export const COIN_IMAGE_SIZES = [24, 40] as const satisfies number[];
-export const COIN_IMAGE_QUALITIES = ['1x', '2x'] as const satisfies string[];
+/**
+ * @deprecated Use `COIN_IMAGE_SIZES` instead
+ */
+export const LEGACY_COIN_IMAGE_SIZES = [24, 48] as const satisfies number[];
+/**
+ * @deprecated Use `CoinImageSize` instead
+ */
+export type LegacyCoinImageSize = (typeof LEGACY_COIN_IMAGE_SIZES)[number];
+
+export const COIN_IMAGE_SIZES = [24, 40, 48, 80] as const satisfies number[];
 
 export type CoinImageSize = (typeof COIN_IMAGE_SIZES)[number];
-export type CoinImageQuality = (typeof COIN_IMAGE_QUALITIES)[number];
 
-export function createCoinImageName<
-    Name extends string,
-    Size extends CoinImageSize,
-    Quality extends CoinImageQuality,
->(name: Name, { size, quality }: { size: Size; quality: Quality }) {
-    const qualitySuffix =
-        quality !== '1x'
-            ? (`@${quality as Exclude<Quality, '1x'>}` as const)
-            : ('' as const satisfies string);
+const CRYPTO_ID_SEPARATOR = '--';
+const IMAGE_SIZE_SEPARATOR = '@';
 
-    return `${encodeURIComponent(name)}--${size}${qualitySuffix}.webp` as const;
+function createCryptoId(coingeckoId: string, contractAddress?: string) {
+    const cryptoId = contractAddress
+        ? (`${coingeckoId}${CRYPTO_ID_SEPARATOR}${contractAddress}` as const)
+        : coingeckoId;
+
+    return encodeURIComponent(cryptoId);
 }
 
-export function createCoinImageNameLegacy(name: string, quality: CoinImageQuality) {
-    return `${encodeURIComponent(name)}${quality !== '1x' ? `@${quality}` : ''}.webp` as const;
+export interface CreateCoinImageNameParams<Size extends CoinImageSize> {
+    coingeckoId: string;
+    contractAddress?: string;
+    size: Size;
 }
 
-export function concatCoinImageName(coingeckoId: string, contractAddress?: string) {
-    return contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
+export function createCoinImageName<Size extends CoinImageSize>({
+    coingeckoId,
+    contractAddress,
+    size,
+}: CreateCoinImageNameParams<Size>) {
+    const cryptoId = createCryptoId(coingeckoId, contractAddress);
+
+    return `${cryptoId}${IMAGE_SIZE_SEPARATOR}${size}.webp` as const;
+}
+
+export interface CreateCoinImageNameLegacyParams {
+    coingeckoId: string;
+    contractAddress?: string;
+    size: LegacyCoinImageSize;
+}
+
+/**
+ * @deprecated Use `createCoinImageName` instead
+ */
+export function createCoinImageNameLegacy({
+    coingeckoId,
+    contractAddress,
+    size,
+}: CreateCoinImageNameLegacyParams) {
+    const cryptoId = createCryptoId(coingeckoId, contractAddress);
+
+    return `${cryptoId}${size === 24 ? '' : '@2x'}.webp` as const;
 }

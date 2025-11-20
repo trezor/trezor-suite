@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
-import { getAssetLogoUrl, resolveAssetLogoSize } from '@trezor/asset-utils';
+import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 export interface CryptoIconProps {
     symbol: NetworkSymbol | NetworkDisplaySymbol;
@@ -58,8 +58,8 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
                 url = getAssetLogoUrl({
                     coingeckoId,
                     contractAddress: formattedAddress,
-                    quality: '2x',
-                    size: resolveAssetLogoSize(sizeNumber, 24),
+                    density: 2,
+                    size: sizeNumber,
                 });
             }
         }

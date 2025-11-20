@@ -5,7 +5,7 @@ import styled from 'styled-components';
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { getNetwork, getNetworkByCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
-import { getAssetLogoUrl, resolveAssetLogoSize } from '@trezor/asset-utils';
+import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetInitials } from './AssetInitials';
@@ -144,14 +144,14 @@ export const AssetLogo = ({
             const url1x = getAssetLogoUrl({
                 coingeckoId: coingeckoIdLogo,
                 contractAddress: !hasNative ? address : undefined,
-                quality: '1x',
-                size: resolveAssetLogoSize(size),
+                density: 1,
+                size,
             });
             const url2x = getAssetLogoUrl({
                 coingeckoId: coingeckoIdLogo,
                 contractAddress: !hasNative ? address : undefined,
-                quality: '2x',
-                size: resolveAssetLogoSize(size),
+                density: 2,
+                size,
             });
 
             return { address, src: url1x, srcSet: `${url1x} 1x, ${url2x} 2x` };
