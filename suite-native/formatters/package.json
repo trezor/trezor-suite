@@ -17,11 +17,9 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/test-utils": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
@@ -33,5 +31,9 @@
         "react-native": "0.81.4",
         "react-redux": "9.2.0",
         "web3-utils": "^4.3.1"
+    },
+    "devDependencies": {
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-native/test-utils": "workspace:*"
     }
 }
