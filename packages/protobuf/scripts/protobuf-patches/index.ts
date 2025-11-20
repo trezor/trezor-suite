@@ -272,6 +272,7 @@ export const TYPE_PATCH = {
     'MoneroTransferDetails.out_key': 'Uint8Array',
     'MoneroTransferDetails.tx_pub_key': 'Uint8Array',
     'MoneroTransferDetails.additional_tx_pub_keys': 'Uint8Array',
+    'ThpDeviceProperties.pairing_methods': '(keyof typeof ThpPairingMethod)',
 };
 
 export const readPatch = (file: string) =>

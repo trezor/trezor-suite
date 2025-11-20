@@ -12,7 +12,7 @@ export type ThpDeviceProperties = {
     model_variant: number;
     protocol_version_major: number;
     protocol_version_minor: number;
-    pairing_methods: ThpPairingMethod[];
+    pairing_methods: (keyof typeof ThpPairingMethod)[];
 };
 
 export type ThpHandshakeCompletionReqNoisePayload = {

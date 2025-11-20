@@ -129,6 +129,20 @@ export const events = (api: TrezorConnect) => {
                 //
             }
         }
+
+        if (event.type === 'ui-request_thp_pairing') {
+            if (event.payload.device.thp?.properties?.pairing_methods[0] === 'CodeEntry') {
+                api.uiResponse({
+                    type: 'ui-receive_thp_pairing_tag',
+                    payload: { selectedMethod: 1 },
+                });
+
+                api.uiResponse({
+                    type: 'ui-receive_thp_pairing_tag',
+                    payload: { source: 'code-entry', tag: '0000' },
+                });
+            }
+        }
     });
     api.off(UI_EVENT, () => {});
 
