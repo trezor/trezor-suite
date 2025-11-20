@@ -34,6 +34,11 @@ export const ConnectSelectDeviceModal = () => {
             dispatch(
                 connectPopupCallThunkInner({
                     ...popupCall,
+                    payload: {
+                        ...popupCall.payload,
+                        // override previously selected device
+                        device: selectedDevice,
+                    },
                 }),
             );
     };
