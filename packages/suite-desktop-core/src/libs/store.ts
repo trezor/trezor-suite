@@ -5,6 +5,7 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { getInitialWindowSize } from './screen';
 
 type OnDidChangeCallback<T> = (newValue?: T, oldValue?: T) => void;
+type Unsubscribe = () => void;
 
 export type WinBoundsCoords = WinBounds & {
     x?: number;
@@ -82,7 +83,7 @@ export class Store {
         this.store.set('torSettings', torSettings);
     }
 
-    public onTorSettingsChange(callback: OnDidChangeCallback<TorSettings>) {
+    public onTorSettingsChange(callback: OnDidChangeCallback<TorSettings>): Unsubscribe {
         return this.store.onDidChange('torSettings', callback);
     }
 
@@ -135,7 +136,7 @@ export class Store {
         });
     }
 
-    public onBioAuthSettingsChange(callback: OnDidChangeCallback<BioAuthSettings>) {
+    public onBioAuthSettingsChange(callback: OnDidChangeCallback<BioAuthSettings>): Unsubscribe {
         return this.store.onDidChange('bioAuthSettings', callback);
     }
 

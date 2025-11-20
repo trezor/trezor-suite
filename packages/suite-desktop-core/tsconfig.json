@@ -1,10 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src", "e2e", "**/*.json"],
     "references": [
         {
