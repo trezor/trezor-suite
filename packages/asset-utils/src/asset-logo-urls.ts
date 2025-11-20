@@ -1,36 +1,41 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
     COIN_IMAGE_SIZES,
-    CoinImageQuality,
     CoinImageSize,
     ICONS_URL_BASE,
-    concatCoinImageName,
     createCoinImageName,
 } from '@suite-common/icons/src/index';
 
 export interface GetAssetLogoUrlParams {
     coingeckoId: string;
     contractAddress?: string;
-    quality?: CoinImageQuality;
-    size?: CoinImageSize;
+    /**
+     * Pixel density of the image
+     */
+    density?: 1 | 2;
+    size?: number;
+}
+
+function resolveImageSize(
+    size: GetAssetLogoUrlParams['size'] = 24,
+    density: GetAssetLogoUrlParams['density'] = 1,
+) {
+    const targetSize = size * density;
+
+    return (
+        COIN_IMAGE_SIZES.find(s => s >= targetSize) ??
+        (Math.max(...COIN_IMAGE_SIZES) as CoinImageSize)
+    );
 }
 
 export const getAssetLogoUrl = ({
     coingeckoId,
     contractAddress,
-    quality = '1x',
-    size = 24,
+    density,
+    size,
 }: GetAssetLogoUrlParams) => {
-    const name = concatCoinImageName(coingeckoId, contractAddress);
-    const fileName = createCoinImageName(name, { quality, size });
+    const resolvedSize = resolveImageSize(size, density);
+    const fileName = createCoinImageName({ coingeckoId, contractAddress, size: resolvedSize });
 
     return `${ICONS_URL_BASE}/${fileName}` as const;
 };
-
-/**
- * - Coin images are generated only in specific sizes (defined in `COIN_IMAGE_SIZES` constant).
- * - This util. finds the `COIN_IMAGE_SIZES` size that is at least as big as the `size` parameter.
- */
-export function resolveAssetLogoSize(size: number, defaultSize: CoinImageSize = 24): CoinImageSize {
-    return COIN_IMAGE_SIZES.find(s => s >= size) ?? defaultSize;
-}
