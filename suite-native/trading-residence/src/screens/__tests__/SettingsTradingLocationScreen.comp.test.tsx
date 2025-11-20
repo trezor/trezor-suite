@@ -32,7 +32,7 @@ describe('TradingLocationSettingsScreen', () => {
         const { getByText, queryByText, getByLabelText } =
             await renderTradingLocationSettingsScreen();
 
-        expect(getByText('Confirm your location to enable trading')).toBeOnTheScreen();
+        expect(getByText('Trading is now available')).toBeOnTheScreen();
         expect(getByText('Confirm location')).toBeOnTheScreen();
         expect(queryByText('Not now')).toBeNull();
 
