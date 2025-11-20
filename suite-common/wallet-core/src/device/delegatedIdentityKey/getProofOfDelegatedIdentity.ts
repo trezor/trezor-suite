@@ -1,4 +1,4 @@
-import { p256 } from '@noble/curves/nist';
+import { p256 } from '@noble/curves/nist.js';
 import { sha256 } from '@noble/hashes/sha2';
 
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
@@ -20,9 +20,9 @@ export const getProofOfDelegatedIdentity = ({
     ]);
 
     const messageDigest = sha256(prefixedMessageInBuffer);
-    const signature = p256.sign(messageDigest, delegatedKey);
+    const signature = p256.sign(messageDigest, Buffer.from(delegatedKey, 'hex'), {
+        prehash: false,
+    });
 
-    return asProofOfDelegatedIdentity(
-        Buffer.from(signature.toBytes('compact').buffer).toString('hex'),
-    );
+    return asProofOfDelegatedIdentity(Buffer.from(signature).toString('hex'));
 };
