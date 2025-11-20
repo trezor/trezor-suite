@@ -209,6 +209,8 @@ export const ConfirmValueModal = ({
                                                 type: 'addressLabel',
                                                 entityKey: account.key,
                                                 defaultValue: value,
+                                                networkSymbol: account.symbol,
+                                                accountDescriptor: account.descriptor,
                                                 value:
                                                     suiteSyncAddressLabels?.find(
                                                         it => it.address === value,

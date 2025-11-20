@@ -157,6 +157,7 @@ export const ReceiveAddressScreen = ({
                     </AnimatedBox>
                 )}
                 <ReceiveAddressCard
+                    accountDescriptor={account.descriptor}
                     symbol={account.symbol}
                     address={address}
                     deviceStaticSessionId={account.deviceState}

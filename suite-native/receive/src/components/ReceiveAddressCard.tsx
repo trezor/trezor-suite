@@ -17,6 +17,7 @@ type ReceiveAddressCardProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
     isReceiveApproved: boolean;
+    accountDescriptor: string;
     isUnverifiedAddressRevealed: boolean;
     symbol: NetworkSymbol;
     onShowAddress: () => void;
@@ -24,6 +25,7 @@ type ReceiveAddressCardProps = {
 };
 
 export const ReceiveAddressCard = ({
+    accountDescriptor,
     address,
     deviceStaticSessionId,
     isUnverifiedAddressRevealed,
@@ -75,8 +77,10 @@ export const ReceiveAddressCard = ({
                 <Box paddingVertical="sp8">
                     {isReceiveApproved ? (
                         <AddressQRCode
+                            accountDescriptor={accountDescriptor}
                             address={address}
                             deviceStaticSessionId={deviceStaticSessionId}
+                            networkSymbol={symbol}
                         />
                     ) : (
                         <UnverifiedAddress

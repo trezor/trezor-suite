@@ -27,7 +27,13 @@ export const setAccountLabel = createAction(
 /** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
 export const setAddressLabel = createAction(
     `${LABELING_PREFIX}/set-address-label`,
-    (payload: { walletDescriptor: WalletDescriptor; address: string; label: string | null }) => ({
+    (payload: {
+        walletDescriptor: WalletDescriptor;
+        address: string;
+        label: string | null;
+        accountDescriptor: string;
+        networkSymbol: NetworkSymbol;
+    }) => ({
         payload,
     }),
 );

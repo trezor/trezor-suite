@@ -267,6 +267,8 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 type: 'addressLabel',
                                 entityKey: account.key,
                                 defaultValue: utxo.address,
+                                accountDescriptor: account.descriptor,
+                                networkSymbol: account.symbol,
                                 value:
                                     suiteSyncAddressLabels.find(it => it.address === utxo.address)
                                         ?.label ?? addressLabels[utxo.address],

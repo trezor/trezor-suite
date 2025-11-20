@@ -186,6 +186,8 @@ export const UsedAddresses = ({
                                     type: 'addressLabel',
                                     entityKey: account.key,
                                     defaultValue: addr.address,
+                                    networkSymbol: account.symbol,
+                                    accountDescriptor: account.descriptor,
                                     value:
                                         suiteSyncAddressLabels.find(
                                             it => it.address === addr.address,

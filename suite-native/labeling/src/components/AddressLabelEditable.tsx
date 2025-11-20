@@ -5,6 +5,7 @@ import {
     selectAddressLabel,
     updateAddressLabelThunk,
 } from '@suite-common/suite-sync';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
@@ -14,11 +15,15 @@ import { useIsLabelingEnabled } from './useIsLabelingEnabled';
 type AddressLabelEditableProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
 };
 
 export const AddressLabelEditable = ({
     address,
     deviceStaticSessionId,
+    accountDescriptor,
+    networkSymbol,
 }: AddressLabelEditableProps) => {
     const isLabelingEnabled = useIsLabelingEnabled();
     const dispatch = useDispatch();
@@ -37,6 +42,8 @@ export const AddressLabelEditable = ({
                 deviceStaticSessionId,
                 address,
                 label: newLabel,
+                accountDescriptor,
+                networkSymbol,
             }),
         );
     };
