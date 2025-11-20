@@ -13597,7 +13597,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     concurrently: "npm:^8.0.0"
     escape-string-regexp: "npm:^5.0.0"
-    flexsearch: "npm:^0.7.31"
+    flexsearch: "npm:^0.8.212"
     focus-visible: "npm:^5.2.1"
     git-url-parse: "npm:^15.0.0"
     intersection-observer: "npm:^0.12.2"
@@ -26104,6 +26104,13 @@ __metadata:
   version: 0.7.43
   resolution: "flexsearch@npm:0.7.43"
   checksum: 10/79c0bceee435bd40fd0a0d8ba72f1bd07f622374a73bd3ceb874f7c7dd9a0fe9863b5c66a4037c2fa534e726f718d010ac99377d1924e347823b51ce641180e5
+  languageName: node
+  linkType: hard
+
+"flexsearch@npm:^0.8.212":
+  version: 0.8.212
+  resolution: "flexsearch@npm:0.8.212"
+  checksum: 10/d499fcd2b9f08d8f481995af50df5fbe7b4222e233fbdc59859da96f2c1dc528bc56a33516cc2ef49158130cd610f9a85841e01c50d3b23172538fa6997ef01f
   languageName: node
   linkType: hard
 

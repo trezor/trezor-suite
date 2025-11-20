@@ -30,7 +30,7 @@
         "@trezor/theme": "workspace:*",
         "clsx": "^2.1.1",
         "escape-string-regexp": "^5.0.0",
-        "flexsearch": "^0.7.31",
+        "flexsearch": "^0.8.212",
         "focus-visible": "^5.2.1",
         "git-url-parse": "^15.0.0",
         "intersection-observer": "^0.12.2",
