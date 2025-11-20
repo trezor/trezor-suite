@@ -23,7 +23,6 @@ import {
     PrecomposedTransactionFinal,
     RatesByKey,
     ReceiveInfo,
-    SuccessfulAccount,
     TokenAddress,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -54,9 +53,6 @@ import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
-
-export const isAccountSuccessful = (account: Account): account is SuccessfulAccount =>
-    !account.failed;
 
 export const isAccountFailed = (account: Account): account is FailedAccount => !!account.failed;
 

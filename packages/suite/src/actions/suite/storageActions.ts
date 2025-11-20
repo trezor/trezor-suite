@@ -13,13 +13,9 @@ import {
     selectDevices,
     selectPersistentDeviceData,
 } from '@suite-common/wallet-core';
-import type { FormState, RatesByTimestamps, SuccessfulAccount } from '@suite-common/wallet-types';
+import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
-import {
-    getFormDraftKey,
-    isAccountSuccessful,
-    selectHistoricRatesByTransactions,
-} from '@suite-common/wallet-utils';
+import { getFormDraftKey, selectHistoricRatesByTransactions } from '@suite-common/wallet-utils';
 import { cloneObject } from '@trezor/utils';
 
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -259,7 +255,7 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
     ]);
 };
 
-export const saveAccounts = (accounts: SuccessfulAccount[]) => {
+export const saveAccounts = (accounts: Account[]) => {
     if (!db.isAccessible()) return;
 
     return db.addItems('accounts', accounts, true);
@@ -307,9 +303,9 @@ export const rememberDevice =
         if (!isDeviceAcquired(device) || !device.state?.staticSessionId) return;
 
         const { wallet } = getState();
-        const accounts = wallet.accounts
-            .filter(isAccountSuccessful)
-            .filter(a => a.deviceState === device.state?.staticSessionId);
+        const accounts = wallet.accounts.filter(
+            a => a.deviceState === device.state?.staticSessionId,
+        );
 
         const graphData = wallet.graph.data.filter(d =>
             deviceGraphDataFilterFn(d, device.state?.staticSessionId),
