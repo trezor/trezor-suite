@@ -12,7 +12,7 @@
     "dependencies": {
         "@trezor/utils": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
-        "cross-fetch": "^4.0.0"
+        "cross-fetch": "^4.1.0"
     },
     "devDependencies": {
         "ts-node": "^10.9.2",
