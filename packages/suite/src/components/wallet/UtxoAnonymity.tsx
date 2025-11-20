@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import { Icon, variables } from '@trezor/components';
+import { Icon } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 const Wrapper = styled.div`
     align-items: center;
@@ -10,9 +11,8 @@ const Wrapper = styled.div`
 
 const AnonymityLevel = styled.span`
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
     font-variant-numeric: tabular-nums;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface UtxoAnonymityProps {

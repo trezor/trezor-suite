@@ -4,8 +4,8 @@ import { BuyTrade, BuyTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { invityAPI } from '@suite-common/trading';
-import { Button, Image, variables } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, Image, Paragraph } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -21,17 +21,12 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled.div`
-    margin-top: 25px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
 const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
     color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
     margin: 17px 0 10px;
     text-align: center;
 `;
@@ -80,9 +75,13 @@ export const TradingDetailBuyPaymentWaitingForUser = ({
     return (
         <Wrapper>
             <Image image="TRADING_WAITING" />
-            <Title data-testid="@trading/transaction/detail/status">
+            <Paragraph
+                typographyStyle="body"
+                margin={{ top: 24 }}
+                data-testid="@trading/transaction/detail/status"
+            >
                 <Translation id={translations.titleTranslationId} />
-            </Title>
+            </Paragraph>
             <Description>
                 <Translation id={translations.descriptionTranslationId} values={{ providerName }} />
             </Description>

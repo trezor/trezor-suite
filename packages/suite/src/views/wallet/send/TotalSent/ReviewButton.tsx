@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
-import { Banner, Button, Checkbox, Column, Tooltip, variables } from '@trezor/components';
+import { Banner, Button, Checkbox, Column, Paragraph, Tooltip } from '@trezor/components';
 import { paletteV2, spacingsPx } from '@trezor/theme';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -34,11 +34,6 @@ const TextButton = styled.button`
     cursor: pointer;
     padding: 0;
     text-decoration: underline;
-`;
-
-const SecondLine = styled.p`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 export const ReviewButton = () => {
@@ -182,9 +177,9 @@ export const ReviewButton = () => {
                     <Column alignItems="center" gap={4}>
                         <Translation id={getPrimaryText()} />
                         {buttonHasTwoLines && (
-                            <SecondLine>
+                            <Paragraph typographyStyle="label">
                                 <Translation id={secondaryText} />
-                            </SecondLine>
+                            </Paragraph>
                         )}
                     </Column>
                 </Button>

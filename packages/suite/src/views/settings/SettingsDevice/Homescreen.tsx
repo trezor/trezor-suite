@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Tooltip, variables } from '@trezor/components';
+import { Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -29,12 +29,6 @@ const HiddenInput = styled.input`
 
 const Col = styled.div`
     flex-direction: column;
-`;
-
-const ValidationMessage = styled.div`
-    color: ${({ theme }) => theme.textAlertYellow};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 type HomescreenProps = {
@@ -161,7 +155,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <TextColumn
                         title={<Translation id="TR_CUSTOM_HOMESCREEN" />}
                         description={
-                            <ValidationMessage>
+                            <Paragraph typographyStyle="body" variant="warning">
                                 <Translation
                                     id={validationError}
                                     values={{
@@ -172,7 +166,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                                 .maxImageSize / 1024,
                                     }}
                                 />
-                            </ValidationMessage>
+                            </Paragraph>
                         }
                     />
 

@@ -9,9 +9,9 @@ import {
     buildUserFeedbackData,
     sendFeedbackAction,
 } from '@suite-common/feedback';
-import { Button, CollapsibleBox, Select, Textarea, variables } from '@trezor/components';
+import { Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
@@ -21,8 +21,7 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';
 
 const Headline = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.label}
     text-align: left;
     color: ${({ theme }) => theme.textDefault};
     padding: 0 0 11px;
@@ -39,8 +38,7 @@ const AnonymousDataList = styled.ul`
 
 const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
     color: ${({ theme }) => theme.textDefault};
 `;
 

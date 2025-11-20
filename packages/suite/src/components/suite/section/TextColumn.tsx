@@ -2,7 +2,8 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
+import { typography } from '@trezor/theme';
 import { Url } from '@trezor/urls';
 
 import { LearnMoreButton } from '../LearnMoreButton';
@@ -20,8 +21,7 @@ const Description = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     margin-bottom: 12px;
     margin-top: 12px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
 
     &:first-child {
         margin-top: 0;
@@ -30,11 +30,6 @@ const Description = styled.div`
     &:last-child {
         margin-bottom: 0;
     }
-`;
-
-const Title = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface TextColumnProps {
@@ -53,7 +48,7 @@ export const TextColumn = ({
     'data-testid': dataTestId,
 }: TextColumnProps) => (
     <Wrapper data-test={dataTestId}>
-        {title && <Title>{title}</Title>}
+        {title && <Paragraph typographyStyle="body">{title}</Paragraph>}
         {description && <Description>{description}</Description>}
         {buttonLink && (
             <LearnMoreButton data-testid={`${dataTestId}/learn-more-button`} url={buttonLink}>

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -13,16 +13,14 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
 `;
 
 const Header = styled.div`
     display: flex;
     align-items: center;
     height: 15px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    line-height: 1;
+    ${typography.highlight}
 
     > :first-child {
         margin-right: 6px;
@@ -33,8 +31,7 @@ const Header = styled.div`
 const CryptoAmount = styled(FormattedCryptoAmount)<{ $color?: string }>`
     margin: 6px 0 4px;
     color: ${({ theme, $color }) => $color || theme.textDefault};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.FONT_SIZE.H3};
+    ${typography.titleSmall}
 `;
 
 interface CryptoAmountWithHeaderProps {

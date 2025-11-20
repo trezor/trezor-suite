@@ -9,8 +9,8 @@ import {
     getTxOperation,
     isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { Icon, Row, variables } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Icon, Row } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -56,8 +56,7 @@ const ChevronIconWrapper = styled.div<{ $show: boolean; $animate: boolean }>`
 const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ $isPhishingTransaction: boolean }>`
     color: ${({ theme, $isPhishingTransaction }) =>
         $isPhishingTransaction ? theme.textSubdued : theme.textDefault};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
     white-space: nowrap;
     flex: 0;
 `;

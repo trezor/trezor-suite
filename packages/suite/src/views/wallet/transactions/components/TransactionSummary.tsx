@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { Button, Card, Column, Row, variables } from '@trezor/components';
+import { Button, Card, Column, Row } from '@trezor/components';
+import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
@@ -30,7 +31,7 @@ const ErrorMessage = styled.div`
     align-items: center;
     justify-content: center;
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
     text-align: center;
 `;
 

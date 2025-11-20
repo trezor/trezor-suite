@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { H3, IconCircle, IconName, Paragraph, variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -33,7 +34,7 @@ const StepTitle = styled(H3)`
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         align-self: center;
-        font-size: ${variables.FONT_SIZE.BIG};
+        ${typography.highlight}
         grid-column: 2;
         grid-row: 1;
     }
@@ -42,7 +43,7 @@ const StepTitle = styled(H3)`
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StepDescription = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;

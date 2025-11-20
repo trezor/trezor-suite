@@ -8,8 +8,8 @@ import {
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Column, Row, Text, Tooltip } from '@trezor/components';
-import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { Column, Paragraph, Row, Text, Tooltip } from '@trezor/components';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -28,19 +28,6 @@ import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAm
 
 import { TradingUtilsKyc } from './TradingUtilsKyc';
 
-const PriceWrap = styled.div``;
-
-const PriceTitle = styled.div`
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const PriceValueWrap = styled.div`
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-`;
-
 const PriceValue = styled.div`
     ${typography.titleSmall}
     color: ${({ theme }) => theme.textDefault};
@@ -48,7 +35,7 @@ const PriceValue = styled.div`
     margin-right: ${spacingsPx.sm};
 
     ${SCREEN_QUERY.MOBILE} {
-        font-size: ${FONT_SIZE.BIG};
+        ${typography.titleSmall}
     }
 `;
 
@@ -79,8 +66,8 @@ export const TradingUtilsPrice = ({
         : {};
 
     return (
-        <PriceWrap>
-            <PriceTitle>
+        <div>
+            <Paragraph typographyStyle="hint" variant="tertiary">
                 {showProviderAdjustedAmountTooltip ? (
                     <Tooltip
                         hasIcon
@@ -118,8 +105,8 @@ export const TradingUtilsPrice = ({
                         }
                     />
                 )}
-            </PriceTitle>
-            <PriceValueWrap data-testid="@trading/offers/quote/amount">
+            </Paragraph>
+            <Column alignItems="center" flexWrap="wrap" data-testid="@trading/offers/quote/amount">
                 <Column>
                     <Row alignItems="flex-start">
                         <PriceValue>
@@ -188,7 +175,7 @@ export const TradingUtilsPrice = ({
                         )}
                     </Row>
                 </Column>
-            </PriceValueWrap>
-        </PriceWrap>
+            </Column>
+        </div>
     );
 };

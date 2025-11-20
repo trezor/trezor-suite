@@ -4,8 +4,8 @@ import { BuyCryptoPaymentMethod, CryptoId, SellCryptoPaymentMethod } from 'invit
 import styled from 'styled-components';
 
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
-import { variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
+import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -18,8 +18,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.BIG};
+    ${typography.titleSmall}
     height: 100%;
 `;
 

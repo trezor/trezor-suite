@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -24,8 +24,7 @@ const Section = styled.div`
 `;
 
 const SectionHeading = styled.h3`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.callout}
     color: ${({ theme }) => theme.textSubdued};
     padding: 8px 0 18px;
 `;

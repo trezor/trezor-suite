@@ -5,8 +5,8 @@ import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount, isPending } from '@suite-common/wallet-utils';
-import { Icon, variables } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
+import { Icon } from '@trezor/components';
+import { typography, zIndices } from '@trezor/theme';
 
 import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
 import { useGraph, useSelector } from 'src/hooks/suite';
@@ -29,7 +29,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
     white-space: nowrap;
 
     /* little hack to remove first and last horizontal line from cartesian grid (lines that wrap the area of the chart) */

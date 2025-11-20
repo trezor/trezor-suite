@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { ChainedTransactions } from '@suite-common/wallet-types';
-import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -17,8 +17,7 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
     color: ${({ theme }) => theme.textDefault};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
     padding: 0 20px;
 `;
 

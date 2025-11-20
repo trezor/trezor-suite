@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import { Image, Link, variables } from '@trezor/components';
+import { Image, Link } from '@trezor/components';
+import { typography } from '@trezor/theme';
 import { INVITY_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -9,7 +10,7 @@ import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
     color: ${({ theme }) => theme.textSubdued};
 `;
 

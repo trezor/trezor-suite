@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Icon, IconName, IconProps, Image, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { typography } from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';
 
@@ -41,8 +42,7 @@ const ItemIconWrapper = styled.div`
 const ItemText = styled.div`
     width: 100%;
     color: ${({ theme }) => theme.textDefault};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
     padding: 26px 0;
     text-align: left;
 `;

@@ -3,17 +3,13 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import type { GuideCategory } from '@suite-common/suite-types';
-import { Icon, Input, Spinner, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Box, Icon, Input, Paragraph, Spinner } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
 import { Translation } from 'src/components/suite/Translation';
 import { useGuideSearch } from 'src/hooks/guide';
 import { useTranslation } from 'src/hooks/suite';
-
-const Wrapper = styled.div`
-    margin-bottom: ${spacingsPx.xs};
-`;
 
 const PageFoundList = styled.div`
     margin-top: 10px;
@@ -22,18 +18,11 @@ const PageFoundList = styled.div`
     gap: 10px;
 `;
 
-const NoResults = styled.p`
-    margin-top: 10px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
 const PreviewContent = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
     color: ${({ theme }) => theme.textSubdued};
 
     & > em {
@@ -74,7 +63,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     }, [query, searchResult, setSearchActive, loading]);
 
     return (
-        <Wrapper>
+        <Box margin={{ bottom: 8 }}>
             <Input
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
@@ -100,11 +89,16 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             ) : (
                 query &&
                 !loading && (
-                    <NoResults data-testid="@guide/search/no-results">
+                    <Paragraph
+                        data-testid="@guide/search/no-results"
+                        typographyStyle="hint"
+                        variant="tertiary"
+                        margin={{ top: 12 }}
+                    >
                         <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
-                    </NoResults>
+                    </Paragraph>
                 )
             )}
-        </Wrapper>
+        </Box>
     );
 };

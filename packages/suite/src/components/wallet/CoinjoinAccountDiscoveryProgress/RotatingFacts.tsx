@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { motionEasing, variables } from '@trezor/components';
+import { motionEasing } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 
@@ -12,9 +13,7 @@ const Fact = styled(motion.p)`
     height: 42px;
     margin-top: 6px;
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 1.5;
+    ${typography.hint}
     text-align: center;
 `;
 

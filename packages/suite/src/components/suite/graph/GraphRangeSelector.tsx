@@ -11,7 +11,8 @@ import {
 } from 'date-fns';
 import styled, { css } from 'styled-components';
 
-import { Popover, PopoverPlacement, PopoverRef, Timerange, variables } from '@trezor/components';
+import { Popover, PopoverPlacement, PopoverRef, Timerange } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useGraph, useLocales } from 'src/hooks/suite';
@@ -23,9 +24,8 @@ const Wrapper = styled.div`
 
 const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     display: flex;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${({ $selected }) => ($selected ? typography.callout : typography.hint)}
     text-align: center;
-    font-weight: ${({ $selected }) => ($selected ? 600 : 500)};
     color: ${({ theme, $selected }) => ($selected ? theme.textDefault : theme.textSubdued)};
     cursor: pointer;
     text-transform: uppercase;

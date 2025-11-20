@@ -10,7 +10,7 @@ import {
 
 import styled from 'styled-components';
 
-import { Input, InputProps, useElevation, variables } from '@trezor/components';
+import { Input, InputProps, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 
 const LevelContainer = styled.div`
@@ -25,7 +25,7 @@ const Level = styled(Input)<{ $elevation: Elevation }>`
         padding: ${({ rightContent }) => !rightContent && '1px 12px 0 12px'};
         border: 1.5px solid ${mapElevationToBorder};
         color: ${({ theme }) => theme.textPrimaryDefault};
-        font-size: ${variables.FONT_SIZE.H3};
+        ${typography.titleSmall}
         text-align: center;
 
         &:disabled {
