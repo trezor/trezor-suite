@@ -35,12 +35,15 @@ test.describe(
 
                 // [device screen] check your backup?
                 await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
 
                 // [device screen] select the number of words in your backup
                 await trezorUserEnvLink.inputEmu('20');
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
 
                 // [device screen] backup instructions
                 await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
 
                 for (const word of MNEMONICS.mnemonic_academic.split(' ')) {
                     // [device screen] enter next word
@@ -50,6 +53,7 @@ test.describe(
                 // [device screen] create additional backup?
                 await page.waitForTimeout(1000); // without this timeout, backup on device simply disappears, it stinks TODO: https://github.com/trezor/trezor-suite/issues/17128
                 await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
                 await trezorUserEnvLink.readAndConfirmShamirMnemonicEmu({
                     shares: 3,
                     threshold: 2,

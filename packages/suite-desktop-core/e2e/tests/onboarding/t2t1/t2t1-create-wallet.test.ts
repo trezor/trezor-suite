@@ -15,6 +15,7 @@ test.describe(
         });
 
         test('Success (Shamir backup)', async ({
+            page,
             analyticsSection,
             onboardingPage,
             devicePrompt,
@@ -38,10 +39,15 @@ test.describe(
             await devicePrompt.confirmOnDevicePromptIsShown();
 
             await trezorUserEnvLink.pressYes();
+            await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             await trezorUserEnvLink.inputEmu('12');
+            await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             await trezorUserEnvLink.inputEmu('12');
+            await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             await devicePrompt.confirmOnDevicePromptIsShown();
+            await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             await trezorUserEnvLink.pressYes();
+            await page.waitForTimeout(100); // This wait fixes weird emu/tenv sync issues (https://github.com/trezor/trezor-suite/issues/23270)
             await expect(onboardingPage.onboardingExitButton).toBeVisible();
         });
     },
