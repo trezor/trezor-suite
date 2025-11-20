@@ -19,7 +19,7 @@ const createCspRules = ({}: CreateCspRulesParams) => [
     "script-src 'self'",
     `style-src 'self' 'unsafe-inline'`,
     // Allow all API calls (Can't be restricted bc of custom backends)
-    'connect-src *',
+    'connect-src data: *',
     // Allow images from trezor.io
     "img-src 'self' blob: data: https://*.trezor.io",
 ];
