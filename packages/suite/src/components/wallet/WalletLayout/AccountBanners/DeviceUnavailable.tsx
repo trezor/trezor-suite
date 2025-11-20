@@ -8,7 +8,7 @@ export const DeviceUnavailable = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
-    if (!device?.connected || device.available) return null;
+    if (!device?.connected || device.available || !device.features) return null;
 
     const handleButtonClick = () => dispatch(applySettings({ use_passphrase: true }));
 
