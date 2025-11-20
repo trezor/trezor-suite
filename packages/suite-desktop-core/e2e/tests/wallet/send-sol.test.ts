@@ -1,0 +1,117 @@
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+
+import { formatAddress } from '../../support/common';
+import { expect, test } from '../../support/fixtures';
+import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const RECIPIENT_ADDRESS = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
+const FORMATTED_ADDRESS = formatAddress(RECIPIENT_ADDRESS);
+const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fullLine');
+const SOL_DECIMALS = 9;
+
+test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
+    test.use({
+        emulatorSetupConf: {
+            mnemonic: 'mnemonic_academic',
+            passphrase_protection: true,
+        },
+    });
+
+    test.beforeEach(async ({ settingsPage, onboardingPage, dashboardPage, walletPage }) => {
+        await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({
+            enableNetworks: ['sol'],
+            disableNetworks: ['btc'],
+        });
+        await dashboardPage.deviceSwitchingOpenButton.click();
+        await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+        await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
+    });
+
+    test(
+        'Send max',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Send Max functionality verification',
+                category: TestCategory.Solana,
+                priority: TestPriority.High,
+                stream: TestStream.NotDefined,
+            }),
+        },
+        async ({ model, walletPage, tradingPage, devicePrompt }) => {
+            let balance: number;
+            let maxFee: number;
+            let sendMaxAmount: string;
+
+            await test.step('Navigate to Solana Send form', async () => {
+                await walletPage.openSendFormButton.click();
+
+                await expect(walletPage.sendForm).toBeVisible();
+                await expect(tradingPage.sendButton).toBeDisabled();
+            });
+            await test.step('Fill recipient address, toggle Send Max & verify calculation', async () => {
+                await tradingPage.sendAddressInput.fill(RECIPIENT_ADDRESS);
+                await tradingPage.setMax.click();
+
+                await expect(tradingPage.fees.maxFee).not.toBeEmpty();
+
+                balance = Number(await tradingPage.sendBalance.textContent());
+                maxFee = Number(await tradingPage.fees.maxFee.textContent());
+                sendMaxAmount = (balance - maxFee).toFixed(SOL_DECIMALS);
+
+                await expect(tradingPage.sendAmountInput).toHaveValue(sendMaxAmount);
+                await expect(walletPage.totalSent).toHaveText(`${balance}`);
+                await expect(tradingPage.sendButton).toBeEnabled();
+            });
+            await test.step('Trigger Review & Send Modal', async () => {
+                await tradingPage.sendButton.click();
+
+                await expect(tradingPage.modal).toBeVisible();
+                await expect(devicePrompt.sendButton).toBeDisabled();
+            });
+            await test.step('Verify Recipient Address', async () => {
+                await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
+                await expect(devicePrompt.outputValueOf('address')).toHaveText(FORMATTED_ADDRESS);
+
+                // verify recipient address on device
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Recipient' },
+                    body: [model.model !== 'T3W1' ? TRANSFORMED_ADDRESS : RECIPIENT_ADDRESS],
+                    footer: 'Tap to continue',
+                });
+
+                // confirm address
+                await devicePrompt.waitForPromptAndClick(model.model);
+            });
+            await test.step('Verify Amount & Transaction Fee', async () => {
+                await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(`${sendMaxAmount}`);
+                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(`${maxFee}`);
+
+                // verify amount & fee
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Summary' },
+                    body: [
+                        ['Amount:'],
+                        [`${sendMaxAmount} SOL`],
+                        [' '],
+                        ['Transaction fee:'],
+                        [`${maxFee} SOL`],
+                    ],
+                    footer: 'Tap to continue',
+                });
+
+                // confirm amount & fee
+                await devicePrompt.waitForPromptAndClick(model.model);
+            });
+            await test.step('Approve and Verify Send readiness', async () => {
+                // hold & sign
+                if (model.model !== 'T3W1') {
+                    await devicePrompt.waitForPromptAndClick(model.model);
+                }
+
+                await expect(devicePrompt.sendButton).toBeEnabled();
+            });
+        },
+    );
+});

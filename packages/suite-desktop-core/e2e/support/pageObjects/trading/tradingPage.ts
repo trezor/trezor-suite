@@ -101,6 +101,8 @@ export class TradingPage {
     readonly sendAddressInput: Locator;
     readonly sendAmountInput: Locator;
     readonly sendButton: Locator;
+    readonly sendBalance: Locator;
+    readonly setMax: Locator;
     readonly swapBestOfferButton: Locator;
     readonly swapAmountInputCurrencyTicker: Locator;
     readonly swapFromAccountInput: Locator;
@@ -213,6 +215,8 @@ export class TradingPage {
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
+        this.sendBalance = this.page.getByTestId('outputs.0.token');
+        this.setMax = this.page.getByTestId('outputs.0.setMax');
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
         this.swapAmountInputCurrencyTicker = this.page.getByTestId(
             '@trading/form/crypto-input/input-addon',

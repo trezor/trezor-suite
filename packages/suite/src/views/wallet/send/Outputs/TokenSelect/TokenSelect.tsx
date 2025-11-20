@@ -152,6 +152,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             }
                                             symbol={selectedToken?.symbol ?? account.symbol}
                                             contractAddress={selectedToken?.contract}
+                                            data-testid={tokenInputName}
                                         />
                                     </HiddenPlaceholder>{' '}
                                     <BaseCurrencyValue
