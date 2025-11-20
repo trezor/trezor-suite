@@ -120,6 +120,20 @@ export type FilterPropertiesByType<T, ValueFilter> = {
     [Key in keyof T as T[Key] extends ValueFilter ? Key : never]: T[Key];
 };
 
+export type XORWithout<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+
+/**
+ * XOR type - allows only one of the two types, not both
+ * @example
+ * type LoginMethod = XOR<{ email: string }, { phone: string }>;
+ * Valid: { email: 'test@example.com' }
+ * Valid: { phone: '+1234567890' }
+ * Invalid: { email: 'test@example.com', phone: '+1234567890' }
+ */
+export type XOR<T, U> = T | U extends object
+    ? (XORWithout<T, U> & U) | (XORWithout<U, T> & T)
+    : T | U;
+
 /**
  * Removed the type from the union where `{ KeyName: ValueToExclude }`.
  *

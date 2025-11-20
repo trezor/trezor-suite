@@ -4,5 +4,8 @@
         "outDir": "libDev",
         "exactOptionalPropertyTypes": true
     },
-    "references": []
+    "references": [
+        { "path": "../redux-utils" },
+        { "path": "../suite-utils" }
+    ]
 }
