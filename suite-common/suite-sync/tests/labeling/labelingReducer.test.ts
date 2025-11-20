@@ -185,6 +185,8 @@ describe('labelingReducer', () => {
                 walletDescriptor,
                 address: 'tb1qexampleaddressxyz',
                 label: 'First Address',
+                accountDescriptor: 'test-descriptor-123',
+                networkSymbol: 'btc',
             }),
         );
 
@@ -206,6 +208,8 @@ describe('labelingReducer', () => {
                 walletDescriptor,
                 address: 'tb1qexampleaddressxyz',
                 label: 'First Address Updated',
+                accountDescriptor: 'test-descriptor-123',
+                networkSymbol: 'btc',
             }),
         );
 
@@ -235,6 +239,8 @@ describe('labelingReducer', () => {
                 walletDescriptor,
                 address: 'tb1qaddress1',
                 label: 'Address 1',
+                accountDescriptor: 'test-descriptor-123',
+                networkSymbol: 'btc',
             }),
         );
 
@@ -243,6 +249,8 @@ describe('labelingReducer', () => {
                 walletDescriptor,
                 address: 'tb1qaddress2',
                 label: 'Address 2',
+                accountDescriptor: 'test-descriptor-123',
+                networkSymbol: 'btc',
             }),
         );
 
@@ -259,6 +267,8 @@ describe('labelingReducer', () => {
                 walletDescriptor,
                 address: 'tb1qaddress2',
                 label: 'Address 2 Updated',
+                accountDescriptor: 'test-descriptor-123',
+                networkSymbol: 'btc',
             }),
         );
 
@@ -269,6 +279,8 @@ describe('labelingReducer', () => {
         expect(updatedAddrLabels).toHaveLength(2);
         expect(updatedAddrLabels[0].label).toBe('Address 1');
         expect(updatedAddrLabels[1].label).toBe('Address 2 Updated');
+        expect(updatedAddrLabels[0].accountDescriptor).toBe('test-descriptor-123');
+        expect(updatedAddrLabels[1].networkSymbol).toBe('btc');
     });
 
     it('adds and updates output label (insert then update path)', () => {
@@ -336,6 +348,8 @@ describe('labelingReducer', () => {
                 {
                     address: 'tb1qexampleaddressxyz',
                     label: 'Address',
+                    accountDescriptor: 'test-descriptor-123',
+                    networkSymbol: 'btc',
                 },
             ],
             outputLabels: [

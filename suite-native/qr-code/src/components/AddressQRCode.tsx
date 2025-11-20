@@ -1,5 +1,6 @@
 import { Alert, Pressable, Share } from 'react-native';
 
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -12,13 +13,20 @@ import { QRCode } from './QRCode';
 type AddressQRCodeProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
 };
 
 const addressContainer = prepareNativeStyle(() => ({
     justifyContent: 'center',
     alignItems: 'center',
 }));
-export const AddressQRCode = ({ address, deviceStaticSessionId }: AddressQRCodeProps) => {
+export const AddressQRCode = ({
+    address,
+    deviceStaticSessionId,
+    accountDescriptor,
+    networkSymbol,
+}: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -49,7 +57,12 @@ export const AddressQRCode = ({ address, deviceStaticSessionId }: AddressQRCodeP
                     {address}
                 </Text>
             </Pressable>
-            <AddressLabelEditable address={address} deviceStaticSessionId={deviceStaticSessionId} />
+            <AddressLabelEditable
+                accountDescriptor={accountDescriptor}
+                address={address}
+                deviceStaticSessionId={deviceStaticSessionId}
+                networkSymbol={networkSymbol}
+            />
             <HStack spacing="sp8" justifyContent="center">
                 <Button
                     size="small"

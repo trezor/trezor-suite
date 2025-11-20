@@ -1,6 +1,10 @@
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+
 export type AddressLabel = {
     address: string;
     label: string | null;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
 };
 
 export interface AddressLabelsStore {

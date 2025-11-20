@@ -29,6 +29,8 @@ export type MetadataAddPayload = { skipSave?: boolean } & (
           entityKey: string;
           defaultValue: string;
           value?: string;
+          networkSymbol: string;
+          accountDescriptor: string;
       }
     | {
           type: 'accountLabel';

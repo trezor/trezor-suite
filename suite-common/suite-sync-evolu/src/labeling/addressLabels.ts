@@ -8,9 +8,11 @@ import {
 } from '@evolu/common';
 
 import { AddressLabel, AddressLabelsStore } from '@suite-common/suite-sync-storage';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountDescriptor } from '@suite-common/wallet-types';
 
-import { UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
+import { UnwrapQuery } from '../evoluUtils';
 
 export const AddressLabelId = id('AddressLabelId');
 export type AddressLabelId = typeof AddressLabelId.Type;
@@ -23,13 +25,15 @@ export const AddressLabelSchema = {
         id: AddressLabelId,
         label: nullOr(NonEmptyString1000),
         address: NonEmptyString1000,
+        accountDescriptor: NonEmptyString1000,
+        networkSymbol: NonEmptyString1000,
     },
 };
 
 export class AddressLabels implements AddressLabelsStore {
     constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
 
-    update = ({ address, label }: AddressLabel) => {
+    update = ({ address, label, accountDescriptor, networkSymbol }: AddressLabel) => {
         const idResult = createAddressLabelId(address);
 
         if (!idResult.ok) {
@@ -42,6 +46,8 @@ export class AddressLabels implements AddressLabelsStore {
             id: idResult.value,
             address,
             label: normalizeLabel(label),
+            accountDescriptor: accountDescriptor as AccountDescriptor,
+            networkSymbol: networkSymbol as NetworkSymbol,
         });
 
         if (!result.ok) {
@@ -59,13 +65,19 @@ export class AddressLabels implements AddressLabelsStore {
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
             for (const label of labels) {
-                if (label.address === null) {
+                if (
+                    label.address === null ||
+                    label.accountDescriptor === null ||
+                    label.networkSymbol === null
+                ) {
                     continue;
                 }
 
                 onChange({
                     address: label.address,
                     label: label.label,
+                    accountDescriptor: label.accountDescriptor,
+                    networkSymbol: label.networkSymbol as NetworkSymbol,
                 });
             }
         };
