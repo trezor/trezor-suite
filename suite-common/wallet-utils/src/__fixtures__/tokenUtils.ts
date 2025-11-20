@@ -35,4 +35,16 @@ export const getContractAddressForNetworkSymbolFixtures = [
         contractAddress: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc53541474958',
         expected: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc535',
     },
+    {
+        testName: 'Handles undefined contract address',
+        symbol: 'eth' as const,
+        contractAddress: undefined,
+        expected: '',
+    },
+    {
+        testName: 'Handles null contract address',
+        symbol: 'sol' as const,
+        contractAddress: null,
+        expected: '',
+    },
 ];

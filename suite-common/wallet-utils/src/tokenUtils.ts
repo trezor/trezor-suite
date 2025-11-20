@@ -9,8 +9,12 @@ import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended, // unknown symbols will result to lowerCase
-    contractAddress: string,
+    contractAddress?: string | null,
 ) => {
+    if (!contractAddress) {
+        return '';
+    }
+
     switch (symbol) {
         case 'eth':
             // Specifying most common network as first case improves performance little bit
