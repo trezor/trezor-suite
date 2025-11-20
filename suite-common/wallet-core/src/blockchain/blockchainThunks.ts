@@ -119,6 +119,9 @@ export const initBlockchainThunk = createThunk(
     },
 );
 
+const isAccountSubscribable = (account: Account) =>
+    !account.failed && isTrezorConnectBackendType(account.backendType);
+
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribeBlockchainThunk = createThunk(
@@ -140,7 +143,7 @@ export const subscribeBlockchainThunk = createThunk(
         const accountsToSubscribe = findAccountsByNetwork(
             symbol,
             selectAccounts(getState()),
-        ).filter(a => isTrezorConnectBackendType(a.backendType)); // do not subscribe accounts with unsupported backend type
+        ).filter(isAccountSubscribable); // do not subscribe accounts with unsupported backend type
         if (!accountsToSubscribe.length) return;
 
         const paramsArray = useIdentities
@@ -171,8 +174,8 @@ export const unsubscribeBlockchainThunk = createThunk(
             blocks?: boolean;
             accounts: Account[];
         }>(symbol => {
-            const accountsToSubscribe = findAccountsByNetwork(symbol, allAccounts).filter(a =>
-                isTrezorConnectBackendType(a.backendType),
+            const accountsToSubscribe = findAccountsByNetwork(symbol, allAccounts).filter(
+                isAccountSubscribable,
             ); // do not unsubscribe accounts with unsupported backend type
 
             if (shouldUseIdentities(symbol)) {
