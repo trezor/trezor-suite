@@ -2,7 +2,7 @@ import { JSX, useContext } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { IconButton, useElevation, variables } from '@trezor/components';
+import { IconButton, useElevation } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/theme';
 
@@ -47,8 +47,7 @@ const MainLabel = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.callout}
     text-align: center;
     color: ${({ theme }) => theme.textDefault};
     padding: 0 15px;

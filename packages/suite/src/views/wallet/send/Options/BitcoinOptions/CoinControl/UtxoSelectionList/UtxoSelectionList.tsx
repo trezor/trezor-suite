@@ -4,9 +4,9 @@ import { transparentize } from 'polished';
 import styled from 'styled-components';
 
 import { selectAccountTransactions } from '@suite-common/wallet-core';
-import { Icon, IconName, useElevation, variables } from '@trezor/components';
+import { Icon, IconName, Paragraph, useElevation } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { CSSColor, Elevation, mapElevationToBorder } from '@trezor/theme';
+import { CSSColor, Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -22,19 +22,9 @@ const Wrapper = styled.section<{ $elevation: Elevation }>`
 const Header = styled.header`
     align-items: center;
     display: flex;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
     gap: 16px;
     margin: 6px 0 12px;
-`;
-
-const Heading = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: 4px;
-`;
-
-const Description = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -79,8 +69,12 @@ export const UtxoSelectionList = ({
                         $backgroundColor={iconColor}
                     />
                     <div>
-                        <Heading>{heading}</Heading>
-                        <Description>{description}</Description>
+                        <Paragraph typographyStyle="body" margin={{ bottom: 4 }}>
+                            {heading}
+                        </Paragraph>
+                        <Paragraph typographyStyle="body" variant="tertiary">
+                            {description}
+                        </Paragraph>
                     </div>
                 </Header>
             )}

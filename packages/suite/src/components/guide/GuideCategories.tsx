@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { GuideCategory } from '@suite-common/suite-types';
-import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
 
@@ -12,8 +12,7 @@ const Section = styled.section`
 `;
 
 const SectionHeading = styled.h3`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.callout}
     color: ${({ theme }) => theme.textSubdued};
     padding: 0 0 18px;
 `;

@@ -3,7 +3,7 @@ import { JSX, useEffect } from 'react';
 import { TooltipProps } from 'recharts';
 import styled from 'styled-components';
 
-import { Row, variables } from '@trezor/components';
+import { Row, Text } from '@trezor/components';
 import { paletteV2, spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite';
@@ -80,14 +80,15 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled.span`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-right: 20px;
-`;
+const Title = ({ children }: { children: React.ReactNode }) => (
+    <Text typographyStyle="body" margin={{ right: 20 }}>
+        {children}
+    </Text>
+);
 
-const Value = styled.span`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
+const Value = ({ children }: { children: React.ReactNode }) => (
+    <Text typographyStyle="highlight">{children}</Text>
+);
 
 const ColsWrapper = styled.div`
     display: flex;

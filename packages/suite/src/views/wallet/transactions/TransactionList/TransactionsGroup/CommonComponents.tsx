@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
 
@@ -14,9 +14,8 @@ export const HeaderWrapper = styled.div`
 `;
 
 export const Col = styled(HiddenPlaceholder)`
-    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.callout}
 `;
 
 export const ColDate = styled(Col)`

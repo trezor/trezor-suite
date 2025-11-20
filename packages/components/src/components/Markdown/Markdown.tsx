@@ -4,8 +4,6 @@ import styled from 'styled-components';
 
 import { typography } from '@trezor/theme';
 
-import { variables } from '../../config';
-
 const StyledMarkdown = styled.div`
     ${typography.hint}
 
@@ -18,17 +16,16 @@ const StyledMarkdown = styled.div`
     h5,
     h6 {
         color: ${({ theme }) => theme.textDefault};
-        font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     }
 
     h1 {
         margin: 8px 0 16px;
-        font-size: ${variables.FONT_SIZE.BIG};
+        ${typography.titleSmall}
     }
 
     h2 {
         margin: 8px 0 12px;
-        font-size: ${variables.FONT_SIZE.NORMAL};
+        ${typography.highlight}
     }
 
     h3,
@@ -36,7 +33,7 @@ const StyledMarkdown = styled.div`
     h5,
     h6 {
         margin: 4px 0 12px;
-        font-size: ${variables.FONT_SIZE.SMALL};
+        ${typography.callout}
     }
 
     p,
@@ -67,7 +64,7 @@ const StyledMarkdown = styled.div`
     }
 
     strong {
-        font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+        font-weight: bold;
     }
 `;
 

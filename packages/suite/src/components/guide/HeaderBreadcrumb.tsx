@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import type { GuideCategory } from '@suite-common/suite-types';
-import { variables } from '@trezor/components';
+import { Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { transitions } from '@trezor/theme';
 
@@ -12,12 +12,6 @@ import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
-
-const BreadcrumbWrapper = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    white-space: normal;
-`;
 
 const PreviousCategoryLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.textSubdued};
@@ -52,11 +46,11 @@ export const HeaderBreadcrumb = () => {
 
     // if no parent available, offer navigation to guide dashboard
     const FallbackBreadcrumb = (
-        <BreadcrumbWrapper>
+        <Text typographyStyle="hint" textWrap="normal">
             <CategoryLink onClick={goToDashboard}>
                 <Translation id="TR_GUIDE_DASHBOARD" />
             </CategoryLink>
-        </BreadcrumbWrapper>
+        </Text>
     );
 
     if (!currentNode || !indexNode) return FallbackBreadcrumb;
@@ -95,7 +89,7 @@ export const HeaderBreadcrumb = () => {
     const grandParentNode = parentNodes.pop();
 
     return (
-        <BreadcrumbWrapper>
+        <Text typographyStyle="hint" textWrap="normal">
             <PreviousCategoryLink
                 onClick={() => {
                     if (grandParentNode) {
@@ -125,6 +119,6 @@ export const HeaderBreadcrumb = () => {
             >
                 {parentNode && getNodeTitle(parentNode, language)}
             </CategoryLink>
-        </BreadcrumbWrapper>
+        </Text>
     );
 };

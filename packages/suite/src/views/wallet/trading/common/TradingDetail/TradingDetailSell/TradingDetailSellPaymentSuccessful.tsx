@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Button, Image, variables } from '@trezor/components';
-import { borders } from '@trezor/theme';
+import { Button, Image, Paragraph } from '@trezor/components';
+import { borders, typography } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -16,17 +16,12 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled.div`
-    margin-top: 25px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
 const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
     color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
     margin: 17px 0 30px;
     max-width: 310px;
     text-align: center;
@@ -40,13 +35,7 @@ const FixedRate = styled.div`
     border-radius: ${borders.radii.xs};
     margin-bottom: 30px;
 `;
-const FixedRateHeader = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-const FixedRateMessage = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
-`;
+
 interface PaymentSuccessfulProps {
     account: Account;
 }
@@ -68,19 +57,23 @@ export const TradingDetailSellPaymentSuccessful = ({ account }: PaymentSuccessfu
     return (
         <Wrapper>
             <Image image="TRADING_SUCCESS" />
-            <Title data-testid="@trading/transaction/detail/status">
+            <Paragraph
+                typographyStyle="body"
+                margin={{ top: 24 }}
+                data-testid="@trading/transaction/detail/status"
+            >
                 <Translation id="TR_SELL_DETAIL_SUCCESS_TITLE" />
-            </Title>
+            </Paragraph>
             <Description>
                 <Translation id="TR_SELL_DETAIL_SUCCESS_TEXT" />
             </Description>
             <FixedRate>
-                <FixedRateHeader>
+                <Paragraph typographyStyle="callout">
                     <Translation id="TR_SELL_DETAIL_SUCCESS_FIXED_RATE_HEADER" />
-                </FixedRateHeader>
-                <FixedRateMessage>
+                </Paragraph>
+                <Paragraph variant="tertiary">
                     <Translation id="TR_SELL_DETAIL_SUCCESS_FIXED_RATE_MESSAGE" />
-                </FixedRateMessage>
+                </Paragraph>
             </FixedRate>
             <Button onClick={goToSell}>
                 <Translation id="TR_SELL_DETAIL_SUCCESS_BUTTON" />

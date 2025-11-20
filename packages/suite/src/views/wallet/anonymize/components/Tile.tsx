@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Card, IconCircle, IconName, variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 const containerGridStyle = css`
     display: grid;
@@ -57,8 +58,7 @@ const titleGridStyle = css`
 
 const Title = styled.h3`
     align-self: end;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.highlight}
     margin: 16px 0 8px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -84,8 +84,7 @@ const descriptionGridStyle = css`
 
 const Description = styled.p`
     color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${descriptionGridStyle}

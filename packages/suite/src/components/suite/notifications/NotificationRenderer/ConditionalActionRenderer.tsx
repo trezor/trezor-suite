@@ -1,22 +1,9 @@
 import { JSX, ReactNode } from 'react';
 
-import styled from 'styled-components';
-
-import { variables } from '@trezor/components';
+import { Paragraph } from '@trezor/components';
 
 import type { NotificationRendererProps } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
-
-const Header = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.textSubdued};
-    margin-top: 1px;
-`;
-
-const Body = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-top: 1px;
-`;
 
 type ConditionalActionRendererProps = NotificationRendererProps & {
     header: ReactNode;
@@ -53,8 +40,16 @@ export const ConditionalActionRenderer = ({
             variant="transparent"
             message="TOAST_COIN_SCHEME_PROTOCOL"
             messageValues={{
-                header: <Header>{header}</Header>,
-                body: <Body>{body}</Body>,
+                header: (
+                    <Paragraph typographyStyle="body" margin={{ top: 2 }} variant="tertiary">
+                        {header}
+                    </Paragraph>
+                ),
+                body: (
+                    <Paragraph typographyStyle="body" margin={{ top: 2 }}>
+                        {body}
+                    </Paragraph>
+                ),
             }}
             action={action}
             onCancel={onCancel}

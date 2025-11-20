@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
-import { Card, IMAGES, variables } from '@trezor/components';
+import { Card, IMAGES, Paragraph, variables } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
+import { typography } from '@trezor/theme';
 
 import TooltipSymbol from 'src/components/suite/TooltipSymbol';
 import { Translation } from 'src/components/suite/Translation';
@@ -15,9 +16,8 @@ const Header = styled.div`
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 24px;
-    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.callout}
     text-transform: uppercase;
 `;
 
@@ -45,12 +45,6 @@ const Wrapper = styled(Card)`
     }
 `;
 
-const Text = styled.div`
-    color: ${({ theme }) => theme.textDefault};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
 const Heading = styled.p`
     line-height: 1.5;
 `;
@@ -60,7 +54,7 @@ const Description = styled.div`
     align-items: center;
     height: 29px; /* to match the TransacitonItem component */
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
 `;
 
 const TransactionCandidate = () => (
@@ -74,7 +68,7 @@ const TransactionCandidate = () => (
                 <TransactionTypeIcon type="joint" isPending={false} />
             </TxTypeIconWrapper>
 
-            <Text>
+            <Paragraph typographyStyle="body" variant="default">
                 <Heading>
                     <Translation id="TR_CANDIDATE_TRANSACTION" />
                 </Heading>
@@ -84,7 +78,7 @@ const TransactionCandidate = () => (
                         content={<Translation id="TR_CANDIDATE_TRANSACTION_EXPLANATION" />}
                     />
                 </Description>
-            </Text>
+            </Paragraph>
         </Wrapper>
     </div>
 );

@@ -3,16 +3,9 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    Button,
-    CollapsibleBox,
-    Icon,
-    IconName,
-    intermediaryTheme,
-    variables,
-} from '@trezor/components';
+import { Button, CollapsibleBox, Icon, IconName, intermediaryTheme } from '@trezor/components';
 import { isFirefox } from '@trezor/env-utils';
-import { spacings } from '@trezor/theme';
+import { spacings, typography } from '@trezor/theme';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 export interface ErrorViewProps {
@@ -31,14 +24,11 @@ export interface ErrorViewProps {
 }
 
 const StepsList = styled.ul`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    line-height: 24px;
+    ${typography.hint}
 `;
 
 const Step = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
     color: #545454;
 `;
 
@@ -241,13 +231,12 @@ const InnerWrapper = styled.div`
 
 const H = styled.h1`
     color: ${intermediaryTheme.light.textAlertRed};
-    font-size: 28px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.titleMedium}
 `;
 
 const Text = styled.div`
     color: ${intermediaryTheme.light.textSubdued};
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    ${typography.body}
 `;
 
 const TipsContainer = styled.div`
@@ -282,8 +271,7 @@ const HeadingText = styled.div`
 
 const HeadingH1 = styled.div`
     color: ${intermediaryTheme.light.textDefault};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.highlight}
     margin-bottom: 4px;
 `;
 

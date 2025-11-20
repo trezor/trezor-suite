@@ -10,8 +10,9 @@ import { ArrowRightIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
 
-import { Select, variables } from '@trezor/components';
+import { Select } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { typography } from '@trezor/theme';
 
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
@@ -51,7 +52,7 @@ const MenuCategory = styled.div`
     padding: 1rem 0 0.5rem 0;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
     color: ${({ theme }) => theme.textDefault};
 `;
 

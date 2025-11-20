@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Button, H2, Paragraph, useElevation, variables } from '@trezor/components';
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';
@@ -45,7 +45,7 @@ const ErrorMessage = styled.span`
     text-align: center;
     max-width: 600px;
     font-family: Consolas, Menlo, Courier, monospace;
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
     color: ${({ theme }) => theme.textDefault};
 `;
 

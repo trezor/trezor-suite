@@ -5,9 +5,9 @@ import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
-import { Column, Icon, Row, Text, variables } from '@trezor/components';
+import { Column, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { spacings, typography } from '@trezor/theme';
 
 import { AccountLabeling, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { AddressRow } from 'src/components/suite/copy/AddressRow';
@@ -21,7 +21,7 @@ import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValue
 
 const AccountName = styled.div`
     display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
 `;
 
 interface TradingReceiveAccountSuiteOptionProps {

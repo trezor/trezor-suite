@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
-import { Button, variables } from '@trezor/components';
+import { Button } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
@@ -37,7 +38,7 @@ const ErrorMessage = styled.div`
     align-items: center;
     justify-content: center;
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
     text-align: center;
 `;
 

@@ -3,16 +3,8 @@ import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { localizeNumber } from '@suite-common/wallet-utils';
-import {
-    Card,
-    Column,
-    H3,
-    Icon,
-    LottieAnimation,
-    ProgressBar,
-    variables,
-} from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
@@ -25,8 +17,7 @@ const Subheader = styled.div`
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
     text-align: center;
     margin-top: 8px;
 
@@ -49,8 +40,7 @@ const FactHeading = styled.div`
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.textAlertYellow};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.label}
     text-transform: uppercase;
 `;
 

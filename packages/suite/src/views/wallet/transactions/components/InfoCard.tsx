@@ -1,38 +1,25 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
-import { Card, Column, SkeletonRectangle, variables } from '@trezor/components';
+import { Card, Column, Paragraph, SkeletonRectangle } from '@trezor/components';
+import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
-const Title = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.textSubdued};
-    text-transform: uppercase;
-    margin-bottom: 10px;
-`;
-
 const Value = styled.div`
     display: flex;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.label}
     color: ${({ theme }) => theme.textDefault};
     white-space: nowrap;
-    line-height: 1.5;
 `;
 
 const SecondaryValueWrapper = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
     font-variant-numeric: tabular-nums;
-
-    /* margin-left: 1ch; */
-    line-height: 1.57;
 `;
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
@@ -41,11 +28,9 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
 
 const StyledFormattedValue = styled(FormattedCryptoAmount)`
     display: flex;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
     color: ${({ theme }) => theme.textDefault};
     white-space: nowrap;
-    line-height: 1.5;
 `;
 
 type InfoCardProps = {
@@ -58,6 +43,7 @@ type InfoCardProps = {
 };
 
 export const InfoCard = (props: InfoCardProps) => {
+    const theme = useTheme();
     let bigValue =
         props.isNumeric && props.value && typeof props.value === 'string'
             ? new BigNumber(props.value)
@@ -67,7 +53,15 @@ export const InfoCard = (props: InfoCardProps) => {
     return (
         <Card minHeight={100}>
             <Column>
-                <Title data-testid="@wallet/transactions/summary-card/title">{props.title}</Title>
+                <Paragraph
+                    typographyStyle="label"
+                    color={theme.textSubdued}
+                    data-testid="@wallet/transactions/summary-card/title"
+                    case="uppercase"
+                    margin={{ bottom: 12 }}
+                >
+                    {props.title}
+                </Paragraph>
                 {props.isLoading && <SkeletonRectangle width="160px" />}
 
                 {!props.isLoading && (

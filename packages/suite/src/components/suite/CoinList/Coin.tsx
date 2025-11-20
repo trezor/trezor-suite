@@ -1,10 +1,10 @@
 import { MouseEvent } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Icon, useElevation, variables } from '@trezor/components';
+import { Icon, Paragraph, useElevation } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { CoinLogo } from '@trezor/product-components';
 import {
@@ -12,7 +12,6 @@ import {
     mapElevationToBackground,
     mapElevationToBorder,
     paletteV2,
-    typography,
 } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -84,7 +83,7 @@ export const CoinWrapper = styled.button<{
     background: ${mapElevationToBackground};
     border-radius: 9999px;
     height: 47px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: bold;
     color: ${({ theme }) => theme.textDefault};
     cursor: pointer;
     transition:
@@ -123,28 +122,11 @@ export const CoinWrapper = styled.button<{
         `}
 `;
 
-const Name = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    margin-top: 1px;
-`;
-
 const NameWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     margin-right: 10px;
-`;
-
-const NameLabeled = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    line-height: 0.86;
-    margin-bottom: 3px;
-`;
-
-const Label = styled.div`
-    ${typography.label}
-    line-height: 13px;
-    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Check = styled.div<{ $visible: boolean }>`
@@ -185,6 +167,7 @@ export const Coin = ({
     onSettings,
 }: CoinProps) => {
     const { elevation } = useElevation();
+    const theme = useTheme();
 
     const onSettingsClick =
         onSettings &&
@@ -212,13 +195,15 @@ export const Coin = ({
             </ImageWrapper>
             {label ? (
                 <NameWrapper>
-                    <NameLabeled>{name}</NameLabeled>
-                    <Label>
+                    <Paragraph typographyStyle="hint">{name}</Paragraph>
+                    <Paragraph typographyStyle="label" color={theme.textSubdued}>
                         <Translation id={label} />
-                    </Label>
+                    </Paragraph>
                 </NameWrapper>
             ) : (
-                <Name>{name}</Name>
+                <Paragraph typographyStyle="body" margin={{ top: 2 }}>
+                    {name}
+                </Paragraph>
             )}
             <SettingsWrapper
                 onClick={onSettingsClick}

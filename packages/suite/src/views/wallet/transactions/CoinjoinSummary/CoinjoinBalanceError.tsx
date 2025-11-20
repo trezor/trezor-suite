@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { variables } from '@trezor/components';
+import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -12,15 +12,13 @@ const StyledBalanceContainer = styled.div`
 const Heading = styled.p<{ $color?: string }>`
     margin-bottom: 4px;
     color: ${({ theme, color }) => color || theme.textSubdued};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
 `;
 
 const SubHeading = styled.p`
     max-width: 480px;
     margin-top: 6px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.FONT_SIZE.H3};
+    ${typography.titleSmall}
 `;
 
 export interface CoinjoinBalanceErrorProps {

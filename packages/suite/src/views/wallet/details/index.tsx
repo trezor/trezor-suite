@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
-import { Button, Card, Column, InfoItem, Paragraph, Row, variables } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, Card, Column, InfoItem, Paragraph, Row } from '@trezor/components';
+import { spacings, typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -22,8 +22,7 @@ import { RescanAccount } from './RescanAccount';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.callout}
     margin: 14px 0 4px;
     text-transform: uppercase;
 `;

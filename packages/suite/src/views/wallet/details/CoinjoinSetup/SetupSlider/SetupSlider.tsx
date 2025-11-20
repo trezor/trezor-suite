@@ -2,31 +2,12 @@ import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useRef } from 'rea
 
 import styled from 'styled-components';
 
-import { Range, RangeProps, variables } from '@trezor/components';
+import { Paragraph, Range, RangeProps, Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinSession } from 'src/reducers/wallet/coinjoinReducer';
 
 import { SliderInput, SliderInputProps } from './SliderInput';
-
-const Row = styled.div`
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-`;
-
-const Heading = styled.div`
-    font-size: ${variables.FONT_SIZE.H3};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const Description = styled.p`
-    color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin: 8px 0;
-`;
 
 const StyledSliderInput = styled(SliderInput)<{ $width?: number }>`
     width: ${({ $width }) => $width && `${$width}px`};
@@ -91,8 +72,8 @@ export const SetupSlider = ({
 
     return (
         <div>
-            <Row>
-                <Heading>{heading}</Heading>
+            <Row alignItems="center" justifyContent="space-between" gap={12}>
+                <Paragraph typographyStyle="titleSmall">{heading}</Paragraph>
                 <StyledSliderInput
                     ref={inputRef}
                     value={inputValue}
@@ -104,7 +85,9 @@ export const SetupSlider = ({
                     $width={inputWidth}
                 />
             </Row>
-            <Description>{description}</Description>
+            <Paragraph typographyStyle="hint" margin={{ vertical: 8 }} variant="tertiary">
+                {description}
+            </Paragraph>
             <Range
                 min={min}
                 max={max}
