@@ -31,6 +31,7 @@ export class WalletPage {
     readonly copyPublicKeyButton: Locator;
     readonly openSendFormButton: Locator;
     readonly sendForm: Locator;
+    readonly totalSent: Locator;
     readonly receiveButton: Locator;
     readonly revealAddressButton: Locator;
     readonly copyAddressButton: Locator;
@@ -72,6 +73,7 @@ export class WalletPage {
         this.copyPublicKeyButton = this.page.getByTestId('@metadata/copy-xpub-button');
         this.openSendFormButton = this.page.getByTestId('@wallet/menu/wallet-send');
         this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
+        this.totalSent = this.page.getByTestId('@wallet/send/total-sent');
         this.receiveButton = this.page.getByTestId('@wallet/menu/wallet-receive');
         this.revealAddressButton = this.page.getByTestId('@wallet/receive/reveal-address-button');
         this.copyAddressButton = this.page.getByTestId('@metadata/copy-address-button');

@@ -1,5 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { Model } from '@trezor/trezor-user-env-link';
+
 import { TrezorUserEnvLinkProxy, analyzeObject, step } from '../common';
 import {
     NormalizedDisplayContent,
@@ -103,10 +105,15 @@ export class DevicePrompt {
     }
 
     @step()
-    async waitForPromptAndClick() {
+    async waitForPromptAndClick(model?: Model): Promise<void> {
+        const EMULATOR_CENTER_COORDINATES: Record<string, { x: number; y: number }> = {
+            T3T1: { x: 125, y: 150 },
+            T3W1: { x: 200, y: 480 },
+        };
+
         await this.confirmOnDevicePromptIsShown();
-        const emulatorCenterCoordinates = { x: 125, y: 150 };
-        await TrezorUserEnvLinkProxy.clickEmu(emulatorCenterCoordinates);
+
+        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_CENTER_COORDINATES[model ?? 'T3T1']);
     }
 
     @step()
