@@ -151,7 +151,7 @@
         "@babel/core": "7.28.5",
         "@config-plugins/detox": "^11.0.0",
         "@currents/cmd": "^1.9.4",
-        "@jest/globals": "^29.7.0",
+        "@jest/globals": "^30.2.0",
         "@react-native-community/cli": "^15.1.2",
         "@react-native/babel-preset": "0.81.0",
         "@react-native/metro-config": "~0.82.0",
