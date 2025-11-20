@@ -6221,12 +6221,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^1.0.0, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.9.6, @noble/curves@npm:^1.9.7, @noble/curves@npm:~1.9.0":
+"@noble/curves@npm:^1.0.0, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.9.6, @noble/curves@npm:~1.9.0":
   version: 1.9.7
   resolution: "@noble/curves@npm:1.9.7"
   dependencies:
     "@noble/hashes": "npm:1.8.0"
   checksum: 10/3cfe2735ea94972988ca9e217e0ebb2044372a7160b2079bf885da789492a6291fc8bf76ca3d8bf8dee477847ee2d6fac267d1e6c4f555054059f5e8c4865d44
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@noble/curves@npm:2.0.1"
+  dependencies:
+    "@noble/hashes": "npm:2.0.1"
+  checksum: 10/e826af523f40a671601a6d07f98df16c3afe1cbd0349c3ba4d7b31f6dba7dc743822719f260bd291716b6b42b8dc327f94a76b4852359aa85f79df461eb22bfc
   languageName: node
   linkType: hard
 
@@ -10959,7 +10968,7 @@ __metadata:
   resolution: "@suite-common/wallet-core@workspace:suite-common/wallet-core"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@noble/curves": "npm:^1.9.7"
+    "@noble/curves": "npm:^2.0.1"
     "@noble/hashes": "npm:^1.6.1"
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/bluetooth": "workspace:*"
@@ -13964,7 +13973,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/device-authenticity@workspace:packages/device-authenticity"
   dependencies:
-    "@noble/curves": "npm:^1.9.7"
+    "@noble/curves": "npm:^2.0.1"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
