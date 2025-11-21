@@ -36,6 +36,7 @@ export const DeviceRecoveryMode = () => {
                     key: 'recovery-mode',
                     heading: <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />,
                     description: <Translation id="TR_DEVICE_IN_RECOVERY_MODE_DESC" />,
+                    icon: 'trezorBody',
                 },
             ]}
         />

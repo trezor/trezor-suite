@@ -2,10 +2,8 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { isLinux } from '@trezor/env-utils';
 
 import { TroubleshootingTips } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
-    TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_RECONNECT,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
@@ -58,19 +56,10 @@ export const DeviceUnreadable = () => {
         items.push(TROUBLESHOOTING_TIP_RECONNECT);
         // if on web - try installing desktop. this takes you to using bridge which should be more powerful than WebUSB
         items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP);
-        // unfortunately we have seen reports that even old bridge might not be enough for some Windows users. So the only chance
-        // is using another computer, or maybe it would be better to say another OS
-        items.push(TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER);
     }
 
     return (
         <TroubleshootingTips
-            label={
-                <Translation
-                    id="TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN"
-                    values={{ error: selectedDevice?.error }}
-                />
-            }
             intent="warning"
             items={items}
             data-testid="@connect-device-prompt/unreadable-unknown"

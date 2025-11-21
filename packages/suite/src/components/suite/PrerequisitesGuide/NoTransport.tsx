@@ -1,7 +1,6 @@
 import { isDesktop } from '@trezor/env-utils';
 
 import { TroubleshootingTips } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import {
     TROUBLESHOOTING_ENABLE_IN_DEBUG,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
@@ -28,7 +27,6 @@ const Tips = ({ items }: { items: TroubleshootingTipsItem[] }) => (
     // - use a browser that supports WebUSB
     // Desktop app should have Bridge transport layer available as it is built-in, if it is not available we fucked up something.
     <TroubleshootingTips
-        label={<Translation id="TR_TROUBLESHOOTING_DEVICE_NOT_DETECTED" />}
         intent="warning"
         items={items}
         data-testid="@connect-device-prompt/bridge-not-running"

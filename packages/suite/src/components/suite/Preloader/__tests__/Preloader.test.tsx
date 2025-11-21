@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics';
 import { TransportInfo } from '@trezor/connect';
@@ -228,7 +228,7 @@ describe(`${Preloader.name} component`, () => {
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
-        expect(screen.getAllByText('TR_ACQUIRE_DEVICE_TITLE').length).toBe(2);
+        expect(findByTestId('TR_ACQUIRE_DEVICE_TITLE')).not.toBeNull();
 
         unmount();
     });
@@ -381,7 +381,6 @@ describe(`${Preloader.name} component`, () => {
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
-        expect(findByTestId(/TR_YOUR_DEVICE_IS_SEEDLESS/)).not.toBeNull();
         expect(findByTestId('TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE')).not.toBeNull();
 
         unmount();

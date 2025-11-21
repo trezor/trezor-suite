@@ -1,4 +1,4 @@
-import { BulletList, List } from '@trezor/components';
+import { List } from '@trezor/components';
 
 import { TroubleshootingTipsItem } from './TroubleshootingTips';
 import { TroubleshootingTipsItemComponent } from './TroubleshootingTipsItemComponent';
@@ -11,13 +11,6 @@ export const TroubleshootingTipsList = ({ items }: TroubleshootingTipsListCardPr
     const visibleItems = items
         .filter(item => !item.hide)
         .map(item => <TroubleshootingTipsItemComponent item={item} key={item.key} />);
-    const isBulletList = items.every(item => item.icon == undefined);
 
-    return isBulletList ? (
-        <BulletList bulletSize="medium" titleGap={2} gap={20} bulletGap={16}>
-            {visibleItems}
-        </BulletList>
-    ) : (
-        <List gap={20}>{visibleItems}</List>
-    );
+    return <List gap={20}>{visibleItems}</List>;
 };

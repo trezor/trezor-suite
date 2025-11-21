@@ -1,8 +1,27 @@
+import { useState } from 'react';
+
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from 'styled-components';
 
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
-import { Box, Button, Column, H3, Modal, Row, Spinner, Text } from '@trezor/components';
+import {
+    Box,
+    Button,
+    Card,
+    Column,
+    Divider,
+    H3,
+    IconCircle,
+    Image,
+    Modal,
+    Row,
+    Spinner,
+    Text,
+    motionEasing,
+} from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import { getLargeModelImagePath } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import {
@@ -48,15 +67,151 @@ type ConnectModalContentProps = {
 const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentProps) => (
     <Column alignItems="center" gap={32} overflow="hidden">
         <H3 typographyStyle="titleMedium" align="center" textWrap="balance">
-            <Translation id="TR_CONNECT_UNLOCK_YOUR_DEVICE" />
+            <Translation
+                id={
+                    isBluetoothMode
+                        ? 'TR_CONNECT_UNLOCK_BLUETOOTH_DEVICE'
+                        : 'TR_CONNECT_UNLOCK_YOUR_DEVICE'
+                }
+            />
         </H3>
+        <Row gap={8} alignItems="center" justifyContent="center" height={36}>
+            <Spinner size={16} isGrey={false} />
+            <Text variant="primary">
+                <Translation
+                    id={isBluetoothMode ? 'TR_SCAN_TREZORS_NEARBY' : 'TR_CHECK_CONNECTED_TREZORS'}
+                />
+            </Text>
+        </Row>
         {children}
         <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
     </Column>
 );
 
+type ConnectionModeCardProps = {
+    onClick: () => void;
+};
+
+const ViaBluetoothCard = ({ onClick }: ConnectionModeCardProps) => (
+    <Card onClick={onClick} paddingType="large">
+        <Column alignItems="center" gap={24}>
+            <Image image={getLargeModelImagePath(DeviceModelInternal.T3W1)} height={128} />
+            <H3>
+                <Column alignItems="center">
+                    <Text>
+                        <Translation
+                            id="TR_CONNECT_DEVICE_NAME"
+                            values={{
+                                deviceName: 'Trezor Safe 7',
+                                b: chunks => (
+                                    <Text textWrap="nowrap">
+                                        <strong>{chunks}</strong>
+                                    </Text>
+                                ),
+                            }}
+                        />
+                    </Text>
+                    <Row gap={8}>
+                        <Text>
+                            <Translation id="TR_VIA_BLUETOOTH" />
+                        </Text>
+                        <IconCircle
+                            variant="tertiary"
+                            hasBorder={false}
+                            name="bluetooth"
+                            size={28}
+                            paddingType="small"
+                        />
+                    </Row>
+                </Column>
+            </H3>
+        </Column>
+    </Card>
+);
+
+const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
+    <Card onClick={onClick} paddingType="large">
+        <Column alignItems="center" gap={24}>
+            <Row justifyContent="center">
+                {[
+                    DeviceModelInternal.T2T1,
+                    DeviceModelInternal.T3T1,
+                    DeviceModelInternal.T3W1,
+                    DeviceModelInternal.T2B1,
+                    DeviceModelInternal.T1B1,
+                ].map((model, index, array) => {
+                    const distanceFromEdge = Math.min(index, array.length - 1 - index);
+
+                    return (
+                        <Box
+                            key={index}
+                            position={{ type: 'relative' }}
+                            // T1B1 is narrower than other models, so we skip the negative margin
+                            margin={
+                                model !== DeviceModelInternal.T1B1 ? { horizontal: -8 } : undefined
+                            }
+                            zIndex={distanceFromEdge}
+                        >
+                            <AnimatePresence>
+                                <motion.div
+                                    initial={
+                                        index !== Math.floor(array.length / 2)
+                                            ? {
+                                                  x: index < array.length / 2 ? 20 : -20,
+                                              }
+                                            : undefined
+                                    }
+                                    animate={{ x: 0 }}
+                                    transition={{
+                                        duration: 1,
+                                        ease: motionEasing.enter,
+                                    }}
+                                >
+                                    <Image
+                                        image={getLargeModelImagePath(model)}
+                                        height={80 + distanceFromEdge * 24}
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
+                        </Box>
+                    );
+                })}
+            </Row>
+            <H3>
+                <Column alignItems="center">
+                    <Text>
+                        <Translation
+                            id="TR_CONNECT_DEVICE_NAME"
+                            values={{
+                                deviceName: 'any Trezor',
+                                b: chunks => (
+                                    <Text textWrap="nowrap">
+                                        <strong>{chunks}</strong>
+                                    </Text>
+                                ),
+                            }}
+                        />
+                    </Text>
+                    <Row gap={8}>
+                        <Text>
+                            <Translation id="TR_VIA_CABLE" />
+                        </Text>
+                        <IconCircle
+                            variant="tertiary"
+                            hasBorder={false}
+                            name="cableUsbC"
+                            size={28}
+                            paddingType="small"
+                        />
+                    </Row>
+                </Column>
+            </H3>
+        </Column>
+    </Card>
+);
+
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
-    const theme = useTheme();
+    const [isModeSelected, setIsModeSelected] = useState(false);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {
         toggleBluetoothMode,
@@ -150,18 +305,37 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                     data-testid="@suite/connection-modal"
                     size="tiny"
                     onCancel={onCancel}
-                    onBackClick={toggleBluetoothMode}
+                    onBackClick={() => {
+                        setIsModeSelected(false);
+                        toggleBluetoothMode();
+                    }}
                 >
-                    <ConnectModalContent isBluetoothMode={true}>
-                        <Row gap={8} alignItems="center" justifyContent="center" height={36}>
-                            <Spinner size={16} bodyColor={theme.iconAlertBlue} isGrey={false} />
-                            <Text variant="info">
-                                <Translation id="TR_SCAN_TREZORS_NEARBY" />
-                            </Text>
-                        </Row>
-                    </ConnectModalContent>
+                    <ConnectModalContent isBluetoothMode={true} />
                 </Modal.ModalBase>
             </Modal.Backdrop>
+        );
+    }
+
+    if (isDesktop() && !isModeSelected) {
+        return (
+            <Modal data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
+                <Column gap={16}>
+                    <ViaBluetoothCard
+                        onClick={() => {
+                            setIsModeSelected(true);
+                            toggleBluetoothMode();
+                        }}
+                    />
+                    <Row gap={24}>
+                        <Divider margin={0} />
+                        <Text typographyStyle="hint" variant="tertiary" case="uppercase">
+                            or
+                        </Text>
+                        <Divider margin={0} />
+                    </Row>
+                    <ViaCableCard onClick={() => setIsModeSelected(true)} />
+                </Column>
+            </Modal>
         );
     }
 
@@ -169,23 +343,13 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
     return (
         <Modal.Backdrop onClick={onCancel}>
             <DontSeeTrezorPill onClick={toggleShowHints} />
-            <Modal.ModalBase data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
+            <Modal.ModalBase
+                data-testid="@suite/connection-modal"
+                size="tiny"
+                onCancel={onCancel}
+                onBackClick={() => setIsModeSelected(false)}
+            >
                 <ConnectModalContent isBluetoothMode={false}>
-                    {isDesktop() && (
-                        <Button
-                            iconLeft="bluetooth"
-                            onClick={() => {
-                                analytics.report({
-                                    type: EventType.DeviceConnectionConnectModal,
-                                    payload: {},
-                                });
-                                toggleBluetoothMode();
-                            }}
-                            intent="info"
-                        >
-                            <Translation id="TR_PAIR_NEW_BLUETOOTH_DEVICE" />
-                        </Button>
-                    )}
                     {isWebUsbTransport && <WebUsbButton intent="brand" size="medium" />}
                 </ConnectModalContent>
             </Modal.ModalBase>

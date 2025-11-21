@@ -29,6 +29,7 @@ export const DeviceFirmwareCorrupted = () => {
                     key: 'device-firmware-corrupted',
                     heading: <Translation id="FW_CORRUPTED_REINSTALL_REQUIRED" />,
                     description: <Translation id="TR_FIRMWARE_CORRUPTED_REQUIRED_EXPLAINED" />,
+                    icon: 'cpu',
                 },
             ]}
         />
