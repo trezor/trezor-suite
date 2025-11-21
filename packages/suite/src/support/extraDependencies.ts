@@ -68,7 +68,6 @@ export const createRouterServices = (history: History) => ({
 export const extraDependencies: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
-        cardanoFetchTrezorData: cardanoStakingActions.fetchTrezorData,
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,

@@ -29,9 +29,6 @@ export const allowedDomains = [
     'oauth2.googleapis.com',
     'googleapis.com',
     onionDomain,
-    'trezor-cardano-mainnet.blockfrost.io',
-    'trezor-cardano-preview.blockfrost.io',
-    'blockfrost.dev',
     'eth-api-b2c-stage.everstake.one', // staking endpoint for Hoodi testnet, works only with VPN
     'eth-api-b2c.everstake.one', // staking endpoint for Ethereum mainnet
     'dashboard-api.everstake.one', // staking endpoint for Solana
