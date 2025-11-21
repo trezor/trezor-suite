@@ -21,7 +21,6 @@ export const serializeDevice = (device: AcquiredDevice): DeviceWithEmptyPath => 
     bluetoothProps: undefined,
     localFirstStorageSecret: {
         evoluKeys: device.localFirstStorageSecret?.evoluKeys,
-        isRetrieving: false,
     },
 });
 

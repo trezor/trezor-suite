@@ -728,22 +728,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     if (!device.features) return;
                     const index = deviceUtils.findInstanceIndex(state.devices, device);
                     if (!state.devices[index]) return;
-                    state.devices[index].localFirstStorageSecret = {
-                        evoluKeys,
-                        isRetrieving: false,
-                    };
-                },
-            )
-            .addCase(
-                deviceActions.setLocalFirstStorageSecretRetrieving,
-                (state, { payload: { device, isRetrieving } }) => {
-                    if (!device.features) return;
-                    const index = deviceUtils.findInstanceIndex(state.devices, device);
-                    if (!state.devices[index]) return;
-                    state.devices[index].localFirstStorageSecret = {
-                        isRetrieving,
-                        evoluKeys: state.devices[index].localFirstStorageSecret?.evoluKeys,
-                    };
+                    state.devices[index].localFirstStorageSecret = { evoluKeys };
                 },
             )
             .addCase(deviceActions.setDiscovered, (state, { payload }) => {

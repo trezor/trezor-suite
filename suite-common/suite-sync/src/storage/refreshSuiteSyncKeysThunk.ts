@@ -17,6 +17,7 @@ import {
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
+import { createTryLock } from '@trezor/utils';
 
 import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
 
@@ -72,6 +73,13 @@ const retrieveEvoluNode = async ({ device, delegatedKey }: RetrieveEvoluNodePara
     return err({ type: 'DeviceError' as const, message: result.payload.error });
 };
 
+/**
+ * Ideally, this shall be done per-physical device. But practically,
+ * it is not needed. We won't run `refreshSuiteSyncKeysThunk`
+ * in parallel on multiple physical devices.
+ */
+const tryLock = createTryLock();
+
 type RefreshSuiteSyncKeysThunkParams = {
     device: TrezorDevice;
 };
@@ -84,59 +92,63 @@ type RefreshSuiteSyncKeysThunkParams = {
 export const refreshSuiteSyncKeysThunk =
     ({ device: originalDevice }: RefreshSuiteSyncKeysThunkParams) =>
     async (dispatch: Dispatch, getState: () => any) => {
-        const device = selectDevices(getState())?.find(
-            it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
-        );
-
-        if (
-            device === undefined ||
-            !device.connected || // disconnected device cannot resolve Evolu-Keys
-            device.mode !== 'normal' || // bootloader,
-            !isTrezorDeviceWithState(device) ||
-            device.localFirstStorageSecret?.evoluKeys !== undefined ||
-            // We are already getting the keys in different "await"
-            // This may happen if selectedDeviceThunk is called concurrently.
-            // Todo: This probably shall not happen, but it happens currently.
-            device.localFirstStorageSecret?.isRetrieving
-        ) {
-            return ok(); // No action needed
-        }
-
-        dispatch(
-            deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: true }),
-        );
-
-        const delegatedKeyResult = await dispatch(retrieveDelegatedIdentityKeyThunk({ device }));
-
-        if (!delegatedKeyResult.ok) {
-            dispatch(
-                deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: false }),
+        const inner = async () => {
+            const device = selectDevices(getState())?.find(
+                it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
             );
 
-            return delegatedKeyResult;
-        }
+            if (
+                device === undefined ||
+                !device.connected || // disconnected device cannot resolve Evolu-Keys
+                device.mode !== 'normal' || // bootloader,
+                !isTrezorDeviceWithState(device) ||
+                device.localFirstStorageSecret?.evoluKeys !== undefined
+            ) {
+                return ok(); // No action needed
+            }
 
-        const evoluNodeResult = await retrieveEvoluNode({
-            device,
-            delegatedKey: delegatedKeyResult.value,
-        });
-
-        if (!evoluNodeResult.ok) {
-            dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys: undefined }));
-            dispatch(
-                deviceActions.setDelegatedIdentityKey({ deviceId: device.id, delegatedKey: null }),
+            const delegatedKeyResult = await dispatch(
+                retrieveDelegatedIdentityKeyThunk({ device }),
             );
 
-            return evoluNodeResult;
-        }
+            if (!delegatedKeyResult.ok) {
+                return delegatedKeyResult;
+            }
 
-        // This also sets the `isRetrieving` flag to `false`
-        dispatch(
-            deviceActions.setLocalFirstStorageSecret({
+            const evoluNodeResult = await retrieveEvoluNode({
                 device,
-                evoluKeys: evoluNodeResult.value ?? undefined,
-            }),
-        );
+                delegatedKey: delegatedKeyResult.value,
+            });
 
-        return ok();
+            if (!evoluNodeResult.ok) {
+                dispatch(
+                    deviceActions.setLocalFirstStorageSecret({ device, evoluKeys: undefined }),
+                );
+                dispatch(
+                    deviceActions.setDelegatedIdentityKey({
+                        deviceId: device.id,
+                        delegatedKey: null,
+                    }),
+                );
+
+                return evoluNodeResult;
+            }
+
+            dispatch(
+                deviceActions.setLocalFirstStorageSecret({
+                    device,
+                    evoluKeys: evoluNodeResult.value ?? undefined,
+                }),
+            );
+
+            return ok();
+        };
+
+        // Hack: We are already getting the keys in different "await". This may happen
+        // if selectedDeviceThunk is called concurrently. So we run it under
+        // try-lock to prevent double-calling of the device.
+        // Todo: This probably shall not happen, but it happens currently.
+        const lockedResult = await tryLock(inner);
+
+        return lockedResult !== null ? lockedResult : ok();
     };

@@ -245,7 +245,6 @@ export const getSuiteDevice = (
             metadata: {},
             localFirstStorageSecret: {
                 evoluKeys: undefined,
-                isRetrieving: false,
             },
             ...dev,
             ...device,

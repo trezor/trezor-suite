@@ -160,13 +160,6 @@ const setDelegatedIdentityKey = createAction(
     }),
 );
 
-const setLocalFirstStorageSecretRetrieving = createAction(
-    `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecretRetrieving`,
-    ({ device, isRetrieving }: { device: TrezorDevice; isRetrieving: boolean }) => ({
-        payload: { device, isRetrieving },
-    }),
-);
-
 const setDiscovered = createAction(
     `${DEVICE_MODULE_PREFIX}/setDiscovered`,
     (staticSessionId: StaticSessionId, success: boolean) => ({
@@ -197,7 +190,6 @@ export const deviceActions = {
     setThpCredentials,
     setDelegatedIdentityKey,
     setLocalFirstStorageSecret,
-    setLocalFirstStorageSecretRetrieving,
     setDiscovered,
     devicePushNotification,
 };

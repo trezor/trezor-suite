@@ -63,8 +63,6 @@ export interface ExtendedDevice {
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
     localFirstStorageSecret?: {
-        // To prevent consequential call of the TrezorConnect.evoluGetNode(...)
-        isRetrieving: boolean;
         evoluKeys: EvoluKeys | undefined;
     };
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
