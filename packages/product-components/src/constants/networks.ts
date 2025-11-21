@@ -10,7 +10,9 @@ export type LegacyNetworkSymbol =
     | 'nmc'
     | 'vtc'
     | 'btg'
-    | 'xmr';
+    | 'xmr'
+    // not 'legacy', but not supported yet in Suite
+    | 'trx';
 
 export const NETWORK_ICONS = {
     ada: require('../images/networks/ada.svg'),
@@ -32,6 +34,7 @@ export const NETWORK_ICONS = {
     tada: require('../images/networks/tada.svg'),
     test: require('../images/networks/btc_test.svg'),
     thod: require('../images/networks/thod.svg'),
+    trx: require('../images/networks/trx.svg'),
     tsep: require('../images/networks/tsep.svg'),
     txlm: require('../images/networks/txlm.svg'),
     txrp: require('../images/networks/txrp.svg'),
