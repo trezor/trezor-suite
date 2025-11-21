@@ -3,14 +3,8 @@ import { getUnixTime } from 'date-fns';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 import { transactionsActions } from '@suite-common/wallet-core';
-import { getAccountTransactions, getNetworkName, isPending } from '@suite-common/wallet-utils';
+import { getAccountTransactions, isPending } from '@suite-common/wallet-utils';
 import { BlockchainBlock } from '@trezor/connect';
-import {
-    CARDANO_MAINNET_DREP,
-    CARDANO_PREVIEW_DREP,
-    CARDANO_STAKE_POOL_MAINNET_URL,
-    CARDANO_STAKE_POOL_PREVIEW_URL,
-} from '@trezor/urls';
 
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -112,60 +106,3 @@ export const validatePendingStakeTxOnTx =
             dispatch(setPendingStakeTx(account, null));
         }
     };
-
-export const fetchTrezorData = (network: 'ADA' | 'tADA') => async (dispatch: Dispatch) => {
-    const cardanoNetwork = getNetworkName(network);
-
-    dispatch({
-        type: CARDANO_STAKING.SET_FETCH_LOADING,
-        loading: true,
-        network: cardanoNetwork,
-    });
-
-    try {
-        // Fetch ID of Trezor stake pool that will be used in delegation transaction
-        const urlPools =
-            cardanoNetwork === 'mainnet'
-                ? CARDANO_STAKE_POOL_MAINNET_URL
-                : CARDANO_STAKE_POOL_PREVIEW_URL;
-
-        const responsePools = await fetch(urlPools, { credentials: 'same-origin' });
-        const responsePoolsJson = await responsePools.json();
-
-        if (
-            !responsePoolsJson ||
-            !('next' in responsePoolsJson) ||
-            !('pools' in responsePoolsJson)
-        ) {
-            throw new Error('Cardano: fetchTrezorPools: Invalid data format');
-        }
-
-        // Fetch DRep for transaction withdrawal
-        const urlDRep = cardanoNetwork === 'mainnet' ? CARDANO_MAINNET_DREP : CARDANO_PREVIEW_DREP;
-
-        const responseDRep = await fetch(urlDRep, { credentials: 'same-origin' });
-        const responseDRepJson = await responseDRep.json();
-
-        if (!responseDRepJson || !('drep' in responseDRepJson)) {
-            throw new Error('Cardano: fetchTrezorDRep: Invalid data format');
-        }
-
-        dispatch({
-            type: CARDANO_STAKING.SET_TREZOR_DATA,
-            trezorPools: responsePoolsJson as PoolsResponse,
-            trezorDRep: responseDRepJson as DRepResponse,
-            network: cardanoNetwork,
-        });
-    } catch {
-        dispatch({
-            type: CARDANO_STAKING.SET_FETCH_ERROR,
-            error: true,
-            network: cardanoNetwork,
-        });
-    }
-    dispatch({
-        type: CARDANO_STAKING.SET_FETCH_LOADING,
-        loading: false,
-        network: cardanoNetwork,
-    });
-};

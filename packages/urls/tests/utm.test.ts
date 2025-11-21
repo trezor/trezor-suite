@@ -87,10 +87,6 @@ describe('withUtm', () => {
     });
 
     test('throws error for invalid domains', () => {
-        expect(() =>
-            //@ts-expect-error
-            withPlatformUtm('https://trezor-cardano-mainnet.blockfrost.io/api/v0/dreps/'),
-        ).toThrow('URL must include trezor.io');
         //@ts-expect-error
         expect(() => withPlatformUtm('https://crowdin.com/project/trezor-suite')).toThrow(
             'URL must include trezor.io',

@@ -69,7 +69,6 @@ export const mockReducer = (name: string) => (state: any, action: any) => {
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
-        cardanoFetchTrezorData: mockThunk('fetchTrezorData'),
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
         initMetadata: mockThunk('initMetadata'),
         addAccountMetadata: mockThunk('addAccountMetadata'),

@@ -54,7 +54,6 @@ export type ExtraDependencies = {
             block: BlockchainBlock;
             timestamp: number;
         }>;
-        cardanoFetchTrezorData: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
         addAccountMetadata: SuiteCompatibleThunk<
