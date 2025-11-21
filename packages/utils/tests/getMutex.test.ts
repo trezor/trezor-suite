@@ -7,7 +7,7 @@ const fail = (reason: string) => {
     throw new Error(reason);
 };
 
-describe('getMutex', () => {
+describe(getMutex.name, () => {
     let state: any;
     let lock: ReturnType<typeof getMutex>;
 

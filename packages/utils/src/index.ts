@@ -9,6 +9,7 @@ export * from './arrayShuffle';
 export * from './arrayToDictionary';
 export * from './asciiUtils';
 export * from './bigNumber';
+export { createTryLock } from './tryLock';
 export * from './bytesToHumanReadable';
 export * from './cache';
 export * from './capitalizeFirstLetter';

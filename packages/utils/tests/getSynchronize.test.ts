@@ -7,7 +7,7 @@ const fail = (reason: string) => {
     throw new Error(reason);
 };
 
-describe('getSynchronize', () => {
+describe(getSynchronize.name, () => {
     let state: any;
     let synchronize: ReturnType<typeof getSynchronize>;
 
