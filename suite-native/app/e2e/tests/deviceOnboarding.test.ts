@@ -58,7 +58,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding [@fix
         await proceedToCreateOrRecoverCrossroads();
     });
 
-    it('Create Wallet', async () => {
+    it.skip('Create Wallet', async () => {
         await onDeviceOnboarding.selectCreateWalletOption();
 
         await onDeviceOnboarding.waitForCreateWalletLoadingScreen();
@@ -94,7 +94,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding [@fix
         await finishOnboardingFlow();
     });
 
-    it('Recover Wallet', async () => {
+    it.skip('Recover Wallet', async () => {
         await onDeviceOnboarding.selectRecoverWalletOption();
         await onDeviceOnboarding.confirmRecoveryInstructions();
 

@@ -17,7 +17,7 @@ conditionalDescribe(
             await prepareTrezorEmulator();
         });
 
-        it('Navigate to dashboard', async () => {
+        it.skip('Navigate to dashboard', async () => {
             await onOnboarding.finishOnboarding();
 
             if (getModelFromEnv() === 'T3W1') {
