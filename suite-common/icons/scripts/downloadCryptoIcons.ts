@@ -82,8 +82,7 @@ const updateIcon = async (coin: CoinListData) => {
 
         const originImageBuffer = await originImage.arrayBuffer();
         const platforms = Object.entries(coinData.platforms).filter(
-            // filter out platforms that don't have a contract address (e.g. KASPY had instead of contract address some debug message which caused "too long name" error)
-            ([platform, contract]) => platform && contract && contract.startsWith('0x'),
+            ([platform, contract]) => platform && contract,
         );
 
         // Legacy naming – Make sure it's backwards compatible for older versions of the Trezor Suite
