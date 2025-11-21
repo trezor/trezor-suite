@@ -18,11 +18,13 @@ export const DeviceBootloader = () => {
             key: 'device-bootloader',
             heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
             description: tipDescription !== null ? <Translation id={tipDescription} /> : null,
+            icon: 'trezorBody',
         },
         {
             key: 'wipe-or-update',
             heading: <Translation id="TR_WIPE_OR_UPDATE" />,
             description: <UpdateGoToSettingsDescription />,
+            icon: 'arrowsClockwise',
         },
     ];
 

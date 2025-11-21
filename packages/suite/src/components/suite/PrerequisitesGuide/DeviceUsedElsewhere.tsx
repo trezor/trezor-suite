@@ -11,6 +11,7 @@ import {
 import { useDevice } from 'src/hooks/suite';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
+import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
 
 export const DeviceUsedElsewhere = () => {
     const { device } = useDevice();
@@ -19,7 +20,7 @@ export const DeviceUsedElsewhere = () => {
         e.stopPropagation();
     };
 
-    const tips = [
+    const tips: TroubleshootingTipsItem[] = [
         {
             key: 'device-used-elsewhere',
             heading: <Translation id="TR_DEVICE_CONNECTED_UNACQUIRED" />,
@@ -31,6 +32,7 @@ export const DeviceUsedElsewhere = () => {
                     }}
                 />
             ),
+            icon: 'trezorBody',
         },
         TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
         TROUBLESHOOTING_TIP_RECONNECT,

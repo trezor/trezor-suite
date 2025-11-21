@@ -21,7 +21,7 @@ export const TroubleshootingTipsFooter = () => {
                 <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
             </Text>
 
-            <Button intent="neutral" priority="secondary" size="small" href={href}>
+            <Button intent="neutral" priority="secondary" href={href}>
                 <Translation id="TR_CONTACT_SUPPORT" />
             </Button>
         </Flex>

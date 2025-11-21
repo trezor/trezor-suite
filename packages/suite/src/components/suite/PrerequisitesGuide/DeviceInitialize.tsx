@@ -41,6 +41,7 @@ export const DeviceInitialize = () => {
                     key: 'device-initialize',
                     heading: <Translation id="TR_DEVICE_NOT_INITIALIZED" />,
                     description: <Translation id="TR_DEVICE_NOT_INITIALIZED_TEXT" />,
+                    icon: 'trezorBody',
                 },
             ]}
         />

@@ -29,6 +29,7 @@ export const DeviceNoFirmware = () => {
                     key: 'device-firmware-missing',
                     heading: <Translation id="TR_NO_FIRMWARE" />,
                     description: <Translation id="TR_NO_FIRMWARE_EXPLAINED" />,
+                    icon: 'cpu',
                 },
             ]}
         />

@@ -1,31 +1,23 @@
 import { useMemo } from 'react';
 
-import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
+import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { isDesktop } from '@trezor/env-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
+import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
 import { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { TroubleshootingTipsList } from 'src/components/suite/troubleshooting/TroubleshootingTipsList';
 import {
-    TROUBLESHOOTING_ALL_BLUETOOTH_TIPS,
-    TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_CABLE,
+    TROUBLESHOOTING_TIP_DEVICE_TURNED_ON_UNLOCKED,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
-    TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
     TROUBLESHOOTING_TIP_UDEV,
-    TROUBLESHOOTING_TIP_USB,
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
-import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
-import {
-    selectHasTransportOfType,
-    selectTransportOfType,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
@@ -35,9 +27,10 @@ type DontSeeYourTrezorModalProps = {
 };
 
 const commonCableTips = [
+    TROUBLESHOOTING_TIP_DEVICE_TURNED_ON_UNLOCKED,
     TROUBLESHOOTING_TIP_UDEV,
     TROUBLESHOOTING_TIP_CABLE,
-    TROUBLESHOOTING_TIP_USB,
+    TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
 ];
 
 export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => {
@@ -50,43 +43,22 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
     } = useConnectionGlobalModalContext();
 
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
-    const bridge = useSelector(selectTransportOfType('BridgeTransport'));
-
-    const bridgeDesktopApi = useBridgeDesktopApi();
 
     const allowPairAgain =
         notConnectedNearbyDevices?.length === 0 && notConnectedKnownDevices.length > 0;
 
     const openTrezorSupport = () => {
-        window.open(TREZOR_SUPPORT_URL, '_blank');
+        window.open(TREZOR_SUPPORT_DEVICE_URL, '_blank');
         toggleShowHints();
     };
 
     const cableItem: TroubleshootingTipsItem[] = useMemo(() => {
         const items = isWebUsbTransport
             ? [...commonCableTips, TROUBLESHOOTING_TIP_SUITE_DESKTOP]
-            : [
-                  TROUBLESHOOTING_TIP_BRIDGE_STATUS,
-                  ...commonCableTips,
-                  TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-              ];
-
-        if (bridgeDesktopApi?.bridgeProcess?.process && bridge) {
-            items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE);
-        } else {
-            // TODO: here we are going to put instruction to uninstall standalone bridge
-        }
+            : commonCableTips;
 
         return items;
-    }, [isWebUsbTransport, bridgeDesktopApi, bridge]);
-
-    const tipItems = useMemo(() => {
-        if (isBluetoothMode && isDesktop()) {
-            return TROUBLESHOOTING_ALL_BLUETOOTH_TIPS;
-        }
-
-        return cableItem;
-    }, [isBluetoothMode, cableItem]);
+    }, [isWebUsbTransport]);
 
     if (isBluetoothMode) {
         return (
@@ -115,17 +87,19 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                 }
             >
                 <Column gap={32}>
-                    <H3 typographyStyle="titleMedium" align="center" textWrap="balance">
-                        <Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />
-                    </H3>
-                    <Paragraph
-                        variant="tertiary"
-                        typographyStyle="hint"
-                        align="center"
-                        textWrap="pretty"
-                    >
-                        <Translation id="TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED" />
-                    </Paragraph>
+                    <Column gap={24} padding={{ horizontal: 8 }}>
+                        <H3 typographyStyle="titleMedium" align="center" textWrap="pretty">
+                            <Translation id="TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE" />
+                        </H3>
+                        <Paragraph
+                            variant="tertiary"
+                            typographyStyle="hint"
+                            align="center"
+                            textWrap="balance"
+                        >
+                            <Translation id="TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED" />
+                        </Paragraph>
+                    </Column>
                     <AnimationCard aspectRatio="1">
                         <DeviceAnimation
                             type="PAIRING_MODE"
@@ -140,25 +114,29 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
 
     return (
         <Modal
+            size="small"
             bottomContent={
-                <Modal.Button
-                    intent="neutral"
-                    priority="secondary"
-                    onClick={() => {
-                        openTrezorSupport();
-                        onClose();
-                    }}
-                >
-                    <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
-                </Modal.Button>
+                <>
+                    <Modal.Button onClick={toggleShowHints}>
+                        <Translation id="TR_GOT_IT" />
+                    </Modal.Button>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={() => {
+                            openTrezorSupport();
+                            onClose();
+                        }}
+                    >
+                        <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
+                    </Modal.Button>
+                </>
             }
             heading={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             onCancel={toggleShowHints}
             variant="info"
         >
-            <Card paddingType="large">
-                <TroubleshootingTipsList items={tipItems} />
-            </Card>
+            <TroubleshootingTipsList items={cableItem} />
         </Modal>
     );
 };

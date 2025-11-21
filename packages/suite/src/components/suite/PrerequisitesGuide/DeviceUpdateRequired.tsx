@@ -29,6 +29,7 @@ export const DeviceUpdateRequired = () => {
                     key: 'device-firmware-required',
                     heading: <Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />,
                     description: <Translation id="TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED" />,
+                    icon: 'arrowsClockwise',
                 },
             ]}
         />

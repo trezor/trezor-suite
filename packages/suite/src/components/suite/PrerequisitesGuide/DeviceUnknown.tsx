@@ -10,6 +10,7 @@ export const DeviceUnknown = () => (
                 key: 'device-unknown',
                 heading: <Translation id="TR_UNKNOWN_DEVICE" />,
                 description: 'This is a very rare case. Please contact our support team.',
+                icon: 'questionSimple',
             },
         ]}
     />

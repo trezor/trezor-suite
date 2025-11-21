@@ -2104,6 +2104,22 @@ export default defineMessages({
         description: 'Prompt to user to connect and unlock device in modal.',
         id: 'TR_CONNECT_UNLOCK_YOUR_DEVICE',
     },
+    TR_CONNECT_UNLOCK_BLUETOOTH_DEVICE: {
+        defaultMessage: 'Turn on & unlock your Trezor Safe 7',
+        id: 'TR_CONNECT_UNLOCK_BLUETOOTH_DEVICE',
+    },
+    TR_CONNECT_DEVICE_NAME: {
+        defaultMessage: 'Connect <b>{deviceName}</b>',
+        id: 'TR_CONNECT_DEVICE_NAME',
+    },
+    TR_VIA_CABLE: {
+        defaultMessage: 'via cable',
+        id: 'TR_VIA_CABLE',
+    },
+    TR_VIA_BLUETOOTH: {
+        defaultMessage: 'via Bluetooth',
+        id: 'TR_VIA_BLUETOOTH',
+    },
     TR_CONNECT_YOUR_DEVICE: {
         defaultMessage: 'Connect & unlock your Trezor',
         description: 'Prompt to user to connect his device.',
@@ -7929,12 +7945,16 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_CABLE_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_TITLE',
-        defaultMessage: 'Use a different USB cable',
+        defaultMessage: 'Try using a different USB cable or port.',
     },
     TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
         defaultMessage:
             'The cable must be fully inserted. For USB-C devices, ensure the cable clicks securely into place.',
+    },
+    TR_TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER_TITLE',
+        defaultMessage: 'Connect your Trezor to a different computer or phone.',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
@@ -10414,6 +10434,10 @@ export default defineMessages({
     TR_SCAN_TREZORS_NEARBY: {
         id: 'TR_SCAN_TREZORS_NEARBY',
         defaultMessage: 'Scanning for nearby Trezors',
+    },
+    TR_CHECK_CONNECTED_TREZORS: {
+        id: 'TR_CHECK_CONNECTED_TREZORS',
+        defaultMessage: 'Checking for connected Trezors',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE',

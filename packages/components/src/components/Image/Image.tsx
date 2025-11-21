@@ -58,6 +58,7 @@ const getSourceProps = (imageKey: ImageKey) => {
 };
 
 const StyledImage = styled.img<TransientProps<AllowedFrameProps>>`
+    display: block;
     max-width: 100%;
 
     ${withFrameProps}
