@@ -928,19 +928,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     device: this.toMessageObject(),
                 });
             }
+            const firmwareType = getFirmwareType(feat);
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this._firmwareStatus = getFirmwareStatus(feat, getFirmwareType(feat));
-            this._firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(
-                feat,
-                getFirmwareType(feat),
-            );
+            this._firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(feat, firmwareType);
+            this._firmwareStatus = getFirmwareStatus(feat, this._firmwareReleaseConfigInfo);
+
             // Here we update `currentRelease` in case of a release JSON that was bundled.
             // In case it was not bundled it will be fetched after `_updateFeatures` by `_updateCurrentRelease`.
-            this._currentRelease = getReleaseAsset(
-                feat.internal_model,
-                newVersion,
-                getFirmwareType(feat),
-            );
+            this._currentRelease = getReleaseAsset(feat.internal_model, newVersion, firmwareType);
         }
 
         this._features = feat;

@@ -651,7 +651,7 @@ export const getFirmwareReleaseConfigInfo = (features: Features, firmwareType: F
     });
 };
 
-export const getFirmwareStatus = (features: Features, firmwareType: FirmwareType) => {
+export const getFirmwareStatus = (features: Features, releaseInfo?: FirmwareReleaseConfigInfo) => {
     // indication that firmware is not installed at all. This information is set to false in bl mode. Otherwise it is null.
     if (features.firmware_present === false) {
         return 'none';
@@ -661,8 +661,6 @@ export const getFirmwareStatus = (features: Features, firmwareType: FirmwareType
     if (features.major_version === 1 && features.bootloader_mode) {
         return 'unknown';
     }
-
-    const releaseInfo = getFirmwareReleaseConfigInfo(features, firmwareType);
 
     // should never happen for official firmware, see getInfo
     if (!releaseInfo) return 'custom';
