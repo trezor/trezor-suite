@@ -241,7 +241,7 @@ var CURRENCIES = [
     {
         name: 'GameCredits',
         symbol: 'game',
-        segwitHrp: { prod: 'game', prod: 'tgame' },
+        segwitHrp: { prod: 'game', testnet: 'tgame' },
         addressTypes: { prod: ['26', '3e'], testnet: ['6f', '3a'] },
         validator: BTCValidator,
     },
@@ -260,7 +260,7 @@ var CURRENCIES = [
     {
         name: 'MonaCoin',
         symbol: 'mona',
-        segwitHrp: { prod: 'mona', prod: 'tmona' },
+        segwitHrp: { prod: 'mona', testnet: 'tmona' },
         addressTypes: { prod: ['32', '37'], testnet: ['6f', '75'] },
         validator: BTCValidator,
     },
@@ -303,7 +303,7 @@ var CURRENCIES = [
     {
         name: 'Qtum',
         symbol: 'qtum',
-        segwitHrp: { prod: 'qc', prod: 'tq' },
+        segwitHrp: { prod: 'qc', testnet: 'tq' },
         addressTypes: { prod: ['3a', '32'], testnet: ['78', '6e'] },
         validator: BTCValidator,
     },
