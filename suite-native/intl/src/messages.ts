@@ -124,6 +124,11 @@ export const messages = {
                 description: 'Sync your favorite coins and track balances with portfolio tracker.',
                 syncButton: 'Sync & Track',
             },
+            demoAccountQuestionnaire: {
+                title: "Don't have a Trezor yet?",
+                description: 'Help us shape a better experience for you.',
+                button: "I don't have a Trezor",
+            },
         },
         buttons: {
             receive: 'Receive',
