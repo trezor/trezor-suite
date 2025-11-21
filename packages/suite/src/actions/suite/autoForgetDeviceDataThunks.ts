@@ -26,6 +26,7 @@ export const setAutoForgetDeviceDataThunk = createThunk<
     // Finally, having purged the data in Bluetooth and THP reducers, simply sync BT and THP to persistent storage.
     await dispatch(storageActions.saveKnownDevices());
     await dispatch(storageActions.saveThpCredentials());
+    await storageActions.clearPersistentDeviceData();
 
     // Reload to ensure all local state is cleared, especially Connect session, which would otherwise reconnect THP.
     // Delay for two reasons: make sure IDB operations are complete, and give some time for the UI success notification to be seen
