@@ -1,7 +1,17 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 // These coins are not supported in Suite, but exist in Trezor Connect
-export type LegacyNetworkSymbol = 'xtz' | 'dash' | 'dgb' | 'nmc' | 'vtc' | 'btg' | 'xmr' | 'tada';
+export type LegacyNetworkSymbol =
+    | 'xtz'
+    | 'dash'
+    | 'dgb'
+    | 'nmc'
+    | 'vtc'
+    | 'btg'
+    | 'xmr'
+    | 'tada'
+    // not 'legacy', but not supported yet in Suite
+    | 'trx';
 
 export const NETWORK_ICONS = {
     ada: require('../images/networks/ada.svg'),
@@ -23,6 +33,7 @@ export const NETWORK_ICONS = {
     tada: require('../images/networks/tada.svg'),
     test: require('../images/networks/btc_test.svg'),
     thod: require('../images/networks/thod.svg'),
+    trx: require('../images/networks/trx.svg'),
     tsep: require('../images/networks/tsep.svg'),
     txlm: require('../images/networks/txlm.svg'),
     txrp: require('../images/networks/txrp.svg'),
