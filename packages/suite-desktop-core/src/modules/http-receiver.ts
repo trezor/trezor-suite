@@ -1,6 +1,7 @@
 /**
  * Local web server for handling requests to app
  */
+import { isMacOs, isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { restartApp } from '../libs/app-utils';
@@ -67,6 +68,16 @@ export const initBackground: ModuleInitBackground = ({
         ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
             validateIpcMessage({ ipcEvent });
             try {
+                // Use deeplink URLs for trading redirects on macOS/Windows only
+                if (
+                    TRADING_REDIRECT_PATHS.some(path => path === pathname) &&
+                    (isMacOs() || isWindows())
+                ) {
+                    receiver.activateRoute(pathname);
+
+                    return `trezorsuite:/${pathname}`;
+                }
+
                 const address = receiver.getRouteAddress(pathname);
                 if (address) {
                     receiver.activateRoute(pathname);
