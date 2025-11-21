@@ -533,15 +533,18 @@ export const saveMessageSystem = () => (_dispatch: Dispatch, getState: GetState)
     );
 };
 
-export const savePersistentDeviceData = createThunk(
-    `${STORAGE.MODULE_PREFIX}/savePersistentDeviceData`,
-    (_, { getState }) => {
-        if (!db.isAccessible()) return;
-        const data = selectPersistentDeviceData(getState());
+export const savePersistentDeviceData = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+    const data = selectPersistentDeviceData(getState());
 
-        db.addItem('persistentDeviceData', data, 'persistentDeviceData', true);
-    },
-);
+    await db.addItem('persistentDeviceData', data, 'persistentDeviceData', true);
+};
+
+// BEWARE This is not a thunk (most functions in this file are thunks, but are not named as such TODO rename them to "thunk"
+export const clearPersistentDeviceData = async () => {
+    if (!db.isAccessible()) return;
+    await db.removeItemByPK('persistentDeviceData', 'persistentDeviceData');
+};
 
 export const saveConnectSettings = () => (_dispatch: Dispatch, getState: GetState) => {
     if (!db.isAccessible()) return;

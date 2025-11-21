@@ -283,6 +283,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 api.dispatch(storageActions.savePersistentDeviceData());
             }
+            // just a safeguard, nothing should be persisted in the first place
+            if (isAutoForgetEnabled && deviceActions.deviceDisconnect.match(action)) {
+                storageActions.clearPersistentDeviceData();
+            }
 
             switch (action.type) {
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
