@@ -87,6 +87,7 @@ export const Feature = {
     // Feature flags implemented only for mobile app
     firmwareUpdate: 'device.firmware.update',
     inAppRating: 'inAppRating',
+    demoAccountQuestionnaire: 'demoAccountQuestionnaire',
 } as const;
 
 type ExtractFeatureValues<T> =

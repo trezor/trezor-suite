@@ -1,13 +1,20 @@
 import { Platform, View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
-import { Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
+    DemoAccountQuestionnaireStackRoutes,
     HomeStackParamList,
     HomeStackRoutes,
     RootStackParamList,
@@ -37,11 +44,22 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+type SecondaryCardConfig = {
+    titleTranslationId: TxKeyPath;
+    descriptionTranslationId: TxKeyPath;
+    buttonTranslationId: TxKeyPath;
+    onPress: () => void;
+    testID: string;
+};
+
 export const EmptyPortfolioCrossroads = () => {
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
 
     const { onConnectDevicePress } = useConnectDeviceHandler();
+    const isQuestionnaireEnabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureEnabled(state, Feature.demoAccountQuestionnaire, true),
+    );
 
     const handleConnectDevice = () => {
         onConnectDevicePress();
@@ -57,6 +75,30 @@ export const EmptyPortfolioCrossroads = () => {
         });
         analytics.report({ type: EventType.EmptyDashboardClick, payload: { action: 'syncCoins' } });
     };
+
+    const handleOpenQuestionnaire = () => {
+        navigation.navigate(RootStackRoutes.DemoAccountQuestionnaireStack, {
+            screen: DemoAccountQuestionnaireStackRoutes.Intro,
+        });
+        analytics.report({ type: EventType.DemoAccountQuestionnaireDashboard });
+    };
+
+    const secondaryCardConfig: SecondaryCardConfig = isQuestionnaireEnabled
+        ? {
+              titleTranslationId: 'moduleHome.emptyState.demoAccountQuestionnaire.title',
+              descriptionTranslationId:
+                  'moduleHome.emptyState.demoAccountQuestionnaire.description',
+              buttonTranslationId: 'moduleHome.emptyState.demoAccountQuestionnaire.button',
+              onPress: handleOpenQuestionnaire,
+              testID: '@home/portfolio/open-demo-questionnaire-button',
+          }
+        : {
+              titleTranslationId: 'moduleHome.emptyState.syncCoins.title',
+              descriptionTranslationId: 'moduleHome.emptyState.syncCoins.description',
+              buttonTranslationId: 'moduleHome.emptyState.syncCoins.syncButton',
+              onPress: handleSyncMyCoins,
+              testID: '@home/portfolio/sync-coins-button',
+          };
 
     return (
         <VStack spacing="sp16" flex={1}>
@@ -80,19 +122,19 @@ export const EmptyPortfolioCrossroads = () => {
                 <VStack spacing="sp24" justifyContent="center" alignItems="center">
                     <VStack alignItems="center">
                         <Text variant="titleSmall" textAlign="center">
-                            <Translation id="moduleHome.emptyState.syncCoins.title" />
+                            <Translation id={secondaryCardConfig.titleTranslationId} />
                         </Text>
                         <Text color="textSubdued" textAlign="center">
-                            <Translation id="moduleHome.emptyState.syncCoins.description" />
+                            <Translation id={secondaryCardConfig.descriptionTranslationId} />
                         </Text>
                     </VStack>
                     <View style={applyStyle(buttonWrapperStyle)}>
                         <Button
-                            onPress={handleSyncMyCoins}
+                            onPress={secondaryCardConfig.onPress}
                             colorScheme="tertiaryElevation1"
-                            testID="@home/portfolio/sync-coins-button"
+                            testID={secondaryCardConfig.testID}
                         >
-                            <Translation id="moduleHome.emptyState.syncCoins.syncButton" />
+                            <Translation id={secondaryCardConfig.buttonTranslationId} />
                         </Button>
                     </View>
                 </VStack>
