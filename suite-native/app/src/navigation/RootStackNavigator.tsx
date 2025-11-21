@@ -43,6 +43,7 @@ import { TransactionDetailScreen } from '@suite-native/transactions';
 
 import { AppTabNavigator } from './AppTabNavigator';
 import { NavigatorLayoutWithGlobalHooks } from './RootStackNavigatorGlobalHooksWrapper';
+import StorybookUI from '../../.rnstorybook';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -174,6 +175,14 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.TradingLocationModal}
                     component={TradingLocationModalScreen}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.Storybook}
+                    component={StorybookUI}
+                    options={{
+                        headerShown: true,
+                        headerBackButtonDisplayMode: 'minimal',
+                    }}
                 />
             </RootStack.Group>
         </RootStack.Navigator>

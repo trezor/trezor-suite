@@ -6,6 +6,8 @@ const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/m
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { mergeConfig } = require('metro-config');
 const nodejs = require('node-libs-browser');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
 
 const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecureResolver');
 
@@ -134,7 +136,7 @@ const config = {
     },
 };
 
-const mergedConfig = mergeConfig(jsonExpoConfig, config);
+const mergedConfig = mergeConfig(jsonExpoConfig, withStorybook(config));
 
 if (
     process.env.EXPO_PUBLIC_IS_DETOX_BUILD !== 'true' &&

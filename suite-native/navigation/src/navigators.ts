@@ -356,6 +356,7 @@ export type RootStackParamList = {
     };
     [RootStackRoutes.BootloaderMode]: undefined;
     [RootStackRoutes.TradingLocationModal]: undefined;
+    [RootStackRoutes.Storybook]: undefined;
 };
 
 export type TradingStackParamList = {

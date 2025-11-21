@@ -11,6 +11,7 @@ import {
     DevUtilsStackRoutes,
     DynamicScreenHeader,
     RootStackParamList,
+    RootStackRoutes,
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -58,9 +59,18 @@ export const DevUtilsScreen = () => {
                             <TitleHeader title="Build version" subtitle={versionString} />
                         </Pressable>
                         {isDevelopOrDebugEnv() && (
-                            <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
-                                See Component Demo
-                            </Button>
+                            <VStack>
+                                <Button
+                                    onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}
+                                >
+                                    See Component Demo
+                                </Button>
+                                <Button
+                                    onPress={() => navigation.navigate(RootStackRoutes.Storybook)}
+                                >
+                                    StoryBook
+                                </Button>
+                            </VStack>
                         )}
                     </VStack>
                 </Card>
