@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isFulfilled } from '@reduxjs/toolkit';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import {
@@ -176,7 +176,13 @@ export const useTradingTransaction = ({
             return;
         }
 
-        await dispatch(updateFeeInfoThunk({ networkSymbol: sendAccount.symbol }));
+        const feesResult = await dispatch(
+            updateFeeInfoThunk({ networkSymbol: sendAccount.symbol }),
+        );
+        if (isRejected(feesResult)) {
+            console.error('Failed to fetch fees for trading transaction');
+        }
+
         await composeRequest({
             selectedFeeLevel: selectedFee as NativeSupportedFeeLevel,
             feePerUnit: feePerUnitDraft,

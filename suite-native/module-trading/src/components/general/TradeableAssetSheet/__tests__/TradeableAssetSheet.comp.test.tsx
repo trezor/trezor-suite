@@ -1,3 +1,5 @@
+import { Keyboard } from 'react-native';
+
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { TradeableAsset } from '@suite-native/trading-types';
@@ -21,9 +23,10 @@ describe('TradeableAssetSheet', () => {
             />,
         );
 
-    it('should call both onAssetSelect and onClose when an item is pressed', async () => {
+    it('should call Keyboard.dismiss, onAssetSelect and onClose when an item is pressed', async () => {
         const closeMock = jest.fn();
         const selectMock = jest.fn();
+        const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 
         const { getByText } = await renderTradeableAssetsSheet({
             onClose: closeMock,
@@ -32,6 +35,7 @@ describe('TradeableAssetSheet', () => {
 
         fireEvent.press(getByText('BTC'));
 
+        expect(keyboardDismissSpy).toHaveBeenCalledTimes(1);
         expect(selectMock).toHaveBeenCalledTimes(1);
         expect(closeMock).toHaveBeenCalledTimes(1);
     });
