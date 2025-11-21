@@ -288,6 +288,10 @@ export const EXPERIMENTAL_FEATURES_KB_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-suite/experimental-features-in-trezor-suite',
 );
 
+export const HELP_CENTER_T3W1_INTRODUCTION_URL: Url = withPlatformUtm(
+    'https://trezor.io/guides/trezor-devices/trezor-safe-7/introduction-to-the-trezor-safe-7',
+);
+
 // =====================
 // 🛠️ SERVICES
 // =====================
@@ -329,6 +333,14 @@ export const DASHBOARD_BANNER_TS7_URL: Url =
 
 export const ESHOP_KEEP_METAL_MULTI_SHARE_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-keep-metal-multi-share',
+);
+
+export const ESHOP_WHAT_IS_A_HARDWARE_WALLET_URL: Url = withPlatformUtm(
+    'https://trezor.io/what-is-a-hardware-wallet',
+);
+
+export const ESHOP_WHY_TREZOR_IS_SECURE_URL: Url = withPlatformUtm(
+    'https://trezor.io/why-trezor-is-secure',
 );
 
 // =====================

@@ -21,6 +21,7 @@ import {
     AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
     BackupAndPassphraseStackRoutes,
+    DemoAccountQuestionnaireStackRoutes,
     DevUtilsStackRoutes,
     DeviceAuthenticityStackRoutes,
     DeviceCheckBackupStackRoutes,
@@ -65,6 +66,13 @@ export type AccountsStackParamList = {
 
 export type HomeStackParamList = {
     [HomeStackRoutes.Home]: undefined;
+};
+
+export type DemoAccountQuestionnaireStackParamList = {
+    [DemoAccountQuestionnaireStackRoutes.Intro]: undefined;
+    [DemoAccountQuestionnaireStackRoutes.Reason]: undefined;
+    [DemoAccountQuestionnaireStackRoutes.SuiteAction]: undefined;
+    [DemoAccountQuestionnaireStackRoutes.Success]: undefined;
 };
 
 export type DevUtilsStackParamList = {
@@ -314,6 +322,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
+    [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetail]: {
         txid: string;

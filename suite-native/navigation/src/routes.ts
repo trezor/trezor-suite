@@ -24,6 +24,7 @@ export enum RootStackRoutes {
     TradingWebView = 'TradingWebView',
     BootloaderMode = 'BootloaderMode',
     TradingLocationModal = 'TradingLocationModal',
+    DemoAccountQuestionnaireStack = 'DemoAccountQuestionnaireStack',
 }
 
 export enum AppTabsRoutes {
@@ -168,6 +169,13 @@ export enum DevUtilsStackRoutes {
 
 export enum HomeStackRoutes {
     Home = 'Home',
+}
+
+export enum DemoAccountQuestionnaireStackRoutes {
+    Intro = 'Intro',
+    Reason = 'Reason',
+    SuiteAction = 'SuiteAction',
+    Success = 'Success',
 }
 
 export enum AccountsStackRoutes {

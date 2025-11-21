@@ -11231,6 +11231,7 @@ __metadata:
     "@suite-native/module-authenticity-checks": "workspace:*"
     "@suite-native/module-authorize-device": "workspace:*"
     "@suite-native/module-connect-popup": "workspace:*"
+    "@suite-native/module-demo-account-questionnaire": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
     "@suite-native/module-device-onboarding": "workspace:*"
     "@suite-native/module-device-settings": "workspace:*"
@@ -12218,6 +12219,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-demo-account-questionnaire@workspace:*, @suite-native/module-demo-account-questionnaire@workspace:suite-native/module-demo-account-questionnaire":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-demo-account-questionnaire@workspace:suite-native/module-demo-account-questionnaire"
+  dependencies:
+    "@react-navigation/native": "npm:7.1.18"
+    "@react-navigation/native-stack": "npm:7.5.1"
+    "@suite-native/analytics": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.4"
+    react-native-reanimated: "npm:~4.1.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-dev-utils@workspace:*, @suite-native/module-dev-utils@workspace:suite-native/module-dev-utils":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
@@ -12355,6 +12376,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/graph": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"

@@ -68,6 +68,7 @@
         "@suite-native/module-authenticity-checks": "workspace:*",
         "@suite-native/module-authorize-device": "workspace:*",
         "@suite-native/module-connect-popup": "workspace:*",
+        "@suite-native/module-demo-account-questionnaire": "workspace:*",
         "@suite-native/module-dev-utils": "workspace:*",
         "@suite-native/module-device-onboarding": "workspace:*",
         "@suite-native/module-device-settings": "workspace:*",
