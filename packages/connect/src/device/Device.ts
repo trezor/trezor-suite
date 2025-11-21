@@ -158,9 +158,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private _currentRelease?: FirmwareRelease;
-    public get currentRelease() {
-        return this._currentRelease;
-    }
 
     private _firmwareReleaseConfigInfo?: FirmwareReleaseConfigInfo;
     public get firmwareReleaseConfigInfo() {
@@ -213,8 +210,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private name = 'Trezor';
 
     private color?: string;
-
-    private availableTranslations: Record<string, string> = {};
 
     private authenticityChecks: KnownDevice['authenticityChecks'] = {
         firmwareRevision: null,
@@ -891,9 +886,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return;
         }
 
-        const release = await getReleaseByVersion(feat, newVersion, newFirmwareType);
-        this._currentRelease = release;
-        this.availableTranslations = this._currentRelease?.translations ?? {};
+        this._currentRelease = await getReleaseByVersion(feat, newVersion, newFirmwareType);
     }
 
     private _updateFeatures(feat: Features) {
@@ -948,7 +941,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 newVersion,
                 getFirmwareType(feat),
             );
-            this.availableTranslations = this._currentRelease?.translations ?? {};
         }
 
         this._features = feat;
@@ -1168,7 +1160,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             firmwareType: this.firmwareType,
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,
-            availableTranslations: this.availableTranslations,
+            availableTranslations: this._currentRelease?.translations ?? {},
             authenticityChecks: this.authenticityChecks,
             bluetoothProps,
             thp: this.thp?.serialize(),
