@@ -71,9 +71,10 @@ export const useTradingFormAccount = () => {
                     : undefined;
 
             if (isNativeToken) {
-                return tokens
-                    ? tokens.shownWithBalance.length > 0
-                    : new BigNumber(account.balance).gt(0);
+                const hasTokensWithBalance = tokens ? tokens.shownWithBalance.length > 0 : false;
+                const hasAccountBalance = new BigNumber(account.balance).gt(0);
+
+                return hasTokensWithBalance || hasAccountBalance;
             }
 
             return tokens?.shownWithBalance.some(token => {
