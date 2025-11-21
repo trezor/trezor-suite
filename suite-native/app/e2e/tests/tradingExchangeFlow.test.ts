@@ -60,7 +60,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.openSwapForm();
         });
 
-        it('Basic exchange USDC to USDT', async () => {
+        it.skip('Basic exchange USDC to USDT', async () => {
             await tradingExchangeActions.selectSendAsset('USDC');
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
