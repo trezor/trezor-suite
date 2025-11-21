@@ -4,6 +4,7 @@ import type {
     CountryCode,
     FirmwareVariant,
     Model,
+    PairingMethod,
     Variant,
     Vendor,
 } from '@suite-common/suite-types';
@@ -17,6 +18,7 @@ import {
     FEATURE_LIST,
     FW_VARIANT_ENUM,
     MODEL_ENUM,
+    PAIRING_METHOD_ENUM,
     VARIANT_ENUM,
     VENDOR_ENUM,
 } from './messageSystemConstants';
@@ -254,6 +256,16 @@ const settingsSchema = yup.array(
         .noUnknown(false),
 );
 
+const thpPropertiesSchema = yup
+    .object({
+        internalModel: yup.string().optional(),
+        modelVariant: yup.number().optional(),
+        protocolVersionMajor: yup.number().optional(),
+        protocolVersionMinor: yup.number().optional(),
+        pairingMethods: yup.array(yup.mixed<PairingMethod>().oneOf(PAIRING_METHOD_ENUM)).optional(),
+    })
+    .noUnknown(true);
+
 const deviceSchema = yup
     .object({
         model: yup.mixed<Model>().oneOf(MODEL_ENUM).required(),
@@ -262,6 +274,7 @@ const deviceSchema = yup
         bootloader: versionSchema,
         variant: yup.mixed<FirmwareVariant>().oneOf(FW_VARIANT_ENUM).required(),
         vendor: yup.mixed<Vendor>().oneOf(VENDOR_ENUM).required(),
+        thpProperties: thpPropertiesSchema.optional(),
     })
     .noUnknown(true);
 

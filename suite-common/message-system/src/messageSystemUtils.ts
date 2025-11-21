@@ -16,6 +16,7 @@ import type {
     Settings,
     Transport,
     TrezorDevice,
+    TrezorHostProtocolTHPProperties,
     Version,
 } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -154,6 +155,50 @@ export const isTransportCompatible = (
         })
         .some(({ type, version }) => isVersionCompatible(transportCondition, type, version));
 
+const isThpPropertiesCompatible = (
+    condition?: TrezorHostProtocolTHPProperties,
+    device?: NonNullable<TrezorDevice['thp']>['properties'],
+) => {
+    if (!condition) return true;
+
+    if (!device) return false;
+
+    if (
+        condition.internalModel &&
+        device.internal_model?.toLowerCase() !== condition.internalModel.toLowerCase()
+    ) {
+        return false;
+    }
+
+    if (condition.modelVariant !== undefined && device.model_variant !== condition.modelVariant) {
+        return false;
+    }
+
+    if (
+        condition.protocolVersionMajor !== undefined &&
+        device.protocol_version_major !== condition.protocolVersionMajor
+    ) {
+        return false;
+    }
+
+    if (
+        condition.protocolVersionMinor !== undefined &&
+        device.protocol_version_minor !== condition.protocolVersionMinor
+    ) {
+        return false;
+    }
+
+    if (condition.pairingMethods?.length) {
+        if (!device.pairing_methods?.length) return false;
+
+        if (!condition.pairingMethods.every(method => device.pairing_methods.includes(method))) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDevice): boolean => {
     // if device conditions are empty, then device should be empty
     if (!deviceConditions.length) {
@@ -178,6 +223,7 @@ export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDe
             firmware: firmwareCondition,
             bootloader: bootloaderCondition,
             variant: variantCondition,
+            thpProperties: thpPropertiesCondition,
         } = deviceCondition;
 
         return (
@@ -189,7 +235,8 @@ export const isDeviceCompatible = (deviceConditions: Device[], device?: TrezorDe
             (semver.satisfies(deviceFwVersion, createVersionRange(firmwareCondition)!) ||
                 firmwareCondition === '*') &&
             (semver.satisfies(deviceBootloaderVersion, createVersionRange(bootloaderCondition)!) ||
-                bootloaderCondition === '*')
+                bootloaderCondition === '*') &&
+            isThpPropertiesCompatible(thpPropertiesCondition, device.thp?.properties)
         );
     });
 };
@@ -466,12 +513,19 @@ export const getDefaultConditionValue = (key: keyof Condition): Condition[keyof 
         case 'devices':
             return [
                 {
-                    model: 'T3T1',
+                    model: 'T3W1',
                     firmwareRevision: '*',
                     firmware: '*',
                     bootloader: '*',
                     variant: '*',
                     vendor: '*',
+                    thpProperties: {
+                        internalModel: 'T3W1',
+                        modelVariant: 2,
+                        protocolVersionMajor: 2,
+                        protocolVersionMinor: 0,
+                        pairingMethods: ['CodeEntry'],
+                    },
                 },
             ];
 
