@@ -311,19 +311,6 @@ export const LTC_ADDRESS_INFO_URL: Url = withPlatformUtm(
 export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://invity.onelink.me/yIY4/q7ltbnv0';
 
 // =====================
-// 🌐 CARDANO
-// =====================
-
-export const CARDANO_STAKE_POOL_MAINNET_URL: Url =
-    'https://trezor-cardano-mainnet.blockfrost.io/api/v0/pools/';
-export const CARDANO_STAKE_POOL_PREVIEW_URL: Url =
-    'https://trezor-cardano-preview.blockfrost.io/api/v0/pools/';
-export const CARDANO_MAINNET_DREP: Url =
-    'https://trezor-cardano-mainnet.blockfrost.io/api/v0/dreps/';
-export const CARDANO_PREVIEW_DREP: Url =
-    'https://trezor-cardano-preview.blockfrost.io/api/v0/dreps/';
-
-// =====================
 // 📣 PROMO
 // =====================
 

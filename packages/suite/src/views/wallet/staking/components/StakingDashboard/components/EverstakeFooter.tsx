@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { isStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import {
@@ -35,9 +34,6 @@ const Left = styled.div`
 
 export const EverstakeFooter = () => {
     const account = useSelector(selectSelectedAccount);
-    const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
-    const { trezorPools } = cardanoStaking['mainnet'];
-    const isFiveBinariesPool = isStakedWithFiveBinaries(account, trezorPools);
 
     const learnMoreLink = useMemo(() => {
         switch (account?.networkType) {
@@ -56,11 +52,7 @@ export const EverstakeFooter = () => {
         <Wrapper>
             <Left>
                 <Translation id="TR_STAKE_PROVIDED_BY" />{' '}
-                <Icon
-                    size={isFiveBinariesPool ? 75 : 100}
-                    name={isFiveBinariesPool ? 'fiveBinariesLogo' : 'everstakeLogoText'}
-                    variant="default"
-                />
+                <Icon size={100} name="everstakeLogoText" variant="default" />
             </Left>
             {learnMoreLink && <LearnMoreButton url={learnMoreLink} />}
         </Wrapper>
