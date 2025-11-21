@@ -59,7 +59,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.openSwapForm();
         });
 
-        it.skip('Basic exchange USDC to USDT', async () => {
+        it('Basic exchange USDC to USDT', async () => {
             await tradingExchangeActions.selectSendAsset('USDC');
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
@@ -76,6 +76,10 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.confirmTradingForm();
 
             await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
+
+            // TODO remove after https://github.com/trezor/trezor-trade-api/issues/386 is resolved
+            const is386Resolved = false;
+            if (!is386Resolved) return;
 
             await exchangePreviewActions.waitForFeesToLoad();
             await exchangePreviewActions.scrollScreenToBottom();
