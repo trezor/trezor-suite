@@ -42,9 +42,16 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
                 <Collapsible.Content>
                     {devices.map((device, index) => (
                         <div key={`${device.model}_${index}`}>
-                            <strong>{device.model}</strong> (firmware: {device.firmware},
-                            bootloader: {device.bootloader}, variant: {device.variant},
-                            firmwareRevision: {device.firmwareRevision}, vendor: {device.vendor})
+                            <strong>{device.model}</strong>{' '}
+                            {JSON.stringify(
+                                device,
+                                (key, value) => {
+                                    if (key === 'model') return undefined;
+
+                                    return value;
+                                },
+                                2,
+                            )}
                         </div>
                     ))}
                 </Collapsible.Content>

@@ -5,6 +5,7 @@ import {
     CountryCode,
     FirmwareVariant,
     Model,
+    PairingMethod,
     Variant,
     Vendor,
 } from '@suite-common/suite-types';
@@ -89,6 +90,8 @@ export const FW_VARIANT_ENUM = schema.definitions.conditions.items.properties.de
     .properties.variant.enum as readonly FirmwareVariant[];
 export const VENDOR_ENUM = schema.definitions.conditions.items.properties.devices.items.properties
     .vendor.enum as readonly Vendor[];
+export const PAIRING_METHOD_ENUM = schema.definitions.conditions.items.properties.devices.items
+    .properties.thpProperties.properties.pairingMethods.items.enum as readonly PairingMethod[];
 
 export const CATEGORY_OPTIONS = toMessageSystemOptions(CATEGORY_ENUM);
 export const CATEGORY_FILTER_OPTIONS = toMessageSystemOptions([

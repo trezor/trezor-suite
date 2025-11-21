@@ -477,6 +477,39 @@
                                     "description": "Eligible authorized vendors.",
                                     "type": "string",
                                     "enum": ["*", "trezor.io"]
+                                },
+                                "thpProperties": {
+                                    "title": "Trezor-Host-Protocol (THP) properties",
+                                    "type": "object",
+                                    "properties": {
+                                        "internalModel": {
+                                            "type": "string"
+                                        },
+                                        "modelVariant": {
+                                            "type": "number"
+                                        },
+                                        "protocolVersionMajor": {
+                                            "type": "number"
+                                        },
+                                        "protocolVersionMinor": {
+                                            "type": "number"
+                                        },
+                                        "pairingMethods": {
+                                            "type": "array",
+                                            "items": {
+                                                "title": "Pairing Method",
+                                                "type": "string",
+                                                "enum": [
+                                                    "SkipPairing",
+                                                    "CodeEntry",
+                                                    "QrCode",
+                                                    "NFC"
+                                                ],
+                                                "description": "Supported THP pairing methods: 1=SkipPairing, 2=CodeEntry, 3=QrCode, 4=NFC."
+                                            }
+                                        }
+                                    },
+                                    "additionalProperties": false
                                 }
                             },
                             "additionalProperties": false

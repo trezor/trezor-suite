@@ -23,6 +23,10 @@ export type FirmwareVariant = '*' | 'bitcoin-only' | 'universal';
  */
 export type Vendor = '*' | 'trezor.io';
 /**
+ * Supported THP pairing methods: 1=SkipPairing, 2=CodeEntry, 3=QrCode, 4=NFC.
+ */
+export type PairingMethod = 'SkipPairing' | 'CodeEntry' | 'QrCode' | 'NFC';
+/**
  * This interface was referenced by `MessageSystem`'s JSON-Schema
  * via the `definition` "countryCodes".
  */
@@ -378,6 +382,14 @@ export interface Device {
     bootloader: Version;
     variant: FirmwareVariant;
     vendor: Vendor;
+    thpProperties?: TrezorHostProtocolTHPProperties;
+}
+export interface TrezorHostProtocolTHPProperties {
+    internalModel?: string;
+    modelVariant?: number;
+    protocolVersionMajor?: number;
+    protocolVersionMinor?: number;
+    pairingMethods?: PairingMethod[];
 }
 export interface Message {
     id: string;
