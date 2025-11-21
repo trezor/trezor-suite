@@ -76,4 +76,8 @@ export enum EventType {
     DeviceSetupCompleted = 'device_setup/completed',
     DeviceSetupSecurityCheck = 'device_setup/security_check',
     DeviceSetupInfo = 'device_setup/info',
+    DemoAccountQuestionnaireDashboard = 'demo-account/questionnaire-dashboard',
+    DemoAccountQuestionnaireStart = 'demo-account/questionnaire-start',
+    DemoAccountQuestionnaireQuestion = 'demo-account/questionnaire-question',
+    DemoAccountQuestionnaireLinks = 'demo-account/questionnaire-links',
 }

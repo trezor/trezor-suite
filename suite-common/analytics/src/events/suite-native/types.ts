@@ -9,6 +9,9 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType } from './constants';
 import {
     AnalyticsSendFlowStep,
+    DemoAccountQuestionnaireLinkKey,
+    DemoAccountQuestionnaireQuestion,
+    DemoAccountQuestionnaireQuestionOption,
     DeviceAuthenticityCheckResult,
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
@@ -558,4 +561,23 @@ export type SuiteNativeAnalyticsEvent =
       }
     | {
           type: EventType.ReferralButtonPress;
+      }
+    | {
+          type: EventType.DemoAccountQuestionnaireDashboard;
+      }
+    | {
+          type: EventType.DemoAccountQuestionnaireStart;
+      }
+    | {
+          type: EventType.DemoAccountQuestionnaireQuestion;
+          payload: {
+              option: DemoAccountQuestionnaireQuestionOption;
+              question: DemoAccountQuestionnaireQuestion;
+          };
+      }
+    | {
+          type: EventType.DemoAccountQuestionnaireLinks;
+          payload: {
+              option: DemoAccountQuestionnaireLinkKey;
+          };
       };

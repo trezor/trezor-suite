@@ -59,6 +59,9 @@
         },
         { "path": "../module-authorize-device" },
         { "path": "../module-connect-popup" },
+        {
+            "path": "../module-demo-account-questionnaire"
+        },
         { "path": "../module-dev-utils" },
         { "path": "../module-device-onboarding" },
         { "path": "../module-device-settings" },

@@ -18,6 +18,7 @@ import {
     WalletConnectSessionPopupScreen,
     WalletConnectSwitchAccountScreen,
 } from '@suite-native/module-connect-popup';
+import { DemoAccountQuestionnaireStackNavigator } from '@suite-native/module-demo-account-questionnaire';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import {
     BackupFailedModalScreen,
@@ -118,6 +119,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.SettingsScreenStack}
                 component={SettingsStackNavigator}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.DemoAccountQuestionnaireStack}
+                component={DemoAccountQuestionnaireStackNavigator}
             />
             <RootStack.Screen
                 name={RootStackRoutes.DeviceCompromisedModal}
