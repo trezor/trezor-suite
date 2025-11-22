@@ -196,8 +196,9 @@ type getAccountTypeNameProps = {
 
 export const getAccountTypeName = ({ path, accountType, networkType }: getAccountTypeNameProps) => {
     if (!networkType) return null;
+
     if (networkType !== 'bitcoin') {
-        switch (accountType?.toLowerCase()) {
+        switch (accountType) {
             case 'ledger':
                 return 'TR_ACCOUNT_TYPE_LEDGER';
             case 'legacy':
@@ -205,21 +206,22 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
             case 'normal':
                 return 'TR_ACCOUNT_TYPE_DEFAULT';
         }
-    } else {
-        switch (accountType?.toLowerCase()) {
-            case 'segwit':
-                return 'TR_ACCOUNT_TYPE_SEGWIT';
-            case 'taproot':
-                return 'TR_ACCOUNT_TYPE_TAPROOT';
-            case 'normal':
-                return 'TR_ACCOUNT_TYPE_BIP84_NAME';
-            case 'legacy':
-                return 'TR_ACCOUNT_TYPE_LEGACY';
-        }
     }
+
+    switch (accountType) {
+        case 'segwit':
+            return 'TR_ACCOUNT_TYPE_SEGWIT';
+        case 'taproot':
+            return 'TR_ACCOUNT_TYPE_TAPROOT';
+        case 'normal':
+            return 'TR_ACCOUNT_TYPE_BIP84_NAME';
+        case 'legacy':
+            return 'TR_ACCOUNT_TYPE_LEGACY';
+    }
+
     if (!path) return null;
-    const accountTypePrefix = getAccountTypePrefix(path);
-    if (accountTypePrefix) return `${accountTypePrefix}_NAME` as const;
+    // TODO: is this used?
+
     const bip43 = getBip43Type(path);
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_NAME';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
@@ -250,28 +252,30 @@ type getAccountTypeDescProps = {
 };
 
 export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccountTypeDescProps) => {
-    switch (accountType?.toLowerCase()) {
+    switch (accountType) {
         case 'ledger':
             return 'TR_ACCOUNT_TYPE_LEDGER_DESC';
         case 'legacy':
+            if (networkType === 'cardano') {
+                return 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC';
+            }
+
             return 'TR_ACCOUNT_TYPE_LEGACY_DESC';
     }
 
-    switch (networkType?.toLowerCase()) {
+    switch (networkType) {
         case 'ethereum':
             return 'TR_ACCOUNT_TYPE_NORMAL_EVM_DESC';
         case 'solana':
             return 'TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC';
         case 'cardano':
-            return 'TR_ACCOUNT_TYPE_CARDANO_DESC';
+            return 'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC';
         case 'ripple':
             return 'TR_ACCOUNT_TYPE_XRP_DESC';
         case 'stellar':
             return 'TR_ACCOUNT_TYPE_STELLAR_DESC';
     }
 
-    const accountTypePrefix = getAccountTypePrefix(path);
-    if (accountTypePrefix) return `${accountTypePrefix}_DESC` as const;
     const bip43 = getBip43Type(path);
     switch (bip43) {
         case 'bip86':
@@ -280,8 +284,6 @@ export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccoun
             return 'TR_ACCOUNT_TYPE_BIP84_DESC';
         case 'bip49':
             return 'TR_ACCOUNT_TYPE_BIP49_DESC';
-        case 'shelley':
-            return 'TR_ACCOUNT_TYPE_SHELLEY_DESC';
         case 'slip25':
             return 'TR_ACCOUNT_TYPE_SLIP25_DESC';
     }

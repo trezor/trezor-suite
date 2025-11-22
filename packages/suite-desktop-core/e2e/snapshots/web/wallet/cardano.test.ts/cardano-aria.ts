@@ -1,7 +1,7 @@
 export const cardanoAccountDetails = `
     - text: Account type
     - paragraph:
-      - paragraph: The current and most widely accepted method of generating and managing Cardano addresses ensures interoperability, security, and support for all types of tokens.
+      - paragraph: Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.
     - text: Default
     - paragraph: (Shelley)
     - text: Derivation path

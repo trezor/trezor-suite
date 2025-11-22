@@ -12,6 +12,7 @@ import { Account } from 'src/types/wallet';
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
 import { BackendDisconnected } from './BackendDisconnected';
+import { CardanoLegacyBanner } from './CardanoLegacyBanner';
 import { ContextMessage } from './ContextMessage';
 import { DeviceUnavailable } from './DeviceUnavailable';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
@@ -49,6 +50,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <AccountOutOfSync account={account} />
             <EvmExplanationBanner account={account} />
             <TaprootBanner account={account} />
+            <CardanoLegacyBanner account={account} />
             {account?.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
             {account?.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
             {account?.symbol && <StakingBanner account={account} />}
