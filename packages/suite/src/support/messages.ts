@@ -3905,11 +3905,22 @@ export default defineMessages({
         defaultMessage:
             'The current and most widely accepted method of generating and managing Solana addresses ensures interoperability, security, and support for SOL and SPL tokens.',
     },
-    TR_ACCOUNT_TYPE_CARDANO_DESC: {
-        id: 'TR_ACCOUNT_TYPE_CARDANO_DESC',
+    TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC',
         defaultMessage:
-            'The current and most widely accepted method of generating and managing Cardano addresses ensures interoperability, security, and support for all types of tokens.',
+            'Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
     },
+    TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC',
+        defaultMessage:
+            'Legacy Cardano accounts are no longer supported. Use a default account to manage your funds.',
+    },
+    TR_ACCOUNT_TYPE_CARDANO_LEGACY_BANNER: {
+        id: 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_BANNER',
+        defaultMessage:
+            'Legacy Cardano account detected—migrate to a default account, as legacy accounts won’t be automatically discovered in future.',
+    },
+
     TR_ACCOUNT_TYPE_XRP_DESC: {
         id: 'TR_ACCOUNT_TYPE_XRP_DESC',
         defaultMessage:
@@ -3985,11 +3996,6 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH: {
         id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_TECH',
         defaultMessage: 'BIP44, Base58',
-        dynamic: true,
-    },
-    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC: {
-        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_DESC',
-        defaultMessage: 'Bip44Change account',
         dynamic: true,
     },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
@@ -8258,11 +8264,6 @@ export default defineMessages({
     TR_ERROR_CARDANO_WITHDRAWAL: {
         id: 'TR_ERROR_CARDANO_WITHDRAWAL',
         defaultMessage: "Amount isn't enough",
-    },
-    TR_ACCOUNT_TYPE_SHELLEY_DESC: {
-        id: 'TR_ACCOUNT_TYPE_SHELLEY_DESC',
-        defaultMessage:
-            'Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
     },
     TR_CARDANO_TREZOR_AMOUNT_HEADLINE: {
         id: 'TR_CARDANO_TREZOR_AMOUNT_HEADLINE',
