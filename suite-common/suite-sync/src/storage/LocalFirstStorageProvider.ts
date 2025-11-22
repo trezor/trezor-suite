@@ -1,60 +1,9 @@
-import {
-    EvoluDeps,
-    OwnerId,
-    SimpleName,
-    createEvolu,
-    createOwnerWebSocketTransport,
-} from '@evolu/common';
+import { EvoluDeps, OwnerId } from '@evolu/common';
 
 import { EvoluKeys } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
 
-import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
-import { Schema } from '../schema';
 import { LocalFirstStorage } from '../storage';
-
-// This is a way how to force change of the SQL files. It was useful for development
-// so not everybody had to delete SQLite file manually:
-// See: https://www.evolu.dev/docs/faq#how-to-delete-opfs-sqlite-in-browser
-const VERSION = 4;
-
-type CreateEvoluInstanceProps = {
-    relayUrl: string;
-    evoluKeys: EvoluKeys;
-    evoluDeps: EvoluDeps;
-};
-
-const createEvoluInstance = ({ relayUrl, evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
-    const owner = createEvoluAppOwnerFromTrezorData({ data: evoluKeys.ownerSecret });
-
-    if (!owner.ok) {
-        console.error(owner.error);
-
-        throw owner.error;
-    }
-
-    const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
-    const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${sanitizedOwnerId}`);
-
-    if (!databaseName.ok) {
-        console.error(databaseName.error);
-
-        throw databaseName.error;
-    }
-
-    const evolu = createEvolu(evoluDeps)(Schema, {
-        name: databaseName.value,
-        transports: [createOwnerWebSocketTransport({ url: relayUrl, ownerId: owner.value.id })],
-        externalAppOwner: owner.value,
-    });
-
-    evolu.subscribeError(() => {
-        const error = evolu.getError();
-        console.error(JSON.stringify(error));
-    });
-
-    return evolu;
-};
 
 type SuiteOwnerId = string;
 
@@ -80,13 +29,11 @@ export class LocalFirstStorageProvider {
                     ? DEFAULT_SUITE_SYNC_RELAY_URL
                     : this.relayUrl;
 
-            const evolu = createEvoluInstance({
+            storage = new LocalFirstStorage({
                 relayUrl,
-                evoluKeys,
                 evoluDeps: this.evoluDeps,
+                evoluKeys,
             });
-
-            storage = new LocalFirstStorage(evolu);
             this.storages.set(evoluKeys.ownerId, storage);
         }
 
