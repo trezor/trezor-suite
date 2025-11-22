@@ -8,8 +8,10 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { UnwrapQuery } from '../../evoluUtils';
-import { normalizeLabel } from '../normalizeLabel';
+import { OutputLabel, OutputLabelsStore } from '@suite-common/suite-sync-storage';
+
+import { UnwrapQuery } from '../evoluUtils';
+import { normalizeLabel } from './normalizeLabel';
 
 export const OutputLabelId = id('OutputLabelId');
 export type OutputLabelId = typeof OutputLabelId.Type;
@@ -26,13 +28,7 @@ export const OutputLabelSchema = {
     },
 };
 
-export type OutputLabel = {
-    txId: string;
-    outputIndex: number;
-    label: string | null;
-};
-
-export class OutputLabels {
+export class OutputLabels implements OutputLabelsStore {
     constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
 
     update = ({ txId, outputIndex, label }: OutputLabel) => {

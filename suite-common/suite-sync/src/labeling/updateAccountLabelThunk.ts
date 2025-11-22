@@ -1,9 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { getLocalFirstStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 
 import { LABELING_PREFIX } from './labelingActions';
-import { getLocalFirstStorageProvider } from '../storage/sharedObjects';
 
 type UpdateAccountLabelThunkParams = {
     deviceStaticSessionId: string;

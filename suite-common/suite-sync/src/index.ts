@@ -1,22 +1,21 @@
 // Suite Sync
-export { disposeAllLocalFirstStorageThunk } from './storage/disposeAllLocalFirstStorageThunk';
-export { initLocalFirstStorageThunkFactory } from './storage/initLocalFirstStorageThunk';
-export { subscribeLocalFirstStorageThunk } from './storage/subscribeLocalFirstStorageThunk';
-export { changeRelayUrlThunk } from './storage/changeRelayUrlThunk';
-export { unsubscribeAndDisposeLocalFirstStorageThunk } from './storage/unsubscribeAndDisposeLocalFirstStorageThunk';
-export { DEFAULT_SUITE_SYNC_RELAY_URL as DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL } from './storage/LocalFirstStorageProvider';
-export { suiteSyncActions } from './storage/suiteSyncActions';
-export { prepareSuiteSyncReducer, initialSuiteSyncState } from './storage/suiteSyncReducer';
-export type { SuiteSyncState, SuiteSyncSettings } from './storage/suiteSyncReducer';
 export {
-    selectIsLocalFirstStorageDebugEnabled,
     selectIsLocalFirstStorageEnabled,
+    selectIsFeatureLocalFirstStorageAvailable,
     selectLocalFirstStorageRelayUrl,
     selectShouldOfferSecureSync,
-    selectIsFeatureLocalFirstStorageAvailable,
-} from './storage/suiteSyncSelectors';
-export { useLocalFirstStorage } from './storage/useLocalFirstStorage';
-export { isSuiteSyncSupportedByDevice } from './device';
+    selectIsLocalFirstStorageDebugEnabled,
+} from './suiteSyncSelectors';
+export { useLocalFirstStorage } from './useLocalFirstStorage';
+export { prepareSuiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
+export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
+export { suiteSyncActions } from './suiteSyncActions';
+export { subscribeLocalFirstStorageThunk } from './subscribeLocalFirstStorageThunk';
+export { unsubscribeAndDisposeLocalFirstStorageThunk } from './unsubscribeAndDisposeLocalFirstStorageThunk';
+export { initLocalFirstStorageThunkFactory } from './initLocalFirstStorageThunk';
+export { changeRelayUrlThunk } from './changeRelayUrlThunk';
+export { DEFAULT_SUITE_SYNC_RELAY_URL } from './constants';
+export { disposeAllLocalFirstStorageThunk } from './disposeAllLocalFirstStorageThunk';
 
 // Labeling
 export { updateWalletLabelThunk } from './labeling/updateWalletLabelThunk';

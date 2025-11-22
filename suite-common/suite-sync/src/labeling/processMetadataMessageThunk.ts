@@ -18,7 +18,7 @@ type ProcessMetadataMessageThunkParams = {
 /**
  * This is a compatibility thunk to map the old Metadata code to a new Evolu storage.
  *
- * This shall be removed, once we phase out the old Metadata code.
+ * @deprecated This shall be removed, once we phase out the old Metadata code.
  */
 export const processMetadataMessageThunk = createThunk<
     void,

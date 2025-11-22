@@ -1,9 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { getLocalFirstStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 
-import { DEFAULT_SUITE_SYNC_RELAY_URL } from './LocalFirstStorageProvider';
-import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
-import { getLocalFirstStorageProvider } from './sharedObjects';
+import { DEFAULT_SUITE_SYNC_RELAY_URL, LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import { setLocalFirstStorageRelayUrl } from './suiteSyncActions';
 
 type ChangeRelayUrlThunkThunkParams = {

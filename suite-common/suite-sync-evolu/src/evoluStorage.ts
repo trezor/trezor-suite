@@ -1,13 +1,14 @@
 import { Evolu, EvoluDeps, SyncOwner, createOwnerWebSocketTransport } from '@evolu/common';
 
+import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { EvoluKeys } from '@suite-common/suite-types';
 
-import { AccountLabelSchema, AccountLabels } from './labeling/evolu/accountLabels';
-import { AddressLabelSchema, AddressLabels } from './labeling/evolu/addressLabels';
-import { OutputLabelSchema, OutputLabels } from './labeling/evolu/outputLabels';
-import { WalletLabelSchema, WalletLabels } from './labeling/evolu/walletLabels';
+import { createEvoluInstance } from './createEvoluInstance';
+import { AccountLabelSchema, AccountLabels } from './labeling/accountLabels';
+import { AddressLabelSchema, AddressLabels } from './labeling/addressLabels';
+import { OutputLabelSchema, OutputLabels } from './labeling/outputLabels';
+import { WalletLabelSchema, WalletLabels } from './labeling/walletLabels';
 import { Schema } from './schema';
-import { createEvoluInstance } from './storage/createEvoluInstance';
 
 type LocalFirstStorageDeps = {
     relayUrl: string;
@@ -19,7 +20,7 @@ type LocalFirstStorageDeps = {
  * This is intended as Wrapper around Evolu. In case we need to change Evolu for
  * something else, this is the Public API for the rest of the Suite ecosystem.
  */
-export class LocalFirstStorage {
+export class EvoluStorage implements SuiteSyncStorage {
     /**
      * Dispose function of the connected owner. When owner is changed
      * (for example for RelayUrl change, this needs to be called).

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 
+import { isSuiteSyncSupportedByDevice } from './device';
 import { disposeAllLocalFirstStorageThunk } from './disposeAllLocalFirstStorageThunk';
 import { initLocalFirstStorageThunk } from './initLocalFirstStorageThunk';
 import { suiteSyncActions } from './suiteSyncActions';
@@ -10,7 +11,6 @@ import {
     selectIsLocalFirstStorageDebugEnabled,
     selectIsLocalFirstStorageEnabled,
 } from './suiteSyncSelectors';
-import { isSuiteSyncSupportedByDevice } from '../device';
 
 export type UseLocalStorageParams = {
     // This needs to be passed, as labeling can be attached to remembered wallets

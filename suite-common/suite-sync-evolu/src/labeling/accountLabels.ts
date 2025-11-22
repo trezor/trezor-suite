@@ -8,11 +8,12 @@ import {
     nullOr,
 } from '@evolu/common';
 
+import { AccountLabel, AccountLabelsStore } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { UnwrapQuery } from '../../evoluUtils';
-import { normalizeLabel } from '../normalizeLabel';
+import { UnwrapQuery } from '../evoluUtils';
+import { normalizeLabel } from './normalizeLabel';
 
 export const AccountLabelId = id('AccountLabelId');
 export type AccountLabelId = typeof AccountLabelId.Type;
@@ -31,13 +32,7 @@ export const AccountLabelSchema = {
     },
 };
 
-export type AccountLabel = {
-    accountDescriptor: AccountDescriptor;
-    networkSymbol: NetworkSymbol;
-    label: string | null;
-};
-
-export class AccountLabels {
+export class AccountLabels implements AccountLabelsStore {
     constructor(private evolu: Evolu<typeof AccountLabelSchema>) {}
 
     update = ({ networkSymbol, accountDescriptor, label }: AccountLabel) => {

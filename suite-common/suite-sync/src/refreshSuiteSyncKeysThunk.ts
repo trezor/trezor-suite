@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
 import {
     DelegatedIdentityKey,
     EvoluKeys,
@@ -17,8 +18,6 @@ import {
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
-
-import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
 

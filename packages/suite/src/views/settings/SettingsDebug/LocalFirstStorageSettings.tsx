@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import {
-    DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
+    DEFAULT_SUITE_SYNC_RELAY_URL,
     changeRelayUrlThunk,
     selectLocalFirstStorageRelayUrl,
     suiteSyncActions,
@@ -76,7 +76,7 @@ export const LocalFirstStorageSettings = () => {
                                     }
                                 />
                                 <Text typographyStyle="hint" variant="tertiary">
-                                    Default is: <Code>{DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL}</Code>
+                                    Default is: <Code>{DEFAULT_SUITE_SYNC_RELAY_URL}</Code>
                                 </Text>
                             </Column>
                         </ActionColumn>
