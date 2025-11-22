@@ -7,8 +7,10 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { UnwrapQuery } from '../../evoluUtils';
-import { normalizeLabel } from '../normalizeLabel';
+import { AddressLabel, AddressLabelsStore } from '@suite-common/suite-sync-storage';
+
+import { UnwrapQuery } from '../evoluUtils';
+import { normalizeLabel } from './normalizeLabel';
 
 export const AddressLabelId = id('AddressLabelId');
 export type AddressLabelId = typeof AddressLabelId.Type;
@@ -24,12 +26,7 @@ export const AddressLabelSchema = {
     },
 };
 
-export type AddressLabel = {
-    address: string;
-    label: string | null;
-};
-
-export class AddressLabels {
+export class AddressLabels implements AddressLabelsStore {
     constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
 
     update = ({ address, label }: AddressLabel) => {

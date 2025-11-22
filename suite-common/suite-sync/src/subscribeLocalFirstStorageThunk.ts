@@ -6,9 +6,9 @@ import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { exhaustive, ok } from '@trezor/type-utils';
 
+import { isSuiteSyncSupportedByDevice } from './device';
+import { subscribeLabelingUpdatesThunk } from './labeling/subscribeLabelingUpdatesThunk';
 import { refreshSuiteSyncKeysThunk } from './refreshSuiteSyncKeysThunk';
-import { isSuiteSyncSupportedByDevice } from '../device';
-import { subscribeLabelingUpdatesThunk } from '../labeling/subscribeLabelingUpdatesThunk';
 
 type SubscribeLocalFirstStorageThunkParams = {
     device: TrezorDeviceWithState;

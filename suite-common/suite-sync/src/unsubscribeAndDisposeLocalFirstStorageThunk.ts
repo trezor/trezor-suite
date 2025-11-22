@@ -1,12 +1,12 @@
 import { OwnerId } from '@evolu/common';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { localFirstStorageProvider, subscriptionStorage } from '@suite-common/suite-sync-storage';
 import { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { typedObjectValues } from '@trezor/utils';
 
 import { LOCAL_FIRST_STORAGE_PREFIX } from './constants';
-import { localFirstStorageProvider, subscriptionStorage } from './sharedObjects';
 
 type UnsubscribeLocalFirstStorageThunkParams = {
     device: TrezorDeviceWithState;

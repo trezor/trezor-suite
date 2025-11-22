@@ -2,8 +2,8 @@ import { EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
 
 import { EvoluKeys } from '@suite-common/suite-types';
 
-import { createEvoluAppOwnerFromTrezorData } from '../createEvoluAppOwnerFromTrezorData';
-import { Schema } from '../schema';
+import { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
+import { Schema } from './schema';
 
 // This is a way how to force change of the SQL files. It was useful for development
 // so not everybody had to delete SQLite file manually:

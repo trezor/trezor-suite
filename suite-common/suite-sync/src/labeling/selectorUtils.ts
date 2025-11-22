@@ -1,9 +1,6 @@
+import { AccountLabel, AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
-
-import { AccountLabel } from './evolu/accountLabels';
-import { AddressLabel } from './evolu/addressLabels';
-import { OutputLabel } from './evolu/outputLabels';
 
 type FindAccountLabelParams = {
     accountLabels: AccountLabel[];

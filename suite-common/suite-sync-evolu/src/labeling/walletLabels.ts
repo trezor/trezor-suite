@@ -7,10 +7,11 @@ import {
     nullOr,
 } from '@evolu/common';
 
+import { WalletLabel, WalletLabelsStore } from '@suite-common/suite-sync-storage';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
-import { UnwrapQuery } from '../../evoluUtils';
-import { normalizeLabel } from '../normalizeLabel';
+import { UnwrapQuery } from '../evoluUtils';
+import { normalizeLabel } from './normalizeLabel';
 
 export const WalletLabelId = id('WalletLabelId');
 export type WalletLabelId = typeof WalletLabelId.Type;
@@ -28,17 +29,12 @@ export const WalletLabelSchema = {
     },
 };
 
-type LabelData = {
-    walletDescriptor: WalletDescriptor;
-    label: string | null;
-};
-
-export class WalletLabels {
+export class WalletLabels implements WalletLabelsStore {
     constructor(private evolu: Evolu<typeof WalletLabelSchema>) {}
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('walletLabel').selectAll());
 
-    update = ({ walletDescriptor, label }: LabelData) => {
+    update = ({ walletDescriptor, label }: WalletLabel) => {
         const idResult = createWalletLabelId(walletDescriptor);
 
         if (!idResult.ok) {
@@ -60,7 +56,7 @@ export class WalletLabels {
         }
     };
 
-    subscribe = (onChange: (payload: LabelData) => void) => {
+    subscribe = (onChange: (payload: WalletLabel) => void) => {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {

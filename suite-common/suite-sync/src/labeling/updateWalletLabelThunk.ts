@@ -1,10 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { getLocalFirstStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { LABELING_PREFIX } from './labelingActions';
-import { getLocalFirstStorageProvider } from '../storage/sharedObjects';
 
 type UpdateWalletLabelThunkParams = {
     deviceStaticSessionId: StaticSessionId;

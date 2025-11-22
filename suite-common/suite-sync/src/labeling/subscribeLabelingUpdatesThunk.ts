@@ -1,9 +1,12 @@
 import { createThunk } from '@suite-common/redux-utils';
+import {
+    getLocalFirstStorageProvider,
+    subscriptionStorage,
+} from '@suite-common/suite-sync-storage';
 import { EvoluKeys } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { LABELING_PREFIX, clearAllLabels, labelingActions } from './labelingActions';
-import { getLocalFirstStorageProvider, subscriptionStorage } from '../storage/sharedObjects';
 
 type SubscribeLabelingUpdatesThunkParams = {
     evoluKeys: EvoluKeys;

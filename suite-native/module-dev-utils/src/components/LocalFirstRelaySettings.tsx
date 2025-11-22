@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL,
+    DEFAULT_SUITE_SYNC_RELAY_URL,
     changeRelayUrlThunk,
     disposeAllLocalFirstStorageThunk,
     selectIsFeatureLocalFirstStorageAvailable,
@@ -57,8 +57,8 @@ export const LocalFirstRelaySettings = () => {
     };
 
     const handleResetToDefault = () => {
-        dispatch(changeRelayUrlThunk({ relayUrl: DEFAULT_CUSTOM_RELAY_URL }));
-        form.reset({ localFirstStorageRelayUrl: DEFAULT_CUSTOM_RELAY_URL });
+        dispatch(changeRelayUrlThunk({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL }));
+        form.reset({ localFirstStorageRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         showToast({
             message: 'Local First Storage relay URL reset to default',
             variant: 'success',
@@ -93,7 +93,7 @@ export const LocalFirstRelaySettings = () => {
                             color="textSubdued"
                             style={{ fontFamily: 'monospace' }}
                         >
-                            {DEFAULT_LOCAL_FIRST_STORAGE_RELAY_URL}
+                            {DEFAULT_SUITE_SYNC_RELAY_URL}
                         </Text>
                     </Text>
                     <Button
