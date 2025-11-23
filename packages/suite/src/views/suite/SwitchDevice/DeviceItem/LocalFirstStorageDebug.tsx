@@ -31,7 +31,7 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
     const handleResetKeysRequest = () => {
         if (!device?.id) return;
 
-        dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys: undefined }));
+        dispatch(deviceActions.setLocalFirstStorageSecret({ device, owner: undefined }));
         dispatch(
             deviceActions.setDelegatedIdentityKey({
                 deviceId: device.id,
@@ -54,15 +54,11 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
                         <Code>{deviceId.slice(-8)}</Code>
                     </Text>
                     <Tooltip
-                        content={
-                            <Code>{JSON.stringify(device.localFirstStorageSecret, null, 2)}</Code>
-                        }
+                        content={<Code>{JSON.stringify(device.suiteSyncOwner, null, 2)}</Code>}
                     >
                         <Text typographyStyle="hint" variant="purple">
                             E:
-                            <Code>
-                                {device.localFirstStorageSecret?.evoluKeys?.ownerId.slice(-8)}
-                            </Code>
+                            <Code>{device.suiteSyncOwner?.ownerId.slice(-8)}</Code>
                         </Text>
                     </Tooltip>
                 </>

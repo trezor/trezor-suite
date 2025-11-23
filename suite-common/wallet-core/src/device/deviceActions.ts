@@ -4,7 +4,7 @@ import {
     AcquiredDevice,
     ButtonRequest,
     DelegatedIdentityKey,
-    EvoluKeys,
+    SuiteSyncOwner,
     ThpSuiteCredentials,
     TrezorDevice,
 } from '@suite-common/suite-types';
@@ -143,8 +143,8 @@ const setThpCredentials = createAction(
 
 const setLocalFirstStorageSecret = createAction(
     `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecret`,
-    ({ device, evoluKeys }: { device: TrezorDevice; evoluKeys: EvoluKeys | undefined }) => ({
-        payload: { device, evoluKeys },
+    ({ device, owner }: { device: TrezorDevice; owner: SuiteSyncOwner | undefined }) => ({
+        payload: { device, owner },
     }),
 );
 
@@ -157,13 +157,6 @@ const setDelegatedIdentityKey = createAction(
     `${DEVICE_MODULE_PREFIX}/setDelegatedIdentityKey`,
     ({ deviceId, delegatedKey }: SetDelegatedIdentityKeyParams) => ({
         payload: { deviceId, delegatedKey },
-    }),
-);
-
-const setLocalFirstStorageSecretRetrieving = createAction(
-    `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecretRetrieving`,
-    ({ device, isRetrieving }: { device: TrezorDevice; isRetrieving: boolean }) => ({
-        payload: { device, isRetrieving },
     }),
 );
 
@@ -197,7 +190,6 @@ export const deviceActions = {
     setThpCredentials,
     setDelegatedIdentityKey,
     setLocalFirstStorageSecret,
-    setLocalFirstStorageSecretRetrieving,
     setDiscovered,
     devicePushNotification,
 };

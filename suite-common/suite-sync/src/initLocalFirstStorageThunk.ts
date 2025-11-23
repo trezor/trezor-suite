@@ -4,9 +4,9 @@ import { createThunk } from '@suite-common/redux-utils';
 import { EvoluStorage } from '@suite-common/suite-sync-evolu';
 import {
     LocalFirstStorageProvider,
+    SuiteStorageCreator,
     setLocalFirstStorageProvider,
 } from '@suite-common/suite-sync-storage';
-import { EvoluKeys } from '@suite-common/suite-types';
 
 import { DEFAULT_SUITE_SYNC_RELAY_URL, LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import {
@@ -22,7 +22,8 @@ export const initLocalFirstStorageThunk = createThunk<void, void, void>(
 );
 
 const evoluStorageCreator =
-    (evoluDeps: EvoluDeps) => (evoluKeys: EvoluKeys, relayUrl: string | null) =>
+    (evoluDeps: EvoluDeps): SuiteStorageCreator =>
+    ({ owner, relayUrl }) =>
         // This is the place were we decide which storage we use
         new EvoluStorage({
             relayUrl:
@@ -30,7 +31,7 @@ const evoluStorageCreator =
                     ? DEFAULT_SUITE_SYNC_RELAY_URL
                     : relayUrl,
             evoluDeps,
-            evoluKeys,
+            owner,
         });
 
 export const initLocalFirstStorageThunkFactory = (evoluDeps: EvoluDeps) =>

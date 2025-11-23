@@ -1,7 +1,7 @@
 import { Evolu, EvoluDeps, SyncOwner, createOwnerWebSocketTransport } from '@evolu/common';
 
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { EvoluKeys } from '@suite-common/suite-types';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { createEvoluInstance } from './createEvoluInstance';
 import { AccountLabelSchema, AccountLabels } from './labeling/accountLabels';
@@ -12,7 +12,7 @@ import { Schema } from './schema';
 
 type LocalFirstStorageDeps = {
     relayUrl: string;
-    evoluKeys: EvoluKeys;
+    owner: SuiteSyncOwner;
     evoluDeps: EvoluDeps;
 };
 
@@ -34,13 +34,13 @@ export class EvoluStorage implements SuiteSyncStorage {
     outputLabels: OutputLabels;
     addressLabels: AddressLabels;
 
-    constructor({ relayUrl, evoluDeps, evoluKeys }: LocalFirstStorageDeps) {
+    constructor({ relayUrl, evoluDeps, owner }: LocalFirstStorageDeps) {
         // just to satisfy TS for initialization,
         // its then truly initialized in this.updateRelayUrl()
         this.#ownerDispose = () => {};
 
         this.#evolu = createEvoluInstance({
-            evoluKeys,
+            suiteSyncOwner: owner,
             evoluDeps,
         });
         this.updateRelayUrl(relayUrl); // This updates the relay

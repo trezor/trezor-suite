@@ -3,13 +3,13 @@ import {
     getLocalFirstStorageProvider,
     subscriptionStorage,
 } from '@suite-common/suite-sync-storage';
-import { EvoluKeys } from '@suite-common/suite-types';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { LABELING_PREFIX, clearAllLabels, labelingActions } from './labelingActions';
 
 type SubscribeLabelingUpdatesThunkParams = {
-    evoluKeys: EvoluKeys;
+    owner: SuiteSyncOwner;
     walletDescriptor: WalletDescriptor;
 };
 
@@ -19,8 +19,8 @@ export const subscribeLabelingUpdatesThunk = createThunk<
     void
 >(
     `${LABELING_PREFIX}/subscribeLabelingUpdatesThunk`,
-    ({ evoluKeys, walletDescriptor }, { dispatch }) => {
-        const storage = getLocalFirstStorageProvider(evoluKeys);
+    ({ owner, walletDescriptor }, { dispatch }) => {
+        const storage = getLocalFirstStorageProvider(owner);
 
         const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
             if (walletDescriptor !== payload.walletDescriptor) {

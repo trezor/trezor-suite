@@ -3,10 +3,11 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
 import {
     DelegatedIdentityKey,
-    EvoluKeys,
+    SuiteSyncOwner,
     TrezorDevice,
     TrezorDeviceWithState,
-    asDeviceEvoluOwnerId,
+    asSuiteSyncOwnerId,
+    asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-types';
 import {
     deviceActions,
@@ -56,12 +57,12 @@ const retrieveEvoluNode = async ({ device, delegatedKey }: RetrieveEvoluNodePara
             return ok();
         }
 
-        const evoluKeys: EvoluKeys = {
-            ownerId: asDeviceEvoluOwnerId(appOwnerResult.value.id),
-            ownerSecret: result.payload.data,
+        const owner: SuiteSyncOwner = {
+            ownerId: asSuiteSyncOwnerId(appOwnerResult.value.id),
+            ownerSecret: asSuiteSyncOwnerSecretHex(result.payload.data),
         };
 
-        return ok(evoluKeys);
+        return ok(owner);
     }
 
     if (isCanceledErrorMessage(result.payload.error)) {
@@ -92,26 +93,14 @@ export const refreshSuiteSyncKeysThunk =
             !device.connected || // disconnected device cannot resolve Evolu-Keys
             device.mode !== 'normal' || // bootloader,
             !isTrezorDeviceWithState(device) ||
-            device.localFirstStorageSecret?.evoluKeys !== undefined ||
-            // We are already getting the keys in different "await"
-            // This may happen if selectedDeviceThunk is called concurrently.
-            // Todo: This probably shall not happen, but it happens currently.
-            device.localFirstStorageSecret?.isRetrieving
+            device.suiteSyncOwner !== undefined
         ) {
             return ok(); // No action needed
         }
 
-        dispatch(
-            deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: true }),
-        );
-
         const delegatedKeyResult = await dispatch(retrieveDelegatedIdentityKeyThunk({ device }));
 
         if (!delegatedKeyResult.ok) {
-            dispatch(
-                deviceActions.setLocalFirstStorageSecretRetrieving({ device, isRetrieving: false }),
-            );
-
             return delegatedKeyResult;
         }
 
@@ -121,7 +110,7 @@ export const refreshSuiteSyncKeysThunk =
         });
 
         if (!evoluNodeResult.ok) {
-            dispatch(deviceActions.setLocalFirstStorageSecret({ device, evoluKeys: undefined }));
+            dispatch(deviceActions.setLocalFirstStorageSecret({ device, owner: undefined }));
             dispatch(
                 deviceActions.setDelegatedIdentityKey({ deviceId: device.id, delegatedKey: null }),
             );
@@ -129,11 +118,10 @@ export const refreshSuiteSyncKeysThunk =
             return evoluNodeResult;
         }
 
-        // This also sets the `isRetrieving` flag to `false`
         dispatch(
             deviceActions.setLocalFirstStorageSecret({
                 device,
-                evoluKeys: evoluNodeResult.value ?? undefined,
+                owner: evoluNodeResult.value ?? undefined,
             }),
         );
 

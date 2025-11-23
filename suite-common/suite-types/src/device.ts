@@ -30,12 +30,26 @@ export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
         | NonNullable<PROTO.PinMatrixRequest>['type'];
 };
 
-export type DeviceEvoluOwnerId = string & Branded<DeviceEvoluOwnerId>;
-export const asDeviceEvoluOwnerId = (value: string) => value as DeviceEvoluOwnerId;
+/**
+ * This is identifier of the SuiteSync user. We generate an Owner for every
+ * wallet (seed+passphrase). It is deterministically derived from the secret
+ * in Trezor Device (seed+passphrase).
+ *
+ * This can be calculated from SuiteSyncOwnerSecretHex.
+ */
+export type SuiteSyncOwnerId = string & Branded<SuiteSyncOwnerId>;
+export const asSuiteSyncOwnerId = (value: string) => value as SuiteSyncOwnerId;
 
-export type EvoluKeys = {
-    ownerId: DeviceEvoluOwnerId;
-    ownerSecret: string; // hex
+/**
+ * This is an SLIP21 node, it is provided by Trezor Device
+ * (derived from the wallets secret)
+ */
+export type SuiteSyncOwnerSecretHex = string & Branded<SuiteSyncOwnerSecretHex>;
+export const asSuiteSyncOwnerSecretHex = (value: string) => value as SuiteSyncOwnerSecretHex;
+
+export type SuiteSyncOwner = {
+    ownerId: SuiteSyncOwnerId;
+    ownerSecret: SuiteSyncOwnerSecretHex;
 };
 
 /**
@@ -62,11 +76,7 @@ export interface ExtendedDevice {
     firstConnectedTimestamp: number;
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
-    localFirstStorageSecret?: {
-        // To prevent consequential call of the TrezorConnect.evoluGetNode(...)
-        isRetrieving: boolean;
-        evoluKeys: EvoluKeys | undefined;
-    };
+    suiteSyncOwner: SuiteSyncOwner | undefined;
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice
