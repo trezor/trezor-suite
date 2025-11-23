@@ -4,15 +4,29 @@ import styled from 'styled-components';
 
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 
-const Container = styled.div<{
-    $valueInPercents: number;
-    $size: number;
-    $color?: string;
-    $backgroundColor?: string;
-    $elevation: Elevation;
-}>`
+export const allowedProgressPieFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedProgressPieFrameProps)[number]>;
+type TransientAllowedFrameProps = TransientProps<AllowedFrameProps>;
+
+const Container = styled.div<
+    TransientAllowedFrameProps & {
+        $valueInPercents: number;
+        $size: number;
+        $color?: string;
+        $backgroundColor?: string;
+        $elevation: Elevation;
+    }
+>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,16 +37,18 @@ const Container = styled.div<{
         `conic-gradient(${$color || theme.backgroundPrimaryDefault} ${3.6 * $valueInPercents}deg, ${
             $backgroundColor || mapElevationToBorder({ $elevation, theme })
         } 0)`};
+
+    ${withFrameProps}
 `;
 
-export interface ProgressPieProps {
+type ProgressPieProps = TransientProps<AllowedFrameProps> & {
     valueInPercents: number; // 0-100
     size?: number;
     color?: string;
     backgroundColor?: string;
     children?: ReactNode;
     className?: string;
-}
+};
 
 export const ProgressPie = ({
     size = 16,
@@ -41,8 +57,10 @@ export const ProgressPie = ({
     backgroundColor,
     className,
     color,
+    ...rest
 }: ProgressPieProps) => {
     const { elevation } = useElevation();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedProgressPieFrameProps);
 
     return (
         <Container
@@ -52,6 +70,7 @@ export const ProgressPie = ({
             $color={color}
             className={className}
             $elevation={elevation}
+            {...frameProps}
         >
             {children}
         </Container>

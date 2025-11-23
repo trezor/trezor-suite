@@ -134,8 +134,6 @@ const Actions = styled.div`
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const ActionButton = styled(Button)`
-    margin-top: ${spacingsPx.xs};
-
     &:first-child {
         margin-top: 0;
     }
@@ -415,6 +413,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                     intent="brand"
                                     onClick={() => submit(value)}
                                     width="100%"
+                                    margin={{ top: 8 }}
                                 >
                                     {props.submitLabel}
                                 </ActionButton>

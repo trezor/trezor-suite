@@ -62,11 +62,6 @@ const Label = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const LabelButton = styled(Button)`
-    overflow: hidden;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
 const ActionButton = styled(Button)<{ $isVisible?: boolean }>`
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 `;
@@ -141,7 +136,7 @@ const ButtonLikeLabel = ({
 
     if (payload.value) {
         return (
-            <LabelButton
+            <Button
                 intent="neutral"
                 priority="secondary"
                 iconLeft="tag"
@@ -156,7 +151,7 @@ const ButtonLikeLabel = ({
                         <LabelDefaultValue>{defaultVisibleValue}</LabelDefaultValue>
                     )}
                 </Inline>
-            </LabelButton>
+            </Button>
         );
     }
 

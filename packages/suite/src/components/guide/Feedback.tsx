@@ -11,7 +11,7 @@ import {
 } from '@suite-common/feedback';
 import { Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacingsPx, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
@@ -40,11 +40,6 @@ const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
     ${typography.hint}
     color: ${({ theme }) => theme.textDefault};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledTextarea = styled(Textarea)`
-    margin-bottom: ${spacingsPx.md};
 `;
 
 const MESSAGE_CHARACTER_LIMIT = 1000;
@@ -204,7 +199,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     </Headline>
                 )}
 
-                <StyledTextarea
+                <Textarea
                     rows={8}
                     value={description}
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
@@ -213,6 +208,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     characterCount
                     data-testid="@guide/feedback/suggestion-form"
                     maxLength={MESSAGE_CHARACTER_LIMIT}
+                    margin={{ bottom: 16 }}
                 />
 
                 <Button

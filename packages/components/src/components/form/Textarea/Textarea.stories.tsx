@@ -3,7 +3,8 @@ import { ChangeEventHandler } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import { Textarea as TextareaComponent } from './Textarea';
+import { Textarea as TextareaComponent, allowedTextareaFrameProps } from './Textarea';
+import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta<typeof TextareaComponent> = {
     title: '✏️ Form',
@@ -28,6 +29,7 @@ export const Textarea: StoryObj<typeof meta> = {
         rows: 5,
         maxLength: 500,
         characterCount: true,
+        ...getFramePropsStory(allowedTextareaFrameProps).args,
     },
     argTypes: {
         isDisabled: {
@@ -85,5 +87,6 @@ export const Textarea: StoryObj<typeof meta> = {
             },
         },
         inputState: { control: 'select', options: ['error', 'warning', 'primary'] },
+        ...getFramePropsStory(allowedTextareaFrameProps).argTypes,
     },
 };

@@ -27,13 +27,6 @@ const Description = styled.div<{ $hasTopMargin?: boolean }>`
     ${typography.label}
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ArrowCol = styled(Column)`
-    flex: 0 0 auto;
-    height: 100%;
-    justify-content: center;
-`;
-
 const WalletTitle = styled.div<{ $withMargin: boolean }>`
     display: flex;
     ${typography.body}
@@ -90,9 +83,9 @@ export const PassphraseTypeCardHeading = ({
                 <Description>{description}</Description>
             </Column>
             {type === 'standard' && (
-                <ArrowCol>
+                <Column flex="0 0 auto" height="100%" justifyContent="center">
                     <Icon name="caretLeft" color={theme.iconSubdued} />
-                </ArrowCol>
+                </Column>
             )}
         </Row>
     );

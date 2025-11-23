@@ -23,11 +23,6 @@ const Version = styled.div`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const VersionTooltip = styled(Tooltip)`
-    display: inline-flex;
-`;
-
 const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {
     if (!device.firmwareReleaseConfigInfo?.isNewer) {
         return 'TR_REINSTALL';
@@ -93,9 +88,10 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                 id="TR_YOUR_FIRMWARE_VERSION"
                                 values={{
                                     version: (
-                                        <VersionTooltip
+                                        <Tooltip
                                             content={revision}
                                             cursor={!revision ? 'not-allowed' : undefined}
+                                            display="inline-flex"
                                         >
                                             {revision ? (
                                                 <TrezorLink href={changelogUrl} variant="nostyle">
@@ -105,7 +101,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                                 // remove the link if revision is unknown (in bootloader mode)
                                                 <GithubButton />
                                             )}
-                                        </VersionTooltip>
+                                        </Tooltip>
                                     ),
                                 }}
                             />
