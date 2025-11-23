@@ -48,6 +48,7 @@ export type LoadingContentProps = {
     isLoading?: boolean;
     size?: number;
     isSuccessful?: boolean;
+    isLoadingPositionReversed?: boolean;
     /**
      * If true, `children` will slide to the right when loading starts and are initially placed at -{size}px.
      */
@@ -59,6 +60,7 @@ export const LoadingContent = ({
     isLoading = false,
     size = 25,
     isSuccessful = true,
+    isLoadingPositionReversed = false,
     slideContent = true,
 }: LoadingContentProps) => {
     const [isSpinnerVisible, setIsSpinnerVisible] = useState(false);
@@ -70,19 +72,23 @@ export const LoadingContent = ({
         }
     }, [isLoading]);
 
+    const SpinnerContainer = () => (
+        <LoaderCell $isLoading={isLoading} $size={size}>
+            {isSpinnerVisible ? (
+                <Spinner
+                    size={size}
+                    data-testid="@loading-content/loader"
+                    hasStartAnimation
+                    hasFinished={!isLoading && isSuccessful}
+                    hasError={!isLoading && !isSuccessful}
+                />
+            ) : null}
+        </LoaderCell>
+    );
+
     return (
         <LoadingWrapper>
-            <LoaderCell $isLoading={isLoading} $size={size}>
-                {isSpinnerVisible && (
-                    <Spinner
-                        size={size}
-                        data-testid="@loading-content/loader"
-                        hasStartAnimation
-                        hasFinished={!isLoading && isSuccessful}
-                        hasError={!isLoading && !isSuccessful}
-                    />
-                )}
-            </LoaderCell>
+            {!isLoadingPositionReversed && <SpinnerContainer />}
             {slideContent ? (
                 <ContentCell $isLoading={isLoading} $size={size}>
                     {children}
@@ -90,6 +96,7 @@ export const LoadingContent = ({
             ) : (
                 children
             )}
+            {isLoadingPositionReversed && <SpinnerContainer />}
         </LoadingWrapper>
     );
 };

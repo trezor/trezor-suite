@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode } from 'react';
+import { HTMLProps, MouseEvent, ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -63,56 +63,64 @@ const A = styled.a<AProps>`
         `}
 `;
 
-type LinkProps = AllowedLinkTextProps & {
-    href?: string;
-    target?: string;
-    onClick?: (event: MouseEvent<any>) => void;
-    children?: ReactNode;
-    className?: string;
-    variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
-    icon?: IconName;
-    color?: string;
-    'data-testid'?: string;
-};
+export type LinkProps = HTMLProps<HTMLAnchorElement> &
+    AllowedLinkTextProps & {
+        href?: string;
+        target?: string;
+        onClick?: (event: MouseEvent<any>) => void;
+        children?: ReactNode;
+        className?: string;
+        variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
+        icon?: IconName;
+        color?: string;
+        'data-testid'?: string;
+    };
 
-const Link = ({
-    href,
-    target,
-    icon,
-    onClick,
-    'data-testid': dataTest,
-    children,
-    color,
-    className,
-    variant,
-    typographyStyle = 'inherit',
-    ...rest
-}: LinkProps) => {
-    const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);
-    const iconSize =
-        typographyStylesBase[typographyStyle !== 'inherit' ? typographyStyle : 'body'].fontSize;
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
+    (
+        {
+            href,
+            target,
+            icon,
+            onClick,
+            'data-testid': dataTest,
+            children,
+            color,
+            className,
+            variant,
+            typographyStyle = 'inherit',
+            ...rest
+        },
+        ref,
+    ) => {
+        const textProps = pickAndPrepareTextProps(
+            { ...rest, typographyStyle },
+            allowedTextTextProps,
+        );
+        const iconSize =
+            typographyStylesBase[typographyStyle !== 'inherit' ? typographyStyle : 'body'].fontSize;
 
-    return (
-        <A
-            href={href}
-            target={target || '_blank'}
-            rel="noreferrer noopener"
-            data-testid={dataTest}
-            onClick={(e: MouseEvent<any>) => {
-                if (onClick !== undefined) {
-                    e.stopPropagation();
-                    onClick(e);
-                }
-            }}
-            $variant={variant}
-            className={className}
-            {...textProps}
-            $color={color}
-        >
-            {children}
-            {icon && <Icon size={iconSize} name={icon} />}
-        </A>
-    );
-};
-export type { LinkProps };
-export { Link };
+        return (
+            <A
+                ref={ref}
+                href={href}
+                target={target || '_blank'}
+                rel="noreferrer noopener"
+                data-testid={dataTest}
+                onClick={(e: MouseEvent<any>) => {
+                    if (onClick !== undefined) {
+                        e.stopPropagation();
+                        onClick(e);
+                    }
+                }}
+                $variant={variant}
+                className={className}
+                {...textProps}
+                $color={color}
+            >
+                {children}
+                {icon && <Icon size={iconSize} name={icon} />}
+            </A>
+        );
+    },
+);

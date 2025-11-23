@@ -6,6 +6,7 @@ import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { BasicName } from './BasicName';
 import { SettingsName } from './SettingsName';
+import { Translation } from '../../../../Translation';
 
 export const PageName = () => {
     const currentRoute = useSelector(state => state.router.route?.name);
@@ -26,5 +27,9 @@ export const PageName = () => {
         return <AccountSubpageName selectedAccount={selectedAccount} />;
     }
 
-    return <BasicName nameId="TR_DASHBOARD" />;
+    return (
+        <BasicName>
+            <Translation id="TR_DASHBOARD" />
+        </BasicName>
+    );
 };

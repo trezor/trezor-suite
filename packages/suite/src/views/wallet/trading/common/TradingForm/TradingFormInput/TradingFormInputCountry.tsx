@@ -2,7 +2,6 @@ import { Control, Controller } from 'react-hook-form';
 
 import { TRADING_FORM_COUNTRY_SELECT, TradingCountryOption, regional } from '@suite-common/trading';
 import { Flag, Row, Select } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -36,7 +35,7 @@ export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps)
                         if (!labelParts) return null;
 
                         return (
-                            <Row gap={spacings.xs}>
+                            <Row gap={16}>
                                 <Flag
                                     country={
                                         option.value === 'unknown' ||

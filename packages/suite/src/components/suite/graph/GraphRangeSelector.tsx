@@ -11,16 +11,12 @@ import {
 } from 'date-fns';
 import styled, { css } from 'styled-components';
 
-import { Popover, PopoverPlacement, PopoverRef, Timerange } from '@trezor/components';
+import { Popover, PopoverPlacement, PopoverRef, Row, Timerange } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useGraph, useLocales } from 'src/hooks/suite';
 import { GraphRange } from 'src/types/wallet/graph';
-
-const Wrapper = styled.div`
-    display: flex;
-`;
 
 const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     display: flex;
@@ -103,15 +99,10 @@ const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
 
 interface GraphRangeSelectorProps {
     onSelectedRange?: (range: GraphRange) => void;
-    className?: string;
     placement?: PopoverPlacement;
 }
 
-export const GraphRangeSelector = ({
-    onSelectedRange,
-    className,
-    placement,
-}: GraphRangeSelectorProps) => {
+export const GraphRangeSelector = ({ onSelectedRange, placement }: GraphRangeSelectorProps) => {
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
     const [customTimerangeEnd, setCustomTimerangeEnd] = useState<Date>();
 
@@ -145,7 +136,7 @@ export const GraphRangeSelector = ({
     };
 
     return (
-        <Wrapper className={className}>
+        <Row>
             {RANGES.map(range => (
                 <RangeItem
                     key={range.label}
@@ -183,6 +174,6 @@ export const GraphRangeSelector = ({
                     <Translation id="TR_RANGE" />
                 </RangeItem>
             </Popover>
-        </Wrapper>
+        </Row>
     );
 };

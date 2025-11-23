@@ -74,6 +74,7 @@ export const Badge = ({
                     as="div"
                     typographyStyle={mapSizeToTypographyStyle(size)}
                     color={mapIntentToTextColor(intent, theme)}
+                    textWrap="nowrap"
                 >
                     {children}
                 </Text>

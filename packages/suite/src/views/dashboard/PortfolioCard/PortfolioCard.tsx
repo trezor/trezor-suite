@@ -37,7 +37,6 @@ export const PortfolioCard = memo(() => {
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
     const { device } = useDevice();
-
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const failedAccounts = useMemo(() => accounts.filter(isAccountFailed), [accounts]);
     const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
@@ -166,7 +165,7 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card header={body ? header : null} paddingType="large">
+            <Card header={body ? header : null} paddingType="none">
                 {body ? (
                     <Column justifyContent="center" minHeight={329}>
                         {body}

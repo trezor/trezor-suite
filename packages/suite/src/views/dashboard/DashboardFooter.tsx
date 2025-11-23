@@ -24,6 +24,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 import { StoreBadge } from '../../components/suite/StoreBadge';
+import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
 import { useResponsiveContext } from '../../support/suite/ResponsiveContext';
 
 const Container = styled.div`
@@ -178,8 +179,8 @@ const ReferralButton = () => {
 export const DashboardFooter = () => {
     const { isBelowTablet } = useLayoutSize();
     const { contentWidth } = useResponsiveContext();
-    const isVerticalLayout = contentWidth ? contentWidth < 650 : false;
-    const Component = isVerticalLayout ? Column : Row;
+
+    const isVerticalLayout = useIsContentBelowBreakpoint();
 
     const isGuideIconInContent =
         contentWidth && !isVerticalLayout && !isBelowTablet
@@ -189,7 +190,7 @@ export const DashboardFooter = () => {
     return (
         <Container>
             <Divider margin={{ bottom: 0 }} />
-            <Component
+            <ContentFlex
                 margin={{ left: spacings.md, right: spacings.md }}
                 gap={isVerticalLayout ? 0 : spacings.md}
                 flex="1"
@@ -226,7 +227,7 @@ export const DashboardFooter = () => {
                 >
                     <MobileAppPromo hasRightMargin={isGuideIconInContent} />
                 </Row>
-            </Component>
+            </ContentFlex>
         </Container>
     );
 };

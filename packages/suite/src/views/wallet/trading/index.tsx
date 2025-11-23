@@ -52,10 +52,3 @@ export const TooltipText = styled.div<{ $isYellow?: boolean }>`
 `;
 
 export const TradingTestWrapper = styled.div``;
-
-export const TradingFooterLogoWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex: 1;
-    padding-top: 1px;
-`;

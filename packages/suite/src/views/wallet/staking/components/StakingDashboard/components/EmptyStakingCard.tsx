@@ -152,67 +152,74 @@ export const EmptyStakingCard = () => {
             data-testid="@wallet/staking/empty-card"
             heading={<Translation id="TR_STAKE_STAKE_TOKEN" values={{ symbol: displaySymbol }} />}
         >
-            {!isDeviceConnected && <ConnectDeviceGenericPromo />}
-            {isDiscoveryRunning && <DiscoveryWarning />}
-            <Card>
-                <Column gap={spacings.xxxl}>
-                    <Column gap={spacings.xs}>
-                        <H3>
-                            <Translation
-                                id="TR_STAKING_CARD_TITLE"
-                                values={{ apy, displaySymbol }}
-                            />
-                        </H3>
-                        <Paragraph variant="tertiary" maxWidth={700}>
-                            {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
+            <Column gap={16}>
+                {!isDeviceConnected && <ConnectDeviceGenericPromo />}
+                {isDiscoveryRunning && <DiscoveryWarning />}
+
+                <Card>
+                    <Column gap={spacings.xxxl}>
+                        <Column gap={spacings.xs}>
+                            <H3>
                                 <Translation
-                                    id={
-                                        isCardano
-                                            ? 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY'
-                                            : 'TR_STAKING_CARD_TEXT_EMPTY'
-                                    }
-                                    values={{ displaySymbol }}
+                                    id="TR_STAKING_CARD_TITLE"
+                                    values={{ apy, displaySymbol }}
                                 />
-                            ) : (
-                                <Translation
-                                    id={
-                                        isCardano
-                                            ? 'TR_STAKING_CARD_TEXT_FUNDS_STAY'
-                                            : 'TR_STAKING_CARD_TEXT_EMPTY'
-                                    }
-                                    values={{ potentialRewards, displaySymbol }}
-                                />
-                            )}
-                        </Paragraph>
+                            </H3>
+                            <Paragraph variant="tertiary" maxWidth={700}>
+                                {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
+                                    <Translation
+                                        id={
+                                            isCardano
+                                                ? 'TR_STAKING_CARD_TEXT_EMPTY_FUNDS_STAY'
+                                                : 'TR_STAKING_CARD_TEXT_EMPTY'
+                                        }
+                                        values={{ displaySymbol }}
+                                    />
+                                ) : (
+                                    <Translation
+                                        id={
+                                            isCardano
+                                                ? 'TR_STAKING_CARD_TEXT_FUNDS_STAY'
+                                                : 'TR_STAKING_CARD_TEXT_EMPTY'
+                                        }
+                                        values={{ potentialRewards, displaySymbol }}
+                                    />
+                                )}
+                            </Paragraph>
+                        </Column>
+
+                        <Grid columns={isBelowLaptop ? 1 : 3} gap={spacings.xl}>
+                            {stakingFeatures.map(feature => (
+                                <Row key={feature.id} gap={spacings.md} alignItems="flex-start">
+                                    <Column>
+                                        <IconCircle
+                                            name={feature.icon}
+                                            variant="primary"
+                                            size={44}
+                                        />
+                                    </Column>
+                                    <Column gap={spacings.xxs}>
+                                        <H4>{feature.title}</H4>
+                                        <Paragraph variant="tertiary">{feature.text}</Paragraph>
+                                    </Column>
+                                </Row>
+                            ))}
+                        </Grid>
+
+                        <Tooltip content={stakingMessageContent}>
+                            <Button
+                                onClick={openStakeInANutshellModal}
+                                isDisabled={isStakingDisabled}
+                                iconLeft={isStakingDisabled ? 'info' : undefined}
+                                data-testid="@wallet/staking/empty-card/start-staking-button"
+                                size="large"
+                            >
+                                <Translation id="TR_STAKING_CARD_START_STAKING" />
+                            </Button>
+                        </Tooltip>
                     </Column>
-
-                    <Grid columns={isBelowLaptop ? 1 : 3} gap={spacings.xl}>
-                        {stakingFeatures.map(feature => (
-                            <Row key={feature.id} gap={spacings.md} alignItems="flex-start">
-                                <Column>
-                                    <IconCircle name={feature.icon} variant="primary" size={44} />
-                                </Column>
-                                <Column gap={spacings.xxs}>
-                                    <H4>{feature.title}</H4>
-                                    <Paragraph variant="tertiary">{feature.text}</Paragraph>
-                                </Column>
-                            </Row>
-                        ))}
-                    </Grid>
-
-                    <Tooltip content={stakingMessageContent}>
-                        <Button
-                            onClick={openStakeInANutshellModal}
-                            isDisabled={isStakingDisabled}
-                            iconLeft={isStakingDisabled ? 'info' : undefined}
-                            data-testid="@wallet/staking/empty-card/start-staking-button"
-                            size="large"
-                        >
-                            <Translation id="TR_STAKING_CARD_START_STAKING" />
-                        </Button>
-                    </Tooltip>
-                </Column>
-            </Card>
+                </Card>
+            </Column>
             <ContextMessage context={Context.getLegal('gateway')} />
         </DashboardSection>
     );

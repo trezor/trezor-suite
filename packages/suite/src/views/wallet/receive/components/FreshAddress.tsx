@@ -30,6 +30,7 @@ import { AppState } from 'src/types/suite';
 const FreshAddressWrapper = styled.div`
     position: relative;
     user-select: none;
+    overflow: hidden;
 `;
 
 const TooltipLabel = ({

@@ -7,9 +7,11 @@ import { IMAGES_PATH } from '../Image/Image';
 
 export type FlagType = keyof typeof FLAGS;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isUnknown: boolean }>`
     display: flex;
     align-items: center;
+    filter: ${({ $isUnknown, theme }) =>
+        theme.variant === 'dark' && $isUnknown ? 'invert(1)' : 'none'};
 `;
 
 export interface FlagProps {
@@ -18,12 +20,16 @@ export interface FlagProps {
     size?: number;
 }
 
-export const Flag = ({ size = 24, country }: FlagProps) => (
-    <Wrapper>
-        <img
-            src={resolveStaticPath(`${IMAGES_PATH}/flags/${country.toLowerCase()}.svg`)}
-            width={`${size}px`}
-            alt={`flag-${country}`}
-        />
-    </Wrapper>
-);
+export const Flag = ({ size = 24, country }: FlagProps) => {
+    const isUnknown = country === 'UNKNOWN';
+
+    return (
+        <Wrapper $isUnknown={isUnknown}>
+            <img
+                src={resolveStaticPath(`${IMAGES_PATH}/flags/${country.toLowerCase()}.svg`)}
+                width={`${size}px`}
+                alt={`flag-${country}`}
+            />
+        </Wrapper>
+    );
+};

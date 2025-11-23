@@ -1,11 +1,13 @@
-import { Button, Flex, Paragraph } from '@trezor/components';
+import { Button, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { INVITY_SCHEDULE_OF_FEES } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
 
+import { ContentFlex } from '../../../../../support/suite/ContentFlex';
+
 export const TradingFormFeesDisclamer = () => (
-    <Flex gap={spacings.sm}>
+    <ContentFlex gap={spacings.sm}>
         <Paragraph variant="tertiary">
             <Translation id="TR_TRADING_FEES_CALCULATION_DISCLAIMER" />
         </Paragraph>
@@ -18,5 +20,5 @@ export const TradingFormFeesDisclamer = () => (
         >
             <Translation id="TR_LEARN_MORE" />
         </Button>
-    </Flex>
+    </ContentFlex>
 );

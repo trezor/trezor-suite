@@ -199,4 +199,6 @@ export const Flex = ({
 
 export const Column = (props: FlexProps) => <Flex {...props} direction="column" />;
 export const Row = (props: FlexProps) => <Flex alignItems="center" {...props} direction="row" />;
-export const Center = (props: FlexProps) => <Flex alignSelf="center" {...props} />;
+export const Center = (props: FlexProps) => (
+    <Flex alignSelf="center" alignItems="center" justifyContent="center" {...props} />
+);

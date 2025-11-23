@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Button, Row, SkeletonRectangle } from '@trezor/components';
+import { Button, SkeletonRectangle } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector } from 'src/components/suite';
@@ -10,6 +10,8 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
 import { Discovery } from 'src/types/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
+
+import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 export type PortfolioCardHeaderProps = {
     discovery?: Discovery;
@@ -39,6 +41,7 @@ export const PortfolioCardHeader = ({
     receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
     const accounts = useSelector(selectAllAccountsToList);
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     const onSelectedRange = useCallback(
         (_range: GraphRange) => {
@@ -75,7 +78,12 @@ export const PortfolioCardHeader = ({
     const valueLoading = isDiscoveryRunning || (!discovery && isNaN(Number(fiatAmount)));
 
     return (
-        <Row justifyContent="space-between">
+        <ContentFlex
+            justifyContent="space-between"
+            alignItems={isContentBelowBreakpoint ? 'flex-start' : 'center'}
+            gap={8}
+            margin={{ top: 16, horizontal: 24, bottom: 8 }}
+        >
             {valueLoading ? (
                 <SkeletonRectangle width={140} height={53} />
             ) : (
@@ -87,6 +95,6 @@ export const PortfolioCardHeader = ({
                 />
             )}
             {actions}
-        </Row>
+        </ContentFlex>
     );
 };

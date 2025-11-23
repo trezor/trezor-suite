@@ -19,6 +19,7 @@ import { SuiteBanners } from 'src/components/suite/banners';
 import { useSelector } from 'src/hooks/suite';
 
 import { TrafficLightOffset } from '../../TrafficLightOffset';
+import { Translation } from '../../Translation';
 import { ContentContainer } from '../ContentContainer';
 import { PageHeader } from '../SuiteLayout';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';
@@ -93,7 +94,9 @@ const RightSideContent = ({ showPureChildren, children }: RightContentProps) => 
             <SuiteBanners />
             <WelcomePageHeaderWrapper>
                 <PageHeader>
-                    <BasicName nameId="TR_DASHBOARD" />
+                    <BasicName>
+                        <Translation id="TR_DASHBOARD" />
+                    </BasicName>
                 </PageHeader>
             </WelcomePageHeaderWrapper>
             <ContentContainer>

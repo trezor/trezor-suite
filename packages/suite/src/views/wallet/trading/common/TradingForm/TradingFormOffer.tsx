@@ -18,7 +18,7 @@ import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/w
 import { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { breakpoints, spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
@@ -54,6 +54,7 @@ import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingFor
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferOTC';
 import { TradingFormOffersSwitcher } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcher';
 
+import { useIsContentBelowBreakpoint } from '../../../../../support/suite/ContentFlex';
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 const getSelectedQuote = (
@@ -306,6 +307,8 @@ export const TradingFormOffer = () => {
         (isTradingExchangeContext(context) || isTradingBuyContext(context)) &&
         !!context.tradingReceiveAddress.receiveAddress;
 
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
+
     return (
         <Column gap={spacings.lg}>
             <Column
@@ -434,10 +437,10 @@ export const TradingFormOffer = () => {
                     margin={{
                         top: spacings.md,
                     }}
-                    width="100%"
                     isDisabled={isButtonDisabled || isLoading}
                     isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
                     size="large"
+                    minWidth={160}
                 >
                     <Translation id="TR_CONTINUE" />
                 </Button>
@@ -460,11 +463,12 @@ export const TradingFormOffer = () => {
                             margin={{
                                 top: spacings.md,
                             }}
-                            width="100%"
                             size="large"
                             isDisabled={isButtonDisabled || isLoading}
                             isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
                             data-testid={`@trading/form/${type}-button`}
+                            minWidth={160}
+                            width={isContentBelowBreakpoint ? undefined : '100%'}
                         >
                             <Translation id={tradingGetSectionActionLabel(type)} />
                         </Button>

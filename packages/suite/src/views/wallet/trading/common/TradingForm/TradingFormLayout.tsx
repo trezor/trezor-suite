@@ -1,23 +1,17 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import { Context } from '@suite-common/message-system';
-import { Card, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Box, Card, Column } from '@trezor/components';
+import { breakpoints, spacings } from '@trezor/theme';
 
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingFeaturedOffers } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffers';
 import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer';
-import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
+import { ContentFlex } from '../../../../../support/suite/ContentFlex';
 import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
-
-const TradingFormLayoutWrapper = styled.form`
-    ${TradingWrapper}
-`;
 
 interface TradingFormLayoutProps {
     children: ReactNode;
@@ -30,14 +24,16 @@ export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
         <Column gap={spacings.md} data-testid="@trading/form">
             {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
-            <TradingFormLayoutWrapper>
+            <form>
                 <ReceiveAddressModalControlsProvider>
-                    {children}
-                    <Card>
-                        <TradingFormOffer />
-                    </Card>
+                    <ContentFlex gap={16} breakpoint={breakpoints.tablet} alignItems="stretch">
+                        <Box flex="2">{children}</Box>
+                        <Card flex="1">
+                            <TradingFormOffer />
+                        </Card>
+                    </ContentFlex>
                 </ReceiveAddressModalControlsProvider>
-            </TradingFormLayoutWrapper>
+            </form>
             <ContextMessage context={Context.getLegal('gateway')} />
             <TradingFeaturedOffers />
         </Column>
