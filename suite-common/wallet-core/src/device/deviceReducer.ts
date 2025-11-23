@@ -133,7 +133,6 @@ const connectDevice = (
 
     const deviceCommonFields = {
         connected: true,
-
         buttonRequests: [],
         metadata: {},
         passwords: {},
@@ -142,6 +141,7 @@ const connectDevice = (
                 ? Number(device.firstConnectedTimestamp ?? currentTime)
                 : currentTime,
         ts: currentTime,
+        suiteSyncOwner: undefined,
     };
     // connected device is unacquired/unreadable
     if (!device.features) {
@@ -210,7 +210,7 @@ const connectDevice = (
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
-        localFirstStorageSecret: undefined,
+        suiteSyncOwner: undefined,
     };
 
     // update affected devices
@@ -353,7 +353,7 @@ const addAuthorizedDevice = (
         useEmptyPassphrase,
         remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         state,
-        localFirstStorageSecret: undefined,
+        suiteSyncOwner: undefined,
     };
 
     draft.devices.push(newDevice);
@@ -458,7 +458,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         buttonRequests: [],
         metadata: {},
         passwords: {},
-        localFirstStorageSecret: undefined,
+        suiteSyncOwner: undefined,
     };
     draft.devices.push(newDevice);
 };
@@ -724,26 +724,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             )
             .addCase(
                 deviceActions.setLocalFirstStorageSecret,
-                (state, { payload: { device, evoluKeys } }) => {
+                (state, { payload: { device, owner } }) => {
                     if (!device.features) return;
                     const index = deviceUtils.findInstanceIndex(state.devices, device);
                     if (!state.devices[index]) return;
-                    state.devices[index].localFirstStorageSecret = {
-                        evoluKeys,
-                        isRetrieving: false,
-                    };
-                },
-            )
-            .addCase(
-                deviceActions.setLocalFirstStorageSecretRetrieving,
-                (state, { payload: { device, isRetrieving } }) => {
-                    if (!device.features) return;
-                    const index = deviceUtils.findInstanceIndex(state.devices, device);
-                    if (!state.devices[index]) return;
-                    state.devices[index].localFirstStorageSecret = {
-                        isRetrieving,
-                        evoluKeys: state.devices[index].localFirstStorageSecret?.evoluKeys,
-                    };
+                    state.devices[index].suiteSyncOwner = owner;
                 },
             )
             .addCase(deviceActions.setDiscovered, (state, { payload }) => {

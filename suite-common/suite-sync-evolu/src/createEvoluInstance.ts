@@ -1,6 +1,6 @@
 import { EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
 
-import { EvoluKeys } from '@suite-common/suite-types';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
 import { Schema } from './schema';
@@ -11,12 +11,12 @@ import { Schema } from './schema';
 const VERSION = 5;
 
 type CreateEvoluInstanceProps = {
-    evoluKeys: EvoluKeys;
+    suiteSyncOwner: SuiteSyncOwner;
     evoluDeps: EvoluDeps;
 };
 
-export const createEvoluInstance = ({ evoluKeys, evoluDeps }: CreateEvoluInstanceProps) => {
-    const owner = createEvoluAppOwnerFromTrezorData({ data: evoluKeys.ownerSecret });
+export const createEvoluInstance = ({ suiteSyncOwner, evoluDeps }: CreateEvoluInstanceProps) => {
+    const owner = createEvoluAppOwnerFromTrezorData({ data: suiteSyncOwner.ownerSecret });
 
     if (!owner.ok) {
         console.error(owner.error);

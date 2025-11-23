@@ -19,9 +19,9 @@ export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkPa
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
-        const evoluKeys = device?.localFirstStorageSecret?.evoluKeys;
+        const owner = device?.suiteSyncOwner;
 
-        if (evoluKeys === undefined) {
+        if (owner === undefined) {
             console.error(
                 'Evolu: [updateOutputLabelThunk] no keys found on the selected device',
                 deviceStaticSessionId,
@@ -30,7 +30,7 @@ export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkPa
             return;
         }
 
-        const storage = getLocalFirstStorageProvider(evoluKeys);
+        const storage = getLocalFirstStorageProvider(owner);
 
         storage.outputLabels.update({ txId, outputIndex, label });
     },

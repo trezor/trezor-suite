@@ -1,4 +1,6 @@
 export { LocalFirstStorageProvider } from './LocalFirstStorageProvider';
+export type { SuiteStorageCreator } from './LocalFirstStorageProvider';
+export type { SuiteSyncStorage } from './SuiteSyncStorage';
 
 // Todo: this shared object shall be handled by Dependency Injection, this is madness
 export {
@@ -7,8 +9,6 @@ export {
     setLocalFirstStorageProvider,
     localFirstStorageProvider,
 } from './sharedObjects';
-
-export type { SuiteSyncStorage } from './SuiteSyncStorage';
 
 // Labeling
 export type { AddressLabelsStore, AddressLabel } from './labeling/AddressLabelsStore';

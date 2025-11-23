@@ -20,13 +20,13 @@ export const changeRelayUrlThunk = createThunk<void, ChangeRelayUrlThunkThunkPar
             relayUrl === null || relayUrl.trim() === '' ? DEFAULT_SUITE_SYNC_RELAY_URL : relayUrl;
 
         for (const device of devices) {
-            const evoluKeys = device.localFirstStorageSecret?.evoluKeys;
+            const owner = device.suiteSyncOwner;
 
-            if (evoluKeys === undefined) {
+            if (owner === undefined) {
                 continue;
             }
 
-            await getLocalFirstStorageProvider(evoluKeys).updateRelayUrl(normalizedUrl);
+            await getLocalFirstStorageProvider(owner).updateRelayUrl(normalizedUrl);
         }
     },
 );

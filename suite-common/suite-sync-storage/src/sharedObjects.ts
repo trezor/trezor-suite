@@ -1,4 +1,4 @@
-import { EvoluKeys } from '@suite-common/suite-types';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { LocalFirstStorageProvider } from './LocalFirstStorageProvider';
@@ -16,10 +16,10 @@ export const setLocalFirstStorageProvider = (provider: LocalFirstStorageProvider
     localFirstStorageProvider = provider;
 };
 
-export const getLocalFirstStorageProvider = (evoluKeys: EvoluKeys) => {
+export const getLocalFirstStorageProvider = (owner: SuiteSyncOwner) => {
     if (localFirstStorageProvider === null) {
         throw Error('initLocalFirstStorageThunk() must be called before this!');
     }
 
-    return localFirstStorageProvider.getStorage(evoluKeys);
+    return localFirstStorageProvider.getStorage(owner);
 };

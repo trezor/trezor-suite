@@ -50,7 +50,7 @@ export const useLocalFirstStorage = ({ device }: UseLocalStorageParams) => {
     };
 
     const isEvoluSupportedByDevice = isSuiteSyncSupportedByDevice(device);
-    const hasDeviceLocalFirstStorageKeys = device?.localFirstStorageSecret?.evoluKeys !== undefined;
+    const hasDeviceLocalFirstStorageKeys = device?.suiteSyncOwner !== undefined;
 
     return {
         isLocalFirstStorageEnabled,

@@ -30,7 +30,7 @@ export const subscribeLocalFirstStorageThunk =
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        if (device.localFirstStorageSecret?.evoluKeys === undefined) {
+        if (device.suiteSyncOwner === undefined) {
             const result = await dispatch(refreshSuiteSyncKeysThunk({ device }));
 
             if (!result.ok) {
@@ -53,18 +53,15 @@ export const subscribeLocalFirstStorageThunk =
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
-        const evoluKeys = reselectedDevice?.localFirstStorageSecret?.evoluKeys;
+        const owner = reselectedDevice?.suiteSyncOwner;
 
-        if (evoluKeys === undefined) {
-            console.error(
-                'Evolu: Keys set to reselectedDevice',
-                reselectedDevice?.localFirstStorageSecret,
-            );
+        if (owner === undefined) {
+            console.error('Evolu: Keys set to reselectedDevice', reselectedDevice?.suiteSyncOwner);
 
             return ok();
         }
 
-        dispatch(subscribeLabelingUpdatesThunk({ evoluKeys, walletDescriptor }));
+        dispatch(subscribeLabelingUpdatesThunk({ owner, walletDescriptor }));
 
         return ok();
     };

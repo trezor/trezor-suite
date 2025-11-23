@@ -243,10 +243,7 @@ export const getSuiteDevice = (
             ts: 0,
             buttonRequests: [],
             metadata: {},
-            localFirstStorageSecret: {
-                evoluKeys: undefined,
-                isRetrieving: false,
-            },
+            suiteSyncOwner: undefined,
             ...dev,
             ...device,
             state: dev?.state
