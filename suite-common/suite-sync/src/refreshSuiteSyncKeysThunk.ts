@@ -1,13 +1,11 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
+import { ExtraDependencies } from '@suite-common/redux-utils';
+import { CreateSuiteSyncOwner } from '@suite-common/suite-sync-storage';
 import {
     DelegatedIdentityKey,
-    SuiteSyncOwner,
     TrezorDevice,
     TrezorDeviceWithState,
-    asSuiteSyncOwnerId,
-    asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-types';
 import {
     deviceActions,
@@ -22,55 +20,43 @@ import { err, ok } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
 
+type RetrieveEvoluNodeDeps = {
+    createSuiteSyncOwner: CreateSuiteSyncOwner;
+};
+
 type RetrieveEvoluNodeParams = {
     device: TrezorDeviceWithState;
     delegatedKey: DelegatedIdentityKey;
 };
 
-const retrieveEvoluNode = async ({ device, delegatedKey }: RetrieveEvoluNodeParams) => {
-    const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
-        delegatedKey,
-        header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
-    });
-
-    const result = await TrezorConnect.evoluGetNode({
-        device: {
-            path: device.path,
-            state: device.state,
-            instance: device.instance ?? 0,
-        },
-        useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-        proof_of_delegated_identity: proofOfDelegatedIdentity,
-    });
-
-    if (result.success) {
-        const appOwnerResult = createEvoluAppOwnerFromTrezorData({
-            data: result.payload.data,
+const retrieveEvoluNode =
+    (deps: RetrieveEvoluNodeDeps) =>
+    async ({ device, delegatedKey }: RetrieveEvoluNodeParams) => {
+        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+            delegatedKey,
+            header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
         });
 
-        if (!appOwnerResult.ok) {
-            console.error('Evolu: appOwnerResult error', appOwnerResult);
+        const result = await TrezorConnect.evoluGetNode({
+            device: {
+                path: device.path,
+                state: device.state,
+                instance: device.instance ?? 0,
+            },
+            useEmptyPassphrase: device.useEmptyPassphrase ?? false,
+            proof_of_delegated_identity: proofOfDelegatedIdentity,
+        });
 
-            // We log the (unexpected) error, so we won't propagate it.
-            // This shall never happen under standard circumstances and if this happens
-            // something is terribly wrong (like Evolu BC Breaking Change)
-            return ok();
+        if (result.success) {
+            return deps.createSuiteSyncOwner({ data: result.payload.data });
         }
 
-        const owner: SuiteSyncOwner = {
-            ownerId: asSuiteSyncOwnerId(appOwnerResult.value.id),
-            ownerSecret: asSuiteSyncOwnerSecretHex(result.payload.data),
-        };
+        if (isCanceledErrorMessage(result.payload.error)) {
+            return err({ type: 'DeviceCancelled' as const });
+        }
 
-        return ok(owner);
-    }
-
-    if (isCanceledErrorMessage(result.payload.error)) {
-        return err({ type: 'DeviceCancelled' as const });
-    }
-
-    return err({ type: 'DeviceError' as const, message: result.payload.error });
-};
+        return err({ type: 'DeviceError' as const, message: result.payload.error });
+    };
 
 type RefreshSuiteSyncKeysThunkParams = {
     device: TrezorDevice;
@@ -83,7 +69,7 @@ type RefreshSuiteSyncKeysThunkParams = {
  */
 export const refreshSuiteSyncKeysThunk =
     ({ device: originalDevice }: RefreshSuiteSyncKeysThunkParams) =>
-    async (dispatch: Dispatch, getState: () => any) => {
+    async (dispatch: Dispatch, getState: () => any, extra: ExtraDependencies) => {
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
         );
@@ -105,6 +91,9 @@ export const refreshSuiteSyncKeysThunk =
         }
 
         const evoluNodeResult = await retrieveEvoluNode({
+            createSuiteSyncOwner: ({ data }) =>
+                dispatch(extra.thunks.createSuiteSyncOwner({ data })),
+        })({
             device,
             delegatedKey: delegatedKeyResult.value,
         });

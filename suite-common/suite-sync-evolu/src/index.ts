@@ -3,7 +3,8 @@
  *
  * We shall NOT leak Evolu implementation details.
  */
-export { EvoluStorage } from './evoluStorage';
+export { evoluStorageCreator } from './evoluStorageCreator';
+export { evoluCreateSuiteSyncOwner } from './evoluCreateSuiteSyncOwner';
 
 // Todo: this shall not be exported, this is kinda hack (we miss abstraction for this)
 export { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';

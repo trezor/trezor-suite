@@ -6,6 +6,9 @@
             "path": "../../suite-common/suite-sync"
         },
         {
+            "path": "../../suite-common/suite-sync-evolu"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },

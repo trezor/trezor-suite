@@ -1,6 +1,7 @@
 export { LocalFirstStorageProvider } from './LocalFirstStorageProvider';
 export type { SuiteStorageCreator } from './LocalFirstStorageProvider';
 export type { SuiteSyncStorage } from './SuiteSyncStorage';
+export type { CreateSuiteSyncOwner } from './Owner';
 
 // Todo: this shared object shall be handled by Dependency Injection, this is madness
 export {

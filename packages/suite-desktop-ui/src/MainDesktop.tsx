@@ -30,7 +30,7 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
-import { initSuiteLocalFirstStorageThunk } from '@suite/suite-sync';
+import { initSuiteSyncDesktop } from '@suite/suite-sync';
 import { type History, createMemoryHistory } from 'history';
 import { createRouterServices } from 'src/support/extraDependencies';
 import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
@@ -136,7 +136,7 @@ export const init = async (container: HTMLElement) => {
     // TODO should it really be here instead of initAction.ts?
     await store.dispatch(initBluetoothThunk());
 
-    store.dispatch(initSuiteLocalFirstStorageThunk());
+    initSuiteSyncDesktop({ getState: store.getState });
 
     // finally render whole app
     root.render(

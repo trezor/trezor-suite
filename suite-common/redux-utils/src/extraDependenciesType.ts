@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { CreateSuiteSyncOwner } from '@suite-common/suite-sync-storage';
 import {
     ReportSecurityCheckProps,
     Route,
@@ -69,7 +70,11 @@ export type ExtraDependencies = {
         unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{
             device: TrezorDeviceWithState;
         }>;
-        initLocalFirstStorage: SuiteCompatibleThunk<void>;
+        initSuiteSync: OriginalReduxThunk<void>;
+        createSuiteSyncOwner: OriginalReduxThunk<
+            { data: string },
+            ReturnType<CreateSuiteSyncOwner>
+        >;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras

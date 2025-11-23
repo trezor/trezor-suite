@@ -42,6 +42,12 @@ export const subscribeLocalFirstStorageThunk =
                         dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
 
                         return ok();
+                    case 'CreateSuiteSyncOwnerError':
+                        console.error(result.error);
+                        // Todo: dispatch better notification
+                        dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
+
+                        return ok();
                     default:
                         return exhaustive(errType);
                 }

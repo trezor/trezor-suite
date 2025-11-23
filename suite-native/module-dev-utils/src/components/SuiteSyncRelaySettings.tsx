@@ -11,7 +11,7 @@ import {
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
-import { initNativeLocalFirstStorageThunk } from '@suite-native/suite-sync';
+import { initSuiteSyncNative } from '@suite-native/suite-sync';
 import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';
@@ -57,7 +57,7 @@ export const SuiteSyncRelaySettings = () => {
         );
 
         if (!originalIsLocalFirstStorageEnabled) {
-            dispatch(initNativeLocalFirstStorageThunk());
+            dispatch((_, getState) => initSuiteSyncNative({ getState }));
         } else {
             dispatch(disposeAllLocalFirstStorageThunk());
         }

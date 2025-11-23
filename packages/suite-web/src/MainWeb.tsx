@@ -6,7 +6,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { History, createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { initSuiteLocalFirstStorageThunk } from '@suite/suite-sync';
+import { initSuiteSyncDesktop } from '@suite/suite-sync';
 
 import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
@@ -59,7 +59,7 @@ export const init = async (container: HTMLElement) => {
         },
     });
 
-    store.dispatch(initSuiteLocalFirstStorageThunk());
+    initSuiteSyncDesktop({ getState: store.getState });
 
     root.render(
         <ReduxProvider store={store}>
