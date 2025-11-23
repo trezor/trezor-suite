@@ -8,6 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { useFeesContext } from '../context/FeesContext';
 import { TransactionMaxFee } from './hooks/useTransactionMaxFee';
+import { useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 
 export type MaximumFeeProps = {
     typographyStyle: TypographyStyle;
@@ -17,6 +18,7 @@ export type MaximumFeeProps = {
 export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
     const { networkSymbol } = useFeesContext();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, networkSymbol));
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     if (!txMaxFee) {
         return (
@@ -25,6 +27,7 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
                 isLoading={areFeesLoading}
                 data-testid="@trading/quote/maximum-fee-amount-loading"
                 slideContent={false}
+                isLoadingPositionReversed={isContentBelowBreakpoint}
             >
                 <Text variant="tertiary" typographyStyle={typographyStyle}>
                     <Translation id="TO_BE_CALCULATED" />
@@ -39,8 +42,9 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
             isLoading={areFeesLoading}
             data-testid="@trading/quote/maximum-fee-amount-loading"
             slideContent={false}
+            isLoadingPositionReversed={isContentBelowBreakpoint}
         >
-            <Column alignItems="flex-end">
+            <Column>
                 <Text variant="default" typographyStyle={typographyStyle}>
                     <FormattedCryptoAmount
                         data-testid="@trading/quote/maximum-fee-amount"

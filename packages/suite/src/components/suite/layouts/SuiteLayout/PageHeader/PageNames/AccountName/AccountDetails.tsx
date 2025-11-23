@@ -6,9 +6,8 @@ import { selectAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacingsPx, typography, zIndices } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
 import {
     AccountLabel,
@@ -19,6 +18,8 @@ import {
 } from 'src/components/suite';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+
+import { BasicName } from '../BasicName';
 
 const LOGO_SIZE = 36;
 
@@ -58,14 +59,6 @@ const DetailsContainer = styled.div<{ $isBalanceShown: boolean; $shouldAnimate: 
             getAnimation($isBalanceShown, $shouldAnimate)}
         0.3s forwards;
     -webkit-app-region: no-drag;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const AccountHeading = styled(H2)<{ $isBalanceShown: boolean }>`
-    display: flex;
-    align-items: center;
-
-    ${({ $isBalanceShown }) => typography[$isBalanceShown ? 'body' : 'titleMedium']};
 `;
 
 const AccountBalance = styled.div`
@@ -129,7 +122,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
         <DetailsContainer $isBalanceShown={isBalanceShown} $shouldAnimate={shouldAnimate}>
             <CoinLogo size={LOGO_SIZE} symbol={symbol} type="token" />
             <div>
-                <AccountHeading $isBalanceShown={isBalanceShown}>
+                <BasicName>
                     <MetadataLabeling
                         variant="text"
                         accountType={accountType}
@@ -158,7 +151,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         })}
                         updateFlag={isBalanceShown}
                     />
-                </AccountHeading>
+                </BasicName>
                 {isBalanceShown && (
                     <AccountBalance>
                         <CryptoBalance>

@@ -57,7 +57,7 @@ export const TradingReceiveAddress = () => {
                         }
                     />
                 </Text>
-                <Row gap={spacings.xs}>
+                <Row gap={16}>
                     <Column alignItems="flex-end">
                         {selectedAccountOption?.account && receiveAddress ? (
                             <>

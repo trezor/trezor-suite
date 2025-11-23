@@ -21,6 +21,7 @@ import {
 
 import { SummaryCards } from './SummaryCards';
 import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
+import { useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 
 const ErrorMessage = styled.div`
     display: flex;
@@ -94,6 +95,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
         );
 
     const isGraphSupported = getNetworkFeatures(account.symbol).includes('graph');
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
         <Column alignItems="stretch" gap={20}>
@@ -126,7 +128,10 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                             </Card>
                         ) : (
                             <HiddenPlaceholder enforceIntensity={8}>
-                                <Card overflow="visible">
+                                <Card
+                                    overflow="visible"
+                                    paddingType={isContentBelowBreakpoint ? 'none' : 'normal'}
+                                >
                                     <Row height={320} overflow="visible" alignItems="stretch">
                                         <TransactionsGraph
                                             hideToolbar

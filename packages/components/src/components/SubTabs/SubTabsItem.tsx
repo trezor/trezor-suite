@@ -63,7 +63,7 @@ export const SubTabsItem = ({
         >
             <Row gap={spacings.xs} padding={{ vertical: spacings.xs, horizontal: spacings.md }}>
                 {iconName && <Icon name={iconName} size={mapSizeToIconSize(size)} />}
-                <Text as="div" typographyStyle={mapSizeToTypography(size)}>
+                <Text as="div" typographyStyle={mapSizeToTypography(size)} textWrap="nowrap">
                     {children}
                 </Text>
                 {count > 0 && (

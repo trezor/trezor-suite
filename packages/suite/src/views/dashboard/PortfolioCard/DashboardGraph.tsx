@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency, selectSelectedDevice } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
-import { Button } from '@trezor/components';
+import { Box, Button } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData, prepareGraphDataAsync } from 'src/utils/wallet/graph';
+
+import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,6 +53,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -128,20 +131,28 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                         </Button>
                     </ErrorMessage>
                 ) : (
-                    <TransactionsGraph
-                        hideToolbar
-                        variant="all-assets"
-                        onRefresh={onRefresh}
-                        isLoading={graph.isLoading || isProcessing}
-                        localCurrency={baseCurrencyCode}
-                        xTicks={xTicks}
-                        minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}
-                        data={data}
-                        selectedRange={graph.selectedRange}
-                        receivedValueFn={receivedValueFn}
-                        sentValueFn={sentValueFn}
-                        balanceValueFn={balanceValueFn}
-                    />
+                    <Box
+                        margin={
+                            isContentBelowBreakpoint ? undefined : { vertical: 12, horizontal: 20 }
+                        }
+                        width="100%"
+                        height="100%"
+                    >
+                        <TransactionsGraph
+                            hideToolbar
+                            variant="all-assets"
+                            onRefresh={onRefresh}
+                            isLoading={graph.isLoading || isProcessing}
+                            localCurrency={baseCurrencyCode}
+                            xTicks={xTicks}
+                            minMaxValues={[minMaxValues[0].toNumber(), minMaxValues[1].toNumber()]}
+                            data={data}
+                            selectedRange={graph.selectedRange}
+                            receivedValueFn={receivedValueFn}
+                            sentValueFn={sentValueFn}
+                            balanceValueFn={balanceValueFn}
+                        />
+                    </Box>
                 )}
             </GraphWrapper>
         </Wrapper>

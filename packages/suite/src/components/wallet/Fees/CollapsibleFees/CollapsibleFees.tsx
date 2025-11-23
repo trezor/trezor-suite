@@ -15,6 +15,7 @@ import { MaximumFee } from './MaximumFee';
 import { StandardFee } from './StandardFee/StandardFee';
 import { FeesContext, FeesContextType } from '../context/FeesContext';
 import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
+import { ContentFlex } from '../../../../support/suite/ContentFlex';
 
 export type CollapsibleFeesProps = {
     networkType: NetworkType;
@@ -70,7 +71,7 @@ export function CollapsibleFees({
             }}
         >
             <Collapsible gap={20}>
-                <Row justifyContent="space-between" gap={12}>
+                <ContentFlex justifyContent="space-between" gap={12}>
                     <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
                     <Collapsible.Toggle
                         data-testid="@wallet/fees/collapsible-fees-toggle"
@@ -86,7 +87,7 @@ export function CollapsibleFees({
                             )}
                         </Row>
                     </Collapsible.Toggle>
-                </Row>
+                </ContentFlex>
                 {supportsAdjustableFees && (
                     <Collapsible.Content overflow="unset">
                         <Column gap={16}>

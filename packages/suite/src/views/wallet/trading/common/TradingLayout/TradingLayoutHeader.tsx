@@ -47,7 +47,9 @@ const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
                     onClick={goToRoute(getBackRoute(currentRouteName, activeSection))}
                     data-testid="@account-subpage/back"
                 />
-                <BasicName nameId={fallbackTitle} />
+                <BasicName>
+                    <Translation id={fallbackTitle} />
+                </BasicName>
                 {currentRouteName !== 'wallet-trading-transactions' && (
                     <Box margin={{ left: 'auto' }}>
                         <Button

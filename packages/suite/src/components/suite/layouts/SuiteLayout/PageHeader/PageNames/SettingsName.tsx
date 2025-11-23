@@ -1,22 +1,13 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacingsPx } from '@trezor/theme';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
-import { HeaderHeading } from './BasicName';
-
-const Container = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.md};
-`;
+import { BasicName } from './BasicName';
+import { Translation } from '../../../../Translation';
 
 export const SettingsName = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
@@ -49,10 +40,8 @@ export const SettingsName = () => {
     };
 
     return (
-        <Container>
-            <HeaderHeading onClick={handleTitleClick} data-testid="@settings/menu/title">
-                <Translation id="TR_SETTINGS" />
-            </HeaderHeading>
-        </Container>
+        <BasicName onClick={handleTitleClick} data-testid="@settings/menu/title">
+            <Translation id="TR_SETTINGS" />
+        </BasicName>
     );
 };

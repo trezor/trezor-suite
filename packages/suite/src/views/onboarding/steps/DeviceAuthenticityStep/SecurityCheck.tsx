@@ -13,7 +13,6 @@ import {
     Icon,
     Note,
     Paragraph,
-    Row,
     Text,
     TextButton,
     Tooltip,
@@ -42,6 +41,7 @@ import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityChecklistItem } from './types';
+import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 
 import { DeviceAuthenticityStep } from './index';
@@ -103,24 +103,23 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
     ] as const satisfies SecurityChecklistItem[];
 
 type ButtonFlexProps = {
-    isContentSmall: boolean;
     children: React.ReactNode;
 };
 
-const ButtonFlex = ({ isContentSmall, children }: ButtonFlexProps) => {
-    const Component = isContentSmall ? Column : Row;
+const ButtonFlex = ({ children }: ButtonFlexProps) => {
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
-        <Component
-            isReversed={isContentSmall}
-            alignItems={isContentSmall ? 'center' : 'stretch'}
+        <ContentFlex
+            isReversed={isContentBelowBreakpoint}
+            alignItems={isContentBelowBreakpoint ? 'center' : 'stretch'}
             flexWrap="wrap"
             gap={spacings.xl}
             width="100%"
             margin={{ top: spacings.xxxxl }}
         >
             {children}
-        </Component>
+        </ContentFlex>
     );
 };
 
@@ -215,7 +214,7 @@ const SecurityCheckContent = ({
     return isFailed ? (
         <SecurityCheckFail
             ctaSection={
-                <ButtonFlex isContentSmall={isContentBelowMobile}>
+                <ButtonFlex>
                     <Button
                         intent="neutral"
                         priority="secondary"
@@ -252,7 +251,7 @@ const SecurityCheckContent = ({
                 </H3>
                 <SecurityChecklist items={checklistItems} />
             </Column>
-            <ButtonFlex isContentSmall={isContentBelowMobile}>
+            <ButtonFlex>
                 <Button
                     intent="neutral"
                     priority="secondary"

@@ -26,7 +26,7 @@ interface AccountExceptionLayoutProps {
 
 export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
     <Card data-testid={props['data-testid']}>
-        <Column alignItems="center">
+        <Column alignItems="center" margin={{ bottom: 24 }}>
             {props.iconName && props.iconVariant && (
                 <IconCircle
                     name={props.iconName}

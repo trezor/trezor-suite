@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
-import { Button, Card, Column, InfoItem, Paragraph, Row } from '@trezor/components';
+import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
 
@@ -19,6 +19,7 @@ import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
+import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.textSubdued};
@@ -34,27 +35,34 @@ type DetailsRowProps = {
     learnMoreUrl?: Url;
 };
 
-const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowProps) => (
-    <Row gap={spacings.xxxl} justifyContent="space-between">
-        <InfoItem
-            label={<Translation id={title} />}
-            typographyStyle="body"
-            variant="default"
-            gap={spacings.xs}
-            maxWidth={500}
-        >
-            <Column gap={spacings.sm}>
-                <Paragraph typographyStyle="hint" variant="tertiary">
-                    {description}
-                </Paragraph>
-                {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
+const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowProps) => {
+    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
+
+    return (
+        <ContentFlex gap={spacings.xxxl} justifyContent="space-between">
+            <InfoItem
+                label={<Translation id={title} />}
+                typographyStyle="body"
+                variant="default"
+                gap={spacings.xs}
+                maxWidth={500}
+            >
+                <Column gap={spacings.sm}>
+                    <Paragraph typographyStyle="hint" variant="tertiary">
+                        {description}
+                    </Paragraph>
+                    {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
+                </Column>
+            </InfoItem>
+            <Column
+                alignItems={isContentBelowBreakpoint ? 'flex-start' : 'flex-end'}
+                gap={spacings.xs}
+            >
+                {children}
             </Column>
-        </InfoItem>
-        <Column alignItems="flex-end" gap={spacings.xs}>
-            {children}
-        </Column>
-    </Row>
-);
+        </ContentFlex>
+    );
+};
 
 const Details = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);

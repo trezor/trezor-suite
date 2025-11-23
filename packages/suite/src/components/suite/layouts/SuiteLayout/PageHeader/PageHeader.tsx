@@ -21,8 +21,10 @@ const Container = styled.div`
     position: sticky;
     top: 0;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     width: 100%;
+    gap: ${spacingsPx.xs};
     height: ${HEADER_HEIGHT};
     min-height: ${HEADER_HEIGHT};
     padding: ${spacingsPx.xs} ${spacingsPx.md};
