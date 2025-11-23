@@ -1,19 +1,10 @@
-import styled from 'styled-components';
-
 import { Account } from '@suite-common/wallet-types';
-import { IconButton } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { IconButton, Row } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AccountDetails } from './AccountDetails';
-
-const Container = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.md};
-`;
 
 interface AccountSubpageNameProps {
     selectedAccount: Account;
@@ -27,7 +18,7 @@ export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps)
         dispatch(goto(previousRoute.name, { params: previousRoute.params }));
 
     return (
-        <Container>
+        <Row alignItems="center" gap={16}>
             <IconButton
                 icon="caretLeft"
                 intent="neutral"
@@ -37,6 +28,6 @@ export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps)
                 data-testid="@account-subpage/back"
             />
             <AccountDetails selectedAccount={selectedAccount} isBalanceShown />
-        </Container>
+        </Row>
     );
 };

@@ -10,7 +10,6 @@ interface BannerPointsProps {
 
 const ListItem = styled.li`
     ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
     list-style-type: disc;
     list-style-position: inside;
 
