@@ -175,6 +175,7 @@ const SignVerify = () => {
                                 <Switch
                                     label={<Translation id="TR_HEX_FORMAT" />}
                                     labelPosition="start"
+                                    size="small"
                                     {...hexField}
                                 />
                             }
