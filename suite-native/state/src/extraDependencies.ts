@@ -13,7 +13,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import { initNativeLocalFirstStorageThunk } from '@suite-native/suite-sync';
+import { createSuiteSyncOwnerNative, initSuiteSyncNative } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
@@ -67,7 +67,8 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
         unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
-        initLocalFirstStorage: initNativeLocalFirstStorageThunk,
+        initSuiteSync: () => (_, getState) => initSuiteSyncNative({ getState }),
+        createSuiteSyncOwner: params => () => createSuiteSyncOwnerNative(params),
     } as Partial<ExtraDependencies['thunks']>,
     actions: {} as Partial<ExtraDependencies['actions']>,
     actionTypes: {} as Partial<ExtraDependencies['actionTypes']>,

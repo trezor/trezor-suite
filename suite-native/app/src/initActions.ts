@@ -13,7 +13,7 @@ import {
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { setIsAppReady } from '@suite-native/state';
-import { initNativeLocalFirstStorageThunk } from '@suite-native/suite-sync';
+import { initSuiteSyncNative } from '@suite-native/suite-sync';
 
 const ACTION_PREFIX = '@suite-native/app';
 
@@ -57,6 +57,6 @@ export const postOnboardingInit = createThunk(
 
         dispatch(walletConnectInitThunk());
 
-        dispatch(initNativeLocalFirstStorageThunk());
+        initSuiteSyncNative({ getState });
     },
 );

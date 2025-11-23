@@ -1,5 +1,16 @@
 import { evoluWebDeps } from '@evolu/web';
 
-import { initLocalFirstStorageThunkFactory } from '@suite-common/suite-sync';
+import { DEFAULT_SUITE_SYNC_RELAY_URL, initSuiteSync } from '@suite-common/suite-sync';
+import { evoluCreateSuiteSyncOwner, evoluStorageCreator } from '@suite-common/suite-sync-evolu';
 
-export const initSuiteLocalFirstStorageThunk = initLocalFirstStorageThunkFactory(evoluWebDeps);
+type InitSuiteSyncDesktopDeps = {
+    getState: () => any;
+};
+
+export const initSuiteSyncDesktop = ({ getState }: InitSuiteSyncDesktopDeps) =>
+    initSuiteSync({
+        getState,
+        storageFactory: evoluStorageCreator(evoluWebDeps, DEFAULT_SUITE_SYNC_RELAY_URL),
+    });
+
+export const createSuiteSyncOwnerDesktop = evoluCreateSuiteSyncOwner;

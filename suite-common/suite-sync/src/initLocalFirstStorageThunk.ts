@@ -1,53 +1,27 @@
-import { EvoluDeps } from '@evolu/common'; // Todo: this dependency shall not be here
-
-import { createThunk } from '@suite-common/redux-utils';
-import { EvoluStorage } from '@suite-common/suite-sync-evolu';
 import {
     LocalFirstStorageProvider,
     SuiteStorageCreator,
     setLocalFirstStorageProvider,
 } from '@suite-common/suite-sync-storage';
 
-import { DEFAULT_SUITE_SYNC_RELAY_URL, LOCAL_FIRST_STORAGE_PREFIX } from './constants';
 import {
     selectIsLocalFirstStorageEnabled,
     selectLocalFirstStorageRelayUrl,
 } from './suiteSyncSelectors';
 
-export const initLocalFirstStorageThunk = createThunk<void, void, void>(
-    `${LOCAL_FIRST_STORAGE_PREFIX}/initLocalFirstStorageThunk`,
-    (_, { dispatch, extra }) => {
-        dispatch(extra.thunks.initLocalFirstStorage());
-    },
-);
+type InitSuiteSyncDeps = {
+    storageFactory: SuiteStorageCreator;
+    getState: () => any;
+};
 
-const evoluStorageCreator =
-    (evoluDeps: EvoluDeps): SuiteStorageCreator =>
-    ({ owner, relayUrl }) =>
-        // This is the place were we decide which storage we use
-        new EvoluStorage({
-            relayUrl:
-                relayUrl === null || relayUrl.trim() === ''
-                    ? DEFAULT_SUITE_SYNC_RELAY_URL
-                    : relayUrl,
-            evoluDeps,
-            owner,
-        });
+export const initSuiteSync = (deps: InitSuiteSyncDeps) => {
+    const isLocalFirstStorageEnabled = selectIsLocalFirstStorageEnabled(deps.getState());
 
-export const initLocalFirstStorageThunkFactory = (evoluDeps: EvoluDeps) =>
-    createThunk<void, void, void>(
-        `${LOCAL_FIRST_STORAGE_PREFIX}/initLocalFirstStorageThunk`,
-        (_, { getState }) => {
-            const isLocalFirstStorageEnabled = selectIsLocalFirstStorageEnabled(getState());
+    if (!isLocalFirstStorageEnabled) {
+        return;
+    }
 
-            if (!isLocalFirstStorageEnabled) {
-                return;
-            }
+    const relayUrl = selectLocalFirstStorageRelayUrl(deps.getState());
 
-            const relayUrl = selectLocalFirstStorageRelayUrl(getState());
-
-            setLocalFirstStorageProvider(
-                new LocalFirstStorageProvider(relayUrl, evoluStorageCreator(evoluDeps)),
-            );
-        },
-    );
+    setLocalFirstStorageProvider(new LocalFirstStorageProvider(relayUrl, deps.storageFactory));
+};

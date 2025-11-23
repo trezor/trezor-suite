@@ -12,7 +12,7 @@ export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';
 export { subscribeLocalFirstStorageThunk } from './subscribeLocalFirstStorageThunk';
 export { unsubscribeAndDisposeLocalFirstStorageThunk } from './unsubscribeAndDisposeLocalFirstStorageThunk';
-export { initLocalFirstStorageThunkFactory } from './initLocalFirstStorageThunk';
+export { initSuiteSync } from './initLocalFirstStorageThunk';
 export { changeRelayUrlThunk } from './changeRelayUrlThunk';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './constants';
 export { disposeAllLocalFirstStorageThunk } from './disposeAllLocalFirstStorageThunk';

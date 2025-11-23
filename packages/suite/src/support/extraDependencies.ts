@@ -2,7 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
-import { initSuiteLocalFirstStorageThunk } from '@suite/suite-sync';
+import { createSuiteSyncOwnerDesktop, initSuiteSyncDesktop } from '@suite/suite-sync';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { ExtraDependencies, LocationPushState, To } from '@suite-common/redux-utils';
 import {
@@ -77,7 +77,8 @@ export const extraDependencies: ExtraDependencies = {
         // `@suite-common/suite-sync` depends on `wallet-core`
         subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
         unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
-        initLocalFirstStorage: initSuiteLocalFirstStorageThunk,
+        initSuiteSync: () => (_, getState) => initSuiteSyncDesktop({ getState }),
+        createSuiteSyncOwner: params => () => createSuiteSyncOwnerDesktop(params),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>

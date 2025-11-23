@@ -8,6 +8,9 @@
     "references": [
         {
             "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-sync-evolu"
         }
     ]
 }

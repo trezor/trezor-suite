@@ -4,7 +4,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 
 import { isSuiteSyncSupportedByDevice } from './device';
 import { disposeAllLocalFirstStorageThunk } from './disposeAllLocalFirstStorageThunk';
-import { initLocalFirstStorageThunk } from './initLocalFirstStorageThunk';
+import { initSuiteSyncHackForHook } from './initSuiteSyncHackForHook';
 import { suiteSyncActions } from './suiteSyncActions';
 import {
     selectIsFeatureLocalFirstStorageAvailable,
@@ -45,7 +45,7 @@ export const useLocalFirstStorage = ({ device }: UseLocalStorageParams) => {
     const enableLocalFirstStorageIfNeeded = () => {
         if (!isLocalFirstStorageEnabled) {
             dispatch(suiteSyncActions.updateLocalFirstStorageEnabled({ isEnabled: true }));
-            dispatch(initLocalFirstStorageThunk());
+            dispatch(initSuiteSyncHackForHook());
         }
     };
 

@@ -75,7 +75,8 @@ export const extraDependenciesMock: ExtraDependencies = {
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
         subscribeLocalFirstStorage: mockOriginalReduxThunk('subscribeLocalFirstStorage'),
         unsubscribeAndDisposeLocalFirstStorage: mockThunk('unsubscribeLocalFirstStorage'),
-        initLocalFirstStorage: mockThunk('initLocalFirstStorage'),
+        initSuiteSync: mockOriginalReduxThunk('initSuiteSync'),
+        createSuiteSyncOwner: mockOriginalReduxThunk('createSuiteSyncOwner'),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(
