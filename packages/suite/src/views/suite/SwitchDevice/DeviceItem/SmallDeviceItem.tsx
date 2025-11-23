@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Image, Row } from '@trezor/components';
@@ -9,15 +7,6 @@ import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceDetail } from './DeviceDetail';
 import { Translation } from '../../../../components/suite/Translation';
 import { useSelector } from '../../../../hooks/suite';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const DeviceImage = styled(Image)`
-    object-fit: contain;
-`;
-
-const SmallDeviceImage = styled(DeviceImage)`
-    width: 18px;
-`;
 
 type SmallDeviceItemProps = {
     forceAlternativeDeviceLabel?: string;
@@ -39,7 +28,12 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
             padding={{ vertical: spacings.xs, horizontal: spacings.xs }}
             alignItems="center"
         >
-            <SmallDeviceImage alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />
+            <Image
+                width={18}
+                objectFit="contain"
+                alt="Trezor"
+                image={`TREZOR_${selectedDeviceModelInternal}`}
+            />
 
             <DeviceDetail label={forceAlternativeDeviceLabel || deviceLabel || 'Trezor'}>
                 <DeviceConnectionText

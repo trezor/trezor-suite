@@ -22,7 +22,11 @@ import { Icon } from '../Icon/Icon';
 
 export type TooltipInteraction = 'none' | 'hover';
 
-export const allowedTooltipFrameProps = ['cursor'] as const satisfies FramePropsKeys[];
+export const allowedTooltipFrameProps = [
+    'cursor',
+    'display',
+    'margin',
+] as const satisfies FramePropsKeys[];
 export type AllowedFrameProps = Pick<FrameProps, (typeof allowedTooltipFrameProps)[number]>;
 
 const Wrapper = styled.div<{ $isFullWidth: boolean }>`

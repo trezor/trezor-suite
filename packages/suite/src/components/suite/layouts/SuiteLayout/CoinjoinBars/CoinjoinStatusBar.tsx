@@ -56,11 +56,6 @@ const Container = styled.div<{ $isClickable: boolean }>`
         `}
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledProgressPie = styled(ProgressPie)`
-    margin-right: ${SPACING}px;
-`;
-
 const StatusText = styled.span`
     color: ${({ theme }) => theme.textPrimaryDefault};
 `;
@@ -151,7 +146,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
             onClick={isStatusBarClickable ? handleViewAccount : undefined}
             $isClickable={isStatusBarClickable}
         >
-            <StyledProgressPie valueInPercents={sessionProgress} />
+            <ProgressPie valueInPercents={sessionProgress} margin={{ right: 8 }} />
 
             <StatusText>
                 {getSessionStatusMessage()}

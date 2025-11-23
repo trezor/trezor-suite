@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Elevation, spacingsPx } from '@trezor/theme';
 
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
+import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
 import {
@@ -16,6 +17,10 @@ import {
     getInputStateBgColor,
 } from '../styles';
 import { InputState } from '../types';
+
+export const allowedTextareaFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextareaFrameProps)[number]>;
 
 const TextareaWrapper = styled(InputWrapper)<{
     disabled?: boolean; // intentionally not transient, disabled is HTML <input> prop
@@ -69,7 +74,8 @@ const TextareaLabel = styled(Label)`
 
 type TextareaHTMLProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-export type TextareaProps = TextareaHTMLProps &
+export type TextareaProps = AllowedFrameProps &
+    TextareaHTMLProps &
     Omit<FormCellProps, 'children'> & {
         isDisabled?: boolean;
         label?: ReactNode;

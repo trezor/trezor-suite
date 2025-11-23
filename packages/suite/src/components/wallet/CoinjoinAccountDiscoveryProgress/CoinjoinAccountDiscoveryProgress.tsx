@@ -45,12 +45,6 @@ const FactHeading = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const SparksIcon = styled(Icon)`
-    margin-right: 4px;
-    padding-bottom: 2px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLottieAnimation = styled(LottieAnimation)`
     margin: -32px -8px -32px -20px;
 
@@ -91,7 +85,12 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                 <DiscoveryProgress max={1.01} value={progress} />
 
                 <FactHeading>
-                    <SparksIcon name="starFour" size={13} color={theme.iconAlertYellow} />
+                    <Icon
+                        name="starFour"
+                        size={13}
+                        color={theme.iconAlertYellow}
+                        margin={{ right: 4, bottom: 2 }}
+                    />
                     <Translation id="TR_LOADING_FACT_TITLE" />
                 </FactHeading>
 

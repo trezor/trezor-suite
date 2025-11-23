@@ -42,9 +42,6 @@ const StepTitle = styled(H3)`
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StepDescription = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.body}
-
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         grid-column: 2;
         grid-row: 2;
@@ -114,6 +111,8 @@ export const CoinjoinProcessStep = ({
             <Translation id="TR_STEP" values={{ number }} />
         </StepNumber>
         <StepTitle>{title}</StepTitle>
-        <StepDescription>{description}</StepDescription>
+        <StepDescription typographyStyle="body" variant="tertiary">
+            {description}
+        </StepDescription>
     </Container>
 );

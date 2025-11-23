@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Divider, Icon, Image, Link, Row, useElevation } from '@trezor/components';
+import { Divider, Icon, Image, Link, Paragraph, Row, useElevation } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import {
     Elevation,
@@ -76,13 +76,6 @@ const IconWrapper = styled.div`
     margin-left: 10px;
 `;
 
-const Text = styled.div`
-    padding-left: 10px;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.body}
-    margin-bottom: 15px;
-`;
-
 const linkStyle = css`
     color: ${({ theme }) => theme.textSubdued};
     cursor: pointer;
@@ -101,10 +94,6 @@ const StyledLink = styled(Link)`
 
 const LearnMoreToggle = styled.div`
     ${linkStyle}
-`;
-
-const FooterText = styled(Text)`
-    padding-right: 10px;
 `;
 
 export const TradingFooter = () => {
@@ -144,12 +133,20 @@ export const TradingFooter = () => {
                                         </IconWrapper>
                                     </BoxRight>
                                 </Header>
-                                <FooterText>
+                                <Paragraph
+                                    margin={{ bottom: 16, vertical: 12 }}
+                                    typographyStyle="body"
+                                    variant="tertiary"
+                                >
                                     <Translation id="TR_BUY_FOOTER_TEXT_1" />
-                                </FooterText>
-                                <FooterText>
+                                </Paragraph>
+                                <Paragraph
+                                    margin={{ bottom: 16, vertical: 12 }}
+                                    typographyStyle="body"
+                                    variant="tertiary"
+                                >
                                     <Translation id="TR_BUY_FOOTER_TEXT_2" />
-                                </FooterText>
+                                </Paragraph>
                             </FooterBox>
                         )}
 

@@ -5,7 +5,7 @@ import { Inspector } from 'react-inspector';
 import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
-import { Button, ButtonProps, Card, H3, IconButton, Row, variables } from '@trezor/components';
+import { Button, ButtonProps, Card, IconButton, Row, Text, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';
@@ -181,12 +181,6 @@ const Container = styled.div`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Heading = styled(H3)`
-    font-size: 16px;
-    font-weight: 600;
-`;
-
 const Checkboxes = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -305,7 +299,7 @@ export const Method = () => {
             <div>
                 {manualMode ? (
                     <Container>
-                        <Heading>Method with params</Heading>
+                        <Text typographyStyle="highlight">Method with params</Text>
                         <CodeEditor {...{ code, codeChange, schema }} />
                         <CopyWrapper>
                             <CopyToClipboard getValue={() => javascriptCode ?? ''} />
@@ -331,7 +325,7 @@ export const Method = () => {
                 <Sticky>
                     {!manualMode && (
                         <Container data-testid="@code">
-                            <Heading>Method with params</Heading>
+                            <Text typographyStyle="highlight">Method with params</Text>
                             <CopyWrapper>
                                 <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                             </CopyWrapper>
@@ -350,7 +344,7 @@ export const Method = () => {
                         </Container>
                     )}
                     <Container data-testid="@response">
-                        <Heading>Response</Heading>
+                        <Text typographyStyle="highlight">Response</Text>
                         <CopyWrapper>
                             <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
                         </CopyWrapper>

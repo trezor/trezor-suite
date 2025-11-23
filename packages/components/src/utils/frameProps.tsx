@@ -69,6 +69,9 @@ type UserSelect = (typeof userSelects)[number];
 const objectFits = ['none', 'fill', 'contain', 'cover', 'scale-down'] as const;
 export type ObjectFit = (typeof objectFits)[number];
 
+const displays = ['block', 'inline', 'inline-block', 'flex', 'inline-flex'] as const;
+export type Display = (typeof display)[number];
+
 export type FrameProps = {
     margin?: Margin;
     padding?: Padding;
@@ -89,6 +92,7 @@ export type FrameProps = {
     aspectRatio?: `${number}` | `${number} / ${number}`;
     userSelect?: UserSelect;
     objectFit?: ObjectFit;
+    display?: Display;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -135,6 +139,7 @@ export const withFrameProps = ({
     $opacity,
     $userSelect,
     $objectFit,
+    $display,
 }: TransientFrameProps) => css`
     ${$margin &&
     (typeof $margin === 'object'
@@ -232,6 +237,10 @@ export const withFrameProps = ({
     css`
         object-fit: ${$objectFit};
     `};
+    ${$display &&
+    css`
+        display: ${$display};
+    `};
 `;
 
 const getStorybookType = (key: FramePropsKeys) => {
@@ -300,6 +309,13 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'objectFit':
             return {
                 options: objectFits,
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'display':
+            return {
+                options: displays,
                 control: {
                     type: 'select',
                 },
@@ -379,6 +395,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('aspectRatio') ? { aspectRatio: undefined } : {}),
             ...(allowedFrameProps.includes('userSelect') ? { userSelect: undefined } : {}),
             ...(allowedFrameProps.includes('objectFit') ? { objectFit: undefined } : {}),
+            ...(allowedFrameProps.includes('display') ? { display: undefined } : {}),
         },
         argTypes,
     };

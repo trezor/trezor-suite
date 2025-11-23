@@ -18,13 +18,6 @@ import {
 
 import { Tile, TileProps } from './Tile';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const TopRow = styled(H3)`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: ${spacingsPx.xxl};
-`;
-
 const TopFeeRow = styled.div`
     display: flex;
     justify-content: space-between;
@@ -119,9 +112,9 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
     return (
         <>
             <Card>
-                <TopRow>
+                <H3 margin={{ bottom: 32 }}>
                     <Translation id="TR_COINJOIN_SETUP" />
-                </TopRow>
+                </H3>
                 <Tiles>
                     {tiles.map(tile => (
                         <Tile key={tile.iconName} {...tile} />
