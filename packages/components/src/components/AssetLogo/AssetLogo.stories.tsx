@@ -19,7 +19,8 @@ export const AssetLogo: StoryObj<AssetLogoProps> = {
     args: {
         size: 24,
         coingeckoId: 'ethereum',
-        contractAddress: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+        symbol: 'eth',
+        contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         shouldTryToFetch: true,
         placeholder: 'USDC',
         ...getFramePropsStory(allowedAssetLogoFrameProps).args,

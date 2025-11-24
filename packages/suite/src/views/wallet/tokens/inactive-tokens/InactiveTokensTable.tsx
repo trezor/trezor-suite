@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import type { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
 import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
 import { AssetLogo, Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
@@ -184,10 +183,8 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                     <AssetLogo
                                         coingeckoId={coingeckoId || ''}
                                         placeholder={token.name || token.symbol || ''}
-                                        contractAddress={getAssetLogoContractAddresses(
-                                            account.symbol,
-                                            token.contract,
-                                        )}
+                                        symbol={account.symbol}
+                                        contractAddress={token.contract}
                                         size={24}
                                         shouldTryToFetch={true}
                                     />

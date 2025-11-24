@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetLogo, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
@@ -52,7 +51,8 @@ export const TokenIconSet = ({ symbol, tokens }: TokenIconSetProps) => {
                 key={token.contract}
                 size={20}
                 coingeckoId={coingeckoId ?? ''}
-                contractAddress={getAssetLogoContractAddresses(symbol, token.contract)}
+                symbol={symbol}
+                contractAddress={token.contract}
                 placeholder={token.symbol?.toUpperCase() ?? ''}
                 placeholderWithTooltip={false}
             />

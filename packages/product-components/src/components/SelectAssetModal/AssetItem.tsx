@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -72,7 +71,8 @@ export const AssetItem = ({
                         <AssetLogo
                             size={24}
                             coingeckoId={coingeckoId}
-                            contractAddress={getAssetLogoContractAddresses(symbol, contractAddress)}
+                            symbol={symbol}
+                            contractAddress={contractAddress}
                             placeholder={displaySymbol}
                             shouldTryToFetch={shouldTryToFetch}
                         />
