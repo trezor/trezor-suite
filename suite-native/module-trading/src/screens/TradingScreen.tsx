@@ -47,8 +47,8 @@ const TradingScreenContent = () => {
         <VStack spacing="sp16">
             <Header isFormMountedRecently={isScreenMountedRecently} />
             <TradingTabContent />
-            <Footer isFormMountedRecently={isScreenMountedRecently} />
             <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
+            <Footer type={activeTradingType} isFormMountedRecently={isScreenMountedRecently} />
         </VStack>
     );
 };

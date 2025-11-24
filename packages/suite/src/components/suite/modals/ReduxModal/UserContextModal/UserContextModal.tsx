@@ -1,5 +1,3 @@
-import { CryptoId } from 'invity-api';
-
 import { UI } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -49,7 +47,6 @@ import { StakeInANutshellModal } from './StakeInANutshellModal/StakeInANutshellM
 import { StakeModal } from './StakeModal/StakeModal';
 import { TorLoadingModal } from './TorLoadingModal';
 import { TradingDCAModal } from './TradingDCAModal';
-import { TradingTermsModal } from './TradingTermsModal';
 import { TxDetailModal } from './TxDetailModal/TxDetailModal';
 import { TxSimulationModal } from './TxSimulationModal';
 import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
@@ -107,50 +104,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <TransactionReviewModal {...payload} />;
         case 'cardano-withdraw-modal':
             return <CardanoWithdrawModal onCancel={onCancel} />;
-        case 'trading-buy-terms': {
-            return (
-                <TradingTermsModal
-                    onCancel={onCancel}
-                    type="BUY"
-                    decision={payload.decision}
-                    provider={payload.provider}
-                    cryptoCurrency={payload.cryptoCurrency as CryptoId}
-                />
-            );
-        }
-        case 'trading-sell-terms':
-            return (
-                <TradingTermsModal
-                    onCancel={onCancel}
-                    type="SELL"
-                    decision={payload.decision}
-                    provider={payload.provider}
-                    cryptoCurrency={payload.cryptoCurrency as CryptoId}
-                />
-            );
-
-        case 'trading-exchange-terms':
-            return (
-                <TradingTermsModal
-                    onCancel={onCancel}
-                    type="TRADING_SWAP"
-                    decision={payload.decision}
-                    provider={payload.provider}
-                    toCryptoCurrency={payload.toCryptoCurrency as CryptoId}
-                    fromCryptoCurrency={payload.fromCryptoCurrency as CryptoId}
-                />
-            );
-        case 'trading-exchange-dex-terms':
-            return (
-                <TradingTermsModal
-                    onCancel={onCancel}
-                    type="TRADING_SWAP_DEX"
-                    decision={payload.decision}
-                    provider={payload.provider}
-                    toCryptoCurrency={payload.toCryptoCurrency as CryptoId}
-                    fromCryptoCurrency={payload.fromCryptoCurrency as CryptoId}
-                />
-            );
         case 'import-transaction':
             return <ImportTransactionModal {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':

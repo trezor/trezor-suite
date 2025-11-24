@@ -16,21 +16,25 @@ import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/Tra
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingExchangeFormInputs } from '../common/TradingForm/TradingExchangeFormInputs';
 
-const TradingExchangeFormContent = () => {
+const TradingExchangeFormContent = () => (
+    <TradingFormLayout>
+        <TradingExchangeFormInputs />
+    </TradingFormLayout>
+);
+
+const TradingExchangeFormWrapper = () => {
     const tradingExchangeContextValue = useTradingExchangeForm({});
 
     return (
         <TradingFormContext.Provider value={tradingExchangeContextValue}>
             <FormProvider {...tradingExchangeContextValue.methods}>
-                <TradingFormLayout>
-                    <TradingExchangeFormInputs />
-                </TradingFormLayout>
+                <TradingContainer SectionComponent={TradingExchangeFormContent} />
             </FormProvider>
         </TradingFormContext.Provider>
     );
 };
 
-const TradingExchangeFormWrapper = () => {
+export const TradingExchangeForm = () => {
     const type: TradingType = 'exchange';
     const { isDisabled, content } = useMessageSystemTrading(type);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
@@ -41,12 +45,8 @@ const TradingExchangeFormWrapper = () => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingExchangeFormContent />
+                <TradingExchangeFormWrapper />
             )}
         </TradingLayout>
     );
 };
-
-export const TradingExchangeForm = () => (
-    <TradingContainer SectionComponent={TradingExchangeFormWrapper} />
-);

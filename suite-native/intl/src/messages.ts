@@ -2272,7 +2272,11 @@ export const messages = {
             rate: 'Rate',
             selectedRate: 'Selected rate',
             footer: {
-                poweredBy: 'Powered by',
+                termsAndConditions:
+                    "Invity doesn't provide this service. It's governed by {termsAndConditions}.",
+                noProviderTermsAndConditions: "provider's Terms & Conditions",
+                providerTermsAndConditions: "{companyName}'s Terms & Conditions",
+                termsOfUse: "Invity's Terms of Use",
                 learnMore: 'Learn more',
             },
             balance: 'Balance:',
@@ -2362,83 +2366,6 @@ export const messages = {
             step2Hint: 'Select to display account addresses',
             balanceFiat: 'Balance in fiat',
             balanceCrypto: 'Balance in {coinLabel}',
-        },
-        legalSheet: {
-            buy: {
-                title: 'Buy with {companyName}',
-                subheaderSecurity: 'Security first with your Trezor',
-                infoSecurity1:
-                    "You're here to buy cryptocurrencies. If you were directed to this site for any other reason, contact {companyName} support before proceeding.",
-                infoSecurity2:
-                    "You're buying cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
-                infoSecurity3:
-                    "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-                subheaderPartners: 'Verified partners by Invity',
-                infoPartners:
-                    "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
-                subheaderLegal: 'Legal notice',
-                infoLegal1:
-                    "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-                infoLegal2:
-                    'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-            },
-            exchange: {
-                dex: {
-                    title: 'Swap {send} to {receive} with {companyName}',
-                    security: {
-                        title: 'Security first with your Trezor',
-                        line1: "You're here to swap cryptocurrencies with a DEX (decentralized exchange) by using {companyName}'s contract.",
-                        line2: "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
-                        line3: "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-                    },
-                    verifiedPartners: {
-                        title: 'Verified partners by Invity',
-                        line1: "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
-                    },
-                    legal: {
-                        title: 'Legal notice',
-                        line1: "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-                        line2: 'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-                    },
-                },
-                cex: {
-                    title: 'Swap {send} to {receive} with {companyName}',
-                    security: {
-                        title: 'Security first with your Trezor',
-                        line1: "You're here to swap cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
-                        line2: "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
-                        line3: "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-                    },
-                    verifiedPartners: {
-                        title: 'Verified partners by Invity',
-                        line1: "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
-                    },
-                    legal: {
-                        title: 'Legal notice',
-                        line1: "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-                        line2: 'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-                    },
-                },
-                continueButton: "I'm ready to swap",
-            },
-            sell: {
-                title: 'Sell {symbol} with {companyName}',
-                subheaderSecurity: 'Security first with your Trezor',
-                infoSecurity1:
-                    "You're here to sell cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
-                infoSecurity2:
-                    "You're selling cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
-                infoSecurity3:
-                    "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-                subheaderPartners: 'Verified partners by Invity',
-                infoPartners:
-                    "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
-                subheaderLegal: 'Legal notice',
-                infoLegal1:
-                    "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-                infoLegal2:
-                    'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-            },
         },
         validators: {
             min: 'Minimum is {min}',

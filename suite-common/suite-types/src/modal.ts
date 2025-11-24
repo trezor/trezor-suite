@@ -68,32 +68,6 @@ export type UserContextPayload =
           decision: Deferred<{ [key: string]: string }[]>;
       }
     | {
-          type: 'trading-buy-terms';
-          provider?: string;
-          cryptoCurrency?: string;
-          decision: Deferred<boolean>;
-      }
-    | {
-          type: 'trading-sell-terms';
-          provider?: string;
-          cryptoCurrency?: string;
-          decision: Deferred<boolean>;
-      }
-    | {
-          type: 'trading-exchange-terms';
-          provider?: string;
-          fromCryptoCurrency?: string;
-          toCryptoCurrency?: string;
-          decision: Deferred<boolean>;
-      }
-    | {
-          type: 'trading-exchange-dex-terms';
-          provider?: string;
-          fromCryptoCurrency?: string;
-          toCryptoCurrency?: string;
-          decision: Deferred<boolean>;
-      }
-    | {
           type: 'application-log';
       }
     | {

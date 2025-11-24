@@ -1,4 +1,4 @@
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
@@ -35,6 +35,7 @@ import {
     TradingBuildAccountOptionsProps,
     TradingGetAmountLabelsProps,
     TradingGetAmountLabelsReturnProps,
+    TradingGetProvidersInfoProps,
     TradingGetSortedAccountsProps,
 } from 'src/types/trading/trading';
 import { Account } from 'src/types/wallet';
@@ -394,6 +395,17 @@ export const getTradeTypeByRoute = (
     if (routeName?.startsWith('wallet-trading-exchange')) {
         return 'exchange';
     }
+};
+
+interface GetTradeProviderProps {
+    trade: BuyTrade | ExchangeTrade | SellFiatTrade | undefined;
+    providerInfo: TradingGetProvidersInfoProps;
+}
+
+export const getTradeProvider = ({ trade, providerInfo }: GetTradeProviderProps) => {
+    if (!trade || !trade.exchange) return undefined;
+
+    return providerInfo?.[trade.exchange];
 };
 
 interface GetFeeInUnitsProps {

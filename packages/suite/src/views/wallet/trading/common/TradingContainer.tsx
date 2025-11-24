@@ -1,5 +1,7 @@
 import { ElementType } from 'react';
 
+import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -11,9 +13,10 @@ import { TradingLayoutHeader } from 'src/views/wallet/trading/common/TradingLayo
 
 export interface TradingContainerProps {
     SectionComponent: ElementType;
+    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
 }
 
-export const TradingContainer = ({ SectionComponent }: TradingContainerProps) => {
+export const TradingContainer = ({ SectionComponent, provider }: TradingContainerProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
@@ -25,7 +28,7 @@ export const TradingContainer = ({ SectionComponent }: TradingContainerProps) =>
                 </Column>
             )}
             <SectionComponent selectedAccount={selectedAccount} />
-            <TradingFooter />
+            <TradingFooter provider={provider} />
         </TradingLayoutHeader>
     );
 };

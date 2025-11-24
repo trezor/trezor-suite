@@ -2,7 +2,6 @@ import { createAction } from '@reduxjs/toolkit';
 
 import type { Locale } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { TradingType } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -13,8 +12,8 @@ import type { TranslationKey } from 'src/components/suite/Translation';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { AutodetectSettings, DebugModeOptions, EvmSettings } from 'src/reducers/suite/suiteReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TorStatus } from 'src/types/suite';
 import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite';
+import { TorStatus } from 'src/types/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
 
 import { SUITE } from './constants';
@@ -75,7 +74,6 @@ export type SuiteAction =
           type: typeof SUITE.EVM_CLOSE_EXPLANATION_BANNER;
           symbol: keyof EvmSettings['explanationBannerClosed'];
       }
-    | { type: typeof SUITE.DISMISSED_TRADING_TERMS; tradingType: TradingType }
     | { type: typeof SUITE.APP_CHANGED; payload: AppState['router']['app'] }
     | {
           type: typeof SUITE.SET_THEME;
@@ -179,11 +177,6 @@ export const setIsCoinsFilterVisible = (payload: {
 }): SuiteAction => ({
     type: SUITE.SET_IS_COINS_FILTER_VISIBLE,
     payload: { isCoinsFilterVisible: payload.isCoinsFilterVisible },
-});
-
-export const setDismissedTradingTerms = (tradingType: TradingType): SuiteAction => ({
-    type: SUITE.DISMISSED_TRADING_TERMS,
-    tradingType,
 });
 
 /**

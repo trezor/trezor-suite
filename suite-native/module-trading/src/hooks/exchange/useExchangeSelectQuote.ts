@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -29,8 +28,6 @@ import { useExchangeAnalyticReportCallback } from './useExchangeAnalyticReportCa
 import { clearExchangeFormQuoteData } from './useExchangeForm';
 import { getApprovalStatus } from '../../utils/general/approvalStatusUtils';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
-import { useConsent } from '../general/useConsent';
-import { useConsentDenier } from '../general/useConsentDenier';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -51,8 +48,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
     const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
 
-    const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
-    useConsentDenier(candidateQuote?.exchange, resolveConsent);
     const analyticsReportCallback = useExchangeAnalyticReportCallback(candidateQuote);
 
     const canProceed = !isLoading && !!candidateQuote && !!sendAccount;
@@ -66,16 +61,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             });
         }
     };
-
-    const giveConsent = useCallback(() => {
-        resolveConsent(true);
-        analyticsReportCallback('exchange-terms-modal', 'continue');
-    }, [resolveConsent, analyticsReportCallback]);
-
-    const cancelConsent = useCallback(() => {
-        resolveConsent(false);
-        analyticsReportCallback('exchange-terms-modal', 'cancel');
-    }, [resolveConsent, analyticsReportCallback]);
 
     const selectQuote = async () => {
         if (!candidateQuote || isLoading) {
@@ -93,7 +78,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             exchangeThunks.selectQuoteThunk({
                 quote: { ...candidateQuote, swapSlippage },
                 timer,
-                userConsent: waitForConsent,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
 
@@ -126,7 +110,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
                     return navigation.navigate(TradingStackRoutes.TradingExchangeApproval, {});
                 },
-                onCancel: () => {},
             }),
         );
     };
@@ -137,9 +120,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         sendAccount,
         receiveAccount,
         isLoading,
-        isConsentRequested,
-        giveConsent,
-        cancelConsent,
         selectReceiveAccount,
         selectQuote,
     };

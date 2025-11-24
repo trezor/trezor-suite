@@ -11,7 +11,6 @@ import {
     type TradingAmountLimitProps,
     type TradingSellFormProps,
     type TradingSellType,
-    type TradingSellUserConsentProps,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionSell,
@@ -31,7 +30,6 @@ import { selectAccountByKey, selectBaseCurrency, useFormDraft } from '@suite-com
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 
-import { openDeferredModal } from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -47,10 +45,7 @@ import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/u
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import {
-    selectIsDebugModeActive,
-    selectIsTradingTermsDismissed,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,
@@ -102,10 +97,6 @@ export const useTradingSellForm = ({
         pageType,
         isLoading,
     });
-
-    const isTradingTermsDismissed = useSelector(state =>
-        selectIsTradingTermsDismissed(state, type),
-    );
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
@@ -356,27 +347,7 @@ export const useTradingSellForm = ({
             }
         }
 
-        const userConsent = async ({ provider, cryptoCurrency }: TradingSellUserConsentProps) =>
-            isTradingTermsDismissed ||
-            Boolean(
-                await dispatch(
-                    openDeferredModal({
-                        type: 'trading-sell-terms',
-                        provider,
-                        cryptoCurrency,
-                    }),
-                ),
-            );
-
         const nextStep = () => {
-            analytics.report({
-                type: EventType.TradingSell,
-                payload: {
-                    action: 'continue',
-                    step: 'sell-terms-modal',
-                },
-            });
-
             navigateToSellConfirm();
 
             // empty quoteId means the partner requests login first, requestTrade to get login screen
@@ -388,23 +359,11 @@ export const useTradingSellForm = ({
             }
         };
 
-        const onCancel = () => {
-            analytics.report({
-                type: EventType.TradingSell,
-                payload: {
-                    action: 'cancel',
-                    step: 'sell-terms-modal',
-                },
-            });
-        };
-
         await dispatch(
             sellThunks.selectQuoteThunk({
                 quote,
                 timer,
-                userConsent,
                 nextStep,
-                onCancel,
             }),
         );
     };

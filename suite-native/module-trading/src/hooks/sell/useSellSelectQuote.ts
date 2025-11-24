@@ -20,8 +20,6 @@ import { SellFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearSellFormQuoteData } from './useSellForm';
-import { useConsent } from '../general/useConsent';
-import { useConsentDenier } from '../general/useConsentDenier';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -31,10 +29,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 type SellSelectQuoteReturn = {
     canProceed: boolean;
-    isLegalTermsConsentRequested: boolean;
     selectQuote: () => Promise<void>;
-    giveLegalTermsConsent: () => void;
-    cancelLegalTermsConsent: () => void;
 };
 
 export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn => {
@@ -48,22 +43,7 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
 
     const sendAccount = useSelector(selectSellSelectedSendAccount);
 
-    const {
-        isConsentRequested: isLegalTermsConsentRequested,
-        waitForConsent: waitForLegalTermsConsent,
-        resolveConsent: resolveLegalTermsConsent,
-    } = useConsent();
-    useConsentDenier(candidateQuote?.exchange, resolveLegalTermsConsent);
-
     const canProceed = !!candidateQuote && !!sendAccount && !isLoading;
-
-    const giveLegalTermsConsent = useCallback(() => {
-        resolveLegalTermsConsent(true);
-    }, [resolveLegalTermsConsent]);
-
-    const cancelLegalTermsConsent = useCallback(() => {
-        resolveLegalTermsConsent(false);
-    }, [resolveLegalTermsConsent]);
 
     const selectQuote = useCallback(async () => {
         if (!candidateQuote || isLoading) {
@@ -90,27 +70,13 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
             sellThunks.selectQuoteThunk({
                 quote: candidateQuote,
                 timer,
-                userConsent: waitForLegalTermsConsent,
                 nextStep,
-                onCancel: () => {},
             }),
         );
-    }, [
-        candidateQuote,
-        isLoading,
-        sellInfo?.providerInfos,
-        dispatch,
-        timer,
-        waitForLegalTermsConsent,
-        navigation,
-        form,
-    ]);
+    }, [candidateQuote, isLoading, sellInfo?.providerInfos, dispatch, timer, navigation, form]);
 
     return {
         canProceed,
-        isLegalTermsConsentRequested,
-        giveLegalTermsConsent,
-        cancelLegalTermsConsent,
         selectQuote,
     };
 };
