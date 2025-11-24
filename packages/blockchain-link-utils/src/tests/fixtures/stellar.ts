@@ -1721,7 +1721,7 @@ export const fixtures = {
             },
         },
         {
-            description: 'failed transaction',
+            description: 'errored transaction',
             input: {
                 descriptor: 'GB635ARCRZOV7YZ5KC2BRIBFRHOCBJ5E35O76H3VUAMJP7UDTXFHG5C4',
                 tx: {

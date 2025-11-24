@@ -4,7 +4,7 @@ import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel'] }, () => {
+test.describe('Backup errors', { tag: ['@group=device-management', '@specificModel'] }, () => {
     test.use({
         emulatorStartConf: { model: 'T2T1', wipe: true },
         emulatorSetupConf: { needs_backup: true },
@@ -51,7 +51,7 @@ test.describe('Backup fail', { tag: ['@group=device-management', '@specificModel
             );
         });
 
-        await test.step('Check backup failed setting in device settings', async () => {
+        await test.step('Check backup errored setting in device settings', async () => {
             await settingsPage.navigateTo('device');
             await expect(onboardingPage.backup.failedBackupSetting).toBeVisible();
             await expect(onboardingPage.backup.failedBackupSetting).toContainTranslation(

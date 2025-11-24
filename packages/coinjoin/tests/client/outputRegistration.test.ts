@@ -31,7 +31,7 @@ describe('outputRegistration', () => {
         server?.close();
     });
 
-    it('fails on joining credentials (missing data in input)', async () => {
+    it('errors on joining credentials (missing data in input)', async () => {
         const response = await outputRegistration(
             createCoinjoinRound([createInput('account-A', 'A1')], {
                 ...server?.requestOptions,
@@ -45,7 +45,7 @@ describe('outputRegistration', () => {
         expect(response.inputs[0].error?.message).toMatch(/Missing confirmed credentials/);
     });
 
-    it('fails on insufficient amount of available change addresses', async () => {
+    it('errors on insufficient amount of available change addresses', async () => {
         server?.addListener('test-request', ({ url, resolve, reject }) => {
             if (url.endsWith('/output-registration')) {
                 // do not accept **any** output

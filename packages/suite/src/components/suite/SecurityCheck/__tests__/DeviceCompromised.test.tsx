@@ -52,7 +52,7 @@ const deviceCompromisedFixtures: Array<{
     result: TranslationKey;
 }> = [
     {
-        description: 'Failed entropy check',
+        description: 'Errored entropy check',
         device: {
             ...deviceInitialState,
             persistentDeviceData: [
@@ -66,7 +66,7 @@ const deviceCompromisedFixtures: Array<{
         result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
     },
     {
-        description: 'Failed firmware hash check',
+        description: 'Errored firmware hash check',
         device: {
             ...deviceInitialState,
             selectedDevice: {
@@ -126,7 +126,7 @@ const deviceCompromisedFixtures: Array<{
         result: 'TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT',
     },
     {
-        description: 'Failed firmware revision check',
+        description: 'Errored firmware revision check',
         device: {
             ...deviceInitialState,
             selectedDevice: {

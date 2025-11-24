@@ -404,7 +404,7 @@ describe('useAddressValidationAlerts', () => {
     });
 
     describe('Error handling', () => {
-        it('should handle TrezorConnect.getAccountInfo failure gracefully', async () => {
+        it('should handle TrezorConnect.getAccountInfo error gracefully', async () => {
             mockWatch.mockReturnValue(contractAddressLowercase);
 
             getAccountInfoSpy.mockResolvedValue(mockAccountInfoResponses.networkError);

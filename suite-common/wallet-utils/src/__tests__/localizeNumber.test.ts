@@ -13,7 +13,7 @@ describe('localizeNumber', () => {
         expect(localizeNumber(1.234832924423748, 'cs-CZ')).toStrictEqual('1,234832924423748');
     });
 
-    it('fails with wrong values', () => {
+    it('errors with wrong values', () => {
         expect(localizeNumber(NaN)).toStrictEqual('');
         expect(localizeNumber(Infinity)).toStrictEqual('');
         expect(localizeNumber('asadff')).toStrictEqual('');

@@ -105,7 +105,7 @@ describe('Message system actions', () => {
             expect(global.fetch).not.toHaveBeenCalled();
         });
 
-        it('fetches local jws if the remote one fails', async () => {
+        it('fetches local jws if the remote one errors', async () => {
             jest.spyOn(console, 'error').mockImplementation(() => {});
 
             global.fetch = jest.fn().mockImplementationOnce(() => undefined);

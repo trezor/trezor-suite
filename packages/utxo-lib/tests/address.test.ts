@@ -47,7 +47,7 @@ describe('address', () => {
         });
 
         fixtures.invalid.bech32.forEach(f => {
-            it(`decode fails for ${f.address}(${f.exception})`, () => {
+            it(`decode errors for ${f.address}(${f.exception})`, () => {
                 expect(() => {
                     baddress.fromBech32(f.address);
                 }).toThrow(new RegExp(f.exception));
@@ -87,7 +87,7 @@ describe('address', () => {
         // TODO: These fixtures (according to TypeScript) have none of the data used below
         // fixtures.invalid.bech32.forEach((f, i) => {
         // eslint-disable-next-line jest/no-commented-out-tests
-        //     it(`encode fails (${f.exception}`, () => {
+        //     it(`encode errors (${f.exception}`, () => {
         //         expect(() => {
         //             baddress.toBech32(Buffer.from(f.data, 'hex'), f.version, f.prefix);
         //         }).toThrow(new RegExp(f.exception));

@@ -114,7 +114,7 @@ export const stakeFailedFixture = [
         result: 'Min amount 0.1 ETH',
     },
     {
-        description: 'should throw an error when fee estimation is failed',
+        description: 'should throw an error when fee estimation is errored',
         args: {
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             amount: '0.1',
@@ -172,7 +172,7 @@ export const unstakeFixture = [
 
 export const unstakeFailedFixture = [
     {
-        description: 'should throw an error when account info is failed',
+        description: 'should throw an error when account info is errored',
         args: {
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             amount: '0.1', // eth
@@ -220,7 +220,7 @@ export const unstakeFailedFixture = [
         result: 'Failed to get the autocompound balance',
     },
     {
-        description: 'should throw an error when fee estimation is failed',
+        description: 'should throw an error when fee estimation is errored',
         args: {
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             amount: '0.1', // eth
@@ -312,7 +312,7 @@ export const claimFixture = [
 
 export const claimFailedFixture = [
     {
-        description: 'should throw an error when account info is failed',
+        description: 'should throw an error when account info is errored',
         args: {
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             symbol: 'thod',
@@ -327,7 +327,7 @@ export const claimFailedFixture = [
         result: 'Account info error',
     },
     {
-        description: 'should throw an error when fee estimation is failed',
+        description: 'should throw an error when fee estimation is errored',
         args: {
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             symbol: 'eth',

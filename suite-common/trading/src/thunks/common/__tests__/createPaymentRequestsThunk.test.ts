@@ -355,7 +355,7 @@ describe('createPaymentRequestsThunk', () => {
             });
         });
 
-        it('should reject when payment request creation fails', async () => {
+        it('should reject when payment request creation errors', async () => {
             invityAPI.getSignedTrade = () =>
                 Promise.resolve({
                     mockExchangeQuote,
@@ -462,7 +462,7 @@ describe('createPaymentRequestsThunk', () => {
             });
         });
 
-        it('should reject when sell payment request creation fails', async () => {
+        it('should reject when sell payment request creation errors', async () => {
             invityAPI.getSignedTrade = () =>
                 Promise.resolve({
                     ...mockSignedSellTrade,
@@ -569,7 +569,7 @@ describe('createPaymentRequestsThunk', () => {
 
     describe('error handling', () => {
         it('should handle invityAPI.getSignedTrade rejection', async () => {
-            invityAPI.getSignedTrade = () => Promise.reject('API request failed');
+            invityAPI.getSignedTrade = () => Promise.reject('API request errored');
 
             const mockExchangeQuote = {
                 orderId: 'exchange-order-123',

@@ -52,7 +52,7 @@ describe('readWithExpectedHeaders', () => {
         await expect(() => resultPromise).rejects.toThrow('Aborted by timeout');
     });
 
-    it('api.read failed', async () => {
+    it('api.read error', async () => {
         const read = readWithExpectedHeaders(() =>
             Promise.resolve({ success: false, error: 'unexpected error' }),
         );

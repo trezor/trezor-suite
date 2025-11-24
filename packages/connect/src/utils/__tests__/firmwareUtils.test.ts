@@ -5,7 +5,7 @@ import { findBestCompatibleRelease, isStrictFeatures } from '../firmwareUtils';
 
 describe('firmwareUtils', () => {
     describe('isStrictFeatures()', () => {
-        it('fail on not matching pattern', () => {
+        it('errors on not matching pattern', () => {
             expect(
                 // @ts-expect-error
                 isStrictFeatures({ foo: 'bar' }),

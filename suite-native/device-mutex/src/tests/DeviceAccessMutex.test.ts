@@ -86,7 +86,7 @@ describe('RequestDeviceAccess', () => {
         expect(deviceAccessMutex.isLocked).toBe(false);
     });
 
-    test('mutex unlocked on deviceCallback failure', async () => {
+    test('mutex unlocked on deviceCallback error', async () => {
         const callbackError = 'Callback failed';
         const mockCallback = jest.fn().mockRejectedValue(callbackError);
 

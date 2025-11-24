@@ -19,7 +19,7 @@ describe('outputRegistration', () => {
         if (server) server.close();
     });
 
-    it('outputDecomposition fails. missing data in input', async () => {
+    it('outputDecomposition errors. missing data in input', async () => {
         await expect(
             outputDecomposition(
                 createCoinjoinRound([createInput('account-A', 'A1')], {

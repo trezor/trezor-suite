@@ -130,7 +130,7 @@ export const composeTxFixture: Fixture[] = [
         },
     },
     {
-        description: 'fails on little funds',
+        description: 'errors on little funds',
         request: {
             changeAddress: { address: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT' },
             dustThreshold: 546,

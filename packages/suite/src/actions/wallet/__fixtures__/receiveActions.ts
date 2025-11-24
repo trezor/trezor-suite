@@ -119,7 +119,7 @@ export default [
         },
     },
     {
-        description: 'Show address failed, @trezor/connect method not specified',
+        description: 'Show address errored, @trezor/connect method not specified',
         initialState: {
             wallet: {
                 selectedAccount: {

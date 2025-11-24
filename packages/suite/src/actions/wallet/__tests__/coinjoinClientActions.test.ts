@@ -247,7 +247,7 @@ describe('coinjoinClientActions', () => {
         expect(cli).toBe(undefined);
     });
 
-    it('initCoinjoinService and fail to enable', async () => {
+    it('initCoinjoinService and errors to enable', async () => {
         const store = initStore();
         const spy = jest.spyOn(CoinjoinService, 'createInstance').mockImplementationOnce(
             () =>

@@ -113,7 +113,11 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
         },
     );
 
-    test('Fail to confirm passphrase and retry', async ({ page, dashboardPage, devicePrompt }) => {
+    test('Errors to confirm passphrase and retry', async ({
+        page,
+        dashboardPage,
+        devicePrompt,
+    }) => {
         await test.step('Initiate adding passphrase wallet', async () => {
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet('abc', { skipDiscovery: true });

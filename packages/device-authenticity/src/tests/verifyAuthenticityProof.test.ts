@@ -112,7 +112,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(T3W1rootPubKeyTropic);
     });
 
-    it('verify failed for optiga (debug keys not allowed)', async () => {
+    it('verify errored for optiga (debug keys not allowed)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultOptigaProps,
             config: CONFIG_WITH_DEBUG_KEYS,
@@ -123,7 +123,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(undefined);
     });
 
-    it('verify failed for tropic (debug keys not allowed)', async () => {
+    it('verify errored for tropic (debug keys not allowed)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultTropicProps,
             config: CONFIG_WITH_DEBUG_KEYS,
@@ -134,7 +134,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(undefined);
     });
 
-    it('verify failed for optiga (signature mismatch)', async () => {
+    it('verify errored for optiga (signature mismatch)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultOptigaProps,
             signature:
@@ -148,7 +148,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(T2B1rootPubKeyOptiga);
     });
 
-    it('verify failed for tropic (signature mismatch)', async () => {
+    it('verify errored for tropic (signature mismatch)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultTropicProps,
             signature:
@@ -162,7 +162,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(T3W1rootPubKeyTropic);
     });
 
-    it('verify failed for optiga (missing rootPubKey)', async () => {
+    it('verify errored for optiga (missing rootPubKey)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultOptigaProps,
             config: {
@@ -181,7 +181,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(undefined);
     });
 
-    it('verify failed for tropic (missing rootPubKey)', async () => {
+    it('verify errored for tropic (missing rootPubKey)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultTropicProps,
             config: {
@@ -197,7 +197,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(undefined);
     });
 
-    it('verify failed for tropic (no rootPubKeysTropic defined)', async () => {
+    it('verify errored for tropic (no rootPubKeysTropic defined)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultTropicProps,
             config: { ...CONFIG, T3W1: { rootPubKeysOptiga: [] } },
@@ -207,7 +207,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(undefined);
     });
 
-    it('verify failed for optiga (device model mismatch)', async () => {
+    it('verify errored for optiga (device model mismatch)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultOptigaProps,
             certificates: [
@@ -223,7 +223,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
 
     // device model mismatch case is not relevant for tropic (supported only by T3W1)
 
-    it('verify failed for optiga (caPubKey on blacklist)', async () => {
+    it('verify errored for optiga (caPubKey on blacklist)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultOptigaProps,
             blacklistConfig: {
@@ -239,7 +239,7 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
         expect(verify.rootPubKey).toBe(T2B1rootPubKeyOptiga);
     });
 
-    it('verify failed for tropic (caPubKey on blacklist)', async () => {
+    it('verify errored for tropic (caPubKey on blacklist)', async () => {
         const verify = await verifyAuthenticityProof({
             ...defaultTropicProps,
             blacklistConfig: {

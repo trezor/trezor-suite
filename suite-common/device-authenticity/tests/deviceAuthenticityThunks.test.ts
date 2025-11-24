@@ -111,7 +111,7 @@ const fixtures: Fixture[] = [
         expectedResult: undefined,
     },
     {
-        description: 'Fail - root pub key not found',
+        description: 'Error - root pub key not found',
         device: deviceWithLockedBootloader,
         mockedConnectResponse: verifyFailureResponseNotFound,
         expectedFulfilled: false,
@@ -119,7 +119,7 @@ const fixtures: Fixture[] = [
         expectedResult: { valid: false, ...verifyFailureResponseNotFound.payload },
     },
     {
-        description: 'Fail - caPubKey is blacklisted',
+        description: 'Error - caPubKey is blacklisted',
         device: deviceWithLockedBootloader,
         mockedConnectResponse: verifyFailureResponseBlacklisted,
         expectedFulfilled: false,
@@ -127,7 +127,7 @@ const fixtures: Fixture[] = [
         expectedResult: { valid: false, ...verifyFailureResponseBlacklisted.payload },
     },
     {
-        description: 'Fail - bootloader unlocked',
+        description: 'Error - bootloader unlocked',
         device: getDevice(false),
         mockedConnectResponse: connectCallFailResponse,
         expectedFulfilled: false,

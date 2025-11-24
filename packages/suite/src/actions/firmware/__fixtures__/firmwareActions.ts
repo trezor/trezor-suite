@@ -153,7 +153,7 @@ export const actions = [
         },
     },
     {
-        description: 'Fails for missing device',
+        description: 'Errors for missing device',
         action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
@@ -166,7 +166,7 @@ export const actions = [
         },
     },
     {
-        description: 'FirmwareUpdate call to connect fails',
+        description: 'FirmwareUpdate call to connect errors',
         action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
@@ -203,7 +203,7 @@ export const actions = [
         },
     },
     {
-        description: 'FirmwareUpdate call to connect fails due to cancelling on device',
+        description: 'FirmwareUpdate call to connect errors due to cancelling on device',
         action: () => firmwareUpdate({ firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {

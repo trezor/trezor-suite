@@ -352,7 +352,7 @@ describe('transactionSigning', () => {
         expect(response.isSignedSuccessfully()).toBe(true);
     });
 
-    it('failed to send signatures', async () => {
+    it('errors to send signatures', async () => {
         server?.addListener('test-request', ({ url, resolve, reject }) => {
             if (url.endsWith('/transaction-signature')) {
                 reject(500, { ErrorCode: 'WrongPhase' });

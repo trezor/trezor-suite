@@ -63,7 +63,7 @@ export default {
             },
         },
         {
-            description: 'Testnet (multisig): 2 of 3 (fail when ordered gives wrong key))',
+            description: 'Testnet (multisig): 2 of 3 (errors when ordered gives wrong key))',
             params: {
                 coin: 'testnet',
                 inputs: [

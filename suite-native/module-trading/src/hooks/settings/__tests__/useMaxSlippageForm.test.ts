@@ -21,7 +21,7 @@ describe('useMaxSlippageForm', () => {
     });
 
     it.each<string>(['-1', '0', '0.009', '50.1', '55', '', 'invalid_number'])(
-        'should fail validation for value %s',
+        'should error validation for value %s',
         async slippage => {
             const store = await initStore();
             const { result } = await renderUseMaxSlippageForm(store);
