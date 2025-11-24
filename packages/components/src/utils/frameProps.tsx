@@ -70,7 +70,7 @@ const objectFits = ['none', 'fill', 'contain', 'cover', 'scale-down'] as const;
 export type ObjectFit = (typeof objectFits)[number];
 
 const displays = ['block', 'inline', 'inline-block', 'flex', 'inline-flex'] as const;
-export type Display = (typeof display)[number];
+export type Display = (typeof displays)[number];
 
 export type FrameProps = {
     margin?: Margin;
