@@ -142,7 +142,7 @@ describe('getNonce thunk', () => {
             });
         });
 
-        it('should reject when TrezorConnect.getNonce fails', async () => {
+        it('should reject when TrezorConnect.getNonce errors', async () => {
             (selectSelectedDevice as jest.Mock).mockReturnValue(mockDevice);
             (TrezorConnect.getNonce as jest.Mock).mockResolvedValue({
                 success: false,

@@ -61,7 +61,7 @@ export default [
         },
     },
     {
-        description: 'Show public key failed, @trezor/connect method not specified',
+        description: 'Show public key errored, @trezor/connect method not specified',
         initialState: {
             networkType: 'ethereum',
         },

@@ -295,7 +295,7 @@ describe('Discovery Reducer', () => {
         });
     });
 
-    it('should handle updateDiscovery action with failed status', () => {
+    it('should handle updateDiscovery action with errored status', () => {
         // Initialize store with existing discovery
         const store = initStore({
             preloadedState: {

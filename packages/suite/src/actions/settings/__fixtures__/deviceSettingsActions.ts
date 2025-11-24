@@ -231,7 +231,7 @@ const fixture: Fixture[] = [
         },
     },
     {
-        description: 'Wipe device failed',
+        description: 'Wipe device errored',
         action: () => wipeDeviceThunk(),
         mocks: { success: false, payload: { error: 'fuuu' } },
         result: {
@@ -366,7 +366,7 @@ const fixture: Fixture[] = [
         },
     },
     {
-        description: 'Reset device - Entropy check fail - show Device compromised',
+        description: 'Reset device - Entropy check errored - show Device compromised',
         action: () => deviceSettingsActions.resetDevice(),
         mocks: {
             success: false,

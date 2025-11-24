@@ -126,7 +126,7 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     describe('Error Alert Functionality', () => {
-        it('should show error alert when trade confirmation fails', async () => {
+        it('should show error alert when trade confirmation errors', async () => {
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
             // Mock confirmTrade to throw an error
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));

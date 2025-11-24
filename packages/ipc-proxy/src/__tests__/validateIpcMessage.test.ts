@@ -54,7 +54,7 @@ describe(validateIpcMessage.name, () => {
         });
     });
 
-    it('fails when not in PROD environment and is on (localhost.8000)', () => {
+    it('errors when not in PROD environment and is on (localhost.8000)', () => {
         const original = process.env.NODE_ENV;
         process.env.NODE_ENV = 'production';
 
@@ -70,7 +70,7 @@ describe(validateIpcMessage.name, () => {
         process.env.NODE_ENV = original;
     });
 
-    it('fails for malicious URL', () => {
+    it('errors for malicious URL', () => {
         const subject = () => {
             validateIpcMessage({
                 ipcEvent: createSenderFrame('https://www.irs.gov/'),
@@ -81,7 +81,7 @@ describe(validateIpcMessage.name, () => {
         expect(subject).toThrow('Hostname www.irs.gov found, must be empty');
     });
 
-    it('fails for invalid senderFrame', () => {
+    it('errors for invalid senderFrame', () => {
         const subject = () => {
             validateIpcMessage({
                 ipcEvent: {} as ElectronIpcMainInvokeEvent,
@@ -92,7 +92,7 @@ describe(validateIpcMessage.name, () => {
         expect(subject).toThrow('Invalid ipcEvent: {}');
     });
 
-    it('fails when senderFrame has been destroyed', () => {
+    it('errors when senderFrame has been destroyed', () => {
         const subject = () => {
             validateIpcMessage({
                 ipcEvent: createSenderFrame('http://localhost:8000/', true),
@@ -103,7 +103,7 @@ describe(validateIpcMessage.name, () => {
         expect(subject).toThrow('ipcEvent.senderFrame is destroyed');
     });
 
-    it('fails when in production, you get different protocol to file:', () => {
+    it('errors when in production, you get different protocol to file:', () => {
         const original = process.env.NODE_ENV;
         process.env.NODE_ENV = 'production';
 

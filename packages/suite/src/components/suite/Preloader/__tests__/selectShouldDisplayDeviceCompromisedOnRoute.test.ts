@@ -46,7 +46,7 @@ const fixtures: Fixture[] = [
         result: false,
     },
     {
-        description: 'returns false if check fails, but on a skipped route',
+        description: 'returns false if check errors, but on a skipped route',
         state: {
             ...initialAppState,
             router: {
@@ -70,7 +70,7 @@ const fixtures: Fixture[] = [
         result: false,
     },
     {
-        description: 'returns true if firmware check failed and not dismissed',
+        description: 'returns true if firmware check errored and not dismissed',
         state: {
             ...initialAppState,
             messageSystem: messageSystemInitialState,
@@ -85,7 +85,7 @@ const fixtures: Fixture[] = [
         result: true,
     },
     {
-        description: 'returns false if firmware check failed and dismissed',
+        description: 'returns false if firmware check errored and dismissed',
         state: {
             ...initialAppState,
             messageSystem: messageSystemInitialState,
@@ -101,7 +101,7 @@ const fixtures: Fixture[] = [
         result: false,
     },
     {
-        description: 'returns false if a firmware check failed but is disabled',
+        description: 'returns false if a firmware check errored but is disabled',
         state: {
             ...initialAppState,
             messageSystem: messageSystemInitialState,
@@ -129,7 +129,7 @@ const fixtures: Fixture[] = [
         result: false,
     },
     {
-        description: 'returns true if entropy check failed',
+        description: 'returns true if entropy check errored',
         state: {
             ...initialAppState,
             messageSystem: messageSystemInitialState,
@@ -150,7 +150,7 @@ const fixtures: Fixture[] = [
         result: true,
     },
     {
-        description: 'returns false if entropy check failed but is disabled',
+        description: 'returns false if entropy check errored but is disabled',
         state: {
             ...initialAppState,
             messageSystem: messageSystemInitialState,

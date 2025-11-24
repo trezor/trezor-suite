@@ -50,14 +50,14 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: true },
         },
         {
-            it: 'fails when firmware revision is NOT same as in static file',
+            it: 'errors when firmware revision is NOT same as in static file',
             params: createDeviceParams({
                 expectedRevision: 'cde8f31ec2ddcb7d35e36edbcf8a71dda983a9ea',
             }),
             expected: { success: false, error: 'revision-mismatch' },
         },
         {
-            it: 'fails when firmware revision is not provided',
+            it: 'errors when firmware revision is not provided',
             params: createDeviceParams({
                 deviceRevision: undefined,
                 expectedRevision: 'cde8f31ec2ddcb7d35e36edbcf8a71dda983a9ea',
@@ -73,7 +73,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: true },
         },
         {
-            it: 'fails when firmware version is not found locally, found in the online release, but does NOT match',
+            it: 'errors when firmware version is not found locally, found in the online release, but does NOT match',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
             params: createDeviceParams({
                 deviceRevision: '1234567890987654321',
@@ -82,7 +82,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: false, error: 'revision-mismatch' },
         },
         {
-            it: 'fails when firmware version is not found locally, and also not in the online release',
+            it: 'errors when firmware version is not found locally, and also not in the online release',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
             params: createDeviceParams({
                 deviceRevision: '1234567890987654321',
@@ -92,7 +92,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: false, error: 'firmware-version-unknown' },
         },
         {
-            it: 'fails with a specific error message when the check cannot be performed because the revision is not found locally and the user is offline',
+            it: 'errors with a specific error message when the check cannot be performed because the revision is not found locally and the user is offline',
             httpRequestMock: () => {
                 throw new FetchError('You are offline!', 'network', {
                     code: 'ENOTFOUND',
@@ -106,7 +106,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: false, error: 'cannot-perform-check-offline' },
         },
         {
-            it: 'fails with a generic error message when there is an error when reading the online version of releases.json',
+            it: 'errors with a generic error message when there is an error when reading the online version of releases.json',
             httpRequestMock: () => {
                 throw new Error('There is an unexpected error!');
             },

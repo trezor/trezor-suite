@@ -470,7 +470,7 @@ export const onConnect = [
         blockchainSubscribe: 1,
     },
     {
-        description: 'successful, blockchainEstimateFee failed',
+        description: 'successful, blockchainEstimateFee errored',
         initialState: {
             accounts: [{ symbol: 'btc', history: {} }],
         },
@@ -485,7 +485,7 @@ export const onConnect = [
         blockchainSubscribe: 1,
     },
     {
-        description: 'successful, ETH blockchainEstimateFee failed',
+        description: 'successful, ETH blockchainEstimateFee errored',
         initialState: {
             accounts: [{ symbol: 'eth', history: {}, deviceState: 'abc' }],
         },

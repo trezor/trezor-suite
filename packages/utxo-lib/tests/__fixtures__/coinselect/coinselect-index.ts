@@ -497,7 +497,7 @@ export const coinselectIndexFixture = [
         dustThreshold: 546,
     },
     {
-        description: '1 output, fails, skips (and finishes on) detrimental input',
+        description: '1 output, errors, skips (and finishes on) detrimental input',
         feeRate: 55,
         inputs: [
             {

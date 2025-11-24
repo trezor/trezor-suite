@@ -83,7 +83,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
         );
 
         test(
-            `Enable ${coin.toUpperCase()} asset & connect to backend server ${customBackendUrlWrong} failes`,
+            `Enable ${coin.toUpperCase()} asset & connect to backend server ${customBackendUrlWrong} errors`,
             {
                 annotation: createTestAnnotation({
                     testCase: `Verifies that settings up a custom ${backendType} server for ${coin.toUpperCase()} with wrong url ${customBackendUrlWrong} will fail.`,
@@ -115,7 +115,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
                         page.discoveryShouldFinish(),
                     ]);
                 });
-                await test.step(`Open ${coin.toUpperCase()} account & verify it fails to load`, async () => {
+                await test.step(`Open ${coin.toUpperCase()} account & verify it errors to load`, async () => {
                     await walletPage.accountButton({ symbol: coin }).click();
                     await expect(walletPage.accountNotLoaded).toContainTranslation(
                         'TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR',

@@ -35,7 +35,7 @@ describe('promiseAllSequence', () => {
         expect(args2).toEqual([[3], [2], [1]]); // but actionInnerProcess was called in different order
     });
 
-    it('one failed', async () => {
+    it('one errored', async () => {
         const action = (id: number, time: number) =>
             new Promise((resolve, reject) =>
                 setTimeout(() => {

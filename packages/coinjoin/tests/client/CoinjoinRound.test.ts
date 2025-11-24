@@ -100,7 +100,7 @@ describe(`CoinjoinRound`, () => {
         );
     });
 
-    it('catch failed Round', async () => {
+    it('catch errored Round', async () => {
         // create CoinjoinRound in phase 2 (OutputRegistration)
         const round = createCoinjoinRound(
             [
@@ -135,7 +135,7 @@ describe(`CoinjoinRound`, () => {
         );
     });
 
-    it('end Round if any input-registration fails and there is only one account', async () => {
+    it('end Round if any input-registration errors and there is only one account', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.endsWith('/input-registration') && data.Input === 'A2') {
                 // fail on second input
@@ -159,7 +159,7 @@ describe(`CoinjoinRound`, () => {
         expect(round.inputs.length).toBe(0); // all inputs are removed
     });
 
-    it('exclude all account inputs from the Round if any input-registration fails', async () => {
+    it('exclude all account inputs from the Round if any input-registration errors', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.endsWith('/input-registration') && data.Input === 'B2') {
                 // fail on second input of account-B

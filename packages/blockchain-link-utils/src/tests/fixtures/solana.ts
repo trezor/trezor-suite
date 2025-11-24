@@ -417,7 +417,7 @@ export const fixtures = {
     ],
     getTxType: [
         {
-            description: 'should return "failed" if the transaction has an error',
+            description: 'should return error if the transaction has an error',
             input: {
                 transaction: {
                     meta: {

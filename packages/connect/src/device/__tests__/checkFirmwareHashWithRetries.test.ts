@@ -46,7 +46,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
         });
     });
 
-    it('performs check with failure from initial state', async () => {
+    it('performs check with error from initial state', async () => {
         jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() =>
             Promise.resolve({ success: false, error: 'hash-mismatch' }),
         );
@@ -76,7 +76,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
         expect(device.setAuthenticityChecks).not.toHaveBeenCalled();
     });
 
-    it('does not retry the check after decisive failure', async () => {
+    it('does not retry the check after decisive error', async () => {
         const device = getMockedDevice();
         device.getAuthenticityChecks = jest.fn(() => ({
             firmwareRevision: null,
@@ -111,7 +111,7 @@ describe(checkFirmwareHashWithRetries.name, () => {
         });
     });
 
-    it('does a single retry with failure for a retriable error', async () => {
+    it('does a single retry with error for a retriable error', async () => {
         jest.spyOn(checkFirmwareHashModule, 'checkFirmwareHash').mockImplementation(() =>
             Promise.resolve({
                 success: false,

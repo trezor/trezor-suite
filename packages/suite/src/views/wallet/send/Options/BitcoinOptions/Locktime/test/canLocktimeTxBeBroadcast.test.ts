@@ -36,7 +36,7 @@ const data: Array<{
         result: true,
     },
     {
-        it: 'fails for locktime more then current hash',
+        it: 'errors for locktime more then current hash',
         input: {
             locktimeBlockHeight: 151,
             locktimeDatetime: undefined,
@@ -54,7 +54,7 @@ const data: Array<{
         result: true,
     },
     {
-        it: 'fails for datetime in the future',
+        it: 'errors for datetime in the future',
         input: {
             locktimeBlockHeight: undefined,
             locktimeDatetime: 2147483647,

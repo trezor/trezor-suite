@@ -60,7 +60,7 @@ describe('thp', () => {
             expect(result).toMatchObject({ success: false, message: 'Aborted by signal in API' });
         });
 
-        it('api write failed', async () => {
+        it('api write error', async () => {
             const readResult = Buffer.from('200c22000471913136', 'hex');
             thpState.setChannel(readResult.subarray(1, 3));
             thpState.setExpectedResponses([0x20]);
@@ -192,7 +192,7 @@ describe('thp', () => {
             expect(apiWrite).toHaveBeenCalledTimes(10);
         });
 
-        it('api read failed', async () => {
+        it('api read error', async () => {
             jest.useFakeTimers();
 
             const apiRead = jest.fn(
@@ -222,7 +222,7 @@ describe('thp', () => {
             expect(apiRead).toHaveBeenCalledTimes(1);
         });
 
-        it('api write failed', async () => {
+        it('api write error', async () => {
             const apiWrite = jest.fn(
                 () =>
                     new Promise<any>(resolve => {

@@ -19,7 +19,7 @@ describe('migration 25.10.0', () => {
         await deleteDB(DB_NAME);
     });
 
-    test('migrates devicesWithFailedEntropyCheck to persistentDeviceData', async () => {
+    test('migrates devices with errored entropy check to persistentDeviceData', async () => {
         const db = await openDB(DB_NAME, INITIAL_VERSION, {
             upgrade(db) {
                 db.createObjectStore('security');

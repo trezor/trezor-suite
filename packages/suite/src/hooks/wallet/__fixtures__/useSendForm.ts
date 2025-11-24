@@ -1453,7 +1453,7 @@ export const signAndPush = [
         },
     },
     {
-        description: 'ETH failed',
+        description: 'ETH errored',
         store: {
             send: {
                 drafts: getDraft(),
@@ -1508,7 +1508,7 @@ export const signAndPush = [
         },
     },
     {
-        description: 'XRP failed',
+        description: 'XRP errored',
         store: {
             send: {
                 drafts: getDraft(),

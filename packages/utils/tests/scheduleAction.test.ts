@@ -63,7 +63,7 @@ describe('scheduleAction', () => {
             aborter.abort();
         }));
 
-    it('deadline on always failing action', async () => {
+    it('deadline on always error action', async () => {
         const spy = jest.fn(() => {
             throw new Error('Runtime error');
         });
@@ -153,7 +153,7 @@ describe('scheduleAction', () => {
         expect(checkListeners()).toBeUndefined();
     });
 
-    it('attempt failure handler', async () => {
+    it('attempt error handler', async () => {
         const spy = jest.fn(
             (signal?: AbortSignal) =>
                 new Promise<any>((_, reject) => {

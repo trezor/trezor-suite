@@ -240,7 +240,7 @@ export const stopCoinjoinSession = [
 
 export const restoreCoinjoinAccounts = [
     {
-        description: 'four accounts, two networks, one success, one failed',
+        description: 'four accounts, two networks, one success, one errored',
         state: {
             accounts: [
                 { key: 'account-1', symbol: 'regtest' }, // regtest is not supported in tests

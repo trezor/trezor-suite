@@ -183,7 +183,7 @@ describe('getRefundAddress thunk', () => {
             });
         });
 
-        it('should reject when confirmAddressOnDeviceThunk fails', async () => {
+        it('should reject when confirmAddressOnDeviceThunk errors', async () => {
             (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
                 createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
                     success: false,

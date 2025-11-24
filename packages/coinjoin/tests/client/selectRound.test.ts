@@ -62,7 +62,7 @@ describe('selectRound', () => {
         expect(result).toEqual([]);
     });
 
-    it('CoinjoinRound creation failed on status Round without RoundCreated event', async () => {
+    it('CoinjoinRound creation errored on status Round without RoundCreated event', async () => {
         const result = await getRoundCandidates({
             roundGenerator,
             prison,
