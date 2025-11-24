@@ -1,15 +1,6 @@
 import React from 'react';
-import {
-    PixelRatio,
-    Platform,
-    Text as RNText,
-    TextProps as RNTextProps,
-    TextStyle,
-} from 'react-native';
+import { PixelRatio, Text as RNText, TextProps as RNTextProps, TextStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
-
-// @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
-import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 
 import {
     NativeStyleObject,
@@ -21,21 +12,6 @@ import { Color, NativeTypographyStyle } from '@trezor/theme';
 
 import { TestProps } from './types';
 
-// NativeText improves the performance of the text rendering, but unfortunately it does not support iOS Accessibility font enlarging.
-// Since iOS devices have enough computational power and the text optimization is not crucial, the NativeText is used only for Android.
-const DefaultTextComponent: typeof RNText = Platform.select({
-    android: NativeText,
-    ios: RNText,
-});
-
-// NativeText does not support all the props that are supported by the standard `react-native` Text.
-type UnsupportedNativeTextProps =
-    | 'pressRetentionOffset'
-    | 'onLongPress'
-    | 'onPress'
-    | 'onPressIn'
-    | 'onPressOut';
-
 export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
     variant?: NativeTypographyStyle;
     color?: Color;
@@ -43,7 +19,7 @@ export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProp
     style?: NativeStyleObject;
 }
 
-export type TextProps = Omit<PressableTextProps, UnsupportedNativeTextProps>;
+export type TextProps = PressableTextProps;
 
 type TextStyleProps = {
     variant: NativeTypographyStyle;
@@ -106,7 +82,7 @@ export const Text = React.forwardRef<RNText, TextProps>(
         const maxFontSizeMultiplier = getAccessibilityFontScale(variant);
 
         return (
-            <DefaultTextComponent
+            <RNText
                 style={mergeNativeStyleObjects([
                     applyStyle(textStyle, { variant, color, textAlign }),
                     style,
@@ -116,7 +92,7 @@ export const Text = React.forwardRef<RNText, TextProps>(
                 ref={ref}
             >
                 {children}
-            </DefaultTextComponent>
+            </RNText>
         );
     },
 );
