@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { Box, Card, Divider, Image, Link, Modal, Paragraph, Row } from '@trezor/components';
+import { Card, Divider, Image, Link, Modal, Paragraph, Row } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 
@@ -11,6 +11,7 @@ import { TradingProvidedByInvity } from 'src/views/wallet/trading/common/Trading
 
 import { TrezorLink } from '../../../../../components/suite';
 import { useExternalLink } from '../../../../../hooks/suite';
+import { ContentFlex } from '../../../../../support/suite/ContentFlex';
 
 export const TradingFooter = () => {
     const theme = useTheme();
@@ -27,38 +28,28 @@ export const TradingFooter = () => {
 
     return (
         <>
-            <Box margin={{ top: 40 }}>
-                <Divider />
-                <Box margin={{ top: 20 }}>
-                    <Row justifyContent="center">
-                        <TradingProvidedByInvity />
-                        <Row
-                            alignItems="center"
-                            justifyContent="flex-end"
-                            flex="1"
-                            hasDivider
-                            gap={8}
-                        >
-                            <TrezorLink
-                                href={DATA_TOS_INVITY_URL}
-                                icon="arrowUpRight"
-                                color={theme.textSubdued}
-                                typographyStyle="label"
-                            >
-                                <Translation id="TR_TERMS_OF_USE_INVITY" />
-                            </TrezorLink>
-                            <Link
-                                ref={toggleRef}
-                                onClick={() => setIsInfoModalOpened(true)}
-                                color={theme.textSubdued}
-                                typographyStyle="label"
-                            >
-                                <Translation id="TR_BUY_LEARN_MORE" />
-                            </Link>
-                        </Row>
-                    </Row>
-                </Box>
-            </Box>
+            <Divider margin={{ top: 40, bottom: 20 }} />
+            <ContentFlex gap={16} justifyContent="space-between" alignItems="center">
+                <TradingProvidedByInvity />
+                <Row alignItems="center" justifyContent="flex-end" flex="1" gap={16}>
+                    <TrezorLink
+                        href={DATA_TOS_INVITY_URL}
+                        icon="arrowUpRight"
+                        color={theme.textSubdued}
+                        typographyStyle="label"
+                    >
+                        <Translation id="TR_TERMS_OF_USE_INVITY" />
+                    </TrezorLink>
+                    <Link
+                        ref={toggleRef}
+                        onClick={() => setIsInfoModalOpened(true)}
+                        color={theme.textSubdued}
+                        typographyStyle="label"
+                    >
+                        <Translation id="TR_BUY_LEARN_MORE" />
+                    </Link>
+                </Row>
+            </ContentFlex>
             {isInfoModalOpened && (
                 <Modal
                     variant="info"

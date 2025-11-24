@@ -6,7 +6,7 @@ import { selectAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { Paragraph, Row, Text } from '@trezor/components';
+import { Column, Paragraph, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
@@ -20,7 +20,6 @@ import {
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
-import { Column } from '../../../../../../../views/wallet/staking/components/CardanoPrimitives';
 import { BasicName, NoDragContainer } from '../BasicName';
 
 const LOGO_SIZE = 36;
