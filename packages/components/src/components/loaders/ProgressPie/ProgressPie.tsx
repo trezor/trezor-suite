@@ -41,7 +41,7 @@ const Container = styled.div<
     ${withFrameProps}
 `;
 
-type ProgressPieProps = TransientProps<AllowedFrameProps> & {
+export type ProgressPieProps = AllowedFrameProps & {
     valueInPercents: number; // 0-100
     size?: number;
     color?: string;
