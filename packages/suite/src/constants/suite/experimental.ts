@@ -1,5 +1,4 @@
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { labelingActions } from '@suite-common/local-first-storage';
 import { Route } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';
@@ -18,8 +17,8 @@ export type ExperimentalFeature =
     | 'tor-external'
     | 'nft-section'
     | 'global-send-receive'
-    | 'experimental-networks'
-    | 'suite-sync';
+    | 'experimental-networks';
+// | 'suite-sync';
 
 export type ExperimentalFeatureConfig = {
     title: ExtendedMessageDescriptor;
@@ -76,7 +75,8 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             },
         },
     },
-    'suite-sync': {
+    // temporarily disabled, moved to debug
+    /*     'suite-sync': {
         title: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE' },
         description: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION' },
         onToggle: ({ newValue, dispatch }) => {
@@ -86,5 +86,5 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 }),
             );
         },
-    },
+    }, */
 };
