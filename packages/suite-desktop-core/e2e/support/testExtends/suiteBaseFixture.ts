@@ -149,6 +149,10 @@ const trezorEnvSetup = async (
     await TrezorUserEnvLinkProxy.stopBridge();
     await TrezorUserEnvLinkProxy.stopEmu();
     await TrezorUserEnvLinkProxy.connect();
+
+    const defaultEmulatorStartConf = getDefaultEmuStartConf();
+    emulatorStartConf.version = emulatorStartConf.version || defaultEmulatorStartConf.version;
+
     if (startEmulator) {
         await TrezorUserEnvLinkProxy.startEmu(emulatorStartConf);
     }
