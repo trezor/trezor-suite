@@ -26,7 +26,7 @@ import { UseTradingTransactionReturnProps } from '../general/useTradingTransacti
 
 type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<
     TradingStackParamList,
-    TradingStackRoutes.TradingOutputsReview,
+    TradingStackRoutes.TradingSellOutputsReview | TradingStackRoutes.TradingExchangeOutputsReview,
     AppTabsParamList
 >;
 

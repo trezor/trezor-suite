@@ -28,21 +28,18 @@ const spacerStyle = prepareNativeStyle(_ => ({
     height: 150,
 }));
 
-type TradingOutputsBaseReviewScreenProps = {
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
-    orderId: string;
-    tradingType: TradingType;
-};
-
-type TradingOutputsReviewScreenParams = UseTradingOutputsReviewScreenControlsProps &
-    TradingOutputsBaseReviewScreenProps &
+type TradingOutputsBaseReviewScreenParams = UseTradingOutputsReviewScreenControlsProps &
     Pick<
         UseTradingTransactionReturnProps,
         'isTransactionSendConsentRequested' | 'resolveTransactionSendConsent'
-    >;
+    > & {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+        tradingType: TradingType;
+    };
 
-export const TradingOutputsBaseReviewScreen = ({
+const TradingOutputsBaseReviewScreen = ({
     accountKey,
     tokenContract,
     orderId,
@@ -50,7 +47,7 @@ export const TradingOutputsBaseReviewScreen = ({
     signAndSendTransaction,
     isTransactionSendConsentRequested,
     resolveTransactionSendConsent,
-}: TradingOutputsReviewScreenParams) => {
+}: TradingOutputsBaseReviewScreenParams) => {
     const { applyStyle } = useNativeStyles();
     const { isTransactionAlreadySigned, confirmOnTrezorRef } =
         useTradingOutputsReviewScreenControls({
@@ -98,11 +95,9 @@ export const TradingOutputsBaseReviewScreen = ({
 };
 
 export const TradingExchangeOutputsReviewScreen = ({
-    accountKey,
-    tokenContract,
-    orderId,
-    tradingType,
-}: TradingOutputsBaseReviewScreenProps) => {
+    route,
+}: StackProps<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>) => {
+    const { accountKey, tokenContract, orderId } = route.params;
     const {
         signAndSendTransaction,
         isTransactionSendConsentRequested,
@@ -114,7 +109,7 @@ export const TradingExchangeOutputsReviewScreen = ({
             accountKey={accountKey}
             tokenContract={tokenContract}
             orderId={orderId}
-            tradingType={tradingType}
+            tradingType="exchange"
             signAndSendTransaction={signAndSendTransaction}
             isTransactionSendConsentRequested={isTransactionSendConsentRequested}
             resolveTransactionSendConsent={resolveTransactionSendConsent}
@@ -123,11 +118,9 @@ export const TradingExchangeOutputsReviewScreen = ({
 };
 
 export const TradingSellOutputsReviewScreen = ({
-    accountKey,
-    tokenContract,
-    orderId,
-    tradingType,
-}: TradingOutputsBaseReviewScreenProps) => {
+    route,
+}: StackProps<TradingStackParamList, TradingStackRoutes.TradingSellOutputsReview>) => {
+    const { accountKey, tokenContract, orderId } = route.params;
     const {
         signAndSendTransaction,
         isTransactionSendConsentRequested,
@@ -139,39 +132,10 @@ export const TradingSellOutputsReviewScreen = ({
             accountKey={accountKey}
             tokenContract={tokenContract}
             orderId={orderId}
-            tradingType={tradingType}
+            tradingType="sell"
             signAndSendTransaction={signAndSendTransaction}
             isTransactionSendConsentRequested={isTransactionSendConsentRequested}
             resolveTransactionSendConsent={resolveTransactionSendConsent}
         />
     );
-};
-
-export const TradingOutputsReviewScreen = ({
-    route,
-}: StackProps<TradingStackParamList, TradingStackRoutes.TradingOutputsReview>) => {
-    const { tradingType, accountKey, tokenContract, orderId } = route.params;
-
-    if (tradingType === 'exchange') {
-        return (
-            <TradingExchangeOutputsReviewScreen
-                accountKey={accountKey}
-                tokenContract={tokenContract}
-                orderId={orderId}
-                tradingType={tradingType}
-            />
-        );
-    }
-    if (tradingType === 'sell') {
-        return (
-            <TradingSellOutputsReviewScreen
-                accountKey={accountKey}
-                tokenContract={tokenContract}
-                orderId={orderId}
-                tradingType={tradingType}
-            />
-        );
-    }
-
-    return null;
 };

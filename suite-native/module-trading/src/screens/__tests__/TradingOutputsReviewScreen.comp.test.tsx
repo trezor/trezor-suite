@@ -5,7 +5,10 @@ import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigat
 import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
-import { TradingOutputsReviewScreen } from '../TradingOutputsReviewScreen';
+import {
+    TradingExchangeOutputsReviewScreen,
+    TradingSellOutputsReviewScreen,
+} from '../TradingOutputsReviewScreen';
 
 const mockSignAndSendTransaction = jest.fn();
 const mockResolveTransactionSendConsent = jest.fn();
@@ -21,11 +24,11 @@ const mockUseSellFlow = {
     resolveTransactionSendConsent: mockResolveTransactionSendConsent,
 };
 
-const mockUseRoute = jest.fn();
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
-    useRoute: () => mockUseRoute(),
-}));
+const mockNavigation = {
+    navigate: jest.fn(),
+    goBack: jest.fn(),
+    popToTop: jest.fn(),
+} as any;
 
 jest.mock('@suite-native/device', () => ({
     ...jest.requireActual('@suite-native/device'),
@@ -38,12 +41,6 @@ jest.mock('@suite-native/device', () => ({
 
 const mockUseExchangeFlowFn = jest.fn(() => mockUseExchangeFlow);
 const mockUseSellFlowFn = jest.fn(() => mockUseSellFlow);
-
-const mockNavigation = {
-    navigate: jest.fn(),
-    goBack: jest.fn(),
-    popToTop: jest.fn(),
-} as any;
 
 jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => mockUseExchangeFlowFn(),
@@ -70,82 +67,78 @@ jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () 
 const TEST_ACCOUNT_KEY = 'btc-account-1';
 const TEST_ORDER_ID = 'test-order-id';
 
-// Helper function to create route params
-const createRouteParams = (
-    tradingType: 'exchange' | 'sell' | 'buy',
-    tokenContract?: TokenAddress,
-) => ({
-    tradingType,
+// Helper function to create route params for sell
+const createSellRouteParams = (tokenContract?: TokenAddress) => ({
     accountKey: TEST_ACCOUNT_KEY,
     tokenContract,
     orderId: TEST_ORDER_ID,
 });
 
-// Helper function to create route
-const createRoute = (params: ReturnType<typeof createRouteParams>) =>
+// Helper function to create route params for exchange
+const createExchangeRouteParams = (tokenContract?: TokenAddress) => ({
+    accountKey: TEST_ACCOUNT_KEY,
+    tokenContract,
+    orderId: TEST_ORDER_ID,
+});
+
+// Helper function to create route for sell
+const createSellRoute = (params: ReturnType<typeof createSellRouteParams>) =>
     ({
         params,
-    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingOutputsReview>;
+    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingSellOutputsReview>;
 
-describe('TradingOutputsReviewScreen', () => {
+// Helper function to create route for exchange
+const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams>) =>
+    ({
+        params,
+    }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>;
+
+describe('TradingSellOutputsReviewScreen', () => {
     let store: TestStore;
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        store = await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) });
-        mockUseRoute.mockReturnValue({
-            params: createRouteParams('exchange'),
-        });
-        // Reset navigation mocks
+        store = await initStore({ wallet: getWalletState({ tradeType: 'sell' }) });
         mockNavigation.navigate.mockClear();
         mockNavigation.goBack.mockClear();
         mockNavigation.popToTop.mockClear();
     });
 
-    describe('TradingOutputsReviewScreen routing', () => {
-        it('should render TradingExchangeOutputsReviewScreen for exchange trading type', async () => {
-            const params = createRouteParams('exchange');
-            mockUseRoute.mockReturnValueOnce({ params });
+    it('should render TradingSellOutputsReviewScreen', async () => {
+        const params = createSellRouteParams();
+        const route = createSellRoute(params);
 
-            const route = createRoute(params);
+        const { toJSON } = await renderWithStoreProviderAsync(
+            <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
+            { store },
+        );
 
-            const { toJSON } = await renderWithStoreProviderAsync(
-                <TradingOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { store },
-            );
+        expect(toJSON()).not.toBeNull();
+        expect(mockUseSellFlowFn).toHaveBeenCalled();
+    });
+});
 
-            // Verify that TradingExchangeOutputsReviewScreen is rendered
-            expect(toJSON()).not.toBeNull();
-        });
+describe('TradingExchangeOutputsReviewScreen', () => {
+    let store: TestStore;
 
-        it('should render TradingSellOutputsReviewScreen for sell trading type', async () => {
-            const params = createRouteParams('sell');
-            mockUseRoute.mockReturnValueOnce({ params });
+    beforeEach(async () => {
+        jest.clearAllMocks();
+        store = await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) });
+        mockNavigation.navigate.mockClear();
+        mockNavigation.goBack.mockClear();
+        mockNavigation.popToTop.mockClear();
+    });
 
-            const route = createRoute(params);
+    it('should render TradingExchangeOutputsReviewScreen', async () => {
+        const params = createExchangeRouteParams();
+        const route = createExchangeRoute(params);
 
-            const { toJSON } = await renderWithStoreProviderAsync(
-                <TradingOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { store },
-            );
+        const { toJSON } = await renderWithStoreProviderAsync(
+            <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
+            { store },
+        );
 
-            // Verify that TradingSellOutputsReviewScreen is rendered
-            expect(toJSON()).not.toBeNull();
-        });
-
-        it('should return null for unknown trading type', async () => {
-            const params = createRouteParams('buy' as any);
-            mockUseRoute.mockReturnValueOnce({ params });
-
-            const route = createRoute(params);
-
-            // TradingOutputsReviewScreen returns null for unknown trading type
-            const { toJSON } = await renderWithStoreProviderAsync(
-                <TradingOutputsReviewScreen route={route} navigation={mockNavigation} />,
-                { store },
-            );
-
-            expect(toJSON()).toBeNull();
-        });
+        expect(toJSON()).not.toBeNull();
+        expect(mockUseExchangeFlowFn).toHaveBeenCalled();
     });
 });
