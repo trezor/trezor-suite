@@ -1,4 +1,4 @@
-import { useLocalFirstStorage } from '@suite-common/suite-sync';
+import { useSuiteSync } from '@suite-common/suite-sync';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -17,7 +17,7 @@ type UseLabelingCombinedParams = {
 
 /**
  * @deprecated This hook is obsolete. Once legacy metadata labeling is removed -> use only the hook
- * `useLocalFirstStorage` from `suite-common/local-first-storage`.
+ * `useSuiteSync` from `@suite-common/suite-sync`.
  */
 export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombinedParams) => {
     const dispatch = useDispatch();
@@ -29,13 +29,13 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
     );
 
     const {
-        isLocalFirstStorageEnabled,
-        isLocalFirstStorageDebugEnabled,
-        isFeatureLocalFirstStorageAvailable,
-        toggleIsFeatureLocalFirstStorageAvailable,
-        disableLocalFirstStorageIfNeeded,
-        enableLocalFirstStorageIfNeeded: enableLocalFirstStorageIfNeededCommon,
-    } = useLocalFirstStorage({
+        isSuiteSyncEnabled,
+        isSuiteSyncDebugEnabled,
+        isFeatureSuiteSyncAvailable,
+        toggleIsFeatureSuiteSyncAvailable,
+        disableSuiteSyncIfNeeded,
+        enableSuiteSyncIfNeeded: enableSuiteSyncIfNeededCommon,
+    } = useSuiteSync({
         device,
     });
 
@@ -45,7 +45,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         if (legacyMetadataState.enabled) dispatch(metadataActions.disableMetadata());
     };
 
-    const enableLocalFirstStorageIfNeeded = () => {
+    const enableSuiteSyncIfNeeded = () => {
         // Enabling Evolu implicitly disables Legacy Labeling
         if (legacyMetadataState.enabled) legacyDisableIfNeeded();
 
@@ -55,30 +55,30 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
                 provider: 'evolu',
             },
         });
-        enableLocalFirstStorageIfNeededCommon();
+        enableSuiteSyncIfNeededCommon();
     };
 
     const legacyEnableIfNeeded = () => {
         if (!legacyMetadataState.enabled) {
-            disableLocalFirstStorageIfNeeded(); // Enabling Legacy Labeling implicitly disables Evolu
+            disableSuiteSyncIfNeeded(); // Enabling Legacy Labeling implicitly disables Evolu
             dispatch(metadataLabelingActions.init(true));
         }
     };
 
     const isEvoluSupportedByDevice = device?.unavailableCapabilities?.evolu === undefined;
 
-    const hasDeviceLocalFirstStorageKeys = device?.suiteSyncOwner !== undefined;
+    const hasDeviceSuiteSyncOwner = device?.suiteSyncOwner !== undefined;
 
     return {
-        /** New Labeling: LocalFirstStorage (Evolu) */
-        isFeatureLocalFirstStorageAvailable,
-        toggleIsFeatureLocalFirstStorageAvailable,
-        isLocalFirstStorageEnabled,
+        /** New Labeling: SuiteSync (Evolu) */
+        isFeatureSuiteSyncAvailable,
+        toggleIsFeatureSuiteSyncAvailable,
+        isSuiteSyncEnabled,
         isEvoluSupportedByDevice,
-        isLocalFirstStorageDebugEnabled,
-        hasDeviceLocalFirstStorageKeys,
-        enableLocalFirstStorageIfNeeded,
-        disableLocalFirstStorageIfNeeded,
+        isSuiteSyncDebugEnabled,
+        hasDeviceSuiteSyncOwner,
+        enableSuiteSyncIfNeeded,
+        disableSuiteSyncIfNeeded,
 
         /** Legacy Labeling */
         legacyMetadataState,

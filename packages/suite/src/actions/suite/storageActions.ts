@@ -469,11 +469,10 @@ export const saveSuiteSyncSettings = () => (_dispatch: Dispatch, getState: GetSt
     return db.addItem(
         'suiteSyncSettings',
         {
-            isFeatureLocalFirstStorageAvailable:
-                suiteSync.settings.isFeatureLocalFirstStorageAvailable,
-            isLocalFirstStorageEnabled: suiteSync.settings.isLocalFirstStorageEnabled,
-            isLocalFirstStorageDebugEnabled: suiteSync.settings.isLocalFirstStorageDebugEnabled,
-            localFirstStorageRelayUrl: suiteSync.settings.localFirstStorageRelayUrl,
+            isFeatureSuiteSyncAvailable: suiteSync.settings.isFeatureSuiteSyncAvailable,
+            isSuiteSyncEnabled: suiteSync.settings.isSuiteSyncEnabled,
+            isSuiteSyncDebugEnabled: suiteSync.settings.isSuiteSyncDebugEnabled,
+            suiteSyncRelayUrl: suiteSync.settings.suiteSyncRelayUrl,
         },
         'suiteSyncSettings',
         true,

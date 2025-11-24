@@ -71,16 +71,16 @@ export const ConfirmValueModal = ({
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
 
-    const { isLocalFirstStorageEnabled, legacyMetadataState } = useLabelingCombined({
+    const { isSuiteSyncEnabled, legacyMetadataState } = useLabelingCombined({
         deviceStaticSessionId: account!.deviceState,
     });
     // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
     const isMetadataBlockedByDeviceCall =
         isDeviceLocked &&
-        !isLocalFirstStorageEnabled &&
+        !isSuiteSyncEnabled &&
         (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
 
-    const localFirstAddressLabels = useSelector(state =>
+    const suiteSyncAddressLabels = useSelector(state =>
         account
             ? selectAddressLabels({ state, deviceStaticSessionId: account.deviceState })
             : undefined,
@@ -210,7 +210,7 @@ export const ConfirmValueModal = ({
                                                 entityKey: account.key,
                                                 defaultValue: value,
                                                 value:
-                                                    localFirstAddressLabels?.find(
+                                                    suiteSyncAddressLabels?.find(
                                                         it => it.address === value,
                                                     )?.label ?? addressLabels[value],
                                             }}

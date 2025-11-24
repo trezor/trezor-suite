@@ -10,7 +10,7 @@ import { isSuiteSyncSupportedByDevice } from './device';
 import { subscribeLabelingUpdatesThunk } from './labeling/subscribeLabelingUpdatesThunk';
 import { refreshSuiteSyncKeysThunk } from './refreshSuiteSyncKeysThunk';
 
-type SubscribeLocalFirstStorageThunkParams = {
+type subscribeSuiteSyncStorageThunkParams = {
     device: TrezorDeviceWithState;
 };
 
@@ -19,8 +19,8 @@ type SubscribeLocalFirstStorageThunkParams = {
  *
  * This is part of the experiment here: https://github.com/trezor/trezor-suite/issues/23202
  */
-export const subscribeLocalFirstStorageThunk =
-    ({ device }: SubscribeLocalFirstStorageThunkParams) =>
+export const subscribeSuiteSyncStorageThunk =
+    ({ device }: subscribeSuiteSyncStorageThunkParams) =>
     async (dispatch: Dispatch, getState: () => any) => {
         if (!isSuiteSyncSupportedByDevice(device)) {
             return ok();

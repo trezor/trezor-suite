@@ -4,9 +4,9 @@ import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
-    selectIsLocalFirstStorageEnabled,
-    subscribeLocalFirstStorageThunk,
-    unsubscribeAndDisposeLocalFirstStorageThunk,
+    selectIsSuiteSyncEnabled,
+    subscribeSuiteSyncStorageThunk,
+    unsubscribeAndDisposeSuiteSyncStorageThunk,
 } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -59,13 +59,13 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             staticKey: state.thp?.staticKey,
             knownCredentials: state.thp?.credentials,
         }),
-        selectIsLocalFirstStorageEnabled,
+        selectIsSuiteSyncEnabled,
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {
         // This needs to be over `extra` to prevent circular dependency,
         // `@suite-common/suite-sync` depends on `wallet-core`
-        subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
-        unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
+        subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
+        unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
         initSuiteSync: () => (_, getState) => initSuiteSyncNative({ getState }),
         createSuiteSyncOwner: params => () => createSuiteSyncOwnerNative(params),

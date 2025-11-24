@@ -39,11 +39,10 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
 
         dispatch(deviceActions.selectDevice(trezorDevice));
 
-        const isLocalFirstStorageEnabled =
-            extra.selectors.selectIsLocalFirstStorageEnabled(getState());
+        const isSuiteSyncEnabled = extra.selectors.selectIsSuiteSyncEnabled(getState());
 
-        if (isTrezorDeviceWithState(trezorDevice) && isLocalFirstStorageEnabled) {
-            dispatch(extra.thunks.subscribeLocalFirstStorage({ device: trezorDevice }));
+        if (isTrezorDeviceWithState(trezorDevice) && isSuiteSyncEnabled) {
+            dispatch(extra.thunks.subscribeSuiteSync({ device: trezorDevice }));
         }
     },
 );

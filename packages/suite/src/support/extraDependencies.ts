@@ -6,8 +6,8 @@ import { createSuiteSyncOwnerDesktop, initSuiteSyncDesktop } from '@suite/suite-
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { ExtraDependencies, LocationPushState, To } from '@suite-common/redux-utils';
 import {
-    subscribeLocalFirstStorageThunk,
-    unsubscribeAndDisposeLocalFirstStorageThunk,
+    subscribeSuiteSyncStorageThunk,
+    unsubscribeAndDisposeSuiteSyncStorageThunk,
 } from '@suite-common/suite-sync';
 import {
     TokenDefinitionsState,
@@ -75,8 +75,8 @@ export const extraDependencies: ExtraDependencies = {
 
         // This needs to be over `extra` to prevent circular dependency,
         // `@suite-common/suite-sync` depends on `wallet-core`
-        subscribeLocalFirstStorage: subscribeLocalFirstStorageThunk,
-        unsubscribeAndDisposeLocalFirstStorage: unsubscribeAndDisposeLocalFirstStorageThunk,
+        subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
+        unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
         initSuiteSync: () => (_, getState) => initSuiteSyncDesktop({ getState }),
         createSuiteSyncOwner: params => () => createSuiteSyncOwnerDesktop(params),
     },
@@ -98,8 +98,7 @@ export const extraDependencies: ExtraDependencies = {
         selectTradingEnvironment: (state: AppState) =>
             state.suite.settings.debug.invityServerEnvironment,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
-        selectIsLocalFirstStorageEnabled: (state: AppState) =>
-            state.suiteSync.settings.isLocalFirstStorageEnabled,
+        selectIsSuiteSyncEnabled: (state: AppState) => state.suiteSync.settings.isSuiteSyncEnabled,
         selectThpSettings: (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
             pairingMethods: ['CodeEntry'],

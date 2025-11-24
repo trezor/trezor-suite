@@ -8,21 +8,19 @@ export type WithSuiteSyncState = {
 
 export type WithSuiteSyncAndDeviceState = WithSuiteSyncState & DeviceRootState;
 
-export const selectIsLocalFirstStorageEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
-    state.suiteSync.settings.isLocalFirstStorageEnabled;
+export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
+    state.suiteSync.settings.isSuiteSyncEnabled;
 
-export const selectIsLocalFirstStorageDebugEnabled = (
-    state: WithSuiteSyncAndDeviceState,
-): boolean => state.suiteSync.settings.isLocalFirstStorageDebugEnabled;
+export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
+    state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
-export const selectIsFeatureLocalFirstStorageAvailable = (
-    state: WithSuiteSyncAndDeviceState,
-): boolean => state.suiteSync.settings.isFeatureLocalFirstStorageAvailable;
+export const selectIsFeatureSuiteSyncAvailable = (state: WithSuiteSyncAndDeviceState): boolean =>
+    state.suiteSync.settings.isFeatureSuiteSyncAvailable;
 
-export const selectLocalFirstStorageRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
-    state.suiteSync.settings.localFirstStorageRelayUrl;
+export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
+    state.suiteSync.settings.suiteSyncRelayUrl;
 
 export const selectShouldOfferSecureSync = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.device.selectedDevice?.unavailableCapabilities?.evolu === undefined &&
-    state.suiteSync.settings.isFeatureLocalFirstStorageAvailable &&
-    !state.suiteSync.settings.isLocalFirstStorageEnabled;
+    state.suiteSync.settings.isFeatureSuiteSyncAvailable &&
+    !state.suiteSync.settings.isSuiteSyncEnabled;

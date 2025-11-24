@@ -99,7 +99,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
 
     const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
 
-    const localFirstAccountLabel = useSelector(state =>
+    const suiteSyncAccountLabel = useSelector(state =>
         selectAccountLabel({
             state,
             walletDescriptor,
@@ -107,7 +107,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
         }),
     );
 
-    const label = localFirstAccountLabel ?? selectedAccountLabels.accountLabel;
+    const label = suiteSyncAccountLabel ?? selectedAccountLabels.accountLabel;
 
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { symbol, key, path, index, accountType, formattedBalance, deviceState } =

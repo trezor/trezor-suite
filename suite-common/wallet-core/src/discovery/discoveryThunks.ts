@@ -74,19 +74,16 @@ const initNewDeviceStateMetadataThunk = createThunk(
             await dispatch(extra.thunks.initMetadata(false));
         }
 
-        const isLocalFirstStorageEnabled =
-            extra.selectors.selectIsLocalFirstStorageEnabled(getState());
+        const isSuiteSyncEnabled = extra.selectors.selectIsSuiteSyncEnabled(getState());
 
-        if (isLocalFirstStorageEnabled && device !== undefined) {
+        if (isSuiteSyncEnabled && device !== undefined) {
             const reselectDeviceForSecret = selectDeviceByStaticSessionId(
                 getState(),
                 staticSessionId,
             );
 
             if (isTrezorDeviceWithState(reselectDeviceForSecret)) {
-                dispatch(
-                    extra.thunks.subscribeLocalFirstStorage({ device: reselectDeviceForSecret }),
-                );
+                dispatch(extra.thunks.subscribeSuiteSync({ device: reselectDeviceForSecret }));
             }
         }
     },

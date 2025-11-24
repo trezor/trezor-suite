@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
-import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/suite-sync';
+import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -21,9 +21,7 @@ import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
-    const isFeatureLocalFirstStorageAvailable = useSelector(
-        selectIsFeatureLocalFirstStorageAvailable,
-    );
+    const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
@@ -54,7 +52,7 @@ export const FeaturesSettings = () => {
                 isDisabled={hasDiscovery}
                 testID="@settings/coin-enabling"
             />
-            {isFeatureLocalFirstStorageAvailable && (
+            {isFeatureSuiteSyncAvailable && (
                 <AppSettingsCardWithIconLayout
                     icon="tag"
                     title={<Translation id="moduleSettings.items.features.labeling.title" />}

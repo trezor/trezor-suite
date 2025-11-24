@@ -10,7 +10,7 @@ import { OutputLabelSchema, OutputLabels } from './labeling/outputLabels';
 import { WalletLabelSchema, WalletLabels } from './labeling/walletLabels';
 import { Schema } from './schema';
 
-type LocalFirstStorageDeps = {
+type EvoluStorageDeps = {
     relayUrl: string;
     owner: SuiteSyncOwner;
     evoluDeps: EvoluDeps;
@@ -34,7 +34,7 @@ export class EvoluStorage implements SuiteSyncStorage {
     outputLabels: OutputLabels;
     addressLabels: AddressLabels;
 
-    constructor({ relayUrl, evoluDeps, owner }: LocalFirstStorageDeps) {
+    constructor({ relayUrl, evoluDeps, owner }: EvoluStorageDeps) {
         // just to satisfy TS for initialization,
         // its then truly initialized in this.updateRelayUrl()
         this.#ownerDispose = () => {};

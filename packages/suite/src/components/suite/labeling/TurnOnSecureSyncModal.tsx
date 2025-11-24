@@ -9,12 +9,12 @@ type TurnOnSecureSyncModalProps = {
 };
 
 export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) => {
-    const { enableLocalFirstStorageIfNeeded } = useLabelingCombined({
+    const { enableSuiteSyncIfNeeded } = useLabelingCombined({
         deviceStaticSessionId: undefined,
     });
 
     const onSwitch = () => {
-        enableLocalFirstStorageIfNeeded();
+        enableSuiteSyncIfNeeded();
         onClose();
     };
 

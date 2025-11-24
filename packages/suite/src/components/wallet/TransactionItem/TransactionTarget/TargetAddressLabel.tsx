@@ -35,7 +35,7 @@ export const TargetAddressLabel = ({
 }: TargetAddressLabelProps) => {
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
 
-    const localFirstStorageAddressLabels = useSelector(state =>
+    const suiteSyncAddressLabels = useSelector(state =>
         selectAddressLabels({ state, deviceStaticSessionId }),
     );
 
@@ -51,7 +51,7 @@ export const TargetAddressLabel = ({
         <TruncatedSpan data-testid="@wallet/transaction/target-address">
             {target.addresses?.map((a, i) => {
                 const addressLabel =
-                    localFirstStorageAddressLabels.find(it => it.address === a)?.label ??
+                    suiteSyncAddressLabels.find(it => it.address === a)?.label ??
                     accountMetadata?.addressLabels[a];
 
                 // either it may be AddressLabeling - sent to another account associated with this device, e.g: "Bitcoin #2"

@@ -105,7 +105,7 @@ export interface SuiteSettings {
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
-    localFirstStorageRelayUrl: string | null;
+    suiteSyncRelayUrl: string | null;
     autoEject: boolean;
 }
 
@@ -208,7 +208,7 @@ const initialState: SuiteState = {
         addressDisplayType: AddressDisplayOptions.CHUNKED,
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
-        localFirstStorageRelayUrl: null,
+        suiteSyncRelayUrl: null,
         autoEject: false,
     },
     recentlyConnectedDeviceRef: null,

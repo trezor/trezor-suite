@@ -18,7 +18,6 @@ import { FirmwareUpdateEnvironmentSelect } from './FirmwareUpdateEnvironmentSele
 import { ForgetAllDevicesButton } from './ForgetBluetoothDevices';
 import { GithubIssue } from './GithubIssue';
 import { InvityApi } from './InvityApi';
-import { LocalFirstStorageSettings } from './LocalFirstStorageSettings';
 import { MessageSystemConfigSourceSelect } from './MessageSystem/MessageSystemConfigSourceSelect';
 import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
@@ -26,6 +25,7 @@ import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
 import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
+import { SuiteSyncSettings } from './SuiteSyncSettings';
 import { ThrowTestingError } from './ThrowTestingError';
 import { Tor } from './Tor';
 import { Transport } from './Transport';
@@ -107,7 +107,7 @@ export const SettingsDebug = () => {
             <SettingsSection title="Firmware update source">
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
-            <LocalFirstStorageSettings />
+            <SuiteSyncSettings />
         </SettingsLayout>
     );
 };

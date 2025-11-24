@@ -3,7 +3,7 @@ import { useState } from 'react';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     changeRelayUrlThunk,
-    selectLocalFirstStorageRelayUrl,
+    selectSuiteSyncRelayUrl,
     suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
@@ -14,28 +14,28 @@ import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 
-export const LocalFirstStorageSettings = () => {
+export const SuiteSyncSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const {
-        isLocalFirstStorageDebugEnabled,
-        isFeatureLocalFirstStorageAvailable,
-        toggleIsFeatureLocalFirstStorageAvailable,
+        isSuiteSyncDebugEnabled,
+        isFeatureSuiteSyncAvailable,
+        toggleIsFeatureSuiteSyncAvailable,
     } = useLabelingCombined({
         // In debug, there may not be any device selected and it is in fact irrelevant
         deviceStaticSessionId: undefined,
     });
 
-    const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
+    const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
 
-    const [relayUrl, setRelayUrl] = useState(localFirstStorageRelayUrl ?? '');
+    const [relayUrl, setRelayUrl] = useState(suiteSyncRelayUrl ?? '');
 
     const dispatch = useDispatch();
 
-    const handleToggleLocalFirstStorageDebug = () => {
+    const handleToggleSuiteSyncDebug = () => {
         dispatch(
-            suiteSyncActions.updateLocalFirstStorageDebugEnabled({
-                isEnabled: !isLocalFirstStorageDebugEnabled,
+            suiteSyncActions.updateSuiteSyncDebugEnabled({
+                isEnabled: !isSuiteSyncDebugEnabled,
             }),
         );
     };
@@ -59,18 +59,15 @@ export const LocalFirstStorageSettings = () => {
                 />
                 <ActionColumn>
                     <Checkbox
-                        isChecked={isFeatureLocalFirstStorageAvailable}
-                        onClick={toggleIsFeatureLocalFirstStorageAvailable}
+                        isChecked={isFeatureSuiteSyncAvailable}
+                        onClick={toggleIsFeatureSuiteSyncAvailable}
                     />
                 </ActionColumn>
             </SectionItem>
-            {!isFeatureLocalFirstStorageAvailable && (
-                <p>
-                    Enable Local First Storage is disabled. To use Local First Storage (Evolu),
-                    enable Suite Sync experimental feature in the Experimental settings section.
-                </p>
+            {!isFeatureSuiteSyncAvailable && (
+                <p>Suite Sync is disabled. Enable it in the Experimental Features settings.</p>
             )}
-            {isFeatureLocalFirstStorageAvailable && (
+            {isFeatureSuiteSyncAvailable && (
                 <>
                     <SectionItem>
                         <TextColumn title="Relay URL" />
@@ -100,8 +97,8 @@ export const LocalFirstStorageSettings = () => {
                         <TextColumn title="Local First Storage (Evolu) Debug" />
                         <ActionColumn>
                             <Checkbox
-                                isChecked={isLocalFirstStorageDebugEnabled}
-                                onClick={handleToggleLocalFirstStorageDebug}
+                                isChecked={isSuiteSyncDebugEnabled}
+                                onClick={handleToggleSuiteSyncDebug}
                             />
                         </ActionColumn>
                     </SectionItem>

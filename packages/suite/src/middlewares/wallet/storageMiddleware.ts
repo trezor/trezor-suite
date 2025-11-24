@@ -178,10 +178,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (
                 isAnyOf(
-                    suiteSyncActions.updateLocalFirstStorageDebugEnabled,
-                    suiteSyncActions.updateLocalFirstStorageEnabled,
-                    suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable,
-                    suiteSyncActions.setLocalFirstStorageRelayUrl,
+                    suiteSyncActions.updateSuiteSyncDebugEnabled,
+                    suiteSyncActions.updateSuiteSyncEnabled,
+                    suiteSyncActions.updateIsFeatureSuiteSyncAvailable,
+                    suiteSyncActions.setSuiteSyncRelayUrl,
                 )(action)
             ) {
                 api.dispatch(storageActions.saveSuiteSyncSettings());

@@ -56,7 +56,7 @@ const labelStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
-const LocalFirstStorageDebug = ({ device }: { device?: TrezorDevice }) => {
+const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
     const isLabelingEnabled = useIsLabelingEnabled();
 
     if (!isDebugEnv() || !isLabelingEnabled || !device) {
@@ -111,7 +111,7 @@ export const WalletItemBase = ({
                             fallbackLabel={fallbackLabel}
                         />
                     </Text>
-                    <LocalFirstStorageDebug device={device} />
+                    <SuiteSyncWalletDebug device={device} />
                 </HStack>
 
                 <HStack alignItems="center" spacing="sp12">

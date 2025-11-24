@@ -141,8 +141,8 @@ const setThpCredentials = createAction(
     }),
 );
 
-const setLocalFirstStorageSecret = createAction(
-    `${DEVICE_MODULE_PREFIX}/setLocalFirstStorageSecret`,
+const setSuiteSyncOwner = createAction(
+    `${DEVICE_MODULE_PREFIX}/setSuiteSyncOwner`,
     ({ device, owner }: { device: TrezorDevice; owner: SuiteSyncOwner | undefined }) => ({
         payload: { device, owner },
     }),
@@ -189,7 +189,7 @@ export const deviceActions = {
     setEntropyCheckResult,
     setThpCredentials,
     setDelegatedIdentityKey,
-    setLocalFirstStorageSecret,
+    setSuiteSyncOwner,
     setDiscovered,
     devicePushNotification,
 };

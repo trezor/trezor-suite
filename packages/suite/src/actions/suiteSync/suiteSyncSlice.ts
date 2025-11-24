@@ -10,12 +10,12 @@ import { Action } from 'src/types/suite';
 import { STORAGE } from '../suite/constants';
 
 export type DesktopSuiteSyncState = SuiteSyncState & {
-    showEnableLocalFirstStorageModal: boolean;
+    showEnableSuiteSyncModal: boolean;
 };
 
 export const initialSuiteSyncState: DesktopSuiteSyncState = {
     ...commonInitialState,
-    showEnableLocalFirstStorageModal: false,
+    showEnableSuiteSyncModal: false,
 };
 
 export type DesktopSuiteSyncRootState = {
@@ -26,8 +26,8 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
     name: 'suiteSync',
     initialState: initialSuiteSyncState,
     reducers: {
-        updateShowEnableLocalFirstStorageModal: (state, action) => {
-            state.showEnableLocalFirstStorageModal = action.payload.show;
+        updateShowEnableSuiteSyncModal: (state, action) => {
+            state.showEnableSuiteSyncModal = action.payload.show;
         },
     },
     extraReducers: (builder, extra) => {
@@ -56,4 +56,4 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
     },
 });
 
-export const { updateShowEnableLocalFirstStorageModal } = suiteSyncSlice.actions;
+export const { updateShowEnableSuiteSyncModal } = suiteSyncSlice.actions;

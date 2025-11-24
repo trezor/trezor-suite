@@ -30,11 +30,11 @@ export const DeviceStatusTextVisible = ({
     const defaultWalletLabel =
         device !== undefined ? defaultAccountLabelString({ device }) : undefined;
 
-    const localFirstWalletLabel = useSelector(state =>
+    const suiteSyncWalletLabel = useSelector(state =>
         selectWalletLabel({ state, deviceStaticSessionId: device?.state?.staticSessionId }),
     );
 
-    const walletLabel = localFirstWalletLabel ?? walletLabelOld;
+    const walletLabel = suiteSyncWalletLabel ?? walletLabelOld;
     const isWalletLabelEmpty = walletLabel === undefined || walletLabel.trim() === '';
     const walletText = isWalletLabelEmpty ? defaultWalletLabel : walletLabel;
 

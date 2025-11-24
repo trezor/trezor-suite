@@ -3,7 +3,7 @@ import { FormProvider } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -60,7 +60,7 @@ interface SendLoadedProps extends SendProps {
 // separated to call `useSendForm` hook at top level
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
-    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const props = useSelector(state => ({
         localCurrency: state.wallet.settings.localCurrency,
@@ -68,7 +68,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         online: state.suite.online,
         sendRaw: state.wallet.send.sendRaw,
         metadataEnabled:
-            (state.metadata.enabled && !!state.metadata.providers[0]) || isLocalFirstStorageEnabled,
+            (state.metadata.enabled && !!state.metadata.providers[0]) || isSuiteSyncEnabled,
         targetAnonymity: selectTargetAnonymityByAccountKey(state, selectedAccount.account.key),
         prison: selectRegisteredUtxosByAccountKey(state, selectedAccount.account.key),
     }));

@@ -9,20 +9,16 @@ import { useDispatch } from 'src/hooks/suite';
 
 import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 
-export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) => {
+export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => {
     const dispatch = useDispatch();
     const {
         legacyMetadataState,
-        isLocalFirstStorageEnabled,
-        isLocalFirstStorageDebugEnabled,
+        isSuiteSyncEnabled,
+        isSuiteSyncDebugEnabled,
         isEvoluSupportedByDevice,
     } = useLabelingCombined({ deviceStaticSessionId: device.state?.staticSessionId });
 
-    if (
-        !isLocalFirstStorageDebugEnabled ||
-        !isEvoluSupportedByDevice ||
-        !device.state?.staticSessionId
-    ) {
+    if (!isSuiteSyncDebugEnabled || !isEvoluSupportedByDevice || !device.state?.staticSessionId) {
         return;
     }
 
@@ -31,7 +27,7 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
     const handleResetKeysRequest = () => {
         if (!device?.id) return;
 
-        dispatch(deviceActions.setLocalFirstStorageSecret({ device, owner: undefined }));
+        dispatch(deviceActions.setSuiteSyncOwner({ device, owner: undefined }));
         dispatch(
             deviceActions.setDelegatedIdentityKey({
                 deviceId: device.id,
@@ -40,11 +36,11 @@ export const LocalFirstStorageDebug = ({ device }: { device: AcquiredDevice }) =
         );
     };
 
-    return isLocalFirstStorageEnabled ? (
+    return isSuiteSyncEnabled ? (
         <Row gap={spacings.xxs}>
             🐞
             {legacyMetadataState.enabled && <Text variant="purple">[Legacy]</Text>}
-            {isLocalFirstStorageEnabled && (
+            {isSuiteSyncEnabled && (
                 <>
                     <Text typographyStyle="hint" variant="warning">
                         <Code>{walletDescriptor.slice(-8)}</Code>

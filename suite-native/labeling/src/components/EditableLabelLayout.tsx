@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 
 import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useLocalFirstStorageAlerts } from '@suite-native/suite-sync';
+import { useSuiteSyncAlerts } from '@suite-native/suite-sync';
 
 import { useIsLabelingEnabled } from './useIsLabelingEnabled';
 
@@ -17,14 +17,14 @@ type EditableLabelLayoutParams = {
 
 export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutParams) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const isLocalFirstStorageEnabled = useSelector(selectIsLocalFirstStorageEnabled);
-    const { showLocalFirstStorageEnableConfirmationAlert } = useLocalFirstStorageAlerts();
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const { showSuiteSyncEnableConfirmationAlert } = useSuiteSyncAlerts();
 
     const isLabelingEnabled = useIsLabelingEnabled();
 
     const handleAddLabel = () => {
-        if (!isLocalFirstStorageEnabled) {
-            showLocalFirstStorageEnableConfirmationAlert(openModal);
+        if (!isSuiteSyncEnabled) {
+            showSuiteSyncEnableConfirmationAlert(openModal);
 
             return;
         }

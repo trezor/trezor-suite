@@ -99,7 +99,7 @@ export const refreshSuiteSyncKeysThunk =
         });
 
         if (!evoluNodeResult.ok) {
-            dispatch(deviceActions.setLocalFirstStorageSecret({ device, owner: undefined }));
+            dispatch(deviceActions.setSuiteSyncOwner({ device, owner: undefined }));
             dispatch(
                 deviceActions.setDelegatedIdentityKey({ deviceId: device.id, delegatedKey: null }),
             );
@@ -108,7 +108,7 @@ export const refreshSuiteSyncKeysThunk =
         }
 
         dispatch(
-            deviceActions.setLocalFirstStorageSecret({
+            deviceActions.setSuiteSyncOwner({
                 device,
                 owner: evoluNodeResult.value ?? undefined,
             }),

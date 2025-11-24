@@ -63,11 +63,11 @@ export type ExtraDependencies = {
         forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: BluetoothDeviceId }>;
 
         // This needs to be over `extra` to prevent circular dependency
-        subscribeLocalFirstStorage: OriginalReduxThunk<
+        subscribeSuiteSync: OriginalReduxThunk<
             { device: TrezorDeviceWithState },
             Promise<Ok<void>>
         >;
-        unsubscribeAndDisposeLocalFirstStorage: SuiteCompatibleThunk<{
+        unsubscribeAndDisposeSuiteSyncStorage: SuiteCompatibleThunk<{
             device: TrezorDeviceWithState;
         }>;
         initSuiteSync: OriginalReduxThunk<void>;
@@ -94,7 +94,7 @@ export type ExtraDependencies = {
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
-        selectIsLocalFirstStorageEnabled: SuiteCompatibleSelector<boolean>;
+        selectIsSuiteSyncEnabled: SuiteCompatibleSelector<boolean>;
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;

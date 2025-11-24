@@ -76,7 +76,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         description: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION' },
         onToggle: ({ newValue, dispatch }) => {
             dispatch(
-                suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable({
+                suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
                     isShownInSettings: newValue,
                 }),
             );
