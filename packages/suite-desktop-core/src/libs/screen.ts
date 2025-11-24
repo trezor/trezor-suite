@@ -1,7 +1,7 @@
 import { screen } from 'electron';
 
-export const MIN_WIDTH = 770;
-export const MIN_HEIGHT = 700;
+export const MIN_WIDTH = 420;
+export const MIN_HEIGHT = 420;
 export const MAX_WIDTH = 1920;
 export const MAX_HEIGHT = 1080;
 export const WINDOW_SIZE_FACTOR = 0.8;
