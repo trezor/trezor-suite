@@ -67,9 +67,8 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         });
 
         await test.step('Select second offer', async () => {
-            await tradingPage.selectThisQuoteButton.nth(1).click();
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            await tradingPage.termsConfirmButton.click();
+            await tradingPage.selectThisQuoteButton.nth(1).click();
             await expect(tradeRequestPromise).toHavePayload(
                 { trade: { ...buyQuotesBTCUpdate[5], receiveAddress } },
                 { omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'] },
@@ -95,7 +94,6 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
             const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
 
             await tradingPage.buyBestOfferButton.click();
-            await tradingPage.termsConfirmButton.click();
 
             await expect.soft(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],

@@ -34,7 +34,6 @@ export type TradingNavigateFrom =
 export type TradingExchangeAction = 'continue' | 'cancel' | 'retry' | 'visit';
 export type TradingExchangeStep =
     | 'exchange-form'
-    | 'exchange-terms-modal'
     | 'account-selection'
     | 'create-approval'
     | 'already-approved'

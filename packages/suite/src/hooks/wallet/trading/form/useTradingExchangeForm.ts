@@ -13,7 +13,6 @@ import {
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     TradingExchangeType,
-    type TradingExchangeUserConsentProps,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
@@ -44,7 +43,6 @@ import {
 import { Account } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -58,10 +56,7 @@ import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useT
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import {
-    selectIsDebugModeActive,
-    selectIsTradingTermsDismissed,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
@@ -108,10 +103,6 @@ export const useTradingExchangeForm = ({
     // quotes are scheduled to refresh after changing swap form inputs
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
-
-    const isTradingTermsDismissed = useSelector(state =>
-        selectIsTradingTermsDismissed(state, type),
-    );
 
     const { timer, device, checkQuotesTimer } = useTradingInitializer({
         pageType,
@@ -276,101 +267,66 @@ export const useTradingExchangeForm = ({
     });
 
     const selectQuote = async (quote: ExchangeTrade) => {
-        const userConsent = async ({
-            provider,
-            isDex,
-            send,
-            receive,
-        }: TradingExchangeUserConsentProps) => {
-            const {
-                label: sendCryptoLabel,
-                networkSymbol: sendCryptoNetworkSymbol,
-                contractAddress: sendCryptoContractAddress,
-            } = getTradingCryptoInfo(sendCryptoSelect);
+        const {
+            label: sendCryptoLabel,
+            networkSymbol: sendCryptoNetworkSymbol,
+            contractAddress: sendCryptoContractAddress,
+        } = getTradingCryptoInfo(sendCryptoSelect);
 
-            const {
-                label: receiveCryptoLabel,
-                networkSymbol: receiveCryptoNetworkSymbol,
-                contractAddress: receiveCryptoContractAddress,
-            } = getTradingCryptoInfo(receiveCryptoSelect);
+        const {
+            label: receiveCryptoLabel,
+            networkSymbol: receiveCryptoNetworkSymbol,
+            contractAddress: receiveCryptoContractAddress,
+        } = getTradingCryptoInfo(receiveCryptoSelect);
 
-            switch (pageType) {
-                case 'form': {
-                    analytics.report({
-                        type: EventType.TradingExchange,
-                        payload: {
-                            action: 'continue',
-                            step: 'exchange-form',
-                            sendCryptoLabel,
-                            sendCryptoNetworkSymbol,
-                            sendCryptoContractAddress,
-                            receiveCryptoLabel,
-                            receiveCryptoNetworkSymbol,
-                            receiveCryptoContractAddress,
-                            exchangeType,
-                            exchangeName: provider,
-                            rateType,
-                            fractionButton: helpers.fractionButton
-                                ? `${(100 / helpers.fractionButton).toString()}%`
-                                : undefined,
-                        },
-                    });
-                    break;
-                }
-                case 'offers': {
-                    analytics.report({
-                        type: EventType.TradingExchange,
-                        payload: {
-                            action: 'continue',
-                            step: 'offers-form',
-                            exchangeType,
-                            exchangeName: provider,
-                        },
-                    });
-                    break;
-                }
+        const provider =
+            exchangeInfo?.providerInfos && quote.exchange
+                ? exchangeInfo?.providerInfos[quote.exchange]
+                : null;
+
+        switch (pageType) {
+            case 'form': {
+                analytics.report({
+                    type: EventType.TradingExchange,
+                    payload: {
+                        action: 'continue',
+                        step: 'exchange-form',
+                        sendCryptoLabel,
+                        sendCryptoNetworkSymbol,
+                        sendCryptoContractAddress,
+                        receiveCryptoLabel,
+                        receiveCryptoNetworkSymbol,
+                        receiveCryptoContractAddress,
+                        exchangeType,
+                        exchangeName: provider?.companyName,
+                        rateType,
+                        fractionButton: helpers.fractionButton
+                            ? `${(100 / helpers.fractionButton).toString()}%`
+                            : undefined,
+                    },
+                });
+                break;
             }
-
-            return (
-                isTradingTermsDismissed ||
-                Boolean(
-                    await dispatch(
-                        openDeferredModal({
-                            type: isDex ? 'trading-exchange-dex-terms' : 'trading-exchange-terms',
-                            provider,
-                            fromCryptoCurrency: send,
-                            toCryptoCurrency: receive,
-                        }),
-                    ),
-                )
-            );
-        };
+            case 'offers': {
+                analytics.report({
+                    type: EventType.TradingExchange,
+                    payload: {
+                        action: 'continue',
+                        step: 'offers-form',
+                        exchangeType,
+                        exchangeName: provider?.companyName,
+                    },
+                });
+                break;
+            }
+        }
 
         await dispatch(
             exchangeThunks.selectQuoteThunk({
                 quote,
                 timer,
-
-                userConsent,
                 nextStep: () => {
                     navigateToExchangeConfirm();
-
-                    analytics.report({
-                        type: EventType.TradingExchange,
-                        payload: {
-                            action: 'continue',
-                            step: 'exchange-terms-modal',
-                        },
-                    });
-                },
-                onCancel: () => {
-                    analytics.report({
-                        type: EventType.TradingExchange,
-                        payload: {
-                            action: 'cancel',
-                            step: 'exchange-terms-modal',
-                        },
-                    });
                 },
             }),
         );

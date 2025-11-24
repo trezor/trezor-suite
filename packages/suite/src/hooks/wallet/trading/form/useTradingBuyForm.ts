@@ -27,7 +27,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 
-import { openDeferredModal } from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -38,7 +37,6 @@ import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/us
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { selectIsTradingTermsDismissed } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
@@ -70,9 +68,7 @@ export const useTradingBuyForm = ({
     } = useSelector(selectTradingBuy);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const paymentMethods = useSelector(selectTradingPaymentMethods);
-    const isTradingTermsDismissed = useSelector(state =>
-        selectIsTradingTermsDismissed(state, type),
-    );
+
     const { timer, device, checkQuotesTimer } = useTradingInitializer({
         pageType,
         isLoading,
@@ -289,20 +285,6 @@ export const useTradingBuyForm = ({
             }
         }
 
-        const userConsent = async (provider: string, cryptoCurrency: string) => {
-            if (isTradingTermsDismissed) return true;
-
-            const confirmed = await dispatch(
-                openDeferredModal({
-                    type: 'trading-buy-terms',
-                    provider,
-                    cryptoCurrency,
-                }),
-            );
-
-            return Boolean(confirmed);
-        };
-
         await dispatch(
             buyThunks.selectQuoteThunk({
                 quote,
@@ -311,26 +293,8 @@ export const useTradingBuyForm = ({
                 loginRequest: form => {
                     dispatch(submitRequestForm(form));
                 },
-                userConsent,
                 nextStep: () => {
-                    analytics.report({
-                        type: EventType.TradingBuy,
-                        payload: {
-                            action: 'continue',
-                            step: 'buy-terms-modal',
-                        },
-                    });
-
                     confirmTrade({ trade: quote, receiveAddress });
-                },
-                onCancel: () => {
-                    analytics.report({
-                        type: EventType.TradingBuy,
-                        payload: {
-                            action: 'cancel',
-                            step: 'buy-terms-modal',
-                        },
-                    });
                 },
             }),
         );

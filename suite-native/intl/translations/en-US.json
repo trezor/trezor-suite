@@ -1159,7 +1159,6 @@
     "moduleTrading.tradingScreen.quotesLoadingLabel": "Fetching offers...",
     "moduleTrading.tradingScreen.rate": "Rate",
     "moduleTrading.tradingScreen.selectedRate": "Selected rate",
-    "moduleTrading.tradingScreen.footer.poweredBy": "Powered by",
     "moduleTrading.tradingScreen.footer.learnMore": "Learn more",
     "moduleTrading.tradingScreen.balance": "Balance:",
     "moduleTrading.tradingScreen.providerOffer": "Provider offer: {amount}",

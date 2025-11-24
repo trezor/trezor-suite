@@ -121,27 +121,20 @@ describe('selectBuyQuoteThunk', () => {
         } as unknown as SelectBuyQuoteThunkProps['timer'];
 
         const mockNextStep = jest.fn();
-        const mockOnCancel = jest.fn();
         const mockLoginRequest = jest.fn();
-        const mockUserConsent = jest.fn(() => Promise.resolve(true));
-        const mockUserConsentDenied = jest.fn(() => Promise.resolve(false));
 
         return {
             store,
             mockTimer,
             mockTimerStop,
             mockNextStep,
-            mockOnCancel,
-            mockUserConsent,
-            mockUserConsentDenied,
             mockLoginRequest,
         };
     };
 
     it('should successful select without need of login', async () => {
         const { quote, state } = getDataMocks();
-        const { store, mockTimer, mockNextStep, mockTimerStop, mockUserConsent, mockLoginRequest } =
-            getMocks(state);
+        const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } = getMocks(state);
 
         await store
             .dispatch(
@@ -150,49 +143,14 @@ describe('selectBuyQuoteThunk', () => {
                     returnUrl: 'returnUrl',
                     timer: mockTimer,
                     loginRequest: mockLoginRequest,
-                    userConsent: mockUserConsent,
                     nextStep: mockNextStep,
                 }),
             )
             .unwrap();
 
-        expect(mockUserConsent).toHaveBeenCalledTimes(1);
         expect(mockNextStep).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(quote);
-    });
-
-    it('should call onCancel on cancelling the user consent', async () => {
-        const { quote, state } = getDataMocks();
-        const {
-            store,
-            mockTimer,
-            mockNextStep,
-            mockOnCancel,
-            mockTimerStop,
-            mockUserConsentDenied,
-            mockLoginRequest,
-        } = getMocks(state);
-
-        await store
-            .dispatch(
-                buyThunks.selectQuoteThunk({
-                    quote,
-                    returnUrl: 'returnUrl',
-                    timer: mockTimer,
-                    loginRequest: mockLoginRequest,
-                    userConsent: mockUserConsentDenied,
-                    nextStep: mockNextStep,
-                    onCancel: mockOnCancel,
-                }),
-            )
-            .unwrap();
-
-        expect(mockUserConsentDenied).toHaveBeenCalledTimes(1);
-        expect(mockNextStep).toHaveBeenCalledTimes(0);
-        expect(mockOnCancel).toHaveBeenCalledTimes(1);
-        expect(mockTimerStop).toHaveBeenCalledTimes(0);
-        expect(store.getState().wallet.trading.buy.selectedQuote).not.toEqual(quote);
     });
 
     describe('should not be possible to save selected quote', () => {
@@ -203,8 +161,6 @@ describe('selectBuyQuoteThunk', () => {
                 buyInfo: undefined,
             });
 
-            const mockUserConsent = jest.fn(() => Promise.resolve(false));
-
             await store
                 .dispatch(
                     buyThunks.selectQuoteThunk({
@@ -212,13 +168,11 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(0);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
@@ -231,8 +185,6 @@ describe('selectBuyQuoteThunk', () => {
                 quotesRequest: undefined,
             });
 
-            const mockUserConsent = jest.fn(() => Promise.resolve(false));
-
             await store
                 .dispatch(
                     buyThunks.selectQuoteThunk({
@@ -240,13 +192,11 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(0);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
@@ -256,8 +206,6 @@ describe('selectBuyQuoteThunk', () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } =
                 getMocks(state);
-
-            const mockUserConsent = jest.fn(() => Promise.resolve(false));
 
             await store
                 .dispatch(
@@ -269,13 +217,11 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(0);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
@@ -285,8 +231,6 @@ describe('selectBuyQuoteThunk', () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } =
                 getMocks(state);
-
-            const mockUserConsent = jest.fn(() => Promise.resolve(false));
 
             await store
                 .dispatch(
@@ -298,39 +242,11 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(0);
-            expect(mockNextStep).toHaveBeenCalledTimes(0);
-            expect(mockTimerStop).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
-        });
-
-        it('when user cancels consent', async () => {
-            const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } =
-                getMocks(state);
-
-            const mockUserConsent = jest.fn(() => Promise.resolve(false));
-
-            await store
-                .dispatch(
-                    buyThunks.selectQuoteThunk({
-                        quote,
-                        returnUrl: 'returnUrl',
-                        timer: mockTimer,
-                        loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
-                        nextStep: mockNextStep,
-                    }),
-                )
-                .unwrap();
-
-            expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
@@ -340,14 +256,8 @@ describe('selectBuyQuoteThunk', () => {
     describe('should not successfully select quote in login flow', () => {
         it('when there is a need of login request before continue', async () => {
             const { quote, tradeForm, state } = getDataMocks();
-            const {
-                store,
-                mockTimer,
-                mockNextStep,
-                mockTimerStop,
-                mockUserConsent,
-                mockLoginRequest,
-            } = getMocks(state);
+            const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } =
+                getMocks(state);
 
             const buyTradeResponse: BuyTradeResponse = {
                 trade: {
@@ -369,13 +279,11 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockLoginRequest).toHaveBeenCalledTimes(1);
             expect(mockNextStep).toHaveBeenCalledTimes(0);
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
@@ -384,8 +292,7 @@ describe('selectBuyQuoteThunk', () => {
 
         it('when login response has not tradeForm', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockUserConsent, mockLoginRequest } =
-                getMocks(state);
+            const { store, mockTimer, mockNextStep, mockLoginRequest } = getMocks(state);
 
             const buyTradeResponse = {
                 trade: {
@@ -406,21 +313,18 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockLoginRequest).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when login response has incorrect status', async () => {
             const { quote, state, tradeForm } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockUserConsent, mockLoginRequest } =
-                getMocks(state);
+            const { store, mockTimer, mockNextStep, mockLoginRequest } = getMocks(state);
 
             const buyTradeResponse = {
                 trade: {
@@ -442,21 +346,18 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
                 .unwrap();
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockLoginRequest).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
         it('when login response is undefined', async () => {
             const { quote, state } = getDataMocks();
-            const { store, mockTimer, mockNextStep, mockUserConsent, mockLoginRequest } =
-                getMocks(state);
+            const { store, mockTimer, mockNextStep, mockLoginRequest } = getMocks(state);
 
             invityAPI.doBuyTrade = () => Promise.resolve(undefined as unknown as BuyTradeResponse);
 
@@ -470,7 +371,6 @@ describe('selectBuyQuoteThunk', () => {
                         returnUrl: 'returnUrl',
                         timer: mockTimer,
                         loginRequest: mockLoginRequest,
-                        userConsent: mockUserConsent,
                         nextStep: mockNextStep,
                     }),
                 )
@@ -480,7 +380,6 @@ describe('selectBuyQuoteThunk', () => {
                 .getActions()
                 .find(action => action.type === '@common/in-app-notifications/addToast');
 
-            expect(mockUserConsent).toHaveBeenCalledTimes(1);
             expect(mockLoginRequest).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
             expect(actionToast?.payload?.type).toEqual('error');

@@ -17,21 +17,25 @@ import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/Tra
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingSellFormInputs } from '../common/TradingForm/TradingSellFormInputs';
 
-const TradingSellFormContent = ({ selectedAccount }: UseTradingProps) => {
+const TradingSellFormContent = () => (
+    <TradingFormLayout>
+        <TradingSellFormInputs />
+    </TradingFormLayout>
+);
+
+const TradingSellFormWrapper = ({ selectedAccount }: UseTradingProps) => {
     const tradingSellContextValues = useTradingSellForm({ selectedAccount });
 
     return (
         <TradingFormContext.Provider value={tradingSellContextValues}>
             <FormProvider {...tradingSellContextValues.methods}>
-                <TradingFormLayout>
-                    <TradingSellFormInputs />
-                </TradingFormLayout>
+                <TradingContainer SectionComponent={TradingSellFormContent} />
             </FormProvider>
         </TradingFormContext.Provider>
     );
 };
 
-const TradingSellFormWrapper = ({ selectedAccount }: UseTradingProps) => {
+const TradingSellFormLoaded = ({ selectedAccount }: UseTradingProps) => {
     const type: TradingType = 'sell';
     const { isDisabled, content } = useMessageSystemTrading(type);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
@@ -42,10 +46,18 @@ const TradingSellFormWrapper = ({ selectedAccount }: UseTradingProps) => {
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
-                <TradingSellFormContent selectedAccount={selectedAccount} />
+                <TradingSellFormWrapper selectedAccount={selectedAccount} />
             )}
         </TradingLayout>
     );
 };
 
-export const TradingSellForm = () => <TradingContainer SectionComponent={TradingSellFormWrapper} />;
+export const TradingSellForm = () => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+
+    return <TradingSellFormLoaded selectedAccount={selectedAccount} />;
+};

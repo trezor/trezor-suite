@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -32,8 +31,6 @@ import {
     getReceiveAccountAddressText,
     isFullySelectedReceiveAccount,
 } from '../../utils/general/receiveAccountUtils';
-import { useConsent } from '../general/useConsent';
-import { useConsentDenier } from '../general/useConsentDenier';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -64,9 +61,6 @@ export const useBuyFlow = (form: BuyFormType) => {
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
-    const { isConsentRequested, waitForConsent, resolveConsent } = useConsent();
-    useConsentDenier(candidateQuote?.exchange, resolveConsent);
-
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, candidateQuote?.receiveCurrency),
     );
@@ -87,32 +81,6 @@ export const useBuyFlow = (form: BuyFormType) => {
             });
         }
     };
-
-    const giveConsent = useCallback(() => {
-        resolveConsent(true);
-
-        analytics.report({
-            type: EventType.TradingBuy,
-            payload: {
-                step: 'buy-terms-modal',
-                action: 'continue',
-                ...quoteAnalyticsData,
-            },
-        });
-    }, [resolveConsent, quoteAnalyticsData]);
-
-    const cancelConsent = useCallback(() => {
-        resolveConsent(false);
-
-        analytics.report({
-            type: EventType.TradingBuy,
-            payload: {
-                step: 'buy-terms-modal',
-                action: 'cancel',
-                ...quoteAnalyticsData,
-            },
-        });
-    }, [resolveConsent, quoteAnalyticsData]);
 
     const handleWebview = (formData: FormResponse['form'], returnUrl: string) => {
         const source = getSourceForForm(formData);
@@ -208,7 +176,6 @@ export const useBuyFlow = (form: BuyFormType) => {
                 timer,
                 returnUrl,
                 loginRequest: formResponse => handleWebview(formResponse, returnUrl),
-                userConsent: waitForConsent,
                 nextStep: () => {
                     confirmTrade(candidateQuote, addressText);
                 },
@@ -219,8 +186,5 @@ export const useBuyFlow = (form: BuyFormType) => {
     return {
         canProceed,
         selectQuote,
-        isConsentRequested,
-        giveConsent,
-        cancelConsent,
     };
 };

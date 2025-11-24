@@ -1,4 +1,3 @@
-import type { TradingType } from '@suite-common/trading';
 import { DeviceRootState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { TransportInfo } from '@trezor/connect';
 import { versionUtils } from '@trezor/utils';
@@ -100,8 +99,6 @@ export const selectIsFirmwareHashCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareHash;
 export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
     state.suite.settings.enabledSecurityChecks.firmwareRevision;
-export const selectIsTradingTermsDismissed = (state: AppState, tradingType: TradingType): boolean =>
-    !!state.suite.dismissedTradingTerms?.[tradingType];
 
 // TODO use selectDeviceByDeviceRef from wallet-core; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
 export const selectRecentlyConnectedDevice = (state: AppState): TrezorDevice | undefined =>

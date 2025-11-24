@@ -422,7 +422,7 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.TradingBuy;
           payload: {
               action: 'continue' | 'cancel';
-              step: 'buy-form' | 'account-selection' | 'buy-terms-modal';
+              step: 'buy-form' | 'account-selection';
 
               cryptoLabel?: string;
               cryptoNetworkSymbol?: string;
@@ -461,7 +461,7 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.TradingSell;
           payload: {
               action: 'continue' | 'cancel';
-              step: 'sell-form' | 'sell-terms-modal' | 'confirm-and-send-transaction';
+              step: 'sell-form' | 'confirm-and-send-transaction';
 
               cryptoLabel?: string;
               cryptoNetworkSymbol?: string;

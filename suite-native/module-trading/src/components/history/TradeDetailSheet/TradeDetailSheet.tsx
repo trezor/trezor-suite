@@ -11,6 +11,7 @@ import { TradeDetailHeader } from './TradeDetailHeader';
 import { TradeDetailInfo } from './TradeDetailInfo';
 import { TradeDetailTransactionInfo } from './TradeDetailTransactionInfo';
 import { getTradeTitle } from '../../../utils/general/utils';
+import { Footer } from '../../general/Footer';
 
 type TradeDetailSheetProps = {
     orderId?: string;
@@ -29,6 +30,7 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
+
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     useEffect(() => {
@@ -59,6 +61,7 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
             <TradeDetailTransactionInfo orderId={orderId} />
             <TradeDetailInfo orderId={orderId} />
             <TradeDetailFooter orderId={orderId} />
+            <Footer type={trade.tradeType} />
         </BottomSheetModal>
     );
 });

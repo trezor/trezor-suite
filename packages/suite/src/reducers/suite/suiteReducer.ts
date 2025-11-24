@@ -2,7 +2,7 @@ import { produce } from 'immer';
 
 import type { CountryCode } from '@suite-common/geolocation';
 import { Locale } from '@suite-common/suite-types';
-import type { InvityServerEnvironment, TradingType } from '@suite-common/trading';
+import type { InvityServerEnvironment } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
@@ -123,7 +123,6 @@ export interface SuiteState {
     locks: Record<(typeof SUITE.LOCK_TYPE)[keyof typeof SUITE.LOCK_TYPE], number>;
     flags: Flags;
     evmSettings: EvmSettings;
-    dismissedTradingTerms: Partial<Record<TradingType, boolean>>;
     countryCode: CountryCode | null;
     prefillFields: PrefillFields;
     settings: SuiteSettings;
@@ -174,7 +173,6 @@ const initialState: SuiteState = {
         confirmExplanationModalClosed: {},
         explanationBannerClosed: {},
     },
-    dismissedTradingTerms: {},
     prefillFields: {
         sendForm: '',
         transactionHistory: '',
@@ -242,10 +240,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 draft.evmSettings = {
                     ...draft.evmSettings,
                     ...action.payload.suiteSettings?.evmSettings,
-                };
-                draft.dismissedTradingTerms = {
-                    ...draft.dismissedTradingTerms,
-                    ...action.payload.suiteSettings?.dismissedTradingTerms,
                 };
                 draft.seenDisconnectNotificationForDeviceIds = [
                     ...draft.seenDisconnectNotificationForDeviceIds,
@@ -329,12 +323,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 };
                 break;
 
-            case SUITE.DISMISSED_TRADING_TERMS:
-                draft.dismissedTradingTerms = {
-                    ...draft.dismissedTradingTerms,
-                    [action.tradingType]: true,
-                };
-                break;
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
                 break;

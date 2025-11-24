@@ -59,7 +59,6 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
 
         await test.step('Continue Swap flow towards Send section', async () => {
             await tradingPage.swapBestOfferButton.click();
-            await tradingPage.termsConfirmButton.click();
             await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
             await tradingPage.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
