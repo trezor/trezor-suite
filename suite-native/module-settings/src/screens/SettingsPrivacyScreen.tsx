@@ -12,7 +12,11 @@ import {
     VStack,
     useDiscreetMode,
 } from '@suite-native/atoms';
-import { selectIsBiometricsEnabled, useBiometricsSettings } from '@suite-native/biometrics';
+import {
+    BiometricsToggleResult,
+    selectIsBiometricsEnabled,
+    useBiometricsSettings,
+} from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles-native';
@@ -91,12 +95,19 @@ const AnalyticsSwitchRow = () => {
 
 const BiometricsSwitchRow = () => {
     const isBiometricsEnabled = useSelector(selectIsBiometricsEnabled);
-    const { toggleBiometricsOption } = useBiometricsSettings();
+    const { toggleBiometricsOption, displayBiometricsNotAvailableAlert } = useBiometricsSettings();
+
+    const toggleBiometrics = async () => {
+        const result = await toggleBiometricsOption();
+        if (result === BiometricsToggleResult.BiometricsNotAvailable) {
+            displayBiometricsNotAvailableAlert();
+        }
+    };
 
     return (
         <TouchableSwitchRow
             isChecked={isBiometricsEnabled}
-            onChange={toggleBiometricsOption}
+            onChange={toggleBiometrics}
             accessibilityLabel="biometrics"
             text={<Translation id="moduleSettings.privacyAndSecurity.biometrics.title" />}
             icon={Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint'}

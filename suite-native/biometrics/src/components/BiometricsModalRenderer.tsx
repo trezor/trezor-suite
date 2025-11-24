@@ -19,27 +19,44 @@ export const BiometricsModalRenderer = () => {
 
     const handleBiometricsAppStateChange = useCallback(
         (nextAppState: AppStateStatus) => {
-            if (!isBiometricsOptionEnabled) {
-                return;
-            }
-
             dispatch(
                 handleBiometricsAppStateChangeThunk({
                     currentAppState: nextAppState,
                 }),
             );
         },
-        [dispatch, isBiometricsOptionEnabled],
+        [dispatch],
     );
 
     useEffect(() => {
+        if (!isBiometricsOptionEnabled) {
+            return;
+        }
+
         // Authentication on mount
         handleBiometricsAppStateChange(AppState.currentState);
 
         const subscription = AppState.addEventListener('change', handleBiometricsAppStateChange);
 
-        return () => subscription.remove();
-    }, [dispatch, handleBiometricsAppStateChange]);
+        // const blurSubscription = AppState.addEventListener('blur', () => {
+        //     // On Android, blur is equivalent of inactive state on iOS
+        //     if (isBiometricsOptionEnabled) {
+        //         console.log('BiometricsModalRenderer: AppState blur event detected');
+        //     }
+        // });
+        // const focusSubscription = AppState.addEventListener('focus', () => {
+        //     // On Android, focus is equivalent of going from inactive state on iOS
+        //     if (isBiometricsOptionEnabled) {
+        //         console.log('BiometricsModalRenderer: AppState focus event detected');
+        //     }
+        // });
+
+        return () => {
+            // blurSubscription.remove();
+            // focusSubscription.remove();
+            subscription.remove();
+        };
+    }, [dispatch, handleBiometricsAppStateChange, isBiometricsOptionEnabled]);
 
     return shouldUserBeAuthenticated ? (
         <BiometricOverlay isBiometricsAuthButtonVisible={!!biometricsError} />
