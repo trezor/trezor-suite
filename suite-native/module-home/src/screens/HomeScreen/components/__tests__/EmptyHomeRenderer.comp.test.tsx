@@ -17,7 +17,7 @@ describe('EmptyHomeRenderer', () => {
     const expectEmptyPortfolioCrossroadsState = () => {
         const { getByText } = screen;
 
-        expect(getByText('Connect your Trezor')).toBeTruthy();
+        expect(getByText('Manage your coins with your Trezor connected.')).toBeTruthy();
     };
 
     const expectEmptyConnectedDeviceState = () => {

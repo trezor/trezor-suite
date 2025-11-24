@@ -1,13 +1,15 @@
+// iOS-only version of the illustration, see the file name.
+
 import * as React from 'react';
-import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
 
 import { useIllustrationColors } from '@suite-native/atoms';
 
-export const TurnOnTrezorSvg = (props: SvgProps) => {
+export const ConnectTrezorSvg = () => {
     const { lineColor, fillColor } = useIllustrationColors();
 
     return (
-        <Svg width={224} height={224} fill="none" {...props}>
+        <Svg width={224} height={224} fill="none">
             <G clipPath="url(#a)">
                 <Path
                     d="M189.139 41.5984L159.149 42.6143C159.149 42.6143 154.256 42.3368 153.482 50.2927L145.051 106.752C145.051 106.752 144.679 112.413 146.548 124.287C148.417 136.162 150.744 147.998 150.744 147.998C150.744 147.998 152.875 149.675 157.014 150.959C161.152 152.243 172.567 155.93 172.567 155.93L179.624 154.987C179.624 154.987 181.808 154.96 183.648 151.608C185.488 148.257 198.339 125.084 198.339 125.084C198.339 125.084 200.916 119.481 202.317 110.296C203.717 101.112 211.543 49.9669 211.543 49.9669C211.543 49.9669 211.802 46.5549 208.92 44.1587L201.728 41.6032H189.141L189.139 41.5984Z"

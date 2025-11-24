@@ -4,17 +4,17 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { selectIsDeviceAuthorized } from '@suite-common/wallet-core';
-import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { CloseActionType, Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import TrezorConnect, { DEVICE } from '@trezor/connect';
 
 import { ConnectDeviceScreenHeader } from './ConnectDeviceScreenHeader';
 
 type ConnectDeviceScreenProps = {
+    closeActionType?: CloseActionType;
     children: ReactNode;
-    helpButton?: ReactNode;
 };
 
-export const ConnectDeviceScreen = ({ children, helpButton }: ConnectDeviceScreenProps) => {
+export const ConnectDeviceScreen = ({ closeActionType, children }: ConnectDeviceScreenProps) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
 
@@ -36,7 +36,10 @@ export const ConnectDeviceScreen = ({ children, helpButton }: ConnectDeviceScree
     );
 
     return (
-        <Screen header={<ConnectDeviceScreenHeader helpButton={helpButton} />} isScrollable={false}>
+        <Screen
+            header={<ConnectDeviceScreenHeader closeActionType={closeActionType} />}
+            isScrollable={false}
+        >
             {children}
         </Screen>
     );

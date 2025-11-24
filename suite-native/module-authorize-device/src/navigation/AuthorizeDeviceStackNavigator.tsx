@@ -14,6 +14,7 @@ import {
 import { PassphraseStackNavigator } from './PassphraseStackNavigator';
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { ConnectBluetoothDeviceScreen } from '../screens/connect/ConnectBluetoothDeviceScreen';
+import { ConnectDeviceCrossroadsScreen } from '../screens/connect/ConnectDeviceCrossroadsScreen';
 import { ConnectingDeviceScreen } from '../screens/connect/ConnectingDeviceScreen';
 import { DeviceConnectionGuardScreen } from '../screens/connect/DeviceConnectionGuardScreen';
 import { PinScreen } from '../screens/connect/PinScreen';
@@ -57,9 +58,12 @@ export const AuthorizeDeviceStackNavigator = () => {
                             component={DeviceConnectionGuardScreen}
                         />
                         <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads}
+                            component={ConnectDeviceCrossroadsScreen}
+                        />
+                        <AuthorizeDeviceStack.Screen
                             name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
                             component={ConnectAndUnlockDeviceScreen}
-                            options={{ animationTypeForReplace: 'pop' }}
                         />
                         <AuthorizeDeviceStack.Screen
                             name={AuthorizeDeviceStackRoutes.TurnOnAndUnlockDevice}

@@ -115,7 +115,10 @@ export const messages = {
                 alert: 'This requires access to Trezor Suite coin addresses.',
             },
             connectTrezor: {
-                title: 'Connect your Trezor',
+                title: {
+                    ios: 'Connect your Trezor Safe 7',
+                    android: 'Connect your Trezor',
+                },
                 description: 'Manage your coins with your Trezor connected.',
                 connectButton: 'Connect',
             },
@@ -483,12 +486,22 @@ export const messages = {
         },
     },
     moduleConnectDevice: {
+        crossroads: {
+            bluetooth: {
+                title: 'Connect <bold>Trezor Safe 7</bold>',
+                subtitle: 'via Bluetooth',
+            },
+            cable: {
+                title: 'Connect <bold>any Trezor</bold>',
+                subtitle: 'via cable',
+            },
+        },
         connectAndUnlockScreen: {
             title: 'Connect & unlock\nyour Trezor',
-            connectViaBluetoothButton: 'Connect via Bluetooth',
+            status: 'Checking for connected Trezors',
         },
         turnOnAndUnlockScreen: {
-            title: 'Turn on & unlock\nyour Trezor',
+            title: 'Turn on & unlock\nyour Trezor Safe 7',
             status: {
                 adapterDisabled: 'Bluetooth is turned off',
                 scanning: 'Scanning for nearby Trezors',
@@ -525,13 +538,11 @@ export const messages = {
         },
         helpModal: {
             connect: {
-                title: 'Connect my Trezor',
-                subtitle: 'Don’t see your Trezor?',
-                stepsTitle: 'Try these steps',
-                step1: '1. Reconnect your Trezor',
-                step2: '2. Use a different USB data cable',
-                step3: '3. Use a different mobile device',
-                step4: '4. Enable connection for Trezor Suite via phone system message',
+                title: 'Don’t see your Trezor?',
+                hint1: 'Make sure your Trezor is unlocked',
+                hint2: 'Try using a different USB cable',
+                hint3: 'Connect your Trezor to a different phone or computer',
+                contactSupportButton: 'Contact support',
             },
             pairing: {
                 hints: {

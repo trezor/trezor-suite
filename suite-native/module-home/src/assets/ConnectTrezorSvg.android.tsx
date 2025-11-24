@@ -1,13 +1,15 @@
+// Android-only version of the illustration, see the file name.
+
 import * as React from 'react';
-import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path } from 'react-native-svg';
 
 import { useIllustrationColors } from '@suite-native/atoms';
 
-export const ConnectTrezorSvg = (props: SvgProps) => {
+export const ConnectTrezorSvg = () => {
     const { lineColor, fillColor } = useIllustrationColors();
 
     return (
-        <Svg width={224} height={224} fill="none" {...props}>
+        <Svg width={224} height={224} fill="none">
             <G clipPath="url(#a)">
                 <Path
                     d="M149.941 45.01s6.9-1.785 13.316-2.558c6.418-.773 18.818-2.025 20.314-1.93 1.496.096 4.681 1.496 4.681 1.496s3.185 2.751 3.135 2.992c-.05.241.53 2.317.193 3.956-.339 1.641-6.031 30.3-6.031 30.3s-3.427 13.028-3.474 13.269c-.048.24-2.076 5.5-3.185 7.43-1.11 1.93-3.861 5.886-3.861 6.031 0 .146-3.474 5.163-3.474 5.163l-4.101 6.08s-3.378 4.39-3.86 4.681c-.482.291-1.014.868-1.833.964-.818.095-1.641.529-2.364.193-.723-.339-1.883-.53-2.076-.53-.193 0-.434-.096-.434-.096s-.628 2.365-.723 2.413c-.096.047-1.883.675-2.026.675-.143 0-3.956-.53-3.86-.723.095-.193.434-3.04.434-3.04l-2.799-.723-5.258-3.569s-2.219-8.878-2.944-13.22c-.723-4.343-1.883-12.013-.916-17.37.964-5.356 8.491-37.633 8.491-37.633s1.109-3.378 2.846-4.342M94.713 178.876c.072-.217 6.351-2.412 6.659-2.534.308-.121 3.111 8.83 3.111 8.83l-7.165 1.809-2.605-8.105z"

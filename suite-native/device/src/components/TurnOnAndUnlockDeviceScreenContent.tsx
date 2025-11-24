@@ -42,8 +42,8 @@ export const TurnOnAndUnlockDeviceScreenContent = ({
                     )}
                     {bluetoothAdapterStatus === 'enabled' && (
                         <>
-                            <Loader color="iconAlertBlue" />
-                            <Text variant="body" color="textAlertBlue">
+                            <Loader color="iconPrimaryDefault" />
+                            <Text variant="body" color="textPrimaryDefault">
                                 <Translation id="moduleConnectDevice.turnOnAndUnlockScreen.status.scanning" />
                             </Text>
                         </>

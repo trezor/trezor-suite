@@ -24,7 +24,11 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
-import { TurnOnTrezorSvg } from '../../../assets/TurnOnTrezorSvg';
+
+const platformSpecificTitle: TxKeyPath = Platform.select({
+    ios: 'moduleHome.emptyState.connectTrezor.title.ios',
+    default: 'moduleHome.emptyState.connectTrezor.title.android',
+});
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -104,9 +108,9 @@ export const EmptyPortfolioCrossroads = () => {
         <VStack spacing="sp16" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="sp24" justifyContent="center" alignItems="center">
-                    {Platform.OS === 'ios' ? <TurnOnTrezorSvg /> : <ConnectTrezorSvg />}
+                    <ConnectTrezorSvg />
                     <CenteredTitleHeader
-                        title={<Translation id="moduleHome.emptyState.connectTrezor.title" />}
+                        title={<Translation id={platformSpecificTitle} />}
                         subtitle={
                             <Translation id="moduleHome.emptyState.connectTrezor.description" />
                         }
