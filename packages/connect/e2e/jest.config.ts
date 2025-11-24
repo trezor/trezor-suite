@@ -16,6 +16,7 @@ export default {
             },
         ],
     },
+    transformIgnorePatterns: ['node_modules/(?!(@noble)/)'],
     verbose: true,
     bail: true,
     testEnvironment: 'node',
