@@ -247,7 +247,7 @@ export const HELP_CENTER_TRANSACTION_FEES_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/transaction-fees-in-trezor-suite',
 );
 export const HELP_CENTER_EVM_ADDRESS_CHECKSUM: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/trezor-suite-desktop/experimental-features-in-trezor-suite',
+    'https://trezor.io/learn/a/evm-address-checksum-in-trezor-suite',
 );
 export const HELP_CENTER_EVM_SEND_TO_CONTRACT_URL = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/coins-tokens/where-is-my-ethereum',
