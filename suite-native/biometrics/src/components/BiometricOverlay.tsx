@@ -55,7 +55,7 @@ export const BiometricOverlay = ({ isBiometricsAuthButtonVisible }: BiometricOve
                 >
                     <BiometricsIcon iconSize={iconSizes.extraLarge} showShadow />
                     <Text color="contentBrand">
-                        <Translation id="biometricsButton" />
+                        <Translation id="biometrics.biometricsButton" />
                     </Text>
                 </PressableOpacity>
             )}

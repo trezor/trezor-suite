@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
+import {
+    BiometricsSvg,
+    BiometricsToggleResult,
+    useBiometricsSettings,
+} from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -38,7 +42,7 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
 
     const enableBiometrics = async () => {
         const result = await toggleBiometricsOption();
-        if (result === 'enabled') {
+        if (result === BiometricsToggleResult.Enabled) {
             analytics.report({
                 type: events.biometricsChangeEvent.name,
                 payload: {

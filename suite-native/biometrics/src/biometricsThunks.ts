@@ -21,8 +21,8 @@ import { getIsBiometricsFeatureAvailable, getShouldRevokeAuth } from './biometri
 const BIOMETRICS_THUNK_PREFIX = 'biometrics';
 
 export enum AuthenticateError {
-    BiometricsNotAvailable = 'biometrics-not-available',
     AuthenticationFailed = 'authentication-failed',
+    BiometricsNotAvailable = 'biometrics-not-available',
 }
 
 export const authenticateUserThunk = createThunk<
@@ -47,15 +47,24 @@ export const authenticateUserThunk = createThunk<
     return result;
 });
 
-export type BiometricsToggleResult = 'enabled' | 'disabled';
+export enum BiometricsToggleResult {
+    Enabled = 'enabled',
+    Disabled = 'disabled',
+    BiometricsNotAvailable = 'biometrics-not-available',
+}
 
 export const toggleBiometricsSettingsThunk = createThunk<
     BiometricsToggleResult,
     void,
-    { rejectValue: AuthenticateError }
+    { rejectValue: BiometricsToggleResult | AuthenticateError }
 >(
     `${BIOMETRICS_THUNK_PREFIX}/toggleBiometricsSettings`,
     async (_, { getState, rejectWithValue, dispatch }) => {
+        const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
+
+        if (!isBiometricsAvailable)
+            return rejectWithValue(BiometricsToggleResult.BiometricsNotAvailable);
+
         const authResult = await dispatch(authenticateUserThunk());
 
         if (isRejected(authResult) && authResult.payload) {
@@ -71,7 +80,7 @@ export const toggleBiometricsSettingsThunk = createThunk<
                 payload: { enabled: false, origin: 'settingsToggle' },
             });
 
-            return 'disabled';
+            return BiometricsToggleResult.Disabled;
         } else {
             dispatch(toggleEnableBiometrics(true));
             analytics.report({
@@ -79,22 +88,24 @@ export const toggleBiometricsSettingsThunk = createThunk<
                 payload: { enabled: true, origin: 'settingsToggle' },
             });
 
-            return 'enabled';
+            return BiometricsToggleResult.Enabled;
         }
     },
 );
 export const handleBiometricsAppStateChangeThunk = createThunk(
     `${BIOMETRICS_THUNK_PREFIX}/handleAppStateChange`,
     ({ currentAppState }: { currentAppState: AppStateStatus }, { getState, dispatch }) => {
-
         const goneToBackgroundAtTimestamp = selectGoneToBackgroundAtTimestamp(getState());
         const shouldUserBeAuthenticated = selectShouldUserBeAuthenticated(getState());
         const isTogglingBiometricsInProgress = selectIsTogglingBiometrics(getState());
-
+        const isBiometricsOptionEnabled = selectIsBiometricsEnabled(getState());
         const shouldRevokeAuth = getShouldRevokeAuth(goneToBackgroundAtTimestamp);
+
+        if (!isBiometricsOptionEnabled) return;
 
         switch (currentAppState) {
             case 'active':
+                // TODO can I remove shouldUserBeAuthenticated and replace it with if/else?
                 if (shouldRevokeAuth && shouldUserBeAuthenticated) {
                     dispatch(authenticateUserThunk());
                 } else if (!shouldRevokeAuth) {
@@ -103,7 +114,7 @@ export const handleBiometricsAppStateChangeThunk = createThunk(
                 break;
 
             case 'background':
-                // Stop the authentication flow if user leaves the app.
+                // Stop the authentication flow if user leaves the app on Android.
                 if (Platform.OS === 'android' && isBiometricsOptionEnabled) {
                     LocalAuthentication.cancelAuthenticate();
                 }

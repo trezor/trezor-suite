@@ -204,7 +204,14 @@ export const messages = {
         },
         rediscoveryNeeded: 'Reconnect your Trezor to load all assets.',
     },
-    biometricsButton: 'Unlock with biometrics',
+    biometrics: {
+        biometricsButton: 'Unlock with biometrics',
+        biometricsUnavailableAlert: {
+            title: 'Biometrics',
+            description:
+                'No security features on your device. Make sure you have biometrics setup on your phone and try again.',
+        },
+    },
     bluetooth: {
         alerts: {
             permissionDenied: {
