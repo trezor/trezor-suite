@@ -16,7 +16,7 @@ export const createThpSession = async (device: Device, deriveCardano: boolean) =
 
             return promptRes.payload.passphraseOnDevice
                 ? { on_device: true }
-                : { passphrase: promptRes.payload.value };
+                : { passphrase: promptRes.payload.value.normalize('NFKD') };
         });
     }
 
