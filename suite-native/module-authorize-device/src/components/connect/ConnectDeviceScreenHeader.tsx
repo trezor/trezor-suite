@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +14,7 @@ import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
+    CloseActionType,
     NavigateParameters,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
@@ -24,7 +25,7 @@ import TrezorConnect from '@trezor/connect';
 type ConnectDeviceScreenHeaderProps = {
     shouldDisplayCancelButton?: boolean;
     onCancelNavigationTarget?: NavigateParameters<RootStackParamList>;
-    helpButton?: ReactNode;
+    closeActionType?: CloseActionType;
 };
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -36,7 +37,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
     onCancelNavigationTarget,
-    helpButton,
+    closeActionType = 'close',
 }: ConnectDeviceScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
@@ -104,7 +105,7 @@ export const ConnectDeviceScreenHeader = ({
         <ScreenHeaderWrapper>
             {shouldDisplayCancelButton && (
                 <IconButton
-                    iconName="x"
+                    iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
                     size="medium"
                     colorScheme="tertiaryElevation0"
                     accessibilityRole="button"
@@ -112,7 +113,6 @@ export const ConnectDeviceScreenHeader = ({
                     onPress={handleCancel}
                 />
             )}
-            {helpButton}
         </ScreenHeaderWrapper>
     );
 };

@@ -140,6 +140,7 @@ export enum BackupAndPassphraseStackRoutes {
 
 export enum AuthorizeDeviceStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ConnectDeviceCrossroads = 'ConnectDeviceCrossroads',
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
     TurnOnAndUnlockDevice = 'TurnOnAndUnlockDevice',
     ConnectBluetoothDevice = 'ConnectBluetoothDevice',

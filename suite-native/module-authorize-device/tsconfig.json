@@ -34,7 +34,6 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" }
     ],
     "include": [".", "**/*.json"]

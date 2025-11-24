@@ -40,7 +40,6 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "expo-video": "~3.0.11",
         "react": "19.1.0",

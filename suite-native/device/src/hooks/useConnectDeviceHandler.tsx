@@ -45,7 +45,7 @@ export const useConnectDeviceHandler = () => {
             });
         } else {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+                screen: AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads,
             });
         }
     }, [dispatch, isDeviceThpRequired, isAnyPhysicalDeviceConnectedViaUsb, navigation]);
