@@ -54,7 +54,6 @@ const Title = () => {
                     rest: text => text,
                     underline: text => <UnderlinedBlock>{text}</UnderlinedBlock>,
                 }}
-                isNested={true}
             />
         </Text>
     );

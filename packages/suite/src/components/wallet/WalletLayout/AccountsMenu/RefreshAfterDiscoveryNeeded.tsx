@@ -78,7 +78,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
                     ) : (
                         <DiscoveryButtonContainer {...animationConfig}>
                             <AccountsMenuNotice>
-                                <Translation id="TR_DISCOVERY_NEW_COINS_TEXT" isNested={false} />
+                                <Translation id="TR_DISCOVERY_NEW_COINS_TEXT" />
                             </AccountsMenuNotice>
 
                             <Button
