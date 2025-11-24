@@ -12,26 +12,23 @@ import messages from '../../support/messages';
 
 export type TranslationKey = keyof typeof messages;
 
-type OwnProps = {
-    isNested?: boolean;
-};
-
 export type ExtendedMessageDescriptor = CommonExtendedMessageDescriptor;
-type MsgType = OwnProps & ExtendedMessageDescriptor;
 
 export const isMsgType = (
-    props: MsgType | ReactNode | ExtendedMessageDescriptor | Date | FormatXMLElementFn,
-): props is MsgType =>
-    typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
+    props: ReactNode | ExtendedMessageDescriptor | Date | FormatXMLElementFn,
+): props is ExtendedMessageDescriptor =>
+    typeof props === 'object' &&
+    props !== null &&
+    (props as ExtendedMessageDescriptor).id !== undefined;
 
-export const Translation = (props: MsgType) => {
+export const Translation = (props: ExtendedMessageDescriptor) => {
     const values: Record<string, any> = {};
     // message passed via props (id, defaultMessage, values)
     Object.keys(props.values || []).forEach(key => {
         // Iterates through all values. The entry may also contain a MessageDescriptor.
         // If so, Renders MessageDescriptor by passing it to `Translation` component
         const maybeMsg = props.values![key];
-        values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} isNested /> : maybeMsg;
+        values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} /> : maybeMsg;
     });
 
     // prevent runtime errors
@@ -43,12 +40,10 @@ export const Translation = (props: MsgType) => {
         return <>{`Unknown translation id: ${props.id}`}</>;
     }
 
-    const defaultTagName = props.isNested ? undefined : 'span';
-
     return (
         <FormattedMessage
             id={props.id}
-            {...(defaultTagName === undefined ? {} : { tagName: defaultTagName })} // needed due to: "exactOptionalPropertyTypes": true
+            tagName="span"
             defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
             // pass undefined to a 'values' prop in case of an empty values object
             {...(Object.keys(values).length === 0 ? {} : { values })} // needed due to: "exactOptionalPropertyTypes": true
