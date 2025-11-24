@@ -108,7 +108,7 @@ export const PaymentRequest = Type.Object(
         nonce: Type.Optional(Type.String()),
         recipient_name: Type.String(),
         memos: Type.Optional(Type.Array(PaymentRequestMemo)),
-        amount: Type.Optional(Type.Uint()),
+        amount: Type.Optional(Type.String()),
         signature: Type.String(),
     },
     { $id: 'PaymentRequest' },

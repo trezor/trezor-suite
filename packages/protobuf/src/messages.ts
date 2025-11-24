@@ -78,7 +78,7 @@ export type PaymentRequest = {
     nonce?: string;
     recipient_name: string;
     memos?: PaymentRequestMemo[];
-    amount?: UintType;
+    amount?: string;
     signature: string;
 };
 

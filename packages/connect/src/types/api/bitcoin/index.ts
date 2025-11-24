@@ -66,10 +66,14 @@ export interface TransactionOptions {
     chunkify?: boolean;
 }
 
+export interface PaymentRequest extends Omit<PROTO.PaymentRequest, 'amount'> {
+    amount?: string | number;
+}
+
 export interface SignTransaction {
     inputs: ProtoWithDerivationPath<PROTO.TxInputType>[];
     outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[];
-    paymentRequests?: PROTO.PaymentRequest[];
+    paymentRequests?: PaymentRequest[];
     refTxs?: RefTransaction[];
     account?: {
         addresses: AccountAddresses;
