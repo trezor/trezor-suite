@@ -26,7 +26,7 @@ export const MessageSystemButton = ({ cta, id, ...props }: MessageSystemButtonPr
 
     const { action, label, link, anchor } = cta;
 
-    const onClick = e => {
+    const onClick = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
         e.stopPropagation();
         switch (action) {
             case 'internal-link':
