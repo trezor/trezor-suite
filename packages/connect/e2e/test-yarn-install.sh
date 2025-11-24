@@ -15,6 +15,8 @@ cd connect-implementation
 npm init -y
 touch yarn.lock
 
+echo "npmMinimalAgeGate: 0" > .yarnrc.yml
+
 # install connect package
 yarn add @trezor/connect@"$1"
 # prepare minimal typescript implementation
