@@ -111,74 +111,6 @@ describe('useExchangeSelectQuote', () => {
             expect(result.current.canProceed).toBe(true);
         });
 
-        it('should handle user consent flow with giveConsent', async () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const analyticsSpy = jest.spyOn(analytics, 'report');
-
-            const { result } = await renderUseExchangeSelectQuote();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { userConsent } = (dispatchCall as any).payload;
-
-            act(() => {
-                userConsent('provider', 'BTC', 'ETH');
-            });
-
-            expect(result.current.isConsentRequested).toBe(true);
-
-            act(() => {
-                result.current.giveConsent();
-            });
-
-            expect(result.current.isConsentRequested).toBe(false);
-            expect(analyticsSpy).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
-                payload: expect.objectContaining({
-                    step: 'exchange-terms-modal',
-                    action: 'continue',
-                    exchangeName: 'mercuryo',
-                }),
-            });
-        });
-
-        it('should handle user consent flow with cancelConsent', async () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const analyticsSpy = jest.spyOn(analytics, 'report');
-
-            const { result } = await renderUseExchangeSelectQuote();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            const { userConsent } = (dispatchCall as any).payload;
-
-            act(() => {
-                userConsent('provider', 'BTC', 'ETH');
-            });
-
-            expect(result.current.isConsentRequested).toBe(true);
-
-            act(() => {
-                result.current.cancelConsent();
-            });
-
-            expect(result.current.isConsentRequested).toBe(false);
-            expect(analyticsSpy).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
-                payload: expect.objectContaining({
-                    step: 'exchange-terms-modal',
-                    action: 'cancel',
-                    exchangeName: 'mercuryo',
-                }),
-            });
-        });
-
         it('should call selectQuoteThunk when selectQuote is called', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
@@ -273,35 +205,6 @@ describe('useExchangeSelectQuote', () => {
             });
 
             expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingExchangePreview', {});
-        });
-
-        it('should call cancelConsent when quote provider changes', async () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-            const { result, rerender } = await renderUseExchangeSelectQuote();
-
-            act(() => {
-                result.current.selectQuote();
-            });
-
-            const dispatchCall = dispatchSpy.mock.calls[0][0];
-            // simulate userConsent call (as we mock the thunk)
-            const { userConsent } = (dispatchCall as any).payload;
-            act(() => {
-                userConsent();
-            });
-            expect(result.current.isConsentRequested).toBe(true);
-
-            // change selected quote to quote with different provider
-            act(() => {
-                exchangeForm.setValue('quote', { ...exchangeQuotes[1], exchange: 'invity' });
-            });
-
-            // we need to manually rerender tested hook
-            rerender({});
-
-            // consent should not be requested anymore
-            expect(result.current.isConsentRequested).toBe(false);
         });
     });
 

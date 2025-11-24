@@ -232,130 +232,14 @@ export default defineMessages({
         defaultMessage: '{type} is currently disabled.',
         id: 'TR_TRADING_DISABLED_DEFAULT',
     },
-    TR_TRADING_TERMS_DONT_SHOW_AGAIN: {
-        defaultMessage: 'Don’t show this again',
-        id: 'TR_TRADING_TERMS_DONT_SHOW_AGAIN',
-    },
-    TR_TRADING_SWAP_MODAL_FOR_YOUR_SAFETY: {
-        defaultMessage: 'Swap {fromCrypto} to {toCrypto} with {provider}',
-        id: 'TR_TRADING_SWAP_MODAL_FOR_YOUR_SAFETY',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_CONFIRM: {
-        defaultMessage: 'I’m ready to swap',
-        id: 'TR_TRADING_SWAP_MODAL_CONFIRM',
-        dynamic: true,
-    },
     TR_TRADING_SWAP_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_TRADING_SWAP_MODAL_SECURITY_HEADER',
         dynamic: true,
     },
-    TR_TRADING_SWAP_MODAL_TERMS_1: {
-        defaultMessage:
-            "You're here to swap cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
-        id: 'TR_TRADING_SWAP_MODAL_TERMS_1',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_TERMS_2: {
-        defaultMessage:
-            "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
-        id: 'TR_TRADING_SWAP_MODAL_TERMS_2',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_TERMS_3: {
-        defaultMessage:
-            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-        id: 'TR_TRADING_SWAP_MODAL_TERMS_3',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_VERIFIED_PARTNERS_HEADER: {
-        defaultMessage: 'Verified partners by Invity',
-        id: 'TR_TRADING_SWAP_MODAL_VERIFIED_PARTNERS_HEADER',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_TERMS_4: {
-        defaultMessage:
-            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
-        id: 'TR_TRADING_SWAP_MODAL_TERMS_4',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_LEGAL_HEADER: {
-        defaultMessage: 'Legal notice',
-        id: 'TR_TRADING_SWAP_MODAL_LEGAL_HEADER',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_TERMS_5: {
-        defaultMessage:
-            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-        id: 'TR_TRADING_SWAP_MODAL_TERMS_5',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_MODAL_TERMS_6: {
-        defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-        id: 'TR_TRADING_SWAP_MODAL_TERMS_6',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_FOR_YOUR_SAFETY: {
-        defaultMessage: 'Swap {fromCrypto} to {toCrypto} with {provider}',
-        id: 'TR_TRADING_SWAP_DEX_MODAL_FOR_YOUR_SAFETY',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_CONFIRM: {
-        defaultMessage: 'I’m ready to swap',
-        id: 'TR_TRADING_SWAP_DEX_MODAL_CONFIRM',
-        dynamic: true,
-    },
     TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_TERMS_1: {
-        defaultMessage:
-            "You're here to swap cryptocurrencies with a DEX (decentralized exchange) by using {provider}'s contract.",
-        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_1',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_TERMS_2: {
-        defaultMessage:
-            "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
-        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_2',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_TERMS_3: {
-        defaultMessage:
-            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_3',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_VERIFIED_PARTNERS_HEADER: {
-        defaultMessage: 'Verified partners by Invity',
-        id: 'TR_TRADING_SWAP_DEX_MODAL_VERIFIED_PARTNERS_HEADER',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_TERMS_4: {
-        defaultMessage:
-            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
-        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_4',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_LEGAL_HEADER: {
-        defaultMessage: 'Legal notice',
-        id: 'TR_TRADING_SWAP_DEX_MODAL_LEGAL_HEADER',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_TERMS_5: {
-        defaultMessage:
-            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_5',
-        dynamic: true,
-    },
-    TR_TRADING_SWAP_DEX_MODAL_TERMS_6: {
-        defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_6',
         dynamic: true,
     },
     TR_TRADING_MISSING_COMPOSED_DATA: {
@@ -804,65 +688,9 @@ export default defineMessages({
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
     },
-    TR_SELL_MODAL_FOR_YOUR_SAFETY: {
-        defaultMessage: 'Sell {cryptocurrency} with {provider}',
-        id: 'TR_SELL_MODAL_FOR_YOUR_SAFETY',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_CONFIRM: {
-        defaultMessage: 'I’m ready to sell',
-        id: 'TR_SELL_MODAL_CONFIRM',
-        dynamic: true,
-    },
     TR_SELL_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_SELL_MODAL_SECURITY_HEADER',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_TERMS_1: {
-        defaultMessage:
-            "You're here to sell cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
-        id: 'TR_SELL_MODAL_TERMS_1',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_TERMS_2: {
-        defaultMessage:
-            "You're selling cryptocurrency for your own account. You acknowledge that the provider's policies may require identity verification.",
-        id: 'TR_SELL_MODAL_TERMS_2',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_TERMS_3: {
-        defaultMessage:
-            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-        id: 'TR_SELL_MODAL_TERMS_3',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_VERIFIED_PARTNERS_HEADER: {
-        defaultMessage: 'Verified partners by Invity',
-        id: 'TR_SELL_MODAL_VERIFIED_PARTNERS_HEADER',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_TERMS_4: {
-        defaultMessage:
-            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
-        id: 'TR_SELL_MODAL_TERMS_4',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_LEGAL_HEADER: {
-        defaultMessage: 'Legal notice',
-        id: 'TR_SELL_MODAL_LEGAL_HEADER',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_TERMS_5: {
-        defaultMessage:
-            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-        id: 'TR_SELL_MODAL_TERMS_5',
-        dynamic: true,
-    },
-    TR_SELL_MODAL_TERMS_6: {
-        defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-        id: 'TR_SELL_MODAL_TERMS_6',
         dynamic: true,
     },
     TR_SELL_REGISTER: {
@@ -983,65 +811,21 @@ export default defineMessages({
             "Invity doesn't see any of your payment or KYC information. You share this only with the exchange provider if you choose to complete the transaction.",
         id: 'TR_BUY_FOOTER_TEXT_2',
     },
-    TR_BUY_MODAL_FOR_YOUR_SAFETY: {
-        defaultMessage: 'Buy {cryptocurrency} with {provider}',
-        id: 'TR_BUY_MODAL_FOR_YOUR_SAFETY',
-        dynamic: true,
+    TR_TRADING_TERMS_1: {
+        id: 'TR_TRADING_TERMS_1',
+        defaultMessage: "Invity doesn't provide this service. It's governed by ",
     },
-    TR_BUY_MODAL_CONFIRM: {
-        defaultMessage: 'I’m ready to buy',
-        id: 'TR_BUY_MODAL_CONFIRM',
-        dynamic: true,
+    TR_TRADING_TERMS_2: {
+        id: 'TR_TRADING_TERMS_2',
+        defaultMessage: "provider's Terms & Conditions.",
+    },
+    TR_TRADING_TERMS_PROVIDER: {
+        id: 'TR_TRADING_TERMS_PROVIDER',
+        defaultMessage: "{companyName}'s Terms & Conditions.",
     },
     TR_BUY_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
         id: 'TR_BUY_MODAL_SECURITY_HEADER',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_TERMS_1: {
-        defaultMessage:
-            "You're here to buy cryptocurrencies. If you were directed to this site for any other reason, contact {provider}  support before proceeding.",
-        id: 'TR_BUY_MODAL_TERMS_1',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_TERMS_2: {
-        defaultMessage:
-            "You're buying cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
-        id: 'TR_BUY_MODAL_TERMS_2',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_TERMS_3: {
-        defaultMessage:
-            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-        id: 'TR_BUY_MODAL_TERMS_3',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_VERIFIED_PARTNERS_HEADER: {
-        defaultMessage: 'Verified partners by Invity',
-        id: 'TR_BUY_MODAL_VERIFIED_PARTNERS_HEADER',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_TERMS_4: {
-        defaultMessage:
-            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
-        id: 'TR_BUY_MODAL_TERMS_4',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_LEGAL_HEADER: {
-        defaultMessage: 'Legal notice',
-        id: 'TR_BUY_MODAL_LEGAL_HEADER',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_TERMS_5: {
-        defaultMessage:
-            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-        id: 'TR_BUY_MODAL_TERMS_5',
-        dynamic: true,
-    },
-    TR_BUY_MODAL_TERMS_6: {
-        defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-        id: 'TR_BUY_MODAL_TERMS_6',
         dynamic: true,
     },
     TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO: {
@@ -1091,7 +875,7 @@ export default defineMessages({
         defaultMessage: 'Proceed',
     },
     TR_TERMS_OF_USE_INVITY: {
-        defaultMessage: 'Terms of Use',
+        defaultMessage: "Invity's Terms of Use",
         id: 'TR_TERMS_OF_USE_INVITY',
     },
     TR_BUY_PROVIDED_BY_INVITY: {

@@ -3,7 +3,6 @@ import { AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { BuyLegalSheet } from './BuyLegalSheet';
 import { useBuyFlow } from '../../hooks/buy/useBuyFlow';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 
@@ -16,10 +15,7 @@ const CONFIRMATION_TEST_ID = '@trading/buy/continue-button';
 export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const form = useBuyFormContext();
 
-    const { canProceed, selectQuote, isConsentRequested, giveConsent, cancelConsent } =
-        useBuyFlow(form);
-
-    const quote = form.watch('quote');
+    const { canProceed, selectQuote } = useBuyFlow(form);
 
     return (
         <AnimatedBox entering={enteringAnimation} exiting={FadeOutDown}>
@@ -30,12 +26,6 @@ export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
                     </Button>
                 </AnimatedBox>
             )}
-            <BuyLegalSheet
-                onDismiss={cancelConsent}
-                isVisible={isConsentRequested}
-                onConsent={giveConsent}
-                tradeProvider={quote?.exchange ?? ''}
-            />
         </AnimatedBox>
     );
 };

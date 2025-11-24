@@ -56,7 +56,6 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.clickSwapBestOfferAndWaitForFees();
-            await tradingPage.termsConfirmButton.click();
         });
 
         await test.step('Initiate send', async () => {

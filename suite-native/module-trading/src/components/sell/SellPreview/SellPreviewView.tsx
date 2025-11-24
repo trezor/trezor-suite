@@ -11,6 +11,7 @@ import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
 import { SellFromAccountTradePreviewCard } from './SellFromAccountTradePreviewCard';
 import { SellToFiatTradePreviewCard } from './SellToFiatTradePreviewCard';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { Footer } from '../../general/Footer';
 
 export type SellPreviewViewProps = {
     quote: SellFiatTrade | undefined;
@@ -53,6 +54,8 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
                     onBankAccountSelect={handleBankAccountSelect}
                 />
             )}
+
+            <Footer type="sell" />
         </VStack>
     );
 });

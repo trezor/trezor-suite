@@ -25,6 +25,7 @@ import {
     ExchangePreviewScreenHeader,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
+import { Footer } from '../components/general/Footer';
 import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { clearTradingStateThunk } from '../thunks';
@@ -160,6 +161,8 @@ export const TradingExchangePreviewScreen = ({
                 isDisabled={!!txnErrorString}
                 onSignTransactionNavigation={onSignTransactionNavigation}
             />
+
+            <Footer type="exchange" />
         </Screen>
     );
 };

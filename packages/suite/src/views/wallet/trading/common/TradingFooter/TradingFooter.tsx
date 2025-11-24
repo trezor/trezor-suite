@@ -1,82 +1,79 @@
-import { useRef, useState } from 'react';
+import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+import styled, { css } from 'styled-components';
 
-import { useTheme } from 'styled-components';
-
-import { Card, Divider, Image, Link, Modal, Paragraph, Row } from '@trezor/components';
-import { useOnClickOutside } from '@trezor/react-utils';
-import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
+import { Column, Link, Row, Text, Tooltip } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
+import { DATA_TOS_INVITY_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
-import { TradingProvidedByInvity } from 'src/views/wallet/trading/common/TradingFooter/TradingProvidedByInvity';
 
-import { TrezorLink } from '../../../../../components/suite';
-import { useExternalLink } from '../../../../../hooks/suite';
-import { ContentFlex } from '../../../../../support/suite/ContentFlex';
+const Wrapper = styled.div`
+    margin-top: ${spacingsPx.xl};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
+`;
 
-export const TradingFooter = () => {
-    const theme = useTheme();
-    const invityUrl = useExternalLink(INVITY_URL);
-    const [isInfoModalOpened, setIsInfoModalOpened] = useState(false);
-    const menuRef = useRef<HTMLDivElement>(null);
-    const toggleRef = useRef<HTMLAnchorElement>(null);
+const linkStyle = css`
+    color: ${({ theme }) => theme.textSubdued};
+    cursor: pointer;
 
-    useOnClickOutside([menuRef, toggleRef], () => {
-        if (isInfoModalOpened) {
-            setIsInfoModalOpened(false);
-        }
-    });
+    &:hover {
+        color: ${({ theme }) => theme.textSubdued};
+        text-decoration: underline;
+    }
+`;
 
-    return (
-        <>
-            <Divider margin={{ top: 40, bottom: 20 }} />
-            <ContentFlex gap={16} justifyContent="space-between" alignItems="center">
-                <TradingProvidedByInvity />
-                <Row alignItems="center" justifyContent="flex-end" flex="1" gap={16}>
-                    <TrezorLink
-                        href={DATA_TOS_INVITY_URL}
-                        icon="arrowUpRight"
-                        color={theme.textSubdued}
-                        typographyStyle="label"
-                    >
+// reason: different design then basic Link
+// eslint-disable-next-line local-rules/no-override-ds-component
+const StyledLink = styled(Link)`
+    ${linkStyle}
+`;
+
+const StyledLinkUnderline = styled(StyledLink)`
+    text-decoration: underline;
+`;
+
+interface TradingFooterProps {
+    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+}
+
+export const TradingFooter = ({ provider }: TradingFooterProps) => (
+    <Wrapper>
+        <Column alignItems="center" margin={{ top: spacings.xl }} gap={spacings.sm}>
+            <Text typographyStyle="hint" variant="tertiary">
+                <Translation id="TR_TRADING_TERMS_1" />
+                {provider ? (
+                    <StyledLinkUnderline href={provider.termsUrl} variant="nostyle">
+                        <Translation
+                            id="TR_TRADING_TERMS_PROVIDER"
+                            values={{ companyName: provider.companyName }}
+                        />
+                    </StyledLinkUnderline>
+                ) : (
+                    <Translation id="TR_TRADING_TERMS_2" />
+                )}
+            </Text>
+
+            <Text typographyStyle="hint" variant="tertiary">
+                <Row gap={spacings.xs} alignItems="center">
+                    <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
                         <Translation id="TR_TERMS_OF_USE_INVITY" />
-                    </TrezorLink>
-                    <Link
-                        ref={toggleRef}
-                        onClick={() => setIsInfoModalOpened(true)}
-                        color={theme.textSubdued}
-                        typographyStyle="label"
+                    </StyledLink>
+                    <Text>|</Text>
+                    <Tooltip
+                        content={
+                            <Column gap={spacings.sm}>
+                                <Translation id="TR_BUY_FOOTER_TEXT_1" />
+                                <Translation id="TR_BUY_FOOTER_TEXT_2" />
+                            </Column>
+                        }
+                        cursor="default"
                     >
-                        <Translation id="TR_BUY_LEARN_MORE" />
-                    </Link>
+                        <StyledLink variant="nostyle">
+                            <Translation id="TR_BUY_LEARN_MORE" />
+                        </StyledLink>
+                    </Tooltip>
                 </Row>
-            </ContentFlex>
-            {isInfoModalOpened && (
-                <Modal
-                    variant="info"
-                    heading={
-                        <Link href={invityUrl} variant="nostyle" color={theme.textSubdued}>
-                            <Image height={44} image="INVITY_LOGO" />
-                        </Link>
-                    }
-                    bottomContent={
-                        <>
-                            <Modal.Button href={invityUrl} iconRight="arrowUpRight">
-                                invity.io
-                            </Modal.Button>
-                        </>
-                    }
-                    onCancel={() => setIsInfoModalOpened(false)}
-                >
-                    <Card>
-                        <Paragraph>
-                            <Translation id="TR_BUY_FOOTER_TEXT_1" />
-                        </Paragraph>
-                        <Paragraph margin={{ top: 16 }}>
-                            <Translation id="TR_BUY_FOOTER_TEXT_2" />
-                        </Paragraph>
-                    </Card>
-                </Modal>
-            )}
-        </>
-    );
-};
+            </Text>
+        </Column>
+    </Wrapper>
+);

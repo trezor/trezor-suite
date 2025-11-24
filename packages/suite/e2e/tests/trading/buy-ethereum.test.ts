@@ -35,7 +35,6 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] },
 
         await test.step('Confirm Trade', async () => {
             await tradingPage.buyBestOfferButton.click();
-            await tradingPage.termsConfirmButton.click();
         });
 
         await tradingPage.waitForRedirectCompletion();

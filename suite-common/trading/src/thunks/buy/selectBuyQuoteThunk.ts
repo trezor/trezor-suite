@@ -10,7 +10,6 @@ import { tradingBuyActions } from '../../reducers/buyReducer';
 import {
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
-    selectTradingCoinSymbolByCryptoId,
 } from '../../selectors/tradingSelectors';
 
 export type SelectBuyQuoteThunkProps = {
@@ -19,23 +18,13 @@ export type SelectBuyQuoteThunkProps = {
     returnUrl: string;
 
     loginRequest: (form: FormResponse['form']) => void;
-    userConsent: (provider: string, cryptoCurrency: string) => Promise<boolean>;
     nextStep: () => void;
-    onCancel?: () => void;
 };
 
 export const selectBuyQuoteThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/selectQuote`,
     async (
-        {
-            quote,
-            returnUrl,
-            timer,
-            loginRequest,
-            userConsent,
-            nextStep,
-            onCancel,
-        }: SelectBuyQuoteThunkProps,
+        { quote, returnUrl, timer, loginRequest, nextStep }: SelectBuyQuoteThunkProps,
         { dispatch, getState },
     ) => {
         const buyInfo = selectTradingBuyInfo(getState());
@@ -44,18 +33,6 @@ export const selectBuyQuoteThunk = createThunk(
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
 
         if (!quotesRequest || !quote.receiveCurrency || !provider) return;
-
-        // consent to continue (modal)
-        const result = await userConsent(
-            provider.name,
-            selectTradingCoinSymbolByCryptoId(getState(), quote.receiveCurrency) ?? 'unknown',
-        );
-
-        if (!result) {
-            onCancel?.();
-
-            return;
-        }
 
         // empty quoteId means the partner requests login first, requestTrade to get login screen
         if (!quote.quoteId) {
