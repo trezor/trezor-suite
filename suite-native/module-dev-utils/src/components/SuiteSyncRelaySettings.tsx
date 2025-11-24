@@ -16,7 +16,7 @@ import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';
 
-export const LocalFirstRelaySettings = () => {
+export const SuiteSyncRelaySettings = () => {
     const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
     const isFeatureLocalFirstStorageEnabled = useSelector(
         selectIsFeatureLocalFirstStorageAvailable,
@@ -43,9 +43,16 @@ export const LocalFirstRelaySettings = () => {
 
     const handleLocalFirstEnableToggle = () => {
         const originalIsLocalFirstStorageEnabled = isFeatureLocalFirstStorageEnabled;
+        // This is probably irrelevant for native
         dispatch(
             suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable({
                 isShownInSettings: !isFeatureLocalFirstStorageEnabled,
+            }),
+        );
+        // Here, we need this as well,as we don't have experimental feature in Native
+        dispatch(
+            suiteSyncActions.updateLocalFirstStorageEnabled({
+                isEnabled: !isFeatureLocalFirstStorageEnabled,
             }),
         );
 
