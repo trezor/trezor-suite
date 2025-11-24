@@ -165,6 +165,25 @@ describe('TrezorConnect passphrase', () => {
         });
     });
 
+    it('Passphrase encoding', async () => {
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler('příliš žluťoučký kůň'));
+
+        const xpub = await TrezorConnect.getPublicKey({
+            device: {
+                instance: 0,
+                state: undefined,
+            },
+            path: "m/84'/0'/0'/0/0",
+        });
+
+        if (!xpub.success) {
+            throw new Error(`Passphrase exception: ${xpub.payload.error}`);
+        }
+        expect(xpub.payload).toMatchObject({
+            xpub: 'xpub6Gw8xpZ3YUTF7ebfnT3bGLHYrZ5mRQU14SXfGsjopTx1yVcZwkXSz2TPGyS7zqvzL9McXUjBG87FugyENjxpFCCv5W3ic1SWW5oQbRKx368',
+        });
+    });
+
     // passphrase on device not available on T1B1
     conditionalTest(['1'], 'Input passphrase on device', async () => {
         TrezorConnect.on('ui-request_passphrase', () => {
