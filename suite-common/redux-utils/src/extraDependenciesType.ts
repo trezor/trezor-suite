@@ -49,7 +49,7 @@ export type To = string | Partial<Path>;
 
 export type LocationPushState = Record<string, unknown>;
 
-export type ExtraDependencies = {
+export type ExtraDependenciesStatic = {
     thunks: {
         cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
             block: BlockchainBlock;
@@ -70,11 +70,6 @@ export type ExtraDependencies = {
         unsubscribeAndDisposeSuiteSyncStorage: SuiteCompatibleThunk<{
             device: TrezorDeviceWithState;
         }>;
-        initSuiteSync: OriginalReduxThunk<void>;
-        createSuiteSyncOwner: OriginalReduxThunk<
-            { data: string },
-            ReturnType<CreateSuiteSyncOwner>
-        >;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras
@@ -149,6 +144,13 @@ export type ExtraDependencies = {
         navigate: (to: To, state?: LocationPushState) => void;
     };
 };
+
+export type ExtraWithStore = (store: { getState: () => any; dispatch: (action: any) => any }) => {
+    initSuiteSync: () => void;
+    createSuiteSyncOwner: CreateSuiteSyncOwner;
+};
+
+export type ExtraDependencies = ExtraDependenciesStatic & ReturnType<ExtraWithStore>;
 
 export type ExtraDependenciesForReducer = Pick<
     ExtraDependencies,

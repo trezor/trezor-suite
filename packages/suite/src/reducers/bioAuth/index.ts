@@ -32,6 +32,8 @@ const initialState: BioAuthState = {
 export const prepareBioAuthReducer = createReducerWithExtraDeps<BioAuthState>(
     initialState,
     (builder, extra) => {
+        console.log('extra', extra);
+
         builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBioAuth);
         builder.addCase(bioAuthActions.setBioAuthEnabled, (state, action) => {
             state.bioAuthEnabled = action.payload;

@@ -1,6 +1,7 @@
 import { Middleware, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 import { logger } from 'redux-logger';
+import createThunkService from 'redux-thunk-service';
 
 import {
     prepareFiatRatesMiddleware,
@@ -15,7 +16,7 @@ import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
 
-import { extraDependencies } from './extraDependencies';
+import { extraDependencies, extraWithStore } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
@@ -51,12 +52,17 @@ export const initStore = async (preloadedState?: PreloadedState) =>
         reducer: await prepareRootReducers(),
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
-                thunk: {
-                    extraArgument: extraDependencies,
-                },
                 serializableCheck: false,
                 immutableCheck: false,
             })
+                .prepend(
+                    createThunkService((dispatch, getState) => ({
+                        dispatch,
+                        getState,
+                        ...extraDependencies,
+                        ...extraWithStore({ dispatch, getState }),
+                    })),
+                )
                 .prepend(deviceConnectionMiddleware.middleware)
                 .concat(middlewares),
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),

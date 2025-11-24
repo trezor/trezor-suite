@@ -12862,6 +12862,7 @@ __metadata:
     redux-devtools-expo-dev-plugin: "npm:2.0.0"
     redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"
+    redux-thunk-service: "npm:^1.0.1"
   languageName: unknown
   linkType: soft
 
@@ -14631,6 +14632,7 @@ __metadata:
     redux-logger: "npm:^3.0.6"
     redux-mock-store: "npm:^1.5.5"
     redux-thunk: "npm:^3.1.0"
+    redux-thunk-service: "npm:^1.0.1"
     semver: "npm:^7.7.1"
     styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
@@ -39262,6 +39264,26 @@ __metadata:
   peerDependencies:
     redux: ">4.0.0"
   checksum: 10/d3bf03fe8fc90f08985b88419eb32a21f727db2cfc93b486a8267b3884a22c665916a3dce1fd80e9e7d8180a849e5dc614b53e09e0a6803855899d7b3e652242
+  languageName: node
+  linkType: hard
+
+"redux-thunk-service@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "redux-thunk-service@npm:1.0.1"
+  dependencies:
+    redux-thunk: "npm:^2.3.0"
+  peerDependencies:
+    redux: ^4
+  checksum: 10/98bab65e331981067677aa719b776fe7d5fc5d3e633501d5e1130604a2293ba52acc9179ba48a880fd002f39e83f2e2bb0038f0fdc307661515ed2b072694508
+  languageName: node
+  linkType: hard
+
+"redux-thunk@npm:^2.3.0":
+  version: 2.4.2
+  resolution: "redux-thunk@npm:2.4.2"
+  peerDependencies:
+    redux: ^4
+  checksum: 10/9bcb1193835128ecebf1e1a1b1a37bc15e8dfbdf6b6ee1b5566dd4c8e4ca05a81175f0c6dda34ab47f87053cd13b74d9f881d59446691d7b192831852b5d7a72
   languageName: node
   linkType: hard
 

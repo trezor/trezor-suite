@@ -7,10 +7,12 @@ type InitSuiteSyncDesktopDeps = {
     getState: () => any;
 };
 
-export const initSuiteSyncDesktop = ({ getState }: InitSuiteSyncDesktopDeps) =>
-    initSuiteSync({
-        getState,
-        storageFactory: evoluStorageCreator(evoluWebDeps, DEFAULT_SUITE_SYNC_RELAY_URL),
-    });
+export const initSuiteSyncDesktop =
+    ({ getState }: InitSuiteSyncDesktopDeps) =>
+    () =>
+        initSuiteSync({
+            getState,
+            storageFactory: evoluStorageCreator(evoluWebDeps, DEFAULT_SUITE_SYNC_RELAY_URL),
+        });
 
 export const createSuiteSyncOwnerDesktop = evoluCreateSuiteSyncOwner;

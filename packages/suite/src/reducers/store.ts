@@ -9,6 +9,7 @@ import {
     configureStore,
 } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
+import createThunkService from 'redux-thunk-service';
 
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { addLog } from '@suite-common/logger';
@@ -39,7 +40,7 @@ import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
-import { extraDependencies } from '../support/extraDependencies';
+import { extraDependencies, extraWithStore } from '../support/extraDependencies';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 
@@ -143,6 +144,7 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
         preloadedState: patchedState,
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
+                thunk: undefined,
                 immutableCheck: false,
                 serializableCheck: {
                     ignoredActions: [OPEN_USER_CONTEXT],
@@ -152,13 +154,17 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
                         'modal.payload.decision.reject',
                     ],
                 },
-                thunk: {
-                    extraArgument: {
+            })
+                .prepend(
+                    createThunkService((dispatch, getState) => ({
+                        dispatch,
+                        getState,
                         ...extraDependencies,
+                        ...extraWithStore({ dispatch, getState }),
                         ...(options.additionalExtraDeps ?? {}),
-                    },
-                },
-            }).concat(getCustomMiddleware()),
+                    })),
+                )
+                .concat(getCustomMiddleware()),
         devTools,
     } as const);
 };

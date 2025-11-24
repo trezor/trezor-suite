@@ -124,6 +124,7 @@
         "redux": "^5.0.1",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^3.1.0",
+        "redux-thunk-service": "^1.0.1",
         "semver": "^7.7.1",
         "styled-components": "^6.1.19",
         "web3-utils": "^4.3.1"
