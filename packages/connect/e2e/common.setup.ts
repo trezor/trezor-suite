@@ -190,11 +190,12 @@ export const initTrezorConnect = async (
             hostName: 'tests:e2e',
             staticKey: '0007070707070707070707070707070707070707070707070707070707070747',
             knownCredentials: [
+                // all all seed credential generated from thpPairing.test
                 {
                     trezor_static_public_key:
-                        'f60b84cdb80a2139f80489c811dc129937a4f4f75ca7710c7570c5085f1ffe68',
+                        '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
                     credential:
-                        '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e656374122098264da94889d9b3bd52a61f6e94da83795c83ffb7be34e7e3a06f1c90eb8cfc',
+                        '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412203fa725f325ba34cce19e39e6c87f573a9db1a532c28f67a363f0ea8317f64af9',
                     autoconnect: true,
                 },
             ],
