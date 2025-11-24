@@ -1,16 +1,21 @@
-const isWeb = () => process.env.SUITE_TYPE === 'web'; // duplicated with envUtils.ts to prevent importing it in mobile
-
-// This needs to be set as `.` so it loads from appDir of the Electron app.
-// For example (in case of AppImage): `file:///tmp/.mount_TrezorAvGo8g/resources/app.asar/build`,
-// where the requested asset (for example: `static/images/images/app-store-badge.svg`) is located.
-const getDefaultAssetPrefix = () => (isWeb() ? '' : '.');
+/*
+ Most apps use empty string as ASSET_PREFIX, which means loading assets from root of location.origin
+ e.g. https://suite.trezor.io/web/settings will load /static/images/logo.svg from https://suite.trezor.io/static/images/logo.svg
+ However on desktop, the app runs from file, for example AppImage: file:///tmp/.mount_TrezorAvGo8g/resources/app.asar/build
+ There is no location.origin, so using /path would incorrectly resolve as file:///path
+ On Desktop, we therefore need to use relative paths, e.g. ./static/images/logo.svg
+ Note that `process` may not be defined (e.g. in storybook), so accessing it without checking would crash.
+*/
+const getEnvAssetPrefix = () =>
+    typeof process !== 'undefined' ? process.env?.ASSET_PREFIX : undefined;
+const getDefaultPrefix = () => getEnvAssetPrefix() ?? '';
 
 export const resolveStaticPath = (
     path: string,
-    pathPrefix: string | undefined = process.env.ASSET_PREFIX,
-) => `${pathPrefix || getDefaultAssetPrefix()}/static/${path.replace(/^\/+/, '')}`;
+    pathPrefix: string | undefined = getDefaultPrefix(),
+) => `${pathPrefix}/static/${path.replace(/^\/+/, '')}`;
 
 export const resolveConnectPath = (
     path: string,
-    pathPrefix: string | undefined = process.env.ASSET_PREFIX,
-) => `${pathPrefix || getDefaultAssetPrefix()}/${path.replace(/^\/+/, '')}`;
+    pathPrefix: string | undefined = getDefaultPrefix(),
+) => `${pathPrefix}/${path.replace(/^\/+/, '')}`;

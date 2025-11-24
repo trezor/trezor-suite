@@ -17,7 +17,7 @@
         "dev:web": "yarn run web",
         "dev:web:vite": "vite",
         "build:web": "NODE_ENV=production yarn run web",
-        "desktop": "PROJECT=desktop yarn run base",
+        "desktop": "PROJECT=desktop ASSET_PREFIX=. yarn run base",
         "dev:desktop": "yarn run desktop",
         "build:desktop": "NODE_ENV=production yarn run desktop",
         "type-check": "yarn g:tsc --build tsconfig.json",
