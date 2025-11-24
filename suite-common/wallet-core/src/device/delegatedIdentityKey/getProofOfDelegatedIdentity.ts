@@ -24,5 +24,7 @@ export const getProofOfDelegatedIdentity = ({
         prehash: false,
     });
 
-    return asProofOfDelegatedIdentity(Buffer.from(signature).toString('hex'));
+    const rawSig = signature.toCompactRawBytes();
+
+    return asProofOfDelegatedIdentity(Buffer.from(rawSig).toString('hex'));
 };
