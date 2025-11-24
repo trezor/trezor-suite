@@ -29,7 +29,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
             deviceActions.forgetDevice,
             // ?
             deviceActions.setDeviceState,
-            deviceActions.setLocalFirstStorageSecret,
+            deviceActions.setSuiteSyncOwner,
             deviceActions.setDiscovered,
         )(action)
     ) {
@@ -93,7 +93,7 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
 
             dispatch(handleDeviceDisconnect(device));
             if (isTrezorDeviceWithState(device)) {
-                dispatch(extra.thunks.unsubscribeAndDisposeLocalFirstStorage({ device }));
+                dispatch(extra.thunks.unsubscribeAndDisposeSuiteSyncStorage({ device }));
             }
         }
 

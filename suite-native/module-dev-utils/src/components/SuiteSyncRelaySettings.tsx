@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     changeRelayUrlThunk,
-    disposeAllLocalFirstStorageThunk,
-    selectIsFeatureLocalFirstStorageAvailable,
-    selectLocalFirstStorageRelayUrl,
+    disposeAllSuiteSyncStoragesThunk,
+    selectIsFeatureSuiteSyncAvailable,
+    selectSuiteSyncRelayUrl,
     suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { yup } from '@suite-common/validators';
@@ -17,55 +17,53 @@ import { useToast } from '@suite-native/toasts';
 const DEFAULT_CUSTOM_RELAY_URL = '';
 
 export const SuiteSyncRelaySettings = () => {
-    const localFirstStorageRelayUrl = useSelector(selectLocalFirstStorageRelayUrl);
-    const isFeatureLocalFirstStorageEnabled = useSelector(
-        selectIsFeatureLocalFirstStorageAvailable,
-    );
+    const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
+    const isFeatureSuiteSyncEnabled = useSelector(selectIsFeatureSuiteSyncAvailable);
     const dispatch = useDispatch();
     const { showToast } = useToast();
 
-    const form = useForm<{ localFirstStorageRelayUrl: string }>({
+    const form = useForm<{ suiteSyncRelayUrl: string }>({
         defaultValues: {
-            localFirstStorageRelayUrl: localFirstStorageRelayUrl ?? DEFAULT_CUSTOM_RELAY_URL,
+            suiteSyncRelayUrl: suiteSyncRelayUrl ?? DEFAULT_CUSTOM_RELAY_URL,
         },
         validation: yup.object({
-            localFirstStorageRelayUrl: yup.string(),
+            suiteSyncRelayUrl: yup.string(),
         }),
     });
 
     const onSubmit = form.handleSubmit(values => {
-        dispatch(changeRelayUrlThunk({ relayUrl: values.localFirstStorageRelayUrl }));
+        dispatch(changeRelayUrlThunk({ relayUrl: values.suiteSyncRelayUrl }));
         showToast({
             message: 'Local First Storage relay URL updated',
             variant: 'success',
         });
     });
 
-    const handleLocalFirstEnableToggle = () => {
-        const originalIsLocalFirstStorageEnabled = isFeatureLocalFirstStorageEnabled;
+    const handleSuiteSyncEnableToggle = () => {
+        const originalIsSuiteSyncEnabled = isFeatureSuiteSyncEnabled;
         // This is probably irrelevant for native
         dispatch(
-            suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable({
-                isShownInSettings: !isFeatureLocalFirstStorageEnabled,
+            suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
+                isShownInSettings: !isFeatureSuiteSyncEnabled,
             }),
         );
         // Here, we need this as well,as we don't have experimental feature in Native
         dispatch(
-            suiteSyncActions.updateLocalFirstStorageEnabled({
-                isEnabled: !isFeatureLocalFirstStorageEnabled,
+            suiteSyncActions.updateSuiteSyncEnabled({
+                isEnabled: !isFeatureSuiteSyncEnabled,
             }),
         );
 
-        if (!originalIsLocalFirstStorageEnabled) {
+        if (!originalIsSuiteSyncEnabled) {
             dispatch((_, getState) => initSuiteSyncNative({ getState }));
         } else {
-            dispatch(disposeAllLocalFirstStorageThunk());
+            dispatch(disposeAllSuiteSyncStoragesThunk());
         }
     };
 
     const handleResetToDefault = () => {
         dispatch(changeRelayUrlThunk({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL }));
-        form.reset({ localFirstStorageRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
+        form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         showToast({
             message: 'Local First Storage relay URL reset to default',
             variant: 'success',
@@ -78,15 +76,15 @@ export const SuiteSyncRelaySettings = () => {
                 <HStack justifyContent="space-between">
                     <Text variant="highlight">Enable Suite Sync in settings (Evolu)</Text>
                     <CheckBox
-                        isChecked={isFeatureLocalFirstStorageEnabled}
-                        onChange={handleLocalFirstEnableToggle}
+                        isChecked={isFeatureSuiteSyncEnabled}
+                        onChange={handleSuiteSyncEnableToggle}
                     />
                 </HStack>
                 <VStack spacing="sp8">
                     <Text>Custom relay URL</Text>
                     <Form form={form}>
                         <TextInputField
-                            name="localFirstStorageRelayUrl"
+                            name="suiteSyncRelayUrl"
                             placeholder="Enter custom relay URL"
                         />
                         <Button colorScheme="tertiaryElevation0" size="small" onPress={onSubmit}>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectIsFeatureLocalFirstStorageAvailable } from '@suite-common/suite-sync';
+import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
@@ -30,16 +30,16 @@ export const Labeling = () => {
     const { device } = useDevice();
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
-    const showLocalFirstStorage = useSelector(selectIsFeatureLocalFirstStorageAvailable);
+    const showSuiteSync = useSelector(selectIsFeatureSuiteSyncAvailable);
 
     const {
         legacyMetadataState,
         legacyEnableIfNeeded,
         legacyDisableIfNeeded,
-        disableLocalFirstStorageIfNeeded,
-        enableLocalFirstStorageIfNeeded,
+        disableSuiteSyncIfNeeded,
+        enableSuiteSyncIfNeeded,
         isEvoluSupportedByDevice,
-        isLocalFirstStorageEnabled,
+        isSuiteSyncEnabled,
     } = useLabelingCombined({
         deviceStaticSessionId: device?.state?.staticSessionId,
     });
@@ -47,7 +47,7 @@ export const Labeling = () => {
     const translatedOptions: LabelingOption<string>[] = LABELING_SELECT_OPTIONS.map(option => ({
         ...option,
         label:
-            !showLocalFirstStorage && option.value === 'legacy'
+            !showSuiteSync && option.value === 'legacy'
                 ? translate.translationString(LABELING_LEGACY_OPTION_LABEL)
                 : translate.translationString(option.label),
     }));
@@ -56,7 +56,7 @@ export const Labeling = () => {
         const { value } = selected;
 
         // show a warning legacy modal when user selects legacy option while using local first storage
-        if (value === 'legacy' && isLocalFirstStorageEnabled) {
+        if (value === 'legacy' && isSuiteSyncEnabled) {
             setLegacyModalWarningVisible(true);
 
             return;
@@ -65,15 +65,15 @@ export const Labeling = () => {
         switch (value) {
             case 'off':
                 legacyDisableIfNeeded();
-                disableLocalFirstStorageIfNeeded();
+                disableSuiteSyncIfNeeded();
                 break;
 
             case 'secure-sync':
-                enableLocalFirstStorageIfNeeded();
+                enableSuiteSyncIfNeeded();
                 break;
 
             case 'legacy':
-                disableLocalFirstStorageIfNeeded();
+                disableSuiteSyncIfNeeded();
                 legacyEnableIfNeeded();
                 break;
 
@@ -99,9 +99,8 @@ export const Labeling = () => {
             {} as Record<LabelingSelectValue, LabelingOption<string>>,
         );
 
-        if (showLocalFirstStorage) {
-            if (isLocalFirstStorageEnabled)
-                return LABELING_SELECT_TRANSLATED_OPTIONS_MAP['secure-sync'];
+        if (showSuiteSync) {
+            if (isSuiteSyncEnabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP['secure-sync'];
             if (legacyMetadataState.enabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy;
 
             return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.off;
@@ -121,7 +120,7 @@ export const Labeling = () => {
                 <LabelingSwitchToLegacyModal
                     onClose={() => setLegacyModalWarningVisible(false)}
                     onSwitch={() => {
-                        disableLocalFirstStorageIfNeeded();
+                        disableSuiteSyncIfNeeded();
                         legacyEnableIfNeeded();
                         setLegacyModalWarningVisible(false);
                     }}
@@ -146,7 +145,7 @@ export const Labeling = () => {
                         options={translatedOptions.filter(
                             option =>
                                 option.value !== 'secure-sync' ||
-                                (showLocalFirstStorage && isEvoluSupportedByDevice),
+                                (showSuiteSync && isEvoluSupportedByDevice),
                         )}
                         value={getSelectedOption()}
                         onChange={handleOnChange}

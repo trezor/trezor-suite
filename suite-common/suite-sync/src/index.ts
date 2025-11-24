@@ -1,21 +1,21 @@
 // Suite Sync
 export {
-    selectIsLocalFirstStorageEnabled,
-    selectIsFeatureLocalFirstStorageAvailable,
-    selectLocalFirstStorageRelayUrl,
+    selectIsSuiteSyncEnabled,
+    selectIsFeatureSuiteSyncAvailable,
+    selectSuiteSyncRelayUrl,
     selectShouldOfferSecureSync,
-    selectIsLocalFirstStorageDebugEnabled,
+    selectIsSuiteSyncDebugEnabled,
 } from './suiteSyncSelectors';
-export { useLocalFirstStorage } from './useLocalFirstStorage';
+export { useSuiteSync } from './useSuiteSync';
 export { prepareSuiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';
-export { subscribeLocalFirstStorageThunk } from './subscribeLocalFirstStorageThunk';
-export { unsubscribeAndDisposeLocalFirstStorageThunk } from './unsubscribeAndDisposeLocalFirstStorageThunk';
-export { initSuiteSync } from './initLocalFirstStorageThunk';
+export { subscribeSuiteSyncStorageThunk } from './subscribeSuiteSyncStorageThunk';
+export { unsubscribeAndDisposeSuiteSyncStorageThunk } from './unsubscribeAndDisposeSuiteSyncStorageThunk';
+export { initSuiteSync } from './initSuiteSync';
 export { changeRelayUrlThunk } from './changeRelayUrlThunk';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './constants';
-export { disposeAllLocalFirstStorageThunk } from './disposeAllLocalFirstStorageThunk';
+export { disposeAllSuiteSyncStoragesThunk } from './disposeAllSuiteSyncStoragesThunk';
 
 // Labeling
 export { updateWalletLabelThunk } from './labeling/updateWalletLabelThunk';

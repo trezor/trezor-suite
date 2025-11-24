@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getLocalFirstStorageProvider } from '@suite-common/suite-sync-storage';
+import { getSuiteSyncStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -29,7 +29,7 @@ export const updateAddressLabelThunk = createThunk<void, UpdateAddressLabelThunk
             return;
         }
 
-        const storage = getLocalFirstStorageProvider(owner);
+        const storage = getSuiteSyncStorageProvider(owner);
 
         storage.addressLabels.update({ address, label });
     },

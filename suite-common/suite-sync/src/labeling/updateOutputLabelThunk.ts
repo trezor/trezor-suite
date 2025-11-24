@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getLocalFirstStorageProvider } from '@suite-common/suite-sync-storage';
+import { getSuiteSyncStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -30,7 +30,7 @@ export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkPa
             return;
         }
 
-        const storage = getLocalFirstStorageProvider(owner);
+        const storage = getSuiteSyncStorageProvider(owner);
 
         storage.outputLabels.update({ txId, outputIndex, label });
     },

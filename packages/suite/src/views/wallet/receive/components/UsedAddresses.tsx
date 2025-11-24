@@ -123,7 +123,7 @@ export const UsedAddresses = ({
     const dispatch = useDispatch();
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
 
-    const localFirstAddressLabels = useSelector(state =>
+    const suiteSyncAddressLabels = useSelector(state =>
         selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
     );
 
@@ -187,7 +187,7 @@ export const UsedAddresses = ({
                                     entityKey: account.key,
                                     defaultValue: addr.address,
                                     value:
-                                        localFirstAddressLabels.find(
+                                        suiteSyncAddressLabels.find(
                                             it => it.address === addr.address,
                                         )?.label ?? addressLabels[addr.address],
                                 }}

@@ -3,10 +3,7 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    processMetadataMessageThunk,
-    selectIsLocalFirstStorageEnabled,
-} from '@suite-common/suite-sync';
+import { processMetadataMessageThunk, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,
@@ -126,9 +123,9 @@ const applySendFormMetadataLabelsThunk = createThunk<
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
     ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
         const metadata = selectMetadata(getState());
-        const isLocalFirstStorageEnabled = selectIsLocalFirstStorageEnabled(getState());
+        const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
 
-        if (!metadata.enabled && !isLocalFirstStorageEnabled) {
+        if (!metadata.enabled && !isSuiteSyncEnabled) {
             return;
         }
 
@@ -165,7 +162,7 @@ const applySendFormMetadataLabelsThunk = createThunk<
                 const isLast = index === arr.length - 1;
 
                 synchronize(() => {
-                    if (isLocalFirstStorageEnabled) {
+                    if (isSuiteSyncEnabled) {
                         return dispatch(
                             processMetadataMessageThunk({
                                 payload: output,

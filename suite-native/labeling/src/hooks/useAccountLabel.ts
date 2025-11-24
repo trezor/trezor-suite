@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import {
     WithLabelingState,
-    selectAccountLabel as selectAccountLabelLocalFirst,
+    selectAccountLabel as selectAccountLabelSuiteSync,
 } from '@suite-common/suite-sync';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
@@ -24,7 +24,7 @@ export const useAccountLabel = ({
         : { walletDescriptor: null };
 
     const syncedLabel = useSelector((state: WithLabelingState) =>
-        selectAccountLabelLocalFirst({ state, walletDescriptor, accountKey }),
+        selectAccountLabelSuiteSync({ state, walletDescriptor, accountKey }),
     );
 
     const storeLabel = useSelector((state: AccountsRootState) =>

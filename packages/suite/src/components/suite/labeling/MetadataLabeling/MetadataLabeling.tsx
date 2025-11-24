@@ -9,7 +9,7 @@ import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
-import { updateShowEnableLocalFirstStorageModal } from 'src/actions/suiteSync/suiteSyncSlice';
+import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
 import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -363,10 +363,10 @@ export const MetadataLabeling = ({
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
 
     const {
-        isLocalFirstStorageEnabled,
+        isSuiteSyncEnabled,
         isEvoluSupportedByDevice,
         legacyMetadataState,
-        hasDeviceLocalFirstStorageKeys,
+        hasDeviceSuiteSyncOwner,
     } = useLabelingCombined({ deviceStaticSessionId });
 
     let timeout: TimerId | undefined;
@@ -395,14 +395,14 @@ export const MetadataLabeling = ({
     const activateEdit = () => {
         // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
-            !isLocalFirstStorageEnabled &&
+            !isSuiteSyncEnabled &&
             // Isn't initiation in progress?
             !legacyMetadataState.initiating &&
             // Is there something that needs to be initiated?
             !isLegacyLabelingEnabled
         ) {
             if (shouldOfferSecureSync) {
-                dispatch(updateShowEnableLocalFirstStorageModal({ show: true }));
+                dispatch(updateShowEnableSuiteSyncModal({ show: true }));
 
                 // user can decide if they want to enable metadata or not, so we do not set editing state yet
                 return;
@@ -442,7 +442,7 @@ export const MetadataLabeling = ({
         isSubscribedToSubmitResult.current = payload.defaultValue;
         setPending(true);
 
-        if (isLocalFirstStorageEnabled) {
+        if (isSuiteSyncEnabled) {
             await dispatch(processMetadataMessageThunk({ payload, deviceStaticSessionId, value }));
 
             setShowSuccess(true);
@@ -472,7 +472,7 @@ export const MetadataLabeling = ({
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
     const isEvoluLabeling =
-        isLocalFirstStorageEnabled && isEvoluSupportedByDevice && hasDeviceLocalFirstStorageKeys;
+        isSuiteSyncEnabled && isEvoluSupportedByDevice && hasDeviceSuiteSyncOwner;
 
     // Should "add label"/"edit label" button be visible?
     const showActionButton =
@@ -499,7 +499,7 @@ export const MetadataLabeling = ({
     return (
         <Tooltip
             content={
-                isLocalFirstStorageEnabled &&
+                isSuiteSyncEnabled &&
                 !isEvoluSupportedByDevice && (
                     <Text variant="warning">
                         <Translation id="FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC" />

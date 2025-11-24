@@ -722,15 +722,12 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     data.delegatedIdentityKey = delegatedKey;
                 },
             )
-            .addCase(
-                deviceActions.setLocalFirstStorageSecret,
-                (state, { payload: { device, owner } }) => {
-                    if (!device.features) return;
-                    const index = deviceUtils.findInstanceIndex(state.devices, device);
-                    if (!state.devices[index]) return;
-                    state.devices[index].suiteSyncOwner = owner;
-                },
-            )
+            .addCase(deviceActions.setSuiteSyncOwner, (state, { payload: { device, owner } }) => {
+                if (!device.features) return;
+                const index = deviceUtils.findInstanceIndex(state.devices, device);
+                if (!state.devices[index]) return;
+                state.devices[index].suiteSyncOwner = owner;
+            })
             .addCase(deviceActions.setDiscovered, (state, { payload }) => {
                 const device = state.devices.find(
                     d => d.state?.staticSessionId === payload.staticSessionId,

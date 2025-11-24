@@ -73,7 +73,7 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
-    const localFirstOutputLabels = useSelector(state =>
+    const suiteSyncOutputLabels = useSelector(state =>
         selectOutputLabels(state, transaction.deviceState),
     );
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
@@ -225,7 +225,7 @@ export const TransactionTarget = ({
                         outputIndex: metadataId,
                         defaultValue: defaultMetadataValue,
                         value:
-                            localFirstOutputLabels.find(
+                            suiteSyncOutputLabels.find(
                                 it => it.txId === transaction.txid && it.outputIndex == metadataId,
                             )?.label ?? targetMetadata,
                     }}

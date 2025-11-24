@@ -1,29 +1,27 @@
 import { useSelector } from 'react-redux';
 
-import { useLocalFirstStorage } from '@suite-common/suite-sync';
+import { useSuiteSync } from '@suite-common/suite-sync';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useLocalFirstStorageAlerts } from '@suite-native/suite-sync';
+import { useSuiteSyncAlerts } from '@suite-native/suite-sync';
 
 export const ToggleLabelingCard = () => {
-    const { showLocalFirstStorageDisableConfirmationAlert } = useLocalFirstStorageAlerts();
+    const { showSuiteSyncDisableConfirmationAlert } = useSuiteSyncAlerts();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const { isLocalFirstStorageEnabled, enableLocalFirstStorageIfNeeded } = useLocalFirstStorage({
+    const { isSuiteSyncEnabled, enableSuiteSyncIfNeeded } = useSuiteSync({
         device: selectedDevice,
     });
 
-    const toggleLocalFirstStorage = () =>
-        isLocalFirstStorageEnabled
-            ? showLocalFirstStorageDisableConfirmationAlert()
-            : enableLocalFirstStorageIfNeeded();
+    const toggleSuiteSync = () =>
+        isSuiteSyncEnabled ? showSuiteSyncDisableConfirmationAlert() : enableSuiteSyncIfNeeded();
 
     return (
         <>
             <TouchableSwitchRow
                 icon="arrowsClockwise"
-                isChecked={isLocalFirstStorageEnabled}
-                onChange={toggleLocalFirstStorage}
+                isChecked={isSuiteSyncEnabled}
+                onChange={toggleSuiteSync}
                 text={<Translation id="moduleSettings.secureSync.title" />}
                 description={<Translation id="moduleSettings.secureSync.description" />}
                 accessibilityLabel="Secure sync toggle"

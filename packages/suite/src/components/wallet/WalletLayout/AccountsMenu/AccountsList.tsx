@@ -56,7 +56,7 @@ const Accounts = ({
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
     const params = useSelector(selectRouterParams) as RouteParams;
 
-    const localFirstAccountLabels = useSelector(state =>
+    const suiteSyncAccountLabels = useSelector(state =>
         selectAccountLabels({ state, deviceStaticSessionId }),
     );
 
@@ -75,7 +75,7 @@ const Accounts = ({
 
                 const label =
                     findAccountLabel({
-                        accountLabels: localFirstAccountLabels,
+                        accountLabels: suiteSyncAccountLabels,
                         accountDescriptor,
                         networkSymbol,
                     })?.label ?? accountLabels[account.key];
@@ -111,7 +111,7 @@ export const AccountsList = ({
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabelsOld);
 
-    const localFirstAccountLabels = useSelector(state =>
+    const suiteSyncAccountLabels = useSelector(state =>
         device?.state?.staticSessionId !== undefined
             ? selectAccountLabels({ state, deviceStaticSessionId: device?.state?.staticSessionId })
             : [],
@@ -139,7 +139,7 @@ export const AccountsList = ({
 
                   const accountLabel =
                       findAccountLabel({
-                          accountLabels: localFirstAccountLabels,
+                          accountLabels: suiteSyncAccountLabels,
                           accountDescriptor,
                           networkSymbol,
                       })?.label ?? accountLabelOld;

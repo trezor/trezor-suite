@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getLocalFirstStorageProvider } from '@suite-common/suite-sync-storage';
+import { getSuiteSyncStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 
@@ -29,7 +29,7 @@ export const updateAccountLabelThunk = createThunk<void, UpdateAccountLabelThunk
             return;
         }
 
-        const storage = getLocalFirstStorageProvider(owner);
+        const storage = getSuiteSyncStorageProvider(owner);
 
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 

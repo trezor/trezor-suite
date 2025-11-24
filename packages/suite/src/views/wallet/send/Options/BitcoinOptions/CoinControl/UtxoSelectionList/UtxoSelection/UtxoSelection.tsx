@@ -174,10 +174,10 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
-    const localFirstAddressLabels = useSelector(state =>
+    const suiteSyncAddressLabels = useSelector(state =>
         selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
     );
-    const localFirstOutputLabels = useSelector(state =>
+    const suiteSyncOutputLabels = useSelector(state =>
         selectOutputLabels(state, account.deviceState),
     );
 
@@ -268,7 +268,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 entityKey: account.key,
                                 defaultValue: utxo.address,
                                 value:
-                                    localFirstAddressLabels.find(it => it.address === utxo.address)
+                                    suiteSyncAddressLabels.find(it => it.address === utxo.address)
                                         ?.label ?? addressLabels[utxo.address],
                             }}
                             isDisabled
@@ -315,7 +315,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     outputIndex: utxo.vout,
                                     defaultValue: `${utxo.txid}-${utxo.vout}`,
                                     value:
-                                        localFirstOutputLabels.find(
+                                        suiteSyncOutputLabels.find(
                                             it =>
                                                 it.txId === utxo.txid &&
                                                 it.outputIndex == utxo.vout,

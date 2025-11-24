@@ -1,19 +1,19 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getLocalFirstStorageProvider } from '@suite-common/suite-sync-storage';
+import { getSuiteSyncStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 
-import { DEFAULT_SUITE_SYNC_RELAY_URL, LOCAL_FIRST_STORAGE_PREFIX } from './constants';
-import { setLocalFirstStorageRelayUrl } from './suiteSyncActions';
+import { DEFAULT_SUITE_SYNC_RELAY_URL, SUITE_SYNC_STORAGE_PREFIX } from './constants';
+import { setSuiteSyncRelayUrl } from './suiteSyncActions';
 
 type ChangeRelayUrlThunkThunkParams = {
     relayUrl: string | null;
 };
 
 export const changeRelayUrlThunk = createThunk<void, ChangeRelayUrlThunkThunkParams, void>(
-    `${LOCAL_FIRST_STORAGE_PREFIX}/changeRelayUrlThunk`,
+    `${SUITE_SYNC_STORAGE_PREFIX}/changeRelayUrlThunk`,
     async ({ relayUrl }, { getState, dispatch }) => {
         const devices = selectDevices(getState());
-        dispatch(setLocalFirstStorageRelayUrl({ url: relayUrl }));
+        dispatch(setSuiteSyncRelayUrl({ url: relayUrl }));
 
         // We save empty, but we need to reconnect to DEFAULT in case user clears relay form to empty
         const normalizedUrl =
@@ -26,7 +26,7 @@ export const changeRelayUrlThunk = createThunk<void, ChangeRelayUrlThunkThunkPar
                 continue;
             }
 
-            await getLocalFirstStorageProvider(owner).updateRelayUrl(normalizedUrl);
+            await getSuiteSyncStorageProvider(owner).updateRelayUrl(normalizedUrl);
         }
     },
 );

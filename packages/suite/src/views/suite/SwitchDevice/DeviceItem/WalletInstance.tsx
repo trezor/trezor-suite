@@ -34,7 +34,7 @@ import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer'
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
-import { LocalFirstStorageDebug } from './LocalFirstStorageDebug';
+import { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
 import { METADATA_LABELING } from '../../../../actions/suite/constants';
 import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 
@@ -60,7 +60,7 @@ export const WalletInstance = ({
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
     const store = useStore();
-    const { isLocalFirstStorageEnabled } = useLabelingCombined({
+    const { isSuiteSyncEnabled } = useLabelingCombined({
         deviceStaticSessionId: instance?.state?.staticSessionId,
     });
 
@@ -74,11 +74,11 @@ export const WalletInstance = ({
         selectLabelingDataForWallet(state, instance.state),
     );
 
-    const localFirstWalletLabel = useSelector(state =>
+    const suiteSyncWalletLabel = useSelector(state =>
         selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
     );
 
-    const walletLabel = localFirstWalletLabel ?? oldWalletLabel;
+    const walletLabel = suiteSyncWalletLabel ?? oldWalletLabel;
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
@@ -175,7 +175,7 @@ export const WalletInstance = ({
                                                             // This is some legacy weird stuff I do not want to refacotr.
                                                             // `payload.value` needs to be falsey for the `MetadataLabeling` component
                                                             // to display `add` button, instead of `edit` button
-                                                            isLocalFirstStorageEnabled &&
+                                                            isSuiteSyncEnabled &&
                                                             instance?.metadata[
                                                                 METADATA_LABELING.ENCRYPTION_VERSION
                                                             ]
@@ -185,7 +185,7 @@ export const WalletInstance = ({
                                                     defaultEditableValue={valueLabel}
                                                 />
                                             </span>
-                                            <LocalFirstStorageDebug device={instance} />
+                                            <SuiteSyncWalletDebug device={instance} />
                                         </Column>
                                     ) : (
                                         <WalletLabeling device={instance} />

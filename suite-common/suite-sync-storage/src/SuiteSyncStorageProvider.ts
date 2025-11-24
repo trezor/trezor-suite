@@ -14,7 +14,11 @@ type SuiteStorageCreatorParams = {
  */
 export type SuiteStorageCreator = (params: SuiteStorageCreatorParams) => SuiteSyncStorage;
 
-export class LocalFirstStorageProvider {
+/**
+ * This is the **Stateful** service, that works as a **Repository** for SuiteSyncStorages.
+ * Every Wallet has its own SuiteSyncStorage with Owner derived from Seed+Passphrase.
+ */
+export class SuiteSyncStorageProvider {
     private storages = new Map<SuiteSyncOwnerId, SuiteSyncStorage>();
 
     constructor(

@@ -2,7 +2,7 @@ import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
 
 import { DEFAULT_SUITE_SYNC_RELAY_URL, initSuiteSync } from '@suite-common/suite-sync';
 import { evoluCreateSuiteSyncOwner, evoluStorageCreator } from '@suite-common/suite-sync-evolu';
-export { useLocalFirstStorageAlerts } from './hooks/useLocalFirstStorageAlerts';
+export { useSuiteSyncAlerts } from './hooks/useSuiteSyncAlerts';
 
 type InitSuiteSyncNativeDeps = {
     getState: () => any;

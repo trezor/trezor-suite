@@ -421,10 +421,10 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
         suiteSync: createReducer(
             {
                 settings: {
-                    isFeatureLocalFirstStorageAvailable: false,
-                    isLocalFirstStorageEnabled: false,
-                    isLocalFirstStorageDebugEnabled: false,
-                    localFirstStorageRelayUrl: null,
+                    isFeatureSuiteSyncAvailable: false,
+                    isSuiteSyncEnabled: false,
+                    isSuiteSyncDebugEnabled: false,
+                    suiteSyncRelayUrl: null,
                 },
             } satisfies SuiteSyncState,
             state => state,

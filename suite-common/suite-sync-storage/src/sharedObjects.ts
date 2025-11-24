@@ -1,7 +1,7 @@
 import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
-import { LocalFirstStorageProvider } from './LocalFirstStorageProvider';
+import { SuiteSyncStorageProvider } from './SuiteSyncStorageProvider';
 
 type SubscriptionKey = 'labeling'; // for example: "labeling", ...
 
@@ -10,16 +10,16 @@ export const subscriptionStorage: Record<
     Partial<Record<SubscriptionKey, () => void>>
 > = {};
 
-export let localFirstStorageProvider: LocalFirstStorageProvider | null = null;
+export let suiteSyncStorageProvider: SuiteSyncStorageProvider | null = null;
 
-export const setLocalFirstStorageProvider = (provider: LocalFirstStorageProvider) => {
-    localFirstStorageProvider = provider;
+export const setSuiteSyncProvider = (provider: SuiteSyncStorageProvider) => {
+    suiteSyncStorageProvider = provider;
 };
 
-export const getLocalFirstStorageProvider = (owner: SuiteSyncOwner) => {
-    if (localFirstStorageProvider === null) {
-        throw Error('initLocalFirstStorageThunk() must be called before this!');
+export const getSuiteSyncStorageProvider = (owner: SuiteSyncOwner) => {
+    if (suiteSyncStorageProvider === null) {
+        throw Error('initSuiteSync[Desktop|Native]() must be called before this!');
     }
 
-    return localFirstStorageProvider.getStorage(owner);
+    return suiteSyncStorageProvider.getStorage(owner);
 };

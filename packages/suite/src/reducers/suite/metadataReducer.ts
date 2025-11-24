@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 
-import { selectIsLocalFirstStorageEnabled } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
     AccountsRootState,
     DeviceReducerState,
@@ -296,11 +296,11 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
  */
 export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
     const device = selectSelectedDevice(state);
-    const isLocalFirstStorageEnabled = selectIsLocalFirstStorageEnabled(state);
+    const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
 
     // If Evolu is enabled, we do not want to allow for enabling Legacy Labeling just by
     // clicking on the stuff.
-    if (isLocalFirstStorageEnabled) {
+    if (isSuiteSyncEnabled) {
         return false;
     }
 

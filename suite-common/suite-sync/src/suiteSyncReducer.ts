@@ -1,6 +1,6 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { setLocalFirstStorageRelayUrl, suiteSyncActions } from './suiteSyncActions';
+import { setSuiteSyncRelayUrl, suiteSyncActions } from './suiteSyncActions';
 
 export type SuiteSyncSettings = {
     /**
@@ -10,19 +10,19 @@ export type SuiteSyncSettings = {
      *
      * It shall be removed once we release the Suite Sync feature.
      */
-    isFeatureLocalFirstStorageAvailable: boolean;
+    isFeatureSuiteSyncAvailable: boolean;
 
     /**
      * This is flag to show some extra Debug UI.
      */
-    isLocalFirstStorageDebugEnabled: boolean;
+    isSuiteSyncDebugEnabled: boolean;
 
     /**
      * This flag enables Suite Sync. It is intended as Switch
      * in the settings, so privacy focused users can simply
      * switch whole feature off.
      */
-    isLocalFirstStorageEnabled: boolean;
+    isSuiteSyncEnabled: boolean;
 
     /**
      * This is URL for backend/relay.
@@ -31,7 +31,7 @@ export type SuiteSyncSettings = {
      *       can have different config. So this may better be in some
      *       Provider-Config place in the future.
      */
-    localFirstStorageRelayUrl: string | null;
+    suiteSyncRelayUrl: string | null;
 };
 
 export type SuiteSyncState = {
@@ -40,10 +40,10 @@ export type SuiteSyncState = {
 
 export const initialSuiteSyncState: SuiteSyncState = {
     settings: {
-        isFeatureLocalFirstStorageAvailable: false,
-        isLocalFirstStorageEnabled: false,
-        isLocalFirstStorageDebugEnabled: false,
-        localFirstStorageRelayUrl: null,
+        isFeatureSuiteSyncAvailable: false,
+        isSuiteSyncEnabled: false,
+        isSuiteSyncDebugEnabled: false,
+        suiteSyncRelayUrl: null,
     },
 };
 
@@ -51,19 +51,16 @@ export const prepareSuiteSyncReducer = createReducerWithExtraDeps<SuiteSyncState
     initialSuiteSyncState,
     builder =>
         builder
-            .addCase(suiteSyncActions.updateLocalFirstStorageEnabled, (state, { payload }) => {
-                state.settings.isLocalFirstStorageEnabled = payload.isEnabled;
+            .addCase(suiteSyncActions.updateSuiteSyncEnabled, (state, { payload }) => {
+                state.settings.isSuiteSyncEnabled = payload.isEnabled;
             })
-            .addCase(suiteSyncActions.updateLocalFirstStorageDebugEnabled, (state, { payload }) => {
-                state.settings.isLocalFirstStorageDebugEnabled = payload.isEnabled;
+            .addCase(suiteSyncActions.updateSuiteSyncDebugEnabled, (state, { payload }) => {
+                state.settings.isSuiteSyncDebugEnabled = payload.isEnabled;
             })
-            .addCase(
-                suiteSyncActions.updateIsFeatureLocalFirstStorageAvailable,
-                (state, { payload }) => {
-                    state.settings.isFeatureLocalFirstStorageAvailable = payload.isShownInSettings;
-                },
-            )
-            .addCase(setLocalFirstStorageRelayUrl, (state, { payload }) => {
-                state.settings.localFirstStorageRelayUrl = payload.url;
+            .addCase(suiteSyncActions.updateIsFeatureSuiteSyncAvailable, (state, { payload }) => {
+                state.settings.isFeatureSuiteSyncAvailable = payload.isShownInSettings;
+            })
+            .addCase(setSuiteSyncRelayUrl, (state, { payload }) => {
+                state.settings.suiteSyncRelayUrl = payload.url;
             }),
 );
