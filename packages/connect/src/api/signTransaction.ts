@@ -136,11 +136,26 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 );
             }
         }
+        const paymentRequests =
+            payload.paymentRequests?.map(p => {
+                if (typeof p.amount === 'number') {
+                    // convert int to hex string (little endian)
+                    const buffer = Buffer.allocUnsafe(8);
+                    buffer.writeIntLE(p.amount, 0, 6);
+
+                    return {
+                        ...p,
+                        amount: buffer.toString('hex'),
+                    };
+                }
+
+                return { ...p, amount: p.amount };
+            }) ?? [];
 
         this.params = {
             inputs,
             outputs,
-            paymentRequests: payload.paymentRequests ?? [],
+            paymentRequests,
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
             options: {
