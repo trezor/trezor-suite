@@ -20,9 +20,9 @@ import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
 import { FeatureFlags } from '../components/FeatureFlags';
 import { FirmwareUpdateEnvironmentSelect } from '../components/FirmwareUpdateEnvironmentSelect';
-import { LocalFirstRelaySettings } from '../components/LocalFirstRelaySettings';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
+import { SuiteSyncRelaySettings } from '../components/SuiteSyncRelaySettings';
 import { TestnetsToggle } from '../components/TestnetsToggle';
 import { TradingDeeplinks } from '../components/TradingDeeplinks';
 import { TradingEnvironmentSelect } from '../components/TradingEnvironmentSelect';
@@ -103,7 +103,7 @@ export const DevUtilsScreen = () => {
                         <FirmwareUpdateEnvironmentSelect />
                     </VStack>
                 </Card>
-                <LocalFirstRelaySettings />
+                <SuiteSyncRelaySettings />
             </VStack>
         </Screen>
     );
