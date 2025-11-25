@@ -9918,6 +9918,10 @@ export default defineMessages({
         id: 'TR_STAKE_NEXT_PAYOUT',
         defaultMessage: 'Next reward payout',
     },
+    TR_STAKE_NEXT_PAYOUT_FREQUENCY: {
+        id: 'TR_STAKE_NEXT_PAYOUT_FREQUENCY',
+        defaultMessage: 'Reward cycle',
+    },
     TR_STAKE_STAKE_MORE: {
         id: 'TR_STAKE_STAKE_MORE',
         defaultMessage: 'Stake more',
