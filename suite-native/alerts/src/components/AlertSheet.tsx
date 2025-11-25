@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     Box,
@@ -25,16 +26,18 @@ type AlertSheetProps = {
 const SCREEN_WIDTH = getScreenWidth();
 const SCREEN_HEIGHT = getScreenHeight();
 
-const alertSheetContainerStyle = prepareNativeStyle(utils => ({
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: utils.spacings.sp24,
-    paddingVertical: utils.spacings.sp32,
-    marginBottom: utils.spacings.sp32,
-    marginHorizontal: utils.spacings.sp8,
-    borderRadius: utils.borders.radii.r16,
-    ...utils.boxShadows.small,
-}));
+const alertSheetContainerStyle = prepareNativeStyle<{ bottomInset: number }>(
+    (utils, { bottomInset }) => ({
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: utils.spacings.sp24,
+        paddingVertical: utils.spacings.sp32,
+        marginHorizontal: utils.spacings.sp16,
+        borderRadius: utils.borders.radii.r16,
+        marginBottom: bottomInset + utils.spacings.sp16,
+        ...utils.boxShadows.small,
+    }),
+);
 
 const alertSheetContentStyle = prepareNativeStyle(utils => ({
     width: '100%',
@@ -58,6 +61,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     const { hideAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
     const { runShakeAnimation, shakeAnimatedStyle } = useShakeAnimation();
+    const { bottom } = useSafeAreaInsets();
 
     const {
         animatedSheetWithOverlayStyle,
@@ -109,7 +113,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                     style={shakeAnimatedStyle}
                     onStartShouldSetResponder={_ => true} // Stop the shake event trigger propagation.
                 >
-                    <Card style={applyStyle(alertSheetContainerStyle)}>
+                    <Card style={applyStyle(alertSheetContainerStyle, { bottomInset: bottom })}>
                         <VStack style={applyStyle(alertSheetContentStyle)}>
                             {pictogramVariant && (
                                 <Box alignItems="center">
