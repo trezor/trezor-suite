@@ -19,17 +19,22 @@ const getStaticSessionId = (device: WorkflowContext['device']) =>
                 `${message.address}@${device.features.device_id}:${device.getInstance()}` as StaticSessionId,
         );
 
-const getState = async ({ device, method }: WorkflowContext) => {
-    if (!device.features) return;
-
+const preauthorizeState = ({ device, method }: WorkflowContext) => {
     if (!device.features.unlocked && method.preauthorized) {
         // NOTE: auto locked device accepts preauthorized methods (authorizeConjoin, getOwnershipProof, signTransaction) without pin request.
         // in that case it's enough to check if session_id is preauthorized...
         // add-abort-signal
-        if (await device.getCommands().preauthorize(false)) {
-            return;
-        }
+        return device.getCommands().preauthorize(false);
         // ...and if it's not then unlock device and proceed to regular GetAddress flow
+    }
+};
+
+const getState = async (context: WorkflowContext) => {
+    const { device } = context;
+    if (!device.features) return;
+
+    if (await preauthorizeState(context)) {
+        return;
     }
 
     const expectedState = device.getState()?.staticSessionId;
@@ -89,6 +94,11 @@ const getInvalidThpDeviceState = async (context: WorkflowContext) => {
     const expectedSessionId = currentState?.sessionId
         ? Buffer.from(currentState.sessionId, 'hex')
         : undefined;
+
+    if (await preauthorizeState(context)) {
+        return;
+    }
+
     let uniqueState;
     const thpState = device.getThpState()!;
     if (expectedSessionId) {
