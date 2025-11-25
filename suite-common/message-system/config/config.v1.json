@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-11-20T00:00:00+00:00",
-    "sequence": 121,
+    "timestamp": "2025-11-25T00:00:00+00:00",
+    "sequence": 122,
     "actions": [
         {
             "conditions": [
@@ -1508,6 +1508,44 @@
                         "flag": true
                     }
                 ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "ada": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<25.12.1",
+                        "mobile": "!",
+                        "web": "<25.12.1"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c2723e0a-640b-44be-b1a8-7c7eaa7d87b9",
+                "priority": 93,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["context"],
+                "content": {
+                    "en": "Legacy Cardano account detected—migrate to a default account, as legacy accounts won't be automatically discovered in future.",
+                    "es": "Cuenta Cardano Legacy detectada: migre a una cuenta predeterminada, ya que las cuentas Legacy no se detectarán automáticamente en el futuro.",
+                    "cs": "Využíváte legacy Cardano účet–Přejděte na výchozí účet. Legacy účty nebudou v budoucnu automaticky načítány.",
+                    "ru": "Обнаружен устаревший аккаунт Cardano—перейдите на стандартный аккаунт, так как в будущем устаревшие аккаунты не будут обнаруживаться автоматически.",
+                    "ja": "レガシーCardanoアカウントが検出されました。レガシーアカウントは将来的に自動検出されなくなるため、デフォルトアカウントに移行してください。",
+                    "hu": "Régi típusú Cardano fiók észlelve–váltson át egy alapértelmezett fiókra, mivel a régi fiókok a jövőben nem kerülnek automatikus észlelésre.",
+                    "it": "Rilevato account Cardano Legacy: passa a un account predefinito, poiché in futuro gli account Legacy non verranno rilevati automaticamente.",
+                    "fr": "Compte Cardano Legacy détecté : migrez vers un compte par défaut, car les comptes Legacy ne seront plus détectés automatiquement à l'avenir.",
+                    "de": "Legacy-Cardano-Konto erkannt–wechseln Sie zu einem Standardkonto, da Legacy-Konten in Zukunft nicht mehr automatisch erkannt werden.",
+                    "tr": "Eski Cardano hesabı tespit edildi; varsayılan bir hesaba geçiş yapın, çünkü eski hesaplar gelecekte otomatik olarak algılanmayacaktır.",
+                    "pt": "Conta Cardano Legacy detectada–migre para uma conta padrão, pois as contas Legacy não serão detectadas automaticamente no futuro.",
+                    "uk": "Виявлено застарілий акаунт Cardano–перейдіть на стандартний акаунт, оскільки в майбутньому застарілі акаунти не будуть виявлятися автоматично."
+                },
+                "context": { "domain": "accounts.ada.legacy" }
             }
         },
         {
