@@ -23,7 +23,7 @@ import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
-import { PayoutCard } from '../StakingDashboard/components/PayoutCard';
+import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
 interface NewCardanoStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
@@ -78,10 +78,8 @@ export const NewCardanoStakingDashboard = ({
                                     <ClaimCard />
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
                                         <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
-                                        <PayoutCard
-                                            nextRewardPayout={CARDANO_EPOCH_DAYS}
-                                            daysToAddToPool={CARDANO_EPOCH_DAYS}
-                                            validatorWithdrawTime={0}
+                                        <PayoutCardFrequencyRewards
+                                            rewardFrequency={CARDANO_EPOCH_DAYS}
                                         />
                                     </Flex>
                                 </Grid>
