@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
-import { AssetLogo } from '@trezor/components';
+import { AssetLogo } from '@trezor/product-components';
 
 import { TradingCoinLogoProps } from 'src/types/trading/trading';
 

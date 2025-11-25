@@ -33,3 +33,4 @@ export { type ModelFor, type ColorsFor } from './components/DeviceAnimation/devi
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
 export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';
 export { DataAnalytics } from './components/DataAnalytics';
+export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo';

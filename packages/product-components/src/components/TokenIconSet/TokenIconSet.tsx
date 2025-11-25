@@ -4,8 +4,10 @@ import styled, { css } from 'styled-components';
 
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import { AssetLogo, useElevation } from '@trezor/components';
+import { useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+
+import { AssetLogo } from '../AssetLogo/AssetLogo';
 
 export type TokenIconSetProps = {
     symbol: NetworkSymbol;

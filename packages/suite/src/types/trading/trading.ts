@@ -28,9 +28,8 @@ import type {
 import { AccountType } from '@suite-common/wallet-config';
 import { AccountsState } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { AssetLogoProps } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
-import { AssetOptionBaseProps } from '@trezor/product-components';
+import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { ExtendedMessageDescriptor } from 'src/types/suite';

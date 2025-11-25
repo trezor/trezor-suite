@@ -14,7 +14,6 @@ export * from './components/animations/LottieAnimation';
 export { recolorLottieAnimation } from './components/animations/recolorLottieAnimation';
 export { hexToRgbaArray } from '../../utils/src/hexToRgbaArray';
 export { hexToRgba } from '../../utils/src/hexToRgba';
-export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo';
 export * from './components/Flag/Flag';
 export * from './components/AutoScalingInput/AutoScalingInput';
 export { Badge, type BadgeProps, type BadgeSize } from './components/Badge/Badge';

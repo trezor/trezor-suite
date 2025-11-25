@@ -3,10 +3,11 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
+import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { AssetOptionBaseProps } from './SelectAssetModal';
+import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { isCoinSymbol } from '../CoinLogo/coins';
 

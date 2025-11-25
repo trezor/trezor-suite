@@ -7,7 +7,8 @@ import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import type { TokenDetailByMint, TokenInfo } from '@trezor/blockchain-link-types';
 import { STELLAR_DECIMALS, getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
-import { AssetLogo, Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
+import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
+import { AssetLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Loading } from 'src/components/suite';
