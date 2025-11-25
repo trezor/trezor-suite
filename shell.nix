@@ -1,14 +1,14 @@
-# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/467a36d9f02926bf8388b62eb82f0e6234b40851
+# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/9ea478ee24f110ac3b20800a10903989b03e4bf2
 # we need to use nixos-unstable to be able to use nodejs_24, once there is a stable release with it we can change.
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/467a36d9f02926bf8388b62eb82f0e6234b40851.tar.gz";
-    sha256 = "17cana4hwz4a23p2lmqfp1szxihbgib9a4dqwf6xmbjz1w1kxxlh";
+    url = "https://github.com/NixOS/nixpkgs/archive/9ea478ee24f110ac3b20800a10903989b03e4bf2.tar.gz";
+    sha256 = "0b4bhjkcvdlaacydcaf1v4jmzp22mpxc16wwn3y6p12k3n5zkyj7";
    }) { system = builtins.currentSystem; };
 
 let
   # unstable packages
-  electron = electron_36;
+  electron = electron_39;
   nodejs = nodejs_24;
   # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
   # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
@@ -62,6 +62,7 @@ in
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
     '' + lib.optionalString stdenv.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
+      export ELECTRON_DISABLE_SANDBOX=1
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
       export PLAYWRIGHT_BROWSERS_PATH="$CURDIR/.cache/ms-playwright"
     '';
