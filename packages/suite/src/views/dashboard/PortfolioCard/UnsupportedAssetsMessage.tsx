@@ -15,12 +15,12 @@ export const useUnsupportedNetworkMessage = ({
     showGraphControls,
     device,
     accounts,
-    dashboardGraphHidden,
+    isGraphHidden,
 }: {
     showGraphControls: boolean;
     device?: TrezorDevice;
     accounts: Account[];
-    dashboardGraphHidden: boolean;
+    isGraphHidden: boolean;
 }) => {
     const affectedAccounts =
         showGraphControls && !hasBitcoinOnlyFirmware(device)
@@ -32,7 +32,7 @@ export const useUnsupportedNetworkMessage = ({
     const affectedNetworks = union(affectedAccounts);
     const hasTokens = hasAnyAccountWithTokens(accounts);
     const showMissingDataTooltip =
-        !dashboardGraphHidden && (affectedNetworks.length > 0 || hasAnyAccountWithTokens(accounts));
+        !isGraphHidden && (affectedNetworks.length > 0 || hasAnyAccountWithTokens(accounts));
 
     return { affectedNetworks, showMissingDataTooltip, hasTokens };
 };
