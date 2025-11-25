@@ -8,7 +8,7 @@ import { WalletLabelsStore } from './labeling/WalletLabelsStore';
  * Every wallet has its own Store. Store can use different technologies to provide Synchronization
  * of data. For example the Evolu library.
  */
-export interface SuiteSyncStorage {
+export type SuiteSyncStorage = {
     accountLabels: AccountLabelsStore;
     walletLabels: WalletLabelsStore;
     outputLabels: OutputLabelsStore;
@@ -16,4 +16,4 @@ export interface SuiteSyncStorage {
 
     updateRelayUrl(url: string): Promise<void>;
     dispose(): Promise<void>;
-}
+};

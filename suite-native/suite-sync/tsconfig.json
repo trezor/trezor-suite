@@ -9,6 +9,9 @@
             "path": "../../suite-common/suite-sync-evolu"
         },
         {
+            "path": "../../suite-common/suite-sync-storage"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },

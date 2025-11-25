@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { subscriptionStorage, suiteSyncStorageProvider } from '@suite-common/suite-sync-storage';
+import { subscriptionStorage, suiteSyncStorages } from '@suite-common/suite-sync-storage';
 import { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { typedObjectValues } from '@trezor/utils';
@@ -15,7 +15,7 @@ export const unsubscribeAndDisposeSuiteSyncStorageThunk = createThunk<
     UnsubscribeAndDisposeSuiteSyncStorageThunkParams,
     void
 >(`${SUITE_SYNC_STORAGE_PREFIX}/unsubscribeAndDisposeSuiteSyncStorageThunk`, async ({ device }) => {
-    if (suiteSyncStorageProvider === null) {
+    if (suiteSyncStorages === null) {
         throw Error('initSuiteSync[Desktop|Native]() must be called before this!');
     }
 
@@ -32,5 +32,5 @@ export const unsubscribeAndDisposeSuiteSyncStorageThunk = createThunk<
     typedObjectValues(subscriptionStorage[walletDescriptor]).forEach(callback => callback?.());
 
     delete subscriptionStorage[walletDescriptor];
-    await suiteSyncStorageProvider.deleteStorage(owner.ownerId);
+    await suiteSyncStorages.delete(owner.ownerId);
 });

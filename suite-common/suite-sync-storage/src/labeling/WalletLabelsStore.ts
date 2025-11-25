@@ -5,7 +5,7 @@ export type WalletLabel = {
     label: string | null;
 };
 
-export interface WalletLabelsStore {
+export type WalletLabelsStore = {
     update({ walletDescriptor, label }: WalletLabel): void;
     subscribe(onChange: (payload: WalletLabel) => void): () => void;
-}
+};

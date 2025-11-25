@@ -12901,6 +12901,7 @@ __metadata:
     "@evolu/react-native": "npm:^12.0.1-preview.9"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -13242,6 +13243,7 @@ __metadata:
     "@evolu/web": "npm:^1.0.1-preview.7"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
   languageName: unknown
   linkType: soft
 
