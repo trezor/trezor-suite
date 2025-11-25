@@ -136,7 +136,8 @@ export const init = async (container: HTMLElement) => {
     // TODO should it really be here instead of initAction.ts?
     await store.dispatch(initBluetoothThunk());
 
-    initSuiteSyncDesktop({ getState: store.getState });
+    // Todo: run it from extra, shall be solved in: https://github.com/trezor/trezor-suite/pull/23356
+    initSuiteSyncDesktop({ getState: store.getState }).init();
 
     // finally render whole app
     root.render(

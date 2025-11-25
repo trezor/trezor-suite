@@ -77,7 +77,7 @@ export const extraDependencies: ExtraDependencies = {
         // `@suite-common/suite-sync` depends on `wallet-core`
         subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
         unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
-        initSuiteSync: () => (_, getState) => initSuiteSyncDesktop({ getState }),
+        initSuiteSync: () => (_, getState) => initSuiteSyncDesktop({ getState }).init(),
         createSuiteSyncOwner: params => () => createSuiteSyncOwnerDesktop(params),
     },
     selectors: {

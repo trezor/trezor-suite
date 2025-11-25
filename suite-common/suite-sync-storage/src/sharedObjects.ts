@@ -18,6 +18,7 @@ export const setSuiteSyncProvider = (repository: SuiteSyncStorageRepository) => 
 
 export const getSuiteSyncStorageProvider = (owner: SuiteSyncOwner) => {
     if (suiteSyncStorages === null) {
+        console.error('initSuiteSync[Desktop|Native]() must be called before this!'); // IMPORTANT! Throw Error can be suppressed in thunks :(
         throw Error('initSuiteSync[Desktop|Native]() must be called before this!');
     }
 
