@@ -1,5 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Pressable, TextInput } from 'react-native';
+import { KeyboardEvents } from 'react-native-keyboard-controller';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { HStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -29,6 +32,10 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
         inputRef.current?.focus();
     }, []);
 
+    const blurInput = useCallback(() => {
+        inputRef.current?.blur();
+    }, []);
+
     const onKeyPress = (key: string) => {
         if (key >= '0' && key <= '9' && code.length < length) {
             const newCode = code + key;
@@ -41,13 +48,19 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
         }
     };
 
-    useEffect(() => {
-        const timeoutId = setTimeout(focusInput, 1);
+    useFocusEffect(
+        useCallback(() => {
+            // Need to wait a while with focusing otherwise the keyboard might not show up.
+            const timeoutId = setTimeout(focusInput, 100);
+            // In case the keyboard is hidden on Android, ensure it shows up again upon focus.
+            const subscription = KeyboardEvents.addListener('keyboardDidHide', blurInput);
 
-        return () => {
-            clearTimeout(timeoutId);
-        };
-    }, [focusInput]);
+            return () => {
+                clearTimeout(timeoutId);
+                subscription.remove();
+            };
+        }, [focusInput, blurInput]),
+    );
 
     return (
         <Pressable onPress={focusInput}>
