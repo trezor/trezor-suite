@@ -12,7 +12,7 @@ export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceIm
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export { CoinLogo } from './components/CoinLogo/CoinLogo';
-export { isCoinSymbol } from './components/CoinLogo/coins';
+export { isCoinSymbol } from './constants/coins';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTabs';
@@ -33,4 +33,6 @@ export { type ModelFor, type ColorsFor } from './components/DeviceAnimation/devi
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
 export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';
 export { DataAnalytics } from './components/DataAnalytics';
-export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo';
+export * from './components/AssetLogo/AssetLogo';
+export { isNetworkSymbolWithIcon } from './constants/networks';
+export * from './components/TopAssets/TopAssets';

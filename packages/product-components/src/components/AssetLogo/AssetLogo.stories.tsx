@@ -24,15 +24,26 @@ export const AssetLogo: StoryObj<AssetLogoProps> = {
         contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         shouldTryToFetch: true,
         placeholder: 'USDC',
+        showNetworkIcon: false,
         ...getFramePropsStory(allowedAssetLogoFrameProps).args,
     },
     argTypes: {
+        ...getFramePropsStory(allowedAssetLogoFrameProps).argTypes,
         size: {
             options: allowedAssetLogoSizes,
             control: {
                 type: 'select',
             },
         },
-        ...getFramePropsStory(allowedAssetLogoFrameProps).argTypes,
+        showNetworkIcon: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        shouldTryToFetch: {
+            control: {
+                type: 'boolean',
+            },
+        },
     },
 };

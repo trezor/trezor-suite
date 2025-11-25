@@ -13706,6 +13706,7 @@ __metadata:
     react-svg: "npm:16.3.0"
     react-use: "npm:^17.6.0"
     storybook: "npm:^9.0.16"
+    stream-browserify: "npm:^3.0.0"
     styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^38.0.0"

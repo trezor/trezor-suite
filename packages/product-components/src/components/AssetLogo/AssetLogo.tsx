@@ -3,18 +3,20 @@ import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import {
+    NetworkSymbol,
     type NetworkSymbolExtended,
     getNetwork,
     getNetworkByCoingeckoId,
+    getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
     ElevationUp,
-    type FrameProps,
-    type FramePropsKeys,
-    type TransientProps,
+    FrameProps,
+    FramePropsKeys,
+    TransientProps,
     pickAndPrepareFrameProps,
     useElevation,
     withFrameProps,
@@ -22,6 +24,8 @@ import {
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetInitials } from './AssetInitials';
+import { LegacyNetworkSymbol, isNetworkSymbolWithIcon } from '../../constants/networks';
+import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
 
 export const allowedAssetLogoSizes = [20, 24, 32, 40] as const;
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
@@ -38,6 +42,7 @@ export type AssetLogoProps = AllowedFrameProps & {
     placeholderWithTooltip?: boolean;
     placeholder: string;
     'data-testid'?: string;
+    showNetworkIcon?: boolean;
 };
 
 type LogoCandidate = { address: string; src: string; srcSet: string };
@@ -46,6 +51,7 @@ const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number
     ${({ $size }) => `
         width: ${$size}px;
         height: ${$size}px;
+        position: relative;
     `}
     ${withFrameProps}
 `;
@@ -56,6 +62,13 @@ const Logo = styled.img<{ $size: number; $elevation: Elevation }>`
     border-radius: ${borders.radii.full};
     box-shadow: inset 0 0 0 1px ${mapElevationToBorder};
     background-color: ${mapElevationToBackground};
+`;
+
+const StyledNetworkIcon = styled(NetworkIcon)`
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    line-height: 0;
 `;
 
 interface LogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -77,6 +90,19 @@ const makeCacheKey = (coingeckoId: string, addressesKey: string) =>
     `${coingeckoId}::${addressesKey}`;
 
 const makeAddressKey = (coingeckoId: string, address: string) => `${coingeckoId}::${address}`;
+
+export function shouldShowNetworkIcon(
+    networkSymbol?: NetworkSymbolExtended,
+    contractAddress?: string | null,
+) {
+    return (
+        networkSymbol &&
+        isNetworkSymbolWithIcon(networkSymbol) &&
+        isNetworkSymbol(networkSymbol) &&
+        Boolean(contractAddress) &&
+        getNetworkFeatures(networkSymbol).includes('tokens')
+    );
+}
 
 export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
     coingeckoId: string,
@@ -106,10 +132,11 @@ export const AssetLogo = ({
     size,
     coingeckoId,
     symbol,
-    contractAddress,
+    contractAddress = null,
     shouldTryToFetch = true,
     placeholder,
     placeholderWithTooltip = true,
+    showNetworkIcon = false,
     'data-testid': dataTest,
     ...rest
 }: AssetLogoProps) => {
@@ -238,6 +265,12 @@ export const AssetLogo = ({
                         onLoad={handleOnLoad}
                         onError={handleLoadError}
                     />
+                    {showNetworkIcon && (
+                        <StyledNetworkIcon
+                            networkSymbol={symbol as NetworkSymbol | LegacyNetworkSymbol}
+                            size={size * 0.375}
+                        />
+                    )}
                 </ElevationUp>
             )}
         </Container>

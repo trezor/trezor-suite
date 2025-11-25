@@ -7,9 +7,9 @@ import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { AssetOptionBaseProps } from './SelectAssetModal';
+import { isCoinSymbol } from '../../constants/coins';
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
-import { isCoinSymbol } from '../CoinLogo/coins';
 
 const ClickableContainer = styled.div`
     cursor: pointer;

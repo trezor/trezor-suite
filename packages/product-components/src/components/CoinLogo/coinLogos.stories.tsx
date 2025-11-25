@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { networksCollection } from '@suite-common/wallet-config';
 import { StoryColumn } from '@trezor/components';
 
-import { COINS, isCoinSymbol } from './coins';
-import { NETWORK_ICONS, isNetworkSymbol } from './networks';
-import { CoinLogo } from '../../index';
+import { CoinLogo } from './CoinLogo';
+import { COINS, isCoinSymbol } from '../../constants/coins';
+import { NETWORK_ICONS, isNetworkSymbolWithIcon } from '../../constants/networks';
 
 const Heading = styled.h2`
     margin-bottom: 2px;
@@ -67,7 +67,7 @@ export const All: StoryObj = {
                     {Object.keys(NETWORK_ICONS).map(network => (
                         <Icon key={network}>
                             <CoinName>{network}</CoinName>
-                            {isNetworkSymbol(network) && (
+                            {isNetworkSymbolWithIcon(network) && (
                                 <CoinLogo
                                     symbol={network}
                                     data-testid={`network-${network}`}

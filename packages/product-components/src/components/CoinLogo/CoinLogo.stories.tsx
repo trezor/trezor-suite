@@ -1,9 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { COIN_LOGO_TYPE, CoinLogoProps } from './CoinLogo';
-import { COINS } from './coins';
-import { CoinLogo as CoinLogoComponent } from '../../index';
+import { COIN_LOGO_TYPE, CoinLogo as CoinLogoComponent, CoinLogoProps } from './CoinLogo';
+import { COINS } from '../../constants/coins';
 
 const Center = styled.div`
     display: flex;
