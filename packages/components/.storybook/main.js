@@ -49,6 +49,12 @@ module.exports = {
             ],
         });
 
+        // Add polyfill for Node.js 'stream' module (required by jws)
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            stream: require.resolve('stream-browserify'),
+        };
+
         // NOTE: remove the previous loaders from handling the svgs
         const imageRule = config.module.rules.find(rule => rule?.['test']?.test('.svg'));
         if (imageRule) {

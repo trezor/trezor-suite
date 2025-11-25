@@ -11,8 +11,7 @@ import {
 } from '@suite-common/wallet-types';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
 import { mapPaddingTypeToPadding } from '@trezor/components/src/components/Card/utils';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
-import { isCoinSymbol } from '@trezor/product-components/src/components/CoinLogo/coins';
+import { AssetLogo, CoinLogo, isCoinSymbol } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

@@ -31,8 +31,7 @@ import {
     Text,
 } from '@trezor/components';
 import { ERRORS } from '@trezor/connect';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
-import { isCoinSymbol } from '@trezor/product-components/src/components/CoinLogo/coins';
+import { AssetLogo, CoinLogo, isCoinSymbol } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 

@@ -5,17 +5,19 @@ import styled from 'styled-components';
 
 import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { borders } from '@trezor/theme';
+import { roundTo } from '@trezor/utils';
 
-import { COINS, LegacyNetworkSymbol } from './coins';
-import { NETWORK_ICONS } from './networks';
+import { COINS, LegacyNetworkSymbol } from '../../constants/coins';
+import { NETWORK_ICONS } from '../../constants/networks';
+import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
 
 export const COIN_LOGO_TYPE = ['token', 'network', 'tokenWithNetwork'] as const;
 export type CoinLogoType = (typeof COIN_LOGO_TYPE)[number];
 
 const DEFAULT_SIZE = 32;
 
-const getSize = (size?: number, border = 0, divisor = 1) =>
-    `${(size ?? DEFAULT_SIZE) / divisor + border * 2}px`;
+const getSize = (size: number = DEFAULT_SIZE, border = 0, divisor = 1) =>
+    `${roundTo(size / divisor + border * 2, 2)}px`;
 
 export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol: NetworkSymbol | LegacyNetworkSymbol;
@@ -98,16 +100,7 @@ export const CoinLogo = ({
                 }}
                 loading={() => <span className="loading" />}
             />
-            {badge && symbolSrc != null && (
-                <ReactSVG
-                    src={badge}
-                    beforeInjection={svg => {
-                        svg.setAttribute('width', getSize(size, 0, 3));
-                        svg.setAttribute('height', getSize(size, 0, 3));
-                    }}
-                    loading={() => <span className="loading" />}
-                />
-            )}
+            {badge && <NetworkIcon networkSymbol={symbol} size={roundTo(size / 3, 2)} />}
         </SvgWrapper>
     );
 };

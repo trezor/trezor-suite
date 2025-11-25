@@ -60,3 +60,4 @@ export * from './getIntegerInRangeFromString';
 export * from './safeBigIntStringify';
 export * from './union';
 export * from './isInt';
+export * from './number';

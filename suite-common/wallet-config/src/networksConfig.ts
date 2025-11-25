@@ -1,7 +1,7 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { getExplorerUrls } from './getExplorerUrls';
-import { Networks } from './types';
+import { NetworkFeature, Networks } from './types';
 
 export const networks = {
     btc: {
@@ -680,15 +680,17 @@ export const networks = {
     },
 } as const satisfies Networks;
 
-export type NetworkDisplaySymbol = (typeof networks)[keyof typeof networks]['displaySymbol'];
-
 type NetworksConfig = typeof networks;
 
-export type StakingNetworkSymbol = {
-    [S in keyof NetworksConfig]: 'staking' extends NetworksConfig[S]['features'][number]
-        ? S
+export type NetworkDisplaySymbol = NetworksConfig[keyof NetworksConfig]['displaySymbol'];
+
+export type NetworkWithFeature<TFeature extends NetworkFeature> = {
+    [S in keyof NetworksConfig]: TFeature extends NetworksConfig[S]['features'][number]
+        ? NetworksConfig[S]
         : never;
 }[keyof NetworksConfig];
+
+export type StakingNetworkSymbol = NetworkWithFeature<'staking'>['symbol'];
 
 export type StakingNetworkType = NetworksConfig[StakingNetworkSymbol]['networkType'];
 

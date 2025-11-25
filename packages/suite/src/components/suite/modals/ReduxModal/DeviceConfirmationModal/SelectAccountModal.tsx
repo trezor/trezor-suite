@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
     Card,
@@ -14,8 +13,7 @@ import {
     Table,
 } from '@trezor/components';
 import { UiRequestSelectAccount } from '@trezor/connect';
-import { CoinLogo } from '@trezor/product-components';
-import { NETWORK_ICONS } from '@trezor/product-components/src/components/CoinLogo/networks';
+import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { onReceiveAccount } from 'src/actions/suite/modalActions';
@@ -132,10 +130,10 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                         >
                                             <Table.Cell>
                                                 <Row gap={spacings.sm}>
-                                                    {symbol in NETWORK_ICONS && (
+                                                    {isNetworkSymbolWithIcon(symbol) && (
                                                         <CoinLogo
                                                             type="network"
-                                                            symbol={symbol as NetworkSymbol}
+                                                            symbol={symbol}
                                                             size={24}
                                                         />
                                                     )}
