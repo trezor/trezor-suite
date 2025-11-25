@@ -11,16 +11,13 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.6.5-beta.2
+# 9.7.0-beta.1
 
-This release introduces Monero support in Trezor Connect and enhances Trezor Suite Web for use as a Trezor Connect popup.
+This release enables a new flow that replaces the old popup with web-based Suite. It allows for TS7 support on the web and provides an improved UI, consistent with Suite Desktop.
 
-    feat(connect-web): in core-in-suite-desktop handle permission error (41da933)
-    feat(connect): monero support (7e4e42c)
-    feat(connect-webextension): suite web popup implementation for webextension (175e40c)
-    feat(connect): use existing message channels for suite web (314464a)
-    feat(connect-explorer): suite web popup setting (9252ce3)
-    feat(connect): suite web popup implementation (6bafb1e)
+Additionally, Monero support has been added to Connect APIs.
+
+If you encounter any issues with the new flow, please let us know.
 
 # 9.6.4
 
