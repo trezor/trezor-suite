@@ -12951,6 +12951,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/thp@workspace:suite-native/thp"
   dependencies:
+    "@react-navigation/native": "npm:7.1.18"
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
@@ -12963,6 +12964,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
+    react-native-keyboard-controller: "npm:1.19.2"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
