@@ -220,13 +220,18 @@ export const initTrezorConnect = async (
 // "1.9.3" - skip for FW exact with 1.9.3
 // "1.9.3-1.9.6" - skip for FW gte 1.9.3 && lte 1.9.6
 // "!T3T1" - skip for specific device model
+// "*T3T1" - run only on specific device models
 export const skipTest = (rules: string[]) => {
     if (!rules || !Array.isArray(rules)) return;
     if (!firmware) return;
     const fwModel = firmware.substring(0, 1);
     const fwMaster = firmware.includes('-main');
-    const deviceRule = rules.find(skip => skip === '!' + deviceModel);
-    if (deviceRule) return deviceRule;
+    const deviceRuleNegative = rules.find(skip => skip === '!' + deviceModel);
+    if (deviceRuleNegative) return deviceRuleNegative;
+
+    const anyDeviceRulePositive = rules.find(skip => skip.startsWith('*'));
+    const deviceRulePositive = rules.find(skip => skip === '*' + deviceModel);
+    if (anyDeviceRulePositive && !deviceRulePositive) return anyDeviceRulePositive;
 
     const rule = rules
         .filter(skip => skip.substring(0, 1) === fwModel || skip.substring(1, 2) === fwModel) // filter rules only for current model

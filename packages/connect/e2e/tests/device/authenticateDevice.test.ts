@@ -38,7 +38,7 @@ describe('TrezorConnect.authenticateDevice', () => {
         ),
     };
 
-    conditionalTest(['!T2T1', '!T1B1'], 'validation successful', async () => {
+    conditionalTest(['*T3W1'], 'validation successful - tropic', async () => {
         const result = await TrezorConnect.authenticateDevice({
             config,
         });
@@ -50,6 +50,20 @@ describe('TrezorConnect.authenticateDevice', () => {
                 // trezor-user-env T3W1 has no tropic debug keys provisioned, but it is now required.
                 // TODO change to true when it's fixed in trezor-user-env (this E2E will start failing)
                 tropicResult: { valid: false },
+            },
+        });
+    });
+
+    conditionalTest(['*T3T1', '*T3B1', '*T2B1'], 'validation successful - optiga', async () => {
+        const result = await TrezorConnect.authenticateDevice({
+            config,
+        });
+
+        expect(result).toMatchObject({
+            success: true,
+            payload: {
+                optigaResult: { valid: true },
+                tropicResult: null,
             },
         });
     });
@@ -83,14 +97,13 @@ describe('TrezorConnect.authenticateDevice', () => {
                 success: true,
                 payload: {
                     optigaResult: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },
-                    tropicResult: null,
                 },
             });
         },
     );
 
     conditionalTest(
-        ['!T2T1', '!T1B1'],
+        ['*T3T1', '*T3B1', '*T2B1'],
         'sanity check unsuccessful (caPubkey is on blacklist)',
         async () => {
             const result = await TrezorConnect.authenticateDevice({
@@ -110,7 +123,6 @@ describe('TrezorConnect.authenticateDevice', () => {
                 success: true,
                 payload: {
                     optigaResult: { valid: false, error: 'CA_PUBKEY_BLACKLISTED' },
-                    tropicResult: null,
                 },
             });
         },
