@@ -24,10 +24,10 @@ export function AssetRowAccountWithBalance({
                 data-testid={`${dataTestId}/${account.symbol}`}
                 gap={spacings.sm}
                 alignItems="center"
+                overflow="hidden"
             >
                 <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
-
-                <Column alignItems="flex-start" justifyContent="flex-start">
+                <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
                     <Text variant="default" typographyStyle="body">
                         {getNetworkDisplaySymbolName(account.symbol)}
                     </Text>

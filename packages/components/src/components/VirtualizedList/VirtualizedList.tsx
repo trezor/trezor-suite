@@ -4,6 +4,17 @@ import styled from 'styled-components';
 
 import { TimerId } from '@trezor/type-utils';
 
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+
+export const allowedVirtualizedListFrameProps: FramePropsKeys[] = ['padding'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedVirtualizedListFrameProps)[number]>;
+
 function debounce<T extends (...args: unknown[]) => void>(
     func: T,
     wait: number,
@@ -20,10 +31,10 @@ function debounce<T extends (...args: unknown[]) => void>(
     };
 }
 
-interface ContainerProps {
+type ContainerProps = TransientProps<AllowedFrameProps> & {
     $height: number | string;
     $minHeight: number | string;
-}
+};
 
 const Container = styled.div<ContainerProps>`
     height: ${({ $height }) => (typeof $height === 'number' ? `${$height}px` : $height)};
@@ -33,6 +44,7 @@ const Container = styled.div<ContainerProps>`
     width: 100%;
     overflow-y: auto;
     position: relative;
+    ${withFrameProps};
 `;
 const Content = styled.div`
     position: relative;
@@ -51,7 +63,7 @@ export type BaseItemProps = {
 
 const calculateItemHeight = <T extends BaseItemProps>(item: T): number => item.height;
 
-type VirtualizedListProps<T extends BaseItemProps> = {
+type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & {
     items: Array<T>;
     itemsFingerprint: string;
     onScroll?: (e: Event) => void;
@@ -103,6 +115,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     estimatedItemHeight = 40,
 
     resetScrollOnItemsChange = true,
+    ...rest
 }: VirtualizedListProps<T>) {
     const newRef = useRef<HTMLDivElement>(null);
     const containerRef = (ref as React.RefObject<HTMLDivElement>) || newRef;
@@ -207,13 +220,18 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
         }
     }, [containerRef, handleScroll]);
 
+    const frameProps = pickAndPrepareFrameProps(
+        rest,
+        allowedVirtualizedListFrameProps,
+    ) as TransientProps<AllowedFrameProps>;
+
     const firstItemTop = useMemo(
         () => itemHeights.slice(0, indexes.startIndex).reduce((acc, h) => acc + h, 0),
         [itemHeights, indexes.startIndex],
     );
 
     return (
-        <Container ref={ref} $height={listHeight} $minHeight={listMinHeight}>
+        <Container ref={ref} $height={listHeight} $minHeight={listMinHeight} {...frameProps}>
             <Content style={{ height: `${totalHeight}px` }}>
                 {/* TODO: use https://react-window.vercel.app/list/variable-row-height or something that's already optimized */}
                 {itemHeights.slice(indexes.startIndex, indexes.endIndex).map((height, index) => {

@@ -1,46 +1,34 @@
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
-import { Row } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Box, Row } from '@trezor/components';
 
-const ClickableContainer = styled.button`
-    border: unset;
-    background: unset;
-    box-shadow: unset;
+import { ASSET_ROW_HEIGHT } from '../../constants';
 
-    width: calc(100% - ${spacings.xxs * 2}px);
-
-    cursor: pointer;
-    padding: ${spacingsPx.xs} 0;
-    margin: ${spacingsPx.xxs} ${spacingsPx.xxs};
-    border-radius: 4px;
-    transition: background-color 150ms ease-in-out;
-
-    &:hover {
-        background-color: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
-    }
-`;
-
-interface ItemClickableContainerProps {
+type ItemClickableContainerProps = {
     children: React.ReactNode;
     onClick: () => void;
-}
+};
 
 export function ItemClickableContainer({ children, onClick }: ItemClickableContainerProps) {
+    const theme = useTheme();
+
     return (
-        <ClickableContainer
+        <Box
+            borderRadius={10}
+            width="100%"
+            height={ASSET_ROW_HEIGHT - 8}
+            padding={8}
             onClick={e => {
                 e.stopPropagation();
                 onClick();
             }}
+            as="button"
+            cursor="pointer"
+            backgroundColorOnInteraction={theme.backgroundTertiaryPressedOnElevation0}
         >
-            <Row
-                justifyContent="space-between"
-                gap={spacings.sm}
-                padding={{ horizontal: spacings.md }}
-            >
+            <Row justifyContent="space-between" gap={12} height="100%">
                 {children}
             </Row>
-        </ClickableContainer>
+        </Box>
     );
 }

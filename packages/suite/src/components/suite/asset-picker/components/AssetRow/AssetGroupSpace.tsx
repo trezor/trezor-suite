@@ -1,19 +1,12 @@
-import styled from 'styled-components';
+import { Box } from '@trezor/components';
 
-const RowSpace = styled.div<{ height: number }>`
-    height: ${({ height }) => height}px;
-`;
+import { ASSET_ROW_HEIGHTS_BY_SIZE } from 'src/components/suite/asset-picker/constants';
+import { AssetGroupSpaceSize } from 'src/components/suite/asset-picker/types';
 
-type AssetGroupSpaceSize = 'md' | 'lg';
-export interface AssetGroupSpaceProps {
+export type AssetGroupSpaceProps = {
     size: AssetGroupSpaceSize;
-}
-
-export const ASSET_ROW_HEIGHTS_BY_SIZE = {
-    md: 24,
-    lg: 32,
-} as const satisfies Record<AssetGroupSpaceSize, number>;
+};
 
 export function AssetGroupSpace({ size }: AssetGroupSpaceProps) {
-    return <RowSpace height={ASSET_ROW_HEIGHTS_BY_SIZE[size]} />;
+    return <Box height={ASSET_ROW_HEIGHTS_BY_SIZE[size]} />;
 }

@@ -52,14 +52,13 @@ const ShadowContainer = styled.div`
 const Gradient = styled.div<GradientProps>`
     ${({ $direction }) => $direction && `${$direction}: 0;`}
     width: ${({ $direction }) =>
-        $direction === 'left' || $direction === 'right' ? '60px' : '100%'};
+        $direction === 'left' || $direction === 'right' ? '60px' : 'calc(100% - 15px)'};
     height: ${({ $direction }) =>
         $direction === 'left' || $direction === 'right' ? '100%' : '60px'};
     z-index: 1;
     position: absolute;
     pointer-events: none;
     opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
-    transition: all 0.2s ease-in;
     background: ${({ $direction, $backgroundColor, $elevation, theme }) =>
         mapDirectionToGradient({ $direction, $backgroundColor, $elevation, theme })};
 `;

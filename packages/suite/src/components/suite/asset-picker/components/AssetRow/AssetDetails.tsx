@@ -5,11 +5,6 @@ import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { hasOwn } from '@trezor/utils';
 
-const TextWrapper = styled.div`
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
-
 const BadgeWrapper = styled.div`
     flex: none;
 `;
@@ -32,12 +27,10 @@ export function AssetDetails({ name, symbol, ...props }: AssetDetailsProps) {
         : props.networkName;
 
     return (
-        <Column alignItems="flex-start" justifyContent="flex-start">
-            <TextWrapper>
-                <Text typographyStyle="body" textWrap="nowrap">
-                    {name}
-                </Text>
-            </TextWrapper>
+        <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
+            <Text typographyStyle="body" ellipsisLineCount={1}>
+                {name}
+            </Text>
             <Row gap={spacings.xs} alignItems="center">
                 <Text typographyStyle="hint" variant="tertiary">
                     {getDisplaySymbol(symbol)}

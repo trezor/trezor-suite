@@ -6,8 +6,6 @@ import { spacings } from '@trezor/theme';
 import { AssetDetails } from '../AssetDetails';
 import { ItemClickableContainer } from '../ItemClickableContainer';
 
-export const ASSET_ROW_ASSET_HEIGHT = 68;
-
 export type AssetRowAssetProps = {
     asset: TradingAssetOption;
     onClick: (asset: TradingAssetOption) => void;
@@ -21,7 +19,12 @@ export function AssetRowAsset({ asset, dataTestId, onClick }: AssetRowAssetProps
                 onClick(asset);
             }}
         >
-            <Row data-testid={`${dataTestId}/${asset.id}`} gap={spacings.sm}>
+            <Row
+                data-testid={`${dataTestId}/${asset.id}`}
+                gap={spacings.sm}
+                overflow="hidden"
+                maxWidth="100%"
+            >
                 {asset.isNativeToken ? (
                     <CoinLogo size={40} symbol={asset.symbol} type="tokenWithNetwork" />
                 ) : (

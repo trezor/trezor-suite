@@ -6,18 +6,17 @@ import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';
 import { useSearchFilter } from './hooks/useSearchFilter';
 
-export interface AssetSearchWithNetworkFilterProps {
+export type AssetSearchWithNetworkFilterProps = {
     placeholder: TranslationKey;
     listRef: RefObject<HTMLDivElement | null>;
     modal?: NonNullable<GlobalSendReceiveType>;
-}
+};
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
     placeholder,
@@ -40,7 +39,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const { translationString } = useTranslation();
 
     return (
-        <Box padding={{ horizontal: spacings.md }}>
+        <Box padding={{ horizontal: 16 }}>
             <SearchAsset
                 searchPlaceholder={translationString(placeholder)}
                 search={search}

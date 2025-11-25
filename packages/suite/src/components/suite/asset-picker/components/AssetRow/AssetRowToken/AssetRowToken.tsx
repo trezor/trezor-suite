@@ -10,8 +10,6 @@ import { ItemClickableContainer } from '../ItemClickableContainer';
 import { AssetAmount } from './AssetAmount';
 import { AssetDetails } from '../AssetDetails';
 
-export const ASSET_ROW_TOKEN_HEIGHT = 68;
-
 export type AssetRowTokenProps = {
     token: TokensWithRates;
     account: Account;
@@ -26,7 +24,11 @@ export function AssetRowToken({ token, account, dataTestId, onClick }: AssetRowT
                 onClick(token, account);
             }}
         >
-            <Row data-testid={`${dataTestId}/${account.symbol}/${token.symbol}`} gap={spacings.sm}>
+            <Row
+                data-testid={`${dataTestId}/${account.symbol}/${token.symbol}`}
+                gap={spacings.sm}
+                overflow="hidden"
+            >
                 <AssetLogo
                     size={40}
                     coingeckoId={getCoingeckoId(account.symbol)!}

@@ -33,6 +33,7 @@ function AssetsListInner<T extends BaseItemProps>({
             <ShadowTop backgroundColor={shadowColor} />
             <VirtualizedList
                 items={items}
+                padding={8}
                 itemsFingerprint={itemsFingerprint}
                 ref={ref}
                 onScroll={onScroll}

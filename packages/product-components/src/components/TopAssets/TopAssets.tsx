@@ -1,21 +1,10 @@
 import { useTheme } from 'styled-components';
 
-import {
-    Box,
-    Column,
-    FrameProps,
-    FramePropsKeys,
-    Row,
-    Text,
-    pickAndPrepareFrameProps,
-} from '@trezor/components';
+import { Box, Column, Row, Text } from '@trezor/components';
 import { mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetLogo, AssetLogoProps, shouldShowNetworkIcon } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
-
-const allowedTopAssetsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
-type AllowedTopAssetsFrameProps = Pick<FrameProps, (typeof allowedTopAssetsFrameProps)[number]>;
 
 export type Asset = {
     id: string;
@@ -30,17 +19,15 @@ export type TopAssetsProps = {
     onAssetClick: (asset: Asset) => void;
     logoSize?: AssetLogoProps['size'];
     'data-testid'?: string;
-} & AllowedTopAssetsFrameProps;
+};
 
 export function TopAssets({
     assets,
     logoSize = 40,
     onAssetClick,
     'data-testid': dataTestId,
-    ...rest
 }: TopAssetsProps) {
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedTopAssetsFrameProps, false);
 
     return (
         <Box
@@ -51,7 +38,6 @@ export function TopAssets({
             as="button"
             overflow="hidden"
             data-testid={dataTestId}
-            {...frameProps}
         >
             <Row hasDivider alignItems="stretch">
                 {assets.map(asset => {

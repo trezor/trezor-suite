@@ -1,17 +1,17 @@
 import { memo, useCallback, useState } from 'react';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Divider } from '@trezor/components';
+import { Box, Divider } from '@trezor/components';
 import { TopAssets } from '@trezor/product-components';
 
 import {
-    ASSET_ROW_ASSET_HEIGHT,
     AssetGroupLabel,
     AssetRowAccountWithBalance,
     AssetRowAsset,
     AssetRowToken,
     AssetsModal,
 } from 'src/components/suite/asset-picker/components';
+import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 
 import { AssetListWrapper } from './AssetListWrapper';
 import { AssetSearchWithNetworkFilter } from './AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
@@ -40,18 +40,19 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
             switch (item.type) {
                 case 'top-five-assets':
                     return (
-                        <TopAssets
-                            assets={item.assets}
-                            onAssetClick={topAsset =>
-                                handleAssetClick({
-                                    type: 'asset',
-                                    asset: item.assets.find(asset => asset.id === topAsset.id)!,
-                                    height: ASSET_ROW_ASSET_HEIGHT,
-                                })
-                            }
-                            data-testid={`${dataTestId}/top-five-assets`}
-                            margin={{ horizontal: 16 }}
-                        />
+                        <Box margin={{ horizontal: 8, top: 8 }}>
+                            <TopAssets
+                                assets={item.assets}
+                                onAssetClick={topAsset =>
+                                    handleAssetClick({
+                                        type: 'asset',
+                                        asset: item.assets.find(asset => asset.id === topAsset.id)!,
+                                        height: ASSET_ROW_HEIGHT,
+                                    })
+                                }
+                                data-testid={`${dataTestId}/top-five-assets`}
+                            />
+                        </Box>
                     );
 
                 case 'account':
@@ -103,7 +104,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 setNetworkFilter={setNetworkFilter}
             />
 
-            <Divider />
+            <Divider margin={{ top: 16 }} />
 
             <AssetListWrapper
                 search={throttledSearch}

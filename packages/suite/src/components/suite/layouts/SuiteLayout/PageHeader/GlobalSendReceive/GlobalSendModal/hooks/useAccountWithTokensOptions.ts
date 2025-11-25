@@ -15,10 +15,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import {
-    ASSET_ROW_ACCOUNT_HEIGHT,
-    ASSET_ROW_TOKEN_HEIGHT,
-} from 'src/components/suite/asset-picker/components';
+import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import {
@@ -104,7 +101,7 @@ export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
                 {
                     type: 'account',
                     account,
-                    height: ASSET_ROW_ACCOUNT_HEIGHT,
+                    height: ASSET_ROW_HEIGHT,
                 },
                 ...(account.tokens ?? []).map(
                     token =>
@@ -112,7 +109,7 @@ export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
                             type: 'token',
                             account,
                             token,
-                            height: ASSET_ROW_TOKEN_HEIGHT,
+                            height: ASSET_ROW_HEIGHT,
                         }) satisfies AccountWithTokensOption,
                 ),
             ]);
