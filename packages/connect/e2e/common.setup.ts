@@ -198,6 +198,14 @@ export const initTrezorConnect = async (
                         '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412203fa725f325ba34cce19e39e6c87f573a9db1a532c28f67a363f0ea8317f64af9',
                     autoconnect: true,
                 },
+                // credential for newer TENV image
+                {
+                    trezor_static_public_key:
+                        'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
+                    credential:
+                        '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412204cd0d3ccab3d615430d218e96d78cd5b89a06783581e5948d8cc532e423bd145',
+                    autoconnect: true,
+                },
             ],
             pairingMethods: ['CodeEntry'],
         },
