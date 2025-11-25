@@ -28,7 +28,7 @@ import { ApyCard } from '../../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../../StakingDashboard/components/EmptyStakingCard';
-import { PayoutCard } from '../../StakingDashboard/components/PayoutCard';
+import { PayoutCardNextRewards } from '../../StakingDashboard/components/PayoutCardNextRewards';
 import { StakingCard } from '../../StakingDashboard/components/StakingCard';
 import { Transactions } from '../../StakingDashboard/components/Transactions';
 
@@ -108,7 +108,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                     <ClaimCard />
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
                                         <ApyCard apy={apy} />
-                                        <PayoutCard
+                                        <PayoutCardNextRewards
                                             nextRewardPayout={nextRewardPayout}
                                             daysToAddToPool={daysToAddToPool}
                                             validatorWithdrawTime={data?.validatorWithdrawTime}

@@ -1,63 +1,17 @@
-import { useMemo } from 'react';
+import { ReactNode } from 'react';
 
-import { BACKUP_REWARD_PAYOUT_DAYS } from '@suite-common/wallet-constants';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Card, Column, Icon, Paragraph } from '@trezor/components';
+import { Card, Column, Icon } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-import { Translation } from 'src/components/suite/Translation';
-import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 interface PayoutCardProps {
-    nextRewardPayout?: number | null;
-    daysToAddToPool?: number;
-    validatorWithdrawTime?: number;
+    children: ReactNode;
 }
 
-export const PayoutCard = ({
-    nextRewardPayout,
-    daysToAddToPool,
-    validatorWithdrawTime,
-}: PayoutCardProps) => {
-    const selectedAccount = useSelector(selectSelectedAccount);
-
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(selectedAccount) ?? {};
-
-    const payout = useMemo(() => {
-        if (!nextRewardPayout || !daysToAddToPool) return undefined;
-
-        if (new BigNumber(autocompoundBalance).gt(0) || daysToAddToPool <= nextRewardPayout) {
-            return nextRewardPayout;
-        }
-
-        if (!validatorWithdrawTime) return undefined;
-
-        return Math.round(validatorWithdrawTime / 60 / 60 / 24) + nextRewardPayout;
-    }, [autocompoundBalance, daysToAddToPool, nextRewardPayout, validatorWithdrawTime]);
-
-    return (
-        <Card paddingType="small" flex="1">
-            <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
-                <Icon name="calendar" variant="tertiary" />
-
-                <Column margin={{ top: 'auto' }}>
-                    <Paragraph typographyStyle="titleMedium">
-                        {payout === undefined ? (
-                            <Translation
-                                id="TR_STAKE_MAX_REWARD_DAYS"
-                                values={{ count: BACKUP_REWARD_PAYOUT_DAYS }}
-                            />
-                        ) : (
-                            <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
-                        )}
-                    </Paragraph>
-                    <Paragraph typographyStyle="hint" variant="tertiary">
-                        <Translation id="TR_STAKE_NEXT_PAYOUT" />
-                    </Paragraph>
-                </Column>
-            </Column>
-        </Card>
-    );
-};
+export const PayoutCard = ({ children }: PayoutCardProps) => (
+    <Card paddingType="small" flex="1">
+        <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
+            <Icon name="calendar" variant="tertiary" />
+            <Column margin={{ top: 'auto' }}>{children}</Column>
+        </Column>
+    </Card>
+);

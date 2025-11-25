@@ -25,7 +25,7 @@ import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
-import { PayoutCard } from '../StakingDashboard/components/PayoutCard';
+import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
 
 interface SolStakingDashboardProps {
@@ -84,10 +84,8 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                                             gap={spacings.sm}
                                         >
                                             <ApyCard apy={apy} />
-                                            <PayoutCard
-                                                nextRewardPayout={SOLANA_EPOCH_DAYS}
-                                                daysToAddToPool={SOLANA_EPOCH_DAYS}
-                                                validatorWithdrawTime={0}
+                                            <PayoutCardFrequencyRewards
+                                                rewardFrequency={SOLANA_EPOCH_DAYS}
                                             />
                                         </Flex>
                                     </Grid>
