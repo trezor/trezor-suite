@@ -1,3 +1,4 @@
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { SignOperator } from '@suite-common/suite-types';
 import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { Timestamp } from '@suite-common/wallet-types';
@@ -12,7 +13,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';

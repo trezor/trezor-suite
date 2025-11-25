@@ -2,10 +2,10 @@ import { JSX } from 'react';
 
 import styled from 'styled-components';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { H3, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const Wrapper = styled.div`
     display: flex;

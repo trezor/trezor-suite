@@ -8,6 +8,7 @@ import {
     SellProviderInfo,
 } from 'invity-api';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import type {
     TradingBuyInfoSelector,
@@ -32,7 +33,6 @@ import { StaticSessionId } from '@trezor/connect';
 import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
 

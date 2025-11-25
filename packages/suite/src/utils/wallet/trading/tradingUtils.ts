@@ -1,5 +1,6 @@
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
     TradingCryptoSelectItemProps,
@@ -23,7 +24,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';
+import { Route, TrezorDevice } from 'src/types/suite';
 import {
     TradingAccountOptionsGroupOptionProps,
     TradingAccountsOptionsGroupProps,

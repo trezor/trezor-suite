@@ -38,11 +38,12 @@ describe('Translation component', () => {
 
     test('renders message with nested messages', () => {
         renderWithIntl(
+            // @ts-expect-error: fake id for testing
             <Translation
                 {...messages.TR_HELLO_NAME}
                 values={{
                     // @ts-expect-error: fake id for testing
-                    TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
+                    TR_NAME: <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
                     TR_AGE: 100,
                 }}
             />,

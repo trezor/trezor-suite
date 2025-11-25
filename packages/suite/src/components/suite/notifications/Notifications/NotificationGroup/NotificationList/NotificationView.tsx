@@ -1,5 +1,6 @@
 import { JSX } from 'react';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import type { NotificationEntry } from '@suite-common/toast-notifications';
 import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -7,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { FormattedDateWithBullet } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite';
-import type { ExtendedMessageDescriptor, ToastNotificationVariant } from 'src/types/suite';
+import type { ToastNotificationVariant } from 'src/types/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
 
 export type NotificationActionVariant = 'primary' | 'info' | 'warning' | 'destructive' | 'tertiary';

@@ -10615,7 +10615,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/intl-types@workspace:suite-common/intl-types"
   dependencies:
-    "@trezor/type-utils": "workspace:*"
     react: "npm:19.1.0"
     react-intl: "npm:^7.1.11"
   languageName: unknown

@@ -10,7 +10,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/type-utils": "workspace:*",
         "react": "19.1.0",
         "react-intl": "^7.1.11"
     }

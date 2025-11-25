@@ -51,7 +51,6 @@ export type {
     UnknownDevice,
     UnreadableDevice,
 } from '@suite-common/suite-types';
-export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
 export type { AppState } from 'src/reducers/store';
 export type { PrerequisiteType } from 'src/utils/suite/prerequisites';
 export type { Route };

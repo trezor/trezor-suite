@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
 
 import { useTranslation } from 'src/hooks/suite';
 import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 
 export type AddressItem = {

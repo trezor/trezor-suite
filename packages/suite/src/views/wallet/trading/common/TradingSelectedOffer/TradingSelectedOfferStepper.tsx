@@ -1,10 +1,10 @@
 import { Fragment, JSX } from 'react';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 export interface TradingSelectedOfferStepperItemProps {
     step: string;
