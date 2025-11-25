@@ -197,3 +197,16 @@ export const formatMaxOutputAmount = (
 
     return convertAmountSubunitsToUnits(maxAmount, tokenDecimals);
 };
+
+export const getCardanoFingerprint = (
+    tokens: Account['tokens'],
+    symbol: string | undefined,
+): string | undefined => {
+    if (!tokens) {
+        return undefined;
+    }
+
+    const token = tokens.find(t => t.symbol?.toLowerCase() === symbol?.toLowerCase());
+
+    return token?.fingerprint;
+};

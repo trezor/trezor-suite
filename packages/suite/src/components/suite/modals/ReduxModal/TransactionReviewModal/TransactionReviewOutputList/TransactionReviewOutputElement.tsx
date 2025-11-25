@@ -27,19 +27,6 @@ import { Translation } from 'src/components/suite/Translation';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 import { Account } from 'src/types/wallet';
 
-const getCardanoFingerprint = (
-    tokens: Account['tokens'],
-    symbol: string | undefined,
-): string | undefined => {
-    if (!tokens) {
-        return undefined;
-    }
-
-    const token = tokens.find(token => token.symbol?.toLowerCase() === symbol?.toLowerCase());
-
-    return token?.fingerprint;
-};
-
 const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
     word-break: break-all;
     font-variant-numeric: tabular-nums;
@@ -115,12 +102,11 @@ type ValueProps = {
     type: OutputElementLine['type'];
     symbol: NetworkSymbol;
     isFiatVisible: boolean;
-    isFee: boolean;
     state: TransactionReviewOutputElementProps['state'];
     token?: TokenInfo;
 };
 
-const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: ValueProps) => {
+const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     switch (type) {
@@ -137,8 +123,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
         case 'data':
             return <Data value={value} />;
         case 'amount': {
-            const isTokenAmount = !isFee && token;
-            const formattedValue = isTokenAmount
+            const formattedValue = token
                 ? convertAmountSubunitsToUnits(value, token.decimals)
                 : formatNetworkAmount(value, symbol);
 
@@ -148,11 +133,8 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
                         data-testid="@modal/crypto-amount"
                         disableHiddenPlaceholder
                         value={formattedValue}
-                        symbol={
-                            // TX fee is so far always paid in network native coin
-                            isTokenAmount ? token.symbol : symbol
-                        }
-                        contractAddress={isTokenAmount ? token?.contract : undefined}
+                        symbol={token?.symbol ?? symbol}
+                        contractAddress={token?.contract}
                         isTabular={false}
                     />
                     {shallDisplayBaseCurrency && isFiatVisible && (
@@ -160,9 +142,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
                             <BaseCurrencyValue
                                 disableHiddenPlaceholder
                                 amount={formattedValue}
-                                tokenAddress={
-                                    token && !isFee ? (token.contract as TokenAddress) : undefined
-                                }
+                                tokenAddress={token?.contract as TokenAddress}
                                 symbol={symbol}
                             />
                         </Text>
@@ -180,6 +160,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
 export type OutputElementLine = {
     id: string;
     value: string;
+    token?: TokenInfo;
     type: 'default' | 'address' | 'safe-address' | 'data' | 'amount';
     label?: ReactNode;
 };
@@ -190,18 +171,16 @@ export type TransactionReviewOutputElementProps = {
     account: Pick<Account, 'networkType' | 'symbol' | 'tokens'>;
     state: 'active' | 'confirmed' | 'unconfirmed';
     fiatVisible?: boolean;
-    token?: TokenInfo;
 };
 
 export const TransactionReviewOutputElement = ({
     title,
     lines,
-    token,
     fiatVisible = false,
     account,
     state,
 }: TransactionReviewOutputElementProps) => {
-    const { networkType, symbol } = account;
+    const { symbol } = account;
 
     return (
         <Card
@@ -226,9 +205,8 @@ export const TransactionReviewOutputElement = ({
                             value={line.value}
                             type={line.type}
                             symbol={symbol}
-                            token={token}
+                            token={line.token}
                             isFiatVisible={fiatVisible}
-                            isFee={line.id === 'fee'}
                             state={state}
                         />
                     );
@@ -261,44 +239,6 @@ export const TransactionReviewOutputElement = ({
                                     <Text data-testid="@modal/output-value">{value}</Text>
                                 )}
                             </Text>
-                            {networkType === 'cardano' && token?.symbol && (
-                                <Text typographyStyle="hint" as="div">
-                                    <InfoItem
-                                        label={
-                                            <Text variant="default">
-                                                <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
-                                            </Text>
-                                        }
-                                        direction="row"
-                                    >
-                                        <Column
-                                            alignItems="flex-end"
-                                            data-testid="@modal/cardano-fingerprint"
-                                        >
-                                            {getCardanoFingerprint(account?.tokens, token?.symbol)}
-                                        </Column>
-                                    </InfoItem>
-                                </Text>
-                            )}
-                            {networkType === 'cardano' && token && token.decimals !== 0 && (
-                                <Text typographyStyle="hint" as="div">
-                                    <InfoItem
-                                        label={
-                                            <Text variant="default">
-                                                <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
-                                            </Text>
-                                        }
-                                        direction="row"
-                                    >
-                                        <Column
-                                            alignItems="flex-end"
-                                            data-testid="@modal/cardano-trezor-amount"
-                                        >
-                                            {line.value}
-                                        </Column>
-                                    </InfoItem>
-                                </Text>
-                            )}
                         </Column>
                     );
                 })}
