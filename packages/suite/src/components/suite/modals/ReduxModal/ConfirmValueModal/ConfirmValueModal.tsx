@@ -105,7 +105,7 @@ export const ConfirmValueModal = ({
         }
     };
 
-    const handleOpenGuide = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleOpenGuide = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.stopPropagation();
         openNodeById(DESTINATION_TAG_GUIDE_PATH);
     };
