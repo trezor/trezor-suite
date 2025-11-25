@@ -15,8 +15,8 @@ import {
     hasNetworkFeatures,
     isNftToken,
 } from '@suite-common/wallet-utils';
-import { AssetLogo, Card, Column, IconButton, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { Card, Column, IconButton, Row, Text } from '@trezor/components';
+import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';

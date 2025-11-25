@@ -23,7 +23,6 @@ import {
     getTokenExplorerUrl,
 } from '@suite-common/wallet-utils';
 import {
-    AssetLogo,
     Button,
     ButtonGroup,
     Card,
@@ -36,6 +35,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { AssetLogo } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 

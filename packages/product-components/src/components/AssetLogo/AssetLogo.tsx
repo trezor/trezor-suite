@@ -2,8 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-/* eslint-disable @typescript-eslint/no-restricted-imports*/
 import {
     type NetworkSymbolExtended,
     getNetwork,
@@ -11,19 +9,19 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
-/* eslint-enable @typescript-eslint/no-restricted-imports */
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import {
+    ElevationUp,
+    type FrameProps,
+    type FramePropsKeys,
+    type TransientProps,
+    pickAndPrepareFrameProps,
+    useElevation,
+    withFrameProps,
+} from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetInitials } from './AssetInitials';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
-import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedAssetLogoSizes = [20, 24, 32, 40] as const;
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];

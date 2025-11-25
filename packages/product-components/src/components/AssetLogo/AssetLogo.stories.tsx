@@ -1,12 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { getFramePropsStory } from '@trezor/components';
+
 import {
     AssetLogo as AssetLogoComponent,
     AssetLogoProps,
     allowedAssetLogoFrameProps,
     allowedAssetLogoSizes,
 } from './AssetLogo';
-import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<AssetLogoProps> = {
     title: 'AssetLogo',
