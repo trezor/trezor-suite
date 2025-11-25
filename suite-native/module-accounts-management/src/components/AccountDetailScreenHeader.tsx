@@ -1,9 +1,11 @@
+import { useSelector } from 'react-redux';
+
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { Account } from '@suite-common/wallet-types';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { useAccountLabel } from '@suite-native/labeling';
+import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
     AccountsStackParamList,
     RootStackParamList,
@@ -24,10 +26,9 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => {
-    const accountLabel = useAccountLabel({
-        accountKey: account?.key ?? null,
-        deviceState: account?.deviceState ?? null,
-    });
+    const accountLabel = useSelector((state: CombinedLabelingState) =>
+        selectAccountLabel(state, account?.key, account?.deviceState),
+    );
 
     return (
         <HStack alignItems="center">

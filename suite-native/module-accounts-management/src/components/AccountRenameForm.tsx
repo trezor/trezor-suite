@@ -12,7 +12,11 @@ import {
 import { Box, Button, InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { selectIsLabelingEnabled, useAccountLabel } from '@suite-native/labeling';
+import {
+    CombinedLabelingState,
+    selectAccountLabel,
+    selectIsLabelingEnabled,
+} from '@suite-native/labeling';
 
 type AccountRenameFormProps = {
     accountKey: string;
@@ -28,10 +32,10 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const inputRef = useRef<InputType>(null);
 
-    const accountLabel = useAccountLabel({
-        accountKey: account?.key ?? null,
-        deviceState: account?.deviceState ?? null,
-    });
+    const accountLabel = useSelector((state: CombinedLabelingState) =>
+        selectAccountLabel(state, account?.key, account?.deviceState),
+    );
+
     const form = useAccountLabelForm(accountLabel ?? undefined);
     const {
         handleSubmit,

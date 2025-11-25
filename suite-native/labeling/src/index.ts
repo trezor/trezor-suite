@@ -5,4 +5,3 @@ export * from './components/TransactionOutputLabel';
 export * from './components/TransactionOutputLabelEditable';
 export * from './components/WalletLabel';
 export * from './selectors';
-export * from './hooks/useAccountLabel';
