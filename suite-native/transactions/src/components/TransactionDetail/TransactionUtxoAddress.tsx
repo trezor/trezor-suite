@@ -1,10 +1,12 @@
+import { useSelector } from 'react-redux';
+
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import {
     AddressLabel,
     TransactionOutputLabelEditable,
-    useIsLabelingEnabled,
+    selectIsLabelingEnabled,
 } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -29,7 +31,7 @@ export const TransactionUtxoAddress = ({
     showLabels,
 }: TransactionUtxoAddressProps) => {
     const { applyStyle } = useNativeStyles();
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
     return (
         <VStack>

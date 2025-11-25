@@ -8,7 +8,7 @@ import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native
 import { Translation } from '@suite-native/intl';
 import { useSuiteSyncAlerts } from '@suite-native/suite-sync';
 
-import { useIsLabelingEnabled } from './useIsLabelingEnabled';
+import { selectIsLabelingEnabled } from '../selectors';
 
 type EditableLabelLayoutParams = {
     children: (params: { onClose: () => void; ref: Ref<BottomSheetModalMethods> }) => ReactNode;
@@ -20,7 +20,7 @@ export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutPara
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const { showSuiteSyncEnableConfirmationAlert } = useSuiteSyncAlerts();
 
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
     const handleAddLabel = () => {
         if (!isSuiteSyncEnabled) {

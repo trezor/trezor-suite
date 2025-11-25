@@ -9,7 +9,7 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
-import { useIsLabelingEnabled } from './useIsLabelingEnabled';
+import { selectIsLabelingEnabled } from '../selectors';
 
 type TransactionOutputLabelEditableProps = {
     txId: string;
@@ -22,7 +22,7 @@ export const TransactionOutputLabelEditable = ({
     outputIndex,
     deviceStaticSessionId,
 }: TransactionOutputLabelEditableProps) => {
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const dispatch = useDispatch();
 
     const label = useSelector((state: WithLabelingState) =>
