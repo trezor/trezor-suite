@@ -1,4 +1,4 @@
-import TrezorConnect, { ConnectSettings, Device } from '../../../src';
+import TrezorConnect, { ConnectSettings, Device, UiEvent } from '../../../src';
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 
 describe('THP pairing', () => {
@@ -40,6 +40,16 @@ describe('THP pairing', () => {
         });
     };
 
+    const getPairingInfo = ({
+        device,
+        nfcData,
+    }: Extract<UiEvent, { type: 'ui-request_thp_pairing' }>['payload']) =>
+        controller.getPairingInfo(device.thp!.channel, nfcData).catch(e => {
+            console.error('DebugLinkGetPairingInfo', device.thp!.channel, e);
+
+            return { error: e.message };
+        });
+
     it('ThpPairing SkipPairing', async () => {
         const spy = typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('on.button');
         const device = await waitForDevice({ pairingMethods: ['SkipPairing'] });
@@ -57,10 +67,8 @@ describe('THP pairing', () => {
     it('ThpPairing NFC', async () => {
         const device = await waitForDevice({ pairingMethods: ['NFC'] });
 
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        TrezorConnect.on('ui-request_thp_pairing', async ({ device, nfcData }) => {
-            // await new Promise(resolve => setTimeout(resolve, 1000));
-            const state = await controller.getPairingInfo(device.thp!.channel, nfcData);
+        TrezorConnect.on('ui-request_thp_pairing', async event => {
+            const state = await getPairingInfo(event);
             TrezorConnect.removeAllListeners('ui-request_thp_pairing');
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
@@ -118,8 +126,8 @@ describe('THP pairing', () => {
             typeof jest !== 'undefined' ? jest.fn() : jasmine.createSpy('credentials');
         TrezorConnect.on('device-thp_credentials_changed', credentialsSpy);
 
-        TrezorConnect.on('ui-request_thp_pairing', async ({ nfcData }) => {
-            const state = await controller.getPairingInfo(device.thp!.channel, nfcData);
+        TrezorConnect.on('ui-request_thp_pairing', async event => {
+            const state = await getPairingInfo(event);
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { source: 'code-entry', tag: state.code_entry_code },
@@ -235,8 +243,8 @@ describe('THP pairing', () => {
         TrezorConnect.removeAllListeners('ui-button');
         TrezorConnect.removeAllListeners('ui-request_thp_pairing');
         TrezorConnect.on('ui-button', buttonRequestHandler());
-        TrezorConnect.on('ui-request_thp_pairing', async ({ nfcData, ...rest }) => {
-            const state = await controller.getPairingInfo(rest.device.thp!.channel, nfcData);
+        TrezorConnect.on('ui-request_thp_pairing', async event => {
+            const state = await getPairingInfo(event);
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
                 payload: { source: 'code-entry', tag: state.code_entry_code },
