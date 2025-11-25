@@ -9,4 +9,5 @@ export { default as m25_9_2 } from './25.9.2';
 export { default as m25_10_0 } from './25.10.0';
 export { default as m25_11_0 } from './25.11.0';
 export { default as m25_11_0_1 } from './25.11.0.1';
+export { default as m25_11_3 } from './25.11.3';
 export { default as m25_12_0 } from './25.12.0';

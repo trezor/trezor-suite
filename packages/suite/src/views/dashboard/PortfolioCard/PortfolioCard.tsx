@@ -1,9 +1,11 @@
 import { memo, useMemo } from 'react';
 
+import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
+    selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Card, Column, Dropdown, Switch } from '@trezor/components';
@@ -29,6 +31,8 @@ export const PortfolioCard = memo(() => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
+
     const accounts = useSelector(selectAllAccountsToList);
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
@@ -40,6 +44,12 @@ export const PortfolioCard = memo(() => {
 
     const passphraseEntryCanceled = accounts.length === 0 && discoveryStatus === undefined;
     const hasMultipleAccounts = accounts.length > 1;
+
+    const hasNetworkWithEnabledGraph = networksCollection.some(
+        network => network.features.includes('graph') && enabledNetworks.includes(network.symbol),
+    );
+
+    const isGraphHidden = dashboardGraphHidden || !hasNetworkWithEnabledGraph;
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)
     // 1. DashboardGraph gets mounted
@@ -67,14 +77,14 @@ export const PortfolioCard = memo(() => {
             />
         );
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = dashboardGraphHidden ? null : (
+        body = isGraphHidden ? null : (
             <Column height={320}>
                 <GraphSkeleton data-testid="@dashboard/loading" />
             </Column>
         );
     } else if (isDeviceEmpty) {
         body = <EmptyWallet />;
-    } else if (!dashboardGraphHidden) {
+    } else if (!isGraphHidden) {
         body = <DashboardGraph accounts={accounts} />;
     }
 
@@ -82,12 +92,12 @@ export const PortfolioCard = memo(() => {
     const isWalletLoading = discoveryStatus?.status === 'loading';
     const isWalletError = discoveryStatus?.status === 'exception';
     const showGraphControls =
-        !isWalletEmpty && !isWalletLoading && !isWalletError && !dashboardGraphHidden;
+        !isWalletEmpty && !isWalletLoading && !isWalletError && !isGraphHidden;
     const { affectedNetworks, hasTokens, showMissingDataTooltip } = useUnsupportedNetworkMessage({
         showGraphControls,
         device,
         accounts,
-        dashboardGraphHidden,
+        isGraphHidden,
     });
 
     const goToReceive = () => {
@@ -129,7 +139,7 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
             actions={
-                !isWalletEmpty && !isWalletLoading && !isWalletError ? (
+                !isWalletEmpty && !isWalletLoading && !isWalletError && !isGraphHidden ? (
                     <Dropdown
                         placement={{ position: 'bottom', alignment: 'start' }}
                         content={

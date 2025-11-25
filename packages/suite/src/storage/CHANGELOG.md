@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 25.11.3
+
+- remove Cardano graph data
+
 ## 25.11.0
 
 - move `autoEject` from `suite.settings` to `wallet.walletSettings`
