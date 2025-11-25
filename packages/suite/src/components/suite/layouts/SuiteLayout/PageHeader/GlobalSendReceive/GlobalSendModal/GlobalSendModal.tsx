@@ -98,7 +98,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                 modal="send"
             />
 
-            <Divider />
+            <Divider margin={{ top: 16 }} />
 
             <AssetsListEmpty
                 isEmpty={filteredAccountsWithTokens.length === 0}

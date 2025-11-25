@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Button, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
+import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { onCancel } from 'src/actions/suite/modalActions';
@@ -69,9 +69,9 @@ export const ConfirmUnverifiedModal = ({
             onCancel={handleClose}
             bottomContent={
                 <>
-                    <Button intent="warning" onClick={handleEvent}>
+                    <Modal.Button intent="warning" onClick={handleEvent}>
                         <Translation id={action.title} />
-                    </Button>
+                    </Modal.Button>
                     {isPassphraseRequired && (
                         <Tooltip
                             isActive={isDeviceLocked}
@@ -79,18 +79,18 @@ export const ConfirmUnverifiedModal = ({
                                 <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
-                            <Button
+                            <Modal.Button
                                 intent="brand"
                                 onClick={enablePassphraseAndContinue}
                                 isDisabled={isDeviceLocked}
                             >
                                 <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
-                            </Button>
+                            </Modal.Button>
                         </Tooltip>
                     )}
-                    <Button onClick={handleClose} intent="neutral" priority="secondary">
+                    <Modal.Button onClick={handleClose} intent="neutral" priority="secondary">
                         <Translation id="TR_DISMISS" />
-                    </Button>
+                    </Modal.Button>
                 </>
             }
         >

@@ -7,12 +7,10 @@ import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
 import {
-    ASSET_ROW_ACCOUNT_HEIGHT,
-    ASSET_ROW_ASSET_HEIGHT,
     ASSET_ROW_GROUP_LABEL_HEIGHT,
+    ASSET_ROW_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
-    ASSET_ROW_TOKEN_HEIGHT,
-} from 'src/components/suite/asset-picker/components';
+} from 'src/components/suite/asset-picker/constants';
 import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { useAssetsContext } from '../../AssetOptionsContext';
@@ -139,7 +137,7 @@ export function useBuildTradingAssetOptions({
                     listItems.push({
                         type: 'account',
                         account: accountOrToken.account,
-                        height: ASSET_ROW_ACCOUNT_HEIGHT,
+                        height: ASSET_ROW_HEIGHT,
                     });
                     break;
 
@@ -148,7 +146,7 @@ export function useBuildTradingAssetOptions({
                         type: 'token',
                         token: accountOrToken.token,
                         account: accountOrToken.account,
-                        height: ASSET_ROW_TOKEN_HEIGHT,
+                        height: ASSET_ROW_HEIGHT,
                     });
                     break;
             }
@@ -178,7 +176,7 @@ export function useBuildTradingAssetOptions({
             listItems.push({
                 type: 'asset',
                 asset,
-                height: ASSET_ROW_ASSET_HEIGHT,
+                height: ASSET_ROW_HEIGHT,
             });
         }
 

@@ -29,19 +29,16 @@ export function AssetRowReceiveToAccount({
 
     return (
         <ItemClickableContainer onClick={() => onClick(account)}>
-            <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center">
+            <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center" overflow="hidden">
                 <CoinLogo symbol={account.symbol} size={40} type="token" />
-
-                <Column alignItems="flex-start" justifyContent="flex-start">
-                    <Text variant="default" typographyStyle="body">
-                        <AccountLabel
-                            account={account}
-                            accountTypeBadgeSize="medium"
-                            showAccountTypeBadge={true}
-                        />
-                    </Text>
+                <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
+                    <AccountLabel
+                        account={account}
+                        accountTypeBadgeSize="medium"
+                        showAccountTypeBadge={true}
+                    />
                     {supportsTokens && (
-                        <Text typographyStyle="hint" as="div" variant="tertiary">
+                        <Text typographyStyle="hint" variant="tertiary">
                             <Translation id="TR_INCLUDING_TOKENS" />
                         </Text>
                     )}

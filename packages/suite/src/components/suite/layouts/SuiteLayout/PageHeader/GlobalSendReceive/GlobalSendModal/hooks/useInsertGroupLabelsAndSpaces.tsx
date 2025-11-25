@@ -6,7 +6,7 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import {
     ASSET_ROW_GROUP_LABEL_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
-} from 'src/components/suite/asset-picker/components';
+} from 'src/components/suite/asset-picker/constants';
 
 import { AccountWithTokensOption } from './useAccountWithTokensOptions';
 

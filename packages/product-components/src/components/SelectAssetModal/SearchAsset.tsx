@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
-import { Icon, Input, Select } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Icon, Input, Row, Select, Text } from '@trezor/components';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
@@ -39,20 +38,14 @@ const SelectWrapper = styled.div`
     /* stylelint-enable selector-class-pattern */
 `;
 
-const Option = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xs};
-`;
-
-export interface SearchAssetProps {
+export type SearchAssetProps = {
     searchPlaceholder: string;
     search: string;
     setSearch: (value: string) => void;
     'data-testid'?: string;
     selectConfig?: SearchAssetSelectConfig;
     autoFocus?: boolean;
-}
+};
 
 export const SearchAsset = ({
     searchPlaceholder,
@@ -71,8 +64,10 @@ export const SearchAsset = ({
                 value={selectedOption}
                 onChange={option => selectConfig.onChange(option.value)}
                 size="small"
+                isClean
                 formatOptionLabel={(option, meta) => (
-                    <Option
+                    <Row
+                        gap={8}
                         data-testid={
                             meta.context === 'menu'
                                 ? `${dataTestId}/select-option/${option.value ?? 'all-networks'}`
@@ -82,8 +77,8 @@ export const SearchAsset = ({
                         {option.value && (
                             <CoinLogo size={20} symbol={option.value} type="network" />
                         )}
-                        <span>{option.label}</span>
-                    </Option>
+                        <Text typographyStyle="hint">{option.label}</Text>
+                    </Row>
                 )}
                 width="auto"
                 minValueWidth="170px"

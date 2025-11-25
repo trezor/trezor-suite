@@ -58,7 +58,7 @@ const Container = styled.div<
     border: 0 solid
         ${({ $borderColor, $elevation, theme }) =>
             $borderColor ?? mapElevationToBorder({ theme, $elevation })};
-    transition: background 0.2s ease;
+    transition: background 0.3s ease;
 
     ${({ $borderWidth }) =>
         $borderWidth &&
@@ -120,6 +120,7 @@ export type BoxProps = AllowedFrameProps & {
     hasBackground?: boolean;
     // TODO: type to token names
     backgroundColor?: CSSColor;
+    // TODO: type to token names
     backgroundColorOnInteraction?: CSSColor;
     // TODO: type to token names
     borderColor?: CSSColor;

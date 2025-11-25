@@ -2,9 +2,8 @@ import { useCallback, useRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { Divider, Link, Row } from '@trezor/components';
+import { Divider, Link } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings } from '@trezor/theme';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import {
@@ -73,32 +72,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                     },
                 }}
                 onClose={() => onCancel(filledSearch)}
-            >
-                <AssetSearchWithNetworkFilter
-                    placeholder="TR_RECEIVE_SEARCH"
-                    listRef={listRef}
-                    modal="receive"
-                />
-
-                <Divider />
-
-                <AssetsListEmpty
-                    isEmpty={filteredAccounts.length === 0}
-                    heading={
-                        filledSearch ? 'TR_ACCOUNT_SEARCH_NO_RESULTS' : 'TR_ACCOUNT_NO_ACCOUNTS'
-                    }
-                    height={LIST_HEIGHT}
-                >
-                    <AssetsList
-                        items={filteredAccounts}
-                        itemsFingerprint={filteredAccountsFingerprint}
-                        renderItem={renderItem}
-                        height={LIST_HEIGHT}
-                        ref={listRef}
-                    />
-                </AssetsListEmpty>
-
-                <Row justifyContent="center" margin={{ top: spacings.xs }}>
+                bottomContent={
                     <AddAccountButton
                         data-testid="@global-send-receive/add-account"
                         device={device}
@@ -115,7 +89,31 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                         }}
                         isIconOnly={false}
                     />
-                </Row>
+                }
+            >
+                <AssetSearchWithNetworkFilter
+                    placeholder="TR_RECEIVE_SEARCH"
+                    listRef={listRef}
+                    modal="receive"
+                />
+
+                <Divider margin={{ top: 16 }} />
+
+                <AssetsListEmpty
+                    isEmpty={filteredAccounts.length === 0}
+                    heading={
+                        filledSearch ? 'TR_ACCOUNT_SEARCH_NO_RESULTS' : 'TR_ACCOUNT_NO_ACCOUNTS'
+                    }
+                    height={LIST_HEIGHT}
+                >
+                    <AssetsList
+                        items={filteredAccounts}
+                        itemsFingerprint={filteredAccountsFingerprint}
+                        renderItem={renderItem}
+                        height={LIST_HEIGHT}
+                        ref={listRef}
+                    />
+                </AssetsListEmpty>
             </AssetsModal>
             {acccountModal.open && device && (
                 <AddAccountModal

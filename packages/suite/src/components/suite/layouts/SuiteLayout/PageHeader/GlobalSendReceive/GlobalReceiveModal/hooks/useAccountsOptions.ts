@@ -4,7 +4,7 @@ import { useThrottle } from 'react-use';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { sortByCoin } from '@suite-common/wallet-utils';
 
-import { ASSET_ROW_ACCOUNT_HEIGHT } from 'src/components/suite/asset-picker/components';
+import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSelector } from 'src/hooks/suite';
 
 export function useAccountsOptions() {
@@ -15,7 +15,7 @@ export function useAccountsOptions() {
         () =>
             sortByCoin(throttledAccounts).map(account => ({
                 account,
-                height: ASSET_ROW_ACCOUNT_HEIGHT,
+                height: ASSET_ROW_HEIGHT,
             })),
         [throttledAccounts],
     );
