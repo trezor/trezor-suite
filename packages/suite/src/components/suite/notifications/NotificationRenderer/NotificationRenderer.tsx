@@ -1,6 +1,7 @@
 import { ComponentType, JSX } from 'react';
 import { useSelector } from 'react-redux';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
@@ -8,13 +9,13 @@ import { DEVICE } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { NotificationViewProps } from 'src/components/suite';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
+import { Translation } from '../../Translation';
 
 const simple = (
     View: NotificationRendererProps['render'],
@@ -78,7 +79,7 @@ export const NotificationRenderer = ({
             return error(render, notification, 'TOAST_ACQUIRE_ERROR');
         case 'auth-confirm-error':
             return error(render, notification, 'TOAST_AUTH_CONFIRM_ERROR', {
-                error: notification.error || { id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT' },
+                error: notification.error || <Translation id="TOAST_AUTH_CONFIRM_ERROR_DEFAULT" />,
             });
         case 'discovery-error':
             return error(render, notification, 'TOAST_DISCOVERY_ERROR');
@@ -295,7 +296,7 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="EVENT_DEVICE_CONNECT_UNACQUIRED"
                     messageValues={{
-                        label: { id: 'TR_UNACQUIRED' },
+                        label: <Translation id="TR_UNACQUIRED" />,
                     }}
                 />
             );

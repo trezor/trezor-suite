@@ -4,9 +4,7 @@
         "outDir": "libDev",
         "rootDir": "../../../"
     },
-    "references": [
-        { "path": "../../packages/type-utils" }
-    ],
+    "references": [],
     "include": [
         "suite-common/intl-types/**/*",
         "packages/suite/src/components/suite/Translation"

@@ -1,9 +1,9 @@
 import { JSX, ReactNode } from 'react';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { Paragraph } from '@trezor/components';
 
 import type { NotificationRendererProps } from 'src/components/suite';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 type ConditionalActionRendererProps = NotificationRendererProps & {
     header: ReactNode;

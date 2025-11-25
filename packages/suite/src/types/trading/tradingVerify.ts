@@ -3,9 +3,9 @@ import { UseFormReturn } from 'react-hook-form';
 
 import { CryptoId } from 'invity-api';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AccountAddress } from '@trezor/connect';
 
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 
 export interface TradingVerifyFormProps {

@@ -1,10 +1,11 @@
 import { ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { H3, Icon, Row, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { ExtendedMessageDescriptor, Translation } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { TradingOffersItem } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 
 const OffersContainer = styled.div`
