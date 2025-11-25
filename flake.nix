@@ -41,7 +41,7 @@
             pkgs.python3
             pkgs.python3Packages.pip
             pkgs.jre
-            pkgs.electron_36
+            pkgs.electron_39
             pkgs.pkg-config
             pkgs.pixman # build dependencies for node-canvas
             pkgs.cairo # build dependencies for node-canvas
@@ -74,6 +74,7 @@
             export CURDIR="$(pwd)"
             export PATH="$PATH:$CURDIR/node_modules/.bin"
             export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
+            export ELECTRON_DISABLE_SANDBOX=1
             export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
             export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
             export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
@@ -85,9 +86,9 @@
             echo "- Playwright $(playwright --version)"
             
           '' + pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
-            export ELECTRON_OVERRIDE_DIST_PATH="${pkgs.electron_36}/Applications/"
+            export ELECTRON_OVERRIDE_DIST_PATH="${pkgs.electron_39}/Applications/"
           '' + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
-            export ELECTRON_OVERRIDE_DIST_PATH="${pkgs.electron_36}/bin/"
+            export ELECTRON_OVERRIDE_DIST_PATH="${pkgs.electron_39}/bin/"
             export npm_config_build_from_source=true
           '';
         };
