@@ -1,6 +1,14 @@
 // Suite Sync
-export * from './suiteSyncSelectors';
-export { useLocalFirstStorage } from './useLocalFirstStorage';
+export {
+    selectIsSuiteSyncEnabled,
+    selectIsFeatureSuiteSyncAvailable,
+    selectSuiteSyncRelayUrl,
+    selectShouldOfferSecureSync,
+    selectIsSuiteSyncDebugEnabled,
+} from './suiteSyncSelectors';
+
+export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
+export { useSuiteSync } from './useSuiteSync';
 export { prepareSuiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';
