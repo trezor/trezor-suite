@@ -104,6 +104,13 @@ describe('THP pairing', () => {
                         '0a180a064368726f6d6510001a0c5472657a6f722053756974651220884364860fbccd18f6c14890ee4cf427c6a1e7e7a4cba91866474b4b7d73cb00',
                     autoconnect: false,
                 },
+                {
+                    trezor_static_public_key:
+                        'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
+                    credential:
+                        '0a1c0a0974657374733a65326510001a0d5472657a6f72436f6e6e65637412203a4826fcf4d107240c1b9aa0c4bec6abab95e50b35950b5da8a648da135ae96d',
+                    autoconnect: false,
+                },
             ],
         });
 
