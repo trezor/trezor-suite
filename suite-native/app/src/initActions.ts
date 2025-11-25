@@ -57,6 +57,7 @@ export const postOnboardingInit = createThunk(
 
         dispatch(walletConnectInitThunk());
 
-        initSuiteSyncNative({ getState });
+        // Todo: run it from extra, shall be solved in: https://github.com/trezor/trezor-suite/pull/23356
+        initSuiteSyncNative({ getState }).init();
     },
 );

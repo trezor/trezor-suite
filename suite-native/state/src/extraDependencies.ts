@@ -67,7 +67,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
         unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
-        initSuiteSync: () => (_, getState) => initSuiteSyncNative({ getState }),
+        initSuiteSync: () => (_, getState) => initSuiteSyncNative({ getState }).init(),
         createSuiteSyncOwner: params => () => createSuiteSyncOwnerNative(params),
     } as Partial<ExtraDependencies['thunks']>,
     actions: {} as Partial<ExtraDependencies['actions']>,

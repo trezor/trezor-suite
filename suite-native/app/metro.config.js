@@ -102,6 +102,16 @@ const config = {
                     type: 'sourceFile',
                 };
             }
+
+            if (moduleName === '@evolu/common/local-first') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + `/@evolu/common/dist/src/local-first/index.js`,
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
             if (moduleName === 'uuid') {
                 return {
                     filePath: require.resolve(rootNodeModulesPath + '/uuid/dist/index.js'),

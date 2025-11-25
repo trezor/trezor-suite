@@ -59,7 +59,8 @@ export const init = async (container: HTMLElement) => {
         },
     });
 
-    initSuiteSyncDesktop({ getState: store.getState });
+    // Todo: run it from extra, shall be solved in: https://github.com/trezor/trezor-suite/pull/23356
+    initSuiteSyncDesktop({ getState: store.getState }).init();
 
     root.render(
         <ReduxProvider store={store}>

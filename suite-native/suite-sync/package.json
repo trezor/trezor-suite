@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@evolu/react-native": "^12.0.1-preview.9",
+        "@evolu/react-native": "^14.1.1",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
