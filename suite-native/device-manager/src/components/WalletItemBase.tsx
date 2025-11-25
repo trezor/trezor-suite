@@ -1,4 +1,5 @@
 import { Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { BaseCurrencyAmount, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -7,7 +8,7 @@ import { isDebugEnv } from '@suite-native/config';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { WalletLabel, useIsLabelingEnabled } from '@suite-native/labeling';
+import { WalletLabel, selectIsLabelingEnabled } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
@@ -57,7 +58,7 @@ const labelStyle = prepareNativeStyle(() => ({
 }));
 
 const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
     if (!isDebugEnv() || !isLabelingEnabled || !device) {
         return null;

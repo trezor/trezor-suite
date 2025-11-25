@@ -10,7 +10,7 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
-import { useIsLabelingEnabled } from './useIsLabelingEnabled';
+import { selectIsLabelingEnabled } from '../selectors';
 
 type AddressLabelEditableProps = {
     address: string;
@@ -25,7 +25,7 @@ export const AddressLabelEditable = ({
     accountDescriptor,
     networkSymbol,
 }: AddressLabelEditableProps) => {
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const dispatch = useDispatch();
 
     const label = useSelector((state: WithLabelingState) =>

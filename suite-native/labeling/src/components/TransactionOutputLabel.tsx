@@ -4,7 +4,7 @@ import { WithLabelingState, selectOutputLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { useIsLabelingEnabled } from './useIsLabelingEnabled';
+import { selectIsLabelingEnabled } from '../selectors';
 
 type TransactionOutputLabelProps = {
     txId: string;
@@ -17,7 +17,7 @@ export const TransactionOutputLabel = ({
     outputIndex,
     deviceStaticSessionId,
 }: TransactionOutputLabelProps) => {
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
     const label = useSelector((state: WithLabelingState) =>
         selectOutputLabel({

@@ -5,7 +5,7 @@ import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync'
 import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { useIsLabelingEnabled } from './useIsLabelingEnabled';
+import { selectIsLabelingEnabled } from '../selectors';
 
 type AddressLabelEProps = {
     address: string;
@@ -14,7 +14,7 @@ type AddressLabelEProps = {
 };
 
 export const AddressLabel = ({ address, deviceStaticSessionId, fallback }: AddressLabelEProps) => {
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
     const label = useSelector((state: WithLabelingState) =>
         selectAddressLabel({

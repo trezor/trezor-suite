@@ -8,7 +8,7 @@ import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core
 import type { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
-import { useIsLabelingEnabled } from '../components/useIsLabelingEnabled';
+import { selectIsLabelingEnabled } from '../selectors';
 
 export const useAccountLabel = ({
     accountKey,
@@ -17,7 +17,7 @@ export const useAccountLabel = ({
     accountKey: Account['key'] | null;
     deviceState: Account['deviceState'] | null;
 }) => {
-    const isLabelingEnabled = useIsLabelingEnabled();
+    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
     const { walletDescriptor } = deviceState
         ? parseDeviceStaticSessionId(deviceState)
