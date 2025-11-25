@@ -5,7 +5,7 @@ import { useTheme } from 'styled-components';
 import { Divider, Link, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
-import { HELP_CENTER_VERIFY_TREZOR_SUITE_ADDRESSES_URL } from '@trezor/urls';
+import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import {
     AssetRowReceiveToAccount,
@@ -65,7 +65,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                 color={theme.textSubdued}
                                 variant="underline"
                                 target="_blank"
-                                href={HELP_CENTER_VERIFY_TREZOR_SUITE_ADDRESSES_URL}
+                                href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
                             >
                                 {chunks}
                             </Link>

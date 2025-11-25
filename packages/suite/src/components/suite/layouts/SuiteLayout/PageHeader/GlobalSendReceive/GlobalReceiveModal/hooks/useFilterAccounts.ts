@@ -12,11 +12,11 @@ export function useFilterAccounts(accounts: AccountOption[]) {
 
     return useMemo(
         () =>
-            accounts
-                .filter(account =>
-                    networkSymbol ? account.account.symbol === networkSymbol : true,
-                )
-                .filter(account => (search ? accountSearchFn(account.account, search) : true)),
+            accounts.filter(account =>
+                search || networkSymbol
+                    ? accountSearchFn(account.account, search, networkSymbol)
+                    : true,
+            ),
         [accounts, networkSymbol, search],
     );
 }

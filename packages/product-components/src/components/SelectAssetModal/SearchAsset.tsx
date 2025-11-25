@@ -17,6 +17,24 @@ const SelectWrapper = styled.div`
         &:focus-within {
             border-color: transparent;
         }
+
+        &:hover .react-select__indicators {
+            color: unset;
+        }
+    }
+
+    .react-select__single-value {
+        color: ${({ theme }) => theme.textSubdued};
+    }
+
+    .react-select__dropdown-indicator > svg {
+        fill: ${({ theme }) => theme.iconSubdued};
+        stroke: ${({ theme }) => theme.iconSubdued};
+    }
+
+    &:hover .react-select__dropdown-indicator > svg {
+        fill: ${({ theme }) => theme.iconSubdued};
+        stroke: ${({ theme }) => theme.iconSubdued};
     }
     /* stylelint-enable selector-class-pattern */
 `;

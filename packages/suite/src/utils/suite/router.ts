@@ -134,7 +134,15 @@ const validateDashboardParams = (url: string): DashboardParams | undefined => {
         return undefined;
     }
 
-    return parseDashboardParams({ modal, networkSymbol });
+    const params = parseDashboardParams({ modal, networkSymbol });
+
+    if (params && networkSymbol === undefined) {
+        return {
+            modal: params?.modal,
+        };
+    }
+
+    return params;
 };
 
 // Used in routerReducer

@@ -937,6 +937,9 @@ export const accountSearchFn = (
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>
         u.address.toLowerCase() === searchString;
 
+    const accountNumberMatch = `#${account.index + 1} ${account.accountType}`
+        .toLowerCase()
+        .includes(searchString);
     const symbolMatch = account.symbol.startsWith(searchString);
     const networkNameMatch = network?.name.toLowerCase().includes(searchString);
     const accountTypeMatch = account.accountType.startsWith(searchString);
@@ -961,6 +964,7 @@ export const accountSearchFn = (
     const tokenMatch = !!account.tokens && !!account.tokens.filter(filterTokens).length;
 
     return (
+        accountNumberMatch ||
         symbolMatch ||
         networkNameMatch ||
         accountTypeMatch ||

@@ -8,10 +8,11 @@ const ClickableContainer = styled.button`
     background: unset;
     box-shadow: unset;
 
-    width: 100%;
+    width: calc(100% - ${spacings.xxs * 2}px);
 
     cursor: pointer;
-    padding: ${spacingsPx.sm} 0;
+    padding: ${spacingsPx.xs} 0;
+    margin: ${spacingsPx.xxs} ${spacingsPx.xxs};
     border-radius: 4px;
     transition: background-color 150ms ease-in-out;
 
