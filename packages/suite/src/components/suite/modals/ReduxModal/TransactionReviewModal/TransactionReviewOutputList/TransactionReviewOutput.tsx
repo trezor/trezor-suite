@@ -3,13 +3,14 @@ import { ReactNode } from 'react';
 import { TranslationKey } from '@suite-common/intl-types';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
     EvmApprovalPurpose,
     findAccountsByAddress,
+    getCardanoFingerprint,
     isApprovalFlowSupported,
     isEvmApprovalTxByTextSignature,
     isTestnet,
@@ -181,11 +182,10 @@ const getOutputTitle = (
 
 interface GetOutputLinesParams {
     type: ReviewOutput['type'];
-    networkType: NetworkType;
+    account: Account;
     value: string;
     value2?: string;
     label?: string;
-    symbol: NetworkSymbol;
     stakeType?: StakeType;
     evmTxType?: EvmTransactionPurpose;
     device?: TrezorDevice;
@@ -195,17 +195,18 @@ interface GetOutputLinesParams {
 
 const getOutputLines = ({
     type,
-    networkType,
+    account,
     value,
     value2 = '',
     label = '',
-    symbol,
     stakeType,
     evmTxType,
     device,
     token,
     translationString,
 }: GetOutputLinesParams): OutputElementLine[] => {
+    const { networkType, symbol } = account;
+
     switch (type) {
         case 'gas':
         case 'fee':
@@ -315,15 +316,38 @@ const getOutputLines = ({
                     value,
                 },
             ];
-        case 'amount':
-            return [
+        case 'amount': {
+            const output: OutputElementLine[] = [
                 {
                     id: type,
                     label: <Translation id="AMOUNT" />,
                     value,
                     type: 'amount',
+                    token,
                 },
             ];
+            if (networkType === 'cardano' && token) {
+                const fingerprint = getCardanoFingerprint(account?.tokens, token?.symbol);
+                if (fingerprint) {
+                    output.push({
+                        id: 'cardano-fingerprint',
+                        label: <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />,
+                        value: fingerprint,
+                        type: 'default',
+                    });
+                }
+                if (token.decimals !== 0) {
+                    output.push({
+                        id: 'cardano-trezor-amount',
+                        label: <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />,
+                        value,
+                        type: 'default',
+                    });
+                }
+            }
+
+            return output;
+        }
         case 'approve_data': {
             const isMaxApproval = new BigNumber(value).eq(UINT256_MAX);
             const isApprovalTx = evmTxType === 'approve';
@@ -345,6 +369,7 @@ const getOutputLines = ({
                         />
                     ),
                     value: getValue(),
+                    token,
                     type,
                 },
                 {
@@ -408,11 +433,10 @@ export const TransactionReviewOutput = ({
 
     const outputLines = getOutputLines({
         type,
-        networkType,
+        account,
         value,
         value2,
         label,
-        symbol,
         stakeType,
         evmTxType,
         device,
@@ -477,7 +501,6 @@ export const TransactionReviewOutput = ({
             title={outputTitle}
             account={account}
             lines={outputLines}
-            token={token}
             state={state}
             fiatVisible={isFiatVisible}
         />

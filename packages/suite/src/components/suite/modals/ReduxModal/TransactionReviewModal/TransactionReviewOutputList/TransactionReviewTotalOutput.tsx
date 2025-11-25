@@ -75,6 +75,7 @@ const getLines = (
             id: 'amount', // In updated ethereum send flow there is no total amount shown, only amount without fee
             label: <Translation id="AMOUNT" />,
             value: tokenInfo ? precomposedTx.totalSpent : amountWithoutFee,
+            token: tokenInfo,
             type: 'amount',
         };
 
@@ -98,6 +99,7 @@ const getLines = (
                 id: 'total',
                 label: <Translation id={showAmountWithoutFee ? 'AMOUNT' : 'TR_TOTAL_AMOUNT'} />,
                 value: tokenInfo ? precomposedTx.totalSpent : amount,
+                token: tokenInfo,
                 type: 'amount',
             },
             {
@@ -114,6 +116,7 @@ const getLines = (
             id: 'total',
             label: <Translation id="TR_TOTAL" />,
             value: precomposedTx.totalSpent,
+            token: tokenInfo,
             type: 'amount',
         },
     ];
@@ -158,7 +161,6 @@ export const TransactionReviewTotalOutput = ({
             lines={lines}
             state={state}
             fiatVisible={!isTestnet(symbol)}
-            token={precomposedTx?.token}
         />
     );
 };
