@@ -41,7 +41,7 @@ export function AssetsList<T extends BaseItemProps>({
                 listHeight={height}
                 listMinHeight={minHeight}
                 visibleItemsCount={20}
-                beforeAfterBufferCount={20}
+                beforeAfterBufferCount={30}
                 loadMoreBufferCount={5}
                 resetScrollOnItemsChange={false}
             />

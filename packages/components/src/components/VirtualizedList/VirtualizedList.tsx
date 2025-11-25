@@ -42,6 +42,7 @@ const Content = styled.div`
 const Item = styled.div`
     position: absolute;
     width: 100%;
+    left: 0;
 `;
 
 export type BaseItemProps = {
@@ -49,57 +50,6 @@ export type BaseItemProps = {
 };
 
 const calculateItemHeight = <T extends BaseItemProps>(item: T): number => item.height;
-
-interface ListContainerProps<T extends BaseItemProps> {
-    listHeight: number | string;
-    listMinHeight: number | string;
-    totalHeight: number;
-    items: Array<T>;
-    itemHeights: Array<number>;
-    startIndex: number;
-    endIndex: number;
-    ref?: React.Ref<HTMLDivElement>; // NOTE: needs to be here due to typecasting due to forwardRef
-    renderItem: (item: T, index: number) => React.ReactNode;
-}
-
-function ListContainerComponent<T extends BaseItemProps>({
-    listHeight,
-    listMinHeight,
-    totalHeight,
-    items,
-    itemHeights,
-    startIndex,
-    endIndex,
-    renderItem,
-    ref,
-}: ListContainerProps<T>) {
-    return (
-        <Container ref={ref} $height={listHeight} $minHeight={listMinHeight}>
-            <Content style={{ height: `${totalHeight}px` }}>
-                {itemHeights.slice(startIndex, endIndex).map((height, index) => {
-                    const itemIndex = startIndex + index;
-                    const itemTop = itemHeights.slice(0, itemIndex).reduce((acc, h) => acc + h, 0);
-
-                    if (!items[itemIndex]) return null;
-
-                    return (
-                        <Item
-                            key={itemIndex}
-                            style={{
-                                top: `${itemTop}px`,
-                                height,
-                            }}
-                        >
-                            {renderItem(items[itemIndex], itemIndex)}
-                        </Item>
-                    );
-                })}
-            </Content>
-        </Container>
-    );
-}
-
-const ListContainer = memo(ListContainerComponent) as typeof ListContainerComponent;
 
 type VirtualizedListProps<T extends BaseItemProps> = {
     items: Array<T>;
@@ -111,11 +61,29 @@ type VirtualizedListProps<T extends BaseItemProps> = {
     ref?: React.Ref<HTMLDivElement>;
     renderItem: (item: T, index: number) => React.ReactNode;
 
+    /**
+     * @default 20
+     */
     visibleItemsCount?: number;
+
+    /**
+     * @default 100
+     */
     beforeAfterBufferCount?: number;
+
+    /**
+     * @default 100
+     */
     loadMoreBufferCount?: number;
+
+    /**
+     * @default 40
+     */
     estimatedItemHeight?: number;
 
+    /**
+     * @default true
+     */
     resetScrollOnItemsChange?: boolean;
 };
 
@@ -140,8 +108,10 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     const containerRef = (ref as React.RefObject<HTMLDivElement>) || newRef;
     const [items, setItems] = useState(initialItems);
     const [itemsFingerprint, setItemsFingerprint] = useState(initialItemsFingerprint);
-    const [startIndex, setStartIndex] = useState(0);
-    const [endIndex, setEndIndex] = useState(visibleItemsCount);
+    const [indexes, setIndexes] = useState({
+        startIndex: 0,
+        endIndex: visibleItemsCount,
+    });
     const debouncedOnScrollEnd = useMemo(() => debounce(onScrollEnd, 1000), [onScrollEnd]);
 
     const resetScroll = useCallback(() => {
@@ -175,10 +145,11 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
         [itemHeights],
     );
 
+    // TODO: use https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API, it's more efficient
     const handleScroll = useCallback(
         (e: Event) => {
             if (!containerRef.current) return;
-            const { scrollTop } = containerRef.current;
+            const { scrollTop, clientHeight } = containerRef.current;
             let offset = 0;
             let newStartIndex = 0;
 
@@ -194,7 +165,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
 
             let newEndIndex = newStartIndex;
             let visibleHeight = 0;
-            const containerHeight = containerRef.current.clientHeight;
+            const containerHeight = clientHeight;
 
             while (
                 newEndIndex < items.length &&
@@ -205,8 +176,10 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
             }
             newEndIndex = Math.min(items.length, newEndIndex + beforeAfterBufferCount);
 
-            setStartIndex(newStartIndex);
-            setEndIndex(newEndIndex);
+            setIndexes({
+                startIndex: newStartIndex,
+                endIndex: newEndIndex,
+            });
 
             if (newEndIndex >= items.length - loadMoreBufferCount) {
                 debouncedOnScrollEnd();
@@ -234,18 +207,40 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
         }
     }, [containerRef, handleScroll]);
 
+    const firstItemTop = useMemo(
+        () => itemHeights.slice(0, indexes.startIndex).reduce((acc, h) => acc + h, 0),
+        [itemHeights, indexes.startIndex],
+    );
+
     return (
-        <ListContainer<T>
-            ref={containerRef}
-            listHeight={listHeight}
-            listMinHeight={listMinHeight}
-            totalHeight={totalHeight}
-            items={items}
-            itemHeights={itemHeights}
-            startIndex={startIndex}
-            endIndex={endIndex}
-            renderItem={renderItem}
-        />
+        <Container ref={ref} $height={listHeight} $minHeight={listMinHeight}>
+            <Content style={{ height: `${totalHeight}px` }}>
+                {/* TODO: use https://react-window.vercel.app/list/variable-row-height or something that's already optimized */}
+                {itemHeights.slice(indexes.startIndex, indexes.endIndex).map((height, index) => {
+                    const itemIndex = indexes.startIndex + index;
+
+                    if (!items[itemIndex]) return null;
+
+                    const itemTop =
+                        firstItemTop +
+                        itemHeights
+                            .slice(indexes.startIndex, itemIndex)
+                            .reduce((acc, h) => acc + h, 0);
+
+                    return (
+                        <Item
+                            key={itemIndex}
+                            style={{
+                                transform: `translateY(${itemTop}px)`,
+                                height,
+                            }}
+                        >
+                            {renderItem(items[itemIndex], itemIndex)}
+                        </Item>
+                    );
+                })}
+            </Content>
+        </Container>
     );
 }
 

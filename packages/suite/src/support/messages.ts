@@ -3229,7 +3229,7 @@ export default defineMessages({
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
     },
     TR_RECEIVE: {
-        defaultMessage: 'Receive',
+        defaultMessage: 'Select an account to receive funds',
         id: 'TR_RECEIVE',
     },
     TR_RECEIVE_SELECT_ACCOUNT: {
@@ -3237,8 +3237,7 @@ export default defineMessages({
         id: 'TR_RECEIVE_SELECT_ACCOUNT',
     },
     TR_RECEIVE_DESCRIPTION: {
-        defaultMessage:
-            'Tokens exist on multiple networks, so be sure to select the correct one. <a>Learn more</a>',
+        defaultMessage: 'How to <a>choose the right network</a> to receive your tokens',
         id: 'TR_RECEIVE_DESCRIPTION',
     },
     TR_RECEIVE_SEARCH: {
