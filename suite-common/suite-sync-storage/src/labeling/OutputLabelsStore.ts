@@ -4,7 +4,7 @@ export type OutputLabel = {
     label: string | null;
 };
 
-export interface OutputLabelsStore {
+export type OutputLabelsStore = {
     update({ txId, outputIndex, label }: OutputLabel): void;
     subscribe(onChange: (payload: OutputLabel) => void): () => void;
-}
+};

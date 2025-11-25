@@ -7,7 +7,7 @@ export type AccountLabel = {
     label: string | null;
 };
 
-export interface AccountLabelsStore {
+export type AccountLabelsStore = {
     update({ networkSymbol, accountDescriptor, label }: AccountLabel): void;
     subscribe(onChange: (payload: AccountLabel) => void): () => void;
-}
+};

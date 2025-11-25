@@ -1,5 +1,7 @@
-export { SuiteSyncStorageProvider } from './SuiteSyncStorageProvider';
-export type { SuiteStorageCreator } from './SuiteSyncStorageProvider';
+export type { SuiteSyncStorageRepository } from './SuiteSyncStorageRepository';
+export type { CreateSuiteSyncStorageRepository } from './SuiteSyncStorageRepository';
+export { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
+export type { CreateSuiteStorage } from './SuiteSyncStorageRepository';
 export type { SuiteSyncStorage } from './SuiteSyncStorage';
 export type { CreateSuiteSyncOwner } from './Owner';
 
@@ -8,7 +10,7 @@ export {
     subscriptionStorage,
     getSuiteSyncStorageProvider,
     setSuiteSyncProvider,
-    suiteSyncStorageProvider,
+    suiteSyncStorages,
 } from './sharedObjects';
 
 // Labeling

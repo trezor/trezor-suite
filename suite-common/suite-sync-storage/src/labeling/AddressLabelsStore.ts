@@ -7,7 +7,7 @@ export type AddressLabel = {
     networkSymbol: NetworkSymbol;
 };
 
-export interface AddressLabelsStore {
+export type AddressLabelsStore = {
     update({ address, label }: AddressLabel): void;
     subscribe(onChange: (payload: AddressLabel) => void): () => void;
-}
+};

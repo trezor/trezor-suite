@@ -1,7 +1,7 @@
 import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
-import { SuiteSyncStorageProvider } from './SuiteSyncStorageProvider';
+import { SuiteSyncStorageRepository } from './SuiteSyncStorageRepository';
 
 type SubscriptionKey = 'labeling'; // for example: "labeling", ...
 
@@ -10,16 +10,16 @@ export const subscriptionStorage: Record<
     Partial<Record<SubscriptionKey, () => void>>
 > = {};
 
-export let suiteSyncStorageProvider: SuiteSyncStorageProvider | null = null;
+export let suiteSyncStorages: SuiteSyncStorageRepository | null = null;
 
-export const setSuiteSyncProvider = (provider: SuiteSyncStorageProvider) => {
-    suiteSyncStorageProvider = provider;
+export const setSuiteSyncProvider = (repository: SuiteSyncStorageRepository) => {
+    suiteSyncStorages = repository;
 };
 
 export const getSuiteSyncStorageProvider = (owner: SuiteSyncOwner) => {
-    if (suiteSyncStorageProvider === null) {
+    if (suiteSyncStorages === null) {
         throw Error('initSuiteSync[Desktop|Native]() must be called before this!');
     }
 
-    return suiteSyncStorageProvider.getStorage(owner);
+    return suiteSyncStorages.get(owner);
 };
