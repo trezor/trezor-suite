@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 import { Persistor, persistStore } from 'redux-persist';
 
+import { ServicesProvider } from '@suite-common/redux-utils';
 import { captureSentryException } from '@suite-native/sentry';
 import { StorageProvider } from '@suite-native/storage';
 
@@ -16,14 +17,14 @@ export type BaseStoreProviderProps = {
 
 export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProviderProps) => {
     const initStoreCalledRef = useRef(false);
-    const [store, setStore] = useState<Awaited<ReturnType<typeof initStore>>['store'] | null>(null);
+    const [store, setStore] = useState<Awaited<ReturnType<typeof initStore>> | null>(null);
     const [storePersistor, setStorePersistor] = useState<Persistor | null>(null);
 
     const initStoreAsync = useCallback(async () => {
         initStoreCalledRef.current = true;
         try {
-            const { store: freshStore } = await initStore(preloadedState);
-            const freshPersistor = persistStore(freshStore);
+            const freshStore = await initStore(preloadedState);
+            const freshPersistor = persistStore(freshStore.store);
             setStore(freshStore);
             setStorePersistor(freshPersistor);
         } catch (error) {
@@ -52,8 +53,10 @@ export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProvide
     if (store === null || storePersistor === null) return null;
 
     return (
-        <Provider store={store}>
-            <StorageProvider persistor={storePersistor}>{children}</StorageProvider>
-        </Provider>
+        <ServicesProvider services={store.extra.services}>
+            <Provider store={store.store}>
+                <StorageProvider persistor={storePersistor}>{children}</StorageProvider>
+            </Provider>
+        </ServicesProvider>
     );
 };

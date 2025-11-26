@@ -2,7 +2,11 @@ import { Middleware, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 import { logger } from 'redux-logger';
 
-import { ExtraDependencies, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
+import {
+    ExtraDependencies,
+    castExtraStore,
+    createStoreWithExtraStoreMiddleware,
+} from '@suite-common/redux-utils';
 import {
     prepareFiatRatesMiddleware,
     preparePushNotificationMiddleware,
@@ -47,7 +51,7 @@ if (__DEV__) {
 }
 
 export const initStore = async (preloadedState?: PreloadedState) => {
-    let extra: ExtraDependencies | null = null;
+    let extra: ExtraDependencies | null = null as ExtraDependencies | null;
 
     const store = configureStore({
         preloadedState: preloadedState as FullPreloadedState,
@@ -73,11 +77,5 @@ export const initStore = async (preloadedState?: PreloadedState) => {
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });
 
-    if (!extra) {
-        throw new Error(
-            "This shouldn't happen: Extra dependencies not initialized, should be done in callback in createEnhancedStoreWithExtraStoreThunk",
-        );
-    }
-
-    return { store, extra };
+    return castExtraStore(store, extra);
 };
