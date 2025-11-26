@@ -1,38 +1,25 @@
 import TrezorConnectMobile from '@trezor/connect-mobile';
-import TrezorConnect, {
-    DEVICE,
-    DEVICE_EVENT,
-    TRANSPORT_EVENT,
-    WEBEXTENSION,
-} from '@trezor/connect-web';
+import TrezorConnect, { DEVICE_EVENT, TRANSPORT_EVENT, WEBEXTENSION } from '@trezor/connect-web';
 
-import { Dispatch, Field, GetState, TrezorConnectDevice } from '../types';
-
-import * as ACTIONS from './index';
-
-type ConnectOptions = Parameters<(typeof TrezorConnect)['init']>[0];
-export type TrezorConnectAction =
-    | { type: typeof ACTIONS.ON_SELECT_DEVICE; path: string }
-    | { type: typeof DEVICE.CONNECT; device: TrezorConnectDevice }
-    | { type: typeof DEVICE.CONNECT_UNACQUIRED; device: TrezorConnectDevice }
-    | { type: typeof DEVICE.DISCONNECT; device: TrezorConnectDevice }
-    | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
-    | { type: typeof ACTIONS.ON_HANDSHAKE_CONFIRMED }
-    | { type: typeof ACTIONS.ON_INIT_ERROR; payload: string }
-    | {
-          type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTION;
-          payload: { option: Field<any>; value: any };
-      };
+import type { Dispatch, Field, GetState } from '../types';
+import {
+    type ConnectOptions,
+    ON_CHANGE_CONNECT_OPTION,
+    ON_CHANGE_CONNECT_OPTIONS,
+    ON_HANDSHAKE_CONFIRMED,
+    ON_INIT_ERROR,
+    ON_SELECT_DEVICE,
+} from '../types/actions';
 
 export function onSelectDevice(path: string) {
     return {
-        type: ACTIONS.ON_SELECT_DEVICE,
+        type: ON_SELECT_DEVICE,
         path,
     };
 }
 
 export const onConnectOptionChange = (option: Field<any>, value: any) => ({
-    type: ACTIONS.ON_CHANGE_CONNECT_OPTION,
+    type: ON_CHANGE_CONNECT_OPTION,
     payload: {
         option,
         value,
@@ -66,7 +53,7 @@ const testLoadingScript = (src: string) =>
     });
 
 export const init =
-    (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
+    (options: ConnectOptions = {}) =>
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
 
@@ -76,7 +63,7 @@ export const init =
         // @ts-expect-error
         TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
             if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
-                dispatch({ type: ACTIONS.ON_HANDSHAKE_CONFIRMED });
+                dispatch({ type: ON_HANDSHAKE_CONFIRMED });
             }
         });
 
@@ -122,7 +109,7 @@ export const init =
                 await testLoadingScript(options.connectSrc + 'js/core.js');
             } catch {
                 dispatch({
-                    type: ACTIONS.ON_INIT_ERROR,
+                    type: ON_INIT_ERROR,
                     payload: `Invalid connectSrc: ${options.connectSrc}`,
                 });
 
@@ -181,12 +168,12 @@ export const init =
                 await TrezorConnect.init(connectOptions);
             }
         } catch (err) {
-            dispatch({ type: ACTIONS.ON_INIT_ERROR, payload: err.message });
+            dispatch({ type: ON_INIT_ERROR, payload: err.message });
 
             return;
         }
 
-        dispatch({ type: ACTIONS.ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions });
+        dispatch({ type: ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions });
     };
 
 export const onSubmitInit = () => async (dispatch: Dispatch, getState: GetState) => {

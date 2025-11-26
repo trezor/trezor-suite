@@ -1,4 +1,13 @@
 import {
+    MethodState,
+    initialState,
+    prepareBundle,
+    setAffectedValues,
+    updateParams,
+} from './methodCommon';
+import { getMethodState, getMethodStateFromSchema } from './methodInit';
+import type { MethodAction, TrezorConnectAction } from '../types/actions';
+import {
     ADD_BATCH,
     FIELD_CHANGE,
     FIELD_DATA_CHANGE,
@@ -9,16 +18,11 @@ import {
     SET_METHOD_PROCESSING,
     SET_SCHEMA,
     SET_UNION,
-} from '../actions/methodActions';
-import { type Action, type Field, isFieldBasic } from '../types';
-import {
-    MethodState,
-    initialState,
-    prepareBundle,
-    setAffectedValues,
-    updateParams,
-} from './methodCommon';
-import { getMethodState, getMethodStateFromSchema } from './methodInit';
+} from '../types/actions';
+import type { Field } from '../types/common';
+import { isFieldBasic } from '../types/common';
+
+type Action = MethodAction | TrezorConnectAction;
 
 // Recursively find a field in the schema (inner function)
 const findFieldsNested = (

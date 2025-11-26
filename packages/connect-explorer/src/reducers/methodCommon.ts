@@ -2,7 +2,8 @@ import type { TrezorConnect } from '@trezor/connect-web';
 import { TSchema } from '@trezor/schema-utils';
 import { setDeepValue } from '@trezor/schema-utils/src/utils';
 
-import { Field, FieldBasic, isFieldBasic } from '../types';
+import type { Field, FieldBasic } from '../types/common';
+import { isFieldBasic } from '../types/common';
 
 export interface MethodState {
     name?: keyof TrezorConnect;

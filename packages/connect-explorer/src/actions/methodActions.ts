@@ -1,34 +1,24 @@
-import { TSchema } from '@sinclair/typebox';
+import type { TSchema } from '@sinclair/typebox';
 import JSON5 from 'json5';
 
 import TrezorConnectMobile from '@trezor/connect-mobile';
-import TrezorConnect, { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
+import TrezorConnect from '@trezor/connect-web';
 import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
-import { Dispatch, Field, GetState } from '../types';
+import type { Dispatch, Field, GetState } from '../types';
+import {
+    ADD_BATCH,
+    FIELD_CHANGE,
+    FIELD_DATA_CHANGE,
+    REMOVE_BATCH,
+    RESPONSE,
+    SET_MANUAL_MODE,
+    SET_METHOD,
+    SET_METHOD_PROCESSING,
+    SET_SCHEMA,
+    SET_UNION,
+} from '../types/actions';
 
-export const SET_METHOD = 'method_set';
-export const SET_SCHEMA = 'schema_set';
-export const FIELD_CHANGE = 'method_field_change';
-export const FIELD_DATA_CHANGE = 'method_field_data_change';
-export const ADD_BATCH = 'method_add_batch';
-export const REMOVE_BATCH = 'method_remove_batch';
-export const SET_UNION = 'method_set_union';
-export const RESPONSE = 'method_response';
-export const SET_MANUAL_MODE = 'method_set_manual_mode';
-export const SET_METHOD_PROCESSING = 'method_set_processing';
-
-export type MethodAction =
-    | { type: typeof SET_METHOD; methodConfig: any }
-    | { type: typeof SET_SCHEMA; method: keyof TrezorConnectType; schema: TSchema }
-    | { type: typeof FIELD_CHANGE; field: Field<any>; value: any }
-    | { type: typeof FIELD_DATA_CHANGE; field: Field<any>; data: any }
-    | { type: typeof ADD_BATCH; field: Field<any>; item: any }
-    | { type: typeof REMOVE_BATCH; field: Field<any>; batch: any[] }
-    | { type: typeof SET_UNION; field: Field<any>; current: any }
-    | { type: typeof RESPONSE; response: any }
-    | { type: typeof SET_MANUAL_MODE; manualMode: boolean }
-    | { type: typeof SET_METHOD_PROCESSING; payload: boolean };
 export const onSetMethod = (methodConfig: any) => ({
     type: SET_METHOD,
     methodConfig,

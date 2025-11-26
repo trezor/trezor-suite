@@ -1,12 +1,21 @@
-import TrezorConnect, { DEVICE } from '@trezor/connect-web';
+import { DEVICE } from '@trezor/connect-web';
 
-import * as ACTIONS from '../actions/index';
-import { Action, Field, TrezorConnectDevice } from '../types';
+import type { ConnectOptions, MethodAction, TrezorConnectAction } from '../types/actions';
+import {
+    ON_CHANGE_CONNECT_OPTION,
+    ON_CHANGE_CONNECT_OPTIONS,
+    ON_HANDSHAKE_CONFIRMED,
+    ON_INIT_ERROR,
+    ON_SELECT_DEVICE,
+} from '../types/actions';
+import type { Field, TrezorConnectDevice } from '../types/common';
+
+type Action = MethodAction | TrezorConnectAction;
 
 export type ConnectState = {
     devices: TrezorConnectDevice[];
     selectedDevice?: string;
-    options?: Parameters<(typeof TrezorConnect)['init']>[0];
+    options?: ConnectOptions;
     isHandshakeConfirmed: boolean;
     isInitSuccess: boolean;
     initError?: string;
@@ -67,8 +76,8 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
             },
         };
     }
-    // @ts-expect-error field name must be key of options
-    newState.options[field.name] = value;
+
+    (newState.options as any)[field.name] = value;
 
     return newState;
 };
@@ -88,28 +97,28 @@ export default function connect(state: ConnectState = initialState, action: Acti
                 ...removeDevice(state, action.device),
             };
 
-        case ACTIONS.ON_SELECT_DEVICE:
+        case ON_SELECT_DEVICE:
             return {
                 ...state,
                 selectedDevice: action.path,
             };
 
-        case ACTIONS.ON_CHANGE_CONNECT_OPTION:
+        case ON_CHANGE_CONNECT_OPTION:
             return onOptionChange(state, action.payload.option, action.payload.value);
 
-        case ACTIONS.ON_CHANGE_CONNECT_OPTIONS:
+        case ON_CHANGE_CONNECT_OPTIONS:
             return {
                 ...state,
                 initError: undefined,
                 isInitSuccess: true,
                 options: action.payload,
             };
-        case ACTIONS.ON_HANDSHAKE_CONFIRMED:
+        case ON_HANDSHAKE_CONFIRMED:
             return {
                 ...state,
                 isHandshakeConfirmed: true,
             };
-        case ACTIONS.ON_INIT_ERROR:
+        case ON_INIT_ERROR:
             return {
                 ...state,
                 initError: action.payload,
