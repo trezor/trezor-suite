@@ -47,7 +47,7 @@ describe('TradingLocationModalScreen', () => {
     it('should render all components', async () => {
         const { getByText, queryByLabelText } = await renderTradingLocationModalScreen();
 
-        expect(getByText('Confirm your location to enable trading')).toBeOnTheScreen();
+        expect(getByText('Trading is now available')).toBeOnTheScreen();
         expect(getByText('Confirm location')).toBeOnTheScreen();
         expect(getByText('Not now')).toBeOnTheScreen();
 
