@@ -72,11 +72,6 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                 <Text variant="hint">
                     <Translation id="moduleSend.outputs.recipients.addressLabel" />
                 </Text>
-                {isDebugEnv() && (
-                    <Button size="small" colorScheme="tertiaryElevation0" onPress={fillSelfAddress}>
-                        DEV: self address
-                    </Button>
-                )}
                 <SendFormLabelEditable
                     label={utxoLabel ?? null}
                     onLabelChange={newUtxoLabel => {
@@ -84,6 +79,11 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                     }}
                 />
             </HStack>
+            {isDebugEnv() && (
+                <Button size="small" colorScheme="tertiaryElevation0" onPress={fillSelfAddress}>
+                    DEV: self address
+                </Button>
+            )}
             <TextInputField
                 multiline
                 name={addressFieldName}
