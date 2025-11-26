@@ -238,7 +238,7 @@ export const TransactionsGraph = memo(
                                 }}
                                 onMouseLeave={() => setHovered(-1)}
                             >
-                                <CartesianGrid vertical={false} stroke={theme.borderFocus} />
+                                <CartesianGrid vertical={false} stroke={theme.borderDashed} />
 
                                 <XAxis
                                     // xAxisId="primary"
