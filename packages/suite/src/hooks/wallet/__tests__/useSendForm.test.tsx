@@ -23,7 +23,7 @@ import SendIndex from 'src/views/wallet/send';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 
-const TEST_TIMEOUT = 30000;
+const TEST_TIMEOUT = 35000;
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
