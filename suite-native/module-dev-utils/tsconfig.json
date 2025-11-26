@@ -7,6 +7,9 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         { "path": "../../suite-common/trading" },
@@ -27,7 +30,6 @@
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },
-        { "path": "../suite-sync" },
         { "path": "../toasts" },
         { "path": "../trading-state" },
         { "path": "../../packages/connect" },

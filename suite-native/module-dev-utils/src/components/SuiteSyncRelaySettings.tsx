@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/redux-utils';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
-    changeRelayUrlThunk,
     disposeAllSuiteSyncStoragesThunk,
     selectIsFeatureSuiteSyncAvailable,
     selectSuiteSyncRelayUrl,
@@ -11,7 +11,6 @@ import {
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
-import { initSuiteSyncNative } from '@suite-native/suite-sync';
 import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';
@@ -20,6 +19,7 @@ export const SuiteSyncRelaySettings = () => {
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
     const isFeatureSuiteSyncEnabled = useSelector(selectIsFeatureSuiteSyncAvailable);
     const dispatch = useDispatch();
+    const { suiteSync } = useServices();
     const { showToast } = useToast();
 
     const form = useForm<{ suiteSyncRelayUrl: string }>({
@@ -31,8 +31,8 @@ export const SuiteSyncRelaySettings = () => {
         }),
     });
 
-    const onSubmit = form.handleSubmit(values => {
-        dispatch(changeRelayUrlThunk({ relayUrl: values.suiteSyncRelayUrl }));
+    const onSubmit = form.handleSubmit(async values => {
+        await suiteSync.changeRelayUrl({ relayUrl: values.suiteSyncRelayUrl });
         showToast({
             message: 'Local First Storage relay URL updated',
             variant: 'success',
@@ -54,15 +54,13 @@ export const SuiteSyncRelaySettings = () => {
             }),
         );
 
-        if (!originalIsSuiteSyncEnabled) {
-            dispatch((_, getState) => initSuiteSyncNative({ getState }));
-        } else {
+        if (originalIsSuiteSyncEnabled) {
             dispatch(disposeAllSuiteSyncStoragesThunk());
         }
     };
 
-    const handleResetToDefault = () => {
-        dispatch(changeRelayUrlThunk({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL }));
+    const handleResetToDefault = async () => {
+        await suiteSync.changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         showToast({
             message: 'Local First Storage relay URL reset to default',

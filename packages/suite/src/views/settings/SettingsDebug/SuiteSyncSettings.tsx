@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
+import { useServices } from '@suite-common/redux-utils';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
-    changeRelayUrlThunk,
     selectSuiteSyncRelayUrl,
     suiteSyncActions,
 } from '@suite-common/suite-sync';
@@ -17,6 +17,9 @@ import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 export const SuiteSyncSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
+    const dispatch = useDispatch();
+    const { suiteSync } = useServices();
+
     const {
         isSuiteSyncDebugEnabled,
         isFeatureSuiteSyncAvailable,
@@ -30,8 +33,6 @@ export const SuiteSyncSettings = () => {
 
     const [relayUrl, setRelayUrl] = useState(suiteSyncRelayUrl ?? '');
 
-    const dispatch = useDispatch();
-
     const handleToggleSuiteSyncDebug = () => {
         dispatch(
             suiteSyncActions.updateSuiteSyncDebugEnabled({
@@ -40,9 +41,10 @@ export const SuiteSyncSettings = () => {
         );
     };
 
-    const onRelayUrlSave = () => {
+    const onRelayUrlSave = async () => {
         setIsLoading(true);
-        dispatch(changeRelayUrlThunk({ relayUrl }));
+
+        await suiteSync.changeRelayUrl({ relayUrl });
 
         // Fake it, to make some UI interaction for the user
         setTimeout(() => {
