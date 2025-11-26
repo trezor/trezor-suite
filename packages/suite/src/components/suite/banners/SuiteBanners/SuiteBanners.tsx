@@ -196,6 +196,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
             $fill={fill}
             onClick={() => setIsExpanded(!isExpanded)}
             $hasPadding
+            data-testid="@suite-banners/container"
         >
             <Tooltip
                 isFullWidth

@@ -20,6 +20,7 @@ test.describe('Backup success', { tag: ['@T2T1'] }, () => {
         devicePrompt,
     }) => {
         // access from notification
+        await dashboardPage.suiteBannersContainer.click();
         await dashboardPage.notificationNoBackupButton.click();
 
         await onboardingPage.backup.understandWhatSeedIsCheckbox.click();
