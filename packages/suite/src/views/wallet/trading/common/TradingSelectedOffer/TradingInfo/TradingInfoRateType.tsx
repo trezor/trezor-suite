@@ -20,7 +20,7 @@ export const TradingInfoRateType = ({ selectedQuote, providers }: TradingInfoRat
 
     return (
         <InfoItem label={<Translation id="TR_TRADING_RATE" />} direction="row">
-            <Text data-testid="@trading/offer/info/exchange-type" typographyStyle="hint">
+            <Text data-testid="@trading/offer/info/exchange-type">
                 {rateType === 'fixed' && (
                     <Tooltip content={<Translation id="TR_EXCHANGE_FIXED_OFFERS_INFO" />} hasIcon>
                         <Translation id="TR_EXCHANGE_FIXED" />

@@ -11,8 +11,7 @@ import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common
 import { selectCountryCode } from '@suite-common/geolocation';
 import { ExperimentId } from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
-import { Button, Card, Column, IconCircle, Row, Text, Textarea } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, Card, Column, H3, IconCircle, Paragraph, Row, Textarea } from '@trezor/components';
 
 import { EmojiRatingSelector } from 'src/components/suite/EmojiRatingSelector';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
@@ -78,30 +77,30 @@ export const TradingDetailFeedback = ({
     const isFormValid = rating !== undefined && description.trim().length > 0;
 
     const Success = (
-        <Row gap={spacings.lg} margin={{ vertical: spacings.xs }}>
+        <Row gap={20} margin={{ vertical: 8 }}>
             <IconCircle name="check" size={64} />
-            <Column gap={spacings.xs}>
-                <Text typographyStyle="titleSmall">
+            <Column gap={8}>
+                <H3>
                     <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_TITLE" />
-                </Text>
-                <Text typographyStyle="hint">
+                </H3>
+                <Paragraph typographyStyle="hint">
                     <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_SUCCESS_DESCRIPTION" />
-                </Text>
+                </Paragraph>
             </Column>
         </Row>
     );
 
     const Form = (
         <>
-            <Text typographyStyle="titleSmall">
+            <H3>
                 <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_TITLE" />
-            </Text>
+            </H3>
 
             <EmojiRatingSelector value={rating} onChange={setRating} />
 
-            <Text typographyStyle="hint">
+            <Paragraph typographyStyle="hint">
                 <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_DESCRIPTION" />
-            </Text>
+            </Paragraph>
 
             <Textarea
                 rows={3}
@@ -112,13 +111,7 @@ export const TradingDetailFeedback = ({
                 maxLength={1000}
             />
 
-            <Button
-                isDisabled={!isFormValid}
-                intent="brand"
-                type="button"
-                size="small"
-                onClick={submitFeedback}
-            >
+            <Button isDisabled={!isFormValid} intent="brand" type="button" onClick={submitFeedback}>
                 <Translation id="TR_EXCHANGE_DETAIL_FEEDBACK_INPUT_BUTTON" />
             </Button>
         </>
@@ -133,11 +126,7 @@ export const TradingDetailFeedback = ({
                     variant: 'B',
                     element: (
                         <Card>
-                            <Column
-                                gap={spacings.md}
-                                alignItems="start"
-                                margin={{ vertical: spacings.xs }}
-                            >
+                            <Column gap={16} alignItems="start" margin={{ vertical: 8 }}>
                                 {view === 'form' ? Form : Success}
                             </Column>
                         </Card>

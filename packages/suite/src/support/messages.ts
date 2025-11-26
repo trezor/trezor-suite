@@ -1110,6 +1110,34 @@ export default defineMessages({
         defaultMessage: 'Provider',
         id: 'TR_BUY_PROVIDER',
     },
+    TR_ESTIMATED_TIME: {
+        defaultMessage: 'Estimated time',
+        id: 'TR_ESTIMATED_TIME',
+    },
+    TR_ORDER_ID: {
+        defaultMessage: 'Order ID',
+        id: 'TR_ORDER_ID',
+    },
+    TR_BUY_PAYMENT_PROCESSING_TITLE: {
+        defaultMessage: '{providerName} is processing your buy',
+        id: 'TR_BUY_PAYMENT_PROCESSING_TITLE',
+    },
+    TR_TRADING_PROCESSING_SUPPORT: {
+        defaultMessage: 'Need help? Reach out to <link>{providerName}’s support</link>.',
+        id: 'TR_TRADING_PROCESSING_SUPPORT',
+    },
+    TR_BUY_COMPLETE: {
+        defaultMessage: 'Buy complete',
+        id: 'TR_BUY_COMPLETE',
+    },
+    TR_BUY_HEADING: {
+        defaultMessage: 'Your buy',
+        id: 'TR_BUY_HEADING',
+    },
+    TR_BUY_HEADING_DESCRIPTION: {
+        defaultMessage: 'View and track your buy in trade history.',
+        id: 'TR_BUY_HEADING_DESCRIPTION',
+    },
     TR_BUY_RECEIVING_ADDRESS: {
         defaultMessage: 'Receive address',
         id: 'TR_BUY_RECEIVING_ADDRESS',
@@ -1178,6 +1206,10 @@ export default defineMessages({
     TR_BUY_DETAIL_WAITING_FOR_USER_TITLE: {
         defaultMessage: 'Complete your transaction',
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
+    },
+    TR_BUY_DETAIL_PAYMENT_SUCCESSFUL_TITLE: {
+        defaultMessage: 'Payment successful',
+        id: 'TR_BUY_DETAIL_PAYMENT_SUCCESSFUL_TITLE',
     },
     TR_BUY_DETAIL_WAITING_FOR_USER_TEXT: {
         defaultMessage:

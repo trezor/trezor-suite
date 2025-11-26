@@ -4,7 +4,7 @@ import { SpacingValuesNew, typography } from '@trezor/theme';
 
 import { useBulletList } from './BulletListContext';
 import { BulletLineWidth, BulletListDirection, BulletListItemState, BulletSize } from './types';
-import { mapSizeToDimension, mapStateToColor } from './utils';
+import { mapPropsToTypographyStyle, mapSizeToDimension, mapStateToColor } from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';
 
@@ -58,13 +58,18 @@ const Bullet = styled.div<{
     width: ${mapSizeToDimension}px;
     height: ${mapSizeToDimension}px;
     border-radius: 50%;
-    background-color: ${({ theme, $isDarkTheme }) =>
-        theme[$isDarkTheme ? 'textDefaultInverted' : 'backgroundNeutralDisabled']};
+    background-color: ${({ theme, $isDarkTheme, $state }) =>
+        // eslint-disable-next-line no-nested-ternary
+        $state === 'active'
+            ? theme.backgroundPrimarySubtleOnElevation0
+            : $isDarkTheme
+              ? theme.textDefaultInverted
+              : theme.backgroundNeutralDisabled};
     color: ${mapStateToColor};
     ${({ $size }) => ($size === 'small' ? typography.label : typography.hint)}
 
     ${({ $state, $isOrdered, theme }) =>
-        $state === 'default' &&
+        $state === 'active' &&
         $isOrdered &&
         css`
             background-color: ${theme.textDefaultInverted};
@@ -72,7 +77,7 @@ const Bullet = styled.div<{
         `}
 
     &::before {
-        ${({ $isOrdered, $isDarkTheme }) =>
+        ${({ $isOrdered, $isDarkTheme, $state, theme }) =>
             $isOrdered
                 ? css`
                       content: counter(item-counter);
@@ -82,12 +87,15 @@ const Bullet = styled.div<{
                       width: 50%;
                       height: 50%;
                       border-radius: 50%;
-                      background-color: ${({ theme }) =>
-                          theme[
-                              $isDarkTheme ? 'backgroundNeutralDisabled' : 'textDefaultInverted'
-                          ]};
-
-                      box-shadow: ${({ theme }) => !$isDarkTheme && theme.boxShadowBase};
+                      background-color: ${
+                          // eslint-disable-next-line no-nested-ternary
+                          $state === 'active'
+                              ? theme.backgroundPrimaryDefault
+                              : $isDarkTheme
+                                ? theme.backgroundNeutralDisabled
+                                : theme.textDefaultInverted
+                      };
+                      box-shadow: ${!$isDarkTheme && $state !== 'active' && theme.boxShadowBase};
                   `}
     }
 `;
@@ -195,7 +203,7 @@ export const BulletListItem = ({
             <Title $direction={direction}>
                 <Text
                     as="div"
-                    typographyStyle={direction === 'vertical' ? 'body' : 'hint'}
+                    typographyStyle={mapPropsToTypographyStyle(direction, state)}
                     color={mapStateToColor({ $state: state, theme })}
                     ellipsisLineCount={direction === 'vertical' ? 2 : undefined}
                 >

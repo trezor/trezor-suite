@@ -1,0 +1,93 @@
+import { useState } from 'react';
+
+import { BuyTrade } from 'invity-api';
+
+import { invityAPI } from '@suite-common/trading';
+import { BulletListItemState, Button, Column, Paragraph } from '@trezor/components';
+
+import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
+import { Translation } from 'src/components/suite/Translation';
+import { useDispatch } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
+import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
+
+import { TradingDetailStep } from '../TradingDetailStep';
+
+type WaitingForUserProps = {
+    trade: BuyTrade;
+    account: Account;
+    providerName?: string;
+};
+
+const getState = (trade: BuyTrade): BulletListItemState => {
+    switch (trade.status) {
+        case 'APPROVAL_PENDING':
+            return 'done';
+        default:
+            return 'active';
+    }
+};
+
+const getTitleId = (trade: BuyTrade) => {
+    switch (trade.status) {
+        case 'APPROVAL_PENDING':
+            return 'TR_BUY_DETAIL_PAYMENT_SUCCESSFUL_TITLE';
+        default:
+            return 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE';
+    }
+};
+
+const getDescriptionId = (trade: BuyTrade) => {
+    switch (trade.status) {
+        case 'SUBMITTED':
+            return 'TR_BUY_DETAIL_SUBMITTED_TEXT';
+        default:
+            return 'TR_BUY_DETAIL_WAITING_FOR_USER_TEXT';
+    }
+};
+
+const getButtonLabelId = (trade: BuyTrade) => {
+    switch (trade.status) {
+        case 'SUBMITTED':
+            return 'TR_BUY_DETAIL_SUBMITTED_GATE';
+        default:
+            return 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE';
+    }
+};
+
+export const TradingDetailBuyPaymentWaitingForUserStep = ({
+    trade,
+    account,
+    providerName,
+}: WaitingForUserProps) => {
+    const [isWorking, setIsWorking] = useState(false);
+    const dispatch = useDispatch();
+    const state = getState(trade);
+
+    const goToPayment = async () => {
+        setIsWorking(true);
+        const returnUrl = await createTxLink(trade, account);
+        const response = await invityAPI.getBuyTradeForm({ trade, returnUrl });
+        if (response) {
+            dispatch(submitRequestForm(response.form));
+        }
+    };
+
+    return (
+        <TradingDetailStep state={state} title={<Translation id={getTitleId(trade)} />}>
+            <Column gap={20}>
+                <Paragraph typographyStyle="hint">
+                    <Translation id={getDescriptionId(trade)} values={{ providerName }} />
+                </Paragraph>
+                <Button
+                    onClick={goToPayment}
+                    isLoading={isWorking}
+                    isDisabled={isWorking}
+                    iconRight="arrowSquareOut"
+                >
+                    <Translation id={getButtonLabelId(trade)} />
+                </Button>
+            </Column>
+        </TradingDetailStep>
+    );
+};
