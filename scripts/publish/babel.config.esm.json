@@ -1,0 +1,9 @@
+{
+    "presets": [],
+    "plugins": [
+        "./babel-plugin-sanitize-internal-imports.js",
+        "./babel-plugin-add-js-extension.js"
+    ],
+    "comments": true,
+    "sourceMaps": true
+}

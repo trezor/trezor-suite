@@ -28,11 +28,11 @@
         "main": "lib/index.js"
     },
     "scripts": {
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

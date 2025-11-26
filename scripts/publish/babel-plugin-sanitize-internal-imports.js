@@ -1,0 +1,59 @@
+const sanitizeInternalImports = (src, moduleType) => {
+    const searchValue = new RegExp('@trezor/([^/]+)/src', 'g');
+    const replaceValue = `@trezor/$1/${moduleType === 'esm' ? 'libESM' : 'lib'}`;
+
+    return src.replace(searchValue, replaceValue);
+};
+
+/**
+ * Babel plugin to sanitize non-index internal imports, from src to the built lib or libESM folder.
+ * e.g. @trezor/utils/src/bufferUtils → @trezor/utils/lib/bufferUtils
+ */
+const sanitizeInternalImportsPlugin = ({ types }) => {
+    const modifyESMImportPath = path => {
+        const src = path.node.source?.value;
+        if (!src) return;
+        path.node.source = types.stringLiteral(sanitizeInternalImports(src, 'esm'));
+    };
+
+    const modifyCJSRequireArg = path => {
+        const args = path.node.arguments;
+        if (!args || args.length === 0) return;
+        const first = args[0];
+        if (!types.isStringLiteral(first)) return;
+        first.value = sanitizeInternalImports(first.value, 'cjs');
+    };
+
+    return {
+        name: 'sanitize-internal-imports',
+        visitor: {
+            // handle ESM import/export statements
+            ImportDeclaration(path) {
+                modifyESMImportPath(path);
+            },
+            ExportAllDeclaration(path) {
+                modifyESMImportPath(path);
+            },
+            ExportNamedDeclaration(path) {
+                modifyESMImportPath(path);
+            },
+            // handle CJS require(...) and require.resolve('...') statements
+            CallExpression(path) {
+                const { callee } = path.node;
+                if (types.isIdentifier(callee) && callee.name === 'require') {
+                    modifyCJSRequireArg(path);
+                } else if (
+                    types.isMemberExpression(callee) &&
+                    types.isIdentifier(callee.object) &&
+                    callee.object.name === 'require' &&
+                    types.isIdentifier(callee.property) &&
+                    callee.property.name === 'resolve'
+                ) {
+                    modifyCJSRequireArg(path);
+                }
+            },
+        },
+    };
+};
+
+export default sanitizeInternalImportsPlugin;

@@ -1,0 +1,6 @@
+{
+    "presets": [],
+    "plugins": ["./babel-plugin-sanitize-internal-imports.js"],
+    "comments": true,
+    "sourceMaps": true
+}
