@@ -58,7 +58,7 @@ export const PortfolioCardHeader = ({
                     onClick={receiveClickHandler}
                     data-testid="@dashboard/receive-button"
                     minWidth={120}
-                    size="large"
+                    size={isContentBelowBreakpoint ? 'medium' : 'large'}
                 >
                     <Translation
                         id={hasMultipleAccounts ? 'TR_RECEIVE_SELECT_ACCOUNT' : 'TR_RECEIVE'}

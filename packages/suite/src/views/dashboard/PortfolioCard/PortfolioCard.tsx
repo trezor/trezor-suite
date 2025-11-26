@@ -8,7 +8,7 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
-import { Card, Column, Dropdown, Switch } from '@trezor/components';
+import { Box, Card, Column, Dropdown, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -25,6 +25,10 @@ import { EmptyWallet } from './EmptyWallet';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
+
+const MarginContainer = ({ children }: { children: React.ReactNode }) => (
+    <Box margin={{ horizontal: 24, vertical: 16 }}>{children}</Box>
+);
 
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -58,31 +62,41 @@ export const PortfolioCard = memo(() => {
     let body = null;
     if (discoveryStatus && discoveryStatus.status === 'exception') {
         body = (
-            <PortfolioCardException
-                exception={discoveryStatus}
-                discovery={discovery}
-                failed={failedAccounts}
-            />
+            <MarginContainer>
+                <PortfolioCardException
+                    exception={discoveryStatus}
+                    discovery={discovery}
+                    failed={failedAccounts}
+                />
+            </MarginContainer>
         );
     } else if (passphraseEntryCanceled) {
         body = (
-            <PortfolioCardException
-                exception={{
-                    status: 'exception',
-                    type: 'discovery-failed',
-                }}
-                discovery={discovery}
-                failed={failedAccounts}
-            />
+            <MarginContainer>
+                <PortfolioCardException
+                    exception={{
+                        status: 'exception',
+                        type: 'discovery-failed',
+                    }}
+                    discovery={discovery}
+                    failed={failedAccounts}
+                />
+            </MarginContainer>
         );
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
         body = isGraphHidden ? null : (
-            <Column height={320}>
-                <GraphSkeleton data-testid="@dashboard/loading" />
-            </Column>
+            <MarginContainer>
+                <Column height={320}>
+                    <GraphSkeleton data-testid="@dashboard/loading" />
+                </Column>
+            </MarginContainer>
         );
     } else if (isDeviceEmpty) {
-        body = <EmptyWallet />;
+        body = (
+            <MarginContainer>
+                <EmptyWallet />
+            </MarginContainer>
+        );
     } else if (!isGraphHidden) {
         body = <DashboardGraph accounts={accounts} />;
     }
