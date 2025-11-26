@@ -139,9 +139,9 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const paymentRequests =
             payload.paymentRequests?.map(p => {
                 if (typeof p.amount === 'number') {
-                    // convert int to hex string (little endian)
+                    // convert to 64bit little-endian
                     const buffer = Buffer.allocUnsafe(8);
-                    buffer.writeIntLE(p.amount, 0, 6);
+                    buffer.writeBigInt64LE(BigInt(p.amount), 0);
 
                     return {
                         ...p,
