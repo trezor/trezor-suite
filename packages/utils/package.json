@@ -15,12 +15,13 @@
     },
     "sideEffects": false,
     "publishConfig": {
-        "main": "lib/index"
+        "main": "lib/index.js",
+        "types": "lib/index.d.ts"
     },
     "main": "src/index.ts",
     "files": [
         "lib/",
-        "libESM",
+        "libESM/",
         "!**/*.map"
     ],
     "scripts": {

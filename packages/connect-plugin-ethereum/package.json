@@ -20,6 +20,7 @@
     "sideEffects": false,
     "publishConfig": {
         "main": "lib/index.js",
+        "types": "lib/index.d.ts",
         "exports": {
             ".": {
                 "import": "./libESM/index.js",
@@ -30,7 +31,7 @@
     "main": "src/index.ts",
     "files": [
         "lib/",
-        "libESM",
+        "libESM/",
         "!**/*.map"
     ],
     "peerDependencies": {
