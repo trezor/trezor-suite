@@ -13,13 +13,22 @@ import {
     preparePreloadedReduxState,
     prepareTrezorEmulator,
 } from '../support/setup';
-import { wait } from '../support/utils';
+import { isElementVisible, wait } from '../support/utils';
 
-const proceedToCreateOrRecoverCrossroads = async (options?: { skipFirmwareUpdate?: boolean }) => {
+const proceedToCreateOrRecoverCrossroads = async () => {
     await onDeviceOnboarding.waitForUninitializedDeviceLanding();
     await onDeviceOnboarding.dismissTheUninitializedDeviceLanding();
-    if (options?.skipFirmwareUpdate) {
+    // During our release process, the TrezorUserEnv might not have the latest firmware version.
+    // In such cases, the firmware update screen appears here.
+    // We want to skip the update in e2e tests as it is not supported.
+    const isFirmwareUpdateScreenPresent = await isElementVisible(
+        by.id('@device-firmware/update-button'),
+    );
+    if (isFirmwareUpdateScreenPresent) {
         await onDeviceOnboarding.skipFirmwareUpdate();
+        console.warn(
+            'SKIPPING FIRMWARE UPDATE: Firmware update was displayed, make sure it was only due to TrezorUserEnv not having latest firmware version.',
+        );
     }
 
     await TrezorUserEnvLink.pressYes();
@@ -58,7 +67,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding [@fix
         await proceedToCreateOrRecoverCrossroads();
     });
 
-    it.skip('Create Wallet', async () => {
+    it('Create Wallet', async () => {
         await onDeviceOnboarding.selectCreateWalletOption();
 
         await onDeviceOnboarding.waitForCreateWalletLoadingScreen();
@@ -94,7 +103,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Device onboarding [@fix
         await finishOnboardingFlow();
     });
 
-    it.skip('Recover Wallet', async () => {
+    it('Recover Wallet', async () => {
         await onDeviceOnboarding.selectRecoverWalletOption();
         await onDeviceOnboarding.confirmRecoveryInstructions();
 
