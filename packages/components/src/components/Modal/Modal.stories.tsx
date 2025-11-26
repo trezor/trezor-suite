@@ -2,14 +2,12 @@ import { JSX } from 'react';
 
 import { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
-import { ThemeProvider } from 'styled-components';
 
 import { modalSizes, modalVariants } from './types';
 import {
     Modal as ModalComponent,
     ModalProps,
     allowedModalFrameProps,
-    intermediaryTheme,
     variables,
 } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -28,22 +26,20 @@ const meta: Meta<typeof ModalComponent> = {
     component: ModalComponent,
     decorators: [
         Story => (
-            <ThemeProvider theme={{ variant: 'light', ...intermediaryTheme.light }}>
-                <ModalComponent.Provider>
-                    <Story />
-                    <p>
-                        Quos delectus veritatis est doloribus dolor. Odit fugit omnis magni ipsam
-                        quia rem aut. Et alias sint non. Consequuntur dignissimos veritatis debitis
-                        corporis esse. Quaerat voluptatem unde aut. Iusto laborum omnis quis amet
-                        atque. Sint culpa delectus non soluta temporibus saepe. Sequi saepe corrupti
-                        aliquam ut sit assumenda aspernatur consequuntur. Ut est ullam iusto facilis
-                        voluptatibus. Sit est cum quos. Quasi deleniti non fugit iste alias
-                        consequuntur. Ullam ad ut culpa est reiciendis molestiae. Reiciendis ab
-                        veritatis a totam inventore nihil voluptatem occaecati. Quisquam atque odit
-                        quia nam. Laboriosam rem et ut. Maxime qui voluptatem voluptatem.
-                    </p>
-                </ModalComponent.Provider>
-            </ThemeProvider>
+            <ModalComponent.Provider>
+                <Story />
+                <p>
+                    Quos delectus veritatis est doloribus dolor. Odit fugit omnis magni ipsam quia
+                    rem aut. Et alias sint non. Consequuntur dignissimos veritatis debitis corporis
+                    esse. Quaerat voluptatem unde aut. Iusto laborum omnis quis amet atque. Sint
+                    culpa delectus non soluta temporibus saepe. Sequi saepe corrupti aliquam ut sit
+                    assumenda aspernatur consequuntur. Ut est ullam iusto facilis voluptatibus. Sit
+                    est cum quos. Quasi deleniti non fugit iste alias consequuntur. Ullam ad ut
+                    culpa est reiciendis molestiae. Reiciendis ab veritatis a totam inventore nihil
+                    voluptatem occaecati. Quisquam atque odit quia nam. Laboriosam rem et ut. Maxime
+                    qui voluptatem voluptatem.
+                </p>
+            </ModalComponent.Provider>
         ),
     ],
 };
