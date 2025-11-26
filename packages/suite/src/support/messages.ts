@@ -2883,7 +2883,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
         defaultMessage:
-            'All wallets will be automatically ejected when your Trezor is disconnected.',
+            'All wallets will be ejected. Trezor Suite will automatically restart once the process is complete.',
     },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
@@ -3875,7 +3875,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_LEDGER_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEDGER_DESC',
         defaultMessage:
-            'Ledger accounts are compatible with Ledger Live derivation paths, enabling smooth migration from Ledger to Trezor.',
+            'Ledger accounts are compatible with Ledger Wallet derivation paths, enabling smooth migration from Ledger to Trezor.',
     },
     TR_ACCOUNT_TYPE_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',
@@ -6713,7 +6713,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_YOUR_VERSION: {
         id: 'TR_UPDATE_MODAL_YOUR_VERSION',
-        defaultMessage: 'Your version: {version}',
+        defaultMessage: 'Current version: {version}',
     },
     TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES: {
         id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES',
@@ -6749,7 +6749,8 @@ export default defineMessages({
     },
     TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE: {
         id: 'TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE',
-        defaultMessage: 'We’re always striving to enhance your Trezor experience.',
+        defaultMessage:
+            'Download the latest version of Trezor Suite for improved performance and features.',
     },
     TR_UPDATE_MODAL_UPDATE_DOWNLOADED: {
         id: 'TR_UPDATE_MODAL_UPDATE_DOWNLOADED',
@@ -9558,7 +9559,7 @@ export default defineMessages({
     },
     TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER: {
         id: 'TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER',
-        defaultMessage: 'Keep earning rewards with your current provider for ~{days} days.',
+        defaultMessage: 'Keep earning rewards with your current provider for ~{days} days',
     },
     TR_STAKE_ACTIVATION_PERIOD: {
         id: 'TR_STAKE_ACTIVATION_PERIOD',
@@ -10094,7 +10095,8 @@ export default defineMessages({
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE_ERROR: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE_ERROR',
-        defaultMessage: "Passphrase wallet couldn't be loaded",
+        defaultMessage:
+            "This Passphrase wallet couldn't be loaded. Check your connection and try again.",
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION',
