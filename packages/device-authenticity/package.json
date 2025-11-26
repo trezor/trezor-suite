@@ -15,15 +15,25 @@
     },
     "sideEffects": false,
     "publishConfig": {
-        "main": "lib/index.js"
+        "main": "lib/index.js",
+        "types": "lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js"
+            }
+        }
     },
     "main": "src/index",
     "files": [
         "lib/",
+        "libESM/",
         "!**/*.map"
     ],
     "scripts": {
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/replace-imports.sh ./libESM libESM",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
