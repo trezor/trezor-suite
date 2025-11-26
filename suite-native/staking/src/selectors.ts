@@ -166,7 +166,7 @@ export const selectAPYByAccountKey = (state: NativeStakingRootState, accountKey:
         return null;
     }
 
-    return selectPoolStatsApyData(state, symbol);
+    return selectPoolStatsApyData(state, account);
 };
 
 export const selectStakedBalanceByAccountKey = (
