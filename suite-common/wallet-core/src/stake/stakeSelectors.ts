@@ -4,10 +4,13 @@ import {
     BACKUP_CARDANO_APY,
     BACKUP_ETH_APY,
     BACKUP_SOL_APY,
+    CARDANO_APY_MIN_THRESHOLD,
 } from '@suite-common/wallet-constants';
+import { Account } from '@suite-common/wallet-types';
 import {
     isSupportedAdaStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
+    selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
 
 import { VotingDelegationOption } from './stakeActions';
@@ -19,8 +22,15 @@ export const selectEverstakeData = (
     endpointType: 'poolStats' | 'validatorsQueue' | 'stakingInfo',
 ) => state.wallet.stake?.data?.[symbol]?.[endpointType];
 
-export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSymbol) => {
+export const selectPoolStatsApyData = (
+    state: StakeRootState,
+    account?: Account,
+    networkSymbol?: NetworkSymbol,
+) => {
     const { data } = state.wallet.stake ?? {};
+    const { symbol: symbolFromAccount, misc } = account ?? {};
+
+    const symbol = symbolFromAccount ?? networkSymbol;
 
     if (!symbol || !data) {
         return BACKUP_APY;
@@ -31,11 +41,34 @@ export const selectPoolStatsApyData = (state: StakeRootState, symbol?: NetworkSy
     }
 
     if (isSupportedAdaStakingNetworkSymbol(symbol)) {
-        return data?.[symbol]?.stakingInfo?.data?.apy || BACKUP_CARDANO_APY;
+        if (!misc || !('staking' in misc)) return BACKUP_CARDANO_APY;
+
+        const stakingInfo = data?.[symbol]?.stakingInfo?.data;
+        const stakingPoolId = misc.staking?.poolId;
+
+        if (!stakingInfo?.pools) return BACKUP_CARDANO_APY;
+
+        // if the user is not staked yet pick the best pool
+        const poolId = stakingPoolId || selectBestCardanoPool(stakingInfo?.pools)?.bech32;
+
+        const selectedPool = stakingInfo?.pools?.find(pool => pool.id === poolId);
+        if (!selectedPool) return BACKUP_CARDANO_APY;
+
+        const { apy } = selectedPool;
+
+        // fallback if APY missing, zero, or below threshold
+        if (!apy || apy < CARDANO_APY_MIN_THRESHOLD) {
+            return BACKUP_CARDANO_APY;
+        }
+
+        return apy;
     }
 
     return data?.[symbol]?.poolStats?.data.ethApy || BACKUP_ETH_APY;
 };
+
+export const selectCardanoPoolsInfo = (state: StakeRootState) =>
+    state.wallet.stake?.data?.ada?.stakingInfo?.data?.pools ?? [];
 
 export const selectPoolStatsNextRewardPayout = (state: StakeRootState, symbol?: NetworkSymbol) => {
     if (!symbol) {

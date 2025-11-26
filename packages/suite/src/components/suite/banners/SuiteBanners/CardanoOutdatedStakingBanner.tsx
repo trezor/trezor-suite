@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const CardanoOutdatedStakingBanner = () => {
     const dispatch = useDispatch();
-    const apy = useSelector(state => selectPoolStatsApyData(state, 'ada'));
+    const apy = useSelector(state => selectPoolStatsApyData(state, undefined, 'ada'));
 
     return (
         <Banner

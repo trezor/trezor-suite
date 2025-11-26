@@ -14,17 +14,20 @@ import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
+    EVERSTAKE_API_KEY,
     EVERSTAKE_ENDPOINT_PREFIX,
     EVERSTAKE_REWARDS_SOLANA_ENPOINT,
     EVERSTAKE_VALIDATOR,
 } from './stakeConstants';
 import { selectEverstakeData } from './stakeSelectors';
 import {
+    CardanoValidatorStats,
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
     EVERSTAKE_ENDPOINT_TYPES,
     EverstakeAssetEndpointType,
     EverstakeEndpointType,
     EverstakeRewardsEndpointType,
+    EverstakeStakingInfo,
     StakeRewardsByAccount,
     TotalStakeRewardsByAccount,
     ValidatorsQueue,
@@ -85,14 +88,14 @@ const getStakingInfoEndpointParams = (symbol: NetworkSymbol) => {
         return `name=solana`;
     }
     if (isSupportedAdaStakingNetworkSymbol(symbol)) {
-        return `name=cardano`;
+        return `limit=1000&offset=0&partner=Trezor`;
     }
 
     return '';
 };
 
 export const fetchEverstakeStakingInfo = createThunk<
-    { apy: number },
+    EverstakeStakingInfo,
     {
         symbol: SupportedSolanaNetworkSymbols | SupportedCardanoNetworkSymbols;
         endpointType: EverstakeAssetEndpointType;
@@ -103,18 +106,33 @@ export const fetchEverstakeStakingInfo = createThunk<
     async (params, { fulfillWithValue, rejectWithValue }) => {
         const { symbol, endpointType } = params;
 
-        const endpointSuffix = EVERSTAKE_ASSET_ENDPOINT_TYPES[endpointType];
+        const endpointSuffix = EVERSTAKE_ASSET_ENDPOINT_TYPES[endpointType][symbol];
         const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[symbol];
         const endpointParams = getStakingInfoEndpointParams(symbol);
 
         try {
             const assetResponse = await fetch(
                 `${endpointPrefix}/${endpointSuffix}?${endpointParams}`,
+                {
+                    headers: isSupportedAdaStakingNetworkSymbol(symbol)
+                        ? { 'x-api-key': EVERSTAKE_API_KEY }
+                        : undefined,
+                },
             );
             if (!assetResponse.ok) {
                 throw Error(assetResponse.statusText);
             }
             const assetData = await assetResponse.json();
+
+            if (isSupportedAdaStakingNetworkSymbol(symbol)) {
+                return fulfillWithValue({
+                    pools: assetData?.data?.map((pool: CardanoValidatorStats) => ({
+                        apy: Number(pool.apy.value),
+                        saturation: Number(pool.saturation) * 100,
+                        id: pool.validator_address,
+                    })),
+                });
+            }
 
             return fulfillWithValue({
                 apy: Number(assetData?.blockchain?.apr),
