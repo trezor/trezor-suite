@@ -7,13 +7,13 @@ import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/toke
 
 import { VerticalSeparator } from './NetworkTransactionDetailSummary';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
-import { VinVoutAddress } from '../../types';
+import { AddressesType, VinVoutAddress } from '../../types';
 
 type TokenTransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
     tokenTransfer: TypedTokenTransfer;
-    onShowMore: () => void;
+    onShowMore: (addressesType: AddressesType) => void;
 };
 
 export const TokenTransactionDetailSummary = ({
@@ -41,13 +41,13 @@ export const TokenTransactionDetailSummary = ({
                 addresses={inputAddresses}
                 symbol={symbol ?? undefined}
                 contractAddress={tokenTransfer.contract}
-                onShowMore={onShowMore}
+                onShowMore={() => onShowMore('inputs')}
             />
             <TransactionDetailAddressesSection
                 transaction={transaction}
                 addressesType="outputs"
                 addresses={outputAddresses}
-                onShowMore={onShowMore}
+                onShowMore={() => onShowMore('outputs')}
             />
             <VerticalSeparator inputsCount={inputAddresses.length} />
         </VStack>

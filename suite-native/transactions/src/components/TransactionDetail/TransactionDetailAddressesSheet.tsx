@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 
@@ -31,6 +31,8 @@ type TransactionDetailAddressesSheetProps = {
     accountKey: AccountKey;
     onClose: () => void;
     ref: BottomSheetModalRef;
+    displayedAddressesType: AddressesType;
+    toggleAddresses: () => void;
 };
 
 const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
@@ -88,9 +90,9 @@ export const TransactionDetailAddressesSheet = ({
     txid,
     accountKey,
     ref,
+    toggleAddresses,
+    displayedAddressesType,
 }: TransactionDetailAddressesSheetProps) => {
-    const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
-
     const inputAddresses = useSelector((state: TransactionsRootState & TokenDefinitionsRootState) =>
         selectTransactionAddresses(state, accountKey, txid, 'inputs'),
     );
@@ -109,10 +111,6 @@ export const TransactionDetailAddressesSheet = ({
         }),
         [displayedAddresses],
     );
-
-    const toggleAddresses = () => {
-        setDisplayedAddressesType(displayedAddressesType === 'inputs' ? 'outputs' : 'inputs');
-    };
 
     return (
         <BottomSheetModal

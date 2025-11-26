@@ -11,6 +11,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 import { selectTransactionAddresses } from '../../selectors';
+import { AddressesType } from '../../types';
 
 type VerticalSeparatorProps = { inputsCount: number };
 
@@ -54,7 +55,7 @@ export const VerticalSeparator = ({ inputsCount }: VerticalSeparatorProps) => {
 type NetworkTransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    onShowMore: () => void;
+    onShowMore: (addressesType: AddressesType) => void;
 };
 
 export const NetworkTransactionDetailSummary = ({
@@ -77,7 +78,7 @@ export const NetworkTransactionDetailSummary = ({
                 <TransactionDetailAddressesSection
                     addressesType="inputs"
                     addresses={transactionInputAddresses}
-                    onShowMore={onShowMore}
+                    onShowMore={() => onShowMore('inputs')}
                     symbol={transaction.symbol}
                     transaction={transaction}
                 />
@@ -86,7 +87,7 @@ export const NetworkTransactionDetailSummary = ({
                 <TransactionDetailAddressesSection
                     addressesType="outputs"
                     addresses={transactionOutputAddresses}
-                    onShowMore={onShowMore}
+                    onShowMore={() => onShowMore('outputs')}
                     transaction={transaction}
                 />
             )}

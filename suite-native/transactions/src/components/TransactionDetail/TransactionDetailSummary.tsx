@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { AccountKey } from '@suite-common/wallet-types';
 import { Card, useBottomSheetModal } from '@suite-native/atoms';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
@@ -6,6 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
 import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
 import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
+import { AddressesType } from '../../types';
 
 type TransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;
@@ -25,8 +28,18 @@ export const TransactionDetailSummary = ({
 }: TransactionDetailSummaryProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
 
     const isTokenTransferDetail = !!tokenTransfer;
+
+    const handleOpenModal = (addressesType: AddressesType) => {
+        setDisplayedAddressesType(addressesType);
+        openModal();
+    };
+
+    const toggleAddresses = () => {
+        setDisplayedAddressesType(displayedAddressesType === 'inputs' ? 'outputs' : 'inputs');
+    };
 
     return (
         <Card style={applyStyle(cardStyle)} borderColor="borderElevation1">
@@ -35,13 +48,13 @@ export const TransactionDetailSummary = ({
                     accountKey={accountKey}
                     transaction={transaction}
                     tokenTransfer={tokenTransfer}
-                    onShowMore={openModal}
+                    onShowMore={handleOpenModal}
                 />
             ) : (
                 <NetworkTransactionDetailSummary
                     accountKey={accountKey}
                     transaction={transaction}
-                    onShowMore={openModal}
+                    onShowMore={handleOpenModal}
                 />
             )}
             <TransactionDetailAddressesSheet
@@ -49,6 +62,8 @@ export const TransactionDetailSummary = ({
                 txid={transaction.txid}
                 accountKey={accountKey}
                 onClose={closeModal}
+                displayedAddressesType={displayedAddressesType}
+                toggleAddresses={toggleAddresses}
             />
         </Card>
     );
