@@ -28,7 +28,7 @@ const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>(
         justifyContent: 'center',
         borderRadius: utils.borders.radii.r4,
         borderWidth: utils.borders.widths.medium,
-        borderColor: utils.colors.borderElevation2,
+        borderColor: utils.colors.iconSubdued,
         backgroundColor: isDisabled
             ? utils.colors.backgroundNeutralDisabled
             : utils.colors.backgroundNeutralSubtleOnElevation1,
