@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import {
     EverstakeRewardsEndpointType,
     StakeAccountRewards,
-    StakeRootState,
     fetchEverstakeRewards,
     selectStakingRewardsHistory,
 } from '@suite-common/wallet-core';
@@ -12,11 +11,13 @@ import { useDebounce } from '@trezor/react-utils';
 
 import { Account } from 'src/types/wallet';
 
+import { useSelector } from '../suite';
+
 const PAGE_SIZE_DEFAULT = 10;
 
 export const useSolanaRewards = (account: Account) => {
     const { data: selectedAccountRewards, isLoading } =
-        useSelector((state: StakeRootState) =>
+        useSelector(state =>
             selectStakingRewardsHistory(state, account.symbol, account.descriptor),
         ) || {};
 

@@ -3,6 +3,7 @@ import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-
 import type { Network } from '@suite-common/wallet-config';
 import type {
     Account,
+    CardanoPoolInfo,
     FeeInfo,
     PrecomposedLevels,
     Rate,
@@ -31,7 +32,11 @@ export enum EverstakeRewardsEndpointType {
 }
 
 export const EVERSTAKE_ASSET_ENDPOINT_TYPES = {
-    [EverstakeAssetEndpointType.StakingInfo]: 'chain',
+    [EverstakeAssetEndpointType.StakingInfo]: {
+        sol: 'chain',
+        dsol: 'chain',
+        ada: 'blockchain/summary',
+    },
 };
 
 export interface ValidatorsQueue {
@@ -122,3 +127,25 @@ export type StakeRewardsByAccount = {
 export type TotalStakeRewardsByAccount = {
     [address: string]: string;
 };
+
+export interface EverstakeStakingInfo {
+    apy?: number;
+    pools?: CardanoPoolInfo[];
+}
+
+export interface CardanoValidatorStats {
+    apr: { value: string };
+    apy: { value: string };
+    blockchain_name: string;
+    date: string;
+    delegators_number: number;
+    fee: string;
+    precision: number;
+    price: number;
+    saturation: number;
+    stake: string;
+    token: string;
+    total_stake_usd: number;
+    validator_address: string;
+    validator_name: string;
+}

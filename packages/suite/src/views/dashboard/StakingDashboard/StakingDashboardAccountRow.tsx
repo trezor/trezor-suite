@@ -4,7 +4,11 @@ import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
+import {
+    selectAccountIsStakingActive,
+    selectCardanoPoolsInfo,
+    selectPoolStatsApyData,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
@@ -28,10 +32,11 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
@@ -128,7 +133,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         });
 
     const state = useMemo(() => {
-        if (isCardanoStakedOutsideEverstake(account)) {
+        if (isCardanoStakedOutsideEverstake(account, cardanoStakingPools)) {
             return 'staking-outdated-provider';
         }
 
@@ -162,6 +167,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         minStakingAmount,
         isCardanoNetworkType,
         isStakingActive,
+        cardanoStakingPools,
     ]);
 
     const CurrentRewardsCell = () => {

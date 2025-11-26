@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
+import { selectCardanoPoolsInfo, selectIsDiscreteModeActive } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { BaseCurrencyAmount, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Column, Icon, Row } from '@trezor/components';
@@ -45,11 +45,12 @@ export const AccountItemContent = ({
     isFiatLoading,
 }: AccountItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
+    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const { isSidebarCollapsed } = useResponsiveContext();
     const isCardanoStaking = account.networkType === 'cardano' && type === 'staking';
     const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
-    const cardanoStakingIcon = isCardanoStakedWithEverstake(account) ? (
+    const cardanoStakingIcon = isCardanoStakedWithEverstake(account, cardanoStakingPools) ? (
         <Icon name="check" variant="primary" size={16} />
     ) : (
         <Icon name="warning" variant="warning" size={16} />
