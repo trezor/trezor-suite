@@ -8,3 +8,4 @@ export * from './protocol';
 export * from './invariant';
 export * from './jws';
 export * from './pollingController';
+export * from './triggerWebDownloadFile';
