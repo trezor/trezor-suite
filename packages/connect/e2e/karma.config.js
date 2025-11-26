@@ -93,6 +93,11 @@ module.exports = config => {
             resolve: {
                 modules: ['node_modules'],
                 extensions: ['.ts', '.js'],
+                fallback: {
+                    crypto: require.resolve('crypto-browserify'),
+                    stream: require.resolve('stream-browserify'),
+                    vm: require.resolve('vm-browserify'),
+                },
             },
             plugins: [
                 // provide fallback plugins, Buffer and process are used in fixtures
