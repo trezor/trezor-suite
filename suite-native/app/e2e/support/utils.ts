@@ -83,3 +83,19 @@ export const inputTextToElement = async (element: Detox.IndexableNativeElement, 
         await element.typeText(text);
     }
 };
+
+// Use this method in absolute necessity only! Try-catch in tests is discouraged because it may hide real issues.
+export const isElementVisible = async (
+    elementOrMatcher: Detox.IndexableNativeElement | Detox.NativeMatcher,
+): Promise<boolean> => {
+    const target = isIndexableNativeElement(elementOrMatcher)
+        ? elementOrMatcher
+        : element(elementOrMatcher);
+    try {
+        await waitFor(target).toBeVisible().withTimeout(5_000);
+
+        return true;
+    } catch {
+        return false;
+    }
+};
