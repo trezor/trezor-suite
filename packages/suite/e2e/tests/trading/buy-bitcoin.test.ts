@@ -104,7 +104,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
                 omit: ['partnerData', 'orderId', 'paymentId'],
             });
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                'TR_BUY_DETAIL_SUBMITTED_TITLE',
+                'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
             );
             await expect(tradingPage.proceedToPayButton).toBeVisible();
         });

@@ -16,7 +16,7 @@ export const TradingInfoExchangeType = ({ selectedQuote }: TradingInfoExchangeTy
 
     return (
         <InfoItem label={<Translation id="TR_TRADING_EXCHANGE_TYPE" />} direction="row">
-            <Text typographyStyle="hint">
+            <Text>
                 {exchangeQuote.isDex ? (
                     <Tooltip
                         content={<Translation id="TR_EXCHANGE_DECENTRALIZED_EXCHANGE" />}

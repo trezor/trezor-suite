@@ -139,7 +139,9 @@ export const TradingSelectedOfferInfo = ({
                     />
                 )}
 
-                <TradingInfoProvider providers={providers} exchange={exchange} />
+                {type !== 'buy' && (
+                    <TradingInfoProvider providers={providers} exchange={exchange} />
+                )}
 
                 {type === 'exchange' && (
                     <TradingInfoExchangeType
@@ -162,16 +164,18 @@ export const TradingSelectedOfferInfo = ({
                 )}
 
                 {type === 'exchange' && transactionId && (
-                    <InfoItem label={<Translation id="TR_TRADING_TRANS_ID" />} direction="column">
-                        <Text typographyStyle="hint">{transactionId}</Text>
-                        <Button
-                            size="small"
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={() => copyToClipboard(transactionId)}
-                        >
-                            <Translation id="TR_COPY_TO_CLIPBOARD" />
-                        </Button>
+                    <InfoItem label={<Translation id="TR_TRADING_TRANS_ID" />} direction="row">
+                        <Row gap={8}>
+                            <Text typographyStyle="hint">{transactionId}</Text>
+                            <Button
+                                size="small"
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={() => copyToClipboard(transactionId)}
+                            >
+                                <Translation id="TR_COPY_TO_CLIPBOARD" />
+                            </Button>
+                        </Row>
                     </InfoItem>
                 )}
             </Column>

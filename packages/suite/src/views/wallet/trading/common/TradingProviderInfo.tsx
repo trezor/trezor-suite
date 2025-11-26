@@ -1,36 +1,53 @@
+import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+
 import { invityAPI } from '@suite-common/trading';
-import { Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Row } from '@trezor/components';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite/Translation';
+import { TradingGetProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
 
-export interface TradingProviderInfoProps {
+export type TradingProviderInfoProps = {
     exchange?: string;
-    providers?: {
-        [name: string]: {
-            logo: string;
-            companyName: string;
-            brandName?: string;
-        };
-    };
-}
+    providers?: TradingGetProvidersInfoProps;
+    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+};
 
-export const TradingProviderInfo = ({ exchange, providers }: TradingProviderInfoProps) => {
-    const provider = providers && exchange ? providers[exchange] : null;
+const isBuyProviderInfo = (
+    provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo,
+): provider is BuyProviderInfo => 'brandName' in provider;
+
+export const TradingProviderInfo = ({
+    exchange,
+    providers,
+    provider,
+}: TradingProviderInfoProps) => {
+    const extractedProvider = provider ?? (providers && exchange ? providers[exchange] : undefined);
+
+    const brandName =
+        extractedProvider && isBuyProviderInfo(extractedProvider)
+            ? extractedProvider.brandName
+            : undefined;
+
+    const providerName =
+        brandName ??
+        extractedProvider?.companyName ??
+        (exchange ? capitalizeFirstLetter(exchange) : extractedProvider?.name);
 
     return (
-        <Row data-testid="@trading/form/info/provider" gap={spacings.xs}>
-            {!exchange && <Translation id="TR_TRADING_UNKNOWN_PROVIDER" />}
-            {provider ? (
+        <Row gap={8} data-testid="@trading/form/info/provider">
+            {providerName ? (
                 <>
-                    {provider.logo && (
-                        <TradingIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
+                    {extractedProvider?.logo && (
+                        <TradingIcon
+                            iconUrl={invityAPI.getProviderLogoUrl(extractedProvider?.logo)}
+                        />
                     )}
-                    {provider.brandName ?? provider.companyName}
+                    {providerName}
                 </>
             ) : (
-                <Text margin={{ left: spacings.xxl }}>{exchange}</Text>
+                <Translation id="TR_TRADING_UNKNOWN_PROVIDER" />
             )}
         </Row>
     );

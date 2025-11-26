@@ -1,41 +1,31 @@
-import styled from 'styled-components';
+import { BuyProviderInfo, BuyTrade } from 'invity-api';
 
-import { Button, H4, Image } from '@trezor/components';
-import { spacings, typography } from '@trezor/theme';
+import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    flex-direction: column;
-`;
+import { TradingDetailInfo } from '../TradingDetailInfo';
+import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
-const Description = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.body}
-    margin: 17px 0 10px;
-    max-width: 310px;
-    text-align: center;
-`;
-
-interface PaymentFailedProps {
-    supportUrl?: string;
+type PaymentFailedProps = {
     account: Account;
-}
+    trade: BuyTrade;
+    provider?: BuyProviderInfo;
+    supportUrl?: string;
+};
 
-export const TradingDetailBuyPaymentFailed = ({ supportUrl, account }: PaymentFailedProps) => {
+export const TradingDetailBuyPaymentFailed = ({
+    supportUrl,
+    account,
+    trade,
+    provider,
+}: PaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const goToBuy = () =>
+    const handleClick = () =>
         dispatch(
             goto('wallet-trading-buy', {
                 params: {
@@ -47,28 +37,27 @@ export const TradingDetailBuyPaymentFailed = ({ supportUrl, account }: PaymentFa
         );
 
     return (
-        <Wrapper>
-            <Image image="UNI_ERROR" />
-            <H4 data-testid="@trading/transaction/detail/status" margin={{ top: spacings.xl }}>
-                <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
-            </H4>
-            <Description>
-                <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
-            </Description>
-            {supportUrl && (
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    href={supportUrl}
-                    target="_blank"
-                    margin={{ top: spacings.xxl }}
-                >
-                    <Translation id="TR_BUY_DETAIL_ERROR_SUPPORT" />
-                </Button>
-            )}
-            <Button onClick={goToBuy} margin={{ top: spacings.xxl }}>
+        <Column gap={24} padding={{ top: 12, bottom: 4 }}>
+            <IconCircle name="x" variant="destructive" size={100} />
+            <Column>
+                <H3 data-testid="@trading/transaction/detail/status">
+                    <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
+                </H3>
+                <Paragraph typographyStyle="hint" variant="tertiary">
+                    <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
+                </Paragraph>
+            </Column>
+            <Button onClick={handleClick} intent="neutral" priority="secondary">
                 <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />
             </Button>
-        </Wrapper>
+            <Card>
+                <Column gap={24}>
+                    {provider && <TradingDetailInfo provider={provider} trade={trade} />}
+                    {provider && supportUrl && (
+                        <TradingDetailSupportBanner provider={provider} supportUrl={supportUrl} />
+                    )}
+                </Column>
+            </Card>
+        </Column>
     );
 };
