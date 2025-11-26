@@ -1,15 +1,15 @@
 import React, { JSX } from 'react';
-import { useSelector } from 'react-redux';
 
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { StakeRootState, selectValidatorsQueue } from '@suite-common/wallet-core';
+import { selectValidatorsQueue } from '@suite-common/wallet-core';
 import { getUnstakingPeriodInDays, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
+import { useSelector } from 'src/hooks/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';
@@ -77,8 +77,7 @@ interface UnstakingInfoProps {
 export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
     const { account } = useSelector((state: CoinjoinRootState) => state.wallet.selectedAccount);
 
-    const { data } =
-        useSelector((state: StakeRootState) => selectValidatorsQueue(state, account?.symbol)) || {};
+    const { data } = useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
 
     if (!account) return null;
 

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
 import {
+    selectCardanoPoolsInfo,
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
@@ -58,6 +59,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const transport = useSelector(state => state.suite.transport);
     const accounts = useSelector(selectVisibleDeviceAccounts);
+    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
 
     // The dismissal doesn't need to outlive the session. Use local state.
@@ -112,7 +114,9 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     } else if (bridge?.outdated) {
         banner = <BridgeDeprecated />;
         priority = 30;
-    } else if (accounts.some(isCardanoStakedOutsideEverstake)) {
+    } else if (
+        accounts.some(account => isCardanoStakedOutsideEverstake(account, cardanoStakingPools))
+    ) {
         banner = <CardanoOutdatedStakingBanner />;
         priority = 20;
     }

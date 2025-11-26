@@ -51,7 +51,7 @@ export const EmptyStakingCard = () => {
 
     const isCardano = account?.networkType === 'cardano';
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const stakingData = getStakingDataForNetwork(account);
 
     const accountBalance = account?.formattedBalance ?? '0';

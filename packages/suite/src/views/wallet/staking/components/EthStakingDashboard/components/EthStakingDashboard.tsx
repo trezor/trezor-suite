@@ -48,7 +48,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const { data, isLoading } =
         useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const nextRewardPayout = useSelector(state =>
         selectPoolStatsNextRewardPayout(state, account?.symbol),
     );

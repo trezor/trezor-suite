@@ -2,6 +2,7 @@ import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
     hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
+    selectCardanoPoolsInfo,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
@@ -16,7 +17,8 @@ interface CardanoNewProviderCardProps {
 
 export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps) {
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
-    const isStakedWithEverstake = isCardanoStakedWithEverstake(account);
+    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
+    const isStakedWithEverstake = isCardanoStakedWithEverstake(account, cardanoStakingPools);
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );

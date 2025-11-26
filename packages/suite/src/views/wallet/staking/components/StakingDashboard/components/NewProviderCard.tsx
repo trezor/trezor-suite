@@ -17,7 +17,7 @@ export const NewProviderCard = () => {
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
 
