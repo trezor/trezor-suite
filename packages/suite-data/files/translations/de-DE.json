@@ -256,7 +256,7 @@
   "TR_ACCOUNT_TYPE_DEFAULT": "Standard",
   "TR_ACCOUNT_TYPE_IMPORTED": "Importiert",
   "TR_ACCOUNT_TYPE_LEDGER": "Ledger",
-  "TR_ACCOUNT_TYPE_LEDGER_DESC": "Ledger-Konten sind kompatibel mit Ableitungspfaden von Ledger Live und gewährleisten so die reibungslose Migration von Ledger auf Trezor.",
+  "TR_ACCOUNT_TYPE_LEDGER_DESC": "Ledger-Konten sind kompatibel mit Ableitungspfaden von Ledger Wallet und gewährleisten so die reibungslose Migration von Ledger auf Trezor.",
   "TR_ACCOUNT_TYPE_LEGACY": "Veraltet",
   "TR_ACCOUNT_TYPE_LEGACY_DESC": "Veraltete Konten sind kompatibel mit Ableitungspfaden von Ledger Legacy und gewährleisten so die reibungslose Migration von Ledger auf Trezor.",
   "TR_ACCOUNT_TYPE_NORMAL_EVM_DESC": "Mit der aktuellen und am weitesten verbreiteten Methode zur Generierung und Verwaltung von {value}-Adressen wird Interoperabilität, Sicherheit und die Unterstützung aller Arten von Tokens gewährleistet.",

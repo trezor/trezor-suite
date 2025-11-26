@@ -256,7 +256,7 @@
   "TR_ACCOUNT_TYPE_DEFAULT": "Výchozí",
   "TR_ACCOUNT_TYPE_IMPORTED": "Importováno",
   "TR_ACCOUNT_TYPE_LEDGER": "Ledger",
-  "TR_ACCOUNT_TYPE_LEDGER_DESC": "Účty Ledger jsou kompatibilní s derivačními cestami Ledger Live, což umožňuje snadnou migraci z Ledger do Trezoru.",
+  "TR_ACCOUNT_TYPE_LEDGER_DESC": "Účty Ledger jsou kompatibilní s derivačními cestami Ledger Wallet, což umožňuje snadnou migraci z Ledger do Trezoru.",
   "TR_ACCOUNT_TYPE_LEGACY": "Legacy",
   "TR_ACCOUNT_TYPE_LEGACY_DESC": "Legacy účty jsou kompatibilní s derivačními cestami Ledger Legacy, což umožňuje snadnou migraci z Ledger do Trezoru.",
   "TR_ACCOUNT_TYPE_NORMAL_EVM_DESC": "Současná a nejrozšířenější metoda generování a správy adres {value} zajišťuje interoperabilitu, zabezpečení a podporu pro všechny typy tokenů.",
