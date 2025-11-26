@@ -27,9 +27,8 @@ export const decorators = [
                         background: theme.backgroundSurfaceElevation0,
                         color: theme.textDefault,
                         boxSizing: 'border-box',
-                        // height: '100vh',
-                        // overflow: 'auto',
-                        // nic víc!
+                        height: '100vh',
+                        overflow: 'auto',
                     }}
                 >
                     {Story(context.args, context)}

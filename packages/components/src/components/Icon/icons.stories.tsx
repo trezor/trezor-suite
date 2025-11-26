@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { Meta, StoryObj } from '@storybook/react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -11,6 +11,9 @@ import { typography } from '@trezor/theme';
 import { Icon, IconProps, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';
+import { Paragraph } from '../typography/Paragraph/Paragraph';
+
+const MAX_RENDERED_ICONS = 500;
 
 const CopiedText = styled.div`
     display: flex;
@@ -76,13 +79,19 @@ export default meta;
 const Render = (props: IconProps) => {
     const [search, setSearch] = useState('');
     const [copied, setCopied] = useState<string | null>(null);
-    const theme = useTheme();
 
     const copy = (iconKey: string) => {
         navigator.clipboard.writeText(iconKey);
         setCopied(iconKey);
         setTimeout(() => setCopied(null), 1000);
     };
+
+    const iconKeys = Object.keys(icons);
+    const filteredIconKeys = (iconKeys as IconName[]).filter(iconKey =>
+        new RegExp(search, 'i').test(iconKey),
+    );
+    const filteredIconKeysWithLimit = filteredIconKeys.slice(0, MAX_RENDERED_ICONS);
+    const filteredIconsCount = filteredIconKeys.length;
 
     return (
         <>
@@ -92,25 +101,30 @@ const Render = (props: IconProps) => {
                     value={search}
                     onChange={event => setSearch(event.target.value)}
                     // eslint-disable-next-line jsx-a11y/no-autofocus
-                    autoFocus={theme.mode === 'light'}
+                    autoFocus
                     onClear={() => setSearch('')}
                     showClearButton="always"
                 />
             </FloatingWrapper>
             <Wrapper>
-                {(Object.keys(icons) as IconName[])
-                    .filter(iconKey => new RegExp(search, 'i').test(iconKey))
-                    .map(iconKey =>
-                        copied === iconKey ? (
-                            <CopiedText key={iconKey}>Copied to clipboard!</CopiedText>
-                        ) : (
-                            <IconWrapper key={iconKey} onClick={() => copy(iconKey)}>
-                                <Icon {...props} name={iconKey} />
-                                <IconText>{iconKey}</IconText>
-                            </IconWrapper>
-                        ),
-                    )}
+                {filteredIconKeysWithLimit.map(iconKey =>
+                    copied === iconKey ? (
+                        <CopiedText key={iconKey}>Copied to clipboard!</CopiedText>
+                    ) : (
+                        <IconWrapper key={iconKey} onClick={() => copy(iconKey)}>
+                            <Icon {...props} name={iconKey} />
+                            <IconText>{iconKey}</IconText>
+                        </IconWrapper>
+                    ),
+                )}
             </Wrapper>
+            {MAX_RENDERED_ICONS < filteredIconsCount && (
+                <Paragraph align="center" variant="tertiary" margin={{ top: 40 }}>
+                    For performance reasons showing <strong>{MAX_RENDERED_ICONS}</strong> of{' '}
+                    <strong>{filteredIconsCount}</strong> icons. <br />
+                    Try to adjust filter.
+                </Paragraph>
+            )}
         </>
     );
 };
