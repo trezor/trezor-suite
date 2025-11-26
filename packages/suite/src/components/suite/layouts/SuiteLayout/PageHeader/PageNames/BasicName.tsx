@@ -14,14 +14,16 @@ export interface BasicNameProps {
     children: React.ReactNode;
 }
 
-export const BasicName = ({ 'data-testid': dataTest, children }: BasicNameProps) => {
+export const BasicName = ({ 'data-testid': dataTest, onClick, children }: BasicNameProps) => {
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
     const Heading = isContentBelowBreakpoint ? H3 : H2;
 
     return (
         <NoDragContainer data-testid={dataTest}>
             <Center>
-                <Heading textWrap="nowrap">{children}</Heading>
+                <Heading textWrap="nowrap" onClick={onClick}>
+                    {children}
+                </Heading>
             </Center>
         </NoDragContainer>
     );
