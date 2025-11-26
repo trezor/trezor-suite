@@ -43,10 +43,18 @@ const Container = styled.div<{ $fill?: boolean; $cursor?: string; $hasPadding?: 
     padding: ${({ $hasPadding }) => ($hasPadding ? `${spacingsPx.sm} ${spacingsPx.md}` : 0)};
     position: relative; /* because it must be on the top of the draggable area on Mac */
     cursor: ${({ $cursor }) => $cursor || 'unset'};
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        transform: scale(1.005);
+    }
 `;
 const BannerWrapperContainer = styled(motion.div)<{ $zIndex: number }>`
     position: relative;
     z-index: ${({ $zIndex }) => $zIndex};
+
+    & > * {
+        outline: solid 1px ${({ theme }) => theme.backgroundSurfaceElevation0};
+    }
 `;
 
 type BannerWrapperProps = {
@@ -180,12 +188,6 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
             : []),
         ...(!isOnline ? [<NoConnectionBanner key="banner-no-connection" />] : []),
         ...(!isMessageSystemBannerVisible && banner ? [banner] : []),
-        <BridgeDeprecated key="banner-bridge-deprecated" />, // for test only!
-        <SafetyChecksBanner
-            key="banner-safety-checks"
-            onDismiss={() => setSafetyChecksDismissed(true)}
-        />, // for test only!
-        <FailedBackup key="banner-failed-backup" />, // for test only!
     ];
 
     const hasMultipleItems = banners.length > 1;
