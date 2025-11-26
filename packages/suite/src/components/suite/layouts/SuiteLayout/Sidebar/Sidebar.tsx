@@ -133,10 +133,31 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
     };
 
     useEffect(() => {
-        const onResize = () => setAutoCollapseSuppressed(false);
-        window.addEventListener('resize', onResize);
+        const resetSuppression = () => {
+            setAutoCollapseSuppressed(false);
 
-        return () => window.removeEventListener('resize', onResize);
+            setTimeout(() => {
+                setAutoCollapseSuppressed(false);
+            }, 100);
+        };
+
+        window.addEventListener('resize', resetSuppression);
+
+        if (window.screen?.orientation) {
+            window.screen.orientation.addEventListener('change', resetSuppression);
+        }
+
+        window.addEventListener('orientationchange', resetSuppression);
+
+        return () => {
+            window.removeEventListener('resize', resetSuppression);
+
+            if (window.screen?.orientation) {
+                window.screen.orientation.removeEventListener('change', resetSuppression);
+            }
+
+            window.removeEventListener('orientationchange', resetSuppression);
+        };
     }, [setAutoCollapseSuppressed]);
 
     const onNotificationBannerClosed = () => {
