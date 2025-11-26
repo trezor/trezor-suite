@@ -12,7 +12,7 @@ import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';
 export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol }) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const apy = useSelector(state => selectPoolStatsApyData(state, symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, undefined, symbol));
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { displaySymbol, name } = getNetwork(symbol);

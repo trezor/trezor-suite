@@ -28,7 +28,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
 
-    const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));

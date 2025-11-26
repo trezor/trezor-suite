@@ -6,7 +6,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_DREP,
-    CARDANO_EVERSTAKE_STAKING_POOL,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
@@ -14,11 +13,13 @@ import {
 import {
     ComposeActionContext,
     VotingDelegationOption,
+    selectCardanoPoolsInfo,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import {
     Account,
     CardanoAction,
+    CardanoPoolInfo,
     EstimatedFee,
     ExternalOutput,
     PrecomposedTransaction,
@@ -40,6 +41,7 @@ import {
     getVotingCertificates,
     isTestnet,
     networkAmountToSmallestUnit,
+    selectBestCardanoPool,
     subunitsToUnits,
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
@@ -91,6 +93,7 @@ const calculateTransaction = (
 export const prepareTxPlan = async (
     account: Account,
     action: CardanoAction,
+    cardanoPools: CardanoPoolInfo[],
     votingDelegation?: VotingDelegationOption,
 ) => {
     if (!account || account.networkType !== 'cardano') return;
@@ -114,12 +117,18 @@ export const prepareTxPlan = async (
 
     const addressParameters = getAddressParameters(account, changeAddress.path);
 
-    const pool = CARDANO_EVERSTAKE_STAKING_POOL.hex;
+    const selectedPool = selectBestCardanoPool(cardanoPools);
 
     const certificates = [];
 
     if (action === 'delegate') {
-        certificates.push(...getDelegationCertificates(stakingPath, pool, !isStakingActive));
+        if (!selectedPool) {
+            return null;
+        }
+
+        certificates.push(
+            ...getDelegationCertificates(stakingPath, selectedPool?.hex, !isStakingActive),
+        );
 
         const isVotingToAnotherDrep =
             votingDelegation?.type === 'another_drep' &&
@@ -177,6 +186,7 @@ export const prepareTxPlan = async (
 const getTransactionData = (
     formValues: StakeFormState,
     selectedAccount: SelectedAccountStatus,
+    cardanoPools: CardanoPoolInfo[],
     votingDelegation?: VotingDelegationOption,
 ) => {
     const { stakeType } = formValues;
@@ -188,15 +198,15 @@ const getTransactionData = (
     const { account } = selectedAccount;
 
     if (stakeType === 'stake') {
-        return prepareTxPlan(account, 'delegate', votingDelegation);
+        return prepareTxPlan(account, 'delegate', cardanoPools, votingDelegation);
     }
 
     if (stakeType === 'unstake') {
-        return prepareTxPlan(account, 'deregister', votingDelegation);
+        return prepareTxPlan(account, 'deregister', cardanoPools, votingDelegation);
     }
 
     if (stakeType === 'claim') {
-        return prepareTxPlan(account, 'withdrawal', votingDelegation);
+        return prepareTxPlan(account, 'withdrawal', cardanoPools, votingDelegation);
     }
 };
 
@@ -229,6 +239,7 @@ export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch, getState: GetState) => {
         const { selectedAccount, stake } = getState().wallet;
+        const cardanoPools = selectCardanoPoolsInfo(getState());
 
         if (!selectedAccount.account) return;
 
@@ -237,6 +248,7 @@ export const composeTransaction =
         const txData = await getTransactionData(
             formValues,
             selectedAccount,
+            cardanoPools,
             stake.votingDelegation,
         );
         const { txPlan } = txData || {};
@@ -291,6 +303,7 @@ export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { selectedAccount, stake } = getState().wallet;
+        const cardanoPools = selectCardanoPoolsInfo(getState());
         if (!selectedAccount || !selectedAccount.account) return;
 
         const device = selectSelectedDevice(getState());
@@ -311,6 +324,7 @@ export const signTransaction =
         const txData = await getTransactionData(
             formValues,
             selectedAccount,
+            cardanoPools,
             stake.votingDelegation,
         );
 

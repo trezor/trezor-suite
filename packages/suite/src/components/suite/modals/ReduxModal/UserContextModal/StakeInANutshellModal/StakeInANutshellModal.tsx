@@ -1,11 +1,7 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    StakeRootState,
-    selectPoolStatsApyData,
-    selectValidatorsQueueData,
-} from '@suite-common/wallet-core';
+import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import {
     Badge,
@@ -109,9 +105,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
     const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
         selectValidatorsQueueData(state, account?.symbol),
     );
-    const apy = useSelector((state: StakeRootState) =>
-        selectPoolStatsApyData(state, account?.symbol),
-    );
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     const isCardano = account?.networkType === 'cardano';
 

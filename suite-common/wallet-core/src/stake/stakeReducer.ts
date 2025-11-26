@@ -9,7 +9,12 @@ import {
     fetchEverstakeRewards,
     fetchEverstakeStakingInfo,
 } from './stakeThunks';
-import { StakeRewardsByAccount, TotalStakeRewardsByAccount, ValidatorsQueue } from './stakeTypes';
+import {
+    EverstakeStakingInfo,
+    StakeRewardsByAccount,
+    TotalStakeRewardsByAccount,
+    ValidatorsQueue,
+} from './stakeTypes';
 import { SerializedTx } from '../send/sendFormTypes';
 
 export interface StakeState {
@@ -39,7 +44,7 @@ export interface StakeState {
                 error: boolean | string;
                 isLoading: boolean;
                 lastSuccessfulFetchTimestamp: Timestamp;
-                data: { apy?: number };
+                data: EverstakeStakingInfo;
             };
             stakingRewards?: {
                 error: boolean | string;

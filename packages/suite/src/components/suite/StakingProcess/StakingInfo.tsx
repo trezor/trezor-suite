@@ -9,11 +9,7 @@ import {
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import {
-    StakeRootState,
-    selectPoolStatsApyData,
-    selectValidatorsQueueData,
-} from '@suite-common/wallet-core';
+import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -134,9 +130,7 @@ export const StakingInfo = ({ isExpanded, flow }: StakingInfoProps) => {
 
     const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
 
-    const apy = useSelector((state: StakeRootState) =>
-        selectPoolStatsApyData(state, account?.symbol),
-    );
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     if (!account) return null;
 

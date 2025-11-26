@@ -1,9 +1,9 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
-    StakeRootState,
     hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
+    selectCardanoPoolsInfo,
     selectHasRunningDiscovery,
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
@@ -41,13 +41,13 @@ export const NewCardanoStakingDashboard = ({
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
-    const apy = useSelector((state: StakeRootState) =>
-        selectPoolStatsApyData(state, account?.symbol),
-    );
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
-    const isStakedWithEverstake = isCardanoStakedWithEverstake(account) || hasPendingTx;
+    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
+    const canDisplayApy =
+        isCardanoStakedWithEverstake(account, cardanoStakingPools) || hasPendingTx;
 
     const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
 
@@ -77,7 +77,7 @@ export const NewCardanoStakingDashboard = ({
                                 >
                                     <ClaimCard />
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
-                                        <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
+                                        <ApyCard apy={canDisplayApy ? apy : undefined} />
                                         <PayoutCardFrequencyRewards
                                             rewardFrequency={CARDANO_EPOCH_DAYS}
                                         />

@@ -1,7 +1,6 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
-    StakeRootState,
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
     selectPoolStatsApyData,
@@ -42,9 +41,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
-    const apy = useSelector((state: StakeRootState) =>
-        selectPoolStatsApyData(state, account?.symbol),
-    );
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 

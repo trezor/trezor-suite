@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
-import { addFakePendingCardanoTxThunk, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    addFakePendingCardanoTxThunk,
+    selectCardanoPoolsInfo,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { CardanoAction } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
@@ -16,8 +19,9 @@ import {
     getVotingCertificates,
     isPoolOverSaturated,
     isTestnet,
+    selectBestCardanoPool,
 } from '@suite-common/wallet-utils';
-import trezorConnect, { PROTO } from '@trezor/connect';
+import trezorConnect, { CardanoCertificate, PROTO } from '@trezor/connect';
 
 import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -67,6 +71,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     const { trezorDRep } = useSelector(state => state.wallet.cardanoStaking[cardanoNetwork]);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
     const cardanoStaking = useSelector(state => state.wallet.cardanoStaking);
+    const cardanoPools = useSelector(selectCardanoPoolsInfo);
     const dispatch = useDispatch();
 
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
@@ -127,12 +132,21 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             const addressParameters = getAddressParameters(account, changeAddress.path);
 
-            const pool = CARDANO_EVERSTAKE_STAKING_POOL.hex;
+            const selectedPool = selectBestCardanoPool(cardanoPools);
 
-            let certificates =
-                action === 'delegate'
-                    ? getDelegationCertificates(stakingPath, pool, !isStakingActive)
-                    : [];
+            let certificates: CardanoCertificate[] = [];
+
+            if (action === 'delegate') {
+                if (!selectedPool) {
+                    return null;
+                }
+
+                certificates = getDelegationCertificates(
+                    stakingPath,
+                    selectedPool.hex,
+                    !isStakingActive,
+                );
+            }
 
             if (action === 'voteAbstain') {
                 const dRep = { type: PROTO.CardanoDRepType.ABSTAIN };
@@ -176,7 +190,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             return { txPlan: response.payload[0], certificates, withdrawals };
         },
-        [trezorDRep, account, isStakingActive, rewardsAmount, stakeAddress],
+        [trezorDRep, account, isStakingActive, rewardsAmount, stakeAddress, cardanoPools],
     );
 
     const calculateFeeAndDeposit = useCallback(

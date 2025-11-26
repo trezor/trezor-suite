@@ -1,9 +1,10 @@
 import { bech32 } from 'bech32';
 
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
+import { CARDANO_POOL_SATURATION_SAFE_THRESHOLD } from '@suite-common/wallet-constants';
 import {
     Account,
+    CardanoPoolInfo,
     StakeType,
     SupportedCardanoNetworkSymbols,
     supportedCardanoNetworkSymbols,
@@ -31,12 +32,52 @@ export const getCardanoStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
         return acc;
     }, [] as SupportedCardanoNetworkSymbols[]);
 
-export const isCardanoStakedWithEverstake = (account: Account) => {
-    if (!account) return false;
+export const isCardanoStakedWithEverstake = (
+    account: Account,
+    cardanoStakingPools: CardanoPoolInfo[],
+) => {
+    if (!account || !cardanoStakingPools?.length) return false;
 
     if (account.networkType !== 'cardano') return false;
 
-    return account?.misc.staking.poolId === CARDANO_EVERSTAKE_STAKING_POOL.bech32;
+    const accountPoolId = account.misc?.staking?.poolId;
+    if (!accountPoolId) return false;
+
+    return cardanoStakingPools.some(pool => pool.id === accountPoolId);
+};
+
+export const poolBech32ToHex = (poolId: string): string => {
+    const decoded = bech32.decode(poolId);
+    const bytes = bech32.fromWords(decoded.words);
+
+    return Buffer.from(bytes).toString('hex');
+};
+
+export const selectBestCardanoPool = (pools?: CardanoPoolInfo[]) => {
+    if (!pools || pools.length === 0) return;
+
+    // sort from highest saturation to lowest
+    const sortedPools = [...pools].sort((a, b) => b.saturation - a.saturation);
+
+    // find the one within the threshold
+    const bestPool = sortedPools.find(
+        pool => pool.saturation < CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
+    );
+
+    if (bestPool) {
+        return {
+            hex: poolBech32ToHex(bestPool.id),
+            bech32: bestPool.id,
+        };
+    }
+
+    // pick the last one (lowest saturation)
+    const fallback = sortedPools[sortedPools.length - 1];
+
+    return {
+        hex: poolBech32ToHex(fallback.id),
+        bech32: fallback.id,
+    };
 };
 
 export const isCardanoStakedOutsideEverstake = (account: Account) => {

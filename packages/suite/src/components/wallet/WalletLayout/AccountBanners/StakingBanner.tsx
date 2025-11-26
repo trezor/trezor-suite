@@ -44,7 +44,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
         useSelector(selectSuiteFlags);
     const { route } = useSelector(state => state.router);
-    const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
+    const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const displaySymbol = getDisplaySymbol(account.symbol);

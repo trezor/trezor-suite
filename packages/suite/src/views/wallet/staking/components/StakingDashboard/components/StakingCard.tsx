@@ -2,7 +2,6 @@ import { getStakingTotalRewards } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    StakeRootState,
     selectAccountPendingStakeTypeTransactions,
     selectAccountStakeTypeTransactions,
     selectStakingTotalRewards,
@@ -93,7 +92,7 @@ export const StakingCard = ({
     const isEthereumNetworkType = selectedAccount?.networkType === 'ethereum';
     const isCardanoNetworkType = selectedAccount?.networkType === 'cardano';
 
-    const selectedStakingTotalRewards = useSelector((state: StakeRootState) =>
+    const selectedStakingTotalRewards = useSelector(state =>
         selectStakingTotalRewards(state, selectedAccount?.symbol, selectedAccount?.descriptor),
     );
 

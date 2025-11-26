@@ -33,6 +33,7 @@ export const allowedDomains = [
     'eth-api-b2c.everstake.one', // staking endpoint for Ethereum mainnet
     'dashboard-api.everstake.one', // staking endpoint for Solana
     'stake-sync-api.everstake.one', // staking rewards endpoint for Solana
+    'stats.everstake.one', // staking endpoint for Cardano
     'verify.walletconnect.org', // WalletConnect
     'horizon.stellar.org', // Stellar Horizon, hosted by SDF
     'horizon-testnet.stellar.org', // Stellar Horizon (testnet), hosted by SDF
