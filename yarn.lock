@@ -12262,6 +12262,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/validators": "workspace:*"
@@ -12279,7 +12280,6 @@ __metadata:
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@suite-native/suite-sync": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -12930,6 +12930,7 @@ __metadata:
   resolution: "@suite-native/suite-sync@workspace:suite-native/suite-sync"
   dependencies:
     "@evolu/react-native": "npm:^14.2.0"
+    "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
@@ -13274,6 +13275,7 @@ __metadata:
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
     "@evolu/web": "npm:^2.3.0"
+    "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"

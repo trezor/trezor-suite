@@ -91,6 +91,7 @@ const suiteSyncMock: SuiteSync = {
             ownerId: asSuiteSyncOwnerId('test-1'),
             ownerSecret: asSuiteSyncOwnerSecretHex('test-2'),
         }),
+    changeRelayUrl: () => Promise.resolve(),
 };
 
 export const extraDependenciesMock: ExtraDependencies = {

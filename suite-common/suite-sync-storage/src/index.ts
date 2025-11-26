@@ -1,11 +1,12 @@
 export type {
+    SuiteSyncStorageRepository,
     CreateSuiteSyncStorageRepository,
     CreateSuiteStorage,
 } from './SuiteSyncStorageRepository';
 export { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 export type { SuiteSyncStorage } from './SuiteSyncStorage';
 export type { CreateSuiteSyncOwner } from './Owner';
-export type { SuiteSync } from './SuiteSync';
+export type { SuiteSync, ChangeRelayUrlDep, ChangeRelayUrl } from './SuiteSync';
 
 // Todo: this shared object shall be handled by Dependency Injection, this is madness
 export { subscriptionStorage } from './sharedObjects';
