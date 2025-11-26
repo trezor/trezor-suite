@@ -2884,9 +2884,9 @@ export const messages = {
     },
     tradingResidence: {
         locationSettings: {
-            title: 'Confirm your location to enable trading',
+            title: 'Trading is now available',
             description:
-                'We need to confirm that trading is available in your region. You can change this later in settings.',
+                'Swap and buy crypto directly on your phone.  Availability varies by location. Select your country to continue. Change this anytime in settings.',
             tradingAvailable: 'Trading is available',
             tradingUnavailable: "Trading isn't available",
             confirmButton: 'Confirm location',
