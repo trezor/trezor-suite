@@ -30,12 +30,12 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
-import { initSuiteSyncDesktop } from '@suite/suite-sync';
 import { type History, createMemoryHistory } from 'history';
 import { createRouterServices } from 'src/support/extraDependencies';
 import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
 import { GlobalStyle } from './GlobalStyle';
 import { initSentry } from './sentry';
+import { ServicesProvider } from '@suite-common/redux-utils';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();
@@ -71,7 +71,7 @@ export const init = async (container: HTMLElement) => {
     const memoryHistory = createMemoryHistory();
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
-    const store = initStore(preloadAction, {
+    const { store, extra } = initStore(preloadAction, {
         statePatch,
         additionalExtraDeps: { routerServices: createRouterServices(memoryHistory) },
     });
@@ -102,11 +102,13 @@ export const init = async (container: HTMLElement) => {
     if (shouldRunTor) {
         await new Promise(resolve => {
             root.render(
-                <ReduxProvider store={store}>
-                    <ConnectedIntlProvider>
-                        <TorLoadingScreen callback={resolve} />
-                    </ConnectedIntlProvider>
-                </ReduxProvider>,
+                <ServicesProvider services={extra.services}>
+                    <ReduxProvider store={store}>
+                        <ConnectedIntlProvider>
+                            <TorLoadingScreen callback={resolve} />
+                        </ConnectedIntlProvider>
+                    </ReduxProvider>
+                </ServicesProvider>,
             );
             desktopApi.toggleTor(true);
         });
@@ -136,13 +138,12 @@ export const init = async (container: HTMLElement) => {
     // TODO should it really be here instead of initAction.ts?
     await store.dispatch(initBluetoothThunk());
 
-    // Todo: run it from extra, shall be solved in: https://github.com/trezor/trezor-suite/pull/23356
-    initSuiteSyncDesktop({ getState: store.getState }).init();
-
     // finally render whole app
     root.render(
-        <ReduxProvider store={store}>
-            <MainDesktop history={memoryHistory} />
-        </ReduxProvider>,
+        <ServicesProvider services={extra.services}>
+            <ReduxProvider store={store}>
+                <MainDesktop history={memoryHistory} />
+            </ReduxProvider>
+        </ServicesProvider>,
     );
 };

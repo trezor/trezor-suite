@@ -81,7 +81,7 @@ describe('useAllTradesReloadTimer', () => {
             },
         };
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseAllTradesReloadTimer = (store: TestStore) =>

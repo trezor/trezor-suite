@@ -91,7 +91,7 @@ describe('FeesFooter', () => {
     };
 
     beforeEach(async () => {
-        store = await initStore(getPreloadedState());
+        store = (await initStore(getPreloadedState())).store;
 
         // Default mock implementations
         mockSelectAreFeesLoading.mockReturnValue(false);

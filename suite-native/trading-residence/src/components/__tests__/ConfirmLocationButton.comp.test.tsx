@@ -40,7 +40,7 @@ describe('ConfirmLocationButton', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        store = await initStore();
+        store = (await initStore()).store;
     });
 
     it('should set location and call afterConfirmMock on press', async () => {

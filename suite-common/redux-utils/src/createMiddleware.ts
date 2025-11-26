@@ -1,7 +1,7 @@
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
-import { ExtraDependencies } from './extraDependenciesType';
+import { ExtraDependenciesStatic } from './extraDependenciesType';
 import { AnyAction } from './types';
 
 interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
@@ -27,13 +27,13 @@ export const createMiddleware =
         }
     };
 
-type ExtraMiddlewareAPI = { extra: ExtraDependencies };
+type ExtraMiddlewareAPI = { extra: ExtraDependenciesStatic };
 
 export const createMiddlewareWithExtraDeps =
     <TAction extends Action = AnyAction>(
         simpleMiddleware: SimpleMiddleware<TAction, ExtraMiddlewareAPI>,
     ) =>
-    (extra: ExtraDependencies): Middleware =>
+    (extra: ExtraDependenciesStatic): Middleware =>
     (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, ExtraMiddlewareAPI, AnyAction>>) =>
     next =>
     action => {

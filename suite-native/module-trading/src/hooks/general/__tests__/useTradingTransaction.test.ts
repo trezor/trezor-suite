@@ -80,7 +80,7 @@ describe('useTradingTransaction', () => {
             },
         };
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseTradingTransaction = ({ store }: { store: TestStore }) =>

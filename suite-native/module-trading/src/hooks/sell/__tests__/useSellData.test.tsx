@@ -29,7 +29,7 @@ describe('useSellData', () => {
         };
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseSellData = (reloadRequestOrdinalInitialValue: number = 0, store?: TestStore) =>

@@ -77,7 +77,7 @@ describe('ExchangeSendAssetPicker', () => {
         });
 
     beforeEach(async () => {
-        store = await initStore(getPreloadedState());
+        store = (await initStore(getPreloadedState())).store;
         const { result } = await renderExchangeForm();
         form = result.current;
 

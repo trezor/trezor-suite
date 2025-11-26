@@ -88,7 +88,7 @@ describe('useWatchAllTrades', () => {
             },
         };
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseWatchAllTrades = (store: TestStore) =>

@@ -79,7 +79,6 @@
         { "path": "../settings" },
         { "path": "../state" },
         { "path": "../storage" },
-        { "path": "../suite-sync" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../trading-residence" },

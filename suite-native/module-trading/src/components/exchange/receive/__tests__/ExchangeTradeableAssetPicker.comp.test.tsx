@@ -38,7 +38,7 @@ describe('ExchangeTradeableAssetPicker', () => {
         });
 
     beforeEach(async () => {
-        store = await initPreloadedStore(FirmwareType.Universal);
+        store = (await initPreloadedStore(FirmwareType.Universal)).store;
         form = await renderFormHook();
     });
 

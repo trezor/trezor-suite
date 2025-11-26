@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
-import { ExtraDependencies } from '@suite-common/redux-utils';
+import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
 import {
     selectIsSuiteSyncEnabled,
     subscribeSuiteSyncStorageThunk,
@@ -13,7 +13,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import { createSuiteSyncOwnerNative, initSuiteSyncNative } from '@suite-native/suite-sync';
+import { initSuiteSyncNative } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
@@ -35,7 +35,13 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
-export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
+export const nativeExtraFactory: ExtraWithStoreFactory = store => ({
+    services: {
+        suiteSync: initSuiteSyncNative(store),
+    },
+});
+
+export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(extraDependenciesMock, {
     selectors: {
         selectTokenDefinitionsEnabledNetworks,
         selectDevice: selectSelectedDevice,
@@ -60,19 +66,17 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             knownCredentials: state.thp?.credentials,
         }),
         selectIsSuiteSyncEnabled,
-    } as Partial<ExtraDependencies['selectors']>,
+    } as Partial<ExtraDependenciesStatic['selectors']>,
     thunks: {
         // This needs to be over `extra` to prevent circular dependency,
         // `@suite-common/suite-sync` depends on `wallet-core`
         subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
         unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
-        initSuiteSync: () => (_, getState) => initSuiteSyncNative({ getState }).init(),
-        createSuiteSyncOwner: params => () => createSuiteSyncOwnerNative(params),
-    } as Partial<ExtraDependencies['thunks']>,
-    actions: {} as Partial<ExtraDependencies['actions']>,
-    actionTypes: {} as Partial<ExtraDependencies['actionTypes']>,
-    reducers: {} as Partial<ExtraDependencies['reducers']>,
+    } as Partial<ExtraDependenciesStatic['thunks']>,
+    actions: {} as Partial<ExtraDependenciesStatic['actions']>,
+    actionTypes: {} as Partial<ExtraDependenciesStatic['actionTypes']>,
+    reducers: {} as Partial<ExtraDependenciesStatic['reducers']>,
     utils: {
         connectInitSettings: {
             lazyLoad: false,
@@ -87,7 +91,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             },
         },
         reportSecurityCheck,
-    } as Partial<ExtraDependencies['utils']>,
-} as OneLevelPartial<ExtraDependencies>) as ExtraDependencies;
+    } as Partial<ExtraDependenciesStatic['utils']>,
+} as OneLevelPartial<ExtraDependenciesStatic>) as ExtraDependenciesStatic;
 
 type OneLevelPartial<T extends object> = Record<keyof T, Partial<T[keyof T]>>;

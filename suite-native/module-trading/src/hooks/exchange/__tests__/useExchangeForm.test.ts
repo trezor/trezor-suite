@@ -40,7 +40,7 @@ describe('useExchangeForm', () => {
             } as FeatureFlagsRootState['featureFlags'],
         };
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     beforeEach(async () => {

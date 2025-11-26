@@ -66,7 +66,7 @@ describe('useExchangeQuotes', () => {
             },
         };
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseExchangeQuotes = (store: TestStore) =>

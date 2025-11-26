@@ -69,7 +69,7 @@ type RefreshSuiteSyncKeysThunkParams = {
  */
 export const refreshSuiteSyncKeysThunk =
     ({ device: originalDevice }: RefreshSuiteSyncKeysThunkParams) =>
-    async (dispatch: Dispatch, getState: () => any, extra: ExtraDependencies) => {
+    async (dispatch: Dispatch, getState: () => any, { services }: ExtraDependencies) => {
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
         );
@@ -91,8 +91,7 @@ export const refreshSuiteSyncKeysThunk =
         }
 
         const evoluNodeResult = await retrieveEvoluNode({
-            createSuiteSyncOwner: ({ data }) =>
-                dispatch(extra.thunks.createSuiteSyncOwner({ data })),
+            createSuiteSyncOwner: services.suiteSync.createSuiteSyncOwner,
         })({
             device,
             delegatedKey: delegatedKeyResult.value,

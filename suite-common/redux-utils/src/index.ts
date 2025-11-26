@@ -8,3 +8,5 @@ export * from './createActionWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
 export * from './selectorsUtils';
+export * from './ServicesProvider';
+export * from './extraWithStoreThunkMiddleware';

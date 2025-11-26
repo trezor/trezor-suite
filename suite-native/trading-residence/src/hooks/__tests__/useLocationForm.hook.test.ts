@@ -17,7 +17,7 @@ describe('useLocationForm', () => {
         renderHookWithStoreProviderAsync(() => useLocationForm(), { store });
 
     beforeEach(async () => {
-        store = await initStore();
+        store = (await initStore()).store;
     });
 
     it('should use default value from redux state', async () => {

@@ -12,9 +12,11 @@ import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues'
 let store: TestStore;
 
 const setNewStoreMockup = async (preloadedState: PreloadedState) => {
-    store = await initStore({
-        ...preloadedState,
-    });
+    store = (
+        await initStore({
+            ...preloadedState,
+        })
+    ).store;
 };
 
 describe(useFormattedGraphHeaderValues.name, () => {

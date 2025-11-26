@@ -35,7 +35,7 @@ describe('selectDiscoverySupportedNetworks', () => {
 
     it('should be stable (return same reference for same inputs)', async () => {
         const state = createMockState();
-        const store = await initStore(state);
+        const { store } = await initStore(state);
 
         const firstCall = selectDiscoverySupportedNetworks(store.getState());
         const secondCall = selectDiscoverySupportedNetworks(store.getState());
@@ -47,7 +47,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: false },
         });
-        const store = await initStore(state);
+        const { store } = await initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -69,7 +69,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: true },
         });
-        const store = await initStore(state);
+        const { store } = await initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -91,7 +91,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             featureFlags: { areDebugOnlyNetworksEnabled: false },
         });
-        const store = await initStore(state);
+        const { store } = await initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -107,7 +107,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             featureFlags: { areDebugOnlyNetworksEnabled: true },
         });
-        const store = await initStore(state);
+        const { store } = await initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -122,7 +122,7 @@ describe('selectDiscoverySupportedNetworks', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: false },
         });
-        const store = await initStore(state);
+        const { store } = await initStore(state);
 
         // Force testnets enabled even though app setting is false
         const result = selectDiscoverySupportedNetworks(store.getState(), true);

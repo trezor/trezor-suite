@@ -13,7 +13,6 @@ import {
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { setIsAppReady } from '@suite-native/state';
-import { initSuiteSyncNative } from '@suite-native/suite-sync';
 
 const ACTION_PREFIX = '@suite-native/app';
 
@@ -56,8 +55,5 @@ export const postOnboardingInit = createThunk(
         dispatch(createImportedDeviceThunk());
 
         dispatch(walletConnectInitThunk());
-
-        // Todo: run it from extra, shall be solved in: https://github.com/trezor/trezor-suite/pull/23356
-        initSuiteSyncNative({ getState }).init();
     },
 );

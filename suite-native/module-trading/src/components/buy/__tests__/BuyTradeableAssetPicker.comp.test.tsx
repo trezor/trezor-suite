@@ -42,7 +42,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     describe('with regular firmware', () => {
         beforeEach(async () => {
-            store = await initPreloadedStore(FirmwareType.Universal);
+            store = (await initPreloadedStore(FirmwareType.Universal)).store;
             form = await renderFormHook();
         });
 
@@ -62,7 +62,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     describe('with BTC-only firmware', () => {
         beforeEach(async () => {
-            store = await initPreloadedStore(FirmwareType.BitcoinOnly);
+            store = (await initPreloadedStore(FirmwareType.BitcoinOnly)).store;
             form = await renderFormHook();
         });
 

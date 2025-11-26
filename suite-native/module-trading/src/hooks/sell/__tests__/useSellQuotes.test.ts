@@ -54,7 +54,7 @@ describe('useSellQuotes', () => {
         };
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'btc-account-1';
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseSellQuotes = (store: TestStore) =>
