@@ -23,7 +23,7 @@ import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { TransactionDetailIncludedCoins } from './TransactionDetailIncludedCoins';
 import { TransactionDetailRow } from './TransactionDetailRow';
 import { TransactionDetailSheets } from './TransactionDetailSheets';
-import { TransactionDetailSummary, cardStyle } from './TransactionDetailSummary';
+import { TransactionOverview, cardStyle } from './TransactionOverview';
 
 type TransactionDetailDataProps = {
     transaction: WalletAccountTransaction;
@@ -128,7 +128,7 @@ export const TransactionDetailData = ({
                     )}
                 </VStack>
             </Card>
-            <TransactionDetailSummary
+            <TransactionOverview
                 transaction={transaction}
                 accountKey={accountKey}
                 tokenTransfer={tokenTransfer}

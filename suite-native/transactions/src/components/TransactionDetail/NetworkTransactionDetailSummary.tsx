@@ -78,7 +78,6 @@ export const NetworkTransactionDetailSummary = ({
                     addressesType="inputs"
                     addresses={transactionInputAddresses}
                     onShowMore={onShowMore}
-                    symbol={transaction.symbol}
                     transaction={transaction}
                 />
             )}

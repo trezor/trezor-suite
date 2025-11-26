@@ -1807,6 +1807,8 @@ export const messages = {
             exploreButton: 'Explore in blockchain',
             feeLabel: 'Fee',
             dateLabel: 'Date',
+            transactionOverviewTitle: 'Transaction overview',
+            showDetails: 'Show details',
             showMoreButton: 'and {amount} more',
             sheet: {
                 parameters: 'Parameters',

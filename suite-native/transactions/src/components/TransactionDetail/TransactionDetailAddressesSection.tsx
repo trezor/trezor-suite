@@ -1,10 +1,6 @@
-import { useMemo } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useMemo } from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { Box, CardDivider, Text, TextButton, VStack } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -20,23 +16,11 @@ type TransactionDetailAddressesSectionProps = {
     addresses: VinVoutAddress[];
     addressesType: 'inputs' | 'outputs';
     onShowMore: () => void;
-    symbol?: NetworkSymbol;
-    contractAddress?: TokenAddress;
 };
 
 const showMoreButtonContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     marginLeft: utils.spacings.sp32,
-}));
-const showMoreButtonStyle = prepareNativeStyle(_ => ({ flexDirection: 'row' }));
-
-const hiddenTransactionsCountStyle = prepareNativeStyle(utils => ({
-    justifyContent: 'center',
-    marginLeft: utils.spacings.sp8,
-    backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
-    borderRadius: utils.borders.radii.round,
-    paddingHorizontal: utils.spacings.sp8,
-    paddingVertical: utils.spacings.sp2,
 }));
 
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
@@ -71,8 +55,6 @@ export const TransactionDetailAddressesSection = ({
     addressesType,
     addresses,
     onShowMore,
-    symbol,
-    contractAddress,
 }: TransactionDetailAddressesSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -120,29 +102,17 @@ export const TransactionDetailAddressesSection = ({
                             />
                         ))}
                     </Box>
-
-                    {symbol && (
-                        <CryptoIconWithNetwork
-                            symbol={symbol}
-                            contractAddress={contractAddress}
-                            size="small"
-                        />
-                    )}
                 </Box>
             </SummaryRow>
 
             {isShowMoreButtonVisible && (
                 <Box style={applyStyle(showMoreButtonContainerStyle)}>
-                    <TouchableOpacity onPress={onShowMore} style={applyStyle(showMoreButtonStyle)}>
-                        <Text color="textPrimaryDefault">
-                            <Translation id="transactions.detail.showMoreButton" />
-                        </Text>
-                        <Box style={applyStyle(hiddenTransactionsCountStyle)}>
-                            <Text variant="label" color="textSubdued">
-                                {hiddenAddressesCount}
-                            </Text>
-                        </Box>
-                    </TouchableOpacity>
+                    <TextButton onPress={onShowMore} isUnderlined>
+                        <Translation
+                            id="transactions.detail.showMoreButton"
+                            values={{ amount: hiddenAddressesCount }}
+                        />
+                    </TextButton>
                 </Box>
             )}
 

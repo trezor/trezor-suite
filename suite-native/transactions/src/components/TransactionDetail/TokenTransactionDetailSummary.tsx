@@ -1,7 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 
@@ -11,20 +7,15 @@ import { VinVoutAddress } from '../../types';
 
 type TokenTransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;
-    accountKey: AccountKey;
     tokenTransfer: TypedTokenTransfer;
     onShowMore: () => void;
 };
 
 export const TokenTransactionDetailSummary = ({
     transaction,
-    accountKey,
     tokenTransfer,
     onShowMore,
 }: TokenTransactionDetailSummaryProps) => {
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
     // Token transfer has always only one address, so we need to wrap it to an array.
     const inputAddresses: VinVoutAddress[] = [
         { address: tokenTransfer.from, isChangeAddress: false, outputIndex: 0 },
@@ -39,8 +30,6 @@ export const TokenTransactionDetailSummary = ({
                 transaction={transaction}
                 addressesType="inputs"
                 addresses={inputAddresses}
-                symbol={symbol ?? undefined}
-                contractAddress={tokenTransfer.contract}
                 onShowMore={onShowMore}
             />
             <TransactionDetailAddressesSection

@@ -14,7 +14,7 @@ import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/toke
 import { useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';
-import { cardStyle } from './TransactionDetailSummary';
+import { cardStyle } from './TransactionOverview';
 
 type TransactionDetailIncludedCoinsProps = {
     accountKey: AccountKey;
