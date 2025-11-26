@@ -55,7 +55,7 @@
         "test:unit": "jest --version && jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
         "version:prepatch": "yarn g:tsx scripts/bump-version.ts prepatch",
@@ -64,8 +64,8 @@
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
         "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
         "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
     },
     "dependencies": {
         "@ethereumjs/common": "^10.1.0",

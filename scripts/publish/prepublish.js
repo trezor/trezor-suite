@@ -14,15 +14,7 @@ if (!isValidPackageName) {
     throw new Error(`Invalid package name: ${packageName}`);
 }
 
-//  test all d.ts files for existence of non-resolvable imports such as:
-//  import("packages/protobuf/lib").MessageType
-//  in the example "packages" segment is not resolvable. "packages" is a folder in the monorepo root and typescript
-//  compiler does not replace it with absolute import starting with "@trezor".
-//  there were issues with this in the past: https://github.com/trezor/trezor-suite/issues/10389
-//  There are two ways to fix this:
-//  1. rename "packages" folder in monorepo to "@trezor"
-//  2. find and replace all the problematic occurrences before actual release.
-//     not very good solution and yarn advices against doing it https://yarnpkg.com/advanced/lifecycle-scripts
+// Run babel with custom plugins to fix non-index internal imports and add .js extensions.
 const scriptPath = path.join(__dirname, 'replace-imports.sh');
 const args = [path.join(__dirname, '..', 'packages', packageName, 'lib')];
 execFileSync(scriptPath, args, {

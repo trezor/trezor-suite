@@ -15,8 +15,9 @@ const packagesPath = path.join(rootPath, 'packages');
 
 const args = process.argv.slice(2);
 
-if (args.length < 2)
+if (args.length < 2) {
     throw new Error('Usage: yarn tsx check-npm-dependencies.ts <packageName> <semanticVersion>');
+}
 
 const [packageName, semanticVersion] = args;
 const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];

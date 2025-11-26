@@ -48,15 +48,15 @@
         "dev": "webpack serve --config ./webpack/dev.js",
         "dev:electrum": "yarn g:tsx watch ./src/workers/electrum/devrun.ts",
         "dev:module": "USE_MODULES=true webpack serve --config ./webpack/dev.js",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
         "test:unit": "yarn g:jest --verbose -c jest.config.unit.js",
         "test:integration": "yarn g:jest -c jest.config.integration.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js",
+        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js",
         "depcheck": "yarn g:depcheck"
     },
     "devDependencies": {
