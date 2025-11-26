@@ -10,6 +10,9 @@ import { useLocale } from './useLocale';
 const LANGUAGE_TRANSLATIONS_MAP = {
     'en-US': require('../../translations/en-US.json'),
     'cs-CZ': require('../../translations/cs-CZ.json'),
+    'de-DE': require('../../translations/de-DE.json'),
+    'pt-BR': require('../../translations/pt-BR.json'),
+    'ja-JP': require('../../translations/ja-JP.json'),
 } as const satisfies Record<SupportedLanguage, any>;
 
 // default values defined during the development.
