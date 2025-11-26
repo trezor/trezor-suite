@@ -1,4 +1,5 @@
-import { ActionReducerMapBuilder, createReducer } from '@reduxjs/toolkit';
+import { type ActionReducerMapBuilder, type EnhancedStore, createReducer } from '@reduxjs/toolkit';
+import type { ThunkDispatch } from 'redux-thunk';
 
 import { ExtraDependenciesForReducer } from './extraDependenciesType';
 
@@ -21,3 +22,28 @@ export const createReducerWithExtraDeps =
                 reducers: extraDeps.reducers,
             }),
         );
+
+// NOTE: adds the proper thunk dispatch type to the store
+export const castExtraStore = <E, S extends EnhancedStore<any, any>>(
+    store: S,
+    extra: E | null,
+): {
+    store: S & {
+        dispatch: ThunkDispatch<S, E, any>;
+    };
+    extra: NonNullable<E>;
+} => {
+    if (!extra) {
+        throw new Error('castExtraStore: Extra dependencies not initialized');
+    }
+
+    return {
+        store,
+        extra,
+    } as {
+        store: S & {
+            dispatch: ThunkDispatch<S, E, any>;
+        };
+        extra: NonNullable<E>;
+    };
+};

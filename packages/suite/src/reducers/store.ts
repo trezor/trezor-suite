@@ -18,7 +18,11 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
-import { ExtraDependencies, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
+import {
+    ExtraDependencies,
+    castExtraStore,
+    createStoreWithExtraStoreMiddleware,
+} from '@suite-common/redux-utils';
 
 import backupMiddlewares from 'src/middlewares/backup';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
@@ -138,7 +142,7 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
               )
             : preloadedState;
 
-    let extra: ExtraDependencies | null = null;
+    let extra: ExtraDependencies | null = null as ExtraDependencies | null;
 
     const store = configureStore({
         reducer: rootReducer as Reducer<AppState, InferredAction, PreloadedState>,
@@ -159,6 +163,7 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
                     createStoreWithExtraStoreMiddleware({
                         extraFactory: api => ({
                             ...extraDependencies,
+                            ...(options.additionalExtraDeps || {}),
                             ...suiteExtraFactory(api),
                         }),
                         onExtraCreated: initializedExtra => {
@@ -170,11 +175,5 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
         devTools,
     } as const);
 
-    if (!extra) {
-        throw new Error(
-            "This shouldn't happen: Extra dependencies not initialized, should be done in callback in createEnhancedStoreWithExtraStoreThunk",
-        );
-    }
-
-    return { store, extra };
+    return castExtraStore(store, extra);
 };
