@@ -1,3 +1,4 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountKey, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
@@ -87,6 +88,27 @@ export const selectAddressLabels = ({
     return state.labeling.walletsLabels[walletDescriptor]?.addressLabels ?? [];
 };
 
+type SelectAddressLabelsByAccountParams = {
+    state: WithLabelingState;
+    deviceStaticSessionId: StaticSessionId;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
+};
+
+export const selectAddressLabelsByAccount = ({
+    state,
+    deviceStaticSessionId,
+    accountDescriptor,
+    networkSymbol,
+}: SelectAddressLabelsByAccountParams) => {
+    const addressLabels = selectAddressLabels({ state, deviceStaticSessionId });
+
+    return addressLabels.filter(
+        label =>
+            label.accountDescriptor === accountDescriptor && label.networkSymbol === networkSymbol,
+    );
+};
+
 type SelectAddressLabelParam = {
     state: WithLabelingState;
     deviceStaticSessionId: StaticSessionId;
@@ -114,6 +136,27 @@ export const selectOutputLabels = (
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
     return state.labeling.walletsLabels[walletDescriptor]?.outputLabels ?? [];
+};
+
+type SelectOutputLabelsByAccountParams = {
+    state: WithLabelingState;
+    deviceStaticSessionId: StaticSessionId;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
+};
+
+export const selectOutputLabelsByAccount = ({
+    state,
+    deviceStaticSessionId,
+    accountDescriptor,
+    networkSymbol,
+}: SelectOutputLabelsByAccountParams) => {
+    const outputLabels = selectOutputLabels(state, deviceStaticSessionId);
+
+    return outputLabels.filter(
+        label =>
+            label.accountDescriptor === accountDescriptor && label.networkSymbol === networkSymbol,
+    );
 };
 
 type SelectOutputLabelParams = {
