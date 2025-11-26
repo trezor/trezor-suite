@@ -73,7 +73,7 @@ describe('CustomFeeInputs', () => {
     };
 
     beforeEach(async () => {
-        store = await initStore(defaultState);
+        store = (await initStore(defaultState)).store;
         // Default mock implementations
         mockSelectConvertedNetworkFeeInfo.mockReturnValue({
             minFee: '1',

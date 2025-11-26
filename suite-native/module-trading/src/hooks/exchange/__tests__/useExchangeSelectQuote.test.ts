@@ -64,7 +64,7 @@ describe('useExchangeSelectQuote', () => {
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-key';
         preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-key';
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderExchangeForm = () =>

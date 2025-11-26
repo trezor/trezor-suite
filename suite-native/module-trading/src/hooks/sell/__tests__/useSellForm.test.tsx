@@ -36,7 +36,7 @@ describe('useSellForm', () => {
             wallet: getWalletState({ tradeType: 'sell', bitcoinAmountUnit }),
         };
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     beforeEach(async () => {

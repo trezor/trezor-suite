@@ -29,7 +29,7 @@ describe('useExchangeData', () => {
         };
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = tradingAccountKey;
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseExchangeData = (

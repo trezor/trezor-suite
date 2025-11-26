@@ -33,7 +33,7 @@ describe('useApprovalTypeControls', () => {
                 tradeType: 'exchange',
             }),
         };
-        store = await initStore(preloadedState);
+        store = (await initStore(preloadedState)).store;
         store.dispatch(tradingExchangeActions.savePreselectedQuote(exchangeQuotes[0]));
     });
 

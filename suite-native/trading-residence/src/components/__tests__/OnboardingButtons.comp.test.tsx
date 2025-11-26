@@ -22,7 +22,7 @@ describe('OnboardingButtons', () => {
         });
 
     beforeEach(async () => {
-        store = await initStore();
+        store = (await initStore()).store;
     });
 
     it('should render correctly', async () => {

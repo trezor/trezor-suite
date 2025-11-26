@@ -14,8 +14,6 @@ export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';
 export { subscribeSuiteSyncStorageThunk } from './subscribeSuiteSyncStorageThunk';
 export { unsubscribeAndDisposeSuiteSyncStorageThunk } from './unsubscribeAndDisposeSuiteSyncStorageThunk';
-export { createInitSuiteSync } from './InitSuiteSync';
-export type { InitSuiteSync } from './InitSuiteSync';
 export { changeRelayUrlThunk } from './changeRelayUrlThunk';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './constants';
 export { disposeAllSuiteSyncStoragesThunk } from './disposeAllSuiteSyncStoragesThunk';

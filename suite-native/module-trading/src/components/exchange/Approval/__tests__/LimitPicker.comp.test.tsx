@@ -27,7 +27,7 @@ describe('LimitPicker', () => {
 
         preloadedState!.wallet!.trading.exchange.preselectedQuote = exchangeQuotes[0];
 
-        store = await initStore(preloadedState);
+        store = (await initStore(preloadedState)).store;
     });
 
     it('should render Unlimited when no limit is specified', async () => {

@@ -40,7 +40,7 @@ describe('ApprovalButton', () => {
             }),
         };
         preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
-        store = await initStore(preloadedState);
+        store = (await initStore(preloadedState)).store;
     });
 
     it('should render continue button', async () => {

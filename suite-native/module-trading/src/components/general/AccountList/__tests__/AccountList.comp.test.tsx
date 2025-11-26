@@ -77,7 +77,7 @@ describe('AccountList', () => {
         props: Partial<AccountsListProps>,
         preloadedState = defaultPreloadedState,
     ) => {
-        store = await initStore(preloadedState);
+        store = (await initStore(preloadedState)).store;
 
         return renderWithStoreProviderAsync(
             <AccountList

@@ -37,7 +37,7 @@ describe('useSellFlow', () => {
         renderHookWithStoreProviderAsync(() => useSellFlow(sellForm), { store });
 
     beforeEach(async () => {
-        store = await initStore({ wallet: getWalletState({ tradeType: 'sell' }) });
+        store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
 
         const { result } = await renderSellForm();
         sellForm = result.current;

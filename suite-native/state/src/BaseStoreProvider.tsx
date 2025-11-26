@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import { Provider } from 'react-redux';
 
-import { EnhancedStore } from '@reduxjs/toolkit';
 import { Persistor, persistStore } from 'redux-persist';
 
 import { captureSentryException } from '@suite-native/sentry';
@@ -17,13 +16,13 @@ export type BaseStoreProviderProps = {
 
 export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProviderProps) => {
     const initStoreCalledRef = useRef(false);
-    const [store, setStore] = useState<EnhancedStore | null>(null);
+    const [store, setStore] = useState<Awaited<ReturnType<typeof initStore>>['store'] | null>(null);
     const [storePersistor, setStorePersistor] = useState<Persistor | null>(null);
 
     const initStoreAsync = useCallback(async () => {
         initStoreCalledRef.current = true;
         try {
-            const freshStore = await initStore(preloadedState);
+            const { store: freshStore } = await initStore(preloadedState);
             const freshPersistor = persistStore(freshStore);
             setStore(freshStore);
             setStorePersistor(freshPersistor);

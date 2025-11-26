@@ -4,7 +4,6 @@ import { TrezorDevice } from '@suite-common/suite-types';
 
 import { isSuiteSyncSupportedByDevice } from './device';
 import { disposeAllSuiteSyncStoragesThunk } from './disposeAllSuiteSyncStoragesThunk';
-import { initSuiteSyncHackForHook } from './initSuiteSyncHackForHook';
 import { suiteSyncActions } from './suiteSyncActions';
 import {
     selectIsFeatureSuiteSyncAvailable,
@@ -43,7 +42,6 @@ export const useSuiteSync = ({ device }: UseLocalStorageParams) => {
     const enableSuiteSyncIfNeeded = () => {
         if (!isSuiteSyncEnabled) {
             dispatch(suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: true }));
-            dispatch(initSuiteSyncHackForHook());
         }
     };
 

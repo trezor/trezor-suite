@@ -57,7 +57,7 @@ describe('useBuyForm', () => {
         };
         preloadedState.wallet!.trading!.buy!.tradingAccountKey = 'btc-account-1';
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const initFormAndQuotes = (form: BuyFormType, store: EnhancedStore) => {

@@ -6,8 +6,15 @@ import {
     type To,
     createThunk,
 } from '@suite-common/redux-utils';
-import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
+import type { SuiteSync, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import {
+    ReportSecurityCheckProps,
+    Route,
+    asSuiteSyncOwnerId,
+    asSuiteSyncOwnerSecretHex,
+} from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { ok } from '@trezor/type-utils';
 
 import { testMocks } from './mocks';
 
@@ -66,6 +73,26 @@ export const mockReducer = (name: string) => (state: any, action: any) => {
     return state;
 };
 
+const suiteSyncMock: SuiteSync = {
+    suiteSyncStorageRepository: {
+        get: () =>
+            ({
+                accountLabels: {},
+                walletLabels: {},
+                outputLabels: {},
+                addressLabels: {},
+                deviceMetadata: {},
+                deviceMetadataPasswords: {},
+            }) as any as SuiteSyncStorage,
+        delete: () => Promise.resolve(),
+    },
+    createSuiteSyncOwner: () =>
+        ok({
+            ownerId: asSuiteSyncOwnerId('test-1'),
+            ownerSecret: asSuiteSyncOwnerSecretHex('test-2'),
+        }),
+};
+
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
@@ -75,8 +102,9 @@ export const extraDependenciesMock: ExtraDependencies = {
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
         subscribeSuiteSync: mockOriginalReduxThunk('subscribeSuiteSync'),
         unsubscribeAndDisposeSuiteSyncStorage: mockThunk('unsubscribeAndDisposeSuiteSyncStorage'),
-        initSuiteSync: mockOriginalReduxThunk('initSuiteSync'),
-        createSuiteSyncOwner: mockOriginalReduxThunk('createSuiteSyncOwner'),
+    },
+    services: {
+        suiteSync: suiteSyncMock,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(

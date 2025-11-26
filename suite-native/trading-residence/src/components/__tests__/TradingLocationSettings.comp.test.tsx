@@ -10,7 +10,7 @@ describe('TradingLocationSettings', () => {
         renderWithStoreProviderAsync(<TradingLocationSettings {...props} />, { store });
 
     beforeEach(async () => {
-        store = await initStore();
+        store = (await initStore()).store;
     });
 
     it('should render all components', async () => {

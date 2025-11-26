@@ -6,7 +6,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { History, createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { initSuiteSyncDesktop } from '@suite/suite-sync';
+import { ServicesProvider } from '@suite-common/redux-utils';
 
 import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
@@ -53,18 +53,17 @@ export const init = async (container: HTMLElement) => {
     root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
-    const store = initStore(preloadAction, {
+    const { store, extra } = initStore(preloadAction, {
         additionalExtraDeps: {
             routerServices: createRouterServices(browserHistory),
         },
     });
 
-    // Todo: run it from extra, shall be solved in: https://github.com/trezor/trezor-suite/pull/23356
-    initSuiteSyncDesktop({ getState: store.getState }).init();
-
     root.render(
-        <ReduxProvider store={store}>
-            <MainWeb history={browserHistory} />
-        </ReduxProvider>,
+        <ServicesProvider services={extra.services}>
+            <ReduxProvider store={store}>
+                <MainWeb history={browserHistory} />
+            </ReduxProvider>
+        </ServicesProvider>,
     );
 };

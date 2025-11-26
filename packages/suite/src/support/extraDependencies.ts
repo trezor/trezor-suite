@@ -2,9 +2,14 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
-import { createSuiteSyncOwnerDesktop, initSuiteSyncDesktop } from '@suite/suite-sync';
+import { createSuiteSyncDesktop } from '@suite/suite-sync';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import { ExtraDependencies, LocationPushState, To } from '@suite-common/redux-utils';
+import {
+    ExtraDependenciesStatic,
+    ExtraWithStoreFactory,
+    LocationPushState,
+    To,
+} from '@suite-common/redux-utils';
 import {
     subscribeSuiteSyncStorageThunk,
     unsubscribeAndDisposeSuiteSyncStorageThunk,
@@ -65,7 +70,13 @@ export const createRouterServices = (history: History) => ({
     navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
 
-export const extraDependencies: ExtraDependencies = {
+export const suiteExtraFactory: ExtraWithStoreFactory = store => ({
+    services: {
+        suiteSync: createSuiteSyncDesktop(store),
+    },
+});
+
+export const extraDependencies: ExtraDependenciesStatic = {
     thunks: {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         initMetadata: metadataLabelingActions.init,
@@ -77,8 +88,6 @@ export const extraDependencies: ExtraDependencies = {
         // `@suite-common/suite-sync` depends on `wallet-core`
         subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
         unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
-        initSuiteSync: () => (_, getState) => initSuiteSyncDesktop({ getState }).init(),
-        createSuiteSyncOwner: params => () => createSuiteSyncOwnerDesktop(params),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>

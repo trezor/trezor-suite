@@ -71,7 +71,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        store = await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) });
+        store = (await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) })).store;
     });
 
     it('should return values from useExchangeFlow', async () => {

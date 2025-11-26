@@ -25,7 +25,7 @@ describe('useShowReviewCancellationAlert', () => {
 
     beforeEach(async () => {
         mockShowAlert.mockClear();
-        store = await initStore();
+        store = (await initStore()).store;
     });
 
     it('should return stable callback', async () => {

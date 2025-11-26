@@ -41,7 +41,7 @@ describe('useBuyFlow', () => {
             preloadedState.wallet!.trading!.buy!.isLoading = isLoading;
         }
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderBuyForm = () => renderHookWithStoreProviderAsync(() => useBuyForm(), { store });

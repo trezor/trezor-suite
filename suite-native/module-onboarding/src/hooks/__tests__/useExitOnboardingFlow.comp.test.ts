@@ -25,7 +25,7 @@ describe('useExitOnboardingFlow', () => {
         renderHookWithStoreProviderAsync(() => useExitOnboardingFlow(), { store });
 
     beforeEach(async () => {
-        store = await initStore();
+        store = (await initStore()).store;
         jest.clearAllMocks();
     });
 

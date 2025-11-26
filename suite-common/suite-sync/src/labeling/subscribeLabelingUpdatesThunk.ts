@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getSuiteSyncStorageProvider, subscriptionStorage } from '@suite-common/suite-sync-storage';
+import { subscriptionStorage } from '@suite-common/suite-sync-storage';
 import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
@@ -16,8 +16,8 @@ export const subscribeLabelingUpdatesThunk = createThunk<
     void
 >(
     `${LABELING_PREFIX}/subscribeLabelingUpdatesThunk`,
-    ({ owner, walletDescriptor }, { dispatch }) => {
-        const storage = getSuiteSyncStorageProvider(owner);
+    ({ owner, walletDescriptor }, { dispatch, extra: { services } }) => {
+        const storage = services.suiteSync.suiteSyncStorageRepository.get(owner);
 
         const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
             if (walletDescriptor !== payload.walletDescriptor) {

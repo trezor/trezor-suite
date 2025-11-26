@@ -50,7 +50,7 @@ describe('useExchangeFlow', () => {
             },
         };
 
-        return await initStore(preloadedState);
+        return (await initStore(preloadedState)).store;
     };
 
     const renderUseExchangeFlow = ({ store }: { store: TestStore }) =>
@@ -177,7 +177,7 @@ describe('useExchangeFlow', () => {
                 },
             };
 
-            const store = await initStore(preloadedState);
+            const { store } = await initStore(preloadedState);
             const { result } = await renderUseExchangeFlow({ store });
 
             const mockTrade = {

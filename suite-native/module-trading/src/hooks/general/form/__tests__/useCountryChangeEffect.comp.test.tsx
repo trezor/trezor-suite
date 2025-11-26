@@ -11,7 +11,7 @@ describe('useCountryChangeEffect', () => {
         renderHookWithStoreProviderAsync(() => useCountryChangeEffect(watch), { store });
 
     beforeEach(async () => {
-        store = await initStore();
+        store = (await initStore()).store;
     });
 
     it('should do nothing on mount', async () => {

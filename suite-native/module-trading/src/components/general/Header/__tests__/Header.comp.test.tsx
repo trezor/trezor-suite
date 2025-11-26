@@ -181,7 +181,7 @@ describe('Header', () => {
     });
 
     it('should set state on tab button press', async () => {
-        const store = await initStore(
+        const { store } = await initStore(
             getFFPreloadedState({
                 buyEnabled: true,
                 exchangeEnabled: true,
@@ -217,13 +217,15 @@ describe('Header', () => {
         let store: TestStore;
 
         beforeEach(async () => {
-            store = await initStore(
-                getFFPreloadedState({
-                    buyEnabled: true,
-                    exchangeEnabled: true,
-                    sellEnabled: true,
-                }),
-            );
+            store = (
+                await initStore(
+                    getFFPreloadedState({
+                        buyEnabled: true,
+                        exchangeEnabled: true,
+                        sellEnabled: true,
+                    }),
+                )
+            ).store;
         });
 
         it('should report TradingNavigate event on tab change', async () => {

@@ -96,7 +96,7 @@ describe('TradingExchangePreviewScreen', () => {
             },
         };
 
-        store = await initStore(preloadedState);
+        store = (await initStore(preloadedState)).store;
     });
 
     it('should render continue button', async () => {

@@ -27,7 +27,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
-        store = await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) });
+        store = (await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) })).store;
     });
 
     it('should show alert', async () => {

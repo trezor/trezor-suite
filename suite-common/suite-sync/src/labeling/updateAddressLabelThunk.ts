@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getSuiteSyncStorageProvider } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -17,7 +16,10 @@ type UpdateAddressLabelThunkParams = {
 
 export const updateAddressLabelThunk = createThunk<void, UpdateAddressLabelThunkParams, void>(
     `${LABELING_PREFIX}/updateAddressLabelThunk`,
-    ({ deviceStaticSessionId, address, label, accountDescriptor, networkSymbol }, { getState }) => {
+    (
+        { deviceStaticSessionId, address, label, accountDescriptor, networkSymbol },
+        { getState, extra: { services } },
+    ) => {
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
@@ -33,8 +35,8 @@ export const updateAddressLabelThunk = createThunk<void, UpdateAddressLabelThunk
             return;
         }
 
-        const storage = getSuiteSyncStorageProvider(owner);
-
-        storage.addressLabels.update({ address, label, accountDescriptor, networkSymbol });
+        services.suiteSync.suiteSyncStorageRepository
+            .get(owner)
+            .addressLabels.update({ address, label, accountDescriptor, networkSymbol });
     },
 );

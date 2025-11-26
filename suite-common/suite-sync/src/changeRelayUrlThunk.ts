@@ -1,5 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { getSuiteSyncStorageProvider } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 
 import { DEFAULT_SUITE_SYNC_RELAY_URL, SUITE_SYNC_STORAGE_PREFIX } from './constants';
@@ -11,7 +10,7 @@ type ChangeRelayUrlThunkThunkParams = {
 
 export const changeRelayUrlThunk = createThunk<void, ChangeRelayUrlThunkThunkParams, void>(
     `${SUITE_SYNC_STORAGE_PREFIX}/changeRelayUrlThunk`,
-    async ({ relayUrl }, { getState, dispatch }) => {
+    async ({ relayUrl }, { getState, dispatch, extra: { services } }) => {
         const devices = selectDevices(getState());
         dispatch(setSuiteSyncRelayUrl({ url: relayUrl }));
 
@@ -26,7 +25,9 @@ export const changeRelayUrlThunk = createThunk<void, ChangeRelayUrlThunkThunkPar
                 continue;
             }
 
-            await getSuiteSyncStorageProvider(owner).updateRelayUrl(normalizedUrl);
+            await services.suiteSync.suiteSyncStorageRepository
+                .get(owner)
+                .updateRelayUrl(normalizedUrl);
         }
     },
 );

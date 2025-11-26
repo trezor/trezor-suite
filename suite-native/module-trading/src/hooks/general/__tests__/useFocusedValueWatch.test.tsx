@@ -30,7 +30,7 @@ describe('useFocusedValueWatch', () => {
         const { result } = await renderForm();
         form = result.current;
 
-        store = await initStore();
+        store = (await initStore()).store;
     });
 
     it('should return false by default', async () => {

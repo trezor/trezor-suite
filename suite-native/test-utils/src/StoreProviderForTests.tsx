@@ -8,7 +8,7 @@ import { PreloadedState, initStore } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
 
-export type TestStore = Awaited<ReturnType<typeof initStore>>;
+export type TestStore = Awaited<ReturnType<typeof initStore>>['store'];
 
 type ReduxProviderProps = {
     children: ReactNode;
@@ -47,7 +47,7 @@ export const StoreProviderForTests = ({
         }
 
         const initStoreAsync = async () => {
-            const freshStore = await initStore(preloadedState);
+            const { store: freshStore } = await initStore(preloadedState);
             setStore(freshStore);
         };
 

@@ -20,6 +20,7 @@ export type CreateSuiteStorageDep = {
 
 export type CreateSuiteSyncStorageRepositoryFactoryDeps = CreateSuiteStorageDep & {
     defaultRelayUrl: string;
+    getRelayUrl: () => string | null;
 };
 
 export type SuiteSyncStorageRepository = {
@@ -27,21 +28,14 @@ export type SuiteSyncStorageRepository = {
     delete: (ownerId: SuiteSyncOwnerId) => Promise<void>;
 };
 
-type CreateSuiteSyncStorageRepositoryParams = {
-    relayUrl: string | null;
-};
-
-export type CreateSuiteSyncStorageRepository = ({
-    relayUrl,
-}: CreateSuiteSyncStorageRepositoryParams) => SuiteSyncStorageRepository;
+export type CreateSuiteSyncStorageRepository = () => SuiteSyncStorageRepository;
 
 /**
  * Every Wallet has its own SuiteSyncStorage with Owner derived
  * from its secret (Seed+Passphrase) .
  */
 export const createSuiteSyncStorageRepositoryFactory =
-    (deps: CreateSuiteSyncStorageRepositoryFactoryDeps): CreateSuiteSyncStorageRepository =>
-    ({ relayUrl }): SuiteSyncStorageRepository => {
+    (deps: CreateSuiteSyncStorageRepositoryFactoryDeps) => (): SuiteSyncStorageRepository => {
         const storages = new Map<SuiteSyncOwnerId, SuiteSyncStorage>();
 
         return {
@@ -51,7 +45,7 @@ export const createSuiteSyncStorageRepositoryFactory =
                 if (storage === undefined) {
                     storage = deps.createSuiteStorage({
                         suiteSyncOwner,
-                        relayUrl: relayUrl ?? deps.defaultRelayUrl,
+                        relayUrl: deps.getRelayUrl() ?? deps.defaultRelayUrl,
                     });
                     storages.set(suiteSyncOwner.ownerId, storage);
                 }
