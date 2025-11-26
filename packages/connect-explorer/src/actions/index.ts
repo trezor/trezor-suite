@@ -18,12 +18,3 @@ export const ON_PASSPHRASE_SUBMIT = 'action__on_passphrase_submit';
 export const ON_CHANGE_ACCOUNT = 'action__on_change_account';
 export const ON_CUSTOM_FEE_OPEN = 'action__on_custom_fee_open';
 export const ON_CUSTOM_FEE_CHANGE = 'action__on_custom_fee_change';
-
-export const ON_SELECT_DEVICE = 'action__on_select_device';
-export const ON_CHANGE_CONNECT_OPTIONS = 'action__on_change_connect_options';
-export const ON_CHANGE_CONNECT_OPTION = 'action__on_change_connect_option';
-
-export const ON_HANDSHAKE_CONFIRMED = 'action__on_handshake_confirmed';
-export const ON_INIT_ERROR = 'action__on_init_error';
-
-export { SET_SCHEMA, SET_METHOD } from './methodActions';

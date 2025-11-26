@@ -27,15 +27,6 @@ packages/connect-explorer-theme/src/components/index.ts > packages/connect-explo
 packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/nav-links.tsx > packages/connect-explorer-theme/src/index.tsx > packages/connect-explorer-theme/src/mdx-components.tsx
 packages/connect-explorer-theme/src/components/sidebar.tsx > packages/connect-explorer-theme/src/components/menu.tsx
 packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/toc.tsx
-packages/connect-explorer/src/actions/index.ts > packages/connect-explorer/src/actions/methodActions.ts > packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/actions/trezorConnectActions.ts
-packages/connect-explorer/src/actions/index.ts > packages/connect-explorer/src/actions/methodActions.ts > packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/reducers/index.ts > packages/connect-explorer/src/reducers/trezorConnectReducer.ts
-packages/connect-explorer/src/actions/methodActions.ts > packages/connect-explorer/src/types/index.ts
-packages/connect-explorer/src/actions/methodActions.ts > packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/reducers/index.ts > packages/connect-explorer/src/reducers/methodReducer.ts
-packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/actions/trezorConnectActions.ts
-packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/reducers/index.ts > packages/connect-explorer/src/reducers/methodReducer.ts
-packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/reducers/index.ts > packages/connect-explorer/src/reducers/methodReducer.ts > packages/connect-explorer/src/reducers/methodCommon.ts
-packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/reducers/index.ts > packages/connect-explorer/src/reducers/methodReducer.ts > packages/connect-explorer/src/reducers/methodInit.ts
-packages/connect-explorer/src/types/index.ts > packages/connect-explorer/src/reducers/index.ts > packages/connect-explorer/src/reducers/trezorConnectReducer.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts > packages/connect/src/utils/firmwareReleaseConfigUtils.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts

@@ -1,8 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 
-import { SET_METHOD, SET_SCHEMA } from '../actions';
 import { init } from '../actions/trezorConnectActions';
 import { Action, AppState, Dispatch } from '../types';
+import { SET_METHOD, SET_SCHEMA } from '../types/actions';
 import { getQueryVariable } from '../utils/windowUtils';
 
 export const trezorConnectMiddleware =
