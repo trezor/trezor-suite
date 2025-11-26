@@ -4,10 +4,8 @@ import { spacings } from '@trezor/theme';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
-import { ConnectDeviceReceivePromo } from './components/ConnectDevicePromo';
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
 import { ConfirmEvmExplanationModal } from '../../../components/suite/modals/ConfirmEvmExplanationModal';
@@ -19,8 +17,6 @@ export const Receive = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const receive = useSelector(state => state.wallet.receive);
     const device = useSelector(selectSelectedDevice);
-
-    const { isReceiveDisabled } = useReceiveDisabled();
 
     const { account } = selectedAccount;
 
@@ -40,13 +36,9 @@ export const Receive = () => {
     const showCexWarning = account?.accountType === 'coinjoin' && !isCoinjoinReceiveWarningHidden;
 
     const isDeviceConnected = device.connected && device.available;
-    // FW check hard failure or backup check failure is persisted for view-only
-    // → severe banner is shown & Receive button disabled, so this weaker banner is superfluous
-    const isConnectDevicePromoDisplayed = !isDeviceConnected && !isReceiveDisabled;
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
-            {isConnectDevicePromoDisplayed && <ConnectDeviceReceivePromo />}
             {showCexWarning && <CoinjoinReceiveWarning />}
             <Column gap={spacings.xl}>
                 <WalletSubpageHeading title="TR_NAV_RECEIVE" />

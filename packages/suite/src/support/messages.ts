@@ -10283,15 +10283,6 @@ export default defineMessages({
         id: 'TR_CONNECT_DEVICE_GENERIC_PROMO_DESCRIPTION',
         defaultMessage: 'Connect your Trezor to continue.',
     },
-    TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE: {
-        id: 'TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE',
-        defaultMessage: "Receive address can't be verified",
-    },
-    TR_CONNECT_DEVICE_RECEIVE_PROMO_DESCRIPTION: {
-        id: 'TR_CONNECT_DEVICE_RECEIVE_PROMO_DESCRIPTION',
-        defaultMessage:
-            "Verify on your Trezor to confirm the receive address. It's not recommended to continue without confirming.",
-    },
     TR_SELECT_TREZOR: {
         id: 'TR_SELECT_TREZOR',
         defaultMessage: 'Select Trezor',
