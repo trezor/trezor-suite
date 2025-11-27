@@ -16,9 +16,9 @@ import { typography } from '@trezor/theme';
 
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
-import { FocusedItemContext, OnFocusItemContext } from './sidebar';
 import { useActiveAnchor } from '../contexts/active-anchor';
 import { useMenu } from '../contexts/menu';
+import { FocusedItemContext, OnFocusItemContext } from '../contexts/sidebar-focus';
 import { useConfig } from '../contexts/useConfig';
 import { renderComponent } from '../utils/render';
 

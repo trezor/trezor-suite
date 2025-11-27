@@ -5,7 +5,7 @@ import type { NextSeoProps } from 'next-seo';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import { z } from 'zod';
 
-import type { TOCProps } from './components/toc';
+import type { TOCProps } from './types';
 
 export const themeOptionsSchema = z.strictObject({
     light: z.string(),
