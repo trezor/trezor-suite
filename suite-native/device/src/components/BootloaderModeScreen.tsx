@@ -63,7 +63,7 @@ export const BootloaderModeScreen = () => {
         if (!shouldFactoryResetBeVisible) {
             navigateToInitialScreen();
         }
-    }, [shouldFactoryResetBeVisible, navigateToInitialScreen, navigation]);
+    }, [shouldFactoryResetBeVisible, navigateToInitialScreen]);
 
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
