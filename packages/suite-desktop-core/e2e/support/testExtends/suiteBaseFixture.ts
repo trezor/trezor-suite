@@ -118,8 +118,8 @@ const webTeardown = async (page: Page, browserContext: BrowserContext, testInfo:
     }
 };
 
-const getDefaultEmuStartConf = (): StartEmuModelRequired => {
-    const model = getModelFromEnv();
+const getDefaultEmuStartConf = (emulatorModel?: Model): StartEmuModelRequired => {
+    const model = emulatorModel ?? getModelFromEnv();
     const DefaultFirmwareMajorVersion = model === 'T1B1' ? 1 : 2;
     const defaultFirmwareType = process.env.CANARY_FIRMWARE ? '-main' : '-latest';
 
@@ -150,7 +150,7 @@ const trezorEnvSetup = async (
     await TrezorUserEnvLinkProxy.stopEmu();
     await TrezorUserEnvLinkProxy.connect();
 
-    const defaultEmulatorStartConf = getDefaultEmuStartConf();
+    const defaultEmulatorStartConf = getDefaultEmuStartConf(emulatorStartConf.model);
     emulatorStartConf.version = emulatorStartConf.version || defaultEmulatorStartConf.version;
 
     if (startEmulator) {
