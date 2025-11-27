@@ -74,17 +74,30 @@ const mergeDeviceState = (
         AcquiredDevice & { state?: DeviceState | StaticSessionId; _state?: DeviceState }
     >,
 ): DeviceState | undefined => {
+    const currentState = device.state;
     const upcomingState = typeof upcoming.state === 'string' ? upcoming._state : upcoming.state;
-    if (
-        // state was previously not defined, we can set it
-        device.state === undefined ||
-        // update sessionId for the same staticSessionId
-        (upcomingState &&
-            device.state?.staticSessionId === upcomingState.staticSessionId &&
-            device.state?.sessionId !== upcomingState.sessionId)
-    ) {
-        return upcomingState;
+
+    if (currentState && upcomingState) {
+        if (
+            currentState.staticSessionId === upcomingState.staticSessionId &&
+            currentState.sessionId !== upcomingState.sessionId
+        ) {
+            // update sessionId for the same staticSessionId
+            return { ...currentState, sessionId: upcomingState.sessionId };
+        }
+
+        if (
+            currentState.staticSessionId !== upcomingState.staticSessionId &&
+            currentState.sessionId === upcomingState.sessionId
+        ) {
+            // special THP case: new sessionId was assigned to a wallet but there already was another remembered wallet with the same sessionId.
+            // In that case, remove the sessionId from the existing wallet as it can't be valid anymore.
+            return { ...currentState, sessionId: undefined };
+        }
     }
+
+    // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
+    return currentState;
 };
 
 /**
@@ -103,7 +116,7 @@ const merge = (
     ...device,
     ...upcoming,
     id: upcoming.id ?? device.id,
-    state: mergeDeviceState(device, upcoming) ?? device.state,
+    state: mergeDeviceState(device, upcoming),
     instance: device.instance,
     features: {
         // Don't override features if upcoming device is locked.
@@ -262,25 +275,6 @@ const changeDevice = (
         });
 
         return;
-    }
-
-    // this is not nice - during passphrase/discovery refactor, I made a decision that we are not going to update device.state in reducer
-    // in any other case than as a result of device authorization (passphrase+discovery). But later we realized that we need to update device.state.sessionId
-    // for saved devices too https://github.com/trezor/trezor-suite/issues/19411 so I am adding this as a quick fix that should work until we come up with a better solution.
-    const staticSessionId = device?.state;
-    const deviceBeforeUpdate = staticSessionId
-        ? draft.devices.find(d => d.state?.staticSessionId === staticSessionId)
-        : undefined;
-    const shouldUpdateState =
-        !!deviceBeforeUpdate &&
-        deviceBeforeUpdate.remember &&
-        !deviceBeforeUpdate.useEmptyPassphrase;
-
-    if (!shouldUpdateState) {
-        // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
-        delete device.state;
-        // @ts-expect-error - connect feeds this but we don't work with it
-        delete device._state;
     }
 
     // find devices with the same "device_id"
