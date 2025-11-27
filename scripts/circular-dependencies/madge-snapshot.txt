@@ -22,11 +22,6 @@ packages/components/src/components/Table/Table.tsx > packages/components/src/com
 packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableRow.tsx
 packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/customComponents.tsx
 packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/useOnKeyDown.ts
-packages/connect-explorer-theme/src/components/anchor.tsx > packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/toc.tsx
-packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/nav-links.tsx > packages/connect-explorer-theme/src/index.tsx
-packages/connect-explorer-theme/src/components/index.ts > packages/connect-explorer-theme/src/components/nav-links.tsx > packages/connect-explorer-theme/src/index.tsx > packages/connect-explorer-theme/src/mdx-components.tsx
-packages/connect-explorer-theme/src/components/sidebar.tsx > packages/connect-explorer-theme/src/components/menu.tsx
-packages/connect-explorer-theme/src/contexts/useConfig.tsx > packages/connect-explorer-theme/src/schema.ts > packages/connect-explorer-theme/src/components/toc.tsx
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts > packages/connect/src/utils/firmwareReleaseConfigUtils.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts

@@ -5,7 +5,7 @@ import { ArrowRightIcon } from 'nextra/icons';
 import type { Item } from 'nextra/normalize-pages';
 
 import { useConfig } from '../contexts/useConfig';
-import type { DocsThemeConfig } from '../index';
+import type { DocsThemeConfig } from '../schema';
 import { Anchor } from './anchor';
 
 interface NavLinkProps {

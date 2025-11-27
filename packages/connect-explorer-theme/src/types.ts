@@ -1,17 +1,17 @@
 import type { ReactNode } from 'react';
 
-import type { PageOpts } from 'nextra';
+import type { Heading } from 'nextra';
 
-import type { DocsThemeConfig } from './schema';
-
-export type Context = {
-    pageOpts: PageOpts;
-    themeConfig: DocsThemeConfig;
-};
+// Intentionally keep this file free of imports from './schema' to avoid cycles.
 
 export type SearchResult = {
     children: ReactNode;
     id: string;
     prefix?: ReactNode;
     route: string;
+};
+
+export type TOCProps = {
+    headings: Heading[];
+    filePath: string;
 };

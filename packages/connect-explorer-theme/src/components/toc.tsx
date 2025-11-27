@@ -2,7 +2,6 @@ import type { ReactElement } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 
 import cn from 'clsx';
-import type { Heading } from 'nextra';
 import scrollIntoView from 'scroll-into-view-if-needed';
 import styled from 'styled-components';
 
@@ -12,12 +11,8 @@ import { Anchor } from './anchor';
 import { BackToTop } from './back-to-top';
 import { useActiveAnchor } from '../contexts/active-anchor';
 import { useConfig } from '../contexts/useConfig';
+import type { TOCProps } from '../types';
 import { renderComponent } from '../utils/render';
-
-export type TOCProps = {
-    headings: Heading[];
-    filePath: string;
-};
 
 const Container = styled.div`
     ${variables.SCREEN_QUERY.ABOVE_TABLET} {

@@ -1,14 +1,13 @@
 import type { ReactElement, ReactNode } from 'react';
 import { useState } from 'react';
 
-import type { PageMapItem } from 'nextra';
+import type { PageMapItem, PageOpts } from 'nextra';
 import { metaSchema } from 'nextra/normalize-pages';
 import type { ZodError } from 'zod';
 
 import type { DocsThemeConfig } from '../schema';
 import { themeSchema } from '../schema';
 import { DEEP_OBJECT_KEYS, DEFAULT_THEME } from '../theme';
-import type { Context } from '../types';
 import { MenuProvider } from './menu';
 import { type Config, ConfigContext } from './useConfig';
 
@@ -52,7 +51,7 @@ export const ConfigProvider = ({
     value: { themeConfig, pageOpts },
 }: {
     children: ReactNode;
-    value: Context;
+    value: { themeConfig: DocsThemeConfig; pageOpts: PageOpts };
 }): ReactElement => {
     const [menu, setMenu] = useState(false);
     // Merge only on first load
