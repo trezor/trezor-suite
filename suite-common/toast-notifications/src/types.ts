@@ -80,6 +80,7 @@ export type ToastPayload = (
               | 'device-authenticity-success'
               | 'clear-storage'
               | 'add-token-success'
+              | 'remove-token-success'
               | 'auto-updater-no-new'
               | 'auto-eject-settings'
               | 'qr-incorrect-address'

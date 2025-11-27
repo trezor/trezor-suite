@@ -13,7 +13,7 @@ import { spacings } from '@trezor/theme';
 
 import { Loading } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { ActivateTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ActivateTokenModal';
+import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { useDispatch } from 'src/hooks/suite';
 
 import { NoTokens } from '../common/NoTokens';
@@ -226,7 +226,8 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
             </Table>
 
             {tokenToActivate && (
-                <ActivateTokenModal
+                <StellarManageTokenModal
+                    mode="activate"
                     symbol={account.symbol}
                     contractAddress={tokenToActivate.contract}
                     onCancel={closeActivateModal}

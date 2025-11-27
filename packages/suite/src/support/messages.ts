@@ -4622,6 +4622,27 @@ export default defineMessages({
         id: 'TR_ACTIVATE_TOKEN_MANUALLY',
         defaultMessage: 'Activate token manually',
     },
+    TR_DEACTIVATE_TOKEN: {
+        id: 'TR_DEACTIVATE_TOKEN',
+        defaultMessage: 'Deactivate token',
+    },
+    TR_DEACTIVATE_TOKEN_HEADING: {
+        id: 'TR_DEACTIVATE_TOKEN_HEADING',
+        defaultMessage: 'Deactivate {token}',
+    },
+    TR_TOKEN_DEACTIVATION_DESCRIPTION: {
+        id: 'TR_TOKEN_DEACTIVATION_DESCRIPTION',
+        defaultMessage:
+            "You won't be able to receive, send, or trade this token until you activate it again. Deactivation makes the 0.5 XLM reserve available for use.",
+    },
+    TR_CANT_DEACTIVATE_TOKEN_WITH_BALANCE: {
+        id: 'TR_CANT_DEACTIVATE_TOKEN_WITH_BALANCE',
+        defaultMessage: "You can't deactivate a token with a balance",
+    },
+    TR_DEACTIVATE_TOKEN_BALANCE_WARNING: {
+        id: 'TR_DEACTIVATE_TOKEN_BALANCE_WARNING',
+        defaultMessage: 'To deactivate this token, first send its balance elsewhere.',
+    },
     TR_ASSET_CODE: {
         id: 'TR_ASSET_CODE',
         defaultMessage: 'Asset code',
@@ -5796,6 +5817,14 @@ export default defineMessages({
     TR_ADD_TOKEN_TOAST_ERROR: {
         id: 'TR_ADD_TOKEN_TOAST_ERROR',
         defaultMessage: 'Action failed: {error}',
+    },
+    TR_REMOVE_TOKEN_TOAST_SUCCESS: {
+        id: 'TR_REMOVE_TOKEN_TOAST_SUCCESS',
+        defaultMessage: 'Token removed',
+    },
+    TR_REMOVE_TOKEN_TOAST_ERROR: {
+        id: 'TR_REMOVE_TOKEN_TOAST_ERROR',
+        defaultMessage: 'Failed to remove token: {error}',
     },
     TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',

@@ -157,6 +157,8 @@ export const NotificationRenderer = ({
             });
         case 'add-token-success':
             return success(render, notification, 'TR_ADD_TOKEN_TOAST_SUCCESS');
+        case 'remove-token-success':
+            return success(render, notification, 'TR_REMOVE_TOKEN_TOAST_SUCCESS');
         case 'auto-eject-settings':
             return <AutoEjectRenderer render={render} notification={notification} />;
         case 'user-feedback-send-success':

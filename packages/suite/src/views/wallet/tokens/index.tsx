@@ -6,7 +6,7 @@ import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Route } from 'src/components/suite/Route';
-import { ActivateTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ActivateTokenModal';
+import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -99,7 +99,8 @@ export const Tokens = () => {
             )}
 
             {manualTokenContract && (
-                <ActivateTokenModal
+                <StellarManageTokenModal
+                    mode="activate"
                     symbol={selectedAccount.account.symbol}
                     contractAddress={manualTokenContract}
                     onCancel={closeManualActivateModal}
