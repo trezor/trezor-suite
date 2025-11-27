@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { ElectronIpcMainInvokeEvent } from './proxy-handler';
+import { ElectronIpcMainInvokeEvent } from './types';
 
 const defaultDirnameProvider = () => __dirname;
 
