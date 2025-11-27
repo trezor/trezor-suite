@@ -148,10 +148,7 @@ export const EmptyStakingCard = () => {
     };
 
     return (
-        <DashboardSection
-            data-testid="@wallet/staking/empty-card"
-            heading={<Translation id="TR_STAKE_STAKE_TOKEN" values={{ symbol: displaySymbol }} />}
-        >
+        <DashboardSection data-testid="@wallet/staking/empty-card">
             <Column gap={16}>
                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                 {isDiscoveryRunning && <DiscoveryWarning />}

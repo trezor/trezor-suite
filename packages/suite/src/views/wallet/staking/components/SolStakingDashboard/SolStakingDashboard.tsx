@@ -1,4 +1,3 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     StakeRootState,
@@ -12,7 +11,6 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
@@ -61,14 +59,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                 <Column alignItems="normal" gap={spacings.xxxxl}>
                     {isStakingActive ? (
                         <>
-                            <DashboardSection
-                                heading={
-                                    <Translation
-                                        id="TR_STAKE_STAKE_TOKEN"
-                                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
-                                    />
-                                }
-                            >
+                            <DashboardSection>
                                 <Column alignItems="normal" gap={spacings.sm}>
                                     {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                     {isDiscoveryRunning && <DiscoveryWarning />}

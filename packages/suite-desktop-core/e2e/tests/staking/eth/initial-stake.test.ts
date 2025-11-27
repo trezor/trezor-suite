@@ -68,12 +68,6 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.stakingDashboardCard).toBeHidden();
                 await expect(stakingSection.stakingEmptyCard).toBeVisible();
-                await expect(stakingSection.stakingEmptyCard).toContainTranslation(
-                    'TR_STAKE_STAKE_TOKEN',
-                    {
-                        values: { symbol: 'ETH' },
-                    },
-                );
             });
 
             await test.step('Open and fill staking form', async () => {
