@@ -1,4 +1,4 @@
-import { LocaleTag } from '@suite-native/intl';
+import { SupportedLocaleCode } from '@suite-native/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
@@ -37,7 +37,7 @@ class SettingsActions {
         await discreetModeToggleElement.tap();
     }
 
-    async changeLanguage(localeTag: LocaleTag) {
+    async changeLanguage(localeTag: SupportedLocaleCode) {
         const languageSelectorTriggerElement = element(
             by.id('@settings/localization/language-selector'),
         );
