@@ -1,26 +1,24 @@
-import { ComponentProps, ReactElement, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { RequireOneOrNone } from 'type-fest';
 
 import { Box } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
-import { ScreenHeaderContent } from './ScreenHeaderContent';
+import { ScreenHeaderContent, type ScreenHeaderContentProps } from './ScreenHeaderContent';
 
-export type ScreenHeaderProps = RequireOneOrNone<
-    {
-        title?: ReactElement<ComponentProps<typeof Translation>> | string;
-        customContent?: ReactNode;
-        leftIcon?: ReactNode;
-        closeActionType?: CloseActionType;
-        rightIcon?: ReactNode;
-        closeAction?: () => void;
-    },
-    'leftIcon' | 'closeActionType'
->;
+export type ScreenHeaderProps = ScreenHeaderContentProps &
+    RequireOneOrNone<
+        {
+            leftIcon?: ReactNode;
+            closeActionType?: CloseActionType;
+            rightIcon?: ReactNode;
+            closeAction?: () => void;
+        },
+        'leftIcon' | 'closeActionType'
+    >;
 
 const ICON_SIZE = 48;
 
