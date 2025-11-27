@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../atoms" },
+        { "path": "../device" },
+        { "path": "../device-manager" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../../packages/styles" }
+    ]
+}

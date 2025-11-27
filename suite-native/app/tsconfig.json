@@ -44,6 +44,7 @@
         { "path": "../connection-status" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../device-bootloader-mode" },
         { "path": "../feature-flags" },
         { "path": "../formatters-config" },
         { "path": "../icons" },

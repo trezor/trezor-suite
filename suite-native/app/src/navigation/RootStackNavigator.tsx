@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { BootloaderModeScreen } from '@suite-native/device';
+import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     AccountDetailScreen,
