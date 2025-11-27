@@ -112,7 +112,7 @@ export default class DiscoverAccounts extends AbstractMethod<'discoverAccounts',
                 .map(account => [account, knownAccs?.find(t => t.type === account.type)] as const) // Pair all coin accounts with possibly known account types
                 .filter(([_, known]) => (known ? typeof known.skip === 'number' : !knownOnly)) // Include passed known accounts with skip param (the other ones are known completely) and unpassed accounts if knownOnly wasn't requested
                 .map(([account, known]) => ({
-                    pageSize: TXS_PER_PAGE,
+                    pageSize: isCardano(account) ? 8 : TXS_PER_PAGE,
                     details: DETAILS,
                     coinInfo,
                     firmwareRange,
