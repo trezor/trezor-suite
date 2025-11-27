@@ -21,12 +21,13 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionIcon } from './TransactionIcon';
-import { TransactionName } from '../TransactionName';
+import { TransactionName } from './TransactionName';
 
 type TransactionListItemContainerProps = {
     children: ReactNode;
@@ -110,10 +111,13 @@ export const TransactionListItemContainer = ({
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
 
     const handleNavigateToTransactionDetail = () => {
-        navigation.navigate(RootStackRoutes.TransactionDetail, {
-            txid,
-            accountKey,
-            tokenContract: tokenTransfer?.contract,
+        navigation.navigate(RootStackRoutes.TransactionDetailStack, {
+            screen: TransactionDetailStackRoutes.TransactionDetail,
+            params: {
+                txid,
+                accountKey,
+                tokenContract: tokenTransfer?.contract,
+            },
         });
     };
 
@@ -141,7 +145,7 @@ export const TransactionListItemContainer = ({
 
     return (
         <TouchableOpacity
-            onPress={() => handleNavigateToTransactionDetail()}
+            onPress={handleNavigateToTransactionDetail}
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
             <Box style={applyStyle(descriptionBoxStyle)}>

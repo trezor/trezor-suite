@@ -7,17 +7,18 @@ import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { TokenTransferListItemValues } from '../TransactionsList/TokenTransferListItem';
-import { TransactionListItemValues } from '../TransactionsList/TransactionListItem';
 import {
+    TokenTransferListItemValues,
+    TransactionListItemValues,
     transactionListItemContainerStyle,
     valuesContainerStyle,
-} from '../TransactionsList/TransactionListItemContainer';
+} from '@suite-native/transactions';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TransactionDetailListItemProps = {
     accountKey: AccountKey;
@@ -28,9 +29,10 @@ type TransactionDetailListItemProps = {
     onPress: () => void;
 };
 
-type TransactionDetailNavigation = StackNavigationProps<
+type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
     RootStackParamList,
-    RootStackRoutes.TransactionDetail
+    TransactionDetailStackRoutes.TransactionDetail,
+    TransactionDetailStackParamList
 >;
 
 const CoinNameContainerStyle = prepareNativeStyle(_ => ({
@@ -50,10 +52,13 @@ export const TransactionDetailListItem = ({
 
     const handleNavigation = () => {
         onPress();
-        navigation.push(RootStackRoutes.TransactionDetail, {
-            txid: transaction.txid,
-            accountKey,
-            tokenContract: tokenTransfer?.contract,
+        navigation.push(RootStackRoutes.TransactionDetailStack, {
+            screen: TransactionDetailStackRoutes.TransactionDetail,
+            params: {
+                txid: transaction.txid,
+                accountKey,
+                tokenContract: tokenTransfer?.contract,
+            },
         });
     };
 

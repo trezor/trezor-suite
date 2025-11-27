@@ -10,11 +10,12 @@ import {
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import {
+    TransactionIcon,
+    getTransactionValueSign,
+    useTransactionFiatRate,
+} from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
-import { getTransactionValueSign } from '../../utils';
-import { TransactionIcon } from '../TransactionsList/TransactionIcon';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;

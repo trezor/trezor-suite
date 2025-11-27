@@ -18,21 +18,21 @@ import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
     ScreenHeader,
     StackProps,
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { TransactionName } from '@suite-native/transactions';
 
-import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
-import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
-import { TransactionName } from '../components/TransactionName';
+import { TransactionDetailData } from '../components/TransactionDetailData';
+import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
 
 export const TransactionDetailScreen = ({
     route,
-}: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
+}: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
     const navigation = useNavigation();
 

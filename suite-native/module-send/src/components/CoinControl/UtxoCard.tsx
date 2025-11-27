@@ -26,7 +26,9 @@ import { AddressLabel, TransactionOutputLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { Utxo } from '@trezor/blockchain-link-types';
 import type { StaticSessionId } from '@trezor/connect';
@@ -49,9 +51,10 @@ export type Props = {
     isSelected?: boolean;
 };
 
-type TransactionDetailNavigation = StackNavigationProps<
+type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
     RootStackParamList,
-    RootStackRoutes.TransactionDetail
+    TransactionDetailStackRoutes.TransactionDetail,
+    TransactionDetailStackParamList
 >;
 
 export const UtxoCard = ({
@@ -78,9 +81,12 @@ export const UtxoCard = ({
     );
 
     const handleShowDetails = () => {
-        navigation.push(RootStackRoutes.TransactionDetail, {
-            txid: utxo.txid,
-            accountKey,
+        navigation.push(RootStackRoutes.TransactionDetailStack, {
+            screen: TransactionDetailStackRoutes.TransactionDetail,
+            params: {
+                txid: utxo.txid,
+                accountKey,
+            },
         });
     };
 

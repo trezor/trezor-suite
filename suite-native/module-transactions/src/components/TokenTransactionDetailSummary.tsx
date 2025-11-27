@@ -1,9 +1,9 @@
 import { VStack } from '@suite-native/atoms';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { VinVoutAddress } from '@suite-native/transactions';
 
 import { VerticalSeparator } from './NetworkTransactionDetailSummary';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
-import { VinVoutAddress } from '../../types';
 
 type TokenTransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;

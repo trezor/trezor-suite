@@ -2,10 +2,10 @@ import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { BottomSheetModal, Box, Button, Text, useBottomSheetModal } from '@suite-native/atoms/src';
+import { BottomSheetModal, Box, Button, Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TransactionDetailSheetProps = {
     iconName: IconName;

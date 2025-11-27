@@ -38,6 +38,7 @@ import {
     SendStackRoutes,
     SettingsStackRoutes,
     TradingStackRoutes,
+    TransactionDetailStackRoutes,
     WipeDeviceStackRoutes,
 } from './routes';
 import { NavigateParameters } from './types';
@@ -335,17 +336,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
-    [RootStackRoutes.TransactionDetail]: {
-        txid: string;
-        accountKey: AccountKey;
-        closeActionType?: CloseActionType;
-        tokenContract?: TokenAddress;
-        source?: 'send';
-    };
-    [RootStackRoutes.TransactionDetailOverview]: {
-        txid: string;
-        accountKey: AccountKey;
-    };
+    [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
@@ -371,6 +362,20 @@ export type RootStackParamList = {
     };
     [RootStackRoutes.BootloaderMode]: undefined;
     [RootStackRoutes.TradingLocationModal]: undefined;
+};
+
+export type TransactionDetailStackParamList = {
+    [TransactionDetailStackRoutes.TransactionDetail]: {
+        txid: string;
+        accountKey: AccountKey;
+        closeActionType?: CloseActionType;
+        tokenContract?: TokenAddress;
+        source?: 'send';
+    };
+    [TransactionDetailStackRoutes.TransactionDetailOverview]: {
+        txid: string;
+        accountKey: AccountKey;
+    };
 };
 
 export type TradingStackParamList = {

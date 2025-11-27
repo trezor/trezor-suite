@@ -23,6 +23,7 @@ import {
     SendStackParamList,
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { cleanupSendFormThunk, sendTransactionThunk } from '@suite-native/send';
 import { SignSuccessMessage } from '@suite-native/transaction-management';
@@ -63,13 +64,16 @@ const navigateOutOfSendFlowAction = ({
 
     if (txid) {
         routes.push({
-            name: RootStackRoutes.TransactionDetail,
+            name: RootStackRoutes.TransactionDetailStack,
             params: {
-                accountKey,
-                tokenContract,
-                txid,
-                closeActionType: 'close',
-                source: 'send',
+                screen: TransactionDetailStackRoutes.TransactionDetail,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    txid,
+                    closeActionType: 'close',
+                    source: 'send',
+                },
             },
         });
     }

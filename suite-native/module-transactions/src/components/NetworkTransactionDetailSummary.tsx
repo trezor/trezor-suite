@@ -7,10 +7,10 @@ import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 import { WalletAccountTransaction } from '@suite-native/tokens';
+import { selectTransactionAddresses } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
-import { selectTransactionAddresses } from '../../selectors';
 
 type VerticalSeparatorProps = { inputsCount: number };
 
