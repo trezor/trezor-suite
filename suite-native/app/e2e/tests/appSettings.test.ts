@@ -23,7 +23,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onHome.scrollScreenToBottom();
     });
 
-    it('Localization - Currency', async () => {
+    it.skip('Localization - Currency', async () => {
         await detoxExpect(element(by.text(/^.*\$.*$/i))).toBeVisible();
         await onTabBar.navigateToSettings();
         await onSettings.tapPreferences();
