@@ -27,6 +27,12 @@ import { selectTransactions } from '../transactions/transactionsSelectors';
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];
+
+    // Stellar: All tokens with active trustlines are already in payload (even with 0 balance).
+    if (account.networkType === 'stellar') {
+        return tokens;
+    }
+
     // get list of tokens that are not included in default response, their balances need to be fetched
     const customTokens =
         account.tokens?.filter(t => !payloadTokens?.find(p => p.contract === t.contract)) ?? [];
