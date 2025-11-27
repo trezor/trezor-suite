@@ -24,9 +24,12 @@
         "@formatjs/intl": "3.1.6",
         "@hookform/resolvers": "^5.2.2",
         "@mobily/ts-belt": "^3.13.1",
+        "@noble/ciphers": "^2.0.1",
         "@noble/hashes": "^2.0.1",
         "@reduxjs/toolkit": "2.10.1",
         "@sentry/core": "10.17.0",
+        "@simplewebauthn/browser": "^13.2.2",
+        "@simplewebauthn/server": "^13.2.2",
         "@solana/kit": "^2.3.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/assets": "workspace:*",
@@ -68,6 +71,7 @@
         "@suite-common/walletconnect": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
         "@suite/suite-sync": "workspace:*",
+        "@tanstack/react-query": "^5.90.8",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/address-validator": "workspace:*",
         "@trezor/analytics": "workspace:*",
@@ -103,6 +107,7 @@
         "framer-motion": "^12.23.3",
         "history": "^5.3.0",
         "idb": "^8.0.3",
+        "idb-stores": "^0.0.24",
         "immer": "10.2.0",
         "pako": "^2.1.0",
         "pdfmake": "^0.2.20",
@@ -126,7 +131,8 @@
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
         "styled-components": "^6.1.19",
-        "web3-utils": "^4.3.1"
+        "web3-utils": "^4.3.1",
+        "zod": "^4.1.12"
     },
     "devDependencies": {
         "@crowdin/cli": "4.8.0",
