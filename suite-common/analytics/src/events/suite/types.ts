@@ -238,6 +238,13 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.RemoveToken;
+          payload: {
+              networkSymbol: string;
+              token: string;
+          };
+      }
+    | {
           type: EventType.AccountsEmptyAccountReceive;
           payload: {
               symbol: string;
