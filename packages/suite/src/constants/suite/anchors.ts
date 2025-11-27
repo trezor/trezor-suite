@@ -1,8 +1,16 @@
 import { Route } from '@suite-common/suite-types';
 
-export type AnchorSettingSection = 'general-settings' | 'device-settings' | 'coin-settings';
+export type AnchorSettingSection =
+    | 'general-settings'
+    | 'device-settings'
+    | 'coin-settings'
+    | 'dashboard';
 
 type Anchor = `@${AnchorSettingSection}/${string}`;
+
+export const DashboardAnchor = {
+    Staking: '@dashboard/staking',
+} satisfies { [key: string]: Anchor };
 
 export const SettingsAnchor = {
     Language: '@general-settings/language',
@@ -57,6 +65,7 @@ export const mapAnchorToRoute: Record<AnchorSettingSection, Route['name']> = {
     'general-settings': 'settings-index',
     'device-settings': 'settings-device',
     'coin-settings': 'settings-coins',
+    dashboard: 'suite-index',
 };
 
 export const AccountTransactionBaseAnchor = '@account/transaction';

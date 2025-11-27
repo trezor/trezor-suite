@@ -1,0 +1,31 @@
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { Banner } from '@trezor/components';
+
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite/Translation';
+import { DashboardAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+
+export const CardanoOutdatedStakingBanner = () => {
+    const dispatch = useDispatch();
+    const apy = useSelector(state => selectPoolStatsApyData(state, 'ada'));
+
+    return (
+        <Banner
+            icon
+            intent="warning"
+            rightContent={
+                <Banner.Button
+                    onClick={() =>
+                        dispatch(goto('suite-index', { anchor: DashboardAnchor.Staking }))
+                    }
+                    data-testid="@notification/bridge-deprecated/button"
+                >
+                    <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
+                </Banner.Button>
+            }
+        >
+            <Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy }} />
+        </Banner>
+    );
+};
