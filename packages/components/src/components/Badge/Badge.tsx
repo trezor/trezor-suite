@@ -83,4 +83,4 @@ export const Badge = ({
     );
 };
 
-export type { BadgeSize };
+export type { BadgeSize, BadgeIntent };

@@ -9,20 +9,45 @@ import {
     getAccountTotalStakingBalance,
     getFiatRateKey,
     getStakingLimitsByNetworkSymbol,
+    isCardanoStakedOutsideEverstake,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { Badge, Card, Table } from '@trezor/components';
+import { Badge, BadgeIntent, Card, Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber, arrayPartition } from '@trezor/utils';
 
 import { setStakingDashboardCollapsed } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { StakingDashboardAccountRow } from './StakingDashboardAccountRow';
 import { StakingDashboardActivateRow } from './StakingDashboardActivateRow';
+
+const getBadgeState = (
+    isStakingActive: boolean,
+    accounts: Account[],
+): { intent: BadgeIntent; label: TranslationKey } => {
+    if (!isStakingActive) {
+        return {
+            intent: 'neutral',
+            label: 'TR_STAKING_DASHBOARD_NOT_ACTIVE',
+        };
+    }
+
+    if (accounts.some(isCardanoStakedOutsideEverstake)) {
+        return {
+            intent: 'warning',
+            label: 'TR_STAKING_DASHBOARD_OUTDATED',
+        };
+    }
+
+    return {
+        intent: 'brand',
+        label: 'TR_STAKING_DASHBOARD_ACTIVE',
+    };
+};
 
 const useCryptoCurrentRate = (symbol: NetworkSymbol) => {
     const baseCurrency = useSelector(selectBaseCurrency);
@@ -154,22 +179,15 @@ export const StakingDashboard = () => {
         dispatch(setStakingDashboardCollapsed(collapsed));
     };
 
+    const badge = getBadgeState(isStakingActive, stakingAccounts);
+
     return (
         <DashboardSection
             heading={
                 <>
                     <Translation id="TR_STAKING_DASHBOARD_TITLE" />
-                    <Badge
-                        intent={isStakingActive ? 'brand' : 'neutral'}
-                        margin={{ left: spacings.sm }}
-                    >
-                        <Translation
-                            id={
-                                isStakingActive
-                                    ? 'TR_STAKING_DASHBOARD_ACTIVE'
-                                    : 'TR_STAKING_DASHBOARD_NOT_ACTIVE'
-                            }
-                        />
+                    <Badge intent={badge.intent} margin={{ left: spacings.sm }}>
+                        <Translation id={badge.label} />
                     </Badge>
                 </>
             }

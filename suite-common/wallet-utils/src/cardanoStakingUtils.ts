@@ -39,6 +39,15 @@ export const isCardanoStakedWithEverstake = (account: Account) => {
     return account?.misc.staking.poolId === CARDANO_EVERSTAKE_STAKING_POOL.bech32;
 };
 
+export const isCardanoStakedOutsideEverstake = (account: Account) => {
+    if (account.networkType !== 'cardano') return false;
+
+    const poolId = account.misc?.staking?.poolId;
+    if (!poolId) return false;
+
+    return poolId !== CARDANO_EVERSTAKE_STAKING_POOL.bech32;
+};
+
 export const validateCardanoDrep = (drepId: string): boolean => {
     try {
         const { prefix, words } = bech32.decode(drepId);
