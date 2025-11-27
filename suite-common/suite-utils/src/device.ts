@@ -10,7 +10,6 @@ import {
     UnavailableCapability,
 } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
-import { ThpStateSerialized } from '@trezor/protocol';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
 import { isArrayMember } from '@trezor/utils';
@@ -524,7 +523,7 @@ export const getDeviceInternalModel = (
 
 export const getIsThpDevice = <T extends Device | TrezorDevice>(
     device: T,
-): device is T & { thp: ThpStateSerialized } => device.thp !== undefined;
+): device is T & { thp: NonNullable<Device['thp']> } => device.thp !== undefined;
 
 export const getIsDeviceInitialized = ({
     deviceMode,

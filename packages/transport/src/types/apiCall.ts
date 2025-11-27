@@ -1,7 +1,7 @@
 import { Messages } from '@trezor/protobuf';
 import {
     PROTOCOL_MALFORMED,
-    ThpStateSerialized,
+    ThpChannelState,
     TransportProtocol,
     thp as protocolThp,
 } from '@trezor/protocol';
@@ -30,7 +30,7 @@ export type AbortableParam = { signal?: AbortSignal; timeout?: number };
 export type BridgeProtocolMessage = {
     data: string;
     protocol?: TransportProtocol['name'];
-    thpState?: ThpStateSerialized;
+    thpState?: ThpChannelState;
 };
 
 export type MessageResponse = Messages.MessageResponse | protocolThp.ThpMessageResponse;

@@ -45,6 +45,7 @@ import {
     DeviceFirmwareStatus,
     DeviceState,
     DeviceStatus,
+    DeviceThpState,
     Device as DeviceTyped,
     DeviceUniquePath,
     Features,
@@ -1126,6 +1127,19 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         return 'available';
     }
+
+    private getDeviceThp(): DeviceThpState | undefined {
+        const state = this.thp?.serialize();
+
+        return state
+            ? {
+                  properties: state.properties,
+                  credentials: state.credentials,
+                  channel: state.channel,
+              }
+            : undefined;
+    }
+
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
         const { name, uniquePath: path, descriptor } = this;
@@ -1158,7 +1172,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 name: this.name,
                 transportSessionOwner: this.sessionAcquired ? undefined : sessionOwner,
                 bluetoothProps,
-                thp: this.thp?.serialize(),
+                thp: this.getDeviceThp(),
                 status: this.busy ? this.busy : undefined,
             };
         }
@@ -1184,7 +1198,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
             bluetoothProps,
-            thp: this.thp?.serialize(),
+            thp: this.getDeviceThp(),
         };
     }
 }

@@ -3,7 +3,7 @@ export type {
     ThpPairingMethod,
     ThpCredentials,
 } from './protocol-thp/messages';
-export type { ThpState, ThpStateSerialized } from './protocol-thp/ThpState';
+export type { ThpState, ThpStateSerialized, ThpChannelState } from './protocol-thp/ThpState';
 
 export type TransportProtocolDecode = (bytes: Buffer) => {
     header: Buffer;

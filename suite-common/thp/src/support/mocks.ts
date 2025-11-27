@@ -1,6 +1,6 @@
 import type { ThpSuiteCredentials } from '@suite-common/suite-types';
+import type { DeviceThpState } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import type { ThpStateSerialized } from '@trezor/protocol';
 
 // This file is intentionally not reexported in index.ts, so that bundler won't have to import.
 
@@ -20,9 +20,7 @@ export const createCredential = (
 /**
  * Generate a mock device.thp properties as they are on a readable device
  */
-export const createDeviceThp = (
-    partialDeviceThp?: Partial<ThpStateSerialized>,
-): ThpStateSerialized => ({
+export const createDeviceThp = (partialDeviceThp?: Partial<DeviceThpState>): DeviceThpState => ({
     properties: {
         internal_model: DeviceModelInternal.T3W1,
         model_variant: 0,
@@ -31,13 +29,6 @@ export const createDeviceThp = (
         pairing_methods: [],
     },
     channel: 'channel-id',
-    sendBit: 0,
-    recvBit: 0,
-    sendAckBit: 0,
-    recvAckBit: 0,
-    sendNonce: 1,
-    recvNonce: 2,
-    expectedResponses: [1],
     credentials: [createCredential()],
     ...partialDeviceThp,
 });

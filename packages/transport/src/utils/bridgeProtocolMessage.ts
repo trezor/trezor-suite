@@ -1,4 +1,4 @@
-import type { ThpStateSerialized, TransportProtocol } from '@trezor/protocol';
+import type { ThpChannelState, TransportProtocol } from '@trezor/protocol';
 
 import type { BridgeProtocolMessage } from '../types';
 
@@ -55,7 +55,7 @@ export function validateProtocolMessage(body: unknown, withData = true): BridgeP
 export function createProtocolMessage(
     body: unknown,
     protocol?: TransportProtocol | TransportProtocol['name'],
-    thpState?: ThpStateSerialized,
+    thpState?: ThpChannelState,
 ) {
     let data;
     if (Buffer.isBuffer(body)) {
