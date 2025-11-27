@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
 import { getDaysToAddToPool, getDaysToUnstake } from '@suite-common/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     fetchAllTransactionsForAccountThunk,
     selectAccountIsStakingActive,
@@ -18,7 +17,6 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
@@ -84,14 +82,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
             dashboard={
                 <Column gap={spacings.xxxxl}>
                     {isStakingActive ? (
-                        <DashboardSection
-                            heading={
-                                <Translation
-                                    id="TR_STAKE_STAKE_TOKEN"
-                                    values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
-                                />
-                            }
-                        >
+                        <DashboardSection>
                             <Column gap={spacings.sm}>
                                 {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                 {isDiscoveryRunning && <DiscoveryWarning />}

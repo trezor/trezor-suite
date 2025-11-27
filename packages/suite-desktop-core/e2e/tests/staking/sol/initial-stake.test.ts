@@ -36,10 +36,6 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.stakingDashboardCard).toBeHidden();
                 await expect(stakingSection.stakingEmptyCard).toBeVisible();
-                await expect(stakingSection.stakingEmptyCard).toContainTranslation(
-                    'TR_STAKE_STAKE_TOKEN',
-                    { values: { symbol: 'SOL' } },
-                );
                 await expect(stakingSection.stakeMoreButton).toBeHidden();
                 await expect(stakingSection.unstakeToClaimButton).toBeHidden();
             });

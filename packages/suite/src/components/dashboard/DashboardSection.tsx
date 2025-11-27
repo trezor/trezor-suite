@@ -4,7 +4,7 @@ import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/componen
 import { useCurrentRef } from '@trezor/react-utils';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {
-    heading: ReactElement;
+    heading?: ReactElement;
     subheading?: ReactElement;
     actions?: ReactElement;
     collapsible?: boolean;
@@ -35,31 +35,37 @@ export const DashboardSection = forwardRef(
             collapseChangeRef.current?.(collapsed);
         }, [collapseChangeRef, collapsed]);
 
+        const renderHeader = heading || subheading || actions || collapsible;
+
         return (
             <div ref={ref} {...rest}>
                 <Collapsible isOpen={!collapsed}>
                     <Column data-testid={dataTestId} gap={16}>
-                        <Column width="100%" gap={2}>
-                            <Row as="header" justifyContent="space-between">
-                                {heading && (
-                                    <H3>
-                                        <Row as="span">{heading}</Row>
-                                    </H3>
-                                )}
+                        {renderHeader && (
+                            <Column width="100%" gap={2}>
+                                <Row as="header" justifyContent="space-between">
+                                    {heading && (
+                                        <H3>
+                                            <Row as="span">{heading}</Row>
+                                        </H3>
+                                    )}
 
-                                {actions && <div>{actions}</div>}
-                                {collapsible && (
-                                    <Collapsible.Toggle onClick={() => setCollapsed(prev => !prev)}>
-                                        <IconButton
-                                            icon={collapsed ? 'caretDown' : 'caretUp'}
-                                            intent="neutral"
-                                            priority="secondary"
-                                        />
-                                    </Collapsible.Toggle>
-                                )}
-                            </Row>
-                            {subheading && <Text variant="tertiary">{subheading}</Text>}
-                        </Column>
+                                    {actions && <div>{actions}</div>}
+                                    {collapsible && (
+                                        <Collapsible.Toggle
+                                            onClick={() => setCollapsed(prev => !prev)}
+                                        >
+                                            <IconButton
+                                                icon={collapsed ? 'caretDown' : 'caretUp'}
+                                                intent="neutral"
+                                                priority="secondary"
+                                            />
+                                        </Collapsible.Toggle>
+                                    )}
+                                </Row>
+                                {subheading && <Text variant="tertiary">{subheading}</Text>}
+                            </Column>
+                        )}
                         <Collapsible.Content overflow="unset">{children}</Collapsible.Content>
                     </Column>
                 </Collapsible>
