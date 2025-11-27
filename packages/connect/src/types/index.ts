@@ -44,3 +44,4 @@ export type {
 } from '@trezor/blockchain-link';
 
 export { FirmwareType, type VersionArray } from '@trezor/device-utils';
+export { ThpPairingMethod } from '@trezor/protocol/src/protocol-thp/messages';

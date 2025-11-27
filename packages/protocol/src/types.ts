@@ -1,7 +1,7 @@
-export type {
-    ThpDeviceProperties,
+export {
     ThpPairingMethod,
-    ThpCredentials,
+    type ThpDeviceProperties,
+    type ThpCredentials,
 } from './protocol-thp/messages';
 export type { ThpState, ThpStateSerialized, ThpChannelState } from './protocol-thp/ThpState';
 
