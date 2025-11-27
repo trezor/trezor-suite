@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
+import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -9,11 +10,14 @@ import {
     calculateRewards,
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
+    isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
 import { Button, Column, H4, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -85,6 +89,35 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         });
     };
 
+    const openStakeInANutshellModal = () => {
+        dispatch(
+            goto('wallet-staking', {
+                preserveParams: true,
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
+        dispatch(
+            openModal({
+                type: 'stake-in-a-nutshell',
+                flow: StakingFlow.Stake,
+            }),
+        );
+
+        analytics.report({
+            type: EventType.StakingUpdateProvider,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account?.symbol,
+            },
+        });
+    };
+
     const formatCryptoAmount = (amount: string, withSymbol = false) =>
         CryptoAmountFormatter.format(amount, {
             symbol: account.symbol,
@@ -95,6 +128,10 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         });
 
     const state = useMemo(() => {
+        if (isCardanoStakedOutsideEverstake(account)) {
+            return 'staking-outdated-provider';
+        }
+
         if (
             (accountBalance === '0' && stakingBalance !== '0') ||
             (isCardanoNetworkType && isStakingActive)
@@ -118,7 +155,14 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         }
 
         return 'staking-inactive';
-    }, [accountBalance, stakingBalance, minStakingAmount, isCardanoNetworkType, isStakingActive]);
+    }, [
+        account,
+        accountBalance,
+        stakingBalance,
+        minStakingAmount,
+        isCardanoNetworkType,
+        isStakingActive,
+    ]);
 
     const CurrentRewardsCell = () => {
         const isStakingActive = stakingBalance !== '0';
@@ -183,7 +227,13 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                 <StakingDashboardAccountCell account={account} />
             </Table.Cell>
 
-            <Table.Cell>~{apy}%</Table.Cell>
+            <Table.Cell>
+                {state === 'staking-outdated-provider' ? (
+                    <Translation id="TR_STAKE_UNKNOWN_APY" />
+                ) : (
+                    <>~{apy}%</>
+                )}
+            </Table.Cell>
 
             {state === 'insufficient-funds' && (
                 <>
@@ -278,6 +328,28 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                             onClick={navigateToTradingBuy}
                         >
                             <Translation id="TR_BUY" />
+                        </Button>
+                    </Table.Cell>
+                </>
+            )}
+
+            {state === 'staking-outdated-provider' && (
+                <>
+                    <Table.Cell colSpan={2}>
+                        <Row gap={spacings.xxs}>
+                            <Icon name="warning" size={24} variant="warning" />
+                            <Paragraph typographyStyle="body" variant="warning">
+                                <Translation
+                                    id="TR_STAKING_DASHBOARD_OUTDATED_PROVIDER"
+                                    values={{ apy }}
+                                />
+                            </Paragraph>
+                        </Row>
+                    </Table.Cell>
+
+                    <Table.Cell align="end">
+                        <Button intent="brand" size="small" onClick={openStakeInANutshellModal}>
+                            <Translation id="TR_STAKING_UPDATE_PROVIDER" />
                         </Button>
                     </Table.Cell>
                 </>
