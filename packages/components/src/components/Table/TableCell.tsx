@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 
-import { useTable } from './Table';
+import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';
 import { UIAlignment } from '../../config/types';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';

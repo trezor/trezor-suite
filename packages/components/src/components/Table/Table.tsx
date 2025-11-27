@@ -1,11 +1,12 @@
-import { ReactNode, createContext, useContext } from 'react';
+import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { TypographyStyle, mapElevationToBackgroundToken } from '@trezor/theme';
+import { mapElevationToBackgroundToken } from '@trezor/theme';
 
 import { TableBody } from './TableBody';
 import { TableCell } from './TableCell';
+import { TableContext } from './TableContext';
 import { TableHeader } from './TableHeader';
 import { TableRow } from './TableRow';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
@@ -23,20 +24,6 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableFrameProps)[number
 
 export const allowedTableTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
 type AllowedTextProps = Pick<TextProps, (typeof allowedTableTextProps)[number]>;
-
-interface TableContextProps {
-    isRowHighlightedOnHover: boolean;
-    hasBorders: boolean;
-    typographyStyle: TypographyStyle;
-}
-
-const TableContext = createContext<TableContextProps>({
-    isRowHighlightedOnHover: false,
-    hasBorders: true,
-    typographyStyle: 'body',
-});
-
-export const useTable = () => useContext(TableContext);
 
 const Container = styled.table<TransientProps<AllowedFrameProps>>`
     width: 100%;

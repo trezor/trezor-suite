@@ -1,7 +1,7 @@
 import { KeyboardEvent, RefObject, useCallback, useRef } from 'react';
 import { GroupBase, Options, OptionsOrGroups, SelectInstance } from 'react-select';
 
-import type { Option } from './Select';
+import type { Option } from './types';
 
 /** Custom Type Guards to check if options are grouped or not */
 const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is GroupBase<Option>[] =>

@@ -17,11 +17,6 @@ packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinB
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinBackendClient.ts > packages/coinjoin/src/backend/CoinjoinWebsocketController.ts > packages/coinjoin/src/types/index.ts
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinFilterController.ts
 packages/coinjoin/src/types/backend.ts > packages/coinjoin/src/backend/CoinjoinMempoolController.ts
-packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx
-packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableCell.tsx > packages/components/src/components/Table/TableHeader.tsx
-packages/components/src/components/Table/Table.tsx > packages/components/src/components/Table/TableRow.tsx
-packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/customComponents.tsx
-packages/components/src/components/form/Select/Select.tsx > packages/components/src/components/form/Select/useOnKeyDown.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/data/DataManager.ts > packages/connect/src/utils/firmwareReleaseConfigUtils.ts
 packages/connect/src/data/firmwareInfo.ts > packages/connect/src/utils/firmwareUtils.ts

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
-import { useTable } from './Table';
+import { useTable } from './TableContext';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 const HeaderContext = createContext(false);

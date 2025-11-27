@@ -19,6 +19,7 @@ import {
     zIndices,
 } from '@trezor/theme';
 
+import { Option as OptionType } from './types';
 import { FrameProps } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
@@ -49,7 +50,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[numbe
 const createSelectStyle = (
     theme: DefaultTheme,
     isRenderedInModal: boolean,
-): StylesConfig<Option, boolean> => ({
+): StylesConfig<OptionType, boolean> => ({
     menuPortal: base => ({
         ...(base as Record<string, CSSObject>),
         zIndex: isRenderedInModal ? zIndices.modal : zIndices.selectMenu,
@@ -272,7 +273,7 @@ const SpinnerWrapper = styled.div`
 const closeMenuOnScroll = (e: Event) =>
     !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix);
 
-export type Option = any;
+export type { Option } from './types';
 
 // Make sure isSearchable can't be defined if useKeyPressScroll===true
 // If useKeyPressScroll is false or undefined, isSearchable is a boolean value
@@ -283,7 +284,7 @@ type KeyPressScrollProps =
 export type SelectProps = KeyPressScrollProps &
     AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
-    Omit<ReactSelectProps<Option>, 'onChange' | 'menuIsOpen'> & {
+    Omit<ReactSelectProps<OptionType>, 'onChange' | 'menuIsOpen'> & {
         isClean?: boolean;
         label?: ReactNode;
         size?: InputSize;
@@ -295,7 +296,7 @@ export type SelectProps = KeyPressScrollProps &
         isRenderedInModal?: boolean;
         /** @deprecated: workaround for issues with scroll */
         isScrollToSelectedEnabled?: boolean;
-        onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
+        onChange?: (value: OptionType, ref?: SelectInstance<OptionType, boolean> | null) => void;
         'data-testid'?: string;
         openMenuOnFocus?: boolean;
     };
@@ -319,7 +320,7 @@ export const Select = ({
     'data-testid': dataTest,
     ...rest
 }: SelectProps) => {
-    const selectRef = useRef<SelectInstance<Option, boolean>>(null);
+    const selectRef = useRef<SelectInstance<OptionType, boolean>>(null);
     const { elevation } = useElevation();
     const theme = useTheme();
     const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
@@ -327,7 +328,7 @@ export const Select = ({
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled } = formCellProps;
 
-    const [selectedOption, setSelectedOption] = useState<Option | undefined>(rest.value);
+    const [selectedOption, setSelectedOption] = useState<OptionType | undefined>(rest.value);
 
     // Todo: hack to workaround the issue, see: https://github.com/JedWatson/react-select/issues/4631
     const cache: EmotionCache = createCache({
@@ -336,7 +337,7 @@ export const Select = ({
         nonce: typeof window !== 'undefined' && window?.cspNonce ? window.cspNonce : '',
     });
 
-    const handleOnChange = useCallback<Required<ReactSelectProps<Option>>['onChange']>(
+    const handleOnChange = useCallback<Required<ReactSelectProps<OptionType>>['onChange']>(
         (value, { action }) => {
             if (value) {
                 onChange?.(value, selectRef.current);
