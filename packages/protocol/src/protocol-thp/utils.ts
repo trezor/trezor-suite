@@ -12,7 +12,7 @@ import {
     THP_HANDSHAKE_INIT_RESPONSE,
     THP_READ_ACK_HEADER_BYTE,
 } from './constants';
-import type { ThpMessageSyncBit } from './messages';
+import { ThpMessageSyncBit, ThpPairingMethod } from './messages';
 
 export const addAckBit = (magic: number, ackBit: number) => {
     const result = Buffer.alloc(1);
@@ -154,3 +154,6 @@ export const isThpMessageName = (name: string) =>
         'ThpHandshakeCompletionRequest',
         'ThpReadAck',
     ].includes(name);
+
+export const getThpPairingMethod = (dm: ThpPairingMethod | keyof typeof ThpPairingMethod) =>
+    typeof dm === 'string' ? ThpPairingMethod[dm] : dm;
