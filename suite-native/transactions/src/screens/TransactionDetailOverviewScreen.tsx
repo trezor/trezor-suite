@@ -1,37 +1,27 @@
 import { useMemo, useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    BottomSheetModal,
-    BottomSheetModalRef,
-    Box,
-    Button,
-    Card,
-    Text,
-    Toggle,
-    VStack,
-} from '@suite-native/atoms';
+import { Box, Card, Text, Toggle, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenHeader,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ChangeAddressesHeader } from './ChangeAddressesHeader';
-import { selectTransactionAddresses } from '../../selectors';
-import { AddressesType, VinVoutAddress } from '../../types';
-
-type TransactionDetailAddressesSheetProps = {
-    txid: string;
-    accountKey: AccountKey;
-    onClose: () => void;
-    ref: BottomSheetModalRef;
-};
+import { ChangeAddressesHeader } from '../components/TransactionDetail/ChangeAddressesHeader';
+import { selectTransactionAddresses } from '../selectors';
+import { AddressesType, VinVoutAddress } from '../types';
 
 const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
 
@@ -83,12 +73,12 @@ const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
     </Card>
 );
 
-export const TransactionDetailAddressesSheet = ({
-    onClose,
-    txid,
-    accountKey,
-    ref,
-}: TransactionDetailAddressesSheetProps) => {
+type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.TransactionDetailOverview>;
+
+export const TransactionDetailOverviewScreen = () => {
+    const route = useRoute<RouteProps>();
+    const { txid, accountKey } = route.params;
+
     const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
 
     const inputAddresses = useSelector((state: TransactionsRootState & TokenDefinitionsRootState) =>
@@ -115,12 +105,7 @@ export const TransactionDetailAddressesSheet = ({
     };
 
     return (
-        <BottomSheetModal
-            isCloseDisplayed
-            ref={ref}
-            title="Addresses"
-            subtitle={`Transaction #${txid}`}
-        >
+        <Screen header={<ScreenHeader />}>
             <Box>
                 <Toggle
                     isToggled={displayedAddressesType === 'outputs'}
@@ -149,13 +134,8 @@ export const TransactionDetailAddressesSheet = ({
                             </>
                         )}
                     </VStack>
-                    <Box marginTop="sp24" paddingHorizontal="sp8">
-                        <Button size="large" onPress={onClose}>
-                            <Translation id="generic.buttons.close" />
-                        </Button>
-                    </Box>
                 </Box>
             </Box>
-        </BottomSheetModal>
+        </Screen>
     );
 };
