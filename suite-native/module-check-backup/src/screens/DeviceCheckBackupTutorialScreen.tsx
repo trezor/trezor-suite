@@ -4,13 +4,13 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
+import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
+import { Screen } from '@suite-native/navigation';
 import {
     SwipeableWalkthrough,
     SwipeableWalkthroughCloseButton,
     SwipeableWalkthroughScreenHeader,
-} from '@suite-native/atoms';
-import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
-import { Screen } from '@suite-native/navigation';
+} from '@suite-native/swipeable-walkthrough';
 
 import { useHandleCheckBackupExitButtonPress } from '../components/CheckBackupScreenWithExitButton';
 import { CheckBackupTutorialStep1 } from '../components/CheckBackupTutorialStep1';

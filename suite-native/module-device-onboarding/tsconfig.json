@@ -30,6 +30,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../settings" },
+        { "path": "../swipeable-walkthrough" },
         { "path": "../thp" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

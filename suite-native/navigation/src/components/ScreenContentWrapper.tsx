@@ -5,11 +5,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
+import { ScrollViewContext, useScrollDivider } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useScrollDivider } from '../useScrollDivider';
 import { useDynamicHeader } from './DynamicHeader/DynamicScreenHeaderContext';
-import { ScrollViewContext } from './ScrollViewContext';
 
 type ScreenContentProps = {
     children: ReactNode;

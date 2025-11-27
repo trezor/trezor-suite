@@ -72,11 +72,6 @@ export * from './CircularSpinner';
 export * from './CardStepper/CardStepper';
 export * from './Sheet/BottomSheetModal';
 export * from './Sheet/hooks/useBottomSheetModal';
-export * from './SwipeableWalkthrough/SwipeableWalkthrough';
-export * from './SwipeableWalkthrough/SwipeableWalkthroughScreenHeader';
-export * from './SwipeableWalkthrough/SwipeableWalkthroughStep';
-export * from './SwipeableWalkthrough/SwipeableWalkthroughStepHeader';
-export * from './SwipeableWalkthrough/SwipeableWalkthroughCloseButton';
 export * from './AnimatedDoubleView/AnimatedDoubleView';
 export * from './AnimatedDoubleView/AnimatedDoubleInput';
 

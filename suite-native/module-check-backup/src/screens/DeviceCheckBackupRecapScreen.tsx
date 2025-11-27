@@ -1,4 +1,4 @@
-import { Box, Button, SwipeableWalkthroughStepHeader, VStack } from '@suite-native/atoms';
+import { Box, Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceCheckBackupStackParamList,
@@ -7,6 +7,7 @@ import {
     DeviceSettingsStackRoutes,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';
 
 import { CheckBackupScreenWithExitButton } from '../components/CheckBackupScreenWithExitButton';
 

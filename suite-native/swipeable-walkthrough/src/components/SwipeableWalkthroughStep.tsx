@@ -3,13 +3,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AnimatedBox, IconButton, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useSwipeableWalkthroughStepHeight } from './useSwipeableWalkthroughStepHeight';
-import { AnimatedBox } from '../Box';
-import { IconButton } from '../Button/IconButton';
-import { VStack } from '../Stack';
 import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
+import { useSwipeableWalkthroughStepHeight } from '../hooks/useSwipeableWalkthroughStepHeight';
 
 export type SwipeableWalkthroughStepProps = {
     children: ReactNode;

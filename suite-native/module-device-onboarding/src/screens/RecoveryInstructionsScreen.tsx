@@ -1,12 +1,6 @@
 import { useSetAtom } from 'jotai';
 
-import {
-    Box,
-    Button,
-    SwipeableWalkthroughStepHeader,
-    VStack,
-    useBottomSheetModal,
-} from '@suite-native/atoms';
+import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
@@ -15,6 +9,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { RecoveryCardSvg } from '../assets/RecoveryCardSvg';
