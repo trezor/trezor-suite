@@ -1,3 +1,6 @@
+import { DEFAULT_LOCALE, LANGUAGES } from './languages';
+import { SupportedLocaleCode } from './types';
+
 // flatten object to single level deep like { a: { b: { c: 1 } } } => { 'a.b.c': 1 }
 export const flatten = (obj: Record<string, any>, prefix = '') => {
     const result: Record<string, any> = {};
@@ -34,4 +37,16 @@ export const unflatten = (obj: Record<string, any>) => {
     }
 
     return result;
+};
+
+export const findClosestOfficiallySupportedLanguageLocale = (
+    locale: string,
+): SupportedLocaleCode => {
+    const [language, _region] = locale.split('-');
+
+    const matchingOfficialLanguageLocale = Object.entries(LANGUAGES).find(
+        ([key, { type }]) => type === 'official' && key.startsWith(language),
+    )?.[0] as SupportedLocaleCode | undefined;
+
+    return matchingOfficialLanguageLocale ?? DEFAULT_LOCALE;
 };
