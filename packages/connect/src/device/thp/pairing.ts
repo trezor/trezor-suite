@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from 'crypto';
 
-import { thp as protocolThp } from '@trezor/protocol';
+import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
 import { createDeferred } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
@@ -96,26 +96,28 @@ const processCodeEntry = async (device: Device, value: string) => {
 const processThpPairingResponse = (device: Device, payload: UiResponseThpPairingTag['payload']) => {
     if ('selectedMethod' in payload) {
         // change pairing method
-        device.getThpState()?.setPairingMethod(payload.selectedMethod);
+        const selectedMethod = protocolThp.getThpPairingMethod(payload.selectedMethod);
+        device.getThpState()?.setPairingMethod(selectedMethod);
 
         return thpCall(device, 'ThpSelectMethod', {
-            selected_pairing_method: payload.selectedMethod,
+            selected_pairing_method: selectedMethod,
         });
     }
 
-    if (payload.source === 'qr-code') {
+    const selectedMethod = device.getThpState()?.pairingMethod;
+    if (selectedMethod === ThpPairingMethod.QrCode) {
         return processQrCodeTag(device, payload.tag);
     }
 
-    if (payload.source === 'nfc') {
+    if (selectedMethod === ThpPairingMethod.NFC) {
         return processNfcTag(device, payload.tag);
     }
 
-    if (payload.source === 'code-entry') {
+    if (selectedMethod === ThpPairingMethod.CodeEntry) {
         return processCodeEntry(device, payload.tag);
     }
 
-    throw new Error(`Unknown THP pairing source ${payload.source}`);
+    throw ERRORS.TypedError('Device_ThpPairingMethodsException');
 };
 
 const waitForPairingCancel = (device: Device) => {
@@ -133,6 +135,9 @@ const waitForPairingTag = async (device: Device) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
         throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+    if (thpState.pairingMethod === undefined) {
+        throw ERRORS.TypedError('Device_ThpPairingMethodsException');
     }
 
     const dfd = createDeferred<UiResponseThpPairingTag['payload'] | { error: string }>();

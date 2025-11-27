@@ -6,6 +6,7 @@ import {
     DEVICE_EVENT,
     TRANSPORT,
     TRANSPORT_EVENT,
+    ThpPairingMethod,
     TrezorConnect,
     UI,
     UI_EVENT,
@@ -134,12 +135,35 @@ export const events = (api: TrezorConnect) => {
             if (event.payload.device.thp?.properties?.pairing_methods[0] === 'CodeEntry') {
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
-                    payload: { selectedMethod: 1 },
+                    payload: { selectedMethod: ThpPairingMethod.NFC },
                 });
 
                 api.uiResponse({
                     type: 'ui-receive_thp_pairing_tag',
-                    payload: { source: 'code-entry', tag: '0000' },
+                    payload: { selectedMethod: 'SkipPairing' },
+                });
+
+                api.uiResponse({
+                    type: 'ui-receive_thp_pairing_tag',
+                    // @ts-expect-error invalid string
+                    payload: { selectedMethod: 'unknown method' },
+                });
+
+                api.uiResponse({
+                    type: 'ui-receive_thp_pairing_tag',
+                    // @ts-expect-error invalid enum
+                    payload: { selectedMethod: 7 },
+                });
+
+                api.uiResponse({
+                    type: 'ui-receive_thp_pairing_tag',
+                    payload: { tag: '0000' },
+                });
+
+                api.uiResponse({
+                    type: 'ui-receive_thp_pairing_tag',
+                    // @ts-expect-error invalid tag
+                    payload: { tag: 1234 },
                 });
             }
         }

@@ -66,8 +66,8 @@ export type DeviceThpCredentialsChangedPayload = {
 
 export type DeviceThpPairingPayload = {
     availableMethods: ThpPairingMethod[];
-    selectedMethod?: ThpPairingMethod; // expected pairing response data
-    nfcData?: string; // data for NFC module, if selected_method === ThpPairingMethod.NFC
+    selectedMethod: ThpPairingMethod; // expected pairing method
+    nfcData?: string; // data for NFC module, if selectedMethod === ThpPairingMethod.NFC
 };
 
 export interface DeviceThpCredentialsChanged {

@@ -9,17 +9,15 @@ import { DataManager } from '../../data/DataManager';
 import type { Device } from '../Device';
 
 // intersection of device acceptable methods and host acceptable methods
-const enumFromString = (dm: ThpPairingMethod | keyof typeof ThpPairingMethod) =>
-    typeof dm === 'string' ? protocolThp.ThpPairingMethod[dm] : dm;
-
 const getPairingMethods = (
     deviceMethods?: (ThpPairingMethod | keyof typeof ThpPairingMethod)[],
     settingsMethods?: (ThpPairingMethod | keyof typeof ThpPairingMethod)[],
 ) =>
     deviceMethods?.flatMap(dm => {
-        const value = enumFromString(dm);
+        const value = protocolThp.getThpPairingMethod(dm);
         const isRequested =
-            settingsMethods && settingsMethods.find(sm => value === enumFromString(sm));
+            settingsMethods &&
+            settingsMethods.find(sm => value === protocolThp.getThpPairingMethod(sm));
 
         return isRequested ? value : [];
     });
