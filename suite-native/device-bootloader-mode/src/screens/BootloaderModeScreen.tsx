@@ -5,6 +5,7 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Button, Card, Pictogram, Text, TextDivider, VStack } from '@suite-native/atoms';
+import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,8 +20,6 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { selectShouldFactoryResetBeVisible } from '../selectors';
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
@@ -72,14 +71,14 @@ export const BootloaderModeScreen = () => {
                     <VStack spacing="sp32" style={applyStyle(contentWrapperStyle)}>
                         <Pictogram variant="critical" />
                         <Text variant="highlight" textAlign="center">
-                            <Translation id="moduleDevice.bootloaderScreen.factoryResetCard.title" />
+                            <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.title" />
                         </Text>
                         <Text color="textSubdued" textAlign="center">
-                            <Translation id="moduleDevice.bootloaderScreen.factoryResetCard.description" />
+                            <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.description" />
                         </Text>
                         <VStack style={applyStyle(buttonWrapperStyle)}>
                             <Button colorScheme="redBold" onPress={handleRedirectToFactoryReset}>
-                                <Translation id="moduleDevice.bootloaderScreen.factoryResetCard.buttonTitle" />
+                                <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.factoryResetCard.buttonTitle" />
                             </Button>
                         </VStack>
                     </VStack>
@@ -87,10 +86,10 @@ export const BootloaderModeScreen = () => {
                 <TextDivider />
                 <VStack style={applyStyle(contentWrapperStyle)}>
                     <Text variant="highlight" textAlign="center">
-                        <Translation id="moduleDevice.bootloaderScreen.reconnectCard.title" />
+                        <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.reconnectCard.title" />
                     </Text>
                     <Text color="textSubdued" textAlign="center">
-                        <Translation id="moduleDevice.bootloaderScreen.reconnectCard.description" />
+                        <Translation id="moduleDeviceBootloaderMode.bootloaderScreen.reconnectCard.description" />
                     </Text>
                 </VStack>
             </VStack>

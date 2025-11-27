@@ -11234,6 +11234,7 @@ __metadata:
     "@suite-native/connection-status": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/device-bootloader-mode": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters-config": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -11555,6 +11556,23 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:19.1.0"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/device-bootloader-mode@workspace:*, @suite-native/device-bootloader-mode@workspace:suite-native/device-bootloader-mode":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/device-bootloader-mode@workspace:suite-native/device-bootloader-mode"
+  dependencies:
+    "@react-navigation/native": "npm:7.1.18"
+    "@react-navigation/native-stack": "npm:7.5.1"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
     react: "npm:19.1.0"
     react-redux: "npm:9.2.0"

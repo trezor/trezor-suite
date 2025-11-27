@@ -758,6 +758,21 @@ export const messages = {
             },
         },
     },
+    moduleDeviceBootloaderMode: {
+        bootloaderScreen: {
+            factoryResetCard: {
+                title: 'Forgot your PIN or just want to reset your Trezor?',
+                description:
+                    'This will reset all stored data on your Trezor. Proceed with caution.',
+                buttonTitle: 'Factory reset',
+            },
+            reconnectCard: {
+                title: 'Want to see your dashboard?',
+                description:
+                    'If you want to see your dashboard, simply reconnect & unlock your Trezor.',
+            },
+        },
+    },
     moduleDeviceSettings: {
         sectionTitles: {
             general: 'General',
