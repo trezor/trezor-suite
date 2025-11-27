@@ -22,6 +22,7 @@ import { abortThpWorkflow, getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
 import {
+    getCurrentVersion,
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
     getLanguage,
@@ -876,22 +877,23 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private async _updateCurrentRelease(feat: Features) {
-        const newVersion = [
-            feat.major_version,
-            feat.minor_version,
-            feat.patch_version,
-        ] satisfies VersionArray;
+        const { firmwareVersion } = getCurrentVersion(feat);
         const newFirmwareType = getFirmwareType(feat);
+
+        // We need firmwareVersion to lookup the release.
+        if (!firmwareVersion) {
+            return;
+        }
 
         if (
             this._currentRelease &&
             newFirmwareType === this.firmwareType &&
-            versionUtils.isEqual(this._currentRelease.version, newVersion)
+            versionUtils.isEqual(this._currentRelease.version, firmwareVersion)
         ) {
             return;
         }
 
-        const release = await getReleaseByVersion(feat, newVersion, newFirmwareType);
+        const release = await getReleaseByVersion(feat, firmwareVersion, newFirmwareType);
         this._currentRelease = release;
         this.availableTranslations = this._currentRelease?.translations ?? {};
     }

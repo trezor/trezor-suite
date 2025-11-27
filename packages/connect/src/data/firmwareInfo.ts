@@ -356,7 +356,7 @@ export type CurrentVersion = {
     firmwareVersion: VersionArray | null;
 };
 
-const getCurrentVersion = (features: Features): CurrentVersion => {
+export const getCurrentVersion = (features: Features): CurrentVersion => {
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided.');
     }
