@@ -24,6 +24,7 @@ const TooltipSymbol = ({
         margin={{ horizontal: 4 }}
         content={content}
         maxWidth={250}
+        // eslint-disable-next-line local-rules/no-classname-on-component
         className={className}
     >
         <Icon name={icon} size={16} color={iconColor} />

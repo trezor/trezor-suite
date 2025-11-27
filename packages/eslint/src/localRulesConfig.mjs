@@ -4,7 +4,7 @@ import pluginLocalRules from 'eslint-plugin-local-rules';
  */
 
 /** @type {Config[]} */
-export const localRulesConfig = [
+export default [
     {
         plugins: {
             'local-rules': pluginLocalRules,
@@ -14,6 +14,15 @@ export const localRulesConfig = [
                 'error',
                 { packageNames: ['@trezor/components', '@trezor/product-components'] },
             ],
+            'local-rules/no-classname-on-component': 'error',
+        },
+    },
+
+    {
+        files: ['packages/connect-explorer-theme/**/*'],
+        rules: {
+            'local-rules/no-classname-on-component': 'off',
+            'local-rules/no-override-ds-component': 'off',
         },
     },
 ];

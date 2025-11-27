@@ -36,7 +36,10 @@ export const TradingHeaderSummary = ({
     const context = useTradingFormContext();
 
     return (
-        <SummaryWrap className={className}>
+        <SummaryWrap
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+        >
             <Row alignItems="center">
                 {isTradingSellContext(context) && (
                     <>

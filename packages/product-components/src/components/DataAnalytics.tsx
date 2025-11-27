@@ -22,12 +22,7 @@ export const DataAnalytics = ({
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(isInitialTrackingEnabled);
 
     return (
-        <Card
-            data-testid="@analytics/consent"
-            className={className}
-            paddingType="large"
-            maxWidth={550}
-        >
+        <Card data-testid="@analytics/consent" paddingType="large" maxWidth={550}>
             <Column gap={spacings.md}>
                 <Column gap={spacings.md}>
                     <Text typographyStyle="callout" data-testid="@analytics/consent/heading">

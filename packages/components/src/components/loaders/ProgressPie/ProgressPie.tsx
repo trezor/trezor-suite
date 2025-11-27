@@ -68,6 +68,7 @@ export const ProgressPie = ({
             $valueInPercents={valueInPercents}
             $backgroundColor={backgroundColor}
             $color={color}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             $elevation={elevation}
             {...frameProps}

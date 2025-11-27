@@ -151,6 +151,7 @@ export const Spinner = ({
         <StyledLottie
             size={size}
             $isGrey={isGrey}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             data-testid={dataTest ?? '@spinner'}
             {...lottieProps}

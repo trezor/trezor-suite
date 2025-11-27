@@ -362,7 +362,11 @@ export const Range = ({
     );
 
     return (
-        <StyledRange className={className} $fill={fill}>
+        <StyledRange
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+            $fill={fill}
+        >
             <Input
                 {...props}
                 type="range"

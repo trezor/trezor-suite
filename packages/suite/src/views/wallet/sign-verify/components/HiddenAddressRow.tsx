@@ -22,6 +22,7 @@ export const HiddenAddressRow = ({
 
     return (
         <Row
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={`${className} react-select__single-value`}
             gap={spacings.xxs}
             cursor="pointer"

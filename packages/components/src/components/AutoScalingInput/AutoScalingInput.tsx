@@ -96,6 +96,7 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
         return (
             <>
                 <HiddenInputToMeasurePlaceholderScrollableWidth
+                    // eslint-disable-next-line local-rules/no-classname-on-component
                     className={props.className} // It is important to keep styles so the width is properly calculated
                     style={props.style} // It is important to keep styles so the width is properly calculated
                     type="text"

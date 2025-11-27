@@ -24,6 +24,7 @@ export default [
         rules: {
             'react/no-unescaped-entities': 'off',
             'local-rules/no-override-ds-component': 'off',
+            'local-rules/no-classname-on-component': 'off',
         },
     },
     {

@@ -122,7 +122,12 @@ export const Tooltip = ({
     const elType = isInline ? 'span' : 'div';
 
     return (
-        <Wrapper $isFullWidth={isFullWidth} className={className} as={elType}>
+        <Wrapper
+            $isFullWidth={isFullWidth}
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+            as={elType}
+        >
             <TooltipFloatingUi
                 isActive={isActive}
                 placement={placement}

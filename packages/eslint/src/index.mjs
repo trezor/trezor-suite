@@ -7,7 +7,7 @@ import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './i
 import { javascriptConfig } from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
-import { localRulesConfig } from './localRulesConfig.mjs';
+import localRulesConfig from './localRulesConfig.mjs';
 import { reactConfig } from './reactConfig.mjs';
 import { typescriptConfig } from './typescriptConfig.mjs';
 /**

@@ -175,6 +175,7 @@ export const TextButton = ({
             $isUnderlined={isUnderlined}
             data-testid={dataTestId}
             onClick={onClick}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             tabIndex={tabIndex}
             type={type}

@@ -136,5 +136,12 @@ export const FormattedCryptoAmount = ({
         return content;
     }
 
-    return <HiddenPlaceholder className={className}>{content}</HiddenPlaceholder>;
+    return (
+        <HiddenPlaceholder
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+        >
+            {content}
+        </HiddenPlaceholder>
+    );
 };

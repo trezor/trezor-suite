@@ -51,7 +51,10 @@ export const CryptoAmountWithHeader = ({
     color,
     className,
 }: CryptoAmountWithHeaderProps) => (
-    <Container className={className}>
+    <Container
+        // eslint-disable-next-line local-rules/no-classname-on-component
+        className={className}
+    >
         <Header>
             {headerIcon && headerIcon} {header}
         </Header>

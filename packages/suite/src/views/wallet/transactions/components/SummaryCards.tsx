@@ -110,7 +110,10 @@ export const SummaryCards = ({
     );
 
     return (
-        <InfoCardsWrapper className={className}>
+        <InfoCardsWrapper
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+        >
             <InfoCard
                 title={getFormattedLabelLong(selectedRange.label)}
                 isLoading={isLoading}

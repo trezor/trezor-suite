@@ -125,6 +125,7 @@ export const HiddenPlaceholder = ({
             $discreetMode={discreetMode}
             $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
             $minWidth={shouldEnforceMinWidth ? wrapperMinWidth : undefined}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             ref={ref}
             data-testid={dataTestId}

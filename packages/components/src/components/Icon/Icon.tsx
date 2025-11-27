@@ -179,6 +179,7 @@ export const Icon = forwardRef(
                 $variant={variant}
                 data-testid={dataTest}
                 onClick={onClick ? handleClick : undefined}
+                // eslint-disable-next-line local-rules/no-classname-on-component
                 className={className}
                 ref={ref}
                 {...frameProps}

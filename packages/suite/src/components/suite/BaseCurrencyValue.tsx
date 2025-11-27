@@ -111,7 +111,10 @@ export const BaseCurrencyValue = ({
 
     if (value) {
         const fiatValueComponent = (
-            <WrapperComponent className={className}>
+            <WrapperComponent
+                // eslint-disable-next-line local-rules/no-classname-on-component
+                className={className}
+            >
                 {showApproximationIndicator && <>≈&nbsp;</>}
                 <BaseCurrencyAmountFormatter
                     currency={baseCurrencyCode.toUpperCase()}

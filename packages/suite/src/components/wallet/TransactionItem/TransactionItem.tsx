@@ -230,6 +230,7 @@ export const TransactionItem = memo(
                 onMouseLeave={() => setTxItemIsHovered(false)}
                 ref={anchorRef}
                 $isPhishingTransaction={isPhishingTransaction}
+                // eslint-disable-next-line local-rules/no-classname-on-component
                 className={className}
                 data-testid="@wallet/transaction-item"
             >

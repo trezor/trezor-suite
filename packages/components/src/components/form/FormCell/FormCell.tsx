@@ -82,6 +82,7 @@ export const FormCell = ({
     return (
         <Wrapper
             {...frameProps}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

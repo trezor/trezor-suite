@@ -95,7 +95,10 @@ export const FormattedNftAmount = ({
     }
 
     return (
-        <Row className={className}>
+        <Row
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+        >
             {signValue ? <Sign value={signValue} /> : null}
             <Box margin={{ right: spacings.xxs }}>
                 <Translation id="TR_TOKEN_ID_COLON" />

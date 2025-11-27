@@ -222,6 +222,7 @@ export const Checkbox = ({
             $verticalAlignment={verticalAlignment}
             onClick={isDisabled ? undefined : onClick}
             onKeyUp={handleKeyUp}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             {...frameProps}
         >

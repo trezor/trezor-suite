@@ -55,7 +55,11 @@ interface StatusLightProps {
 }
 
 export const StatusLight = ({ variant, className }: StatusLightProps) => (
-    <Circle $variant={variant} className={className}>
+    <Circle
+        $variant={variant}
+        // eslint-disable-next-line local-rules/no-classname-on-component
+        className={className}
+    >
         <div />
     </Circle>
 );

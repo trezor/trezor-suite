@@ -48,6 +48,7 @@ export const ProgressBar = ({
         <Wrapper
             $color={backgroundColor || theme.backgroundNeutralSubdued}
             data-testid={dataTestId}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
         >
             <Value $max={max} $value={value} $color={foregroundColor || theme.iconPrimaryDefault} />

@@ -21,5 +21,10 @@ interface TradingTagProps {
 }
 
 export const TradingTag = ({ tag, className }: TradingTagProps) => (
-    <TagRow className={className}>{tag && <Tag>{tag}</Tag>}</TagRow>
+    <TagRow
+        // eslint-disable-next-line local-rules/no-classname-on-component
+        className={className}
+    >
+        {tag && <Tag>{tag}</Tag>}
+    </TagRow>
 );

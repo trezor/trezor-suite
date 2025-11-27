@@ -16,7 +16,10 @@ type LoadingProps = {
 };
 
 export const Loading = ({ className }: LoadingProps) => (
-    <LoaderWrapper data-testid="@suite/loading" className={className}>
+    <LoaderWrapper
+        data-testid="@suite/loading" // eslint-disable-next-line local-rules/no-classname-on-component
+        className={className}
+    >
         <Spinner size={80} isGrey={false} hasStartAnimation={true} />
     </LoaderWrapper>
 );

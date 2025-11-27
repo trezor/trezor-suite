@@ -114,6 +114,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
                     }
                 }}
                 $variant={variant}
+                // eslint-disable-next-line local-rules/no-classname-on-component
                 className={className}
                 {...textProps}
                 $color={color}

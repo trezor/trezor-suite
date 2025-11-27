@@ -25,7 +25,10 @@ interface QuestionTooltipProps {
 
 // TODO: remove or refactor this
 export const QuestionTooltip = ({ label, tooltip, className }: QuestionTooltipProps) => (
-    <Wrapper className={className}>
+    <Wrapper
+        // eslint-disable-next-line local-rules/no-classname-on-component
+        className={className}
+    >
         {label &&
             (tooltip ? (
                 <Tooltip

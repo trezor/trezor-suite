@@ -108,7 +108,10 @@ export const AssetShareIndicator = ({
     index,
     ...rest
 }: AssetShareIndicatorProps) => (
-    <Container className={className}>
+    <Container
+        // eslint-disable-next-line local-rules/no-classname-on-component
+        className={className}
+    >
         <CoinLogo symbol={symbol} size={size} {...rest} />
         <ProgressCircle
             symbol={symbol}

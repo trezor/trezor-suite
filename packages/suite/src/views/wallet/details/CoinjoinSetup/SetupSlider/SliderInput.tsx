@@ -124,7 +124,10 @@ export const SliderInput = forwardRef<
     const focusInput = () => inputRef.current?.focus();
 
     return (
-        <LevelContainer className={className}>
+        <LevelContainer
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+        >
             <Level
                 value={String(inputValue)}
                 onChange={handleChange}

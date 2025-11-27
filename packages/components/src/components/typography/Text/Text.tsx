@@ -147,6 +147,7 @@ export const Text = ({
     return (
         <StyledText
             {...(variant !== undefined ? { $variant: variant } : { $color: color })}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             as={as}
             onClick={onClick}

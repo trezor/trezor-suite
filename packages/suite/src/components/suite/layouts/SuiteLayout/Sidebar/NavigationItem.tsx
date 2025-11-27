@@ -140,6 +140,7 @@ export const NavItem = (props: NavigationItemProps) => {
             $isActive={isActive || isActiveRoute}
             onClick={handleClick}
             data-testid={dataTest || `@suite/menu/${goToRoute}`}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             tabIndex={0}
             $elevation={elevation}

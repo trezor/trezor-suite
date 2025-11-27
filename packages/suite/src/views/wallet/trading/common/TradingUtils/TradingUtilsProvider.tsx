@@ -26,7 +26,12 @@ export const TradingUtilsProvider = ({
     const provider = providers && exchange ? providers[exchange] : null;
 
     return (
-        <Row gap={spacings.xs} className={className} data-testid="@trading/offers/quote/provider">
+        <Row
+            gap={spacings.xs}
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+            data-testid="@trading/offers/quote/provider"
+        >
             {provider ? (
                 <>
                     {provider.logo && (

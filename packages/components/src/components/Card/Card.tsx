@@ -186,6 +186,7 @@ export const Card = ({
                 $variant={variant}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
+                // eslint-disable-next-line local-rules/no-classname-on-component
                 className={className}
                 onMouseLeave={onMouseLeave}
                 data-testid={dataTest}

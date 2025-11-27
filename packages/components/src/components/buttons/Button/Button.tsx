@@ -129,6 +129,7 @@ export const Button = ({
             $priority={priority}
             $intent={intent}
             $isInverse={isInverse}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             {...frameProps}
         >

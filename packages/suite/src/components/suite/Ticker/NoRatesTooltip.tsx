@@ -25,7 +25,10 @@ export const NoRatesTooltip = ({ customText, customTooltip, className }: NoRates
     const theme = useTheme();
 
     return (
-        <NoRatesMessage className={className}>
+        <NoRatesMessage
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+        >
             <Translation id={customText || 'TR_FIAT_RATES_NOT_AVAILABLE'} />
             <TooltipSymbol
                 content={

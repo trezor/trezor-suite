@@ -31,6 +31,7 @@ export const RotateDeviceImage = ({
     return (
         <DeviceAnimation
             loop={loop}
+            // eslint-disable-next-line local-rules/no-classname-on-component
             className={className}
             type="ROTATE"
             deviceModelInternal={

@@ -18,7 +18,10 @@ export const TradingCoinLogo = ({
     const networkSymbol = cryptoIdToNativeCoinSymbol(cryptoId);
 
     return (
-        <Wrapper className={className}>
+        <Wrapper
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+        >
             <AssetLogo
                 coingeckoId={networkId}
                 symbol={networkSymbol}

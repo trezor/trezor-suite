@@ -89,7 +89,12 @@ export const CoinLogo = ({
     }
 
     return (
-        <SvgWrapper className={className} $size={size} {...rest}>
+        <SvgWrapper
+            // eslint-disable-next-line local-rules/no-classname-on-component
+            className={className}
+            $size={size}
+            {...rest}
+        >
             <ReactSVG
                 src={symbolSrc ?? COINS[symbol]}
                 beforeInjection={svg => {
