@@ -5,7 +5,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
-import { formatUrl, getContexts, log, openPopup, setConnectSettings } from '../support/helpers';
+import { formatUrl, getContexts, log, openPopup } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
@@ -92,23 +92,14 @@ filteredFixtures.forEach(f => {
         );
         context = browserContext;
 
-        if (connectSrc || isCoreInPopup) {
-            await setConnectSettings(
-                explorerPage,
-                explorerUrl,
-                {
-                    trustedHost: false,
-                    connectSrc,
-                    isCoreInPopup,
-                },
-                isWebExtension,
-            );
-        }
-
         const [method, submethod] = f.url.split('-');
         const fullUrl = formatUrl(
             explorerUrl,
-            `methods/${f.dir}/${method}/index.html${submethod ? '?submethod=' + submethod : ''}`,
+            `methods/${f.dir}/${method}/` +
+                `${isWebExtension ? 'index.html' : ''}` +
+                `?core-mode=popup` + // always test with legacy popup flow
+                `${isWebExtension ? '&trezor-connect-src=' + encodeURIComponent(url.split('?')[0]) : ''}` +
+                `${submethod ? '&submethod=' + submethod : ''}`,
         );
         await explorerPage.goto(fullUrl);
 
