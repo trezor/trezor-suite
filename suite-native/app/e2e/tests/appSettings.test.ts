@@ -10,6 +10,7 @@ import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { openApp, preparePreloadedReduxState } from '../support/setup';
+import { waitForVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
@@ -23,8 +24,9 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onHome.scrollScreenToBottom();
     });
 
-    it.skip('Localization - Currency', async () => {
-        await detoxExpect(element(by.text(/^.*\$.*$/i))).toBeVisible();
+    it('Localization - Currency', async () => {
+        const fiatInUSDRegex = /^.*\$.*$/i;
+        await waitForVisible(by.text(fiatInUSDRegex));
         await onTabBar.navigateToSettings();
         await onSettings.tapPreferences();
         await onSettings.changeLocalizationCurrency('czk');

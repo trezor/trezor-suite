@@ -34,7 +34,7 @@ export const DeviceConnectionStatus = ({
                 isConnected={isConnected}
                 isDeviceInBootloaderMode={isDeviceInBootloaderMode}
             />
-            <Text variant="hint" color={getTextColor()}>
+            <Text testID="@device-manager/connection-status" variant="hint" color={getTextColor()}>
                 <Translation id={getDeviceStatus()} />
             </Text>
         </HStack>

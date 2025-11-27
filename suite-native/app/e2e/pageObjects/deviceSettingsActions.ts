@@ -161,10 +161,13 @@ class DeviceSettingsActions {
         await this.tapDeviceCheckBackupContinueButton();
 
         await TrezorUserEnvLink.pressYes();
+        await wait(500); // Firmware 2.9.4 brought instability in firmware/emu interaction, this will be discussed with firmware team
         await TrezorUserEnvLink.selectNumOfWordsEmu(12);
         await wait(500); // short timeout is needed to avoid calling `.pressYes()` before the `.selectNumOfWordsEmu()` is registered by emulator
         await TrezorUserEnvLink.pressYes();
+        await wait(500); // Firmware 2.9.4 brought instability in firmware/emu interaction, this will be discussed with firmware team
         await insertSeed();
+        await wait(500); // Firmware 2.9.4 brought instability in firmware/emu interaction, this will be discussed with firmware team
         await TrezorUserEnvLink.pressYes();
 
         await waitForVisible(by.text('Your backup is valid'));
