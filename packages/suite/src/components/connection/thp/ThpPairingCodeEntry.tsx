@@ -27,7 +27,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
             dispatch(thpActions.setLastThpCode({ code: tag }));
             TrezorConnect.uiResponse({
                 type: 'ui-receive_thp_pairing_tag',
-                payload: { source: 'code-entry', tag },
+                payload: { tag },
             });
         },
         [dispatch],

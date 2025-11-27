@@ -1,3 +1,5 @@
+import type { ThpPairingMethod } from '@trezor/protocol';
+
 import { POPUP } from './popup';
 import { UI_EVENT } from './ui-request';
 import type { Device } from '../types/device';
@@ -78,11 +80,10 @@ export interface UiResponseThpPairingTag {
     type: typeof UI_RESPONSE.RECEIVE_THP_PAIRING_TAG;
     payload:
         | {
-              source: 'code-entry' | 'qr-code' | 'nfc';
               tag: string;
           }
         | {
-              selectedMethod: number; // change pairing method ThpPairingMethod;
+              selectedMethod: ThpPairingMethod | keyof typeof ThpPairingMethod;
           };
 }
 

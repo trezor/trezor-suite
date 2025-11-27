@@ -20,14 +20,11 @@ export const ThpCodeEntryScreenContent = ({ onRetry }: ThpCodeEntryScreenContent
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const onSubmit = (code: string) => {
+    const onSubmit = (tag: string) => {
         setIsLoading(true);
         TrezorConnect.uiResponse({
             type: 'ui-receive_thp_pairing_tag',
-            payload: {
-                source: 'code-entry',
-                tag: code,
-            },
+            payload: { tag },
         });
     };
 
