@@ -11,15 +11,6 @@ describe('utils/hdnode', () => {
         });
     });
 
-    describe('convertBitcoinXpub', () => {
-        fixtures.convertBitcoinXpub.forEach(f => {
-            it(f.description, () => {
-                const result = hdnode.convertBitcoinXpub(f.xpub, f.network);
-                expect(result).toEqual(f.result);
-            });
-        });
-    });
-
     describe('convertMultisigPubKey', () => {
         fixtures.convertMultisigPubKey.forEach(f => {
             it(f.description, () => {

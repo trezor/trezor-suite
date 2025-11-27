@@ -26,9 +26,6 @@ export const formatTime = (n: number) => {
     return res;
 };
 
-export const btckb2satoshib = (n: string) =>
-    new BigNumber(n).times(1e5).toFixed(0, BigNumber.ROUND_HALF_UP);
-
 export const hasHexPrefix = (str: string) => str.slice(0, 2).toLowerCase() === '0x';
 
 export const stripHexPrefix = (str: string) => (hasHexPrefix(str) ? str.slice(2) : str);

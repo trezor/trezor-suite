@@ -37,20 +37,6 @@ export const convertXpub = (
     return node.toBase58();
 };
 
-// stupid hack, because older (1.7.1, 2.0.8) trezor FW serializes all xpubs with bitcoin magic
-export const convertBitcoinXpub = (xpub: string, network: Network) => {
-    if (network.bip32.public === 0x0488b21e) {
-        // it's bitcoin-like => return xpub
-        return xpub;
-    }
-    const node = bip32.fromBase58(xpub); // use default bitcoin magic
-
-    // override network of BIP32Interface
-    node.network = network;
-
-    return node.toBase58();
-};
-
 // converts from protobuf.PublicKey to bip32.BIP32Interface
 const pubKey2bjsNode = (key: PROTO.PublicKey | PROTO.EthereumPublicKey, network?: Network) => {
     const keyNode = key.node;
