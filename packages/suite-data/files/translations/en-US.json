@@ -2094,7 +2094,7 @@
   "TR_STORE_DEVICE_DATA_MODAL_DISABLED": "Disabled",
   "TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE": "Advanced",
   "TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION": "No data is stored, and advanced security features are disabled. A secure pairing connection must be reestablished every time. Recommended for experienced users only. Use at your own risk.",
-  "TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING": "All wallets will be ejected. Trezor Suite will automatically restart once the process is complete.",
+  "TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING": "All wallets will be safely ejected. Trezor Suite will restart automatically when the process is finished.",
   "TR_STORE_DEVICE_DATA_MODAL_ENABLED": "Enabled",
   "TR_STORE_DEVICE_DATA_MODAL_ENABLED_DESCRIPTION": "Trezor Suite stores firmware, pairing credentials, and other device data locally to provide advanced security.",
   "TR_STORE_DEVICE_DATA_MODAL_TITLE": "Store device-related data",

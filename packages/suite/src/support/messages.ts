@@ -2883,7 +2883,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
         defaultMessage:
-            'All wallets will be ejected. Trezor Suite will automatically restart once the process is complete.',
+            'All wallets will be safely ejected. Trezor Suite will restart automatically when the process is finished.',
     },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
