@@ -17,9 +17,12 @@ import { spacings } from '@trezor/theme';
 import { BigNumber, arrayPartition } from '@trezor/utils';
 
 import { setStakingDashboardCollapsed } from 'src/actions/suite/suiteActions';
+import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { StakingDashboardAccountRow } from './StakingDashboardAccountRow';
@@ -61,6 +64,8 @@ export const StakingDashboard = () => {
     const dispatch = useDispatch();
 
     const collapsed = useSelector(state => state.suite.stakingDashboardCollapsed);
+
+    const { anchorRef, shouldHighlight } = useAnchor(DashboardAnchor.Staking);
 
     const ethCurrentRate = useCryptoCurrentRate('eth');
     const solCurrentRate = useCryptoCurrentRate('sol');
@@ -182,61 +187,64 @@ export const StakingDashboard = () => {
     const badge = getBadgeState(isStakingActive, stakingAccounts);
 
     return (
-        <DashboardSection
-            heading={
-                <>
-                    <Translation id="TR_STAKING_DASHBOARD_TITLE" />
-                    <Badge intent={badge.intent} margin={{ left: spacings.sm }}>
-                        <Translation id={badge.label} />
-                    </Badge>
-                </>
-            }
-            subheading={<Translation id="TR_STAKING_DASHBOARD_TEXT" />}
-            collapsible
-            defaultCollapsed={collapsed}
-            onCollapseChange={onCollapseChange}
-        >
-            <Card paddingType="none">
-                <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.Cell>
-                                <Translation id="TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE" />
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Translation id="TR_STAKING_DASHBOARD_TABLE_APY" />
-                            </Table.Cell>
-                            <Table.Cell>
-                                {!stakingAccountsNotActivated && (
-                                    <Translation id="TR_STAKING_DASHBOARD_TABLE_YEARLY_REWARDS" />
-                                )}
-                            </Table.Cell>
-                            <Table.Cell>
-                                {!stakingAccountsNotActivated && (
-                                    <Translation id="TR_STAKING_DASHBOARD_TABLE_POTENTIAL_REWARDS" />
-                                )}
-                            </Table.Cell>
-                            <Table.Cell></Table.Cell>
-                        </Table.Row>
-                    </Table.Header>
+        <OutlineHighlight shouldHighlight={shouldHighlight}>
+            <DashboardSection
+                heading={
+                    <>
+                        <Translation id="TR_STAKING_DASHBOARD_TITLE" />
+                        <Badge intent={badge.intent} margin={{ left: spacings.sm }}>
+                            <Translation id={badge.label} />
+                        </Badge>
+                    </>
+                }
+                subheading={<Translation id="TR_STAKING_DASHBOARD_TEXT" />}
+                collapsible
+                defaultCollapsed={collapsed}
+                onCollapseChange={onCollapseChange}
+                ref={anchorRef}
+            >
+                <Card paddingType="none">
+                    <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.Cell>
+                                    <Translation id="TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE" />
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <Translation id="TR_STAKING_DASHBOARD_TABLE_APY" />
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {!stakingAccountsNotActivated && (
+                                        <Translation id="TR_STAKING_DASHBOARD_TABLE_YEARLY_REWARDS" />
+                                    )}
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {!stakingAccountsNotActivated && (
+                                        <Translation id="TR_STAKING_DASHBOARD_TABLE_POTENTIAL_REWARDS" />
+                                    )}
+                                </Table.Cell>
+                                <Table.Cell></Table.Cell>
+                            </Table.Row>
+                        </Table.Header>
 
-                    <Table.Body>
-                        {sortedAccounts.map(account => (
-                            <StakingDashboardAccountRow account={account} key={account.key} />
-                        ))}
+                        <Table.Body>
+                            {sortedAccounts.map(account => (
+                                <StakingDashboardAccountRow account={account} key={account.key} />
+                            ))}
 
-                        {ethNotActivated && !isEthStakingDisabled && (
-                            <StakingDashboardActivateRow symbol="eth" />
-                        )}
-                        {solNotActivated && !isSolStakingDisabled && (
-                            <StakingDashboardActivateRow symbol="sol" />
-                        )}
-                        {adaNotActivated && !isAdaStakingDisabled && (
-                            <StakingDashboardActivateRow symbol="ada" />
-                        )}
-                    </Table.Body>
-                </Table>
-            </Card>
-        </DashboardSection>
+                            {ethNotActivated && !isEthStakingDisabled && (
+                                <StakingDashboardActivateRow symbol="eth" />
+                            )}
+                            {solNotActivated && !isSolStakingDisabled && (
+                                <StakingDashboardActivateRow symbol="sol" />
+                            )}
+                            {adaNotActivated && !isAdaStakingDisabled && (
+                                <StakingDashboardActivateRow symbol="ada" />
+                            )}
+                        </Table.Body>
+                    </Table>
+                </Card>
+            </DashboardSection>
+        </OutlineHighlight>
     );
 };

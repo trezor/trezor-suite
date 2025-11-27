@@ -9393,6 +9393,15 @@ export default defineMessages({
         id: 'TR_STAKING_DASHBOARD_OUTDATED',
         defaultMessage: 'Outdated provider',
     },
+    TR_STAKING_MODAL_OUTDATED: {
+        id: 'TR_STAKING_MODAL_OUTDATED',
+        defaultMessage:
+            'Your ADA staking rewards will drop soon. Move to a new pool with {apy}% APY. Your funds and past rewards are safe.',
+    },
+    TR_STAKING_MODAL_OUTDATED_BUTTON: {
+        id: 'TR_STAKING_MODAL_OUTDATED_BUTTON',
+        defaultMessage: 'Update staking pool',
+    },
     TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
         id: 'TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE',
         defaultMessage: 'Account',
