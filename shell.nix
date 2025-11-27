@@ -1,9 +1,9 @@
-# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/9ea478ee24f110ac3b20800a10903989b03e4bf2
+# pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/5ae3b07d8d6527c42f17c876e404993199144b6a
 # we need to use nixos-unstable to be able to use nodejs_24, once there is a stable release with it we can change.
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/9ea478ee24f110ac3b20800a10903989b03e4bf2.tar.gz";
-    sha256 = "0b4bhjkcvdlaacydcaf1v4jmzp22mpxc16wwn3y6p12k3n5zkyj7";
+    url = "https://github.com/NixOS/nixpkgs/archive/5ae3b07d8d6527c42f17c876e404993199144b6a.tar.gz";
+    sha256 = "1zb5ca8jqavb19j7g06a41jg6bvpr20b9lihvham6qywhgaqprz9";
    }) { system = builtins.currentSystem; };
 
 let
