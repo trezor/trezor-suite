@@ -53,6 +53,7 @@ export enum EventType {
     AccountsNewAccount = 'accounts/new-account',
     AccountsActions = 'accounts/actions',
     AddToken = 'add-token',
+    RemoveToken = 'remove-token',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
     AccountsTransactionsExport = 'accounts/transactions-export',
 
