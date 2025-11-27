@@ -3797,9 +3797,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/common@npm:^7.2.3":
-  version: 7.2.3
-  resolution: "@evolu/common@npm:7.2.3"
+"@evolu/common@npm:^7.3.0":
+  version: 7.3.0
+  resolution: "@evolu/common@npm:7.3.0"
   dependencies:
     "@noble/ciphers": "npm:^2.0.0"
     "@noble/hashes": "npm:^2.0.0"
@@ -3807,16 +3807,16 @@ __metadata:
     kysely: "npm:^0.28.4"
     msgpackr: "npm:^1.11.5"
     random: "npm:^5.4.1"
-  checksum: 10/48a673e03408b18c8b3c184030e75c67e0368d4b32b5cc818c8de5c661f13901b7c0e5dcea9c3041245857e8b12f08fd7adc58fde384bd138e6a62e266bca94a
+  checksum: 10/9e1b90947f28100200b5da0074698d5352369bbdd1d9e6edfa2269b25a50f52d42ec0bfa296c89ed6104801a22ceb1f4fcff91868753de3c52d8336ec445f31d
   languageName: node
   linkType: hard
 
-"@evolu/react-native@npm:^14.1.1":
-  version: 14.1.1
-  resolution: "@evolu/react-native@npm:14.1.1"
+"@evolu/react-native@npm:^14.2.0":
+  version: 14.2.0
+  resolution: "@evolu/react-native@npm:14.2.0"
   peerDependencies:
-    "@evolu/common": ^7.2.1
-    "@evolu/react": ^10.2.1
+    "@evolu/common": ^7.3.0
+    "@evolu/react": ^10.3.0
     "@op-engineering/op-sqlite": ">=12"
     expo: ">=54"
     expo-secure-store: ">=15"
@@ -3840,7 +3840,7 @@ __metadata:
       optional: true
     react-native-svg:
       optional: true
-  checksum: 10/7e520cabfd32bdc7270ea96298a1b6781ea088c7de5b52e7d0b057b57c97feda41ef8c2c03ee60640fe77ad9984c5de68b922a413b10a3d1db4d8f02bdcf9662
+  checksum: 10/e8a49abdd6b52ef80f3f16fed41dc8b52e746edf665eae63ea84f42b77e1312cc9e5852c25edda02102e565b6b8949610e41a1cf724c49dee56b064b87784327
   languageName: node
   linkType: hard
 
@@ -3853,15 +3853,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/web@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "@evolu/web@npm:2.2.1"
+"@evolu/web@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@evolu/web@npm:2.3.0"
   dependencies:
     "@evolu/sqlite-wasm": "npm:2.2.4"
     idb-keyval: "npm:^6.2.2"
   peerDependencies:
-    "@evolu/common": ^7.2.1
-  checksum: 10/675d936d7a1a0bb72b977333dad3a01b990b382f813ae777f2a43daf159595e736d84266202e92121c0a5424a01c8e45cba33a783c80764b28f229269f5c26b2
+    "@evolu/common": ^7.3.0
+  checksum: 10/73de169259f5f224b9a4feb3b58f1e0eca06925504544922824080cd498259962a85bd4eca0e8b8bbefee2b44f71b0a928413f5e08e6cb70d79fa7d67502e618
   languageName: node
   linkType: hard
 
@@ -10769,7 +10769,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
-    "@evolu/common": "npm:^7.2.3"
+    "@evolu/common": "npm:^7.3.0"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12929,7 +12929,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/suite-sync@workspace:suite-native/suite-sync"
   dependencies:
-    "@evolu/react-native": "npm:^14.1.1"
+    "@evolu/react-native": "npm:^14.2.0"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
@@ -13273,7 +13273,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
-    "@evolu/web": "npm:^2.2.1"
+    "@evolu/web": "npm:^2.3.0"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"

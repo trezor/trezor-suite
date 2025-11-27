@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@evolu/common": "^7.2.3",
+        "@evolu/common": "^7.3.0",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
