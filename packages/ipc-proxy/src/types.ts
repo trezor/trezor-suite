@@ -17,3 +17,11 @@ export type IpcProxyApi = {
     setHandler: (channelName: string, instanceId: string, eventName: string, handler: any) => void;
     clearHandler: (channelName: string, instanceId: string, eventName: string) => void;
 };
+
+// Electron.IpcMainInvokeEvent narowed down only to properties we actually need
+export interface ElectronIpcMainInvokeEvent {
+    senderFrame: {
+        url: string;
+        isDestroyed: () => boolean;
+    } | null;
+}

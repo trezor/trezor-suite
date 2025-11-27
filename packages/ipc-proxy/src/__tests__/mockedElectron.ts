@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { ElectronIpcMainInvokeEvent } from '../proxy-handler';
+import { ElectronIpcMainInvokeEvent } from '../types';
 
 const ipcMainEvent: ElectronIpcMainInvokeEvent = {
     senderFrame: {

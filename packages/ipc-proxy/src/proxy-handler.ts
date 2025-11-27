@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 
+import { ElectronIpcMainInvokeEvent } from './types';
 import { validateIpcMessage } from './validateIpcMessage';
 
 interface EventEmitterApi {
@@ -41,14 +42,6 @@ interface IpcMainEvents<Api> {
 interface IpcMainHandlers<Api> {
     '/create': [string, ...any[]]; // channelName, ...params of interface constructor
     '/invoke': Parameters<ApiUnion<Api>>; // methodName, ...params
-}
-
-// Electron.IpcMainInvokeEvent narowed down only to properties we actually need
-export interface ElectronIpcMainInvokeEvent {
-    senderFrame: {
-        url: string;
-        isDestroyed: () => boolean;
-    } | null;
 }
 
 export interface ElectronIpcMainEvent {
