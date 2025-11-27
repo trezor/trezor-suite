@@ -13,8 +13,8 @@ import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/toke
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionListItemContainer } from './TransactionListItemContainer';
-import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
-import { getTransactionValueSign } from '../../utils';
+import { useTransactionFiatRate } from '../hooks/useTransactionFiatRate';
+import { getTransactionValueSign } from '../utils';
 
 type TokenTransferListItemProps = {
     txid: string;

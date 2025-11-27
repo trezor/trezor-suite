@@ -8,10 +8,13 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import {
+    TransactionTranfer,
+    selectTransactionInputAndOutputTransfers,
+} from '@suite-native/transactions';
 
 import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
-import { TransactionTranfer, selectTransactionInputAndOutputTransfers } from '../../selectors';
 
 type TransactionDetailInputsSheetProps = {
     txid: string;

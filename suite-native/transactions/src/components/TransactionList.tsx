@@ -27,10 +27,10 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { arrayPartition } from '@trezor/utils';
 
-import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
+import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 
 type AccountTransactionProps = {

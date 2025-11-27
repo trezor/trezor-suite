@@ -30,6 +30,7 @@ import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StakingDetailScreen } from '@suite-native/module-staking-management';
 import { TradingWebViewScreen } from '@suite-native/module-trading';
+import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -39,10 +40,6 @@ import { ReceiveStackNavigator } from '@suite-native/receive';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
 import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
-import {
-    TransactionDetailOverviewScreen,
-    TransactionDetailScreen,
-} from '@suite-native/transactions';
 
 import { AppTabNavigator } from './AppTabNavigator';
 import { NavigatorLayoutWithGlobalHooks } from './RootStackNavigatorGlobalHooksWrapper';
@@ -84,13 +81,8 @@ export const RootStackNavigator = () => {
                 component={AccountSettingsScreen}
             />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.TransactionDetail }}
-                name={RootStackRoutes.TransactionDetail}
-                component={TransactionDetailScreen}
-            />
-            <RootStack.Screen
-                name={RootStackRoutes.TransactionDetailOverview}
-                component={TransactionDetailOverviewScreen}
+                name={RootStackRoutes.TransactionDetailStack}
+                component={TransactionDetailStackNavigator}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountDetail }}

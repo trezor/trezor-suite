@@ -4,7 +4,7 @@ import { G } from '@mobily/ts-belt';
 
 import { AnalyticsSendFlowStep, EventType, analytics } from '@suite-native/analytics';
 
-import { RootStackRoutes, SendStackRoutes } from '../routes';
+import { SendStackRoutes, TransactionDetailStackRoutes } from '../routes';
 
 type AnalyticsRelevantSendRoute = Exclude<`${SendStackRoutes}`, `${SendStackRoutes.SendAccounts}`>;
 
@@ -55,7 +55,7 @@ export const useReportSendFlowExitToAnalytics = () => {
             }
 
             // This means successful dispatch of the transaction, we don't want to report that.
-            if (nextScreenRoute === RootStackRoutes.TransactionDetail) {
+            if (nextScreenRoute === TransactionDetailStackRoutes.TransactionDetail) {
                 setFurthestSendStep(null);
 
                 return;

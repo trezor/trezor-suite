@@ -11733,6 +11733,7 @@ __metadata:
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/module-staking-management": "workspace:*"
     "@suite-native/module-trading": "workspace:*"
+    "@suite-native/module-transactions": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/receive": "workspace:*"
     "@suite-native/sentry": "workspace:*"
@@ -11744,7 +11745,6 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
-    "@suite-native/transactions": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -13183,6 +13183,33 @@ __metadata:
     react-native-reanimated: "npm:~4.1.5"
     react-native-safe-area-context: "npm:5.6.1"
     react-native-webview: "npm:13.16.0"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-transactions@workspace:*, @suite-native/module-transactions@workspace:suite-native/module-transactions":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-transactions@workspace:suite-native/module-transactions"
+  dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@react-navigation/native": "npm:7.1.18"
+    "@react-navigation/native-stack": "npm:7.5.1"
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
+    "@suite-native/transactions": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft

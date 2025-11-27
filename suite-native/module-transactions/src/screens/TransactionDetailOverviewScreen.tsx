@@ -13,15 +13,14 @@ import { Icon, IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { VinVoutAddress, selectTransactionAddresses } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ChangeAddressesHeader } from '../components/TransactionDetail/ChangeAddressesHeader';
-import { selectTransactionAddresses } from '../selectors';
-import { VinVoutAddress } from '../types';
+import { ChangeAddressesHeader } from '../components/ChangeAddressesHeader';
 
 const addressStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
@@ -61,7 +60,10 @@ const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
     </>
 );
 
-type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.TransactionDetailOverview>;
+type RouteProps = RouteProp<
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes.TransactionDetailOverview
+>;
 
 const TransactionOverviewSectionHeader = ({
     iconName,

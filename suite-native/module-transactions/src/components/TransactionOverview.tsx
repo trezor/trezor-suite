@@ -4,9 +4,9 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Divider, HStack, Text, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
-    RootStackRoutes,
     StackNavigationProps,
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -30,8 +30,8 @@ const cardContentStyle = prepareNativeStyle(utils => ({
 }));
 
 type NavigationProps = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.TransactionDetailOverview
+    TransactionDetailStackParamList,
+    TransactionDetailStackRoutes.TransactionDetailOverview
 >;
 
 export const TransactionOverview = ({
@@ -46,7 +46,7 @@ export const TransactionOverview = ({
     const isTokenTransferDetail = !!tokenTransfer;
 
     const navigateToOverview = () => {
-        navigation.navigate(RootStackRoutes.TransactionDetailOverview, {
+        navigation.navigate(TransactionDetailStackRoutes.TransactionDetailOverview, {
             txid: transaction.txid,
             accountKey,
         });

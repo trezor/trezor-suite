@@ -12,16 +12,16 @@ import { Box } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
+    EmptyAmountText,
     SignValueFormatter,
 } from '@suite-native/formatters';
-import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
 import { WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
-import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
-import { getTransactionValueSign } from '../../utils';
+import { useTransactionFiatRate } from '../hooks/useTransactionFiatRate';
+import { getTransactionValueSign } from '../utils';
 
 type TransactionListItemProps = {
     transaction: WalletAccountTransaction;

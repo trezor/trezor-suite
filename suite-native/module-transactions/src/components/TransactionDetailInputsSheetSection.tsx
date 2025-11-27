@@ -11,9 +11,8 @@ import {
     TokenAmountFormatter,
 } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
+import { TransactionTranfer } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { TransactionTranfer } from '../../selectors';
 
 type TransactionAddressAmountProps = {
     address: string;

@@ -74,6 +74,7 @@
             "path": "../module-staking-management"
         },
         { "path": "../module-trading" },
+        { "path": "../module-transactions" },
         { "path": "../navigation" },
         { "path": "../receive" },
         { "path": "../sentry" },
@@ -84,7 +85,6 @@
         { "path": "../toasts" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
-        { "path": "../transactions" },
         {
             "path": "../../packages/blockchain-link-types"
         },
