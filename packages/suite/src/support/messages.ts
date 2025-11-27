@@ -9389,6 +9389,10 @@ export default defineMessages({
         id: 'TR_STAKING_DASHBOARD_NOT_ACTIVE',
         defaultMessage: 'Inactive',
     },
+    TR_STAKING_DASHBOARD_OUTDATED: {
+        id: 'TR_STAKING_DASHBOARD_OUTDATED',
+        defaultMessage: 'Outdated provider',
+    },
     TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
         id: 'TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE',
         defaultMessage: 'Account',
@@ -9432,6 +9436,10 @@ export default defineMessages({
     TR_STAKING_DASHBOARD_STAKED: {
         id: 'TR_STAKING_DASHBOARD_STAKED',
         defaultMessage: '{amount} {displaySymbol} staked',
+    },
+    TR_STAKING_DASHBOARD_OUTDATED_PROVIDER: {
+        id: 'TR_STAKING_DASHBOARD_OUTDATED_PROVIDER',
+        defaultMessage: 'Update to Everstake and earn ~{apy}% APY',
     },
     TR_STAKING_BANNER_DETAIL_TITLE: {
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
