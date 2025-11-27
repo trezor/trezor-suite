@@ -41,6 +41,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Receive [@fixT3W1]', ()
 
         await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
-        await onAccountReceive.verifyReceiveAddress('32hQpu7yqoxbXfUw1oaBuojodzxxoKhKHB');
+        await onAccountReceive.verifyReceiveAddress('bc1qa55m6kz3crfse5xg2rukulyap4eyp75w0puawz');
     });
 });
