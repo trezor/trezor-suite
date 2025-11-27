@@ -42,10 +42,15 @@ export const createSuiteSyncStorageRepositoryFactory =
             get: (suiteSyncOwner: SuiteSyncOwner): SuiteSyncStorage => {
                 let storage = storages.get(suiteSyncOwner.ownerId);
 
+                const relayUrl = deps.getRelayUrl();
+
                 if (storage === undefined) {
                     storage = deps.createSuiteStorage({
                         suiteSyncOwner,
-                        relayUrl: deps.getRelayUrl() ?? deps.defaultRelayUrl,
+                        relayUrl:
+                            relayUrl !== null && relayUrl.trim() !== ''
+                                ? relayUrl
+                                : deps.defaultRelayUrl,
                     });
                     storages.set(suiteSyncOwner.ownerId, storage);
                 }
