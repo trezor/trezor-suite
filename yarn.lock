@@ -11388,8 +11388,8 @@ __metadata:
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:^"
+    "@suite-native/scrollview": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
-    "@suite-native/theme": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -12190,6 +12190,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/swipeable-walkthrough": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -12334,6 +12335,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/swipeable-walkthrough": "workspace:*"
     "@suite-native/thp": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -12692,6 +12694,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/scrollview": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -12791,6 +12794,17 @@ __metadata:
     react-native-reanimated: "npm:~4.1.3"
     react-redux: "npm:9.2.0"
     type-fest: "npm:4.24.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/scrollview@workspace:*, @suite-native/scrollview@workspace:suite-native/scrollview":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/scrollview@workspace:suite-native/scrollview"
+  dependencies:
+    "@trezor/styles": "workspace:*"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.4"
+    react-native-reanimated: "npm:~4.1.3"
   languageName: unknown
   linkType: soft
 
@@ -12950,6 +12964,23 @@ __metadata:
     expo: "npm:~54.0.20"
     expo-sqlite: "npm:^16.0.8"
     react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/swipeable-walkthrough@workspace:*, @suite-native/swipeable-walkthrough@workspace:suite-native/swipeable-walkthrough":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/swipeable-walkthrough@workspace:suite-native/swipeable-walkthrough"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/theme": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    jotai: "npm:2.15.0"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.4"
+    react-native-gesture-handler: "npm:2.29.0"
+    react-native-reanimated: "npm:~4.1.3"
+    react-native-safe-area-context: "npm:5.6.1"
   languageName: unknown
   linkType: soft
 
@@ -13196,6 +13227,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/scrollview": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -13241,6 +13273,7 @@ __metadata:
     "@suite-native/labeling": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/scrollview": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"

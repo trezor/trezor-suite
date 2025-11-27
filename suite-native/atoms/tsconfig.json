@@ -14,7 +14,7 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../theme" },
+        { "path": "../scrollview" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },

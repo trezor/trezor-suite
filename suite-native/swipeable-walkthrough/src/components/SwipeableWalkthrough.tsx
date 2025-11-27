@@ -3,8 +3,9 @@ import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { SharedValue } from 'react-native-reanimated';
 
-import { useSwipeableWalkthroughStepHeight } from './useSwipeableWalkthroughStepHeight';
-import { AnimatedBox } from '../Box';
+import { AnimatedBox } from '@suite-native/atoms';
+
+import { useSwipeableWalkthroughStepHeight } from '../hooks/useSwipeableWalkthroughStepHeight';
 
 type SwipeableWalkthroughProps = {
     children: ReactNode;

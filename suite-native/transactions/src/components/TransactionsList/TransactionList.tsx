@@ -17,7 +17,7 @@ import {
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
-import { useScrollDivider } from '@suite-native/navigation';
+import { useScrollDivider } from '@suite-native/scrollview';
 import {
     TokensRootState,
     TypedTokenTransfer,

@@ -22,7 +22,7 @@
         "@suite-native/helpers": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:^",
-        "@suite-native/theme": "workspace:*",
+        "@suite-native/scrollview": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles": "workspace:*",

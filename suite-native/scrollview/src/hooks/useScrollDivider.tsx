@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
+import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
-import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const scrollDividerStyle = prepareNativeStyle(({ borders, colors }) => ({
@@ -18,7 +18,7 @@ const ScrollDivider = () => {
 
     return (
         <Animated.View entering={FadeIn.duration(500)} exiting={FadeOut.duration(250)}>
-            <Box style={applyStyle(scrollDividerStyle)} />
+            <View style={applyStyle(scrollDividerStyle)} />
         </Animated.View>
     );
 };

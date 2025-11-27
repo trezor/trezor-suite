@@ -1,5 +1,6 @@
-import { HoldToConfirmButton, SwipeableWalkthroughStep } from '@suite-native/atoms';
+import { HoldToConfirmButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
 import {
     WALLET_RECOVERY_RECAP_STEPS,

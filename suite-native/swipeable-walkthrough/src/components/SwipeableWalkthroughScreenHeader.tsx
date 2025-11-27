@@ -3,12 +3,10 @@ import { StatusBar } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Box, IconButton } from '@suite-native/atoms';
 import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { Box } from '../Box';
-import { IconButton } from '../Button/IconButton';
 
 type SwipeableWalkthroughScreenHeaderProps = {
     currentStepIndex: SharedValue<number>;

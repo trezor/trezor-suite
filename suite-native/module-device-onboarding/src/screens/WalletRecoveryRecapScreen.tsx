@@ -1,11 +1,11 @@
 import { useSharedValue } from 'react-native-reanimated';
 
+import { Screen } from '@suite-native/navigation';
 import {
     SwipeableWalkthrough,
     SwipeableWalkthroughCloseButton,
     SwipeableWalkthroughScreenHeader,
-} from '@suite-native/atoms';
-import { Screen } from '@suite-native/navigation';
+} from '@suite-native/swipeable-walkthrough';
 
 import {
     WALLET_RECOVERY_RECAP_STEPS,

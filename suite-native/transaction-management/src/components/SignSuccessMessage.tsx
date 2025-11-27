@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useScrollView } from '@suite-native/navigation';
+import { useScrollView } from '@suite-native/scrollview';
 
 import sendArrowsLottie from '../../assets/send-arrows-lottie.json';
 import { selectIsTransactionAlreadySigned } from '../selectors';

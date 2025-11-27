@@ -9,7 +9,6 @@ import {
     selectDeviceDefaultBackupType,
     selectIsDeviceInitialized,
 } from '@suite-common/wallet-core';
-import { SwipeableWalkthrough, SwipeableWalkthroughScreenHeader } from '@suite-native/atoms';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -17,6 +16,10 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import {
+    SwipeableWalkthrough,
+    SwipeableWalkthroughScreenHeader,
+} from '@suite-native/swipeable-walkthrough';
 
 import { WalletBackupTutorialStep1 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep1';
 import { WalletBackupTutorialStep2 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep2';

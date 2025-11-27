@@ -1,4 +1,7 @@
-import { SwipeableWalkthroughStep, SwipeableWalkthroughStepProps } from '@suite-native/atoms';
+import {
+    SwipeableWalkthroughStep,
+    SwipeableWalkthroughStepProps,
+} from '@suite-native/swipeable-walkthrough';
 
 import { WALLET_BACKUP_TUTORIAL_STEPS_COUNT } from '../../constants';
 

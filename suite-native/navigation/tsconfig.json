@@ -19,6 +19,7 @@
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../scrollview" },
         { "path": "../sentry" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

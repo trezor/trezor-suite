@@ -1,8 +1,9 @@
 import { useDerivedValue } from 'react-native-reanimated';
 
-import { Box, SwipeableWalkthroughStep, Text, VStack } from '@suite-native/atoms';
+import { Box, Text, VStack } from '@suite-native/atoms';
 import { useIsMultiline } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
+import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
 import { Underline } from './Underline';
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupRecapStep1';

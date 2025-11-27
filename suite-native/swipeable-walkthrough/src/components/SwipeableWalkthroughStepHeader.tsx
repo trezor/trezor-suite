@@ -1,9 +1,7 @@
 import { ReactNode } from 'react';
 
+import { Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { VStack } from '../Stack';
-import { Text } from '../Text';
 
 type SwipeableWalkthroughStepHeaderProps = {
     callout: ReactNode;
