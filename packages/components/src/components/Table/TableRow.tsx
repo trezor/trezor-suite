@@ -9,7 +9,7 @@ import {
     nextElevation,
 } from '@trezor/theme';
 
-import { useTable } from './Table';
+import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';
 import { useElevation } from '../ElevationContext/ElevationContext';
 

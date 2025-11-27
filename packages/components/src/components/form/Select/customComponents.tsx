@@ -4,7 +4,7 @@ import { useDeepCompareEffect } from 'react-use';
 
 import { deepEqual } from '@trezor/utils';
 
-import type { Option as OptionType } from './Select';
+import type { Option as OptionType } from './types';
 
 export interface ControlComponentProps extends ControlProps<OptionType, boolean> {
     'data-testid'?: string;
