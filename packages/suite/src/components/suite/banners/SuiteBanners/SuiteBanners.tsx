@@ -7,7 +7,9 @@ import {
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
+import { isCardanoStakedOutsideEverstake } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -22,6 +24,7 @@ import { selectTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
 import { BridgeDeprecated } from './BridgeDeprecatedBanner';
+import { CardanoOutdatedStakingBanner } from './CardanoOutdatedStakingBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
 import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
@@ -54,6 +57,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const transport = useSelector(state => state.suite.transport);
+    const accounts = useSelector(selectVisibleDeviceAccounts);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
 
     // The dismissal doesn't need to outlive the session. Use local state.
@@ -108,6 +112,9 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     } else if (bridge?.outdated) {
         banner = <BridgeDeprecated />;
         priority = 30;
+    } else if (accounts.some(isCardanoStakedOutsideEverstake)) {
+        banner = <CardanoOutdatedStakingBanner />;
+        priority = 20;
     }
 
     // message system banners should always be visible in the app even if app body is blurred
