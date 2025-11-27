@@ -88,6 +88,7 @@ export const TransactionDetailScreen = ({
                             values={{
                                 transactionType: _ => (
                                     <TransactionName
+                                        key={transaction.txid}
                                         transaction={transaction}
                                         isPending={isPending}
                                         variant="highlight"
