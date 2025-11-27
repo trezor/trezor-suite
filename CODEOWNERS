@@ -3,11 +3,11 @@
 /docker @vdovhanych @mroz22
 
 /scripts/list-outdated-dependencies/connect-dependencies.txt @mroz22
-/scripts/list-outdated-dependencies/engagement-dependencies.txt @jvaclavik
 /scripts/list-outdated-dependencies/foundation-dependencies.txt @komret
-/scripts/list-outdated-dependencies/mobile-dependencies.txt @matejkriz
+/scripts/list-outdated-dependencies/growth-dependencies.txt @jvaclavik
+/scripts/list-outdated-dependencies/trade-dependencies.txt @vytick
 /scripts/list-outdated-dependencies/qa-dependencies.txt @HajekOndrej
-/scripts/list-outdated-dependencies/trends-dependencies.txt @tomasklim
+/scripts/list-outdated-dependencies/wallet-dependencies.txt @tomasklim
 /scripts @karliatto
 
 /packages/analytics @tomasklim
@@ -29,9 +29,9 @@
 
 /packages/coinjoin @marekrjpolak @szymonlesisz
 
-/packages/components @trezor/suite-engagement @seibei-iguchi @jvaclavik
+/packages/components @trezor/suite-growth @seibei-iguchi @jvaclavik
 
-/packages/product-components @trezor/suite-engagement @seibei-iguchi @jvaclavik
+/packages/product-components @trezor/suite-growth @seibei-iguchi @jvaclavik
 
 /packages/connect @mroz22 @szymonlesisz @martykan @marekrjpolak
 
@@ -85,7 +85,7 @@
 
 /packages/transport-test @mroz22
 
-/packages/theme @trezor/suite-engagement
+/packages/theme @trezor/suite-growth
 
 /packages/urls @marekrjpolak @pavelmario
 
@@ -95,7 +95,7 @@
 
 /packages/utxo-lib @szymonlesisz
 
-/packages/styles @trezor/suite-engagement
+/packages/styles @trezor/suite-growth
 
 /packages/suite/src/support/messages.ts @pavelmario
 
