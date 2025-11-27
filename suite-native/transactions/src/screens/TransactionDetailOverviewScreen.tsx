@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -7,41 +7,34 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
-import { Box, Card, Text, Toggle, VStack } from '@suite-native/atoms';
+import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
-import { Icon } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Icon, IconName } from '@suite-native/icons';
+import { useTranslate } from '@suite-native/intl';
 import {
+    DynamicScreenHeader,
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenHeader,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from '../components/TransactionDetail/ChangeAddressesHeader';
 import { selectTransactionAddresses } from '../selectors';
-import { AddressesType, VinVoutAddress } from '../types';
+import { VinVoutAddress } from '../types';
 
-const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
-
-const copyContainerStyle = prepareNativeStyle(utils => ({
-    flex: 1,
-    paddingTop: utils.spacings.sp4,
-    marginHorizontal: utils.spacings.sp8,
+const addressStyle = prepareNativeStyle(utils => ({
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors.borderOnElevation0,
+    backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
+    borderRadius: utils.borders.radii.r12,
 }));
 
-export const formatAddressesCount = (count: number) => {
-    if (count > 1) {
-        return `· ${count}`;
-    }
-
-    return '';
-};
-
 const AddressRow = ({ address }: { address: string }) => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
+
+    const { translate } = useTranslate();
+
     const copyToClipboard = useCopyToClipboard();
 
     const handleCopy = () =>
@@ -51,35 +44,51 @@ const AddressRow = ({ address }: { address: string }) => {
         );
 
     return (
-        <Box flex={1} flexDirection="row" justifyContent="space-between" alignItems="flex-start">
-            <Box style={applyStyle(addressStyle)}>
-                <Text variant="hint">{address}</Text>
-            </Box>
-
-            <TouchableOpacity style={applyStyle(copyContainerStyle)} onPress={handleCopy}>
+        <HStack paddingHorizontal="sp16" paddingVertical="sp12" style={applyStyle(addressStyle)}>
+            <Text variant="hint">{address}</Text>
+            <TouchableOpacity onPress={handleCopy}>
                 <Icon name="copy" color="iconPrimaryDefault" size="medium" />
             </TouchableOpacity>
-        </Box>
+        </HStack>
     );
 };
 
 const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
-    <Card>
-        <VStack spacing="sp16">
-            {addresses.map(({ address, outputIndex }) => (
-                <AddressRow key={outputIndex} address={address} />
-            ))}
-        </VStack>
-    </Card>
+    <>
+        {addresses.map(({ address, outputIndex }) => (
+            <AddressRow key={outputIndex} address={address} />
+        ))}
+    </>
 );
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.TransactionDetailOverview>;
 
+const TransactionOverviewSectionHeader = ({
+    iconName,
+    title,
+    count,
+}: {
+    iconName: IconName;
+    title: string;
+    count: number;
+}) => (
+    <HStack spacing="sp12" alignItems="center">
+        <Icon name={iconName} size="mediumLarge" />
+        <Text variant="highlight">
+            {title} <Text color="textSubdued">· {count}</Text>
+        </Text>
+    </HStack>
+);
+
+const OverviewSubheader = ({ title, count }: { title: string; count: number }) => (
+    <Text color="textSubdued" variant="hint">
+        {title} · {count}
+    </Text>
+);
+
 export const TransactionDetailOverviewScreen = () => {
     const route = useRoute<RouteProps>();
     const { txid, accountKey } = route.params;
-
-    const [displayedAddressesType, setDisplayedAddressesType] = useState<AddressesType>('inputs');
 
     const inputAddresses = useSelector((state: TransactionsRootState & TokenDefinitionsRootState) =>
         selectTransactionAddresses(state, accountKey, txid, 'inputs'),
@@ -89,52 +98,48 @@ export const TransactionDetailOverviewScreen = () => {
             selectTransactionAddresses(state, accountKey, txid, 'outputs'),
     );
 
-    const displayedAddresses =
-        displayedAddressesType === 'inputs' ? inputAddresses : outputAddresses;
-
     const { targetAddresses, changeAddresses } = useMemo(
         () => ({
-            targetAddresses: displayedAddresses.filter(({ isChangeAddress }) => !isChangeAddress),
-            changeAddresses: displayedAddresses.filter(({ isChangeAddress }) => isChangeAddress),
+            targetAddresses: outputAddresses.filter(({ isChangeAddress }) => !isChangeAddress),
+            changeAddresses: outputAddresses.filter(({ isChangeAddress }) => isChangeAddress),
         }),
-        [displayedAddresses],
+        [outputAddresses],
     );
 
-    const toggleAddresses = () => {
-        setDisplayedAddressesType(displayedAddressesType === 'inputs' ? 'outputs' : 'inputs');
-    };
-
     return (
-        <Screen header={<ScreenHeader />}>
-            <Box>
-                <Toggle
-                    isToggled={displayedAddressesType === 'outputs'}
-                    onToggle={toggleAddresses}
-                    leftLabel={
-                        <Translation
-                            id="transactions.TransactionDetailScreen.addressesSheet.from"
-                            values={{ count: formatAddressesCount(inputAddresses.length) }}
+        <Screen
+            header={<DynamicScreenHeader title="Received transaction" closeActionType="close" />}
+        >
+            <Box marginVertical="sp16">
+                <VStack spacing="sp32">
+                    <VStack spacing="sp12">
+                        <TransactionOverviewSectionHeader
+                            iconName="arrowUp"
+                            title="From"
+                            count={inputAddresses.length}
                         />
-                    }
-                    rightLabel={
-                        <Translation
-                            id="transactions.TransactionDetailScreen.addressesSheet.to"
-                            values={{ count: formatAddressesCount(outputAddresses.length) }}
+                        <AddressesListCard addresses={inputAddresses} />
+                    </VStack>
+                    <VStack spacing="sp12">
+                        <TransactionOverviewSectionHeader
+                            iconName="arrowDown"
+                            title="To"
+                            count={targetAddresses.length}
                         />
-                    }
-                />
-                <Box marginVertical="sp16">
-                    <VStack spacing="sp16">
-                        <AddressesListCard addresses={targetAddresses} />
-
                         {A.isNotEmpty(changeAddresses) && (
                             <>
+                                <OverviewSubheader title="Me" count={changeAddresses.length} />
                                 <ChangeAddressesHeader addressesCount={changeAddresses.length} />
                                 <AddressesListCard addresses={changeAddresses} />
                             </>
                         )}
+                        <OverviewSubheader
+                            title="Other recipients"
+                            count={targetAddresses.length}
+                        />
+                        <AddressesListCard addresses={targetAddresses} />
                     </VStack>
-                </Box>
+                </VStack>
             </Box>
         </Screen>
     );

@@ -141,13 +141,6 @@ export interface AccountUtxoParams {
 
 export type VinVout = OptionalKey<Vin & Vout, 'addresses'>;
 
-export interface EthereumInternalTransfer {
-    type: number;
-    from: string;
-    to: string;
-    value?: string;
-}
-
 export interface Transaction extends BlockbookTx {
     fees: string; // optional in Tx, seems to always be there
     tokenTransfers?: (BlockbookTokenTransfer & {
