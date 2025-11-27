@@ -57,9 +57,8 @@ export const SellPreviewContinueButton = memo(
                 : undefined;
 
             navigation.navigate({
-                name: TradingStackRoutes.TradingOutputsReview,
+                name: TradingStackRoutes.TradingSellOutputsReview,
                 params: {
-                    tradingType: 'sell',
                     accountKey: fromAccount.key,
                     tokenContract,
                     orderId: quote.orderId ?? '',
