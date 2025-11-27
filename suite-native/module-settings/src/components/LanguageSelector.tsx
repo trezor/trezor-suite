@@ -2,11 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Select, SelectItemType } from '@suite-native/atoms';
 import {
+    AppLocaleOption,
     LANGUAGES,
-    LocaleTag,
     Translation,
-    selectUserSelectedLocaleTag,
-    setLocale,
+    selectAppLocaleCode,
+    setAppLocaleCode,
 } from '@suite-native/intl';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
@@ -16,7 +16,7 @@ const languageItems = Object.entries(LANGUAGES).map(
         ({
             value: localeCode,
             label: language.name,
-        }) as SelectItemType<LocaleTag>,
+        }) as SelectItemType<AppLocaleOption>,
 );
 
 languageItems.unshift({
@@ -26,10 +26,10 @@ languageItems.unshift({
 
 export const LanguageSelector = () => {
     const dispatch = useDispatch();
-    const userSelectedLocaleTag = useSelector(selectUserSelectedLocaleTag);
+    const userSelectedLocaleCode = useSelector(selectAppLocaleCode);
 
-    const handleSelectLanguage = (localeCode: LocaleTag) => {
-        dispatch(setLocale(localeCode));
+    const handleSelectLanguage = (localeCode: AppLocaleOption) => {
+        dispatch(setAppLocaleCode(localeCode));
     };
 
     return (
@@ -38,7 +38,7 @@ export const LanguageSelector = () => {
             title={<Translation id="moduleSettings.preferences.languageLabel" />}
         >
             <Select
-                selectValue={userSelectedLocaleTag}
+                selectValue={userSelectedLocaleCode}
                 selectLabel={<Translation id="moduleSettings.preferences.languageLabel" />}
                 items={languageItems}
                 onSelectItem={handleSelectLanguage}

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
-import { useLocale } from '@suite-native/intl';
+import { selectLocale } from '@suite-native/intl';
 
 const MAX_DECIMALS_LENGTH = 2;
 
@@ -71,7 +71,7 @@ const getFormattedCurrencySymbol = ({
 };
 
 export const useFormattedGraphHeaderValues = (value: string = '0') => {
-    const locale = useLocale();
+    const locale = useSelector(selectLocale);
     const baseCurrency = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
 

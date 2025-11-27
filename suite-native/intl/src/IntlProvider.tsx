@@ -1,14 +1,17 @@
-import { IntlProvider as ReactIntlProvider } from 'react-intl';
-
 // Polyfill to support plural syntax
 import 'intl-pluralrules';
+import { IntlProvider as ReactIntlProvider } from 'react-intl';
+import { useSelector } from 'react-redux';
 
-import { useLocale } from './hooks/useLocale';
+import { useSystemLocaleListener } from './hooks/useSystemLocaleListener';
 import { useTranslatedMessages } from './hooks/useTranslatedMessages';
 import { DEFAULT_LOCALE } from './languages';
+import { selectLocale } from './localeSlice';
 
 export const IntlProvider = ({ children }: { children: React.ReactNode }) => {
-    const locale = useLocale();
+    useSystemLocaleListener();
+
+    const locale = useSelector(selectLocale);
     const messages = useTranslatedMessages();
 
     return (

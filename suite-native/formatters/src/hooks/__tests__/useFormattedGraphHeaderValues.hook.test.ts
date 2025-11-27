@@ -1,4 +1,4 @@
-import { LocaleTag } from '@suite-native/intl';
+import { SupportedLocaleCode } from '@suite-native/intl';
 import {
     PreloadedState,
     TestStore,
@@ -31,7 +31,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('should parse balance amount correctly with valid input - english locale + USD', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'en-US' },
+            locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'usd' } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
@@ -44,7 +44,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('parses balance amount correctly with valid input - english locale + CZK', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'en-US' },
+            locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
@@ -57,7 +57,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('parses balance amount correctly with valid input - czech locale + CZK', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'cs-CZ' },
+            locale: { appLocaleCode: 'cs-CZ' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
@@ -70,7 +70,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('parses balance amount correctly with valid input and no decimal part', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'en-US' },
+            locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'eur' } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('2000');
@@ -83,7 +83,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('parses balance amount correctly with valid input and only decimal part', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'en-US' },
+            locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('0.99');
@@ -96,7 +96,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('handles BTC BaseCurrency correctly', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'en-US' },
+            locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.BITCOIN } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('0.01');
@@ -109,7 +109,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('rounds BTC Crypto value correctly', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'en-US' },
+            locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.BITCOIN } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('0.00124009');
@@ -122,7 +122,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('parses satoshis value correctly - english locale', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'en-US' },
+            locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.SATOSHI } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('0.01477571');
@@ -135,7 +135,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
 
     it('parses satoshis value correctly - spanish locale', async () => {
         await setNewStoreMockup({
-            locale: { localeTag: 'es-ES' as LocaleTag },
+            locale: { appLocaleCode: 'es-ES' as SupportedLocaleCode },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.SATOSHI } },
         });
         const { result } = await renderUseFormattedGraphHeaderValues('0.01477571');

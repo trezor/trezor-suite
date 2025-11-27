@@ -50,6 +50,7 @@ import {
     migrateAccountsDeprecateNetworks,
     migrateAutoEjectToWalletSettings,
     migrateDeviceState,
+    migrateLocaleTagToAppLocaleCode,
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
@@ -259,7 +260,10 @@ export const prepareRootReducers = async () => {
         reducer: localeReducer,
         persistedKeys: localePersistWhitelist,
         key: 'locale',
-        version: 1,
+        version: 2,
+        migrations: {
+            2: migrateLocaleTagToAppLocaleCode,
+        },
     });
 
     const suiteSyncPersistedReducer = await preparePersistReducer({

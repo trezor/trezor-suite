@@ -23,10 +23,10 @@ type RecursiveKeyOfHandleValue<TValue, Text extends string> = TValue extends any
       ? Text | `${Text}${RecursiveKeyOfInner<TValue>}`
       : Text;
 
-export type SupportedLanguage = keyof typeof LANGUAGES;
+export type SupportedLocaleCode = keyof typeof LANGUAGES;
 
-export const isSupportedLanguage = (locale: string): locale is SupportedLanguage =>
+export const isSupportedLanguage = (locale: string): locale is SupportedLocaleCode =>
     locale in LANGUAGES;
 
-export const isOfficiallySupportedLanguage = (locale: string): locale is SupportedLanguage =>
+export const isOfficiallySupportedLanguage = (locale: string): locale is SupportedLocaleCode =>
     isSupportedLanguage(locale) && LANGUAGES[locale].type === 'official';
