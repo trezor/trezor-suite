@@ -9,6 +9,7 @@ export enum RootStackRoutes {
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
+    TransactionDetailOverview = 'TransactionDetailOverview',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
     DeviceSettingsStack = 'DeviceSettingsStack',

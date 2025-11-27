@@ -6,7 +6,6 @@ import { WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
-import { formatAddressesCount } from './TransactionDetailAddressesSheet';
 import { SummaryRow } from './TransactionSummaryRow';
 import { TransactionUtxoAddress } from './TransactionUtxoAddress';
 import { VinVoutAddress } from '../../types';
@@ -48,6 +47,14 @@ const TransactionDetailSummaryStepper = () => {
             <Box style={applyStyle(stepperDotStyle)} />
         </Box>
     );
+};
+
+export const formatAddressesCount = (count: number) => {
+    if (count > 1) {
+        return `· ${count}`;
+    }
+
+    return '';
 };
 
 export const TransactionDetailAddressesSection = ({

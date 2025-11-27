@@ -1,20 +1,18 @@
+import { useNavigation } from '@react-navigation/native';
+
 import { AccountKey } from '@suite-common/wallet-types';
-import {
-    Box,
-    Card,
-    Divider,
-    HStack,
-    Text,
-    TextButton,
-    useBottomSheetModal,
-} from '@suite-native/atoms';
+import { Box, Card, Divider, HStack, Text, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
 import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
-import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
 
 type TransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;
@@ -31,15 +29,28 @@ const cardContentStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
 }));
 
+type NavigationProps = StackNavigationProps<
+    RootStackParamList,
+    RootStackRoutes.TransactionDetailOverview
+>;
+
 export const TransactionOverview = ({
     transaction,
     accountKey,
     tokenTransfer,
 }: TransactionDetailSummaryProps) => {
     const { applyStyle } = useNativeStyles();
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const navigation = useNavigation<NavigationProps>();
 
     const isTokenTransferDetail = !!tokenTransfer;
+
+    const navigateToOverview = () => {
+        navigation.navigate(RootStackRoutes.TransactionDetailOverview, {
+            txid: transaction.txid,
+            accountKey,
+        });
+    };
 
     return (
         <Card noPadding={true}>
@@ -47,7 +58,7 @@ export const TransactionOverview = ({
                 <Text>
                     <Translation id="transactions.detail.transactionOverviewTitle" />
                 </Text>
-                <TextButton variant="primary" isUnderlined onPress={openModal}>
+                <TextButton variant="primary" isUnderlined onPress={navigateToOverview}>
                     <Translation id="transactions.detail.showDetails" />
                 </TextButton>
             </HStack>
@@ -57,22 +68,16 @@ export const TransactionOverview = ({
                     <TokenTransactionDetailSummary
                         transaction={transaction}
                         tokenTransfer={tokenTransfer}
-                        onShowMore={openModal}
+                        onShowMore={navigateToOverview}
                     />
                 ) : (
                     <NetworkTransactionDetailSummary
                         accountKey={accountKey}
                         transaction={transaction}
-                        onShowMore={openModal}
+                        onShowMore={navigateToOverview}
                     />
                 )}
             </Box>
-            <TransactionDetailAddressesSheet
-                ref={bottomSheetRef}
-                txid={transaction.txid}
-                accountKey={accountKey}
-                onClose={closeModal}
-            />
         </Card>
     );
 };

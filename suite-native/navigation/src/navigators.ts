@@ -342,6 +342,10 @@ export type RootStackParamList = {
         tokenContract?: TokenAddress;
         source?: 'send';
     };
+    [RootStackRoutes.TransactionDetailOverview]: {
+        txid: string;
+        accountKey: AccountKey;
+    };
     [RootStackRoutes.DevUtilsStack]: undefined;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
