@@ -26,7 +26,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@trezor/eslint": "workspace:*",
         "@types/fs-extra": "^11.0.4",
-        "autoprefixer": "^10.4.21",
+        "autoprefixer": "^10.4.22",
         "babel-loader": "^10.0.0",
         "css-loader": "^6.10.0",
         "fs-extra": "^11.3.1",

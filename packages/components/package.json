@@ -29,7 +29,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "framer-motion": "^12.23.3",
+        "framer-motion": "^12.23.24",
         "lottie-react": "2.4.1",
         "polished": "^4.3.1",
         "react": "19.1.0",
