@@ -77,7 +77,7 @@ interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
-type StartBridgeVersion = '2.0.32' | '2.0.33' | 'node-bridge';
+type StartBridgeVersion = '2.0.33' | 'node-bridge';
 
 export const MNEMONICS = {
     mnemonic_all: 'all all all all all all all all all all all all',
@@ -89,7 +89,7 @@ export const MNEMONICS = {
         'academic again academic academic academic academic academic academic academic academic academic academic academic academic academic academic academic pecan provide remember',
 };
 
-export const DEFAULT_BRIDGE_VERSION = '2.0.33';
+export const DEFAULT_BRIDGE_VERSION = 'node-bridge';
 
 // There's an ongoing problem with debug link & button requests race conditions
 // Adding a delay to workaround this issue temporarily
