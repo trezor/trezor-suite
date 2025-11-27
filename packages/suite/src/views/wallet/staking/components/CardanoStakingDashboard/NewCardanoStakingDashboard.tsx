@@ -46,7 +46,7 @@ export const NewCardanoStakingDashboard = ({
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const canDisplayApy =
+    const isStakedWithEverstake =
         isCardanoStakedWithEverstake(account, cardanoStakingPools) || hasPendingTx;
 
     const shouldShowStakingDashboard = isStakingActive || hasPendingTx;
@@ -77,7 +77,7 @@ export const NewCardanoStakingDashboard = ({
                                 >
                                     <ClaimCard />
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
-                                        <ApyCard apy={canDisplayApy ? apy : undefined} />
+                                        <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
                                         <PayoutCardFrequencyRewards
                                             rewardFrequency={CARDANO_EPOCH_DAYS}
                                         />

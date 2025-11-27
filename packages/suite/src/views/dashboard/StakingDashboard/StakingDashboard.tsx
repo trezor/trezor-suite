@@ -1,15 +1,16 @@
 import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
+    selectCardanoPoolsInfo,
     selectFiatRatesByFiatRateKey,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { Account, CardanoPoolInfo } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     getFiatRateKey,
     getStakingLimitsByNetworkSymbol,
-    isCardanoStakedOutsideEverstake,
+    isCardanoStakedWithEverstake,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { Badge, BadgeIntent, Card, Table } from '@trezor/components';
@@ -31,6 +32,7 @@ import { StakingDashboardActivateRow } from './StakingDashboardActivateRow';
 const getBadgeState = (
     isStakingActive: boolean,
     accounts: Account[],
+    cardanoStakingPools: CardanoPoolInfo[],
 ): { intent: BadgeIntent; label: TranslationKey } => {
     if (!isStakingActive) {
         return {
@@ -39,7 +41,7 @@ const getBadgeState = (
         };
     }
 
-    if (accounts.some(isCardanoStakedOutsideEverstake)) {
+    if (accounts.some(account => !isCardanoStakedWithEverstake(account, cardanoStakingPools))) {
         return {
             intent: 'warning',
             label: 'TR_STAKING_DASHBOARD_OUTDATED',
@@ -64,6 +66,7 @@ export const StakingDashboard = () => {
     const dispatch = useDispatch();
 
     const collapsed = useSelector(state => state.suite.stakingDashboardCollapsed);
+    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
 
     const { anchorRef, shouldHighlight } = useAnchor(DashboardAnchor.Staking);
 
@@ -184,7 +187,7 @@ export const StakingDashboard = () => {
         dispatch(setStakingDashboardCollapsed(collapsed));
     };
 
-    const badge = getBadgeState(isStakingActive, stakingAccounts);
+    const badge = getBadgeState(isStakingActive, stakingAccounts, cardanoStakingPools);
 
     return (
         <OutlineHighlight shouldHighlight={shouldHighlight}>

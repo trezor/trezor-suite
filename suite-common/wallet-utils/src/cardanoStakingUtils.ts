@@ -1,7 +1,10 @@
 import { bech32 } from 'bech32';
 
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { CARDANO_POOL_SATURATION_SAFE_THRESHOLD } from '@suite-common/wallet-constants';
+import {
+    CARDANO_EVERSTAKE_STAKING_POOL,
+    CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
+} from '@suite-common/wallet-constants';
 import {
     Account,
     CardanoPoolInfo,
@@ -54,7 +57,7 @@ export const poolBech32ToHex = (poolId: string): string => {
 };
 
 export const selectBestCardanoPool = (pools?: CardanoPoolInfo[]) => {
-    if (!pools || pools.length === 0) return;
+    if (!pools || pools.length === 0) return CARDANO_EVERSTAKE_STAKING_POOL;
 
     // sort from highest saturation to lowest
     const sortedPools = [...pools].sort((a, b) => b.saturation - a.saturation);
@@ -78,15 +81,6 @@ export const selectBestCardanoPool = (pools?: CardanoPoolInfo[]) => {
         hex: poolBech32ToHex(fallback.id),
         bech32: fallback.id,
     };
-};
-
-export const isCardanoStakedOutsideEverstake = (account: Account) => {
-    if (account.networkType !== 'cardano') return false;
-
-    const poolId = account.misc?.staking?.poolId;
-    if (!poolId) return false;
-
-    return poolId !== CARDANO_EVERSTAKE_STAKING_POOL.bech32;
 };
 
 export const validateCardanoDrep = (drepId: string): boolean => {

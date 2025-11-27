@@ -4,13 +4,17 @@ import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApyData } from '@suite-common/wallet-core';
+import {
+    selectAccountIsStakingActive,
+    selectCardanoPoolsInfo,
+    selectPoolStatsApyData,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
-    isCardanoStakedOutsideEverstake,
+    isCardanoStakedWithEverstake,
 } from '@suite-common/wallet-utils';
 import { Button, Column, H4, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -32,6 +36,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
@@ -128,7 +133,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         });
 
     const state = useMemo(() => {
-        if (isCardanoStakedOutsideEverstake(account)) {
+        if (!isCardanoStakedWithEverstake(account, cardanoStakingPools)) {
             return 'staking-outdated-provider';
         }
 
@@ -162,6 +167,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         minStakingAmount,
         isCardanoNetworkType,
         isStakingActive,
+        cardanoStakingPools,
     ]);
 
     const CurrentRewardsCell = () => {
