@@ -485,7 +485,7 @@ const eosSignTransaction = [
         device: initializedDevice,
         dir: 'eos',
         url: 'eosSignTransaction',
-        views: [followDevice, followDevice],
+        views: [followDevice, confirmOutput],
     },
 ];
 
@@ -520,7 +520,7 @@ const rippleSignTransaction = [
         device: initializedDevice,
         dir: 'ripple',
         url: 'rippleSignTransaction',
-        views: [confirmOutput, confirmOutput, followDevice],
+        views: [followDevice, confirmOutput, confirmOutput, followDevice],
     },
 ];
 
