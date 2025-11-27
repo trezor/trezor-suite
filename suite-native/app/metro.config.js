@@ -136,7 +136,12 @@ const config = {
     },
 };
 
-const mergedConfig = mergeConfig(jsonExpoConfig, withStorybook(config));
+const mergedConfig = mergeConfig(
+    jsonExpoConfig,
+    withStorybook(config, {
+        enabled: process.env.EXPO_PUBLIC_ENVIRONMENT !== 'production',
+    }),
+);
 
 if (
     process.env.EXPO_PUBLIC_IS_DETOX_BUILD !== 'true' &&
