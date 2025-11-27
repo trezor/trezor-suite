@@ -1,61 +1,92 @@
+import { DEFAULT_LOCALE, LocaleCode } from '../languages';
 import {
-    AppLocaleOption,
     LocaleSliceRootState,
-    selectIsLanguageLocaleSupported,
+    LocaleState,
+    selectLocale,
+    selectSupportedLanguageLocale,
 } from '../localeSlice';
+import { SupportedLocaleCode } from '../types';
 
-describe('selectIsLanguageLocaleSupported', () => {
+describe('selectSupportedLanguageLocale', () => {
     const testCases = [
         {
-            description:
-                'should return true when user selected locale is "system" and system locale is officially supported',
-            appLocaleCode: 'system',
-            systemLocaleCode: 'en-US',
-            expectedResult: true,
+            description: 'should return supported system locale when app locale is "system"',
+            localeState: {
+                appLocaleCode: 'system',
+                systemLocaleCode: 'cs-CZ',
+            },
+            expectedResultLocale: 'cs-CZ',
         },
         {
             description:
-                'should return false when user selected locale is "system" and system locale is community supported',
-            appLocaleCode: 'system',
-            systemLocaleCode: 'cs-CZ',
-            expectedResult: false,
+                'should return default locale when app locale is "system" and system locale is not supported',
+            localeState: {
+                appLocaleCode: 'system',
+                systemLocaleCode: 'fr-FR',
+            },
+            expectedResultLocale: DEFAULT_LOCALE,
+        },
+        {
+            description: 'should return app locale even if the system locale is supported',
+            localeState: {
+                appLocaleCode: 'cs-CZ',
+                systemLocaleCode: 'en-US',
+            },
+            expectedResultLocale: 'cs-CZ',
         },
         {
             description:
-                'should return false when user selected locale is "system" and system locale is not supported',
-            appLocaleCode: 'system',
-            systemLocaleCode: 'fr-FR',
-            expectedResult: false,
-        },
-        {
-            description:
-                'should return true when user selected locale is a supported language (official)',
-            appLocaleCode: 'en-US',
-            systemLocaleCode: 'en-US',
-            expectedResult: true,
-        },
-        {
-            description:
-                'should return true when user selected locale is a supported language (community)',
-            appLocaleCode: 'cs-CZ',
-            systemLocaleCode: 'en-US',
-            expectedResult: true,
+                'should return supported language locale even if the system locale is matching only on language, but has different region',
+            localeState: {
+                appLocaleCode: 'system',
+                systemLocaleCode: 'de-AT',
+            },
+            expectedResultLocale: 'de-DE',
         },
     ] as const satisfies {
         description: string;
-        appLocaleCode: AppLocaleOption;
-        systemLocaleCode: string;
-        expectedResult: boolean;
+        localeState: LocaleState;
+        expectedResultLocale: SupportedLocaleCode;
     }[];
 
-    it.each(testCases)('$description', ({ appLocaleCode, systemLocaleCode, expectedResult }) => {
+    it.each(testCases)('$description', ({ localeState, expectedResultLocale }) => {
         const state: LocaleSliceRootState = {
-            locale: {
-                appLocaleCode,
-                systemLocaleCode,
-            },
+            locale: localeState,
         };
 
-        expect(selectIsLanguageLocaleSupported(state, systemLocaleCode)).toBe(expectedResult);
+        expect(selectSupportedLanguageLocale(state)).toBe(expectedResultLocale);
+    });
+});
+
+describe('selectLocale', () => {
+    const testCases = [
+        {
+            description: 'should return system locale when app locale is "system"',
+            localeState: {
+                appLocaleCode: 'system',
+                systemLocaleCode: 'cs-CZ',
+            },
+            expectedResultLocale: 'cs-CZ',
+        },
+        {
+            description: 'should return app locale when it has any other value than "system"',
+            localeState: {
+                appLocaleCode: 'ja-JP',
+                systemLocaleCode: 'cs-CZ',
+            },
+            expectedResultLocale: 'ja-JP',
+        },
+    ] as const satisfies {
+        description: string;
+        localeState: LocaleState;
+        expectedResultLocale: LocaleCode;
+    }[];
+
+    it.each(testCases)('$description', ({ localeState, expectedResultLocale }) => {
+        const state: LocaleSliceRootState = {
+            locale: localeState,
+        };
+
+        expect(selectLocale(state)).toBe(expectedResultLocale);
     });
 });

@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { DEFAULT_LOCALE, LocaleCode } from './languages';
-import { SupportedLocaleCode, isOfficiallySupportedLanguage, isSupportedLanguage } from './types';
+import { SupportedLocaleCode, isOfficiallySupportedLanguage } from './types';
+import { findClosestOfficiallySupportedLanguageLocale } from './utils';
 
 export type AppLocaleOption = SupportedLocaleCode | 'system';
 
@@ -52,15 +53,11 @@ export const selectLocale = (state: LocaleSliceRootState) => {
     return userSelectedLocaleCode === 'system' ? systemLocaleCode : userSelectedLocaleCode;
 };
 
-export const selectIsLanguageLocaleSupported = (
-    state: LocaleSliceRootState,
-    systemLocaleCode: LocaleCode,
-) => {
-    const userSelectedLocaleCode = selectAppLocaleCode(state);
-
-    if (userSelectedLocaleCode === 'system') {
-        return isOfficiallySupportedLanguage(systemLocaleCode);
+export const selectSupportedLanguageLocale = (state: LocaleSliceRootState): SupportedLocaleCode => {
+    const locale = selectLocale(state);
+    if (isOfficiallySupportedLanguage(locale)) {
+        return locale;
     }
 
-    return isSupportedLanguage(userSelectedLocaleCode);
+    return findClosestOfficiallySupportedLanguageLocale(locale);
 };
