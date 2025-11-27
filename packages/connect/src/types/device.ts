@@ -75,6 +75,12 @@ export type DeviceState = {
     deriveCardano?: boolean;
 };
 
+export type DeviceThpState = {
+    properties?: ThpStateSerialized['properties'];
+    credentials: ThpStateSerialized['credentials'];
+    channel: string;
+};
+
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
 // in ideal/expected setup this object should be empty but given setup might have exceptions.
 // key = coin shortcut lowercase (ex: btc, eth, xrp) OR field declared in coins.json "supportedFirmware.capability"
@@ -159,7 +165,7 @@ export type KnownDevice = BaseDevice & {
     _state?: DeviceState; // TODO: breaking change in next major release
     state?: DeviceState['staticSessionId'];
     features: PROTO.Features;
-    thp?: ThpStateSerialized;
+    thp?: DeviceThpState;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: Record<string, string>;
     authenticityChecks: {
@@ -182,7 +188,7 @@ export type UnknownDevice = BaseDevice & {
     id?: typeof undefined;
     error?: typeof undefined;
     features?: typeof undefined;
-    thp?: ThpStateSerialized;
+    thp?: DeviceThpState;
     firmware?: typeof undefined;
     firmwareReleaseConfigInfo?: typeof undefined;
     firmwareType?: typeof undefined;

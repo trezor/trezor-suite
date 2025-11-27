@@ -9,6 +9,9 @@ import {
 export type ThpStateSerialized = {
     properties?: ThpDeviceProperties;
     credentials: ThpCredentials[];
+} & ThpChannelState;
+
+export type ThpChannelState = {
     channel: string; // 2 bytes as hex
     sendBit: ThpMessageSyncBit; // host synchronization bit
     recvBit: ThpMessageSyncBit; // device synchronization bit
@@ -272,7 +275,7 @@ export class ThpState {
         };
     }
 
-    deserialize(json: ReturnType<(typeof this)['serialize']>) {
+    deserialize(json: ThpChannelState) {
         // simple fields validation
         const error = new Error('ThpState.deserialize invalid state');
         if (!json || typeof json !== 'object') {
