@@ -58,7 +58,7 @@ USE_WS_CACHE=true
 PATTERN=""
 FIRMWARE_MODEL=""
 RANDOMIZE=false
-TRANSPORT="2.0.33"
+TRANSPORT="node-bridge"
 
 # echo $OPTARG
 # user options
