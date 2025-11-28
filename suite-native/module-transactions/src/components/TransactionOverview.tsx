@@ -1,6 +1,10 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/native';
 
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Card, Divider, HStack, Text, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -9,7 +13,7 @@ import {
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle } from '@trezor/styles';
 
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
 import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
@@ -25,10 +29,6 @@ export const cardStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.none,
 }));
 
-const cardContentStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.sp16,
-}));
-
 type NavigationProps = StackNavigationProps<
     TransactionDetailStackParamList,
     TransactionDetailStackRoutes.TransactionDetailOverview
@@ -39,10 +39,11 @@ export const TransactionOverview = ({
     accountKey,
     tokenTransfer,
 }: TransactionDetailSummaryProps) => {
-    const { applyStyle } = useNativeStyles();
-
     const navigation = useNavigation<NavigationProps>();
 
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
     const isTokenTransferDetail = !!tokenTransfer;
 
     const navigateToOverview = () => {
@@ -52,18 +53,29 @@ export const TransactionOverview = ({
         });
     };
 
+    if (!account) return null;
+
+    const isUtxoBasedNetwork = isUtxoBased(account);
+
     return (
         <Card noPadding={true}>
-            <HStack style={applyStyle(cardContentStyle)} flex={1} justifyContent="space-between">
-                <Text>
+            <HStack padding="sp16" alignItems="center" flex={1} justifyContent="space-between">
+                <Text variant="hint">
                     <Translation id="transactions.detail.transactionOverviewTitle" />
                 </Text>
-                <TextButton variant="primary" isUnderlined onPress={navigateToOverview}>
-                    <Translation id="transactions.detail.showDetails" />
-                </TextButton>
+                {isUtxoBasedNetwork && (
+                    <TextButton
+                        size="small"
+                        variant="primary"
+                        isUnderlined
+                        onPress={navigateToOverview}
+                    >
+                        <Translation id="transactions.detail.showDetails" />
+                    </TextButton>
+                )}
             </HStack>
             <Divider />
-            <Box style={applyStyle(cardContentStyle)}>
+            <Box padding="sp16">
                 {isTokenTransferDetail ? (
                     <TokenTransactionDetailSummary
                         transaction={transaction}
