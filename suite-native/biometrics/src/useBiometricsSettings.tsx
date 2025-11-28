@@ -11,15 +11,6 @@ export const useBiometricsSettings = () => {
 
     const dispatch = useDispatch();
 
-    const displayBiometricsNotAvailableAlert = useCallback(() => {
-        showAlert({
-            title: <Translation id="biometrics.biometricsUnavailableAlert.title" />,
-            description: <Translation id="biometrics.biometricsUnavailableAlert.description" />,
-            primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-            pictogramVariant: 'warning',
-        });
-    }, [showAlert]);
-
     const toggleBiometricsOption = useCallback(async () => {
         const authResult = await dispatch(toggleBiometricsSettingsThunk());
 
@@ -40,5 +31,5 @@ export const useBiometricsSettings = () => {
         return authResult.payload;
     }, [dispatch, showAlert]);
 
-    return { toggleBiometricsOption, displayBiometricsNotAvailableAlert };
+    return { toggleBiometricsOption };
 };
