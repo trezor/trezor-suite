@@ -46,6 +46,8 @@ export const setOutputLabel = createAction(
         txId: string;
         outputIndex: number;
         label: string | null;
+        accountDescriptor: string;
+        networkSymbol: NetworkSymbol;
     }) => ({ payload }),
 );
 

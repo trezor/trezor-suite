@@ -9,6 +9,8 @@ import {
 } from '@evolu/common';
 
 import { OutputLabel, OutputLabelsStore } from '@suite-common/suite-sync-storage';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
@@ -25,13 +27,15 @@ export const OutputLabelSchema = {
         label: nullOr(NonEmptyString1000),
         txId: NonEmptyString1000,
         outputIndex: NonNegativeNumber,
+        accountDescriptor: NonEmptyString1000,
+        networkSymbol: NonEmptyString1000,
     },
 };
 
 export class OutputLabels implements OutputLabelsStore {
     constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
 
-    update = ({ txId, outputIndex, label }: OutputLabel) => {
+    update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: OutputLabel) => {
         const idResult = createOutputLabelId(txId, outputIndex);
 
         if (!idResult.ok) {
@@ -45,6 +49,8 @@ export class OutputLabels implements OutputLabelsStore {
             txId,
             outputIndex,
             label: normalizeLabel(label),
+            accountDescriptor: accountDescriptor as AccountDescriptor,
+            networkSymbol: networkSymbol as NetworkSymbol,
         });
 
         if (!result.ok) {
@@ -69,6 +75,8 @@ export class OutputLabels implements OutputLabelsStore {
                     txId: label.txId,
                     outputIndex: label.outputIndex,
                     label: label.label,
+                    accountDescriptor: label.accountDescriptor!,
+                    networkSymbol: label.networkSymbol as NetworkSymbol,
                 });
             }
         };

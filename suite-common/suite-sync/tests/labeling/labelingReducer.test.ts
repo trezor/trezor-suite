@@ -296,6 +296,8 @@ describe('labelingReducer', () => {
                 txId: 'deadbeefcafebabe',
                 outputIndex: 0,
                 label: 'Output 0',
+                accountDescriptor: 'xpub...',
+                networkSymbol: 'btc',
             }),
         );
 
@@ -316,6 +318,8 @@ describe('labelingReducer', () => {
                 txId: 'deadbeefcafebabe',
                 outputIndex: 0,
                 label: 'Output 0 Updated',
+                accountDescriptor: 'xpub...',
+                networkSymbol: 'btc',
             }),
         );
 
@@ -357,6 +361,8 @@ describe('labelingReducer', () => {
                     txId: 'deadbeefcafebabe',
                     outputIndex: 0,
                     label: 'Output 0',
+                    accountDescriptor: 'xpub...',
+                    networkSymbol: 'btc',
                 },
             ],
         };
