@@ -2660,10 +2660,17 @@ export const messages = {
             continueButton: 'I’ve checked it',
             checkBackupButton: 'Check backup',
         },
+        versionCard: {
+            version: 'Version',
+            status: {
+                upToDate: 'You’re up to date',
+                updateAvailable: 'Update available',
+                updateRequired: 'Update required',
+            },
+        },
         updateCard: {
             upToDate: 'You’re all up to date',
             newVersionAvailable: 'Update available',
-            updateToVersionAvailable: 'Update to version {firmwareVersion} available',
             updateButton: 'Update',
         },
         firmwareInfoScreen: {
@@ -2692,8 +2699,8 @@ export const messages = {
             updateFirmware: 'Update firmware',
             skipButton: 'Skip for now',
             currentFirmware: 'Current Firmware',
-            title: 'Firmware',
-            subtitle: "Firware is your Trezor's operating system",
+            title: 'Firmware update',
+            subtitle: 'Firmware is your Trezor’s operating system.',
             changelog: {
                 button: 'What’s new?',
                 title: 'What’s new?',
