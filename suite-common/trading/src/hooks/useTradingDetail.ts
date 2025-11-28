@@ -5,7 +5,7 @@ import type { TradingType } from '@suite-common/suite-types';
 
 import { useSelector } from './useSelector';
 import { selectTradingDetailData } from '../selectors/tradingSelectors';
-import { tradingThunks } from '../thunks';
+import { tradingThunks } from '../thunks/common';
 import type {
     TradingTradeInfoMapProps,
     TradingTradeTransactionMapProps,

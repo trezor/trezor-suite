@@ -3,6 +3,8 @@ import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
+    type DeviceRootState,
     selectAccounts,
     selectDeviceAccounts,
     selectDeviceUnavailableCapabilities,
@@ -14,12 +16,10 @@ import { exhaustive } from '@trezor/type-utils';
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
 import { SellInfo, TradingSellState } from '../reducers/sellReducer';
-import type { TradingState } from '../reducers/tradingReducer';
+import type { TradingRootState, TradingState } from '../reducers/tradingReducer';
 import {
     TradingFiatCurrenciesProps,
     TradingPaymentMethodProps,
-    TradingRootState,
-    TradingRootStateWithDeviceAndAccounts,
     TradingTransaction,
     TradingType,
 } from '../types';
@@ -38,6 +38,17 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
+
+type SelectedAccountRootState = {
+    wallet: {
+        selectedAccount: SelectedAccountStatus;
+    };
+};
+
+export type TradingRootStateWithDeviceAndAccounts = TradingRootState &
+    DeviceRootState &
+    AccountsRootState &
+    SelectedAccountRootState;
 
 export type TradingBuyInfoSelector = Omit<
     BuyInfo,

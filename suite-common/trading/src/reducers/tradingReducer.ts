@@ -75,6 +75,12 @@ export interface TradingState {
     settings: TradingSettingsState;
 }
 
+export type TradingRootState = {
+    wallet: {
+        trading: TradingState;
+    };
+};
+
 export const initialState: TradingState = {
     info: {
         platforms: undefined,
