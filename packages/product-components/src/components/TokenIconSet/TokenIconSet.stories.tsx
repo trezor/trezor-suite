@@ -6,8 +6,8 @@ const getToken = (contract: string, symbol: string, decimals: number) => ({
     contract,
     symbol,
     decimals,
-    type: 'ERC20',
-    standard: 'ERC20',
+    type: 'ERC20' as const,
+    standard: 'ERC20' as const,
 });
 
 const TOKEN_1 = getToken('0xaea46a60368a7bd060eec7df8cba43b7ef41ad85', 'FET', 6);

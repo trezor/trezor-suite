@@ -176,7 +176,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             token: tokenInfo
                 ? {
                       mint: tokenInfo.contract,
-                      program: tokenStandardToTokenProgramName(tokenInfo.type),
+                      program: tokenStandardToTokenProgramName(tokenInfo.standard),
                       decimals: tokenInfo.decimals,
                       accounts: tokenInfo.accounts ?? [],
                   }
@@ -319,7 +319,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             token: token
                 ? {
                       mint: token.contract,
-                      program: tokenStandardToTokenProgramName(token.type),
+                      program: tokenStandardToTokenProgramName(token.standard),
                       decimals: token.decimals,
                       accounts: token.accounts ?? [],
                   }

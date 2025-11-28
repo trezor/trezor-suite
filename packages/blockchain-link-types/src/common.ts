@@ -217,9 +217,9 @@ export interface TokenAccount {
 }
 
 export interface TokenInfo {
-    /** @deprecated: Use type instead. */
+    /** @deprecated: Use standard instead. */
     type: string; // token type: ERC20...
-    standard: string; // token standard: ERC20...
+    standard: TokenStandard; // token standard: ERC20...
     contract: string; // token address, token unit for ADA
     balance?: string; // token balance
     name?: string; // token name
