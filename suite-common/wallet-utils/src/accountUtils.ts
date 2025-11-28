@@ -697,8 +697,8 @@ export const getAccountFiatBalance = ({
         totalBalance = totalBalance.plus(tokensBalance ?? 0);
     }
 
-    // account staking balance
-    if (shouldIncludeStaking) {
+    // account staking balance, Cardano staking should never be included as it would double the total
+    if (shouldIncludeStaking && account.networkType !== 'cardano') {
         const stakingBalance = getStakingFiatBalance(account, coinFiatRate.rate);
         totalBalance = totalBalance.plus(stakingBalance ?? 0);
     }
@@ -723,10 +723,10 @@ export const getTotalFiatBalance = ({
 }: GetTotalFiatBalanceParams) => {
     let instanceBalance = new BigNumber(0);
 
-    deviceAccounts.forEach(a => {
+    deviceAccounts.forEach(account => {
         const accountFiatBalance =
             getAccountFiatBalance({
-                account: a,
+                account,
                 baseCurrencyCode,
                 rates,
                 shouldIncludeTokens,
