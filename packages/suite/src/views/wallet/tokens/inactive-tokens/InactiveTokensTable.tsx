@@ -52,8 +52,8 @@ const getInactiveStellarTokens = async (account: Account): Promise<StellarTokenI
     const inactiveTokens = Object.entries(allTokens)
         .filter(([contractAddress]) => !activeTokenContracts.has(contractAddress))
         .map(([contract]) => ({
-            type: 'STELLAR-CLASSIC',
-            standard: 'STELLAR-CLASSIC',
+            type: 'STELLAR-CLASSIC' as const,
+            standard: 'STELLAR-CLASSIC' as const,
             contract,
             name: allTokens[contract]?.name,
             symbol: contract.split('-')[0],
