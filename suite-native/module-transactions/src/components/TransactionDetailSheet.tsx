@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { BottomSheetModal, Box, Button, Text, useBottomSheetModal } from '@suite-native/atoms';

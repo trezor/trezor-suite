@@ -1,4 +1,4 @@
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
