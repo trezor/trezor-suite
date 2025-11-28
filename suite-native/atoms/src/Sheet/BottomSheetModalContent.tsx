@@ -8,13 +8,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AnimatedBox, BoxProps } from '../Box';
 
-const childWrapperStyle = prepareNativeStyle<{ bottomInset?: number }>(
-    (utils, { bottomInset }) => ({
-        flex: 1,
-        paddingBottom: bottomInset || utils.spacings.sp16,
-        paddingHorizontal: utils.spacings.sp16,
-    }),
-);
+const childWrapperStyle = prepareNativeStyle<{ bottomInset: number }>((utils, { bottomInset }) => ({
+    flex: 1,
+    paddingBottom: bottomInset + utils.spacings.sp16,
+    paddingHorizontal: utils.spacings.sp16,
+}));
 
 const containerStyle = prepareNativeStyle(() => ({
     flex: 1,
