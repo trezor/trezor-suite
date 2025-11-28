@@ -29,27 +29,19 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../clipboard" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../formatters" },
         { "path": "../icons" },
-        { "path": "../in-app-rating" },
         { "path": "../intl" },
-        { "path": "../labeling" },
-        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../tokens" },
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]
 }
