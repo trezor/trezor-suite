@@ -14,6 +14,7 @@ import {
     isEvmApprovalTx,
     isTestnet,
 } from '@suite-common/wallet-utils';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -26,14 +27,25 @@ import {
     TransactionReviewOutputElementProps,
 } from './TransactionReviewOutputElement';
 
-const getLines = (
-    device: TrezorDevice,
-    networkType: NetworkType,
-    precomposedTx: GeneralPrecomposedTransactionFinal,
-    precomposedForm: FormState | StakeFormState,
-    isRbfAction?: boolean,
-    stakeType?: StakeType,
-): OutputElementLine[] => {
+interface GetLinesParams {
+    device: TrezorDevice;
+    networkType: NetworkType;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    precomposedForm: FormState | StakeFormState;
+    isRbfAction?: boolean;
+    stakeType?: StakeType;
+    nativeToken?: TokenInfo;
+}
+
+const getLines = ({
+    device,
+    networkType,
+    precomposedTx,
+    precomposedForm,
+    isRbfAction,
+    stakeType,
+    nativeToken,
+}: GetLinesParams): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType, stakeType);
     const isEthereum = networkType === 'ethereum';
@@ -75,7 +87,7 @@ const getLines = (
             id: 'amount', // In updated ethereum send flow there is no total amount shown, only amount without fee
             label: <Translation id="AMOUNT" />,
             value: tokenInfo ? precomposedTx.totalSpent : amountWithoutFee,
-            token: tokenInfo,
+            token: tokenInfo ?? nativeToken,
             type: 'amount',
         };
 
@@ -83,6 +95,7 @@ const getLines = (
             id: 'fee',
             label: <Translation id="MAX_FEE" />,
             value: precomposedTx.fee,
+            token: nativeToken,
             type: 'amount',
         };
 
@@ -145,8 +158,21 @@ export const TransactionReviewTotalOutput = ({
         return null;
     }
 
-    const { networkType, symbol } = account;
-    const lines = getLines(device, networkType, precomposedTx, precomposedForm, isRbf, stakeType);
+    const { networkType } = account;
+    const nativeToken =
+        account.accountType === 'placeholder' && 'nativeToken' in precomposedTx
+            ? precomposedTx.nativeToken
+            : undefined;
+    const isFiatVisible = !isTestnet(account.symbol) && account.accountType !== 'placeholder';
+    const lines = getLines({
+        device,
+        networkType,
+        precomposedTx,
+        precomposedForm,
+        isRbfAction: isRbf,
+        stakeType,
+        nativeToken,
+    });
 
     return (
         <TransactionReviewOutputElement
@@ -160,7 +186,7 @@ export const TransactionReviewTotalOutput = ({
             account={account}
             lines={lines}
             state={state}
-            fiatVisible={!isTestnet(symbol)}
+            fiatVisible={isFiatVisible}
         />
     );
 };

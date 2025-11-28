@@ -122,6 +122,9 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     feeLimit?: string;
     estimatedFeeLimit?: string;
     token?: TokenInfo;
+    /** override the network's native token
+     * used with EVMs that are used via Connect, but not natively supported in Suite */
+    nativeToken?: TokenInfo;
     isTokenKnown?: boolean;
     createdTimestamp?: number;
     maxFeePerGas?: string;
