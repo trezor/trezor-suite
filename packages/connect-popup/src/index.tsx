@@ -252,16 +252,6 @@ const handleMessageInIframeMode = (
         handleResponseEvent(data);
     }
 
-    // This is message from the window.opener
-    if (data.type === UI_REQUEST.IFRAME_FAILURE) {
-        fail({
-            type: 'error',
-            detail: 'iframe-failure',
-        });
-
-        return;
-    }
-
     // ignore messages from origin other then MessagePort (iframe)
     const isMessagePort =
         event.target instanceof MessagePort ||
