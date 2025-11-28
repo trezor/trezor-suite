@@ -68,7 +68,6 @@ export const UI_REQUEST = {
     LOGIN_CHALLENGE_REQUEST: 'ui-login_challenge_request',
     BUNDLE_PROGRESS: 'ui-bundle_progress',
     ADDRESS_VALIDATION: 'ui-address_validation',
-    IFRAME_FAILURE: 'ui-iframe_failure',
 } as const;
 
 export type UiRequestWithoutPayload =
@@ -78,10 +77,6 @@ export type UiRequestWithoutPayload =
       }
     | {
           type: typeof UI_REQUEST.REQUEST_UI_WINDOW;
-          payload?: typeof undefined;
-      }
-    | {
-          type: typeof UI_REQUEST.IFRAME_FAILURE;
           payload?: typeof undefined;
       }
     | {

@@ -479,34 +479,6 @@ export class PopupManager extends EventEmitter {
         }
     }
 
-    async postMessage(message: CoreEventMessage) {
-        // NOTE: This method only seems to be used in one case to show UI.IFRAME_FAILURE
-        // Maybe we could handle this in a simpler way?
-
-        // device needs interaction but there is no popup/ui
-        // maybe popup request wasn't handled
-        // ignore "ui_request_window" type
-        if (!this.popupWindow && message.type !== UI.REQUEST_UI_WINDOW && this.openTimeout) {
-            this.clear();
-            showPopupRequest(this.open.bind(this), () => {
-                this.emitClosed();
-            });
-
-            return;
-        }
-
-        // post message before popup request finalized
-        if (this.popupPromise) {
-            await this.popupPromise.promise;
-        }
-        // post message to popup window
-        if (this.popupWindow?.mode === 'window') {
-            this.popupWindow.window.postMessage(message, this.origin);
-        } else if (this.popupWindow?.mode === 'tab') {
-            this.channel.postMessage(message);
-        }
-    }
-
     private isWebExtensionWithTab() {
         // Check if webextension actually has access to chrome.tabs API
         // This is not the case when used in offscreen context
