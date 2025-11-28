@@ -347,7 +347,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                 data-testid="@suite/connection-modal"
                 size="tiny"
                 onCancel={onCancel}
-                onBackClick={() => setIsModeSelected(false)}
+                onBackClick={isDesktop() ? () => setIsModeSelected(false) : undefined}
             >
                 <ConnectModalContent isBluetoothMode={false}>
                     {isWebUsbTransport && <WebUsbButton intent="brand" size="medium" />}
