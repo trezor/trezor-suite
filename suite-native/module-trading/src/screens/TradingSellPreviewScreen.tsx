@@ -24,12 +24,13 @@ export const TradingSellPreviewScreen = () => {
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
 
     const currentQuote = trade?.data ? trade.data : selectedQuote;
-    const currentStatus = useRef(currentQuote?.status);
+    const hasFetchedAndComposedFees = useRef(false);
+    const lastOrderId = useRef<string | undefined>(undefined);
 
     useWatchTrade({
         accountKey: trade?.sendAccountKey,
         orderId: currentQuote?.orderId,
-        isInProgress: false,
+        isInProgress: true,
     });
 
     useEffect(() => {
@@ -37,17 +38,25 @@ export const TradingSellPreviewScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Reset the flag when quote changes (different orderId) or status changes away from SEND_CRYPTO
     useEffect(() => {
-        // only fetch fees and compose if the form step has changed to SEND_TRANSACTION
-        // dependencies are not stable, so we use useRef to store the previous form step
-        if (
-            currentStatus.current !== currentQuote?.status &&
-            currentQuote?.status === 'SEND_CRYPTO'
-        ) {
-            currentStatus.current = currentQuote?.status;
+        const orderIdChanged = lastOrderId.current !== currentQuote?.orderId;
+        const statusNotSendCrypto = currentQuote?.status !== 'SEND_CRYPTO';
+
+        if (orderIdChanged || statusNotSendCrypto) {
+            hasFetchedAndComposedFees.current = false;
+        }
+
+        lastOrderId.current = currentQuote?.orderId;
+    }, [currentQuote?.orderId, currentQuote?.status]);
+
+    // Fetch fees and compose when status is SEND_CRYPTO and we haven't fetched yet
+    useEffect(() => {
+        if (currentQuote?.status === 'SEND_CRYPTO' && !hasFetchedAndComposedFees.current) {
+            hasFetchedAndComposedFees.current = true;
             fetchFeesAndCompose();
         }
-    }, [fetchFeesAndCompose, currentQuote]);
+    }, [fetchFeesAndCompose, currentQuote?.status, currentQuote?.orderId]);
 
     // clear trading state on unmount
     useEffect(

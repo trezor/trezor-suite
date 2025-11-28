@@ -28,7 +28,10 @@ type FeePickerCardProps = {
 export const FeePickerCard = ({ trade, accountKey, symbol, tradingType }: FeePickerCardProps) => {
     const navigation =
         useNavigation<
-            StackNavigationProps<TradingStackParamList, TradingStackRoutes.TradingExchangePreview>
+            StackNavigationProps<
+                TradingStackParamList,
+                TradingStackRoutes.TradingExchangePreview | TradingStackRoutes.TradingSellPreview
+            >
         >();
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
