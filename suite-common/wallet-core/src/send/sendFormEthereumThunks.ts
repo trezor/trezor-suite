@@ -17,6 +17,8 @@ import {
     RbfTransactionParams,
 } from '@suite-common/wallet-types';
 import {
+    asAmountSubunit,
+    asAmountUnit,
     calculateMax,
     calculateTotal,
     calculateTotalGasCost,
@@ -24,6 +26,7 @@ import {
     convertAmountUnitsToSubunits,
     getAccountIdentity,
     getApprovalComposeOutput,
+    getCryptoMaxAmountWithReserve,
     getEthereumEstimateFeeParams,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
@@ -32,12 +35,15 @@ import {
     isPending,
     isSentTransaction,
     prepareEthereumTransaction,
+    subunitsToUnits,
+    unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
+    ComposeActionContext,
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
     SignTransactionError,
@@ -51,6 +57,8 @@ export const calculate = (
     output: ExternalOutput,
     feeLevel: FeeLevel,
     token?: TokenInfo,
+    composeContext?: ComposeActionContext,
+    isNetworkReserveEnabled = false,
 ): PrecomposedTransaction => {
     let amount: string;
     let max: string | undefined;
@@ -66,6 +74,33 @@ export const calculate = (
 
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, totalGasCostInWei);
+
+        if (composeContext) {
+            const feesInUnits = subunitsToUnits({
+                value: asAmountSubunit(new BigNumber(totalGasCostInWei)),
+                symbol: composeContext.account.symbol,
+            }).toString();
+
+            const maxInUnits = subunitsToUnits({
+                value: asAmountSubunit(new BigNumber(max)),
+                symbol: composeContext.account.symbol,
+            }).toString();
+
+            max = getCryptoMaxAmountWithReserve({
+                symbol: composeContext.account.symbol,
+                contractAddress: token?.contract,
+                balance: composeContext.account.formattedBalance,
+                amount: maxInUnits,
+                fee: feesInUnits,
+                isNetworkReserveEnabled,
+            });
+
+            max = unitsToSubunits({
+                value: asAmountUnit(new BigNumber(max)),
+                symbol: composeContext.account.symbol,
+            }).toString();
+        }
+
         amount = max;
     } else {
         amount = output.amount;
@@ -147,7 +182,10 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue, getState }) => {
+    async (
+        { formState, composeContext, isNetworkReserveEnabled = false },
+        { dispatch, rejectWithValue, getState },
+    ) => {
         const device = selectSelectedDevice(getState());
 
         const { account, network, feeInfo } = composeContext;
@@ -254,7 +292,14 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
-            calculate(availableBalance, output, level, tokenInfo),
+            calculate(
+                availableBalance,
+                output,
+                level,
+                tokenInfo,
+                composeContext,
+                isNetworkReserveEnabled,
+            ),
         );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];

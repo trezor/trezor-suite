@@ -37,6 +37,7 @@ export type TransactionType = WalletAccountTransaction['type'];
 export type ComposeTransactionThunkArguments = {
     formState: FormState;
     composeContext: ComposeActionContext;
+    isNetworkReserveEnabled?: boolean;
 };
 
 export type SignTransactionThunkArguments = {

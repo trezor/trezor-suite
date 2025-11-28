@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import { getNetworkReserve } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
@@ -10,6 +9,7 @@ import {
     findToken,
     formatNetworkAmount,
     getInputState,
+    getNetworkReserve,
     hasNetworkFeatures,
     isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';

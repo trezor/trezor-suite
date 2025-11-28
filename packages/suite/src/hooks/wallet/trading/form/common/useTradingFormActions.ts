@@ -14,7 +14,6 @@ import {
     type TradingExchangeFormProps,
     type TradingSellFormProps,
     cryptoIdToSymbol,
-    getCryptoAmountWithReserve,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
@@ -27,6 +26,7 @@ import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     fromBaseCurrencyToCryptoUnit,
+    getCryptoAmountWithReserve,
     isZero,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isChanged } from '@trezor/utils';
