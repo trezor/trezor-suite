@@ -2883,7 +2883,7 @@ export default defineMessages({
     TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
         id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
         defaultMessage:
-            'All wallets will be ejected. Trezor Suite will automatically restart once the process is complete.',
+            'All wallets will be safely ejected. Trezor Suite will restart automatically when the process is finished.',
     },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
@@ -8085,7 +8085,7 @@ export default defineMessages({
     },
     TR_STAKING_TREZOR_POOL_FAIL: {
         id: 'TR_STAKING_TREZOR_POOL_FAIL',
-        defaultMessage: "Couldn't reach Trezor stake pool to delegate on.",
+        defaultMessage: "Couldn't reach Trezor staking pool to delegate on.",
     },
     TR_STAKING_TX_PENDING: {
         id: 'TR_STAKING_TX_PENDING',
@@ -8103,12 +8103,12 @@ export default defineMessages({
     },
     TR_STAKING_POOL_OVERSATURATED_TITLE: {
         id: 'TR_STAKING_POOL_OVERSATURATED_TITLE',
-        defaultMessage: 'Stake pool is oversaturated',
+        defaultMessage: 'Staking pool is oversaturated',
     },
     TR_STAKING_POOL_OVERSATURATED_DESCRIPTION: {
         id: 'TR_STAKING_POOL_OVERSATURATED_DESCRIPTION',
         defaultMessage:
-            "The stake pool you're delegating on is oversaturated. Redelegate your stake to maximize your staking rewards.",
+            "The staking pool you're delegating on is oversaturated. Redelegate your stake to maximize your staking rewards.",
     },
     TR_STAKING_IS_NOT_SUPPORTED: {
         id: 'TR_STAKING_IS_NOT_SUPPORTED',
@@ -9348,11 +9348,11 @@ export default defineMessages({
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
-            'Your ADA staking rewards will drop soon. Move to a new pool with {apy}% APY. Your funds and past rewards are safe.',
+            'Your ADA staking rewards are about to decrease. Switch to a new pool offering {apy}% APY to keep earning more. Your funds and past rewards remain completely safe.',
     },
     TR_STAKING_MODAL_OUTDATED_BUTTON: {
         id: 'TR_STAKING_MODAL_OUTDATED_BUTTON',
-        defaultMessage: 'Update staking pool',
+        defaultMessage: 'Update provider',
     },
     TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE: {
         id: 'TR_STAKING_DASHBOARD_TABLE_ACCOUNT_BALANCE',
