@@ -3,7 +3,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
 import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
-import { buyThunks, sellThunks } from '../../thunks';
+import { buyThunks } from '../../thunks/buy';
+import { sellThunks } from '../../thunks/sell';
 import { tradingFixtures } from '../__fixtures__/tradingReducer';
 import { settingsInitialState, tradingSettingsActions } from '../settingsReducer';
 import { initialState, prepareTradingReducer } from '../tradingReducer';

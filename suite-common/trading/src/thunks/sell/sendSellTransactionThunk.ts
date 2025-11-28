@@ -5,7 +5,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
-import { tradingThunks } from '../';
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
@@ -17,6 +16,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { TradingSellFormProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { tradingThunks } from '../common';
 import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendSellTransactionThunkProps = {

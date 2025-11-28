@@ -3,7 +3,7 @@ import { CryptoId, SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
-import { sellThunks } from '../../';
+import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
 import { SellInfo, TradingSellState } from '../../../reducers/sellReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';

@@ -10,12 +10,12 @@ import {
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
-import { buyThunks } from '../../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { BuyInfo, TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { TradingCountryCode } from '../../../types';
+import { buyThunks } from '../index';
 import { SelectBuyQuoteThunkProps } from '../selectBuyQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

@@ -4,7 +4,6 @@ import { CryptoId } from 'invity-api';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
-import { buyThunks } from '../../';
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
@@ -14,6 +13,7 @@ import {
     TradingCryptoSelectItemProps,
 } from '../../../types';
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
+import { buyThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 

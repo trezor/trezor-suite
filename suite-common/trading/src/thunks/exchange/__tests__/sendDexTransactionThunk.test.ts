@@ -5,11 +5,13 @@ import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
-import { exchangeThunks, tradingThunks } from '../../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { tradingThunks } from '../../common';
+import * as confirmExchangeTradeThunk from '../confirmExchangeTradeThunk';
+import { exchangeThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
@@ -157,8 +159,8 @@ describe('sendDexTransactionThunk', () => {
                 ),
             );
 
-        (exchangeThunks.confirmTradeThunk as unknown as jest.Mock) = jest
-            .fn()
+        const confirmExchangeTradeThunkSpy = jest
+            .spyOn(confirmExchangeTradeThunk, 'confirmExchangeTradeThunk')
             .mockImplementation(
                 createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
             );
@@ -174,15 +176,14 @@ describe('sendDexTransactionThunk', () => {
             }),
         );
 
-        const confirmTradeThunkArgs = (exchangeThunks.confirmTradeThunk as unknown as jest.Mock)
-            .mock.calls[0][0];
+        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0][0];
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
         expect(tradingThunks.recomposeAndSignTxThunk).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading.trades).toEqual([]);
-        expect(exchangeThunks.confirmTradeThunk).toHaveBeenCalledTimes(1);
-        expect(confirmTradeThunkArgs.trade.approvalSendTxHash).toEqual('txid');
-        expect(confirmTradeThunkArgs.trade.status).toEqual('APPROVAL_PENDING');
+        expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
+        expect(confirmTradeThunkArgs.trade?.approvalSendTxHash).toEqual('txid');
+        expect(confirmTradeThunkArgs.trade?.status).toEqual('APPROVAL_PENDING');
     });
 
     it('should successfully call confirmTradeThunk for making trade', async () => {
@@ -205,8 +206,8 @@ describe('sendDexTransactionThunk', () => {
                 ),
             );
 
-        (exchangeThunks.confirmTradeThunk as unknown as jest.Mock) = jest
-            .fn()
+        const confirmExchangeTradeThunkSpy = jest
+            .spyOn(confirmExchangeTradeThunk, 'confirmExchangeTradeThunk')
             .mockImplementation(
                 createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
             );
@@ -222,8 +223,7 @@ describe('sendDexTransactionThunk', () => {
             }),
         );
 
-        const confirmTradeThunkArgs = (exchangeThunks.confirmTradeThunk as unknown as jest.Mock)
-            .mock.calls[0][0];
+        const confirmTradeThunkArgs = confirmExchangeTradeThunkSpy.mock.calls[0][0];
         const { trade } = confirmTradeThunkArgs;
 
         expect(result.meta.requestStatus).toEqual('fulfilled');
@@ -233,11 +233,11 @@ describe('sendDexTransactionThunk', () => {
                 tradeType: 'exchange',
                 date: dateString,
                 data: trade,
-                key: trade.orderId,
+                key: trade?.orderId,
             },
         ]);
-        expect(exchangeThunks.confirmTradeThunk).toHaveBeenCalledTimes(1);
-        expect(trade.receiveTxHash).toEqual('txid');
-        expect(trade.status).toEqual('CONFIRMING');
+        expect(confirmExchangeTradeThunkSpy).toHaveBeenCalledTimes(1);
+        expect(trade?.receiveTxHash).toEqual('txid');
+        expect(trade?.status).toEqual('CONFIRMING');
     });
 });

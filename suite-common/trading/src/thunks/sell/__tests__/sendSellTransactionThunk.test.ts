@@ -6,13 +6,14 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
-import { sellThunks, tradingThunks } from '../../';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingSellState, sellInitialState } from '../../../reducers/sellReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { TradingSellFormProps, TradingTransactionSell } from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
+import { tradingThunks } from '../../common';
+import { sellThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 

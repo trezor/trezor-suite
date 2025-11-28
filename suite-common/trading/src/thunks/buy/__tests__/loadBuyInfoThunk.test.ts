@@ -3,10 +3,10 @@ import { BuyCryptoPaymentMethod, BuyProviderInfo, CryptoId, FiatCurrenciesProps 
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { buyThunks } from '../../';
 import { invityAPI } from '../../../invityAPI';
 import { buyInitialState, tradingBuyReducer } from '../../../reducers/buyReducer';
 import { regional } from '../../../regional';
+import { buyThunks } from '../index';
 
 describe('loadBuyInfoThunk', () => {
     jest.mock('../../../invityAPI');

@@ -5,7 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
-import { exchangeThunks, tradingThunks } from '../';
+import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
@@ -16,6 +16,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
+import { tradingThunks } from '../common';
 import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
@@ -150,7 +151,7 @@ export const sendDexTransactionThunk = createThunk<
         }
 
         await dispatch(
-            exchangeThunks.confirmTradeThunk({
+            confirmExchangeTradeThunk({
                 trade,
                 returnUrl,
                 receiveAddress: trade.receiveAddress,
