@@ -1,12 +1,10 @@
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
 import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
-import {
-    ConfirmFirmwareUpdateScreenContent,
-    ConfirmFirmwareUpdateScreenFooter,
-} from '@suite-native/firmware';
+import { ConfirmFirmwareUpdateScreenFooter, FirmwareVersionCard } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
@@ -54,7 +52,7 @@ export const ConfirmFirmwareUpdateScreen = ({
                 />
             }
         >
-            <ConfirmFirmwareUpdateScreenContent />
+            <FirmwareVersionCard isUpdateRequired={!isDeviceFirmwareSupported} />
         </DeviceOnboardingScreenWithExitButton>
     );
 };

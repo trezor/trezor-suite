@@ -1,0 +1,57 @@
+import { ReactNode } from 'react';
+
+import { Box, BoxProps, Text, VStack } from '@suite-native/atoms';
+import { Translation, TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
+
+type FirmwareInfoBoxProps = {
+    backgroundColor: Color;
+    title: ReactNode;
+    titleColor: Color;
+    version: string | null;
+    type: TxKeyPath;
+} & BoxProps;
+
+const containerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
+    (utils, { backgroundColor }) => ({
+        padding: utils.spacings.sp16,
+        gap: utils.spacings.sp12,
+        backgroundColor: utils.colors[backgroundColor],
+        borderColor: utils.colors.borderElevation1,
+        borderRadius: utils.borders.radii.r12,
+        borderWidth: utils.borders.widths.small,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }),
+);
+
+export const FirmwareInfoBox = ({
+    backgroundColor,
+    title,
+    titleColor,
+    version,
+    type,
+    children,
+    ...boxProps
+}: FirmwareInfoBoxProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <Box style={applyStyle(containerStyle, { backgroundColor })} {...boxProps}>
+            <VStack spacing="sp2">
+                <Text variant="body" color={titleColor}>
+                    {title}
+                </Text>
+                <Text variant="highlight">
+                    <Text variant="highlight">{version ?? '?.?.?'}</Text>
+                    {' • '}
+                    <Text variant="highlight">
+                        <Translation id={type} />
+                    </Text>
+                </Text>
+            </VStack>
+            {children}
+        </Box>
+    );
+};

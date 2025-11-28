@@ -6,124 +6,124 @@ import {
     selectDeviceFirmwareVersionArray,
     selectDeviceUpdateFirmwareVersion,
     selectHasBitcoinOnlyFirmware,
+    selectIsFirmwareUpgradable,
 } from '@suite-common/wallet-core';
-import { Box, BoxProps, Text } from '@suite-native/atoms';
+import {
+    Box,
+    Card,
+    HStack,
+    InlineAlertText,
+    InlineAlertTextProps,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { VersionArray } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+
+import { FirmwareChangelogButton } from './FirmwareChangelogButton';
+import { FirmwareInfoBox } from './FirmwareInfoBox';
 
 type FirmwareVersionCardProps = {
-    title: ReactNode;
-    titleColor: Color;
-    version: string | null;
-    fwType: string;
-    backgroundColor: Color;
-    isFullWidth?: boolean;
-} & BoxProps;
-
-const cardContainerStyle = prepareNativeStyle<{ backgroundColor: Color; isFullWidth: boolean }>(
-    (utils, { backgroundColor, isFullWidth }) => ({
-        padding: utils.spacings.sp16,
-        backgroundColor: utils.colors[backgroundColor],
-        borderRadius: utils.borders.radii.r12,
-        width: '50%',
-        justifyContent: 'center',
-        extend: {
-            condition: isFullWidth,
-            style: {
-                width: '100%',
-            },
-        },
-    }),
-);
-
-export const concatFirmwareVersion = (firmwareVersion: VersionArray | null) =>
-    firmwareVersion?.join('.');
-
-export const FirmwareVersionCard = ({
-    title,
-    version,
-    fwType,
-    titleColor,
-    backgroundColor,
-    children,
-    isFullWidth = false,
-    ...boxProps
-}: FirmwareVersionCardProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <Box style={applyStyle(cardContainerStyle, { backgroundColor, isFullWidth })} {...boxProps}>
-            <Text variant="body" color={titleColor}>
-                {title}
-            </Text>
-            <Text variant="highlight">
-                <Text variant="highlight">{version ?? '?.?.?'}</Text>
-                {' • '}
-                <Text variant="highlight">{fwType}</Text>
-            </Text>
-            {children}
-        </Box>
-    );
+    isUpdateRequired: boolean;
+    children?: ReactNode;
 };
+
+const concatFirmwareVersion = (firmwareVersion: VersionArray | null) =>
+    firmwareVersion?.join('.') ?? null;
 
 const firmwareArrowStyle = prepareNativeStyle(utils => {
     const firmwareArrowSize = (32 + 4) * PixelRatio.getFontScale();
 
     return {
-        height: firmwareArrowSize,
+        position: 'absolute',
         width: firmwareArrowSize,
+        height: firmwareArrowSize,
+        top: -(firmwareArrowSize / 2 + utils.spacings.sp4),
+        zIndex: 3,
+        backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+        borderColor: utils.colors.backgroundSurfaceElevation1,
         borderRadius: utils.borders.radii.round,
-        backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        borderColor: utils.colors.backgroundSurfaceElevation0,
-        borderWidth: 4,
+        borderWidth: utils.spacings.sp4,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute',
-        zIndex: 3,
-        left: -(firmwareArrowSize / 2),
     };
 });
 
-export const FirmwareUpdateVersionCard = (props: BoxProps) => {
+export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVersionCardProps) => {
     const { applyStyle } = useNativeStyles();
+
+    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
     const firmwareVersion = useSelector(selectDeviceFirmwareVersionArray);
     const updateFirmwareVersion = useSelector(selectDeviceUpdateFirmwareVersion);
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
-    const { translate } = useTranslate();
 
-    const firmwareTypeTranslationId = isBtcOnly
-        ? 'firmware.typeBitcoinOnly'
-        : 'firmware.typeUniversal';
+    const inlineAlertTextProps: InlineAlertTextProps = (() => {
+        if (isUpdateRequired) {
+            return {
+                variant: 'critical',
+                children: <Translation id="firmware.versionCard.status.updateRequired" />,
+            };
+        } else if (isFirmwareUpgradable) {
+            return {
+                variant: 'info',
+                children: <Translation id="firmware.versionCard.status.updateAvailable" />,
+            };
+        } else {
+            return {
+                variant: 'success',
+                children: <Translation id="firmware.versionCard.status.upToDate" />,
+            };
+        }
+    })();
+    const firmwareType = isBtcOnly ? 'firmware.typeBitcoinOnly' : 'firmware.typeUniversal';
 
     return (
-        <Box flexDirection="row" justifyContent="center" alignItems="center" {...props}>
-            <FirmwareVersionCard
-                title={<Translation id="firmware.firmwareUpdateScreen.currentFirmware" />}
-                titleColor="textSubdued"
-                version={concatFirmwareVersion(firmwareVersion) ?? null}
-                fwType={translate(firmwareTypeTranslationId)}
-                flex={1}
-                backgroundColor="backgroundTertiaryDefaultOnElevation0"
-                marginRight="sp2"
-            />
-
-            <FirmwareVersionCard
-                title={<Translation id="firmware.firmwareUpdateScreen.updateFirmware" />}
-                titleColor="textPrimaryDefault"
-                version={updateFirmwareVersion}
-                fwType={translate(firmwareTypeTranslationId)}
-                flex={1}
-                backgroundColor="backgroundSurfaceElevation1"
-                marginLeft="sp2"
-                paddingLeft="sp32"
-            >
-                <Box style={applyStyle(firmwareArrowStyle)}>
-                    <Icon name="arrowRight" color="iconPrimaryDefault" size="mediumLarge" />
-                </Box>
-            </FirmwareVersionCard>
-        </Box>
+        <Card>
+            <VStack spacing="sp16">
+                <HStack alignItems="center" justifyContent="space-between">
+                    <HStack>
+                        <Icon name="cpu" size="mediumLarge" />
+                        <Text variant="body">
+                            <Translation id="firmware.versionCard.version" />
+                        </Text>
+                    </HStack>
+                    <InlineAlertText {...inlineAlertTextProps} />
+                </HStack>
+                <VStack spacing="sp6">
+                    <FirmwareInfoBox
+                        backgroundColor="backgroundTertiaryDefaultOnElevation1"
+                        title={<Translation id="firmware.firmwareUpdateScreen.currentFirmware" />}
+                        titleColor="textSubdued"
+                        version={concatFirmwareVersion(firmwareVersion)}
+                        type={firmwareType}
+                        paddingBottom={isFirmwareUpgradable ? 'sp24' : 'sp16'}
+                    />
+                    {isFirmwareUpgradable && (
+                        <FirmwareInfoBox
+                            backgroundColor="backgroundSurfaceElevation1"
+                            title={
+                                <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />
+                            }
+                            titleColor="textPrimaryDefault"
+                            version={updateFirmwareVersion}
+                            type={firmwareType}
+                            paddingTop="sp24"
+                        >
+                            <FirmwareChangelogButton />
+                            <Box style={applyStyle(firmwareArrowStyle)}>
+                                <Icon
+                                    name="arrowDown"
+                                    color="iconPrimaryDefault"
+                                    size="mediumLarge"
+                                />
+                            </Box>
+                        </FirmwareInfoBox>
+                    )}
+                </VStack>
+                {children}
+            </VStack>
+        </Card>
     );
 };

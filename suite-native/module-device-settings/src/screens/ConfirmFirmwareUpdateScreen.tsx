@@ -5,16 +5,17 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import {
+    selectHasRunningDiscovery,
     selectIsDeviceBackupRequired,
     selectIsFirmwareUpgradable,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { Box, useBottomSheetModal } from '@suite-native/atoms';
+import { Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import {
     ConfirmBottomSheet,
-    ConfirmFirmwareUpdateScreenContent,
-    ConfirmFirmwareUpdateScreenFooter,
+    FirmwareVersionCard,
+    useIsFirmwareUpdateFeatureEnabled,
 } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToCheckBackup } from '@suite-native/module-check-backup';
@@ -41,15 +42,17 @@ type NavigationProps = CompositeNavigationProp<
 >;
 
 export const ConfirmFirmwareUpdateScreen = () => {
-    const navigation = useNavigation<NavigationProps>();
     const { isDeviceConnected } = useDeviceConnectionGuard();
-    const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
+    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     const { showAlert } = useAlert();
-    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
-
     const { openModal: openCheckBackupModal, bottomSheetRef, closeModal } = useBottomSheetModal();
     const { navigateToCheckBackup } = useNavigateToCheckBackup();
+    const navigation = useNavigation<NavigationProps>();
+
+    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
+    const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const withModalClose = (callback: () => void) => () => {
         closeModal();
@@ -98,17 +101,20 @@ export const ConfirmFirmwareUpdateScreen = () => {
                     closeActionType="close"
                 />
             }
-            footer={
-                isFirmwareUpgradable && (
-                    <ConfirmFirmwareUpdateScreenFooter
-                        onUpdateConfirmation={handleConfirmButtonPress}
-                    />
-                )
-            }
         >
-            <Box flex={1}>
-                <ConfirmFirmwareUpdateScreenContent />
-            </Box>
+            <FirmwareVersionCard isUpdateRequired={false}>
+                {isFirmwareUpgradable && (
+                    <Button
+                        onPress={handleConfirmButtonPress}
+                        colorScheme="blueBold"
+                        isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
+                        isLoading={isDiscoveryRunning}
+                        testID="@device-firmware/update-button"
+                    >
+                        <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />
+                    </Button>
+                )}
+            </FirmwareVersionCard>
             <ConfirmBottomSheet
                 ref={bottomSheetRef}
                 onConfirm={withModalClose(handleUpdateConfirmation)}
