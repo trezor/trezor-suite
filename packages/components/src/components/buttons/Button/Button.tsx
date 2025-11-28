@@ -107,7 +107,7 @@ export const Button = ({
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
     const isLink = href !== undefined;
-    const color = mapPropsToColor(intent, priority, isDisabled, isInverse, theme);
+    const color = mapPropsToColor(intent, priority, isDisabled || isLoading, isInverse, theme);
 
     const iconProps = {
         size: mapSizeToIconSize(size),
@@ -118,7 +118,7 @@ export const Button = ({
         <Container
             as={isLink ? 'a' : 'button'}
             data-testid={dataTestId}
-            $isDisabled={isDisabled}
+            $isDisabled={isDisabled || isLoading}
             disabled={isDisabled || isLoading}
             href={href}
             onClick={isDisabled || isLoading ? undefined : onClick}
