@@ -51,7 +51,7 @@
         { "path": "../graph" },
         { "path": "../intl" },
         { "path": "../message-system" },
-        { "path": "../module-send" },
+        { "path": "../send" },
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },

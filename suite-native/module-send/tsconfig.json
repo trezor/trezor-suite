@@ -6,9 +6,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -35,7 +32,6 @@
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../device" },
-        { "path": "../device-mutex" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
@@ -45,6 +41,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../send" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },
         {

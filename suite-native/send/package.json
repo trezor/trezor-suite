@@ -1,0 +1,27 @@
+{
+    "name": "@suite-native/send",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
+        "@reduxjs/toolkit": "2.10.1",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
+        "@suite-native/device-mutex": "workspace:*",
+        "@suite-native/tokens": "workspace:*",
+        "@suite-native/transaction-management": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/connect": "workspace:*"
+    }
+}

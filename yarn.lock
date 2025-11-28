@@ -12467,7 +12467,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.10.1"
     "@shopify/flash-list": "npm:1.8.3"
     "@suite-common/formatters": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12481,7 +12480,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
-    "@suite-native/device-mutex": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -12491,6 +12489,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
+    "@suite-native/send": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
@@ -12784,6 +12783,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/send@workspace:*, @suite-native/send@workspace:suite-native/send":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/send@workspace:suite-native/send"
+  dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
+    "@suite-native/transaction-management": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/sentry@workspace:*, @suite-native/sentry@workspace:suite-native/sentry":
   version: 0.0.0-use.local
   resolution: "@suite-native/sentry@workspace:suite-native/sentry"
@@ -12853,7 +12871,7 @@ __metadata:
     "@suite-native/graph": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/message-system": "workspace:*"
-    "@suite-native/module-send": "workspace:*"
+    "@suite-native/send": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"

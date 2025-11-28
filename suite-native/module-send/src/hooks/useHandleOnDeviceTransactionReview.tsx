@@ -15,6 +15,7 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { signTransactionNativeThunk } from '@suite-native/send';
 import {
     TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
@@ -23,7 +24,6 @@ import {
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
-import { signTransactionNativeThunk } from '../sendFormThunks';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,

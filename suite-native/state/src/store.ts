@@ -15,7 +15,7 @@ import { blockchainMiddleware } from '@suite-native/blockchain';
 import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
-import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
+import { sendFormMiddleware } from '@suite-native/send';
 import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';

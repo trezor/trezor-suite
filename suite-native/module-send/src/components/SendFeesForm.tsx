@@ -16,6 +16,7 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { updateSelectedFeeLevelThunk } from '@suite-native/send';
 import {
     FeesContent,
     FeesFooter,
@@ -28,7 +29,6 @@ import { RecipientsSummary } from './RecipientsSummary';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
 import { useRequestDelayedNavigationToOutputsReview } from '../hooks/useRequestDelayedNavigationToOutputsReview';
 import { selectDestinationTagFromDraft } from '../selectors';
-import { updateSelectedFeeLevelThunk } from '../sendFormThunks';
 
 type SendFormProps = {
     accountKey: AccountKey;
