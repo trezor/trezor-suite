@@ -37,6 +37,7 @@ export const createFormStateForSendForm = ({
     receiveAccountKey,
 }: CreateFormStateForSendFormParams): FormState => {
     if (!isExchangeTrade(quote) && !isSellFiatTrade(quote)) {
+        console.warn('just test, do not merge');
         throw new Error('Invalid quote type: must be ExchangeTrade or SellFiatTrade');
     }
 
