@@ -11476,6 +11476,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/clipboard@workspace:*, @suite-native/clipboard@workspace:suite-native/clipboard":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/clipboard@workspace:suite-native/clipboard"
+  dependencies:
+    "@suite-native/toasts": "workspace:*"
+    expo-clipboard: "npm:~8.0.7"
+    react: "npm:19.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/coin-enabling@workspace:*, @suite-native/coin-enabling@workspace:suite-native/coin-enabling":
   version: 0.0.0-use.local
   resolution: "@suite-native/coin-enabling@workspace:suite-native/coin-enabling"
@@ -11839,7 +11849,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/helpers@workspace:*, @suite-native/helpers@workspace:^, @suite-native/helpers@workspace:suite-native/helpers":
+"@suite-native/helpers@workspace:*, @suite-native/helpers@workspace:suite-native/helpers":
   version: 0.0.0-use.local
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
@@ -11852,7 +11862,6 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    expo-clipboard: "npm:~8.0.7"
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
@@ -12208,10 +12217,10 @@ __metadata:
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/accounts": "workspace:^"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
-    "@suite-native/helpers": "workspace:^"
     "@suite-native/icons": "workspace:^"
     "@suite-native/intl": "workspace:^"
     "@suite-native/navigation": "workspace:*"
@@ -12267,11 +12276,11 @@ __metadata:
     "@suite-common/validators": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"
     "@suite-native/forms": "workspace:*"
-    "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -12617,6 +12626,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
@@ -12709,7 +12719,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/helpers": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
@@ -12756,6 +12766,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -13220,10 +13231,10 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/formatters": "workspace:*"
-    "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/in-app-rating": "workspace:*"
     "@suite-native/intl": "workspace:*"

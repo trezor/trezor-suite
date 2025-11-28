@@ -8,8 +8,8 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
-import { useCopyToClipboard } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 

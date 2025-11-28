@@ -2,7 +2,7 @@ import { Alert, Pressable, Share } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { AddressLabelEditable } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';

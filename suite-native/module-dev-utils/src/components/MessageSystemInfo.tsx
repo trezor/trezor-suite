@@ -8,7 +8,7 @@ import {
     selectMessageSystemConfig,
 } from '@suite-common/message-system';
 import { Button, Card, Divider, Text, VStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { MessageSystemConfigSourceSelect } from './MessageSystemConfigSourceSelect';
