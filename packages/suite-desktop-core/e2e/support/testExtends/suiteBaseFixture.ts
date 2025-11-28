@@ -137,28 +137,35 @@ const trezorEnvSetup = async (
     emulatorStartConf: StartEmu,
     emulatorSetupConf: SetupEmu,
 ) => {
-    await TrezorUserEnvLinkProxy.logTestDetails(
-        ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
-    );
-    // This test annotation is used by our GitHub reporter
-    testInfo.annotations.push({
-        type: TestAnnotationType.DeviceModel,
-        description: emulatorStartConf.model,
-    });
-    // We cannot rely on that previous teardown was done correctly
-    await TrezorUserEnvLinkProxy.stopBridge();
-    await TrezorUserEnvLinkProxy.stopEmu();
-    await TrezorUserEnvLinkProxy.connect();
+    const setupPromise = (async () => {
+        await TrezorUserEnvLinkProxy.logTestDetails(
+            ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
+        );
+        testInfo.annotations.push({
+            type: TestAnnotationType.DeviceModel,
+            description: emulatorStartConf.model,
+        });
+        await TrezorUserEnvLinkProxy.stopBridge();
+        await TrezorUserEnvLinkProxy.stopEmu();
+        await TrezorUserEnvLinkProxy.connect();
 
-    const defaultEmulatorStartConf = getDefaultEmuStartConf(emulatorStartConf.model);
-    emulatorStartConf.version = emulatorStartConf.version || defaultEmulatorStartConf.version;
+        const defaultEmulatorStartConf = getDefaultEmuStartConf(emulatorStartConf.model);
+        emulatorStartConf.version = emulatorStartConf.version || defaultEmulatorStartConf.version;
 
-    if (startEmulator) {
-        await TrezorUserEnvLinkProxy.startEmu(emulatorStartConf);
-    }
-    if (startEmulator && setupEmulator) {
-        await TrezorUserEnvLinkProxy.setupEmu(emulatorSetupConf);
-    }
+        if (startEmulator) {
+            await TrezorUserEnvLinkProxy.startEmu(emulatorStartConf);
+        }
+        if (startEmulator && setupEmulator) {
+            await TrezorUserEnvLinkProxy.setupEmu(emulatorSetupConf);
+        }
+    })();
+
+    await Promise.race([
+        setupPromise,
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('TrezorUserEnv setup timed out')), 30_000),
+        ),
+    ]);
 };
 
 // We first add currents fixtures to ensure current initialize first and quarantine works even for fails in beforeEach
@@ -195,14 +202,16 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
         use,
         testInfo,
     ) => {
-        // This Trezor env setup needs to happen before electron or web page are launched
-        await trezorEnvSetup(
-            testInfo,
-            startEmulator,
-            setupEmulator,
-            emulatorStartConf,
-            emulatorSetupConf,
-        );
+        await base.step(`TrezorUserEnv setup`, async () => {
+            // This Trezor env setup needs to happen before electron or web page are launched
+            await trezorEnvSetup(
+                testInfo,
+                startEmulator,
+                setupEmulator,
+                emulatorStartConf,
+                emulatorSetupConf,
+            );
+        });
 
         if (isDesktopProject(testInfo)) {
             const suite = await electronSetup(
