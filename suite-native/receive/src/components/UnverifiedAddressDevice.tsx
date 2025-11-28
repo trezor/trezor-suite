@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Box, VStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { UnverifiedAddressDeviceHint } from './UnverifiedAddressDeviceHint';

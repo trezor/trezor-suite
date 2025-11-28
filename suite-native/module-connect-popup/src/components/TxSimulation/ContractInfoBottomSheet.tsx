@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 
 import { TransactionScanResponse } from '@suite-common/tx-simulation';
 import { BottomSheetModal, BottomSheetModalRef, Card, Text, VStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation } from '@suite-native/intl';
 
 export const ContractInfoBottomSheet = ({

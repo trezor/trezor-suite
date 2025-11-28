@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { BottomSheetModal, BottomSheetModalRef, Box, Button, VStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

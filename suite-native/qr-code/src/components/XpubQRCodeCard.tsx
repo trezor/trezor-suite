@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 
 import { Card, Text } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

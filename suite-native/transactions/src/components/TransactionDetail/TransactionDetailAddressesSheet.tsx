@@ -17,7 +17,7 @@ import {
     Toggle,
     VStack,
 } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

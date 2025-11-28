@@ -15,6 +15,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../clipboard" },
         { "path": "../device" },
         { "path": "../device-mutex" },
         { "path": "../helpers" },

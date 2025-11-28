@@ -9,7 +9,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
-        { "path": "../helpers" },
+        { "path": "../clipboard" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../labeling" },

@@ -3,8 +3,8 @@ import { Alert, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { useCopyToClipboard } from '@suite-native/clipboard';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
-import { useCopyToClipboard } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 import {
     DevUtilsStackParamList,
