@@ -40,9 +40,8 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
             }),
         },
         async ({ model, walletPage, tradingPage, devicePrompt }) => {
-            let balance: number;
             let maxFee: number;
-            let sendMaxAmount: string;
+            let sendMaxAmountWithReserve: string;
 
             await test.step('Navigate to Solana Send form', async () => {
                 await walletPage.openSendFormButton.click();
@@ -56,11 +55,14 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
 
                 await expect(tradingPage.fees.maxFee).not.toBeEmpty();
 
-                balance = Number(await tradingPage.sendBalance.textContent());
+                const balance = Number(await tradingPage.sendBalance.textContent());
                 maxFee = Number(await tradingPage.fees.maxFee.textContent());
-                sendMaxAmount = (balance - maxFee).toFixed(SOL_DECIMALS);
+                const reservedAmount = await tradingPage.fees.getNetworkReserveAmount();
+                sendMaxAmountWithReserve = (balance - maxFee - reservedAmount).toFixed(
+                    SOL_DECIMALS,
+                );
 
-                await expect(tradingPage.sendAmountInput).toHaveValue(sendMaxAmount);
+                await expect(tradingPage.sendAmountInput).toHaveValue(sendMaxAmountWithReserve);
                 await expect(walletPage.totalSent).toHaveText(`${balance}`);
                 await expect(tradingPage.sendButton).toBeEnabled();
             });
@@ -85,7 +87,9 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
                 await devicePrompt.waitForPromptAndClick(model.model);
             });
             await test.step('Verify Amount & Transaction Fee', async () => {
-                await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(`${sendMaxAmount}`);
+                await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(
+                    `${sendMaxAmountWithReserve}`,
+                );
                 await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(`${maxFee}`);
 
                 // verify amount & fee
@@ -93,7 +97,7 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
                     header: { title: 'Summary' },
                     body: [
                         ['Amount:'],
-                        [`${sendMaxAmount} SOL`],
+                        [`${sendMaxAmountWithReserve} SOL`],
                         [' '],
                         ['Transaction fee:'],
                         [`${maxFee} SOL`],

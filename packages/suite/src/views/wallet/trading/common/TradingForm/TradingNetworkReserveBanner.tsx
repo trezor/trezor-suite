@@ -42,6 +42,7 @@ export const TradingNetworkReserveBanner = ({
 
     return (
         <Banner
+            data-testid="@send/network-reserve-banner"
             intent="info"
             rightContent={
                 <Banner.Button onClick={onManageClick}>
