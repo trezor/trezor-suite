@@ -187,6 +187,8 @@ const addAccountMetadata: Fixture<(typeof metadataLabelingActions)['addAccountMe
                 txid: 'TXID',
                 outputIndex: 0,
                 value: 'Foo',
+                accountDescriptor: 'xpub...',
+                networkSymbol: 'btc',
             },
         ],
         result: undefined,
@@ -206,6 +208,8 @@ const addAccountMetadata: Fixture<(typeof metadataLabelingActions)['addAccountMe
                 txid: 'TXID',
                 outputIndex: 0,
                 value: 'Foo',
+                accountDescriptor: 'xpub...',
+                networkSymbol: 'btc',
             },
         ],
         result: undefined,
@@ -251,6 +255,8 @@ const addAccountMetadata: Fixture<(typeof metadataLabelingActions)['addAccountMe
                 txid: 'TXID',
                 outputIndex: 0,
                 value: 'Foo',
+                accountDescriptor: 'xpub...',
+                networkSymbol: 'btc',
             },
         ],
         result: [
@@ -318,6 +324,8 @@ const addAccountMetadata: Fixture<(typeof metadataLabelingActions)['addAccountMe
                 txid: 'TXID',
                 outputIndex: 0,
                 value: '', // empty string removes value
+                accountDescriptor: 'xpub...',
+                networkSymbol: 'btc',
             },
         ],
         result: [

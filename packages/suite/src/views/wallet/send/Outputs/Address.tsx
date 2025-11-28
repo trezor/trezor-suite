@@ -480,6 +480,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                 outputIndex: outputId,
                                 defaultValue: `${outputId}`,
                                 value: label,
+                                networkSymbol: symbol,
+                                accountDescriptor: descriptor,
                             }}
                             onSubmit={(value: string | undefined) => {
                                 setValue(`outputs.${outputId}.label`, value || '');

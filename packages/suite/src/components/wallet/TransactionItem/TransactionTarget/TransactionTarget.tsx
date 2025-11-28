@@ -228,6 +228,8 @@ export const TransactionTarget = ({
                             suiteSyncOutputLabels.find(
                                 it => it.txId === transaction.txid && it.outputIndex == metadataId,
                             )?.label ?? targetMetadata,
+                        networkSymbol: transaction.symbol,
+                        accountDescriptor: transaction.descriptor,
                     }}
                 />
             }

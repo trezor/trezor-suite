@@ -322,6 +322,8 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                                 it.txId === utxo.txid &&
                                                 it.outputIndex == utxo.vout,
                                         )?.label ?? outputLabel,
+                                    networkSymbol: account.symbol,
+                                    accountDescriptor: account.descriptor,
                                 }}
                             />
                         </LabelPart>
