@@ -141,7 +141,6 @@ export const ETH_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
         misc: { nonce: '0' },
         tokens: [
             {
-                type: 'ERC20',
                 standard: 'ERC20',
                 contract: '0xABCD',
                 symbol: '0xABCD',

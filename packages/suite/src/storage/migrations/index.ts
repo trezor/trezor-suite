@@ -813,7 +813,6 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                         decimals: token.decimals,
                         fingerprint: token.name,
                         policyId,
-                        type: token.type,
                         standard: token.standard,
                     };
                 });

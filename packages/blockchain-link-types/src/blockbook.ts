@@ -152,6 +152,7 @@ export interface Transaction extends BlockbookTx {
     fees: string; // optional in Tx, seems to always be there
     tokenTransfers?: (BlockbookTokenTransfer & {
         type: TokenStandard; // string in Tx, seems to always be ERC20 | ERC721 | ERC1155
+        standard: TokenStandard;
     })[];
 }
 

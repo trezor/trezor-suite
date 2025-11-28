@@ -164,7 +164,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
                     totalSpent = amount;
                     token = {
                         ...decoded.token,
-                        type: 'ERC20',
                         standard: 'ERC20',
                         contract: decoded.token.address,
                     };

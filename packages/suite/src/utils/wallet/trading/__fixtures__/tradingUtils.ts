@@ -51,7 +51,6 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 name: 'Tether USD',
                 symbol: 'usdt',
                 standard: 'ERC20',
-                type: 'ERC20',
             },
             // unknown token
             {
@@ -61,7 +60,6 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 name: 'USDC',
                 symbol: 'usdc',
                 standard: 'ERC20',
-                type: 'ERC20',
             },
             // supported and known token
             {
@@ -71,7 +69,6 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 name: 'VeChain',
                 symbol: 'VEE',
                 standard: 'ERC20',
-                type: 'ERC20',
             },
         ],
     },
@@ -97,7 +94,6 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 name: 'Tether USD',
                 symbol: 'usdt',
                 standard: 'ERC20',
-                type: 'ERC20',
             },
         ],
         descriptor: 'descriptor5',
@@ -117,7 +113,6 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 name: 'USDC',
                 symbol: 'usdc',
                 standard: 'ERC20',
-                type: 'ERC20',
             },
         ],
         descriptor: 'descriptor6',
@@ -137,7 +132,6 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 name: 'USDC',
                 symbol: 'usdc',
                 standard: 'ERC20',
-                type: 'ERC20',
             },
         ],
         descriptor: 'descriptor6',

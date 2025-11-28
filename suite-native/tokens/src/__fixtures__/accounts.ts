@@ -102,7 +102,6 @@ export const ethAccount = {
     formattedBalance: '0.000000000000000081',
     tokens: [
         {
-            type: 'ERC20',
             standard: 'ERC20',
             name: 'ApeCoin',
             contract: '0x4d224452801ACEd8B2F0aebE155379bb5D594381',
@@ -112,7 +111,6 @@ export const ethAccount = {
             balance: '0',
         },
         {
-            type: 'ERC20',
             standard: 'ERC20',
             name: 'DappRadar',
             contract: '0x44709a920fCcF795fbC57BAA433cc3dd53C44DbE',
@@ -122,7 +120,6 @@ export const ethAccount = {
             balance: '0',
         },
         {
-            type: 'ERC20',
             standard: 'ERC20',
             name: 'Decentraland MANA',
             contract: '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942',
@@ -132,7 +129,6 @@ export const ethAccount = {
             balance: '0',
         },
         {
-            type: 'ERC20',
             standard: 'ERC20',
             name: 'FOX',
             contract: '0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d',
@@ -142,7 +138,6 @@ export const ethAccount = {
             balance: '0',
         },
         {
-            type: 'ERC20',
             standard: 'ERC20',
             name: 'Golem Network Token',
             contract: '0xa74476443119A942dE498590Fe1f2454d7D4aC0d',
@@ -152,7 +147,6 @@ export const ethAccount = {
             balance: '0',
         },
         {
-            type: 'ERC20',
             standard: 'ERC20',
             name: 'SmartFund',
             contract: '0xed314Bf44013612e8c00ABd3Cb6EADe61CC8c72e',
@@ -162,7 +156,6 @@ export const ethAccount = {
             balance: '1',
         },
         {
-            type: 'ERC20',
             standard: 'ERC20',
             name: 'Tether USD',
             contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',

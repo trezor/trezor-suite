@@ -31,7 +31,6 @@ describe('tokensSelectors', () => {
                 standard: 'ERC20',
                 symbol: 'ape',
                 transfers: 2,
-                type: 'ERC20',
             });
         });
 

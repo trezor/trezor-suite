@@ -181,9 +181,8 @@ export const transformTokenInfo = (
                             balance: token.balance || '0',
                         });
                     } else {
-                        const { type, standard, contract, balance, decimals, name, symbol } = token;
+                        const { standard, contract, balance, decimals, name, symbol } = token;
                         acc[token.contract] = {
-                            type,
                             standard,
                             contract,
                             balance,

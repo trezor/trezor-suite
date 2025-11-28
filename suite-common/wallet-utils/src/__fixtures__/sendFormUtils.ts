@@ -25,7 +25,6 @@ export const prepareEthereumTransaction = [
         description: 'erc20',
         txInfo: {
             token: {
-                type: 'ERC20',
                 standard: 'ERC20' as const,
                 symbol: 'gnt',
                 decimals: 18,
@@ -79,7 +78,6 @@ export const prepareEthereumTransaction = [
         description: 'erc20 with eip1559 fees',
         txInfo: {
             token: {
-                type: 'ERC20',
                 standard: 'ERC20' as const,
                 symbol: 'gnt',
                 decimals: 18,
@@ -112,7 +110,6 @@ export const prepareEthereumTransaction = [
         description: 'bep20 with eip1559 fees',
         txInfo: {
             token: {
-                type: 'BEP20',
                 standard: 'BEP20' as const,
                 symbol: 'ETH',
                 decimals: 18,
