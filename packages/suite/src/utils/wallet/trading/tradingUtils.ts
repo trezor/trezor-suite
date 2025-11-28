@@ -407,9 +407,8 @@ export const getFeeInUnits = ({
     composedLevels,
     selectedFee = 'normal',
 }: GetFeeInUnitsProps): string => {
-    if (!composedLevels) return '0';
-
-    const selectedFeeLevel = composedLevels[selectedFee];
+    const selectedFeeLevel = composedLevels?.[selectedFee];
+    if (!selectedFeeLevel) return '0';
 
     if (selectedFeeLevel.type !== 'final' && selectedFeeLevel.type !== 'nonfinal') {
         return '0';

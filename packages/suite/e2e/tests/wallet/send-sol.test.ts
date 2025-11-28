@@ -1,3 +1,4 @@
+import { networks } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { formatAddress } from '../../support/common';
@@ -42,6 +43,7 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
         async ({ model, walletPage, tradingPage, devicePrompt }) => {
             let maxFee: number;
             let sendMaxAmountWithReserve: string;
+            const networkReserve = Number(networks.sol.nativeTokenReserve);
 
             await test.step('Navigate to Solana Send form', async () => {
                 await walletPage.openSendFormButton.click();
@@ -58,9 +60,12 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
                 const balance = Number(await tradingPage.sendBalance.textContent());
                 maxFee = Number(await tradingPage.fees.maxFee.textContent());
                 const reservedAmount = await tradingPage.fees.getNetworkReserveAmount();
-                sendMaxAmountWithReserve = (balance - maxFee - reservedAmount).toFixed(
-                    SOL_DECIMALS,
-                );
+                sendMaxAmountWithReserve = (
+                    balance -
+                    maxFee -
+                    networkReserve -
+                    reservedAmount
+                ).toFixed(SOL_DECIMALS);
 
                 await expect(tradingPage.sendAmountInput).toHaveValue(sendMaxAmountWithReserve);
                 await expect(walletPage.totalSent).toHaveText(`${balance}`);
