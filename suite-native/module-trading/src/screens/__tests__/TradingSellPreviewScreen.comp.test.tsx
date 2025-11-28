@@ -1,5 +1,6 @@
+import type { TradingTransactionSell } from '@suite-common/trading';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';
 
@@ -21,7 +22,7 @@ jest.mock('../../hooks/sell/useSellFlow', () => ({
 }));
 
 const mockUseTradingDetailData = {
-    trade: undefined,
+    trade: undefined as TradingTransactionSell | undefined,
 };
 
 jest.mock('@suite-common/trading', () => ({
@@ -117,5 +118,50 @@ describe('TradingSellPreviewScreen', () => {
         // SellPreviewContinueButton should be rendered (it's part of the screen)
         // We can verify by checking that the screen renders without errors
         expect(getByText('To')).toBeOnTheScreen();
+    });
+
+    it('should call fetchFeesAndCompose when quote has SEND_CRYPTO status on mount', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        const quoteWithSendCryptoStatus = {
+            ...sellQuotes[0],
+            status: 'SEND_CRYPTO' as const,
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithSendCryptoStatus;
+
+        await renderTradingSellPreviewScreen(preloadedState);
+
+        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call fetchFeesAndCompose when trade data has SEND_CRYPTO status on mount', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        const trade = getSellTrade({ status: 'SEND_CRYPTO' });
+        preloadedState.wallet!.trading!.trades = [trade];
+        preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[0];
+
+        mockUseTradingDetailData.trade = trade;
+
+        await renderTradingSellPreviewScreen(preloadedState);
+
+        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call fetchFeesAndCompose when status is not SEND_CRYPTO', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        const quoteWithOtherStatus = {
+            ...sellQuotes[0],
+            status: 'SUBMITTED' as const,
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithOtherStatus;
+
+        await renderTradingSellPreviewScreen(preloadedState);
+
+        expect(mockFetchFeesAndCompose).not.toHaveBeenCalled();
     });
 });

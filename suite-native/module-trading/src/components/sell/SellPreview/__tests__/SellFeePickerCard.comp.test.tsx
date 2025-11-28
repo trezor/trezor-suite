@@ -1,0 +1,63 @@
+import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
+
+import { SellFeePickerCard, SellFeePickerCardProps } from '../SellFeePickerCard';
+
+describe('SellFeePickerCard', () => {
+    const renderSellFeePickerCard = (
+        props: Partial<SellFeePickerCardProps> = {},
+        tradingAccountKey = 'eth-account-1',
+    ) => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        preloadedState.wallet!.trading!.composedTransactionInfo = { composed: { fee: '1000' } };
+        preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
+
+        return renderWithStoreProviderAsync(<SellFeePickerCard isTxnError={false} {...props} />, {
+            preloadedState,
+        });
+    };
+
+    it('should render nothing when isTxnError', async () => {
+        const { toJSON } = await renderSellFeePickerCard({
+            quote: sellQuotes[0],
+            isTxnError: true,
+        });
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render nothing when there is no quote', async () => {
+        const { toJSON } = await renderSellFeePickerCard({});
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render nothing when quote has no cryptoCurrency', async () => {
+        const quoteWithoutCrypto = {
+            ...sellQuotes[0],
+            cryptoCurrency: undefined,
+        };
+        const { toJSON } = await renderSellFeePickerCard({
+            quote: quoteWithoutCrypto as (typeof sellQuotes)[0],
+        });
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render nothing when account is not found', async () => {
+        const { toJSON } = await renderSellFeePickerCard(
+            { quote: sellQuotes[0] },
+            'unknown-account-key',
+        );
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('should render FeePickerCard otherwise', async () => {
+        const { getByText } = await renderSellFeePickerCard({ quote: sellQuotes[0] });
+
+        expect(getByText('Fee')).toBeOnTheScreen();
+    });
+});
