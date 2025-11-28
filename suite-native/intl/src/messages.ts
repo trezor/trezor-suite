@@ -2972,4 +2972,7 @@ export const messages = {
             backCta: 'Back to dashboard',
         },
     },
+    moduleClipboard: {
+        copiedToClipboard: 'Copied to clipboard',
+    },
 };

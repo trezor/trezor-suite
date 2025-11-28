@@ -2,9 +2,11 @@ import { useCallback } from 'react';
 
 import * as Clipboard from 'expo-clipboard';
 
+import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
 export function useCopyToClipboard() {
+    const { translate } = useTranslate();
     const { showToast } = useToast();
 
     const copyToClipboard = useCallback(
@@ -13,11 +15,11 @@ export function useCopyToClipboard() {
 
             showToast({
                 variant: 'default',
-                message: toastMessage ?? 'Copied to clipboard.',
+                message: toastMessage ?? translate('moduleClipboard.copiedToClipboard'),
                 icon: 'copy',
             });
         },
-        [showToast],
+        [showToast, translate],
     );
 
     return copyToClipboard;
