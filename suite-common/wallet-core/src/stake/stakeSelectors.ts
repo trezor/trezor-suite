@@ -41,22 +41,32 @@ export const selectPoolStatsApyData = (
     }
 
     if (isSupportedAdaStakingNetworkSymbol(symbol)) {
-        if (!misc || !('staking' in misc)) return BACKUP_CARDANO_APY;
-
         const stakingInfo = data?.[symbol]?.stakingInfo?.data;
-        const stakingPoolId = misc.staking?.poolId;
 
-        if (!stakingInfo?.pools) return BACKUP_CARDANO_APY;
+        if (!stakingInfo?.pools || stakingInfo.pools.length === 0) {
+            return BACKUP_CARDANO_APY;
+        }
 
-        // if the user is not staked yet pick the best pool
-        const poolId = stakingPoolId || selectBestCardanoPool(stakingInfo?.pools)?.bech32;
+        const stakingPoolId = misc && 'staking' in misc ? misc.staking.poolId : undefined;
 
-        const selectedPool = stakingInfo?.pools?.find(pool => pool.id === poolId);
-        if (!selectedPool) return BACKUP_CARDANO_APY;
+        const poolFromAccount = stakingPoolId
+            ? stakingInfo.pools.find(pool => pool.id === stakingPoolId)
+            : undefined;
+
+        const bestPoolId = selectBestCardanoPool(stakingInfo.pools)?.bech32;
+        const poolFromBest =
+            bestPoolId && !poolFromAccount
+                ? stakingInfo.pools.find(pool => pool.id === bestPoolId)
+                : undefined;
+
+        const selectedPool = poolFromAccount ?? poolFromBest;
+
+        if (!selectedPool) {
+            return BACKUP_CARDANO_APY;
+        }
 
         const { apy } = selectedPool;
 
-        // fallback if APY missing, zero, or below threshold
         if (!apy || apy < CARDANO_APY_MIN_THRESHOLD) {
             return BACKUP_CARDANO_APY;
         }
