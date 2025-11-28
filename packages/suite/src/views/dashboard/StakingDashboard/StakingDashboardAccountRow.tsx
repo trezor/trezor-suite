@@ -109,7 +109,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         dispatch(
             openModal({
                 type: 'stake-in-a-nutshell',
-                flow: StakingFlow.Stake,
+                flow: StakingFlow.UpdateProvider,
             }),
         );
 
