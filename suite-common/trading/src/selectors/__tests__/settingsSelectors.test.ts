@@ -1,5 +1,4 @@
-import { initialState } from '../../reducers/tradingReducer';
-import { TradingRootState } from '../../types';
+import { type TradingRootState, initialState } from '../../reducers/tradingReducer';
 import { selectTradingMaxSlippagePercentage } from '../settingsSelectors';
 
 describe('settingsSelectors', () => {
