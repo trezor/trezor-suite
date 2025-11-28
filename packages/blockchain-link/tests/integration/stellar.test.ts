@@ -91,7 +91,6 @@ describe('Stellar', () => {
                     name: 'USDC',
                     standard: 'STELLAR-CLASSIC',
                     symbol: 'usdc',
-                    type: 'STELLAR-CLASSIC',
                 },
             ],
         });
@@ -173,7 +172,6 @@ describe('Stellar', () => {
                     name: 'USDC',
                     standard: 'STELLAR-CLASSIC',
                     symbol: 'usdc',
-                    type: 'STELLAR-CLASSIC',
                 },
             ],
         });

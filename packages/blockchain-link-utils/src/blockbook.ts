@@ -87,7 +87,7 @@ export const filterTokenTransfers = (
                 type,
                 decimals: transfer.decimals || 0,
                 amount: transfer.value || '',
-                standard: transfer.type,
+                standard: transfer.standard,
             };
             delete tokenTransfer.value;
 

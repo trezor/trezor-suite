@@ -199,7 +199,6 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                         });
                         sendAmount = new BigNumber(parsed.data.amount.toString());
                         token = {
-                            type: 'SPL',
                             standard: 'SPL',
                             contract: parsed.accounts.mint.address,
                             decimals: parsed.data.decimals,

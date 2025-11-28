@@ -128,7 +128,6 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             const balance = utils.toStroops(balanceInfo.balance);
 
             return {
-                type: 'STELLAR-CLASSIC',
                 standard: 'STELLAR-CLASSIC',
                 contract,
                 balance: balance.toString(),

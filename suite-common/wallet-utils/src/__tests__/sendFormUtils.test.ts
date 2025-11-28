@@ -244,7 +244,6 @@ describe('sendForm utils', () => {
         const EthAccount = getWalletAccount({
             tokens: [
                 {
-                    type: 'ERC20',
                     standard: 'ERC20',
                     contract: 'A',
                     symbol: 'A',
@@ -252,7 +251,6 @@ describe('sendForm utils', () => {
                     name: 'A',
                 },
                 {
-                    type: 'ERC20',
                     standard: 'ERC20',
                     contract: 'B',
                     symbol: 'B',
@@ -500,7 +498,6 @@ describe('sendForm utils', () => {
                         contract: '0xabc',
                         balance: '200',
                         decimals: 18,
-                        type: 'ERC20',
                         standard: 'ERC20',
                     },
                 ],

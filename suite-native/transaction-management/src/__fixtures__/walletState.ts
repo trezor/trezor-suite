@@ -25,7 +25,6 @@ export const getEthAccount = () =>
         formattedBalance: '0.00000081',
         tokens: [
             {
-                type: 'ERC20',
                 standard: 'ERC20',
                 name: 'USDC',
                 contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

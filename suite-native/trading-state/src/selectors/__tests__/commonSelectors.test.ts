@@ -467,7 +467,6 @@ describe('commonSelectors', () => {
                 deviceState: testDeviceState,
                 tokens: [
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'USDC',
                         contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -477,7 +476,6 @@ describe('commonSelectors', () => {
                         balance: '1000000', // 1 USDC
                     },
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'Zero Token',
                         contract: '0x0000000000000000000000000000000000000000',
@@ -538,7 +536,6 @@ describe('commonSelectors', () => {
                 deviceState: testDeviceState,
                 tokens: [
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'Token Only',
                         contract: '0x4444444444444444444444444444444444444444',
@@ -594,7 +591,6 @@ describe('commonSelectors', () => {
                 deviceState: testDeviceState,
                 tokens: [
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'Zero Token',
                         contract: '0x5555555555555555555555555555555555555555',
@@ -648,7 +644,6 @@ describe('commonSelectors', () => {
                 deviceState: testDeviceState,
                 tokens: [
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'Unknown Token',
                         contract: '0x6666666666666666666666666666666666666666',
@@ -868,7 +863,6 @@ describe('commonSelectors', () => {
                 deviceState: testDeviceState,
                 tokens: [
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'USDC',
                         contract: '0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48',
@@ -927,7 +921,6 @@ describe('commonSelectors', () => {
                 deviceState: testDeviceState,
                 tokens: [
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'USDC',
                         contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -937,7 +930,6 @@ describe('commonSelectors', () => {
                         balance: '1000000', // 1 USDC
                     },
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'non tradeable token 1',
                         contract: '0x12123123123123123123123123123123123123',
@@ -947,7 +939,6 @@ describe('commonSelectors', () => {
                         balance: '1000000',
                     },
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'non tradeable token 2',
                         contract: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
@@ -1016,7 +1007,6 @@ describe('commonSelectors', () => {
                 deviceState: testDeviceState,
                 tokens: [
                     {
-                        type: 'ERC20',
                         standard: 'ERC20',
                         name: 'USDC',
                         contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
