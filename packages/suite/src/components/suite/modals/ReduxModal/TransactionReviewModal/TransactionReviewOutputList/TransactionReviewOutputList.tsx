@@ -109,6 +109,11 @@ export const TransactionReviewOutputList = ({
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
     );
 
+    const nativeToken =
+        account.accountType === 'placeholder' && 'nativeToken' in precomposedTx
+            ? precomposedTx.nativeToken
+            : undefined;
+
     useEffect(() => {
         if (reviewStep === outputs.length || signedTx) {
             // When the tx is signed, the outputs are updated, so we use instant scroll to prevent jumping
@@ -172,6 +177,7 @@ export const TransactionReviewOutputList = ({
                                 evmTxType={getEvmTransactionTextSignature(
                                     precomposedForm.transactionData,
                                 )}
+                                nativeToken={nativeToken}
                             />
                         </Column>
                     </Wrapper>

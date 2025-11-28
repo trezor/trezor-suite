@@ -15,6 +15,7 @@ import {
     isEvmApprovalTxByTextSignature,
     isTestnet,
 } from '@suite-common/wallet-utils';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -190,6 +191,7 @@ interface GetOutputLinesParams {
     evmTxType?: EvmTransactionPurpose;
     device?: TrezorDevice;
     token?: ReviewOutput['token'];
+    nativeToken?: TokenInfo;
     translationString: TranslationFunction;
 }
 
@@ -203,6 +205,7 @@ const getOutputLines = ({
     evmTxType,
     device,
     token,
+    nativeToken,
     translationString,
 }: GetOutputLinesParams): OutputElementLine[] => {
     const { networkType, symbol } = account;
@@ -216,6 +219,7 @@ const getOutputLines = ({
                     type: 'amount',
                     label: <Translation id="AMOUNT" />,
                     value,
+                    token: nativeToken,
                 },
             ];
         case 'fee-replace':
@@ -323,7 +327,7 @@ const getOutputLines = ({
                     label: <Translation id="AMOUNT" />,
                     value,
                     type: 'amount',
-                    token,
+                    token: token || nativeToken,
                 },
             ];
             if (networkType === 'cardano' && token) {
@@ -395,6 +399,7 @@ export type TransactionReviewOutputProps = {
     stakeType?: StakeType;
     isTrading?: boolean;
     evmTxType?: EvmTransactionPurpose;
+    nativeToken?: TokenInfo;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = ({
@@ -411,6 +416,7 @@ export const TransactionReviewOutput = ({
     isRbf,
     isTrading,
     evmTxType,
+    nativeToken,
 }: TransactionReviewOutputProps) => {
     const { networkType, symbol } = account;
     const accounts = useSelector(selectAccounts);
@@ -419,7 +425,8 @@ export const TransactionReviewOutput = ({
     const { translationString } = useTranslation();
     const isFiatVisible =
         ['fee', 'amount', 'gas', 'fee-replace', 'reduce-output'].includes(type) &&
-        !isTestnet(symbol);
+        !isTestnet(symbol) &&
+        !nativeToken;
 
     const outputTitle = getOutputTitle(
         type,
@@ -442,6 +449,7 @@ export const TransactionReviewOutput = ({
         device,
         token,
         translationString,
+        nativeToken,
     }).map(line => {
         if (line.type === 'address') {
             const relevantAccounts = findAccountsByAddress(symbol, line.value, accounts);

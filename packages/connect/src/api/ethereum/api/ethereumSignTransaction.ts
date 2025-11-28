@@ -201,6 +201,17 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 max: undefined,
                 isTokenKnown: !!token,
                 token,
+                nativeToken: this.params.network
+                    ? {
+                          type: 'NATIVE',
+                          standard: 'NATIVE',
+                          contract: '',
+                          name: this.params.network.name,
+                          symbol: this.params.network.shortcut,
+                          decimals: this.params.network.decimals,
+                      }
+                    : undefined,
+                network: this.params.network,
             };
         } catch (e) {
             // Don't throw errors from this method

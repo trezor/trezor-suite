@@ -205,6 +205,8 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
                 return 'TR_ACCOUNT_TYPE_LEGACY';
             case 'normal':
                 return 'TR_ACCOUNT_TYPE_DEFAULT';
+            case 'placeholder':
+                return 'TR_ACCOUNT_TYPE_DEFAULT';
         }
     }
 
