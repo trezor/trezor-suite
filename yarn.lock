@@ -11480,6 +11480,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/clipboard@workspace:suite-native/clipboard"
   dependencies:
+    "@suite-native/intl": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:~8.0.7"
     react: "npm:19.1.0"
