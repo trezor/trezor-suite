@@ -3,6 +3,6 @@ const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.bas
 module.exports = {
     ...baseConfig,
     testEnvironment: 'jsdom',
-    collectCoverage: true,
+    collectCoverage: false,
     collectCoverageFrom: ['src/**/*.ts'],
 };

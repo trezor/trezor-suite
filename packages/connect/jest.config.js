@@ -3,7 +3,7 @@ const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.bas
 module.exports = {
     ...baseConfig,
     testEnvironment: 'node',
-    collectCoverage: true,
+    collectCoverage: false,
     setupFiles: ['<rootDir>/setupJest.ts'],
     testPathIgnorePatterns: [...testPathIgnorePatterns, 'e2e'],
 };

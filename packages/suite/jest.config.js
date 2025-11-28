@@ -39,7 +39,7 @@ module.exports = {
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',
-    collectCoverage: true,
+    collectCoverage: false,
     collectCoverageFrom: [
         '<rootDir>/src/actions/**',
         '<rootDir>/src/hooks/**',

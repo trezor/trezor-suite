@@ -49,4 +49,5 @@ module.exports = {
         '^bcrypto/lib/(.*)$': 'bcrypto/lib/$1-browser',
         '^uint8array-tools$': require.resolve('uint8array-tools'), // same case as with uuid
     },
+    workerIdleMemoryLimit: '1024MB',
 };

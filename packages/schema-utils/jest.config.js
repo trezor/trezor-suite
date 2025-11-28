@@ -3,6 +3,6 @@ const baseConfig = require('../../jest.config.base');
 module.exports = {
     ...baseConfig,
     testEnvironment: 'node',
-    collectCoverage: true,
+    collectCoverage: false,
     collectCoverageFrom: ['src/**/*.ts'],
 };

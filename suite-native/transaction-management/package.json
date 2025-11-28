@@ -8,8 +8,9 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest --coverage",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
+        "test:unit:coverage": "yarn g:jest --coverage"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",

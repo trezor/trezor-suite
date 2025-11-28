@@ -24,7 +24,7 @@ module.exports = {
     },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
-
+    workerIdleMemoryLimit: '1024MB',
     transform: {
         '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],
     },

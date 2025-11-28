@@ -2,6 +2,6 @@ const { testPathIgnorePatterns, ...baseConfig } = require('../../jest.config.bas
 
 module.exports = {
     ...baseConfig,
-    collectCoverage: true,
+    collectCoverage: false,
     testPathIgnorePatterns: [...testPathIgnorePatterns, 'e2e'],
 };
