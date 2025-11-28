@@ -3,7 +3,7 @@ import { ExchangeListResponse } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { exchangeThunks } from '../../';
+import { exchangeThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
 import { exchange } from '../../../reducers/__fixtures__/exchangeTradingReducer';
 import { exchangeInitialState, tradingExchangeReducer } from '../../../reducers/exchangeReducer';

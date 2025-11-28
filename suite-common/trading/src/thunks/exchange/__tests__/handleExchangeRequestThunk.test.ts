@@ -4,7 +4,7 @@ import { CryptoId, ExchangeTrade } from 'invity-api';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
-import { exchangeThunks } from '../../';
+import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';

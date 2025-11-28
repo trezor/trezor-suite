@@ -3,7 +3,7 @@ import { CryptoId, ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
-import { exchangeThunks } from '../../';
+import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { invityAPI } from '../../../invityAPI';
 import { ExchangeInfo, TradingExchangeState } from '../../../reducers/exchangeReducer';

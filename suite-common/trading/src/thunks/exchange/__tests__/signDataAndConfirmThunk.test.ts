@@ -7,12 +7,12 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { exchangeThunks } from '../../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { exchangeThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 

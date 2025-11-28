@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { tradingThunks } from '../';
+import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import {
     selectTradingComposedTransactionInfo,
@@ -251,7 +251,7 @@ export const recomposeAndSignTxThunk = createThunk<
 
         const paymentRequests = isPaymentRequestsAllowed
             ? await dispatch(
-                  tradingThunks.createPaymentRequestsThunk({
+                  createPaymentRequestsThunk({
                       type: tradingFormState.activeSection,
                       account,
                       composedLevels: precomposedToSign,

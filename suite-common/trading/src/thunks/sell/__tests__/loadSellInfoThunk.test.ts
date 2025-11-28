@@ -3,7 +3,7 @@ import { CryptoId, SellListResponse, SellProviderInfo } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 
-import { sellThunks } from '../../';
+import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
 import { sellInitialState, tradingSellReducer } from '../../../reducers/sellReducer';
 import { regional } from '../../../regional';

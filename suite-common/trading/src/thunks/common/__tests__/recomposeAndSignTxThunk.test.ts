@@ -11,13 +11,13 @@ import {
 import { Account, FeesState } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 
-import { tradingThunks } from '../../';
 import { accountBtc } from '../../../__fixtures__/utils';
 import {
     TradingState,
     initialState,
     prepareTradingReducer,
 } from '../../../reducers/tradingReducer';
+import { tradingThunks } from '../index';
 
 jest.mock('@suite-common/wallet-core', () => {
     const actualModule = jest.requireActual('@suite-common/wallet-core');

@@ -2,9 +2,10 @@ import { CryptoId, InfoResponse } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
+import { buyThunks } from '../../thunks/buy';
+import { exchangeThunks } from '../../thunks/exchange';
 import { TradingComposedTransactionInfo, initialState, tradingActions } from '../tradingReducer';
 import { accounts } from './account';
-import { buyThunks, exchangeThunks } from '../../thunks';
 import {
     TradingPaymentMethodListProps,
     TradingTransactionBuy,

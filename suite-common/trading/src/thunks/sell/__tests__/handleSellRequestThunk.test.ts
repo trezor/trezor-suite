@@ -5,7 +5,7 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { getNetwork } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
-import { sellThunks } from '../../';
+import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {

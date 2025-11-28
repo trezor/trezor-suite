@@ -5,7 +5,7 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { tradingThunks } from '../../';
+import { tradingThunks } from '../';
 import { accounts } from '../../../reducers/__fixtures__/account';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 

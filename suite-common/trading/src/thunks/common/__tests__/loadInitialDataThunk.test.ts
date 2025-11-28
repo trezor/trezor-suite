@@ -4,7 +4,6 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
-import { buyThunks, exchangeThunks, sellThunks } from '../../';
 import { accountBtc, accountEth } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { tradingBuyActions } from '../../../reducers/buyReducer';
@@ -17,6 +16,9 @@ import {
     tradingActions,
 } from '../../../reducers/tradingReducer';
 import { regional } from '../../../regional';
+import { buyThunks } from '../../buy';
+import { exchangeThunks } from '../../exchange';
+import { sellThunks } from '../../sell';
 import { loadInitialDataThunk } from '../loadInitialDataThunk';
 
 jest.mock('../../../invityAPI');

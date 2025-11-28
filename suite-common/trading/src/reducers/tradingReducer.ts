@@ -5,6 +5,9 @@ import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { CardanoOutput, FeeLevel, PROTO } from '@trezor/connect';
 
+import { buyThunks } from '../thunks/buy';
+import { exchangeThunks } from '../thunks/exchange';
+import { sellThunks } from '../thunks/sell';
 import {
     TradingPaymentMethodListProps,
     TradingTransaction,
@@ -13,7 +16,6 @@ import {
 } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
 import { TRADING_PREFIX, TRADING_SETTINGS_PREFIX } from '../constants';
-import { buyThunks, exchangeThunks, sellThunks } from '../thunks';
 import {
     TradingExchangeState,
     exchangeInitialState,

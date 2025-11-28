@@ -8,7 +8,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { transformTypedData } from '@trezor/connect-plugin-ethereum';
 
-import { exchangeThunks } from '../';
+import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
@@ -134,7 +134,7 @@ export const signDataAndConfirmThunk = createThunk(
         );
 
         await dispatch(
-            exchangeThunks.confirmTradeThunk({
+            confirmExchangeTradeThunk({
                 trade,
                 returnUrl,
                 receiveAddress: trade.receiveAddress,

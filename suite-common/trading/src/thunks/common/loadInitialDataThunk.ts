@@ -1,6 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 
-import { buyThunks, exchangeThunks, sellThunks } from '../';
 import { INVITY_API_RELOAD_DATA_AFTER_MS, TRADING_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
@@ -16,6 +15,9 @@ import {
     selectTradingSellInfo,
 } from '../../selectors/tradingSelectors';
 import { TradingType } from '../../types';
+import { loadBuyInfoThunk } from '../buy/loadBuyInfoThunk';
+import { loadExchangeInfoThunk } from '../exchange/loadExchangeInfoThunk';
+import { loadSellInfoThunk } from '../sell/loadSellInfoThunk';
 
 export interface LoadInitialDataThunkProps {
     activeSection: TradingType;
@@ -65,18 +67,18 @@ export const loadInitialDataThunk = createThunk(
             }
 
             if (isDifferentAccount || !buyInfo) {
-                const buyInfoData = await dispatch(buyThunks.loadInfoThunk()).unwrap();
+                const buyInfoData = await dispatch(loadBuyInfoThunk()).unwrap();
                 dispatch(tradingBuyActions.saveBuyInfo(buyInfoData));
             }
 
             if (isDifferentAccount || !exchangeInfo) {
-                const exchangeInfoData = await dispatch(exchangeThunks.loadInfoThunk()).unwrap();
+                const exchangeInfoData = await dispatch(loadExchangeInfoThunk()).unwrap();
 
                 dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfoData));
             }
 
             if (isDifferentAccount || !sellInfo) {
-                const sellInfoData = await dispatch(sellThunks.loadInfoThunk()).unwrap();
+                const sellInfoData = await dispatch(loadSellInfoThunk()).unwrap();
 
                 dispatch(tradingSellActions.saveSellInfo(sellInfoData));
             }

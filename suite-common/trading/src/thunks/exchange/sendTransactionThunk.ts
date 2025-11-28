@@ -4,8 +4,11 @@ import { ExchangeTrade } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
-import { exchangeThunks, tradingThunks } from '../';
-import { SendDexTransactionThunkProps } from './sendDexTransactionThunk';
+import { tradingThunks } from '../common';
+import {
+    type SendDexTransactionThunkProps,
+    sendDexTransactionThunk,
+} from './sendDexTransactionThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
@@ -62,7 +65,7 @@ export const sendTransactionThunk = createThunk<
         if (selectedQuote?.isDex) {
             try {
                 await dispatch(
-                    exchangeThunks.sendDexTransactionThunk({
+                    sendDexTransactionThunk({
                         account,
                         returnUrl,
                         setMaxOutputId,
