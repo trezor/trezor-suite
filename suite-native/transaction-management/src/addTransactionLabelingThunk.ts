@@ -63,6 +63,8 @@ export const addTransactionLabelingThunk = createThunk<
                         txId,
                         outputIndex: label.outputIndex,
                         label: label.value,
+                        accountDescriptor: selectedAccount.descriptor,
+                        networkSymbol: selectedAccount.symbol,
                     }),
                 );
             }

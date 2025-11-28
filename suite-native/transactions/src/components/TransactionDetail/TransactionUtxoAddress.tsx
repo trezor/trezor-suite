@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { AccountAddressFormatter } from '@suite-native/formatters';
@@ -21,6 +22,8 @@ type TransactionUtxoAddressProps = {
     txId: string;
     deviceStaticSessionId: StaticSessionId;
     showLabels?: boolean;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
 };
 
 export const TransactionUtxoAddress = ({
@@ -28,6 +31,8 @@ export const TransactionUtxoAddress = ({
     txId,
     outputIndex,
     address,
+    accountDescriptor,
+    networkSymbol,
     showLabels,
 }: TransactionUtxoAddressProps) => {
     const { applyStyle } = useNativeStyles();
@@ -56,6 +61,8 @@ export const TransactionUtxoAddress = ({
                     txId={txId}
                     outputIndex={outputIndex}
                     deviceStaticSessionId={deviceStaticSessionId}
+                    accountDescriptor={accountDescriptor}
+                    networkSymbol={networkSymbol}
                 />
             )}
         </VStack>

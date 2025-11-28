@@ -5,6 +5,7 @@ import {
     selectOutputLabel,
     updateOutputLabelThunk,
 } from '@suite-common/suite-sync';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
@@ -15,12 +16,16 @@ type TransactionOutputLabelEditableProps = {
     txId: string;
     outputIndex: number;
     deviceStaticSessionId: StaticSessionId;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
 };
 
 export const TransactionOutputLabelEditable = ({
     txId,
     outputIndex,
     deviceStaticSessionId,
+    accountDescriptor,
+    networkSymbol,
 }: TransactionOutputLabelEditableProps) => {
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const dispatch = useDispatch();
@@ -50,6 +55,8 @@ export const TransactionOutputLabelEditable = ({
                                 txId,
                                 outputIndex,
                                 label: value,
+                                accountDescriptor,
+                                networkSymbol,
                             }),
                         );
                         onClose();
