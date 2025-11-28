@@ -49,10 +49,7 @@ export const TradingFormInputCurrency = ({
 
     const onChangeAdditional = (option: TradingFiatCurrencyOption) => {
         if (isTradingBuyContext(context)) {
-            context.setValue(
-                TRADING_FORM_FIAT_INPUT,
-                fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(option.value) ?? '',
-            );
+            context.setValue(TRADING_FORM_FIAT_INPUT, '');
         }
 
         if (isTradingExchangeContext(context) || isTradingSellContext(context)) {

@@ -84,6 +84,7 @@ import {
     selectBitcoinAmountUnit,
     selectIsMevProtectionEnabled,
     selectIsMevProtectionFeatureEnabled,
+    selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
 import {
     addFakePendingCardanoTxThunk,
@@ -165,9 +166,10 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { getState, dispatch, rejectWithValue }) => {
         const { account } = composeContext;
         let response: CoinSpecificComposeResponse | undefined;
+        const isNetworkReserveEnabled = selectIsNetworkReserveEnabled(getState());
 
         const { networkType } = account;
 
@@ -180,11 +182,18 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
             );
         } else if (networkType === 'ethereum') {
             response = await dispatch(
-                composeEthereumTransactionFeeLevelsThunk({ formState, composeContext }),
+                composeEthereumTransactionFeeLevelsThunk({
+                    formState,
+                    composeContext,
+                    isNetworkReserveEnabled,
+                }),
             );
         } else if (networkType === 'ripple' || networkType == 'stellar') {
             response = await dispatch(
-                composeRippleStellarTransactionFeeLevelsThunk({ formState, composeContext }),
+                composeRippleStellarTransactionFeeLevelsThunk({
+                    formState,
+                    composeContext,
+                }),
             );
         } else if (networkType === 'cardano') {
             response = await dispatch(
@@ -192,7 +201,11 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
             );
         } else if (networkType === 'solana') {
             response = await dispatch(
-                composeSolanaTransactionFeeLevelsThunk({ formState, composeContext }),
+                composeSolanaTransactionFeeLevelsThunk({
+                    formState,
+                    composeContext,
+                    isNetworkReserveEnabled,
+                }),
             );
         } else {
             return exhaustive(networkType);

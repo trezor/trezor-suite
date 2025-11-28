@@ -6,7 +6,6 @@ import {
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TradingBuyFormProps,
-    getNetworkReserve,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
@@ -15,6 +14,7 @@ import {
     buildCurrencyShortOption,
     getFiatRateKey,
     getInputState,
+    getNetworkReserve,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';

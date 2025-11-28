@@ -8,12 +8,17 @@ import {
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
+    asAmountSubunit,
+    asAmountUnit,
     calculateMax,
     calculateTotal,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     getAccountIdentity,
+    getCryptoMaxAmountWithReserve,
     getExternalComposeOutput,
+    subunitsToUnits,
+    unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
@@ -22,6 +27,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
+    ComposeActionContext,
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
     SignTransactionError,
@@ -36,6 +42,8 @@ const calculate = (
     decimals: number,
     rent: number,
     token?: TokenInfo,
+    composeContext?: ComposeActionContext,
+    isNetworkReserveEnabled = false,
 ): PrecomposedTransaction => {
     const feeInLamports = feeLevel.feePerTx;
     if (feeInLamports == null) throw new Error('Invalid fee.');
@@ -47,6 +55,33 @@ const calculate = (
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
+
+        if (composeContext) {
+            const feesInUnits = subunitsToUnits({
+                value: asAmountSubunit(new BigNumber(feeInLamports)),
+                symbol: composeContext.account.symbol,
+            }).toString();
+
+            const maxInUnits = subunitsToUnits({
+                value: asAmountSubunit(new BigNumber(max)),
+                symbol: composeContext.account.symbol,
+            }).toString();
+
+            max = getCryptoMaxAmountWithReserve({
+                symbol: composeContext.account.symbol,
+                contractAddress: token?.contract,
+                balance: composeContext.account.formattedBalance,
+                amount: maxInUnits,
+                fee: feesInUnits,
+                isNetworkReserveEnabled,
+            });
+
+            max = unitsToSubunits({
+                value: asAmountUnit(new BigNumber(max)),
+                symbol: composeContext.account.symbol,
+            }).toString();
+        }
+
         amount = max;
     } else {
         amount = output.amount;
@@ -130,7 +165,10 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { getState, rejectWithValue }) => {
+    async (
+        { formState, composeContext, isNetworkReserveEnabled = false },
+        { getState, rejectWithValue },
+    ) => {
         const { account, network, feeInfo } = composeContext;
         const composedOutput = getExternalComposeOutput(formState, account, network);
         if (!composedOutput)
@@ -246,6 +284,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 decimals,
                 account.misc?.rent ?? 0,
                 tokenInfo,
+                composeContext,
+                isNetworkReserveEnabled,
             ),
         );
         response.forEach((tx, index) => {

@@ -400,7 +400,7 @@ export class TradingPage {
             fiatCurrency: fiatCurrencyCode.toUpperCase(),
             receiveCurrency: cryptoCurrency,
             country,
-            fiatStringAmount: wantCrypto ? '2500' : amount,
+            fiatStringAmount: wantCrypto ? '' : amount,
             ...(wantCrypto && { cryptoStringAmount: amount }),
         });
         await quotesResponsePromise;

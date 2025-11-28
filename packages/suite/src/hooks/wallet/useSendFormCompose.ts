@@ -4,12 +4,8 @@ import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { getCryptoMaxAmountWithReserve } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import {
-    composeSendFormTransactionFeeLevelsThunk,
-    selectIsNetworkReserveEnabled,
-} from '@suite-common/wallet-core';
+import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     ExcludedUtxos,
     FeeInfo,
@@ -19,20 +15,15 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
-import {
-    asAmountSubunit,
-    findComposeErrors,
-    findToken,
-    subunitsToUnits,
-} from '@suite-common/wallet-utils';
+import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
-import { BigNumber, isChanged } from '@trezor/utils';
+import { isChanged } from '@trezor/utils';
 
 import { TranslationKey } from 'src/components/suite/Translation';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
-import { useSelector, useTranslation } from '../suite';
+import { useTranslation } from '../suite';
 import { useSolanaSubscribeBlocks } from './form/useSolanaSubscribeBlocks';
 
 type Props = UseFormReturn<FormState> & {
@@ -72,7 +63,6 @@ export const useSendFormCompose = ({
 
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
 
@@ -234,30 +224,8 @@ export const useSendFormCompose = ({
             const { setMaxOutputId } = values;
             // set calculated and formatted "max" value to `Amount` input
             if (typeof setMaxOutputId === 'number' && composed.max) {
-                const feeInUnits = composed.fee
-                    ? subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(composed.fee)),
-                          symbol: account.symbol,
-                      })
-                    : undefined;
-
-                const output = values.outputs?.[setMaxOutputId];
-                const token = findToken(account.tokens, output?.token);
-
-                const maxValue = isNetworkReserveEnabled
-                    ? getCryptoMaxAmountWithReserve({
-                          symbol: account.symbol,
-                          contractAddress: token?.contract,
-                          balance: account.formattedBalance,
-                          amount: composed.max,
-                          fee: feeInUnits?.toString() || '0',
-                          isNetworkReserveEnabled,
-                      })
-                    : composed.max;
-
-                setShowReserveBanner(maxValue !== composed.max);
-
-                setAmount(setMaxOutputId, maxValue);
+                setAmount(setMaxOutputId, composed.max);
+                setShowReserveBanner(true);
                 setDraftSaveRequest(true);
             }
             setLoading(false);
@@ -272,10 +240,6 @@ export const useSendFormCompose = ({
             setValue,
             setLoading,
             translationString,
-            account.formattedBalance,
-            account.symbol,
-            account.tokens,
-            isNetworkReserveEnabled,
             setShowReserveBanner,
         ],
     );

@@ -6,24 +6,16 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
-    getCryptoMaxAmountWithReserve,
     tradingActions,
 } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     selectAccounts,
-    selectIsNetworkReserveEnabled,
     selectRawNetworkFeeInfo,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import {
-    asAmountSubunit,
-    findToken,
-    getConvertedOrDefaultFeeInfo,
-    subunitsToUnits,
-} from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
@@ -51,7 +43,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const { translationString } = useTranslation();
-    const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const { getValues, setValue, setError, clearErrors } = methods as unknown as UseFormReturn<
         TradingSellFormProps | TradingExchangeFormProps
@@ -92,14 +83,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         composeRequest,
         ...methods,
     });
-
-    // when Max amount has been set and quotes are done loading
-    // reset shouldUpdateMaxAmount so that subsequent click on Max works
-    useEffect(() => {
-        if (!isComposing) {
-            setShouldUpdateMaxAmount(true);
-        }
-    }, [isComposing]);
 
     useEffect(() => {
         const setStateAsync = async () => {
@@ -171,31 +154,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         if (composed.type === 'final' || composed.type === 'nonfinal') {
             if (typeof setMaxOutputId === 'number' && composed.max && shouldUpdateMaxAmount) {
                 setShouldUpdateMaxAmount(false);
-
-                const feeInUnits = composed.fee
-                    ? subunitsToUnits({
-                          value: asAmountSubunit(new BigNumber(composed.fee)),
-                          symbol: account.symbol,
-                      })
-                    : undefined;
-
-                const output = values.outputs?.[setMaxOutputId];
-                const token = findToken(account.tokens, output?.token);
-
-                const maxValue = isNetworkReserveEnabled
-                    ? getCryptoMaxAmountWithReserve({
-                          symbol: account.symbol,
-                          contractAddress: token?.contract,
-                          balance: account.formattedBalance,
-                          amount: composed.max,
-                          fee: feeInUnits?.toString() || '0',
-                          isNetworkReserveEnabled,
-                      })
-                    : composed.max;
-
-                setShowReserveBanner(maxValue !== composed.max);
-
-                setValue(TRADING_FORM_OUTPUT_AMOUNT, maxValue, {
+                setShowReserveBanner(true);
+                setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
                     shouldValidate: true,
                     shouldDirty: true,
                 });

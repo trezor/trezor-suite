@@ -7,14 +7,13 @@ import {
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
-    getNetworkReserve,
     useTradingInfo,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
-import { getInputState } from '@suite-common/wallet-utils';
+import { getInputState, getNetworkReserve } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
