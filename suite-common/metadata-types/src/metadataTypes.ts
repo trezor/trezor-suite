@@ -23,6 +23,8 @@ export type MetadataAddPayload = { skipSave?: boolean } & (
           outputIndex: number | string;
           defaultValue?: string;
           value?: string;
+          networkSymbol: string;
+          accountDescriptor: string;
       }
     | {
           type: 'addressLabel';

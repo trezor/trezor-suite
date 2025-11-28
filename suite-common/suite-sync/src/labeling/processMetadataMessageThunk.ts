@@ -67,6 +67,8 @@ export const processMetadataMessageThunk = createThunk<
                         txId: payload.txid,
                         outputIndex: Number(payload.outputIndex),
                         label: value ?? null,
+                        accountDescriptor: payload.accountDescriptor,
+                        networkSymbol: payload.networkSymbol as NetworkSymbol,
                     }),
                 );
                 break;
