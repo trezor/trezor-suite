@@ -22,12 +22,14 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from '../components/ChangeAddressesHeader';
 
-const addressStyle = prepareNativeStyle(utils => ({
+const addressCardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderOnElevation0,
     backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
     borderRadius: utils.borders.radii.r12,
 }));
+
+const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
 
 const AddressRow = ({ address }: { address: string }) => {
     const { applyStyle } = useNativeStyles();
@@ -43,8 +45,14 @@ const AddressRow = ({ address }: { address: string }) => {
         );
 
     return (
-        <HStack paddingHorizontal="sp16" paddingVertical="sp12" style={applyStyle(addressStyle)}>
-            <Text variant="hint">{address}</Text>
+        <HStack
+            paddingHorizontal="sp16"
+            paddingVertical="sp12"
+            style={applyStyle(addressCardStyle)}
+        >
+            <Text variant="hint" style={applyStyle(addressStyle)}>
+                {address}
+            </Text>
             <TouchableOpacity onPress={handleCopy}>
                 <Icon name="copy" color="iconPrimaryDefault" size="medium" />
             </TouchableOpacity>
