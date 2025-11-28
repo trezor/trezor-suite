@@ -23,6 +23,7 @@ export class Fees {
     readonly ethereumFeeLimit: Locator;
     readonly ethereumMaxFeePerGas: Locator;
     readonly ethereumMaxPriorityFeePerGas: Locator;
+    readonly networkReserveBanner: Locator;
 
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
@@ -35,6 +36,7 @@ export class Fees {
         this.ethereumFeeLimit = this.page.getByTestId('feeLimit');
         this.ethereumMaxFeePerGas = this.page.getByTestId('maxFeePerGas');
         this.ethereumMaxPriorityFeePerGas = this.page.getByTestId('maxPriorityFeePerGas');
+        this.networkReserveBanner = this.page.getByTestId('@send/network-reserve-banner');
     }
 
     @step()
@@ -211,5 +213,22 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         await this.ethereumFeeLimit.fill(input.gasLimit);
         await this.ethereumMaxFeePerGas.fill(input.maxFeePerGas);
         await this.ethereumMaxPriorityFeePerGas.fill(input.maxPriorityFeePerGas);
+    }
+
+    @step()
+    async getNetworkReserveAmount() {
+        const bannerText = await this.networkReserveBanner.textContent();
+        if (!bannerText) {
+            throw new Error('Network reserve banner text is undefined or null');
+        }
+
+        const regex = /(\d+(?:\.\d+)?)(?=\s*SOL)/;
+        const match = bannerText.match(regex);
+
+        if (!match || !match[1]) {
+            throw new Error(`Failed to extract network reserve amount from text: "${bannerText}"`);
+        }
+
+        return Number(match[1]);
     }
 }
