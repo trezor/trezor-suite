@@ -151,6 +151,8 @@ const applySendFormMetadataLabelsThunk = createThunk<
                     outputIndex,
                     value: label,
                     defaultValue: '',
+                    networkSymbol: selectedAccount.symbol,
+                    accountDescriptor: selectedAccount.descriptor,
                 };
 
                 return outputMetadata;

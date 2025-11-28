@@ -1,5 +1,7 @@
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -13,6 +15,8 @@ type DeleteAllOutputLabelsParams = {
     labels: AccountLabels['outputLabels']['labels'];
     dispatch: Dispatch;
     accountKey: AccountKey;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
     txid: string;
 };
 
@@ -20,6 +24,8 @@ export const deleteDanglingLabels = async ({
     labels,
     dispatch,
     accountKey,
+    accountDescriptor,
+    networkSymbol,
     txid,
 }: DeleteAllOutputLabelsParams) => {
     for (const outputIndex of Object.keys(labels)) {
@@ -31,6 +37,8 @@ export const deleteDanglingLabels = async ({
                 outputIndex: Number(outputIndex),
                 defaultValue: '',
                 value: '',
+                accountDescriptor,
+                networkSymbol,
             }),
         );
     }
@@ -41,12 +49,16 @@ type MoveLabelToNewTransactionParams = {
     dispatch: Dispatch;
     accountKey: AccountKey;
     newTxid: string;
+    accountDescriptor: string;
+    networkSymbol: NetworkSymbol;
 };
 
 export const copyLabelToNewTransaction = async ({
     accountOutputLabels,
     dispatch,
     accountKey,
+    accountDescriptor,
+    networkSymbol,
     newTxid,
 }: MoveLabelToNewTransactionParams) => {
     for (const outputIndex of Object.keys(accountOutputLabels)) {
@@ -60,6 +72,8 @@ export const copyLabelToNewTransaction = async ({
                 outputIndex: Number(outputIndex),
                 defaultValue: '',
                 value,
+                accountDescriptor,
+                networkSymbol,
             }),
         );
     }
@@ -78,14 +92,21 @@ export const moveLabelsForRbfOldMetadataThunk = createThunk<
 >(
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
     async ({ accountKey, data, newTxid }, { dispatch, getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
         const accountMetadata = selectLabelingDataForAccount(getState(), accountKey);
         const accountOutputLabelsToBeMoved: AccountOutputLabels =
             accountMetadata?.outputLabels?.[data.toBeMoved.txid] ?? {};
+
+        if (!account) {
+            return;
+        }
 
         await copyLabelToNewTransaction({
             accountKey,
             accountOutputLabels: accountOutputLabelsToBeMoved,
             newTxid,
+            accountDescriptor: account.descriptor,
+            networkSymbol: account.symbol,
             dispatch,
         });
 
@@ -98,6 +119,8 @@ export const moveLabelsForRbfOldMetadataThunk = createThunk<
                 dispatch,
                 labels: accountOutputLabelsToBeDeleted,
                 txid: transactionToDrop.txid,
+                accountDescriptor: account.descriptor,
+                networkSymbol: account.symbol,
             };
 
             await deleteDanglingLabels(deleteParams);
