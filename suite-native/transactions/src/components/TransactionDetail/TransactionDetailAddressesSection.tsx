@@ -115,6 +115,8 @@ export const TransactionDetailAddressesSection = ({
                                 //       of the previous transaction. So for inputs we would need to pass previous txid
                                 //       (and figure out correct `n` output index of the utxo on the previous transaction)
                                 showLabels={addressesType === 'outputs'}
+                                accountDescriptor={transaction.descriptor}
+                                networkSymbol={transaction.symbol}
                             />
                         ))}
                     </Box>
@@ -162,6 +164,8 @@ export const TransactionDetailAddressesSection = ({
                                         //       of the previous transaction. So for inputs we would need to pass previous txid
                                         //       (and figure out correct `n` output index of the utxo on the previous transaction)
                                         showLabels={addressesType === 'outputs'}
+                                        accountDescriptor={transaction.descriptor}
+                                        networkSymbol={transaction.symbol}
                                     />
                                 ))}
                             </Box>
