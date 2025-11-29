@@ -51,7 +51,9 @@ export const clearTradingStateThunk = createThunk(
     (_, { dispatch }) => {
         // Clear only selected quotes and transaction-related data
         dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+        dispatch(tradingExchangeActions.saveTransactionId(undefined));
         dispatch(tradingSellActions.saveSelectedQuote(undefined));
+        dispatch(tradingSellActions.saveTransactionId(undefined));
 
         // Clear composed transaction info
         dispatch(tradingCommonActions.saveComposedTransactionInfo({}));
