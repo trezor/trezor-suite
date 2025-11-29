@@ -18,6 +18,7 @@ const notarizeAfterSignHook = context => {
     const appName = context.packager.appInfo.productFilename;
     const appPath = `${appOutDir}/${appName}.app`;
 
+    // eslint-disable-next-line no-console
     console.log(`notarizing ${appPath} ...`);
 
     return notarize({
@@ -28,4 +29,5 @@ const notarizeAfterSignHook = context => {
     });
 };
 
+// eslint-disable-next-line import/no-default-export
 export default notarizeAfterSignHook;

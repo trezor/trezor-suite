@@ -10,6 +10,7 @@ import { execSync } from 'node:child_process';
 const signWindows = async configuration => {
     // Check if IS_CODESIGN_BUILD is set and true
     if (!process.env.IS_CODESIGN_BUILD || process.env.IS_CODESIGN_BUILD.toLowerCase() !== 'true') {
+        // eslint-disable-next-line no-console
         console.log('This is DEV build, not signing');
 
         return;
@@ -28,4 +29,5 @@ const signWindows = async configuration => {
     );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default signWindows;
