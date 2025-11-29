@@ -19,6 +19,7 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        { "path": "../secure-storage-native" },
         {
             "path": "../../suite-common/suite-sync"
         },

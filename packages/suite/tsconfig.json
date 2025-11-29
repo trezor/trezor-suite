@@ -55,6 +55,12 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        {
+            "path": "../../suite/secure-storage-electron"
+        },
+        {
+            "path": "../../suite/secure-storage-webauthn"
+        },
         { "path": "../../suite-common/sentry" },
         { "path": "../../suite-common/staking" },
         {

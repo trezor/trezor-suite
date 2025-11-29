@@ -10,6 +10,8 @@ import {
     LocationPushState,
     To,
 } from '@suite-common/redux-utils';
+import { createElectronSecureStorage } from '@suite-common/secure-storage-electron';
+import { createWebauthnSecureStorage } from '@suite-common/secure-storage-webauthn';
 import {
     subscribeSuiteSyncStorageThunk,
     unsubscribeAndDisposeSuiteSyncStorageThunk,
@@ -31,6 +33,7 @@ import {
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -73,6 +76,9 @@ export const createRouterServices = (history: History) => ({
 export const suiteExtraFactory: ExtraWithStoreFactory = store => ({
     services: {
         suiteSync: createSuiteSyncDesktop(store),
+        secureStorage: isDesktop()
+            ? createElectronSecureStorage({ desktopApi })
+            : createWebauthnSecureStorage(),
     },
 });
 

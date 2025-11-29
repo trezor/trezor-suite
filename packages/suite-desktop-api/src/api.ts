@@ -1,3 +1,6 @@
+import { EncryptionUnavailable } from '@suite-common/secure-storage';
+import { Result } from '@trezor/type-utils';
+
 import {
     BioAuthSettings,
     BootstrapTorEvent,
@@ -139,6 +142,8 @@ export interface InvokeChannels {
               message: string;
           };
     'bio-auth/get-validation-status': () => boolean;
+    'safe-storage/decrypt': (params: { value: string }) => Result<string, EncryptionUnavailable>;
+    'safe-storage/encrypt': (params: { value: string }) => Result<string, EncryptionUnavailable>;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -215,4 +220,7 @@ export type DesktopApi = {
     isBioAuthAvailable: DesktopApiInvoke<'bio-auth/is-bio-auth-available'>;
     validateBioAuth: DesktopApiInvoke<'bio-auth/validate-bio-auth'>;
     getBioAuthStatus: DesktopApiInvoke<'bio-auth/get-validation-status'>;
+    // safeStorage
+    safeStoreEncrypt: DesktopApiInvoke<'safe-storage/encrypt'>;
+    safeStoreDecrypt: DesktopApiInvoke<'safe-storage/decrypt'>;
 };

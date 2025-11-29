@@ -1,0 +1,1 @@
+export { createElectronSecureStorage } from './electronSecureStorage';

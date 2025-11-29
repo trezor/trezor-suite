@@ -43,6 +43,8 @@ export const subscribeSuiteSyncStorageThunk =
 
                         return ok();
                     case 'CreateSuiteSyncOwnerError':
+                    case 'EncryptionUnavailable':
+                    case 'ProofOfDelegatedSingFailed':
                         console.error(result.error);
                         // Todo: dispatch better notification
                         dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));

@@ -10687,6 +10687,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10699,6 +10700,42 @@ __metadata:
     redux: "npm:^5.0.1"
     redux-thunk: "npm:^3.1.0"
     reselect: "npm:5.1.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/secure-storage-electron@workspace:*, @suite-common/secure-storage-electron@workspace:suite/secure-storage-electron":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/secure-storage-electron@workspace:suite/secure-storage-electron"
+  dependencies:
+    "@suite-common/secure-storage": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/secure-storage-native@workspace:*, @suite-common/secure-storage-native@workspace:suite-native/secure-storage-native":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/secure-storage-native@workspace:suite-native/secure-storage-native"
+  dependencies:
+    "@suite-common/secure-storage": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/secure-storage-webauthn@workspace:*, @suite-common/secure-storage-webauthn@workspace:suite/secure-storage-webauthn":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/secure-storage-webauthn@workspace:suite/secure-storage-webauthn"
+  dependencies:
+    "@suite-common/secure-storage": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/secure-storage@workspace:*, @suite-common/secure-storage@workspace:suite-common/secure-storage":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/secure-storage@workspace:suite-common/secure-storage"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -10818,6 +10855,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -10859,6 +10897,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11015,6 +11054,7 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -12851,6 +12891,7 @@ __metadata:
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/secure-storage-native": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
@@ -14381,6 +14422,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
+    "@suite-common/secure-storage": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     electron: "npm:39.0.0"
   languageName: unknown
   linkType: soft
@@ -14552,6 +14595,8 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/secure-storage-electron": "workspace:*"
+    "@suite-common/secure-storage-webauthn": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/staking-solana": "workspace:*"
