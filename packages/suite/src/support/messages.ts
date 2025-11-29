@@ -526,6 +526,14 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_EXCHANGE_DETAIL_SENDING_TITLE',
     },
+    TR_EXCHANGE_DETAIL_SENDING_TRANSACTION: {
+        defaultMessage: 'Sending transaction',
+        id: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION',
+    },
+    TR_EXCHANGE_DETAIL_TRANSACTION_SENT: {
+        defaultMessage: 'Transaction sent',
+        id: 'TR_EXCHANGE_DETAIL_TRANSACTION_SENT',
+    },
     TR_EXCHANGE_DETAIL_SENDING_SUPPORT: {
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_SENDING_SUPPORT',
@@ -534,9 +542,25 @@ export default defineMessages({
         defaultMessage: 'Converting',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_TITLE',
     },
+    TR_EXCHANGE_DETAIL_PROCESSING: {
+        defaultMessage: '{providerName} is processing your swap',
+        id: 'TR_EXCHANGE_DETAIL_PROCESSING',
+    },
     TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT: {
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
+    },
+    TR_EXCHANGE_HEADING: {
+        defaultMessage: 'Your swap',
+        id: 'TR_EXCHANGE_HEADING',
+    },
+    TR_EXCHANGE_HEADING_DESCRIPTION: {
+        defaultMessage: 'View and track your swap in trade history.',
+        id: 'TR_EXCHANGE_HEADING_DESCRIPTION',
+    },
+    TR_EXCHANGE_COMPLETE: {
+        defaultMessage: 'Swap complete',
+        id: 'TR_EXCHANGE_COMPLETE',
     },
     TR_EXCHANGE_SEND_TO: {
         defaultMessage: '{providerName}’s address',
@@ -7359,6 +7383,10 @@ export default defineMessages({
     TR_TXID: {
         id: 'TR_TXID',
         defaultMessage: 'Tx ID',
+    },
+    TR_TRANSACTION_ID: {
+        id: 'TR_TRANSACTION_ID',
+        defaultMessage: 'Transaction ID',
     },
     TR_TXID_RBF: {
         id: 'TR_TXID_RBF',

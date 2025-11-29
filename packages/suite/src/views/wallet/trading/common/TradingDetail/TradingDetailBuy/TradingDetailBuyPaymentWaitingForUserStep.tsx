@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { BuyTrade } from 'invity-api';
 
+import { TranslationKey } from '@suite-common/intl-types';
 import { invityAPI } from '@suite-common/trading';
 import { BulletListItemState, Button, Column, Paragraph } from '@trezor/components';
 
@@ -28,7 +29,7 @@ const getState = (trade: BuyTrade): BulletListItemState => {
     }
 };
 
-const getTitleId = (trade: BuyTrade) => {
+const getTitleId = (trade: BuyTrade): TranslationKey => {
     switch (trade.status) {
         case 'APPROVAL_PENDING':
             return 'TR_BUY_DETAIL_PAYMENT_SUCCESSFUL_TITLE';
@@ -37,7 +38,7 @@ const getTitleId = (trade: BuyTrade) => {
     }
 };
 
-const getDescriptionId = (trade: BuyTrade) => {
+const getDescriptionId = (trade: BuyTrade): TranslationKey => {
     switch (trade.status) {
         case 'SUBMITTED':
             return 'TR_BUY_DETAIL_SUBMITTED_TEXT';
@@ -46,7 +47,7 @@ const getDescriptionId = (trade: BuyTrade) => {
     }
 };
 
-const getButtonLabelId = (trade: BuyTrade) => {
+const getButtonLabelId = (trade: BuyTrade): TranslationKey => {
     switch (trade.status) {
         case 'SUBMITTED':
             return 'TR_BUY_DETAIL_SUBMITTED_GATE';

@@ -8,7 +8,6 @@ import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suit
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -160,7 +159,7 @@ export const TradingDetailBuy = () => {
 
     return (
         <Wrapper data-testid="@trading/transaction/detail">
-            <Column gap={spacings.lg}>
+            <Column gap={20}>
                 <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
                     {getContent()}
                 </Card>
@@ -178,7 +177,6 @@ export const TradingDetailBuy = () => {
                     account={account}
                     selectedAccount={receiveAccount}
                     selectedQuote={trade.data}
-                    transactionId={trade.key}
                     providers={info?.providerInfos}
                     quoteAmounts={quoteAmounts}
                     type="buy"

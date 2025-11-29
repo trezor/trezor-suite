@@ -7,7 +7,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
-import { TradingDetailInfo } from '../TradingDetailInfo';
+import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
 type PaymentFailedProps = {
@@ -52,7 +52,7 @@ export const TradingDetailBuyPaymentFailed = ({
             </Button>
             <Card>
                 <Column gap={24}>
-                    {provider && <TradingDetailInfo provider={provider} trade={trade} />}
+                    {provider && <TradingDetailProviderInfo provider={provider} trade={trade} />}
                     {provider && supportUrl && (
                         <TradingDetailSupportBanner provider={provider} supportUrl={supportUrl} />
                     )}

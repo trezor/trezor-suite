@@ -4,9 +4,15 @@ type TradingDetailStepProps = {
     state: BulletListItemState;
     title: React.ReactNode;
     children?: React.ReactNode;
+    doneContent?: React.ReactNode;
 };
 
-export const TradingDetailStep = ({ state, title, children }: TradingDetailStepProps) => {
+export const TradingDetailStep = ({
+    state,
+    title,
+    children,
+    doneContent,
+}: TradingDetailStepProps) => {
     const isActive = state === 'active';
 
     return (
@@ -18,6 +24,7 @@ export const TradingDetailStep = ({ state, title, children }: TradingDetailStepP
                         {title}
                     </Text>
                     {isActive && <Spinner size={20} isGrey={false} />}
+                    {doneContent && state === 'done' && doneContent}
                 </Row>
             }
         >
