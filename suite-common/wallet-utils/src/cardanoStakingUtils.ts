@@ -4,6 +4,7 @@ import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
     CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
+    FIVE_BINARIES_POOLS,
 } from '@suite-common/wallet-constants';
 import {
     Account,
@@ -66,6 +67,13 @@ export const isCardanoStakedOutsideEverstake = (
     if (!accountPoolId) return false;
 
     return cardanoStakingPools.every(pool => pool.id !== accountPoolId);
+};
+
+export const isCardanoStakedWithFiveBinaries = (account: Account) => {
+    const accountPoolId = getAccountPoolId(account);
+    if (!accountPoolId) return false;
+
+    return FIVE_BINARIES_POOLS.includes(accountPoolId);
 };
 
 export const poolBech32ToHex = (poolId: string): string => {

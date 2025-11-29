@@ -4,13 +4,12 @@ import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
 import {
-    selectCardanoPoolsInfo,
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { isCardanoStakedOutsideEverstake } from '@suite-common/wallet-utils';
+import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -61,7 +60,6 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const transport = useSelector(state => state.suite.transport);
     const accounts = useSelector(selectVisibleDeviceAccounts);
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
 
     // The dismissal doesn't need to outlive the session. Use local state.
@@ -116,9 +114,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     } else if (bridge?.outdated) {
         banner = <BridgeDeprecated />;
         priority = 30;
-    } else if (
-        accounts.some(account => isCardanoStakedOutsideEverstake(account, cardanoStakingPools))
-    ) {
+    } else if (accounts.some(account => isCardanoStakedWithFiveBinaries(account))) {
         banner = <CardanoOutdatedStakingBanner />;
         priority = 20;
     }
