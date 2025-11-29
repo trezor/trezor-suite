@@ -18,7 +18,7 @@ export const TradingDetailSupportBanner = ({
     supportUrl,
 }: TradingDetailSupportBannerProps) => {
     const providerName = isBuyProviderInfo(provider)
-        ? provider.brandName
+        ? (provider.brandName ?? provider.companyName)
         : (provider.companyName ?? provider.name);
 
     return (

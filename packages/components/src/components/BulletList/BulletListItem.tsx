@@ -190,6 +190,7 @@ export const BulletListItem = ({
                         size={mapSizeToDimension({ $size: bulletSize })}
                         hasBorder={false}
                         variant="primary"
+                        paddingType="small"
                     />
                 ) : (
                     <Bullet

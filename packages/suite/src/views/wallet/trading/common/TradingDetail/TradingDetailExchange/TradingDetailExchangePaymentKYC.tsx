@@ -1,82 +1,44 @@
-import { ExchangeProviderInfo } from 'invity-api';
-import styled from 'styled-components';
+import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
-import { Button, H4, Image } from '@trezor/components';
-import { spacings, typography } from '@trezor/theme';
+import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch } from 'src/hooks/suite';
-import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
+import { Account } from 'src/types/wallet';
 
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    flex-direction: column;
-`;
+import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
-const Description = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.body}
-    margin: 17px 0 10px;
-    max-width: 310px;
-    text-align: center;
-`;
-
-interface PaymentKYCProps {
-    transactionId?: string;
-    supportUrl?: string;
+type PaymentKYCProps = {
+    trade: ExchangeTrade;
+    account?: Account;
     provider?: ExchangeProviderInfo;
-}
+    supportUrl?: string;
+};
 
 export const TradingDetailExchangePaymentKYC = ({
-    transactionId,
-    supportUrl,
+    trade,
+    account,
     provider,
-}: PaymentKYCProps) => {
-    const dispatch = useDispatch();
-
-    const goToExchange = () => dispatch(goto('wallet-trading-exchange'));
-
-    return (
-        <Wrapper>
-            <Image image="UNI_WARNING" />
-            <H4 data-testid="@trading/transaction/detail/status" margin={{ top: spacings.xl }}>
+    supportUrl,
+}: PaymentKYCProps) => (
+    <Column gap={24} padding={{ top: 12, bottom: 4 }}>
+        <IconCircle name="warning" variant="warning" size={100} />
+        <Column>
+            <H3 data-testid="@trading/transaction/detail/status">
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TITLE" />
-            </H4>
-            <Description>
+            </H3>
+            <Paragraph typographyStyle="hint" variant="tertiary" textWrap="pretty">
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TEXT" />
-            </Description>
-            {transactionId && <TradingTransactionId transactionId={transactionId} />}
-            {supportUrl && (
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    href={supportUrl}
-                    target="_blank"
-                    margin={{ top: spacings.xxs, bottom: spacings.lg }}
-                >
-                    <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
-                </Button>
-            )}
-            {provider?.kycUrl && (
-                <Button
-                    intent="neutral"
-                    priority="secondary"
-                    href={provider?.kycUrl}
-                    target="_blank"
-                >
-                    <Translation id="TR_EXCHANGE_DETAIL_KYC_INFO_LINK" />
-                </Button>
-            )}
-            <Button onClick={goToExchange}>
-                <Translation id="TR_EXCHANGE_DETAIL_KYC_BUTTON" />
+            </Paragraph>
+        </Column>
+        {supportUrl && (
+            <Button intent="neutral" priority="secondary" href={supportUrl} target="_blank">
+                <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
             </Button>
-        </Wrapper>
-    );
-};
+        )}
+        <Card>
+            {provider && (
+                <TradingDetailProviderInfo account={account} provider={provider} trade={trade} />
+            )}
+        </Card>
+    </Column>
+);

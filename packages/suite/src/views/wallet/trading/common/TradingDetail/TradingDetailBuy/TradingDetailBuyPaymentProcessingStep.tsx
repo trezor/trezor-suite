@@ -6,7 +6,7 @@ import { BulletListItemState, Column } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { useLocales } from 'src/hooks/suite';
 
-import { TradingDetailInfo } from '../TradingDetailInfo';
+import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailStep } from '../TradingDetailStep';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
@@ -52,7 +52,7 @@ export const TradingDetailBuyPaymentProcessingStep = ({
         >
             <Column gap={24}>
                 {provider && (
-                    <TradingDetailInfo
+                    <TradingDetailProviderInfo
                         estimatedTime={estimatedTime}
                         provider={provider}
                         trade={trade}

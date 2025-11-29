@@ -130,7 +130,6 @@ export const TradingDetailSell = () => {
                     selectedAccount={sendAccount}
                     providers={info?.providerInfos}
                     selectedQuote={trade.data}
-                    transactionId={trade.key}
                     type="sell"
                     quoteAmounts={quoteAmounts}
                     paymentMethod={trade.data.paymentMethod}

@@ -7,7 +7,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
-import { TradingDetailInfo } from '../TradingDetailInfo';
+import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
 type PaymentSuccessfulProps = {
     account: Account;
@@ -35,7 +35,7 @@ export const TradingDetailBuyPaymentPaymentSuccessful = ({
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="checks" size={100} />
+            <IconCircle name="check" size={100} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_BUY_DETAIL_SUCCESS_TITLE" />
@@ -49,7 +49,7 @@ export const TradingDetailBuyPaymentPaymentSuccessful = ({
             </Button>
             {provider && (
                 <Card>
-                    <TradingDetailInfo provider={provider} trade={trade} />
+                    <TradingDetailProviderInfo provider={provider} trade={trade} />
                 </Card>
             )}
         </Column>

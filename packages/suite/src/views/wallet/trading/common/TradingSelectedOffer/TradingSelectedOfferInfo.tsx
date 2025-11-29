@@ -2,8 +2,7 @@ import { type CryptoId } from 'invity-api';
 
 import { TradingTradeType, isBuyTrade, isExchangeTrade } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
-import { copyToClipboard } from '@trezor/dom-utils';
+import { Column, InfoItem, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -35,7 +34,6 @@ export const TradingSelectedOfferInfo = ({
     quoteAmounts,
     type,
     selectedAccount,
-    transactionId,
     paymentMethod,
     paymentMethodName,
 }: TradingSelectedOfferInfoProps) => {
@@ -139,7 +137,7 @@ export const TradingSelectedOfferInfo = ({
                     />
                 )}
 
-                {type !== 'buy' && (
+                {type === 'sell' && (
                     <TradingInfoProvider providers={providers} exchange={exchange} />
                 )}
 
@@ -161,22 +159,6 @@ export const TradingSelectedOfferInfo = ({
                         exchange={exchange}
                         providers={providers as TradingExchangeProvidersInfoProps}
                     />
-                )}
-
-                {type === 'exchange' && transactionId && (
-                    <InfoItem label={<Translation id="TR_TRADING_TRANS_ID" />} direction="row">
-                        <Row gap={8}>
-                            <Text typographyStyle="hint">{transactionId}</Text>
-                            <Button
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                onClick={() => copyToClipboard(transactionId)}
-                            >
-                                <Translation id="TR_COPY_TO_CLIPBOARD" />
-                            </Button>
-                        </Row>
-                    </InfoItem>
                 )}
             </Column>
         </Column>

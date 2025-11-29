@@ -1,27 +1,26 @@
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
-import { Box, Image, iconSizes } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
+import { Box, Image } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
-const TradingIconWrapper = styled.div<{ $isDark: boolean }>`
-    ${({ $isDark }) => $isDark && `background-color: #fff;`}
-    border-radius: ${borders.radii.xxs};
-`;
-
-interface TradingIconProps {
+type TradingIconProps = {
     iconUrl: string;
-}
+};
 
 export const TradingIcon = ({ iconUrl }: TradingIconProps) => {
+    const theme = useTheme();
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
 
     return (
-        <TradingIconWrapper $isDark={currentTheme === 'dark'}>
-            <Box margin={spacings.xxxs} height={iconSizes.mediumLarge}>
-                <Image imageSrc={iconUrl} width={iconSizes.mediumLarge} alt="" />
-            </Box>
-        </TradingIconWrapper>
+        <Box
+            height={20}
+            borderRadius={4}
+            backgroundColor={
+                currentTheme === 'dark' ? theme.backgroundSurfaceElevation2 : undefined
+            }
+        >
+            <Image imageSrc={iconUrl} height={20} alt="" />
+        </Box>
     );
 };
