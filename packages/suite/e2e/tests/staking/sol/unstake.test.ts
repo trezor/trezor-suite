@@ -1,7 +1,17 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
+import {
+    solStakingAccountDeactivating,
+    solStakingAccountFirst,
+} from '../../../fixtures/staking/sol-staking-accounts';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+// Expected values based on our mocked responses
+const stakedAmount = solStakingAccountFirst.stakeInSol;
+const stakedAmountFormatted = `${stakedAmount} SOL`;
+const unstakingAmount = solStakingAccountDeactivating.stakeInSol;
+const unstakingAmountFormatted = `${unstakingAmount} SOL`;
 
 test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }, () => {
     test.use({
@@ -23,7 +33,7 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
         'unstake and claim on SOL account',
         {
             annotation: createTestAnnotation({
-                testCase: 'Verifies that a user can unstake and claim on his Solana account.',
+                testCase: 'Verifies that a user can unstake and claim to his Solana account.',
                 category: TestCategory.Solana,
                 priority: TestPriority.Critical,
                 stream: TestStream.Trends,
@@ -36,7 +46,7 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
                     pending: 'hidden',
-                    staked: '0.200953787',
+                    staked: stakedAmount,
                     rewards: '0',
                     unstaking: 'hidden',
                 });
@@ -46,15 +56,14 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
             await test.step('Open unstaking form', async () => {
                 await stakingSection.unstakeToClaimButton.click();
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText(
-                    '0.200953787 SOL',
+                    stakedAmountFormatted,
                 );
-                await expect(stakingSection.cryptoInput).toHaveValue('0.200953787');
+                await expect(stakingSection.cryptoInput).toHaveValue(stakedAmount);
             });
 
             await test.step('Initiate unstaking and confirm on device', async () => {
                 await stakingSection.unstakeButton.click();
                 await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(
-                    //TODO: why not from everstake account
                     'TR_UNSTAKE_FROM_STAKE_ACCOUNT',
                     { values: { symbol: 'SOL' } },
                 );
@@ -65,10 +74,10 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    '0.200953787 SOL',
+                    stakedAmountFormatted,
                 );
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    '0.00228788 SOL',
+                    solanaStakingMock.feeFormatted,
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Unstake' },
@@ -83,7 +92,7 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                 await devicePrompt.sendButton.click();
                 await expect(stakingSection.unstakedToast).toContainTranslation(
                     'TOAST_TX_UNSTAKED',
-                    { values: { amount: '0.200953787 SOL' } },
+                    { values: { amount: stakedAmountFormatted } },
                 );
                 await solanaStakingMock.setupUnstakingAccount();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
@@ -91,8 +100,10 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                     pending: 'hidden',
                     staked: '0',
                     rewards: '0',
-                    unstaking: '0.033742393',
+                    unstaking: unstakingAmount,
                 });
+                await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
+                await expect(stakingSection.stakeMoreButton).toBeEnabled();
             });
 
             await test.step('Wait few epochs for claim to be available', async () => {
@@ -107,12 +118,14 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                 await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
                 await expect(stakingSection.claimCard).toBeVisible();
-                await expect(stakingSection.claimBalanceWithSymbol).toHaveText('0.033742393 SOL');
+                await expect(stakingSection.claimBalanceWithSymbol).toHaveText(
+                    unstakingAmountFormatted,
+                );
                 await stakingSection.claimButton.click();
             });
 
             await test.step('Finish claiming', async () => {
-                await expect(stakingSection.claimModalAmount).toHaveText('0.033742393 SOL');
+                await expect(stakingSection.claimModalAmount).toHaveText(unstakingAmountFormatted);
                 await stakingSection.claimModalButton.click();
                 await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(
                     'TR_CLAIM_FROM_STAKE_ACCOUNT',
@@ -125,16 +138,17 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
-                    '0.033742393 SOL',
+                    unstakingAmountFormatted,
                 );
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    '0.00228788 SOL',
+                    solanaStakingMock.feeFormatted,
                 );
+
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Claim' },
                     body: [
                         ['Amount:'],
-                        ['0.036025273 SOL'],
+                        [solanaStakingMock.addFeeTo(unstakingAmount)],
                         [' '],
                         ['Transaction fee:'],
                         ['0.000005 SOL'],
@@ -145,7 +159,7 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                 await solanaStakingMock.setProgramAccounts([]);
                 await devicePrompt.sendButton.click();
                 await expect(stakingSection.claimedToast).toContainTranslation('TOAST_TX_CLAIMED', {
-                    values: { amount: '0.033742393 SOL' },
+                    values: { amount: unstakingAmountFormatted },
                 });
             });
 

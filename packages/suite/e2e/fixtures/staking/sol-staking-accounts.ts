@@ -189,11 +189,34 @@ const deactivatingDecoded: SolanaStakingAccountDecoded = {
     },
 };
 
-export const solanaStakingAccounts = {
+class SolanaStakingAccountFixture {
+    constructor(
+        public payload: SolanaStakingAccount,
+        public decoded: SolanaStakingAccountDecoded,
+    ) {}
+
+    get stakeInSol(): string {
+        return (Number(this.decoded.state.fields[1].delegation.stake) / 1_000_000_000).toString();
+    }
+
+    get activationEpoch(): number {
+        return Number(this.decoded.state.fields[1].delegation.activationEpoch);
+    }
+
+    get deactivationEpoch(): number {
+        return Number(this.decoded.state.fields[1].delegation.deactivationEpoch);
+    }
+}
+
+export const solStakingAccountFirst = new SolanaStakingAccountFixture(
     activeFirst,
     activeFirstDecoded,
+);
+export const solStakingAccountSecond = new SolanaStakingAccountFixture(
     activeSecond,
     activeSecondDecoded,
+);
+export const solStakingAccountDeactivating = new SolanaStakingAccountFixture(
     deactivating,
     deactivatingDecoded,
-};
+);
