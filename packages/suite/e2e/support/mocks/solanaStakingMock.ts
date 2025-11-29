@@ -4,7 +4,8 @@ import { solanaUrlPattern } from './tradingMock';
 import transactionResponse from '../../fixtures/staking/sol-stake-transactionResponse.json';
 import {
     SolanaStakingAccount,
-    solanaStakingAccounts,
+    solStakingAccountDeactivating,
+    solStakingAccountFirst,
 } from '../../fixtures/staking/sol-staking-accounts';
 import { step } from '../common';
 
@@ -159,6 +160,9 @@ const hasEnabledHandler = (
 export class SolanaStakingMock {
     readonly handlers: SolanaRouteHandlers;
     protected currentEpoch: number = BASE_EPOCH;
+    readonly fee: number = 0.00228788;
+    readonly feeFormatted: string = '0.00228788 SOL';
+    readonly magicalFeeDeficit: number = 0.000005;
 
     constructor(
         private readonly page: Page,
@@ -169,6 +173,12 @@ export class SolanaStakingMock {
 
     async routeSolana(routeHandlers: SolanaRouteHandlers = this.handlers) {
         await this.page.route(solanaUrlPattern, route => this.handle(route, routeHandlers));
+    }
+
+    addFeeTo(amountInSol: string): string {
+        const total = Number(amountInSol) + this.fee - this.magicalFeeDeficit;
+
+        return `${total.toFixed(9)} SOL`;
     }
 
     @step()
@@ -261,21 +271,15 @@ export class SolanaStakingMock {
 
     @step()
     async setupStakedAccount() {
-        await this.setProgramAccounts([solanaStakingAccounts.activeFirst]);
-        const epochAfterActivation =
-            Number(
-                solanaStakingAccounts.activeFirstDecoded.state.fields[1].delegation
-                    .activationEpoch!,
-            ) + 1;
+        await this.setProgramAccounts([solStakingAccountFirst.payload]);
+        const epochAfterActivation = solStakingAccountFirst.activationEpoch + 1;
         await this.setEpoch(epochAfterActivation);
     }
 
     @step()
     async setupUnstakingAccount() {
-        await this.setProgramAccounts([solanaStakingAccounts.deactivating]);
-        const deactivationEpoch = Number(
-            solanaStakingAccounts.deactivatingDecoded.state.fields[1].delegation.deactivationEpoch!,
-        );
+        await this.setProgramAccounts([solStakingAccountDeactivating.payload]);
+        const { deactivationEpoch } = solStakingAccountDeactivating;
         await this.setEpoch(deactivationEpoch);
     }
 }
