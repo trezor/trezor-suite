@@ -1,4 +1,5 @@
 import { DeviceMetadata } from '@suite-common/metadata-types';
+import { EncryptedHex } from '@suite-common/secure-storage';
 import {
     DeviceButtonRequest,
     DeviceEvent,
@@ -124,7 +125,7 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
         firmwareVersion: VersionArray | null;
         lastConnectedVia: 'bluetooth' | 'usb' | null;
         lastEntropyCheckResult?: { success: boolean };
-        delegatedIdentityKey: DelegatedIdentityKey | null;
+        delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
         // TODO move deviceAuthenticity to this object and newly introduce persistence
     };
 

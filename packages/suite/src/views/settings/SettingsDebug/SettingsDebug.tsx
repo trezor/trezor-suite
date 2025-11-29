@@ -24,6 +24,7 @@ import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
 import { ResetThpCredentials } from './ResetThpCredentials';
+import { SecureStorage } from './SecureStorage';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { SuiteSyncSettings } from './SuiteSyncSettings';
 import { ThrowTestingError } from './ThrowTestingError';
@@ -108,6 +109,7 @@ export const SettingsDebug = () => {
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <SuiteSyncSettings />
+            <SecureStorage />
         </SettingsLayout>
     );
 };

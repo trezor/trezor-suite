@@ -1,15 +1,13 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "noImplicitAny": false,
-        "esModuleInterop": false,
-        "outDir": "./libDev"
+        "outDir": "libDev",
+        "exactOptionalPropertyTypes": true
     },
-    "include": ["."],
     "references": [
         {
             "path": "../../suite-common/secure-storage"
         },
-        { "path": "../type-utils" }
+        { "path": "../../packages/type-utils" }
     ]
 }

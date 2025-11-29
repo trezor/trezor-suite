@@ -27,6 +27,7 @@ import { Dependencies, ModuleInit, ModuleInitBackground, ModuleLoad, ModuleQuit 
 import * as powerMonitor from './power-monitor';
 import * as requestFilter from './request-filter';
 import * as requestInterceptor from './request-interceptor';
+import * as safeStorage from './safeStorage';
 import * as shortcuts from './shortcuts';
 import * as store from './store';
 import * as systemSettings from './system-settings';
@@ -66,6 +67,7 @@ const MODULES: Module[] = [
     autoStart,
     bridge,
     systemSettings,
+    safeStorage,
     bluetooth,
     firmware,
     powerMonitor,

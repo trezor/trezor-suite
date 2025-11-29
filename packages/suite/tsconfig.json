@@ -55,6 +55,9 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        {
+            "path": "../../suite-common/secure-storage"
+        },
         { "path": "../../suite-common/sentry" },
         { "path": "../../suite-common/staking" },
         {
@@ -112,6 +115,12 @@
         },
         {
             "path": "../../suite/idb-migration-utils"
+        },
+        {
+            "path": "../../suite/secure-storage-electron"
+        },
+        {
+            "path": "../../suite/secure-storage-webauthn"
         },
         { "path": "../../suite/suite-sync" },
         { "path": "../address-validator" },

@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "exactOptionalPropertyTypes": true
+    },
+    "references": [
+        {
+            "path": "../../suite-common/secure-storage"
+        },
+        {
+            "path": "../../packages/suite-desktop-api"
+        },
+        { "path": "../../packages/type-utils" }
+    ]
+}

@@ -37,6 +37,10 @@ const retrieveEvoluNode =
             header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
         });
 
+        if (!proofOfDelegatedIdentity.ok) {
+            return proofOfDelegatedIdentity;
+        }
+
         const result = await TrezorConnect.evoluGetNode({
             device: {
                 path: device.path,
@@ -44,7 +48,7 @@ const retrieveEvoluNode =
                 instance: device.instance ?? 0,
             },
             useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-            proof_of_delegated_identity: proofOfDelegatedIdentity,
+            proof_of_delegated_identity: proofOfDelegatedIdentity.value,
         });
 
         if (result.success) {

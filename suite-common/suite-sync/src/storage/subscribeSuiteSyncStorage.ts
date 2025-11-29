@@ -47,6 +47,8 @@ export const createSubscribeSuiteSyncStorage =
 
                         return;
                     case 'CreateSuiteSyncOwnerError':
+                    case 'EncryptionUnavailable':
+                    case 'ProofOfDelegatedSignFailed':
                         console.error(result.error);
                         // Todo: dispatch better notification
                         deps.dispatch(

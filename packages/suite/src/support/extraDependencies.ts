@@ -2,6 +2,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
+import { createElectronSecureStorage } from '@suite/secure-storage-electron';
+import { createWebauthnSecureStorage } from '@suite/secure-storage-webauthn';
 import { createSuiteSyncDesktop } from '@suite/suite-sync';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
@@ -27,6 +29,7 @@ import {
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -69,6 +72,9 @@ export const createRouterServices = (history: History) => ({
 export const suiteExtraFactory: ExtraWithStoreFactory = store => ({
     services: {
         suiteSync: createSuiteSyncDesktop(store),
+        secureStorage: isDesktop()
+            ? createElectronSecureStorage({ desktopApi })
+            : createWebauthnSecureStorage(),
     },
 });
 

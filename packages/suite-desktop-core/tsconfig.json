@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": ["src", "e2e", "**/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/secure-storage"
+        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-constants"

@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { TrezorDeviceWithState, asDelegatedIdentityKey } from '@suite-common/suite-types';
 // Circular issue, see: https://github.com/trezor/trezor-suite/issues/21553
 import { selectThp } from '@suite-common/thp/src/thpSelectors';
@@ -62,14 +63,21 @@ type RetrieveDelegatedIdentityKeyThunkParams = {
  */
 export const retrieveDelegatedIdentityKeyThunk =
     ({ device }: RetrieveDelegatedIdentityKeyThunkParams) =>
-    async (dispatch: Dispatch, getState: () => any) => {
+    async (dispatch: Dispatch, getState: () => any, extra: ExtraDependencies) => {
         const persistedData = selectPersistentDeviceData(getState());
         const devicePersistedData = persistedData.find(it => it.device_id === device.id);
-        const currentDelegatedKey = devicePersistedData?.delegatedIdentityKey ?? null;
 
-        const thpStaticHostKey = selectThp(getState()).staticKey;
+        const encryptedCurrentDelegatedKey = devicePersistedData?.delegatedIdentityKey ?? null;
 
-        if (currentDelegatedKey === null) {
+        const currentDelegatedKey =
+            encryptedCurrentDelegatedKey !== null
+                ? await extra.services.secureStorage.decrypt({
+                      value: encryptedCurrentDelegatedKey,
+                  })
+                : null;
+
+        if (currentDelegatedKey === null || !currentDelegatedKey.ok) {
+            const thpStaticHostKey = selectThp(getState()).staticKey;
             const result = await retrieveDelegatedIdentityKey({ device, thpStaticHostKey });
 
             if (!result.ok) {
@@ -83,15 +91,23 @@ export const retrieveDelegatedIdentityKeyThunk =
                 return result;
             }
 
+            const encryptedDelegatedKey = await extra.services.secureStorage.encrypt({
+                value: result.value,
+            });
+
+            if (!encryptedDelegatedKey.ok) {
+                return encryptedDelegatedKey;
+            }
+
             dispatch(
                 deviceActions.setDelegatedIdentityKey({
                     deviceId: device.id,
-                    delegatedKey: result.value,
+                    delegatedKey: encryptedDelegatedKey.value,
                 }),
             );
 
             return ok(result.value);
         }
 
-        return ok(currentDelegatedKey);
+        return ok(currentDelegatedKey.value);
     };
