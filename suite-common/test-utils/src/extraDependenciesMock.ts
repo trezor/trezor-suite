@@ -6,6 +6,12 @@ import {
     type To,
     createThunk,
 } from '@suite-common/redux-utils';
+import {
+    EncryptableBranded,
+    EncryptedHex,
+    SecureStorage,
+    asEncryptedHex,
+} from '@suite-common/secure-storage';
 import type { SuiteSync, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import {
     ReportSecurityCheckProps,
@@ -97,6 +103,14 @@ const suiteSyncMock: SuiteSync = {
     turnOffSuiteSync: () => Promise.resolve(),
 };
 
+const secureStorageMock: SecureStorage = {
+    encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
+        Promise.resolve(ok(asEncryptedHex(value as T))),
+
+    decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
+        Promise.resolve(ok(value as unknown as T)),
+};
+
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
@@ -107,6 +121,7 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     services: {
         suiteSync: suiteSyncMock,
+        secureStorage: secureStorageMock,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(

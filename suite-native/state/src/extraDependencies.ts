@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 
 import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
+import { createNativeSecureStorage } from '@suite-common/secure-storage-native';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -34,6 +35,7 @@ const transports = transportsPerDeviceType[deviceType];
 export const nativeExtraFactory: ExtraWithStoreFactory = store => ({
     services: {
         suiteSync: initSuiteSyncNative(store),
+        secureStorage: createNativeSecureStorage(),
     },
 });
 

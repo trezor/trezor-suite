@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { EncryptedHex } from '@suite-common/secure-storage';
 import {
     AcquiredDevice,
     ButtonRequest,
@@ -150,7 +151,7 @@ const setSuiteSyncOwner = createAction(
 
 type SetDelegatedIdentityKeyParams = {
     deviceId: string;
-    delegatedKey: DelegatedIdentityKey | null;
+    delegatedKey: EncryptedHex<DelegatedIdentityKey> | null;
 };
 
 const setDelegatedIdentityKey = createAction(

@@ -18,6 +18,7 @@
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/secure-storage-native": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/thp": "workspace:*",
