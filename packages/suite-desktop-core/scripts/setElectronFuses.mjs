@@ -23,6 +23,7 @@ const afterPackHookSetElectronFuses = async context => {
      So we only set the appropriate fuses for Windows
     */
     if (electronPlatformName !== 'win32') {
+        // eslint-disable-next-line no-console
         console.log('Skipping electron fuses ');
 
         return;
@@ -33,6 +34,7 @@ const afterPackHookSetElectronFuses = async context => {
     const binaryFilename = `${appName}${ext}`;
     const binaryPath = path.join(appOutDir, binaryFilename);
 
+    // eslint-disable-next-line no-console
     console.log(`Setting electron fuses on ${binaryPath}`);
 
     await flipFuses(binaryPath, {
@@ -41,7 +43,9 @@ const afterPackHookSetElectronFuses = async context => {
         [FuseV1Options.OnlyLoadAppFromAsar]: true,
     });
 
+    // eslint-disable-next-line no-console
     console.log('Successfully set electron fuses');
 };
 
+// eslint-disable-next-line import/no-default-export
 export default afterPackHookSetElectronFuses;

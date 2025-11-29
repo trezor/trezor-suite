@@ -10,7 +10,7 @@
         "outDir": "./libDev",
         "baseUrl": "."
     },
-    "include": [".", "**/*.json"],
+    "include": [".", "e2e", "**/*.json"],
     "references": [
         {
             "path": "../../suite-common/analytics"
@@ -141,6 +141,9 @@
         { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../eslint" }
+        { "path": "../e2e-utils" },
+        { "path": "../eslint" },
+        { "path": "../transport" },
+        { "path": "../trezor-user-env-link" }
     ]
 }
