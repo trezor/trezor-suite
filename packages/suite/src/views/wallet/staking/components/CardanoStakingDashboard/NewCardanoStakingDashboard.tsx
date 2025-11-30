@@ -1,5 +1,8 @@
+import { useEffect } from 'react';
+
 import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
+    fetchAllTransactionsForAccountThunk,
     hasPendingStakeTypeTransaction,
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
@@ -12,7 +15,7 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useDevice, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { CardanoNewProviderCard } from '../CardanoNewProviderCard';
@@ -23,6 +26,7 @@ import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarnin
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
 import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
+import { Transactions } from '../StakingDashboard/components/Transactions';
 interface NewCardanoStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
 }
@@ -32,10 +36,24 @@ export const NewCardanoStakingDashboard = ({
 }: NewCardanoStakingDashboardProps) => {
     const { account } = selectedAccount;
     const { device } = useDevice();
+    const accountKey = account?.key ?? '';
 
     const { isBelowLaptop } = useLayoutSize();
     const isDeviceConnected = device?.connected && device?.available;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (accountKey) {
+            dispatch(
+                fetchAllTransactionsForAccountThunk({
+                    accountKey,
+                    noLoading: true,
+                }),
+            );
+        }
+    }, [accountKey, dispatch]);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
 
@@ -84,6 +102,7 @@ export const NewCardanoStakingDashboard = ({
                     ) : (
                         <EmptyStakingCard />
                     )}
+                    <Transactions />
                 </Column>
             }
         />

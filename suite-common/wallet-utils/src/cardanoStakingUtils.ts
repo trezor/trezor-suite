@@ -11,6 +11,7 @@ import {
     CardanoPoolInfo,
     StakeType,
     SupportedCardanoNetworkSymbols,
+    WalletAccountTransaction,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
@@ -156,3 +157,6 @@ export const subtypeToStakeTypeMap: { [key: string]: StakeType } = {
     stake_deregistration: 'unstake',
     withdrawal: 'claim',
 };
+
+export const isCardanoStakingTx = (transaction: WalletAccountTransaction) =>
+    transaction.cardanoSpecific?.subtype && !transaction.tokens.length;

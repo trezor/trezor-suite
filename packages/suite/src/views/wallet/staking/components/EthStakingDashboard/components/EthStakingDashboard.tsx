@@ -65,7 +65,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                 }),
             );
         }
-    }, [account, accountKey, dispatch]);
+    }, [accountKey, dispatch]);
 
     const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
 
