@@ -386,6 +386,27 @@ export default defineMessages({
         defaultMessage: 'Invalid response from the server',
         id: 'TR_TRADING_INVALID_RESPONSE',
     },
+    TR_TRADING_NO_OFFER_BUY_OR_SELL: {
+        defaultMessage: 'No offers found. Adjust the currency, assets, or amounts.',
+        id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL',
+    },
+    TR_TRADING_NO_OFFER_SWAP: {
+        defaultMessage: 'No offers found. Adjust the assets or amounts.',
+        id: 'TR_TRADING_NO_OFFER_SWAP',
+    },
+    TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR: {
+        defaultMessage:
+            'Adjust the currency, assets, or amounts, or disable Tor to see more offers.',
+        id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR',
+    },
+    TR_TRADING_NO_OFFER_SWAP_TOR: {
+        defaultMessage: 'Adjust the assets or amounts, or disable Tor to see more offers.',
+        id: 'TR_TRADING_NO_OFFER_SWAP_TOR',
+    },
+    TR_TRADING_DISABLE_TOR: {
+        defaultMessage: 'Disable Tor to see better offers.',
+        id: 'TR_TRADING_DISABLE_TOR',
+    },
     TR_CHECKED_BALANCES_ON: {
         defaultMessage: 'Checked balances on',
         id: 'TR_CHECKED_BALANCES_ON',

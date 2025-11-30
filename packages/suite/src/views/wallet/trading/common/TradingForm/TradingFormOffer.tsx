@@ -308,6 +308,7 @@ export const TradingFormOffer = () => {
         !!context.tradingReceiveAddress.receiveAddress;
 
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
+    const amountIsEmpty = new BigNumber(amount).isZero() || amount === '';
 
     return (
         <Column gap={spacings.lg}>
@@ -419,6 +420,8 @@ export const TradingFormOffer = () => {
                         isFormLoading={isLoading && !preselectedQuote}
                         isFormInvalid={state.isFormInvalid && !preselectedQuote}
                         providers={providers}
+                        amountIsEmpty={amountIsEmpty}
+                        tradingType={context.type}
                     />
                 ) : (
                     <TradingFormOfferItem
@@ -426,6 +429,8 @@ export const TradingFormOffer = () => {
                         isFormLoading={state.isFormLoading}
                         isFormInvalid={state.isFormInvalid}
                         providers={providers}
+                        amountIsEmpty={amountIsEmpty}
+                        tradingType={context.type}
                     />
                 )}
             </Column>

@@ -4,6 +4,7 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_EXCHANGE_RATE,
     TRADING_EXCHANGE_RATE_FLOATING,
+    TradingType,
     type TradingUtilsProvidersProps,
 } from '@suite-common/trading';
 import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
@@ -13,11 +14,15 @@ import { Translation } from 'src/components/suite/Translation';
 import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
 
+import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
+
 interface TradingFormOffersSwitcherProps {
     context: TradingExchangeFormContextProps;
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: TradingUtilsProvidersProps | undefined;
+    amountIsEmpty: boolean;
+    tradingType: TradingType;
 }
 
 export const TradingFormOffersSwitcher = ({
@@ -25,6 +30,8 @@ export const TradingFormOffersSwitcher = ({
     isFormLoading,
     isFormInvalid,
     providers,
+    amountIsEmpty,
+    tradingType,
 }: TradingFormOffersSwitcherProps) => {
     const { setValue, getValues, dexQuotes, cexQuotes, preselectedQuote } = context;
     const { exchangeType } = getValues();
@@ -51,6 +58,12 @@ export const TradingFormOffersSwitcher = ({
             );
         }
 
+        if (!bestQuote && !isFormLoading && !isFormInvalid) {
+            return (
+                <TradingUtilsTorWarning tradingType={tradingType} noOffer={!bestQuote} showButton />
+            );
+        }
+
         return (
             <Card>
                 <Paragraph
@@ -59,79 +72,87 @@ export const TradingFormOffersSwitcher = ({
                     align="center"
                     margin={{ vertical: spacings.xs }}
                 >
-                    <Translation id="TR_TRADING_OFFERS_EMPTY" />
+                    <Translation
+                        id={amountIsEmpty ? 'TR_TRADING_OFFERS_EMPTY' : 'TR_TRADING_NO_OFFER_SWAP'}
+                    />
                 </Paragraph>
             </Card>
         );
     }
 
     return (
-        <Card paddingType="none">
-            <Column
-                margin={{ horizontal: spacings.xxs, vertical: spacings.xxs }}
-                gap={spacings.xxs}
-            >
-                {preselectedQuote ? (
-                    <TradingFormOffersSwitcherItem
-                        selectedExchangeType={preselectedQuote.isDex ? 'DEX' : 'CEX'}
-                        isSelectable={!hasSingleOption}
-                        onSelect={() => {
-                            if (preselectedQuote.isDex) {
-                                setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX);
-                            } else {
-                                setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX);
-                                setValue(TRADING_EXCHANGE_RATE, TRADING_EXCHANGE_RATE_FLOATING);
-                            }
-                        }}
-                        providers={providers}
-                        quote={preselectedQuote}
-                    />
-                ) : (
-                    <>
-                        {cexQuote ? (
-                            <TradingFormOffersSwitcherItem
-                                selectedExchangeType={exchangeType}
-                                isSelectable={!hasSingleOption}
-                                onSelect={() =>
-                                    setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX)
-                                }
-                                providers={providers}
-                                quote={cexQuote}
-                            />
-                        ) : (
-                            <Paragraph
-                                typographyStyle="label"
-                                variant="tertiary"
-                                align="center"
-                                margin={{ vertical: spacings.md }}
-                            >
-                                <Translation id="TR_TRADING_NO_CEX_PROVIDER_FOUND" />
-                            </Paragraph>
-                        )}
-                        {dexQuote ? (
-                            <TradingFormOffersSwitcherItem
-                                selectedExchangeType={exchangeType}
-                                isSelectable={!hasSingleOption}
-                                onSelect={() => {
+        <>
+            <Card paddingType="none">
+                <Column
+                    margin={{ horizontal: spacings.xxs, vertical: spacings.xxs }}
+                    gap={spacings.xxs}
+                >
+                    {preselectedQuote ? (
+                        <TradingFormOffersSwitcherItem
+                            selectedExchangeType={preselectedQuote.isDex ? 'DEX' : 'CEX'}
+                            isSelectable={!hasSingleOption}
+                            onSelect={() => {
+                                if (preselectedQuote.isDex) {
+                                    setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX);
+                                } else {
                                     setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX);
                                     setValue(TRADING_EXCHANGE_RATE, TRADING_EXCHANGE_RATE_FLOATING);
-                                }}
-                                providers={providers}
-                                quote={dexQuote}
-                            />
-                        ) : (
-                            <Paragraph
-                                typographyStyle="label"
-                                variant="tertiary"
-                                align="center"
-                                margin={{ vertical: spacings.md }}
-                            >
-                                <Translation id="TR_TRADING_NO_DEX_PROVIDER_FOUND" />
-                            </Paragraph>
-                        )}
-                    </>
-                )}
-            </Column>
-        </Card>
+                                }
+                            }}
+                            providers={providers}
+                            quote={preselectedQuote}
+                        />
+                    ) : (
+                        <>
+                            {cexQuote ? (
+                                <TradingFormOffersSwitcherItem
+                                    selectedExchangeType={exchangeType}
+                                    isSelectable={!hasSingleOption}
+                                    onSelect={() =>
+                                        setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX)
+                                    }
+                                    providers={providers}
+                                    quote={cexQuote}
+                                />
+                            ) : (
+                                <Paragraph
+                                    typographyStyle="label"
+                                    variant="tertiary"
+                                    align="center"
+                                    margin={{ vertical: spacings.md }}
+                                >
+                                    <Translation id="TR_TRADING_NO_CEX_PROVIDER_FOUND" />
+                                </Paragraph>
+                            )}
+                            {dexQuote ? (
+                                <TradingFormOffersSwitcherItem
+                                    selectedExchangeType={exchangeType}
+                                    isSelectable={!hasSingleOption}
+                                    onSelect={() => {
+                                        setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX);
+                                        setValue(
+                                            TRADING_EXCHANGE_RATE,
+                                            TRADING_EXCHANGE_RATE_FLOATING,
+                                        );
+                                    }}
+                                    providers={providers}
+                                    quote={dexQuote}
+                                />
+                            ) : (
+                                <Paragraph
+                                    typographyStyle="label"
+                                    variant="tertiary"
+                                    align="center"
+                                    margin={{ vertical: spacings.md }}
+                                >
+                                    <Translation id="TR_TRADING_NO_DEX_PROVIDER_FOUND" />
+                                </Paragraph>
+                            )}
+                        </>
+                    )}
+                </Column>
+            </Card>
+            <TradingUtilsTorWarning tradingType={tradingType} noOffer={!bestQuote} showButton />
+        </>
     );
 };
