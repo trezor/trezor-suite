@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -21,7 +20,6 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -44,93 +42,6 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
     const accountBalance = account.formattedBalance;
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
-
-    const navigateToTradingBuy = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        event.stopPropagation();
-
-        dispatch(
-            goto('wallet-trading-buy', {
-                preserveParams: true,
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
-
-        analytics.report({
-            type: EventType.TradingNavigate,
-            payload: {
-                action: 'navigate',
-                type: 'buy',
-                from: 'dashboard/staking-dashboard',
-                networkSymbol: account.symbol,
-            },
-        });
-    };
-
-    const navigateToStaking = (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        event?.stopPropagation();
-
-        dispatch(
-            goto('wallet-staking', {
-                preserveParams: true,
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
-
-        analytics.report({
-            type: EventType.StakingNavigate,
-            payload: {
-                action: 'navigate',
-                from: 'dashboard/staking-dashboard',
-                networkSymbol: account.symbol,
-            },
-        });
-    };
-
-    const openStakeInANutshellModal = () => {
-        dispatch(
-            goto('wallet-staking', {
-                preserveParams: true,
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
-
-        dispatch(
-            openModal({
-                type: 'stake-in-a-nutshell',
-                flow: StakingFlow.UpdateProvider,
-            }),
-        );
-
-        analytics.report({
-            type: EventType.StakingUpdateProvider,
-            payload: {
-                action: 'continue',
-                step: 'staking-dashboard',
-                networkSymbol: account?.symbol,
-            },
-        });
-    };
-
-    const formatCryptoAmount = (amount: string, withSymbol = false) =>
-        CryptoAmountFormatter.format(amount, {
-            symbol: account.symbol,
-            isBalance: true,
-            withSymbol,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
-        });
 
     const state = useMemo(() => {
         if (isCardanoStakedOutsideEverstake(account, cardanoStakingPools)) {
@@ -170,8 +81,63 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         cardanoStakingPools,
     ]);
 
+    const navigateToTradingBuy = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
+
+        dispatch(
+            goto('wallet-trading-buy', {
+                preserveParams: true,
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
+        analytics.report({
+            type: EventType.TradingNavigate,
+            payload: {
+                action: 'navigate',
+                type: 'buy',
+                from: 'dashboard/staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
+
+    const navigateToStaking = () => {
+        dispatch(
+            goto('wallet-staking', {
+                preserveParams: true,
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
+        analytics.report({
+            type: EventType.StakingNavigate,
+            payload: {
+                action: 'navigate',
+                from: `dashboard/staking-dashboard/${state}`,
+                networkSymbol: account.symbol,
+            },
+        });
+    };
+
+    const formatCryptoAmount = (amount: string, withSymbol = false) =>
+        CryptoAmountFormatter.format(amount, {
+            symbol: account.symbol,
+            isBalance: true,
+            withSymbol,
+            isEllipsisAppended: false,
+            maxDisplayedDecimals: 8,
+        });
+
     const CurrentRewardsCell = () => {
-        const isStakingActive = stakingBalance !== '0';
         const currentRewards = calculateRewards(stakingBalance, apy);
 
         return (
@@ -354,7 +320,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                     </Table.Cell>
 
                     <Table.Cell align="end">
-                        <Button intent="brand" size="small" onClick={openStakeInANutshellModal}>
+                        <Button intent="brand" size="small" onClick={navigateToStaking}>
                             <Translation id="TR_STAKING_UPDATE_PROVIDER" />
                         </Button>
                     </Table.Cell>

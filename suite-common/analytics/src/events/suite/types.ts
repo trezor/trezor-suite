@@ -448,7 +448,12 @@ export type SuiteAnalyticsEvent =
                   | 'account/banner'
                   | 'account/tradebox'
                   | 'dashboard/assets'
-                  | 'dashboard/staking-dashboard';
+                  | 'dashboard/staking-dashboard/staking-outdated-provider'
+                  | 'dashboard/staking-dashboard/staking-max'
+                  | 'dashboard/staking-dashboard/staked-but-insufficient-funds'
+                  | 'dashboard/staking-dashboard/staking-active'
+                  | 'dashboard/staking-dashboard/insufficient-funds'
+                  | 'dashboard/staking-dashboard/staking-inactive';
               networkSymbol?: string;
           };
       }
