@@ -9524,10 +9524,19 @@ export default defineMessages({
         id: 'TR_STAKING_NEW_PROVIDER_TITLE',
         defaultMessage: 'Earn ~{apy}% APY with our new provider',
     },
+    TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE: {
+        id: 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE',
+        defaultMessage: 'Move to new staking provider to avoid losing future rewards',
+    },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
         defaultMessage:
             'Update to our new provider, Everstake, and earn ~{apy}% APY. Your {displaySymbol} with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
+    },
+    TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT: {
+        id: 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT',
+        defaultMessage:
+            'Your current staking pool will soon reduce rewards. To earn ~{apy}% APY, move to a new pool. Your {displaySymbol} and past rewards stay intact.',
     },
     TR_STAKING_UPDATE_PROVIDER: {
         id: 'TR_STAKING_UPDATE_PROVIDER',

@@ -1,6 +1,8 @@
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -9,15 +11,19 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-export const NewProviderCard = () => {
+interface NewProviderCardProps {
+    account: Account;
+}
+
+export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     const dispatch = useDispatch();
-    const account = useSelector(selectSelectedAccount);
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 
     const apy = useSelector(state => selectPoolStatsApyData(state, account));
+
+    const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
 
     const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
 
@@ -49,11 +55,22 @@ export const NewProviderCard = () => {
                 <Column gap={spacings.xxxl}>
                     <Column gap={spacings.xs}>
                         <H3>
-                            <Translation id="TR_STAKING_NEW_PROVIDER_TITLE" values={{ apy }} />
+                            <Translation
+                                id={
+                                    isStakedWithFiveBinaries
+                                        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
+                                        : 'TR_STAKING_NEW_PROVIDER_TITLE'
+                                }
+                                values={{ apy }}
+                            />
                         </H3>
                         <Paragraph variant="tertiary" maxWidth={700}>
                             <Translation
-                                id="TR_STAKING_NEW_PROVIDER_TEXT"
+                                id={
+                                    isStakedWithFiveBinaries
+                                        ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
+                                        : 'TR_STAKING_NEW_PROVIDER_TEXT'
+                                }
                                 values={{ apy, displaySymbol }}
                             />
                         </Paragraph>
