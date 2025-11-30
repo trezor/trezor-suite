@@ -17,6 +17,8 @@ import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/trading/kyc';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingOffersExchangeQuotesByTypeSection } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchangeQuotesByTypeSection';
 
+import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
+
 export const TradingOffersExchange = () => {
     const { quotes, exchangeInfo, getValues } = useTradingFormContext<TradingExchangeType>();
     const exchangeTypeFilter = getValues(TRADING_EXCHANGE_COMPARATOR_RATE_FILTER);
@@ -54,10 +56,14 @@ export const TradingOffersExchange = () => {
         [exchangeInfo?.providerInfos, kycFilter, quotes],
     );
 
-    if (!quotes) return null;
+    if (!quotes) {
+        return <TradingUtilsTorWarning tradingType="exchange" noOffer={false} showButton />;
+    }
 
     return (
         <>
+            <TradingUtilsTorWarning tradingType="exchange" noOffer={false} showButton />
+
             {(showAll ||
                 exchangeTypeFilter === TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX) && (
                 <TradingOffersExchangeQuotesByTypeSection

@@ -1,9 +1,15 @@
-import type { TradingTradeType, TradingUtilsProvidersProps } from '@suite-common/trading';
-import { Card, Paragraph, Row, Spinner } from '@trezor/components';
+import type {
+    TradingTradeType,
+    TradingType,
+    TradingUtilsProvidersProps,
+} from '@suite-common/trading';
+import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
+
+import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
 
 interface TradingFormOfferItemProps {
     bestQuote: TradingTradeType | undefined;
@@ -11,6 +17,8 @@ interface TradingFormOfferItemProps {
     isFormInvalid: boolean;
     providers: TradingUtilsProvidersProps | undefined;
     isBestRate?: boolean;
+    amountIsEmpty: boolean;
+    tradingType: TradingType;
 }
 
 export const TradingFormOfferItem = ({
@@ -18,6 +26,8 @@ export const TradingFormOfferItem = ({
     isFormLoading,
     isFormInvalid,
     providers,
+    amountIsEmpty,
+    tradingType,
 }: TradingFormOfferItemProps) => {
     if (!bestQuote || isFormLoading || isFormInvalid) {
         if (isFormLoading && !isFormInvalid) {
@@ -38,6 +48,12 @@ export const TradingFormOfferItem = ({
             );
         }
 
+        if (!bestQuote && !isFormLoading && !isFormInvalid) {
+            return (
+                <TradingUtilsTorWarning tradingType={tradingType} noOffer={!bestQuote} showButton />
+            );
+        }
+
         return (
             <Card>
                 <Paragraph
@@ -47,15 +63,29 @@ export const TradingFormOfferItem = ({
                     margin={{ vertical: spacings.xs }}
                     data-testid="trading-offer-found-none"
                 >
-                    <Translation id="TR_BUY_SELL_OFFERS_EMPTY" />
+                    <Translation
+                        id={
+                            amountIsEmpty
+                                ? 'TR_BUY_SELL_OFFERS_EMPTY'
+                                : 'TR_TRADING_NO_OFFER_BUY_OR_SELL'
+                        }
+                    />
                 </Paragraph>
             </Card>
         );
     }
 
     return (
-        <Card>
-            <TradingUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
-        </Card>
+        <Column gap={spacings.xs}>
+            <Card>
+                <TradingUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
+            </Card>
+
+            <TradingUtilsTorWarning
+                tradingType={tradingType}
+                noOffer={!bestQuote}
+                showButton={false}
+            />
+        </Column>
     );
 };

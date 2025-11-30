@@ -14,6 +14,8 @@ import { TradingOffersEmpty } from 'src/views/wallet/trading/common/TradingOffer
 import { TradingOffersExchange } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchange';
 import { TradingOffersItem } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 
+import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
+
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -40,6 +42,7 @@ export const TradingOffers = () => {
         <TradingOffersExchange />
     ) : (
         <OffersContainer>
+            <TradingUtilsTorWarning tradingType="exchange" noOffer={false} showButton />
             {quotes?.map(quote => (
                 <TradingOffersItem
                     key={quote?.orderId}
