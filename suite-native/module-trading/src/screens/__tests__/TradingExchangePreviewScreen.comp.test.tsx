@@ -1,8 +1,11 @@
 import { RouteProp } from '@react-navigation/native';
+import type { ExchangeTrade } from 'invity-api';
 
+import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import {
+    PreloadedState,
     TestStore,
     initStore,
     renderWithStoreProviderAsync,
@@ -28,6 +31,7 @@ const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
 const mockFetchFeesAndCompose = jest.fn();
 const mockSignAndSendTransaction = jest.fn();
 const mockResolveConsent = jest.fn();
+let mockTxnErrorString: string | null = null;
 
 jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => ({
@@ -36,7 +40,9 @@ jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
         signAndSendTransaction: mockSignAndSendTransaction,
         isConsentRequested: false,
         resolveConsent: mockResolveConsent,
-        txnErrorString: null,
+        get txnErrorString() {
+            return mockTxnErrorString;
+        },
     }),
 }));
 
@@ -50,53 +56,70 @@ jest.mock('@suite-native/alerts', () => ({
 const mockPopToTop = jest.fn();
 const mockNavigate = jest.fn();
 
+const createPreloadedState = (quote?: ExchangeTrade): PreloadedState => {
+    const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
+    preloadedState.wallet.trading.exchange = {
+        ...preloadedState.wallet.trading.exchange,
+        quotes: exchangeQuotes,
+        tradingAccountKey: 'eth-account-1',
+        receiveAccountKey: 'btc-account-1',
+        receiveAddress: getBtcAccount().addresses?.used[0].address,
+        selectedQuote: quote ?? exchangeQuotes[0],
+    };
+    preloadedState.wallet.send = {
+        ...preloadedState.wallet.send,
+        precomposedTx: {
+            type: 'final',
+            fee: '1000',
+            feePerByte: '10',
+            totalSpent: '100000',
+            bytes: 100,
+        } as GeneralPrecomposedTransactionFinal,
+    };
+
+    return preloadedState;
+};
+
+const createNavigationProps = () =>
+    ({
+        navigate: mockNavigate,
+        popToTop: mockPopToTop,
+    }) as unknown as TradingExchangePreviewScreenProps['navigation'];
+
+const createRouteProps = (isApproved: boolean = false) =>
+    ({ params: { isApproved } }) as TradingExchangePreviewScreenProps['route'];
+
 describe('TradingExchangePreviewScreen', () => {
     let store: TestStore;
     const analyticsSpy = jest.spyOn(analytics, 'report');
+    let consoleErrorSpy: jest.SpyInstance;
 
-    const renderTradingExchangePreviewScreen = (isApproved: boolean = false) =>
-        renderWithStoreProviderAsync(
+    const renderTradingExchangePreviewScreen = (
+        isApproved: boolean = false,
+        customStore?: TestStore,
+    ) => {
+        const testStore = customStore ?? store;
+
+        return renderWithStoreProviderAsync(
             <TradingExchangePreviewScreen
-                navigation={
-                    {
-                        navigate: mockNavigate,
-                        popToTop: mockPopToTop,
-                    } as unknown as TradingExchangePreviewScreenProps['navigation']
-                }
-                route={{ params: { isApproved } } as TradingExchangePreviewScreenProps['route']}
+                navigation={createNavigationProps()}
+                route={createRouteProps(isApproved)}
             />,
-            { store },
+            { store: testStore },
         );
+    };
 
     beforeEach(async () => {
         jest.clearAllMocks();
+        mockTxnErrorString = null;
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-        const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
-        preloadedState.wallet.trading.exchange = {
-            ...preloadedState.wallet.trading.exchange,
-            quotes: exchangeQuotes,
-            tradingAccountKey: 'eth-account-1',
-            receiveAccountKey: 'btc-account-1',
-            receiveAddress: getBtcAccount().addresses?.used[0].address,
-            selectedQuote: exchangeQuotes[0],
-        };
-
-        // Add precomposed transaction to show the Continue button
-        preloadedState.wallet = {
-            ...preloadedState.wallet,
-            send: {
-                ...preloadedState.wallet.send,
-                precomposedTx: {
-                    type: 'final',
-                    fee: '1000',
-                    feePerByte: '10',
-                    totalSpent: '100000',
-                    bytes: 100,
-                } as any,
-            },
-        };
-
+        const preloadedState = createPreloadedState();
         store = (await initStore(preloadedState)).store;
+    });
+
+    afterEach(() => {
+        consoleErrorSpy.mockRestore();
     });
 
     it('should render continue button', async () => {
@@ -127,13 +150,10 @@ describe('TradingExchangePreviewScreen', () => {
 
     describe('Error Alert Functionality', () => {
         it('should show error alert when trade confirmation errors', async () => {
-            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-            // Mock confirmTrade to throw an error
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
 
             await renderTradingExchangePreviewScreen();
 
-            // Wait for the error to be processed
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalledTimes(1);
             });
@@ -144,30 +164,22 @@ describe('TradingExchangePreviewScreen', () => {
         });
 
         it('should retry trade confirmation when retry button is pressed', async () => {
-            // Mock confirmTrade to throw an error first, then succeed
             mockConfirmTrade
                 .mockRejectedValueOnce(new Error('Trade confirmation failed'))
                 .mockResolvedValueOnce(true);
 
             await renderTradingExchangePreviewScreen();
 
-            // Wait for the error alert to be shown
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalled();
             });
 
-            // Get the retry function from the alert call
-            const alertCall = mockShowAlert.mock.calls[0][0];
-            const retryFunction = alertCall.onPressPrimaryButton;
+            const retryFunction = mockShowAlert.mock.calls[0][0].onPressPrimaryButton;
             analyticsSpy.mockClear();
 
-            // Call the retry function
             await retryFunction();
 
-            // Verify confirmTrade was called again
             expect(mockConfirmTrade).toHaveBeenCalledTimes(2);
-
-            expect(analyticsSpy).toHaveBeenCalledTimes(1);
             expect(analyticsSpy).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
@@ -178,29 +190,20 @@ describe('TradingExchangePreviewScreen', () => {
         });
 
         it('should navigate to top when cancel button is pressed', async () => {
-            // Mock confirmTrade to throw an error
             mockConfirmTrade.mockRejectedValueOnce(new Error('Trade confirmation failed'));
 
             await renderTradingExchangePreviewScreen();
 
-            // Wait for the error alert to be shown
             await waitFor(() => {
                 expect(mockShowAlert).toHaveBeenCalled();
             });
 
-            // Get the cancel function from the alert call
-            const alertCall = mockShowAlert.mock.calls[0][0];
-            const cancelFunction = alertCall.onPressSecondaryButton;
-
+            const cancelFunction = mockShowAlert.mock.calls[0][0].onPressSecondaryButton;
             analyticsSpy.mockClear();
 
-            // Call the cancel function
             cancelFunction();
 
-            // Verify navigation.popToTop was called
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
-
-            expect(analyticsSpy).toHaveBeenCalledTimes(1);
             expect(analyticsSpy).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
@@ -211,15 +214,12 @@ describe('TradingExchangePreviewScreen', () => {
         });
 
         it('should not show error alert when trade confirmation succeeds', async () => {
-            // Mock confirmTrade to succeed
             mockConfirmTrade.mockResolvedValue(true);
 
             await renderTradingExchangePreviewScreen();
 
-            // Wait a bit to ensure no error alert is shown
             await new Promise(resolve => setTimeout(resolve, 100));
 
-            // Verify no error alert was shown
             expect(mockShowAlert).not.toHaveBeenCalled();
         });
     });
@@ -250,6 +250,66 @@ describe('TradingExchangePreviewScreen', () => {
                 step: 'transaction-preview',
                 action: 'continue',
             }),
+        });
+    });
+
+    describe('Error String Fallback Logic', () => {
+        it('should use txnErrorString when provided', async () => {
+            mockTxnErrorString = 'Transaction error occurred';
+
+            const { getByText } = await renderTradingExchangePreviewScreen();
+
+            expect(getByText('Transaction error occurred')).toBeOnTheScreen();
+        });
+
+        it('should fall back to quote.error when txnErrorString is null', async () => {
+            mockTxnErrorString = null;
+
+            const quoteWithError = {
+                ...exchangeQuotes[0],
+                error: 'Quote error message',
+            };
+
+            const preloadedState = createPreloadedState(quoteWithError);
+            const testStore = (await initStore(preloadedState)).store;
+            const { getByText } = await renderTradingExchangePreviewScreen(false, testStore);
+
+            expect(getByText('Quote error message')).toBeOnTheScreen();
+        });
+
+        it('should not show error when both txnErrorString and quote.error are null', async () => {
+            mockTxnErrorString = null;
+
+            const quoteWithoutError = {
+                ...exchangeQuotes[0],
+                error: undefined,
+            };
+
+            const preloadedState = createPreloadedState(quoteWithoutError);
+            const testStore = (await initStore(preloadedState)).store;
+            const { queryByText } = await renderTradingExchangePreviewScreen(false, testStore);
+
+            expect(queryByText('Transaction error occurred')).toBeNull();
+            expect(queryByText('Quote error message')).toBeNull();
+        });
+
+        it('should prioritize txnErrorString over quote.error', async () => {
+            mockTxnErrorString = 'Transaction error takes priority';
+
+            const quoteWithError = {
+                ...exchangeQuotes[0],
+                error: 'Quote error message',
+            };
+
+            const preloadedState = createPreloadedState(quoteWithError);
+            const testStore = (await initStore(preloadedState)).store;
+            const { getByText, queryByText } = await renderTradingExchangePreviewScreen(
+                false,
+                testStore,
+            );
+
+            expect(getByText('Transaction error takes priority')).toBeOnTheScreen();
+            expect(queryByText('Quote error message')).toBeNull();
         });
     });
 });

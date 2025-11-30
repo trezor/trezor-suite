@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
     TradingSellType,
+    isFinalStatus,
     selectTradingSellSelectedQuote,
     useTradingDetailData,
 } from '@suite-common/trading';
@@ -24,8 +25,7 @@ export const TradingSellPreviewScreen = () => {
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
 
     const currentQuote = trade?.data ? trade.data : selectedQuote;
-    const hasFetchedAndComposedFees = useRef(false);
-    const lastOrderId = useRef<string | undefined>(undefined);
+    const isFinalized = isFinalStatus('sell', currentQuote?.status);
 
     useWatchTrade({
         accountKey: trade?.sendAccountKey,
@@ -38,25 +38,12 @@ export const TradingSellPreviewScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Reset the flag when quote changes (different orderId) or status changes away from SEND_CRYPTO
+    // Fetch fees and compose when status is SEND_CRYPTO
     useEffect(() => {
-        const orderIdChanged = lastOrderId.current !== currentQuote?.orderId;
-        const statusNotSendCrypto = currentQuote?.status !== 'SEND_CRYPTO';
-
-        if (orderIdChanged || statusNotSendCrypto) {
-            hasFetchedAndComposedFees.current = false;
-        }
-
-        lastOrderId.current = currentQuote?.orderId;
-    }, [currentQuote?.orderId, currentQuote?.status]);
-
-    // Fetch fees and compose when status is SEND_CRYPTO and we haven't fetched yet
-    useEffect(() => {
-        if (currentQuote?.status === 'SEND_CRYPTO' && !hasFetchedAndComposedFees.current) {
-            hasFetchedAndComposedFees.current = true;
+        if (currentQuote?.status === 'SEND_CRYPTO') {
             fetchFeesAndCompose();
         }
-    }, [fetchFeesAndCompose, currentQuote?.status, currentQuote?.orderId]);
+    }, [currentQuote?.status, currentQuote?.orderId, fetchFeesAndCompose]);
 
     // clear trading state on unmount
     useEffect(
@@ -75,11 +62,13 @@ export const TradingSellPreviewScreen = () => {
     return (
         <Screen header={<SellPreviewScreenHeader />}>
             <SellPreviewView quote={currentQuote} txnErrorString={errorString} />
-            <SellPreviewContinueButton
-                quote={currentQuote}
-                isDisabled={!!errorString}
-                onSignTransactionNavigation={onSignTransactionNavigation}
-            />
+            {!isFinalized && (
+                <SellPreviewContinueButton
+                    quote={currentQuote}
+                    isDisabled={!!errorString}
+                    onSignTransactionNavigation={onSignTransactionNavigation}
+                />
+            )}
         </Screen>
     );
 };
