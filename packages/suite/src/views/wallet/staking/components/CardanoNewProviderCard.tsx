@@ -5,9 +5,13 @@ import {
     selectCardanoPoolsInfo,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
+import {
+    isCardanoStakedWithEverstake,
+    isCardanoStakedWithFiveBinaries,
+} from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { NewProviderCard } from '../../staking/components/StakingDashboard/components/NewProviderCard';
 
@@ -16,9 +20,14 @@ interface CardanoNewProviderCardProps {
 }
 
 export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps) {
+    const routeName = useSelector(selectRouteName);
+
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
     const isStakedWithEverstake = isCardanoStakedWithEverstake(account, cardanoStakingPools);
+    const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
+    const isStakingRoute = routeName?.includes('staking');
+
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
     );
@@ -30,7 +39,8 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
         hasPendingTx ||
         !isNewProviderBannerEnabled ||
         !isCardanoNetworkType ||
-        !isStakingActive
+        !isStakingActive ||
+        (!isStakedWithEverstake && !isStakedWithFiveBinaries && !isStakingRoute)
     ) {
         return null;
     }
