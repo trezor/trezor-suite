@@ -420,7 +420,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
                 totalInput: '0',
                 totalOutput: '0',
             },
-            deadline: blockHeight + 2,
+            deadline: blockHeight + 10,
         };
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
