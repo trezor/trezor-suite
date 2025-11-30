@@ -22,8 +22,9 @@ type UseProgressLabelsData = {
     isDaysToAddToPoolShown: boolean;
     isStakeConfirming: boolean;
     isStakePending: boolean;
-    selectedAccount?: Account;
+    account: Account;
     stakeTxs: WalletAccountTransaction[];
+    isStakedWithEverstake: boolean;
 };
 
 export const useProgressLabelsData = ({
@@ -31,11 +32,12 @@ export const useProgressLabelsData = ({
     isDaysToAddToPoolShown,
     isStakeConfirming,
     isStakePending,
-    selectedAccount,
+    account,
     stakeTxs,
+    isStakedWithEverstake,
 }: UseProgressLabelsData) => {
     const lastPendingStakeTx = stakeTxs.find(tx => isPending(tx));
-    const pendingTxStakeType = lastPendingStakeTx ? getTxStakeType(lastPendingStakeTx) : '';
+    const pendingTxStakeType = lastPendingStakeTx ? getTxStakeType(lastPendingStakeTx) : undefined;
 
     const lastStakeTx = stakeTxs.find(tx => !isPending(tx));
     const lastTxStakeType = lastStakeTx ? getTxStakeType(lastStakeTx) : '';
@@ -97,7 +99,7 @@ export const useProgressLabelsData = ({
         [daysToAddToPool, isDaysToAddToPoolShown, isStakeConfirming, isStakePending],
     );
 
-    const solStakingAccountStatus = getStakingAccountCurrentStatus(selectedAccount);
+    const solStakingAccountStatus = getStakingAccountCurrentStatus(account);
 
     const solanaProgressLabelsData: ProgressLabelData[] = useMemo(
         () => [
@@ -245,9 +247,19 @@ export const useProgressLabelsData = ({
         [isStakeConfirming, isStakePending, isUnstake],
     );
 
-    if (pendingTxStakeType === 'claim' || lastTxStakeType === 'claim') return [];
+    if (
+        account.networkType === 'cardano' &&
+        // progress bar not ready for claim (cardano)
+        (pendingTxStakeType === 'claim' ||
+            // progress bar should not be visible when staking active and last tx was claim (cardano)
+            lastTxStakeType === 'claim' ||
+            // no progress bar when not staking with us, but show it when pending tx as it can be update provider
+            (!isStakedWithEverstake && !pendingTxStakeType))
+    ) {
+        return [];
+    }
 
-    switch (selectedAccount?.networkType) {
+    switch (account.networkType) {
         case 'ethereum':
             return ethereumProgressLabelsData;
         case 'solana':
