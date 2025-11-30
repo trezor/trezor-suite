@@ -612,11 +612,12 @@ export const selectIsDevicePinLocked = createMemoizedSelector(
     selectedDevice => selectedDevice && getStatus(selectedDevice) === 'device-pin-locked',
 );
 
-export const selectAllDeviceOwners = (state: DeviceRootState) =>
-    selectDevices(state).reduce((acc, it) => {
+export const selectAllDeviceOwners = createMemoizedSelector([selectDevices], devices =>
+    devices.reduce((acc, it) => {
         if (it.suiteSyncOwner !== undefined) {
             acc.push(it.suiteSyncOwner);
         }
 
         return acc;
-    }, [] as SuiteSyncOwner[]);
+    }, [] as SuiteSyncOwner[]),
+);
