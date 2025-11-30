@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -43,8 +44,15 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
     const accountBalance = account.formattedBalance;
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
 
+    const isNewProviderBannerEnabled = useSelector(state =>
+        selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),
+    );
+
     const state = useMemo(() => {
-        if (isCardanoStakedOutsideEverstake(account, cardanoStakingPools)) {
+        if (
+            isCardanoStakedOutsideEverstake(account, cardanoStakingPools) &&
+            isNewProviderBannerEnabled
+        ) {
             return 'staking-outdated-provider';
         }
 
@@ -79,6 +87,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         isCardanoNetworkType,
         isStakingActive,
         cardanoStakingPools,
+        isNewProviderBannerEnabled,
     ]);
 
     const navigateToTradingBuy = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
