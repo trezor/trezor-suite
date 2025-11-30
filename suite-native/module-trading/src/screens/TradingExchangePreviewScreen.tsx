@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { isFinalStatus, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
@@ -61,6 +61,8 @@ export const TradingExchangePreviewScreen = ({
     const [isConfirmationErrorRequested, setIsConfirmationErrorRequested] =
         useState<boolean>(false);
 
+    const isFinalized = isFinalStatus('exchange', quote?.status);
+
     const handleConfirmTrade = useCallback(async () => {
         const addressText = getReceiveAccountAddressText(toAccount);
 
@@ -96,12 +98,12 @@ export const TradingExchangePreviewScreen = ({
 
     useFocusEffect(
         useCallback(() => {
-            if (!hasRequestedTradeConfirmation.current) {
+            if (!hasRequestedTradeConfirmation.current && !isFinalized) {
                 hasRequestedTradeConfirmation.current = true;
 
                 handleConfirmTrade();
             }
-        }, [handleConfirmTrade]),
+        }, [handleConfirmTrade, isFinalized]),
     );
 
     // clear trading state on unmount
@@ -148,18 +150,22 @@ export const TradingExchangePreviewScreen = ({
         reportToAnalytics,
     ]);
 
+    const errorString = txnErrorString ?? quote?.error;
+
     return (
         <Screen header={<ExchangePreviewScreenHeader />}>
             <ExchangePreviewView
                 quote={quote}
-                txnErrorString={txnErrorString}
+                txnErrorString={errorString}
                 isApproved={isApproved}
             />
-            <ExchangePreviewContinueButton
-                quote={quote}
-                isDisabled={!!txnErrorString}
-                onSignTransactionNavigation={onSignTransactionNavigation}
-            />
+            {!isFinalized && (
+                <ExchangePreviewContinueButton
+                    quote={quote}
+                    isDisabled={!!errorString}
+                    onSignTransactionNavigation={onSignTransactionNavigation}
+                />
+            )}
         </Screen>
     );
 };
