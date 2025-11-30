@@ -2,16 +2,10 @@ import { getStakingTotalRewards } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    selectAccountPendingStakeTypeTransactions,
     selectAccountStakeTypeTransactions,
     selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
-import {
-    getStakingAccountCurrentStatus,
-    getStakingDataForNetwork,
-    getTxStakeType,
-    isPending,
-} from '@suite-common/wallet-utils';
+import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import {
     Badge,
     Button,
@@ -117,10 +111,6 @@ export const StakingCard = ({
         restakedReward = '0',
     } = getStakingDataForNetwork(selectedAccount) ?? {};
 
-    const canUnstake = new BigNumber(autocompoundBalance).gt(0);
-    const canClaimRewards = new BigNumber(restakedReward).gt(0);
-    const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
-
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
 
     const { isTxStatusShown } = useIsTxStatusShown(
@@ -137,14 +127,10 @@ export const StakingCard = ({
         selectAccountStakeTypeTransactions(state, selectedAccount?.key || ''),
     );
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
-    const hasCardanoPendingTx = isCardanoNetworkType && isStakeConfirming;
 
-    const solStakingAccountStatus = getStakingAccountCurrentStatus(selectedAccount);
-
-    const lastPendingStakeTypeTransaction = useSelector(state =>
-        selectAccountPendingStakeTypeTransactions(state, selectedAccount?.key || ''),
-    )[0];
-    const pendingTxStakeType = getTxStakeType(lastPendingStakeTypeTransaction);
+    const canUnstake = new BigNumber(autocompoundBalance).gt(0) && !isStakeConfirming;
+    const canClaimRewards = new BigNumber(restakedReward).gt(0);
+    const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
 
     const progressLabelsData = useProgressLabelsData({
         daysToAddToPool,
@@ -152,8 +138,7 @@ export const StakingCard = ({
         isStakeConfirming,
         isStakePending,
         selectedAccount,
-        solStakingAccountStatus,
-        pendingTxStakeType,
+        stakeTxs,
     });
 
     const shouldShowProgressLabels =
@@ -209,6 +194,8 @@ export const StakingCard = ({
     if (!selectedAccount?.symbol) {
         return null;
     }
+
+    const isCardanoNetworkType = account.networkType === 'cardano';
 
     return (
         <Card data-testid="@wallet/staking/card">
@@ -383,7 +370,7 @@ export const StakingCard = ({
                     )}
                     <Tooltip content={unstakingMessageContent}>
                         <Button
-                            isDisabled={!canUnstake || isUnstakingDisabled || hasCardanoPendingTx}
+                            isDisabled={!canUnstake || isUnstakingDisabled}
                             onClick={openUnstakeModal}
                             iconLeft={isUnstakingDisabled ? 'info' : undefined}
                             intent="neutral"

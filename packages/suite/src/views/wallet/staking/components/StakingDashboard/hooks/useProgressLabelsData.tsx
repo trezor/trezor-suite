@@ -5,7 +5,12 @@ import {
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import { Account, StakeType } from '@suite-common/wallet-types';
+import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    getStakingAccountCurrentStatus,
+    getTxStakeType,
+    isPending,
+} from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -18,8 +23,7 @@ type UseProgressLabelsData = {
     isStakeConfirming: boolean;
     isStakePending: boolean;
     selectedAccount?: Account;
-    solStakingAccountStatus?: string | null;
-    pendingTxStakeType?: StakeType;
+    stakeTxs: WalletAccountTransaction[];
 };
 
 export const useProgressLabelsData = ({
@@ -28,10 +32,13 @@ export const useProgressLabelsData = ({
     isStakeConfirming,
     isStakePending,
     selectedAccount,
-    solStakingAccountStatus,
-    pendingTxStakeType,
+    stakeTxs,
 }: UseProgressLabelsData) => {
-    const isUnstake = pendingTxStakeType === 'unstake';
+    const lastPendingStakeTx = stakeTxs.find(tx => isPending(tx));
+    const pendingTxStakeType = lastPendingStakeTx ? getTxStakeType(lastPendingStakeTx) : '';
+
+    const lastStakeTx = stakeTxs.find(tx => !isPending(tx));
+    const lastTxStakeType = lastStakeTx ? getTxStakeType(lastStakeTx) : '';
 
     const ethereumProgressLabelsData: ProgressLabelData[] = useMemo(
         () => [
@@ -89,6 +96,8 @@ export const useProgressLabelsData = ({
         ],
         [daysToAddToPool, isDaysToAddToPoolShown, isStakeConfirming, isStakePending],
     );
+
+    const solStakingAccountStatus = getStakingAccountCurrentStatus(selectedAccount);
 
     const solanaProgressLabelsData: ProgressLabelData[] = useMemo(
         () => [
@@ -158,6 +167,8 @@ export const useProgressLabelsData = ({
         ],
         [solStakingAccountStatus, isStakeConfirming],
     );
+
+    const isUnstake = pendingTxStakeType === 'unstake';
 
     const cardanoProgressLabelsData: ProgressLabelData[] = useMemo(
         () =>
@@ -234,7 +245,7 @@ export const useProgressLabelsData = ({
         [isStakeConfirming, isStakePending, isUnstake],
     );
 
-    if (pendingTxStakeType === 'claim') return [];
+    if (pendingTxStakeType === 'claim' || lastTxStakeType === 'claim') return [];
 
     switch (selectedAccount?.networkType) {
         case 'ethereum':
