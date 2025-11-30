@@ -131,7 +131,7 @@ export class TradingMock {
     validatePassphraseEnv = () => {
         if (!process.env.PASSPHRASE) {
             throw new Error(
-                'PASSPHRASE not provided in env variables. Check docs/tests/e2e-playwright-suite.md.',
+                'PASSPHRASE not provided in env variables. Check packages/suite/e2e/docs/e2e-playwright-suite.md.',
             );
         }
     };
