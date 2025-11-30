@@ -1,6 +1,9 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
+import {
+    selectAccountIsStakingActive,
+    selectVotingDelegationOption,
+} from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -16,6 +19,8 @@ type StakeRegistrationDepositCardProps = {
 export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepositCardProps) => {
     const { symbol, key } = account;
 
+    const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
+
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, key ?? ''));
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
 
@@ -29,12 +34,9 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                     <Translation id="TR_STAKE_FULL_BALANCE" />
                 </Paragraph>
             </Row>
+
             {isUpdateProviderFlow ? (
-                <Row
-                    gap={spacings.lg}
-                    justifyContent="space-between"
-                    margin={{ bottom: spacings.md }}
-                >
+                <Row gap={spacings.lg} justifyContent="space-between">
                     <Paragraph typographyStyle="body">
                         <Translation id="TR_STAKING_NEW_PROVIDER" />
                     </Paragraph>
@@ -50,11 +52,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                             {CARDANO_STAKING_REGISTRATION_DEPOSIT} {getNetworkDisplaySymbol(symbol)}
                         </Paragraph>
                     </Row>
-                    <Row
-                        gap={spacings.lg}
-                        justifyContent="space-between"
-                        margin={{ bottom: spacings.md }}
-                    >
+                    <Row gap={spacings.lg} justifyContent="space-between">
                         <Paragraph variant="tertiary" typographyStyle="hint">
                             <Translation id="TR_STAKE_RETURNED_TO_ACCOUNT_WHEN_UNSTAKE" />
                         </Paragraph>
@@ -68,7 +66,21 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                     </Row>
                 </>
             )}
-            <Banner intent="info" icon="info">
+            {selectedVotingDelegation.type === 'another_drep' && (
+                <>
+                    <Row gap={spacings.lg} justifyContent="space-between">
+                        <Paragraph typographyStyle="body">
+                            <Translation id="TR_STAKING_DREP_ID" />
+                        </Paragraph>
+                    </Row>
+                    <Row gap={spacings.lg} justifyContent="space-between">
+                        <Paragraph variant="tertiary" typographyStyle="hint">
+                            {selectedVotingDelegation.drepId}
+                        </Paragraph>
+                    </Row>
+                </>
+            )}
+            <Banner intent="info" icon="info" margin={{ top: spacings.md }}>
                 <Translation
                     id={
                         isUpdateProviderFlow
