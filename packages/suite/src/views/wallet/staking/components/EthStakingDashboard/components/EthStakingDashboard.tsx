@@ -107,6 +107,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                     </Flex>
                                 </Grid>
                                 <StakingCard
+                                    account={account}
                                     isValidatorsQueueLoading={isLoading}
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}

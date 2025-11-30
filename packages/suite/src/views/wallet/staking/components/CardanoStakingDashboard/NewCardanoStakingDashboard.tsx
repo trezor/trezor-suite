@@ -93,6 +93,7 @@ export const NewCardanoStakingDashboard = ({
                                     </Flex>
                                 </Grid>
                                 <StakingCard
+                                    account={account}
                                     isValidatorsQueueLoading={undefined}
                                     daysToAddToPool={CARDANO_EPOCH_DAYS}
                                     daysToUnstake={CARDANO_EPOCH_DAYS}
