@@ -22,6 +22,7 @@ import { CardanoNewProviderCard } from '../CardanoNewProviderCard';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
+import { DebugOnlyCardanoStakingCard } from '../StakingDashboard/components/DebugOnlyCardanoStakingCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
 import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
@@ -98,6 +99,7 @@ export const NewCardanoStakingDashboard = ({
                                     daysToAddToPool={CARDANO_EPOCH_DAYS}
                                     daysToUnstake={CARDANO_EPOCH_DAYS}
                                 />
+                                <DebugOnlyCardanoStakingCard account={account} />
                             </Column>
                         </DashboardSection>
                     ) : (
