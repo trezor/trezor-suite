@@ -130,7 +130,7 @@ The reporter is configured with environment variables:
 The GitHub project used for testing reports must be created manually using the provided script:
 
 ```bash
-yarn workspace @trezor/suite-desktop-core node e2e/support/reporters/scriptCreateProject.ts
+yarn workspace @trezor/suite node e2e/support/reporters/scriptCreateProject.ts
 ```
 
 This script creates a central "Trezor Suite release testing" project that will contain all test results. The project is reused across releases, with the `Release Build` field differentiating between builds.
@@ -139,9 +139,9 @@ This script creates a central "Trezor Suite release testing" project that will c
 
 The reporter can be run from a local environment for troubleshooting and development purposes. Suite:
 
-- `yarn workspace @trezor/suite-desktop-core test:e2e:web --reporter=./e2e/support/reporters/gitHubReporter.ts`
-- `yarn workspace @trezor/suite-desktop-core test:e2e:desktop --reporter=./e2e/support/reporters/gitHubReporter.ts`
-- `yarn workspace @trezor/suite-desktop-core github:report:manual`
+- `yarn workspace @trezor/suite test:e2e:web --reporter=./e2e/support/reporters/gitHubReporter.ts`
+- `yarn workspace @trezor/suite test:e2e:desktop --reporter=./e2e/support/reporters/gitHubReporter.ts`
+- `yarn workspace @trezor/suite github:report:manual`
 
 Suite-native:
 

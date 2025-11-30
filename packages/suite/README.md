@@ -13,4 +13,9 @@ Follow the steps provided in the [migration documentation](../../suite/idb-migra
 
 ## e2e tests
 
-[Documentation](../../docs/tests/e2e-suite-web.md)
+Documentation
+
+- [Suite Playwright E2E](./tests/e2e-playwright-suite.md)
+- [Suite E2E in CI](./tests/e2e-ci.md)
+- [Playwright contribution guide](./tests/e2e-playwright-contribution-guide.md)
+- [GitHub Test Reporter](./tests/e2e-github-reporter.md)
