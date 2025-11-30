@@ -157,7 +157,7 @@ export const StakingCard = ({
     });
 
     const shouldShowProgressLabels =
-        (isStakeConfirming || isTxStatusShown) && progressLabelsData.length;
+        (isStakeConfirming || isTxStatusShown) && !!progressLabelsData.length;
 
     const dispatch = useDispatch();
 
