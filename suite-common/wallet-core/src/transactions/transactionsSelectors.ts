@@ -7,6 +7,7 @@ import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/s
 import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getConfirmations,
+    isCardanoStakingTx,
     isClaimTx,
     isPending,
     isStakeTx,
@@ -150,7 +151,7 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
                 tx =>
                     isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId) ||
                     !!tx?.solanaSpecific?.stakeOperation?.type ||
-                    !!tx?.cardanoSpecific?.subtype,
+                    isCardanoStakingTx(tx),
             ),
         ),
 );

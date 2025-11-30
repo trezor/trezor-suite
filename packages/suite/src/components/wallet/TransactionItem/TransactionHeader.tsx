@@ -2,6 +2,7 @@ import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-c
 import { StakeType } from '@suite-common/wallet-types';
 import {
     getTxHeaderSymbol,
+    isCardanoStakingTx,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
@@ -49,6 +50,13 @@ interface GetTransactionMessageIdProps {
 }
 
 const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessageIdProps) => {
+    if (isCardanoStakingTx(transaction)) {
+        return getSelfTransactionMessageByType({
+            type: transaction.cardanoSpecific?.subtype,
+            isPending,
+        });
+    }
+
     switch (transaction.type) {
         case 'sent':
             return isPending ? 'TR_SENDING_SYMBOL' : 'TR_SENT_SYMBOL';
@@ -61,10 +69,7 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
         case 'contract':
             return 'TR_CONTRACT_TRANSACTION';
         case 'self':
-            return getSelfTransactionMessageByType({
-                type: transaction.cardanoSpecific?.subtype,
-                isPending,
-            });
+            return isPending ? 'TR_SENDING_SYMBOL_TO_SELF' : 'TR_SENT_SYMBOL_TO_SELF';
         case 'unknown':
         default:
             return 'TR_UNKNOWN_TRANSACTION';
