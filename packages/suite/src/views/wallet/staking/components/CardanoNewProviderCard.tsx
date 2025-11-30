@@ -35,5 +35,5 @@ export function CardanoNewProviderCard({ account }: CardanoNewProviderCardProps)
         return null;
     }
 
-    return <NewProviderCard />;
+    return <NewProviderCard account={account} />;
 }
