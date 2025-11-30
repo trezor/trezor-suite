@@ -25,6 +25,7 @@ test.describe(
             tradingPage,
             trezorUserEnvLink,
             emulatorStartConf,
+            firmwareVersion,
         }) => {
             await test.step('Go to send form and verify prompt to connect Trezor', async () => {
                 await settingsPage.navigateTo('application');
@@ -33,7 +34,11 @@ test.describe(
                 await settingsPage.navigateTo('coins');
                 await settingsPage.coins.enableNetwork('regtest');
 
-                await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
+                await trezorUserEnvLink.startEmu({
+                    ...emulatorStartConf,
+                    wipe: false,
+                    version: firmwareVersion,
+                });
 
                 await trezorUserEnvLink.sendToAddressAndMineBlock({
                     address: ADDRESS_INDEX_1,

@@ -13,7 +13,7 @@ test.describe(
     { tag: ['@group=suite', '@webOnly', '@specificFirmware'] },
     () => {
         const firmwareVersion = findLatestVersionForModel('T3T1');
-        test.use({ emulatorStartConf: { model: 'T3T1', version: firmwareVersion, wipe: true } });
+        test.use({ emulatorStartConf: { model: 'T3T1', wipe: true }, firmwareVersion });
         test.beforeEach(async ({ analytics, onboardingPage }) => {
             await analytics.interceptAnalytics();
             await onboardingPage.completeOnboarding();

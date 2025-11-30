@@ -29,6 +29,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test('App spawns bundled bridge and stops it after app quit', async ({
         request,
         emulatorStartConf,
+        firmwareVersion,
     }, testInfo) => {
         const suite = await launchSuite(
             {
@@ -37,6 +38,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
                 viewport: testInfo.project.use.viewport!,
             },
             emulatorStartConf,
+            firmwareVersion,
         );
         const title = await suite.window.title();
         enhancePage(suite.window);
@@ -66,9 +68,10 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
         trezorUserEnvLink,
         emulatorStartConf,
+        firmwareVersion,
         model,
     }, testInfo) => {
-        await trezorUserEnvLink.startEmu(emulatorStartConf);
+        await trezorUserEnvLink.startEmu({ ...emulatorStartConf, version: firmwareVersion });
         await trezorUserEnvLink.setupEmu({});
         await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
@@ -78,6 +81,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
                 viewport: testInfo.project.use.viewport!,
             },
             emulatorStartConf,
+            firmwareVersion,
         );
         enhancePage(suite.window);
         await suite.window.title();
@@ -91,7 +95,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
             devicePrompt,
             new AnalyticsSection(suite.window),
             new SettingsPage(suite.window),
-            emulatorStartConf,
+            firmwareVersion,
         );
         await onboardingPage.completeOnboarding();
 

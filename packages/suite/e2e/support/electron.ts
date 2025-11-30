@@ -2,10 +2,10 @@ import { ElectronApplication, Page, _electron as electron } from '@playwright/te
 import { createWriteStream, ensureDirSync } from 'fs-extra';
 import path from 'path';
 
-import { StartEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
-import { getModelFromEnv } from './helpers/modelFromEnv';
+import { LaunchSuiteParams, StartEmuModelRequired } from './types';
 
 const appDir = path.join(__dirname, '../../../suite-desktop');
 const disableHashChecksPatch = '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
@@ -22,17 +22,6 @@ const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error 
 const removeUserDataArgument = '--remove-user-data-on-start';
 const exposeStoreArgument = '--expose-store';
 
-export type LaunchSuiteParams = {
-    keepUserData?: boolean;
-    bridgeDaemon?: boolean;
-    exposeConnectWs?: boolean;
-    locale?: string;
-    colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
-    artefactFolder: string;
-    viewport: { width: number; height: number };
-    disableAuthenticityCheck?: boolean;
-};
-
 export type Suite = {
     electronApp: ElectronApplication;
     window: Page;
@@ -48,7 +37,11 @@ const formatErrorLogMessage = (data: string) => {
     return `${timestamp} - ${bold}${red}ERROR${unbold}: ${data}${reset}`;
 };
 
-const buildArgs = (params: LaunchSuiteParams, emulatorStartConf: StartEmu) => {
+const buildArgs = (
+    params: LaunchSuiteParams,
+    emulatorStartConf: StartEmuModelRequired,
+    firmwareVersion: string,
+) => {
     const args = [
         // This needs to be just path to the app root, so it is same as for production builds,
         // electron will resolve the path to app.js from the package.json => "main": "dist/app.js",
@@ -80,11 +73,11 @@ const buildArgs = (params: LaunchSuiteParams, emulatorStartConf: StartEmu) => {
         args.push(removeUserDataArgument);
     }
 
-    if (emulatorStartConf.version?.endsWith('-main')) {
+    if (firmwareVersion.endsWith('-main')) {
         args.push(disableFirmwareRevisionChecksPatch);
     }
 
-    if (getModelFromEnv() === 'T3W1' || params.disableAuthenticityCheck) {
+    if (emulatorStartConf.model === 'T3W1' || params.disableAuthenticityCheck) {
         args.push(disableAuthenticityCheckPatch);
     }
 
@@ -107,7 +100,8 @@ const setupLoggingToFile = (electronApp: ElectronApplication, params: LaunchSuit
 
 export const launchSuiteElectronApp = async (
     params: LaunchSuiteParams,
-    emulatorStartConf: StartEmu,
+    emulatorStartConf: StartEmuModelRequired,
+    firmwareVersion: string,
 ) => {
     if (!params.bridgeDaemon) {
         await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
@@ -115,7 +109,7 @@ export const launchSuiteElectronApp = async (
 
     const electronApp = await electron.launch({
         cwd: appDir,
-        args: buildArgs(params, emulatorStartConf),
+        args: buildArgs(params, emulatorStartConf, firmwareVersion),
         env: {
             ...process.env,
             PLAYWRIGHT_RUN: 'true',
@@ -132,9 +126,10 @@ export const launchSuiteElectronApp = async (
 
 export const launchSuite = async (
     params: LaunchSuiteParams,
-    emulatorStartConf: StartEmu,
+    emulatorStartConf: StartEmuModelRequired,
+    firmwareVersion: string,
 ): Promise<Suite> => {
-    const electronApp = await launchSuiteElectronApp(params, emulatorStartConf);
+    const electronApp = await launchSuiteElectronApp(params, emulatorStartConf, firmwareVersion);
     const window = await electronApp.firstWindow();
 
     return { electronApp, window };

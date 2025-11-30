@@ -19,6 +19,7 @@ test.describe(
             recoveryModal,
             devicePrompt,
             trezorUserEnvLink,
+            firmwareVersion,
         }) => {
             await analyticsSection.passThroughAnalytics();
 
@@ -33,7 +34,11 @@ test.describe(
             // Disconnect the device
             await trezorUserEnvLink.stopEmu();
             await devicePrompt.connectDevicePromptIsShown();
-            await trezorUserEnvLink.startEmu({ model: 'T1B1', wipe: false });
+            await trezorUserEnvLink.startEmu({
+                model: 'T1B1',
+                wipe: false,
+                version: firmwareVersion,
+            });
 
             // Retry recovery process
             await onboardingPage.retryRecoveryButton.click();

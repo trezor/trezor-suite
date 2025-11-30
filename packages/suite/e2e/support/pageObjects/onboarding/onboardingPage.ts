@@ -1,7 +1,5 @@
 import { Locator, Page, TestInfo, expect } from '@playwright/test';
 
-import { StartEmu } from '@trezor/trezor-user-env-link';
-
 import { SUITE as SuiteActions } from '../../../../src/actions/suite/constants';
 import { TrezorUserEnvLinkProxy, isWebProject, step } from '../../common';
 import { SeedType } from '../../enums/seedType';
@@ -11,7 +9,6 @@ import { BackupSection } from './backupSection';
 import { FirmwareSection } from './firmwareSection';
 import { PinSection } from './pinSection';
 import { TutorialSection } from './tutorialSection';
-import { getModelFromEnv } from '../../helpers/modelFromEnv';
 import { ModelFixture } from '../../modelFixture';
 import { SettingsPage } from '../settings/settingsPage';
 
@@ -48,7 +45,7 @@ export class OnboardingPage {
         private readonly devicePrompt: DevicePrompt,
         private readonly analyticsSection: AnalyticsSection,
         private readonly settingsPage: SettingsPage,
-        private readonly emulatorStartConf: StartEmu,
+        private readonly firmwareVersion: string,
     ) {
         this.backup = new BackupSection(page, devicePrompt);
         this.firmware = new FirmwareSection(page);
@@ -126,7 +123,7 @@ export class OnboardingPage {
         }
 
         await this.onboardingExitButton.click();
-        if (this.model.isModelWithSecureElement() && getModelFromEnv() !== 'T3W1') {
+        if (this.model.isModelWithSecureElement() && this.model.model !== 'T3W1') {
             await this.passThroughAuthenticityCheck();
         }
         // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
@@ -250,11 +247,11 @@ export class OnboardingPage {
     @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
-        if (this.emulatorStartConf.version?.endsWith('-main')) {
+        if (this.firmwareVersion.endsWith('-main')) {
             await this.disableFirmwareRevisionCheck();
         }
 
-        if (getModelFromEnv() === 'T3W1') {
+        if (this.model.model === 'T3W1') {
             await this.disableAuthenticityCheck();
         }
     }

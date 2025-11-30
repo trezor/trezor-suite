@@ -5,7 +5,7 @@ test.describe.skip(
     'Firmware update',
     { tag: ['@group=device-management', '@specificFirmware'] },
     () => {
-        test.use({ emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.2' } });
+        test.use({ emulatorStartConf: { wipe: true, model: 'T2T1' }, firmwareVersion: '2.5.2' });
         test.beforeEach(async ({ onboardingPage }) => {
             await onboardingPage.completeOnboarding();
         });

@@ -68,7 +68,10 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings', '@specificMod
         'T2T1 - older firmware < 2.5.4',
         { tag: ['@group=settings', '@specificFirmware'] },
         () => {
-            test.use({ emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' } });
+            test.use({
+                emulatorStartConf: { wipe: true, model: 'T2T1' },
+                firmwareVersion: '2.5.3',
+            });
             test('Cannot change homescreen in firmware < 2.5.4', async ({ page }) => {
                 await expect(
                     page.getByTestId('@settings/device/homescreen-gallery'),

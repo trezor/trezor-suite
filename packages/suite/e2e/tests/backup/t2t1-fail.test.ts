@@ -21,6 +21,7 @@ test.describe('Backup errors', { tag: ['@group=device-management', '@specificMod
         devicePrompt,
         trezorUserEnvLink,
         settingsPage,
+        model,
     }) => {
         await test.step('Start backup', async () => {
             await dashboardPage.notificationNoBackupButton.click();
@@ -39,7 +40,7 @@ test.describe('Backup errors', { tag: ['@group=device-management', '@specificMod
         });
 
         await test.step('Simulate reconnect and check errors', async () => {
-            await trezorUserEnvLink.startEmu();
+            await trezorUserEnvLink.startEmu({ model: model.model, version: model.version });
             await expect(page.getByTestId('@toast/backup-failed')).toBeVisible({ timeout: 30_000 });
             await dashboardPage.deviceSwitchingCloseButton.click();
         });

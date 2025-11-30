@@ -20,6 +20,7 @@ test.describe(
             recoveryModal,
             page,
             trezorUserEnvLink,
+            firmwareVersion,
         }) => {
             await test.step('Navigate through onboarding steps', async () => {
                 await analyticsSection.passThroughAnalytics();
@@ -49,7 +50,7 @@ test.describe(
             });
 
             await test.step('Restart emulator', async () => {
-                await trezorUserEnvLink.startEmu({ model: 'T1B1' });
+                await trezorUserEnvLink.startEmu({ model: 'T1B1', version: firmwareVersion });
             });
 
             await test.step('Retry recovery with basic type', async () => {

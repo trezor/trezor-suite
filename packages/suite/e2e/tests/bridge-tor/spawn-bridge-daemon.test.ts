@@ -20,6 +20,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test('App in daemon mode spawns node-bridge', async ({
         request,
         emulatorStartConf,
+        firmwareVersion,
     }, testInfo) => {
         await expectBridgeToBeStopped(request);
 
@@ -30,6 +31,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
                 viewport: testInfo.project.use.viewport!,
             },
             emulatorStartConf,
+            firmwareVersion,
         );
 
         await expect(async () => {
@@ -43,6 +45,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
                 viewport: testInfo.project.use.viewport!,
             },
             emulatorStartConf,
+            firmwareVersion,
         );
         const title = await suite.window.title();
         expect(title).toContain('Trezor Suite');

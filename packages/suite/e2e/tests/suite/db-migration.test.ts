@@ -54,6 +54,7 @@ test.describe(
                 walletPage,
                 devicePrompt,
                 trezorUserEnvLink,
+                model,
             }) => {
                 const discoveryBar = page.locator(
                     '[data-test="\\@wallet\\/discovery-progress-bar"] div',
@@ -169,7 +170,10 @@ test.describe(
                 });
 
                 await test.step('Reconnect Emulator', async () => {
-                    await trezorUserEnvLink.startEmu();
+                    await trezorUserEnvLink.startEmu({
+                        model: model.model,
+                        version: model.version,
+                    });
                     await onboardingPage.disableNecessaryFirmwareChecks({
                         skipSuiteLoadedCheck: true,
                     });

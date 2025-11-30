@@ -2,7 +2,7 @@
 import { BrowserContext, Page, TestInfo, test as base, mergeTests } from '@playwright/test';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
-import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import { SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import {
     TrezorUserEnvLinkProxy,
@@ -11,23 +11,18 @@ import {
     isDesktopProject,
     mockRemoteMessageSystem,
 } from '../common';
-import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
+import { Suite, launchSuite } from '../electron';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
 import { getModelFromEnv } from '../helpers/modelFromEnv';
-
-type StartEmuModelRequired = StartEmu & { model: Model };
-
-type ElectronConf = Pick<
-    LaunchSuiteParams,
-    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'disableAuthenticityCheck'
->;
+import { ElectronConf, StartEmuModelRequired } from '../types';
 
 type suiteBaseFixture = {
     startEmulator: boolean;
     setupEmulator: boolean;
     emulatorStartConf: StartEmuModelRequired;
+    firmwareVersion: string;
     emulatorSetupConf: SetupEmu;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
@@ -42,7 +37,8 @@ const electronSetup = async (
     locale: string | undefined,
     colorScheme: any,
     electronConf: ElectronConf,
-    emulatorStartConf: StartEmu,
+    emulatorStartConf: StartEmuModelRequired,
+    firmwareVersion: string,
 ) => {
     const suite = await launchSuite(
         {
@@ -53,6 +49,7 @@ const electronSetup = async (
             ...electronConf,
         },
         emulatorStartConf,
+        firmwareVersion,
     );
 
     await suite.window
@@ -118,23 +115,12 @@ const webTeardown = async (page: Page, browserContext: BrowserContext, testInfo:
     }
 };
 
-const getDefaultEmuStartConf = (emulatorModel?: Model): StartEmuModelRequired => {
-    const model = emulatorModel ?? getModelFromEnv();
-    const DefaultFirmwareMajorVersion = model === 'T1B1' ? 1 : 2;
-    const defaultFirmwareType = process.env.CANARY_FIRMWARE ? '-main' : '-latest';
-
-    return {
-        model,
-        wipe: true,
-        version: `${DefaultFirmwareMajorVersion}${defaultFirmwareType}`,
-    };
-};
-
 const trezorEnvSetup = async (
     testInfo: TestInfo,
     startEmulator: boolean,
     setupEmulator: boolean,
     emulatorStartConf: StartEmu,
+    firmwareVersion: string,
     emulatorSetupConf: SetupEmu,
 ) => {
     const setupPromise = (async () => {
@@ -149,11 +135,11 @@ const trezorEnvSetup = async (
         await TrezorUserEnvLinkProxy.stopEmu();
         await TrezorUserEnvLinkProxy.connect();
 
-        const defaultEmulatorStartConf = getDefaultEmuStartConf(emulatorStartConf.model);
-        emulatorStartConf.version = emulatorStartConf.version || defaultEmulatorStartConf.version;
-
         if (startEmulator) {
-            await TrezorUserEnvLinkProxy.startEmu(emulatorStartConf);
+            await TrezorUserEnvLinkProxy.startEmu({
+                ...emulatorStartConf,
+                version: firmwareVersion,
+            });
         }
         if (startEmulator && setupEmulator) {
             await TrezorUserEnvLinkProxy.setupEmu(emulatorSetupConf);
@@ -176,10 +162,17 @@ const baseWithCurrents = mergeTests(base, currentsTest);
 const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
-    emulatorStartConf: getDefaultEmuStartConf(),
+    emulatorStartConf: { model: getModelFromEnv(), wipe: true },
     emulatorSetupConf: {},
     electronConf: {},
     ignoreJSExceptions: [],
+
+    firmwareVersion: async ({ emulatorStartConf }, use) => {
+        const defaultFirmwareMajorVersion = emulatorStartConf.model === 'T1B1' ? 1 : 2;
+        const defaultFirmwareType = process.env.CANARY_FIRMWARE ? '-main' : '-latest';
+        const version = `${defaultFirmwareMajorVersion}${defaultFirmwareType}`;
+        await use(version);
+    },
 
     url: async ({}, use, testInfo) => {
         await use(getUrl(testInfo));
@@ -196,6 +189,7 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
             startEmulator,
             setupEmulator,
             emulatorStartConf,
+            firmwareVersion,
             emulatorSetupConf,
             electronConf,
         },
@@ -209,6 +203,7 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
                 startEmulator,
                 setupEmulator,
                 emulatorStartConf,
+                firmwareVersion,
                 emulatorSetupConf,
             );
         });
@@ -220,6 +215,7 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
                 colorScheme,
                 electronConf,
                 emulatorStartConf,
+                firmwareVersion,
             );
             enhancePage(suite.window);
             await use(suite.window);

@@ -16,6 +16,7 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
         devicePrompt,
         trezorUserEnvLink,
         emulatorStartConf,
+        firmwareVersion,
     }) => {
         await test.step('Add passphrase wallet "abc"', async () => {
             await dashboardPage.openDeviceSwitcher();
@@ -45,7 +46,11 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
 
         await test.step('Disconnect and reconnect the device', async () => {
             await trezorUserEnvLink.stopEmu();
-            await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
+            await trezorUserEnvLink.startEmu({
+                model: emulatorStartConf.model,
+                wipe: false,
+                version: firmwareVersion,
+            });
         });
 
         await test.step('Check passphrase wallet "abc" is still cached and connected', async () => {

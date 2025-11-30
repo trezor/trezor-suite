@@ -60,7 +60,7 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new WalletPage(page));
     },
     onboardingPage: async (
-        { page, model, devicePrompt, analyticsSection, settingsPage, emulatorStartConf },
+        { page, model, devicePrompt, analyticsSection, settingsPage, firmwareVersion },
         use,
         testInfo,
     ) => {
@@ -72,7 +72,7 @@ const test = suiteBaseTest.extend<Fixtures>({
                 devicePrompt,
                 analyticsSection,
                 settingsPage,
-                emulatorStartConf,
+                firmwareVersion,
             ),
         );
     },
@@ -125,8 +125,8 @@ const test = suiteBaseTest.extend<Fixtures>({
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
     },
-    model: async ({ emulatorStartConf }, use) => {
-        await use(new ModelFixture(emulatorStartConf.model));
+    model: async ({ emulatorStartConf, firmwareVersion }, use) => {
+        await use(new ModelFixture(emulatorStartConf.model, firmwareVersion));
     },
 });
 

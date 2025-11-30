@@ -22,7 +22,14 @@ test.describe(
                         'Verifies that if the device is disconnected during the recovery process, the user is given the option to retry the recovery.',
                 }),
             },
-            async ({ page, onboardingPage, analyticsSection, devicePrompt, trezorUserEnvLink }) => {
+            async ({
+                page,
+                firmwareVersion,
+                onboardingPage,
+                analyticsSection,
+                devicePrompt,
+                trezorUserEnvLink,
+            }) => {
                 await analyticsSection.passThroughAnalytics();
                 await onboardingPage.firmware.continueThroughFirmware();
 
@@ -36,7 +43,11 @@ test.describe(
                 await trezorUserEnvLink.stopEmu();
                 await page.waitForTimeout(500);
                 await devicePrompt.connectDevicePromptIsShown();
-                await trezorUserEnvLink.startEmu({ model: 'T2T1', wipe: false });
+                await trezorUserEnvLink.startEmu({
+                    model: 'T2T1',
+                    wipe: false,
+                    version: firmwareVersion,
+                });
 
                 // Check that you can retry
                 await onboardingPage.retryRecoveryButton.click();

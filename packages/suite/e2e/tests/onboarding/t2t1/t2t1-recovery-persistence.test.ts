@@ -71,6 +71,7 @@ test.describe(
             analyticsSection,
             devicePrompt,
             indexedDb,
+            firmwareVersion,
         }) => {
             await test.step('Start recovery with some device', async () => {
                 await page.getByTestId('@onboarding/recovery/start-button').click();
@@ -91,7 +92,11 @@ test.describe(
             });
 
             await test.step('Restart emulator and disable firmware hash check and analytics', async () => {
-                await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
+                await trezorUserEnvLink.startEmu({
+                    wipe: false,
+                    model: 'T2T1',
+                    version: firmwareVersion,
+                });
                 await onboardingPage.disableNecessaryFirmwareChecks();
                 await analyticsSection.passThroughAnalytics();
             });
@@ -107,6 +112,7 @@ test.describe(
             page,
             trezorUserEnvLink,
             devicePrompt,
+            firmwareVersion,
         }) => {
             await test.step('Start recovery', async () => {
                 await page.getByTestId('@onboarding/recovery/start-button').click();
@@ -128,7 +134,11 @@ test.describe(
             await test.step('Disconnect and reconnect device', async () => {
                 await trezorUserEnvLink.stopEmu();
                 await devicePrompt.connectDevicePromptIsShown();
-                await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
+                await trezorUserEnvLink.startEmu({
+                    wipe: false,
+                    model: 'T2T1',
+                    version: firmwareVersion,
+                });
                 await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
 
                 // This is needed, because there seem to be some weird refreshes on the emu

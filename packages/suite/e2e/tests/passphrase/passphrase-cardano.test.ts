@@ -19,12 +19,17 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
         devicePrompt,
         trezorUserEnvLink,
         emulatorStartConf,
+        firmwareVersion,
     }) => {
         async function restartEmulator() {
             await test.step('Restart emulator', async () => {
                 await trezorUserEnvLink.stopEmu();
                 await expect(page.getByTestId('@deviceStatus-disconnected')).toBeVisible();
-                await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
+                await trezorUserEnvLink.startEmu({
+                    model: emulatorStartConf.model,
+                    wipe: false,
+                    version: firmwareVersion,
+                });
                 await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible({
                     timeout: 15_000,
                 });
