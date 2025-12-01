@@ -10,6 +10,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@noble/ciphers": "^2.0.1",
+        "@noble/hashes": "^2.0.1",
+        "@simplewebauthn/browser": "^13.2.2",
+        "@simplewebauthn/server": "^13.2.2",
         "@suite-common/secure-storage": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }

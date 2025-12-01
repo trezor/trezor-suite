@@ -1,22 +1,17 @@
 import { base64URLStringToBuffer } from '@simplewebauthn/browser';
 
 import { decrypt, deriveEncryptionKey, encrypt } from './crypto';
-import { getStore } from './storage';
-import { getWebAuthnCredentials, isWebAuthnFullySupported } from './webAuthn';
-
-export async function isEncryptedStorageEnabled() {
-    if (!(await isWebAuthnFullySupported())) {
-        return false;
-    }
-
-    return await getStore('encryptedStorage').get('enabled');
-}
+import { getWebAuthnCredentials, isWebAuthnFullySupported, WebAuthnCredentialId } from './webAuthn';
 
 let cachedEncryptionKey: Uint8Array | null = null;
 let cachedSalt: string | null = null;
 
-// TODO: use web worker for encryption-related processes
-export async function retrieveEncryptionKeyAndSalt() {
+// TODO: use web worker for encryption-related processes:
+export const retrieveEncryptionKeyAndSalt = async ({
+    credential,
+}: {
+    credential: WebAuthnCredentialId;
+}) => {
     if (cachedEncryptionKey && cachedSalt) {
         return { encryptionKey: cachedEncryptionKey, salt: cachedSalt };
     }
@@ -38,22 +33,22 @@ export async function retrieveEncryptionKeyAndSalt() {
     cachedSalt = salt;
 
     return { encryptionKey, salt };
-}
+};
 
-export function clearCachedEncryptionKeyAndSalt() {
+export const clearCachedEncryptionKeyAndSalt = () => {
     cachedEncryptionKey = null;
     cachedSalt = null;
-}
+};
 
-export async function encryptWithWebAuthn(plaintext: Uint8Array) {
+export const encryptWithWebAuthn = async (plaintext: Uint8Array) => {
     const { encryptionKey } = await retrieveEncryptionKeyAndSalt();
 
     const { nonce, ciphertext } = encrypt(encryptionKey, plaintext);
 
     return { nonce, ciphertext };
-}
+};
 
-export async function decryptWithWebAuthn(ciphertext: Uint8Array, nonce: Uint8Array) {
+export const decryptWithWebAuthn = async (ciphertext: Uint8Array, nonce: Uint8Array) => {
     if (!cachedEncryptionKey || !cachedSalt) {
         const { encryptionKey, salt } = await retrieveEncryptionKeyAndSalt();
 
@@ -62,9 +57,9 @@ export async function decryptWithWebAuthn(ciphertext: Uint8Array, nonce: Uint8Ar
     }
 
     return decrypt(cachedEncryptionKey, nonce, ciphertext);
-}
+};
 
-export async function enableEncryptedStorage() {
+export const enableEncryptedStorage = async () => {
     if (await isEncryptedStorageEnabled()) {
         return;
     }
@@ -75,9 +70,9 @@ export async function enableEncryptedStorage() {
 
     await getStore('encryptedStorage').set('salt', salt);
     await getStore('encryptedStorage').set('enabled', true);
-}
+};
 
-export async function disableEncryptedStorage() {
+export const disableEncryptedStorage = async () => {
     if (!(await isEncryptedStorageEnabled())) {
         return;
     }
@@ -107,4 +102,4 @@ export async function disableEncryptedStorage() {
 
     await getStore('encryptedStorage').set('salt', null);
     await getStore('encryptedStorage').set('enabled', false);
-}
+};

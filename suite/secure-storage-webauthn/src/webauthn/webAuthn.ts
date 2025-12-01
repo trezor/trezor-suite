@@ -13,7 +13,7 @@ import {
     verifyRegistrationResponse,
 } from '@simplewebauthn/server';
 
-import { WebAuthnCredential } from './storage';
+import { Branded } from '@trezor/type-utils';
 
 type ClientCapabilities = {
     conditionalCreate: boolean;
@@ -39,6 +39,9 @@ type ClientCapabilities = {
     userVerifyingPlatformAuthenticator: boolean;
 };
 
+export type WebAuthnCredentialId = string & Branded<WebAuthnCredentialId>;
+export const asWebAuthnCredentialId = (input: string) => input as WebAuthnCredentialId;
+
 export async function getWebAuthnFeatures() {
     if (!PublicKeyCredential.getClientCapabilities) {
         return null;
@@ -47,11 +50,11 @@ export async function getWebAuthnFeatures() {
     return (await PublicKeyCredential.getClientCapabilities()) as ClientCapabilities;
 }
 
-export async function isWebAuthnFullySupported() {
+export const isWebAuthnFullySupported = async (): Promise<boolean> => {
     const features = await getWebAuthnFeatures();
 
     const supported =
-        features &&
+        features !== null &&
         // PRF is required for deterministic key derivation
         features['extension:prf'] &&
         features['userVerifyingPlatformAuthenticator'] &&
@@ -62,18 +65,15 @@ export async function isWebAuthnFullySupported() {
     }
 
     return supported;
-}
+};
 
-function getRpOrigin() {
+const getRpOrigin = () =>
     // TODO: use env var
-    return location.origin;
-}
+    location.origin;
 
-function getRpId() {
-    return new URL(getRpOrigin()).hostname;
-}
+const getRpId = () => new URL(getRpOrigin()).hostname;
 
-export async function createWebAuthnCredential() {
+export const createWebAuthnCredential = async () => {
     // TODO: validate these variables have enough entropy
     const challenge = new Uint8Array(randomBytes(32));
     const userId = new Uint8Array(randomBytes(16));
@@ -184,10 +184,10 @@ export async function createWebAuthnCredential() {
         userId: bufferToBase64URLString(userId.buffer),
         publicKey: bufferToBase64URLString(credential.publicKey.buffer),
     };
-}
+};
 
 // FIXME: doesn't seem to work, maybe navigator.credentials.get() is required to be called first?
-export async function removeWebAuthnCredential(credentialId: string) {
+export const removeWebAuthnCredential = async (credentialId: string) => {
     console.debug('Removing WebAuthn credential:', credentialId);
     // TODO: fix TS
     // @ts-expect-error
@@ -196,10 +196,10 @@ export async function removeWebAuthnCredential(credentialId: string) {
         rpId: getRpId(),
     });
     console.debug('WebAuthn credential removed:', credentialId);
-}
+};
 
 // FIXME: doesn't seem to work
-export async function removeWebAuthnCrendetials(userId: string) {
+export const removeWebAuthnCrendetials = async (userId: string) => {
     console.debug('Removing WebAuthn credentials for user:', userId);
     // TODO: fix TS
     // @ts-expect-error
@@ -209,12 +209,12 @@ export async function removeWebAuthnCrendetials(userId: string) {
         userId,
     });
     console.debug('WebAuthn credentials removed for user:', userId);
-}
+};
 
-export async function getWebAuthnCredentials(
+export const getWebAuthnCredentials = async (
     credentials: WebAuthnCredential[],
     prevSalt?: Uint8Array | null,
-) {
+) => {
     const challenge = new Uint8Array(randomBytes(32));
     const salt = new Uint8Array(prevSalt || randomBytes(32));
 
@@ -303,4 +303,4 @@ export async function getWebAuthnCredentials(
         // @ts-expect-error
         seed: bufferToBase64URLString(assertionResponse.clientExtensionResults.prf?.results?.first),
     };
-}
+};

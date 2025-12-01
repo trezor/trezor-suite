@@ -12,7 +12,7 @@ export type EncryptionUnavailable = {
 };
 
 export const EncryptionUnavailable = (message: string) => ({
-    type: 'EncryptionUnavailable',
+    type: 'EncryptionUnavailable' as const,
     message,
 });
 
