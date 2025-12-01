@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -9,8 +9,9 @@ import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
+import { AccountAddressFormatter } from '@suite-native/formatters';
 import { Icon, IconName } from '@suite-native/icons';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     Screen,
@@ -48,11 +49,10 @@ const AddressRow = ({ address }: { address: string }) => {
         <HStack
             paddingHorizontal="sp16"
             paddingVertical="sp12"
+            alignItems="center"
             style={applyStyle(addressCardStyle)}
         >
-            <Text variant="hint" style={applyStyle(addressStyle)}>
-                {address}
-            </Text>
+            <AccountAddressFormatter value={address} style={applyStyle(addressStyle)} />
             <TouchableOpacity onPress={handleCopy}>
                 <Icon name="copy" color="iconPrimaryDefault" size="medium" />
             </TouchableOpacity>
@@ -79,7 +79,7 @@ const TransactionOverviewSectionHeader = ({
     count,
 }: {
     iconName: IconName;
-    title: string;
+    title: ReactNode;
     count: number;
 }) => (
     <HStack spacing="sp12" alignItems="center">
@@ -90,7 +90,7 @@ const TransactionOverviewSectionHeader = ({
     </HStack>
 );
 
-const OverviewSubheader = ({ title, count }: { title: string; count: number }) => (
+const OverviewSubheader = ({ title, count }: { title: ReactNode; count: number }) => (
     <Text color="textSubdued" variant="hint">
         {title} · {count}
     </Text>
@@ -125,7 +125,9 @@ export const TransactionDetailOverviewScreen = () => {
                     <VStack spacing="sp12">
                         <TransactionOverviewSectionHeader
                             iconName="arrowUp"
-                            title="From"
+                            title={
+                                <Translation id="transactions.transactionOverviewScreen.fromCard.title" />
+                            }
                             count={inputAddresses.length}
                         />
                         <AddressesListCard addresses={inputAddresses} />
@@ -133,18 +135,27 @@ export const TransactionDetailOverviewScreen = () => {
                     <VStack spacing="sp12">
                         <TransactionOverviewSectionHeader
                             iconName="arrowDown"
-                            title="To"
-                            count={targetAddresses.length}
+                            title={
+                                <Translation id="transactions.transactionOverviewScreen.toCard.title" />
+                            }
+                            count={outputAddresses.length}
                         />
                         {A.isNotEmpty(changeAddresses) && (
                             <>
-                                <OverviewSubheader title="Me" count={changeAddresses.length} />
+                                <OverviewSubheader
+                                    title={
+                                        <Translation id="transactions.transactionOverviewScreen.toCard.meTitle" />
+                                    }
+                                    count={changeAddresses.length}
+                                />
                                 <ChangeAddressesHeader addressesCount={changeAddresses.length} />
                                 <AddressesListCard addresses={changeAddresses} />
                             </>
                         )}
                         <OverviewSubheader
-                            title="Other recipients"
+                            title={
+                                <Translation id="transactions.transactionOverviewScreen.toCard.otherRecipients" />
+                            }
                             count={targetAddresses.length}
                         />
                         <AddressesListCard addresses={targetAddresses} />
