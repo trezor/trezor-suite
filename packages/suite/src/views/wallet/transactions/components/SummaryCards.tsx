@@ -8,27 +8,18 @@ import {
     useShouldRedactNumbers,
 } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { variables } from '@trezor/components';
+import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedDate, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { Account } from 'src/types/wallet';
 import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
 import { FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';
 
 import { InfoCard } from './InfoCard';
-
-const InfoCardsWrapper = styled.div`
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-gap: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        grid-template-columns: 1fr;
-    }
-`;
 
 const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
@@ -49,7 +40,7 @@ const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     }
 };
 
-interface SummaryCardProps {
+type SummaryCardProps = {
     selectedRange: GraphRange;
     data: AggregatedAccountHistory[];
     dataInterval: [number | undefined, number | undefined];
@@ -57,8 +48,7 @@ interface SummaryCardProps {
     account: Account;
     isLoading?: boolean;
     isGraphSupported: boolean;
-    className?: string;
-}
+};
 
 const DateWrapper = styled.span`
     white-space: nowrap;
@@ -79,8 +69,8 @@ export const SummaryCards = ({
     account,
     isLoading,
     isGraphSupported,
-    className,
 }: SummaryCardProps) => {
+    const { isBelowDesktop } = useLayoutSize();
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const [fromTimestamp, toTimestamp] = dataInterval;
 
@@ -110,7 +100,7 @@ export const SummaryCards = ({
     );
 
     return (
-        <InfoCardsWrapper className={className}>
+        <Grid columns={isBelowDesktop ? 1 : 3} gap={20}>
             <InfoCard
                 title={getFormattedLabelLong(selectedRange.label)}
                 isLoading={isLoading}
@@ -167,6 +157,6 @@ export const SummaryCards = ({
                     />
                 </>
             )}
-        </InfoCardsWrapper>
+        </Grid>
     );
 };
