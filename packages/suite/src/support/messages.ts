@@ -3266,10 +3266,6 @@ export default defineMessages({
         defaultMessage: 'Select an account to receive funds',
         id: 'TR_RECEIVE',
     },
-    TR_RECEIVE_SELECT_ACCOUNT: {
-        defaultMessage: 'Select an account to receive funds',
-        id: 'TR_RECEIVE_SELECT_ACCOUNT',
-    },
     TR_RECEIVE_DESCRIPTION: {
         defaultMessage: 'How to <a>choose the right network</a> to receive your tokens',
         id: 'TR_RECEIVE_DESCRIPTION',
