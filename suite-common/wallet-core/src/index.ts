@@ -13,6 +13,7 @@ export { delegatedIdentityKeyCompositionRoot } from './device/delegatedIdentityK
 export type { EnsureDelegatedIdentityKeyDep } from './device/delegatedIdentityKey/ensureDelegatedIdentityKey';
 export type { ProofOfDelegatedSignFailed } from './device/delegatedIdentityKey/getProofOfDelegatedIdentity';
 export { getProofOfDelegatedIdentity } from './device/delegatedIdentityKey/getProofOfDelegatedIdentity';
+export * from './device/delegatedIdentityKey/getPublicIdentityKeyFromDeletegatedKey';
 export * from './device/deviceActions';
 export * from './device/deviceConstants';
 export * from './device/deviceReducer';
