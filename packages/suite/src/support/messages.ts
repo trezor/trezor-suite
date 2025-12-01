@@ -232,6 +232,14 @@ export default defineMessages({
         defaultMessage: '{type} is currently disabled.',
         id: 'TR_TRADING_DISABLED_DEFAULT',
     },
+    TR_TRADING_HEADER_DESCRIPTION: {
+        defaultMessage: 'View and track your {type} in trade history.',
+        id: 'TR_TRADING_HEADER_DESCRIPTION',
+    },
+    TR_TRADING_DETAIL_PROCESSING: {
+        defaultMessage: '{providerName} is processing your {type}',
+        id: 'TR_TRADING_DETAIL_PROCESSING',
+    },
     TR_TRADING_TERMS_DONT_SHOW_AGAIN: {
         defaultMessage: 'Don’t show this again',
         id: 'TR_TRADING_TERMS_DONT_SHOW_AGAIN',
@@ -542,21 +550,13 @@ export default defineMessages({
         defaultMessage: 'Converting',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_TITLE',
     },
-    TR_EXCHANGE_DETAIL_PROCESSING: {
-        defaultMessage: '{providerName} is processing your swap',
-        id: 'TR_EXCHANGE_DETAIL_PROCESSING',
-    },
     TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT: {
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
     },
-    TR_EXCHANGE_HEADING: {
+    TR_EXCHANGE_HEADER_TITLE: {
         defaultMessage: 'Your swap',
-        id: 'TR_EXCHANGE_HEADING',
-    },
-    TR_EXCHANGE_HEADING_DESCRIPTION: {
-        defaultMessage: 'View and track your swap in trade history.',
-        id: 'TR_EXCHANGE_HEADING_DESCRIPTION',
+        id: 'TR_EXCHANGE_HEADER_TITLE',
     },
     TR_EXCHANGE_COMPLETE: {
         defaultMessage: 'Swap complete',
@@ -1014,6 +1014,23 @@ export default defineMessages({
         defaultMessage: "Open partner's support site",
         id: 'TR_SELL_DETAIL_PENDING_SUPPORT',
     },
+    TR_SELL_HEADER_TITLE: {
+        defaultMessage: 'Your sell',
+        id: 'TR_SELL_HEADER_TITLE',
+    },
+    TR_SELL_DETAIL_SENDING_TRANSACTION: {
+        defaultMessage: 'Sending transaction',
+        id: 'TR_SELL_DETAIL_SENDING_TRANSACTION',
+    },
+    TR_SELL_DETAIL_TRANSACTION_SENT: {
+        defaultMessage: 'Transaction sent',
+        id: 'TR_SELL_DETAIL_TRANSACTION_SENT',
+    },
+    TR_SELL_DETAIL_PROCESSING_TEXT: {
+        defaultMessage:
+            "Your rate is locked—you'll get exactly what you see. Once your sell is processed, {providerName} will send the funds to your account. You can check your account to see if they've arrived.",
+        id: 'TR_SELL_DETAIL_PROCESSING_TEXT',
+    },
     TR_BUY_STATUS_PENDING: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
@@ -1159,13 +1176,9 @@ export default defineMessages({
         defaultMessage: 'Estimated time',
         id: 'TR_ESTIMATED_TIME',
     },
-    TR_ORDER_ID: {
-        defaultMessage: 'Order ID',
-        id: 'TR_ORDER_ID',
-    },
-    TR_BUY_PAYMENT_PROCESSING_TITLE: {
-        defaultMessage: '{providerName} is processing your buy',
-        id: 'TR_BUY_PAYMENT_PROCESSING_TITLE',
+    TR_TRADE_ID: {
+        defaultMessage: 'Trade ID',
+        id: 'TR_TRADE_ID',
     },
     TR_TRADING_PROCESSING_SUPPORT: {
         defaultMessage: 'Need help? Reach out to <link>{providerName}’s support</link>.',
@@ -1175,13 +1188,9 @@ export default defineMessages({
         defaultMessage: 'Buy complete',
         id: 'TR_BUY_COMPLETE',
     },
-    TR_BUY_HEADING: {
+    TR_BUY_HEADER_TITLE: {
         defaultMessage: 'Your buy',
-        id: 'TR_BUY_HEADING',
-    },
-    TR_BUY_HEADING_DESCRIPTION: {
-        defaultMessage: 'View and track your buy in trade history.',
-        id: 'TR_BUY_HEADING_DESCRIPTION',
+        id: 'TR_BUY_HEADER_TITLE',
     },
     TR_BUY_RECEIVING_ADDRESS: {
         defaultMessage: 'Receive address',
@@ -7379,10 +7388,6 @@ export default defineMessages({
     TR_TXID: {
         id: 'TR_TXID',
         defaultMessage: 'Tx ID',
-    },
-    TR_TRANSACTION_ID: {
-        id: 'TR_TRANSACTION_ID',
-        defaultMessage: 'Transaction ID',
     },
     TR_TXID_RBF: {
         id: 'TR_TXID_RBF',

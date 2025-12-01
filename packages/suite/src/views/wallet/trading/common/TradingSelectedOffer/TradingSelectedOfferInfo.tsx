@@ -12,11 +12,11 @@ import { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingInfoExchangeType } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoExchangeType';
 import { TradingInfoPaymentMethod } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoPaymentMethod';
-import { TradingInfoProvider } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoProvider';
 import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
 
 import { TradingFiatAmount } from '../TradingFiatAmount';
 import { TradingInfoItem } from './TradingInfo/TradingInfoItem';
+import { TradingInfoProvider } from './TradingInfo/TradingInfoProvider';
 import { TradingInfoRateType } from './TradingInfo/TradingInfoRateType';
 
 function getReceiveAddress(selectedQuote: TradingTradeType) {
@@ -40,8 +40,10 @@ export const TradingSelectedOfferInfo = ({
     const { exchange } = selectedQuote;
 
     const amountInCrypto = quoteAmounts?.amountInCrypto ?? true;
-
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });
+    // Check if we're in detail view (completed trade) vs form view (quote)
+    // Completed trades have a txid property (transaction ID) after transaction is sent
+    const isDetailView = 'txid' in selectedQuote && selectedQuote.txid !== undefined;
 
     return (
         <Column gap={spacings.lg} data-testid="@trading/form/info">
@@ -137,7 +139,7 @@ export const TradingSelectedOfferInfo = ({
                     />
                 )}
 
-                {type === 'sell' && (
+                {type === 'sell' && !isDetailView && (
                     <TradingInfoProvider providers={providers} exchange={exchange} />
                 )}
 

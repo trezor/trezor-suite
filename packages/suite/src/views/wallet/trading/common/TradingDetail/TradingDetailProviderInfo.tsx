@@ -3,6 +3,7 @@ import {
     BuyTrade,
     ExchangeProviderInfo,
     ExchangeTrade,
+    SellFiatTrade,
     SellProviderInfo,
 } from 'invity-api';
 
@@ -20,20 +21,21 @@ import { TradingDetailTxAddress } from './TradingDetailTxAddress';
 type TradingDetailProviderInfoProps = {
     account?: Account;
     estimatedTime?: string;
+    orderId?: string;
     provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
-    trade: BuyTrade | ExchangeTrade;
+    trade: BuyTrade | ExchangeTrade | SellFiatTrade;
+    txAddress?: string;
 };
 
 export const TradingDetailProviderInfo = ({
     account,
     estimatedTime,
+    orderId,
     provider,
     trade,
+    txAddress,
 }: TradingDetailProviderInfoProps) => {
     const dispatch = useDispatch();
-
-    // BuyTrade uses paymentId, ExchangeTrade uses orderId
-    const orderId = 'paymentId' in trade ? trade.paymentId : trade.orderId;
 
     const copyOrderId = () => {
         const result = copyToClipboard(orderId || '');
@@ -50,27 +52,29 @@ export const TradingDetailProviderInfo = ({
                         {estimatedTime}
                     </InfoItem>
                 )}
-                {account && trade.receiveTxHash && (
-                    <InfoItem label={<Translation id="TR_TRANSACTION_ID" />} direction="row">
-                        <TradingDetailTxAddress address={trade.receiveTxHash} account={account} />
+                {account && txAddress && (
+                    <InfoItem label={<Translation id="TR_TXID" />} direction="row">
+                        <TradingDetailTxAddress address={txAddress} account={account} />
                     </InfoItem>
                 )}
                 <InfoItem label={<Translation id="TR_BUY_PROVIDER" />} direction="row">
                     <TradingProviderInfo exchange={trade.exchange} provider={provider} />
                 </InfoItem>
-                <InfoItem label={<Translation id="TR_ORDER_ID" />} direction="row">
-                    <Row gap={12}>
-                        <Text>{orderId}</Text>
-                        <Button
-                            size="small"
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={copyOrderId}
-                        >
-                            <Translation id="TR_COPY_TO_CLIPBOARD" />
-                        </Button>
-                    </Row>
-                </InfoItem>
+                {orderId && (
+                    <InfoItem label={<Translation id="TR_TRADE_ID" />} direction="row">
+                        <Row gap={12}>
+                            <Text>{orderId}</Text>
+                            <Button
+                                size="small"
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={copyOrderId}
+                            >
+                                <Translation id="TR_COPY_TO_CLIPBOARD" />
+                            </Button>
+                        </Row>
+                    </InfoItem>
+                )}
             </Column>
         </Text>
     );

@@ -15,7 +15,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
@@ -35,9 +35,7 @@ const Wrapper = styled.div`
     ${TradingWrapper}
 `;
 
-const getTradeStatusStep = (
-    tradeStatus: ExchangeTradeStatus,
-): 'converting' | 'kyc' | 'error' | 'success' | 'sending' | undefined => {
+const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
     switch (tradeStatus) {
         case 'CONVERTING':
             return 'converting';
@@ -64,6 +62,7 @@ export const TradingDetailExchange = () => {
         selectFeatureConfig(state, Feature.trading.survey),
     );
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
     const previousTradeStatus = usePrevious(tradeStatus);
@@ -127,7 +126,6 @@ export const TradingDetailExchange = () => {
                         trade={trade.data}
                         account={sendAccount}
                         provider={provider}
-                        supportUrl={supportUrl}
                     />
                 );
             case 'kyc':
@@ -143,10 +141,15 @@ export const TradingDetailExchange = () => {
                 return (
                     <>
                         <H3>
-                            <Translation id="TR_EXCHANGE_HEADING" />
+                            <Translation id="TR_EXCHANGE_HEADER_TITLE" />
                         </H3>
                         <Paragraph typographyStyle="hint" variant="tertiary">
-                            <Translation id="TR_EXCHANGE_HEADING_DESCRIPTION" />
+                            <Translation
+                                id="TR_TRADING_HEADER_DESCRIPTION"
+                                values={{
+                                    type: translationString('TR_TRADING_SWAP').toLowerCase(),
+                                }}
+                            />
                         </Paragraph>
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
@@ -158,10 +161,9 @@ export const TradingDetailExchange = () => {
                                 <TradingDetailExchangePaymentConverting
                                     trade={trade.data}
                                     provider={provider}
-                                    supportUrl={supportUrl}
                                 />
                                 <BulletList.Item
-                                    state={tradeStatus === 'SUCCESS' ? 'pending' : 'pending'}
+                                    state="pending"
                                     title={<Translation id="TR_EXCHANGE_COMPLETE" />}
                                 />
                             </TradingDetailStepList>

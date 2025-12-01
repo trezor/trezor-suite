@@ -11,7 +11,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
@@ -49,6 +49,7 @@ export const TradingDetailBuy = () => {
     const accounts = useSelector(selectAccounts);
     const { trade, info, account } = useTradingDetailContext<TradingBuyType>();
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const tradeStatus = trade?.data?.status;
     const previousTradeStatus = usePrevious(tradeStatus);
@@ -58,8 +59,6 @@ export const TradingDetailBuy = () => {
     const exchange = trade?.data?.exchange;
     const provider =
         info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
-    const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
-    const supportUrl = supportUrlTemplate?.replace('{{paymentId}}', trade?.data?.paymentId || '');
 
     const country = trade?.data?.country;
 
@@ -122,17 +121,19 @@ export const TradingDetailBuy = () => {
                         account={account}
                         trade={trade.data}
                         provider={provider}
-                        supportUrl={supportUrl}
                     />
                 );
             default:
                 return (
                     <>
                         <H3>
-                            <Translation id="TR_BUY_HEADING" />
+                            <Translation id="TR_BUY_HEADER_TITLE" />
                         </H3>
                         <Paragraph typographyStyle="hint" variant="tertiary">
-                            <Translation id="TR_BUY_HEADING_DESCRIPTION" />
+                            <Translation
+                                id="TR_TRADING_HEADER_DESCRIPTION"
+                                values={{ type: translationString('TR_BUY').toLowerCase() }}
+                            />
                         </Paragraph>
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
@@ -144,7 +145,6 @@ export const TradingDetailBuy = () => {
                                 <TradingDetailBuyPaymentProcessingStep
                                     trade={trade.data}
                                     provider={provider}
-                                    supportUrl={supportUrl}
                                 />
                                 <BulletList.Item
                                     state="pending"

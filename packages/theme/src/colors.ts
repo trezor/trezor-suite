@@ -242,7 +242,7 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         backgroundNeutralDisabled: paletteV1.darkGray200,
         backgroundNeutralSubdued: paletteV1.darkGray500,
         backgroundNeutralSubtleOnElevationNegative: paletteV1.darkGray100,
-        backgroundNeutralSubtleOnElevation0: paletteV1.darkGray200,
+        backgroundNeutralSubtleOnElevation0: paletteV1.darkGray300,
         backgroundNeutralSubtleOnElevation1: paletteV1.darkGray300,
         backgroundPrimaryDefault: paletteV1.darkPrimaryForest800,
         backgroundPrimaryPressed: paletteV1.darkPrimaryForest900,

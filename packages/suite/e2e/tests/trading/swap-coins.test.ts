@@ -19,8 +19,8 @@ const transactionStates = [
     },
     {
         transactionStatus: 'CONVERTING',
-        displayedText: 'TR_EXCHANGE_DETAIL_PROCESSING',
-        translationValues: (providerName: string) => ({ providerName }),
+        displayedText: 'TR_TRADING_DETAIL_PROCESSING',
+        translationValues: (providerName: string) => ({ providerName, type: 'swap' }),
     },
     {
         transactionStatus: 'SUCCESS',

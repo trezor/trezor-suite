@@ -1,83 +1,70 @@
-import styled from 'styled-components';
+import { SellFiatTrade, SellProviderInfo } from 'invity-api';
 
-import { Button, Image, Paragraph } from '@trezor/components';
-import { borders, typography } from '@trezor/theme';
+import { BulletListItemState, Card, Column, Paragraph } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { useTranslation } from 'src/hooks/suite';
 
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    flex-direction: column;
-`;
+import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
+import { TradingDetailStep } from '../TradingDetailStep';
+import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
-const Description = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.body}
-    margin: 17px 0 30px;
-    max-width: 310px;
-    text-align: center;
-`;
+const getState = (trade: SellFiatTrade): BulletListItemState => {
+    switch (trade.status) {
+        case 'SUCCESS':
+            return 'active';
+        default:
+            return 'pending';
+    }
+};
 
-const FixedRate = styled.div`
-    display: flex;
-    flex-direction: column;
-    background-color: ${({ theme }) => theme.backgroundNeutralBoldInverted};
-    padding: 14px 18px;
-    border-radius: ${borders.radii.xs};
-    margin-bottom: 30px;
-`;
+type TradingDetailSellPaymentSuccessfulProps = {
+    trade: SellFiatTrade;
+    provider?: SellProviderInfo;
+};
 
-interface PaymentSuccessfulProps {
-    account: Account;
-}
+export const TradingDetailSellPaymentSuccessful = ({
+    trade,
+    provider,
+}: TradingDetailSellPaymentSuccessfulProps) => {
+    const { translationString } = useTranslation();
+    const state = getState(trade);
 
-export const TradingDetailSellPaymentSuccessful = ({ account }: PaymentSuccessfulProps) => {
-    const dispatch = useDispatch();
-
-    const goToSell = () =>
-        dispatch(
-            goto('wallet-trading-sell', {
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const providerName = provider?.companyName ?? provider?.name ?? '';
 
     return (
-        <Wrapper>
-            <Image image="TRADING_SUCCESS" />
-            <Paragraph
-                typographyStyle="body"
-                margin={{ top: 24 }}
-                data-testid="@trading/transaction/detail/status"
-            >
-                <Translation id="TR_SELL_DETAIL_SUCCESS_TITLE" />
-            </Paragraph>
-            <Description>
-                <Translation id="TR_SELL_DETAIL_SUCCESS_TEXT" />
-            </Description>
-            <FixedRate>
-                <Paragraph typographyStyle="callout">
-                    <Translation id="TR_SELL_DETAIL_SUCCESS_FIXED_RATE_HEADER" />
+        <TradingDetailStep
+            state={state}
+            title={
+                <Translation
+                    id="TR_TRADING_DETAIL_PROCESSING"
+                    values={{
+                        providerName,
+                        type: translationString('TR_TRADING_SELL').toLowerCase(),
+                    }}
+                />
+            }
+        >
+            <Column gap={12}>
+                <Paragraph typographyStyle="hint" variant="tertiary">
+                    <Translation id="TR_SELL_DETAIL_PROCESSING_TEXT" values={{ providerName }} />
                 </Paragraph>
-                <Paragraph variant="tertiary">
-                    <Translation id="TR_SELL_DETAIL_SUCCESS_FIXED_RATE_MESSAGE" />
-                </Paragraph>
-            </FixedRate>
-            <Button onClick={goToSell}>
-                <Translation id="TR_SELL_DETAIL_SUCCESS_BUTTON" />
-            </Button>
-        </Wrapper>
+                {provider && (
+                    <Card>
+                        <Column gap={24}>
+                            <TradingDetailProviderInfo
+                                orderId={trade.orderId}
+                                provider={provider}
+                                trade={trade}
+                            />
+                            <TradingDetailSupportBanner
+                                provider={provider}
+                                orderId={trade.orderId}
+                            />
+                        </Column>
+                    </Card>
+                )}
+            </Column>
+        </TradingDetailStep>
     );
 };

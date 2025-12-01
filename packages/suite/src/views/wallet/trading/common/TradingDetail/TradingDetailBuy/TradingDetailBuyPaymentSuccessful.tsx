@@ -9,7 +9,7 @@ import { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
-type PaymentSuccessfulProps = {
+type TradingDetailBuyPaymentSuccessfulProps = {
     account: Account;
     trade: BuyTrade;
     provider?: BuyProviderInfo;
@@ -19,7 +19,7 @@ export const TradingDetailBuyPaymentPaymentSuccessful = ({
     account,
     trade,
     provider,
-}: PaymentSuccessfulProps) => {
+}: TradingDetailBuyPaymentSuccessfulProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () =>
@@ -49,7 +49,11 @@ export const TradingDetailBuyPaymentPaymentSuccessful = ({
             </Button>
             {provider && (
                 <Card>
-                    <TradingDetailProviderInfo provider={provider} trade={trade} />
+                    <TradingDetailProviderInfo
+                        orderId={trade.paymentId}
+                        provider={provider}
+                        trade={trade}
+                    />
                 </Card>
             )}
         </Column>

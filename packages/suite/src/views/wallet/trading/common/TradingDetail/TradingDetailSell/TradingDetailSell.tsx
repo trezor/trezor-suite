@@ -6,21 +6,23 @@ import styled from 'styled-components';
 
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Card, Column } from '@trezor/components';
+import { Box, Card, Column, H3, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite/Translation';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { TradingDetailFeedback } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback';
 import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
-import { TradingDetailSellPaymentPending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentPending';
+import { TradingDetailSellPaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSending';
 import { TradingDetailSellPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSuccessful';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
+
+import { TradingDetailStepList } from '../TradingDetailStepList';
 
 const Wrapper = styled.div`
     ${TradingWrapper}
@@ -40,6 +42,7 @@ export const TradingDetailSell = () => {
     const accounts = useSelector(selectAccounts);
     const { account, trade, info } = useTradingDetailContext<TradingSellType>();
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const tradeStatus = trade?.data?.status || 'PENDING';
     const previousTradeStatus = usePrevious(tradeStatus);
@@ -49,8 +52,6 @@ export const TradingDetailSell = () => {
     const exchange = trade?.data?.exchange;
     const provider =
         info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
-    const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
-    const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
     const country = trade?.data?.country;
 
@@ -68,7 +69,7 @@ export const TradingDetailSell = () => {
     useEffect(() => {
         // if tradeStatus hasn't changed, don't send the analytics event
         // also safeguard the initial tradeStatus change from undefined to defined
-        if (!previousTradeStatus || previousTradeStatus === tradeStatus || !tradeStatusStep) {
+        if (!previousTradeStatus || previousTradeStatus === tradeStatus) {
             return;
         }
 
@@ -97,23 +98,53 @@ export const TradingDetailSell = () => {
         return null;
     }
 
+    const getContent = () => {
+        switch (tradeStatusStep) {
+            case 'error':
+                return (
+                    <TradingDetailSellPaymentFailed
+                        account={sendAccount!}
+                        provider={provider}
+                        trade={trade.data}
+                    />
+                );
+            default:
+                return (
+                    <>
+                        <H3>
+                            <Translation id="TR_SELL_HEADER_TITLE" />
+                        </H3>
+                        <Paragraph typographyStyle="hint" variant="tertiary">
+                            <Translation
+                                id="TR_TRADING_HEADER_DESCRIPTION"
+                                values={{
+                                    type: translationString('TR_TRADING_SELL').toLowerCase(),
+                                }}
+                            />
+                        </Paragraph>
+                        <Box margin={{ top: 32, bottom: 12 }}>
+                            <TradingDetailStepList>
+                                <TradingDetailSellPaymentSending
+                                    trade={trade.data}
+                                    account={sendAccount}
+                                    composedTransaction={composedTransaction}
+                                />
+                                <TradingDetailSellPaymentSuccessful
+                                    trade={trade.data}
+                                    provider={provider}
+                                />
+                            </TradingDetailStepList>
+                        </Box>
+                    </>
+                );
+        }
+    };
+
     return (
-        <Wrapper>
-            <Column gap={spacings.lg}>
-                <Card>
-                    {tradeStatusStep === 'success' && sendAccount && (
-                        <TradingDetailSellPaymentSuccessful account={sendAccount} />
-                    )}
-                    {tradeStatusStep === 'error' && sendAccount && (
-                        <TradingDetailSellPaymentFailed
-                            account={sendAccount}
-                            transactionId={trade.key}
-                            supportUrl={supportUrl}
-                        />
-                    )}
-                    {tradeStatusStep === 'pending' && (
-                        <TradingDetailSellPaymentPending supportUrl={supportUrl} />
-                    )}
+        <Wrapper data-testid="@trading/transaction/detail">
+            <Column gap={20}>
+                <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
+                    {getContent()}
                 </Card>
                 <TradingDetailFeedback
                     status={tradeStatus}

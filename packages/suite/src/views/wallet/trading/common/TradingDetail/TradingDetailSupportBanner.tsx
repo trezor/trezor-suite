@@ -5,8 +5,8 @@ import { Banner, Link, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 
 type TradingDetailSupportBannerProps = {
-    provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
-    supportUrl: string;
+    provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+    orderId?: string;
 };
 
 const isBuyProviderInfo = (
@@ -15,11 +15,24 @@ const isBuyProviderInfo = (
 
 export const TradingDetailSupportBanner = ({
     provider,
-    supportUrl,
+    orderId,
 }: TradingDetailSupportBannerProps) => {
+    if (!provider || !orderId) {
+        return null;
+    }
+
     const providerName = isBuyProviderInfo(provider)
         ? (provider.brandName ?? provider.companyName)
         : (provider.companyName ?? provider.name);
+
+    const supportUrlTemplate = provider.statusUrl || provider.supportUrl;
+    const supportUrl = supportUrlTemplate
+        ?.replace('{{orderId}}', orderId)
+        ?.replace('{{paymentId}}', orderId);
+
+    if (!supportUrl) {
+        return null;
+    }
 
     return (
         <Banner intent="neutral" icon="question">
