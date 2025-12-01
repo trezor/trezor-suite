@@ -26,31 +26,25 @@ const handleError = (error: string, dispatch: Dispatch, message: string) => {
 export const init = createThunk(`${BIO_AUTH_PREFIX}/init`, (_args, { dispatch }) => {
     // settings
     desktopApi.getBioAuthSettings().then(settings => {
-        console.log('get settings', settings);
         dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
     });
     desktopApi.on('bio-auth/settings-changed', settings => {
-        console.log('bio-auth/settings-changed', settings);
         dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
     });
 
     // api availability
     desktopApi.isBioAuthAvailable().then(available => {
-        console.log('initial availability', available);
         dispatch(bioAuthActions.setIsBioAuthAvailable(available));
     });
 
     // validation status
     desktopApi.getBioAuthStatus().then(validated => {
-        console.log('initial validation status', validated);
         dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
     });
     desktopApi.on('bio-auth/validation-status-changed', validated => {
-        console.log('validation status changed', validated);
         dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
     });
     desktopApi.on('bio-auth/bio-auth-availability-changed', available => {
-        console.log('bio-auth availability changed', available);
         dispatch(bioAuthActions.setIsBioAuthAvailable(available));
     });
 });
@@ -114,7 +108,6 @@ export const requestBioAuthValidationThunk = createThunk(
         const result = await desktopApi.validateBioAuth({
             message: messageSuccess,
         });
-        console.log('result of bio-auth validation', result);
         if (!result.success) {
             dispatch(bioAuthActions.setCancelled(true));
 
