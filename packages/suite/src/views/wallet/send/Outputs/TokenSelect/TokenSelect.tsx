@@ -26,10 +26,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import {
-    selectIsCopyAddressModalShown,
-    selectIsDebugModeActive,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
@@ -69,14 +66,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     // N0TE: do this conditionally only for networks with tokens and when set-max is not enabled
     const tokenWatch = watch(tokenInputName, null);
 
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
-
     useEffect(() => {
-        if (hasNetworkFeatures(account, 'tokens', isDebugModeActive) && !isSetMaxActive) {
+        if (hasNetworkFeatures(account, 'tokens') && !isSetMaxActive) {
             const amountValue = getValues(`outputs.${outputId}.amount`) as string;
             if (amountValue) setAmount(outputId, amountValue);
         }
-    }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive, isDebugModeActive]);
+    }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
 
     useEffect(() => {
         if (sendFormPrefillContractAddress) {
@@ -198,10 +193,9 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             )}
                         </Column>
                     </Row>
-                    {!hasNoStandardTokens &&
-                        hasNetworkFeatures(account, 'tokens', isDebugModeActive) && (
-                            <IconButton icon="caretDown" intent="neutral" priority="secondary" />
-                        )}
+                    {!hasNoStandardTokens && hasNetworkFeatures(account, 'tokens') && (
+                        <IconButton icon="caretDown" intent="neutral" priority="secondary" />
+                    )}
                 </Row>
             </Card>
         </>

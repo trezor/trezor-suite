@@ -11,7 +11,6 @@ import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/U
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { TokensNavigation } from './TokensNavigation';
 import { CoinsTable } from './coins/CoinsTable';
@@ -26,17 +25,16 @@ export const Tokens = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const dispatch = useDispatch();
     const routeName = useSelector(selectRouteName);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     useEffect(() => {
         if (
             selectedAccount.status === 'loaded' &&
-            !hasNetworkFeatures(selectedAccount.account, 'tokens', isDebugModeActive) &&
+            !hasNetworkFeatures(selectedAccount.account, 'tokens') &&
             routeName !== 'wallet-index'
         ) {
             dispatch(goto('wallet-index', { preserveParams: true }));
         }
-    }, [selectedAccount, dispatch, routeName, isDebugModeActive]);
+    }, [selectedAccount, dispatch, routeName]);
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_TOKENS" account={selectedAccount} />;
