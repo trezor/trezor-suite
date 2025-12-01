@@ -109,21 +109,27 @@ const getInvalidThpDeviceState = async (context: WorkflowContext) => {
         // validate that expected ThpSession still exists
         thpState.setSessionId(expectedSessionId);
         uniqueState = await getStaticSessionId(device).catch(e => {
-            if (e.code === 'Failure_InvalidSession') {
-                // requested sessionId is not valid, reset setSessionId
-                device.setState({
-                    sessionId: undefined,
-                    deriveCardano: undefined,
-                });
-                thpState?.setSessionId(Buffer.alloc(1));
-
-                return undefined;
-            }
-            // user cancelled pin on device
-            if (e.code === 'Failure_PinCancelled') {
-                throw e;
+            switch (e.code) {
+                case 'Failure_PinCancelled':
+                    // user cancelled pin on device
+                    throw e;
+                case 'Failure_InvalidSession':
+                default:
+                    // TODO why not to throw?
+                    return undefined;
             }
         });
+
+        if (isUnexpectedState(expectedState, uniqueState)) {
+            // there is unexpected passphrase on given sessionId, ignore returned state
+            uniqueState = undefined;
+        }
+
+        if (!uniqueState) {
+            // requested sessionId is unknown or there was another passphrase, reset sessionId
+            device.setState({ sessionId: undefined, deriveCardano: undefined });
+            thpState?.setSessionId(Buffer.alloc(1));
+        }
     }
 
     if (!uniqueState || (!currentState?.deriveCardano && method.useCardanoDerivation)) {
