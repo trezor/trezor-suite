@@ -66,7 +66,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
     async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
-        if (!account || account.failed) return;
+        if (!account || account.failed || account.accountType === 'placeholder') return;
 
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         // first basic check, traffic optimization

@@ -90,7 +90,8 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
 
         if (
             (method === 'ethereumSignTransaction' || method === 'ethereumSignTypedData') &&
-            source.type !== 'desktop-ws'
+            source.type !== 'desktop-ws' &&
+            source.type !== 'web'
         ) {
             // Display simulation
             const device = selectSelectedDevice(getState());
