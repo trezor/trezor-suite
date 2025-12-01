@@ -101,7 +101,7 @@ const merge = (
     >,
 ): TrezorDevice => ({
     ...device,
-    ...upcoming,
+    ...(({ _state, ...rest }) => rest)(upcoming),
     id: upcoming.id ?? device.id,
     state: mergeDeviceState(device, upcoming),
     instance: device.instance,
@@ -126,7 +126,7 @@ const merge = (
  */
 const connectDevice = (
     draft: DeviceReducerState,
-    device: Device,
+    { _state, ...device }: Device,
     { isAutoEjectEnabled }: { isAutoEjectEnabled: boolean },
 ) => {
     const currentTime = new Date().getTime();
@@ -204,7 +204,7 @@ const connectDevice = (
     const newDevice: TrezorDevice = {
         ...device,
         ...deviceCommonFields,
-        state: device._state,
+        state: _state,
         useEmptyPassphrase: undefined,
         remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         temporaryRemember: false,
