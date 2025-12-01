@@ -81,7 +81,7 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
                     header: { title: 'Unstake' },
-                    body: [['Transaction fee:'], [`0.000005 SOL`]],
+                    body: [['Transaction fee:'], [`${solanaStakingMock.rentFee} SOL`]],
                     footer: 'Tap to continue',
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
@@ -151,7 +151,7 @@ test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }
                         [solanaStakingMock.addFeeTo(unstakingAmount)],
                         [' '],
                         ['Transaction fee:'],
-                        ['0.000005 SOL'],
+                        [`${solanaStakingMock.rentFee} SOL`],
                     ],
                     footer: 'Tap to continue',
                 });

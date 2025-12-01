@@ -162,7 +162,7 @@ export class SolanaStakingMock {
     protected currentEpoch: number = BASE_EPOCH;
     readonly fee: number = 0.00228788;
     readonly feeFormatted: string = '0.00228788 SOL';
-    readonly magicalFeeDeficit: number = 0.000005;
+    readonly rentFee: number = 0.000005;
 
     constructor(
         private readonly page: Page,
@@ -176,7 +176,7 @@ export class SolanaStakingMock {
     }
 
     addFeeTo(amountInSol: string): string {
-        const total = Number(amountInSol) + this.fee - this.magicalFeeDeficit;
+        const total = Number(amountInSol) + this.fee - this.rentFee;
 
         return `${total.toFixed(9)} SOL`;
     }
