@@ -5,7 +5,6 @@ import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_DAYS,
-    CARDANO_APPROXIMATE_EPOCHS,
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
@@ -77,22 +76,14 @@ const getInfoRowsData = (
             };
         case 'cardano':
             return {
-                payoutDays:
-                    flow === StakingFlow.UpdateProvider ? (
-                        <Translation
-                            id="TR_STAKE_APPROXIMATE_EPOCHS"
-                            values={{
-                                count: CARDANO_APPROXIMATE_EPOCHS,
-                            }}
-                        />
-                    ) : (
-                        <Translation
-                            id="TR_STAKE_APPROXIMATE_DAYS"
-                            values={{
-                                count: CARDANO_ACTIVATION_PERIOD_DAYS,
-                            }}
-                        />
-                    ),
+                payoutDays: (
+                    <Translation
+                        id="TR_STAKE_APPROXIMATE_DAYS"
+                        values={{
+                            count: CARDANO_ACTIVATION_PERIOD_DAYS,
+                        }}
+                    />
+                ),
                 rewardsPeriodHeading: (
                     <Translation
                         id={

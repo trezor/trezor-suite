@@ -199,7 +199,7 @@ export const StakingCard = ({
     };
 
     const isCardanoNetworkType = account.networkType === 'cardano';
-    
+
     return (
         <Card data-testid="@wallet/staking/card">
             <Column flex="1" gap={spacings.xxl}>

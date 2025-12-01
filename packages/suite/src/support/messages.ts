@@ -9506,7 +9506,8 @@ export default defineMessages({
     },
     TR_STAKING_EARN_APY_WITH_EVERSTAKE: {
         id: 'TR_STAKING_EARN_APY_WITH_EVERSTAKE',
-        defaultMessage: 'Earn ~{apy}% APY with our trusted new staking partner, Everstake.',
+        defaultMessage:
+            'Earn ~{apy}% APY with our trusted new staking partner, Everstake. Your initial 2 {networkDisplaySymbol} deposit moves with you—you won’t pay it again.',
     },
     TR_STAKING_BANNER_DETAIL_TEXT_EMPTY: {
         id: 'TR_STAKING_BANNER_DETAIL_TEXT_EMPTY',
@@ -9612,6 +9613,11 @@ export default defineMessages({
         id: 'TR_STAKING_CARD_KEEP_EARNING_TEXT',
         defaultMessage: '<t>APY</t> is your yearly return on staked funds, with compounding.',
     },
+    TR_STAKING_CARD_KEEP_EARNING_CARDANO_TEXT: {
+        id: 'TR_STAKING_CARD_KEEP_EARNING_CARDANO_TEXT',
+        defaultMessage:
+            '<t>APY</t> is your yearly compounded return on your staked funds (excluding the initial 2 {networkDisplaySymbol} deposit).',
+    },
     TR_STAKING_CARD_LOCK_IN_TITLE: {
         id: 'TR_STAKING_CARD_LOCK_IN_TITLE',
         defaultMessage: 'Lock in with flexibility',
@@ -9665,7 +9671,7 @@ export default defineMessages({
     TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
         id: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
         defaultMessage:
-            'All your available {networkDisplaySymbol} is currently staked. Any new {networkDisplaySymbol} you receive will become active after two epochs.',
+            'All your available {networkDisplaySymbol} is currently staked. Any new {networkDisplaySymbol} you receive will become active after ~{days} days.',
     },
     TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED: {
         id: 'TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED',
@@ -9678,7 +9684,7 @@ export default defineMessages({
     },
     TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER: {
         id: 'TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER',
-        defaultMessage: 'Keep earning rewards with your current provider for ~{days} days.',
+        defaultMessage: 'Keep earning rewards with your current provider.',
     },
     TR_STAKE_ACTIVATION_PERIOD: {
         id: 'TR_STAKE_ACTIVATION_PERIOD',
@@ -9959,10 +9965,6 @@ export default defineMessages({
     TR_STAKE_APPROXIMATE_DAYS: {
         id: 'TR_STAKE_APPROXIMATE_DAYS',
         defaultMessage: '~{count, plural, one {# day} other {# days}}',
-    },
-    TR_STAKE_APPROXIMATE_EPOCHS: {
-        id: 'TR_STAKE_APPROXIMATE_EPOCHS',
-        defaultMessage: '{count, plural, one {# epoch} other {# epochs}}',
     },
     TR_STAKE_MAX_REWARD_DAYS: {
         id: 'TR_STAKE_MAX_REWARD_DAYS',
