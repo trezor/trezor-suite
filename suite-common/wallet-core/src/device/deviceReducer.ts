@@ -77,27 +77,14 @@ const mergeDeviceState = (
     const currentState = device.state;
     const upcomingState = typeof upcoming.state === 'string' ? upcoming._state : upcoming.state;
 
-    if (currentState && upcomingState) {
-        if (
-            currentState.staticSessionId === upcomingState.staticSessionId &&
-            currentState.sessionId !== upcomingState.sessionId
-        ) {
-            // update sessionId for the same staticSessionId
-            return { ...currentState, sessionId: upcomingState.sessionId };
-        }
-
-        if (
-            currentState.staticSessionId !== upcomingState.staticSessionId &&
-            currentState.sessionId === upcomingState.sessionId
-        ) {
-            // special THP case: new sessionId was assigned to a wallet but there already was another remembered wallet with the same sessionId.
-            // In that case, remove the sessionId from the existing wallet as it can't be valid anymore.
-            return { ...currentState, sessionId: undefined };
-        }
-    }
-
-    // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
-    return currentState;
+    return currentState &&
+        upcomingState &&
+        currentState.staticSessionId === upcomingState.staticSessionId &&
+        currentState.sessionId !== upcomingState.sessionId
+        ? // update sessionId for the same staticSessionId
+          { ...currentState, sessionId: upcomingState.sessionId }
+        : // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
+          currentState;
 };
 
 /**
