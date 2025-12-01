@@ -1,8 +1,9 @@
 import { useDerivedValue } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { useIsMultiline } from '@suite-native/helpers';
-import { Translation, useLocale } from '@suite-native/intl';
+import { Translation, selectLocale } from '@suite-native/intl';
 import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
 import { Underline } from './Underline';
@@ -15,7 +16,7 @@ const CURRENT_STEP_INDEX = 1;
 export const WalletBackupRecapStep2 = ({
     currentStepIndex,
 }: WalletBackupTutorialNumberedStepProps) => {
-    const locale = useLocale();
+    const locale = useSelector(selectLocale);
     const isFocused = useDerivedValue(() => currentStepIndex.value === CURRENT_STEP_INDEX);
 
     const { onTextLayout, numberOfLines } = useIsMultiline('titleMedium');
