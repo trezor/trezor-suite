@@ -287,8 +287,8 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                 handleSubmit(() => {
                     handleChange();
                 })();
+                previousValues.current = values;
             }
-            previousValues.current = values;
         },
         500,
         [values, previousValues, pageType],
