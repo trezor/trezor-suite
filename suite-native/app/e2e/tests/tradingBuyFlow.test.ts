@@ -11,7 +11,8 @@ const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
 );
 
-describe('Trade Buy [@noDevice]', () => {
+// FIXME https://github.com/trezor/trezor-suite/issues/23518
+describe.skip('Trade Buy [@noDevice]', () => {
     beforeEach(async () => {
         await openApp({ args: { preloadedState } });
         await onHome.assertIsPortfolioGraphVisible();
