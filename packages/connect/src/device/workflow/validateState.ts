@@ -29,6 +29,10 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
     }
 };
 
+const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) =>
+    // Ignore instance ID, it doesn't necessarily need to match the current instance
+    expected && current && expected.split(':')[0] !== current.split(':')[0];
+
 const getState = async (context: WorkflowContext) => {
     const { device } = context;
     if (!device.features) return;
@@ -45,8 +49,8 @@ const getState = async (context: WorkflowContext) => {
     if (device.features.session_id) {
         device.setState({ sessionId: device.features.session_id });
     }
-    // Ignore instance ID, it doesn't necessarily need to match the current instance
-    if (expectedState && expectedState.split(':')[0] !== uniqueState.split(':')[0]) {
+
+    if (isUnexpectedState(expectedState, uniqueState)) {
         return uniqueState;
     }
     if (!expectedState || expectedState !== uniqueState) {
@@ -133,7 +137,7 @@ const getInvalidThpDeviceState = async (context: WorkflowContext) => {
         });
     }
 
-    if (expectedState && expectedState !== uniqueState) {
+    if (isUnexpectedState(expectedState, uniqueState)) {
         return uniqueState;
     }
 
