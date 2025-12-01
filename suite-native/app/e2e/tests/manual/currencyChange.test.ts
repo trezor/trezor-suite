@@ -2,6 +2,7 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { it } from '../../support/wrappedIt';
 
+// FIXME https://github.com/trezor/trezor-suite/issues/23438
 describe.skip('Settings', () => {
     it(
         'Change currency',
