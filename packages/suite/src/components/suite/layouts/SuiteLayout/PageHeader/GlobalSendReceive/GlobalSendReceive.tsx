@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
 
+import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
@@ -39,6 +40,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const handleSendCancel = (filledSearch: boolean) => {
         sendAnalytics.close(filledSearch);
         closeModal();
+        dispatch(resetProtocol());
         dispatch(globalSendReceiveFilters.actions.resetFilters());
     };
 

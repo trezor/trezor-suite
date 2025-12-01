@@ -4143,13 +4143,13 @@ export default defineMessages({
         description: 'Required for current notifications. Do not change.',
         defaultMessage: '{header}{body}',
     },
-    TOAST_COIN_SCHEME_PROTOCOL_ACTION: {
-        id: 'TOAST_COIN_SCHEME_PROTOCOL_ACTION',
-        defaultMessage: 'Autofill send form',
-    },
     TOAST_COIN_SCHEME_PROTOCOL_HEADER: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL_HEADER',
-        defaultMessage: 'Go to an account to send',
+        defaultMessage: 'Send {symbol} to this address',
+    },
+    TOAST_COIN_SCHEME_PROTOCOL_AMOUNT: {
+        id: 'TOAST_COIN_SCHEME_PROTOCOL_AMOUNT',
+        defaultMessage: 'Amount:',
     },
     TOAST_ACQUIRE_ERROR: {
         id: 'TOAST_ACQUIRE_ERROR',
@@ -7028,6 +7028,18 @@ export default defineMessages({
     TR_RECOVERY_FAILED: {
         id: 'TR_RECOVERY_FAILED',
         defaultMessage: 'Wallet recovery failed',
+    },
+    TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_TITLE: {
+        id: 'TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_TITLE',
+        defaultMessage: 'No {network} account found',
+    },
+    TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_DESC: {
+        id: 'TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_DESC',
+        defaultMessage: 'Activate an account to continue with this transaction.',
+    },
+    TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_CTA: {
+        id: 'TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_CTA',
+        defaultMessage: 'Activate {network}',
     },
     TR_ACCOUNT_SEARCH_NO_RESULTS: {
         id: 'TR_ACCOUNT_SEARCH_NO_RESULTS',

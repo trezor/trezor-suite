@@ -22,7 +22,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { useDidUpdate } from '@trezor/react-utils';
 
-import { fillSendForm } from 'src/actions/suite/protocolActions';
+import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
 import {
     getSendFormDraftThunk,
@@ -318,6 +318,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             }
 
             dispatch(fillSendForm(false));
+            dispatch(resetProtocol());
             composeRequest();
         }
     }, [
@@ -334,15 +335,38 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // load draft from reducer and reset current form values, this should be only called once on mount
     useEffect(() => {
         const loadDraftValues = async () => {
-            const storedState = await dispatch(getSendFormDraftThunk()).unwrap();
-            const values = getLoadedValues(storedState);
+            // Check if we should fill from protocol data instead of draft
+            const shouldFillFromProtocol =
+                protocol.sendForm.shouldFill &&
+                protocol.sendForm.scheme &&
+                protocol.sendForm.address &&
+                selectedAccount.network.symbol ===
+                    getNetworkSymbolForProtocol(protocol.sendForm.scheme);
 
-            // keepDefaultValues will set `isDirty` flag to true
-            reset(values, { keepDefaultValues: !!storedState });
+            if (shouldFillFromProtocol) {
+                const values = getLoadedValues();
+                values.outputs[0].address = protocol.sendForm.address!;
 
-            if (storedState) {
-                draft.current = storedState;
-                composeDraft(storedState);
+                if (protocol.sendForm.amount) {
+                    const amount = protocol.sendForm.amount.toString();
+                    values.outputs[0].amount = shouldSendInSats
+                        ? convertAmountUnitsToSubunits(amount, state.network.decimals)
+                        : amount;
+                }
+
+                reset(values);
+                dispatch(fillSendForm(false));
+                composeRequest();
+            } else {
+                const storedState = await dispatch(getSendFormDraftThunk()).unwrap();
+                const values = getLoadedValues(storedState);
+
+                reset(values, { keepDefaultValues: !!storedState });
+
+                if (storedState) {
+                    draft.current = storedState;
+                    composeDraft(storedState);
+                }
             }
         };
         loadDraftValues();

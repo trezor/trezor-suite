@@ -1,6 +1,7 @@
 import { RefObject, memo } from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { Box } from '@trezor/components';
@@ -30,6 +31,12 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         resetSearch: () => setSearch(''),
     });
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const protocolScheme = useSelector(state => state.protocol.sendForm.scheme);
+
+    const protocolSymbol = protocolScheme ? getNetworkSymbolForProtocol(protocolScheme) : undefined;
+
+    const networks = protocolSymbol ? [protocolSymbol] : enabledNetworks;
+
     const { translationString } = useTranslation();
 
     return (
@@ -39,10 +46,10 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
                 search={search}
                 setSearch={setSearch}
                 selectConfig={{
-                    networks: enabledNetworks,
+                    networks,
                     selectedNetwork: networkFilter,
                     onChange: setNetworkFilter,
-                    includeAllOption: true,
+                    includeAllOption: !protocolSymbol,
                     allLabel: translationString('TR_ALL_NETWORKS', {
                         networkCount: enabledNetworks?.length,
                     }),

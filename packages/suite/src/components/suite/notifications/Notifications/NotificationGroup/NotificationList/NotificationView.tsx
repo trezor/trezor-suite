@@ -13,18 +13,20 @@ import { getNotificationIcon } from 'src/utils/suite/notification';
 
 export type NotificationActionVariant = 'primary' | 'info' | 'warning' | 'destructive' | 'tertiary';
 
+export interface NotificationAction {
+    onClick: () => void;
+    label: ExtendedMessageDescriptor['id'];
+    position?: 'bottom' | 'right';
+    variant?: NotificationActionVariant;
+}
+
 export interface NotificationViewProps {
     notification: NotificationEntry;
     variant: ToastNotificationVariant;
     icon?: IconName | JSX.Element;
     message: ExtendedMessageDescriptor['id'];
     messageValues: ExtendedMessageDescriptor['values'];
-    action?: {
-        onClick: () => void;
-        label: ExtendedMessageDescriptor['id'];
-        position?: 'bottom' | 'right';
-        variant?: NotificationActionVariant;
-    };
+    action?: NotificationAction | NotificationAction[];
 }
 
 export const mapActionVariantToIntent = (
@@ -48,7 +50,7 @@ export const mapActionVariantToIntent = (
 export const NotificationView = ({
     message,
     messageValues,
-    action,
+    action: actionProp,
     icon,
     variant,
     notification: { seen, id },
@@ -56,6 +58,9 @@ export const NotificationView = ({
     const { isBelowTablet } = useLayoutSize();
     const defaultIcon = icon ?? getNotificationIcon(variant);
     const colorVariant = seen ? 'tertiary' : 'default';
+
+    // NotificationView only supports a single action so even if an array is passed, only the first action is used
+    const action = Array.isArray(actionProp) ? actionProp[0] : actionProp;
 
     return (
         <Row gap={spacings.sm}>
