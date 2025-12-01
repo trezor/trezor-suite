@@ -2,6 +2,7 @@ import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config
 import {
     selectAccountIsStakingActive,
     selectBaseCurrency,
+    selectDeviceSupportedNetworks,
     selectFiatRatesByFiatRateKey,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
@@ -101,6 +102,7 @@ export const StakingDashboard = () => {
     const isStakingActive = useSelector(state =>
         stakingAccounts.some(account => selectAccountIsStakingActive(state, account.key)),
     );
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     if (!accounts.some(account => account.networkType !== 'bitcoin')) {
         return null;
@@ -174,9 +176,15 @@ export const StakingDashboard = () => {
         ...accountsInsufficientFunds.toSorted(sortAccountsByBalance),
     ];
 
-    const ethNotActivated = !stakingAccounts.find(account => account.symbol === 'eth');
-    const solNotActivated = !stakingAccounts.find(account => account.symbol === 'sol');
-    const adaNotActivated = !stakingAccounts.find(account => account.symbol === 'ada');
+    const ethNotActivated =
+        deviceSupportedNetworkSymbols.includes('eth') &&
+        !stakingAccounts.find(account => account.symbol === 'eth');
+    const solNotActivated =
+        deviceSupportedNetworkSymbols.includes('sol') &&
+        !stakingAccounts.find(account => account.symbol === 'sol');
+    const adaNotActivated =
+        deviceSupportedNetworkSymbols.includes('ada') &&
+        !stakingAccounts.find(account => account.symbol === 'ada');
     const stakingAccountsNotActivated = ethNotActivated && solNotActivated && adaNotActivated;
 
     const onCollapseChange = (collapsed: boolean) => {
