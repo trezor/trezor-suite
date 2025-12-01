@@ -52,8 +52,7 @@ class Controller extends TrezorUserEnvLinkClass {
 
         this.startBridge =
             !env.USE_HW && !env.USE_NODE_BRIDGE
-                ? (version?: Parameters<TrezorUserEnvLinkClass['startBridge']>[0]) =>
-                      this.originalApi.startBridge(version)
+                ? () => this.originalApi.startBridge('2.0.33')
                 : env.USE_NODE_BRIDGE
                   ? async () => {
                         this.nodeBridge = new TrezordNode({

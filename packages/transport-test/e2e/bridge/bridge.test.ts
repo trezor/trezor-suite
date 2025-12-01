@@ -8,6 +8,7 @@ import { assertSuccess } from '../api/utils';
 
 const emulatorStartOpts = { model: 'T2T1', version: '2-latest', wipe: true } as const;
 
+// todo: these test were focused on testing feature parity between old and new bridge implementations. since old bridge is now deprecated, we might get rid of them, or at least stop testing the old bridge behavior
 describe('bridge', () => {
     let bridge: BridgeTransport;
     let descriptors: Descriptor[];
