@@ -48,100 +48,102 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
             heading={<Translation id="TR_REWARDS" />}
             data-testid="@wallet/accounts/rewards-list"
         >
-            {rewards.isLoading || rewards.selectedAccountRewards === undefined ? (
-                <SkeletonStack $col $childMargin="0px 0px 16px 0px">
-                    <SkeletonTransactionItem />
-                    <SkeletonTransactionItem />
-                    <SkeletonTransactionItem />
-                </SkeletonStack>
-            ) : (
-                <>
-                    {rewards.slicedRewards?.map(reward => (
-                        <React.Fragment key={reward.epoch}>
-                            <Row>
-                                <ColDate>
-                                    <FormattedDate
-                                        value={reward?.time ?? undefined}
-                                        day="numeric"
-                                        month="long"
-                                        year="numeric"
-                                    />
-                                </ColDate>
-                            </Row>
-                            <Card>
-                                <Row
-                                    justifyContent="space-between"
-                                    margin={{ horizontal: spacings.xs, bottom: spacings.xs }}
-                                >
-                                    <Row gap={spacings.xs}>
-                                        <Icon name="arrowLineDown" variant="tertiary" />
-                                        <Column>
-                                            <Text typographyStyle="body" variant="tertiary">
-                                                <Translation id="TR_REWARD" />
-                                            </Text>
-                                            <Tooltip
-                                                maxWidth={250}
-                                                content={
-                                                    <Translation
-                                                        id="TR_STAKE_REWARDS_TOOLTIP"
-                                                        values={{ count: SOLANA_EPOCH_DAYS }}
-                                                    />
-                                                }
-                                            >
-                                                <Badge size="small">
-                                                    <Row gap={spacings.xxs} alignItems="center">
+            <Column gap={32}>
+                {rewards.isLoading || rewards.selectedAccountRewards === undefined ? (
+                    <SkeletonStack $col $childMargin="0px 0px 16px 0px">
+                        <SkeletonTransactionItem />
+                        <SkeletonTransactionItem />
+                        <SkeletonTransactionItem />
+                    </SkeletonStack>
+                ) : (
+                    <Column gap={40}>
+                        {rewards.slicedRewards?.map(reward => (
+                            <Column gap={10} key={reward.epoch}>
+                                <Row>
+                                    <ColDate>
+                                        <FormattedDate
+                                            value={reward?.time ?? undefined}
+                                            day="numeric"
+                                            month="long"
+                                            year="numeric"
+                                        />
+                                    </ColDate>
+                                </Row>
+                                <Card>
+                                    <Row
+                                        justifyContent="space-between"
+                                        margin={{ horizontal: spacings.xs, bottom: spacings.xs }}
+                                    >
+                                        <Row gap={spacings.xs}>
+                                            <Icon name="arrowLineDown" variant="tertiary" />
+                                            <Column>
+                                                <Text typographyStyle="body" variant="tertiary">
+                                                    <Translation id="TR_REWARD" />
+                                                </Text>
+                                                <Tooltip
+                                                    maxWidth={250}
+                                                    content={
                                                         <Translation
-                                                            id="TR_STAKE_REWARDS_BADGE"
-                                                            values={{ count: reward.epoch }}
+                                                            id="TR_STAKE_REWARDS_TOOLTIP"
+                                                            values={{ count: SOLANA_EPOCH_DAYS }}
                                                         />
-                                                        <Icon name="info" size="small" />
-                                                    </Row>
-                                                </Badge>
-                                            </Tooltip>
-                                        </Column>
-                                    </Row>
-                                    {reward?.amount && (
-                                        <Column alignItems="end">
-                                            <HiddenPlaceholder>
-                                                <FormattedCryptoAmount
-                                                    value={formatNetworkAmount(
-                                                        reward?.amount,
-                                                        account.symbol,
-                                                    )}
-                                                    symbol={account.symbol}
-                                                />
-                                            </HiddenPlaceholder>
-                                            <HiddenPlaceholder>
-                                                <Text typographyStyle="hint" variant="tertiary">
-                                                    <BaseCurrencyValue
-                                                        amount={formatNetworkAmount(
+                                                    }
+                                                >
+                                                    <Badge size="small">
+                                                        <Row gap={spacings.xxs} alignItems="center">
+                                                            <Translation
+                                                                id="TR_STAKE_REWARDS_BADGE"
+                                                                values={{ count: reward.epoch }}
+                                                            />
+                                                            <Icon name="info" size="small" />
+                                                        </Row>
+                                                    </Badge>
+                                                </Tooltip>
+                                            </Column>
+                                        </Row>
+                                        {reward?.amount && (
+                                            <Column alignItems="end">
+                                                <HiddenPlaceholder>
+                                                    <FormattedCryptoAmount
+                                                        value={formatNetworkAmount(
                                                             reward?.amount,
                                                             account.symbol,
                                                         )}
                                                         symbol={account.symbol}
                                                     />
-                                                </Text>
-                                            </HiddenPlaceholder>
-                                        </Column>
-                                    )}
-                                </Row>
-                            </Card>
-                        </React.Fragment>
-                    ))}
-                </>
-            )}
+                                                </HiddenPlaceholder>
+                                                <HiddenPlaceholder>
+                                                    <Text typographyStyle="hint" variant="tertiary">
+                                                        <BaseCurrencyValue
+                                                            amount={formatNetworkAmount(
+                                                                reward?.amount,
+                                                                account.symbol,
+                                                            )}
+                                                            symbol={account.symbol}
+                                                        />
+                                                    </Text>
+                                                </HiddenPlaceholder>
+                                            </Column>
+                                        )}
+                                    </Row>
+                                </Card>
+                            </Column>
+                        ))}
+                    </Column>
+                )}
 
-            {rewards.showPagination && !rewards.isLoading && rewards.slicedRewards?.length && (
-                <Pagination
-                    hasPages={true}
-                    currentPage={rewards.currentPage}
-                    isLastPage={rewards.isLastPage}
-                    perPage={rewards.itemsPerPage}
-                    totalItems={rewards.totalItems}
-                    onPageSelected={onPageSelected}
-                    explicitNavigation
-                />
-            )}
+                {rewards.showPagination && !rewards.isLoading && rewards.slicedRewards?.length && (
+                    <Pagination
+                        hasPages={true}
+                        currentPage={rewards.currentPage}
+                        isLastPage={rewards.isLastPage}
+                        perPage={rewards.itemsPerPage}
+                        totalItems={rewards.totalItems}
+                        onPageSelected={onPageSelected}
+                        explicitNavigation
+                    />
+                )}
+            </Column>
         </DashboardSection>
     );
 };
