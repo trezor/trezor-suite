@@ -99,7 +99,8 @@ export const ConnectErrorModal = () => {
         popupCall.error?.code === 'Device_InvalidState';
     const isNoTransportError = prerequisite === 'no-transport';
 
-    if (isDeviceReconnectError && !prerequisite) return <ConnectSelectDeviceModal />;
+    if (isDeviceReconnectError && (!prerequisite || prerequisite === 'device-disconnected'))
+        return <ConnectSelectDeviceModal />;
 
     const getVariant = () => {
         if (isCancelled) return 'warning';

@@ -31,12 +31,16 @@ export const useConnectPopupWeb = () => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const manifest = useRef<ManifestPartial | undefined>(undefined);
     const [pendingHandshake, setPendingHandshake] = useState<string | undefined>();
+    const [responseSent, setResponseSent] = useState(false);
 
     useEffect(() => {
         const onMessage = async (event: MessageEvent) => {
             if (event.data?.type === 'channel-handshake-request') {
                 postMessageToParent({ type: 'channel-handshake-confirm' });
-            } else if (event.data.type === POPUP.HANDSHAKE) {
+            } else if (
+                event.data.type === POPUP.HANDSHAKE &&
+                event.data.payload?.settings?.manifest
+            ) {
                 manifest.current = event.data.payload.settings.manifest;
                 setPendingHandshake(event.data.id);
             } else if (event.data?.type === IFRAME.CALL) {
@@ -67,6 +71,7 @@ export const useConnectPopupWeb = () => {
                     type: RESPONSE_EVENT,
                     payload: response,
                 });
+                setResponseSent(true);
             } else if (event.data?.type === POPUP.CLOSED) {
                 dispatch(connectPopupCancelThunk(event.data.payload));
             }
@@ -97,8 +102,12 @@ export const useConnectPopupWeb = () => {
 
     // Window close control
     useEffect(() => {
-        if (popupCall?.state === 'finished' && popupCall?.source.type === CALL_SOURCE_WEB) {
+        if (
+            popupCall?.state === 'finished' &&
+            popupCall?.source.type === CALL_SOURCE_WEB &&
+            responseSent
+        ) {
             window.close();
         }
-    }, [popupCall]);
+    }, [popupCall, responseSent]);
 };
