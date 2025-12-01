@@ -1,3 +1,4 @@
+import { type PropsWithChildren } from 'react';
 import { GestureDetector, GestureType } from 'react-native-gesture-handler';
 import {
     FadeIn,
@@ -11,13 +12,13 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { AnimatedBox, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
-import { Screen } from '@suite-native/navigation';
+import { Screen, type ScreenHeaderProps } from '@suite-native/navigation';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { getScreenWidth, getWindowWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ThemeColorVariant } from '@trezor/theme';
 
-import { ConfirmOnTrezorWrapperProps } from './ConfirmOnTrezorWrapper';
+import { BottomSheetControlProps } from './hooks/useConfirmOnTrezorSheet';
 
 const SCREEN_WIDTH = getScreenWidth();
 const WINDOW_WIDTH = getWindowWidth();
@@ -60,6 +61,14 @@ const indicatorStyle = prepareNativeStyle<{ colorVariant: ThemeColorVariant }>(
             colorVariant === 'dark' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
     }),
 );
+
+export type ConfirmOnTrezorWrapperProps = PropsWithChildren<{
+    controlRef?: React.Ref<BottomSheetControlProps>;
+    isManualControlEnabled?: boolean;
+    defaultHeader?: React.ReactNode;
+    isCloseButtonDisabled?: boolean;
+}> &
+    ScreenHeaderProps;
 
 type ConfirmOnTrezorContentProps = ConfirmOnTrezorWrapperProps & {
     translateY: SharedValue<number>;
