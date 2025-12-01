@@ -11,12 +11,13 @@ Running the dev environment natively on Windows is not most straightforward, but
 
 - Install Python preferably via the [Python for Windows installer](https://www.python.org/downloads/windows/), maybe Microsoft Store could work too
 - Install [latest Visual Studio Community](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community) with C++ build tools
-    - **Make sure** to install the "Desktop development with C++" workload
+    - **Make sure** to install the "Desktop development with C++" workload **and include** "C++ Clang Tools for Windows"
     - _FYI: it's necessary so that yarn packages with native code can be built, `node-gyp` depends on it: [details](https://github.com/nodejs/node-gyp?tab=readme-ov-file#on-windows)_
 - Install [git](https://git-scm.com/downloads/win) using the installer and make sure to include git bash for Windows
-- Install nodeJS version as per [.nvmrc](https://github.com/trezor/trezor-suite/blob/develop/.nvmrc)
-    - nvm is not supported on Windows, forks exists but manual nodeJS installation from `.msi` will work.
-        - Do **not** check build tools with Chocolatey (already installed with Visual Studio)
+- ~Install nodeJS version as per [.nvmrc](https://github.com/trezor/trezor-suite/blob/develop/.nvmrc)~
+- **TEMPORARY: Use >=25.4.0 instead!** (as of writing, the 24 version in `.nvrmc` has no support for Visual Studio 2026)
+    - nvm is not well supported on Windows, but manual nodeJS installation from `.msi` will work.
+        - Do **not** check build tools with Chocolatey (already installed with Visual Studio, that's more reliable)
 - Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
 - Install [Git LFS](https://git-lfs.com/)
 - It is **imperative** that all further commands are run in bash for Windows, **not** in cmd or powershell!
