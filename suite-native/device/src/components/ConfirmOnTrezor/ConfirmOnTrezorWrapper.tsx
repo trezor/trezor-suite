@@ -1,8 +1,7 @@
-import { PropsWithChildren, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { AnimatedBox, Box, VStack, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { isDetoxTestBuild } from '@suite-native/config';
-import { ScreenHeaderProps } from '@suite-native/navigation';
 import { DynamicHeaderProvider } from '@suite-native/navigation/src/components/DynamicHeader/DynamicScreenHeaderContext';
 import { useActiveColorScheme } from '@suite-native/theme';
 import {
@@ -13,18 +12,10 @@ import {
 } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
 
-import { ConfirmOnTrezorContent } from './ConfirmOnTrezorContent';
+import { ConfirmOnTrezorContent, type ConfirmOnTrezorWrapperProps } from './ConfirmOnTrezorContent';
 import { ConfirmOnTrezorHeader } from './ConfirmOnTrezorHeader';
 import { ConfirmOnTrezorInstructions } from './ConfirmOnTrezorInstructions';
-import { BottomSheetControlProps, useConfirmOnTrezorSheet } from './hooks/useConfirmOnTrezorSheet';
-
-export type ConfirmOnTrezorWrapperProps = PropsWithChildren<{
-    controlRef?: React.Ref<BottomSheetControlProps>;
-    isManualControlEnabled?: boolean;
-    defaultHeader?: React.ReactNode;
-    isCloseButtonDisabled?: boolean;
-}> &
-    ScreenHeaderProps;
+import { useConfirmOnTrezorSheet } from './hooks/useConfirmOnTrezorSheet';
 
 const instructionsContainerStyle = prepareNativeStyle<{
     paddingTop: number;
