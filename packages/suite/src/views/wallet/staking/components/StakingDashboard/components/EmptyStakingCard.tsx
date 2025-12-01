@@ -88,7 +88,11 @@ export const EmptyStakingCard = () => {
                 title: <Translation id="TR_STAKING_CARD_KEEP_EARNING_TITLE" />,
                 text: (
                     <Translation
-                        id="TR_STAKING_CARD_KEEP_EARNING_TEXT"
+                        id={
+                            isCardano
+                                ? 'TR_STAKING_CARD_KEEP_EARNING_CARDANO_TEXT'
+                                : 'TR_STAKING_CARD_KEEP_EARNING_TEXT'
+                        }
                         values={{
                             t: text => (
                                 <Tooltip
@@ -99,6 +103,7 @@ export const EmptyStakingCard = () => {
                                     <abbr>{text}</abbr>
                                 </Tooltip>
                             ),
+                            networkDisplaySymbol: displaySymbol,
                         }}
                     />
                 ),

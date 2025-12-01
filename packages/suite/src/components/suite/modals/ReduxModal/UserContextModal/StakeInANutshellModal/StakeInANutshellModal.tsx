@@ -1,6 +1,7 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { CARDANO_ACTIVATION_PERIOD_DAYS } from '@suite-common/wallet-constants';
 import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import {
@@ -201,6 +202,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
                                     networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                                     count: unstakingPeriod,
                                     apy,
+                                    days: CARDANO_ACTIVATION_PERIOD_DAYS,
                                 }}
                             />
                         </Paragraph>
