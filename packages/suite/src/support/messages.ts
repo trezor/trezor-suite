@@ -3829,6 +3829,18 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
         defaultMessage: 'Public key (XPUB)',
     },
+    TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER',
+        defaultMessage: 'Export Labels (BIP 329)',
+    },
+    TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON: {
+        id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON',
+        defaultMessage: 'Export',
+    },
+    TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION: {
+        id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION',
+        defaultMessage: 'Export label files to your computer using the standard BIP 329',
+    },
     TR_ACCOUNT_DETAILS_XPUB: {
         id: 'TR_ACCOUNT_DETAILS_XPUB',
         defaultMessage:

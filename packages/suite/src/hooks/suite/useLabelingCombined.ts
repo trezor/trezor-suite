@@ -81,6 +81,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         disableSuiteSyncIfNeeded,
 
         /** Legacy Labeling */
+        isMetadataEnabled: legacyMetadataState.enabled,
         legacyMetadataState,
         legacyEnableIfNeeded,
         legacyDisableIfNeeded,
