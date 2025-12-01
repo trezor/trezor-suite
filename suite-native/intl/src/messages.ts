@@ -1878,6 +1878,17 @@ export const messages = {
             },
             unknownTarget: 'Target or Origin of transaction is unknown.',
         },
+        transactionOverviewScreen: {
+            title: 'Received transaction',
+            fromCard: {
+                title: 'From',
+            },
+            toCard: {
+                title: 'To',
+                meTitle: 'Me',
+                otherRecipients: 'Other recipients',
+            },
+        },
     },
     device: {
         title: {
