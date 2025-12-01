@@ -24,7 +24,7 @@ import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
 export const Labeling = () => {
-    const translate = useTranslation();
+    const { translationString } = useTranslation();
 
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
@@ -48,8 +48,8 @@ export const Labeling = () => {
         ...option,
         label:
             !showSuiteSync && option.value === 'legacy'
-                ? translate.translationString(LABELING_LEGACY_OPTION_LABEL)
-                : translate.translationString(option.label),
+                ? translationString(LABELING_LEGACY_OPTION_LABEL)
+                : translationString(option.label),
     }));
 
     const handleOnChange = (selected: LabelingOptionTranslated) => {
@@ -109,7 +109,7 @@ export const Labeling = () => {
         return legacyMetadataState.enabled
             ? {
                   ...LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy,
-                  label: LABELING_LEGACY_OPTION_LABEL,
+                  label: translationString(LABELING_LEGACY_OPTION_LABEL),
               }
             : LABELING_SELECT_TRANSLATED_OPTIONS_MAP.off;
     };
