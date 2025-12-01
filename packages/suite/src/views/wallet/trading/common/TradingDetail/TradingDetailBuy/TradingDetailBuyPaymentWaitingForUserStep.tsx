@@ -4,7 +4,7 @@ import { BuyTrade } from 'invity-api';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { invityAPI } from '@suite-common/trading';
-import { BulletListItemState, Button, Column, Paragraph } from '@trezor/components';
+import { BulletListItemState, Button, Card, Column, Paragraph } from '@trezor/components';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -14,7 +14,7 @@ import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { TradingDetailStep } from '../TradingDetailStep';
 
-type WaitingForUserProps = {
+type TradingDetailBuyPaymentWaitingForUserStepProps = {
     trade: BuyTrade;
     account: Account;
     providerName?: string;
@@ -60,7 +60,7 @@ export const TradingDetailBuyPaymentWaitingForUserStep = ({
     trade,
     account,
     providerName,
-}: WaitingForUserProps) => {
+}: TradingDetailBuyPaymentWaitingForUserStepProps) => {
     const [isWorking, setIsWorking] = useState(false);
     const dispatch = useDispatch();
     const state = getState(trade);
@@ -76,19 +76,21 @@ export const TradingDetailBuyPaymentWaitingForUserStep = ({
 
     return (
         <TradingDetailStep state={state} title={<Translation id={getTitleId(trade)} />}>
-            <Column gap={20}>
-                <Paragraph typographyStyle="hint">
-                    <Translation id={getDescriptionId(trade)} values={{ providerName }} />
-                </Paragraph>
-                <Button
-                    onClick={goToPayment}
-                    isLoading={isWorking}
-                    isDisabled={isWorking}
-                    iconRight="arrowSquareOut"
-                >
-                    <Translation id={getButtonLabelId(trade)} />
-                </Button>
-            </Column>
+            <Card>
+                <Column gap={20}>
+                    <Paragraph typographyStyle="hint">
+                        <Translation id={getDescriptionId(trade)} values={{ providerName }} />
+                    </Paragraph>
+                    <Button
+                        onClick={goToPayment}
+                        isLoading={isWorking}
+                        isDisabled={isWorking}
+                        iconRight="arrowSquareOut"
+                    >
+                        <Translation id={getButtonLabelId(trade)} />
+                    </Button>
+                </Column>
+            </Card>
         </TradingDetailStep>
     );
 };

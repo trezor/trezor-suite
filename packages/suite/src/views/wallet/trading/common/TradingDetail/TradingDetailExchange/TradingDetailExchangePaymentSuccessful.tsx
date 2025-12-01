@@ -9,7 +9,7 @@ import { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
-type PaymentSuccessfulProps = {
+type TradingDetailExchangePaymentSuccessfulProps = {
     trade: ExchangeTrade;
     account?: Account;
     provider?: ExchangeProviderInfo;
@@ -19,7 +19,7 @@ export const TradingDetailExchangePaymentSuccessful = ({
     trade,
     account,
     provider,
-}: PaymentSuccessfulProps) => {
+}: TradingDetailExchangePaymentSuccessfulProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () => dispatch(goto('wallet-trading-exchange'));
@@ -42,8 +42,10 @@ export const TradingDetailExchangePaymentSuccessful = ({
                 <Card>
                     <TradingDetailProviderInfo
                         account={account}
+                        orderId={trade.orderId}
                         provider={provider}
                         trade={trade}
+                        txAddress={trade.receiveTxHash}
                     />
                 </Card>
             )}

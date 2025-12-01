@@ -10,19 +10,17 @@ import { Account } from 'src/types/wallet';
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
-type PaymentFailedProps = {
+type TradingDetailExchangePaymentFailedProps = {
     trade: ExchangeTrade;
     account?: Account;
     provider?: ExchangeProviderInfo;
-    supportUrl?: string;
 };
 
 export const TradingDetailExchangePaymentFailed = ({
     trade,
     provider,
     account,
-    supportUrl,
-}: PaymentFailedProps) => {
+}: TradingDetailExchangePaymentFailedProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () => dispatch(goto('wallet-trading-exchange'));
@@ -46,13 +44,13 @@ export const TradingDetailExchangePaymentFailed = ({
                     {provider && (
                         <TradingDetailProviderInfo
                             account={account}
+                            orderId={trade.orderId}
                             provider={provider}
                             trade={trade}
+                            txAddress={trade.receiveTxHash}
                         />
                     )}
-                    {provider && supportUrl && (
-                        <TradingDetailSupportBanner provider={provider} supportUrl={supportUrl} />
-                    )}
+                    <TradingDetailSupportBanner provider={provider} orderId={trade.orderId} />
                 </Column>
             </Card>
         </Column>

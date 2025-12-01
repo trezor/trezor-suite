@@ -1,4 +1,4 @@
-import { BulletList, BulletListItemState, Card, Row, Spinner, Text } from '@trezor/components';
+import { BulletList, BulletListItemState, Row, Spinner, Text } from '@trezor/components';
 
 type TradingDetailStepProps = {
     state: BulletListItemState;
@@ -28,7 +28,7 @@ export const TradingDetailStep = ({
                 </Row>
             }
         >
-            {children && state !== 'done' && <Card>{children}</Card>}
+            {children && state !== 'done' && children}
         </BulletList.Item>
     );
 };

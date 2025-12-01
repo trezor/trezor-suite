@@ -1,4 +1,4 @@
-import { ExchangeTrade } from 'invity-api';
+import { SellFiatTrade } from 'invity-api';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { formatDurationStrict } from '@suite-common/suite-utils';
@@ -16,36 +16,29 @@ import { TradingDetailStep } from '../TradingDetailStep';
 import { TradingDetailTxAddress } from '../TradingDetailTxAddress';
 import { getTxEstimatedTimeSeconds } from '../utils';
 
-const getState = (trade: ExchangeTrade): BulletListItemState => {
-    switch (trade.status) {
-        case 'CONVERTING':
-        case 'SUCCESS':
-            return 'done';
-        default:
-            return 'active';
-    }
-};
+const getState = (trade: SellFiatTrade): BulletListItemState =>
+    trade.status === 'SUCCESS' ? 'done' : 'active';
 
 const getTitleId = (state: BulletListItemState): TranslationKey => {
     switch (state) {
         case 'active':
-            return 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION';
+            return 'TR_SELL_DETAIL_SENDING_TRANSACTION';
         default:
-            return 'TR_EXCHANGE_DETAIL_TRANSACTION_SENT';
+            return 'TR_SELL_DETAIL_TRANSACTION_SENT';
     }
 };
 
-type TradingDetailExchangePaymentSendingProps = {
-    trade: ExchangeTrade;
+type TradingDetailSellPaymentSendingProps = {
+    trade: SellFiatTrade;
     account?: Account;
     composedTransaction?: TradingComposedTransactionInfo;
 };
 
-export const TradingDetailExchangePaymentSending = ({
+export const TradingDetailSellPaymentSending = ({
     trade,
     account,
     composedTransaction,
-}: TradingDetailExchangePaymentSendingProps) => {
+}: TradingDetailSellPaymentSendingProps) => {
     const locale = useLocales();
     const rawFeeInfo = useSelector(state =>
         account ? selectRawNetworkFeeInfo(state, account.symbol) : undefined,
@@ -63,10 +56,10 @@ export const TradingDetailExchangePaymentSending = ({
         : undefined;
 
     const txAddress =
-        trade.receiveTxHash && account ? (
+        trade.txid && account ? (
             <TradingDetailTxAddress
                 variant={state === 'done' ? 'tertiary' : 'default'}
-                address={trade.receiveTxHash}
+                address={trade.txid}
                 account={account}
             />
         ) : null;

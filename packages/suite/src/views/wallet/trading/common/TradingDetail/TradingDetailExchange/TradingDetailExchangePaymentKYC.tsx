@@ -7,7 +7,7 @@ import { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 
-type PaymentKYCProps = {
+type TradingDetailExchangePaymentKYCProps = {
     trade: ExchangeTrade;
     account?: Account;
     provider?: ExchangeProviderInfo;
@@ -19,7 +19,7 @@ export const TradingDetailExchangePaymentKYC = ({
     account,
     provider,
     supportUrl,
-}: PaymentKYCProps) => (
+}: TradingDetailExchangePaymentKYCProps) => (
     <Column gap={24} padding={{ top: 12, bottom: 4 }}>
         <IconCircle name="warning" variant="warning" size={100} />
         <Column>
@@ -37,7 +37,13 @@ export const TradingDetailExchangePaymentKYC = ({
         )}
         <Card>
             {provider && (
-                <TradingDetailProviderInfo account={account} provider={provider} trade={trade} />
+                <TradingDetailProviderInfo
+                    account={account}
+                    orderId={trade.orderId}
+                    provider={provider}
+                    trade={trade}
+                    txAddress={trade.receiveTxHash}
+                />
             )}
         </Card>
     </Column>

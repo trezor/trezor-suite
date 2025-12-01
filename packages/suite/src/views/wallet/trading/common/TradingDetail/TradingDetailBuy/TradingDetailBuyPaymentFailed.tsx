@@ -10,19 +10,17 @@ import { Account } from 'src/types/wallet';
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
 
-type PaymentFailedProps = {
+type TradingDetailBuyPaymentFailedProps = {
     account: Account;
     trade: BuyTrade;
     provider?: BuyProviderInfo;
-    supportUrl?: string;
 };
 
 export const TradingDetailBuyPaymentFailed = ({
-    supportUrl,
     account,
     trade,
     provider,
-}: PaymentFailedProps) => {
+}: TradingDetailBuyPaymentFailedProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () =>
@@ -52,10 +50,14 @@ export const TradingDetailBuyPaymentFailed = ({
             </Button>
             <Card>
                 <Column gap={24}>
-                    {provider && <TradingDetailProviderInfo provider={provider} trade={trade} />}
-                    {provider && supportUrl && (
-                        <TradingDetailSupportBanner provider={provider} supportUrl={supportUrl} />
+                    {provider && (
+                        <TradingDetailProviderInfo
+                            orderId={trade.paymentId}
+                            provider={provider}
+                            trade={trade}
+                        />
                     )}
+                    <TradingDetailSupportBanner provider={provider} orderId={trade.paymentId} />
                 </Column>
             </Card>
         </Column>

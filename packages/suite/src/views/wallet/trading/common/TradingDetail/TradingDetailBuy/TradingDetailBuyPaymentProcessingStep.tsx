@@ -1,10 +1,9 @@
 import { BuyProviderInfo, BuyTrade } from 'invity-api';
 
-import { formatDurationStrict } from '@suite-common/suite-utils';
-import { BulletListItemState, Column } from '@trezor/components';
+import { BulletListItemState, Card, Column } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
-import { useLocales } from 'src/hooks/suite';
+import { useTranslation } from 'src/hooks/suite';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailStep } from '../TradingDetailStep';
@@ -21,47 +20,44 @@ const getState = (trade: BuyTrade): BulletListItemState => {
     }
 };
 
-type PaymentProcessingProps = {
+type TradingDetailBuyPaymentProcessingStepProps = {
     trade: BuyTrade;
     provider?: BuyProviderInfo;
-    supportUrl?: string;
 };
 
 export const TradingDetailBuyPaymentProcessingStep = ({
     trade,
     provider,
-    supportUrl,
-}: PaymentProcessingProps) => {
-    const locale = useLocales();
+}: TradingDetailBuyPaymentProcessingStepProps) => {
+    const { translationString } = useTranslation();
 
-    const estimatedTimeSeconds = 5 * 60;
-    const estimatedTime = `~${formatDurationStrict(estimatedTimeSeconds, locale)}`;
+    const providerName = provider?.brandName ?? provider?.companyName ?? provider?.name ?? '';
 
     return (
         <TradingDetailStep
             state={getState(trade)}
             title={
                 <Translation
-                    id="TR_BUY_PAYMENT_PROCESSING_TITLE"
+                    id="TR_TRADING_DETAIL_PROCESSING"
                     values={{
-                        providerName:
-                            provider?.brandName ?? provider?.companyName ?? provider?.name,
+                        providerName,
+                        type: translationString('TR_BUY').toLowerCase(),
                     }}
                 />
             }
         >
-            <Column gap={24}>
-                {provider && (
-                    <TradingDetailProviderInfo
-                        estimatedTime={estimatedTime}
-                        provider={provider}
-                        trade={trade}
-                    />
-                )}
-                {provider && supportUrl && (
-                    <TradingDetailSupportBanner provider={provider} supportUrl={supportUrl} />
-                )}
-            </Column>
+            <Card>
+                <Column gap={24}>
+                    {provider && (
+                        <TradingDetailProviderInfo
+                            orderId={trade.paymentId}
+                            provider={provider}
+                            trade={trade}
+                        />
+                    )}
+                    <TradingDetailSupportBanner provider={provider} orderId={trade.paymentId} />
+                </Column>
+            </Card>
         </TradingDetailStep>
     );
 };
