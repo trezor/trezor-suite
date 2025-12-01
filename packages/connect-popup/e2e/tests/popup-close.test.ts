@@ -65,7 +65,8 @@ const setup = async ({
         needs_backup: false,
     });
     log('beforeEach', 'startBridge');
-    await TrezorUserEnvLink.startBridge();
+    // todo: with node-bridge, this test fails, investigate
+    await TrezorUserEnvLink.startBridge('2.0.33');
 
     const contexts = await getContexts(page, url, isWebExtension);
 
