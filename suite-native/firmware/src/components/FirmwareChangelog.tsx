@@ -34,7 +34,7 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
         if (!firmwareChangelog) {
             return (
                 <Text>
-                    <Translation id="firmware.firmwareUpdateScreen.changelog.changelogUnavailable" />
+                    <Translation id="firmware.changelog.changelogUnavailable" />
                 </Text>
             );
         }
@@ -71,7 +71,7 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
     return (
         <BottomSheetModal ref={ref}>
             <Text variant="titleSmall" color="textDefault">
-                <Translation id="firmware.firmwareUpdateScreen.changelog.title" />
+                <Translation id="firmware.changelog.title" />
             </Text>
             {formattedChangelog}
             <Button
@@ -79,7 +79,7 @@ export const FirmwareChangelog = ({ ref, onClose }: FirmwareChangelogProps) => {
                 style={applyStyle(buttonContainerStyle)}
                 colorScheme="tertiaryElevation0"
             >
-                <Translation id="firmware.firmwareUpdateScreen.changelog.closeButton" />
+                <Translation id="generic.buttons.close" />
             </Button>
         </BottomSheetModal>
     );

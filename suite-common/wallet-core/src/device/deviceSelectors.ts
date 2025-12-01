@@ -1,7 +1,13 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { BackupType, SuiteSyncOwner, TrezorDevice } from '@suite-common/suite-types';
+import {
+    BackupType,
+    LANGUAGES,
+    Locale,
+    SuiteSyncOwner,
+    TrezorDevice,
+} from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
     getDeviceInstances,
@@ -98,6 +104,11 @@ export const selectDeviceCapabilities = createMemoizedSelector(
     features => features?.capabilities,
 );
 
+export const selectIsDeviceLanguageConfigurable = createMemoizedSelector(
+    [selectDeviceCapabilities],
+    capabilities => !!capabilities?.includes('Capability_Translations'),
+);
+
 export const selectIsBluetoothSupportedByDevice = createMemoizedSelector(
     [selectDeviceCapabilities],
     capabilities => !!capabilities?.includes('Capability_BLE'),
@@ -131,6 +142,29 @@ export const selectIsDeviceBackupRequired = createMemoizedSelector(
 export const selectIsDeviceBackupUnfinished = createMemoizedSelector(
     [selectDeviceFeatures],
     features => features?.unfinished_backup === true,
+);
+
+export const selectDeviceLanguage = createMemoizedSelector(
+    [selectDeviceFeatures],
+    features => features?.language ?? null,
+);
+
+export const selectAvailableDeviceTranslations = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.availableTranslations ?? {},
+);
+
+export const selectSupportedDeviceLanguages = createMemoizedSelector(
+    [selectAvailableDeviceTranslations],
+    availableDeviceTranslations => {
+        const supportedDeviceLanguages = Object.entries(LANGUAGES)
+            .filter(([code]) => availableDeviceTranslations[code])
+            .map(([code, { name }]) => ({ value: code as Locale, label: `${name} (beta)` }))
+            .sort((a, b) => a.label.localeCompare(b.label));
+        supportedDeviceLanguages.unshift({ value: 'en-US', label: LANGUAGES['en-US'].name });
+
+        return supportedDeviceLanguages;
+    },
 );
 
 export const selectDeviceButtonRequests = createMemoizedSelector(

@@ -2,7 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 import { RequireAllOrNone } from 'type-fest';
 
-import { BackupType } from '@suite-common/suite-types';
+import { BackupType, Locale } from '@suite-common/suite-types';
 import { TradingType } from '@suite-common/trading';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -229,8 +229,12 @@ export type DeviceSettingsStackParamList = {
         type: PinActionType;
     };
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
-    [DeviceSettingsStackRoutes.FirmwareUpdateStack]: NavigatorScreenParams<FirmwareUpdateStackParamList>;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
+    [DeviceSettingsStackRoutes.DeviceFirmware]: undefined;
+    [DeviceSettingsStackRoutes.FirmwareUpdateStack]: NavigatorScreenParams<FirmwareUpdateStackParamList>;
+    [DeviceSettingsStackRoutes.FirmwareLanguage]: {
+        language: Locale;
+    };
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
@@ -250,7 +254,6 @@ export type DevicePinProtectionStackParamList = {
 
 export type FirmwareUpdateStackParamList = {
     [FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate]: undefined;
-    [FirmwareUpdateStackRoutes.FirmwareInfo]: undefined;
     [FirmwareUpdateStackRoutes.FirmwareInstallation]: undefined;
     [FirmwareUpdateStackRoutes.ThpConfirmation]: undefined;
 };

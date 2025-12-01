@@ -1,6 +1,7 @@
 export * from './nativeFirmwareSlice';
 export * from './components/UpdateProgressIndicatorDemo';
 export * from './components/FirmwareVersionCard';
+export * from './components/FirmwareLanguageCard';
 export * from './components/FirmwareInstallationScreenContent';
 export * from './components/ConfirmBottomSheet';
 export * from './components/ConfirmFirmwareUpdateScreenFooter';
@@ -8,3 +9,4 @@ export * from './components/FirmwareInfoScreenFooter';
 export * from './components/FirmwareInfoScreenContent';
 export * from './hooks/useIsFirmwareUpdateFeatureEnabled';
 export * from './hooks/useFirmware';
+export * from './hooks/useFirmwareLanguage';

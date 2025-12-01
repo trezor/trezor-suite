@@ -1,125 +1,59 @@
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 
-import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 
-import {
-    selectHasRunningDiscovery,
-    selectIsDeviceBackupRequired,
-    selectIsFirmwareUpgradable,
-} from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
-import { Button, useBottomSheetModal } from '@suite-native/atoms';
-import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
-import {
-    ConfirmBottomSheet,
-    FirmwareVersionCard,
-    useIsFirmwareUpdateFeatureEnabled,
-} from '@suite-native/firmware';
+import { useDeviceLowBatteryAlert } from '@suite-native/device';
+import { FirmwareInfoScreenContent, FirmwareInfoScreenFooter } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
-import { useNavigateToCheckBackup } from '@suite-native/module-check-backup';
 import {
-    DeviceOnboardingStackRoutes,
     DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
     DynamicScreenHeader,
     FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-type NavigationProps = CompositeNavigationProp<
-    NativeStackNavigationProp<
-        FirmwareUpdateStackParamList,
-        FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate
-    >,
-    CompositeNavigationProp<
-        NativeStackNavigationProp<DeviceSettingsStackParamList>,
-        NativeStackNavigationProp<RootStackParamList>
-    >
+type NavigationProps = StackToStackCompositeNavigationProps<
+    FirmwareUpdateStackParamList,
+    FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate,
+    DeviceSettingsStackParamList
 >;
 
 export const ConfirmFirmwareUpdateScreen = () => {
-    const { isDeviceConnected } = useDeviceConnectionGuard();
-    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
-
-    const { showAlert } = useAlert();
-    const { openModal: openCheckBackupModal, bottomSheetRef, closeModal } = useBottomSheetModal();
-    const { navigateToCheckBackup } = useNavigateToCheckBackup();
     const navigation = useNavigation<NavigationProps>();
-
-    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
-    const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-
-    const withModalClose = (callback: () => void) => () => {
-        closeModal();
-        callback();
-    };
+    const { showLowBatteryAlertIfNecessary } = useDeviceLowBatteryAlert();
 
     const handleUpdateConfirmation = useCallback(() => {
-        navigation.replace(FirmwareUpdateStackRoutes.FirmwareInfo);
-    }, [navigation]);
-
-    if (!isDeviceConnected) return;
-
-    const handleConfirmButtonPress = () => {
-        if (isDeviceBackupRequired) {
-            showAlert({
-                title: <Translation id="moduleDeviceSettings.firmware.noBackupAlert.title" />,
-                description: (
-                    <Translation id="moduleDeviceSettings.firmware.noBackupAlert.description" />
-                ),
-                primaryButtonTitle: (
-                    <Translation id="moduleDeviceSettings.firmware.noBackupAlert.primaryButton" />
-                ),
-                primaryButtonVariant: 'redBold',
-                onPressPrimaryButton: () => {
-                    navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-                        screen: DeviceOnboardingStackRoutes.WalletBackupTutorial,
-                    });
-                },
-                secondaryButtonTitle: (
-                    <Translation id="moduleDeviceSettings.firmware.noBackupAlert.secondaryButton" />
-                ),
-                secondaryButtonVariant: 'redElevation1',
-                onPressSecondaryButton: handleUpdateConfirmation,
-            });
-        } else {
-            openCheckBackupModal();
+        if (showLowBatteryAlertIfNecessary()) {
+            return;
         }
+        navigation.replace(FirmwareUpdateStackRoutes.FirmwareInstallation);
+    }, [navigation, showLowBatteryAlertIfNecessary]);
+
+    const handleCancel = () => {
+        navigation.popTo(DeviceSettingsStackRoutes.DeviceSettings);
     };
 
     return (
         <Screen
             header={
                 <DynamicScreenHeader
-                    title={<Translation id="firmware.firmwareUpdateScreen.title" />}
-                    subtitle={<Translation id="firmware.firmwareUpdateScreen.subtitle" />}
+                    title={<Translation id="firmware.firmwareInfoScreen.title.update" />}
+                    subtitle={<Translation id="firmware.firmwareInfoScreen.subtitle" />}
                     closeActionType="close"
+                    closeAction={handleCancel}
+                />
+            }
+            footer={
+                <FirmwareInfoScreenFooter
+                    onUpdateConfirmation={handleUpdateConfirmation}
+                    onCancel={handleCancel}
                 />
             }
         >
-            <FirmwareVersionCard isUpdateRequired={false}>
-                {isFirmwareUpgradable && (
-                    <Button
-                        onPress={handleConfirmButtonPress}
-                        colorScheme="blueBold"
-                        isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
-                        isLoading={isDiscoveryRunning}
-                        testID="@device-firmware/update-button"
-                    >
-                        <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />
-                    </Button>
-                )}
-            </FirmwareVersionCard>
-            <ConfirmBottomSheet
-                ref={bottomSheetRef}
-                onConfirm={withModalClose(handleUpdateConfirmation)}
-                onCheckBackup={withModalClose(navigateToCheckBackup)}
-            />
+            <FirmwareInfoScreenContent />
         </Screen>
     );
 };

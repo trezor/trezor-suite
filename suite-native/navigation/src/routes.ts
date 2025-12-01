@@ -80,7 +80,9 @@ export enum DeviceSettingsStackRoutes {
     PinProtection = 'PinProtection',
     BackupAndPassphraseStack = 'BackupAndPassphraseStack',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
+    DeviceFirmware = 'DeviceFirmware',
     FirmwareUpdateStack = 'FirmwareUpdateStack',
+    FirmwareLanguage = 'FirmwareLanguage',
     DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
     ContinueOnTrezor = 'ContinueOnTrezor',
@@ -100,7 +102,6 @@ export enum DevicePinProtectionStackRoutes {
 
 export enum FirmwareUpdateStackRoutes {
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
-    FirmwareInfo = 'FirmwareInfo',
     FirmwareInstallation = 'FirmwareInstallation',
     ThpConfirmation = 'ThpConfirmation',
 }
