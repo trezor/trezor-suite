@@ -7,10 +7,7 @@ import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import {
-    selectHasExperimentalFeature,
-    selectIsDebugModeActive,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {
@@ -20,7 +17,6 @@ export const AccountNavigation = () => {
     const network = getNetworkOptional(routerParams?.symbol);
     const networkType = account?.networkType || network?.networkType || '';
     const goToWithAnalytics = useGoToWithAnalytics(account);
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const accountTabs: NavigationItem[] = [
         {
@@ -37,12 +33,7 @@ export const AccountNavigation = () => {
                 goToWithAnalytics('wallet-tokens', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: ![
-                'cardano',
-                'ethereum',
-                'solana',
-                ...(isDebugModeActive ? ['stellar'] : []),
-            ].includes(networkType),
+            isHidden: !['cardano', 'ethereum', 'solana', 'stellar'].includes(networkType),
             activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden', 'wallet-tokens-inactive'],
             'data-testid': '@wallet/menu/wallet-tokens',
         },
