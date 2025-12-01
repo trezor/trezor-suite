@@ -1,5 +1,5 @@
 import { Context } from '@suite-common/message-system';
-import { isDesktop, isWeb } from '@trezor/env-utils';
+import { isDesktop } from '@trezor/env-utils';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
@@ -33,7 +33,6 @@ import { TransportBackends } from './TransportBackends';
 import { TrezorConnectLogs } from './TrezorConnectLogs';
 import { TriggerHighlight } from './TriggerHighlight';
 import { TriggerToast } from './TriggerToast';
-import { WebAuthnSettings } from './WebAuthnSettings';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
@@ -109,7 +108,6 @@ export const SettingsDebug = () => {
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <SuiteSyncSettings />
-            {isWeb() && <WebAuthnSettings />}
         </SettingsLayout>
     );
 };
