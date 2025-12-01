@@ -5,6 +5,8 @@ import { Paragraph } from '@trezor/components';
 
 import type { NotificationRendererProps } from 'src/components/suite';
 
+import { NotificationAction } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
+
 type ConditionalActionRendererProps = NotificationRendererProps & {
     header: ReactNode;
     body: ReactNode;
@@ -25,14 +27,10 @@ export const ConditionalActionRenderer = ({
     render: View,
     ...rest
 }: ConditionalActionRendererProps) => {
-    const action = actionAllowed
-        ? ({
-              onClick: onAction,
-              label: actionLabel,
-              position: 'bottom',
-              variant: 'primary',
-          } as const)
-        : undefined;
+    const actions: NotificationAction[] = [
+        { onClick: onAction, label: actionLabel, position: 'bottom', variant: 'primary' },
+        { onClick: onCancel, label: 'TR_CANCEL', position: 'bottom' },
+    ];
 
     return (
         <View
@@ -41,7 +39,7 @@ export const ConditionalActionRenderer = ({
             message="TOAST_COIN_SCHEME_PROTOCOL"
             messageValues={{
                 header: (
-                    <Paragraph typographyStyle="body" margin={{ top: 2 }} variant="tertiary">
+                    <Paragraph typographyStyle="highlight" margin={{ top: 2 }}>
                         {header}
                     </Paragraph>
                 ),
@@ -51,7 +49,7 @@ export const ConditionalActionRenderer = ({
                     </Paragraph>
                 ),
             }}
-            action={action}
+            action={actions}
             onCancel={onCancel}
         />
     );

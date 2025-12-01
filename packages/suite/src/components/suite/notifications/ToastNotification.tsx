@@ -1,9 +1,9 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
 import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
-import { Button, Icon } from '@trezor/components';
+import { Button, Column, Icon, Row } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import {
@@ -16,22 +16,22 @@ import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
 
 import { ToastNotificationVariant } from '../../../types/suite';
+import { NotificationAction } from './Notifications/NotificationGroup/NotificationList/NotificationView';
 
-const Wrapper = styled.div<{ $variant: ToastNotificationVariant; $isTall: boolean }>`
+const Wrapper = styled.div<{ $variant: ToastNotificationVariant }>`
     display: flex;
-    align-items: ${({ $isTall }) => ($isTall ? 'start' : 'center')};
+    align-items: center;
     font-size: ${typography.hint};
     height: 100%;
-    padding: ${({ $isTall }) => ($isTall ? '16px 16px 12px 12px' : '12px 16px 12px 12px')};
+    padding: 8px 16px;
     border-left: 4px solid ${({ $variant }) => getVariantColor($variant)};
     overflow-wrap: anywhere;
     word-break: normal;
     max-width: 430px;
 `;
 
-const BodyWrapper = styled.div<{ $isTall: boolean }>`
+const BodyWrapper = styled.div`
     flex: 1;
-    margin-top: ${({ $isTall }) => $isTall && '-4px'};
     margin-left: 14px;
 `;
 
@@ -55,19 +55,9 @@ const ToastNotification = ({
     onCancel,
     notification: { type, id },
 }: ToastNotificationProps) => {
-    const [isTall, setIsTall] = useState(false);
     const theme = useTheme();
     const dispatch = useDispatch();
     const wrapperRef = useRef<HTMLDivElement>(null);
-
-    useLayoutEffect(() => {
-        const height = wrapperRef.current?.getBoundingClientRect().height ?? 0;
-
-        // more than 2 lines of text
-        if (height > 70) {
-            setIsTall(true);
-        }
-    }, []);
 
     const dataTestBase = `@toast/${type}`;
     const defaultIcon = icon ?? getNotificationIcon(variant);
@@ -77,22 +67,26 @@ const ToastNotification = ({
         onCancel?.();
     };
 
-    const actionButton = action && (
+    const actions = Array.isArray(action)
+        ? action
+        : [action].filter((a): a is NotificationAction => a !== undefined);
+
+    const renderActionButton = (a: NotificationAction) => (
         <Button
-            intent={mapActionVariantToIntent(action.variant)}
-            onClick={action.onClick}
+            key={a.label}
+            intent={mapActionVariantToIntent(a.variant)}
+            onClick={a.onClick}
             size="small"
-            width={action.position === 'bottom' ? '100%' : undefined}
             margin={
                 // eslint-disable-next-line no-nested-ternary
-                !action.position || action.position === 'right'
+                !a.position || a.position === 'right'
                     ? { left: 16 }
-                    : action.position === 'bottom'
+                    : a.position === 'bottom'
                       ? { top: 12 }
                       : undefined
             }
         >
-            <Translation id={action.label} />
+            <Translation id={a.label} />
         </Button>
     );
 
@@ -101,7 +95,6 @@ const ToastNotification = ({
             data-testid={dataTestBase}
             data-testid-alt="@toast"
             $variant={variant}
-            $isTall={isTall}
             ref={wrapperRef}
         >
             {defaultIcon && typeof defaultIcon === 'string' ? (
@@ -109,19 +102,23 @@ const ToastNotification = ({
             ) : (
                 defaultIcon
             )}
-            <BodyWrapper $isTall={isTall}>
+            <BodyWrapper>
                 <Message>
                     <Translation id={message} values={messageValues} />
                 </Message>
 
-                {action?.position === 'bottom' && actionButton}
+                <Row gap={spacings.xs}>
+                    {actions.map(a => a.position === 'bottom' && renderActionButton(a))}
+                </Row>
             </BodyWrapper>
 
-            {(action?.position === 'right' || !action?.position) && actionButton}
+            <Column gap={spacings.xs}>
+                {actions.map(a => (a.position === 'right' || !a.position) && renderActionButton(a))}
+            </Column>
 
             {cancelable && (
                 <Icon
-                    size={16}
+                    size={20}
                     name="x"
                     hoverColor={theme.iconSubdued}
                     onClick={handleCancelClick}
