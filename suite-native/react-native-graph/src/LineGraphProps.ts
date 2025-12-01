@@ -4,11 +4,24 @@ import type { SharedValue } from 'react-native-reanimated';
 
 import type { Color } from '@shopify/react-native-skia';
 
-import type { GraphPathRange } from './CreateGraphPath';
-
 export interface GraphPoint {
     value: number;
     date: Date;
+}
+
+export interface GraphXRange {
+    min: Date;
+    max: Date;
+}
+
+export interface GraphYRange {
+    min: number;
+    max: number;
+}
+
+export interface GraphPathRange {
+    x: GraphXRange;
+    y: GraphYRange;
 }
 
 export type GraphEvent<TEventPayload extends object> = {

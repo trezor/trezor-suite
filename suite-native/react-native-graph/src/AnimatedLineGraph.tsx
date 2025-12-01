@@ -34,7 +34,6 @@ import { hexToRgba } from '@trezor/utils';
 
 import { BlurOverlay } from './BlurOverlay';
 import {
-    GraphPathRange,
     createGraphPath,
     createGraphPathWithGradient,
     getGraphPathRange,
@@ -43,7 +42,7 @@ import {
 } from './CreateGraphPath';
 import { DefaultGraphEvent } from './DefaultGraphEvent';
 import { getYForX } from './GetYForX';
-import type { AnimatedLineGraphProps, GraphEventWithCords } from './LineGraphProps';
+import type { AnimatedLineGraphProps, GraphEventWithCords, GraphPathRange } from './LineGraphProps';
 import { LoadingLine } from './LoadingLine';
 import { SelectionDot as DefaultSelectionDot } from './SelectionDot';
 import { useEventTooltipProps } from './hooks/useEventTooltipProps';

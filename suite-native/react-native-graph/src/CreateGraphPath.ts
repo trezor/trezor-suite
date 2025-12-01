@@ -1,23 +1,14 @@
 import { SkPath, SkPoint, Skia } from '@shopify/react-native-skia';
 
-import type { GraphPoint, GraphRange } from './LineGraphProps';
+import type {
+    GraphPathRange,
+    GraphPoint,
+    GraphRange,
+    GraphXRange,
+    GraphYRange,
+} from './LineGraphProps';
 
 const PIXEL_RATIO = 2;
-
-export interface GraphXRange {
-    min: Date;
-    max: Date;
-}
-
-export interface GraphYRange {
-    min: number;
-    max: number;
-}
-
-export interface GraphPathRange {
-    x: GraphXRange;
-    y: GraphYRange;
-}
 
 type GraphPathConfig = {
     /**
