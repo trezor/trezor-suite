@@ -18,7 +18,9 @@ import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
 import { AutoConnectSettingsScreen } from '../screens/AutoConnectSettingsScreen';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
+import { DeviceFirmwareScreen } from '../screens/DeviceFirmwareScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
+import { FirmwareLanguageScreen } from '../screens/FirmwareLanguageScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
 import { UnpairBluetoothDeviceScreen } from '../screens/UnpairBluetoothDeviceScreen';
 
@@ -42,8 +44,16 @@ export const DeviceSettingsStackNavigator = () => (
             component={PinProtectionScreen}
         />
         <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DeviceFirmware}
+            component={DeviceFirmwareScreen}
+        />
+        <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.FirmwareUpdateStack}
             component={FirmwareUpdateStackNavigator}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.FirmwareLanguage}
+            component={FirmwareLanguageScreen}
         />
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceAuthenticity}

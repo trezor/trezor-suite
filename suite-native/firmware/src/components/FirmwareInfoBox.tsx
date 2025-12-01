@@ -39,7 +39,7 @@ export const FirmwareInfoBox = ({
 
     return (
         <Box style={applyStyle(containerStyle, { backgroundColor })} {...boxProps}>
-            <VStack spacing="sp2">
+            <VStack spacing="sp2" alignItems="center">
                 <Text variant="body" color={titleColor}>
                     {title}
                 </Text>

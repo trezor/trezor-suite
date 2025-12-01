@@ -86,7 +86,7 @@ export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVers
                     <HStack>
                         <Icon name="cpu" size="mediumLarge" />
                         <Text variant="body">
-                            <Translation id="firmware.versionCard.version" />
+                            <Translation id="firmware.versionCard.title" />
                         </Text>
                     </HStack>
                     <InlineAlertText {...inlineAlertTextProps} />
@@ -94,7 +94,7 @@ export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVers
                 <VStack spacing="sp6">
                     <FirmwareInfoBox
                         backgroundColor="backgroundTertiaryDefaultOnElevation1"
-                        title={<Translation id="firmware.firmwareUpdateScreen.currentFirmware" />}
+                        title={<Translation id="firmware.versionCard.currentFirmware" />}
                         titleColor="textSubdued"
                         version={concatFirmwareVersion(firmwareVersion)}
                         type={firmwareType}
@@ -103,9 +103,7 @@ export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVers
                     {isFirmwareUpgradable && (
                         <FirmwareInfoBox
                             backgroundColor="backgroundSurfaceElevation1"
-                            title={
-                                <Translation id="firmware.firmwareUpdateScreen.updateFirmware" />
-                            }
+                            title={<Translation id="firmware.versionCard.newFirmware" />}
                             titleColor="textPrimaryDefault"
                             version={updateFirmwareVersion}
                             type={firmwareType}

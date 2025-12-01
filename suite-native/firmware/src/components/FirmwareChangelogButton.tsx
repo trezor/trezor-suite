@@ -15,7 +15,7 @@ export const FirmwareChangelogButton = () => {
                 isUnderlined
                 onPress={openModal}
             >
-                <Translation id="firmware.firmwareUpdateScreen.changelog.button" />
+                <Translation id="firmware.changelog.button" />
             </TextButton>
             <FirmwareChangelog ref={bottomSheetRef} onClose={closeModal} />
         </>

@@ -931,6 +931,9 @@ export const messages = {
             },
         },
         firmware: {
+            title: 'Firmware',
+            subtitle: 'Firmware is your Trezor’s operating system.',
+            updateFirmwareButton: 'Update firmware',
             noBackupAlert: {
                 title: 'Do you really want to proceed without backup?',
                 description:
@@ -2619,11 +2622,23 @@ export const messages = {
             checkBackupButton: 'Check backup',
         },
         versionCard: {
-            version: 'Version',
+            title: 'Version',
             status: {
                 upToDate: 'You’re up to date',
                 updateAvailable: 'Update available',
                 updateRequired: 'Update required',
+            },
+            currentFirmware: 'Current firmware',
+            newFirmware: 'New firmware',
+        },
+        languageCard: {
+            title: 'Language',
+        },
+        changeLanguage: {
+            success: `Language changed to {languageName}`,
+            failure: {
+                title: 'Translation download failed',
+                description: 'Check your internet connection and try again.',
             },
         },
         updateCard: {
@@ -2631,6 +2646,11 @@ export const messages = {
             newVersionAvailable: 'Update available',
             updateButton: 'Update',
             updateToVersionAvailable: 'Update to version {firmwareVersion} available',
+        },
+        changelog: {
+            button: 'What’s new?',
+            title: 'What’s new?',
+            changelogUnavailable: 'No changelog available',
         },
         firmwareInfoScreen: {
             title: {
@@ -2657,15 +2677,8 @@ export const messages = {
         firmwareUpdateScreen: {
             updateFirmware: 'Update firmware',
             skipButton: 'Skip for now',
-            currentFirmware: 'Current Firmware',
             title: 'Firmware update',
             subtitle: 'Firmware is your Trezor’s operating system.',
-            changelog: {
-                button: 'What’s new?',
-                title: 'What’s new?',
-                closeButton: 'Close',
-                changelogUnavailable: 'No changelog available',
-            },
         },
         firmwareUpdateProgress: {
             generalSubtitle: 'Firmware is your Trezor’s operating system.',

@@ -21,7 +21,6 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
-    FirmwareUpdateStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -80,10 +79,7 @@ export const FirmwareUpdateAlert = () => {
 
     const handleUpdateFirmware = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-            screen: DeviceSettingsStackRoutes.FirmwareUpdateStack,
-            params: {
-                screen: FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate,
-            },
+            screen: DeviceSettingsStackRoutes.DeviceFirmware,
         });
     };
 
