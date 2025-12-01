@@ -1,0 +1,117 @@
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+
+import { quotaManagerDeviceFetched, quotaManagerFetchError } from '../../quotaManagerActions';
+import { quotaManagerFetch } from '../../quotaManagerFetch';
+import { selectQuotaManagerBaseUrl } from '../../quotaManagerSelectors';
+import { registerStorageThunk } from '../registerStorageThunk';
+
+jest.mock('../../quotaManagerFetch');
+jest.mock('../../quotaManagerSelectors');
+jest.mock('@suite-common/wallet-core');
+
+const mockDispatch = jest.fn();
+const mockGetState = jest.fn();
+
+const mockedQuotaManagerUrl = 'https://trezor.io/quota-manager';
+
+describe(registerStorageThunk.name, () => {
+    const params = {
+        publicKey: 'pubkey',
+        size: 123,
+        proof: 'proof',
+        certificateChain: {
+            deviceCert: 'deviceCert',
+            caCert: 'caCert',
+        },
+        deviceModel: 'T3T1',
+        sessionId: 'sessionId',
+        challenge: 'challenge',
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (selectQuotaManagerBaseUrl as jest.Mock).mockReturnValue(mockedQuotaManagerUrl);
+    });
+
+    it('dispatches quotaManagerDeviceFetched on success', async () => {
+        const device = { id: 'device-id' };
+        (selectSelectedDevice as jest.Mock).mockReturnValue(device);
+
+        (quotaManagerFetch as jest.Mock).mockResolvedValue({
+            ok: true,
+            value: {
+                totalStorageSize: 1000,
+                unspentStorageSize: 800,
+            },
+        });
+
+        const thunk = registerStorageThunk(params);
+        const result = await thunk(mockDispatch, mockGetState);
+
+        expect(quotaManagerFetch).toHaveBeenCalledWith({
+            baseUrl: mockedQuotaManagerUrl,
+            path: '/storage/register',
+            method: 'POST',
+            body: params,
+        });
+
+        expect(mockDispatch).toHaveBeenCalledWith(
+            quotaManagerDeviceFetched({
+                deviceId: 'device-id',
+                publicKey: 'pubkey',
+                totalStorageSize: 1000,
+                unspentStorageSize: 800,
+            }),
+        );
+        expect(result.ok).toBe(true);
+
+        // hack
+        if (result.ok) {
+            expect(result.value).toEqual({
+                totalStorageSize: 1000,
+                unspentStorageSize: 800,
+            });
+        }
+    });
+
+    it('dispatches quotaManagerFetchError on failure', async () => {
+        (selectSelectedDevice as jest.Mock).mockReturnValue({ id: 'device-id' });
+
+        (quotaManagerFetch as jest.Mock).mockResolvedValue({
+            ok: false,
+            error: { message: 'Network error' },
+        });
+
+        const thunk = registerStorageThunk(params);
+        const result = await thunk(mockDispatch, mockGetState);
+
+        expect(mockDispatch).toHaveBeenCalledWith(
+            quotaManagerFetchError({ error: 'Network error' }),
+        );
+        expect(result.ok).toBe(false);
+
+        // hack
+        if (!result.ok) {
+            expect(result.error).toEqual({ message: 'Network error' });
+        }
+    });
+
+    it('does not dispatch quotaManagerDeviceFetched if device is missing', async () => {
+        (selectSelectedDevice as jest.Mock).mockReturnValue(undefined);
+
+        (quotaManagerFetch as jest.Mock).mockResolvedValue({
+            ok: true,
+            value: {
+                totalStorageSize: 1000,
+                unspentStorageSize: 800,
+            },
+        });
+
+        const thunk = registerStorageThunk(params);
+        await thunk(mockDispatch, mockGetState);
+
+        expect(mockDispatch).not.toHaveBeenCalledWith(
+            expect.objectContaining(quotaManagerDeviceFetched),
+        );
+    });
+});

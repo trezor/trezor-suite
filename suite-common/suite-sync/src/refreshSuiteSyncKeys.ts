@@ -1,3 +1,4 @@
+import { ensureDeviceHasQuotaThunk } from '@suite-common/suite-sync-quota-manager';
 import {
     RefreshSuiteKeysUnavailable,
     RefreshSuiteSyncKeys,
@@ -42,6 +43,13 @@ export const createRefreshSuiteSyncKeys =
 
             return evoluNodeResult;
         }
+
+        await deps.dispatch(
+            ensureDeviceHasQuotaThunk({
+                device,
+                delegatedKey: delegatedKeyResult.value,
+            }),
+        );
 
         deps.dispatch(
             deviceActions.setSuiteSyncOwner({

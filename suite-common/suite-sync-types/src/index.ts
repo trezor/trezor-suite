@@ -60,3 +60,5 @@ export type {
     UpdateWalletLabelParams,
     UpdateWalletLabelDeps,
 } from './labeling/updateWalletLabel';
+
+export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';

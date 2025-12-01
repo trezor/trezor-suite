@@ -73,6 +73,9 @@
             "path": "../../suite-common/suite-sync"
         },
         {
+            "path": "../../suite-common/suite-sync-quota-manager"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {

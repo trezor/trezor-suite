@@ -1,8 +1,9 @@
 import { err, ok } from '@trezor/type-utils';
+import { typedObjectEntries } from '@trezor/utils';
 
 type SupportedMethod = 'GET' | 'POST' | 'DELETE';
 
-// explicitly list supported endpoints and their methods
+// explicit list of supported endpoints and their methods
 type SupportedPath = '/challenge' | '/storage/ask' | '/storage/register' | '/storage/add' | '/sync';
 
 type QuotaManagerFetchParams = {
@@ -22,9 +23,9 @@ export const quotaManagerFetch = async ({
 }: QuotaManagerFetchParams) => {
     const url = new URL(path, baseUrl);
 
-    if (queryParams) {
-        Object.entries(queryParams).forEach(([key, value]) => {
-            url.searchParams.append(key, String(value));
+    if (queryParams !== undefined) {
+        typedObjectEntries(queryParams).forEach(([key, value]) => {
+            url.searchParams.append(key, value.toString());
         });
     }
 
@@ -37,8 +38,10 @@ export const quotaManagerFetch = async ({
     });
 
     if (!response.ok) {
-        // TODO - improve error handling, parse error response from QM API
-        return err(response.statusText);
+        return err({
+            code: response.status,
+            message: response.statusText,
+        });
     }
 
     const data = (await response.json()) as unknown;

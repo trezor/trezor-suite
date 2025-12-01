@@ -4,10 +4,11 @@ import {
     SuiteSyncOwner,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { ProofOfDelegatedSignFailed } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/getProofOfDelegatedIdentity';
 import { DeviceCancelledErr, DeviceError } from '@suite-common/wallet-core/src/device/deviceUtils';
 import TrezorConnect from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
+
+import { ProofOfDelegatedSignFailed } from '../getProofOfDelegatedIdentity';
 
 export type EnsureSuiteSyncOwnerDeps = {
     createSuiteSyncOwner: CreateSuiteSyncOwner;

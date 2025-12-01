@@ -7,6 +7,7 @@
         { "path": "../intl-types" },
         { "path": "../metadata-types" },
         { "path": "../suite-constants" },
+        { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
