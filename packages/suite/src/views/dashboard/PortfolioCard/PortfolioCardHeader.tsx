@@ -1,11 +1,10 @@
 import { useCallback } from 'react';
 
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Button, SkeletonRectangle } from '@trezor/components';
+import { SkeletonRectangle } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
 import { Discovery } from 'src/types/wallet';
@@ -17,28 +16,22 @@ export type PortfolioCardHeaderProps = {
     discovery?: Discovery;
     fiatAmount: string;
     localCurrency: string;
-    isWalletEmpty: boolean;
     isWalletLoading: boolean;
     isWalletError: boolean;
     isDiscoveryRunning?: boolean;
     showGraphControls: boolean;
     passphraseEntryCanceled: boolean;
-    hasMultipleAccounts: boolean;
-    receiveClickHandler: () => void;
 };
 
 export const PortfolioCardHeader = ({
     discovery,
     fiatAmount,
     localCurrency,
-    isWalletEmpty,
     isWalletLoading,
     isWalletError,
     isDiscoveryRunning,
     showGraphControls,
     passphraseEntryCanceled,
-    hasMultipleAccounts,
-    receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
     const accounts = useSelector(selectAllAccountsToList);
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
@@ -52,20 +45,7 @@ export const PortfolioCardHeader = ({
 
     let actions = null;
     if (!isWalletLoading && !isWalletError && !passphraseEntryCanceled) {
-        if (isWalletEmpty) {
-            actions = (
-                <Button
-                    onClick={receiveClickHandler}
-                    data-testid="@dashboard/receive-button"
-                    minWidth={120}
-                    size={isContentBelowBreakpoint ? 'medium' : 'large'}
-                >
-                    <Translation
-                        id={hasMultipleAccounts ? 'TR_RECEIVE_SELECT_ACCOUNT' : 'TR_RECEIVE'}
-                    />
-                </Button>
-            );
-        } else if (showGraphControls) {
+        if (showGraphControls) {
             actions = (
                 <GraphRangeSelector
                     onSelectedRange={onSelectedRange}

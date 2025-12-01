@@ -11,7 +11,6 @@ import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Dropdown, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphScaleDropdownItem, GraphSkeleton } from 'src/components/suite';
@@ -46,7 +45,6 @@ export const PortfolioCard = memo(() => {
     const walletBalance = useTotalFiatBalance(accounts, baseCurrencyCode, currentFiatRates);
 
     const passphraseEntryCanceled = accounts.length === 0 && discoveryStatus === undefined;
-    const hasMultipleAccounts = accounts.length > 1;
 
     const hasNetworkWithEnabledGraph = networksCollection.some(
         network => network.features.includes('graph') && enabledNetworks.includes(network.symbol),
@@ -113,14 +111,6 @@ export const PortfolioCard = memo(() => {
         isGraphHidden,
     });
 
-    const goToReceive = () => {
-        if (hasMultipleAccounts) {
-            dispatch(goto('suite-index', { params: { modal: 'receive' } }));
-        } else {
-            dispatch(goto('wallet-receive'));
-        }
-    };
-
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
 
     const header =
@@ -130,13 +120,10 @@ export const PortfolioCard = memo(() => {
                 showGraphControls={showGraphControls}
                 fiatAmount={walletBalance}
                 localCurrency={baseCurrencyCode}
-                isWalletEmpty={isWalletEmpty}
                 isWalletLoading={isWalletLoading}
                 isWalletError={isWalletError}
                 isDiscoveryRunning={isDiscoveryRunning}
                 passphraseEntryCanceled={passphraseEntryCanceled}
-                hasMultipleAccounts={hasMultipleAccounts}
-                receiveClickHandler={goToReceive}
             />
         );
 
