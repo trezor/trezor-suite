@@ -9,6 +9,7 @@ import { geolocationActions } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
 import { labelingActions, suiteSyncActions } from '@suite-common/suite-sync';
+import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import type { Route } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -89,6 +90,9 @@ type SuiteSyncAction = ReturnType<(typeof suiteSyncActions)[keyof typeof suiteSy
 type SuiteSyncActionDesktop = ReturnType<
     (typeof suiteSyncSlice.actions)[keyof typeof suiteSyncSlice.actions]
 >;
+type SuiteSyncQuotaManagerAction = ReturnType<
+    (typeof suiteSyncQuotaManagerActions)[keyof typeof suiteSyncQuotaManagerActions]
+>;
 type DeviceActionDesktop = ReturnType<
     (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
 >;
@@ -127,6 +131,7 @@ export type Action =
     | SuiteAction
     | SuiteSyncAction
     | SuiteSyncActionDesktop
+    | SuiteSyncQuotaManagerAction
     | ThpAction
     | TransactionAction
     | TrezorConnectEvents

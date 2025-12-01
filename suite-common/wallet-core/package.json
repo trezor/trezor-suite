@@ -12,8 +12,6 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@noble/curves": "^2.0.1",
-        "@noble/hashes": "^1.6.1",
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",

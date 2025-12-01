@@ -3,11 +3,11 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/ensureDelegatedIdentityKey';
-import { ProofOfDelegatedSignFailed } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/getProofOfDelegatedIdentity';
 import { DeviceCancelledErr, DeviceError } from '@suite-common/wallet-core/src/device/deviceUtils';
 import { Result } from '@trezor/type-utils';
 
 import { EnsureSuiteSyncOwnerDep } from './device/ensureSuiteSyncOwnerKeys';
+import { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
 
 export type RefreshSuiteSyncKeysDeps = {
     dispatch: Dispatch;

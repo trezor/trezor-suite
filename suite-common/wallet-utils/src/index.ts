@@ -33,3 +33,5 @@ export * from './hooks/useFilteredUtxos';
 export * from './cardanoStakingUtils';
 export * from './amountUtils';
 export * from './bigNumberUtils';
+export * from './getProofOfDelegatedIdentity';
+export * from './getPublicIdentityKeyFromDeletegatedKey';

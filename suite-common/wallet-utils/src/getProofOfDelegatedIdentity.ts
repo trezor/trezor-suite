@@ -1,24 +1,12 @@
 import { p256 } from '@noble/curves/nist.js';
-import { sha256 } from '@noble/hashes/sha2';
 
+import { ProofOfDelegatedSignFailed } from '@suite-common/suite-sync-types';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { ProofOfDelegatedIdentity, asProofOfDelegatedIdentity } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 import { bufferUtils } from '@trezor/utils';
 
-/**
- * This may happen in case of data in Redux are corrupted.
- *
- * For example: when we introduced SafeStorage encryption
- * and users (only developers & tested, ATM) have non-encrypted
- * data in Redux, or we change the encryption method.
- */
-export type ProofOfDelegatedSignFailed = {
-    type: 'ProofOfDelegatedSignFailed';
-    caused: unknown;
-};
-
-export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFailed => ({
+export const createProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFailed => ({
     type: 'ProofOfDelegatedSignFailed',
     caused,
 });
@@ -26,6 +14,8 @@ export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFai
 export type GetProofOfDelegatedIdentityParams = {
     delegatedKey: DelegatedIdentityKey;
     header: string;
+    challenge?: string;
+    size?: number;
 };
 
 type GetProofOfDelegatedIdentityResult = Result<
@@ -36,20 +26,29 @@ type GetProofOfDelegatedIdentityResult = Result<
 export const getProofOfDelegatedIdentity = ({
     delegatedKey,
     header,
+    size,
+    challenge,
 }: GetProofOfDelegatedIdentityParams): GetProofOfDelegatedIdentityResult => {
     const prefixedMessageInBuffer = Buffer.concat([
         bufferUtils.getChunkSize(header.length),
         Buffer.from(header),
+
+        challenge
+            ? bufferUtils.getChunkSize(Buffer.from(challenge, 'hex').byteLength)
+            : Buffer.from([]),
+        challenge ? Buffer.from(challenge, 'hex') : Buffer.from([]),
+
+        size
+            ? bufferUtils.getChunkSize(Buffer.allocUnsafe(4).writeUInt32BE(size, 0))
+            : Buffer.from([]),
+        size ? Buffer.from(Uint32Array.of(size).buffer) : Buffer.from([]),
     ]);
 
-    const messageDigest = sha256(prefixedMessageInBuffer);
-    const secretKey = Buffer.from(delegatedKey, 'hex');
-
     try {
-        const signature = p256.sign(messageDigest, secretKey, { prehash: false });
+        const signature = p256.sign(prefixedMessageInBuffer, Buffer.from(delegatedKey, 'hex'));
 
         return ok(asProofOfDelegatedIdentity(Buffer.from(signature).toString('hex')));
     } catch (e) {
-        return err(ProofOfDelegatedSignFailed(e));
+        return err(createProofOfDelegatedSignFailed(e));
     }
 };

@@ -2,6 +2,7 @@ import { FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { MetadataState } from '@suite-common/metadata-types';
 import { initialLabelingState } from '@suite-common/suite-sync';
+import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialState } from 'src/actions/device/deviceSlice';
@@ -28,6 +29,7 @@ export const initialAppState: AppState = {
     },
     labeling: initialLabelingState,
     suiteSync: initialSuiteSyncState,
+    suiteSyncQuotaManager: quotaManagerInitialState,
     window: {
         isVisible: true,
         isBelowMobile: false,

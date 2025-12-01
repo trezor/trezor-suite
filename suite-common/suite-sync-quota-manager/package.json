@@ -14,7 +14,13 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react-redux": "9.2.0"
     }
 }

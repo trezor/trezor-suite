@@ -1,0 +1,1 @@
+export const DEFAULT_WALLET_SIZE_QUOTA = 1024 * 1024 * 50; // 50 MB

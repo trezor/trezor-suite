@@ -1,10 +1,6 @@
 import { EnsureSuiteSyncOwnerDeps, EnsureSuiteSyncOwnerKeys } from '@suite-common/suite-sync-types';
-import {
-    DeviceCancelledErr,
-    DeviceError,
-    getProofOfDelegatedIdentity,
-    isCanceledErrorMessage,
-} from '@suite-common/wallet-core';
+import { DeviceCancelledErr, DeviceError, isCanceledErrorMessage } from '@suite-common/wallet-core';
+import { getProofOfDelegatedIdentity } from '@suite-common/wallet-utils';
 import { err } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';

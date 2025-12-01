@@ -23,6 +23,7 @@ import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
+import { QuotaManagerSettings } from './QuotaManagerSettings';
 import { ResetThpCredentials } from './ResetThpCredentials';
 import { SecureStorage } from './SecureStorage';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
@@ -109,6 +110,7 @@ export const SettingsDebug = () => {
                 <FirmwareUpdateEnvironmentSelect />
             </SettingsSection>
             <SuiteSyncSettings />
+            <QuotaManagerSettings />
             <SecureStorage />
         </SettingsLayout>
     );

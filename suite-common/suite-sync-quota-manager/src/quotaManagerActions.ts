@@ -7,18 +7,33 @@ export const updateQuotaManagerBaseUrl = createAction(
     (payload: { baseUrl: string }) => ({ payload }),
 );
 
-export const quotaManagerSessionIdGenerated = createAction(
-    `${QUOTA_MANAGER_PREFIX}/setSessionId`,
-    (payload: { sessionId: string | null }) => ({ payload }),
-);
-
-export const quotaManagerChallengeFetched = createAction(
-    `${QUOTA_MANAGER_PREFIX}/setChallenge`,
-    (payload: { challenge: string | null }) => ({ payload }),
-);
-
 // this action is used for displaying toasts when any fetch to the Quota Manager fails
+// each platform can subscribe to this action and show appropriate error message to the user
 export const quotaManagerFetchError = createAction(
     `${QUOTA_MANAGER_PREFIX}/fetchError`,
-    (payload: { error: string }) => ({ payload }),
+    (payload: { error: string; path?: string }) => ({ payload }),
 );
+
+export const quotaManagerEnabledUpdated = createAction(
+    `${QUOTA_MANAGER_PREFIX}/setEnabled`,
+    (payload: { isEnabled: boolean }) => ({ payload }),
+);
+
+export const quotaManagerDeviceFetched = createAction(
+    `${QUOTA_MANAGER_PREFIX}/deviceFetched`,
+    (payload: {
+        deviceId: string;
+        publicKey: string;
+        totalStorageSize: number;
+        unspentStorageSize: number;
+    }) => ({
+        payload,
+    }),
+);
+
+export const suiteSyncQuotaManagerActions = {
+    updateQuotaManagerBaseUrl,
+    quotaManagerFetchError,
+    quotaManagerDeviceFetched,
+    quotaManagerEnabledUpdated,
+};

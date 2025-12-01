@@ -1,8 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit';
-
 import { err, ok } from '@trezor/type-utils';
 
-import { quotaManagerFetchThunk } from '../quotaManagerFetchThunk';
+import { quotaManagerFetch } from '../quotaManagerFetch';
+import { selectQuotaManagerBaseUrl } from '../quotaManagerSelectors';
 
 type TransferStorageBody = {
     proof: string;
@@ -16,18 +15,22 @@ type TransferStorageResponse = {
     storageLimit: number | null;
 };
 
-export const transferStorageThunk = (params: TransferStorageBody) => async (dispatch: Dispatch) => {
-    const result = await dispatch(
-        quotaManagerFetchThunk({
+export const transferStorageThunk =
+    (params: TransferStorageBody) => async (getState: () => any) => {
+        const baseUrl = selectQuotaManagerBaseUrl(getState());
+
+        const result = await quotaManagerFetch({
+            baseUrl,
             path: '/storage/add',
             method: 'POST',
             body: params,
-        }),
-    );
+        });
 
-    if (!result.ok) {
-        return err(result.error);
-    }
+        if (!result.ok) {
+            return err(result.error);
+        }
 
-    return ok(result.data as TransferStorageResponse);
-};
+        // assign space / storage limit to ownerId in follow up PR
+
+        return ok(result.value as TransferStorageResponse);
+    };

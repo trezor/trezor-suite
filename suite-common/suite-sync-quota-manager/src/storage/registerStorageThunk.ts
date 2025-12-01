@@ -1,11 +1,11 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { err, ok } from '@trezor/type-utils';
 
-import { quotaManagerFetch } from '../quotaManagerFetchThunk';
+import { quotaManagerDeviceFetched, quotaManagerFetchError } from '../quotaManagerActions';
+import { quotaManagerFetch } from '../quotaManagerFetch';
 import { selectQuotaManagerBaseUrl } from '../quotaManagerSelectors';
-
-// TODO should only register once if in INIT mode
 
 type RegisterStorageBody = {
     publicKey: string;
@@ -21,7 +21,8 @@ type RegisterStorageBody = {
 };
 
 type RegisterStorageResponse = {
-    storageLimit: number | null;
+    totalStorageSize: number;
+    unspentStorageSize: number;
 };
 
 /**
@@ -30,17 +31,35 @@ type RegisterStorageResponse = {
 export const registerStorageThunk =
     (params: RegisterStorageBody) => async (dispatch: Dispatch, getState: () => any) => {
         const baseUrl = selectQuotaManagerBaseUrl(getState());
+        const device = selectSelectedDevice(getState());
+
+        const path = '/storage/register';
 
         const result = await quotaManagerFetch({
             baseUrl,
-            path: '/storage/register',
+            path,
             method: 'POST',
             body: params,
         });
 
         if (!result.ok) {
+            dispatch(quotaManagerFetchError({ error: result.error.message }));
+
             return err(result.error);
         }
 
-        return ok(result.value as RegisterStorageResponse);
+        const response = result.value as RegisterStorageResponse;
+
+        if (device && device.id) {
+            dispatch(
+                quotaManagerDeviceFetched({
+                    deviceId: device.id,
+                    publicKey: params.publicKey,
+                    totalStorageSize: response.totalStorageSize,
+                    unspentStorageSize: response.unspentStorageSize,
+                }),
+            );
+        }
+
+        return ok(response);
     };
