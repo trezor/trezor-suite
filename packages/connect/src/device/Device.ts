@@ -708,17 +708,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
             this.state[this.instance] = newState;
             this.stateStorage?.saveState(this, newState);
-
-            // special THP case: new sessionId was assigned to a wallet but there already was another remembered wallet with the same sessionId.
-            // In that case, remove the sessionId from the existing wallet as it can't be valid anymore.
-            // TODO: resolve in a more elegant way
-            if (!!this.thp && state.sessionId) {
-                this.state.forEach((s, instance) => {
-                    if (instance !== this.instance && s?.sessionId === state.sessionId) {
-                        delete s.sessionId;
-                    }
-                });
-            }
         }
     }
 
