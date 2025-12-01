@@ -3,13 +3,8 @@ import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 
 import { Canvas, LinearGradient, Path, vec } from '@shopify/react-native-skia';
 
-import {
-    GraphPathRange,
-    createGraphPath,
-    getGraphPathRange,
-    getPointsInRange,
-} from './CreateGraphPath';
-import type { StaticLineGraphProps } from './LineGraphProps';
+import { createGraphPath, getGraphPathRange, getPointsInRange } from './CreateGraphPath';
+import type { GraphPathRange, StaticLineGraphProps } from './LineGraphProps';
 import { getSixDigitHex } from './utils/getSixDigitHex';
 
 export function StaticLineGraph({
