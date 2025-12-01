@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 
-import { StackToTabCompositeProps } from '../index';
+import { StackToTabCompositeProps } from '../types';
 
 type NavigationProp = StackToTabCompositeProps<ParamListBase, string, ParamListBase>;
 
