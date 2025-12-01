@@ -1,13 +1,29 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { createThunk } from '@suite-common/redux-utils';
+import {
+    selectAccountLabel,
+    selectIsSuiteSyncEnabled,
+    suiteSyncToBip329,
+} from '@suite-common/suite-sync';
+import {
+    selectAddressLabelsByAccount,
+    selectOutputLabelsByAccount,
+} from '@suite-common/suite-sync/src/labeling/labelingSelectors';
+import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices } from '@suite-common/wallet-core';
+import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
-import { createZip } from '@trezor/utils';
+import { createZip, sanitizeFilename } from '@trezor/utils';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
-import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
+import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
+import {
+    selectLabelingDataForSelectedAccount,
+    selectSelectedProviderForLabels,
+} from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     AccountLabels,
@@ -17,8 +33,13 @@ import {
     MetadataProvider,
     WalletLabels,
 } from 'src/types/suite/metadata';
-import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
+import type {
+    AbstractMetadataProvider,
+    Bip329Label,
+    PasswordManagerState,
+} from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
+import { slip15ToBip329 } from 'src/utils/suite/slip15ToBip329';
 
 import { getProviderInstance } from './metadataProviderActions';
 
@@ -64,6 +85,10 @@ export type MetadataAction =
     | {
           type: typeof METADATA.ACCOUNT_ADD;
           payload: Account;
+      }
+    | {
+          type: typeof METADATA.EXPORT_METADATA_TO_BIP329_FILE;
+          payload: void;
       };
 
 export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
@@ -170,6 +195,103 @@ export const encryptAndSaveMetadata = async ({
     return providerInstance.setFileContent(fileName, encrypted);
 };
 
+export const exportMetadataToBip329File = createThunk<
+    void,
+    { getDefaultAccountLabel: (params: GetDefaultAccountLabelParams) => string },
+    void
+>(METADATA.EXPORT_METADATA_TO_BIP329_FILE, ({ getDefaultAccountLabel }, { dispatch, getState }) => {
+    const showExportErrorToast = () => {
+        dispatch(
+            notificationsActions.addToast({
+                type: 'error',
+                error: 'Exporting labels BIP 329 failed',
+            }),
+        );
+    };
+
+    try {
+        const state = getState();
+        const device = selectSelectedDevice(state);
+        const { selectedAccount } = state.wallet;
+        const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
+
+        const staticSessionId = device?.state?.staticSessionId;
+        if (!staticSessionId) {
+            showExportErrorToast();
+
+            return;
+        }
+
+        let finalAccountLabel = getDefaultAccountLabel({
+            accountType: selectedAccount.account.accountType,
+            symbol: selectedAccount.account.symbol,
+            index: selectedAccount.account.index,
+        });
+        let labelsToExport: Bip329Label[] = [];
+
+        if (isSuiteSyncEnabled) {
+            const owner = device?.suiteSyncOwner;
+            if (owner === undefined) {
+                showExportErrorToast();
+
+                return;
+            }
+
+            const { walletDescriptor } = parseDeviceStaticSessionId(
+                selectedAccount.account.deviceState,
+            );
+
+            const suiteSyncAccountLabel = selectAccountLabel({
+                state,
+                walletDescriptor,
+                accountKey: selectedAccount.account.key,
+            });
+            if (suiteSyncAccountLabel) {
+                finalAccountLabel = suiteSyncAccountLabel;
+            }
+
+            const suiteSyncAddressLabels = selectAddressLabelsByAccount({
+                state,
+                deviceStaticSessionId: staticSessionId,
+                accountDescriptor: selectedAccount.account.descriptor,
+                networkSymbol: selectedAccount.account.symbol,
+            });
+
+            const suiteSyncOutputLabels = selectOutputLabelsByAccount({
+                state,
+                deviceStaticSessionId: staticSessionId,
+                accountDescriptor: selectedAccount.account.descriptor,
+                networkSymbol: selectedAccount.account.symbol,
+            });
+
+            labelsToExport = suiteSyncToBip329({
+                outputLabels: suiteSyncOutputLabels,
+                addressLabels: suiteSyncAddressLabels,
+                allSpendable: true,
+            });
+        } else {
+            // Legacy non-SuiteSync export.
+            const labelForSelectedAccount = selectLabelingDataForSelectedAccount(state);
+            if (labelForSelectedAccount.accountLabel) {
+                finalAccountLabel = labelForSelectedAccount.accountLabel;
+            }
+            labelsToExport = slip15ToBip329(labelForSelectedAccount as AccountLabels);
+        }
+
+        // Maps each object to its JSON string representation
+        const jsonlString = labelsToExport.map(obj => JSON.stringify(obj)).join('\n');
+
+        const blob = new Blob([jsonlString], { type: 'application/jsonl' });
+
+        const safeLabel = sanitizeFilename(finalAccountLabel);
+        const filename = `${safeLabel || 'account_labels'}_export_bip329.jsonl`;
+
+        triggerWebDownloadFile(blob, filename);
+    } catch {
+        showExportErrorToast();
+    }
+});
+
 export const exportMetadataToLocalFile = () => async (dispatch: Dispatch, getState: GetState) => {
     const providerInstance = dispatch(
         getProviderInstance({
@@ -204,14 +326,7 @@ export const exportMetadataToLocalFile = () => async (dispatch: Dispatch, getSta
         .then(filesContent => {
             const zipBlob = createZip(filesContent);
             // Trigger download
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(zipBlob);
-            a.download = 'archive.zip';
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(a.href);
+            triggerWebDownloadFile(zipBlob, 'archive.zip');
         })
         .catch(_err => {
             dispatch(
