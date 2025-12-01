@@ -59,6 +59,7 @@ jobs:
           fail-fast: false
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-ci-build-id: "nightly-run-${{ github.run_id }}-${{ github.run_attempt }}"
           currents-tags: "nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
 
@@ -91,7 +92,8 @@ jobs:
           fail-fast: false
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-tags: "T3W1"
+          currents-ci-build-id: "nightly-run-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
+          currents-tags: "T3W1,nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
   
   run-e2e-suite-web-tests-fw-canary:
@@ -126,7 +128,8 @@ jobs:
           additional-grep-invert: "@specificFirmware|@group=trading"
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-tags: "fw-canary"
+          currents-ci-build-id: "nightly-run-fw-canary-${{ github.run_id }}-${{ github.run_attempt }}"
+          currents-tags: "fw-canary,nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
 
   run-e2e-suite-web-tests-fw-canary-t3w1:
@@ -162,5 +165,6 @@ jobs:
           additional-grep-invert: "@specificFirmware|@group=trading"
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-tags: "T3W1,fw-canary"
+          currents-ci-build-id: "nightly-run-fw-canary-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
+          currents-tags: "T3W1,fw-canary,nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
