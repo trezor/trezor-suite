@@ -112,5 +112,29 @@ describe('TradingWebViewScreen', () => {
                 }),
             });
         });
+
+        it('should report on mount for sell', async () => {
+            const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
+            preloadedState.wallet.trading.trades = [
+                {
+                    tradeType: 'sell',
+                    data: {
+                        orderId: 'orderId',
+                    },
+                } as unknown as TradingTransaction,
+            ];
+
+            await renderWithStoreProviderAsync(<TradingWebViewScreen />, {
+                preloadedState,
+            });
+
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingSell,
+                payload: expect.objectContaining({
+                    step: 'webview',
+                    action: 'visit',
+                }),
+            });
+        });
     });
 });

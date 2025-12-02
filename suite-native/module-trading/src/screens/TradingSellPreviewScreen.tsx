@@ -18,6 +18,7 @@ import {
     SellPreviewView,
 } from '../components/sell/SellPreview';
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
+import { useSellAnalyticReportCallback } from '../hooks/sell/useSellAnalyticReportCallback';
 import { useSellFlow } from '../hooks/sell/useSellFlow';
 import { clearTradingStateThunk } from '../thunks';
 
@@ -36,6 +37,11 @@ export const TradingSellPreviewScreen = () => {
     const currentQuote = trade?.data ? trade.data : selectedQuote;
     const isFinalized = isFinalStatus('sell', currentQuote?.status);
     const isSubmitted = currentQuote?.status === 'SUBMITTED';
+
+    const reportToAnalytics = useSellAnalyticReportCallback();
+    useEffect(() => {
+        reportToAnalytics('transaction-preview', 'visit');
+    }, [reportToAnalytics]);
 
     useWatchTrade({
         accountKey: trade?.sendAccountKey,
@@ -72,8 +78,8 @@ export const TradingSellPreviewScreen = () => {
     );
 
     const onSignTransactionNavigation = useCallback(() => {
-        // TODO: Add analytics if needed
-    }, []);
+        reportToAnalytics('transaction-preview', 'continue');
+    }, [reportToAnalytics]);
 
     const errorString = txnErrorString ?? currentQuote?.error;
 

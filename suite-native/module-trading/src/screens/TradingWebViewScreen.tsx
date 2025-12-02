@@ -22,7 +22,7 @@ import { DebugModeCopyableText } from '@suite-native/trading-debug';
 import { tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
+import { useTradingAnalyticReportCallback } from '../hooks/general/useTradingAnalyticReportCallback';
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
 import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
 
@@ -49,9 +49,10 @@ export const TradingWebViewScreen = () => {
         ),
     );
 
-    const reportToAnalytics = useExchangeAnalyticReportCallback();
+    const reportToAnalytics = useTradingAnalyticReportCallback(trade?.tradeType);
+
     useEffect(() => {
-        if (trade?.tradeType === 'exchange') {
+        if (trade?.tradeType) {
             reportToAnalytics('webview', 'visit');
         }
     }, [reportToAnalytics, trade?.tradeType]);

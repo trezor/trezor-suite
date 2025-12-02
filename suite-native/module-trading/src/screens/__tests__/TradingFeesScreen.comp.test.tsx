@@ -84,13 +84,57 @@ describe('TradingFeesScreen', () => {
         expect(mockTradingFeesForm).not.toHaveBeenCalled();
     });
 
-    it('should report to analytics on mount', async () => {
+    it('should report to analytics on mount for exchange (default)', async () => {
         const analyticsSpy = jest.spyOn(analytics, 'report');
 
         await renderScreen();
 
         expect(analyticsSpy).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
+            payload: expect.objectContaining({
+                step: 'fee-selection',
+                action: 'visit',
+            }),
+        });
+    });
+
+    it('should report to analytics on mount for exchange when explicitly set', async () => {
+        const analyticsSpy = jest.spyOn(analytics, 'report');
+        mockUseRoute.mockReturnValue({
+            name: 'TradingFeesScreen',
+            params: { accountKey: 'btc1', tradingType: 'exchange' },
+        });
+
+        await renderScreen();
+
+        expect(analyticsSpy).toHaveBeenCalledWith({
+            type: EventType.TradingExchange,
+            payload: expect.objectContaining({
+                step: 'fee-selection',
+                action: 'visit',
+            }),
+        });
+    });
+
+    it('should report to analytics on mount for sell', async () => {
+        const analyticsSpy = jest.spyOn(analytics, 'report');
+        const sellPreloadedState = {
+            wallet: {
+                trading: getInitializedTradingState('sell'),
+                accounts,
+            },
+        };
+        mockUseRoute.mockReturnValue({
+            name: 'TradingFeesScreen',
+            params: { accountKey: 'btc1', tradingType: 'sell' },
+        });
+
+        await renderWithStoreProviderAsync(<TradingFeesScreen />, {
+            preloadedState: sellPreloadedState,
+        });
+
+        expect(analyticsSpy).toHaveBeenCalledWith({
+            type: EventType.TradingSell,
             payload: expect.objectContaining({
                 step: 'fee-selection',
                 action: 'visit',

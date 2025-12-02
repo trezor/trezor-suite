@@ -43,6 +43,14 @@ export type TradingExchangeStep =
     | 'sign-and-send'
     | 'webview';
 
+export type TradingSellAction = 'continue' | 'cancel' | 'retry' | 'visit';
+export type TradingSellStep =
+    | 'sell-form'
+    | 'transaction-preview'
+    | 'fee-selection'
+    | 'sign-and-send'
+    | 'webview';
+
 export type DemoAccountQuestionnaireQuestion = 'reason' | 'suiteAction';
 
 export type DemoAccountQuestionnaireQuestionOption =
