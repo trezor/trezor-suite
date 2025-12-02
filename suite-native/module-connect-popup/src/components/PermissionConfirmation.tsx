@@ -17,9 +17,17 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
+import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
+
+const permissionTranslationKeysMap = {
+    read: 'moduleConnectPopup.permissions.read',
+    write: 'moduleConnectPopup.permissions.write',
+    management: 'moduleConnectPopup.permissions.management',
+    push_tx: 'moduleConnectPopup.permissions.push_tx',
+} as const satisfies Record<MethodPermission, TxKeyPath>;
 
 export const PermissionConfirmation = () => {
     const dispatch = useDispatch();
@@ -84,7 +92,7 @@ export const PermissionConfirmation = () => {
                         <HStack key={permission} alignItems="center" spacing="sp8">
                             <Icon name="checkCircle" color="iconPrimaryDefault" />
                             <Text color="textSubdued" variant="hint" style={{ flex: 1 }}>
-                                <Translation id={`moduleConnectPopup.permissions.${permission}`} />
+                                <Translation id={permissionTranslationKeysMap[permission]} />
                             </Text>
                         </HStack>
                     ))}

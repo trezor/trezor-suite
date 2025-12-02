@@ -48,7 +48,9 @@ export const FeeInfoBottomSheet = ({
             ),
         },
         {
-            label: <Translation id="moduleSend.fees.custom.bottomSheet.label.maxFeePerGas" />,
+            label: (
+                <Translation id="transactionManagement.fees.custom.bottomSheet.label.maxFeePerGas" />
+            ),
             value:
                 popupCall.payload?.transaction?.maxFeePerGas &&
                 fromWei(popupCall.payload?.transaction?.maxFeePerGas, 'gwei').toLocaleString() +
@@ -57,7 +59,7 @@ export const FeeInfoBottomSheet = ({
         },
         {
             label: (
-                <Translation id="moduleSend.fees.custom.bottomSheet.label.maxPriorityFeePerGas" />
+                <Translation id="transactionManagement.fees.custom.bottomSheet.label.maxPriorityFeePerGas" />
             ),
             value:
                 popupCall.payload?.transaction?.maxPriorityFeePerGas &&
@@ -69,7 +71,9 @@ export const FeeInfoBottomSheet = ({
                     getFeeUnits(network.networkType),
         },
         {
-            label: <Translation id="moduleSend.fees.custom.bottomSheet.label.gasPrice" />,
+            label: (
+                <Translation id="transactionManagement.fees.custom.bottomSheet.label.gasPrice" />
+            ),
             value:
                 popupCall.payload?.transaction?.gasPrice &&
                 fromWei(Number(popupCall.payload?.transaction?.gasPrice), 'gwei').toLocaleString() +
@@ -77,7 +81,9 @@ export const FeeInfoBottomSheet = ({
                     getFeeUnits(network.networkType),
         },
         {
-            label: <Translation id="moduleSend.fees.custom.bottomSheet.label.gasLimit" />,
+            label: (
+                <Translation id="transactionManagement.fees.custom.bottomSheet.label.gasLimit" />
+            ),
             value: formattedGasLimit,
         },
     ];
