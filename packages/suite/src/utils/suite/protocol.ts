@@ -1,6 +1,5 @@
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { parseQuery, parseUri } from './parseUri';
 
@@ -21,14 +20,6 @@ export const getProtocolInfo = (
         const { protocol, pathname, host, search } = url;
         const scheme = protocol.slice(0, -1) as Protocol; // slice ":" from protocol
         const params = parseQuery(search);
-
-        analytics.report({
-            type: EventType.AppUriHandler,
-            payload: {
-                scheme,
-                isAmountPresent: params.amount !== undefined,
-            },
-        });
 
         if (!getNetworkSymbolForProtocol(scheme)) {
             return { error: 'Unknown protocol', scheme };

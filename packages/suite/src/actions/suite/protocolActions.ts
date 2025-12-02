@@ -3,6 +3,7 @@ import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import {
     SUITE_ANCHOR_DEEPLINK_PREFIX,
     SUITE_BRIDGE_DEEPLINK,
@@ -49,6 +50,16 @@ const saveCoinProtocol = (scheme: Protocol, address: string, amount?: number): P
 export const handleProtocolRequest =
     (uri: string) => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         const protocol = getProtocolInfo(uri);
+
+        if (protocol) {
+            analytics.report({
+                type: EventType.AppUriHandler,
+                payload: {
+                    scheme: protocol.scheme,
+                    isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,
+                },
+            });
+        }
 
         if (protocol && !('error' in protocol) && getNetworkSymbolForProtocol(protocol.scheme)) {
             const { scheme, amount, address } = protocol as CoinProtocolInfo;
