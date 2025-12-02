@@ -41,6 +41,7 @@ import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
     backfillDeviceAuthenticityChecks,
+    backfillPortfolioTrackerUnavailableCapabilities,
     bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
@@ -184,7 +185,7 @@ export const prepareRootReducers = async () => {
         reducer: deviceReducer,
         persistedKeys: ['devices', 'persistentDeviceData'],
         key: 'devices',
-        version: 3,
+        version: 4,
         transforms: [devicePersistTransform],
         migrations: {
             2: (oldState: any /* FIXME */) => {
@@ -199,6 +200,14 @@ export const prepareRootReducers = async () => {
             3: (oldState: any /* FIXME */) => {
                 if (!oldState?.devices) return oldState;
                 const migratedDevices = backfillDeviceAuthenticityChecks(oldState.devices);
+
+                return { ...oldState, devices: migratedDevices };
+            },
+            4: (oldState: any /* FIXME */) => {
+                if (!oldState?.devices) return oldState;
+                const migratedDevices = backfillPortfolioTrackerUnavailableCapabilities(
+                    oldState.devices,
+                );
 
                 return { ...oldState, devices: migratedDevices };
             },
