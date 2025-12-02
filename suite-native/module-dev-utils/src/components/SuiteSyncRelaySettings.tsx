@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useServices } from '@suite-common/redux-utils';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
-    disposeAllSuiteSyncStoragesThunk,
     selectIsFeatureSuiteSyncAvailable,
     selectSuiteSyncRelayUrl,
     suiteSyncActions,
@@ -55,7 +54,7 @@ export const SuiteSyncRelaySettings = () => {
         );
 
         if (originalIsSuiteSyncEnabled) {
-            dispatch(disposeAllSuiteSyncStoragesThunk());
+            suiteSync.turnOffSuiteSync()
         }
     };
 

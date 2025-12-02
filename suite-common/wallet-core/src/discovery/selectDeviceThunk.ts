@@ -42,7 +42,7 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
         const isSuiteSyncEnabled = extra.selectors.selectIsSuiteSyncEnabled(getState());
 
         if (isTrezorDeviceWithState(trezorDevice) && isSuiteSyncEnabled) {
-            dispatch(extra.thunks.subscribeSuiteSync({ device: trezorDevice }));
+            extra.services.suiteSync.subscribeSuiteSyncStorage({ device: trezorDevice });
         }
     },
 );

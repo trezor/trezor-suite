@@ -11,10 +11,6 @@ import {
     To,
 } from '@suite-common/redux-utils';
 import {
-    subscribeSuiteSyncStorageThunk,
-    unsubscribeAndDisposeSuiteSyncStorageThunk,
-} from '@suite-common/suite-sync';
-import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
@@ -83,11 +79,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
-
-        // This needs to be over `extra` to prevent circular dependency,
-        // `@suite-common/suite-sync` depends on `wallet-core`
-        subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
-        unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: (state: AppState) =>

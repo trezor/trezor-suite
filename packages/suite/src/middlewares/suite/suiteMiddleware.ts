@@ -93,7 +93,7 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
 
             dispatch(handleDeviceDisconnect(device));
             if (isTrezorDeviceWithState(device)) {
-                dispatch(extra.thunks.unsubscribeAndDisposeSuiteSyncStorage({ device }));
+                extra.services.suiteSync.unsubscribeSuiteSyncStorage({ device });
             }
         }
 

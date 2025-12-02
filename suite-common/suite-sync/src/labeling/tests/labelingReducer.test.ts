@@ -11,8 +11,8 @@ import {
     setAddressLabel,
     setOutputLabel,
     setWalletLabel,
-} from '../../src/labeling/labelingActions';
-import { LabelingState, prepareLabelingReducer } from '../../src/labeling/labelingReducer';
+} from '../labelingActions';
+import { LabelingState, prepareLabelingReducer } from '../labelingReducer';
 import {
     selectAccountLabel,
     selectAccountLabels,
@@ -21,7 +21,7 @@ import {
     selectOutputLabel,
     selectOutputLabels,
     selectWalletLabel,
-} from '../../src/labeling/labelingSelectors';
+} from '../labelingSelectors';
 
 const labelingReducer = prepareLabelingReducer(extraDependenciesMock);
 

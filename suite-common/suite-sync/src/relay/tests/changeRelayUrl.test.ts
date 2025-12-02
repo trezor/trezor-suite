@@ -3,8 +3,8 @@ import type { UnknownAction } from '@reduxjs/toolkit';
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
 
-import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../../src/relay/changeRelayUrl';
-import { mockNotExpected } from '../utils';
+import { mockNotExpected } from '../../../tests/utils';
+import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../changeRelayUrl';
 
 const owner1 = {
     ownerId: asSuiteSyncOwnerId('OwnerId_1'),

@@ -13,12 +13,7 @@ export { useSuiteSync } from './useSuiteSync';
 export { prepareSuiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';
-export { subscribeSuiteSyncStorageThunk } from './subscribeSuiteSyncStorageThunk';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
-
-// Todo: refactor to services, so they can be isolated & tested!
-export { unsubscribeAndDisposeSuiteSyncStorageThunk } from './unsubscribeAndDisposeSuiteSyncStorageThunk';
-export { disposeAllSuiteSyncStoragesThunk } from './disposeAllSuiteSyncStoragesThunk';
 
 // Labeling
 // Todo: refactor to services, so they can be isolated & tested!

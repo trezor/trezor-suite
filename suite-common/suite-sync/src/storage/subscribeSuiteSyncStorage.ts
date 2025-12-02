@@ -1,17 +1,19 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { TrezorDeviceWithState } from '@suite-common/suite-types';
+import { SubscribeSuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { exhaustive, ok } from '@trezor/type-utils';
+import { exhaustive } from '@trezor/type-utils';
 
-import { isSuiteSyncSupportedByDevice } from './device';
-import { subscribeLabelingUpdatesThunk } from './labeling/subscribeLabelingUpdatesThunk';
-import { refreshSuiteSyncKeysThunk } from './refreshSuiteSyncKeysThunk';
+import { isSuiteSyncSupportedByDevice } from '../device';
+import { SubscribeLabeling } from '../labeling/createSubscribeLabeling';
+import { refreshSuiteSyncKeysThunk } from '../refreshSuiteSyncKeysThunk';
 
-type subscribeSuiteSyncStorageThunkParams = {
-    device: TrezorDeviceWithState;
+type CreateSubscribeSuiteSyncDeps = {
+    dispatch: Dispatch;
+    getState: () => any;
+    subscribeLabeling: SubscribeLabeling;
 };
 
 /**
@@ -19,11 +21,11 @@ type subscribeSuiteSyncStorageThunkParams = {
  *
  * This is part of the experiment here: https://github.com/trezor/trezor-suite/issues/23202
  */
-export const subscribeSuiteSyncStorageThunk =
-    ({ device }: subscribeSuiteSyncStorageThunkParams) =>
-    async (dispatch: Dispatch, getState: () => any) => {
+export const createSubscribeSuiteSyncStorage =
+    (deps: CreateSubscribeSuiteSyncDeps): SubscribeSuiteSyncStorage =>
+    async ({ device }) => {
         if (!isSuiteSyncSupportedByDevice(device)) {
-            return ok();
+            return;
         }
 
         const deviceStaticSessionId = device.state.staticSessionId;
@@ -31,7 +33,7 @@ export const subscribeSuiteSyncStorageThunk =
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
         if (device.suiteSyncOwner === undefined) {
-            const result = await dispatch(refreshSuiteSyncKeysThunk({ device }));
+            const result = await deps.dispatch(refreshSuiteSyncKeysThunk({ device }));
 
             if (!result.ok) {
                 const errType = result.error.type;
@@ -39,15 +41,19 @@ export const subscribeSuiteSyncStorageThunk =
                 switch (errType) {
                     case 'DeviceError':
                     case 'DeviceCancelled':
-                        dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
+                        deps.dispatch(
+                            notificationsActions.addToast({ type: 'suite-sync-keys-error' }),
+                        );
 
-                        return ok();
+                        return;
                     case 'CreateSuiteSyncOwnerError':
                         console.error(result.error);
                         // Todo: dispatch better notification
-                        dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
+                        deps.dispatch(
+                            notificationsActions.addToast({ type: 'suite-sync-keys-error' }),
+                        );
 
-                        return ok();
+                        return;
                     default:
                         return exhaustive(errType);
                 }
@@ -55,7 +61,7 @@ export const subscribeSuiteSyncStorageThunk =
         }
 
         // Reselect the device to get the correct secret (cipherKey)
-        const reselectedDevice = selectDevices(getState())?.find(
+        const reselectedDevice = selectDevices(deps.getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
@@ -64,10 +70,10 @@ export const subscribeSuiteSyncStorageThunk =
         if (owner === undefined) {
             console.error('Evolu: Keys set to reselectedDevice', reselectedDevice?.suiteSyncOwner);
 
-            return ok();
+            return;
         }
 
-        dispatch(subscribeLabelingUpdatesThunk({ owner, walletDescriptor }));
+        deps.subscribeLabeling({ owner, walletDescriptor });
 
-        return ok();
+        return;
     };
