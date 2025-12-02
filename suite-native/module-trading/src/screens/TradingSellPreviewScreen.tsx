@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -9,6 +9,7 @@ import {
 } from '@suite-common/trading';
 import { Screen } from '@suite-native/navigation';
 
+import { Footer } from '../components/general/Footer';
 import {
     SellPreviewContinueButton,
     SellPreviewScreenHeader,
@@ -23,6 +24,7 @@ export const TradingSellPreviewScreen = () => {
     const { txnErrorString, doBankAccountVerificationCheck, fetchFeesAndCompose } = useSellFlow();
     const { trade } = useTradingDetailData<TradingSellType>('sell');
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
+    const [shouldFetchFees, setShouldFetchFees] = useState(false);
 
     const currentQuote = trade?.data ? trade.data : selectedQuote;
     const isFinalized = isFinalStatus('sell', currentQuote?.status);
@@ -41,9 +43,17 @@ export const TradingSellPreviewScreen = () => {
     // Fetch fees and compose when status is SEND_CRYPTO
     useEffect(() => {
         if (currentQuote?.status === 'SEND_CRYPTO') {
+            setShouldFetchFees(true);
+        }
+    }, [currentQuote?.status, currentQuote?.orderId]);
+
+    // unfortunately fetchFeesAndCompose is too unstable to be used directly in above useEffect
+    useEffect(() => {
+        if (shouldFetchFees) {
+            setShouldFetchFees(false);
             fetchFeesAndCompose();
         }
-    }, [currentQuote?.status, currentQuote?.orderId, fetchFeesAndCompose]);
+    }, [shouldFetchFees, fetchFeesAndCompose]);
 
     // clear trading state on unmount
     useEffect(
@@ -69,6 +79,7 @@ export const TradingSellPreviewScreen = () => {
                     onSignTransactionNavigation={onSignTransactionNavigation}
                 />
             )}
+            <Footer type="sell" />
         </Screen>
     );
 };

@@ -53,6 +53,7 @@ const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
                             href={termsUrl}
                             label={parts}
                             isUnderlined
+                            key={parts.join('|')}
                         />
                     ),
                 }}
