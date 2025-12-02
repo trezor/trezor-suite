@@ -937,7 +937,7 @@ export default defineMessages({
         defaultMessage: 'Proceed',
     },
     TR_TERMS_OF_USE_INVITY: {
-        defaultMessage: "Invity's Terms of Use",
+        defaultMessage: 'Terms of Use',
         id: 'TR_TERMS_OF_USE_INVITY',
     },
     TR_BUY_PROVIDED_BY_INVITY: {
@@ -2714,7 +2714,7 @@ export default defineMessages({
     },
     TR_NETWORK_RESERVE_DESCRIPTION: {
         defaultMessage:
-            'We reserve a small amount of native token on {supportedNetworks} to cover extra network fees when you send, swap, or sell your assets.',
+            'We’ve reserved a small amount of the native token on {supportedNetworks} to cover any extra network fees when you send, swap, or sell your assets.',
         id: 'TR_NETWORK_RESERVE_DESCRIPTION',
     },
     TR_CONFIRM_AUTO_EJECT: {
@@ -3794,7 +3794,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC: {
         id: 'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC',
         defaultMessage:
-            'Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
+            'Shelley-era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
     },
     TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC',
@@ -3932,7 +3932,7 @@ export default defineMessages({
     },
     TOAST_COIN_SCHEME_PROTOCOL_HEADER: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL_HEADER',
-        defaultMessage: 'Send {symbol} to this address',
+        defaultMessage: 'Go to an account to send',
     },
     TOAST_COIN_SCHEME_PROTOCOL_AMOUNT: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL_AMOUNT',
@@ -5675,7 +5675,7 @@ export default defineMessages({
     },
     TR_ADD_TOKEN_ADDRESS_DUPLICATE: {
         id: 'TR_ADD_TOKEN_ADDRESS_DUPLICATE',
-        defaultMessage: 'Token address is already activated',
+        defaultMessage: 'Token address is already added',
     },
     TR_ADD_TOKEN_TOAST_SUCCESS: {
         id: 'TR_ADD_TOKEN_TOAST_SUCCESS',
@@ -10075,7 +10075,7 @@ export default defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR',
         defaultMessage:
-            'Your wallet may appear empty until the internet connection is restored. Do you want to open it?',
+            'Your wallet may appear empty until your internet connection is restored. Do you want to open it?',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON',
@@ -10752,8 +10752,7 @@ export default defineMessages({
     },
     TR_NETWORK_RESERVE_BANNER: {
         id: 'TR_NETWORK_RESERVE_BANNER',
-        defaultMessage:
-            'We reserve up to {amount} {displaySymbol} in case extra network fees apply.',
+        defaultMessage: 'We’ve reserved {amount} {displaySymbol} to cover any extra network fees.',
     },
     TR_NETWORK_RESERVE_MANAGE: {
         defaultMessage: 'Manage',
