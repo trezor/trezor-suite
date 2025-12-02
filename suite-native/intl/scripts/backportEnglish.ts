@@ -15,8 +15,9 @@ import path from 'path';
 
 import { mergeDeepObject } from '@trezor/utils';
 
+import { writeMessagesObjectToFile } from './utils';
 import { messages } from '../src/messages';
-import { unflatten, writeMessagesObjectToFile } from '../src/utils';
+import { unflatten } from '../src/utils';
 
 const source: { [key in keyof typeof messages]: string } = JSON.parse(
     fs.readFileSync('translations/en-US.json', 'utf8'),

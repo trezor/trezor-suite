@@ -4,8 +4,9 @@ import path from 'path';
 
 import { getGrepCommandOfTranslationKey } from '@suite-common/suite-utils';
 
+import { writeMessagesObjectToFile } from './utils';
 import { messages } from '../src/messages';
-import { deleteNestedTranslationKey, flatten, writeMessagesObjectToFile } from '../src/utils';
+import { deleteNestedTranslationKey, flatten } from '../src/utils';
 
 const suiteNativeRoot = path.join(__dirname, '..', '..');
 const messagesPath = path.join(suiteNativeRoot, 'intl', 'src', 'messages.ts');

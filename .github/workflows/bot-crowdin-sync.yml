@@ -11,7 +11,7 @@ on:
         description: Should be synced desktop or mobile crowdin project?
         required: true
       remove_unused_translations:
-        description: "Confirm removal of unused translations. Check them first in misc tests pipeline. (works for desktop only)"
+        description: "Confirm removal of unused translations. Check them first in misc tests pipeline."
         required: true
         default: false
         type: boolean
@@ -77,6 +77,9 @@ jobs:
         run: |
           yarn workspace @suite-native/intl translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN_MOBILE }}
           yarn workspace @suite-native/intl translations:backport-en
+          if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
+            yarn workspace @suite-native/intl translations:remove-unused
+          fi
           yarn workspace @suite-native/intl translations:format
           yarn workspace @suite-native/intl translations:extract
           cat suite-native/intl/translations/master.json
