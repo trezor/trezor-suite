@@ -158,11 +158,10 @@ export const TradeDetailAlert = ({
     // Special handling for different alert types
     let handleButtonPress: (() => void) | undefined;
 
+    // even if there is support url, we still need to navigate to the webview for waiting and kyc alerts
     if ((['waiting', 'kyc'] as TradeStatusStep[]).includes(alertType) && orderId) {
         handleButtonPress = () => navigateToWebView();
-    }
-
-    if (supportUrl) {
+    } else if (supportUrl) {
         handleButtonPress = () => openLink(supportUrl);
     }
 
