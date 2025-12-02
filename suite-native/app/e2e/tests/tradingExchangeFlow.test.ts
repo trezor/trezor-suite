@@ -70,9 +70,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 
-            await tradingExchangeActions.openLegalSheet();
-            await tradingExchangeActions.closeBottomSheet();
-            await tradingExchangeActions.expectValidExchangeForm();
             await tradingExchangeActions.confirmTradingForm();
 
             await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();

@@ -150,17 +150,8 @@ export abstract class TradingFormActions extends TradingActions {
         await detoxExpect(this.getElementById('asset-send-button/symbol')).toHaveText(asset);
     }
 
-    async openLegalSheet() {
-        await this.getElementById('continue-button').tap();
-        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
-    }
-
     async confirmTradingForm() {
-        await this.openLegalSheet();
-        await element(by.id('@bottom-sheet/scroll-view')).scrollTo('bottom', 0.5, 0.5);
-        await this.waitForBottomSheetAnimation();
-        await this.getElementById('confirm-button').tap();
-        await this.waitForBottomSheetAnimation();
+        await this.getElementById('continue-button').tap();
     }
 
     async tapTradingSectionHeaderTab() {
