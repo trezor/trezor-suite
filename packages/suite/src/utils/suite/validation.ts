@@ -80,12 +80,14 @@ export const validateCryptoLimits =
             }
             if (amountLimits.minCrypto && new BigNumber(value).lt(minCrypto)) {
                 return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
-                    minimum: formatter.format(amountLimits.minCrypto, {
-                        isBalance: true,
-                        symbol: currency,
-                        shouldRedactNumbers: false,
-                        maxDisplayedDecimals: 18,
-                    }),
+                    minimum: formatter
+                        .format(amountLimits.minCrypto, {
+                            isBalance: true,
+                            symbol: currency,
+                            shouldRedactNumbers: false,
+                            maxDisplayedDecimals: 18,
+                        })
+                        .toUpperCase(),
                 });
             }
 

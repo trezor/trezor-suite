@@ -7,6 +7,8 @@ import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
+import { useSelector } from 'src/hooks/suite';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
@@ -29,6 +31,9 @@ export const TradingFormOfferItem = ({
     amountIsEmpty,
     tradingType,
 }: TradingFormOfferItemProps) => {
+    const { isTorEnabled } = useSelector(selectTorState);
+    const noOffersWithTor = isTorEnabled && !bestQuote && !isFormLoading && !isFormInvalid;
+
     if (!bestQuote || isFormLoading || isFormInvalid) {
         if (isFormLoading && !isFormInvalid) {
             return (
@@ -47,8 +52,7 @@ export const TradingFormOfferItem = ({
                 </Card>
             );
         }
-
-        if (!bestQuote && !isFormLoading && !isFormInvalid) {
+        if (noOffersWithTor) {
             return (
                 <TradingUtilsTorWarning tradingType={tradingType} noOffer={!bestQuote} showButton />
             );
