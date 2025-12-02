@@ -92,6 +92,9 @@ const suiteSyncMock: SuiteSync = {
             ownerSecret: asSuiteSyncOwnerSecretHex('test-2'),
         }),
     changeRelayUrl: () => Promise.resolve(),
+    subscribeSuiteSyncStorage: () => Promise.resolve(),
+    unsubscribeSuiteSyncStorage: () => Promise.resolve(),
+    turnOffSuiteSync: ()=> Promise.resolve(),
 };
 
 export const extraDependenciesMock: ExtraDependencies = {
@@ -101,8 +104,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         initMetadata: mockThunk('initMetadata'),
         addAccountMetadata: mockThunk('addAccountMetadata'),
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
-        subscribeSuiteSync: mockOriginalReduxThunk('subscribeSuiteSync'),
-        unsubscribeAndDisposeSuiteSyncStorage: mockThunk('unsubscribeAndDisposeSuiteSyncStorage'),
     },
     services: {
         suiteSync: suiteSyncMock,

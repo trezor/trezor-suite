@@ -6,10 +6,13 @@ export type {
 export { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 export type { SuiteSyncStorage } from './SuiteSyncStorage';
 export type { CreateSuiteSyncOwner } from './Owner';
-export type { SuiteSync, ChangeRelayUrlDep, ChangeRelayUrl } from './SuiteSync';
-
-// Todo: this shared object shall be handled by Dependency Injection, this is madness
-export { subscriptionStorage } from './sharedObjects';
+export type {
+    SuiteSync,
+    ChangeRelayUrl,
+    SubscribeSuiteSyncStorage,
+    TurnOfSuiteSync,
+    UnsubscribeSuiteSyncStorage,
+} from './SuiteSync';
 
 // Labeling
 export type { AddressLabelsStore, AddressLabel } from './labeling/AddressLabelsStore';

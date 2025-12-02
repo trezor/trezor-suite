@@ -26,5 +26,3 @@ export const initSuiteSyncNative = (deps: InitSuiteSyncNativeDeps): SuiteSync =>
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
     });
 };
-
-export const createSuiteSyncOwnerNative = evoluCreateSuiteSyncOwner;

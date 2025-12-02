@@ -10,7 +10,6 @@ import {
     ReportSecurityCheckProps,
     Route,
     TrezorDevice,
-    TrezorDeviceWithState,
     UserContextPayload,
 } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -22,14 +21,8 @@ import {
     Manifest,
     StaticSessionId,
 } from '@trezor/connect';
-import { Ok } from '@trezor/type-utils';
 
-import {
-    ActionType,
-    OriginalReduxThunk,
-    SuiteCompatibleSelector,
-    SuiteCompatibleThunk,
-} from './types';
+import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -69,15 +62,6 @@ export type ExtraDependenciesStatic = {
             Exclude<MetadataAddPayload, { type: 'walletLabel' }>
         >;
         forgetBluetoothDevice: SuiteCompatibleThunk<{ bluetoothId: BluetoothDeviceId }>;
-
-        // This needs to be over `extra` to prevent circular dependency
-        subscribeSuiteSync: OriginalReduxThunk<
-            { device: TrezorDeviceWithState },
-            Promise<Ok<void>>
-        >;
-        unsubscribeAndDisposeSuiteSyncStorage: SuiteCompatibleThunk<{
-            device: TrezorDeviceWithState;
-        }>;
     };
     selectors: {
         // TODO when tokens are implemented 1:1 in both apps, delete from extras

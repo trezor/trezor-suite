@@ -3,11 +3,7 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 
 import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
-import {
-    selectIsSuiteSyncEnabled,
-    subscribeSuiteSyncStorageThunk,
-    unsubscribeAndDisposeSuiteSyncStorageThunk,
-} from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
@@ -68,10 +64,6 @@ export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(extraD
         selectIsSuiteSyncEnabled,
     } as Partial<ExtraDependenciesStatic['selectors']>,
     thunks: {
-        // This needs to be over `extra` to prevent circular dependency,
-        // `@suite-common/suite-sync` depends on `wallet-core`
-        subscribeSuiteSync: subscribeSuiteSyncStorageThunk,
-        unsubscribeAndDisposeSuiteSyncStorage: unsubscribeAndDisposeSuiteSyncStorageThunk,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
     } as Partial<ExtraDependenciesStatic['thunks']>,
     actions: {} as Partial<ExtraDependenciesStatic['actions']>,

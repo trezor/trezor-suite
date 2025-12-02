@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { isSuiteSyncSupportedByDevice } from './device';
-import { disposeAllSuiteSyncStoragesThunk } from './disposeAllSuiteSyncStoragesThunk';
 import { suiteSyncActions } from './suiteSyncActions';
 import {
     selectIsFeatureSuiteSyncAvailable,
@@ -19,7 +19,7 @@ export type UseLocalStorageParams = {
 
 export const useSuiteSync = ({ device }: UseLocalStorageParams) => {
     const dispatch = useDispatch();
-
+    const { suiteSync } = useServices();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
@@ -35,7 +35,7 @@ export const useSuiteSync = ({ device }: UseLocalStorageParams) => {
     const disableSuiteSyncIfNeeded = () => {
         if (isSuiteSyncEnabled) {
             dispatch(suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: false }));
-            dispatch(disposeAllSuiteSyncStoragesThunk());
+            suiteSync.turnOffSuiteSync();
         }
     };
 
