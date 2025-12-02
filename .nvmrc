@@ -1,1 +1,3 @@
 24.11.1
+
+# This needs to be consistent with node version defined in suite-native/app/eas.json file!
