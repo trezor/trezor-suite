@@ -6,9 +6,9 @@ import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { isSuiteSyncSupportedByDevice } from '../device';
 import { SubscribeLabeling } from '../labeling/createSubscribeLabeling';
 import { RefreshSuiteSyncKeys } from '../refreshSuiteSyncKeys';
+import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
 type CreateSubscribeSuiteSyncDeps = {
     dispatch: Dispatch;
