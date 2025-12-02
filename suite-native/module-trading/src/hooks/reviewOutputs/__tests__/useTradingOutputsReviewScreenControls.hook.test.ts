@@ -12,6 +12,18 @@ import { transactionManagementActions } from '@suite-native/transaction-manageme
 import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 
+const mockReportToAnalyticsExchange = jest.fn((step, action) => {
+    analytics.report({
+        type: EventType.TradingExchange,
+        payload: {
+            step,
+            action,
+        },
+    });
+});
+
+const mockReportToAnalyticsSell = jest.fn();
+
 const mockSignAndSendTransaction = jest.fn(() => Promise.resolve(true));
 
 const mockUseConfirmOnTrezorController = {
@@ -53,13 +65,18 @@ describe('useTradingOutputsReviewScreenControls', () => {
     let store: TestStore;
     const analyticsSpy: jest.SpyInstance = jest.spyOn(analytics, 'report');
 
-    const renderUseTradingOutputsReviewScreenControls = () =>
+    const renderUseTradingOutputsReviewScreenControls = (
+        reportToAnalytics:
+            | typeof mockReportToAnalyticsExchange
+            | typeof mockReportToAnalyticsSell = mockReportToAnalyticsExchange,
+    ) =>
         renderHookWithStoreProviderAsync(
             () =>
                 useTradingOutputsReviewScreenControls({
                     orderId: 'orderId',
                     accountKey: 'btc-account-1',
                     signAndSendTransaction: mockSignAndSendTransaction,
+                    reportToAnalytics,
                 }),
             {
                 store,
@@ -119,6 +136,30 @@ describe('useTradingOutputsReviewScreenControls', () => {
                     action: 'continue',
                 }),
             });
+        });
+
+        it('should navigate to trade detail and report sell analytics', async () => {
+            store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
+            await renderUseTradingOutputsReviewScreenControls(mockReportToAnalyticsSell);
+
+            expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    nextStep: expect.any(Function),
+                }),
+            );
+
+            // call the nextStep callback to simulate thunk behavior
+            act(() => {
+                const { nextStep } = (
+                    mockSignAndSendTransaction.mock.lastCall as unknown as [
+                        TradingExchangeSignAndSendTransactionProps,
+                    ]
+                )[0];
+                nextStep();
+            });
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('orderId');
+            expect(mockReportToAnalyticsSell).toHaveBeenCalled();
         });
 
         it('should display alert on thunk error', async () => {
@@ -192,13 +233,13 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
             act(() => {
                 mockShowAlert.mock.calls[0][0].onPressSecondaryButton();
-                expect(analyticsSpy).toHaveBeenCalledWith({
-                    type: EventType.TradingExchange,
-                    payload: expect.objectContaining({
-                        step: 'sign-and-send',
-                        action: 'cancel',
-                    }),
-                });
+            });
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'sign-and-send',
+                    action: 'cancel',
+                }),
             });
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
@@ -233,8 +274,8 @@ describe('useTradingOutputsReviewScreenControls', () => {
     });
 
     describe('useOutputsReviewBackInterceptor', () => {
-        it('should be initialized with popToTop navigation callback', async () => {
-            await renderUseTradingOutputsReviewScreenControls();
+        it('should be initialized with popToTop navigation callback and report cancel for exchange', async () => {
+            await renderUseTradingOutputsReviewScreenControls(mockReportToAnalyticsExchange);
 
             act(() => {
                 const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
@@ -242,18 +283,38 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'sign-and-send',
+                    action: 'cancel',
+                }),
+            });
+        });
+
+        it('should report cancel for sell', async () => {
+            store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
+            await renderUseTradingOutputsReviewScreenControls(mockReportToAnalyticsSell);
+
+            act(() => {
+                const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
+                onReviewCanceled();
+            });
+
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(mockReportToAnalyticsSell).toHaveBeenCalled();
         });
     });
 
-    it('should report visit to analytics on mount', async () => {
-        await renderUseTradingOutputsReviewScreenControls();
+    it('should report visit to analytics on mount for exchange', async () => {
+        await renderUseTradingOutputsReviewScreenControls(mockReportToAnalyticsExchange);
 
         expect(analyticsSpy).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
-            payload: {
+            payload: expect.objectContaining({
                 step: 'sign-and-send',
                 action: 'visit',
-            },
+            }),
         });
     });
 });

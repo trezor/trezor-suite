@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedBox, VStack } from '@suite-native/atoms';
@@ -10,6 +10,7 @@ import { SellConfirmation } from './SellConfirmation';
 import { SellPaymentCard } from './payment/SellPaymentCard';
 import { useFocusedValueWatch } from '../../hooks/general/useFocusedValueWatch';
 import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
+import { useSellAnalyticReportCallback } from '../../hooks/sell/useSellAnalyticReportCallback';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { useSellQuotes } from '../../hooks/sell/useSellQuotes';
 
@@ -75,8 +76,13 @@ const SellFormMemoized = memo(
 export const SellForm = ({ shouldAnimateEntering }: SellFormProps) => {
     const sellForm = useSellFormContext();
     const isAmountInputActiveDebounced = useFocusedValueWatch(sellForm.watch);
+    const reportToAnalytics = useSellAnalyticReportCallback();
 
     useSellQuotes(sellForm);
+
+    useEffect(() => {
+        reportToAnalytics('sell-form', 'visit');
+    }, [reportToAnalytics]);
 
     return (
         <SellFormMemoized

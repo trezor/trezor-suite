@@ -14,6 +14,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ReviewOutputsFooter } from '../components/reviewOutputs/ReviewOutputsFooter';
 import { ReviewOutputsSkeleton } from '../components/reviewOutputs/ReviewOutputsSkeleton';
+import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import type { UseTradingTransactionReturnProps } from '../hooks/general/useTradingTransaction';
 import { useDelayedReviewOutputListDisplayFlag } from '../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
@@ -21,6 +22,7 @@ import {
     UseTradingOutputsReviewScreenControlsProps,
     useTradingOutputsReviewScreenControls,
 } from '../hooks/reviewOutputs/useTradingOutputsReviewScreenControls';
+import { useSellAnalyticReportCallback } from '../hooks/sell/useSellAnalyticReportCallback';
 import { useSellFlow } from '../hooks/sell/useSellFlow';
 import { getFormDraftKeyPrefixFromTradingType } from '../utils/general/utils';
 
@@ -47,6 +49,7 @@ const TradingOutputsBaseReviewScreen = ({
     signAndSendTransaction,
     isTransactionSendConsentRequested,
     resolveTransactionSendConsent,
+    reportToAnalytics,
 }: TradingOutputsBaseReviewScreenParams) => {
     const { applyStyle } = useNativeStyles();
     const { isTransactionAlreadySigned, confirmOnTrezorRef } =
@@ -54,6 +57,7 @@ const TradingOutputsBaseReviewScreen = ({
             orderId,
             accountKey,
             signAndSendTransaction,
+            reportToAnalytics,
         });
     const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
 
@@ -103,6 +107,7 @@ export const TradingExchangeOutputsReviewScreen = ({
         isTransactionSendConsentRequested,
         resolveTransactionSendConsent,
     } = useExchangeFlow();
+    const analyticsReportCallback = useExchangeAnalyticReportCallback();
 
     return (
         <TradingOutputsBaseReviewScreen
@@ -113,6 +118,7 @@ export const TradingExchangeOutputsReviewScreen = ({
             signAndSendTransaction={signAndSendTransaction}
             isTransactionSendConsentRequested={isTransactionSendConsentRequested}
             resolveTransactionSendConsent={resolveTransactionSendConsent}
+            reportToAnalytics={analyticsReportCallback}
         />
     );
 };
@@ -126,6 +132,7 @@ export const TradingSellOutputsReviewScreen = ({
         isTransactionSendConsentRequested,
         resolveTransactionSendConsent,
     } = useSellFlow();
+    const analyticsReportCallback = useSellAnalyticReportCallback();
 
     return (
         <TradingOutputsBaseReviewScreen
@@ -136,6 +143,7 @@ export const TradingSellOutputsReviewScreen = ({
             signAndSendTransaction={signAndSendTransaction}
             isTransactionSendConsentRequested={isTransactionSendConsentRequested}
             resolveTransactionSendConsent={resolveTransactionSendConsent}
+            reportToAnalytics={analyticsReportCallback}
         />
     );
 };

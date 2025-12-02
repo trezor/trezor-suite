@@ -20,8 +20,8 @@ import {
 } from '@suite-native/transaction-management';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
-import { useExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
 import { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
+import { TradingAnalyticReportCallback } from '../general/tradingAnalyticReportCallbackTypes';
 import { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
 
 type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<
@@ -36,12 +36,14 @@ export type UseTradingOutputsReviewScreenControlsProps = Pick<
 > & {
     orderId: string;
     accountKey: AccountKey;
+    reportToAnalytics: TradingAnalyticReportCallback;
 };
 
 export const useTradingOutputsReviewScreenControls = ({
     orderId,
     accountKey,
     signAndSendTransaction,
+    reportToAnalytics,
 }: UseTradingOutputsReviewScreenControlsProps) => {
     const allowAlertRef = useRef(true);
     const signingExecutedRef = useRef(false);
@@ -52,7 +54,6 @@ export const useTradingOutputsReviewScreenControls = ({
     const { confirmOnTrezorRef, closeSheet } = useConfirmOnTrezorController();
     const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert(accountKey);
 
-    const reportToAnalytics = useExchangeAnalyticReportCallback();
     useEffect(() => {
         reportToAnalytics('sign-and-send', 'visit');
     }, [reportToAnalytics]);

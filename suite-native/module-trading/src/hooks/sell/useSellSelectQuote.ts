@@ -20,6 +20,7 @@ import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { SellFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
+import { useSellAnalyticReportCallback } from './useSellAnalyticReportCallback';
 import { clearSellFormQuoteData } from './useSellForm';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -46,11 +47,14 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
     const sendAccount = useSelector(selectSellSelectedSendAccount);
 
     const canProceed = isValid && !!candidateQuote && !!sendAccount && !isLoading;
+    const analyticsReportCallback = useSellAnalyticReportCallback(candidateQuote);
 
     const selectQuote = useCallback(async () => {
         if (!candidateQuote || isLoading) {
             return;
         }
+
+        analyticsReportCallback('sell-form', 'continue');
 
         const provider = candidateQuote.exchange
             ? sellInfo?.providerInfos[candidateQuote.exchange]
@@ -75,7 +79,16 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
                 nextStep,
             }),
         );
-    }, [candidateQuote, isLoading, sellInfo?.providerInfos, dispatch, timer, navigation, form]);
+    }, [
+        candidateQuote,
+        isLoading,
+        analyticsReportCallback,
+        sellInfo?.providerInfos,
+        dispatch,
+        timer,
+        navigation,
+        form,
+    ]);
 
     return {
         canProceed,

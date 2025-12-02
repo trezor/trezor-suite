@@ -1,3 +1,4 @@
+import { EventType, analytics } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
@@ -84,6 +85,20 @@ describe('SellForm', () => {
             expect(queryByText('Continue')).toBeNull();
             expect(queryByText('Country of residence')).toBeNull();
             expect(queryByText('Provider')).toBeNull();
+        });
+    });
+
+    it('should report to analytics on mount', async () => {
+        const analyticsSpy = jest.spyOn(analytics, 'report');
+        const { result } = await renderFormHook({});
+        await renderSellForm({}, result.current);
+
+        expect(analyticsSpy).toHaveBeenCalledWith({
+            type: EventType.TradingSell,
+            payload: expect.objectContaining({
+                step: 'sell-form',
+                action: 'visit',
+            }),
         });
     });
 });
