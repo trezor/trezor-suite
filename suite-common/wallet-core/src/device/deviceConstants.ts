@@ -70,7 +70,9 @@ export const portfolioTrackerDevice: TrezorDevice = {
     buttonRequests: [],
     metadata: {},
     passwords: {},
-    unavailableCapabilities: {},
+    unavailableCapabilities: {
+        evolu: 'no-support',
+    },
     availableTranslations: {},
     remember: true,
     authenticityChecks: {
