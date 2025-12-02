@@ -99,13 +99,8 @@ export const useTradingBuyForm = ({
           };
     useTradingFiatValues(fiatTradingValuesParams);
 
-    const {
-        defaultValues,
-        defaultCountry,
-        defaultCurrency,
-        defaultPaymentMethod,
-        suggestedFiatCurrency,
-    } = useTradingBuyFormDefaultValues(account.symbol, buyInfo);
+    const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
+        useTradingBuyFormDefaultValues(account.symbol, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingBuyFormProps>(
         'trading-buy',
@@ -450,12 +445,7 @@ export const useTradingBuyForm = ({
             if (!formState.isValidating && Object.keys(formState.errors).length === 0 && buyInfo) {
                 saveDraft({
                     ...values,
-                    fiatInput:
-                        values.fiatInput !== ''
-                            ? values.fiatInput
-                            : buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(
-                                  suggestedFiatCurrency,
-                              ),
+                    fiatInput: values.fiatInput ?? '',
                 } as TradingBuyFormProps);
             }
         },

@@ -3,7 +3,6 @@ import { Control, Controller } from 'react-hook-form';
 
 import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
-    TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_OUTPUT_CURRENCY,
     TradingFiatCurrencyOption,
 } from '@suite-common/trading';
@@ -48,10 +47,6 @@ export const TradingFormInputCurrency = ({
     );
 
     const onChangeAdditional = (option: TradingFiatCurrencyOption) => {
-        if (isTradingBuyContext(context)) {
-            context.setValue(TRADING_FORM_FIAT_INPUT, '');
-        }
-
         if (isTradingExchangeContext(context) || isTradingSellContext(context)) {
             context.form.helpers.onFiatCurrencyChange(option.value);
         }
