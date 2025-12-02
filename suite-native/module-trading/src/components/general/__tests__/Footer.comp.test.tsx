@@ -1,22 +1,20 @@
+import { Linking } from 'react-native';
+
 import type { CryptoId } from 'invity-api';
 
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 
 import { Footer } from '../Footer';
 
-let mockOpenLink: jest.Mock;
-
-jest.mock('@suite-native/link', () => ({
-    useOpenLink: () => mockOpenLink,
-}));
-
 describe('Footer', () => {
+    const mockOpenLink = jest.spyOn(Linking, 'openURL');
+
     const renderFooter = (preloadedState: PreloadedState) =>
         renderWithStoreProviderAsync(<Footer type="exchange" />, { preloadedState });
 
     beforeEach(() => {
-        mockOpenLink = jest.fn();
+        mockOpenLink.mockClear();
     });
 
     it('should render footer links', async () => {
@@ -88,8 +86,8 @@ describe('Footer', () => {
             },
         });
 
-        expect(getByText("ChangeNOW's Terms & Conditions.")).toBeOnTheScreen();
-        fireEvent.press(getByText("ChangeNOW's Terms & Conditions."));
+        expect(getByText("ChangeNOW's Terms & Conditions")).toBeOnTheScreen();
+        await userEvent.press(getByText("ChangeNOW's Terms & Conditions"));
 
         expect(mockOpenLink).toHaveBeenCalledTimes(1);
         expect(mockOpenLink).toHaveBeenCalled();
@@ -98,8 +96,8 @@ describe('Footer', () => {
     it('pressing links should lead to correct URLs', async () => {
         const { getByText } = await renderFooter({});
 
-        fireEvent.press(getByText("Invity's Terms of Use"));
-        fireEvent.press(getByText('Learn more'));
+        await userEvent.press(getByText("Invity's Terms of Use"));
+        await userEvent.press(getByText('Learn more'));
 
         expect(mockOpenLink).toHaveBeenCalledTimes(2);
         expect(mockOpenLink).toHaveBeenNthCalledWith(1, DATA_TOS_INVITY_URL);

@@ -2272,10 +2272,10 @@ export const messages = {
             rate: 'Rate',
             selectedRate: 'Selected rate',
             footer: {
-                termsAndConditions:
-                    "Invity doesn't provide this service. It's governed by {termsAndConditions}.",
-                noProviderTermsAndConditions: "provider's Terms & Conditions",
-                providerTermsAndConditions: "{companyName}'s Terms & Conditions",
+                termsAndConditionsProvider:
+                    "Invity doesn't provide this service. It's governed by <link>{companyName}'s Terms & Conditions</link>.",
+                termsAndConditionsGeneral:
+                    "Invity doesn't provide this service. It's governed by provider's Terms & Conditions.",
                 termsOfUse: "Invity's Terms of Use",
                 learnMore: 'Learn more',
             },
