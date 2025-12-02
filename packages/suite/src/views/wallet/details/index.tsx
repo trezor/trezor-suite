@@ -6,7 +6,12 @@ import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
-import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, Url } from '@trezor/urls';
+import {
+    HELP_CENTER_BIP329_URL,
+    HELP_CENTER_BIP32_URL,
+    HELP_CENTER_XPUB_URL,
+    Url,
+} from '@trezor/urls';
 
 import { exportMetadataToBip329File } from 'src/actions/suite/metadataActions';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -176,6 +181,7 @@ const Details = () => {
                             description={
                                 <Translation id="TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION" />
                             }
+                            learnMoreUrl={HELP_CENTER_BIP329_URL}
                         >
                             <Button
                                 intent="neutral"

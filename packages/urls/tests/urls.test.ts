@@ -10,6 +10,8 @@ const excluded = [
     URLS.LTC_ADDRESS_INFO_URL,
     // captcha, returning 403 in ci
     URLS.TREZOR_FORUM_URL,
+    // TODO: BIP329 article not live yet
+    URLS.HELP_CENTER_BIP329_URL,
     // TODO T3W1 - articles not live yet
     URLS.TREZOR_SUPPORT_BLUETOOTH_TROUBLESHOOTING,
     URLS.HELP_CENTER_DRY_RUN_T3W1_URL,
