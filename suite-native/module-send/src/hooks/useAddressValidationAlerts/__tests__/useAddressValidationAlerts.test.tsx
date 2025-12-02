@@ -85,13 +85,26 @@ describe('useAddressValidationAlerts', () => {
     const renderHookWithForm = async (
         preloadedState: PreloadedState = defaultPreloadedState,
         { inputIndex = 0 } = {},
-    ) =>
-        await renderHookWithStoreProviderAsync(() => useAddressValidationAlerts({ inputIndex }), {
-            preloadedState,
-            wrapper: ({ children }) => (
-                <Form form={{ setValue: mockSetValue, watch: mockWatch } as any}>{children}</Form>
-            ),
+    ) => {
+        const result = await renderHookWithStoreProviderAsync(
+            () => useAddressValidationAlerts({ inputIndex }),
+            {
+                preloadedState,
+                wrapper: ({ children }) => (
+                    <Form form={{ setValue: mockSetValue, watch: mockWatch } as any}>
+                        {children}
+                    </Form>
+                ),
+            },
+        );
+
+        // allow async TrezorConnect.getAccountInfo to resolve
+        await act(async () => {
+            await Promise.resolve();
         });
+
+        return result;
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
