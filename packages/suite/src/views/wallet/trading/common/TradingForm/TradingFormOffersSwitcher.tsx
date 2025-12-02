@@ -11,6 +11,8 @@ import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
+import { useSelector } from 'src/hooks/suite';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
 
@@ -33,12 +35,15 @@ export const TradingFormOffersSwitcher = ({
     amountIsEmpty,
     tradingType,
 }: TradingFormOffersSwitcherProps) => {
+    const { isTorEnabled } = useSelector(selectTorState);
     const { setValue, getValues, dexQuotes, cexQuotes, preselectedQuote } = context;
     const { exchangeType } = getValues();
     const cexQuote = cexQuotes?.[0];
     const dexQuote = dexQuotes?.[0];
     const hasSingleOption = !cexQuote !== !dexQuote;
     const bestQuote = cexQuote ?? dexQuote;
+
+    const noOffersWithTor = isTorEnabled && !bestQuote && !isFormLoading && !isFormInvalid;
 
     if (!bestQuote || isFormLoading || isFormInvalid) {
         if (isFormLoading && !isFormInvalid) {
@@ -58,25 +63,31 @@ export const TradingFormOffersSwitcher = ({
             );
         }
 
-        if (!bestQuote && !isFormLoading && !isFormInvalid) {
+        if (noOffersWithTor) {
             return (
                 <TradingUtilsTorWarning tradingType={tradingType} noOffer={!bestQuote} showButton />
             );
         }
 
         return (
-            <Card>
-                <Paragraph
-                    typographyStyle="hint"
-                    variant="tertiary"
-                    align="center"
-                    margin={{ vertical: spacings.xs }}
-                >
-                    <Translation
-                        id={amountIsEmpty ? 'TR_TRADING_OFFERS_EMPTY' : 'TR_TRADING_NO_OFFER_SWAP'}
-                    />
-                </Paragraph>
-            </Card>
+            <>
+                <Card>
+                    <Paragraph
+                        typographyStyle="hint"
+                        variant="tertiary"
+                        align="center"
+                        margin={{ vertical: spacings.xs }}
+                    >
+                        <Translation
+                            id={
+                                amountIsEmpty
+                                    ? 'TR_TRADING_OFFERS_EMPTY'
+                                    : 'TR_TRADING_NO_OFFER_SWAP'
+                            }
+                        />
+                    </Paragraph>
+                </Card>
+            </>
         );
     }
 
