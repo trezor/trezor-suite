@@ -3,7 +3,7 @@ import { createMigration } from '@suite/idb-migration-utils';
 import { SuiteDBSchema } from 'src/storage/definitions';
 
 export default createMigration<SuiteDBSchema>('25.12.0', (db, tx) => {
-    // @ts-expect-error `suiteSyncSettings` no longer exists, migrates to `suiteSyncSettings`
+    // @ts-expect-error `labelingSettings` no longer exists, migrates to `suiteSyncSettings`
     if (db.objectStoreNames.contains('labelingSettings')) {
         // @ts-expect-error
         db.deleteObjectStore('labelingSettings');
@@ -14,11 +14,10 @@ export default createMigration<SuiteDBSchema>('25.12.0', (db, tx) => {
 
         tx.objectStore('suiteSyncSettings').put(
             {
-                // @ts-expect-error
-                isFeatureLocalFirstStorageAvailable: false,
-                isLocalFirstStorageEnabled: false,
-                isLocalFirstStorageDebugEnabled: false,
-                localFirstStorageRelayUrl: null,
+                isFeatureSuiteSyncAvailable: false,
+                isSuiteSyncEnabled: false,
+                isSuiteSyncDebugEnabled: false,
+                suiteSyncRelayUrl: null,
             },
             'suiteSyncSettings',
         );
