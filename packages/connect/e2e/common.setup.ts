@@ -127,6 +127,25 @@ export const setup = async (
     );
 };
 
+export const restartEmu = async (controller: TrezorUserEnvLinkClass) => {
+    await controller.stopEmu();
+    await new Promise<void>(resolve => {
+        const onDeviceDisconnected = () => {
+            TrezorConnect.off('device-disconnect', onDeviceDisconnected);
+            resolve();
+        };
+        TrezorConnect.on('device-disconnect', onDeviceDisconnected);
+    });
+    await controller.startEmu({ ...emulatorStartOpts, wipe: false });
+    await new Promise<void>(resolve => {
+        const onDeviceConnected = () => {
+            TrezorConnect.off('device-connect', onDeviceConnected);
+            resolve();
+        };
+        TrezorConnect.on('device-connect', onDeviceConnected);
+    });
+};
+
 type InitParams = Partial<Parameters<typeof TrezorConnect.init>[0]> & { autoConfirm?: boolean };
 
 export const initTrezorConnect = async (
