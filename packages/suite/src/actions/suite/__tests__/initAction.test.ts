@@ -263,9 +263,12 @@ type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
     const memoryHistory = createMemoryHistory();
     const routerServices = createRouterServices(memoryHistory);
-    const mockStore = configureStore<State, any>([prepareSuiteMiddleware(extraDependenciesMock)], {
-        routerServices,
-    });
+    const mockStore = configureStore<State, any>(
+        [prepareSuiteMiddleware(() => extraDependenciesMock)],
+        {
+            routerServices,
+        },
+    );
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().slice(-1)[0];

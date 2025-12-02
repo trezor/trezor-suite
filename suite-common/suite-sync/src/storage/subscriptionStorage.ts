@@ -28,7 +28,7 @@ export const createSubscriptionStorage = (): SubscriptionStorage => {
             }
 
             // Defensive, if subscription already exists, we unsubscribe it
-            const existingUnsubscribe = storage[ownerId][name]
+            const existingUnsubscribe = storage[ownerId]?.[name];
 
             if (existingUnsubscribe !== undefined && existingUnsubscribe !== null) {
                 existingUnsubscribe();
@@ -37,7 +37,7 @@ export const createSubscriptionStorage = (): SubscriptionStorage => {
             storage[ownerId][name] = unsubscribe;
         },
         disposeAll: (ownerId: SuiteSyncOwnerId) => {
-            typedObjectValues(storage[ownerId]).forEach(callback => callback?.());
+            typedObjectValues(storage[ownerId] ?? {}).forEach(callback => callback?.());
             delete storage[ownerId];
         },
     };

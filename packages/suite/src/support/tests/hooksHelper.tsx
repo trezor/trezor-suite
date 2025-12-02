@@ -12,22 +12,29 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import { MockedFormatterProvider } from '@suite-common/formatters';
+import { ExtraDependencies, ServicesProvider } from '@suite-common/redux-utils';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
 // used in hooks tests
-export const renderWithProviders = (store: any, children: ReactNode): RenderResult =>
+export const renderWithProviders = (
+    store: any,
+    services: ExtraDependencies['services'],
+    children: ReactNode,
+): RenderResult =>
     render(
         <Provider store={store}>
-            <ConnectedThemeProvider>
-                <ResponsiveContextProvider>
-                    <IntlProvider locale="en">
-                        <MockedFormatterProvider>{children}</MockedFormatterProvider>
-                    </IntlProvider>
-                </ResponsiveContextProvider>
-            </ConnectedThemeProvider>
+            <ServicesProvider services={services}>
+                <ConnectedThemeProvider>
+                    <ResponsiveContextProvider>
+                        <IntlProvider locale="en">
+                            <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                        </IntlProvider>
+                    </ResponsiveContextProvider>
+                </ConnectedThemeProvider>
+            </ServicesProvider>
         </Provider>,
     );
 

@@ -39,7 +39,7 @@ type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
     const mockStore = configureStore<State, Action>([
-        prepareSuiteMiddleware(extraDependenciesMock),
+        prepareSuiteMiddleware(() => extraDependenciesMock),
         buttonRequestMiddleware,
     ]);
     const store = mockStore(state);

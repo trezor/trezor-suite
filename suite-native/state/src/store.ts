@@ -27,28 +27,31 @@ type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
 type FullPreloadedState = Parameters<RootReducerShape>[0];
 export type PreloadedState = DeepPartial<FullPreloadedState> | undefined;
 
-const middlewares: Middleware[] = [
-    messageSystemMiddleware,
-    blockchainMiddleware,
-    prepareFiatRatesMiddleware(extraDependencies),
-    prepareDeviceMiddleware(extraDependencies),
-    prepareDiscoveryMiddleware(extraDependencies),
-    sendFormMiddleware,
-    thpMiddleware,
-    prepareTradingMiddleware(extraDependencies),
-    preparePushNotificationMiddleware(extraDependencies),
-];
-
+const ENABLE_REDUX_LOGGER = false;
 const enhancers: Array<StoreEnhancer<any, any>> = [];
 
-const ENABLE_REDUX_LOGGER = false;
+const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
+    const middlewares: Middleware[] = [
+        messageSystemMiddleware,
+        blockchainMiddleware,
+        prepareFiatRatesMiddleware(getExtra),
+        prepareDeviceMiddleware(getExtra),
+        prepareDiscoveryMiddleware(getExtra),
+        sendFormMiddleware,
+        thpMiddleware,
+        prepareTradingMiddleware(getExtra),
+        preparePushNotificationMiddleware(getExtra),
+    ];
 
-if (__DEV__) {
-    enhancers.push(devToolsEnhancer({ maxAge: 150 })!);
-    if (ENABLE_REDUX_LOGGER) {
-        middlewares.push(logger);
+    if (__DEV__) {
+        enhancers.push(devToolsEnhancer({ maxAge: 150 })!);
+        if (ENABLE_REDUX_LOGGER) {
+            middlewares.push(logger);
+        }
     }
-}
+
+    return middlewares;
+};
 
 export const initStore = async (preloadedState?: PreloadedState) => {
     let extra: ExtraDependencies | null = null as ExtraDependencies | null;
@@ -73,7 +76,7 @@ export const initStore = async (preloadedState?: PreloadedState) => {
                     }),
                 )
                 .prepend(deviceConnectionMiddleware.middleware)
-                .concat(middlewares),
+                .concat(getMiddlewares(() => extra)),
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });
 

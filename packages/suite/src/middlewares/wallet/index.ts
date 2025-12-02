@@ -9,8 +9,6 @@ import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitio
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import { prepareWalletConnectMiddleware } from '@suite-common/walletconnect';
 
-import { extraDependencies } from 'src/support/extraDependencies';
-
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
 import storageMiddleware from './storageMiddleware';
 import walletMiddleware from './walletMiddleware';
@@ -18,20 +16,21 @@ import graphMiddleware from './graphMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
 
-export default [
-    prepareBlockchainMiddleware(extraDependencies),
-    prepareAccountsMiddleware(extraDependencies),
+export const getWalletMiddlewares = (getExtra: () => ExtraDependencies | null) => [
+    prepareBlockchainMiddleware(getExtra),
+    prepareAccountsMiddleware(getExtra),
     walletMiddleware,
-    prepareDiscoveryMiddleware(extraDependencies),
-    prepareFiatRatesMiddleware(extraDependencies),
-    prepareTokenDefinitionsMiddleware(extraDependencies),
-    prepareStakeMiddleware(extraDependencies),
+    prepareDiscoveryMiddleware(getExtra),
+    prepareFiatRatesMiddleware(getExtra),
+    prepareTokenDefinitionsMiddleware(getExtra),
+    prepareStakeMiddleware(getExtra),
     storageMiddleware,
     graphMiddleware,
     tradingMiddleware,
     coinjoinMiddleware,
     replaceByFeeErrorMiddleware,
-    prepareConnectPopupMiddleware(extraDependencies),
-    prepareWalletConnectMiddleware(extraDependencies),
+    prepareConnectPopupMiddleware(getExtra),
+    prepareWalletConnectMiddleware(getExtra),
 ];

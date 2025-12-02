@@ -1,4 +1,4 @@
-import { testMocks } from '@suite-common/test-utils';
+import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
 import {
     SendState,
     prepareBlockchainMiddleware,
@@ -69,7 +69,7 @@ type State = ReturnType<typeof getInitialState>;
 
 const mockStore = configureStore<State, Action>([
     walletMiddleware,
-    prepareBlockchainMiddleware(extraDependencies),
+    prepareBlockchainMiddleware(() => extraDependenciesMock),
 ]);
 
 const initStore = (state: State) => {

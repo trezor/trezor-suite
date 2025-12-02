@@ -49,7 +49,7 @@ const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares = [redirectMiddleware, prepareSuiteMiddleware(extraDependenciesMock)];
+const middlewares = [redirectMiddleware, prepareSuiteMiddleware(() => extraDependenciesMock)];
 
 const initStore = (state: State) => {
     const mockStore = configureStore<State, Action>(middlewares);
