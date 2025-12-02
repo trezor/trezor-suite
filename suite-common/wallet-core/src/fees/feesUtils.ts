@@ -3,7 +3,6 @@ import { Network, NetworkSymbol, getNetwork } from '@suite-common/wallet-config'
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { BlockchainEstimatedFeeLevel } from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { isNative } from '@trezor/env-utils';
 import { BigNumber } from '@trezor/utils';
 
 const NETWORK_FEE_OVERRIDES: Record<
@@ -35,9 +34,7 @@ type GetEip1559AvailabilityProps = {
 export const getEip1559Availability = ({ symbol, feeLevel, device }: GetEip1559AvailabilityProps) =>
     getNetwork(symbol).features.includes('eip1559') &&
     isEip1559(feeLevel) &&
-    !device?.unavailableCapabilities?.['eip1559'] &&
-    // suite-native does not have eip1559 implementation yet #16372
-    !isNative();
+    !device?.unavailableCapabilities?.['eip1559'];
 
 type GetNewFeeInfoProps = { network: Network; device?: TrezorDevice };
 export const getNewFeeInfo = async ({
