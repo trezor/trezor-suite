@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
         { "path": "../../packages/utils" }
     ]
 }

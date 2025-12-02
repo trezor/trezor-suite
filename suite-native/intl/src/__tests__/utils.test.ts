@@ -1,4 +1,4 @@
-import { flatten, unflatten } from '../utils';
+import { deleteNestedTranslationKey, flatten, unflatten } from '../utils';
 
 describe('flatten', () => {
     it('should flatten nested translation object to dot notation', () => {
@@ -111,5 +111,121 @@ describe('unflatten', () => {
         };
 
         expect(unflatten(input)).toEqual(expected);
+    });
+});
+
+describe('deleteNestedTranslationKey', () => {
+    it('removes nested key and prunes empty parents', () => {
+        const messages = {
+            generic: {
+                trezorSuite: 'Trezor Suite',
+                buttons: {
+                    yes: 'Yes',
+                    no: 'No',
+                },
+            },
+            moduleSend: {
+                fees: {
+                    custom: {
+                        openButton: 'Open',
+                    },
+                },
+                low: 'Low',
+                normal: 'Normal',
+                high: 'High',
+            },
+        };
+
+        deleteNestedTranslationKey(messages, 'moduleSend.fees.custom.openButton');
+
+        expect(messages).toEqual({
+            generic: {
+                trezorSuite: 'Trezor Suite',
+                buttons: {
+                    yes: 'Yes',
+                    no: 'No',
+                },
+            },
+            moduleSend: {
+                low: 'Low',
+                normal: 'Normal',
+                high: 'High',
+            },
+        });
+    });
+
+    it('keeps parent when siblings still exist', () => {
+        const messages = {
+            moduleSend: {
+                fees: {
+                    custom: {
+                        openButton: 'Open',
+                        closeButton: 'Close',
+                    },
+                },
+            },
+        };
+
+        deleteNestedTranslationKey(messages, 'moduleSend.fees.custom.openButton');
+
+        expect(messages).toEqual({
+            moduleSend: {
+                fees: {
+                    custom: {
+                        closeButton: 'Close',
+                    },
+                },
+            },
+        });
+    });
+
+    it('removes entire branch when nothing remains', () => {
+        const messages = {
+            moduleSend: {
+                fees: {
+                    custom: {
+                        openButton: 'Open',
+                    },
+                },
+            },
+        };
+
+        deleteNestedTranslationKey(messages, 'moduleSend.fees.custom.openButton');
+
+        expect(messages).toEqual({});
+    });
+
+    it('does nothing when path does not exist', () => {
+        const messages = {
+            moduleSend: {
+                fees: {
+                    custom: {
+                        openButton: 'Open',
+                    },
+                },
+            },
+        };
+
+        const clone = structuredClone(messages);
+
+        deleteNestedTranslationKey(messages, 'moduleSend.fees.custom.invalid');
+
+        expect(messages).toEqual(clone);
+    });
+
+    it('exits early when intermediate key missing', () => {
+        const messages = {
+            moduleSend: {
+                fees: {},
+            },
+        };
+
+        deleteNestedTranslationKey(messages, 'moduleSend.fees.custom.openButton');
+
+        expect(messages).toEqual({
+            moduleSend: {
+                fees: {},
+            },
+        });
     });
 });

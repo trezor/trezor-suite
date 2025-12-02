@@ -12,14 +12,17 @@
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
         "translations:format": "yarn g:prettier --write \"translations/*\"",
-        "translations:extract": "tsx ./scripts/extractTranslations.ts",
-        "translations:backport-en": "tsx ./scripts/backportEnglish.ts && yarn g:prettier --write src/messages.ts",
+        "translations:extract": "yarn g:tsx ./scripts/extractTranslations.ts",
+        "translations:backport-en": "yarn g:tsx ./scripts/backportEnglish.ts && yarn g:prettier --write src/messages.ts",
+        "translations:list-unused": "yarn g:tsx ./scripts/listUnused.ts",
+        "translations:remove-unused": "yarn g:tsx ./scripts/listUnused.ts --cleanup",
         "translations:upload": "crowdin upload",
         "translations:download": "crowdin download --all -l en -l cs -l de -l pt-BR -l ja"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.0",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-localization": "~17.0.7",
         "intl-pluralrules": "^2.0.1",
@@ -29,7 +32,6 @@
         "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@crowdin/cli": "4.8.0",
-        "tsx": "^4.20.3"
+        "@crowdin/cli": "4.8.0"
     }
 }
