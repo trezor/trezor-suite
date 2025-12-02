@@ -194,7 +194,7 @@ export const useStakeForm = ({ selectedAccount }: UseStakeFormsProps): StakeCont
                 toFiatCurrency({
                     amount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
                     rate: currentRate?.rate,
-                })?.toFixed(2) ?? undefined,
+                })?.toFixed(2, BigNumber.ROUND_CEIL) ?? undefined,
             maxFiat:
                 toFiatCurrency({ amount: maxCrypto, rate: currentRate?.rate })?.toFixed(2) ??
                 undefined,
