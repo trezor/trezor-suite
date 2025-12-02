@@ -11905,6 +11905,7 @@ __metadata:
     "@crowdin/cli": "npm:4.8.0"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-localization: "npm:~17.0.7"
     intl-pluralrules: "npm:^2.0.1"
@@ -11912,7 +11913,6 @@ __metadata:
     react-intl: "npm:^7.1.11"
     react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
-    tsx: "npm:^4.20.3"
   languageName: unknown
   linkType: soft
 
@@ -14463,6 +14463,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"

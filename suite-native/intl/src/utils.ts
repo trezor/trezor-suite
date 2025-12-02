@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import { DEFAULT_LOCALE, LANGUAGES } from './languages';
 import { SupportedLocaleCode } from './types';
 
@@ -49,4 +51,50 @@ export const findClosestOfficiallySupportedLanguageLocale = (
     )?.[0] as SupportedLocaleCode | undefined;
 
     return matchingOfficialLanguageLocale ?? DEFAULT_LOCALE;
+};
+
+export const deleteNestedTranslationKey = (obj: Record<string, any>, path: string) => {
+    const keys = path.split('.');
+    let currentNode: Record<string, any> = obj;
+    const parents: Array<{ node: Record<string, any>; key: string }> = [];
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        const nextNode = currentNode[keys[i]];
+        parents.push({ node: currentNode, key: keys[i] });
+        currentNode = nextNode;
+        if (!currentNode) return;
+    }
+
+    const lastKey = keys[keys.length - 1];
+    if (!(lastKey in currentNode)) return;
+
+    delete currentNode[lastKey];
+
+    if (Object.keys(currentNode).length > 0) {
+        return;
+    }
+
+    while (parents.length) {
+        const { node, key } = parents.pop()!;
+        delete node[key];
+
+        if (Object.keys(node).length > 0) {
+            break;
+        }
+
+        currentNode = node;
+    }
+};
+
+export const writeMessagesObjectToFile = (messages: Record<string, any>, filePath: string) => {
+    fs.writeFileSync(
+        filePath,
+        `
+        // Few rules:
+        // 1. Never use dynamic keys IDs for example: translate(\`module.graph.coin.\${symbol}\`) instead map it to static key: { btc: translate('module.graph.coin.btc') }
+        // 2. Don't split string because of formatting or nested components use Rich Text Formatting instead https://formatjs.io/docs/react-intl/components#rich-text-formatting
+        // 3. Always wrap keys per module/screen/feature for example: module.graph.legend
+        
+        export const messages = ${JSON.stringify(messages, null, 2)};`,
+    );
 };

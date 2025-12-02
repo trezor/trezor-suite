@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
+import { getGrepCommandOfTranslationKey } from '@suite-common/suite-utils';
 // See comment in list-duplicates.ts
 import messages from '@trezor/suite/src/support/messages';
 
@@ -18,31 +19,6 @@ function execLocal(cmd: string) {
 
 const unused: string[] = [];
 
-const ignore = [
-    'docs',
-    'node_modules',
-    'lib',
-    'libDev',
-    'build',
-    'build-electron',
-    '.next',
-    '__fixtures__',
-    'fixtures',
-    'test',
-    'tests',
-    '__test__',
-    '__tests__',
-    'coverage',
-    '.git',
-    'suite-data',
-    'connect-common',
-    '.yarn',
-    'screenshots',
-    'e2e',
-];
-
-const extensions = ['.ts', '.tsx'];
-
 for (const message in messages) {
     if (Object.prototype.hasOwnProperty.call(messages, message)) {
         // some messages might be 'dynamic' which means they are not present
@@ -50,13 +26,7 @@ for (const message in messages) {
         if (messages[message].dynamic) {
             continue;
         }
-
-        const includeExtensions = extensions
-            .map(extension => `--include="*${extension}"`)
-            .join(' ');
-        const excludeDir = ignore.map(folder => `--exclude-dir="${folder}"`).join(' ');
-
-        const cmd = `grep ${includeExtensions} ${excludeDir} --exclude=messages.ts -r "${message}" -w ./`;
+        const cmd = getGrepCommandOfTranslationKey(message);
 
         try {
             execLocal(cmd);

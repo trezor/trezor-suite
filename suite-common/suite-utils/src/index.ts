@@ -9,3 +9,4 @@ export * from './invariant';
 export * from './jws';
 export * from './pollingController';
 export * from './triggerWebDownloadFile';
+export * from './translations';
