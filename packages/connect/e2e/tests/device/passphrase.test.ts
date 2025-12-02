@@ -1,5 +1,11 @@
 import TrezorConnect from '../../../src';
-import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
+import {
+    conditionalTest,
+    getController,
+    initTrezorConnect,
+    restartEmu,
+    setup,
+} from '../../common.setup';
 
 const controller = getController();
 
@@ -163,6 +169,42 @@ describe('TrezorConnect passphrase', () => {
         expect(invalidState.payload).toMatchObject({
             error: 'Passphrase is incorrect',
         });
+    });
+
+    it('Using multiple passphrases with device restart', async () => {
+        // get standard wallet state
+        const standard = await TrezorConnect.getDeviceState({
+            device: { instance: 0, state: undefined },
+            useEmptyPassphrase: true,
+        });
+        if (!standard.success) throw new Error(standard.payload.error);
+
+        // get passphrase wallet state
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        const passphrase = await TrezorConnect.getDeviceState({
+            device: { instance: 1, state: undefined },
+        });
+        if (!passphrase.success) throw new Error(passphrase.payload.error);
+
+        // restart the device
+        await restartEmu(controller);
+
+        // try to get passphrase wallet state, with now invalid sessionId
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
+        const passphrase2 = await TrezorConnect.getDeviceState({
+            device: { instance: 1, state: passphrase.payload._state },
+        });
+        if (!passphrase2.success) throw new Error(passphrase2.payload.error);
+
+        // try to get standard wallet state, with sessionId now used for passphrase wallet
+        const standard2 = await TrezorConnect.getDeviceState({
+            device: { instance: 0, state: standard.payload._state },
+            useEmptyPassphrase: true,
+        });
+        if (!standard2.success) throw new Error(standard2.payload.error);
+
+        expect(passphrase2.payload.state).toEqual(passphrase.payload.state);
+        expect(standard2.payload.state).toEqual(standard.payload.state);
     });
 
     it('Passphrase encoding', async () => {
