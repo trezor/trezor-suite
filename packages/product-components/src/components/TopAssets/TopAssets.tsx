@@ -1,43 +1,21 @@
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
-import { Text } from '@trezor/components';
-import { borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import {
+    Box,
+    Column,
+    FrameProps,
+    FramePropsKeys,
+    Row,
+    Text,
+    pickAndPrepareFrameProps,
+} from '@trezor/components';
+import { mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetLogo, AssetLogoProps, shouldShowNetworkIcon } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
-const Container = styled.div<{ $itemsCount: number }>`
-    display: grid;
-    grid-template-columns: repeat(${({ $itemsCount }) => $itemsCount}, 1fr);
-    border: 1px solid ${({ theme }) => mapElevationToBorder({ $elevation: 1, theme })};
-    border-radius: ${borders.radii.md};
-    align-items: center;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-`;
-
-const Item = styled('button')<{ $isLast: boolean }>`
-    border: unset;
-    background: unset;
-    box-shadow: unset;
-    cursor: pointer;
-    border-right: ${({ $isLast, theme }) =>
-        !$isLast && `1px solid ${mapElevationToBorder({ $elevation: 1, theme })}`};
-    width: 100%;
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    gap: ${spacingsPx.xxs};
-    flex-direction: column;
-    padding: ${spacings.xs * 1.25}px ${spacings.xs * 1.5}px ${spacings.xs * 0.75}px;
-    transition: background-color 150ms ease-in-out;
-
-    &:hover {
-        background-color: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation1};
-    }
-`;
+const allowedTopAssetsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+type AllowedTopAssetsFrameProps = Pick<FrameProps, (typeof allowedTopAssetsFrameProps)[number]>;
 
 export type Asset = {
     id: string;
@@ -46,53 +24,80 @@ export type Asset = {
     coingeckoId: string;
     isNativeToken: boolean;
 };
-export interface TopAssetsProps {
+
+export type TopAssetsProps = {
     assets: Asset[];
     onAssetClick: (asset: Asset) => void;
     logoSize?: AssetLogoProps['size'];
-    dataTestId?: string;
-}
+    'data-testid'?: string;
+} & AllowedTopAssetsFrameProps;
 
-export function TopAssets({ assets, logoSize = 40, onAssetClick, dataTestId }: TopAssetsProps) {
+export function TopAssets({
+    assets,
+    logoSize = 40,
+    onAssetClick,
+    'data-testid': dataTestId,
+    ...rest
+}: TopAssetsProps) {
+    const theme = useTheme();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedTopAssetsFrameProps, false);
+
     return (
-        <Container $itemsCount={assets.length}>
-            {assets.map((asset, index) => {
-                const displaySymbol = asset.symbol.toUpperCase();
+        <Box
+            borderRadius={12}
+            borderWidth={1}
+            borderColor={mapElevationToBorder({ theme, $elevation: 1 })}
+            width="100%"
+            as="button"
+            overflow="hidden"
+            data-testid={dataTestId}
+            {...frameProps}
+        >
+            <Row hasDivider alignItems="stretch">
+                {assets.map(asset => {
+                    const displaySymbol = asset.symbol.toUpperCase();
 
-                return (
-                    <Item
-                        key={asset.id}
-                        $isLast={index === assets.length - 1}
-                        onClick={() => onAssetClick(asset)}
-                        data-testid={`${dataTestId}/${asset.id}`}
-                    >
-                        {asset.isNativeToken ? (
-                            <CoinLogo
-                                size={logoSize}
-                                // @ts-expect-error
-                                symbol={asset.symbol}
-                                type="tokenWithNetwork"
-                            />
-                        ) : (
-                            <AssetLogo
-                                size={logoSize}
-                                coingeckoId={asset.coingeckoId}
-                                symbol={asset.symbol}
-                                contractAddress={asset.contractAddress}
-                                placeholder={displaySymbol}
-                                showNetworkIcon={shouldShowNetworkIcon(
-                                    asset.symbol,
-                                    asset.contractAddress,
+                    return (
+                        <Box
+                            key={asset.id}
+                            onClick={() => onAssetClick(asset)}
+                            padding={{ top: 10, horizontal: 12, bottom: 6 }}
+                            flex="1"
+                            backgroundColorOnInteraction={mapElevationToBackground({
+                                theme,
+                                $elevation: 1,
+                            })}
+                            cursor="pointer"
+                        >
+                            <Column alignItems="center" justifyContent="center" gap={4}>
+                                {asset.isNativeToken ? (
+                                    <CoinLogo
+                                        size={logoSize}
+                                        // @ts-expect-error
+                                        symbol={asset.symbol}
+                                        type="tokenWithNetwork"
+                                        showNetworkIcon={shouldShowNetworkIcon(
+                                            asset.symbol,
+                                            asset.contractAddress,
+                                        )}
+                                    />
+                                ) : (
+                                    <AssetLogo
+                                        size={logoSize}
+                                        coingeckoId={asset.coingeckoId}
+                                        symbol={asset.symbol}
+                                        contractAddress={asset.contractAddress}
+                                        placeholder={displaySymbol}
+                                    />
                                 )}
-                            />
-                        )}
-
-                        <Text typographyStyle="hint" variant="default">
-                            {displaySymbol}
-                        </Text>
-                    </Item>
-                );
-            })}
-        </Container>
+                                <Text typographyStyle="hint" variant="default">
+                                    {displaySymbol}
+                                </Text>
+                            </Column>
+                        </Box>
+                    );
+                })}
+            </Row>
+        </Box>
     );
 }

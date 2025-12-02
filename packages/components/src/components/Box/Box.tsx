@@ -48,10 +48,13 @@ const Container = styled.div<
         $elevation: Elevation;
         $hasBackground?: boolean;
         $backgroundColor?: CSSColor;
+        $backgroundColorOnInteraction?: CSSColor;
         $borderColor?: CSSColor;
         $shadow?: string;
     }
 >`
+    background: unset;
+    box-shadow: unset;
     border: 0 solid
         ${({ $borderColor, $elevation, theme }) =>
             $borderColor ?? mapElevationToBorder({ theme, $elevation })};
@@ -82,6 +85,15 @@ const Container = styled.div<
             background: ${$backgroundColor};
         `}
 
+    ${({ $backgroundColorOnInteraction }) =>
+        $backgroundColorOnInteraction &&
+        css`
+            &:hover,
+            &:focus {
+                background: ${$backgroundColorOnInteraction};
+            }
+        `}
+
     ${({ $shadow }) =>
         $shadow &&
         css`
@@ -108,6 +120,7 @@ export type BoxProps = AllowedFrameProps & {
     hasBackground?: boolean;
     // TODO: type to token names
     backgroundColor?: CSSColor;
+    backgroundColorOnInteraction?: CSSColor;
     // TODO: type to token names
     borderColor?: CSSColor;
     // TODO: type to token names
@@ -126,6 +139,7 @@ export const Box = ({
     borderWidth,
     hasBackground,
     backgroundColor,
+    backgroundColorOnInteraction,
     borderColor,
     shadow,
     'data-testid': dataTestId,
@@ -147,6 +161,7 @@ export const Box = ({
             aria-hidden={ariaHidden}
             $borderWidth={borderWidth}
             $backgroundColor={backgroundColor}
+            $backgroundColorOnInteraction={backgroundColorOnInteraction}
             $borderColor={borderColor}
             $hasBackground={hasBackground}
             $elevation={elevation}

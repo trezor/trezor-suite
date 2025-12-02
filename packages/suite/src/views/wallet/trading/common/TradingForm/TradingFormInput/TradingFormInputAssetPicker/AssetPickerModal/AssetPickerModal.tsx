@@ -1,11 +1,8 @@
 import { memo, useCallback, useState } from 'react';
 
-import styled from 'styled-components';
-
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Divider } from '@trezor/components';
 import { TopAssets } from '@trezor/product-components';
-import { spacingsPx } from '@trezor/theme';
 
 import {
     ASSET_ROW_ASSET_HEIGHT,
@@ -22,16 +19,11 @@ import { TradingAssetListItem } from './hooks/useBuildTradingAssetOptions';
 import { useSearchFilter } from './hooks/useSearchFilter';
 import { UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
 
-const TopAssetsContainer = styled.div`
-    padding-left: ${spacingsPx.md};
-    padding-right: ${spacingsPx.md};
-`;
-
-export interface AssetPickerModalProps {
+export type AssetPickerModalProps = {
     closeModal: () => void;
     dataTestId?: string;
     onAssetSelect: UseUpdateFormInputProps['onAssetSelect'];
-}
+};
 
 export const AssetPickerModal = memo(function AssetPickerModalInner({
     closeModal,
@@ -48,19 +40,18 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
             switch (item.type) {
                 case 'top-five-assets':
                     return (
-                        <TopAssetsContainer>
-                            <TopAssets
-                                assets={item.assets}
-                                onAssetClick={topAsset =>
-                                    handleAssetClick({
-                                        type: 'asset',
-                                        asset: item.assets.find(asset => asset.id === topAsset.id)!,
-                                        height: ASSET_ROW_ASSET_HEIGHT,
-                                    })
-                                }
-                                dataTestId={`${dataTestId}/top-five-assets`}
-                            />
-                        </TopAssetsContainer>
+                        <TopAssets
+                            assets={item.assets}
+                            onAssetClick={topAsset =>
+                                handleAssetClick({
+                                    type: 'asset',
+                                    asset: item.assets.find(asset => asset.id === topAsset.id)!,
+                                    height: ASSET_ROW_ASSET_HEIGHT,
+                                })
+                            }
+                            data-testid={`${dataTestId}/top-five-assets`}
+                            margin={{ horizontal: 16 }}
+                        />
                     );
 
                 case 'account':
