@@ -36,15 +36,20 @@ export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardP
                         id="moduleSend.outputs.correctNetworkMessage"
                         values={{
                             networkName,
-                            link: linkChunk => (
-                                <Link
-                                    href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
-                                    label={linkChunk}
-                                    isUnderlined
-                                    textVariant="hint"
-                                    textColor="textDefault"
-                                />
-                            ),
+                            link: linkChunk => {
+                                const label = (linkChunk[0] as string) ?? '';
+
+                                return (
+                                    <Link
+                                        key={label}
+                                        href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
+                                        label={label}
+                                        isUnderlined
+                                        textVariant="hint"
+                                        textColor="textDefault"
+                                    />
+                                );
+                            },
                         }}
                     />
                 </Text>
