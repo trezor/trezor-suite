@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -16,38 +15,46 @@ import {
 } from '@suite-common/trading';
 import { AnimatedBox, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
+import { Link } from '@suite-native/link';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
+
+export type FooterProps = {
+    type?: TradingType;
+    isFormMountedRecently?: boolean;
+};
 
 interface FooterProviderContentProps {
     provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo | undefined;
 }
 
 const FooterProviderContent = ({ provider }: FooterProviderContentProps) => {
-    const openLink = useOpenLink();
+    if (!provider || !provider.termsUrl) {
+        return (
+            <Text variant="hint" color="textSubdued" textAlign="center">
+                <Translation id="moduleTrading.tradingScreen.footer.termsAndConditionsGeneral" />
+            </Text>
+        );
+    }
+
+    const { companyName, termsUrl } = provider;
 
     return (
         <Text variant="hint" color="textSubdued" textAlign="center">
             <Translation
-                id="moduleTrading.tradingScreen.footer.termsAndConditions"
+                id="moduleTrading.tradingScreen.footer.termsAndConditionsProvider"
                 values={{
-                    termsAndConditions:
-                        provider && provider.termsUrl ? (
-                            <Text
-                                variant="hint"
-                                color="textSubdued"
-                                style={{ textDecorationLine: 'underline' }}
-                                onPress={() => openLink(provider.termsUrl!)}
-                            >
-                                <Translation
-                                    id="moduleTrading.tradingScreen.footer.providerTermsAndConditions"
-                                    values={{ companyName: provider.companyName }}
-                                />
-                            </Text>
-                        ) : (
-                            <Translation id="moduleTrading.tradingScreen.footer.noProviderTermsAndConditions" />
-                        ),
+                    companyName,
+                    link: parts => (
+                        <Link
+                            textVariant="hint"
+                            textColor="textSubdued"
+                            textPressedColor="textDisabled"
+                            href={termsUrl}
+                            label={parts}
+                            isUnderlined
+                        />
+                    ),
                 }}
             />
         </Text>
@@ -84,27 +91,21 @@ const ExchangeFooterProviderContent = () => {
     return <FooterProviderContent provider={provider} />;
 };
 
-export type FooterProps = {
-    type?: TradingType;
-    isFormMountedRecently?: boolean;
+const ProviderContent = ({ type }: Pick<FooterProps, 'type'>) => {
+    switch (type) {
+        case 'buy':
+            return <BuyFooterProviderContent />;
+        case 'sell':
+            return <SellFooterProviderContent />;
+        case 'exchange':
+            return <ExchangeFooterProviderContent />;
+        default:
+            return null;
+    }
 };
 
 export const Footer = ({ type, isFormMountedRecently }: FooterProps) => {
-    const openLink = useOpenLink();
     const shouldHideFooter = useSelector(selectIsAmountInputActive);
-
-    const ProviderContent = useCallback(() => {
-        switch (type) {
-            case 'buy':
-                return <BuyFooterProviderContent />;
-            case 'sell':
-                return <SellFooterProviderContent />;
-            case 'exchange':
-                return <ExchangeFooterProviderContent />;
-            default:
-                return null;
-        }
-    }, [type]);
 
     if (shouldHideFooter) {
         return null;
@@ -119,24 +120,28 @@ export const Footer = ({ type, isFormMountedRecently }: FooterProps) => {
             <Divider marginTop="sp16" marginBottom="sp16" />
 
             <VStack alignItems="center">
-                <ProviderContent />
+                <ProviderContent type={type} />
 
                 <HStack alignItems="center" spacing="sp4">
-                    <Text
-                        variant="hint"
-                        color="textSubdued"
-                        onPress={() => openLink(DATA_TOS_INVITY_URL)}
-                    >
-                        <Translation id="moduleTrading.tradingScreen.footer.termsOfUse" />
-                    </Text>
+                    <Link
+                        textVariant="hint"
+                        textColor="textSubdued"
+                        textPressedColor="textDisabled"
+                        href={DATA_TOS_INVITY_URL}
+                        label={<Translation id="moduleTrading.tradingScreen.footer.termsOfUse" />}
+                    />
 
                     <Text variant="hint" color="textSubdued">
                         |
                     </Text>
 
-                    <Text variant="hint" color="textSubdued" onPress={() => openLink(INVITY_URL)}>
-                        <Translation id="moduleTrading.tradingScreen.footer.learnMore" />
-                    </Text>
+                    <Link
+                        textVariant="hint"
+                        textColor="textSubdued"
+                        textPressedColor="textDisabled"
+                        href={INVITY_URL}
+                        label={<Translation id="moduleTrading.tradingScreen.footer.learnMore" />}
+                    />
                 </HStack>
             </VStack>
         </AnimatedBox>
