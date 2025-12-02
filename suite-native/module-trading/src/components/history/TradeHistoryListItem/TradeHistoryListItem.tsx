@@ -52,8 +52,8 @@ export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistory
                             <Translation
                                 id="moduleTrading.tradeHistory.timeAt"
                                 values={{
-                                    date: <DateFormatter value={date} />,
-                                    time: <TimeFormatter value={date} />,
+                                    date: <DateFormatter value={date} key="date" />,
+                                    time: <TimeFormatter value={date} key="time" />,
                                 }}
                             />
                         </Text>
