@@ -19,6 +19,7 @@ import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/sol
 import { Icon, IconButton, Input, Link, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
@@ -119,6 +120,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
 
         const protocol = getProtocolInfo(uri);
+
+        if (protocol) {
+            analytics.report({
+                type: EventType.SendQrScan,
+                payload: {
+                    scheme: protocol.scheme,
+                    isAmountPresent: 'amount' in protocol && protocol.amount !== undefined,
+                    networkSymbol: symbol,
+                },
+            });
+        }
 
         if (protocol && 'error' in protocol) {
             dispatch(

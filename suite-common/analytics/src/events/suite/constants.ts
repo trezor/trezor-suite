@@ -45,6 +45,7 @@ export enum EventType {
     SendInitialised = 'send/initialised',
     SendConfirmerOnDevice = 'send/confirmed-on-device',
     SendDetailOpened = 'send/detail-opened',
+    SendQrScan = 'send/qr-scan',
 
     AccountsStatus = 'accounts/status',
     AccountsTokensStatus = 'accounts/tokens-status',
