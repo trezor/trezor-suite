@@ -9,7 +9,6 @@ import {
 } from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
-import { OpenDeviceChannel } from '@trezor/transport/src/api/abstract';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
 import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 
@@ -147,11 +146,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
      * with and user needs to take some action. for example reconnect the device, update firmware or change transport type
      */
     private unreadableError?: string;
-
-    private channels: Record<Exclude<OpenDeviceChannel, 'read'>, boolean> = {
-        'battery-level': false,
-        'trezor-push-notification': false,
-    };
 
     // @ts-expect-error: strictPropertyInitialization
     private _firmwareStatus: DeviceFirmwareStatus;
@@ -347,7 +341,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.busy = value;
     }
 
-    subscribe() {
+    private subscribe() {
         if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
             this.transport
                 .subscribe({
@@ -355,18 +349,17 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     channels: ['battery-level', 'trezor-push-notification'],
                 })
                 .then(result => {
-                    if (result.success) {
-                        this.channels = result.payload;
-                        this.lifecycle.emit(DEVICE.CHANGED);
-                    }
+                    if (!result.success) return;
 
-                    if (this.channels['battery-level']) {
+                    this.lifecycle.emit(DEVICE.CHANGED);
+
+                    if (result.payload['battery-level']) {
                         this.transport.on('battery-level', event => {
                             this._updateFeature('soc', event.data[0]);
                             this.lifecycle.emit(DEVICE.CHANGED);
                         });
                     }
-                    if (this.channels['trezor-push-notification']) {
+                    if (result.payload['trezor-push-notification']) {
                         this.transport.on('trezor-push-notification', ({ id, data }) => {
                             if (id === this.descriptor.id) {
                                 trezorPushNotificationHandler({ device: this, message: data });
