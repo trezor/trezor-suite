@@ -54,7 +54,7 @@ export const SuiteSyncRelaySettings = () => {
         );
 
         if (originalIsSuiteSyncEnabled) {
-            suiteSync.turnOffSuiteSync()
+            suiteSync.turnOffSuiteSync();
         }
     };
 

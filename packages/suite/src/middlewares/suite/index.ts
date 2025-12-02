@@ -1,4 +1,5 @@
 import { logsMiddleware } from '@suite-common/logger';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { preparePushNotificationMiddleware } from '@suite-common/wallet-core';
 
 import analytics from './analyticsMiddleware';
@@ -12,17 +13,16 @@ import redirect from './redirectMiddleware';
 import router from './routerMiddleware';
 import sentry from './sentryMiddleware';
 import { prepareSuiteMiddleware } from './suiteMiddleware';
-import { extraDependencies } from '../../support/extraDependencies';
 
-export const suiteMiddlewares = [
+export const getSuiteMiddleware = (getExtra: () => ExtraDependencies | null) => [
     log,
     logsMiddleware, // Common logs shared between desktop and mobile app
     redirect,
-    prepareSuiteMiddleware(extraDependencies),
+    prepareSuiteMiddleware(getExtra),
     analytics,
     buttonRequest,
     events,
-    preparePushNotificationMiddleware(extraDependencies),
+    preparePushNotificationMiddleware(getExtra),
     metadata,
     messageSystem,
     protocol,

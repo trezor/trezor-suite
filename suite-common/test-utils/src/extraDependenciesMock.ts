@@ -94,7 +94,7 @@ const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),
     subscribeSuiteSyncStorage: () => Promise.resolve(),
     unsubscribeSuiteSyncStorage: () => Promise.resolve(),
-    turnOffSuiteSync: ()=> Promise.resolve(),
+    turnOffSuiteSync: () => Promise.resolve(),
 };
 
 export const extraDependenciesMock: ExtraDependencies = {

@@ -1,7 +1,7 @@
 import { ThunkDispatch } from '@reduxjs/toolkit';
 import { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
-import { ExtraDependenciesStatic } from './extraDependenciesType';
+import { ExtraDependencies } from './extraDependenciesType';
 import { AnyAction } from './types';
 
 interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
@@ -27,16 +27,22 @@ export const createMiddleware =
         }
     };
 
-type ExtraMiddlewareAPI = { extra: ExtraDependenciesStatic };
+type ExtraMiddlewareAPI = { extra: ExtraDependencies };
 
 export const createMiddlewareWithExtraDeps =
     <TAction extends Action = AnyAction>(
         simpleMiddleware: SimpleMiddleware<TAction, ExtraMiddlewareAPI>,
     ) =>
-    (extra: ExtraDependenciesStatic): Middleware =>
+    (getExtra: () => ExtraDependencies | null): Middleware =>
     (middlewareAPI: MiddlewareAPI<ThunkDispatch<any, ExtraMiddlewareAPI, AnyAction>>) =>
     next =>
     action => {
+        const extra = getExtra();
+        if (!extra) {
+            throw new Error(
+                'createMiddlewareWithExtraDeps: This shoudnt ever happen: Extra dependencies not initialized',
+            );
+        }
         try {
             return simpleMiddleware(action as TAction, {
                 ...middlewareAPI,

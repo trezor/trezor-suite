@@ -27,8 +27,8 @@ import {
 import backupMiddlewares from 'src/middlewares/backup';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import recoveryMiddlewares from 'src/middlewares/recovery';
-import { suiteMiddlewares } from 'src/middlewares/suite';
-import walletMiddlewares from 'src/middlewares/wallet';
+import { getSuiteMiddleware } from 'src/middlewares/suite';
+import { getWalletMiddlewares } from 'src/middlewares/wallet';
 import backupReducers from 'src/reducers/backup';
 import onboardingReducers from 'src/reducers/onboarding';
 import recoveryReducers from 'src/reducers/recovery';
@@ -76,11 +76,11 @@ export type AppState = ReturnType<typeof rootReducer>;
 
 const loggerExcludedActions = [addLog.type, accountsActions.updateAccountRefreshTimestamp.type];
 
-const getCustomMiddleware = () => {
+const getCustomMiddleware = (getExtra: () => ExtraDependencies | null) => {
     const middleware = [
         toastMiddleware,
-        ...suiteMiddlewares,
-        ...walletMiddlewares,
+        ...getSuiteMiddleware(getExtra),
+        ...getWalletMiddlewares(getExtra),
         ...onboardingMiddlewares,
         ...backupMiddlewares,
         ...recoveryMiddlewares,
@@ -171,7 +171,7 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
                         },
                     }),
                 )
-                .concat(getCustomMiddleware()),
+                .concat(getCustomMiddleware(() => extra)),
         devTools,
     } as const);
 

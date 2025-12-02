@@ -3,6 +3,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 import { fireEvent } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics';
+import { extraDependenciesMock } from '@suite-common/test-utils';
 import { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
@@ -134,7 +135,11 @@ describe(`${Preloader.name} component`, () => {
                 },
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
         expect(findByTestId('@suite/loading')).not.toBeNull();
 
         unmount();
@@ -148,7 +153,11 @@ describe(`${Preloader.name} component`, () => {
                 },
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
         expect(findByTestId('@suite/loading')).not.toBeNull();
 
         unmount();
@@ -162,7 +171,11 @@ describe(`${Preloader.name} component`, () => {
                 },
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
         expect(findByTestId('@suite/loading')).not.toBeNull();
 
         unmount();
@@ -170,7 +183,11 @@ describe(`${Preloader.name} component`, () => {
 
     it('No transport', () => {
         const store = initStore(getInitialState());
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_NO_TRANSPORT')).not.toBeNull();
 
@@ -185,7 +202,11 @@ describe(`${Preloader.name} component`, () => {
                 },
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
 
@@ -200,7 +221,11 @@ describe(`${Preloader.name} component`, () => {
                 },
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         // expect(findByTestId('web-usb-button')).not.toBeNull();
@@ -224,7 +249,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
@@ -250,7 +279,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('@connect-device-prompt/unreadable-unknown')).not.toBeNull();
@@ -276,7 +309,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
@@ -303,7 +340,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('@connect-device-prompt/unreadable-unknown')).not.toBeNull();
@@ -327,7 +368,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('@connect-device-prompt/unreadable-unknown')).not.toBeNull();
@@ -351,7 +396,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
@@ -377,7 +426,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         fireEvent.click(findByTestId('@onboarding/troubleshooting-tips/button'));
@@ -402,7 +455,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId(/TR_DEVICE_IN_RECOVERY_MODE/)).not.toBeNull();
@@ -428,7 +485,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId(/TR_DEVICE_NOT_INITIALIZED/)).not.toBeNull();
@@ -454,7 +515,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_DEVICE_CONNECTED_BOOTLOADER')).not.toBeNull();
@@ -481,7 +546,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId(/TR_NO_FIRMWARE/)).not.toBeNull();
@@ -499,7 +568,11 @@ describe(`${Preloader.name} component`, () => {
             .mockImplementation(() => true);
 
         const store = initStore(getInitialState());
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
         expect(findByTestId('@device-compromised')).not.toBeNull();
 
         unmount();
@@ -523,7 +596,11 @@ describe(`${Preloader.name} component`, () => {
                 device,
             }),
         );
-        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+        const { unmount } = renderWithProviders(
+            store,
+            extraDependenciesMock.services,
+            <Index app={store.getState().router.app} />,
+        );
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId(/FW_CAPABILITY_UPDATE_REQUIRED/)).not.toBeNull();

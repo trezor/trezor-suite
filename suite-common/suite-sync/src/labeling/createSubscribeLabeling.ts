@@ -5,7 +5,7 @@ import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { clearAllLabels, labelingActions } from './labelingActions';
-import {SubscriptionStorage} from "../storage/subscriptionStorage";
+import { SubscriptionStorage } from '../storage/subscriptionStorage';
 
 type SubscribeLabelingParams = {
     owner: SuiteSyncOwner;
