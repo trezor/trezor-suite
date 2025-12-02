@@ -19,6 +19,8 @@ import {
     TradingExchangeAction,
     TradingExchangeStep,
     TradingNavigateFrom,
+    TradingSellAction,
+    TradingSellStep,
 } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
@@ -460,8 +462,8 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.TradingSell;
           payload: {
-              action: 'continue' | 'cancel';
-              step: 'sell-form' | 'confirm-and-send-transaction';
+              action: TradingSellAction;
+              step: TradingSellStep;
 
               cryptoLabel?: string;
               cryptoNetworkSymbol?: string;

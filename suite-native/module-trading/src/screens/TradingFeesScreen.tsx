@@ -15,20 +15,21 @@ import {
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 
 import { TradingFeesForm } from '../components/fees/TradingFeesForm';
-import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
+import { useTradingAnalyticReportCallback } from '../hooks/general/useTradingAnalyticReportCallback';
 
 type RouteProps = StackProps<TradingStackParamList, TradingStackRoutes.TradingFees>['route'];
 
 export const TradingFeesScreen = () => {
     const {
-        params: { accountKey },
+        params: { accountKey, tradingType = 'exchange' },
     } = useRoute<RouteProps>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
-    const reportToAnalytics = useExchangeAnalyticReportCallback();
+    const reportToAnalytics = useTradingAnalyticReportCallback(tradingType);
+
     useEffect(() => {
         reportToAnalytics('fee-selection', 'visit');
     }, [reportToAnalytics]);

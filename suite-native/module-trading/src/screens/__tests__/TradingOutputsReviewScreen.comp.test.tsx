@@ -24,6 +24,17 @@ const mockUseSellFlow = {
     resolveTransactionSendConsent: mockResolveTransactionSendConsent,
 };
 
+const mockReportToAnalyticsExchange = jest.fn();
+const mockReportToAnalyticsSell = jest.fn();
+
+jest.mock('../../hooks/exchange/useExchangeAnalyticReportCallback', () => ({
+    useExchangeAnalyticReportCallback: () => mockReportToAnalyticsExchange,
+}));
+
+jest.mock('../../hooks/sell/useSellAnalyticReportCallback', () => ({
+    useSellAnalyticReportCallback: () => mockReportToAnalyticsSell,
+}));
+
 const mockNavigation = {
     navigate: jest.fn(),
     goBack: jest.fn(),
@@ -50,13 +61,16 @@ jest.mock('../../hooks/sell/useSellFlow', () => ({
     useSellFlow: () => mockUseSellFlowFn(),
 }));
 
+const mockUseTradingOutputsReviewScreenControls = jest.fn((_: any) => ({
+    isTransactionAlreadySigned: false,
+    isConsentRequested: false,
+    resolveConsent: jest.fn(),
+    confirmOnTrezorRef: { current: null },
+}));
+
 jest.mock('../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
-    useTradingOutputsReviewScreenControls: jest.fn(() => ({
-        isTransactionAlreadySigned: false,
-        isConsentRequested: false,
-        resolveConsent: jest.fn(),
-        confirmOnTrezorRef: { current: null },
-    })),
+    useTradingOutputsReviewScreenControls: (args: any) =>
+        mockUseTradingOutputsReviewScreenControls(args),
 }));
 
 jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
@@ -115,6 +129,13 @@ describe('TradingSellOutputsReviewScreen', () => {
 
         expect(toJSON()).not.toBeNull();
         expect(mockUseSellFlowFn).toHaveBeenCalled();
+        expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
+            expect.objectContaining({
+                orderId: TEST_ORDER_ID,
+                accountKey: TEST_ACCOUNT_KEY,
+                reportToAnalytics: mockReportToAnalyticsSell,
+            }),
+        );
     });
 });
 
@@ -140,5 +161,12 @@ describe('TradingExchangeOutputsReviewScreen', () => {
 
         expect(toJSON()).not.toBeNull();
         expect(mockUseExchangeFlowFn).toHaveBeenCalled();
+        expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
+            expect.objectContaining({
+                orderId: TEST_ORDER_ID,
+                accountKey: TEST_ACCOUNT_KEY,
+                reportToAnalytics: mockReportToAnalyticsExchange,
+            }),
+        );
     });
 });

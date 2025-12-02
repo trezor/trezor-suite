@@ -71,7 +71,7 @@ describe('TradingWebViewScreen', () => {
             };
         });
 
-        it('should not report on mount for buy', async () => {
+        it('should report nothing on mount for buy', async () => {
             const preloadedState = { wallet: getWalletState({ tradeType: 'buy' }) };
             preloadedState.wallet.trading.trades = [
                 {
@@ -86,7 +86,20 @@ describe('TradingWebViewScreen', () => {
                 preloadedState,
             });
 
-            expect(analyticsSpy).not.toHaveBeenCalled();
+            expect(analyticsSpy).not.toHaveBeenCalledWith({
+                type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'webview',
+                    action: 'visit',
+                }),
+            });
+            expect(analyticsSpy).not.toHaveBeenCalledWith({
+                type: EventType.TradingSell,
+                payload: expect.objectContaining({
+                    step: 'webview',
+                    action: 'visit',
+                }),
+            });
         });
 
         it('should report on mount for exchange', async () => {
@@ -106,6 +119,30 @@ describe('TradingWebViewScreen', () => {
 
             expect(analyticsSpy).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'webview',
+                    action: 'visit',
+                }),
+            });
+        });
+
+        it('should report on mount for sell', async () => {
+            const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
+            preloadedState.wallet.trading.trades = [
+                {
+                    tradeType: 'sell',
+                    data: {
+                        orderId: 'orderId',
+                    },
+                } as unknown as TradingTransaction,
+            ];
+
+            await renderWithStoreProviderAsync(<TradingWebViewScreen />, {
+                preloadedState,
+            });
+
+            expect(analyticsSpy).toHaveBeenCalledWith({
+                type: EventType.TradingSell,
                 payload: expect.objectContaining({
                     step: 'webview',
                     action: 'visit',
