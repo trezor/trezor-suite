@@ -1,5 +1,5 @@
 import TrezorConnect, { ConnectSettings, Device, UiEvent } from '../../../src';
-import { getController, initTrezorConnect, setup } from '../../common.setup';
+import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 
 describe('THP pairing', () => {
     const controller = getController();
@@ -156,25 +156,7 @@ describe('THP pairing', () => {
         TrezorConnect.removeAllListeners('ui-button');
 
         // restart the device
-        await controller.stopEmu();
-        await new Promise<void>(resolve => {
-            const onDeviceDisconnected = () => {
-                TrezorConnect.off('device-disconnect', onDeviceDisconnected);
-                resolve();
-            };
-            TrezorConnect.on('device-disconnect', onDeviceDisconnected);
-        });
-        await controller.startEmu({
-            model: 'T3W1',
-            version: '2-main',
-        });
-        await new Promise<void>(resolve => {
-            const onDeviceConnected = () => {
-                TrezorConnect.off('device-connect', onDeviceConnected);
-                resolve();
-            };
-            TrezorConnect.on('device-connect', onDeviceConnected);
-        });
+        await restartEmu(controller);
 
         const address = await TrezorConnect.getAddress({
             device,
