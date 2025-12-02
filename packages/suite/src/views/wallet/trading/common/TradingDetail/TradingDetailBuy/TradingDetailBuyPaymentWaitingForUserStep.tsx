@@ -72,6 +72,7 @@ export const TradingDetailBuyPaymentWaitingForUserStep = ({
         if (response) {
             dispatch(submitRequestForm(response.form));
         }
+        setIsWorking(false);
     };
 
     return (
