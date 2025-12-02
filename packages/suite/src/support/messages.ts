@@ -5828,15 +5828,23 @@ export default defineMessages({
     },
     TR_ADD_TOKEN_TOAST_ERROR: {
         id: 'TR_ADD_TOKEN_TOAST_ERROR',
-        defaultMessage: 'Action failed: {error}',
+        defaultMessage: 'Failed to add token: {error}',
     },
-    TR_REMOVE_TOKEN_TOAST_SUCCESS: {
-        id: 'TR_REMOVE_TOKEN_TOAST_SUCCESS',
-        defaultMessage: 'Token removed',
+    TR_ACTIVATE_TOKEN_TOAST_SUCCESS: {
+        id: 'TR_ACTIVATE_TOKEN_TOAST_SUCCESS',
+        defaultMessage: 'Token activated',
     },
-    TR_REMOVE_TOKEN_TOAST_ERROR: {
-        id: 'TR_REMOVE_TOKEN_TOAST_ERROR',
-        defaultMessage: 'Failed to remove token: {error}',
+    TR_ACTIVATE_TOKEN_TOAST_ERROR: {
+        id: 'TR_ACTIVATE_TOKEN_TOAST_ERROR',
+        defaultMessage: 'Failed to activate token: {error}',
+    },
+    TR_DEACTIVATE_TOKEN_TOAST_SUCCESS: {
+        id: 'TR_DEACTIVATE_TOKEN_TOAST_SUCCESS',
+        defaultMessage: 'Token deactivated',
+    },
+    TR_DEACTIVATE_TOKEN_TOAST_ERROR: {
+        id: 'TR_DEACTIVATE_TOKEN_TOAST_ERROR',
+        defaultMessage: 'Failed to deactivate token: {error}',
     },
     TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',

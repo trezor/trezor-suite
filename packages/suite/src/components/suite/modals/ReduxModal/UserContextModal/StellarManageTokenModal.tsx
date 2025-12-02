@@ -172,7 +172,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
 
                     dispatch(
                         notificationsActions.addToast({
-                            type: 'add-token-success',
+                            type: 'activate-token-success',
                         }),
                     );
                 } else {
@@ -186,7 +186,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
 
                     dispatch(
                         notificationsActions.addToast({
-                            type: 'remove-token-success',
+                            type: 'deactivate-token-success',
                         }),
                     );
                 }
@@ -196,8 +196,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                 const errorMessage = result.payload?.message || 'Unknown error';
                 const errorTranslationId =
                     mode === 'activate'
-                        ? 'TR_ADD_TOKEN_TOAST_ERROR'
-                        : 'TR_REMOVE_TOKEN_TOAST_ERROR';
+                        ? 'TR_ACTIVATE_TOKEN_TOAST_ERROR'
+                        : 'TR_DEACTIVATE_TOKEN_TOAST_ERROR';
 
                 dispatch(
                     notificationsActions.addToast({
