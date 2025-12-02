@@ -2,6 +2,7 @@
 // 1. Never use dynamic keys IDs for example: translate(`module.graph.coin.${symbol}`) instead map it to static key: { btc: translate('module.graph.coin.btc') }
 // 2. Don't split string because of formatting or nested components use Rich Text Formatting instead https://formatjs.io/docs/react-intl/components#rich-text-formatting
 // 3. Always wrap keys per module/screen/feature for example: module.graph.legend
+
 export const messages = {
     generic: {
         trezorSuite: 'Trezor Suite',
@@ -498,6 +499,7 @@ export const messages = {
         connectAndUnlockScreen: {
             title: 'Connect & unlock\nyour Trezor',
             status: 'Checking for connected Trezors',
+            connectViaBluetoothButton: 'Connect via Bluetooth',
         },
         turnOnAndUnlockScreen: {
             title: 'Turn on & unlock\nyour Trezor Safe 7',
@@ -542,6 +544,12 @@ export const messages = {
                 hint2: 'Try using a different USB cable',
                 hint3: 'Connect your Trezor to a different phone or computer',
                 contactSupportButton: 'Contact support',
+                subtitle: 'Don’t see your Trezor?',
+                stepsTitle: 'Try these steps',
+                step1: '1. Reconnect your Trezor',
+                step2: '2. Use a different USB data cable',
+                step3: '3. Use a different mobile device',
+                step4: '4. Enable connection for Trezor Suite via phone system message',
             },
             pairing: {
                 hints: {
@@ -1449,7 +1457,7 @@ export const messages = {
                     format: 'Generates a <bold>single set of 12 words</bold> to recover access to your funds.',
                     storage:
                         'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
-                    callout: 'Not easily upgradeable to\nMulti-share Backup',
+                    callout: 'This can’t be upgraded to a Multi-share Backup.',
                     submitButton: 'Continue with 12-word backup',
                 },
                 '24-words': {
@@ -1458,7 +1466,7 @@ export const messages = {
                     format: 'Generates a <bold>single set of 24 words</bold> to recover access to your funds.',
                     storage:
                         'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
-                    callout: 'Not easily upgradeable to\nMulti-share Backup',
+                    callout: 'This can’t be upgraded to a Multi-share Backup.',
                     submitButton: 'Continue with 24-word backup',
                 },
             },
@@ -1632,6 +1640,8 @@ export const messages = {
             step2: {
                 callout: 'Securing your wallet backup',
                 title: 'Never store your wallet\nbackup anywhere digital',
+                titleRegular: 'backup anywhere digital',
+                titleUnderlined: 'Never store your wallet',
             },
             step3: {
                 callout: 'Storing your wallet backup',
@@ -1794,7 +1804,7 @@ export const messages = {
             exploreButton: 'Explore in blockchain',
             feeLabel: 'Fee',
             dateLabel: 'Date',
-            showMoreButton: 'Show more',
+            showMoreButton: 'and {amount} more',
             sheet: {
                 parameters: 'Parameters',
                 values: 'Compare values',
@@ -2620,6 +2630,7 @@ export const messages = {
             upToDate: 'You’re all up to date',
             newVersionAvailable: 'Update available',
             updateButton: 'Update',
+            updateToVersionAvailable: 'Update to version {firmwareVersion} available',
         },
         firmwareInfoScreen: {
             title: {
