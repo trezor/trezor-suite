@@ -1246,6 +1246,10 @@ export const accountEqualTo = (a: Account) => (b: Account) =>
         return true;
     })();
 
+/**
+ * @deprecated This is only helper function to work with legacy AccountKey. Always prefer
+ *             to use `AccountDescriptor`, `NetworkSymbol` and `StaticSessionId` separately.
+ */
 export const parseAccountKey = (accountKey: AccountKey) => {
     const [accountDescriptor, networkSymbol, deviceStaticSessionId] = accountKey.split('-');
 

@@ -107,8 +107,18 @@ export type AccountFailureSpecific =
     | { failed: true; error: string }
     | { failed?: false; error?: undefined };
 
+/**
+ * This is synthetic (combined) key, it may be useful for some data-structures.
+ *
+ * @deprecated For domain structures (entities, storage & API of components/functions)
+ *             prefer the separate `AccountDescriptor`, `NetworkSymbol` and `DeviceStaticSessionId`
+ */
 export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceStaticSessionId>
-export type AccountDescriptor = string & Branded<'AccountDescriptor'>; // Descriptor or xpub/zpub/..
+
+/**
+ * Descriptor or xpub/zpub/..
+ */
+export type AccountDescriptor = string & Branded<'AccountDescriptor'>;
 export const asAccountDescriptor = (value: string) => value as AccountDescriptor;
 
 export type Account = {
