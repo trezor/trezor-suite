@@ -164,4 +164,21 @@ describe('TradingSellPreviewScreen', () => {
 
         expect(mockFetchFeesAndCompose).not.toHaveBeenCalled();
     });
+
+    it('should call fetchFeesAndCompose only once per orderId', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        const quoteWithSendCryptoStatus = {
+            ...sellQuotes[0],
+            status: 'SEND_CRYPTO' as const,
+            orderId: 'test_order_id_1',
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = quoteWithSendCryptoStatus;
+
+        await renderTradingSellPreviewScreen(preloadedState);
+
+        // Should be called exactly once for this orderId
+        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+    });
 });
