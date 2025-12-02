@@ -49,7 +49,11 @@ const PassphraseWalletIsEmptyContent = ({
         <Column gap={spacings.sm}>
             <H3>
                 <Translation
-                    id={`TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE${accountFailed ? '_ERROR' : ''}`}
+                    id={
+                        accountFailed
+                            ? 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE_ERROR'
+                            : 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE'
+                    }
                 />
             </H3>
             <Card
@@ -75,7 +79,11 @@ const PassphraseWalletIsEmptyContent = ({
                 <Column gap={spacings.sm} alignItems="center">
                     <Paragraph typographyStyle="highlight">
                         <Translation
-                            id={`TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION${accountFailed ? '_ERROR' : ''}`}
+                            id={
+                                accountFailed
+                                    ? 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION_ERROR'
+                                    : 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION'
+                            }
                         />
                     </Paragraph>
                     <Button
