@@ -10,7 +10,7 @@ export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainSelectors';
 export * from './blockchain/blockchainThunks';
 export * from './device/delegatedIdentityKey/getProofOfDelegatedIdentity';
-export * from './device/delegatedIdentityKey/retrieveDelegatedIdentityKeyThunk';
+export * from './device/delegatedIdentityKey/ensureDelegatedIdentityKeyThunk';
 export * from './device/deviceActions';
 export * from './device/deviceConstants';
 export * from './device/deviceReducer';

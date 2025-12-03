@@ -6,6 +6,7 @@ export type {
 export { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 export type { SuiteSyncStorage } from './SuiteSyncStorage';
 export type { CreateSuiteSyncOwner } from './Owner';
+export { CreateSuiteSyncOwnerError } from './Owner';
 export type {
     SuiteSync,
     ChangeRelayUrl,

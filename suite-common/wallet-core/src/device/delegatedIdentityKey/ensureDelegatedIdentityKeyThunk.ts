@@ -61,7 +61,7 @@ type RetrieveDelegatedIdentityKeyThunkParams = {
  *
  * This is part of the experiment here: https://github.com/trezor/trezor-suite/issues/23202
  */
-export const retrieveDelegatedIdentityKeyThunk =
+export const ensureDelegatedIdentityKeyThunk =
     ({ device }: RetrieveDelegatedIdentityKeyThunkParams) =>
     async (dispatch: Dispatch, getState: () => any, extra: ExtraDependencies) => {
         const persistedData = selectPersistentDeviceData(getState());
