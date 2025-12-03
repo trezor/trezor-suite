@@ -5,6 +5,8 @@ services:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
     network_mode: host
+    volumes:
+      - ./trezor-user-env-logs:/trezor-user-env/logs
   bitcoin-regtest:
     image: ghcr.io/trezor/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
     depends_on:
