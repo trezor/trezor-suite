@@ -65,7 +65,6 @@ export const UtxoList = ({
             renderItem={renderItem}
             contentContainerStyle={applyStyle(UtxoListStyle)}
             ItemSeparatorComponent={rowSeparator}
-            estimatedItemSize={120}
         />
     );
 };

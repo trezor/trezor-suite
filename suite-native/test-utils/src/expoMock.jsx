@@ -418,11 +418,12 @@ jest.mock('react-native-keyboard-controller', () =>
 );
 
 jest.mock('@gorhom/bottom-sheet', () => {
-    require('@gorhom/bottom-sheet/mock');
-    const ReactNative = require('react-native');
+    const { ScrollView } = require('react-native');
     const GorhomBottomSheetMock = require('@gorhom/bottom-sheet/mock');
 
-    GorhomBottomSheetMock.useBottomSheetScrollableCreator = () => ReactNative.ScrollView;
+    GorhomBottomSheetMock.useBottomSheetScrollableCreator = () => props => (
+        <ScrollView {...props} />
+    );
 
     return GorhomBottomSheetMock;
 });

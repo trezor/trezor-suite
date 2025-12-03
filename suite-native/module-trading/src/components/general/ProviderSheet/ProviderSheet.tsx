@@ -10,7 +10,7 @@ import { prepareNativeStyle } from '@trezor/styles';
 import { useProviderFilters } from '../../../hooks/general/useProviderFilters';
 import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 import { NoProvidersPlaceholder } from './NoProvidersPlaceholder';
-import { PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT, ProviderListItem } from './ProviderListItem';
+import { ProviderListItem } from './ProviderListItem';
 import { ProviderSheetHandle } from './ProviderSheetHandle';
 import { ProviderSheetSectionHeader } from './ProviderSheetSectionHeader';
 
@@ -77,7 +77,6 @@ export const ProviderSheet = <
             )}
             ListFooterComponent={<LegalGatewayContextMessage marginVertical="sp12" />}
             data={filteredSections}
-            estimatedItemSize={PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT}
             keyExtractor={keyExtractor}
             extraData={selectedQuote?.orderId}
             renderSectionHeader={(_label, { sectionData }) => (

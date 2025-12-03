@@ -19,10 +19,7 @@ export type AssetListItemProps = {
     rightContent?: ReactNode;
 };
 
-export const ASSET_ITEM_HEIGHT = 68;
-
 const vStackStyle = prepareNativeStyle(({ spacings }) => ({
-    height: ASSET_ITEM_HEIGHT,
     justifyContent: 'center',
     flex: 1,
     gap: 0,

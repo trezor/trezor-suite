@@ -22,7 +22,6 @@ import { ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
-import { ACCOUNT_LIST_ITEM_HEIGHT } from './AccountListBaseItem';
 import { AccountListFooter } from './AccountListFooter';
 import { AccountListItem } from './AccountListItem';
 import { AddressListEmptyComponent } from './AddressListEmptyComponent';
@@ -148,7 +147,6 @@ export const AccountList = ({
             renderItem={internalRenderItem}
             ListFooterComponent={footer}
             data={internalData}
-            estimatedItemSize={ACCOUNT_LIST_ITEM_HEIGHT}
             keyExtractor={internalKeyExtractor}
         />
     );

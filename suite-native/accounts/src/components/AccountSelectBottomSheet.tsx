@@ -97,7 +97,6 @@ export const AccountSelectBottomSheet = React.memo(
                 onClose={onClose}
                 data={data}
                 renderItem={renderItem}
-                estimatedItemSize={ESTIMATED_ITEM_SIZE}
                 estimatedListHeight={ESTIMATED_ITEM_SIZE * data.length * 1.5}
             />
         );
