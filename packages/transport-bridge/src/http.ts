@@ -80,6 +80,7 @@ const validateProtocolMessageBody =
     };
 
 const COMPATIBILITY_PORT = 21325;
+const ADDRESS = 'http://127.0.0.1';
 
 export class TrezordNode {
     version = '3.1.0';
@@ -234,7 +235,7 @@ export class TrezordNode {
                         !req.headers.origin &&
                         req.headers.host &&
                         [
-                            `127.0.0.1:${app.getServerAddress().port}`,
+                            `${ADDRESS}:${app.getServerAddress().port}`,
                             `localhost:${app.getServerAddress().port}`,
                         ].includes(req.headers.host)
                     ) {
@@ -458,7 +459,7 @@ export class TrezordNode {
             app.get('/', [
                 (_req, res) => {
                     res.writeHead(301, {
-                        Location: `http://127.0.0.1:${app.getServerAddress().port}/status`,
+                        Location: `${ADDRESS}:${app.getServerAddress().port}/status`,
                     });
                     res.end();
                 },
@@ -489,7 +490,7 @@ export class TrezordNode {
                     const signal = this.createAbortSignal(res);
                     await this.core.enumerate({ signal });
                     const props = {
-                        intro: `To download full logs go to http://127.0.0.1:${app.getServerAddress().port}/logs`,
+                        intro: `To download full logs go to ${ADDRESS}:${app.getServerAddress().port}/logs`,
                         version: this.version,
                         bundledVersion: this.bundledVersion,
                         devices: this.descriptors,
@@ -566,7 +567,7 @@ export class TrezordNode {
     }
 
     public async status() {
-        const running = await fetch(`http://127.0.0.1:${this.port ?? this.requestedPort}/`)
+        const running = await fetch(`${ADDRESS}:${this.port ?? this.requestedPort}/`)
             .then(resp => resp.ok)
             .catch(() => false);
 
