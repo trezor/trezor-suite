@@ -6,7 +6,7 @@ import { CSSColor, Color } from '@trezor/theme';
 
 import {
     installUpdate,
-    openJustUpdatedChangelog,
+    justUpdated,
     setUpdateModalVisibility,
 } from '../../../../../../../actions/suite/desktopUpdateActions';
 import { goto } from '../../../../../../../actions/suite/routerActions';
@@ -57,7 +57,7 @@ export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallbackCal
     'update-downloaded-auto-restart-to-update': ({ dispatch }) =>
         dispatch(installUpdate({ installNow: true })),
     'update-downloaded-manual': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),
-    'just-updated': ({ dispatch }) => dispatch(openJustUpdatedChangelog()),
+    'just-updated': ({ dispatch }) => dispatch(justUpdated()),
     'update-available': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),
 };
 

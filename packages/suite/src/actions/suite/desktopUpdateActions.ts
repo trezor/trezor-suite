@@ -19,7 +19,7 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE }
     | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean }
     | { type: typeof DESKTOP_UPDATE.SET_AUTOMATIC_UPDATES; payload: { isEnabled: boolean } }
-    | { type: typeof DESKTOP_UPDATE.OPEN_JUST_UPDATED_CHANGELOG };
+    | { type: typeof DESKTOP_UPDATE.JUST_UPDATED };
 
 export const checking = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.CHECKING });
 
@@ -73,8 +73,8 @@ export const downloading = (progress: UpdateProgress): DesktopUpdateAction => ({
     payload: progress,
 });
 
-export const openJustUpdatedChangelog = (): DesktopUpdateAction => ({
-    type: DESKTOP_UPDATE.OPEN_JUST_UPDATED_CHANGELOG,
+export const justUpdated = (): DesktopUpdateAction => ({
+    type: DESKTOP_UPDATE.JUST_UPDATED,
 });
 
 export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState) => {
