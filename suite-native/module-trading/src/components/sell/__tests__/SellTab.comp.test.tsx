@@ -34,7 +34,32 @@ describe('SellTab', () => {
             featureFlags: {
                 [FeatureFlag.IsTradingSellEnabled]: false,
             },
-        });
+            messageSystem: {
+                validMessages: {
+                    feature: ['actionId'],
+                    banner: [],
+                    context: [],
+                    modal: [],
+                },
+                dismissedMessages: [],
+                config: {
+                    actions: [
+                        {
+                            message: {
+                                id: 'actionId',
+                                category: ['feature'],
+                                feature: [
+                                    {
+                                        domain: 'trading.sell',
+                                        flag: false,
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        } as unknown as PreloadedState);
 
         expect(getByText('Sell disabled')).toBeOnTheScreen();
     });
