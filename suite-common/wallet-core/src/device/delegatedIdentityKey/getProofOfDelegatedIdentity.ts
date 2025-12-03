@@ -13,12 +13,12 @@ import { bufferUtils } from '@trezor/utils';
  * and users (only developers & tested, ATM) have non-encrypted
  * data in Redux, or we change the encryption method.
  */
-type ProofOfDelegatedSignFailed = {
+export type ProofOfDelegatedSignFailed = {
     type: 'ProofOfDelegatedSignFailed';
     caused: unknown;
 };
 
-const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFailed => ({
+export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFailed => ({
     type: 'ProofOfDelegatedSignFailed',
     caused,
 });

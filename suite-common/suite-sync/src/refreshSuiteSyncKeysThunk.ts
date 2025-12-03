@@ -1,66 +1,17 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { CreateSuiteSyncOwner } from '@suite-common/suite-sync-storage';
-import {
-    DelegatedIdentityKey,
-    TrezorDevice,
-    TrezorDeviceWithState,
-} from '@suite-common/suite-types';
+import { TrezorDevice } from '@suite-common/suite-types';
 import {
     deviceActions,
-    getProofOfDelegatedIdentity,
-    isCanceledErrorMessage,
-    retrieveDelegatedIdentityKeyThunk,
+    ensureDelegatedIdentityKeyThunk,
     selectDevices,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { err, ok } from '@trezor/type-utils';
+import { ok } from '@trezor/type-utils';
 
-const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
-
-type RetrieveEvoluNodeDeps = {
-    createSuiteSyncOwner: CreateSuiteSyncOwner;
-};
-
-type RetrieveEvoluNodeParams = {
-    device: TrezorDeviceWithState;
-    delegatedKey: DelegatedIdentityKey;
-};
-
-const retrieveEvoluNode =
-    (deps: RetrieveEvoluNodeDeps) =>
-    async ({ device, delegatedKey }: RetrieveEvoluNodeParams) => {
-        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
-            delegatedKey,
-            header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
-        });
-
-        if (!proofOfDelegatedIdentity.ok) {
-            return proofOfDelegatedIdentity;
-        }
-
-        const result = await TrezorConnect.evoluGetNode({
-            device: {
-                path: device.path,
-                state: device.state,
-                instance: device.instance ?? 0,
-            },
-            useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-            proof_of_delegated_identity: proofOfDelegatedIdentity.value,
-        });
-
-        if (result.success) {
-            return deps.createSuiteSyncOwner({ data: result.payload.data });
-        }
-
-        if (isCanceledErrorMessage(result.payload.error)) {
-            return err({ type: 'DeviceCancelled' as const });
-        }
-
-        return err({ type: 'DeviceError' as const, message: result.payload.error });
-    };
+import { createEnsureSuiteSyncOwnerKeys } from './device/ensureSuiteSyncOwnerKeys';
 
 type RefreshSuiteSyncKeysThunkParams = {
     device: TrezorDevice;
@@ -88,13 +39,14 @@ export const refreshSuiteSyncKeysThunk =
             return ok(); // No action needed
         }
 
-        const delegatedKeyResult = await dispatch(retrieveDelegatedIdentityKeyThunk({ device }));
+        const delegatedKeyResult = await dispatch(ensureDelegatedIdentityKeyThunk({ device }));
 
         if (!delegatedKeyResult.ok) {
             return delegatedKeyResult;
         }
 
-        const evoluNodeResult = await retrieveEvoluNode({
+        const evoluNodeResult = await createEnsureSuiteSyncOwnerKeys({
+            trezorConnect: TrezorConnect,
             createSuiteSyncOwner: services.suiteSync.createSuiteSyncOwner,
         })({
             device,
