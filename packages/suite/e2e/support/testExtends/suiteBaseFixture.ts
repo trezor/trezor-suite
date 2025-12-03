@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { BrowserContext, Page, TestInfo, test as base, mergeTests } from '@playwright/test';
+import { execSync } from 'child_process';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
@@ -137,6 +138,17 @@ const trezorEnvSetup = async (
     emulatorStartConf: StartEmu,
     emulatorSetupConf: SetupEmu,
 ) => {
+    let timeoutId;
+    const setupTimeoutPromise = new Promise(
+        (_, reject) =>
+            (timeoutId = setTimeout(() => {
+                if (process.env.COMPOSE_FILE) {
+                    execSync('docker compose restart trezor-user-env-unix', { cwd: '../../' }); // restart tenv to fix potential hangs
+                }
+                reject(new Error('TrezorUserEnv setup timed out'));
+            }, 30_000)),
+    );
+
     const setupPromise = (async () => {
         await TrezorUserEnvLinkProxy.logTestDetails(
             ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
@@ -158,14 +170,11 @@ const trezorEnvSetup = async (
         if (startEmulator && setupEmulator) {
             await TrezorUserEnvLinkProxy.setupEmu(emulatorSetupConf);
         }
+
+        clearTimeout(timeoutId); // prevent timeout and tenv restart if setup completed successfully
     })();
 
-    await Promise.race([
-        setupPromise,
-        new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('TrezorUserEnv setup timed out')), 30_000),
-        ),
-    ]);
+    await Promise.race([setupPromise, setupTimeoutPromise]);
 };
 
 // We first add currents fixtures to ensure current initialize first and quarantine works even for fails in beforeEach
