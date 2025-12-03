@@ -11,10 +11,14 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@we
         walletPage,
         tradingPage,
     }) => {
-        await walletPage.openTradingGlobalButton.click();
-        // waits for trading form to load
-        await expect(tradingPage.youPayFiatInput).toHaveValue('');
-        await tradingPage.selectFiatCurrency('eur');
+        await test.step('Navigate to Buy form and wait for it to be loaded', async () => {
+            await walletPage.openTradingGlobalButton.click();
+
+            await expect(tradingPage.youPayFiatInput).toHaveValue(''); // waits for trading form to load
+            await tradingPage.accountDropdown.click({ trial: true }); // checking actionability of the dropdown, which means page is properly loaded
+
+            await tradingPage.selectFiatCurrency('eur');
+        });
 
         await test.step('Input amount above maximum', async () => {
             await page.route(invityEndpoint.buyQuotes, async route => {
