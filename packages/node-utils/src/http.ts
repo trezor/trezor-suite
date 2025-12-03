@@ -95,9 +95,20 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     private readonly emitter: TypedEmitter<BaseEvents> = this;
     private ports: number[] = [];
     private port: number | undefined;
+    private address: string;
     private sockets: Record<number, net.Socket> = {};
 
-    constructor({ logger, port, ports }: { logger: Log; port?: number; ports?: number[] }) {
+    constructor({
+        logger,
+        port,
+        ports,
+        address = '127.0.0.1',
+    }: {
+        logger: Log;
+        port?: number;
+        ports?: number[];
+        address?: string;
+    }) {
         super();
 
         if (ports && ports.length > 0) {
@@ -110,6 +121,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
         this.logger = logger;
         this.server = http.createServer(this.onRequest);
+        this.address = address;
     }
 
     get logName() {
@@ -212,7 +224,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 };
             });
 
-            this.server.listen(port, '127.0.0.1', undefined, () => {
+            this.server.listen(port, this.address, undefined, () => {
                 this.logger.info('Server started, listening on port: ', port);
                 const address = this.getServerAddress();
                 if (address) {

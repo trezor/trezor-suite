@@ -220,11 +220,13 @@ export class TrezordNode {
         const primaryApp = new HttpServer({
             ports: [this.requestedPort],
             logger: this.logger,
+            address: ADDRESS.replace('http://', ''),
         });
 
         const compatibilityApp = new HttpServer({
             ports: [COMPATIBILITY_PORT],
             logger: this.logger,
+            address: ADDRESS.replace('http://', ''),
         });
 
         const bindHandlers = (app: HttpServer<any>) => {
