@@ -298,6 +298,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             protocol.sendForm.scheme &&
             selectedAccount.network.symbol === getNetworkSymbolForProtocol(protocol.sendForm.scheme)
         ) {
+            reset(getLoadedValues());
             // for now we always fill only first output
             const outputIndex = 0;
 
@@ -313,8 +314,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
             if (protocol.sendForm.address) {
                 setValue(`outputs.${outputIndex}.address`, protocol.sendForm.address, {
-                    shouldValidate: true,
+                    shouldDirty: true,
                 });
+
+                // Defer validation until after Address component renders and registers validators
+                setTimeout(() => {
+                    trigger(`outputs.${outputIndex}.address`);
+                }, 0);
             }
 
             dispatch(fillSendForm(false));
@@ -330,46 +336,35 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         composeRequest,
         shouldSendInSats,
         state.network.decimals,
+        reset,
+        getLoadedValues,
+        trigger,
     ]);
 
     // load draft from reducer and reset current form values, this should be only called once on mount
     useEffect(() => {
         const loadDraftValues = async () => {
-            // Check if we should fill from protocol data instead of draft
-            const shouldFillFromProtocol =
-                protocol.sendForm.shouldFill &&
-                protocol.sendForm.scheme &&
-                protocol.sendForm.address &&
-                selectedAccount.network.symbol ===
-                    getNetworkSymbolForProtocol(protocol.sendForm.scheme);
+            const storedState = await dispatch(getSendFormDraftThunk()).unwrap();
+            const values = getLoadedValues(storedState);
 
-            if (shouldFillFromProtocol) {
-                const values = getLoadedValues();
-                values.outputs[0].address = protocol.sendForm.address!;
+            reset(values, { keepDefaultValues: !!storedState });
 
-                if (protocol.sendForm.amount) {
-                    const amount = protocol.sendForm.amount.toString();
-                    values.outputs[0].amount = shouldSendInSats
-                        ? convertAmountUnitsToSubunits(amount, state.network.decimals)
-                        : amount;
-                }
-
-                reset(values);
-                dispatch(fillSendForm(false));
-                composeRequest();
-            } else {
-                const storedState = await dispatch(getSendFormDraftThunk()).unwrap();
-                const values = getLoadedValues(storedState);
-
-                reset(values, { keepDefaultValues: !!storedState });
-
-                if (storedState) {
-                    draft.current = storedState;
-                    composeDraft(storedState);
-                }
+            if (storedState) {
+                draft.current = storedState;
+                composeDraft(storedState);
             }
         };
-        loadDraftValues();
+        const shouldFillFromProtocol =
+            protocol.sendForm.shouldFill &&
+            protocol.sendForm.scheme &&
+            protocol.sendForm.address &&
+            selectedAccount.network.symbol ===
+                getNetworkSymbolForProtocol(protocol.sendForm.scheme);
+
+        if (!shouldFillFromProtocol) {
+            loadDraftValues();
+        }
+
         // composeDraft is excluded because its reference changes with each feeInfo update.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, getLoadedValues, reset]);

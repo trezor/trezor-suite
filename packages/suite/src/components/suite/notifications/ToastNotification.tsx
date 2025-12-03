@@ -75,6 +75,7 @@ const ToastNotification = ({
         <Button
             key={a.label}
             intent={mapActionVariantToIntent(a.variant)}
+            priority={a.priority}
             onClick={a.onClick}
             size="small"
             margin={
