@@ -1,0 +1,38 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": [
+        "**/*.json",
+        "fixtures",
+        "snapshots",
+        "tests",
+        "support",
+        "playwright.config.ts",
+        "scripts/**/*.ts"
+    ],
+    "references": [
+        { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect-web" },
+        { "path": "../../packages/e2e-utils" },
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/protobuf" },
+        { "path": "../../packages/suite" },
+        {
+            "path": "../../packages/suite-analytics"
+        },
+        { "path": "../../packages/suite-data" },
+        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/trezor-user-env-link"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}

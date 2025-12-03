@@ -85,7 +85,7 @@ runs:
       run: |
         echo "::group::Install PW Dependencies"
         echo "Silently installing Playwright dependencies"
-        yarn workspaces focus @trezor/suite ${{ inputs.workspace-dependencies }} > /dev/null
+        yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }} > /dev/null
         if [[ "${{ inputs.project }}" == "web" ]]; then
           npx playwright install --with-deps > /dev/null
         fi
@@ -132,7 +132,7 @@ runs:
 
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
-        yarn workspace @trezor/suite test:orchestrated:e2e:${{ inputs.project }} \
+        yarn workspace @trezor/suite-e2e test:orchestrated:e2e:${{ inputs.project }} \
           --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
           --forbid-only \
           $REPORTER_OPT \
