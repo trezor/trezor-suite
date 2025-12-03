@@ -7,6 +7,9 @@
     "include": [".", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/secure-storage"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -14,6 +17,7 @@
         },
         {
             "path": "../../suite-common/suite-sync-storage"
-        }
+        },
+        { "path": "../../packages/connect" }
     ]
 }

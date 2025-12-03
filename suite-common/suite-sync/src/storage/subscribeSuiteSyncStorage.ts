@@ -8,12 +8,13 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { isSuiteSyncSupportedByDevice } from '../device';
 import { SubscribeLabeling } from '../labeling/createSubscribeLabeling';
-import { refreshSuiteSyncKeysThunk } from '../refreshSuiteSyncKeysThunk';
+import { RefreshSuiteSyncKeys } from '../refreshSuiteSyncKeys';
 
 type CreateSubscribeSuiteSyncDeps = {
     dispatch: Dispatch;
     getState: () => any;
     subscribeLabeling: SubscribeLabeling;
+    refreshSuiteSyncKeys: RefreshSuiteSyncKeys;
 };
 
 /**
@@ -33,12 +34,16 @@ export const createSubscribeSuiteSyncStorage =
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
         if (device.suiteSyncOwner === undefined) {
-            const result = await deps.dispatch(refreshSuiteSyncKeysThunk({ device }));
+            const result = await deps.refreshSuiteSyncKeys({ device });
 
             if (!result.ok) {
                 const errType = result.error.type;
 
                 switch (errType) {
+                    case 'DeviceDoesNotSupportSuiteSyncErr':
+                        // This may happen for multiple reasons (disconnected device, ...)
+                        return;
+
                     case 'DeviceError':
                     case 'DeviceCancelled':
                         deps.dispatch(

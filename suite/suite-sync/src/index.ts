@@ -1,6 +1,7 @@
 import { evoluWebDeps } from '@evolu/web';
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { SecureStorage } from '@suite-common/secure-storage';
 import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
     createEvoluInstanceFactory,
@@ -8,10 +9,13 @@ import {
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
 import { SuiteSync } from '@suite-common/suite-sync-storage';
+import { TrezorConnect } from '@trezor/connect';
 
 type InitSuiteSyncDesktopDeps = {
     getState: () => any;
     dispatch: Dispatch;
+    secureStorage: SecureStorage;
+    trezorConnect: TrezorConnect;
 };
 
 export const createSuiteSyncDesktop = (deps: InitSuiteSyncDesktopDeps): SuiteSync => {
@@ -24,5 +28,7 @@ export const createSuiteSyncDesktop = (deps: InitSuiteSyncDesktopDeps): SuiteSyn
         dispatch: deps.dispatch,
         createSuiteStorage: createEvoluStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        secureStorage: deps.secureStorage,
+        trezorConnect: deps.trezorConnect,
     });
 };

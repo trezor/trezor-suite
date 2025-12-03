@@ -12,6 +12,7 @@ import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { initSuiteSyncNative } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
+import TrezorConnect from '@trezor/connect';
 import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
@@ -32,12 +33,20 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
-export const nativeExtraFactory: ExtraWithStoreFactory = store => ({
-    services: {
-        suiteSync: initSuiteSyncNative(store),
-        secureStorage: createNativeSecureStorage(),
-    },
-});
+export const nativeExtraFactory: ExtraWithStoreFactory = store => {
+    const secureStorage = createNativeSecureStorage();
+
+    return {
+        services: {
+            suiteSync: initSuiteSyncNative({
+                ...store,
+                secureStorage,
+                trezorConnect: TrezorConnect,
+            }),
+            secureStorage,
+        },
+    };
+};
 
 export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(extraDependenciesMock, {
     selectors: {
