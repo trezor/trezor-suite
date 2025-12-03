@@ -7,7 +7,7 @@ import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/tra
 import { FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { FiatCurrencyListEmptyComponent } from './FiatCurrencyListEmptyComponent';
-import { FIAT_CURRENCY_LIST_ITEM_HEIGHT, FiatCurrencyListItem } from './FiatCurrencyListItem';
+import { FiatCurrencyListItem } from './FiatCurrencyListItem';
 import { useFiatCurrencyFilteredData } from '../../../hooks/general/useFiatCurrencyFilteredData';
 
 export type FiatCurrencySheetProps = {
@@ -60,7 +60,6 @@ export const FiatCurrencySheet = memo(
                     <FiatCurrencyListItem {...rest} onPress={() => onFiatSelectCallback(value)} />
                 )}
                 data={filteredData}
-                estimatedItemSize={FIAT_CURRENCY_LIST_ITEM_HEIGHT}
                 keyExtractor={keyExtractor}
                 flashListKey={flashListKey}
                 noSingletonSectionHeader

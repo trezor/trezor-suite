@@ -10,8 +10,6 @@ export type FiatCurrencyListItemProps = {
     onPress: () => void;
 };
 
-export const FIAT_CURRENCY_LIST_ITEM_HEIGHT = 68 as const;
-
 export const FiatCurrencyListItem = ({
     displayValue,
     onPress,

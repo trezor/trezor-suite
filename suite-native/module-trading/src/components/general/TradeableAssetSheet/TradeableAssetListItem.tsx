@@ -9,15 +9,13 @@ import {
 } from '@suite-native/trading-state';
 import { TradeableAsset } from '@suite-native/trading-types';
 
-import { ASSET_ITEM_HEIGHT, AssetListItem } from '../AssetListItem';
+import { AssetListItem } from '../AssetListItem';
 import { FavouriteIcon } from './FavouriteIcon';
 
 export type TradeableAssetListItemProps = {
     asset: TradeableAsset;
     onPress: () => void;
 };
-
-export { ASSET_ITEM_HEIGHT };
 
 export const TradeableAssetListItem = ({ asset, onPress }: TradeableAssetListItemProps) => {
     const dispatch = useDispatch();

@@ -7,7 +7,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { SearchableSheetHeader } from '@suite-native/trading-atoms';
 
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
-import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
+import { CountryListItem } from './CountryListItem';
 import { useCountryFilteredData } from '../../hooks/useCountryFilteredData';
 
 export type CountrySheetProps = {
@@ -68,7 +68,6 @@ export const CountrySheet = memo(
                 )}
                 data={filteredData}
                 estimatedListHeight={listHeight}
-                estimatedItemSize={COUNTRY_LIST_ITEM_HEIGHT}
                 keyExtractor={keyExtractor}
                 keyboardShouldPersistTaps="handled"
                 flashListKey={flashListKey}

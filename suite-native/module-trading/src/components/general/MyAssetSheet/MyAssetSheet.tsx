@@ -12,7 +12,7 @@ import {
 import { MyAssetRow, TradeableAsset } from '@suite-native/trading-types';
 
 import { MyAssetListEmptyComponent } from './MyAssetListEmptyComponent';
-import { ASSET_ITEM_HEIGHT, MyAssetListItem, MyAssetListItemProps } from './MyAssetListItem';
+import { MyAssetListItem, MyAssetListItemProps } from './MyAssetListItem';
 import { MyAssetListSectionHeader } from './MyAssetListSectionHeader';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
 import { MyAssetsDisabledListItem } from './MyAssetsDisabledListItem';
@@ -64,7 +64,6 @@ export const MyAssetSheet = memo(
                 handleComponent={renderHandle}
                 data={myAssets}
                 keyExtractor={keyExtractor}
-                estimatedItemSize={ASSET_ITEM_HEIGHT}
                 renderItem={(asset, config) => renderItem(asset, config, onAssetSelectCallback)}
                 renderSectionHeader={(_label, config) => {
                     const sectionIndex = myAssets.findIndex(

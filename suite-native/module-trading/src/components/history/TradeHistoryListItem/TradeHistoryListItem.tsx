@@ -26,8 +26,6 @@ const pressableStyle = prepareNativeStyle(() => ({
     paddingBottom: 16,
 }));
 
-export const TRADE_HISTORY_LIST_ITEM_HEIGHT = 148;
-
 export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistoryListItemProps) => {
     const { DateFormatter, TimeFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();

@@ -52,7 +52,6 @@ export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
             handleComponent={() => <SimpleSheetHeader onClose={onClose} title={title} />}
             data={quotes}
             estimatedListHeight={getEstimatedListHeight(quotes.length)}
-            estimatedItemSize={PAYMENT_METHOD_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
             extraData={selectedQuote?.orderId}
         />

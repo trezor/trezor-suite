@@ -13,15 +13,13 @@ import { useToast } from '@suite-native/toasts';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 import { MyAsset, TradeableAsset } from '@suite-native/trading-types';
 
-import { ASSET_ITEM_HEIGHT, AssetListItem } from '../AssetListItem';
+import { AssetListItem } from '../AssetListItem';
 
 export type MyAssetListItemProps = {
     account: Account;
     asset: MyAsset;
     onPress: (asset: TradeableAsset, account: Account) => void;
 };
-
-export { ASSET_ITEM_HEIGHT };
 
 export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProps) => {
     const { showToast } = useToast();

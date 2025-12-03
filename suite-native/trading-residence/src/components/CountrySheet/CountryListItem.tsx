@@ -12,8 +12,6 @@ export type CountryListItemProps = {
     onPress: () => void;
 };
 
-export const COUNTRY_LIST_ITEM_HEIGHT = 64 as const;
-
 const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     marginVertical: spacings.sp4,
 }));

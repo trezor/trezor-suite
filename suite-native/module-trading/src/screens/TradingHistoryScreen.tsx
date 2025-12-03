@@ -16,10 +16,7 @@ import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-sta
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TradeDetailSheet } from '../components/history/TradeDetailSheet/TradeDetailSheet';
-import {
-    TRADE_HISTORY_LIST_ITEM_HEIGHT,
-    TradeHistoryListItem,
-} from '../components/history/TradeHistoryListItem/TradeHistoryListItem';
+import { TradeHistoryListItem } from '../components/history/TradeHistoryListItem/TradeHistoryListItem';
 
 const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
@@ -79,7 +76,6 @@ export const TradingHistoryScreen = () => {
                 })}
                 renderItem={renderItem}
                 data={trades}
-                estimatedItemSize={TRADE_HISTORY_LIST_ITEM_HEIGHT}
                 keyExtractor={keyExtractor}
             />
             <TradeDetailSheet

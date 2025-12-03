@@ -299,7 +299,6 @@ export const TransactionList = ({
                         colors={[colors.backgroundPrimaryDefault]}
                     />
                 }
-                estimatedItemSize={72}
                 refreshing={isRefreshing}
                 onScroll={handleScroll}
             />

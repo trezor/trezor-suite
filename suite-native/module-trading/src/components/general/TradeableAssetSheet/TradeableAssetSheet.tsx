@@ -6,7 +6,7 @@ import { BottomSheetSectionList, ItemRenderConfig } from '@suite-native/trading-
 import { TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
-import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
+import { TradeableAssetListItem } from './TradeableAssetListItem';
 import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
 import {
     ListItemExtraData,
@@ -75,7 +75,6 @@ export const TradeableAssetSheet = memo(
                 handleComponent={renderHandle}
                 data={listData}
                 keyExtractor={keyExtractor}
-                estimatedItemSize={ASSET_ITEM_HEIGHT}
                 renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
                 flashListKey={flashListKey}
                 noSingletonSectionHeader

@@ -26,8 +26,6 @@ export type ProviderListItemProps<T extends TradingTradeType> = {
     tradingType: TradingType;
 };
 
-export const PROVIDER_LIST_ITEM_ESTIMATED_HEIGHT = 160 as const;
-
 const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     marginVertical: spacings.sp4,
 }));

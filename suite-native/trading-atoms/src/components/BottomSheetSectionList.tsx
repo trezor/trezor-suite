@@ -23,12 +23,13 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     // not supported
     | 'getItemType'
     | 'overrideItemLayout'
+    | 'onViewableItemsChanged'
+    | 'viewabilityConfigCallbackPairs'
 > & {
     data: SectionListData<T, U>;
     renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
     renderSectionHeader?: (label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
-    estimatedItemSize: number;
     noSingletonSectionHeader?: boolean;
     itemStyle?: NativeStyle<ItemRenderConfig<unknown>>;
     SectionEmptyComponent?: ReactElement;
@@ -38,7 +39,6 @@ export const BottomSheetSectionList = <T, U = undefined>({
     keyExtractor,
     renderItem,
     renderSectionHeader,
-    estimatedItemSize,
     data,
     noSingletonSectionHeader,
     itemStyle,
@@ -65,7 +65,6 @@ export const BottomSheetSectionList = <T, U = undefined>({
         <BottomSheetFlashList<ListInternalItemShape<T, U>>
             keyExtractor={internalKeyExtractor}
             renderItem={internalRenderItem}
-            estimatedItemSize={estimatedItemSize}
             estimatedListHeight={listHeight}
             data={internalData}
             keyboardShouldPersistTaps="handled"

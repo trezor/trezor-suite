@@ -145,7 +145,6 @@ export const AccountImportConfirmFormScreen = ({
                                 </Text>
                             </Box>
                         }
-                        estimatedItemSize={115}
                     />
                 )}
             </AccountImportSummaryScreen>
