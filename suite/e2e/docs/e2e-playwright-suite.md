@@ -1,0 +1,167 @@
+# @trezor/suite-desktop and @trezor/suite-web e2e tests
+
+@suite/e2e uses [Playwright](https://playwright.dev/) to run e2e tests. It also uses [trezor-user-env](https://github.com/trezor/trezor-user-env) which is [daily built](https://ghcr.io/trezor/trezor-user-env) into a docker image providing all the necessary instrumentation required to run tests (bridge and emulators).
+
+## Run it locally
+
+_Note: All paths below are relative to the root of trezor-suite repository, if not specified otherwise._
+
+### Common
+
+- [Docker](https://docs.docker.com/desktop/mac/install/)
+- macOS only: [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
+- [Trezor user env](https://github.com/trezor/trezor-user-env)
+- No other instance of `Suite` or `trezord` service is running
+
+**Full steps:**<br />
+_(in case of Linux with X11 support, skip to step 6.)_
+
+1. Run XQuartz. Wait till it is launched. Leave it running in the background.
+1. In XQuartz settings go to Preferences -> Security and enable "Allow connections from network clients".
+1. Open a new terminal window (not in XQuartz) and add yourself to the X access control list:
+    - `xhost +127.0.0.1`
+    - You will probably need to logout/login after XQuartz installation to have `xhost` command available.
+1. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
+1. In the terminal window, set two environment variables:
+    - ``export HOSTNAME=`hostname` ``
+    - `export DISPLAY=:0`
+1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
+1. In workspace `packages/suite` create a `.env` file according to the `.example.env`
+
+### Web
+
+1. In another window, run web `Suite` with `yarn suite:dev`.
+1. In a third window, run `yarn workspace @trezor/suite-e2e test:e2e:web`.
+
+### Desktop
+
+1. `yarn workspace @trezor/suite-desktop build:ui`
+
+    Produces `suite-desktop/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
+
+    _Note: This step needs to be repeated on each change in `suite` or `suite-desktop-ui` package._
+
+1. `yarn workspace @trezor/suite-desktop build:app`
+
+    Produces `suite-desktop/dist` directory with javascript bundles & assets in production mode for the electron-main process.
+
+    _Note: This step needs to be repeated on each change in `connect` or `suite-desktop-core` package._
+
+1. `yarn workspace @trezor/suite-e2e test:e2e:desktop`
+
+#### Troubleshooting
+
+1. **To run tests headed (showing UI)** you can add: `--headed`.
+
+1. **To run just one test file** you can do: `yarn workspace @trezor/suite-e2e test:e2e:web general/wallet-discovery.test.ts` or `yarn workspace @trezor/suite-e2e test:e2e:desktop general/wallet-discovery.test.ts`
+
+1. **To run just one test** you can add: `-g "Basic cardano walkthrough"`
+
+1. **To run one group** you can add: `--grep @group=wallet`
+
+1. **To open advance playwright runner/debugger ui** you can add: `--ui`
+
+1. **To check for flakiness** you can specify test/suite and how many time it should run: `--repeat-each=10`
+
+1. **To check for flakiness on CI** you can edit in `packages/suite/package.json` script `"test:orchestrated:e2e:desktop": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./playwright.config.ts --project=desktop --repeat-each=30 <test-file-name>",`, commit, push and run this CI against your branch. This will run this one test 30 times. Please, always specify limited number of tests, never run full suite 30 times.
+
+1. **To debug test** add `await page.pause();` to place where you want test to stop. Debugger window will open. This works only in `--headed` run.
+
+1. **To enable Debug Tools in the browser** press `Ctrl+Shift+I`
+
+1. **To enable Electron verbose logging** add env variable LOGLEVEL=debug or any other level
+
+1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
+
+1. **To run with x-main firmware** instead of x-latest you can use CANARY_FIRMWARE env variable like this: `CANARY_FIRMWARE=true yarn workspace @trezor/suite-e2e test:e2e:web` or `CANARY_FIRMWARE=true yarn workspace @trezor/suite-e2e test:e2e:desktop`
+
+1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @trezor/suite-desktop git:bisect <last_good_commit> <desktop|web> <test_file>`
+
+## Contribution
+
+Please follow our general [Playwright contribution guide](e2e-playwright-contribution-guide.md)
+
+### Tags
+
+Each test should be assigned a tag
+
+At the moment, there are the following tags:
+
+- @group=[string]
+- @desktopOnly
+- @webOnly
+- @nightlyOnly
+- @snapshot
+
+#### @group
+
+Assigning a @group allows filtering based on logical test category
+
+- `@group=wallet`
+- `@group=suite`
+- `@group=device-management`
+- `@group=other`
+- `@group=metadata`
+- `@group=passphrase`
+- `@group=settings`
+- `@group=trading`
+
+#### @desktopOnly or @webOnly
+
+Some tests are only applicable for Desktop app or Web and you can use this tag to notify the runner, that the test should be ignored when running against opposite Suite. This negative filtering is done on playwright-config level.
+
+Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in Web PR workflow definition. Meaning, Web PR runs execute only tests with @WebOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000.
+
+#### @nightlyOnly
+
+Some tests should run on nighty runs only for specific reasons. This tags is used for reversed filtering in PR and release workflows definitions. This means tests with this tags will run only on nightly and canary runs.
+
+#### @snapshot
+
+Some tests are using visual regression comparison by comparing specific element with a prerecorded snapshot or by comparing Aria snapshot. This tag serve for easier updating of snapshots and monitoring.
+
+### Updating snapshots
+
+Changes in implementation or environment may demand updating our Aria snapshots or prerecorded image snapshots that serve for visual regression comparison. To do so:
+
+1. Run `yarn test:e2e:update-snapshots`, this will run all tests with @snapshot tag and record new snapshots if there is difference.
+    - Alternatively, you can run `yarn test:e2e <filter one specific test or test file> --update-snapshots` to run even smaller amount of tests and to do a update just for that test or test file.
+1. Once these tests finish, you will be presented with results which may contain diff patch files of Aria snapshots like in this example:
+
+```
+$ yarn test:e2e ios --update-snapshots
+
+Running 1 test using 1 worker
+
+  ✓  1 …wser › Suite does not support iOS @group=other @webOnly @snapshot (5.7s)
+
+New baselines created for:
+
+  ./tests/browser/ios.test.ts
+
+  git apply ./test-results/rebaselines.patch
+
+  1 passed (6.4s)
+
+To open last HTML report run:
+
+  yarn playwright show-report
+```
+
+1. Apply all patches and review that aria snapshot changes. In above example it would be `git apply e2e/test-results/rebaselines.patch`
+1. Review all new image snapshots that were generated by the first step. They are automatically stored in `suite/e2e/snapshots` folder and should be visible in your `git status`.
+1. Add, commit, and create PR
+
+## Results
+
+Results contains traces, metadata, logs, screenshots, videos and various useful information for debugging.
+Traces contain electron logs of our desktop suit app. Both in CI, currents and local env (`suite/e2e/test-results`).
+CI runs have artifact with logs from `trezor-user-env`. They exist per group. Log are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
+
+- electrum-regtest.txt
+- trezor-user-env-debugging.log
+- tenv-emulator-bridge-debugging.log
+
+### Currents.dev
+
+Test reports are uploaded to [currents.dev](https://app.currents.dev/)

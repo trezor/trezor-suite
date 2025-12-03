@@ -112,7 +112,7 @@
 
 /packages/websocket-client @mroz22 @marekrjpolak
 
-/packages/suite/e2e @HajekOndrej @Vere-Grey
+/suite/e2e @HajekOndrej @Vere-Grey
 
 /packages/e2e-utils @HajekOndrej @Vere-Grey
 

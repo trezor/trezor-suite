@@ -76,18 +76,27 @@ export const eslint = [
     },
 ];
 
+const playwrightEslintRules = {
+    ...playwright.configs['flat/recommended'].rules,
+    'playwright/no-skipped-test': 'off',
+    'playwright/no-nested-step': 'off',
+    'playwright/expect-expect': 'off',
+    'playwright/no-wait-for-timeout': 'off',
+    'playwright/no-conditional-in-test': 'off',
+    'playwright/no-force-option': 'off',
+    'playwright/valid-title': 'off',
+};
+
 /** @type {Config} */
 export const playwrightEslint = {
     ...playwright.configs['flat/recommended'],
     files: ['e2e/**'],
-    rules: {
-        ...playwright.configs['flat/recommended'].rules,
-        'playwright/no-skipped-test': 'off',
-        'playwright/no-nested-step': 'off',
-        'playwright/expect-expect': 'off',
-        'playwright/no-wait-for-timeout': 'off',
-        'playwright/no-conditional-in-test': 'off',
-        'playwright/no-force-option': 'off',
-        'playwright/valid-title': 'off',
-    },
+    rules: playwrightEslintRules,
+};
+
+/** @type {Config} */
+export const playwrightEslintFlat = {
+    ...playwright.configs['flat/recommended'],
+    files: ['./**/*.{ts,tsx,js,jsx}'],
+    rules: playwrightEslintRules,
 };

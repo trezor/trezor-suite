@@ -5,10 +5,6 @@
         "src",
         "stylelint-config-standard",
         "postcss-styled-syntax",
-        "typescript-styled-plugin",
-        "node-loader",
-        "@playwright/browser-chromium",
-        "@playwright/browser-firefox",
-        "@playwright/browser-webkit"
+        "typescript-styled-plugin"
     ]
 }
