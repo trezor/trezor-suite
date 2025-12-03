@@ -157,6 +157,15 @@ const trezorEnvSetup = async (
             type: TestAnnotationType.DeviceModel,
             description: emulatorStartConf.model,
         });
+
+        const randomNumber = Math.random();
+
+        // 1 in 5 chance is 20% (0.2)
+        if (randomNumber < 0.2) {
+            await new Promise(resolve => setTimeout(resolve, 60_000)); // simulate hang
+        }
+
+
         await TrezorUserEnvLinkProxy.stopBridge();
         await TrezorUserEnvLinkProxy.stopEmu();
         await TrezorUserEnvLinkProxy.connect();
