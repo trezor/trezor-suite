@@ -7,7 +7,6 @@ export type SuiteSwitch =
     | 'updater-url'
     | 'bridge-legacy'
     | 'bridge-test'
-    | 'bridge-dev'
     | 'bridge-daemon'
     | 'bridge-daemon-show-ui'
     | 'log-level'

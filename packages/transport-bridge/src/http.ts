@@ -577,11 +577,6 @@ export class TrezordNode {
     }
 
     // compatibility with "BridgeProcess" type
-    public startDev() {
-        return this.start();
-    }
-
-    // compatibility with "BridgeProcess" type
     public startTest() {
         return this.start();
     }
