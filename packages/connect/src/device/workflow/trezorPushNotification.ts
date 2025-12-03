@@ -1,9 +1,4 @@
-import {
-    type DecodedTrezorPushNotification,
-    TrezorPushNotificationMode,
-    TrezorPushNotificationType,
-    tpn,
-} from '@trezor/protocol';
+import { TrezorPushNotificationMode, TrezorPushNotificationType, tpn } from '@trezor/protocol';
 import { resolveAfter } from '@trezor/utils';
 
 import { DEVICE } from '../../events/device';
@@ -48,7 +43,12 @@ const setupDeviceMode = async (
 };
 
 export const trezorPushNotificationHandler = async ({ device, message }: TpnWorkflowContext) => {
-    const decoded: DecodedTrezorPushNotification = tpn.decode(message);
+    const decodedResult = tpn.decode(message);
+
+    if (!decodedResult.success) return;
+
+    const decoded = decodedResult.payload;
+
     device.lifecycle.emit(DEVICE.TREZOR_PUSH_NOTIFICATION, decoded);
 
     const { type, mode } = decoded;
