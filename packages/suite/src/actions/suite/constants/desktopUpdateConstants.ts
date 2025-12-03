@@ -6,6 +6,8 @@ export const DOWNLOADING = '@desktop-update/downloading' as const;
 export const READY = '@desktop-update/ready' as const;
 export const JUST_UPDATED = '@desktop-update/just-updated' as const;
 export const MODAL_VISIBILITY = '@desktop-update/modal-visibility' as const;
+export const VERSION_INFO_MODAL_VISIBILITY =
+    '@desktop-update/version-info-modal-visibility' as const;
 export const OPEN_EARLY_ACCESS_ENABLE = '@desktop-update/open-early-access-enable' as const;
 export const OPEN_EARLY_ACCESS_DISABLE = '@desktop-update/open-early-access-disable' as const;
 export const ALLOW_PRERELEASE = '@desktop-update/allow-prerelease' as const;

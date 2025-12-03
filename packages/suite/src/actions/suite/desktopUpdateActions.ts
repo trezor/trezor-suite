@@ -15,6 +15,7 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: UpdateProgress }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.MODAL_VISIBILITY; payload: boolean }
+    | { type: typeof DESKTOP_UPDATE.VERSION_INFO_MODAL_VISIBILITY; payload: boolean }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE }
     | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean }
@@ -151,6 +152,11 @@ export const error = () => (dispatch: Dispatch, getState: GetState) => {
 
 export const setIsUpdateModalVisible = (isModalVisible: boolean): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.MODAL_VISIBILITY,
+    payload: isModalVisible,
+});
+
+export const setIsVersionInfoModalVisible = (isModalVisible: boolean): DesktopUpdateAction => ({
+    type: DESKTOP_UPDATE.VERSION_INFO_MODAL_VISIBILITY,
     payload: isModalVisible,
 });
 

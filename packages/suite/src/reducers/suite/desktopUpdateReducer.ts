@@ -20,6 +20,8 @@ export interface DesktopUpdateState {
     allowPrerelease: boolean;
     isAutomaticUpdateEnabled: boolean;
     firstRunAfterUpdate: boolean;
+    // Displays an informational modal to view current version
+    isVersionInfoModalVisible: boolean;
 
     /**
      * This flag suppresses the "just updated" notification state
@@ -39,6 +41,7 @@ const initialState: DesktopUpdateState = {
     allowPrerelease: false,
     isAutomaticUpdateEnabled: false,
     firstRunAfterUpdate: false,
+    isVersionInfoModalVisible: false,
     justUpdatedInteractedWith: false,
 };
 
@@ -87,6 +90,9 @@ const desktopUpdateReducer = (
                 break;
             case DESKTOP_UPDATE.MODAL_VISIBILITY:
                 draft.isModalVisible = action.payload;
+                break;
+            case DESKTOP_UPDATE.VERSION_INFO_MODAL_VISIBILITY:
+                draft.isVersionInfoModalVisible = action.payload;
                 break;
             case DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE:
                 draft.state = UpdateState.EarlyAccessEnable;
