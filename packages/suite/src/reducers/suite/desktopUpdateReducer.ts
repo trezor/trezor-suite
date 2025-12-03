@@ -88,7 +88,7 @@ const desktopUpdateReducer = (
                 draft.state = UpdateState.Ready;
                 draft.latest = action.payload;
                 break;
-            case DESKTOP_UPDATE.OPEN_JUST_UPDATED_CHANGELOG:
+            case DESKTOP_UPDATE.JUST_UPDATED:
                 draft.state = UpdateState.JustUpdated;
                 draft.modalVisibility = 'maximized';
                 draft.justUpdatedInteractedWith = true;

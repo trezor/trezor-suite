@@ -5,7 +5,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import {
     installUpdate,
-    openJustUpdatedChangelog,
+    justUpdated,
     setUpdateModalVisibility,
 } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -31,7 +31,7 @@ const getUpdateStateMessage = (state: UpdateState) => {
 const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
     const appVersion = process.env.VERSION || '';
     const dispatch = useDispatch();
-    const openChangelog = () => dispatch(openJustUpdatedChangelog());
+    const openChangelog = () => dispatch(justUpdated());
     const url = useExternalLink(getReleaseUrl(appVersion));
     const commonButtonProps: Partial<ButtonProps> = {
         'data-testid': '@settings/suite-version',
