@@ -3,7 +3,7 @@ import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analyt
 import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
 
 import { DESKTOP_UPDATE } from 'src/actions/suite/constants';
-import { UpdateModalVisibility, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
@@ -14,7 +14,7 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.DOWNLOAD }
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: UpdateProgress }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
-    | { type: typeof DESKTOP_UPDATE.MODAL_VISIBILITY; payload: UpdateModalVisibility }
+    | { type: typeof DESKTOP_UPDATE.MODAL_VISIBILITY; payload: boolean }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE }
     | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean }
@@ -149,11 +149,9 @@ export const error = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const setUpdateModalVisibility = (
-    modalVisibility: UpdateModalVisibility,
-): DesktopUpdateAction => ({
+export const setIsUpdateModalVisible = (isModalVisible: boolean): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.MODAL_VISIBILITY,
-    payload: modalVisibility,
+    payload: isModalVisible,
 });
 
 export const openEarlyAccessSetup = (earlyAccessEnabled: boolean): DesktopUpdateAction => ({
