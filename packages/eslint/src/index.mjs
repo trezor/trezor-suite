@@ -34,6 +34,7 @@ export const eslint = [
             '**/.expo/*',
             'eslint-local-rules/*',
             '**/.cache/*',
+            '**/playwright-report/*',
         ],
     },
     { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
