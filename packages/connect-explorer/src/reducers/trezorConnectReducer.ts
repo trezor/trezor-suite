@@ -24,7 +24,14 @@ export type ConnectState = {
 const initialState: ConnectState = {
     devices: [],
     selectedDevice: undefined,
-    options: undefined,
+    options: {
+        manifest: {
+            email: 'info@trezor.io',
+            appUrl: '@trezor/connect-explorer',
+            appName: 'Trezor Connect Explorer',
+        },
+        uiEnabled: true,
+    },
     isHandshakeConfirmed: false,
     isInitSuccess: false,
     initError: undefined,
@@ -68,13 +75,7 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
         ...state,
     };
     if (!newState.options) {
-        newState.options = {
-            manifest: {
-                email: 'info@trezor.io',
-                appUrl: '@trezor/connect-explorer',
-                appName: 'Trezor Connect Explorer',
-            },
-        };
+        newState.options = initialState.options!;
     }
 
     (newState.options as any)[field.name] = value;

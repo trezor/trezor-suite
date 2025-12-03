@@ -7,8 +7,6 @@ import { LogMessage, LogWriter, setLogWriter } from '@trezor/connect/src/utils/d
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { createDeferred } from '@trezor/utils';
 
-import css from './inlineStyles';
-
 export let instance: HTMLIFrameElement | null;
 export let origin: string;
 export let initPromise = createDeferred();
@@ -33,27 +31,6 @@ const handleIframeBlocked = () => {
     error = ERRORS.TypedError('Init_IframeBlocked');
     dispose();
     initPromise.reject(error);
-};
-
-const injectStyleSheet = () => {
-    if (!instance) {
-        throw ERRORS.TypedError('Init_IframeBlocked');
-    }
-    const doc = instance.ownerDocument;
-    const head = doc.head || doc.getElementsByTagName('head')[0];
-    const style = document.createElement('style');
-    style.setAttribute('type', 'text/css');
-    style.setAttribute('id', 'TrezorConnectStylesheet');
-
-    // @ts-expect-error
-    if (style.styleSheet) {
-        // @ts-expect-error
-        style.styleSheet.cssText = css;
-        head.appendChild(style);
-    } else {
-        style.appendChild(document.createTextNode(css));
-        head.append(style);
-    }
 };
 
 export const init = async (settings: ConnectSettings) => {
@@ -151,7 +128,6 @@ export const init = async (settings: ConnectSettings) => {
     // inject iframe into host document body
     if (document.body) {
         document.body.appendChild(instance);
-        injectStyleSheet();
     }
 
     try {

@@ -187,6 +187,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.npmVersion = input.npmVersion;
     }
 
+    if (typeof input.uiEnabled === 'boolean') {
+        settings.uiEnabled = input.uiEnabled;
+    }
+
     settings.thp = parseThpSettings(input);
 
     return settings;

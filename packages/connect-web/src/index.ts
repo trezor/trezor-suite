@@ -7,6 +7,7 @@ import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInPopup } from './impl/core-in-popup';
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from './impl/core-in-suite-web';
+import { showErrorModal } from './ui/showErrorModal';
 
 const IFRAME_ERRORS = ['Init_IframeBlocked', 'Init_IframeTimeout', 'Transport_Missing'];
 
@@ -68,10 +69,25 @@ const impl = new TrezorConnectDynamic<
     handleErrorFallback: async (errorCode: string) => {
         const env = getEnv();
 
+        // if user did not grant permissions in browser are stubbornly pushing him to do so instead of falling back to another way of communication
+        if (
+            impl.getTargetType() === 'core-in-suite-desktop' &&
+            errorCode === 'Browser_LocalNetworkPermissionMissing' &&
+            impl.lastSettings?.uiEnabled !== false
+        ) {
+            showErrorModal(
+                () => {},
+                () => {},
+                'Local network access permission is missing. Please allow local network access for this website in your browser settings.',
+                impl.lastSettings?.debug === true,
+            );
+
+            // todo: technically, it could work to fallback to suite-web, where localhost permissions might not be needed (if bridge is not running :D), do we want to do it?
+            return false;
+        }
         const isCoreModeDisabled = impl.lastSettings?.popup === false || env === 'webextension';
         const isCoreModeAuto =
             impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
-
         // Handle desktop errors
         if (
             impl.getTargetType() === 'core-in-suite-desktop' &&

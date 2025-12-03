@@ -46,5 +46,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): Conn
         settings.env = getEnv();
     }
 
+    if (typeof input.uiEnabled === 'boolean') {
+        settings.uiEnabled = input.uiEnabled;
+    } else {
+        settings.uiEnabled = true;
+    }
+
     return parseSettings(settings);
 };

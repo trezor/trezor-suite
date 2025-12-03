@@ -23,7 +23,7 @@ import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/w
 import type { IntervalId, TimerId } from '@trezor/type-utils';
 import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
 
-import { showPopupRequest } from './showPopupRequest';
+import { showErrorModal } from '../ui/showErrorModal';
 
 // Util
 const checkIfTabExists = (tabId: number | undefined) =>
@@ -210,16 +210,21 @@ export class PopupManager extends EventEmitter {
         }, POPUP_CLOSE_INTERVAL);
 
         if (this.settings.useCoreInPopup) {
-            // Open timeout not used in Core mode, we can't run showPopupRequest with no DOM
+            // Open timeout not used in Core mode, we can't run showErrorModal with no DOM
             return;
         }
 
         // open timeout will be cancelled by POPUP.BOOTSTRAP message
         this.openTimeout = setTimeout(() => {
             this.clear();
-            showPopupRequest(this.open.bind(this), () => {
-                this.emitClosed();
-            });
+            showErrorModal(
+                this.open.bind(this),
+                () => {
+                    this.emitClosed();
+                },
+                'Popup was blocked',
+                this.settings.debug === true,
+            );
         }, POPUP_OPEN_TIMEOUT);
     }
 

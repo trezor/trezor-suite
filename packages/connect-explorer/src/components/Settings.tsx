@@ -28,6 +28,7 @@ export const Settings = () => {
         trustedHost: state.connect?.options?.trustedHost,
         connectSrc: state.connect?.options?.connectSrc,
         coreMode: state?.connect?.options?.coreMode,
+        uiEnabled: state?.connect?.options?.uiEnabled,
     }));
 
     const initError = useSelector(state => state.connect?.initError);
@@ -65,6 +66,12 @@ export const Settings = () => {
             type: 'input' as const,
             key: 'connectSrc',
             value: connectOptions?.connectSrc || '',
+        },
+        {
+            name: 'uiEnabled',
+            type: 'checkbox' as const,
+            key: 'uiEnabled',
+            value: connectOptions?.uiEnabled,
         },
     ];
 
