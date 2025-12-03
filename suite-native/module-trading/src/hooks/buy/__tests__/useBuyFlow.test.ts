@@ -99,6 +99,7 @@ describe('useBuyFlow', () => {
                     btcAccount.addresses?.used?.[0]?.address ?? btcAccount.descriptor;
 
                 const { result } = await renderUseTradingBuyFlow();
+                dispatchSpy.mockClear();
 
                 act(() => {
                     result.current.selectQuote();
@@ -111,7 +112,7 @@ describe('useBuyFlow', () => {
                     nextStep();
                 });
 
-                expect(store.dispatch).toHaveBeenCalledWith(
+                expect(dispatchSpy).toHaveBeenCalledWith(
                     expect.objectContaining({
                         type: 'confirmTradeThunkMock',
                         payload: expect.objectContaining({

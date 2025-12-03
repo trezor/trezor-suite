@@ -204,6 +204,8 @@ describe('useBuyQuotes', () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { result, rerender } = await renderUseBuyQuotes(store);
+        dispatchSpy.mockClear();
+
         act(() => {
             result.current.setValue('asset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');

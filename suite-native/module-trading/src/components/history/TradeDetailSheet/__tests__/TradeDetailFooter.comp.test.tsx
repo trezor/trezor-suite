@@ -6,7 +6,7 @@ import { TradeDetailFooter } from '../TradeDetailFooter';
 
 const mockCopyToClipboard = jest.fn();
 
-jest.mock('@suite-native/helpers', () => ({
+jest.mock('@suite-native/clipboard', () => ({
     useCopyToClipboard: () => mockCopyToClipboard,
 }));
 

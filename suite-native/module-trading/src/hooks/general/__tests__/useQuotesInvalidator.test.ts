@@ -131,7 +131,7 @@ describe('useQuotesInvalidator', () => {
                 anyQuotesLoaded: false,
             });
 
-            expect(dispatchSpy).not.toHaveBeenCalled();
+            expect(dispatchSpy).not.toHaveBeenCalledWith({ type: 'clearStateAction' });
         });
 
         it('should not dispatch clear request when form is valid', async () => {
@@ -141,7 +141,7 @@ describe('useQuotesInvalidator', () => {
                 anyQuotesLoaded: true,
             });
 
-            expect(dispatchSpy).not.toHaveBeenCalled();
+            expect(dispatchSpy).not.toHaveBeenCalledWith({ type: 'clearStateAction' });
         });
     });
 

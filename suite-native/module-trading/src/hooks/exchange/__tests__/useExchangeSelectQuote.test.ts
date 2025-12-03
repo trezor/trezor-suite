@@ -191,6 +191,7 @@ describe('useExchangeSelectQuote', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
             act(() => {
                 result.current.selectQuote();
@@ -225,6 +226,7 @@ describe('useExchangeSelectQuote', () => {
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
             act(() => {
                 result.current.selectQuote();
@@ -253,6 +255,7 @@ describe('useExchangeSelectQuote', () => {
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
             act(() => {
                 result.current.selectQuote();
@@ -277,6 +280,7 @@ describe('useExchangeSelectQuote', () => {
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
             act(() => {
                 result.current.selectQuote();
@@ -307,6 +311,7 @@ describe('useExchangeSelectQuote', () => {
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
             act(() => {
                 result.current.selectQuote();
@@ -338,6 +343,7 @@ describe('useExchangeSelectQuote', () => {
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
 
             act(() => {
                 result.current.selectQuote();
