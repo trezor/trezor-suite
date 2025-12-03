@@ -204,7 +204,10 @@ export const useUnstakeForm = ({ selectedAccount }: UseUnstakeFormsProps): Unsta
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
             if (currentRate) {
-                const fiatValue = toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(2);
+                const fiatValue = toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(
+                    2,
+                    BigNumber.ROUND_FLOOR,
+                );
                 setValue(FIAT_INPUT, fiatValue || '', {
                     shouldDirty: true,
                     shouldValidate: true,

@@ -171,7 +171,11 @@ export const UnstakeInputs = () => {
                                     symbol={symbol}
                                 />
                                 <Text typographyStyle="hint">
-                                    <BaseCurrencyValue amount={depositedBalance} symbol={symbol}>
+                                    <BaseCurrencyValue
+                                        amount={depositedBalance}
+                                        symbol={symbol}
+                                        fiatAmountFormatterOptions={{ roundingMode: 'floor' }}
+                                    >
                                         {({ value }) => value && <span>{value}</span>}
                                     </BaseCurrencyValue>
                                     {isRewardsVisible && (
