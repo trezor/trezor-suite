@@ -1,17 +1,18 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { SecureStorage } from '@suite-common/secure-storage';
+import { SecureStorageDep } from '@suite-common/secure-storage';
 import {
-    CreateSuiteStorage,
-    CreateSuiteSyncOwner,
+    CreateSuiteStorageDep,
+    CreateSuiteSyncOwnerDep,
     SuiteSync,
     createSuiteSyncStorageRepositoryFactory,
 } from '@suite-common/suite-sync-storage';
 import {
     createEnsureDelegatedIdentityKey,
-    createGetDelegatedIdentityKey,
+    createLoadDelegatedIdentityKeyFromState,
     createSaveDelegatedIdentityKey,
     selectAllDeviceOwners,
+    selectDeviceDelegatedIdentityKey,
 } from '@suite-common/wallet-core';
 
 import {
@@ -29,13 +30,12 @@ import { selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
 import { createTurnOffSuiteSync } from './turnOffSuiteSync';
 
 type CreateSuiteSyncCompositionRootDeps = {
-    createSuiteStorage: CreateSuiteStorage;
-    createSuiteSyncOwner: CreateSuiteSyncOwner;
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'];
-    secureStorage: SecureStorage;
-};
+} & CreateSuiteStorageDep &
+    CreateSuiteSyncOwnerDep &
+    SecureStorageDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -61,10 +61,11 @@ export const createSuiteSyncCompositionRoot = (
 
     // Todo: this shall be extracted upstream in the composition root
     const ensureDelegatedIdentityKey = createEnsureDelegatedIdentityKey({
-        getDelegatedIdentityKey: createGetDelegatedIdentityKey({
+        loadDelegatedIdentityKeyFromState: createLoadDelegatedIdentityKeyFromState({
             dispatch: deps.dispatch,
-            getState: deps.getState,
             secureStorage: deps.secureStorage,
+            getDeviceDelegatedIdentityKey: deviceId =>
+                selectDeviceDelegatedIdentityKey(deps.getState(), deviceId),
         }),
         saveDelegatedIdentityKey: createSaveDelegatedIdentityKey({
             dispatch: deps.dispatch,

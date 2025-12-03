@@ -1,12 +1,11 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { EncryptionUnavailable } from '@suite-common/secure-storage';
 import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     DeviceCancelledErr,
     DeviceError,
-    EnsureDelegatedIdentityKey,
+    EnsureDelegatedIdentityKeyDep,
     ProofOfDelegatedSignFailed,
     deviceActions,
     selectDevices,
@@ -14,14 +13,13 @@ import {
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { Result, err, ok } from '@trezor/type-utils';
 
-import { EnsureSuiteSyncOwnerKeys } from './device/ensureSuiteSyncOwnerKeys';
+import { EnsureSuiteSyncOwnerDep } from './device/ensureSuiteSyncOwnerKeys';
 
 export type RefreshSuiteSyncKeysDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    ensureDelegatedIdentityKey: EnsureDelegatedIdentityKey;
-    ensureSuiteSyncOwnerKeys: EnsureSuiteSyncOwnerKeys;
-};
+} & EnsureSuiteSyncOwnerDep &
+    EnsureDelegatedIdentityKeyDep;
 
 type RefreshSuiteSyncKeysParams = {
     device: TrezorDevice;
@@ -42,7 +40,6 @@ export type RefreshSuiteSyncKeys = (
         void,
         | DeviceError
         | DeviceCancelledErr
-        | EncryptionUnavailable
         | DeviceDoesNotSupportSuiteSyncErr
         | ProofOfDelegatedSignFailed
         | CreateSuiteSyncOwnerError
@@ -69,9 +66,7 @@ export const createRefreshSuiteSyncKeys =
             return err(DeviceDoesNotSupportSuiteSyncErr());
         }
 
-        const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({
-            device,
-        });
+        const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
         if (!delegatedKeyResult.ok) {
             return delegatedKeyResult;

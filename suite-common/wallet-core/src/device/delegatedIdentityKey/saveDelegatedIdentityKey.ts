@@ -18,6 +18,10 @@ type SaveDelegatedIdentityKeyParms = {
 
 export type SaveDelegatedIdentityKey = (params: SaveDelegatedIdentityKeyParms) => Promise<void>;
 
+export type SaveDelegatedIdentityKeyDep = {
+    saveDelegatedIdentityKey: SaveDelegatedIdentityKey;
+};
+
 export const createSaveDelegatedIdentityKey =
     (deps: SaveDelegatedIdentityKeyDeps): SaveDelegatedIdentityKey =>
     async ({ deviceId, delegatedIdentityKey }) => {

@@ -9,7 +9,7 @@ type RetrieveDelegatedIdentityKeyParams = {
     thpStaticHostKey: string | undefined;
 };
 
-export const retrieveDelegatedIdentityKey = async ({
+export const retrieveDelegatedIdentityKeyFromDevice = async ({
     device,
     thpStaticHostKey,
 }: RetrieveDelegatedIdentityKeyParams) => {
