@@ -27,6 +27,8 @@ export const DecryptionFailed = (): DecryptionFailed => ({
 export type EncryptionError = EncryptionUnavailable;
 export type DecryptionError = EncryptionUnavailable | DecryptionFailed;
 
+export type SecureStorageDep = { secureStorage: SecureStorage };
+
 export interface SecureStorage {
     encrypt: <T extends EncryptableBranded>(params: {
         value: T;

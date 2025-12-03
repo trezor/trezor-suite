@@ -1,33 +1,32 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { SecureStorage } from '@suite-common/secure-storage';
+import { EncryptedHex, SecureStorageDep } from '@suite-common/secure-storage';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { exhaustive } from '@trezor/type-utils';
 
 import { deviceActions } from '../deviceActions';
-import { selectPersistentDeviceData } from '../deviceSelectors';
 
-export type GetCurrentDelegatedIdentityKeyDeps = {
-    getState: () => any;
-    secureStorage: SecureStorage;
+export type LoadDelegatedIdentityKeyFromStateDeps = {
+    getDeviceDelegatedIdentityKey: (deviceId: string) => EncryptedHex<DelegatedIdentityKey> | null;
     dispatch: Dispatch;
-};
+} & SecureStorageDep;
 
-export type GetDelegatedIdentityKeyParams = {
+export type LoadDelegatedIdentityKeyFromStateParams = {
     deviceId: string;
 };
 
-export type GetDelegatedIdentityKey = (
-    params: GetDelegatedIdentityKeyParams,
+export type LoadDelegatedIdentityKeyFromStateDep = {
+    loadDelegatedIdentityKeyFromState: LoadDelegatedIdentityKeyFromState;
+};
+
+export type LoadDelegatedIdentityKeyFromState = (
+    params: LoadDelegatedIdentityKeyFromStateParams,
 ) => Promise<DelegatedIdentityKey | null>;
 
-export const createGetDelegatedIdentityKey =
-    (deps: GetCurrentDelegatedIdentityKeyDeps): GetDelegatedIdentityKey =>
+export const createLoadDelegatedIdentityKeyFromState =
+    (deps: LoadDelegatedIdentityKeyFromStateDeps): LoadDelegatedIdentityKeyFromState =>
     async ({ deviceId }) => {
-        const persistedData = selectPersistentDeviceData(deps.getState());
-        const devicePersistedData = persistedData.find(it => it.device_id === deviceId);
-
-        const encryptedCurrentDelegatedKey = devicePersistedData?.delegatedIdentityKey ?? null;
+        const encryptedCurrentDelegatedKey = deps.getDeviceDelegatedIdentityKey(deviceId);
 
         if (encryptedCurrentDelegatedKey === null) {
             return null;

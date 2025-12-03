@@ -35,6 +35,10 @@ export type EnsureSuiteSyncOwnerKeys = (
     >
 >;
 
+export type EnsureSuiteSyncOwnerDep = {
+    ensureSuiteSyncOwnerKeys: EnsureSuiteSyncOwnerKeys;
+};
+
 export const createEnsureSuiteSyncOwnerKeys =
     (deps: EnsureSuiteSyncOwnerDeps): EnsureSuiteSyncOwnerKeys =>
     async ({ device, delegatedKey }) => {

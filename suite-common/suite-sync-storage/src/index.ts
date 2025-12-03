@@ -2,10 +2,11 @@ export type {
     SuiteSyncStorageRepository,
     CreateSuiteSyncStorageRepository,
     CreateSuiteStorage,
+    CreateSuiteStorageDep,
 } from './SuiteSyncStorageRepository';
 export { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 export type { SuiteSyncStorage } from './SuiteSyncStorage';
-export type { CreateSuiteSyncOwner } from './Owner';
+export type { CreateSuiteSyncOwner, CreateSuiteSyncOwnerDep } from './Owner';
 export { CreateSuiteSyncOwnerError } from './Owner';
 export type {
     SuiteSync,

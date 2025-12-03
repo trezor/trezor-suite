@@ -655,3 +655,9 @@ export const selectAllDeviceOwners = createMemoizedSelector([selectDevices], dev
         return acc;
     }, [] as SuiteSyncOwner[]),
 );
+
+export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(
+    [selectPersistentDeviceData, (_state, deviceId: string) => deviceId],
+    (persistentDeviceData, deviceId) =>
+        persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
+);

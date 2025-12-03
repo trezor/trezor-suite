@@ -51,8 +51,9 @@ export const createSubscribeSuiteSyncStorage =
                         );
 
                         return;
+
+                    // Those errors are most likely due to Bug in the code or data corruption
                     case 'CreateSuiteSyncOwnerError':
-                    case 'EncryptionUnavailable':
                     case 'ProofOfDelegatedSignFailed':
                         console.error(result.error);
                         // Todo: dispatch better notification

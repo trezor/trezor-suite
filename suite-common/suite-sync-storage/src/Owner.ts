@@ -11,3 +11,5 @@ export const CreateSuiteSyncOwnerError = (message: string): CreateSuiteSyncOwner
 export type CreateSuiteSyncOwner = (params: {
     data: string;
 }) => Result<SuiteSyncOwner, CreateSuiteSyncOwnerError>;
+
+export type CreateSuiteSyncOwnerDep = { createSuiteSyncOwner: CreateSuiteSyncOwner };
