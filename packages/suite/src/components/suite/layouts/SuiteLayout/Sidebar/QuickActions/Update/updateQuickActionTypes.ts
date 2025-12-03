@@ -7,7 +7,7 @@ import { CSSColor, Color } from '@trezor/theme';
 import {
     installUpdate,
     justUpdated,
-    setUpdateModalVisibility,
+    setIsUpdateModalVisible,
 } from '../../../../../../../actions/suite/desktopUpdateActions';
 import { goto } from '../../../../../../../actions/suite/routerActions';
 import { Dispatch } from '../../../../../../../types/suite';
@@ -56,9 +56,9 @@ export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallbackCal
     'up-to-date': null,
     'update-downloaded-auto-restart-to-update': ({ dispatch }) =>
         dispatch(installUpdate({ installNow: true })),
-    'update-downloaded-manual': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),
+    'update-downloaded-manual': ({ dispatch }) => dispatch(setIsUpdateModalVisible(true)),
     'just-updated': ({ dispatch }) => dispatch(justUpdated()),
-    'update-available': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),
+    'update-available': ({ dispatch }) => dispatch(setIsUpdateModalVisible(true)),
 };
 
 type MapArgs = {

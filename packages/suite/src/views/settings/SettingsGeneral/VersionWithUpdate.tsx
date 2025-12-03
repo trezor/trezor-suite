@@ -6,7 +6,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import {
     installUpdate,
     justUpdated,
-    setUpdateModalVisibility,
+    setIsUpdateModalVisible,
 } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
@@ -109,7 +109,7 @@ export const VersionWithUpdate = () => {
     const dispatch = useDispatch();
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
-    const maximizeUpdateModal = () => dispatch(setUpdateModalVisibility('maximized'));
+    const maximizeUpdateModal = () => dispatch(setIsUpdateModalVisible(true));
     const installAndRestart = () => dispatch(installUpdate({ installNow: true }));
 
     return (

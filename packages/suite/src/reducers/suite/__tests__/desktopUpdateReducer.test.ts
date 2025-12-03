@@ -41,16 +41,13 @@ const fixtures: [Action, Partial<DesktopUpdateState>][] = [
     ],
     [
         { type: DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE },
-        { state: UpdateState.EarlyAccessEnable, modalVisibility: 'maximized' },
+        { state: UpdateState.EarlyAccessEnable, isModalVisible: true },
     ],
-    [
-        { type: DESKTOP_UPDATE.MODAL_VISIBILITY, payload: 'minimized' },
-        { modalVisibility: 'minimized' },
-    ],
+    [{ type: DESKTOP_UPDATE.MODAL_VISIBILITY, payload: false }, { isModalVisible: false }],
 
     [
         { type: DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE },
-        { state: UpdateState.EarlyAccessDisable, modalVisibility: 'maximized' },
+        { state: UpdateState.EarlyAccessDisable, isModalVisible: true },
     ],
 ];
 
