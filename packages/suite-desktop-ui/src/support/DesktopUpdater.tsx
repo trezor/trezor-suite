@@ -1,4 +1,4 @@
-import { JSX, ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { JSX, useCallback, useEffect, useMemo } from 'react';
 
 import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -16,7 +16,6 @@ import {
 } from 'src/actions/suite/desktopUpdateActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState, selectDesktopUpdate } from 'src/reducers/suite/desktopUpdateReducer';
-import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 import { Available } from './DesktopUpdater/Available';
@@ -26,11 +25,7 @@ import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
 import { JustUpdated } from './DesktopUpdater/JustUpdated';
 import { Ready } from './DesktopUpdater/Ready';
 
-interface DesktopUpdaterProps {
-    children: ReactNode;
-}
-
-export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
+export const DesktopUpdater = () => {
     const dispatch = useDispatch();
     const desktopUpdate = useSelector(selectDesktopUpdate);
 
@@ -112,10 +107,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         ready: <Ready hideWindow={hideWindow} />,
     };
 
-    return (
-        <>
-            {isVisible && updateModalMap[desktopUpdateState]}
-            <ModalContextProvider isDisabled={isVisible}>{children}</ModalContextProvider>
-        </>
-    );
+    if (!isVisible) return null;
+
+    return updateModalMap[desktopUpdateState];
 };

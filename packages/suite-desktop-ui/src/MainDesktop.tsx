@@ -45,18 +45,17 @@ const MainDesktop = ({ history }: { history: History }) => {
     return (
         <Main history={history} trafficLightOffset={<TrafficLightDraggableWindowHeader />}>
             <GlobalStyle />
-            <DesktopUpdater>
-                <Metadata />
-                <ToastContainer />
-                <BioAuthGuard>
-                    <Preloader>
-                        <AppRouter components={desktopComponents} />
-                        <ConnectedIntlProvider>
-                            <FindBar />
-                        </ConnectedIntlProvider>
-                    </Preloader>
-                </BioAuthGuard>
-            </DesktopUpdater>
+            <DesktopUpdater />
+            <Metadata />
+            <ToastContainer />
+            <BioAuthGuard>
+                <Preloader>
+                    <AppRouter components={desktopComponents} />
+                    <ConnectedIntlProvider>
+                        <FindBar />
+                    </ConnectedIntlProvider>
+                </Preloader>
+            </BioAuthGuard>
         </Main>
     );
 };
