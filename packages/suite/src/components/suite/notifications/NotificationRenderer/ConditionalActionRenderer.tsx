@@ -29,7 +29,7 @@ export const ConditionalActionRenderer = ({
 }: ConditionalActionRendererProps) => {
     const actions: NotificationAction[] = [
         { onClick: onAction, label: actionLabel, position: 'bottom', variant: 'primary' },
-        { onClick: onCancel, label: 'TR_CANCEL', position: 'bottom' },
+        { onClick: onCancel, label: 'TR_CANCEL', position: 'bottom', priority: 'secondary' },
     ];
 
     return (

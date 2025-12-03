@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { TranslationKey } from '@suite-common/intl-types';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -29,6 +29,7 @@ export const AssetsListEmpty = ({
     const dispatch = useDispatch();
     const protocolScheme = useSelector(state => state.protocol.sendForm.scheme);
     const device = useSelector(selectSelectedDevice);
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const protocolSymbol = protocolScheme ? getNetworkSymbolForProtocol(protocolScheme) : undefined;
     const network = protocolSymbol ? getNetworkDisplaySymbolName(protocolSymbol) : undefined;
@@ -74,7 +75,9 @@ export const AssetsListEmpty = ({
                 <Button
                     onClick={openActivateNetworkModal}
                     margin={{ top: spacings.md }}
+                    isLoading={isDiscoveryRunning}
                     intent="neutral"
+                    priority="secondary"
                 >
                     <Translation id="TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_CTA" values={{ network }} />
                 </Button>

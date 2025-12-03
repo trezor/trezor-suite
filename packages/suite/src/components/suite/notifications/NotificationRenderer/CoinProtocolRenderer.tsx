@@ -8,6 +8,7 @@ import {
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
+import { isBech32AddressUppercase } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
@@ -87,6 +88,14 @@ export const CoinProtocolRenderer = ({
         onCancel(false);
     };
 
+    const renderAddress = () => {
+        if (networkSymbol === 'btc' && isBech32AddressUppercase(notification.address)) {
+            return notification.address.toLowerCase();
+        }
+
+        return notification.address;
+    };
+
     return (
         <ConditionalActionRenderer
             render={render}
@@ -100,7 +109,7 @@ export const CoinProtocolRenderer = ({
             body={
                 <>
                     <Row>
-                        <Text typographyStyle="hint">{notification.address}</Text>
+                        <Text typographyStyle="hint">{renderAddress()}</Text>
                     </Row>
                     {notification.amount && (
                         <>

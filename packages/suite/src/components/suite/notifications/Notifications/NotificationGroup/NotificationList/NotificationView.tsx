@@ -3,6 +3,7 @@ import { JSX } from 'react';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import type { NotificationEntry } from '@suite-common/toast-notifications';
 import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@trezor/components';
+import { ButtonPriority } from '@trezor/components/src/components/buttons/types';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDateWithBullet } from 'src/components/suite';
@@ -18,6 +19,7 @@ export interface NotificationAction {
     label: ExtendedMessageDescriptor['id'];
     position?: 'bottom' | 'right';
     variant?: NotificationActionVariant;
+    priority?: ButtonPriority;
 }
 
 export interface NotificationViewProps {
@@ -84,6 +86,7 @@ export const NotificationView = ({
                 ) : (
                     <Button
                         intent={mapActionVariantToIntent(action.variant)}
+                        priority={action.priority}
                         size="small"
                         onClick={action.onClick}
                         minWidth={80}
