@@ -14,6 +14,7 @@ import {
     ready,
     setAutomaticUpdates,
     setIsUpdateModalVisible,
+    setIsVersionInfoModalVisible,
 } from 'src/actions/suite/desktopUpdateActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState, selectDesktopUpdate } from 'src/reducers/suite/desktopUpdateReducer';
@@ -25,6 +26,9 @@ import { EarlyAccessDisable } from './DesktopUpdater/EarlyAccessDisable';
 import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
 import { JustUpdated } from './DesktopUpdater/JustUpdated';
 import { Ready } from './DesktopUpdater/Ready';
+
+// incidentally the same UI is used, but if they diverge in the future, we can change it here
+const VersionInfoModal = JustUpdated;
 
 const alwaysOpenStates = [
     // Allow to open Early Access model even after updater error (when desktopUpdate.latest is undefined).
@@ -83,6 +87,14 @@ export const DesktopUpdater = () => {
             payload,
         });
     }, [dispatch, desktopUpdate.allowPrerelease, desktopUpdate.latest]);
+
+    const hideVersionInfoModal = () => {
+        dispatch(setIsVersionInfoModalVisible(false));
+    };
+
+    if (desktopUpdate.isVersionInfoModalVisible) {
+        return <VersionInfoModal onCancel={hideVersionInfoModal} />;
+    }
 
     const isUpdateInfoAvailable = desktopUpdate.latest !== undefined;
     const isAlwaysOpenState = isArrayMember(desktopUpdateState, alwaysOpenStates);
