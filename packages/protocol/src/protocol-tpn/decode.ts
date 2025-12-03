@@ -30,23 +30,20 @@ export interface DecodedTrezorPushNotification {
     mode: TrezorPushNotificationMode;
 }
 
-export const decode = (message: number[]): DecodedTrezorPushNotification => {
+export const decode = (message: number[]) => {
     const [version, type, mode] = message;
     if (!version || version !== TPN_VERSION) {
-        throw new Error(PROTOCOL_MISSMATCH_VERSION);
+        return { success: false, error: PROTOCOL_MISSMATCH_VERSION } as const;
     }
 
     if (
-        message.length !== MESSAGE_LENGTH ||
+        message.length < MESSAGE_LENGTH ||
         !Object.values(Version).includes(version) ||
         !Object.values(TrezorPushNotificationType).includes(type) ||
         !Object.values(TrezorPushNotificationMode).includes(mode)
     ) {
-        throw new Error(PROTOCOL_MALFORMED);
+        return { success: false, error: PROTOCOL_MALFORMED } as const;
     }
 
-    return {
-        type,
-        mode,
-    };
+    return { success: true, payload: { type, mode } } as const;
 };
