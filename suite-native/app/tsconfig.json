@@ -110,5 +110,9 @@
             "path": "../../packages/connect-mobile"
         }
     ],
-    "include": [".", "**/*.json",".rnstorybook/*"],
+    "include": [
+        ".",
+        "**/*.json",
+        ".rnstorybook/*"
+    ]
 }
