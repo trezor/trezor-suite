@@ -4,16 +4,22 @@ export const BRIDGE_VERSION = 'node-bridge';
 
 export const BRIDGE_URL = 'http://127.0.0.1:21328';
 const BRIDGE_STATUS_URL = `${BRIDGE_URL}/status/`;
-
+const HEADERS = {
+    Origin: 'https://wallet.trezor.io',
+};
 export const expectBridgeToBeRunning = async (request: APIRequestContext) => {
-    const bridgeResponse = await request.get(BRIDGE_STATUS_URL);
+    const bridgeResponse = await request.get(BRIDGE_STATUS_URL, {
+        headers: HEADERS,
+    });
     await expect(bridgeResponse).toBeOK();
 };
 
 export const expectBridgeToBeStopped = async (request: APIRequestContext) => {
     await expect(async () => {
-        await request.get(BRIDGE_STATUS_URL);
-    }).rejects.toThrow('ECONNREFUSED');
+        await request.get(BRIDGE_STATUS_URL, {
+            headers: HEADERS,
+        });
+    }).rejects.toThrow();
 };
 
 // We wait for `@welcome-layout/body` or `@dashboard/graph` since

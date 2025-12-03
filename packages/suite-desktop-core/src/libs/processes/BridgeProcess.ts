@@ -37,10 +37,6 @@ export class BridgeProcess extends BaseProcess {
         };
     }
 
-    async startDev(): Promise<void> {
-        await this.start(['-e', '21324']);
-    }
-
     async startTest(): Promise<void> {
         await this.start(['-e', '21324', '-u=false']);
     }
