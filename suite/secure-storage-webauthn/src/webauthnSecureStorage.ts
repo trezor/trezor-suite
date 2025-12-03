@@ -1,17 +1,15 @@
 import {
     EncryptableBranded,
     EncryptedHex,
+    EncryptionUnavailable,
     SecureStorage,
-    asEncryptedHex,
 } from '@suite-common/secure-storage';
-import { ok } from '@trezor/type-utils';
+import { err } from '@trezor/type-utils';
 
 export const createWebauthnSecureStorage = (): SecureStorage => ({
-    encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
-        // Todo: implement
-        Promise.resolve(ok(asEncryptedHex(value as T))),
+    encrypt: <T extends EncryptableBranded>(_: { value: T }) =>
+        Promise.resolve(err(EncryptionUnavailable('Webauthn not implemented'))),
 
-    decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
-        // Todo: implement
-        Promise.resolve(ok(value as unknown as T)),
+    decrypt: <T extends EncryptableBranded>(_: { value: EncryptedHex<T> }) =>
+        Promise.resolve(err(EncryptionUnavailable('Webauthn not implemented'))),
 });

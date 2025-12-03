@@ -16,12 +16,8 @@ export const createTurnOffSuiteSync =
         const devices = selectDevices(deps.getState()) ?? [];
 
         await Promise.all(
-            devices.reduce((acc, device) => {
-                if (isTrezorDeviceWithState(device)) {
-                    acc.push(deps.unsubscribeSuiteSyncStorage({ device }));
-                }
-
-                return acc;
-            }, [] as Promise<void>[]),
+            devices
+                .filter(isTrezorDeviceWithState)
+                .map(device => deps.unsubscribeSuiteSyncStorage({ device })),
         );
     };

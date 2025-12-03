@@ -10924,6 +10924,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -13063,6 +13064,7 @@ __metadata:
     "@suite-native/thp": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
+    "@trezor/connect": "workspace:*"
     "@trezor/protobuf": "workspace:^"
     "@trezor/transport": "workspace:^"
     "@trezor/transport-native-bluetooth": "workspace:*"
@@ -13115,9 +13117,11 @@ __metadata:
   dependencies:
     "@evolu/react-native": "npm:^14.2.0"
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
+    "@trezor/connect": "workspace:*"
     expo: "npm:~54.0.20"
     expo-sqlite: "npm:^16.0.8"
     react-redux: "npm:9.2.0"
@@ -13495,9 +13499,11 @@ __metadata:
   dependencies:
     "@evolu/web": "npm:^2.3.0"
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
+    "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
 

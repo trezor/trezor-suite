@@ -27,7 +27,7 @@ import {
     WalletSettingsState,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -69,12 +69,18 @@ export const createRouterServices = (history: History) => ({
     navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
 
+const secureStorage = isDesktop()
+    ? createElectronSecureStorage({ desktopApi })
+    : createWebauthnSecureStorage();
+
 export const suiteExtraFactory: ExtraWithStoreFactory = store => ({
     services: {
-        suiteSync: createSuiteSyncDesktop(store),
-        secureStorage: isDesktop()
-            ? createElectronSecureStorage({ desktopApi })
-            : createWebauthnSecureStorage(),
+        suiteSync: createSuiteSyncDesktop({
+            ...store,
+            secureStorage,
+            trezorConnect: TrezorConnect,
+        }),
+        secureStorage,
     },
 });
 

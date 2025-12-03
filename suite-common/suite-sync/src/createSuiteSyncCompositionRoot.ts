@@ -1,14 +1,25 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { SecureStorage } from '@suite-common/secure-storage';
 import {
     CreateSuiteStorage,
     CreateSuiteSyncOwner,
     SuiteSync,
     createSuiteSyncStorageRepositoryFactory,
 } from '@suite-common/suite-sync-storage';
-import { selectAllDeviceOwners } from '@suite-common/wallet-core';
+import {
+    createEnsureDelegatedIdentityKey,
+    createGetDelegatedIdentityKey,
+    createSaveDelegatedIdentityKey,
+    selectAllDeviceOwners,
+} from '@suite-common/wallet-core';
 
+import {
+    EnsureSuiteSyncOwnerDeps,
+    createEnsureSuiteSyncOwnerKeys,
+} from './device/ensureSuiteSyncOwnerKeys';
 import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
+import { createRefreshSuiteSyncKeys } from './refreshSuiteSyncKeys';
 import { createChangeRelayUrl } from './relay/changeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 import { createSubscribeSuiteSyncStorage } from './storage/subscribeSuiteSyncStorage';
@@ -22,6 +33,8 @@ type CreateSuiteSyncCompositionRootDeps = {
     createSuiteSyncOwner: CreateSuiteSyncOwner;
     getState: () => any;
     dispatch: Dispatch;
+    trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'];
+    secureStorage: SecureStorage;
 };
 
 export const createSuiteSyncCompositionRoot = (
@@ -41,10 +54,38 @@ export const createSuiteSyncCompositionRoot = (
         suiteSyncStorageRepository,
     });
 
+    const ensureSuiteSyncOwnerKeys = createEnsureSuiteSyncOwnerKeys({
+        createSuiteSyncOwner: deps.createSuiteSyncOwner,
+        trezorConnect: deps.trezorConnect,
+    });
+
+    // Todo: this shall be extracted upstream in the composition root
+    const ensureDelegatedIdentityKey = createEnsureDelegatedIdentityKey({
+        getDelegatedIdentityKey: createGetDelegatedIdentityKey({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            secureStorage: deps.secureStorage,
+        }),
+        saveDelegatedIdentityKey: createSaveDelegatedIdentityKey({
+            dispatch: deps.dispatch,
+            secureStorage: deps.secureStorage,
+        }),
+        getState: deps.getState,
+    });
+    // Todo: ------------------------------------------------------------
+
+    const refreshSuiteSyncKeys = createRefreshSuiteSyncKeys({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        ensureDelegatedIdentityKey,
+        ensureSuiteSyncOwnerKeys,
+    });
+
     const subscribeSuiteSyncStorage = createSubscribeSuiteSyncStorage({
         dispatch: deps.dispatch,
         getState: deps.getState,
         subscribeLabeling,
+        refreshSuiteSyncKeys,
     });
 
     const unsubscribeSuiteSyncStorage = createUnsubscribeSuiteSyncStorage({
