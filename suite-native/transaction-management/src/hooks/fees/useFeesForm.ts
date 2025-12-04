@@ -57,6 +57,8 @@ export const useFeesForm = ({
             feeLevel: defaultFeeLevel,
             customFeePerUnit: trimmedFeePerUnit,
             customFeeLimit: normalFee?.feeLimit,
+            customMaxFeePerGas: normalFee?.maxFeePerGas,
+            customMaxPriorityFeePerGas: normalFee?.maxPriorityFeePerGas,
         },
         context: {
             networkFeeInfo,

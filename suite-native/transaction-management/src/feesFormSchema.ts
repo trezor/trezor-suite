@@ -91,6 +91,9 @@ export const feesFormValidationSchema = yup.object({
                 return feeBig.gte(minimalFeeLimit);
             },
         ),
+    // FIXME: add validations
+    customMaxFeePerGas: yup.string(),
+    customMaxPriorityFeePerGas: yup.string(),
 });
 
 export type FeesFormValues = yup.InferType<typeof feesFormValidationSchema>;
