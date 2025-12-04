@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 
-import { NativeSupportedFeeLevel, UpdateSelectedFeeLevelThunkParams } from '../../types';
+import { UpdateSelectedFeeLevelThunkParams } from '../../types';
 
 type UseFeeSelectionParams = {
     accountKey: AccountKey;
@@ -22,7 +22,7 @@ export const useFeeSelection = ({
     const dispatch = useDispatch();
 
     const handleFeeLevelChange = useCallback(
-        (feeLevel: NativeSupportedFeeLevel, customFeePerUnit?: string, customFeeLimit?: string) => {
+        (feeLevel: FeeLevelLabel, customFeePerUnit?: string, customFeeLimit?: string) => {
             analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeLevel } });
 
             let thunkParams: UpdateSelectedFeeLevelThunkParams;

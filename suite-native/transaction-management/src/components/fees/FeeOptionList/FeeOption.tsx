@@ -8,7 +8,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type NetworkType,
+    getNetworkType,
+    hasNetworkSettlementLayer,
+} from '@suite-common/wallet-config';
 import {
     FeesRootState,
     selectConvertedNetworkFeeLevelFeePerUnit,
@@ -19,7 +24,7 @@ import {
     GeneralPrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { getFeeUnits } from '@suite-common/wallet-utils';
+import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { EmptyAmountSkeleton } from '@suite-native/formatters/src/components/EmptyAmountSkeleton';
@@ -42,6 +47,7 @@ export type FeeOptionProps = {
 };
 
 const feeLabelsMap = {
+    low: 'transactionManagement.fees.levels.low',
     economy: 'transactionManagement.fees.levels.low',
     normal: 'transactionManagement.fees.levels.normal',
     high: 'transactionManagement.fees.levels.high',
@@ -64,14 +70,23 @@ const getFeePerUnit = ({
     feeLevel,
     transactionBytes,
     backendFeePerUnit = '0',
+    symbol,
 }: {
     networkType: NetworkType;
     feeLevel: GeneralPrecomposedTransaction;
     transactionBytes: number;
     backendFeePerUnit: string;
+    symbol: NetworkSymbol;
 }): string => {
     if (!isFinalPrecomposedTransaction(feeLevel)) {
         return backendFeePerUnit;
+    }
+
+    if (networkType === 'ethereum') {
+        const decimals = hasNetworkSettlementLayer(symbol) ? 4 : 2;
+        const value = Number(isEip1559(feeLevel) ? feeLevel.maxFeePerGas : feeLevel.feePerByte);
+
+        return value.toFixed(decimals);
     }
 
     if (networkType === 'bitcoin') {
@@ -142,6 +157,7 @@ export const FeeOption = ({
         feeLevel,
         transactionBytes,
         backendFeePerUnit: backendFeePerUnit ?? '0',
+        symbol,
     });
 
     const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;

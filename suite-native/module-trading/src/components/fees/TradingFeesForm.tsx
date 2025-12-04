@@ -5,17 +5,17 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
-import { AccountKey, FormDraftKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    FeeLevelLabel,
+    FormDraftKeyPrefix,
+    TokenAddress,
+} from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import {
-    FeesContent,
-    FeesFooter,
-    NativeSupportedFeeLevel,
-    useFeesManagement,
-} from '@suite-native/transaction-management';
+import { FeesContent, FeesFooter, useFeesManagement } from '@suite-native/transaction-management';
 
 import { updateTradingSelectedFeeLevelThunk } from '../../thunks';
 
@@ -51,7 +51,7 @@ export const TradingFeesForm = ({ accountKey, tokenContract }: TradingFeesFormPr
         accountKey,
         tokenContract,
         updateThunk: updateTradingSelectedFeeLevelThunk,
-        selectedFee: formDraft?.selectedFee as NativeSupportedFeeLevel,
+        selectedFee: formDraft?.selectedFee as FeeLevelLabel,
         selectedFeePerUnit: formDraft?.feePerUnit,
         selectedSetMaxOutputId: formDraft?.setMaxOutputId,
         formDraftKey,

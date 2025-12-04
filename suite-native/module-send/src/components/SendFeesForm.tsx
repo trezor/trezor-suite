@@ -5,7 +5,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 
 import { SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import {
@@ -21,7 +21,6 @@ import {
     FeesContent,
     FeesFooter,
     NativeSendRootState,
-    NativeSupportedFeeLevel,
     useFeesManagement,
 } from '@suite-native/transaction-management';
 
@@ -69,7 +68,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
         accountKey,
         tokenContract,
         updateThunk: updateSelectedFeeLevelThunk,
-        selectedFee: formDraft?.selectedFee as NativeSupportedFeeLevel,
+        selectedFee: formDraft?.selectedFee as FeeLevelLabel,
         selectedFeePerUnit: formDraft?.feePerUnit,
         selectedSetMaxOutputId: formDraft?.setMaxOutputId,
     });

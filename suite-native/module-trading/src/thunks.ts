@@ -27,6 +27,7 @@ import {
 import {
     Account,
     FeeInfo,
+    FeeLevelLabel,
     PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -34,7 +35,6 @@ import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
-    NativeSupportedFeeLevel,
     UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
     transactionManagementActions,
@@ -117,7 +117,7 @@ export const composeTradingTransactionThunk = createThunk(
             account: Account;
             network: Network;
             feeInfo: FeeInfo | null;
-            selectedFeeLevel?: NativeSupportedFeeLevel;
+            selectedFeeLevel?: FeeLevelLabel;
             feeLimit?: string;
             feePerUnit?: string;
             isSlip24Active?: boolean;

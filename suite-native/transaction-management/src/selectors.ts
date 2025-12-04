@@ -15,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
+    FeeLevelLabel,
     FormDraftWithSendKeyPrefix,
     FormState,
     GeneralPrecomposedTransaction,
@@ -32,7 +33,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { NativeSendRootState } from './sendFormSlice';
-import { NativeSupportedFeeLevel, StatefulReviewOutput } from './types';
+import { StatefulReviewOutput } from './types';
 
 export type TransactionReviewOutputsState = NativeSendRootState &
     AccountsRootState &
@@ -49,10 +50,7 @@ export const selectCustomFeeLevel = (
 ): GeneralPrecomposedTransaction | undefined => state.wallet.send.feeLevels.custom;
 
 export const selectFeeLevelTransactionBytes = createMemoizedSelector(
-    [
-        selectFeeLevels,
-        (_state: NativeSendRootState, feeLevelLabel: NativeSupportedFeeLevel) => feeLevelLabel,
-    ],
+    [selectFeeLevels, (_state: NativeSendRootState, feeLevelLabel: FeeLevelLabel) => feeLevelLabel],
     (feeLevels, feeLevelLabel) => {
         const feeLevel = feeLevels[feeLevelLabel];
         if (feeLevel && feeLevel.type !== 'error') {

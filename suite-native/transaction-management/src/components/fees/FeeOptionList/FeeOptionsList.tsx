@@ -2,7 +2,7 @@ import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
 import { D, pipe } from '@mobily/ts-belt';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 
@@ -35,9 +35,11 @@ export const FeeOptionsList = ({
     isLoading,
     onSelectedFeeLevel,
 }: FeeOptionsListProps) => {
+    const isBtcNetworkType = getNetworkType(symbol) === 'bitcoin';
+
     const predefinedFeeLevels = pipe(
         feeLevels,
-        D.filterWithKey(key => key !== 'custom' && key !== 'low'),
+        D.filterWithKey(key => key !== 'custom' && (isBtcNetworkType ? key !== 'low' : true)),
     );
 
     const transactionBytes = getTransactionBytes(predefinedFeeLevels);

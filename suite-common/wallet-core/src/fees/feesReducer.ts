@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { formatDuration } from '@suite-common/suite-utils';
+import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel, FeesState, FeesStatus } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
@@ -96,11 +96,19 @@ export const selectNetworkFeeLevel = createMemoizedSelector(
 );
 
 export const selectConvertedNetworkFeeLevelTimeEstimate = createMemoizedSelector(
-    [selectConvertedNetworkFeeInfo, selectNetworkFeeLevel],
-    (networkFeeInfo, feeLevel): string | null => {
+    [
+        selectConvertedNetworkFeeInfo,
+        selectNetworkFeeLevel,
+        (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
+    ],
+    (networkFeeInfo, feeLevel, symbol): string | null => {
         if (!feeLevel || !networkFeeInfo) return null;
 
-        return formatDuration(networkFeeInfo.blockTime * feeLevel.blocks * 60);
+        const networkType = symbol ? getNetworkType(symbol) : null;
+
+        const multiplier = networkType === 'bitcoin' ? 60 : 1;
+
+        return formatDurationStrict(networkFeeInfo.blockTime * feeLevel.blocks * multiplier);
     },
 );
 
