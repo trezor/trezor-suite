@@ -24,7 +24,7 @@ describe(createSubscriptionStorage.name, () => {
             },
         });
 
-        storage.disposeAll(storageId1);
+        storage.dispose(storageId1);
         expect(isOwnerID1Unsubscribed).toBe(true);
         expect(isOwnerID2Unsubscribed).toBe(false);
     });

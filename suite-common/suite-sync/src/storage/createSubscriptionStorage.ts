@@ -14,7 +14,7 @@ export const createSubscriptionStorage = (): SubscriptionStorage => {
 
             storage[storageId] = unsubscribe;
         },
-        disposeAll: storageId => {
+        dispose: storageId => {
             storage[storageId]?.();
             delete storage[storageId];
         },
