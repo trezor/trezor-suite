@@ -1,4 +1,4 @@
-import { ReactNode, RefObject, useCallback, useState } from 'react';
+import { ReactNode, RefObject, memo, useCallback, useState } from 'react';
 
 import { BaseItemProps, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken } from '@trezor/theme';
@@ -14,7 +14,7 @@ export interface AssetsListProps<T> {
 
 export const LIST_MIN_HEIGHT = 200;
 
-export function AssetsList<T extends BaseItemProps>({
+function AssetsListInner<T extends BaseItemProps>({
     items,
     itemsFingerprint,
     renderItem,
@@ -49,3 +49,5 @@ export function AssetsList<T extends BaseItemProps>({
         </ShadowContainer>
     );
 }
+
+export const AssetsList = memo(AssetsListInner) as typeof AssetsListInner;
