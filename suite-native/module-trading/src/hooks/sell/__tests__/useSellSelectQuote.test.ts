@@ -52,6 +52,21 @@ describe('useSellSelectQuote', () => {
             expect(result.current.canProceed).toEqual(false);
         });
 
+        it('should be false when form contains error', async () => {
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                sellForm.setValue('quote', sellQuotes[0]);
+                sellForm.setError('cryptoStringAmount', {
+                    type: 'manual',
+                    message: 'VALIDATION_ERROR',
+                });
+            });
+
+            const { result } = await renderUseSellSelectQuote();
+
+            expect(result.current.canProceed).toEqual(false);
+        });
+
         it('should be true when quote is selected', async () => {
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
