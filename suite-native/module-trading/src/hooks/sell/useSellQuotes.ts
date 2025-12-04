@@ -48,33 +48,34 @@ const noop = () => {};
 const useShouldFetchSellQuotes = ({ watch, control }: SellFormType): ShouldFetchSellQuotes => {
     const prevState = useRef<ShouldFetchSellQuotesRef>(defaultState);
 
-    const { isValid } = useFormState({ control });
-    if (!isValid) {
-        prevState.current = defaultState;
+    const amountInCrypto = watch('amountInCrypto');
 
-        return {
-            isFetchAllowed: false,
-            shouldFetchQuotes: false,
-        };
+    const { isValid, errors } = useFormState({ control });
+
+    if (!isValid) {
+        const errorCausedByQuote =
+            !amountInCrypto &&
+            Object.values(errors).every(({ type }) => type === 'insufficient-balance');
+
+        if (!errorCausedByQuote) {
+            prevState.current = defaultState;
+
+            return {
+                isFetchAllowed: false,
+                shouldFetchQuotes: false,
+            };
+        }
     }
 
-    const [
-        sendAsset,
-        sendAccount,
-        cryptoStringAmount,
-        fiatStringAmount,
-        amountInCrypto,
-        fiatCurrency,
-        country,
-    ] = watch([
-        'sendAsset',
-        'sendAccount',
-        'cryptoStringAmount',
-        'fiatStringAmount',
-        'amountInCrypto',
-        'fiatCurrency',
-        'country',
-    ]);
+    const [sendAsset, sendAccount, cryptoStringAmount, fiatStringAmount, fiatCurrency, country] =
+        watch([
+            'sendAsset',
+            'sendAccount',
+            'cryptoStringAmount',
+            'fiatStringAmount',
+            'fiatCurrency',
+            'country',
+        ]);
 
     const amount = amountInCrypto ? cryptoStringAmount : fiatStringAmount;
     const isFetchAllowed = !!(sendAsset && fiatCurrency && amount && parseFloat(amount) > 0);

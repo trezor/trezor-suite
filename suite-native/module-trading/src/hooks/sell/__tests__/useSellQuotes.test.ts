@@ -264,6 +264,40 @@ describe('useSellQuotes', () => {
         expect(store.getState().wallet.trading.sell.quotes).toEqual([]);
     });
 
+    it('should not clear quotes when error is from quote', async () => {
+        const sellQuoteWithTooHighCryptoAmount = {
+            ...sellQuotes[0],
+            cryptoStringAmount: '2',
+        };
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseSellQuotes(store);
+
+        act(() => {
+            store.dispatch(tradingSellActions.setTradingAccountKey('eth-account-1'));
+            result.current.setValue('sendAsset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+            result.current.setValue('amountInCrypto', false);
+            result.current.setValue('fiatStringAmount', '100');
+        });
+        // handleRequestThunk is mocked, add quotes manually
+        await act(async () => {
+            store.dispatch(tradingSellActions.saveQuotes([sellQuoteWithTooHighCryptoAmount]));
+            // allow validations to run
+            await Promise.resolve();
+        });
+
+        dispatchSpy.mockClear();
+        expect(store.getState().wallet.trading.sell.quotes).toEqual([
+            sellQuoteWithTooHighCryptoAmount,
+        ]);
+        expect(result.current.getValues('quote')).toEqual(sellQuoteWithTooHighCryptoAmount);
+
+        // make sure form has an error
+        const { invalid } = result.current.getFieldState('cryptoStringAmount');
+        expect(invalid).toBe(true);
+    });
+
     it('should not query quotes when form contains error', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');

@@ -300,6 +300,34 @@ describe('useSellForm', () => {
                     expect(invalid).toBe(expectedInvalid);
                 },
             );
+
+            it("should be validated once the quote is selected and it changes it's value", async () => {
+                const { result } = await renderUseSellForm();
+                act(() => {
+                    store.dispatch(tradingSellActions.setTradingAccountKey('eth-account-1'));
+                    result.current.setValue('amountInCrypto', false);
+                    result.current.setValue('sendAsset', usdcAsset);
+                    result.current.setValue('fiatStringAmount', '100');
+                });
+
+                await act(async () => {
+                    result.current.setValue('quote', {
+                        ...sellQuotes[0],
+                        cryptoStringAmount: '2',
+                    });
+                    // settle validations
+                    await Promise.resolve();
+                });
+
+                const { invalid, error } = result.current.getFieldState('cryptoStringAmount');
+                expect(invalid).toBe(true);
+                expect(error).toEqual(
+                    expect.objectContaining({
+                        message: 'Insufficient balance',
+                        type: 'insufficient-balance',
+                    }),
+                );
+            });
         });
 
         describe('fiatStringAmount', () => {

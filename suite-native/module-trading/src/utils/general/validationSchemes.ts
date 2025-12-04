@@ -137,6 +137,7 @@ export const sendCryptoAmountValidationSchema = yup
         }
 
         return testContext.createError({
+            type: 'insufficient-balance',
             message: translate('moduleTrading.validators.insufficientBalance'),
         });
     });
