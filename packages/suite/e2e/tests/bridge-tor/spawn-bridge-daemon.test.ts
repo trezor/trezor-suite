@@ -39,6 +39,7 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
         // launch UI, with node-bridge already running in background
         const suite = await launchSuite(
             {
+                bridgeDaemon: false,
                 artefactFolder: testInfo.outputDir,
                 viewport: testInfo.project.use.viewport!,
             },

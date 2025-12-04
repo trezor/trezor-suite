@@ -109,7 +109,7 @@ export const launchSuiteElectronApp = async (
     params: LaunchSuiteParams,
     emulatorStartConf: StartEmu,
 ) => {
-    if (!params.bridgeDaemon) {
+    if (params.bridgeDaemon === undefined) {
         await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     }
 
