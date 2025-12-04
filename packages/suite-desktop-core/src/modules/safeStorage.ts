@@ -1,6 +1,7 @@
 import { safeStorage } from 'electron';
 
 import { DecryptionFailed, EncryptionUnavailable } from '@suite-common/secure-storage';
+import { isLinux } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { err, ok } from '@trezor/type-utils';
 
@@ -12,6 +13,19 @@ export const SERVICE_NAME = 'SAFE_STORAGE';
 const isEncryptionAvailable = () => {
     if (!safeStorage.isEncryptionAvailable()) {
         return err(EncryptionUnavailable('SafeStorage encryption is not available'));
+    }
+
+    // NOTE: this method is NOT available on mac / windows, it is linux only
+    if (!('getSelectedStorageBackend' in safeStorage)) {
+        if (isLinux()) {
+            return err(
+                EncryptionUnavailable(
+                    'SafeStorage#getSelectedStorageBackend is not available on Linux',
+                ),
+            );
+        }
+
+        return ok();
     }
 
     // This is probably covered by `isEncryptionAvailable()`, but just to be sure!
