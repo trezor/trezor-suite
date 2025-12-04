@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { FieldErrors, useFormContext } from 'react-hook-form';
+import { FieldErrors, UseFormReturn } from 'react-hook-form';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -77,7 +77,7 @@ export const TradingFormInputCryptoAmount = ({
         getValues,
         trigger,
         clearErrors,
-    } = useFormContext<TradingAllFormProps>();
+    } = useTradingFormContext() as UseFormReturn<TradingAllFormProps>;
 
     const cryptoSelect = getValues(cryptoSelectName);
     const cryptoInputError =

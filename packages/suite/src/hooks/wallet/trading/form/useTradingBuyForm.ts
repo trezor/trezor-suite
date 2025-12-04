@@ -347,7 +347,8 @@ export const useTradingBuyForm = ({
         if (
             isChanged(previousValues.current?.countrySelect, values.countrySelect) ||
             isChanged(previousValues.current?.currencySelect, values.currencySelect) ||
-            isChanged(previousValues.current?.receiveAddress, values?.receiveAddress)
+            isChanged(previousValues.current?.receiveAddress, values?.receiveAddress) ||
+            isChanged(previousValues.current?.cryptoSelect.id, values?.cryptoSelect.id)
         ) {
             handleSubmit(() => {
                 handleChange();
