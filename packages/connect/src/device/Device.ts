@@ -66,7 +66,6 @@ import {
     parseRevision,
 } from '../utils/deviceFeaturesUtils';
 import { getFirmwareMode, getFirmwareType } from '../utils/firmwareUtils';
-import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
 
 // custom log
 const _log = initLog('Device');
@@ -341,35 +340,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.busy = value;
     }
 
-    private subscribe() {
-        if (this.descriptor.id && this.descriptor.apiType === 'bluetooth') {
-            this.transport
-                .subscribe({
-                    path: this.descriptor.id,
-                    channels: ['battery-level', 'trezor-push-notification'],
-                })
-                .then(result => {
-                    if (!result.success) return;
-
-                    this.lifecycle.emit(DEVICE.CHANGED);
-
-                    if (result.payload['battery-level']) {
-                        this.transport.on('battery-level', event => {
-                            this._updateFeature('soc', event.data[0]);
-                            this.lifecycle.emit(DEVICE.CHANGED);
-                        });
-                    }
-                    if (result.payload['trezor-push-notification']) {
-                        this.transport.on('trezor-push-notification', ({ id, data }) => {
-                            if (id === this.descriptor.id) {
-                                trezorPushNotificationHandler({ device: this, message: data });
-                            }
-                        });
-                    }
-                });
-        }
-    }
-
     release() {
         if (!this.sessionAcquired || this.keepTransportSession || this.releasePromise) {
             return;
@@ -447,9 +417,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.unreadableError = error.message;
             }
         }
-
-        // We subscribe now that we have completed handshake with device.
-        this.subscribe();
 
         return true;
     }
@@ -970,12 +937,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    private _updateFeature<K extends keyof Features>(key: K, value: Features[K]) {
+    // For now only battery level is allowed to be updated from outside
+    updateFeature<K extends keyof Pick<Features, 'soc'>>(key: K, value: Features[K]) {
         if (this._features) {
             this._features = {
                 ...this._features,
                 [key]: value,
             };
+            this.lifecycle.emit(DEVICE.CHANGED);
         }
     }
 

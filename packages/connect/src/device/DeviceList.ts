@@ -20,6 +20,7 @@ import { ConnectSettings, DeviceUniquePath, StaticSessionId, asDeviceUniquePath 
 import { createTransportList } from './TransportList';
 import { TransportManager } from './TransportManager';
 import { initLog } from '../utils/debug';
+import { trezorPushNotificationHandler } from './workflow/trezorPushNotification';
 
 const createAuthPenaltyManager = (priority: number) => {
     const penalizedDevices: { [deviceID: string]: number } = {};
@@ -155,6 +156,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             return;
         }
 
+        if (descriptor.id && descriptor.apiType === 'bluetooth') {
+            transport.subscribe({
+                path: device.descriptor.id,
+                channels: ['battery-level', 'trezor-push-notification'],
+            });
+        }
+
         this.devices.push(device);
 
         device.lifecycle.on(DEVICE.CONNECT, () => this.emit(DEVICE.CONNECT, device));
@@ -177,6 +185,18 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         });
 
         this.emit(device.isUnacquired() ? DEVICE.CONNECT_UNACQUIRED : DEVICE.CONNECT, device);
+    }
+
+    private onPushNotification(event: { id: string; data: number[] }) {
+        const device = this.devices.find(d => d.descriptor.id === event.id);
+        if (device) {
+            trezorPushNotificationHandler({ device, message: event.data });
+        }
+    }
+
+    private onBatteryLevel(event: { id: string; data: number[] }) {
+        const device = this.devices.find(d => d.descriptor.id === event.id);
+        device?.updateFeature('soc', event.data[0]);
     }
 
     private getOrCreateTransportManager(apiType: TransportApiType) {
@@ -225,6 +245,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
          * where transport.acquire, transport.release is called
          */
         transport.on(TRANSPORT.DEVICE_CONNECTED, d => this.onDeviceConnected(d, transport));
+        transport.on(TRANSPORT.TREZOR_PUSH_NOTIFICATION, this.onPushNotification.bind(this));
+        transport.on(TRANSPORT.BATTERY_LEVEL, this.onBatteryLevel.bind(this));
 
         // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
         // event until we read descriptors for the first time
