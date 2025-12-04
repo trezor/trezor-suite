@@ -175,7 +175,7 @@ const useSellQuoteChangeEffect = ({ getValues, setValue, watch }: SellFormType) 
                           getNetwork(symbol).decimals,
                       )
                     : truncatedCryptoAmount;
-            setValue('cryptoStringAmount', value);
+            setValue('cryptoStringAmount', value, { shouldValidate: true });
         }
     }, [quote, isAmountInSats, symbol, getValues, setValue]);
 };
