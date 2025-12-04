@@ -7,20 +7,24 @@ import { spacings } from '@trezor/theme';
 import { ItemClickableContainer } from '../ItemClickableContainer';
 import { AccountAmount } from './AccountAmount';
 
-export type AssetRowSendFromAccountProps = {
+export type AssetRowAccountWithBalanceProps = {
     account: Account;
-    'data-testid'?: string;
+    dataTestId?: string;
     onClick: (account: Account) => void;
 };
 
-export function AssetRowSendFromAccount({
-    'data-testid': dataTestId,
+export function AssetRowAccountWithBalance({
+    dataTestId,
     account,
     onClick,
-}: AssetRowSendFromAccountProps) {
+}: AssetRowAccountWithBalanceProps) {
     return (
         <ItemClickableContainer onClick={() => onClick(account)}>
-            <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center">
+            <Row
+                data-testid={`${dataTestId}/${account.symbol}`}
+                gap={spacings.sm}
+                alignItems="center"
+            >
                 <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
 
                 <Column alignItems="flex-start" justifyContent="flex-start">

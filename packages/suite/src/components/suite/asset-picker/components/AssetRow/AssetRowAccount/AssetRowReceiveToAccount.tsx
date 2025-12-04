@@ -13,12 +13,12 @@ import { ItemClickableContainer } from '../ItemClickableContainer';
 
 export type AssetRowReceiveToAccountProps = {
     account: Account;
-    'data-testid'?: string;
+    dataTestId?: string;
     onClick: (account: Account) => void;
 };
 
 export function AssetRowReceiveToAccount({
-    'data-testid': dataTestId,
+    dataTestId,
     account,
     onClick,
 }: AssetRowReceiveToAccountProps) {
