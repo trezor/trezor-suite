@@ -6498,6 +6498,10 @@ export default defineMessages({
         id: 'TR_LABELING_SECURE_SYNC',
         defaultMessage: 'Suite Sync (recommended)',
     },
+    TR_LABELING_ERROR: {
+        id: 'TR_LABELING_ERROR',
+        defaultMessage: 'There was an error saving the label. Please try again.',
+    },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
         defaultMessage:

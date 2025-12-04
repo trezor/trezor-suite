@@ -31,7 +31,6 @@
         "date-fns": "^4.1.0",
         "framer-motion": "^12.23.3",
         "lottie-react": "2.4.1",
-        "polished": "^4.3.1",
         "react": "19.1.0",
         "react-date-range": "^2.0.1",
         "react-dom": "19.1.0",
