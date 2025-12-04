@@ -1,6 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
+import { parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -13,7 +13,7 @@ interface TradingInfoHeaderProps {
 }
 
 export const TradingInfoHeader = ({ receiveCurrency }: TradingInfoHeaderProps) => {
-    const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const { networkId } = parseCryptoId(receiveCurrency);
     const platform = cryptoIdToPlatformName(networkId);

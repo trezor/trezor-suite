@@ -3,7 +3,7 @@ import React from 'react';
 import { CryptoId } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import { TradingTradeType, useTradingInfo } from '@suite-common/trading';
+import { TradingTradeType, useTradingUtils } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
@@ -58,7 +58,7 @@ const TradingFeaturedOffersAmount = ({
 
 export const TradingFeaturedOffersAmounts = ({ quote }: TradingFeaturedOffersAmountsProps) => {
     const context = useTradingFormContext();
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const quoteProps = getCryptoQuoteAmountProps(quote, context);
 
     if (!quoteProps?.receiveCurrency) return null;

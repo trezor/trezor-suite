@@ -10,7 +10,7 @@ import {
     getTradingNetworkDecimals,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeFormStep,
-    useTradingInfo,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
@@ -59,7 +59,7 @@ export const TradingOfferExchangeDetails = ({
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const [isSlippageModalOpen, setIsSlippageModalOpen] = useState(false);
 

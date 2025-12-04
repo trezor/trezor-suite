@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TradingTradeType, useTradingInfo } from '@suite-common/trading';
+import { TradingTradeType, useTradingUtils } from '@suite-common/trading';
 import { NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -18,7 +18,7 @@ export const useChangeStringsExtractor = (
     formattedRate?: string | undefined;
 } => {
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
-    const { cryptoIdToCoinSymbol } = useTradingInfo();
+    const { cryptoIdToCoinSymbol } = useTradingUtils();
 
     const tradeOperationData = getTradeOperationData(trade);
     const { fromValue, fromCurrency, toValue, toCurrency, isFromCrypto, isToCrypto } =

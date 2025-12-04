@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 
 import { ExperimentId } from '@suite-common/message-system';
-import { cryptoIdToNetwork, useTradingInfo } from '@suite-common/trading';
+import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -17,14 +17,14 @@ interface TradingCryptoAmountProps {
 }
 
 export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCryptoAmountProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
-    const network = cryptoId && cryptoIdToNetwork(cryptoId);
 
     if (!coinSymbol) {
-        return;
+        return null;
     }
 
+    const network = cryptoId && cryptoIdToNetwork(cryptoId);
     const hasAmount = amount && new BigNumber(amount).gt(0);
 
     return (

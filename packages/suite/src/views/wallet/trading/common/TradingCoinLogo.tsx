@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
+import { parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { AssetLogo } from '@trezor/product-components';
 
 import { TradingCoinLogoProps } from 'src/types/trading/trading';
@@ -14,7 +14,7 @@ export const TradingCoinLogo = ({
     className,
 }: TradingCoinLogoProps) => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
-    const { cryptoIdToNativeCoinSymbol } = useTradingInfo();
+    const { cryptoIdToNativeCoinSymbol } = useTradingUtils();
     const networkSymbol = cryptoIdToNativeCoinSymbol(cryptoId);
 
     return (

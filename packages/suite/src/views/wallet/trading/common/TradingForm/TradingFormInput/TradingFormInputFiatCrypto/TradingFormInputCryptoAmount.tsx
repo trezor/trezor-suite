@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { FieldErrors } from 'react-hook-form';
+import { FieldErrors, useFormContext } from 'react-hook-form';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -7,24 +7,20 @@ import {
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
-    useTradingInfo,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
 import { getInputState, getNetworkReserve } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
+import { hasOwn } from '@trezor/utils';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
-import {
-    TradingAccountOptionsGroupOptionProps,
-    TradingCryptoListProps,
-} from 'src/types/trading/trading';
 import {
     TradingAllFormProps,
     TradingFormInputFiatCryptoProps,
@@ -49,14 +45,13 @@ import {
     tradingGetAccountLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
 
-export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllFormProps>({
+export const TradingFormInputCryptoAmount = ({
     cryptoInputName,
     fiatInputName,
     cryptoSelectName,
-    methods,
     labelLeft,
     labelRight,
-}: TradingFormInputFiatCryptoProps<TFieldValues>) => {
+}: TradingFormInputFiatCryptoProps) => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
@@ -75,31 +70,31 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
             : undefined;
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const {
         control,
         formState: { errors },
         getValues,
         trigger,
         clearErrors,
-    } = methods;
+    } = useFormContext<TradingAllFormProps>();
 
-    const cryptoSelect = getValues(cryptoSelectName) as
-        | TradingCryptoListProps
-        | TradingAccountOptionsGroupOptionProps
-        | undefined;
+    const cryptoSelect = getValues(cryptoSelectName);
     const cryptoInputError =
         cryptoInputName === TRADING_FORM_OUTPUT_AMOUNT
             ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<TradingBuyFormProps>).cryptoInput;
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.value);
+
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
+        cryptoSelect && hasOwn(cryptoSelect, 'id') ? cryptoSelect.id : cryptoSelect?.value,
+    );
     const displaySymbol = tradingGetAccountLabel(
         getDisplaySymbol(coinSymbol ?? '', contractAddress),
         shouldSendInSats,
     );
     const decimals = getTradingNetworkDecimals({
         sendCryptoSelect: !isTradingBuyContext(context)
-            ? context.getValues()[TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]
+            ? getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)
             : undefined,
         network,
     });
@@ -131,7 +126,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
                       reserveOrBalance: validateReserveOrBalance(translationString, {
                           account,
                           areSatsUsed: !!shouldSendInSats,
-                          contractAddress: (getValues() as FormState).outputs?.[0]?.token,
+                          contractAddress: getValues('outputs')?.[0]?.token,
                       }),
                       networkReserve: isNetworkReserveEnabled
                           ? validateNetworkReserve(translationString, {

@@ -7,7 +7,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeType,
     getTradingNetworkDecimals,
-    useTradingInfo,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { Column, InfoItem, Input, Modal, Row, SelectBar, Text } from '@trezor/components';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
@@ -58,7 +58,7 @@ export const TradingOfferExchangeSlippageModal = ({
         confirmTrade,
     } = useTradingFormContext<TradingExchangeType>();
 
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
