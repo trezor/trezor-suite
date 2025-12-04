@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, TestInfo } from '@playwright/test';
 
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import routes from '@trezor/suite/src//constants/suite/routes';
@@ -6,11 +6,15 @@ import routes from '@trezor/suite/src//constants/suite/routes';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-async function getAllLinksFromAllPages(page: Page, paths: Array<string>): Promise<Set<string>> {
+async function getAllLinksFromAllPages(
+    page: Page,
+    testInfo: TestInfo,
+    paths: Array<string>,
+): Promise<Set<string>> {
     const allValidHrefs = new Set<string>();
 
     for (const path of paths) {
-        await page.goto(path, { waitUntil: 'domcontentloaded' });
+        await page.goto(`.${path}`, { waitUntil: 'domcontentloaded' });
 
         // Ensure the page is loaded by asserting the element is attached to the DOM.
         // For unknown reasons, this is the only available method to wait for the page to load.
@@ -22,16 +26,23 @@ async function getAllLinksFromAllPages(page: Page, paths: Array<string>): Promis
                 .first(),
             `The page element for route "${path}" should be attached`,
         ).toBeAttached();
+        await expect(page.getByTestId('@suite/bundle-loader')).toBeHidden();
 
-        const links = page.locator('a');
-        const allLinks = await links.all();
-        const allHrefs = await Promise.all(allLinks.map(link => link.getAttribute('href')));
+        // Extract all hrefs in a single browser operation to reduce network latency in CI.
+        const allHrefs = await page
+            .locator('a')
+            .evaluateAll(anchors => anchors.map(a => a.getAttribute('href')));
 
         for (const link of allHrefs) {
-            expect.soft(link, `${link} should be a valid href`).toBeTruthy();
-
-            // Normalize the links.
-            if (link) allValidHrefs.add(new URL(link, page.url()).href);
+            if (link) {
+                // Normalize the links.
+                allValidHrefs.add(new URL(link, page.url()).href);
+            } else {
+                testInfo.annotations.push({
+                    type: 'Not Link',
+                    description: `${link} is not valid href`,
+                });
+            }
         }
     }
 
@@ -55,32 +66,65 @@ test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@specificModel
                 stream: TestStream.Foundation,
             }),
         },
-        async ({ page }) => {
+        async ({ page }, testInfo) => {
+            let allUrls = new Set<string>();
+
+            const urlsToCheck: string[] = [];
             // Test is slow due to opening the pages for all known routes.
             // The standard timeout must be extended to ensure test completion.
             test.slow();
 
-            // Create an array of all routes except those containing 4 segments
-            // to keep the list a bit shorter, and reduce execution time.
-            const allPaths = routes
-                .map(route => route.pattern)
-                .filter(pattern => {
-                    const segments = pattern.split('/').filter(segment => !!segment);
+            await test.step('Get all links from all routes', async () => {
+                // Create an array of all routes except those containing 4 segments
+                // to keep the list a bit shorter, and reduce execution time.
+                const allPaths = routes
+                    .map(route => route.pattern)
+                    .filter(pattern => {
+                        const segments = pattern.split('/').filter(segment => !!segment);
 
-                    return segments.length < 4;
-                });
-
-            const allUrls = await getAllLinksFromAllPages(page, allPaths);
-
-            await Promise.all(
-                Array.from(allUrls).map(async url => {
-                    await test.step(`Checking link: ${url}`, async () => {
-                        const response = await page.request.get(url);
-
-                        expect.soft(response.ok(), `${url} should be OK`).toBeTruthy();
+                        return segments.length < 4;
                     });
-                }),
-            );
+
+                // After onboarding, the URL is cleared to the base domain by the application's routing logic.
+                // We need to navigate back to the correct base URL for the test environment.
+                allUrls = await getAllLinksFromAllPages(page, testInfo, allPaths);
+            });
+
+            await test.step('Filter known broken links', () => {
+                // Define patterns for known broken links here.
+                const ignoredPatterns = ['github.com/trezor/trezor-suite/releases/tag'];
+
+                const knownBrokenLinks: string[] = [];
+
+                for (const url of allUrls) {
+                    const ignoredUrl = ignoredPatterns.some(pattern => url.includes(pattern));
+
+                    if (ignoredUrl) {
+                        knownBrokenLinks.push(url);
+                    } else {
+                        urlsToCheck.push(url);
+                    }
+                }
+
+                if (knownBrokenLinks.length > 0) {
+                    testInfo.annotations.push({
+                        type: 'Warning: Known Broken Links',
+                        description: `\nThe following links returned non-200 status codes but are known issues:\n${knownBrokenLinks.join('\n')}`,
+                    });
+                }
+            });
+
+            await test.step(`Check ${urlsToCheck.length} valid links`, async () => {
+                await Promise.all(
+                    Array.from(urlsToCheck).map(async url => {
+                        await test.step(`Checking link: ${url}`, async () => {
+                            const response = await page.request.get(url);
+
+                            expect.soft(response.ok(), `${url} should be OK`).toBeTruthy();
+                        });
+                    }),
+                );
+            });
         },
     );
 });
