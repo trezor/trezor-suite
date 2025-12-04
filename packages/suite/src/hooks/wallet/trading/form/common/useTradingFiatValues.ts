@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
+    TRADING_DEFAULT_CRYPTO_CURRENCY,
     cryptoIdToNetworkAndContractAddress,
     isCryptoIdForNativeToken,
     mapTestnetSymbol,
@@ -53,7 +54,6 @@ export const useTradingFiatValues = ({
     const isNativeToken = cryptoId && isCryptoIdForNativeToken(cryptoId);
 
     const { network, contractAddress, symbol } = useMemo(() => {
-        const defaultCryptoSymbol = 'btc';
         const assetInfo = cryptoId && cryptoIdToNetworkAndContractAddress(cryptoId);
 
         return {
@@ -61,7 +61,7 @@ export const useTradingFiatValues = ({
             contractAddress: isNativeToken
                 ? undefined
                 : (assetInfo?.contractAddress as TokenAddress | undefined),
-            symbol: assetInfo?.network?.symbol ?? defaultCryptoSymbol,
+            symbol: assetInfo?.network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
         };
     }, [cryptoId, isNativeToken]);
 
