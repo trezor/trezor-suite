@@ -1,12 +1,12 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
 
 import { useFeeCalculation } from './useFeeCalculation';
 import { useFeeSelection } from './useFeeSelection';
-import { NativeSupportedFeeLevel, UpdateSelectedFeeLevelThunkParams } from '../../types';
+import { UpdateSelectedFeeLevelThunkParams } from '../../types';
 
 type UseFeesManagementParams = {
     accountKey: AccountKey;
-    selectedFee?: NativeSupportedFeeLevel;
+    selectedFee?: FeeLevelLabel;
     selectedFeePerUnit?: string;
     selectedSetMaxOutputId?: number;
     tokenContract?: TokenAddress;

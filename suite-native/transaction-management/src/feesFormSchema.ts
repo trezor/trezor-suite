@@ -1,11 +1,10 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { FeeInfo } from '@suite-common/wallet-types';
+import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import type { UseFormReturn } from '@suite-native/forms';
 import { BigNumber } from '@trezor/utils';
 
-import { NativeSupportedFeeLevel } from './types';
 import { getFeeDecimals } from './utils';
 
 export type FeesFormContext = {
@@ -14,15 +13,10 @@ export type FeesFormContext = {
     minimalFeeLimit?: string;
 };
 
-const nativeSupportedFeeLevels: Array<NativeSupportedFeeLevel> = [
-    'economy',
-    'normal',
-    'high',
-    'custom',
-];
+const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'normal', 'high', 'custom'];
 
 export const feesFormValidationSchema = yup.object({
-    feeLevel: yup.string().oneOf(nativeSupportedFeeLevels).required('Fee level is required'),
+    feeLevel: yup.string().oneOf(FeeLevelLabels).required('Fee level is required'),
     customFeePerUnit: yup
         .string()
         .required()

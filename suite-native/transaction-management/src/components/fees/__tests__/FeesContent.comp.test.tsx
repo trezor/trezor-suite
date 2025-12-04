@@ -1,11 +1,10 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import { AccountKey, FeeLevelLabel, FormState } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { NativeSupportedFeeLevel } from '../../../types/fees';
 import { FeesContent } from '../FeesContent';
 
 // Create a simple validation schema for testing
@@ -50,7 +49,7 @@ describe('FeesContent', () => {
     });
 
     const defaultProps = {
-        selectedFeeLevel: 'normal' as NativeSupportedFeeLevel,
+        selectedFeeLevel: 'normal' as FeeLevelLabel,
         feeLevels: createMockFeeLevels(),
         symbol: 'btc' as NetworkSymbol,
         accountKey: mockAccountKey,
@@ -92,7 +91,7 @@ describe('FeesContent', () => {
 
     it('should render fee options list when selected fee level is not custom', async () => {
         const { getByTestId } = await renderFeesContent({
-            selectedFeeLevel: 'normal' as NativeSupportedFeeLevel,
+            selectedFeeLevel: 'normal' as FeeLevelLabel,
         });
 
         expect(getByTestId('@transactionManagement/fees-level-container-normal')).toBeTruthy();
@@ -100,7 +99,7 @@ describe('FeesContent', () => {
 
     it('should not render fee options list when selected fee level is custom', async () => {
         const { queryByTestId } = await renderFeesContent({
-            selectedFeeLevel: 'custom' as NativeSupportedFeeLevel,
+            selectedFeeLevel: 'custom' as FeeLevelLabel,
         });
 
         expect(queryByTestId('@transactionManagement/fees-level-container-normal')).toBeNull();
@@ -138,12 +137,12 @@ describe('FeesContent', () => {
 
     it('should render with form draft data', async () => {
         const mockFormDraft = {
-            selectedFee: 'high' as NativeSupportedFeeLevel,
+            selectedFee: 'high' as FeeLevelLabel,
             feePerUnit: '10',
         } as FormState;
 
         const { getByTestId } = await renderFeesContent({
-            selectedFeeLevel: 'high' as NativeSupportedFeeLevel,
+            selectedFeeLevel: 'high' as FeeLevelLabel,
             formDraft: mockFormDraft,
         });
 

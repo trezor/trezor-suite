@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
+    FeeLevelLabel,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
@@ -19,11 +20,10 @@ import { BigNumber } from '@trezor/utils';
 import { useFeesFetching } from './useFeesFetching';
 import { useFeesForm } from './useFeesForm';
 import { selectFeeLevels } from '../../selectors';
-import { NativeSupportedFeeLevel } from '../../types';
 
 type UseFeeCalculationParams = {
     accountKey: AccountKey;
-    selectedFee?: NativeSupportedFeeLevel;
+    selectedFee?: FeeLevelLabel;
     selectedFeePerUnit?: string;
     selectedSetMaxOutputId?: number;
 };

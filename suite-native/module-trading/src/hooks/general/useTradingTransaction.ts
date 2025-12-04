@@ -30,11 +30,10 @@ import {
     selectSendSerializedTx,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
 import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
 import { TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
-    NativeSupportedFeeLevel,
     selectFeeLevels,
     useFeesFetching,
     usePrecomposedTransactionError,
@@ -50,7 +49,7 @@ export type TradingTransactionSignAndSendProps = {
 };
 
 export type TradingTransactionComposeProps = {
-    selectedFeeLevel?: NativeSupportedFeeLevel;
+    selectedFeeLevel?: FeeLevelLabel;
     feePerUnit?: string;
     feeLimit?: string;
 };
@@ -129,7 +128,7 @@ export const useTradingTransaction = ({
 
     const feeLevels = useSelector(selectFeeLevels);
 
-    const selectedLevel = feeLevels[(selectedFee as NativeSupportedFeeLevel) ?? 'normal'];
+    const selectedLevel = feeLevels[(selectedFee as FeeLevelLabel) ?? 'normal'];
     const feeError = selectedLevel?.type === 'error' ? selectedLevel.error : null;
 
     const txnErrorString = usePrecomposedTransactionError({
@@ -202,7 +201,7 @@ export const useTradingTransaction = ({
         }
 
         await composeRequest({
-            selectedFeeLevel: selectedFee as NativeSupportedFeeLevel,
+            selectedFeeLevel: selectedFee as FeeLevelLabel,
             feePerUnit: feePerUnitDraft,
             feeLimit: feeLimitDraft,
         });
@@ -311,7 +310,7 @@ export const useTradingTransaction = ({
     useEffect(() => {
         if (selectedFee && networkFeeInfo) {
             composeRequest({
-                selectedFeeLevel: selectedFee as NativeSupportedFeeLevel,
+                selectedFeeLevel: selectedFee as FeeLevelLabel,
                 feePerUnit: feePerUnitDraft,
                 feeLimit: feeLimitDraft,
             });

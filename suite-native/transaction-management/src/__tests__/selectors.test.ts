@@ -1,4 +1,4 @@
-import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { FeeLevelLabel, GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 import {
     selectCustomFeeLevel,
@@ -7,7 +7,6 @@ import {
     selectIsTransactionAlreadySigned,
 } from '../selectors';
 import { NativeSendRootState } from '../sendFormSlice';
-import { NativeSupportedFeeLevel } from '../types';
 
 const createMockState = (
     overrides: Partial<NativeSendRootState['wallet']['send']> = {},
@@ -134,10 +133,7 @@ describe('transaction-management selectors', () => {
 
         it('should return 0 when fee level does not exist', () => {
             const state = createMockState();
-            const result = selectFeeLevelTransactionBytes(
-                state,
-                'normal' as NativeSupportedFeeLevel,
-            );
+            const result = selectFeeLevelTransactionBytes(state, 'normal' as FeeLevelLabel);
 
             expect(result).toBe(0);
         });
