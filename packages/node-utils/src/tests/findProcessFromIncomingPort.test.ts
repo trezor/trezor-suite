@@ -19,10 +19,15 @@ describe('findProcessFromIncomingPort', () => {
             const processInfo = await findProcessFromIncomingPort(port);
             expect(processInfo).toBeDefined();
 
-            if (process.platform === 'win32') {
-                expect(processInfo?.name).toEqual('Node.js');
-            } else {
-                expect(processInfo?.name).toEqual('MainThread');
+            switch (process.platform) {
+                case 'win32':
+                    expect(processInfo?.name).toEqual('Node.js');
+                    break;
+                case 'darwin':
+                    expect(processInfo?.name).toEqual('node');
+                    break;
+                default:
+                    expect(processInfo?.name).toEqual('MainThread');
             }
         } finally {
             server.close();
