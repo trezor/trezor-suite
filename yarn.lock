@@ -14277,7 +14277,6 @@ __metadata:
     date-fns: "npm:^4.1.0"
     framer-motion: "npm:^12.23.3"
     lottie-react: "npm:2.4.1"
-    polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:19.1.0"
     react-date-range: "npm:^2.0.1"

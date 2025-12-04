@@ -32,9 +32,11 @@ export const allowedFlexFrameProps = [
     'maxWidth',
     'overflow',
     'cursor',
+    'display',
     'opacity',
     'position',
     'pointerEvents',
+    'zIndex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
 
@@ -135,12 +137,14 @@ export type FlexProps = AllowedFrameProps & {
     order?: number;
     isReversed?: boolean;
     hasDivider?: boolean;
-    /** @deprecated Use only is case of absolute desperation. Prefer keep it according to elevation. */
     dividerColor?: string;
     className?: string;
-    onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
     'data-testid'?: string;
     as?: string;
+    ref?: React.RefObject<HTMLElement | null>;
 };
 
 export const Flex = ({
@@ -153,7 +157,6 @@ export const Flex = ({
     children,
     direction = 'row',
     flex = 'initial',
-
     flexWrap = 'nowrap',
     order,
     isReversed = false,
@@ -163,6 +166,9 @@ export const Flex = ({
     hasDivider = false,
     dividerColor,
     onClick,
+    onMouseEnter,
+    onMouseLeave,
+    ref,
     ...rest
 }: FlexProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedFlexFrameProps);
@@ -190,6 +196,9 @@ export const Flex = ({
             })}
             onClick={onClick}
             as={as}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            ref={ref as React.Ref<HTMLDivElement>}
             {...frameProps}
         >
             {children}
