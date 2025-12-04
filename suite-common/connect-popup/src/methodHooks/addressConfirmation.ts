@@ -1,4 +1,4 @@
-import TrezorConnect, { Address, SolanaPublicKey } from '@trezor/connect';
+import { Address, CallMethodKeys, SolanaPublicKey } from '@trezor/connect';
 import { HDNodeResponse } from '@trezor/connect/src/types/api/getPublicKey';
 
 import { connectPopupActions } from '../connectPopupActions';
@@ -27,10 +27,7 @@ const methodsPublicKey = [
 ];
 const methods = [...methodsAddress, ...methodsPublicKey];
 
-const preCallHook = <M extends keyof typeof TrezorConnect>({
-    method,
-    payload,
-}: PreCallHookParams<M>) => {
+const preCallHook = <M extends CallMethodKeys>({ method, payload }: PreCallHookParams<M>) => {
     if (methods.includes(method)) {
         if ('bundle' in payload && Array.isArray(payload.bundle)) {
             return {
@@ -51,7 +48,7 @@ const preCallHook = <M extends keyof typeof TrezorConnect>({
     return payload;
 };
 
-export async function postCallHook<M extends keyof typeof TrezorConnect>({
+export async function postCallHook<M extends CallMethodKeys>({
     method,
     originalPayload,
     response,
