@@ -19,11 +19,17 @@ export const networksCollection: Network[] = Object.values(networks);
  */
 export const networkSymbolCollection = networksCollection.map(n => n.symbol);
 
-export const getMainnets = (
+interface GetMainnetsProps {
+    debug?: boolean;
+    useExperimentalNetworks?: boolean;
+    allNetworks?: Network[];
+}
+
+export const getMainnets = ({
     debug = false,
     useExperimentalNetworks = false,
     allNetworks = networksCollection,
-) =>
+}: GetMainnetsProps) =>
     allNetworks.filter(
         n =>
             !n.testnet &&
@@ -31,19 +37,28 @@ export const getMainnets = (
             (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
     );
 
-export const getTestnets = (
+interface GetTestnetsProps {
+    debug?: boolean;
+    useExperimentalNetworks?: boolean;
+    useTestnetNetworks?: boolean;
+    allNetworks?: Network[];
+}
+
+export const getTestnets = ({
     debug = false,
     useExperimentalNetworks = false,
+    useTestnetNetworks = false,
     allNetworks = networksCollection,
-) =>
+}: GetTestnetsProps) =>
     allNetworks.filter(
         n =>
             n.testnet === true &&
+            useTestnetNetworks &&
             (!n.isDebugOnlyNetwork || debug) &&
             (!n.isExperimentalOnlyNetwork || useExperimentalNetworks),
     );
 
-export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);
+export const getTestnetSymbols = () => getTestnets({ useTestnetNetworks: true }).map(n => n.symbol);
 
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
     networks[symbol]?.backendTypes.some(backend => backend === 'blockbook');

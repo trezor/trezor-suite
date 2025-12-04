@@ -42,6 +42,9 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
             ];
 
             await test.step('No assets are active', async () => {
+                await settingsPage.toggleTestnetNetworks();
+                await settingsPage.navigateTo('coins');
+
                 await expect(settingsPage.coins.networkButton('btc')).toBeEnabledCoin();
                 for (const network of defaultUnchecked) {
                     await expect(settingsPage.coins.networkButton(network)).toBeDisabledCoin();
@@ -62,6 +65,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
 
             await test.step('Activate assets', async () => {
                 await dashboardPage.discoveryEmptyPrimaryButton.click();
+                await settingsPage.navigateTo('coins');
                 for (const network of ['btc', ...defaultUnchecked] as NetworkSymbol[]) {
                     await settingsPage.coins.enableNetwork(network);
                 }

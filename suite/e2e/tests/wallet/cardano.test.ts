@@ -35,6 +35,8 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
             walletPage,
             trezorUserEnvLink,
         }) => {
+            await settingsPage.toggleTestnetNetworks();
+            await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('tada');
             // await settingsPage.coins.openNetworkAdvanceSettings('tada');
             // await expect(settingsPage.modal).toHaveScreenshot('cardano-advanced-settings.png', {

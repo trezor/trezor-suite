@@ -29,6 +29,7 @@ test.describe(
                 });
                 const electrumUrl = '127.0.0.1:50001:t';
 
+                await settingsPage.toggleTestnetNetworks();
                 await settingsPage.navigateTo('coins');
                 await settingsPage.coins.openNetworkAdvanceSettings('regtest');
                 await settingsPage.coins.changeBackend('electrum', electrumUrl);

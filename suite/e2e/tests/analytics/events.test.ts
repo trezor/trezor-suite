@@ -146,6 +146,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             await settingsPage.changeFiatCurrency('czk');
             await settingsPage.changeBTCUnits('Satoshis');
             await settingsPage.changeTheme(Theme.Dark);
+            await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('eth');
             await settingsPage.coins.enableNetwork('thod');
@@ -198,7 +199,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
                 rememberedHiddenWallets: '0',
                 theme: 'dark',
                 earlyAccessProgram: 'false',
-                experimentalFeatures: '',
+                experimentalFeatures: 'testnet-networks',
                 autodetectLanguage: 'false',
                 autodetectTheme: 'false',
                 isAutomaticUpdateEnabled: 'false',

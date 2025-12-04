@@ -13,6 +13,7 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, trezorUserEnvLink }) => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
 
+            await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('regtest');
 
