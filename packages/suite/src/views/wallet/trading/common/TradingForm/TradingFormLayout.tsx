@@ -24,7 +24,8 @@ export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
         <Column gap={spacings.md} data-testid="@trading/form">
             {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
-            <form>
+            {/* If clicking on disabled input, the click propagates to the form and submits it (some form values are then pushed to URL search params) */}
+            <form onSubmit={e => e.preventDefault()}>
                 <ReceiveAddressModalControlsProvider>
                     <ContentFlex gap={16} breakpoint={breakpoints.tablet} alignItems="stretch">
                         <Box flex="2">{children}</Box>
