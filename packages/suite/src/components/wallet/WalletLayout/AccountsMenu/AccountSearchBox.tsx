@@ -27,7 +27,7 @@ export const AccountSearchBox = () => {
 
     const onClear = () => {
         setSearchString(undefined);
-        setCoinFilter(undefined);
+        setCoinFilter([]);
     };
 
     return (

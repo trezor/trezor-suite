@@ -78,9 +78,9 @@ const AddDefaultAccountButton = ({
             onEnableAccount(defaultAccount);
             // reset search string in account search box
             setSearchString(undefined);
-            if (coinFilter && coinFilter !== defaultAccount.symbol) {
+            if (coinFilter && !coinFilter.includes(defaultAccount.symbol)) {
                 // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
-                setCoinFilter(undefined);
+                setCoinFilter([]);
             }
 
             analytics.report({

@@ -15,10 +15,9 @@ import { isChanged } from '@trezor/utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
+import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
-
-import { setCoinFilter } from './accountSearchActions';
 
 // move to selector!!!!
 export const getAccountState = (state: AppState): SelectedAccountStatus => {
@@ -216,11 +215,12 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
         // reset filter if user selects a different coin
         const coinFilter = state.wallet.accountSearch?.coinFilter;
         if (
-            coinFilter !== undefined &&
+            coinFilter?.length !== 0 &&
             newState.status !== 'none' &&
-            newState.network?.symbol !== coinFilter
+            newState.network &&
+            !coinFilter.includes(newState.network.symbol)
         ) {
-            dispatch(setCoinFilter(undefined));
+            dispatch(accountSearchActions.setCoinFilter([]));
         }
     }
 };

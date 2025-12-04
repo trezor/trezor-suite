@@ -84,7 +84,7 @@ export const AccountsMenuHeader = () => {
                                         }
                                     >
                                         <RelativeWrapper>
-                                            {coinFilter && <Indicator />}
+                                            {coinFilter.length > 0 && <Indicator />}
                                             <TextButton
                                                 size="small"
                                                 variant={
