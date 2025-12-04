@@ -18,6 +18,7 @@ export type VerifyAuthenticityProofParams = {
     blacklistConfig: DeviceAuthenticityBlacklistConfig;
     allowDebugKeys?: boolean;
     challengePrefix?: string;
+    bufferChunks?: Buffer[];
 };
 
 export type VerifyAuthenticityProofResult =
