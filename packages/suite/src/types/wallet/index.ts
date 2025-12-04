@@ -17,13 +17,13 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 
-import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
+import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 
 // reexport
 export type { CustomBackend } from './backend';
@@ -70,6 +70,9 @@ type TradingExchangeAction = ReturnType<
 type TradingSellAction = ReturnType<(typeof tradingSellActions)[keyof typeof tradingSellActions]>;
 type ConnectPopupAction = ReturnType<
     (typeof connectPopupActions)[keyof typeof connectPopupActions]
+>;
+type AccountSearchAction = ReturnType<
+    (typeof accountSearchActions)[keyof typeof accountSearchActions]
 >;
 
 export type WalletAction =

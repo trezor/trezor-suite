@@ -2,20 +2,24 @@ import { createContext, useContext, useMemo } from 'react';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import * as accountSearchActions from 'src/actions/wallet/accountSearchActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAccountSearch } from 'src/reducers/wallet/accountSearchReducer';
+import {
+    accountSearchActions,
+    selectAccountSearch,
+} from 'src/reducers/wallet/accountSearchReducer';
 
 type AccountSearchContextType = {
-    coinFilter: NetworkSymbol | undefined;
+    coinFilter: NetworkSymbol[];
     searchString: string | undefined;
-    setCoinFilter: (filter?: NetworkSymbol) => void;
+    toggleCoinFilter: (symbol: NetworkSymbol) => void;
+    setCoinFilter: (filter: NetworkSymbol[]) => void;
     setSearchString: (search?: string) => void;
 };
 
 const AccountSearchContext = createContext<AccountSearchContextType>({
-    coinFilter: undefined,
+    coinFilter: [],
     searchString: '',
+    toggleCoinFilter: () => {},
     setCoinFilter: () => {},
     setSearchString: () => {},
 });
@@ -25,6 +29,8 @@ export function useReduxAccountSearchActions() {
 
     return useMemo(
         () => ({
+            toggleCoinFilter: (symbol: NetworkSymbol) =>
+                dispatch(accountSearchActions.toggleCoinFilter(symbol)),
             setCoinFilter: (filter: AccountSearchContextType['coinFilter']) =>
                 dispatch(accountSearchActions.setCoinFilter(filter)),
             setSearchString: (search: AccountSearchContextType['searchString']) =>

@@ -44,7 +44,7 @@ const Container = styled.div`
 `;
 
 export const CoinsFilter = () => {
-    const { coinFilter, setCoinFilter } = useAccountSearch();
+    const { coinFilter, setCoinFilter, toggleCoinFilter } = useAccountSearch();
     const availableNetworksSymbols = useAvailableNetworkSymbols();
 
     const coinAnimcationConfig: MotionProps = {
@@ -68,12 +68,12 @@ export const CoinsFilter = () => {
     return (
         <Container
             onClick={() => {
-                setCoinFilter(undefined);
+                setCoinFilter([]);
             }}
         >
             <AnimatePresence initial={false}>
                 {availableNetworksSymbols.map(networkSymbol => {
-                    const isSelected = coinFilter === networkSymbol;
+                    const isSelected = coinFilter.includes(networkSymbol);
 
                     return (
                         <Tooltip
@@ -88,17 +88,12 @@ export const CoinsFilter = () => {
                                     symbol={networkSymbol}
                                     type="network"
                                     size={16}
-                                    data-test-activated={coinFilter === networkSymbol}
-                                    $isSelected={isSelected}
-                                    $coinFilter={coinFilter}
+                                    data-test-activated={isSelected}
+                                    $isSelected={isSelected || coinFilter.length === 0}
+                                    $coinFilter={networkSymbol}
                                     onClick={e => {
                                         e.stopPropagation();
-                                        // select the coin or deactivate if it's already selected
-                                        setCoinFilter(
-                                            coinFilter === networkSymbol
-                                                ? undefined
-                                                : networkSymbol,
-                                        );
+                                        toggleCoinFilter(networkSymbol);
                                     }}
                                 />
                             </motion.div>

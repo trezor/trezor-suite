@@ -923,11 +923,22 @@ export const getAccountIdentifier = (account: Account) => ({
 export const accountSearchFn = (
     account: Account,
     rawSearchString?: string,
-    symbolFilter?: NetworkSymbol,
+    coinsFilter?: NetworkSymbol[] | NetworkSymbol,
     metadataAccountLabel?: string,
 ) => {
+    let coinsFilterArray: NetworkSymbol[] = [];
+
+    if (coinsFilter !== undefined) {
+        if (Array.isArray(coinsFilter)) {
+            coinsFilterArray = coinsFilter;
+        } else {
+            coinsFilterArray = [coinsFilter];
+        }
+    }
+
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
-    const symbolFilterMatch = symbolFilter ? account.symbol === symbolFilter : true;
+    const symbolFilterMatch =
+        coinsFilterArray.length > 0 ? coinsFilterArray.includes(account.symbol) : true;
     if (!symbolFilterMatch) return false;
 
     const searchString = rawSearchString?.trim().toLowerCase();

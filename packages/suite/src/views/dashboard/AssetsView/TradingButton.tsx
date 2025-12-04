@@ -23,7 +23,7 @@ export const TradingButton = ({
     'data-testid': dataTest,
 }: TradingButtonProps) => {
     const dispatch = useDispatch();
-    const { setCoinFilter, setSearchString } = useAccountSearch();
+    const { toggleCoinFilter, setSearchString } = useAccountSearch();
 
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
         onButtonClick?.();
@@ -37,7 +37,7 @@ export const TradingButton = ({
                 },
             }),
         );
-        setCoinFilter(symbol);
+        toggleCoinFilter(symbol);
         setSearchString(undefined);
 
         // Prevent parent handler from triggering onClick,
