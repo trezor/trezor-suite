@@ -1,5 +1,7 @@
 import { Locator, Page, Response } from '@playwright/test';
 
+import { BigNumber } from '@trezor/utils';
+
 import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { solanaUrlPattern } from '../../mocks/tradingMock';
 import { expect } from '../../testExtends/customMatchers';
@@ -153,17 +155,24 @@ export class Fees {
         return feeRateText;
     }
 
-    calculateEthereumMaxFee(params: { gasLimit: string; maxFeePerGas: string }) {
+    calculateEthereumMaxFee({
+        gasLimit,
+        maxFeePerGas,
+        numberOfDecimals = 14,
+    }: {
+        gasLimit: string;
+        maxFeePerGas: string;
+        numberOfDecimals?: number;
+    }) {
         const ratioToEthereum = 1e9;
         const maxFeeInEthereum =
-            (parseFloat(params.gasLimit) * parseFloat(params.maxFeePerGas)) / ratioToEthereum;
-        const maxFeeRounded = maxFeeInEthereum.toFixed(14);
-
+            (parseFloat(gasLimit) * parseFloat(maxFeePerGas)) / ratioToEthereum;
+        const maxFeeRounded = maxFeeInEthereum.toFixed(numberOfDecimals);
         // This method is also providing detailed error message for troubleshooting expect if it fails
         const errorMessageMaxCalculation = `expected to have max Fee: 
-"(parseFloat(${params.gasLimit}) * parseFloat(${params.maxFeePerGas})) / ${ratioToEthereum}"
+"(parseFloat(${gasLimit}) * parseFloat(${maxFeePerGas})) / ${ratioToEthereum}"
 here are applied parseFloats:
-(${parseFloat(params.gasLimit)} * ${parseFloat(params.maxFeePerGas)}) / ${ratioToEthereum}
+(${parseFloat(gasLimit)} * ${parseFloat(maxFeePerGas)}) / ${ratioToEthereum}
 before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
 
         return {
@@ -202,6 +211,11 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         await this.openCollapsibleFees();
         await this.switchModeButton('custom').click();
     }
+    @step()
+    async switchToStandard() {
+        await this.openCollapsibleFees();
+        await this.switchModeButton('standard').click();
+    }
 
     @step()
     async setEthereumCustomFees(input: {
@@ -230,5 +244,28 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         }
 
         return Number(match[1]);
+    }
+
+    @step()
+    async getStandardFeeWorkaround() {
+        await this.switchToCustom();
+        const gasLimit = (await this.ethereumFeeLimit.inputValue()).replace(/,/g, '');
+        const maxFeePerGas = await this.ethereumMaxFeePerGas.inputValue();
+        const maxFeePerGasRounded = new BigNumber(maxFeePerGas)
+            .decimalPlaces(4, BigNumber.ROUND_UP)
+            .toFixed(4);
+        const maxPriorityFeePerGas = await this.ethereumMaxPriorityFeePerGas.inputValue();
+        const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas)
+            .decimalPlaces(4, BigNumber.ROUND_UP)
+            .toFixed(4);
+        await this.switchToStandard();
+
+        return {
+            gasLimit,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+            maxFeePerGasRounded,
+            maxPriorityFeePerGasRounded,
+        };
     }
 }

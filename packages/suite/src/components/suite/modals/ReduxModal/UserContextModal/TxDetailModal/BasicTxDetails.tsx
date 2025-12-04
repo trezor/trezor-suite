@@ -101,7 +101,11 @@ export const BasicTxDetails = ({
                 <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
                     {isConfirmed ? (
                         <InfoSegments typographyStyle="hint" variant="tertiary">
-                            <Text typographyStyle="callout" variant="primary">
+                            <Text
+                                typographyStyle="callout"
+                                variant="primary"
+                                data-testid="@modal/tx-details/confirmed"
+                            >
                                 <Translation id="TR_CONFIRMED_TX" />
                             </Text>
                             {confirmations > 0 ? (
@@ -112,7 +116,11 @@ export const BasicTxDetails = ({
                             ) : undefined}
                         </InfoSegments>
                     ) : (
-                        <Text typographyStyle="callout" variant="warning">
+                        <Text
+                            typographyStyle="callout"
+                            variant="warning"
+                            data-testid="@modal/tx-details/unconfirmed"
+                        >
                             <Translation id="TR_UNCONFIRMED_TX" />
                         </Text>
                     )}
