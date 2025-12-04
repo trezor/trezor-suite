@@ -148,9 +148,10 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
         }
     };
 
-    const showUpdateBannerNotification =
+    const isUpdateAvailable =
         (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
         (!['up-to-date', 'disconnected'].includes(updateStatusDevice) && !closedNotificationDevice);
+    const showUpdateBannerNotification = !isSidebarCollapsed && isBannerVisible;
 
     const showAccountsAndIsDeviceReady =
         !shouldDisplayDeviceCompromised &&
@@ -227,19 +228,17 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                                 {showAccountsAndIsDeviceReady && <AccountsMenu />}
                             </HorizontalSpacer>
                             <AnimatePresence onExitComplete={onNotificationBannerClosed}>
-                                {showUpdateBannerNotification &&
-                                    !isSidebarCollapsed &&
-                                    isBannerVisible && (
-                                        <UpdateNotificationBanner
-                                            updateStatusDevice={updateStatusDevice}
-                                            updateStatusSuite={updateStatusSuite}
-                                            onClose={() => setIsBannerVisible(false)}
-                                        />
-                                    )}
+                                {isUpdateAvailable && showUpdateBannerNotification && (
+                                    <UpdateNotificationBanner
+                                        updateStatusDevice={updateStatusDevice}
+                                        updateStatusSuite={updateStatusSuite}
+                                        onClose={() => setIsBannerVisible(false)}
+                                    />
+                                )}
                             </AnimatePresence>
                             <QuickActions
                                 isSidebarCollapsed={isSidebarCollapsed}
-                                showUpdateBannerNotification={showUpdateBannerNotification}
+                                hideUpdateQuickAction={showUpdateBannerNotification}
                             />
                         </Content>
                     </TrafficLightOffset>
