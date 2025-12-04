@@ -9,6 +9,7 @@ import {
     sellThunks,
     tradingSellActions,
 } from '@suite-common/trading';
+import { useFormState } from '@suite-native/forms';
 import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
@@ -36,14 +37,15 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
     const timer = useNullTimer();
-    const { watch } = form;
+    const { watch, control } = form;
+    const { isValid } = useFormState({ control });
     const candidateQuote = watch('quote');
     const isLoading = useSelector(selectTradingSellIsLoading);
     const sellInfo = useSelector(selectTradingSellInfo);
 
     const sendAccount = useSelector(selectSellSelectedSendAccount);
 
-    const canProceed = !!candidateQuote && !!sendAccount && !isLoading;
+    const canProceed = isValid && !!candidateQuote && !!sendAccount && !isLoading;
 
     const selectQuote = useCallback(async () => {
         if (!candidateQuote || isLoading) {
