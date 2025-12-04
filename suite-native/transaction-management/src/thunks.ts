@@ -75,12 +75,22 @@ export const calculateCustomFeeLevelThunk = createThunk<
         selectedFeeLevel?: 'custom';
         customFeePerUnit?: string;
         customFeeLimit?: string;
+        customMaxFeePerGas?: string;
+        customMaxPriorityFeePerGas?: string;
     },
     { rejectValue: string }
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/calculateCustomFeeLevelThunk`,
     async (
-        { accountKey, formState, selectedFeeLevel, customFeePerUnit, customFeeLimit },
+        {
+            accountKey,
+            formState,
+            selectedFeeLevel,
+            customFeePerUnit,
+            customFeeLimit,
+            customMaxFeePerGas,
+            customMaxPriorityFeePerGas,
+        },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
@@ -105,6 +115,12 @@ export const calculateCustomFeeLevelThunk = createThunk<
         }
         if (customFeeLimit) {
             formStateCopy.feeLimit = customFeeLimit;
+        }
+        if (customMaxFeePerGas) {
+            formStateCopy.maxFeePerGas = customMaxFeePerGas;
+        }
+        if (customMaxPriorityFeePerGas) {
+            formStateCopy.maxPriorityFeePerGas = customMaxPriorityFeePerGas;
         }
 
         const response = await dispatch(

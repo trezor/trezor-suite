@@ -40,6 +40,10 @@ export const useFeeCalculation = ({
     const feeLevels = useSelector(selectFeeLevels);
     const { symbol } = account ?? {};
 
+    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
+        ? (feeLevels.normal as PrecomposedTransactionFinal)
+        : null;
+
     const form = useFeesForm({
         accountKey,
         defaultFeeLevel: selectedFee,
@@ -54,10 +58,6 @@ export const useFeeCalculation = ({
     const feePerUnit = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, selectedFeeLevel),
     );
-
-    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? (feeLevels.normal as PrecomposedTransactionFinal)
-        : null;
 
     const { areFeesLoading } = useFeesFetching({
         networkSymbol: symbol,

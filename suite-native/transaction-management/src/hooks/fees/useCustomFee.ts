@@ -24,6 +24,8 @@ type UseCustomFeeProps = {
 
 const FEE_PER_UNIT_FIELD_NAME = 'customFeePerUnit';
 const FEE_LIMIT_FIELD_NAME = 'customFeeLimit';
+const MAX_FEE_PER_GAS_FIELD_NAME = 'customMaxFeePerGas';
+const MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME = 'customMaxPriorityFeePerGas';
 
 export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     const debounce = useDebounce();
@@ -47,10 +49,13 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         watch,
     } = useFormContext<FeesFormValues>();
 
-    const { customFeePerUnit, customFeeLimit } = getValues();
+    const { customFeePerUnit, customFeeLimit, customMaxFeePerGas, customMaxPriorityFeePerGas } =
+        getValues();
 
     const watchedFeePerUnit = watch(FEE_PER_UNIT_FIELD_NAME, '0');
     const watchedFeeLimit = watch(FEE_LIMIT_FIELD_NAME, '1') as string;
+    const watchedMaxFeePerGas = watch(MAX_FEE_PER_GAS_FIELD_NAME, '0');
+    const watchedMaxPriorityFeePerGas = watch(MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME, '0');
 
     const normalLevelTransactionBytes = useSelector((state: NativeSendRootState) =>
         selectFeeLevelTransactionBytes(state, 'normal'),
@@ -78,6 +83,8 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
                 selectedFeeLevel: 'custom',
                 customFeePerUnit,
                 customFeeLimit,
+                customMaxPriorityFeePerGas,
+                customMaxFeePerGas,
             }),
         );
 
@@ -94,12 +101,14 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         setIsFeeLoading(false);
     }, [
         trigger,
+        networkType,
         customFeePerUnit,
         formState,
-        customFeeLimit,
         dispatch,
         accountKey,
-        networkType,
+        customFeeLimit,
+        customMaxPriorityFeePerGas,
+        customMaxFeePerGas,
         setError,
         translate,
     ]);
@@ -107,7 +116,15 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     useEffect(() => {
         setIsFeeLoading(true);
         debounce(handleValuesChange);
-    }, [watchedFeePerUnit, watchedFeeLimit, handleValuesChange, debounce, networkType]);
+    }, [
+        watchedFeePerUnit,
+        watchedFeeLimit,
+        handleValuesChange,
+        debounce,
+        networkType,
+        watchedMaxFeePerGas,
+        watchedMaxPriorityFeePerGas,
+    ]);
 
     // If the trezor-connect is unable to compose the transaction, we display rough estimate of the fee instead.
     const feeEstimate = useMemo(
