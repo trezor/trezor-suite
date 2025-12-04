@@ -1175,7 +1175,7 @@
     "moduleTrading.tradingScreen.quotesLoadingLabel": "Načítání nabídek...",
     "moduleTrading.tradingScreen.rate": "Kurz",
     "moduleTrading.tradingScreen.selectedRate": "Zvolený kurz",
-    "moduleTrading.tradingScreen.footer.learnMore": "Více informací",
+    "moduleTrading.tradingScreen.footer.learnMore": "Více informací",
     "moduleTrading.tradingScreen.balance": "Zůstatek:",
     "moduleTrading.tradingScreen.providerOffer": "Nabídka poskytovatele: {amount}",
     "moduleTrading.tradingScreen.tabs.buy": "Koupit",
