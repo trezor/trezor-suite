@@ -8,7 +8,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectPopupTypes';
-import TrezorConnect from '@trezor/connect';
+import { CallMethodKeys } from '@trezor/connect';
 import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -28,7 +28,7 @@ export const useConnectPopupDesktop = () => {
                     const deferred = getPopupCallDeferred(true);
                     dispatch(
                         connectPopupCallThunk({
-                            method: params.method as keyof typeof TrezorConnect,
+                            method: params.method as CallMethodKeys,
                             payload: params.payload,
                             source: {
                                 type: CALL_SOURCE_DESKTOP_WS,

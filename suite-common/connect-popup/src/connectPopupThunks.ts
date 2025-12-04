@@ -5,10 +5,15 @@ import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import TrezorConnect, { CallMethodParams } from '@trezor/connect';
+import TrezorConnect, {
+    CallMethodKeys,
+    CallMethodParams,
+    CallMethodPayload,
+} from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
 import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
+import { connectCallableMethods } from '@trezor/connect/src/factory';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -23,7 +28,7 @@ import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
-type ConnectPopupCallThunkParams<M extends keyof typeof TrezorConnect> = {
+type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
     source: ConnectCallSource;
@@ -31,19 +36,20 @@ type ConnectPopupCallThunkParams<M extends keyof typeof TrezorConnect> = {
 
 export const connectPopupCallThunkInner = createThunk<
     void,
-    ConnectPopupCallThunkParams<keyof typeof TrezorConnect>
+    ConnectPopupCallThunkParams<CallMethodKeys>
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ method, payload, source }, { dispatch, getState, extra }) => {
         try {
-            if (!TrezorConnect[method]) throw TypedError('Method_Unsupported');
+            if (!connectCallableMethods.includes(method as any))
+                throw TypedError('Method_Unsupported');
 
-            // @ts-expect-error: method is dynamic
-            const methodInfo = await TrezorConnect[method]({
+            const methodInfo = await TrezorConnect.call({
                 ...payload,
+                method,
                 __info: true,
                 __precomposed: true,
-            });
+            } as CallMethodPayload);
             if (!methodInfo.success) {
                 throw methodInfo.payload;
             }
@@ -113,8 +119,7 @@ export const connectPopupCallThunkInner = createThunk<
                 source,
             });
 
-            // @ts-expect-error: method is dynamic
-            const response = await TrezorConnect[method]({
+            const response = await TrezorConnect.call({
                 device: {
                     path: device.path,
                     instance: device.instance,
@@ -122,7 +127,8 @@ export const connectPopupCallThunkInner = createThunk<
                 },
                 useEmptyPassphrase: device.useEmptyPassphrase,
                 ...modifiedPayload,
-            });
+                method,
+            } as CallMethodPayload);
             response.id = undefined;
 
             const postCallOngoing = await postCallHooks({
@@ -200,7 +206,7 @@ export const connectPopupCallThunkInner = createThunk<
 
 // Typed thunk that takes the method as a generic parameter
 // Original thunk is exposed as well for using .fulfilled, .rejected, etc.
-export const connectPopupCallThunk = <M extends keyof typeof TrezorConnect>(
+export const connectPopupCallThunk = <M extends CallMethodKeys>(
     params: ConnectPopupCallThunkParams<M>,
 ): AsyncThunkAction<void, ConnectPopupCallThunkParams<M>, CustomThunkAPI> =>
     connectPopupCallThunkInner(params) as any;
@@ -271,7 +277,7 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
                         appIcon: queryParams.appIcon,
                     },
                 },
-                method: method as keyof typeof TrezorConnect,
+                method: method as CallMethodKeys,
                 payload,
             }),
         );

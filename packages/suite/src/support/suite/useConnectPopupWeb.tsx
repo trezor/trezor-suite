@@ -9,7 +9,7 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import TrezorConnect, { IFRAME, POPUP, RESPONSE_EVENT, createPopupMessage } from '@trezor/connect';
+import { CallMethodKeys, IFRAME, POPUP, RESPONSE_EVENT, createPopupMessage } from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -52,7 +52,7 @@ export const useConnectPopupWeb = () => {
                 const deferred = getPopupCallDeferred(true);
                 dispatch(
                     connectPopupCallThunk({
-                        method: event.data.payload.method as keyof typeof TrezorConnect,
+                        method: event.data.payload.method as CallMethodKeys,
                         payload: event.data.payload,
                         source: {
                             type: CALL_SOURCE_WEB,

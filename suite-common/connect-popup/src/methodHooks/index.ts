@@ -2,10 +2,10 @@ import { Dispatch } from '@reduxjs/toolkit/react';
 
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
+    CallMethodKeys,
     CallMethodParams,
     CallMethodResponse,
     Success,
-    TrezorConnect,
     Unsuccessful,
 } from '@trezor/connect';
 
@@ -15,7 +15,7 @@ import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { ConnectCallSource } from '../connectPopupTypes';
 
-export type PreCallHookParams<M extends keyof TrezorConnect> = {
+export type PreCallHookParams<M extends CallMethodKeys> = {
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
     dispatch: Dispatch;
@@ -23,12 +23,12 @@ export type PreCallHookParams<M extends keyof TrezorConnect> = {
     txSigningPrecomposed?: PrecomposedTransactionFinal;
     source: ConnectCallSource;
 };
-export type PostCallHookParams<M extends keyof TrezorConnect> = PreCallHookParams<M> & {
+export type PostCallHookParams<M extends CallMethodKeys> = PreCallHookParams<M> & {
     originalPayload: Omit<CallMethodParams<M>, 'method'>;
     response: Success<CallMethodResponse<M>> | Unsuccessful;
 };
 
-export const preCallHooks = async <M extends keyof TrezorConnect>(params: PreCallHookParams<M>) => {
+export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
     await bitcoinSignTransaction.preCallHook(params);
     await solanaSignTransaction.preCallHook(params);
 
@@ -41,7 +41,7 @@ export const preCallHooks = async <M extends keyof TrezorConnect>(params: PreCal
     return params.payload;
 };
 
-export async function postCallHooks<M extends keyof TrezorConnect>(params: PostCallHookParams<M>) {
+export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHookParams<M>) {
     const hooks = [
         await bitcoinSignTransaction.postCallHook(params),
         await ethereumSignTransaction.postCallHook(params),
