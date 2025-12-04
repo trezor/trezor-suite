@@ -7,7 +7,7 @@ import {
     TradingExchangeType,
     invityAPI,
     tradingExchangeActions,
-    useTradingInfo,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -78,11 +78,13 @@ export const ApproveModal = ({
         tradingReceiveAddress,
     } = context;
 
-    const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
+    const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const { cryptoIdToSymbolAndContractAddress, cryptoIdToCoinSymbol } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress, cryptoIdToCoinSymbol } = useTradingUtils();
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(selectedQuote?.send);
+    const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
     const [approvalType, setApprovalType] = useState<DexApprovalType>('MINIMAL');
     const [isConfirmButtonLoading, setIsConfirmButtonLoading] = useState<boolean>(false);
@@ -115,7 +117,7 @@ export const ApproveModal = ({
                 payload: {
                     type: 'approve-modal',
                     action: type === 'MINIMAL' ? 'limit-exact' : 'limit-unlimited',
-                    ...cryptoInfo,
+                    ...getCryptoInfo(),
                 },
             });
         }
@@ -158,7 +160,7 @@ export const ApproveModal = ({
             payload: {
                 type: 'approve-modal',
                 action: 'continue',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
@@ -182,7 +184,7 @@ export const ApproveModal = ({
             payload: {
                 type: 'approve-modal',
                 action: 'refresh',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
@@ -198,15 +200,12 @@ export const ApproveModal = ({
             payload: {
                 type: 'approve-modal',
                 action: 'cancel',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
         onCancel(isSubmitting);
     };
-
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(selectedQuote.send);
-    const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
     const providers = getProvidersInfoProps(context);
     const provider =

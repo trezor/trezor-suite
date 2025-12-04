@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { TradingExchangeType } from '@suite-common/trading';
 
@@ -9,40 +9,38 @@ import { useTradingFormContext } from './useTradingCommonForm';
 export const useTradingExchangeCryptoAndProviderInfo = () => {
     const { selectedQuote, preselectedQuote, exchangeInfo, getValues } =
         useTradingFormContext<TradingExchangeType>();
-    const { sendCryptoSelect, receiveCryptoSelect, selectedFee } = getValues();
 
-    const cryptoInfo = useMemo(() => {
+    const getCryptoInfo = useCallback(() => {
+        const { sendCryptoSelect, receiveCryptoSelect, selectedFee } = getValues();
+
+        const quoteExchange = preselectedQuote?.exchange ?? selectedQuote?.exchange;
+        const quoteProviderName =
+            quoteExchange && exchangeInfo?.providerInfos[quoteExchange]?.companyName;
+
         const {
             label: sendCryptoLabel,
             networkSymbol: sendCryptoNetworkSymbol,
             contractAddress: sendCryptoContractAddress,
         } = getTradingCryptoInfo(sendCryptoSelect);
 
-        const {
-            label: receiveCryptoLabel,
-            networkSymbol: receiveCryptoNetworkSymbol,
-            contractAddress: receiveCryptoContractAddress,
-        } = getTradingCryptoInfo(receiveCryptoSelect);
-
         return {
             sendCryptoLabel,
             sendCryptoNetworkSymbol,
             sendCryptoContractAddress,
-            receiveCryptoLabel,
-            receiveCryptoNetworkSymbol,
-            receiveCryptoContractAddress,
+
+            receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
+            receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
+            receiveCryptoContractAddress: receiveCryptoSelect?.contractAddress ?? undefined,
+
+            providerName: quoteProviderName,
+            selectedFee,
         };
-    }, [sendCryptoSelect, receiveCryptoSelect]);
+    }, [
+        getValues,
+        preselectedQuote?.exchange,
+        selectedQuote?.exchange,
+        exchangeInfo?.providerInfos,
+    ]);
 
-    const providerName = useMemo(() => {
-        const quoteExchange = preselectedQuote?.exchange ?? selectedQuote?.exchange;
-
-        return quoteExchange && exchangeInfo?.providerInfos[quoteExchange]?.companyName;
-    }, [selectedQuote, preselectedQuote, exchangeInfo]);
-
-    return {
-        ...cryptoInfo,
-        providerName,
-        selectedFee,
-    };
+    return getCryptoInfo;
 };

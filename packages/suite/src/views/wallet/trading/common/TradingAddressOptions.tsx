@@ -4,7 +4,7 @@ import type { MenuPlacement } from 'react-select';
 
 import { CryptoId } from 'invity-api';
 
-import { TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, useTradingInfo } from '@suite-common/trading';
+import { TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, InfoSegments, Select } from '@trezor/components';
@@ -75,7 +75,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
     const accountMetadata = useSelector(state =>
         selectLabelingDataForAccount(state, account?.key || ''),
     );
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     useEffect(() => {
         if (!address && addresses) {

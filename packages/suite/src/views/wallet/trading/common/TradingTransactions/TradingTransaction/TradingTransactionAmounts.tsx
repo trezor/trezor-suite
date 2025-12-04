@@ -1,4 +1,4 @@
-import { TradingTransaction, useTradingInfo } from '@suite-common/trading';
+import { TradingTransaction, useTradingUtils } from '@suite-common/trading';
 import { Icon, Row, iconSizes } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -16,7 +16,7 @@ interface TradingTransactionAmountsProps {
 }
 
 export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     if (trade.tradeType === 'sell') {
         const { cryptoStringAmount, cryptoCurrency, fiatStringAmount, fiatCurrency } = trade.data;

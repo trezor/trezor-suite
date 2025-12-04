@@ -12,7 +12,7 @@ import {
     parseCryptoId,
     tradingExchangeActions,
     tradingSellActions,
-    useTradingInfo,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
@@ -36,7 +36,7 @@ import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectQuoteTyped,
-    getSelectedCrypto,
+    getSelectedCryptoId,
     isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
@@ -97,7 +97,7 @@ export const TradingFormOffer = () => {
 
     const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
 
-    const { cryptoIdToPlatformName } = useTradingInfo();
+    const { cryptoIdToPlatformName } = useTradingUtils();
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
     const preselectedQuote = isTradingExchangeContext(context)
@@ -108,7 +108,7 @@ export const TradingFormOffer = () => {
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const selectedCrypto = getSelectedCrypto(context);
+    const selectedCryptoId = getSelectedCryptoId(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
     const { amountInCrypto } = getValues();
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });
@@ -119,8 +119,8 @@ export const TradingFormOffer = () => {
 
     const selectQuote = getSelectQuoteTyped(context);
     const shouldDisplayFiatAmount = isTradingExchangeContext(context) ? false : amountInCrypto;
-    const { networkId, contractAddress } = parseCryptoId(selectedCrypto?.value ?? ('' as CryptoId));
-    const network = selectedCrypto?.value ? cryptoIdToPlatformName(networkId) : undefined;
+    const { networkId, contractAddress } = parseCryptoId(selectedCryptoId ?? ('' as CryptoId));
+    const network = selectedCryptoId ? cryptoIdToPlatformName(networkId) : undefined;
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
@@ -301,7 +301,7 @@ export const TradingFormOffer = () => {
     const selectedAssetCryptoId =
         !state.isLoadingOrInvalid && receiveCurrency
             ? receiveCurrency
-            : (selectedCrypto?.value as CryptoId | undefined);
+            : (selectedCryptoId ?? undefined);
 
     const isReceiveAddressSelected =
         (isTradingExchangeContext(context) || isTradingBuyContext(context)) &&

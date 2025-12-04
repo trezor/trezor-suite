@@ -6,7 +6,7 @@ import {
     TradingExchangeType,
     invityAPI,
     tokenSupportsIncreasingAllowance,
-    useTradingInfo,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -66,11 +66,11 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
         tradingReceiveAddress,
     } = context;
 
-    const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
+    const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const [isConfirmButtonLoading, setIsConfirmButtonLoading] = useState<boolean>(false);
 
@@ -84,7 +84,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
             payload: {
                 type: 'revoke-modal',
                 action: 'continue',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
@@ -108,7 +108,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
             payload: {
                 type: 'revoke-modal',
                 action: 'refresh',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
@@ -124,7 +124,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
             payload: {
                 type: 'revoke-modal',
                 action: 'cancel',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 

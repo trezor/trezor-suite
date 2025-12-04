@@ -1,4 +1,4 @@
-import { cryptoIdToSymbol, parseCryptoId, useTradingInfo } from '@suite-common/trading';
+import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, Icon } from '@trezor/components';
 
@@ -7,8 +7,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
-import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
+import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';
 
 export const TradingReceiveAccountAddSuiteOption = () => {
     const { cryptoId } = useTradingReceiveAddressValues();
@@ -16,7 +16,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
 
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
-    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo();
+    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingUtils();
 
     const symbol = cryptoIdToSymbol(cryptoId);
 

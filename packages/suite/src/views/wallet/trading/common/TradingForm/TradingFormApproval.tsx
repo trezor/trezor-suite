@@ -6,7 +6,7 @@ import styled, { DefaultTheme, keyframes } from 'styled-components';
 import {
     TradingExchangeType,
     tokenSupportsIncreasingAllowance,
-    useTradingInfo,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components';
@@ -91,7 +91,7 @@ export const TradingFormApproval = ({
         account,
     } = context;
 
-    const cryptoInfo = useTradingExchangeCryptoAndProviderInfo();
+    const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const currentQuoteStatus = selectedQuote?.status;
     const previousQuoteStatus = usePrevious(currentQuoteStatus);
@@ -109,7 +109,7 @@ export const TradingFormApproval = ({
         watchApproval,
     });
 
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     useEffect(() => {
         if (currentQuoteStatus === 'ERROR') {
@@ -196,7 +196,7 @@ export const TradingFormApproval = ({
             payload: {
                 type: 'exchange-form',
                 action: 'approve',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
@@ -219,7 +219,7 @@ export const TradingFormApproval = ({
             payload: {
                 type: 'exchange-form',
                 action: 'revoke',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
@@ -242,7 +242,7 @@ export const TradingFormApproval = ({
             payload: {
                 type: 'exchange-form',
                 action: 'swap',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
@@ -268,7 +268,7 @@ export const TradingFormApproval = ({
             payload: {
                 type: 'exchange-form',
                 action: 'refresh',
-                ...cryptoInfo,
+                ...getCryptoInfo(),
             },
         });
 
