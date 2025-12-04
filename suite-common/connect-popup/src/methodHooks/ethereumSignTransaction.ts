@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import type { EthereumSignTransaction } from '@trezor/connect';
+import type { CallMethodKeys, EthereumSignTransaction } from '@trezor/connect';
 import { MethodInfo } from '@trezor/connect/src/core/AbstractMethod';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
@@ -47,7 +47,7 @@ const _storePrecomposedTransaction = ({
         },
     });
 
-const preCallHook = async <M extends keyof typeof TrezorConnect>({
+const preCallHook = async <M extends CallMethodKeys>({
     method,
     payload,
     getState,
@@ -158,9 +158,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
     }
 };
 
-const postCallHook = <M extends keyof typeof TrezorConnect>({
-    dispatch,
-}: PostCallHookParams<M>) => {
+const postCallHook = <M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) => {
     if (temporaryAccounts.length) {
         // Remove temporary accounts
         dispatch(accountsActions.removeAccount(temporaryAccounts));

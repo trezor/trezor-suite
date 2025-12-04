@@ -1,4 +1,4 @@
-import TrezorConnect from '@trezor/connect';
+import { CallMethodKeys } from '@trezor/connect';
 import { ErrorCode } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 
@@ -46,7 +46,7 @@ export type ConnectCallSource = {
 
 export type ConnectPopupCallLoaded = {
     // Common properties that are always present
-    method: keyof typeof TrezorConnect;
+    method: CallMethodKeys;
     methodInfo: {
         methodTitle: string;
         confirmLabel?: string;
