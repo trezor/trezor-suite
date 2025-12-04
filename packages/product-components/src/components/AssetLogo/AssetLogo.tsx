@@ -265,13 +265,14 @@ export const AssetLogo = ({
                         onLoad={handleOnLoad}
                         onError={handleLoadError}
                     />
-                    {showNetworkIcon && (
-                        <StyledNetworkIcon
-                            networkSymbol={symbol as NetworkSymbol | LegacyNetworkSymbol}
-                            size={size * 0.375}
-                        />
-                    )}
                 </ElevationUp>
+            )}
+
+            {showNetworkIcon && (
+                <StyledNetworkIcon
+                    networkSymbol={symbol as NetworkSymbol | LegacyNetworkSymbol}
+                    size={size * 0.375}
+                />
             )}
         </Container>
     );

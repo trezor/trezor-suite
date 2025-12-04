@@ -71,8 +71,14 @@ export const SearchAsset = ({
                 value={selectedOption}
                 onChange={option => selectConfig.onChange(option.value)}
                 size="small"
-                formatOptionLabel={option => (
-                    <Option>
+                formatOptionLabel={(option, meta) => (
+                    <Option
+                        data-testid={
+                            meta.context === 'menu'
+                                ? `${dataTestId}/select-option/${option.value ?? 'all-networks'}`
+                                : `${dataTestId}/select-option-value/${option.value ?? 'all-networks'}`
+                        }
+                    >
                         {option.value && (
                             <CoinLogo size={20} symbol={option.value} type="network" />
                         )}
@@ -81,7 +87,9 @@ export const SearchAsset = ({
                 )}
                 width="auto"
                 minValueWidth="170px"
+                data-testid={`${dataTestId}/select`}
                 isRenderedInModal
+                openMenuOnFocus={false}
             />
         </SelectWrapper>
     ) : undefined;
