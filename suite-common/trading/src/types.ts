@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 import type {
     BuyCryptoPaymentMethod,
     BuyProviderInfo,
@@ -21,7 +19,7 @@ import type {
 
 import { CountryCode } from '@suite-common/geolocation';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { AccountType, Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { AccountType, Network } from '@suite-common/wallet-config';
 import {
     Account,
     BaseCurrencyOption,
@@ -33,6 +31,7 @@ import { Timer } from '@trezor/react-utils';
 import { PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
+import type { TradingAssetOption } from './hooks/useTradingAssets';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;
@@ -111,46 +110,11 @@ export type TradingTransaction =
 
 export type TradingTransactionStatus = TradingTransaction['data']['status'];
 
-export type TradingCryptoSelectItemProps = {
-    badge?: ReactNode;
-    symbol: NetworkSymbolExtended;
-    cryptoName?: string;
-    coingeckoId?: string;
-    contractAddress: string | null;
-    shouldTryToFetch?: boolean;
-    value: CryptoId;
-    label: string;
-    ticker?: string;
-    type: 'currency';
-    balance?: string;
-    networkName?: string;
-};
-
 export interface TradingSelectAssetOptionGroupProps {
     type: 'group';
     label: string;
     networkName?: string;
     coingeckoId?: string;
-}
-
-export type TradingCryptoSelectOptionProps =
-    | TradingCryptoSelectItemProps
-    | TradingSelectAssetOptionGroupProps;
-
-export interface TradingInfoProps {
-    cryptoIdToPlatformName: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToCoinName: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToCoinSymbol: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToNativeCoinSymbol: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToSymbolAndContractAddress: (cryptoId: CryptoId | undefined) => {
-        coinSymbol: NetworkSymbolExtended | undefined;
-        contractAddress: string | undefined;
-    };
-    buildCryptoOptions: (
-        cryptoIds: Set<CryptoId>,
-        excludedCryptoIds?: Set<CryptoId>,
-    ) => TradingCryptoSelectOptionProps[];
-    buildDefaultCryptoOption: (cryptoId?: CryptoId | null) => TradingCryptoSelectItemProps;
 }
 
 export type TradingFiatCurrencyOption = {
@@ -169,7 +133,7 @@ export type TradingBuyFormProps = {
     [constants.TRADING_FORM_FIAT_INPUT]?: string;
     [constants.TRADING_FORM_CRYPTO_INPUT]?: string;
     [constants.TRADING_FORM_FIAT_CURRENCY_SELECT]: TradingFiatCurrencyOption;
-    [constants.TRADING_FORM_CRYPTO_CURRENCY_SELECT]: TradingCryptoSelectItemProps;
+    [constants.TRADING_FORM_CRYPTO_CURRENCY_SELECT]: TradingAssetOption;
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
@@ -233,7 +197,7 @@ export type TradingExchangeRateFilter =
     | typeof constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX;
 
 export interface TradingExchangeFormProps extends FormState {
-    [constants.TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: TradingCryptoSelectItemProps | null;
+    [constants.TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: TradingAssetOption | null;
     [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]:
         | TradingAccountOptionsGroupOptionProps
         | undefined;
@@ -249,7 +213,9 @@ export interface TradingExchangeFormProps extends FormState {
 
 export type MinimalExchangeFormProps = {
     outputs: { amount?: string }[];
-    receiveCryptoSelect?: { value: CryptoId } | null;
+    receiveCryptoSelect?: {
+        id: CryptoId;
+    } | null;
     sendCryptoSelect?: { value: CryptoId } | null;
     setMaxOutputId?: number;
     receiveAddress?: string;

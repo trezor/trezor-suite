@@ -2,12 +2,7 @@ import { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } fr
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import {
-    TradingCryptoSelectItemProps,
-    type TradingType,
-    cryptoIdToSymbol,
-    toTokenCryptoId,
-} from '@suite-common/trading';
+import { type TradingType, cryptoIdToSymbol, toTokenCryptoId } from '@suite-common/trading';
 import {
     Network,
     NetworkSymbol,
@@ -55,11 +50,7 @@ export const translationKeys: Record<
 };
 
 export const getTradingCryptoInfo = (
-    cryptoSelect:
-        | TradingAccountOptionsGroupOptionProps
-        | TradingCryptoSelectItemProps
-        | null
-        | undefined,
+    cryptoSelect: TradingAccountOptionsGroupOptionProps | null | undefined,
 ) => {
     const label = cryptoSelect?.label ?? undefined;
     const networkSymbol = cryptoSelect ? cryptoIdToSymbol(cryptoSelect.value) : undefined;

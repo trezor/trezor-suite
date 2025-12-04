@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
@@ -130,11 +130,15 @@ export const useTradingExchangeForm = ({
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const network = getNetwork(account.symbol);
     const trades = useSelector(selectTradingTrades);
-    const trade = trades.find(
-        (trade): trade is TradingTransactionExchange =>
-            trade.tradeType === 'exchange' &&
-            !!transactionId &&
-            trade.data.orderId === transactionId,
+    const trade = useMemo(
+        () =>
+            trades.find(
+                (trade): trade is TradingTransactionExchange =>
+                    trade.tradeType === 'exchange' &&
+                    !!transactionId &&
+                    trade.data.orderId === transactionId,
+            ),
+        [trades, transactionId],
     );
 
     const sendAccountKey = useSelector(selectTradingExchangeAccountKey);
@@ -158,7 +162,7 @@ export const useTradingExchangeForm = ({
     });
 
     const { reset, register, getValues, setValue, formState, control } = methods;
-    const values = useWatch<TradingExchangeFormProps>({ control });
+    const values = useWatch({ control }) as TradingExchangeFormProps;
     const {
         rateType,
         exchangeType,
@@ -166,15 +170,14 @@ export const useTradingExchangeForm = ({
         receiveCryptoSelect,
         transactionData,
         ethereumAdjustGasLimit,
+        outputs,
     } = getValues();
-    const output = values.outputs?.[0];
+    const output = outputs?.[0];
     const outputAddress = output?.address;
-
-    const receiveCryptoId = receiveCryptoSelect?.value;
 
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'exchange',
-        cryptoId: receiveCryptoId,
+        cryptoId: receiveCryptoSelect?.id,
         isPreviousRouteFromTradeSection,
         nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
         pageType,
@@ -184,13 +187,13 @@ export const useTradingExchangeForm = ({
         Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
 
     useTradingFiatValues({
-        cryptoId: receiveCryptoId,
-        amount: receiveCryptoSelect?.balance,
-        fiatCurrency: output?.currency?.value as FiatCurrencyCode,
+        cryptoId: receiveCryptoSelect?.id,
+        amount: selectedQuote?.receiveStringAmount,
+        fiatCurrency: output?.currency?.value as FiatCurrencyCode | undefined,
     });
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = !!output?.amount && !!values.receiveCryptoSelect;
+    const hasValues = !!output?.amount && !!receiveCryptoSelect;
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
@@ -198,9 +201,12 @@ export const useTradingExchangeForm = ({
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
     const decimals = getTradingNetworkDecimals({ sendCryptoSelect, network });
 
-    const setAmountLimits = (limits: TradingExchangeAmountLimitProps | undefined) => {
-        dispatch(tradingExchangeActions.setAmountLimits(limits));
-    };
+    const setAmountLimits = useCallback(
+        (limits: TradingExchangeAmountLimitProps | undefined) => {
+            dispatch(tradingExchangeActions.setAmountLimits(limits));
+        },
+        [dispatch],
+    );
 
     const { cexQuotes, dexQuotes } = useTradingExchangeQuotesFilter({
         exchangeType,
@@ -221,7 +227,7 @@ export const useTradingExchangeForm = ({
         type: 'exchange',
         account,
         network,
-        values: values as TradingExchangeFormProps,
+        values,
         methods,
         setShowReserveBanner,
     });
@@ -237,7 +243,7 @@ export const useTradingExchangeForm = ({
     });
 
     const { handleChange } = useTradingExchangeHandleChange({
-        formValues: values as TradingExchangeFormProps,
+        formValues: values,
         network,
         timer,
         shouldSendInSats,
@@ -273,12 +279,6 @@ export const useTradingExchangeForm = ({
             contractAddress: sendCryptoContractAddress,
         } = getTradingCryptoInfo(sendCryptoSelect);
 
-        const {
-            label: receiveCryptoLabel,
-            networkSymbol: receiveCryptoNetworkSymbol,
-            contractAddress: receiveCryptoContractAddress,
-        } = getTradingCryptoInfo(receiveCryptoSelect);
-
         const provider =
             exchangeInfo?.providerInfos && quote.exchange
                 ? exchangeInfo?.providerInfos[quote.exchange]
@@ -294,9 +294,10 @@ export const useTradingExchangeForm = ({
                         sendCryptoLabel,
                         sendCryptoNetworkSymbol,
                         sendCryptoContractAddress,
-                        receiveCryptoLabel,
-                        receiveCryptoNetworkSymbol,
-                        receiveCryptoContractAddress,
+                        receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
+                        receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
+                        receiveCryptoContractAddress:
+                            receiveCryptoSelect?.contractAddress ?? undefined,
                         exchangeType,
                         exchangeName: provider?.companyName,
                         rateType,
@@ -683,19 +684,19 @@ export const useTradingExchangeForm = ({
         return !!newTrade;
     };
 
-    const resetSelectedOffer = () => {
+    const resetSelectedOffer = useCallback(() => {
         dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
         setIsScheduledQuotesRefresh(true);
-    };
+    }, [dispatch]);
 
     const refreshQuotes = async () => {
         await handleChange();
     };
 
-    const fetchFeesAndCompose = async () => {
+    const fetchFeesAndCompose = useCallback(async () => {
         await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
         composeRequest();
-    };
+    }, [dispatch, account.symbol, composeRequest]);
 
     useEffect(() => {
         const networkType = getNetworkType(account.symbol);
@@ -759,18 +760,15 @@ export const useTradingExchangeForm = ({
         if (pageType !== 'form') return;
 
         fetchFeesAndCompose();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType]);
+    }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType, fetchFeesAndCompose]);
 
     useEffect(() => {
         setValue('receiveAddress', receiveAddress);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [receiveAddress]);
+    }, [receiveAddress, setValue]);
 
     useEffect(() => {
         setValue('extraField', extraField);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [extraField]);
+    }, [extraField, setValue]);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
@@ -787,7 +785,7 @@ export const useTradingExchangeForm = ({
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing
             ) {
-                saveDraft(values as TradingExchangeFormProps);
+                saveDraft(values);
             }
         },
         200,

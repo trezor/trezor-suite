@@ -6,6 +6,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
+import { TradingAssetOption } from '../../../hooks/useTradingAssets';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
@@ -102,14 +103,16 @@ describe('handleExchangeRequestThunk', () => {
                 decimals: 8,
             },
             receiveCryptoSelect: {
-                type: 'currency',
-                value: 'ethereum' as CryptoId,
-                label: 'ETH',
-                cryptoName: 'Ethereum',
+                id: 'ethereum' as CryptoId,
+                isNativeToken: true,
+                name: 'Ethereum',
                 coingeckoId: 'ethereum',
                 contractAddress: null,
                 symbol: 'eth',
-            },
+                displaySymbol: 'ETH',
+                networkName: 'Ethereum',
+                networkSymbol: 'eth',
+            } satisfies TradingAssetOption,
             rateType: 'fixed',
             exchangeType: 'CEX',
             exchangeComparatorKycFilter: 'all',

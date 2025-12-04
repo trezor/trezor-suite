@@ -1,43 +1,62 @@
+import { useCallback } from 'react';
+
 import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
-    type TradingBuyFormProps,
     TradingBuyType,
-    cryptoIdToNetworkAndContractAddress,
     selectTradingLoadingAndTimestamp,
+    tradingActions,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Card, Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
+import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
-import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect/TradingFormInputCryptoSelect';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
 
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import {
+    TradingFormInputAssetPicker,
+    TradingFormInputAssetPickerProps,
+} from './TradingFormInput/TradingFormInputAssetPicker/TradingFormInputAssetPicker';
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
-    const { buyInfo, device } = context;
-    const { currencySelect, cryptoSelect, amountInCrypto, cryptoInput } = context.getValues();
-    const supportedCryptoCurrencies = buyInfo?.supportedCryptoCurrencies;
+    const { buyInfo, device, setAmountLimits, getValues, setValue } = context;
+    const {
+        [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
+        [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
+        amountInCrypto,
+        currencySelect,
+    } = getValues();
 
-    const tokenAddress = (cryptoSelect.contractAddress as TokenAddress | null) ?? undefined;
-    const { network } = cryptoIdToNetworkAndContractAddress(cryptoSelect.value);
+    const dispatch = useDispatch();
 
-    const cryptoId = cryptoSelect.value;
+    // `useTradingBuyForm` has many re-rendering issues, use refs to avoid them
+    const setAmountLimitsRef = useCurrentRef(setAmountLimits);
+    const setValueRef = useCurrentRef(setValue);
+
+    const handleCryptoSelect = useCallback<TradingFormInputAssetPickerProps['onAssetSelect']>(
+        asset => {
+            setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
+            setAmountLimitsRef.current(undefined);
+            dispatch(tradingActions.setModalCryptoCurrency(asset.id));
+        },
+        [dispatch, setAmountLimitsRef, setValueRef],
+    );
 
     return (
         <Column gap={spacings.lg}>
@@ -48,17 +67,16 @@ export const TradingBuyFormInputs = () => {
                         padding={{
                             vertical: spacings.md,
                             horizontal: spacings.lg,
-                            bottom: cryptoId && !isLoading ? 0 : spacings.md,
+                            bottom: cryptoSelect.id && !isLoading ? 0 : spacings.md,
                         }}
                     >
                         <Column gap={spacings.xs}>
-                            <TradingFormInputFiatCrypto<TradingBuyFormProps>
+                            <TradingFormInputFiatCrypto
                                 cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                                 fiatInputName={TRADING_FORM_FIAT_INPUT}
                                 cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
                                 currencySelectLabel={currencySelect.label}
-                                cryptoCurrencyLabel={cryptoSelect.value}
-                                methods={{ ...context }}
+                                cryptoCurrencyLabel={cryptoSelect.id}
                             />
 
                             {amountInCrypto && (
@@ -71,13 +89,16 @@ export const TradingBuyFormInputs = () => {
                                         },
                                         {
                                             variant: 'B',
-                                            element: network?.symbol ? (
+                                            element: cryptoSelect.networkSymbol ? (
                                                 <Row justifyContent="end">
                                                     <TradingBalance
                                                         balance={cryptoInput}
-                                                        displaySymbol={cryptoSelect?.label}
-                                                        symbol={network?.symbol}
-                                                        tokenAddress={tokenAddress}
+                                                        displaySymbol={cryptoSelect.displaySymbol}
+                                                        symbol={cryptoSelect.networkSymbol}
+                                                        tokenAddress={
+                                                            (cryptoSelect.contractAddress as TokenAddress) ??
+                                                            undefined
+                                                        }
                                                         showOnlyAmount
                                                         amountInCrypto={amountInCrypto}
                                                     />
@@ -91,17 +112,17 @@ export const TradingBuyFormInputs = () => {
                             )}
                         </Column>
 
-                        <TradingFormInputCryptoSelect<TradingBuyFormProps>
-                            label="TR_TRADING_YOU_BUY"
-                            cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            supportedCryptoCurrencies={supportedCryptoCurrencies}
-                            methods={{ ...context }}
-                            isDisabled={hasBitcoinOnlyFirmware(device)}
-                            sortTokensByFiatBalanceInDesc={false}
+                        <TradingFormInputAssetPicker
+                            inputLabel="TR_TRADING_YOU_BUY"
+                            inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                            inputDisabled={hasBitcoinOnlyFirmware(device)}
+                            enabledCryptoIds={buyInfo?.supportedCryptoCurrencies}
+                            onAssetSelect={handleCryptoSelect}
+                            dataTestId="@trading/form/select-crypto"
                         />
                     </Column>
 
-                    {cryptoId && !isLoading && <TradingReceiveAddress />}
+                    {cryptoSelect && !isLoading && <TradingReceiveAddress />}
                 </Column>
             </Card>
 

@@ -7,8 +7,6 @@ import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    type TradingBuyFormProps,
-    type TradingSellFormProps,
 } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
@@ -44,22 +42,20 @@ export const TradingHeaderFilter = () => {
         <Row data-testid="@trading/filter" flexWrap="wrap" alignItems="flex-start">
             {isTradingBuyContext(context) ? (
                 <InputWrapper>
-                    <TradingFormInputFiatCrypto<TradingBuyFormProps>
+                    <TradingFormInputFiatCrypto
                         showLabel={false}
                         cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                         fiatInputName={TRADING_FORM_FIAT_INPUT}
-                        methods={{ ...context }}
                         cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
                     />
                 </InputWrapper>
             ) : (
                 <InputWrapper>
-                    <TradingFormInputFiatCrypto<TradingSellFormProps>
+                    <TradingFormInputFiatCrypto
                         showLabel={false}
                         cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                         cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                        methods={{ ...context }}
                     />
                 </InputWrapper>
             )}

@@ -18,10 +18,13 @@ export const useTradingReceiveAddressValues = () => {
         quotes,
     } = context;
 
-    const cryptoSelect = isTradingExchangeContext(context)
-        ? context.getValues().receiveCryptoSelect
-        : context.getValues().cryptoSelect;
-    const cryptoId = cryptoSelect?.value;
+    const cryptoId = isTradingExchangeContext(context)
+        ? context.getValues().receiveCryptoSelect?.id
+        : context.getValues().cryptoSelect?.id;
+
+    if (!cryptoId) {
+        throw new Error('cryptoId must be defined');
+    }
 
     const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
     const isLoading = (isFormLoading && !isFormInvalid) || isLoadingQuote;
@@ -46,10 +49,6 @@ export const useTradingReceiveAddressValues = () => {
     const extraFieldDescription = isTradingExchangeContext(context)
         ? (quote as ExchangeTrade)?.extraFieldDescription
         : undefined;
-
-    if (!cryptoId) {
-        throw new Error('cryptoId must be defined');
-    }
 
     return { cryptoId, tradingReceiveAddress, quote, extraFieldDescription, isLoading };
 };

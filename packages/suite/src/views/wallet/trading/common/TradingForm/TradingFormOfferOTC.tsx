@@ -49,7 +49,7 @@ export const TradingFormOfferOTC = () => {
 
     let cryptoCurrency;
     if (isTradingBuyContext(context)) {
-        cryptoCurrency = context.getValues().cryptoSelect.value;
+        cryptoCurrency = context.getValues().cryptoSelect.id;
     } else if (isTradingSellContext(context)) {
         cryptoCurrency = context.getValues().sendCryptoSelect?.value;
     }

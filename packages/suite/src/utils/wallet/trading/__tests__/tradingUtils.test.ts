@@ -1,9 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import {
-    TradingAccountOptionsGroupOptionProps,
-    TradingCryptoSelectItemProps,
-} from '@suite-common/trading';
+import { TradingAccountOptionsGroupOptionProps } from '@suite-common/trading';
 
 import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
 import { Account } from 'src/types/wallet';
@@ -57,24 +54,6 @@ describe('trading utils', () => {
             expect(getTradingCryptoInfo(null)).toStrictEqual({
                 label: undefined,
                 networkSymbol: undefined,
-                contractAddress: undefined,
-            });
-        });
-
-        it('should return correct values for native coin', () => {
-            const cryptoSelect: TradingCryptoSelectItemProps = {
-                coingeckoId: 'ethereum',
-                contractAddress: null,
-                cryptoName: 'Ethereum',
-                label: 'ETH',
-                symbol: 'eth',
-                type: 'currency',
-                value: 'ethereum' as CryptoId,
-            };
-
-            expect(getTradingCryptoInfo(cryptoSelect)).toStrictEqual({
-                label: 'ETH',
-                networkSymbol: 'eth',
                 contractAddress: undefined,
             });
         });

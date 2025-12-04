@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form';
+import type { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import type {
     BankAccount,
@@ -14,6 +14,12 @@ import type {
 } from 'invity-api';
 
 import type {
+    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
     TradingBuyInfoSelector,
     TradingBuyType,
@@ -273,7 +279,7 @@ export interface TradingFormInputDefaultProps {
     'data-testid'?: string;
 }
 
-export interface TradingFormInputCryptoSelectProps<TFieldValues extends FieldValues>
+export interface TradingFormInputCryptoSelectProps<TFieldValues extends TradingAllFormProps>
     extends TradingFormInputDefaultProps {
     cryptoSelectName: FieldPath<TFieldValues>;
     supportedCryptoCurrencies: Set<CryptoId> | undefined;
@@ -282,29 +288,30 @@ export interface TradingFormInputCryptoSelectProps<TFieldValues extends FieldVal
     sortTokensByFiatBalanceInDesc?: boolean;
 }
 
-export interface TradingFormInputFiatCryptoProps<TFieldValues extends FieldValues> {
-    methods: UseFormReturn<TFieldValues>;
-    cryptoInputName: FieldPath<TFieldValues>;
-    fiatInputName: FieldPath<TFieldValues>;
-    cryptoSelectName: FieldPath<TFieldValues>;
+export interface TradingFormInputFiatCryptoProps {
+    cryptoInputName: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
+    fiatInputName: typeof TRADING_FORM_FIAT_INPUT | typeof TRADING_FORM_OUTPUT_FIAT;
+    cryptoSelectName:
+        | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT
+        | typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
     labelLeft?: React.ReactNode;
     labelRight?: React.ReactNode;
 }
 
-export interface TradingFormInputFiatCryptoWrapProps<TFieldValues extends FieldValues> {
+export interface TradingFormInputFiatCryptoWrapProps {
     showLabel?: boolean;
-    methods: UseFormReturn<TFieldValues>;
-    cryptoInputName: FieldPath<TFieldValues>;
-    fiatInputName: FieldPath<TFieldValues>;
-    cryptoSelectName: FieldPath<TFieldValues>;
+    cryptoInputName: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
+    fiatInputName: typeof TRADING_FORM_FIAT_INPUT | typeof TRADING_FORM_OUTPUT_FIAT;
+    cryptoSelectName:
+        | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT
+        | typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
     cryptoCurrencyLabel?: CryptoId;
     currencySelectLabel?: string;
 }
 
-export interface TradingFormInputAccountProps<TFieldValues extends FieldValues> {
+export interface TradingFormInputAccountProps {
     label?: TranslationKey;
-    accountSelectName: FieldPath<TFieldValues>;
-    methods: UseFormReturn<TFieldValues>;
+    accountSelectName: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
     'data-testid'?: string;
 }
 

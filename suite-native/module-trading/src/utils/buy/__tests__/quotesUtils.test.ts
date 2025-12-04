@@ -1,5 +1,6 @@
-import type { BuyTrade } from 'invity-api';
+import type { BuyTrade, CryptoId } from 'invity-api';
 
+import { TradingAssetOption } from '@suite-common/trading';
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     btcAsset,
@@ -44,9 +45,9 @@ describe('quotesUtils', () => {
 
     describe('tradingBuyFormToTradingBuyFormProps', () => {
         it('should throw when crypto value is not selected', () => {
-            expect(() => tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin)).toThrow(
-                'Asset is required',
-            );
+            expect(() =>
+                tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined),
+            ).toThrow('Asset is required');
         });
 
         describe('with buy form populated', () => {
@@ -63,13 +64,13 @@ describe('quotesUtils', () => {
             });
 
             it('should throw when info is not defined', () => {
-                expect(() => tradingBuyFormToTradingBuyFormProps(form, undefined)).toThrow(
-                    'CoinInfo is required',
-                );
+                expect(() =>
+                    tradingBuyFormToTradingBuyFormProps(form, undefined, undefined),
+                ).toThrow('CoinInfo is required');
             });
 
             it('should return correct props', () => {
-                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
+                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined);
                 expect(props).toEqual({
                     fiatInput: '100',
                     cryptoInput: '0.001000168',
@@ -78,14 +79,16 @@ describe('quotesUtils', () => {
                         label: 'Czech Koruna',
                     },
                     cryptoSelect: {
+                        id: 'bitcoin' as CryptoId,
+                        isNativeToken: true,
                         coingeckoId: 'bitcoin',
                         contractAddress: null,
-                        cryptoName: 'Bitcoin',
-                        label: 'BTC',
+                        name: 'Bitcoin',
                         symbol: 'btc',
-                        type: 'currency',
-                        value: 'bitcoin',
-                    },
+                        displaySymbol: 'BTC',
+                        networkName: 'Bitcoin',
+                        networkSymbol: 'btc',
+                    } satisfies TradingAssetOption,
                     countrySelect: {
                         value: 'US',
                         label: 'United States of America',
@@ -106,7 +109,7 @@ describe('quotesUtils', () => {
                     } as unknown as BuyTrade);
                 });
 
-                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin);
+                const props = tradingBuyFormToTradingBuyFormProps(form, coins.bitcoin, undefined);
 
                 expect(props).toEqual(
                     expect.objectContaining({

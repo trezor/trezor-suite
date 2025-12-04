@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { FieldErrors, UseControllerProps, UseFormReturn } from 'react-hook-form';
+import { FieldErrors, UseControllerProps, useFormContext } from 'react-hook-form';
 
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -39,13 +40,12 @@ import {
 import { getFeeInUnits, tradingGetRoundedFiatAmount } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
-export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
+export const TradingFormInputFiat = ({
     cryptoInputName,
     fiatInputName,
-    methods,
     labelLeft,
     labelRight,
-}: TradingFormInputFiatCryptoProps<TFieldValues>) => {
+}: TradingFormInputFiatCryptoProps) => {
     const { translationString } = useTranslation();
     const locale = useSelector(selectLanguage);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
@@ -58,9 +58,9 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
         trigger,
         clearErrors,
         getValues,
-    } = methods as unknown as UseFormReturn<TradingAllFormProps>;
+    } = useFormContext<TradingAllFormProps>();
 
-    const sendCryptoSelect = getValues('sendCryptoSelect');
+    const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const tokenAddress = sendCryptoSelect?.contractAddress as TokenAddress | undefined;
 
     const { fiatAmount } = useFiatFromCryptoValue({
@@ -102,9 +102,10 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
     const { areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
 
     const rates = useSelector(selectCurrentFiatRates);
-    const currencySelect = getValues(TRADING_FORM_OUTPUT_CURRENCY);
-
-    const cryptoAmount = getValues(cryptoInputName) as string;
+    const [currencySelect, cryptoAmount] = getValues([
+        TRADING_FORM_OUTPUT_CURRENCY,
+        cryptoInputName,
+    ]);
 
     const fiatInputError =
         fiatInputName === TRADING_FORM_OUTPUT_FIAT

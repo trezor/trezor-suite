@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BuyTrade, BuyTradeResponse, CryptoId, FiatCurrencyCode } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse, FiatCurrencyCode } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import {
@@ -12,7 +12,6 @@ import {
     TradingBuyFormProps,
     type TradingBuyType,
     buyThunks,
-    cryptoIdToNetwork,
     getTradingQuotesByPaymentMethod,
     selectTradingBuy,
     selectTradingPaymentMethods,
@@ -20,7 +19,7 @@ import {
     tradingBuyActions,
     tradingThunks,
 } from '@suite-common/trading';
-import { networks } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { useFormDraft } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
@@ -44,7 +43,6 @@ import {
     TradingBuyFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
-import { getTradingCryptoInfo } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingFiatValues } from './common/useTradingFiatValues';
 import { useTradingInitializer } from './common/useTradingInitializer';
@@ -118,17 +116,15 @@ export const useTradingBuyForm = ({
         mode: 'onChange',
         defaultValues: redirectValues || (isDraft && draftUpdated ? draftUpdated : defaultValues),
     });
-    const { control, formState, reset, setValue, handleSubmit } = methods;
-    const values = useWatch<TradingBuyFormProps>({ control });
-    const previousValues = useRef<typeof values | TradingBuyFormProps | null>(
+    const { formState, reset, setValue, handleSubmit, control } = methods;
+    const values = useWatch({ control }) as TradingBuyFormProps;
+    const previousValues = useRef<TradingBuyFormProps | null>(
         !isFromRedirect && isNotFormPage ? draftUpdated : null,
     );
 
-    const cryptoId = values.cryptoSelect?.value as CryptoId | undefined;
-
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'buy',
-        cryptoId,
+        cryptoId: values.cryptoSelect?.id,
         isPreviousRouteFromTradeSection,
         nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
         pageType,
@@ -150,10 +146,9 @@ export const useTradingBuyForm = ({
         values?.paymentMethod?.value ?? '',
     );
     // based on selected cryptoSymbol, because of using for validation cryptoInput
-    const network =
-        cryptoIdToNetwork(
-            (values.cryptoSelect?.value as CryptoId) ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
-        ) ?? networks.btc;
+    const network = getNetwork(
+        values.cryptoSelect?.networkSymbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
+    );
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
@@ -166,7 +161,7 @@ export const useTradingBuyForm = ({
     });
 
     const { handleChange } = useTradingBuyHandleChange({
-        formValues: values as TradingBuyFormProps,
+        formValues: values,
         network,
         timer,
         shouldSendInSats,
@@ -242,11 +237,7 @@ export const useTradingBuyForm = ({
             account,
         );
 
-        const {
-            label: cryptoLabel,
-            networkSymbol: cryptoNetworkSymbol,
-            contractAddress: cryptoContractAddress,
-        } = getTradingCryptoInfo(draftUpdated?.cryptoSelect);
+        const { name, networkSymbol, contractAddress } = draftUpdated?.cryptoSelect ?? {};
 
         switch (pageType) {
             case 'form': {
@@ -255,9 +246,9 @@ export const useTradingBuyForm = ({
                     payload: {
                         action: 'continue',
                         step: 'buy-form',
-                        cryptoLabel,
-                        cryptoNetworkSymbol,
-                        cryptoContractAddress,
+                        cryptoLabel: name,
+                        cryptoNetworkSymbol: networkSymbol,
+                        cryptoContractAddress: contractAddress ?? undefined,
                         exchangeName: quote?.exchange,
                         paymentMethod: draftUpdated?.paymentMethod?.value,
                         countryOfResidence: draftUpdated?.countrySelect?.value,
@@ -380,7 +371,7 @@ export const useTradingBuyForm = ({
             return;
         }
 
-        if (values.cryptoSelect && !values.cryptoSelect?.value) {
+        if (values.cryptoSelect && !values.cryptoSelect?.id) {
             removeDraft();
         }
     }, [defaultValues, values, removeDraft]);

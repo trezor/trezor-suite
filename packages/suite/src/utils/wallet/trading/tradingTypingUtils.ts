@@ -1,4 +1,4 @@
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
@@ -14,7 +14,6 @@ import {
 import { BaseCurrencyOption } from '@suite-common/wallet-types';
 
 import {
-    TradingCryptoListProps,
     TradingGetCryptoQuoteAmountProps,
     TradingGetFiatCurrenciesProps,
     TradingGetPaymentMethodProps,
@@ -128,18 +127,18 @@ export const getSelectQuoteTyped = (
     return selectQuote;
 };
 
-export const getSelectedCrypto = (
+export const getSelectedCryptoId = (
     context: TradingFormContextValues<TradingType>,
-): TradingCryptoListProps | null | undefined => {
+): CryptoId | null => {
     if (isTradingExchangeContext(context)) {
-        return context.getValues().receiveCryptoSelect;
+        return context.getValues().receiveCryptoSelect?.id ?? null;
     }
 
     if (isTradingSellContext(context)) {
-        return context.getValues().sendCryptoSelect;
+        return context.getValues().sendCryptoSelect?.value ?? null;
     }
 
-    return context.getValues().cryptoSelect;
+    return context.getValues().cryptoSelect.id ?? null;
 };
 
 export const getSelectedTradingCurrency = (
