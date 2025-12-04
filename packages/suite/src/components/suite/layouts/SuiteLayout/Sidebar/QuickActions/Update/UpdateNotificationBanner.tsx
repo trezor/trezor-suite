@@ -3,11 +3,12 @@ import { MouseEvent } from 'react';
 import { type Variants, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import {
     UpdateStatus,
@@ -16,7 +17,6 @@ import {
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
 } from './updateQuickActionTypes';
-import { Translation, TranslationKey } from '../../../../../Translation';
 
 type ContainerProps = { $elevation: Elevation };
 
@@ -80,8 +80,7 @@ export const UpdateNotificationBanner = ({
     onClose,
 }: UpdateNotificationBannerProps) => {
     const dispatch = useDispatch();
-    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
+    const discoveryInProgress = useSelector(selectHasRunningDiscovery);
 
     const translationHeader =
         updateStatusSuite !== 'up-to-date' // Update suite first, because it will contain the newest firmware

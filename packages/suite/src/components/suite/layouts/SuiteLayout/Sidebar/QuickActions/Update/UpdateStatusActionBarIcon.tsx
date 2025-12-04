@@ -2,22 +2,14 @@ import { useDispatch } from 'react-redux';
 
 import styled, { DefaultTheme, css, useTheme } from 'styled-components';
 
-import {
-    ComponentWithSubIcon,
-    Icon,
-    IconSize,
-    ManagedTooltipProps,
-    Tooltip,
-    getIconSize,
-    iconSizes,
-} from '@trezor/components';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { ComponentWithSubIcon, Icon, IconSize, getIconSize, iconSizes } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { CSSColor, Color, borders } from '@trezor/theme';
 
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { useDevice, useSelector } from 'src/hooks/suite';
 
-import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import { QuickActionButton } from '../QuickActionButton';
 import { UpdateIconGroup } from './UpdateIconGroup';
 import { UpdateTooltip } from './UpdateTooltip';
@@ -157,19 +149,17 @@ const SuiteUpdateIcon = ({ iconSize, updateStatus, variant }: SuiteUpdateIconPro
 };
 
 type UpdateStatusActionBarIconProps = {
-    showUpdateBannerNotification: boolean;
-    hideDeviceUpdateStatusBar?: boolean;
+    hideUpdateQuickAction: boolean;
 };
 
 export const UpdateStatusActionBarIcon = ({
-    showUpdateBannerNotification,
-    hideDeviceUpdateStatusBar,
+    hideUpdateQuickAction,
 }: UpdateStatusActionBarIconProps) => {
     const theme = useTheme();
 
     const { updateStatus, updateStatusDevice, updateStatusSuite } = useUpdateStatus();
-    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
+    const discoveryInProgress = useSelector(selectHasRunningDiscovery);
+    const displayDeviceUpdateStatusBar = !discoveryInProgress;
 
     const { device } = useDevice();
     const dispatch = useDispatch();
@@ -181,7 +171,9 @@ export const UpdateStatusActionBarIcon = ({
     const isDesktopSuite = isDesktop();
 
     const suiteOnClick = mapSuiteUpdateToClick[updateStatusSuite];
-    const deviceOnClick = mapDeviceUpdateToClick[updateStatusDevice];
+    const deviceOnClick = displayDeviceUpdateStatusBar
+        ? mapDeviceUpdateToClick[updateStatusDevice]
+        : null;
 
     const suiteOnClickHandler = suiteOnClick ? () => suiteOnClick({ dispatch }) : undefined;
     const deviceOnClickHandler = deviceOnClick ? () => deviceOnClick({ dispatch }) : undefined;
@@ -194,62 +186,54 @@ export const UpdateStatusActionBarIcon = ({
         }
     };
 
-    const displayDeviceUpdateStatusBar = !hideDeviceUpdateStatusBar && !discoveryInProgress;
-
     const anyUpdateInfoAvailable = isDesktopSuite || displayDeviceUpdateStatusBar;
 
-    const getTooltip = (): Partial<ManagedTooltipProps> => ({
-        isActive: !showUpdateBannerNotification,
-        content: (
-            <UpdateTooltip
-                displayDeviceUpdateStatus={displayDeviceUpdateStatusBar}
-                updateStatusDevice={updateStatusDevice}
-                onClickSuite={suiteOnClickHandler}
-                updateStatusSuite={updateStatusSuite}
-                onClickDevice={deviceOnClickHandler}
-            />
-        ),
-    });
-
-    const tooltip = getTooltip();
+    const tooltipContent = (
+        <UpdateTooltip
+            displayDeviceUpdateStatus={displayDeviceUpdateStatusBar}
+            updateStatusDevice={updateStatusDevice}
+            onClickSuite={suiteOnClickHandler}
+            updateStatusSuite={updateStatusSuite}
+            onClickDevice={deviceOnClickHandler}
+        />
+    );
 
     if (!anyUpdateInfoAvailable) {
         return null;
     }
 
     return (
-        <div>
-            <QuickActionButton onClick={handleClick}>
-                <ComponentWithSubIcon
-                    variant={variant}
-                    icon={
-                        <Icon
-                            name={updateSubIcon}
-                            color={theme.iconDefaultInverted}
-                            size={iconSizes.extraSmall}
+        <QuickActionButton
+            onClick={handleClick}
+            tooltip={{ content: tooltipContent, isActive: !hideUpdateQuickAction }}
+        >
+            <ComponentWithSubIcon
+                variant={variant}
+                icon={
+                    <Icon
+                        name={updateSubIcon}
+                        color={theme.iconDefaultInverted}
+                        size={iconSizes.extraSmall}
+                    />
+                }
+            >
+                <UpdateIconGroup $variant={variant}>
+                    {device?.features !== undefined && (
+                        <DeviceUpdateIcon
+                            iconSize={iconSize}
+                            updateStatus={updateStatusDevice}
+                            variant={variant}
                         />
-                    }
-                >
-                    <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip}>
-                        <UpdateIconGroup $variant={variant}>
-                            {device?.features !== undefined && (
-                                <DeviceUpdateIcon
-                                    iconSize={iconSize}
-                                    updateStatus={updateStatusDevice}
-                                    variant={variant}
-                                />
-                            )}
-                            {isDesktopSuite && (
-                                <SuiteUpdateIcon
-                                    iconSize={iconSize}
-                                    updateStatus={updateStatusSuite}
-                                    variant={variant}
-                                />
-                            )}
-                        </UpdateIconGroup>
-                    </Tooltip>
-                </ComponentWithSubIcon>
-            </QuickActionButton>
-        </div>
+                    )}
+                    {isDesktopSuite && (
+                        <SuiteUpdateIcon
+                            iconSize={iconSize}
+                            updateStatus={updateStatusSuite}
+                            variant={variant}
+                        />
+                    )}
+                </UpdateIconGroup>
+            </ComponentWithSubIcon>
+        </QuickActionButton>
     );
 };
