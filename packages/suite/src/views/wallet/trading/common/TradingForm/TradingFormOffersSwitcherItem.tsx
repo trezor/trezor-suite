@@ -64,7 +64,9 @@ export const TradingFormOffersSwitcherItem = ({
                 <Radio
                     labelAlignment="start"
                     isChecked={isSelected}
-                    onClick={() => onSelect(quote)}
+                    onClick={() => {
+                        onSelect(quote);
+                    }}
                 >
                     {content}
                 </Radio>

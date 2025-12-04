@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 
 import { TRADING_FORM_AMOUNT_IN_CRYPTO, useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -29,9 +29,10 @@ export const TradingFormInputFiatCrypto = memo(function TradingFormInputFiatCryp
         form: {
             state: { toggleAmountInCrypto },
         },
+        ...context
     } = useTradingFormContext();
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
-    const { getValues } = useFormContext<TradingAllFormProps>();
+    const getValues = context.getValues as UseFormReturn<TradingAllFormProps>['getValues'];
 
     const amountInCrypto = getValues(TRADING_FORM_AMOUNT_IN_CRYPTO);
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });

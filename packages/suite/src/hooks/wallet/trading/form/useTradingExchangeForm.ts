@@ -41,6 +41,7 @@ import {
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { useCurrentRef } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -170,9 +171,8 @@ export const useTradingExchangeForm = ({
         receiveCryptoSelect,
         transactionData,
         ethereumAdjustGasLimit,
-        outputs,
     } = getValues();
-    const output = outputs?.[0];
+    const output = values.outputs?.[0];
     const outputAddress = output?.address;
 
     const tradingReceiveAddress = useTradingReceiveAddress({
@@ -193,7 +193,7 @@ export const useTradingExchangeForm = ({
     });
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = !!output?.amount && !!receiveCryptoSelect;
+    const hasValues = !!output?.amount && !!values.receiveCryptoSelect;
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
@@ -693,11 +693,13 @@ export const useTradingExchangeForm = ({
         await handleChange();
     };
 
+    const composeRequestRef = useCurrentRef(composeRequest);
     const fetchFeesAndCompose = useCallback(async () => {
         await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
-        composeRequest();
-    }, [dispatch, account.symbol, composeRequest]);
+        composeRequestRef.current();
+    }, [dispatch, account.symbol, composeRequestRef]);
 
+    const setValueRef = useCurrentRef(setValue);
     useEffect(() => {
         const networkType = getNetworkType(account.symbol);
 
@@ -706,11 +708,11 @@ export const useTradingExchangeForm = ({
             case 'solana':
             case 'ripple':
             case 'stellar':
-                return setValue('fromAddress', account.descriptor);
+                return setValueRef.current('fromAddress', account.descriptor);
             default:
-                return setValue('fromAddress', undefined);
+                return setValueRef.current('fromAddress', undefined);
         }
-    }, [account, setValue]);
+    }, [account.symbol, account.descriptor, setValueRef]);
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
@@ -755,20 +757,21 @@ export const useTradingExchangeForm = ({
         isLoadingQuote,
     ]);
 
+    const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
     // fetch fees when transactionData changes
     useEffect(() => {
         if (pageType !== 'form') return;
 
-        fetchFeesAndCompose();
-    }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType, fetchFeesAndCompose]);
+        fetchFeesAndComposeRef.current();
+    }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType, fetchFeesAndComposeRef]);
 
     useEffect(() => {
-        setValue('receiveAddress', receiveAddress);
-    }, [receiveAddress, setValue]);
+        setValueRef.current('receiveAddress', receiveAddress);
+    }, [receiveAddress, setValueRef]);
 
     useEffect(() => {
-        setValue('extraField', extraField);
-    }, [extraField, setValue]);
+        setValueRef.current('extraField', extraField);
+    }, [extraField, setValueRef]);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));

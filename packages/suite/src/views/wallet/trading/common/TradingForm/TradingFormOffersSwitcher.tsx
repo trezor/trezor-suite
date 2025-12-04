@@ -117,9 +117,9 @@ export const TradingFormOffersSwitcher = ({
                                 <TradingFormOffersSwitcherItem
                                     selectedExchangeType={exchangeType}
                                     isSelectable={!hasSingleOption}
-                                    onSelect={() =>
-                                        setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX)
-                                    }
+                                    onSelect={() => {
+                                        setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX);
+                                    }}
                                     providers={providers}
                                     quote={cexQuote}
                                 />
