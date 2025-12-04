@@ -16,7 +16,7 @@ import { crc32 } from './crypto/crc32';
 import { getHandshakeHash, getTrezorState } from './crypto/pairing';
 import { getIvFromNonce } from './crypto/tools';
 import { ThpDeviceProperties, ThpError, ThpMessageResponse } from './messages';
-import { clearControlBit, readThpHeader } from './utils';
+import { readThpHeader } from './utils';
 
 type ThpMessage = ReturnType<TransportProtocolDecode> & {
     magic: number;
@@ -188,8 +188,7 @@ const validateCrc = (decodedMessage: ReturnType<TransportProtocolDecode>) => {
 export const decodeSendAck = (decodedMessage: MessageV2) => {
     validateCrc(decodedMessage);
 
-    const header = readThpHeader(decodedMessage.header);
-    const magic = clearControlBit(header.magic);
+    const { magic } = readThpHeader(decodedMessage.header);
     if (magic === THP_ERROR_HEADER_BYTE) {
         return decodeThpError(decodedMessage.payload);
     }
@@ -217,7 +216,7 @@ export const decode = (
         thpState,
     };
 
-    const magic = clearControlBit(message.magic);
+    const { magic } = header;
     if (magic === THP_ERROR_HEADER_BYTE) {
         return decodeThpError(message.payload);
     }
