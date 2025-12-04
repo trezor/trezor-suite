@@ -566,10 +566,7 @@ export class TradingPage {
 
     @step()
     async openConfirmAndSendModal() {
-        await expect(this.confirmOnTrezorAndSend).toBeVisible({ timeout: 30_000 });
-        await expect(this.confirmOnTrezorAndSend).toBeEnabled();
-
-        await this.confirmOnTrezorAndSend.click();
+        await this.confirmOnTrezorAndSend.click({ timeout: 30_000 });
         await expect(this.modal).toBeVisible();
         await expect(this.devicePrompt.sendButton).toBeDisabled();
     }
@@ -633,7 +630,7 @@ export class TradingPage {
     @step()
     async waitForRedirectCompletion() {
         await expect(this.page.getByText('Buy & sell')).toBeHidden();
-        await expect(this.confirmationSection).toBeVisible({ timeout: 30_000 });
+        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 });
     }
 
     @step()
@@ -644,7 +641,7 @@ export class TradingPage {
 
     @step()
     async verifySellFormOpened(cryptoName: RegExp) {
-        await expect(this.assetPickerInput).toHaveText(cryptoName);
+        await expect(this.accountDropdown).toHaveText(cryptoName);
         await expect(this.page.getByText('You sell')).toBeVisible();
     }
 
