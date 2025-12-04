@@ -13,10 +13,12 @@ describe('protocol-tpn', () => {
                 TrezorPushNotificationType.BOOT,
                 TrezorPushNotificationMode.NormalMode,
             ];
-            const result = tpn.decode(message);
-            expect(result).toEqual({
-                type: TrezorPushNotificationType.BOOT,
-                mode: TrezorPushNotificationMode.NormalMode,
+            expect(tpn.decode(message)).toEqual({
+                success: true,
+                payload: {
+                    type: TrezorPushNotificationType.BOOT,
+                    mode: TrezorPushNotificationMode.NormalMode,
+                },
             });
         });
 
@@ -26,40 +28,56 @@ describe('protocol-tpn', () => {
                 TrezorPushNotificationType.LOCK,
                 TrezorPushNotificationMode.BootloaderMode,
             ];
-            const result = tpn.decode(message);
-            expect(result).toEqual({
-                type: TrezorPushNotificationType.LOCK,
-                mode: TrezorPushNotificationMode.BootloaderMode,
+            expect(tpn.decode(message)).toEqual({
+                success: true,
+                payload: {
+                    type: TrezorPushNotificationType.LOCK,
+                    mode: TrezorPushNotificationMode.BootloaderMode,
+                },
             });
         });
 
-        it('should throw a protocol error for messages with incorrect version', () => {
+        it('should return a protocol error for messages with incorrect version', () => {
             const invalidVersionMessage = [
                 99,
                 TrezorPushNotificationType.BOOT,
                 TrezorPushNotificationMode.BootloaderMode,
             ];
-
-            expect(() => tpn.decode(invalidVersionMessage)).toThrow(PROTOCOL_MISSMATCH_VERSION);
+            expect(tpn.decode(invalidVersionMessage)).toEqual({
+                success: false,
+                error: PROTOCOL_MISSMATCH_VERSION,
+            });
         });
 
-        it('should throw a protocol error for messages with incorrect length', () => {
+        it('should correctly decode longer message but return a protocol error for shorter message', () => {
             const shortMessage = [1, 0];
             const longMessage = [1, 0, 1, 99];
 
-            expect(() => tpn.decode(shortMessage)).toThrow(PROTOCOL_MALFORMED);
-            expect(() => tpn.decode(longMessage)).toThrow(PROTOCOL_MALFORMED);
+            expect(tpn.decode(shortMessage)).toEqual({ success: false, error: PROTOCOL_MALFORMED });
+            expect(tpn.decode(longMessage)).toEqual({
+                success: true,
+                payload: {
+                    type: TrezorPushNotificationType.BOOT,
+                    mode: TrezorPushNotificationMode.BootloaderMode,
+                },
+            });
         });
 
-        it('should throw a protocol error for an unknown notification type', () => {
+        it('should return a protocol error for an unknown notification type', () => {
             const messageWithInvalidType = [Version.v1, 99, TrezorPushNotificationMode.NormalMode];
 
-            expect(() => tpn.decode(messageWithInvalidType)).toThrow(PROTOCOL_MALFORMED);
+            expect(tpn.decode(messageWithInvalidType)).toEqual({
+                success: false,
+                error: PROTOCOL_MALFORMED,
+            });
         });
 
-        it('should throw a protocol error for an unknown mode', () => {
+        it('should return a protocol error for an unknown mode', () => {
             const messageWithInvalidMode = [Version.v1, TrezorPushNotificationType.BOOT, 99];
-            expect(() => tpn.decode(messageWithInvalidMode)).toThrow(PROTOCOL_MALFORMED);
+            expect(tpn.decode(messageWithInvalidMode)).toEqual({
+                success: false,
+                error: PROTOCOL_MALFORMED,
+            });
         });
     });
 });
