@@ -112,6 +112,7 @@ export const verifyAuthenticityProof = async ({
     config,
     blacklistConfig,
     challengePrefix = 'AuthenticateDevice:',
+    bufferChunks = [],
 }: VerifyAuthenticityProofParams): Promise<VerifyAuthenticityProofResult> => {
     // Parse config with given device model, type of secure element and debug mode.
     const allRootPubKeys = getRootPubKeys({
@@ -200,15 +201,19 @@ export const verifyAuthenticityProof = async ({
 
     // 5. validate that the signature from AuthenticityProof was created using prefixed challenge **and** if DEVICES pubKey is not on blacklist
     const challengePrefixBuffer = Buffer.from(challengePrefix);
-    const prefixedChallenge = Buffer.concat([
-        bufferUtils.getChunkSize(challengePrefixBuffer.length),
-        challengePrefixBuffer,
-        bufferUtils.getChunkSize(challenge.length),
-        challenge,
-    ]);
+
+    const chunks =
+        bufferChunks && bufferChunks.length > 0
+            ? [challengePrefixBuffer, ...bufferChunks]
+            : [challengePrefixBuffer, challenge];
+
+    const prefixedBuffer = Buffer.concat(
+        chunks.flatMap(chunk => [bufferUtils.getChunkSize(chunk.byteLength), chunk]),
+    );
+
     const isSignatureValid = await verifySignatureFn(
         Buffer.from(deviceCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes),
-        prefixedChallenge,
+        prefixedBuffer,
         Buffer.from(signature, 'hex'),
     );
 
