@@ -1,4 +1,4 @@
-import { BackendType, Explorer, NetworkSymbol } from '@suite-common/wallet-config';
+import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TimerId } from '@trezor/type-utils';
 
 /**
@@ -31,7 +31,6 @@ export interface ConnectionStatus {
 
 export interface Blockchain extends ConnectionStatus {
     url?: string;
-    explorer: Explorer;
     blockHash: string;
     blockHeight: number;
     version: string;

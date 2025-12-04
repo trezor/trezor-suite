@@ -38,7 +38,6 @@ export const blockchainInitialState: BlockchainNetworks = networksCollection.red
     (state, network) => {
         state[network.symbol] = {
             connected: false,
-            explorer: network.explorer,
             blockHash: '0',
             blockHeight: 0,
             version: '0',
@@ -86,48 +85,8 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         return;
     }
 
-    const isHttp = isHttpProtocol(info.url); // can use dynamic backend url settings
-
-    // solana rpc nodes and stellar horizon nodes do not have explorer, so we cannot use backend as explorer
-    const isBackendAlsoExplorer =
-        network.networkType !== 'solana' && network.networkType !== 'stellar';
-
-    const useBackendAsExplorer = isHttp && isBackendAlsoExplorer;
-
     draft[network.symbol] = {
         url: info.url,
-        explorer: {
-            base: `${
-                useBackendAsExplorer
-                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.base)
-                    : network.explorer.base
-            }`,
-            tx: `${
-                useBackendAsExplorer
-                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.tx)
-                    : network.explorer.tx
-            }`,
-            queryString: network.explorer.queryString,
-            nft: network.explorer.nft
-                ? `${
-                      isHttp
-                          ? info.url + getBlockExplorerUrlSuffix(network.explorer.nft)
-                          : network.explorer.nft
-                  }`
-                : undefined,
-            address: `${
-                isHttp
-                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.address)
-                    : network.explorer.address
-            }`,
-            token: network.explorer.token
-                ? `${
-                      isHttp
-                          ? info.url + getBlockExplorerUrlSuffix(network.explorer.token)
-                          : network.explorer.token
-                  }`
-                : undefined,
-        },
         connected: true,
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
@@ -152,7 +111,6 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
         draft[network.symbol] = {
             ...draft[network.symbol],
             connected: false,
-            explorer: network.explorer,
             error,
         };
         delete draft[network.symbol].url;
