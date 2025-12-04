@@ -64,6 +64,13 @@ react-native-ble-plx
 react-native-mmkv
 react-freeze
 react-native-nitro-modules
+set.prototype.difference
+set.prototype.intersection
+set.prototype.isdisjointfrom
+set.prototype.issubsetof
+set.prototype.issupersetof
+set.prototype.symmetricdifference
+set.prototype.union
 sort-package-json
 terser-webpack-plugin
 typescript-eslint

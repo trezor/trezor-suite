@@ -6,6 +6,14 @@ import { install } from 'react-native-quick-crypto';
 import { CustomEvent } from '@whatwg-node/events'; // to work with @solana/kit
 import { Event, EventTarget } from 'event-target-shim'; // to work with @solana/kit
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'; // to work with @solana/kit
+// Shimming Set prototype methods
+import difference from 'set.prototype.difference';
+import intersection from 'set.prototype.intersection';
+import isDisjointFrom from 'set.prototype.isdisjointfrom';
+import isSubsetOf from 'set.prototype.issubsetof';
+import isSupersetOf from 'set.prototype.issupersetof';
+import symmetricDifference from 'set.prototype.symmetricdifference';
+import union from 'set.prototype.union';
 
 // Event, EventTarget and CustomEvent are needed for @solana/kit to work
 globalThis.Event = Event;
@@ -22,6 +30,14 @@ install();
 
 // The Buffer implementation from react-native-quick-crypto is not compatible with Trezor Connect.
 global.Buffer = require('buffer').Buffer;
+
+difference.shim();
+intersection.shim();
+isDisjointFrom.shim();
+isSubsetOf.shim();
+isSupersetOf.shim();
+symmetricDifference.shim();
+union.shim();
 
 global.process = {
     ...require('process'),
