@@ -15350,7 +15350,7 @@ __metadata:
     react-intl: "npm:^7.1.11"
     react-redux: "npm:9.2.0"
     react-select: "npm:^5.10.2"
-    react-toastify: "npm:^10.0.4"
+    react-toastify: "npm:^10.0.5"
     react-use: "npm:^17.6.0"
     react-zxing: "npm:^2.1.0"
     recharts: "npm:^2.15.3"
@@ -39778,7 +39778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-toastify@npm:^10.0.4":
+"react-toastify@npm:^10.0.5":
   version: 10.0.6
   resolution: "react-toastify@npm:10.0.6"
   dependencies:
