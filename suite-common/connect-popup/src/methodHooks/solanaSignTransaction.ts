@@ -5,8 +5,7 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
-import type { SolanaSignTransaction } from '@trezor/connect';
+import type { CallMethodKeys, SolanaSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
@@ -16,7 +15,7 @@ import { PostCallHookParams, PreCallHookParams } from './index';
 
 const temporaryAccounts: Account[] = [];
 
-const preCallHook = async <M extends keyof typeof TrezorConnect>({
+const preCallHook = async <M extends CallMethodKeys>({
     method,
     payload,
     getState,
@@ -71,9 +70,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
     }
 };
 
-export function postCallHook<M extends keyof typeof TrezorConnect>({
-    dispatch,
-}: PostCallHookParams<M>) {
+export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
     if (temporaryAccounts.length) {
         // Remove temporary accounts
         dispatch(accountsActions.removeAccount(temporaryAccounts));
