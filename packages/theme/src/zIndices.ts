@@ -22,6 +22,7 @@ export const zIndices = {
     pageSubHeader: 11, // below PAGE_HEADER to be hidden beneath it, but above STICKY_BAR
     stickyBar: 10, // above page content to scroll over it
     secondaryStickyBar: 9, // below STICKY_BAR so that it can hide beneath it when no longer needed
+    labeling: 4,
     selectMenu: 3,
     onboardingForeground: 2, // for handling multiple layers on the onboarding page
     base: 1, // above static content to be fully visible

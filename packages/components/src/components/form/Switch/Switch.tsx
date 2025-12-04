@@ -101,7 +101,7 @@ export const Switch = ({
         onChange?.(!isChecked);
     };
 
-    const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleContainerClick = (e: React.MouseEvent<HTMLElement>) => {
         // Prevent handling clicks that originate from the input or label
         const target = e.target as HTMLElement;
         if (target.tagName === 'INPUT' || target.tagName === 'LABEL') return;

@@ -1,145 +1,232 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Badge, Box, IconButton, Row, Spinner, Tooltip, useElevation } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBorder,
-    spacings,
-    spacingsPx,
-    zIndices,
-} from '@trezor/theme';
+import { IconButton, IconButtonProps, Spinner, Tooltip } from '@trezor/components';
+import { zIndices } from '@trezor/theme';
+
+import type { SavingStatus } from './types';
 
 type ActionContainerProps = {
     onEdit: () => void;
-    onDelete: () => void;
-    onSave: () => void;
+    onDelete: () => void | Promise<void>;
+    onSubmit: () => void | Promise<void>;
+    onError: () => void;
     onCancel: () => void;
+    dataTestIdBase?: string;
     isLoading?: boolean;
     isEditable: boolean;
-    isJustSaved: boolean;
     isDisabled?: boolean;
     isHovered: boolean;
     isDeleteButtonVisible: boolean;
+    isSubmitButtonVisible: boolean;
+    savingStatus: SavingStatus;
 };
 
-const ActionsBackground = styled.div<{ $elevation: Elevation }>`
-    background: ${({ theme }) => mapElevationToBorder({ theme, $elevation: 2 })};
-    border-radius: ${borders.radii.full};
-    padding: ${spacingsPx.xxs};
-    margin-left: ${spacingsPx.xs};
+const Container = styled.div<{
+    $isActive: boolean;
+    $isDirty: boolean;
+    $savingStatus: SavingStatus;
+}>`
+    --base-transform: translateY(-50%);
+    --base-gap: calc(0.1em + 2px);
+
+    display: flex;
+    align-items: center;
+    gap: var(--base-gap);
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    padding: var(--base-gap);
+    padding-left: calc(100% + 8px + var(--base-gap) * 2);
+    box-sizing: content-box;
+    min-height: 28px;
+    z-index: ${zIndices.labeling};
+    background: ${({ theme }) => theme.baseFillElementNeutralSoft};
+    border-radius: 8px;
+    transform: var(--base-transform) scaleX(0.9);
+    transform-origin: left;
+    opacity: 0;
+    pointer-events: none;
+
+    ${({ $isDirty }) =>
+        !$isDirty &&
+        css`
+            transition: 0.2s ease-in-out;
+        `}
+
+    ${({ $isActive }) =>
+        $isActive &&
+        css`
+            opacity: 1;
+            pointer-events: auto;
+            transform: var(--base-transform);
+        `}
+
+    ${({ $savingStatus }) =>
+        $savingStatus === 'saved' &&
+        css`
+            opacity: 0;
+            transition: 0.3s 2.7s opacity ease-in-out;
+        `}
 `;
 
 export const ActionsContainer = ({
     onEdit,
     onDelete,
-    onSave,
+    onSubmit,
+    onError,
     onCancel,
     isLoading,
     isEditable,
-    isJustSaved,
     isDisabled,
     isHovered,
     isDeleteButtonVisible,
+    isSubmitButtonVisible,
+    savingStatus,
+    dataTestIdBase,
 }: ActionContainerProps) => {
-    const { elevation } = useElevation();
+    const [isDirty, setIsDirty] = useState(false);
+
+    const isActive = Boolean(isEditable || isHovered || savingStatus !== 'idle');
+
+    useEffect(() => {
+        if (!isActive) {
+            setIsDirty(false);
+        }
+    }, [isActive]);
+
+    if (isDisabled) {
+        return null;
+    }
+
+    const commonProps: Partial<IconButtonProps> = {
+        isDisabled,
+        tabIndex: isActive ? 0 : -1,
+        priority: 'secondary',
+        size: 'small',
+    };
+
+    const getContent = () => {
+        if (isLoading || ['saving', 'saved'].includes(savingStatus)) {
+            return (
+                <Spinner
+                    size={20}
+                    margin={{ right: 4 }}
+                    hasFinished={!isLoading}
+                    isGrey={isLoading}
+                    data-testid={savingStatus === 'saved' ? `${dataTestIdBase}/success` : undefined}
+                />
+            );
+        }
+
+        if (savingStatus === 'error') {
+            return (
+                <Tooltip
+                    content={
+                        <FormattedMessage
+                            id="TR_LABELING_ERROR"
+                            defaultMessage="There was an error saving the label. Please try again."
+                        />
+                    }
+                    hasArrow
+                    delayShow={0}
+                    cursor="inherit"
+                >
+                    <IconButton
+                        intent="critical"
+                        icon="arrowsClockwise"
+                        onClick={onError}
+                        {...commonProps}
+                    />
+                </Tooltip>
+            );
+        }
+
+        if (isEditable) {
+            return (
+                <>
+                    {isSubmitButtonVisible && (
+                        <IconButton
+                            data-testid="@metadata/submit"
+                            icon="check"
+                            onClick={onSubmit}
+                            {...commonProps}
+                        />
+                    )}
+                    <IconButton
+                        data-testid="@metadata/cancel"
+                        icon="x"
+                        intent="neutral"
+                        onClick={onCancel}
+                        {...commonProps}
+                    />
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <Tooltip
+                        content={
+                            <FormattedMessage id="TR_LABELING_EDIT_LABEL" defaultMessage="Edit" />
+                        }
+                        hasArrow
+                        delayShow={1000}
+                        cursor="inherit"
+                    >
+                        <IconButton
+                            data-testid={
+                                isDeleteButtonVisible
+                                    ? `${dataTestIdBase}/edit-label-button`
+                                    : `${dataTestIdBase}/add-label-button`
+                            }
+                            intent="neutral"
+                            icon="pencil"
+                            onClick={() => {
+                                setIsDirty(true);
+                                onEdit();
+                            }}
+                            {...commonProps}
+                        />
+                    </Tooltip>
+                    {isDeleteButtonVisible && (
+                        <Tooltip
+                            content={
+                                <FormattedMessage
+                                    id="TR_LABELING_REMOVE_LABEL"
+                                    defaultMessage="Remove"
+                                />
+                            }
+                            hasArrow
+                            delayShow={1000}
+                            cursor="inherit"
+                        >
+                            <IconButton
+                                intent="critical"
+                                icon="trash"
+                                onClick={() => {
+                                    setIsDirty(true);
+                                    onDelete();
+                                }}
+                                {...commonProps}
+                            />
+                        </Tooltip>
+                    )}
+                </>
+            );
+        }
+    };
 
     return (
-        <Box
-            as="span"
-            position={{ type: 'absolute', top: 0, left: '100%' }}
-            height="100%"
-            zIndex={zIndices.tooltip}
-            cursor="pointer"
+        <Container
+            onClick={e => e.stopPropagation()}
+            $isActive={isActive}
+            $isDirty={isDirty}
+            $savingStatus={savingStatus}
+            inert={!isActive}
         >
-            <Row alignItems="center" height="100%">
-                {isLoading ? (
-                    <ActionsBackground $elevation={elevation}>
-                        <Row gap={spacings.xxs}>
-                            <Spinner size={20} />
-                            <FormattedMessage id="TR_LOADING" defaultMessage="Loading" />
-                        </Row>
-                    </ActionsBackground>
-                ) : (
-                    <>
-                        {!isJustSaved && isEditable && (
-                            <ActionsBackground $elevation={elevation}>
-                                <Row gap={spacings.xxs}>
-                                    <Tooltip
-                                        content={
-                                            <FormattedMessage
-                                                id="TR_CONFIRM"
-                                                defaultMessage="Confirm"
-                                            />
-                                        }
-                                        hasArrow
-                                        delayShow={1000}
-                                        cursor="inherit"
-                                    >
-                                        <IconButton
-                                            icon="check"
-                                            size="small"
-                                            onClick={onSave}
-                                            isDisabled={isDisabled}
-                                        />
-                                    </Tooltip>
-                                    <Tooltip
-                                        content={
-                                            <FormattedMessage
-                                                id="TR_CANCEL"
-                                                defaultMessage="Cancel"
-                                            />
-                                        }
-                                        hasArrow
-                                        delayShow={1000}
-                                        cursor="inherit"
-                                    >
-                                        <IconButton
-                                            intent="critical"
-                                            icon="x"
-                                            size="small"
-                                            onClick={onCancel}
-                                            isDisabled={isDisabled}
-                                        />
-                                    </Tooltip>
-                                </Row>
-                            </ActionsBackground>
-                        )}
-                        {!isJustSaved && !isEditable && isHovered && (
-                            <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
-                                <IconButton
-                                    intent="neutral"
-                                    priority="secondary"
-                                    icon="pencil"
-                                    size="small"
-                                    onClick={onEdit}
-                                    isDisabled={isDisabled}
-                                />
-                                {isDeleteButtonVisible && (
-                                    <IconButton
-                                        intent="neutral"
-                                        icon="x"
-                                        size="small"
-                                        priority="secondary"
-                                        onClick={onDelete}
-                                        isDisabled={isDisabled}
-                                    />
-                                )}
-                            </Row>
-                        )}
-                        {isJustSaved && (
-                            <Row gap={spacings.xxs} margin={{ left: spacings.sm }}>
-                                <Badge iconLeft="check" intent="brand">
-                                    <FormattedMessage id="TR_SAVED" defaultMessage="Saved" />
-                                </Badge>
-                            </Row>
-                        )}
-                    </>
-                )}
-            </Row>
-        </Box>
+            {getContent()}
+        </Container>
     );
 };
