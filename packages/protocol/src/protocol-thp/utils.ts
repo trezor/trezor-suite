@@ -48,7 +48,7 @@ export const readThpHeader = (bytes: Buffer) => {
     const channel = bytes.subarray(1, 3);
 
     return {
-        magic,
+        magic: clearControlBit(magic),
         ackBit,
         sequenceBit,
         channel,
@@ -71,8 +71,7 @@ export const isAckExpected = (bytesOrMagic: Buffer | number[]) => {
 
 // get expected responses from decoded request data
 export const getExpectedResponses = (bytes: Buffer) => {
-    const header = readThpHeader(bytes);
-    const magic = clearControlBit(header.magic);
+    const { magic } = readThpHeader(bytes);
 
     if (magic === THP_CREATE_CHANNEL_REQUEST) {
         return [THP_CREATE_CHANNEL_RESPONSE];
@@ -121,7 +120,7 @@ export const isExpectedResponse = (bytes: Buffer, state: ThpState) => {
         return false;
     }
 
-    const magic = clearControlBit(header.magic);
+    const { magic } = header;
     if (magic === THP_ERROR_HEADER_BYTE) {
         // ThpError is always expected
         return true;
