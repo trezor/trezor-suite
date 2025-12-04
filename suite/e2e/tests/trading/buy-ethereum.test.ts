@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -22,7 +24,11 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] },
     test('Enable Ethereum on account by buying it', async ({ page, walletPage, tradingPage }) => {
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.openTradingGlobalButton.click();
-            await tradingPage.selectAccount('Ethereum', 'eth');
+            await tradingPage.selectReceiveAssetInAssetPicker({
+                searchFilter: 'Ethereum',
+                networkFilter: 'eth',
+                receiveAsset: 'ethereum' as CryptoId,
+            });
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
                 cryptoCurrency: 'ethereum',

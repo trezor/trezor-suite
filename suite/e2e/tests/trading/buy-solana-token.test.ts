@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -32,13 +34,18 @@ test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, (
 
     test('Buy Solana Jupiter token - amount specified in crypto', async ({ page, tradingPage }) => {
         await test.step('Request a specific crypto amount of Jupiter token to buy', async () => {
-            await tradingPage.selectAccount('Jupiter', 'sol');
+            const cryptoId = 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId;
+            await tradingPage.selectReceiveAssetInAssetPicker({
+                networkFilter: 'sol',
+                searchFilter: 'Jupiter',
+                receiveAsset: cryptoId,
+            });
             await tradingPage.waitForOffersSync();
             await tradingPage.youPayFiatCryptoSwitchButton.click();
             const isCryptoInput = true;
             await tradingPage.fillBuyForm({
                 amount: cryptoAmount,
-                cryptoCurrency: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+                cryptoCurrency: cryptoId,
                 wantCrypto: isCryptoInput,
                 selectReceiveAddress: async () => {
                     await tradingPage.selectSuiteReceiveAccount(0);

@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -42,8 +44,11 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
                 amount: sendAmount,
                 sendCurrency: 'ethereum',
                 sendTicker: 'ETH',
-                receiveCurrency: 'Bitcoin',
-                receiveSymbol: 'btc',
+                receiveAsset: {
+                    searchFilter: 'Bitcoin',
+                    networkFilter: 'btc',
+                    receiveAsset: 'bitcoin' as CryptoId,
+                },
                 receiveNetwork: 'bitcoin',
                 receiveAddress,
             });

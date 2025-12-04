@@ -15,7 +15,7 @@ export const TradingFeaturedOffers = () => {
         quotes,
     } = context;
 
-    const result = useMemo(() => {
+    const featuredAndBestRatedQuotes = useMemo(() => {
         const featuredQuotes = quotes?.filter(quote => quote.infoNote);
         const noFeaturedOffers = !featuredQuotes || featuredQuotes.length === 0;
         if (state.isFormLoading || state.isFormInvalid || noFeaturedOffers) return null;
@@ -28,9 +28,9 @@ export const TradingFeaturedOffers = () => {
         };
     }, [quotes, state.isFormInvalid, state.isFormLoading, type]);
 
-    if (!result) return null;
+    if (!featuredAndBestRatedQuotes) return null;
 
-    const { featuredQuotes, bestRatedQuote } = result;
+    const { featuredQuotes, bestRatedQuote } = featuredAndBestRatedQuotes;
 
     return (
         <Column>

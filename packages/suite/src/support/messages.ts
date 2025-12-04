@@ -11008,4 +11008,24 @@ export default defineMessages({
         id: 'TR_REINSTALL',
         defaultMessage: 'Reinstall',
     },
+    TR_SWAP_ASSET_PICKER_HEADING: {
+        id: 'TR_SWAP_ASSET_PICKER_HEADING',
+        defaultMessage: 'To',
+    },
+    TR_ASSET_PICKER_SEARCH_PLACEHOLDER: {
+        id: 'TR_ASSET_PICKER_SEARCH_PLACEHOLDER',
+        defaultMessage: 'Search coin or token',
+    },
+    TR_ASSET_PICKER_YOUR_ASSETS: {
+        id: 'TR_ASSET_PICKER_YOUR_ASSETS',
+        defaultMessage: 'Your assets',
+    },
+    TR_ASSET_PICKER_ALL_ASSETS: {
+        id: 'TR_ASSET_PICKER_ALL_ASSETS',
+        defaultMessage: 'All assets',
+    },
+    TR_ASSET_PICKER_SEARCH_NO_RESULTS: {
+        id: 'TR_ASSET_PICKER_SEARCH_NO_RESULTS',
+        defaultMessage: 'No coin or token found',
+    },
 } as const);

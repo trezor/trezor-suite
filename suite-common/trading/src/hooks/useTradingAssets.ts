@@ -25,12 +25,7 @@ import {
 } from '../utils/infoUtils';
 
 const supportedAddressValidatorSymbols = new Set(getCurrencies().map(c => c.symbol));
-const mainnets = new Set(
-    getMainnets()
-        .map(network => network.symbol)
-        // TODO: remove this once axax is moved from experimental features
-        .concat('avax'),
-);
+const mainnets = new Set(getMainnets().map(network => network.symbol));
 
 function hasSupportedAddressValidator(platforms: Platforms, coins: Coins, cryptoId: CryptoId) {
     const prodCryptoId = testnetToProdCryptoId(cryptoId);

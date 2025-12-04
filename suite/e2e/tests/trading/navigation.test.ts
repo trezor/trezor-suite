@@ -51,7 +51,7 @@ test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
 
             await test.step('Buy from token', async () => {
                 await walletPage.openBuyTradingOfToken('eth', 'TrueUSD');
-                await tradingPage.verifyBuyFormOpened(/TrueUSD/);
+                await tradingPage.verifyBuyFormOpened(/TUSD/);
             });
 
             // SELL
