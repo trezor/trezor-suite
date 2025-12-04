@@ -631,7 +631,6 @@ const intlMock = {
 const mockedBlockchainNetworks = networksCollection.reduce((result, network) => {
     result[network.symbol] = {
         connected: false,
-        explorer: network.explorer,
         blockHash: '0',
         blockHeight: 0,
         version: '0',
