@@ -644,22 +644,26 @@ export const networks = {
     },
 } as const satisfies Networks;
 
-type NetworksConfig = typeof networks;
+type NetworksConfigs = typeof networks;
 
-export type NetworkDisplaySymbol = NetworksConfig[keyof NetworksConfig]['displaySymbol'];
+export type NetworkConfig = NetworksConfigs[keyof NetworksConfigs];
+
+export type NetworkConfigWithoutTestnets = Exclude<NetworkConfig, { testnet: true }>;
+
+export type NetworkDisplaySymbol = NetworkConfig['displaySymbol'];
 
 export type NetworkWithFeature<TFeature extends NetworkFeature> = {
-    [S in keyof NetworksConfig]: TFeature extends NetworksConfig[S]['features'][number]
-        ? NetworksConfig[S]
+    [S in keyof NetworksConfigs]: TFeature extends NetworksConfigs[S]['features'][number]
+        ? NetworksConfigs[S]
         : never;
-}[keyof NetworksConfig];
+}[keyof NetworksConfigs];
 
 export type StakingNetworkSymbol = NetworkWithFeature<'staking'>['symbol'];
 
-export type StakingNetworkType = NetworksConfig[StakingNetworkSymbol]['networkType'];
+export type StakingNetworkType = NetworksConfigs[StakingNetworkSymbol]['networkType'];
 
 export const [STAKING_SYMBOLS, STAKING_TYPES] = (
-    Object.entries(networks) as Array<[keyof NetworksConfig, NetworksConfig[keyof NetworksConfig]]>
+    Object.entries(networks) as Array<[keyof NetworksConfigs, NetworkConfig]>
 ).reduce<[StakingNetworkSymbol[], StakingNetworkType[]]>(
     (acc, [symbol, { features, networkType }]) => {
         if ((features as readonly string[]).includes('staking')) {
