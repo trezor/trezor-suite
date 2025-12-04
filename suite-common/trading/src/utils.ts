@@ -54,8 +54,17 @@ type NetworkAndContractAddress = {
 export const parseCryptoId = (cryptoId: CryptoId): TradingParsedCryptoIdProps => {
     const parts = cryptoId.split(CRYPTO_PLATFORM_SEPARATOR);
 
+    // TODO: This casting doesn't make any sense. Return new type called `NetworkId` instead of `CryptoId`
     return { networkId: parts[0] as CryptoId, contractAddress: parts[1] };
 };
+
+export function composeCryptoId(coingeckoId: string, contractAddress?: string | null): CryptoId {
+    return (
+        contractAddress
+            ? `${coingeckoId}${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}`
+            : coingeckoId
+    ) as CryptoId;
+}
 
 export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
     const { contractAddress } = parseCryptoId(cryptoId);

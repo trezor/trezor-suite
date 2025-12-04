@@ -32,8 +32,11 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
                 amount: sendAmount,
                 sendCurrency: 'bitcoin',
                 sendTicker: 'BTC',
-                receiveCurrency: 'Ethereum',
-                receiveSymbol: 'eth',
+                receiveAsset: {
+                    searchFilter: 'Ethereum',
+                    networkFilter: 'eth',
+                    receiveAccount: 'eth',
+                },
                 receiveNetwork: 'ethereum',
                 receiveAddress,
             });

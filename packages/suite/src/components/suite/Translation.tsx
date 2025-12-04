@@ -8,6 +8,10 @@ import messages from '../../support/messages';
 
 export type TranslationKey = keyof typeof messages;
 
+export function isTranslationKey(key: unknown): key is TranslationKey {
+    return typeof key === 'string' && Object.hasOwn(messages, key);
+}
+
 export const Translation = ({ defaultMessage, id, values }: ExtendedMessageDescriptor) => {
     // prevent runtime errors
     if (!defaultMessage && id !== undefined && !messages[id]) {

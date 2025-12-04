@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import {
@@ -43,8 +45,11 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
                 amount: sendAmount,
                 sendCurrency: tetherMint,
                 sendTicker: 'USDT',
-                receiveCurrency: 'USDC',
-                receiveSymbol: 'sol',
+                receiveAsset: {
+                    searchFilter: 'USDC',
+                    networkFilter: 'sol',
+                    receiveAsset: usdcMint as CryptoId,
+                },
                 receiveNetwork: usdcMint,
                 receiveAddress,
                 selectReceiveAddress: async () => {

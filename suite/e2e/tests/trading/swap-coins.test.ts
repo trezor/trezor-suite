@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { localizeNumber } from '@suite-common/wallet-utils';
 import type { TranslationKey } from '@trezor/suite/src//components/suite/Translation';
 
@@ -66,8 +68,11 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 amount: sendAmount,
                 sendCurrency: 'solana',
                 sendTicker: 'SOL',
-                receiveCurrency: 'Bitcoin',
-                receiveSymbol: 'btc',
+                receiveAsset: {
+                    searchFilter: 'Bitcoin',
+                    networkFilter: 'btc',
+                    receiveAsset: 'bitcoin' as CryptoId,
+                },
                 receiveNetwork: 'bitcoin',
                 receiveAddress,
                 selectReceiveAddress: async () => {

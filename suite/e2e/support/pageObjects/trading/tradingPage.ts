@@ -1,7 +1,8 @@
 import { Locator, Page } from '@playwright/test';
+import { CryptoId } from 'invity-api';
 
 import { TradingCountryCode } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import messages from '@trezor/suite/src//support/messages';
 
@@ -23,16 +24,7 @@ const paymentMethodNameMap: Record<string, PaymentMethods> = {
     'Revolut Pay': 'revolutPay',
 };
 
-type AccountTabFilter =
-    | 'all-networks'
-    | 'eth'
-    | 'pol'
-    | 'bsc'
-    | 'arb'
-    | 'base'
-    | 'op'
-    | 'sol'
-    | 'avax';
+type AccountTabFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
 
 export class TradingPage {
     readonly fees: Fees;
@@ -58,15 +50,31 @@ export class TradingPage {
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
+
     readonly accountDropdown: Locator;
-    readonly accountSearchInput: Locator;
-    readonly accountTabFilter = (tab: AccountTabFilter) =>
-        this.page.getByTestId(`@trading/form/select-crypto/network-tab/${tab}`);
     readonly accountOption = (cryptoName: string, symbol?: NetworkSymbol) => {
         const suffix = symbol ? `${cryptoName}-${symbol}` : cryptoName;
 
         return this.page.getByTestId(`@trading/form/select-crypto/option/${suffix}`);
     };
+
+    readonly assetPickerInput: Locator;
+    readonly assetPickerSearchInput: Locator;
+    readonly assetPickerNetworkFilter: Locator;
+    readonly assetPickerDisplaySymbol: Locator;
+
+    readonly assetPickerNetworkFilterOption = (tab: AccountTabFilter) =>
+        this.page.getByTestId(`@trading/form/select-crypto/search/select-option/${tab}`);
+
+    readonly assetPickerTokenOption = (networkSymbol?: NetworkSymbol, tokenSymbol?: string) =>
+        this.page.getByTestId(`@trading/form/select-crypto/token/${networkSymbol}/${tokenSymbol}`);
+    readonly assetPickerAccountOption = (networkSymbol?: NetworkSymbol) =>
+        this.page.getByTestId(`@trading/form/select-crypto/account/${networkSymbol}`);
+    readonly assetPickerTopFiveOption = (id: CryptoId) =>
+        this.page.getByTestId(`@trading/form/select-crypto/top-five-assets/asset/${id}`);
+    readonly assetPickerAssetOption = (id: CryptoId) =>
+        this.page.getByTestId(`@trading/form/select-crypto/asset/${id}`);
+
     readonly paymentMethodDropdown: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
@@ -170,8 +178,18 @@ export class TradingPage {
         this.countryOfResidenceDropdown = this.page.getByTestId(
             '@trading/form/country-select/input',
         );
+
         this.accountDropdown = this.page.getByTestId('@trading/form/select-crypto/input');
-        this.accountSearchInput = this.page.getByTestId('@trading/form/select-crypto/search-input');
+
+        this.assetPickerInput = this.page.getByTestId('@trading/form/select-crypto/input');
+        this.assetPickerDisplaySymbol = this.page.getByTestId(
+            '@trading/form/select-crypto/display-symbol',
+        );
+        this.assetPickerSearchInput = this.page.getByTestId('@trading/form/select-crypto/search');
+        this.assetPickerNetworkFilter = this.page.getByTestId(
+            '@trading/form/select-crypto/search/select/input',
+        );
+
         this.paymentMethodDropdown = this.page.getByTestId(
             '@trading/form/payment-method-select/input',
         );
@@ -298,11 +316,36 @@ export class TradingPage {
     }
 
     @step()
-    async selectAccount(cryptoName: string, symbol: NetworkSymbol) {
-        await this.accountDropdown.click();
-        await this.accountTabFilter('all-networks').click();
-        await this.accountSearchInput.fill(cryptoName);
-        await this.accountOption(cryptoName, symbol).click();
+    async selectReceiveAssetInAssetPicker({
+        searchFilter,
+        networkFilter,
+        receiveAsset,
+        receiveAccount,
+    }: {
+        searchFilter?: string;
+        networkFilter?: AccountTabFilter;
+        receiveAsset?: CryptoId;
+        receiveAccount?: NetworkSymbol;
+    }) {
+        await this.assetPickerInput.click();
+
+        if (networkFilter) {
+            await this.assetPickerNetworkFilter.click();
+            await this.assetPickerNetworkFilterOption(networkFilter).click();
+        }
+
+        if (searchFilter) {
+            await this.assetPickerSearchInput.pressSequentially(searchFilter, { delay: 250 });
+            await this.assetPickerSearchInput.blur();
+        }
+
+        if (receiveAsset) {
+            await this.assetPickerAssetOption(receiveAsset).click();
+        }
+
+        if (receiveAccount) {
+            await this.assetPickerAccountOption(receiveAccount).click();
+        }
     }
 
     @step()
@@ -462,8 +505,7 @@ export class TradingPage {
         sendCurrency: string;
         accountIndex?: number;
         sendTicker: string;
-        receiveCurrency: string;
-        receiveSymbol: NetworkSymbol;
+        receiveAsset: Parameters<TradingPage['selectReceiveAssetInAssetPicker']>[0];
         receiveNetwork: string;
         receiveAddress?: string;
         fromAddress?: string;
@@ -473,7 +515,7 @@ export class TradingPage {
             this.swapFromAccountInput,
             this.swapFromAccountOption(params.sendCurrency).nth(params.accountIndex ?? 0),
         );
-        await this.selectAccount(params.receiveCurrency, params.receiveSymbol);
+        await this.selectReceiveAssetInAssetPicker(params.receiveAsset);
         // We should not fill in amount until account change takes effect = correct ticker is displayed
         await expect(this.swapAmountInputCurrencyTicker).toHaveText(params.sendTicker);
 
@@ -485,6 +527,8 @@ export class TradingPage {
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
         await expect(this.bestOfferAmount).toHaveText(/0 \w+/);
         await this.youPayCryptoInput.fill(params.amount);
+        await quotesResponsePromise;
+        await this.waitForOffersSync();
         await expect.soft(quotesRequestPromise).toHavePayload(
             {
                 receive: params.receiveNetwork,
@@ -495,8 +539,6 @@ export class TradingPage {
             },
             { omit: ['fromAddress'] },
         );
-        await quotesResponsePromise;
-        await this.waitForOffersSync();
     }
 
     @step()
@@ -524,6 +566,9 @@ export class TradingPage {
 
     @step()
     async openConfirmAndSendModal() {
+        await expect(this.confirmOnTrezorAndSend).toBeVisible({ timeout: 30_000 });
+        await expect(this.confirmOnTrezorAndSend).toBeEnabled();
+
         await this.confirmOnTrezorAndSend.click();
         await expect(this.modal).toBeVisible();
         await expect(this.devicePrompt.sendButton).toBeDisabled();
@@ -588,18 +633,18 @@ export class TradingPage {
     @step()
     async waitForRedirectCompletion() {
         await expect(this.page.getByText('Buy & sell')).toBeHidden();
-        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 });
+        await expect(this.confirmationSection).toBeVisible({ timeout: 30_000 });
     }
 
     @step()
     async verifyBuyFormOpened(cryptoName: RegExp) {
-        await expect(this.accountDropdown).toHaveText(cryptoName);
+        await expect(this.assetPickerDisplaySymbol).toHaveText(cryptoName);
         await expect(this.page.getByText('You buy')).toBeVisible();
     }
 
     @step()
     async verifySellFormOpened(cryptoName: RegExp) {
-        await expect(this.accountDropdown).toHaveText(cryptoName);
+        await expect(this.assetPickerInput).toHaveText(cryptoName);
         await expect(this.page.getByText('You sell')).toBeVisible();
     }
 
