@@ -1,5 +1,6 @@
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
+import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
 import { mockNotExpected } from '../../../tests/utils';
 import { asStorageId, createSuiteSyncStorageRepository } from '../createSuiteSyncStorageRepository';
 
@@ -25,5 +26,15 @@ describe(createSuiteSyncStorageRepository.name, () => {
         await repository.delete(storageId1);
         expect(storage.dispose).toHaveBeenCalledTimes(1);
         expect(repository.get(storageId1)).toBeNull();
+    });
+
+    it('sets the suite sync storage', () => {
+        const suiteSyncStorage = createSuiteSyncStorageMock();
+
+        const repository = createSuiteSyncStorageRepository();
+
+        expect(repository.get(storageId1)).toBeNull();
+        repository.set(storageId1, suiteSyncStorage);
+        expect(repository.get(storageId1)).toBe(suiteSyncStorage);
     });
 });
