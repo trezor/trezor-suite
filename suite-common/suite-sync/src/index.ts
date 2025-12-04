@@ -9,7 +9,7 @@ export {
 
 export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
-export { useSuiteSync } from './useSuiteSync';
+export { useToggleSuiteSyncMethods } from './useToggleSuiteSyncMethods';
 export { prepareSuiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';

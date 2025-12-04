@@ -10,11 +10,6 @@
         },
         {
             "path": "../../suite-common/suite-sync-storage"
-        },
-        {
-            "path": "../../suite-common/wallet-core"
-        },
-        { "path": "../alerts" },
-        { "path": "../intl" }
+        }
     ]
 }

@@ -18,10 +18,10 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/suite-sync": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "19.1.0",
         "react-redux": "9.2.0"

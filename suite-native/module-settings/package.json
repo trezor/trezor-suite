@@ -39,7 +39,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
-        "@suite-native/suite-sync": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",

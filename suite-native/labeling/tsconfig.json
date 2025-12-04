@@ -20,10 +20,10 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../suite-sync" },
         { "path": "../../packages/connect" }
     ]
 }
