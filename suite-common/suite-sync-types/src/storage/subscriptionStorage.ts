@@ -7,7 +7,7 @@ export type SubscriptionStorageParams = {
 
 export type SubscriptionStorage = {
     add: (params: SubscriptionStorageParams) => void;
-    disposeAll: (storageId: StorageId) => void;
+    dispose: (storageId: StorageId) => void;
     has: (storageId: StorageId) => boolean;
 };
 

@@ -9,6 +9,7 @@ import { createMockDeps } from '../../../tests/utils';
 import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
 import type { EnsureWalletSuiteSyncOnDeps } from '../createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOn } from '../createEnsureWalletSuiteSyncOn';
+import { createSubscriptionStorageMock } from '../createSubscriptionStorage.mock';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
@@ -34,11 +35,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             getState: () => createMockState([]),
             ensureSuiteSyncData: null,
-            subscriptionStorage: {
-                add: null,
-                disposeAll: null,
-                has: null,
-            },
+            subscriptionStorage: createSubscriptionStorageMock(),
             refreshSuiteSyncKeys: null,
             dispatch: null,
         });
@@ -61,11 +58,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             getState: () => createMockState([createDevice({ unavailableCapabilities })]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: null,
-            subscriptionStorage: {
-                add: null,
-                disposeAll: null,
-                has: null,
-            },
+            subscriptionStorage: createSubscriptionStorageMock(),
         });
 
         const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
@@ -86,11 +79,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             getState: () => createMockState([createDevice()]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
-            subscriptionStorage: {
-                add: null,
-                disposeAll: null,
-                has: null,
-            },
+            subscriptionStorage: createSubscriptionStorageMock(),
         });
 
         const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
@@ -108,11 +97,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             getState: () => createMockState([createDevice()]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
-            subscriptionStorage: {
-                add: null,
-                disposeAll: null,
-                has: null,
-            },
+            subscriptionStorage: createSubscriptionStorageMock(),
         });
 
         const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);

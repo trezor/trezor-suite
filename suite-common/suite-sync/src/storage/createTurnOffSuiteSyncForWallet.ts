@@ -14,6 +14,6 @@ export const createTurnOffSuiteSyncForWallet =
     async ({ deviceStaticSessionId }) => {
         const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
 
-        deps.subscriptionStorage.disposeAll(storageId);
+        deps.subscriptionStorage.dispose(storageId);
         await deps.suiteSyncStorageRepository.delete(storageId);
     };
