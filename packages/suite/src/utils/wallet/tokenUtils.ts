@@ -116,10 +116,13 @@ export const getTokens = <
     const unverifiedWithBalance: T[] = [];
     const unverifiedWithoutBalance: T[] = [];
 
+    const hiddenTokens = new Set(tokenDefinitions?.hide);
+    const shownTokens = new Set(tokenDefinitions?.show);
+
     filteredTokens.forEach(token => {
         const isKnown = isTokenDefinitionKnown(tokenDefinitions?.data, symbol, token.contract);
-        const isHidden = tokenDefinitions?.hide.includes(token.contract);
-        const isShown = tokenDefinitions?.show.includes(token.contract);
+        const isHidden = hiddenTokens.has(token.contract);
+        const isShown = shownTokens.has(token.contract);
 
         const query = searchQuery ? searchQuery.trim().toLowerCase() : '';
 
@@ -196,3 +199,12 @@ export const getTokenAddressTranslationId = (networkType: NetworkType) => {
             return 'TR_CONTRACT_ADDRESS';
     }
 };
+
+export function getAccountsWithPositiveBalanceOrVisibleTokens(
+    accounts: Account[],
+    tokenDefinitions: TokenDefinitionsState,
+): Account[] {
+    return accounts.filter(account =>
+        hasVisibleTokens(account.symbol, account.tokens, tokenDefinitions),
+    );
+}

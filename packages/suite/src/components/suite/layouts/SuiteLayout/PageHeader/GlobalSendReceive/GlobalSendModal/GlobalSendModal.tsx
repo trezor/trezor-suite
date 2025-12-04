@@ -9,9 +9,8 @@ import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
-    AssetRowSendFromAccount,
+    AssetRowAccountWithBalance,
     AssetRowToken,
-    AssetSearchWithNetworkFilter,
     AssetsList,
     AssetsListEmpty,
     AssetsModal,
@@ -26,6 +25,7 @@ import {
     GlobalSendListItem,
     useInsertGroupLabelsAndSpaces,
 } from './hooks/useInsertGroupLabelsAndSpaces';
+import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 
 type GlobalSendModalProps = {
     onCancel: (filledSearch: boolean) => void;
@@ -71,7 +71,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
                 case 'account':
                     return (
-                        <AssetRowSendFromAccount
+                        <AssetRowAccountWithBalance
                             account={item.account}
                             onClick={handleAccountClick}
                         />
