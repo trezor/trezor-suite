@@ -1,4 +1,10 @@
-import { useSuiteSync } from '@suite-common/suite-sync';
+import {
+    selectIsFeatureSuiteSyncAvailable,
+    selectIsSuiteSyncDebugEnabled,
+    selectIsSuiteSyncEnabled,
+    suiteSyncActions,
+    useToggleSuiteSyncMethods,
+} from '@suite-common/suite-sync';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -28,21 +34,25 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
             : undefined,
     );
 
-    const {
-        isSuiteSyncEnabled,
-        isSuiteSyncDebugEnabled,
-        isFeatureSuiteSyncAvailable,
-        toggleIsFeatureSuiteSyncAvailable,
-        disableSuiteSyncIfNeeded,
-        enableSuiteSyncIfNeeded: enableSuiteSyncIfNeededCommon,
-    } = useSuiteSync({
-        device,
-    });
+    const { disableSuiteSyncIfNeeded, enableSuiteSyncIfNeeded: enableSuiteSyncIfNeededCommon } =
+        useToggleSuiteSyncMethods();
+
+    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
+    const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
     const legacyDisableIfNeeded = () => {
         if (legacyMetadataState.enabled) dispatch(metadataActions.disableMetadata());
+    };
+
+    const toggleIsFeatureSuiteSyncAvailable = () => {
+        dispatch(
+            suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
+                isShownInSettings: !isFeatureSuiteSyncAvailable,
+            }),
+        );
     };
 
     const enableSuiteSyncIfNeeded = () => {
