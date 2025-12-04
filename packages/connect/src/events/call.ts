@@ -40,11 +40,24 @@ type CallApi = {
         ? never
         : UnwrappedMethod<TrezorConnect[K], { method: K }>;
 };
+type TopLevelMethods =
+    | 'cancel'
+    | 'dispose'
+    | 'init'
+    | 'manifest'
+    | 'off'
+    | 'on'
+    | 'removeAllListeners'
+    | 'setTransports'
+    | 'uiResponse';
 
-export type CallMethodUnion = CallApi[keyof CallApi];
+export type CallMethodKeys = Exclude<keyof CallApi, TopLevelMethods>;
+export type CallMethodUnion = CallApi[CallMethodKeys];
 export type CallMethodPayload = Parameters<CallMethodUnion>[0];
-export type CallMethodParams<M extends keyof CallApi> = Parameters<CallApi[M]>[0];
-export type CallMethodResponse<M extends keyof CallApi> = UnwrappedResponse<ReturnType<CallApi[M]>>;
+export type CallMethodParams<M extends CallMethodKeys> = Parameters<CallApi[M]>[0];
+export type CallMethodResponse<M extends CallMethodKeys> = UnwrappedResponse<
+    ReturnType<CallApi[M]>
+>;
 export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
 
 export type CallMethod = (params: CallMethodPayload) => Promise<any>;
@@ -63,7 +76,7 @@ export interface MethodResponseMessage {
     type: typeof RESPONSE_EVENT;
     id: number;
     success: boolean;
-    payload: CallMethodResponse<keyof CallApi>;
+    payload: CallMethodResponse<CallMethodKeys>;
     device?: DeviceIdentity;
 }
 

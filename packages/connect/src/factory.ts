@@ -1,7 +1,7 @@
 import type { EventEmitter } from 'events';
 
 import { UI } from './events';
-import type { CallMethod } from './events/call';
+import type { CallMethod, CallMethodKeys } from './events/call';
 import type { TrezorConnect } from './types';
 import type { InitType } from './types/api/init';
 
@@ -16,6 +16,95 @@ export interface ConnectFactoryDependencies<SettingsType extends Record<string, 
     cancel: TrezorConnect['cancel'];
     dispose: TrezorConnect['dispose'];
 }
+
+export const connectCallableMethods = [
+    'applyFlags',
+    'applySettings',
+    'authenticateDevice',
+    'authorizeCoinjoin',
+    'backupDevice',
+    'bleUnpair',
+    'blockchainDisconnect',
+    'blockchainEstimateFee',
+    'blockchainEvmRpcCall',
+    'blockchainGetAccountBalanceHistory',
+    'blockchainGetCurrentFiatRates',
+    'blockchainGetFiatRatesForTimestamps',
+    'blockchainGetInfo',
+    'blockchainGetTransactions',
+    'blockchainSetCustomBackend',
+    'blockchainSubscribe',
+    'blockchainSubscribeFiatRates',
+    'blockchainUnsubscribe',
+    'blockchainUnsubscribeFiatRates',
+    'cancelCoinjoinAuthorization',
+    'cardanoComposeTransaction',
+    'cardanoGetAddress',
+    'cardanoGetNativeScriptHash',
+    'cardanoGetPublicKey',
+    'cardanoSignMessage',
+    'cardanoSignTransaction',
+    'changeLanguage',
+    'changePin',
+    'changeWipeCode',
+    'cipherKeyValue',
+    'composeTransaction',
+    'discoverAccounts',
+    'eosGetPublicKey',
+    'eosSignTransaction',
+    'ethereumGetAddress',
+    'ethereumGetPublicKey',
+    'ethereumSignMessage',
+    'ethereumSignTransaction',
+    'ethereumSignTypedData',
+    'ethereumVerifyMessage',
+    'evoluGetNode',
+    'firmwareUpdate',
+    'getAccountDescriptor',
+    'getAccountInfo',
+    'getAddress',
+    'getCoinInfo',
+    'getDeviceState',
+    'getFeatures',
+    'getFirmwareHash',
+    'getNonce',
+    'getOwnershipId',
+    'getOwnershipProof',
+    'getPublicKey',
+    'getSettings',
+    'loadDevice',
+    'moneroGetAddress',
+    'moneroGetWatchKey',
+    'moneroKeyImageSync',
+    'moneroSignTransaction',
+    'nemGetAddress',
+    'nemSignTransaction',
+    'pushTransaction',
+    'recoveryDevice',
+    'resetDevice',
+    'rippleGetAddress',
+    'rippleSignTransaction',
+    'setBrightness',
+    'setBusy',
+    'setProxy',
+    'showDeviceTutorial',
+    'signMessage',
+    'signTransaction',
+    'solanaComposeTransaction',
+    'solanaGetAddress',
+    'solanaGetPublicKey',
+    'solanaSignTransaction',
+    'stellarGetAddress',
+    'stellarSignTransaction',
+    'tezosGetAddress',
+    'tezosGetPublicKey',
+    'tezosSignTransaction',
+    'thpGetCredentials',
+    'thpRemoveCredentials',
+    'unlockPath',
+    'verifyMessage',
+    'wipeDevice',
+] as const satisfies readonly CallMethodKeys[];
 
 export const factory = <
     SettingsType extends Record<string, any>,
@@ -33,267 +122,57 @@ export const factory = <
         dispose,
     }: ConnectFactoryDependencies<SettingsType>,
     extraMethods: ExtraMethodsType = {} as ExtraMethodsType,
-): Omit<TrezorConnect, 'init'> & { init: InitType<SettingsType> } & ExtraMethodsType => ({
-    manifest,
-    init,
-    setTransports,
-
-    on: <T extends string, P extends (...args: any[]) => any>(type: T, fn: P) => {
-        eventEmitter.on(type, fn);
-    },
-
-    off: (type, fn) => {
-        eventEmitter.removeListener(type, fn);
-    },
-
-    removeAllListeners: type => {
-        if (typeof type === 'string') {
-            eventEmitter.removeAllListeners(type);
-        } else {
-            eventEmitter.removeAllListeners();
-        }
-    },
-
-    uiResponse,
-
-    // methods
-
-    bleUnpair: params => call({ ...params, method: 'bleUnpair' }),
-
-    blockchainGetAccountBalanceHistory: params =>
-        call({ ...params, method: 'blockchainGetAccountBalanceHistory' }),
-
-    blockchainGetCurrentFiatRates: params =>
-        call({ ...params, method: 'blockchainGetCurrentFiatRates' }),
-
-    blockchainGetFiatRatesForTimestamps: params =>
-        call({ ...params, method: 'blockchainGetFiatRatesForTimestamps' }),
-
-    blockchainGetInfo: params => call({ ...params, method: 'blockchainGetInfo' }),
-
-    blockchainEvmRpcCall: params => call({ ...params, method: 'blockchainEvmRpcCall' }),
-
-    blockchainDisconnect: params => call({ ...params, method: 'blockchainDisconnect' }),
-
-    blockchainEstimateFee: params => call({ ...params, method: 'blockchainEstimateFee' }),
-
-    blockchainGetTransactions: params => call({ ...params, method: 'blockchainGetTransactions' }),
-
-    blockchainSetCustomBackend: params => call({ ...params, method: 'blockchainSetCustomBackend' }),
-
-    blockchainSubscribe: params => call({ ...params, method: 'blockchainSubscribe' }),
-
-    blockchainSubscribeFiatRates: params =>
-        call({ ...params, method: 'blockchainSubscribeFiatRates' }),
-
-    blockchainUnsubscribe: params => call({ ...params, method: 'blockchainUnsubscribe' }),
-
-    blockchainUnsubscribeFiatRates: params =>
-        call({ ...params, method: 'blockchainUnsubscribeFiatRates' }),
-
-    requestLogin: params => requestLogin(params),
-
-    cardanoGetAddress: params =>
-        call({
-            ...params,
-            method: 'cardanoGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    cardanoGetNativeScriptHash: params => call({ ...params, method: 'cardanoGetNativeScriptHash' }),
-
-    cardanoGetPublicKey: params => call({ ...params, method: 'cardanoGetPublicKey' }),
-
-    cardanoSignTransaction: params => call({ ...params, method: 'cardanoSignTransaction' }),
-
-    cardanoSignMessage: params => call({ ...params, method: 'cardanoSignMessage' }),
-
-    cardanoComposeTransaction: params => call({ ...params, method: 'cardanoComposeTransaction' }),
-
-    cipherKeyValue: params => call({ ...params, method: 'cipherKeyValue' }),
-
-    evoluGetNode: params => call({ ...params, method: 'evoluGetNode' }),
-
-    composeTransaction: params => call({ ...params, method: 'composeTransaction' }),
-
-    discoverAccounts: params => call({ ...params, method: 'discoverAccounts' }),
-
-    ethereumGetAddress: params =>
-        call({
-            ...params,
-            method: 'ethereumGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    ethereumGetPublicKey: params => call({ ...params, method: 'ethereumGetPublicKey' }),
-
-    ethereumSignMessage: params => call({ ...params, method: 'ethereumSignMessage' }),
-
-    ethereumSignTransaction: params => call({ ...params, method: 'ethereumSignTransaction' }),
-
-    // @ts-expect-error generic param
-    ethereumSignTypedData: params => call({ ...params, method: 'ethereumSignTypedData' }),
-
-    ethereumVerifyMessage: params => call({ ...params, method: 'ethereumVerifyMessage' }),
-
-    getAccountDescriptor: params => call({ ...params, method: 'getAccountDescriptor' }),
-
-    getAccountInfo: params => call({ ...params, method: 'getAccountInfo' }),
-
-    getAddress: params =>
-        call({
-            ...params,
-            method: 'getAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    getDeviceState: params => call({ ...params, method: 'getDeviceState' }),
-
-    getFeatures: params => call({ ...params, method: 'getFeatures' }),
-
-    getFirmwareHash: params => call({ ...params, method: 'getFirmwareHash' }),
-
-    getOwnershipId: params => call({ ...params, method: 'getOwnershipId' }),
-
-    getOwnershipProof: params => call({ ...params, method: 'getOwnershipProof' }),
-
-    getPublicKey: params => call({ ...params, method: 'getPublicKey' }),
-
-    getNonce: params => call({ ...params, method: 'getNonce' }),
-
-    moneroGetAddress: params =>
-        call({
-            ...params,
-            method: 'moneroGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    moneroGetWatchKey: params =>
-        call({
-            ...params,
-            method: 'moneroGetWatchKey',
-        }),
-
-    moneroKeyImageSync: params =>
-        call({
-            ...params,
-            method: 'moneroKeyImageSync',
-        }),
-
-    moneroSignTransaction: params =>
-        call({
-            ...params,
-            method: 'moneroSignTransaction',
-        }),
-
-    nemGetAddress: params =>
-        call({
-            ...params,
-            method: 'nemGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    nemSignTransaction: params => call({ ...params, method: 'nemSignTransaction' }),
-
-    pushTransaction: params => call({ ...params, method: 'pushTransaction' }),
-
-    rippleGetAddress: params =>
-        call({
-            ...params,
-            method: 'rippleGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    rippleSignTransaction: params => call({ ...params, method: 'rippleSignTransaction' }),
-
-    signMessage: params => call({ ...params, method: 'signMessage' }),
-
-    signTransaction: params => call({ ...params, method: 'signTransaction' }),
-
-    solanaComposeTransaction: params => call({ ...params, method: 'solanaComposeTransaction' }),
-
-    solanaGetPublicKey: params => call({ ...params, method: 'solanaGetPublicKey' }),
-
-    solanaGetAddress: params => call({ ...params, method: 'solanaGetAddress' }),
-
-    solanaSignTransaction: params => call({ ...params, method: 'solanaSignTransaction' }),
-
-    stellarGetAddress: params =>
-        call({
-            ...params,
-            method: 'stellarGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    stellarSignTransaction: params => call({ ...params, method: 'stellarSignTransaction' }),
-
-    tezosGetAddress: params =>
-        call({
-            ...params,
-            method: 'tezosGetAddress',
-            useEventListener: eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0,
-        }),
-
-    tezosGetPublicKey: params => call({ ...params, method: 'tezosGetPublicKey' }),
-
-    tezosSignTransaction: params => call({ ...params, method: 'tezosSignTransaction' }),
-
-    unlockPath: params => call({ ...params, method: 'unlockPath' }),
-
-    eosGetPublicKey: params => call({ ...params, method: 'eosGetPublicKey' }),
-
-    eosSignTransaction: params => call({ ...params, method: 'eosSignTransaction' }),
-
-    verifyMessage: params => call({ ...params, method: 'verifyMessage' }),
-
-    resetDevice: params => call({ ...params, method: 'resetDevice' }),
-
-    loadDevice: params => call({ ...params, method: 'loadDevice' }),
-
-    wipeDevice: params => call({ ...params, method: 'wipeDevice' }),
-
-    applyFlags: params => call({ ...params, method: 'applyFlags' }),
-
-    applySettings: params => call({ ...params, method: 'applySettings' }),
-
-    getSettings: () => call({ method: 'getSettings' }),
-
-    authenticateDevice: params => call({ ...params, method: 'authenticateDevice' }),
-
-    authorizeCoinjoin: params => call({ ...params, method: 'authorizeCoinjoin' }),
-
-    cancelCoinjoinAuthorization: params =>
-        call({ ...params, method: 'cancelCoinjoinAuthorization' }),
-
-    showDeviceTutorial: params => call({ ...params, method: 'showDeviceTutorial' }),
-
-    backupDevice: params => call({ ...params, method: 'backupDevice' }),
-
-    changeLanguage: params => call({ ...params, method: 'changeLanguage' }),
-
-    changePin: params => call({ ...params, method: 'changePin' }),
-
-    changeWipeCode: params => call({ ...params, method: 'changeWipeCode' }),
-
-    firmwareUpdate: params => call({ ...params, method: 'firmwareUpdate' }),
-
-    recoveryDevice: params => call({ ...params, method: 'recoveryDevice' }),
-
-    getCoinInfo: params => call({ ...params, method: 'getCoinInfo' }),
-
-    setBrightness: params => call({ ...params, method: 'setBrightness' }),
-
-    setBusy: params => call({ ...params, method: 'setBusy' }),
-
-    setProxy: params => call({ ...params, method: 'setProxy' }),
-
-    thpGetCredentials: params => call({ ...params, method: 'thpGetCredentials' }),
-
-    thpRemoveCredentials: params => call({ ...params, method: 'thpRemoveCredentials' }),
-
-    dispose,
-
-    cancel,
-
-    ...extraMethods,
-});
+): Omit<TrezorConnect, 'init'> & {
+    init: InitType<SettingsType>;
+    call: CallMethod;
+} & ExtraMethodsType => {
+    const callableMethods = Object.fromEntries(
+        connectCallableMethods.map(method => [
+            method,
+            (params: any) =>
+                call({
+                    ...params,
+                    method,
+                    useEventListener: method.toLowerCase().endsWith('getaddress')
+                        ? eventEmitter.listenerCount(UI.ADDRESS_VALIDATION) > 0
+                        : undefined,
+                }),
+        ]),
+    ) as Pick<TrezorConnect, (typeof connectCallableMethods)[number]>;
+
+    return {
+        manifest,
+        init,
+        setTransports,
+
+        on: <T extends string, P extends (...args: any[]) => any>(type: T, fn: P) => {
+            eventEmitter.on(type, fn);
+        },
+
+        off: (type, fn) => {
+            eventEmitter.removeListener(type, fn);
+        },
+
+        removeAllListeners: type => {
+            if (typeof type === 'string') {
+                eventEmitter.removeAllListeners(type);
+            } else {
+                eventEmitter.removeAllListeners();
+            }
+        },
+
+        uiResponse,
+
+        call,
+
+        dispose,
+
+        cancel,
+
+        requestLogin,
+
+        ...callableMethods,
+
+        ...extraMethods,
+    };
+};
