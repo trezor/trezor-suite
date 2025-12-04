@@ -9,7 +9,7 @@ import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFil
 import { parseDashboardParams } from 'src/utils/suite/router';
 
 export interface UseNetworkFilterProps {
-    modal: NonNullable<GlobalSendReceiveType>;
+    modal?: NonNullable<GlobalSendReceiveType>;
     listRef: RefObject<HTMLDivElement | null>;
     resetSearch: () => void;
 }

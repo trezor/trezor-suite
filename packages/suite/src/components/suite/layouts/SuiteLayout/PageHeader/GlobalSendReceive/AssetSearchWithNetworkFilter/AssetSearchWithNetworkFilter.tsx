@@ -16,7 +16,7 @@ import { useSearchFilter } from './hooks/useSearchFilter';
 export interface AssetSearchWithNetworkFilterProps {
     placeholder: TranslationKey;
     listRef: RefObject<HTMLDivElement | null>;
-    modal: NonNullable<GlobalSendReceiveType>;
+    modal?: NonNullable<GlobalSendReceiveType>;
 }
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({

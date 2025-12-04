@@ -9,7 +9,6 @@ import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import {
     AssetRowReceiveToAccount,
-    AssetSearchWithNetworkFilter,
     AssetsList,
     AssetsListEmpty,
     AssetsModal,
@@ -24,6 +23,7 @@ import { Account, AccountItemType } from 'src/types/wallet';
 
 import { useAccountsOptions } from './hooks/useAccountsOptions';
 import { FilteredAccountOption, useFilterAccounts } from './hooks/useFilterAccounts';
+import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 
 type GlobalReceiveModalProps = {
     onCancel: (filledSearch: boolean) => void;
