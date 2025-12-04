@@ -30,6 +30,7 @@ test.describe(
                 await settingsPage.navigateTo('application');
                 await settingsPage.toggleDebugModeInSettings();
 
+                await settingsPage.toggleTestnetNetworks();
                 await settingsPage.navigateTo('coins');
                 await settingsPage.coins.enableNetwork('regtest');
 

@@ -12,6 +12,7 @@ import { CoinGroup } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 import { TorSection } from './TorSection';
@@ -23,6 +24,7 @@ export const CoinsStepBox = (props: OnboardingCardProps) => {
     const torStatus = useSelector(state => state.suite.torStatus);
     const dispatch = useDispatch();
     const isTorEnabled = getIsTorEnabled(torStatus);
+    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
 
     // BTC should be enabled by default
     useEffect(() => {
@@ -33,18 +35,20 @@ export const CoinsStepBox = (props: OnboardingCardProps) => {
         <OnboardingCard iconName="coins" {...props}>
             <Column gap={32}>
                 <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
-                <CollapsibleBox
-                    heading={
-                        <Tooltip
-                            content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
-                            hasIcon
-                        >
-                            <Translation id="TR_TESTNET_COINS" />
-                        </Tooltip>
-                    }
-                >
-                    <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
-                </CollapsibleBox>
+                {useTestnetNetworks && (
+                    <CollapsibleBox
+                        heading={
+                            <Tooltip
+                                content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                                hasIcon
+                            >
+                                <Translation id="TR_TESTNET_COINS" />
+                            </Tooltip>
+                        }
+                    >
+                        <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
+                    </CollapsibleBox>
+                )}
                 {showUnsupportedCoins && (
                     <CollapsibleBox
                         heading={

@@ -15,10 +15,11 @@ export const useNetworkSupport = () => {
     const useExperimentalNetworks = useSelector(
         selectHasExperimentalFeature('experimental-networks'),
     );
+    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
-    const mainnets = getMainnets(isDebug, useExperimentalNetworks);
-    const testnets = getTestnets(isDebug, useExperimentalNetworks);
+    const mainnets = getMainnets({ debug: isDebug, useExperimentalNetworks });
+    const testnets = getTestnets({ debug: isDebug, useExperimentalNetworks, useTestnetNetworks });
 
     const isNetworkSupported = (network: Network) =>
         deviceSupportedNetworkSymbols.includes(network.symbol);

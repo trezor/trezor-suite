@@ -22,7 +22,7 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { selectHasExperimentalFeature, selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
@@ -85,6 +85,7 @@ export const SettingsCoins = () => {
     const isDiscoveryButtonVisible = useSelector(state =>
         selectShowRediscoverButton(state, device),
     );
+    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
 
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
         deviceSupportedNetworkSymbols.includes(enabledNetwork),
@@ -132,15 +133,17 @@ export const SettingsCoins = () => {
                 </SettingsSectionItem>
             </SettingsSection>
 
-            <SettingsSection
-                tooltipText={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
-                title={<Translation id="TR_TESTNET_COINS" />}
-                icon="coin"
-            >
-                <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
-                    <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
-                </SettingsSectionItem>
-            </SettingsSection>
+            {useTestnetNetworks && (
+                <SettingsSection
+                    tooltipText={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                    title={<Translation id="TR_TESTNET_COINS" />}
+                    icon="coin"
+                >
+                    <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
+                        <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
+                    </SettingsSectionItem>
+                </SettingsSection>
+            )}
 
             {showUnsupportedCoins && (
                 <SettingsSection

@@ -21,7 +21,10 @@ import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import {
+    selectHasExperimentalFeature,
+    selectIsDebugModeActive,
+} from 'src/selectors/suite/suiteSelectors';
 import { TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 
@@ -61,6 +64,7 @@ export const AddAccountModal = ({
     const isDebug = useSelector(selectIsDebugModeActive);
     const isCoinjoinPublic = useSelector(selectIsPublic);
     const enabledNetworkSymbols = useSelector(selectEnabledNetworks);
+    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
     const dispatch = useDispatch();
 
     const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
@@ -323,7 +327,7 @@ export const AddAccountModal = ({
                                   handleNetworkSelection={selectNetwork}
                               />
                           </NetworksWrapper>
-                          {!symbol && !!disabledTestnetNetworks.length && (
+                          {!symbol && !!disabledTestnetNetworks.length && useTestnetNetworks && (
                               <CollapsibleBox
                                   heading={
                                       <Tooltip

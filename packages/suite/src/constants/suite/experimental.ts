@@ -15,6 +15,7 @@ const experimentalNetworkNames = experimentalNetworks.map(network => network.nam
 export type ExperimentalFeature =
     | 'password-manager'
     | 'tor-external'
+    | 'testnet-networks'
     | 'nft-section'
     | 'experimental-networks';
 // | 'suite-sync';
@@ -49,6 +50,10 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 });
             }
         },
+    },
+    'testnet-networks': {
+        title: { id: 'TR_EXPERIMENTAL_TESTNET_NETWORKS' },
+        description: { id: 'TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION' },
     },
     'nft-section': {
         title: { id: 'TR_EXPERIMENTAL_NFT_SECTION' },

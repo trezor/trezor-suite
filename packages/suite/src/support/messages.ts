@@ -5336,6 +5336,14 @@ export default defineMessages({
         defaultMessage:
             'Send and receive transactions on the {networkNames} {count, plural, one {network} other {networks}}.',
     },
+    TR_EXPERIMENTAL_TESTNET_NETWORKS: {
+        id: 'TR_EXPERIMENTAL_TESTNET_NETWORKS',
+        defaultMessage: 'Testnet networks',
+    },
+    TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION',
+        defaultMessage: 'Send and receive transactions on the testnet networks.',
+    },
     TR_EXPERIMENTAL_SUITE_SYNC_TITLE: {
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
         defaultMessage: 'Suite Sync',
