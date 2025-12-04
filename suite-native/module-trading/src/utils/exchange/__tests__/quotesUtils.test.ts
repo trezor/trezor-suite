@@ -2,6 +2,7 @@ import { act } from 'react';
 
 import type { CryptoId } from 'invity-api';
 
+import { MinimalExchangeFormProps } from '@suite-common/trading';
 import type { TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
@@ -67,7 +68,9 @@ describe('quotesUtils', () => {
 
             expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
                 sendCryptoSelect: { value: 'bitcoin' },
-                receiveCryptoSelect: { value: 'ethereum' },
+                receiveCryptoSelect: {
+                    id: 'ethereum' as CryptoId,
+                } satisfies MinimalExchangeFormProps['receiveCryptoSelect'],
                 outputs: [{ amount: '1' }],
             });
         });
@@ -88,8 +91,8 @@ describe('quotesUtils', () => {
             expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
                 sendCryptoSelect: { value: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
                 receiveCryptoSelect: {
-                    value: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                },
+                    id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+                } satisfies MinimalExchangeFormProps['receiveCryptoSelect'],
                 outputs: [{ amount: '1' }],
             });
         });
@@ -104,8 +107,8 @@ describe('quotesUtils', () => {
             expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
                 sendCryptoSelect: { value: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' },
                 receiveCryptoSelect: {
-                    value: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL',
-                },
+                    id: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL' as CryptoId,
+                } satisfies MinimalExchangeFormProps['receiveCryptoSelect'],
                 outputs: [{ amount: '1' }],
             });
         });

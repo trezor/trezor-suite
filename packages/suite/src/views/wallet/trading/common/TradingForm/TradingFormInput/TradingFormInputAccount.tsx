@@ -1,13 +1,9 @@
-import { Controller } from 'react-hook-form';
+import { Controller, UseFormReturn } from 'react-hook-form';
 import { createFilter } from 'react-select';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import {
-    type TradingExchangeFormProps,
-    type TradingSellFormProps,
-    selectTradingLoadingAndTimestamp,
-} from '@suite-common/trading';
+import { selectTradingLoadingAndTimestamp } from '@suite-common/trading';
 import { Row, Select, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -22,19 +18,19 @@ import {
     TradingCryptoListProps,
     TradingTradeSellExchangeType,
 } from 'src/types/trading/trading';
-import { TradingFormInputAccountProps } from 'src/types/trading/tradingForm';
+import {
+    TradingFormInputAccountProps,
+    TradingSellExchangeFormProps,
+} from 'src/types/trading/tradingForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputAccountOption } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccountOption';
 
-export const TradingFormInputAccount = <
-    TFieldValues extends TradingSellFormProps | TradingExchangeFormProps,
->({
+export const TradingFormInputAccount = ({
     label,
     accountSelectName,
-    methods,
     'data-testid': dataTestId,
-}: TradingFormInputAccountProps<TFieldValues>) => {
+}: TradingFormInputAccountProps) => {
     const context = useTradingFormContext<TradingTradeSellExchangeType>();
 
     const {
@@ -43,19 +39,19 @@ export const TradingFormInputAccount = <
         form: {
             helpers: { onCryptoCurrencyChange },
         },
+        methods,
     } = context;
     const optionGroups = useTradingBuildAccountGroups(type);
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
-    const { control, getValues } = methods;
-    const selectedOption = getValues(accountSelectName) as
-        | TradingAccountOptionsGroupOptionProps
-        | undefined;
+    const { getValues, control } = methods as UseFormReturn<TradingSellExchangeFormProps>;
+    const { [accountSelectName]: selectedOption, outputs } = getValues();
+
     const fiatValues = useTradingFiatValues({
         amount: selectedOption?.balance,
         cryptoId: selectedOption?.value,
-        fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
+        fiatCurrency: outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
 
     return (

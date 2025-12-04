@@ -1,3 +1,5 @@
+import { useFormContext } from 'react-hook-form';
+
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -32,10 +34,10 @@ export const TradingSellFormInputs = () => {
         composedLevels,
         form: { helpers },
         shouldSendInSats,
-        getValues,
         changeFeeLevel,
         showReserveBanner,
     } = context;
+    const { getValues } = useFormContext<TradingSellFormProps>();
     const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
     const output = outputs[0];
     const currencySelect = output.currency;
@@ -51,19 +53,17 @@ export const TradingSellFormInputs = () => {
     return (
         <Card paddingType="none">
             <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
-                <TradingFormInputAccount<TradingSellFormProps>
+                <TradingFormInputAccount
                     accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     label="TR_TRADING_YOU_SELL"
-                    methods={{ ...context }}
                 />
                 <Column gap={spacings.xs}>
-                    <TradingFormInputFiatCrypto<TradingSellFormProps>
+                    <TradingFormInputFiatCrypto
                         cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                         cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                         currencySelectLabel={currencySelect.label}
                         cryptoCurrencyLabel={sendCryptoSelect?.value}
-                        methods={{ ...context }}
                     />
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">

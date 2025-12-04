@@ -384,7 +384,13 @@ export const selectTradingCoinSymbolByCryptoId = (
     return getTradingCoinSymbolByCryptoId(coins, cryptoId);
 };
 
-export const selectTradingPlatformByCryptoId = (state: TradingRootState, cryptoId: CryptoId) => {
+export const selectTradingPlatformByCryptoId = (
+    state: TradingRootState,
+    cryptoId: CryptoId | undefined,
+) => {
+    if (!cryptoId) {
+        return undefined;
+    }
     const { platforms = {} } = state.wallet.trading.info;
 
     return getTradingPlatformsInfoByCryptoId(platforms, cryptoId);

@@ -70,6 +70,7 @@ packages/suite/src/views/onboarding/steps/SelectBackupType/SelectBackupType.tsx 
 packages/transport/src/transports/abstract.ts > packages/transport/src/transports/bridge.ts
 suite-common/graph/src/graphDataFetching.ts > suite-common/graph/src/graphUtils.ts
 suite-common/intl-types/src/index.ts > suite-common/intl-types/src/types.ts > packages/suite/src/components/suite/Translation.tsx
+suite-common/trading/src/hooks/useTradingAssets.ts > suite-common/trading/src/hooks/useCoinsAndPlatforms.ts > suite-common/trading/src/hooks/useSelector.ts > suite-common/trading/src/reducers/tradingCommonReducer.ts > suite-common/trading/src/reducers/buyReducer.ts > suite-common/trading/src/types.ts
 suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/bluetooth/src/index.ts > suite-common/bluetooth/src/bluetoothReducer.ts
 suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk.ts
 suite-common/wallet-core/src/index.ts > suite-common/wallet-core/src/device/deviceThunks.ts > suite-common/thp/src/index.ts > suite-common/thp/src/finishThpAutoconnectThunk.ts

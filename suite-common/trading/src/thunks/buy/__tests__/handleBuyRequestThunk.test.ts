@@ -5,14 +5,11 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
+import { TradingAssetOption } from '../../../hooks/useTradingAssets';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import {
-    HandleBuyRequestThunkProps,
-    TradingBuyFormProps,
-    TradingCryptoSelectItemProps,
-} from '../../../types';
+import { HandleBuyRequestThunkProps, TradingBuyFormProps } from '../../../types';
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
 import { buyThunks } from '../index';
 
@@ -77,12 +74,16 @@ describe('handleBuyRequestThunk', () => {
                 label: 'USD',
             },
             cryptoSelect: {
-                value: 'bitcoin' as CryptoId,
-                label: 'Bitcoin',
+                id: 'bitcoin' as CryptoId,
+                isNativeToken: true,
+                name: 'Bitcoin',
                 symbol: 'btc',
+                coingeckoId: 'bitcoin',
+                displaySymbol: 'BTC',
                 contractAddress: null,
-                type: 'currency',
-            },
+                networkName: 'Bitcoin',
+                networkSymbol: 'btc',
+            } satisfies TradingAssetOption,
             countrySelect: {
                 value: 'CZ',
                 label: 'Czech Republic',
@@ -147,7 +148,7 @@ describe('handleBuyRequestThunk', () => {
         [
             'incorrect cryptoSelect',
             {
-                cryptoSelect: undefined as unknown as TradingCryptoSelectItemProps,
+                cryptoSelect: undefined as unknown as TradingAssetOption,
             },
         ],
     ])('should not save quotes when %s', async (_, incorrectFormValues) => {

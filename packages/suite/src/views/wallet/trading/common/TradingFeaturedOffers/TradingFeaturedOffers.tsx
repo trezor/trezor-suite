@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { getBestRatedQuote } from '@suite-common/trading';
 import { Column } from '@trezor/components';
 
@@ -12,11 +14,23 @@ export const TradingFeaturedOffers = () => {
         form: { state },
         quotes,
     } = context;
-    const featuredQuotes = quotes?.filter(quote => quote.infoNote);
-    const noFeaturedOffers = !featuredQuotes || featuredQuotes.length === 0;
-    if (state.isFormLoading || state.isFormInvalid || noFeaturedOffers) return null;
 
-    const bestRatedQuote = getBestRatedQuote(quotes, type);
+    const result = useMemo(() => {
+        const featuredQuotes = quotes?.filter(quote => quote.infoNote);
+        const noFeaturedOffers = !featuredQuotes || featuredQuotes.length === 0;
+        if (state.isFormLoading || state.isFormInvalid || noFeaturedOffers) return null;
+
+        const bestRatedQuote = getBestRatedQuote(quotes, type);
+
+        return {
+            featuredQuotes,
+            bestRatedQuote,
+        };
+    }, [quotes, state.isFormInvalid, state.isFormLoading, type]);
+
+    if (!result) return null;
+
+    const { featuredQuotes, bestRatedQuote } = result;
 
     return (
         <Column>

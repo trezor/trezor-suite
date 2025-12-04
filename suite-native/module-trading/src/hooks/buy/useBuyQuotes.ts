@@ -12,6 +12,7 @@ import {
     cryptoIdToNetwork,
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
+    selectTradingPlatformByCryptoId,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -127,6 +128,9 @@ const useBuyQuotesThunk = (
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, asset?.cryptoId),
     );
+    const platformInfo = useSelector((state: TradingRootState) =>
+        selectTradingPlatformByCryptoId(state, asset?.cryptoId),
+    );
 
     useEffect(() => {
         if (shouldRefetchQuotes) {
@@ -142,7 +146,7 @@ const useBuyQuotesThunk = (
 
                 const payload: HandleBuyRequestThunkProps = {
                     network,
-                    formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo),
+                    formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo, platformInfo),
                     shouldSendInSats,
                     timer,
                 };
@@ -166,6 +170,7 @@ const useBuyQuotesThunk = (
         quotesPromiseRef,
         shouldSendInSats,
         coinInfo,
+        platformInfo,
         debounce,
         dispatch,
     ]);

@@ -4,7 +4,7 @@ import {
     TradingBuyFormProps,
     TradingCountryCode,
     getDefaultCountry,
-    useTradingInfo,
+    useTradingAssets,
 } from '@suite-common/trading';
 
 import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
@@ -13,13 +13,13 @@ export const useTradingBuyFormRedirectValues = (
     isFromRedirect: boolean,
     quotesRequest: BuyTradeQuoteRequest | undefined,
 ): TradingBuyFormProps | null => {
-    const { buildDefaultCryptoOption } = useTradingInfo();
+    const { createAssetOptionFromCryptoId } = useTradingAssets();
 
     if (!isFromRedirect || !quotesRequest) return null;
 
     return {
         amountInCrypto: quotesRequest.wantCrypto,
-        cryptoSelect: buildDefaultCryptoOption(quotesRequest.receiveCurrency),
+        cryptoSelect: createAssetOptionFromCryptoId(quotesRequest.receiveCurrency),
         currencySelect: buildTradingFiatOption(quotesRequest.fiatCurrency as FiatCurrencyCode),
         countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
 
