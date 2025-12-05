@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -15,7 +15,6 @@ import {
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    ScreenFooterGradient,
     StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';

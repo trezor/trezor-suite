@@ -1,8 +1,7 @@
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
-import { Box, Button } from '@suite-native/atoms';
+import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { ScreenFooterGradient } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({

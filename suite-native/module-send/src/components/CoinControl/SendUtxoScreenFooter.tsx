@@ -2,10 +2,9 @@ import { useMemo } from 'react';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { ScreenFooterGradient } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type SendUtxoScreenFooterProps = {

@@ -23,8 +23,8 @@ export const TradingEnvironmentSelect = () => {
     return (
         <Select<InvityServerEnvironment>
             items={tradingEnvironmentItems}
-            selectLabel="Environment"
-            selectValue={selectedTradingEnvironment}
+            title="Environment"
+            value={selectedTradingEnvironment}
             onSelectItem={handleSelectEnvironment}
         />
     );

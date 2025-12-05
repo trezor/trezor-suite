@@ -1,8 +1,11 @@
-import { ReactNode, Ref, forwardRef, useCallback } from 'react';
+import { ReactNode, Ref, forwardRef, useCallback, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     BottomSheetBackdrop,
     BottomSheetBackdropProps,
+    BottomSheetFooter,
+    BottomSheetFooterProps,
     BottomSheetModal as BottomSheetModalBase,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -11,12 +14,12 @@ import { useScrollDivider } from '@suite-native/scrollview';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { BoxProps } from '../Box';
+import { Box, BoxProps } from '../Box';
 import { BottomSheetHeader } from './BottomSheetHeader';
 import { BottomSheetModalContent } from './BottomSheetModalContent';
 
-const SCREEN_HEIGHT = getScreenHeight();
-const MAX_HEIGHT = SCREEN_HEIGHT * 0.9;
+const TOP_OFFSET = 72; // corresponds to screen header size
+const MAX_MODAL_HEIGHT = getScreenHeight() - TOP_OFFSET;
 
 export type BottomSheetModalProps = {
     children: ReactNode;
@@ -27,8 +30,13 @@ export type BottomSheetModalProps = {
     onDismiss?: () => void;
 } & BoxProps;
 
-const backgroundStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+const backgroundStyle = prepareNativeStyle(({ colors }) => ({
+    backgroundColor: colors.backgroundSurfaceElevation0,
+}));
+
+const footerStyle = prepareNativeStyle<{ bottomInset: number }>(({ colors }, { bottomInset }) => ({
+    backgroundColor: colors.backgroundSurfaceElevation0,
+    paddingBottom: bottomInset,
 }));
 
 export type BottomSheetModalRef = Ref<BottomSheetModalMethods>;
@@ -38,9 +46,15 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         { children, footer, style, title, isCloseDisplayed = false, subtitle, onDismiss, ...rest },
         ref,
     ) => {
+        const { top, bottom } = useSafeAreaInsets();
         const { applyStyle } = useNativeStyles();
-
         const { scrollDivider, handleScroll } = useScrollDivider();
+
+        const [footerHeight, setFooterHeight] = useState(0);
+
+        // This ensures that the bottom sheet content evades the footer if present.
+        // In case footerHeight > TOP_OFFSET, the content and footer might collide.
+        const maxDynamicContentSize = MAX_MODAL_HEIGHT - top + footerHeight;
 
         const renderBackdrop = useCallback(
             (props: BottomSheetBackdropProps) => (
@@ -61,9 +75,9 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         return (
             <BottomSheetModalBase
                 ref={ref}
-                backdropComponent={renderBackdrop}
-                maxDynamicContentSize={MAX_HEIGHT}
+                maxDynamicContentSize={maxDynamicContentSize}
                 backgroundStyle={applyStyle(backgroundStyle)}
+                backdropComponent={renderBackdrop}
                 handleComponent={() => (
                     <BottomSheetHeader
                         title={title}
@@ -73,12 +87,25 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                         scrollDivider={scrollDivider}
                     />
                 )}
+                footerComponent={({ animatedFooterPosition }: BottomSheetFooterProps) => (
+                    <BottomSheetFooter
+                        animatedFooterPosition={animatedFooterPosition}
+                        style={applyStyle(footerStyle, { bottomInset: footer ? bottom : 0 })}
+                    >
+                        <Box onLayout={e => setFooterHeight(e.nativeEvent.layout.height)}>
+                            {footer}
+                        </Box>
+                    </BottomSheetFooter>
+                )}
                 onDismiss={onDismiss}
             >
-                <BottomSheetModalContent handleScroll={handleScroll} style={style} {...rest}>
+                <BottomSheetModalContent
+                    handleScroll={handleScroll}
+                    bottomInset={bottom + footerHeight}
+                    {...rest}
+                >
                     {children}
                 </BottomSheetModalContent>
-                {footer}
             </BottomSheetModalBase>
         );
     },

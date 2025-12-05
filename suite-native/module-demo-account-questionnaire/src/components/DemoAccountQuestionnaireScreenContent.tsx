@@ -9,14 +9,13 @@ import {
     EventType,
     analytics,
 } from '@suite-native/analytics';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import {
     DemoAccountQuestionnaireStackParamList,
     DemoAccountQuestionnaireStackRoutes,
     Screen,
-    ScreenFooterGradient,
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
