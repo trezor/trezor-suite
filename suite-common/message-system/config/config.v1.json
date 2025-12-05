@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-11-28T00:00:00+00:00",
-    "sequence": 123,
+    "timestamp": "2025-12-09T00:00:00+00:00",
+    "sequence": 124,
     "actions": [
         {
             "conditions": [
@@ -1602,6 +1602,46 @@
                     }
                 }
             }
+        },
+        {
+            "message": {
+                "id": "1e8ddfec-df56-43a1-ac69-dddd5d0c7c5b",
+                "priority": 91,
+                "dismissible": true,
+                "variant": "info",
+                "category": "context",
+                "content": {
+                    "en": "Exclusively for Brazil: Buy crypto with PIX through Banxa and pay 0% fees while the offer lasts.",
+                    "es": "Exclusivo para Brasil: Compra cripto con PIX a través de Banxa y paga 0% de comisiones mientras dure la oferta.",
+                    "cs": "Exkluzivně pro Brazílii: Nakupujte krypto pomocí PIX přes Banxa s 0% poplatkem po dobu trvání nabídky.",
+                    "ru": "Эксклюзивно для Бразилии: покупайте криптовалюту через PIX на Banxa с комиссией 0%, пока действует предложение.",
+                    "ja": "ブラジル限定：Banxa経由のPixで暗号資産を購入すると、キャンペーン期間中は手数料0%。",
+                    "hu": "Kizárólag Brazíliában: Vásároljon kriptovalutát PIX-szel a Banxán keresztül 0%-os díjjal, amíg az ajánlat tart.",
+                    "it": "Esclusiva per il Brasile: Acquista crypto con PIX tramite Banxa a 0% commissioni fino al termine dell'offerta.",
+                    "fr": "Exclusivité pour le Brésil : Achetez des cryptos avec PIX via Banxa et payez 0 % de frais tant que l'offre est valable.",
+                    "de": "Exklusiv für Brasilien: Kaufen Sie Krypto mit PIX über Banxa und zahlen Sie 0 % Gebühren, solange das Angebot gilt.",
+                    "tr": "Brezilya'ya Özel: Banxa üzerinden PIX ile kripto satın alın ve kampanya süresince %0 komisyon ödeyin.",
+                    "pt": "Exclusivo para o Brasil: Compre cripto com Pix via Banxa e pague 0% de taxas enquanto a oferta durar.",
+                    "uk": "Ексклюзивно для Бразилії: купуйте криптовалюту за допомогою PIX через Banxa з комісією 0%, поки діє пропозиція."
+                },
+                "context": {
+                    "domain": ["trading.buy", "trading.sell"]
+                }
+            },
+            "conditions": [
+                {
+                    "countryCodes": ["BR"],
+                    "duration": {
+                        "from": "2025-12-10T13:30:00.000Z",
+                        "to": "2025-12-24T23:59:00.000Z"
+                    },
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ]
         },
         {
             "conditions": [
