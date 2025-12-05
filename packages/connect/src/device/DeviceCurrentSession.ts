@@ -4,7 +4,7 @@ import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { MessageResponse, Session, TRANSPORT, Transport } from '@trezor/transport';
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
-import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
+import { scheduleAction } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { Device } from './Device';
@@ -158,17 +158,6 @@ export class DeviceCurrentSession implements TypedCallProvider {
         }
     }
 
-    /**
-     * Bridge version =< 2.0.28 throws "other call in progress" error.
-     * as workaround takeover transportSession (acquire) before sending Cancel, this will resolve previous pending call.
-     */
-    private needCancelWorkaround() {
-        return (
-            this.transport.name === 'BridgeTransport' &&
-            !versionUtils.isNewer(this.transport.version, '2.0.28')
-        );
-    }
-
     private async callLoop<T extends Messages.MessageKey>(
         type: T,
         msg: Messages.MessagePayload<T>,
@@ -195,21 +184,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
             ]);
 
             if (name === 'ButtonAck' && abortedDuringCall && !this.disposed) {
-                if (this.needCancelWorkaround()) {
-                    try {
-                        // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
-                        await resolveAfter(1);
-                        await this.device.acquire();
-                        await this.device.getCurrentSession().cancelCall();
-                        await this.device.release();
-                    } catch {
-                        // ignore whatever happens
-                    }
-                } else {
-                    // transport is currently in "call-read" state, update sync bit
-                    this.device.getThpState()?.sync('send', 'Cancel');
-                    await this.send('Cancel', {});
-                }
+                // transport is currently in "call-read" state, update sync bit
+                this.device.getThpState()?.sync('send', 'Cancel');
+                await this.send('Cancel', {});
             }
 
             await callPromise;
