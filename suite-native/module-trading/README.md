@@ -32,6 +32,7 @@ Provides logic shared between trading and send flow.
 ### Internal trading modules
 
 - **@suite-native/trading-atoms:** Reusable components.
+- **@suite-native/trading-debug:** Debug UI components for displaying information while `IsTradingDebugEnabled` FF is set.
 - **@suite-native/trading-types:** Types used across trading modules.
 - **@suite-native/trading-consts:** Constants used across trading modules.
 - **@suite-native/trading-fixtures:** Fixtures for testing trading features.
@@ -50,6 +51,7 @@ graph TD
     trading-state["@suite-native/trading-state"]
     subgraph trading-internal["Trading internal modules"]
         trading-atoms["@suite-native/trading-atoms"]
+        trading-debug["@suite-native/trading-debug"]
         trading-fixtures["@suite-native/trading-fixtures"]
         trading-types["@suite-native/trading-types"]
         trading-consts["@suite-native/trading-consts"]
@@ -75,6 +77,7 @@ graph TD
     module-trading -.-> trading-types
     module-trading --> trading-consts
     module-trading -.-> trading-fixtures
+    module-trading --> trading-debug
     module-trading --> trading-atoms
     module-trading --> trading-state
     module-trading --> transaction-management

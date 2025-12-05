@@ -18,6 +18,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { DebugModeCopyableText } from '@suite-native/trading-debug';
 import { tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -105,6 +106,7 @@ export const TradingWebViewScreen = () => {
             noHorizontalPadding
             noBottomPadding
         >
+            <DebugModeCopyableText text={source.uri || 'no URI'} title="URI:" />
             <WebView
                 style={applyStyle(webViewStyle)}
                 source={{ ...sourceData }}

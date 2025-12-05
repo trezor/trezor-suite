@@ -24,6 +24,7 @@ describe('featureFlagsSlice', () => {
                 isTradingExchangeEnabled: false,
                 isTradingResidenceCheckEnabled: true,
                 isTradingSellEnabled: false,
+                isTradingDebugEnabled: false,
             });
         });
 
@@ -43,6 +44,7 @@ describe('featureFlagsSlice', () => {
                 isTradingSellEnabled: false,
                 areTradingExchangeDexesEnabled: false,
                 isTradingResidenceCheckEnabled: false,
+                isTradingDebugEnabled: false,
             });
         });
     });

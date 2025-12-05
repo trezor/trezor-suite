@@ -56,6 +56,7 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
+        "@suite-native/trading-debug": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",

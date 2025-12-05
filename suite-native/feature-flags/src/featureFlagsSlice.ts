@@ -12,6 +12,7 @@ export const FeatureFlag = {
     IsTradingSellEnabled: 'isTradingSellEnabled',
     AreTradingExchangeDexesEnabled: 'areTradingExchangeDexesEnabled',
     IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
+    IsTradingDebugEnabled: 'isTradingDebugEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -40,6 +41,8 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsTradingResidenceCheckEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED === 'true' ||
         (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
+    [FeatureFlag.IsTradingDebugEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -51,6 +54,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsTradingSellEnabled,
     FeatureFlag.AreTradingExchangeDexesEnabled,
     FeatureFlag.IsTradingResidenceCheckEnabled,
+    FeatureFlag.IsTradingDebugEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
