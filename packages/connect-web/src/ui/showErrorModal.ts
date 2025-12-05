@@ -38,16 +38,19 @@ export const showErrorModal = (
         return;
     }
 
-    const div = document.createElement('div');
-    div.id = LAYER_ID;
-    div.className = 'trezorconnect-container';
-    div.innerHTML = HTML;
+    // Create host element for shadow DOM
+    const host = document.createElement('div');
+    host.id = LAYER_ID;
+
+    // Attach shadow DOM
+    const shadowRoot = host.attachShadow({ mode: 'open' });
+    shadowRoot.innerHTML = HTML;
 
     if (document.body) {
-        document.body.appendChild(div);
+        document.body.appendChild(host);
     }
 
-    const body = div.getElementsByClassName('trezorconnect-body')[0] as HTMLDivElement;
+    const body = shadowRoot.querySelector('.trezorconnect-body') as HTMLDivElement;
 
     body.innerHTML = `
         <h3>Error</h3>
@@ -55,19 +58,19 @@ export const showErrorModal = (
         <button class="trezorconnect-open">Continue</button>
         `;
 
-    const button = div.getElementsByClassName('trezorconnect-open')[0] as HTMLButtonElement;
+    const button = shadowRoot.querySelector('.trezorconnect-open') as HTMLButtonElement;
     button.onclick = () => {
         open();
         if (document.body) {
-            document.body.removeChild(div);
+            document.body.removeChild(host);
         }
     };
 
-    const close = div.getElementsByClassName('trezorconnect-close')[0] as HTMLDivElement;
+    const close = shadowRoot.querySelector('.trezorconnect-close') as HTMLDivElement;
     close.onclick = () => {
         cancel();
         if (document.body) {
-            document.body.removeChild(div);
+            document.body.removeChild(host);
         }
     };
 
