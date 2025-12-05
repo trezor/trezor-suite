@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
+import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import {
     FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
@@ -8,25 +10,29 @@ import {
 } from '@suite-native/navigation';
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
+import { DeviceConnectionGuardScreen } from '../screens/DeviceConnectionGuardScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';
 
 const FirmwareUpdateStack = createNativeStackNavigator<FirmwareUpdateStackParamList>();
 
 export const FirmwareUpdateStackNavigator = () => {
-    const { isDeviceConnected } = useDeviceConnectionGuard();
-
-    if (!isDeviceConnected) return;
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     return (
-        <FirmwareUpdateStack.Navigator
-            initialRouteName={FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate}
-            screenOptions={{ ...stackNavigationOptionsConfig }}
-        >
-            <FirmwareUpdateStack.Screen
-                name={FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate}
-                component={ConfirmFirmwareUpdateScreen}
-            />
+        <FirmwareUpdateStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+            {!isDeviceConnected && (
+                <FirmwareUpdateStack.Screen
+                    name={FirmwareUpdateStackRoutes.DeviceConnectionGuard}
+                    component={DeviceConnectionGuardScreen}
+                />
+            )}
+            {isDeviceConnected && (
+                <FirmwareUpdateStack.Screen
+                    name={FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate}
+                    component={ConfirmFirmwareUpdateScreen}
+                />
+            )}
             <FirmwareUpdateStack.Screen
                 name={FirmwareUpdateStackRoutes.FirmwareInstallation}
                 component={FirmwareInstallationScreen}

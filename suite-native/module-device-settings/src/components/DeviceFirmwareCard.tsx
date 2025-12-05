@@ -24,7 +24,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 
-type NavigationProp = StackNavigationProps<
+type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes.DeviceFirmware
 >;
@@ -38,7 +38,7 @@ export const DeviceFirmwareCard = () => {
     const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
     const { showToast } = useToast();
 
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation<NavigationProps>();
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     if (!device || !deviceModel) {
@@ -58,7 +58,9 @@ export const DeviceFirmwareCard = () => {
             return;
         }
 
-        navigation.navigate(DeviceSettingsStackRoutes.DeviceFirmware);
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceFirmware, {
+            closeActionType: 'back',
+        });
     };
 
     const firmwareUpdateProps = ((): InlineAlertBoxProps | undefined => {

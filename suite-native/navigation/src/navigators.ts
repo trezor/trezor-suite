@@ -2,7 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 import { RequireAllOrNone } from 'type-fest';
 
-import { BackupType, Locale } from '@suite-common/suite-types';
+import { BackupType } from '@suite-common/suite-types';
 import { TradingType } from '@suite-common/trading';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -29,6 +29,7 @@ import {
     DeviceOnboardingStackRoutes,
     DevicePinProtectionStackRoutes,
     DeviceSettingsStackRoutes,
+    FirmwareLanguageStackRoutes,
     FirmwareUpdateStackRoutes,
     HomeStackRoutes,
     OnboardingStackRoutes,
@@ -230,11 +231,11 @@ export type DeviceSettingsStackParamList = {
     };
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
-    [DeviceSettingsStackRoutes.DeviceFirmware]: undefined;
-    [DeviceSettingsStackRoutes.FirmwareUpdateStack]: NavigatorScreenParams<FirmwareUpdateStackParamList>;
-    [DeviceSettingsStackRoutes.FirmwareLanguage]: {
-        language: Locale;
+    [DeviceSettingsStackRoutes.DeviceFirmware]: {
+        closeActionType: CloseActionType;
     };
+    [DeviceSettingsStackRoutes.FirmwareUpdateStack]: undefined;
+    [DeviceSettingsStackRoutes.FirmwareLanguageStack]: undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
@@ -253,9 +254,15 @@ export type DevicePinProtectionStackParamList = {
 };
 
 export type FirmwareUpdateStackParamList = {
+    [FirmwareUpdateStackRoutes.DeviceConnectionGuard]: undefined;
     [FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [FirmwareUpdateStackRoutes.FirmwareInstallation]: undefined;
     [FirmwareUpdateStackRoutes.ThpConfirmation]: undefined;
+};
+
+export type FirmwareLanguageStackParamList = {
+    [FirmwareLanguageStackRoutes.DeviceConnectionGuard]: undefined;
+    [FirmwareLanguageStackRoutes.ConfirmLanguageChange]: undefined;
 };
 
 export type WipeDeviceStackParamList = {

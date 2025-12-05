@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { Locale } from '@suite-common/suite-types';
 import {
     selectDeviceLanguage,
@@ -11,21 +9,11 @@ import {
 import { Card, HStack, Select, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes.DeviceFirmware,
-    RootStackParamList
->;
+import { useFirmwareLanguage } from '../hooks/useFirmwareLanguage';
 
 export const FirmwareLanguageCard = () => {
-    const navigation = useNavigation<NavigationProps>();
+    const { changeFirmwareLanguage } = useFirmwareLanguage();
 
     const isDeviceLanguageConfigurable = useSelector(selectIsDeviceLanguageConfigurable);
     const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
@@ -33,7 +21,7 @@ export const FirmwareLanguageCard = () => {
 
     const changeFirmwareLanguageIfDifferent = (language: Locale) => {
         if (language !== deviceLanguage) {
-            navigation.navigate(DeviceSettingsStackRoutes.FirmwareLanguage, { language });
+            changeFirmwareLanguage(language);
         }
     };
 

@@ -1,23 +1,37 @@
 import { useCallback } from 'react';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { LANGUAGES, Locale } from '@suite-common/suite-types';
 import { useAlert } from '@suite-native/alerts';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useTranslate } from '@suite-native/intl';
+import {
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
-type FirmwareLanguageProps = {
-    onCompletion: () => void;
-};
+type NavigationProps = StackToStackCompositeNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.FirmwareLanguageStack,
+    RootStackParamList
+>;
 
-export const useFirmwareLanguage = ({ onCompletion }: FirmwareLanguageProps) => {
+export const useFirmwareLanguage = () => {
+    const navigation = useNavigation<NavigationProps>();
+
     const { showToast } = useToast();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
 
     const changeFirmwareLanguage = useCallback(
         async (language: Locale) => {
+            navigation.navigate(DeviceSettingsStackRoutes.FirmwareLanguageStack);
+
             const result = await requestPrioritizedDeviceAccess({
                 deviceCallback: () => TrezorConnect.changeLanguage({ language }),
             });
@@ -34,7 +48,7 @@ export const useFirmwareLanguage = ({ onCompletion }: FirmwareLanguageProps) => 
                         languageName: LANGUAGES[language].name,
                     }),
                 });
-                onCompletion();
+                navigation.goBack();
             } else {
                 const errorCode = payload.code;
                 if (
@@ -42,19 +56,19 @@ export const useFirmwareLanguage = ({ onCompletion }: FirmwareLanguageProps) => 
                     errorCode === 'Failure_PinCancelled' ||
                     errorCode === 'Method_Interrupted'
                 ) {
-                    onCompletion();
+                    navigation.goBack();
                 } else {
                     showAlert({
                         title: translate('firmware.changeLanguage.failure.title'),
                         description: translate('firmware.changeLanguage.failure.description'),
                         primaryButtonTitle: translate('generic.buttons.gotIt'),
                         primaryButtonVariant: 'redBold',
-                        onPressPrimaryButton: onCompletion,
+                        onPressPrimaryButton: navigation.goBack,
                     });
                 }
             }
         },
-        [showToast, showAlert, translate, onCompletion],
+        [navigation, showToast, showAlert, translate],
     );
 
     return { changeFirmwareLanguage };

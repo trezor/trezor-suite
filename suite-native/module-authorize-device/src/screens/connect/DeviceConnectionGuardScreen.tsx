@@ -13,6 +13,7 @@ import {
     ConnectAndUnlockDeviceScreenContent,
     TurnOnAndUnlockDeviceScreenContent,
 } from '@suite-native/device';
+import { ConnectDeviceScreenHeader } from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -20,8 +21,6 @@ import {
     Screen,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-
-import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
 
 export const DeviceConnectionGuardScreen = ({
     navigation,

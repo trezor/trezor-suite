@@ -13,6 +13,7 @@ import { BackupAndPassphraseStackNavigator } from './BackupAndPassphraseStackNav
 import { DeviceAuthenticityStackNavigator } from './DeviceAuthenticityStackNavigator';
 import { DeviceNameStackNavigator } from './DeviceNameStackNavigator';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
+import { FirmwareLanguageStackNavigator } from './FirmwareLanguageStackNavigator';
 import { FirmwareUpdateStackNavigator } from './FirmwareUpdateStackNavigator';
 import { WipeDeviceStackNavigator } from './WipeDeviceStackNavigator';
 import { AutoConnectSettingsScreen } from '../screens/AutoConnectSettingsScreen';
@@ -20,7 +21,6 @@ import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceFirmwareScreen } from '../screens/DeviceFirmwareScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
-import { FirmwareLanguageScreen } from '../screens/FirmwareLanguageScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
 import { UnpairBluetoothDeviceScreen } from '../screens/UnpairBluetoothDeviceScreen';
 
@@ -29,7 +29,7 @@ const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamL
 export const DeviceSettingsStackNavigator = () => (
     <DeviceSettingsStack.Navigator
         initialRouteName={DeviceSettingsStackRoutes.DeviceSettings}
-        screenOptions={{ ...stackNavigationOptionsConfig, animation: 'slide_from_bottom' }}
+        screenOptions={stackNavigationOptionsConfig}
     >
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceSettings}
@@ -47,14 +47,16 @@ export const DeviceSettingsStackNavigator = () => (
             name={DeviceSettingsStackRoutes.DeviceFirmware}
             component={DeviceFirmwareScreen}
         />
-        <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.FirmwareUpdateStack}
-            component={FirmwareUpdateStackNavigator}
-        />
-        <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.FirmwareLanguage}
-            component={FirmwareLanguageScreen}
-        />
+        <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
+            <DeviceSettingsStack.Screen
+                name={DeviceSettingsStackRoutes.FirmwareUpdateStack}
+                component={FirmwareUpdateStackNavigator}
+            />
+            <DeviceSettingsStack.Screen
+                name={DeviceSettingsStackRoutes.FirmwareLanguageStack}
+                component={FirmwareLanguageStackNavigator}
+            />
+        </DeviceSettingsStack.Group>
         <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceAuthenticity}
             component={DeviceAuthenticityScreen}
