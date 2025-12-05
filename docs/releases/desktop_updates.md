@@ -33,15 +33,10 @@ const defaultFeedURL = {
 };
 ```
 
-4. Change this line in the same file:
+4. Change this line in the same file to turn on the updater (by default disabled in dev build):
 
 ```javascript
 autoUpdater.forceDevUpdateConfig = true;
 ```
 
-5. Run `yarn suite:dev:desktop`<br />
-   But on Linux, run `APPIMAGE=true yarn suite:dev:desktop`
-
-Explanation: to turn on the updater in dev build, `forceDevUpdateConfig` overrides it in `electron-builder`
-[AppUpdater](https://github.com/electron-userland/electron-builder/blob/106640dd42a3db08bfbe3a3a32fe333e93ba5c10/packages/electron-updater/src/AppUpdater.ts#L330-L337),
-but on Linux you also have to fool [AppImageUpdater](https://github.com/electron-userland/electron-builder/blob/106640dd42a3db08bfbe3a3a32fe333e93ba5c10/packages/electron-updater/src/AppImageUpdater.ts#L18-L28).
+5. Run `yarn suite:dev:desktop`
