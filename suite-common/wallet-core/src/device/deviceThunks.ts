@@ -28,6 +28,7 @@ import TrezorConnect, {
     Response as ConnectResponse,
     DEVICE,
     Device,
+    Unsuccessful,
 } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { getEnvironment } from '@trezor/env-utils';
@@ -43,6 +44,7 @@ import {
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
 } from './deviceSelectors';
+import { getIsIgnoredEntropyCheckError } from './deviceUtils';
 import { sortDevices } from './sortDevices';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { startDiscoveryThunk } from '../discovery/discoveryThunks';
@@ -549,7 +551,7 @@ export const wipeDeviceThunk = createThunk(
 
 type FailEntropyCheckParams = {
     device: AcquiredDevice;
-    error: { code?: string; error: string };
+    error: Unsuccessful['payload'];
 };
 
 const failEntropyCheckThunk = createThunk(
@@ -568,15 +570,7 @@ const failEntropyCheckThunk = createThunk(
             payload: error,
         });
 
-        const temporarilySkippedErrorsToBeInvestigated = [
-            // These errors show up in Sentry and they probably lead to false positives.
-            // We should improve the logs to include stack traces so that we can investigate and fix this problem, then remove this condition.
-            'unexpected error',
-            'A transfer error has occurred',
-            // This one was not in Sentry but can be triggered by manually disconnecting the device. Investigate. https://github.com/trezor/trezor-suite-private/issues/135
-            'device disconnected during action',
-        ];
-        if (!temporarilySkippedErrorsToBeInvestigated.includes(error.error)) {
+        if (!getIsIgnoredEntropyCheckError(error.error)) {
             dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: false }));
         }
     },
