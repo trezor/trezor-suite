@@ -18,6 +18,10 @@ export type SubscriptionStorage = {
     disposeAll: (ownerId: SuiteSyncOwnerId) => void;
 };
 
+export type SubscriptionStorageDep = {
+    subscriptionStorage: SubscriptionStorage;
+};
+
 export const createSubscriptionStorage = (): SubscriptionStorage => {
     const storage: Record<SuiteSyncOwnerId, Partial<Record<SubscriptionName, () => void>>> = {};
 

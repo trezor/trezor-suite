@@ -1,20 +1,11 @@
 export type {
-    SuiteSyncStorageRepository,
-    CreateSuiteSyncStorageRepository,
+    SuiteSyncStorage,
     CreateSuiteStorage,
     CreateSuiteStorageDep,
-} from './SuiteSyncStorageRepository';
-export { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
-export type { SuiteSyncStorage } from './SuiteSyncStorage';
+} from './SuiteSyncStorage';
+
 export type { CreateSuiteSyncOwner, CreateSuiteSyncOwnerDep } from './Owner';
 export { CreateSuiteSyncOwnerError } from './Owner';
-export type {
-    SuiteSync,
-    ChangeRelayUrl,
-    SubscribeSuiteSyncStorage,
-    TurnOfSuiteSync,
-    UnsubscribeSuiteSyncStorage,
-} from './SuiteSync';
 
 // Labeling
 export type { AddressLabelsStore, AddressLabel } from './labeling/AddressLabelsStore';
