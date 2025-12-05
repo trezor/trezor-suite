@@ -11,11 +11,9 @@ import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingAction
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import messages from 'src/support/messages';
 
 export const DeviceTutorialStep = () => {
-    const isActionAbortable = useSelector(selectIsActionAbortable);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const intl = useIntl();
@@ -35,16 +33,14 @@ export const DeviceTutorialStep = () => {
                 `${mapTrezorModelToIcon[device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL]}Filled` as IconName
             }
             innerActions={
-                isActionAbortable && (
-                    <OnboardingCard.Button
-                        data-testid="@tutorial/skip-button"
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={handleSkipClick}
-                    >
-                        <Translation id="TR_SKIP" />
-                    </OnboardingCard.Button>
-                )
+                <OnboardingCard.Button
+                    data-testid="@tutorial/skip-button"
+                    intent="neutral"
+                    priority="secondary"
+                    onClick={handleSkipClick}
+                >
+                    <Translation id="TR_SKIP" />
+                </OnboardingCard.Button>
             }
             devicePrompt={<Translation id="TR_CONTINUE_ON_TREZOR" />}
             isConfirmedOnDevice

@@ -14,7 +14,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectBackup, selectBackupStatus } from 'src/reducers/backup/backupReducer';
-import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
+import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { canContinue } from 'src/utils/backup';
 
 export const BackupStep = () => {
@@ -23,7 +23,6 @@ export const BackupStep = () => {
     const backupStatus = useSelector(selectBackupStatus);
     const device = useSelector(selectSelectedDevice);
     const isDeviceLocked = useSelector(selectIsDeviceLocked);
-    const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
 
     const { backupType } = useSelector(state => state.onboarding);
@@ -89,7 +88,7 @@ export const BackupStep = () => {
                         description={<Translation id="TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP" />}
                         device={device}
                         isConfirmedOnDevice
-                        isActionAbortable={isActionAbortable}
+                        isActionAbortable
                     />
                 );
             case 'finished':

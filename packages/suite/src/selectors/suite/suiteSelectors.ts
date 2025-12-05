@@ -1,6 +1,5 @@
 import { DeviceRootState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { TransportInfo } from '@trezor/connect';
-import { versionUtils } from '@trezor/utils';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
@@ -50,13 +49,6 @@ export const selectHasTransportOfType = (type: TransportInfo['type']) => (state:
     state.suite.transport?.transports.some(t => t.type === type) ?? false;
 export const selectTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
     state.suite.transport?.transports.find(t => t.type === type);
-
-export const selectIsActionAbortable = (state: SuiteRootState) => {
-    const bridge = state.suite.transport?.transports.find(t => t.type === 'BridgeTransport');
-
-    // TODO abortable actions should be decided based on specific device's transport
-    return !bridge || versionUtils.isNewerOrEqual(bridge.version as string, '2.0.31');
-};
 
 export const selectPrerequisite = (
     state: SuiteRootState & RouterRootState & DeviceRootState,
