@@ -225,10 +225,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     }
 
     // check if device is in unexpected mode [bootloader, not-initialized, required firmware]
-    const unexpectedMode = device.hasUnexpectedMode(
-        method.allowDeviceMode,
-        method.requireDeviceMode,
-    );
+    const unexpectedMode = device.hasUnexpectedMode(method.allowDeviceMode);
     if (unexpectedMode) {
         if (isUsingPopup) {
             // wait for popup handshake
