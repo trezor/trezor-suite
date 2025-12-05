@@ -11,7 +11,7 @@ import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 interface TradingUtilsTorWarningProps {
     tradingType: TradingType;
     noOffer: boolean;
-    showButton: boolean;
+    showButton?: boolean;
 }
 
 const getTorWarningTranslationId = (tradingType: TradingType, noOffer: boolean): TranslationKey => {
@@ -33,7 +33,7 @@ const getTorWarningTranslationId = (tradingType: TradingType, noOffer: boolean):
 export const TradingUtilsTorWarning = ({
     tradingType,
     noOffer,
-    showButton = true,
+    showButton = false,
 }: TradingUtilsTorWarningProps) => {
     const dispatch = useDispatch();
 
