@@ -1,6 +1,8 @@
 const LAYER_ID = 'TrezorConnectInteractionLayer';
+const STORAGE_KEY = 'TrezorConnect_DismissedErrors';
+
 const INLINE_STYLES =
-    '.trezorconnect-container{position:fixed!important;display:-webkit-box!important;display:-webkit-flex!important;display:-ms-flexbox!important;display:flex!important;-webkit-box-orient:vertical!important;-webkit-box-direction:normal!important;-webkit-flex-direction:column!important;-ms-flex-direction:column!important;flex-direction:column!important;-webkit-box-align:center!important;-webkit-align-items:center!important;-ms-flex-align:center!important;align-items:center!important;z-index:10000!important;width:100%!important;height:100%!important;top:0!important;left:0!important;background:rgba(0,0,0,.5)!important;overflow:auto!important;padding:20px!important;margin:0!important;backdrop-filter:blur(4px)!important}.trezorconnect-container .trezorconnect-window{position:relative!important;display:block!important;width:420px!important;max-width:calc(100vw - 40px)!important;font-family:"TT Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif!important;margin:auto!important;border-radius:12px!important;background:#FFFFFF!important;text-align:center!important;overflow:hidden!important;box-shadow:0 8px 32px rgba(0,0,0,0.12)!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head{text-align:left;padding:20px 24px!important;display:-webkit-box!important;display:-webkit-flex!important;display:-ms-flexbox!important;display:flex!important;-webkit-box-align:center!important;-webkit-align-items:center!important;-ms-flex-align:center!important;align-items:center!important;border-bottom:1px solid #E6E8EC!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-logo{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close{cursor:pointer!important;width:32px!important;height:32px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-radius:8px!important;transition:background-color 0.2s ease!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close svg{fill:#59626D;-webkit-transition:fill .2s ease!important;transition:fill .2s ease!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close:hover{background-color:#F3F5F8!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close:hover svg{fill:#2D343D}.trezorconnect-container .trezorconnect-window .trezorconnect-body{padding:32px 24px!important;background:#FFFFFF!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body h3{color:#2D343D!important;font-size:20px!important;font-weight:500!important;line-height:28px!important;margin:0 0 8px 0!important;letter-spacing:-0.2px!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body p{margin:0 0 24px 0!important;font-weight:400!important;color:#59626D!important;font-size:14px!important;line-height:22px!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body button{width:100%!important;padding:12px 16px!important;margin:0!important;border-radius:8px!important;font-size:16px!important;font-weight:500!important;cursor:pointer!important;background:#136334!important;color:#FFFFFF!important;border:0!important;min-height:48px!important;-webkit-transition:background-color .2s ease!important;transition:background-color .2s ease!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body button:hover{background-color:#0F4D29!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body button:active{background-color:#0F4D29!important;transform:translateY(1px)!important}';
+    '.trezorconnect-container{position:fixed!important;display:-webkit-box!important;display:-webkit-flex!important;display:-ms-flexbox!important;display:flex!important;-webkit-box-orient:vertical!important;-webkit-box-direction:normal!important;-webkit-flex-direction:column!important;-ms-flex-direction:column!important;flex-direction:column!important;-webkit-box-align:center!important;-webkit-align-items:center!important;-ms-flex-align:center!important;align-items:center!important;z-index:10000!important;width:100%!important;height:100%!important;top:0!important;left:0!important;background:rgba(0,0,0,.5)!important;overflow:auto!important;padding:20px!important;margin:0!important;backdrop-filter:blur(4px)!important}.trezorconnect-container .trezorconnect-window{position:relative!important;display:block!important;width:420px!important;max-width:calc(100vw - 40px)!important;font-family:"TT Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif!important;margin:auto!important;border-radius:12px!important;background:#FFFFFF!important;text-align:center!important;overflow:hidden!important;box-shadow:0 8px 32px rgba(0,0,0,0.12)!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head{text-align:left;padding:20px 24px!important;display:-webkit-box!important;display:-webkit-flex!important;display:-ms-flexbox!important;display:flex!important;-webkit-box-align:center!important;-webkit-align-items:center!important;-ms-flex-align:center!important;align-items:center!important;border-bottom:1px solid #E6E8EC!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-logo{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close{cursor:pointer!important;width:32px!important;height:32px!important;display:flex!important;align-items:center!important;justify-content:center!important;border-radius:8px!important;transition:background-color 0.2s ease!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close svg{fill:#59626D;-webkit-transition:fill .2s ease!important;transition:fill .2s ease!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close:hover{background-color:#F3F5F8!important}.trezorconnect-container .trezorconnect-window .trezorconnect-head .trezorconnect-close:hover svg{fill:#2D343D}.trezorconnect-container .trezorconnect-window .trezorconnect-body{padding:32px 24px!important;background:#FFFFFF!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body h3{color:#2D343D!important;font-size:20px!important;font-weight:500!important;line-height:28px!important;margin:0 0 8px 0!important;letter-spacing:-0.2px!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body p{margin:0 0 24px 0!important;font-weight:400!important;color:#59626D!important;font-size:14px!important;line-height:22px!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body .trezorconnect-checkbox-wrapper{display:flex!important;align-items:center!important;justify-content:flex-start!important;margin:0 0 20px 0!important;text-align:left!important;cursor:pointer!important;user-select:none!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body .trezorconnect-checkbox-wrapper input[type="checkbox"]{width:18px!important;height:18px!important;margin:0 8px 0 0!important;cursor:pointer!important;accent-color:#136334!important;flex-shrink:0!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body .trezorconnect-checkbox-wrapper label{font-size:14px!important;color:#59626D!important;cursor:pointer!important;line-height:22px!important;font-weight:400!important;margin:0!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body button{width:100%!important;padding:12px 16px!important;margin:0!important;border-radius:8px!important;font-size:16px!important;font-weight:500!important;cursor:pointer!important;background:#136334!important;color:#FFFFFF!important;border:0!important;min-height:48px!important;-webkit-transition:background-color .2s ease!important;transition:background-color .2s ease!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body button:hover{background-color:#0F4D29!important}.trezorconnect-container .trezorconnect-window .trezorconnect-body button:active{background-color:#0F4D29!important;transform:translateY(1px)!important}';
 
 const HTML = `
     <style>${INLINE_STYLES}</style>
@@ -28,6 +30,41 @@ const HTML = `
     </div>
 `;
 
+// Helper to create a hash from error text for storage key
+const hashErrorText = (text: string): string => {
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) {
+        const char = text.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString();
+};
+
+// Check if error has been dismissed
+const isErrorDismissed = (errorText: string): boolean => {
+    try {
+        const dismissed = localStorage.getItem(STORAGE_KEY);
+        if (!dismissed) return false;
+        const dismissedErrors = JSON.parse(dismissed) as Record<string, boolean>;
+        return dismissedErrors[hashErrorText(errorText)] === true;
+    } catch {
+        return false;
+    }
+};
+
+// Save dismissed error to localStorage
+const dismissError = (errorText: string): void => {
+    try {
+        const dismissed = localStorage.getItem(STORAGE_KEY);
+        const dismissedErrors = dismissed ? (JSON.parse(dismissed) as Record<string, boolean>) : {};
+        dismissedErrors[hashErrorText(errorText)] = true;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dismissedErrors));
+    } catch {
+        // Silently fail if localStorage is not available
+    }
+};
+
 export const showErrorModal = (
     open: () => void,
     cancel: () => void,
@@ -35,6 +72,12 @@ export const showErrorModal = (
     debug: boolean,
 ) => {
     if (document.getElementById(LAYER_ID)) {
+        return;
+    }
+
+    // Check if user has dismissed this error before
+    if (isErrorDismissed(errorText)) {
+        open();
         return;
     }
 
@@ -53,13 +96,24 @@ export const showErrorModal = (
     const body = shadowRoot.querySelector('.trezorconnect-body') as HTMLDivElement;
 
     body.innerHTML = `
-        <h3>Error</h3>
         <p>${errorText}</p>
+        <div class="trezorconnect-checkbox-wrapper">
+            <input type="checkbox" id="trezorconnect-dismiss-checkbox" />
+            <label for="trezorconnect-dismiss-checkbox">Don't show this again</label>
+        </div>
         <button class="trezorconnect-open">Continue</button>
         `;
 
+    const checkbox = shadowRoot.querySelector(
+        '#trezorconnect-dismiss-checkbox',
+    ) as HTMLInputElement;
+
     const button = shadowRoot.querySelector('.trezorconnect-open') as HTMLButtonElement;
     button.onclick = () => {
+        if (checkbox.checked) {
+            // todo: do we want to show error again always copy changes? if not, we need to assign some unique id per error
+            dismissError(errorText);
+        }
         open();
         if (document.body) {
             document.body.removeChild(host);
