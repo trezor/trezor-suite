@@ -8,7 +8,6 @@ import login from '../../../data/methods/other/login.ts';
 <ApiPlayground
     options={[
         { title: 'Synchronous', legacyConfig: login[0] },
-        { title: 'Asynchronous', legacyConfig: login[1] },
         { title: 'Advanced schema', method: 'requestLogin', schema: RequestLoginSchema },
     ]}
 />
@@ -37,6 +36,8 @@ To understand the full mechanics, please consult the Challenge-Response chapter
 of
 [SLIP-0013: Authentication using deterministic hierarchy](https://github.com/satoshilabs/slips/blob/master/slip-0013.md).
 
+**Note:** `callback` and `asyncChallenge` parameters are now deprecated. Simply fetch the data first and pass it to the method.
+
 ```javascript
 const result = await TrezorConnect.requestLogin(params);
 ```
@@ -50,20 +51,6 @@ const result = await TrezorConnect.requestLogin(params);
 <ParamsTable schema={RequestLoginSchema} descriptions={paramDescriptions} />
 
 ### Example
-
-###### Login using server-side async challenge
-
-```javascript
-TrezorConnect.requestLogin({
-    callback: function () {
-        // here should be a request to server to fetch "challengeHidden" and "challengeVisual"
-        return {
-            challengeHidden: '0123456789abcdef',
-            challengeVisual: 'Login to',
-        };
-    },
-});
-```
 
 ###### Login without async challenge
 

@@ -11,7 +11,6 @@ export interface ConnectFactoryDependencies<SettingsType extends Record<string, 
     eventEmitter: EventEmitter;
     manifest: TrezorConnect['manifest'];
     setTransports: TrezorConnect['setTransports'];
-    requestLogin: TrezorConnect['requestLogin'];
     uiResponse: TrezorConnect['uiResponse'];
     cancel: TrezorConnect['cancel'];
     dispose: TrezorConnect['dispose'];
@@ -83,6 +82,7 @@ export const connectCallableMethods = [
     'nemSignTransaction',
     'pushTransaction',
     'recoveryDevice',
+    'requestLogin',
     'resetDevice',
     'rippleGetAddress',
     'rippleSignTransaction',
@@ -118,7 +118,6 @@ export const factory = <
         init,
         call,
         setTransports,
-        requestLogin,
         uiResponse,
         cancel,
         dispose,
@@ -170,8 +169,6 @@ export const factory = <
         dispose,
 
         cancel,
-
-        requestLogin,
 
         ...callableMethods,
 

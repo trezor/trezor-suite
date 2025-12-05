@@ -12,14 +12,8 @@ import {
     createErrorMessage,
 } from '@trezor/connect/src/events';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type {
-    ConnectSettings,
-    ConnectSettingsWeb,
-    Manifest,
-    Response,
-} from '@trezor/connect/src/types';
+import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
-import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 
 import { parseConnectSettings } from '../connectSettings';
@@ -157,11 +151,6 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
-    // todo: not supported yet
-    requestLogin(): Response<Login> {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
     // not needed, only because of types
     disableWebUSB() {
         throw ERRORS.TypedError('Method_InvalidPackage');
@@ -186,7 +175,6 @@ export const TrezorConnect = factory({
     call: impl.call.bind(impl),
     setTransports: impl.setTransports.bind(impl),
     manifest: impl.manifest.bind(impl),
-    requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
     cancel: impl.cancel.bind(impl),
     dispose: impl.dispose.bind(impl),

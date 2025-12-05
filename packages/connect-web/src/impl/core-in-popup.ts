@@ -13,14 +13,8 @@ import {
     createErrorMessage,
 } from '@trezor/connect/src/events';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type {
-    ConnectSettings,
-    ConnectSettingsWeb,
-    Manifest,
-    Response,
-} from '@trezor/connect/src/types';
+import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
-import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Log, LogMessage, LogWriter, initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
 import { createDeferred } from '@trezor/utils';
 
@@ -223,11 +217,6 @@ export class CoreInPopup implements ConnectFactoryDependencies<ConnectSettingsWe
 
     renderWebUSBButton() {}
 
-    requestLogin(): Response<Login> {
-        // todo: not supported yet
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
     disableWebUSB() {
         // todo: not supported yet, probably not needed
         throw ERRORS.TypedError('Method_InvalidPackage');
@@ -249,7 +238,6 @@ export const TrezorConnect = factory({
     call: impl.call.bind(impl),
     setTransports: impl.setTransports.bind(impl),
     manifest: impl.manifest.bind(impl),
-    requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
     cancel: impl.cancel.bind(impl),
     dispose: impl.dispose.bind(impl),

@@ -108,18 +108,12 @@ const uiResponse = () => {
     throw ERRORS.TypedError('Method_InvalidPackage');
 };
 
-const requestLogin = () => {
-    // Not needed here - Not used here.
-    throw ERRORS.TypedError('Method_InvalidPackage');
-};
-
 const TrezorConnect = factory({
     eventEmitter,
     manifest,
     init,
     call,
     setTransports,
-    requestLogin,
     uiResponse,
     cancel,
     dispose,

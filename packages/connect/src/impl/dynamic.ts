@@ -166,10 +166,6 @@ export class TrezorConnectDynamic<
         }
     }
 
-    public requestLogin(params: any) {
-        return this.getTarget().requestLogin(params);
-    }
-
     public uiResponse(params: any) {
         return this.getTarget().uiResponse(params);
     }
