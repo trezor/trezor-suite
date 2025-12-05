@@ -65,6 +65,7 @@
         { "path": "../tokens" },
         { "path": "../trading-atoms" },
         { "path": "../trading-consts" },
+        { "path": "../trading-debug" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },

@@ -13243,6 +13243,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-consts": "workspace:*"
+    "@suite-native/trading-debug": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
@@ -13708,6 +13709,20 @@ __metadata:
   dependencies:
     "@suite-common/trading": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-debug@workspace:*, @suite-native/trading-debug@workspace:suite-native/trading-debug":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-debug@workspace:suite-native/trading-debug"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:19.1.0"
   languageName: unknown
   linkType: soft
 

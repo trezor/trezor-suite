@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../atoms" },
+        { "path": "../clipboard" },
+        { "path": "../feature-flags" },
+        { "path": "../../packages/styles" },
+        { "path": "../test-utils" }
+    ]
+}
