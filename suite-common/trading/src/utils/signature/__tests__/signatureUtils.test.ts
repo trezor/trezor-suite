@@ -7,10 +7,21 @@ import {
 
 // Mock external dependencies
 jest.mock('../../../utils', () => ({
-    cryptoIdToNetworkAndContractAddress: jest.fn().mockReturnValue({
-        network: { decimals: 8 },
-        contractAddress: undefined,
-    }),
+    cryptoIdToNetworkAndContractAddress: jest
+        .fn()
+        .mockImplementation((cryptoId: CryptoId | undefined) => {
+            if (cryptoId === 'ethereum') {
+                return {
+                    network: { decimals: 18, networkType: 'ethereum', symbol: 'eth' },
+                    contractAddress: undefined,
+                };
+            }
+
+            return {
+                network: { decimals: 8, networkType: 'bitcoin', symbol: 'btc' },
+                contractAddress: undefined,
+            };
+        }),
 }));
 
 describe('signatureUtils', () => {
@@ -52,6 +63,7 @@ describe('signatureUtils', () => {
             sendSlip44: 0,
             receiveSlip44: 60,
             receiveDisplaySymbol: 'ETH',
+            sendStringAmount: mockTrade.sendStringAmount,
         };
 
         it('should create valid payment request for exchange trade', () => {
@@ -60,7 +72,7 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestExchange',
                 nonce: 'nonce789',
-                amount: '10000000', // 0.1 * 10^8
+                amount: '8096980000000000', // 8 bytes little-endian for 0.1 BTC
                 memos: [
                     {
                         coin_purchase_memo: {
@@ -108,7 +120,8 @@ describe('signatureUtils', () => {
         it('should return undefined when trade sendStringAmount is missing', () => {
             const propsWithoutSendAmount = {
                 ...defaultProps,
-                trade: { ...mockTrade, sendStringAmount: undefined as any },
+                trade: { ...mockTrade },
+                sendStringAmount: undefined as any,
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutSendAmount);
@@ -250,6 +263,7 @@ describe('signatureUtils', () => {
             pathRefund: "m/44'/0'/0'/1/0",
             nonce: 'sellNonce123',
             memoText: 'Test memo text',
+            sendStringAmount: mockSellTrade.cryptoStringAmount,
         };
 
         it('should create valid payment request for sell trade', () => {
@@ -258,7 +272,7 @@ describe('signatureUtils', () => {
             expect(result).toEqual({
                 recipient_name: 'TestSeller',
                 nonce: 'sellNonce123',
-                amount: '50000000', // 0.5 * 10^8
+                amount: '80f0fa0200000000', // 8 bytes little-endian for 0.5 BTC
                 memos: [
                     {
                         text_memo: {
@@ -347,7 +361,9 @@ describe('signatureUtils', () => {
             const result = tradingSellCreatePaymentRequest(propsWithEth);
 
             expect(result).toBeDefined();
-            expect(result?.amount).toBe('1050000000'); // 10.5 * 10^8
+            expect(result?.amount).toBe(
+                '0000b2d3595bf006000000000000000000000000000000000000000000000000', // 32 bytes little-endian for 10.5 ETH
+            );
         });
 
         it('should handle empty memo text', () => {
@@ -418,11 +434,12 @@ describe('signatureUtils', () => {
                 nonce: 'nonce',
                 receiveSlip44: 60,
                 receiveDisplaySymbol: 'ETH',
+                sendStringAmount: largeTrade.sendStringAmount,
             });
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('99999999999999');
+                expect(result.amount).toBe('ff3f7a10f35a0000'); // 8 bytes little-endian for 99999999999999 sats
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('1000000.12345678 ETH');
             }
         });
@@ -465,11 +482,12 @@ describe('signatureUtils', () => {
                 nonce: 'nonce',
                 receiveSlip44: 60,
                 receiveDisplaySymbol: 'ETH',
+                sendStringAmount: smallTrade.sendStringAmount,
             });
 
             expect(result).toBeDefined();
             if (result && result.memos && result.memos[0]) {
-                expect(result.amount).toBe('1');
+                expect(result.amount).toBe('0100000000000000'); // 8 bytes little-endian for 1 satoshi
                 expect(result.memos[0].coin_purchase_memo?.amount).toBe('0.00000001 ETH');
             }
         });

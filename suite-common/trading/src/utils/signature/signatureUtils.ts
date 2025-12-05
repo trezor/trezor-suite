@@ -7,12 +7,28 @@ import {
     SellProviderInfo,
 } from 'invity-api';
 
-import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import type { Network } from '@suite-common/wallet-config';
+import { asAmountUnit, formatBigNumberToLE, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 
 import { cryptoIdToNetwork, cryptoIdToNetworkAndContractAddress } from '../../utils';
+
+export const formatSlip24SendAmountByNetwork = ({
+    value,
+    network,
+}: {
+    value: string | number;
+    network: Network;
+}): string => {
+    const bytesLength = network.networkType === 'ethereum' ? 32 : 8;
+
+    return formatBigNumberToLE({
+        value: new BigNumber(value),
+        bytesLength,
+    });
+};
 
 export const tradingGetCoinSlip44 = async (cryptoId: CryptoId | undefined) => {
     if (!cryptoId) return;
@@ -40,6 +56,8 @@ type TradingExchangeCreatePaymentRequestProps = {
     nonce: string;
     receiveSlip44: number;
     receiveDisplaySymbol: string;
+    sendStringAmount: string;
+    sendTokenDecimals?: number;
 };
 
 export const tradingExchangeCreatePaymentRequest = ({
@@ -52,25 +70,35 @@ export const tradingExchangeCreatePaymentRequest = ({
     nonce,
     receiveSlip44,
     receiveDisplaySymbol,
+    sendStringAmount,
+    sendTokenDecimals,
 }: TradingExchangeCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
         !trade.send ||
-        !trade.sendStringAmount ||
         !trade.receive ||
         !trade.receiveStringAmount ||
         !trade.receiveAddress ||
-        !trade.refundAddress
+        !trade.refundAddress ||
+        !sendStringAmount
     ) {
         return undefined;
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
-    const sendAmount = unitsToSubunits({
-        value: asAmountUnit(new BigNumber(trade.sendStringAmount)),
-        symbol: sendNetworkSymbol,
-    }).toString();
+    if (!sendNetworkData.network) {
+        return undefined;
+    }
+
+    const sendAmount = formatSlip24SendAmountByNetwork({
+        value: unitsToSubunits({
+            value: asAmountUnit(new BigNumber(sendStringAmount)),
+            symbol: sendNetworkSymbol,
+            ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
+        }).toString(),
+        network: sendNetworkData.network,
+    });
 
     const receiveAmount = `${trade.receiveStringAmount} ${receiveDisplaySymbol}`;
 
@@ -109,6 +137,8 @@ type TradingSellCreatePaymentRequestProps = {
     pathRefund: string;
     nonce: string;
     memoText: string;
+    sendStringAmount: string;
+    sendTokenDecimals?: number;
 };
 
 export const tradingSellCreatePaymentRequest = ({
@@ -118,24 +148,34 @@ export const tradingSellCreatePaymentRequest = ({
     pathRefund,
     nonce,
     memoText,
+    sendStringAmount,
+    sendTokenDecimals,
 }: TradingSellCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
         !trade.refundAddress ||
         !trade.tradeSignature ||
         !trade.cryptoStringAmount ||
-        !trade.cryptoCurrency
+        !trade.cryptoCurrency ||
+        !sendStringAmount
     ) {
         return undefined;
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
-
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
-    const sendAmount = unitsToSubunits({
-        value: asAmountUnit(new BigNumber(trade.cryptoStringAmount)),
-        symbol: sendNetworkSymbol,
-    }).toString();
+    if (!sendNetworkData.network) {
+        return undefined;
+    }
+
+    const sendAmount = formatSlip24SendAmountByNetwork({
+        value: unitsToSubunits({
+            value: asAmountUnit(new BigNumber(sendStringAmount)),
+            symbol: sendNetworkSymbol,
+            ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
+        }).toString(),
+        network: sendNetworkData.network,
+    });
 
     const memos: PROTO.PaymentRequestMemo[] = [
         {

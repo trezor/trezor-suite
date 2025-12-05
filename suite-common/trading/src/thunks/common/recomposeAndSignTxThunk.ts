@@ -231,6 +231,9 @@ export const recomposeAndSignTxThunk = createThunk<
             ? subunitsToUnits({
                   value: asAmountSubunit(new BigNumber(sendAmount)),
                   symbol: account.symbol,
+                  ...(composed.token?.decimals
+                      ? { decimals: composed.token?.decimals }
+                      : undefined),
               }).toString()
             : undefined;
 
