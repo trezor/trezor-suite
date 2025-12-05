@@ -5,14 +5,8 @@ import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/co
 import { DEEPLINK_VERSION, DEFAULT_DOMAIN_MAJOR_VER } from '@trezor/connect/src/data/version';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type {
-    ConnectSettings,
-    ConnectSettingsMobile,
-    Manifest,
-    Response,
-} from '@trezor/connect/src/types';
+import type { ConnectSettings, ConnectSettingsMobile, Manifest } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
-import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
@@ -89,10 +83,6 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         this._settings.deeplinkOpen(url);
 
         return this.messagePromises[this.messageID].promise;
-    }
-
-    public requestLogin(): Response<Login> {
-        throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
     public uiResponse() {
@@ -221,7 +211,6 @@ const TrezorConnect = factory<
         call: impl.call.bind(impl),
         setTransports: impl.setTransports.bind(impl),
         manifest: impl.manifest.bind(impl),
-        requestLogin: impl.requestLogin.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),
         cancel: impl.cancel.bind(impl),
         dispose: impl.dispose.bind(impl),

@@ -14,7 +14,6 @@ import {
     RESPONSE_EVENT,
     TRANSPORT,
     TRANSPORT_EVENT,
-    UI,
     UI_EVENT,
     UiResponseEvent,
     createErrorMessage,
@@ -303,45 +302,6 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
         webUSBButton(className, this._settings.webusbSrc);
     }
 
-    public async requestLogin(params: any) {
-        if (typeof params.callback === 'function') {
-            const { callback } = params;
-
-            // TODO: set message listener only if iframe is loaded correctly
-            const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
-                const { data } = event;
-                if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
-                    try {
-                        const payload = await callback();
-                        iframe.postMessage({
-                            type: UI.LOGIN_CHALLENGE_RESPONSE,
-                            payload,
-                        });
-                    } catch (error) {
-                        iframe.postMessage({
-                            type: UI.LOGIN_CHALLENGE_RESPONSE,
-                            payload: error.message,
-                        });
-                    }
-                }
-            };
-
-            window.addEventListener('message', loginChallengeListener, false);
-
-            const response = await this.call({
-                method: 'requestLogin',
-                ...params,
-                asyncChallenge: true,
-                callback: null,
-            });
-            window.removeEventListener('message', loginChallengeListener);
-
-            return response;
-        }
-
-        return this.call({ method: 'requestLogin', ...params });
-    }
-
     public disableWebUSB() {
         if (!iframe.instance) {
             throw ERRORS.TypedError('Init_NotInitialized');
@@ -374,7 +334,6 @@ export const TrezorConnect = factory(
         call: impl.call.bind(impl),
         setTransports: impl.setTransports.bind(impl),
         manifest: impl.manifest.bind(impl),
-        requestLogin: impl.requestLogin.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),
         cancel: impl.cancel.bind(impl),
         dispose: impl.dispose.bind(impl),

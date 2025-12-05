@@ -6,7 +6,6 @@ import * as ERRORS from '../constants/errors';
 import { parseConnectSettings } from '../data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,
-    CORE_EVENT,
     CallMethodPayload,
     CoreEventMessage,
     CoreRequestMessage,
@@ -231,45 +230,6 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         }
         this.handleCoreMessage(response);
     }
-
-    public async requestLogin(params: any) {
-        if (typeof params.callback === 'function') {
-            const { callback } = params;
-            const core = this._coreManager.get();
-
-            // TODO: set message listener only if _core is loaded correctly
-            const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
-                const { data } = event;
-                if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
-                    try {
-                        const payload = await callback();
-                        this.handleCoreMessage({
-                            type: UI.LOGIN_CHALLENGE_RESPONSE,
-                            payload,
-                        });
-                    } catch (error) {
-                        this.handleCoreMessage({
-                            type: UI.LOGIN_CHALLENGE_RESPONSE,
-                            payload: error.message,
-                        });
-                    }
-                }
-            };
-
-            core?.on(CORE_EVENT, loginChallengeListener);
-            const response = await this.call({
-                method: 'requestLogin',
-                ...params,
-                asyncChallenge: true,
-                callback: null,
-            });
-            core?.removeListener(CORE_EVENT, loginChallengeListener);
-
-            return response;
-        }
-
-        return this.call({ method: 'requestLogin', ...params });
-    }
 }
 
 const impl = new CoreInModule();
@@ -281,7 +241,6 @@ export const TrezorConnect = factory({
     init: impl.init.bind(impl),
     call: impl.call.bind(impl),
     setTransports: impl.setTransports.bind(impl),
-    requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
     cancel: impl.cancel.bind(impl),
     dispose: impl.dispose.bind(impl),

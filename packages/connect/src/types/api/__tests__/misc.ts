@@ -29,43 +29,6 @@ export const cipherKeyValue = async (api: TrezorConnect) => {
     }
 };
 
-// Method with mixed params
-export const requestLogin = async (api: TrezorConnect) => {
-    // async call
-    const a = await api.requestLogin({
-        callback: () => ({
-            challengeHidden: 'a',
-            challengeVisual: 'b',
-        }),
-    });
-
-    if (a.success) {
-        a.payload.address.toLowerCase();
-        a.payload.publicKey.toLowerCase();
-        a.payload.signature.toLowerCase();
-        // @ts-expect-error
-        a.payload.error.toLowerCase();
-    } else {
-        a.payload.error.toLowerCase();
-        // @ts-expect-error
-        a.payload.address.toLowerCase();
-    }
-    // sync call
-    api.requestLogin({
-        challengeHidden: 'a',
-        challengeVisual: 'b',
-    });
-
-    // @ts-expect-error
-    api.requestLogin();
-    // @ts-expect-error
-    api.requestLogin({ callback: 'string' });
-    // @ts-expect-error
-    api.requestLogin({ challengeHidden: 'a' });
-    // @ts-expect-error
-    api.requestLogin({ challengeVisual: 1 });
-};
-
 export const setProxy = async (api: TrezorConnect) => {
     const proxy = await api.setProxy({ proxy: 'socks://localhost:9050' });
     if (proxy.success) {

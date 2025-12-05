@@ -15,9 +15,7 @@ import type {
     ConnectSettingsPublic,
     ConnectSettingsWeb,
     Manifest,
-    Response,
 } from '@trezor/connect/src/types';
-import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { WebsocketClient } from '@trezor/websocket-client';
 import { WebsocketError } from '@trezor/websocket-client/src/client';
 
@@ -185,11 +183,6 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
-    // todo: not supported yet
-    requestLogin(): Response<Login> {
-        throw ERRORS.TypedError('Method_InvalidPackage');
-    }
-
     // not needed, only because of types
     disableWebUSB() {
         throw ERRORS.TypedError('Method_InvalidPackage');
@@ -214,7 +207,6 @@ export const TrezorConnect = factory({
     call: impl.call.bind(impl),
     setTransports: impl.setTransports.bind(impl),
     manifest: impl.manifest.bind(impl),
-    requestLogin: impl.requestLogin.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
     cancel: impl.cancel.bind(impl),
     dispose: impl.dispose.bind(impl),

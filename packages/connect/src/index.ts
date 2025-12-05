@@ -7,7 +7,6 @@ import { initCoreState } from './core';
 import { parseConnectSettings } from './data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,
-    CORE_EVENT,
     CallMethod,
     CoreEventMessage,
     DEVICE_EVENT,
@@ -166,45 +165,6 @@ const uiResponse = (response: UiResponseEvent) => {
     core.handleMessage(response);
 };
 
-const requestLogin = async (params: any) => {
-    if (typeof params.callback === 'function') {
-        const { callback } = params;
-        const core = coreManager.get();
-
-        // TODO: set message listener only if _core is loaded correctly
-        const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
-            const { data } = event;
-            if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
-                try {
-                    const payload = await callback();
-                    core?.handleMessage({
-                        type: UI.LOGIN_CHALLENGE_RESPONSE,
-                        payload,
-                    });
-                } catch (error) {
-                    core?.handleMessage({
-                        type: UI.LOGIN_CHALLENGE_RESPONSE,
-                        payload: error.message,
-                    });
-                }
-            }
-        };
-
-        core?.on(CORE_EVENT, loginChallengeListener);
-        const response = await call({
-            method: 'requestLogin',
-            ...params,
-            asyncChallenge: true,
-            callback: null,
-        });
-        core?.removeListener(CORE_EVENT, loginChallengeListener);
-
-        return response;
-    }
-
-    return call({ method: 'requestLogin', ...params });
-};
-
 const cancel = (error?: string) => {
     const core = coreManager.get();
     if (!core) {
@@ -224,7 +184,6 @@ const TrezorConnect = factory(
         init,
         call,
         setTransports,
-        requestLogin,
         uiResponse,
         cancel,
         dispose,
