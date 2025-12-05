@@ -12,7 +12,16 @@
     ],
     "references": [
         { "path": "../../suite-common/feedback" },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
         {
             "path": "../../suite-common/wallet-utils"
         },
@@ -28,11 +37,13 @@
             "path": "../../packages/suite-analytics"
         },
         { "path": "../../packages/suite-data" },
+        { "path": "../../packages/theme" },
         { "path": "../../packages/transport" },
         {
             "path": "../../packages/trezor-user-env-link"
         },
         { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]
 }
