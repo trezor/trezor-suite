@@ -1,3 +1,5 @@
+import type { UnknownAction } from '@reduxjs/toolkit';
+
 import { EncryptableBranded, asEncryptedHex } from '@suite-common/secure-storage';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
@@ -6,10 +8,10 @@ import { createSaveDelegatedIdentityKey } from '../saveDelegatedIdentityKey';
 
 describe(createSaveDelegatedIdentityKey.name, () => {
     it('saves the encrypted value to the store', async () => {
-        const actions: unknown[] = [];
+        const actions: UnknownAction[] = [];
 
         const saveDelegatedIdentityKey = createSaveDelegatedIdentityKey({
-            dispatch: (action: unknown) => actions.push(action),
+            dispatch: (action: any) => actions.push(action),
             secureStorage: {
                 encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
                     Promise.resolve(ok(asEncryptedHex<T>(`${value}-<encrypted>`))),

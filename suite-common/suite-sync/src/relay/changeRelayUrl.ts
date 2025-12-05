@@ -1,15 +1,20 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { ChangeRelayUrl, SuiteSyncStorageRepository } from '@suite-common/suite-sync-storage';
 import { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { setSuiteSyncRelayUrl } from '../suiteSyncActions';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relayUrl';
+import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
 
 export type ChangeRelayUrlDeps = {
     getAllDevicesOwners: () => SuiteSyncOwner[];
     dispatch: Dispatch;
-    suiteSyncStorageRepository: SuiteSyncStorageRepository;
+} & SuiteSyncStorageRepositoryDep;
+
+export type ChangeRelayUrl = (params: { relayUrl: string | null }) => Promise<void>;
+
+export type ChangeRelayUrlDep = {
+    changeRelayUrl: ChangeRelayUrl;
 };
 
 export const createChangeRelayUrl =

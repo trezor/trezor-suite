@@ -1,11 +1,11 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { SuiteSyncStorageRepository } from '@suite-common/suite-sync-storage';
 import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { clearAllLabels, labelingActions } from './labelingActions';
-import { SubscriptionStorage } from '../storage/subscriptionStorage';
+import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
+import { SubscriptionStorageDep } from '../storage/subscriptionStorage';
 
 type SubscribeLabelingParams = {
     owner: SuiteSyncOwner;
@@ -14,11 +14,10 @@ type SubscribeLabelingParams = {
 
 export type SubscribeLabeling = (params: SubscribeLabelingParams) => void;
 
-export type CreateSubscribeLabelingDeps = {
-    suiteSyncStorageRepository: SuiteSyncStorageRepository;
-    subscriptionStorage: SubscriptionStorage;
-    dispatch: Dispatch;
-};
+export type CreateSubscribeLabelingDeps = SuiteSyncStorageRepositoryDep &
+    SubscriptionStorageDep & {
+        dispatch: Dispatch;
+    };
 
 export const createSubscribeLabeling =
     (deps: CreateSubscribeLabelingDeps): SubscribeLabeling =>

@@ -1,20 +1,21 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorageDep } from '@suite-common/secure-storage';
+import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
+// Circular issue, see: https://github.com/trezor/trezor-suite/issues/21553
+import { selectThp } from '@suite-common/thp/src/thpSelectors';
 import {
-    CreateSuiteStorageDep,
-    CreateSuiteSyncOwnerDep,
-    SuiteSync,
-    createSuiteSyncStorageRepositoryFactory,
-} from '@suite-common/suite-sync-storage';
-import {
+    RetrieveDelegatedIdentityKeyFromDeviceDeps,
     createEnsureDelegatedIdentityKey,
     createLoadDelegatedIdentityKeyFromState,
+    createRetrieveDelegatedIdentityKeyFromDevice,
     createSaveDelegatedIdentityKey,
     selectAllDeviceOwners,
     selectDeviceDelegatedIdentityKey,
 } from '@suite-common/wallet-core';
 
+import { SuiteSync } from './SuiteSync';
+import { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 import {
     EnsureSuiteSyncOwnerDeps,
     createEnsureSuiteSyncOwnerKeys,
@@ -23,16 +24,17 @@ import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
 import { createRefreshSuiteSyncKeys } from './refreshSuiteSyncKeys';
 import { createChangeRelayUrl } from './relay/changeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
-import { createSubscribeSuiteSyncStorage } from './storage/subscribeSuiteSyncStorage';
 import { createSubscriptionStorage } from './storage/subscriptionStorage';
-import { createUnsubscribeSuiteSyncStorage } from './storage/unsubscribeSuiteSync';
+import { createTurnOffSuiteSyncForWallet } from './storage/turnOffSuiteSyncForWallet';
+import { createTurnOnSuiteSyncForWallet } from './storage/turnOnSuiteSyncForWallet';
 import { selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
 import { createTurnOffSuiteSync } from './turnOffSuiteSync';
 
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'];
+    trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'] &
+        RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'];
 } & CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
     SecureStorageDep;
@@ -67,11 +69,14 @@ export const createSuiteSyncCompositionRoot = (
             getDeviceDelegatedIdentityKey: deviceId =>
                 selectDeviceDelegatedIdentityKey(deps.getState(), deviceId),
         }),
+        retrieveDelegatedIdentityKeyFromDevice: createRetrieveDelegatedIdentityKeyFromDevice({
+            trezorConnect: deps.trezorConnect,
+        }),
         saveDelegatedIdentityKey: createSaveDelegatedIdentityKey({
             dispatch: deps.dispatch,
             secureStorage: deps.secureStorage,
         }),
-        getState: deps.getState,
+        getThpStaticKey: () => selectThp(deps.getState()).staticKey,
     });
     // Todo: ------------------------------------------------------------
 
@@ -82,14 +87,14 @@ export const createSuiteSyncCompositionRoot = (
         ensureSuiteSyncOwnerKeys,
     });
 
-    const subscribeSuiteSyncStorage = createSubscribeSuiteSyncStorage({
+    const turnOnSuiteSyncForWallet = createTurnOnSuiteSyncForWallet({
         dispatch: deps.dispatch,
         getState: deps.getState,
         subscribeLabeling,
         refreshSuiteSyncKeys,
     });
 
-    const unsubscribeSuiteSyncStorage = createUnsubscribeSuiteSyncStorage({
+    const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
         suiteSyncStorageRepository,
         subscriptionStorage,
     });
@@ -102,11 +107,11 @@ export const createSuiteSyncCompositionRoot = (
         }),
         suiteSyncStorageRepository,
         createSuiteSyncOwner: deps.createSuiteSyncOwner,
-        subscribeSuiteSyncStorage,
-        unsubscribeSuiteSyncStorage,
+        turnOnSuiteSyncForWallet,
+        turnOffSuiteSyncForWallet,
         turnOffSuiteSync: createTurnOffSuiteSync({
             getState: deps.getState,
-            unsubscribeSuiteSyncStorage,
+            turnOffSuiteSyncForWallet,
         }),
     };
 };
