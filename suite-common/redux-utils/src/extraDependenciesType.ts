@@ -6,7 +6,7 @@ import {
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { SecureStorage } from '@suite-common/secure-storage';
-import { SuiteSync } from '@suite-common/suite-sync-storage';
+import { SuiteSync } from '@suite-common/suite-sync';
 import {
     ReportSecurityCheckProps,
     Route,

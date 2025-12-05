@@ -13,6 +13,7 @@ export * from './device/delegatedIdentityKey/getProofOfDelegatedIdentity';
 export * from './device/delegatedIdentityKey/ensureDelegatedIdentityKey';
 export * from './device/delegatedIdentityKey/saveDelegatedIdentityKey';
 export * from './device/delegatedIdentityKey/loadDelegatedIdentityKeyFromState';
+export * from './device/delegatedIdentityKey/retrieveDelegatedIdentityKeyFromDevice';
 export * from './device/deviceActions';
 export * from './device/deviceConstants';
 export * from './device/deviceReducer';

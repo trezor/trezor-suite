@@ -1,14 +1,18 @@
-import { TurnOfSuiteSync, UnsubscribeSuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { selectDevices } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
+import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
+
+export type TurnOffSuiteSync = () => Promise<void>;
+
+export type TurnOffSuiteSyncDep = { turnOffSuiteSync: TurnOffSuiteSync };
+
 type CreateTurnOffSuiteSyncDeps = {
     getState: () => any;
-    unsubscribeSuiteSyncStorage: UnsubscribeSuiteSyncStorage;
-};
+} & TurnOffSuiteSyncForWalletDep;
 
 export const createTurnOffSuiteSync =
-    (deps: CreateTurnOffSuiteSyncDeps): TurnOfSuiteSync =>
+    (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
     async () => {
         // Intentionally `isSuiteSyncEnabled` check, as dispose will happen when the flag may be already off,
         // but we want to unsubscribe anyway
@@ -18,6 +22,6 @@ export const createTurnOffSuiteSync =
         await Promise.all(
             devices
                 .filter(isTrezorDeviceWithState)
-                .map(device => deps.unsubscribeSuiteSyncStorage({ device })),
+                .map(device => deps.turnOffSuiteSyncForWallet({ device })),
         );
     };

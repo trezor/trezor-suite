@@ -83,7 +83,7 @@ const initNewDeviceStateMetadataThunk = createThunk(
             );
 
             if (isTrezorDeviceWithState(reselectDeviceForSecret)) {
-                extra.services.suiteSync.subscribeSuiteSyncStorage({
+                extra.services.suiteSync.turnOnSuiteSyncForWallet({
                     device: reselectDeviceForSecret,
                 });
             }
