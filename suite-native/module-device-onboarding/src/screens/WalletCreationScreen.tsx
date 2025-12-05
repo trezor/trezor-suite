@@ -9,6 +9,7 @@ import {
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import { getIsIgnoredEntropyCheckError } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent, createAndBackupWalletThunk } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
@@ -17,6 +18,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useToast } from '@suite-native/toasts';
 import { ERRORS } from '@trezor/connect';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
@@ -44,6 +46,7 @@ export const WalletCreationScreen = () => {
     const { walletBackupType } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
+    const { showToast } = useToast();
 
     const isEntropyCheckEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.entropyCheckMobile, true),
@@ -60,20 +63,24 @@ export const WalletCreationScreen = () => {
                     flowType: 'create',
                 });
             }
-            const { code } = responsePayload.payload;
-            if (code && DEFINITIVE_ERRORS.includes(code)) {
-                if (isEntropyCheckEnabled && code === 'Failure_EntropyCheck') {
-                    navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
-                }
+            const { code, error } = responsePayload.payload;
+            const isDefinitiveError = code && DEFINITIVE_ERRORS.includes(code);
+            // inconclusive, so repeat the attempt
+            if (!isDefinitiveError || getIsIgnoredEntropyCheckError(error)) {
+                showToast({ variant: 'error', message: error });
+                // This code is OK, but the eslint plugin crashes on recursive calls
+                // eslint-disable-next-line react-hooks/immutability
+                handleCreateAndBackupWallet();
 
                 return;
             }
+
+            // handle entropy check failure, otherwise continue with the flow
+            if (isEntropyCheckEnabled && code === 'Failure_EntropyCheck') {
+                navigation.navigate(RootStackRoutes.DeviceCompromisedModal);
+            }
         }
-        // repeat the attempt if error was not one of the DEFINITIVE_ERRORS
-        // This code is OK, but the eslint plugin crashes on recursive calls
-        // eslint-disable-next-line react-hooks/immutability
-        handleCreateAndBackupWallet();
-    }, [dispatch, walletBackupType, navigation, isEntropyCheckEnabled]);
+    }, [dispatch, walletBackupType, navigation, isEntropyCheckEnabled, showToast]);
 
     useEffect(() => {
         handleCreateAndBackupWallet();
