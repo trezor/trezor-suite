@@ -144,7 +144,7 @@ const preCallHook = async <M extends CallMethodKeys>({
                 if (txSigningPrecomposed)
                     dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
 
-                return modifiedPayload;
+                return modifiedPayload as any as typeof payload;
             }
         }
     } catch (error) {

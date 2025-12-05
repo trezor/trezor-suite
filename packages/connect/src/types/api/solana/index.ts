@@ -36,6 +36,7 @@ export const SolanaSignTransaction = Type.Object({
     serializedTx: Type.String(),
     additionalInfo: Type.Optional(SolanaTxAdditionalInfo),
     serialize: Type.Optional(Type.Boolean()),
+    chunkify: Type.Optional(Type.Boolean()),
 });
 
 export type SolanaSignedTransaction = Static<typeof SolanaSignedTransaction>;

@@ -20,7 +20,6 @@ export interface CommonParams {
     override?: boolean;
     skipFinalReload?: boolean;
     useCardanoDerivation?: boolean;
-    chunkify?: boolean;
     /**
      * internal flag. if set to true, call will only return info about the method, not execute it.
      * todo: this should be moved to another argument instead of mixing this with params
