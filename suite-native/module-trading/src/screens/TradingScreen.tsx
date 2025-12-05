@@ -7,6 +7,7 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
+import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import {
     selectActiveTradingType,
     selectIsTradingEnabled,
@@ -45,6 +46,7 @@ const TradingScreenContent = () => {
 
     return (
         <VStack spacing="sp16">
+            <TradingEnvironmentWarning />
             <Header isFormMountedRecently={isScreenMountedRecently} />
             <TradingTabContent />
             <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
