@@ -35,7 +35,6 @@ export const ethereumGetAddress = async (api: TrezorConnect) => {
             state: 'state@device-id:1',
         },
         useEmptyPassphrase: true,
-        allowSeedlessDevice: false,
         keepSession: false,
         skipFinalReload: false,
         path: 'm/44',
