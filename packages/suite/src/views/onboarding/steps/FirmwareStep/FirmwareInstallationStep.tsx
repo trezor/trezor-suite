@@ -11,10 +11,7 @@ import { WebUsbButton } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import {
-    selectHasTransportOfType,
-    selectIsActionAbortable,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationStepProps = {
     install: () => void;
@@ -23,7 +20,6 @@ type FirmwareInstallationStepProps = {
 
 export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstallationStepProps) => {
     const { status, showReconnectPrompt, targetType, reconnectEvent } = useFirmwareDesktopUpdate();
-    const isActionAbortable = useSelector(selectIsActionAbortable);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
     const getInnerActionComponent = () => {
@@ -64,7 +60,7 @@ export const FirmwareInstallationStep = ({ install, onSuccess }: FirmwareInstall
             <OnboardingCard
                 iconName="circuitry"
                 heading={<Translation id="TR_INSTALL_FIRMWARE" />}
-                isActionAbortable={isActionAbortable}
+                isActionAbortable={true}
                 innerActions={getInnerActionComponent()}
             >
                 <Column gap={60}>

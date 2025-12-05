@@ -33,7 +33,6 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewOutputList/TransactionReviewModalBottomContent';
@@ -108,7 +107,6 @@ export const TransactionReviewModalBodyInner = ({
     const { symbol, networkType } = account;
     const { options } = precomposedForm;
     const { serializedTx } = txInfoState;
-    const isActionAbortable = useSelector(selectIsActionAbortable);
     const tradingToken = useSelector(selectTradingComposedTransactionInfo).composed?.token;
 
     const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
@@ -178,10 +176,8 @@ export const TransactionReviewModalBodyInner = ({
     const onCancel = () => {
         dispatch(modalActions.onCancel());
 
-        if (isActionAbortable || serializedTx) {
-            cancelSignTx();
-            decision?.resolve(false);
-        }
+        cancelSignTx();
+        decision?.resolve(false);
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);

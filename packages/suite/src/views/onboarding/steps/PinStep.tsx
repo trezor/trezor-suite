@@ -11,7 +11,6 @@ import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirma
 import { PinMatrix } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 export const PinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -21,7 +20,6 @@ export const PinStep = () => {
     const [pin, setPin] = useState('');
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
-    const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
 
     const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
@@ -147,7 +145,7 @@ export const PinStep = () => {
                 }
                 device={device}
                 isConfirmedOnDevice={!!showConfirmationPrompt}
-                isActionAbortable={status === 'initial' ? isActionAbortable : true}
+                isActionAbortable={true}
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
                 {(showPinMatrix || status === 'repeat-pin') && (

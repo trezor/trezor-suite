@@ -8,12 +8,10 @@ import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/Onboard
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
 export const RecoveryStep = () => {
-    const isActionAbortable = useSelector(selectIsActionAbortable);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
@@ -101,7 +99,7 @@ export const RecoveryStep = () => {
                     )
                 }
                 device={device}
-                isActionAbortable={isActionAbortable}
+                isActionAbortable
                 isConfirmedOnDevice
             />
         );

@@ -10,7 +10,6 @@ import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/Onboard
 import { Translation } from 'src/components/suite/Translation';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
 import { SelectBackupType } from './SelectBackupType/SelectBackupType';
 import { isShamirBackupType } from './utils';
@@ -21,7 +20,6 @@ export const ResetDeviceStep = () => {
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
     const deviceDefaultBackupType = useSelector(selectDeviceDefaultBackupType);
-    const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const deviceModel = device?.features?.internal_model;
     const unitPackaging = device?.features?.unit_packaging ?? 0;
@@ -125,7 +123,7 @@ export const ResetDeviceStep = () => {
                 )
             }
             device={device}
-            isActionAbortable={isActionAbortable}
+            isActionAbortable={true}
             isConfirmedOnDevice={isWaitingForConfirmation}
             innerActions={
                 !isWaitingOnDevice && (

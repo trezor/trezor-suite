@@ -38,7 +38,6 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
@@ -69,7 +68,6 @@ export const ConfirmValueModal = ({
     const { device, isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const modalContext = useSelector(state => state.modal.context);
-    const isActionAbortable = useSelector(selectIsActionAbortable);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
@@ -92,7 +90,6 @@ export const ConfirmValueModal = ({
     );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
-    const isCancelable = isActionAbortable || isConfirmed;
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -126,7 +123,7 @@ export const ConfirmValueModal = ({
         suiteSyncAddressLabels?.find(it => it.address === value)?.label ?? addressLabels[value];
 
     return (
-        <Modal.Backdrop onClick={isCancelable ? onCancel : undefined}>
+        <Modal.Backdrop onClick={onCancel}>
             {canConfirmOnDevice && (
                 <ConfirmOnDevicePill
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -149,7 +146,7 @@ export const ConfirmValueModal = ({
                         </Row>
                     )
                 }
-                onCancel={isCancelable ? onCancel : undefined}
+                onCancel={onCancel}
                 size="small"
             >
                 <Column gap={spacings.md}>
