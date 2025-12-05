@@ -90,6 +90,9 @@ graph TD
     trading-state --> trading-consts
     trading-state -.-> trading-types
     trading-atoms -.-> trading-types
+    trading-debug -.-> trading-types
+    trading-debug -.-> trading-consts
+    trading-debug --> trading-state
     trading-atoms -.-> trading-fixtures
     trading-fixtures -.-> trading-types
     trading-fixtures --> trading-consts

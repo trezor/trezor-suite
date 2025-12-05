@@ -16,10 +16,14 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/clipboard": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/trading-state": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "react": "19.1.0"
+        "react": "19.1.0",
+        "react-redux": "9.2.0"
     },
     "devDependencies": {
-        "@suite-native/test-utils": "workspace:*"
+        "@suite-native/test-utils": "workspace:*",
+        "@suite-native/trading-consts": "workspace:*",
+        "@suite-native/trading-types": "workspace:*"
     }
 }

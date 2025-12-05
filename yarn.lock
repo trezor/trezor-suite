@@ -13721,8 +13721,12 @@ __metadata:
     "@suite-native/clipboard": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
+    "@suite-native/trading-consts": "workspace:*"
+    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-types": "workspace:*"
     "@trezor/styles": "workspace:*"
     react: "npm:19.1.0"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
