@@ -113,8 +113,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     skipFinalReload: boolean;
 
-    skipFirmwareCheck: boolean;
-
     overridePreviousCall: boolean;
 
     overridden: boolean;
@@ -177,7 +175,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload =
             typeof payload.skipFinalReload === 'boolean' ? payload.skipFinalReload : true;
-        this.skipFirmwareCheck = false;
         this.overridePreviousCall =
             typeof payload.override === 'boolean' ? payload.override : false;
         this.overridden = false;
@@ -282,9 +279,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     }
 
     checkFirmwareRange() {
-        if (this.skipFirmwareCheck) {
-            return;
-        }
         const { device } = this;
 
         // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
