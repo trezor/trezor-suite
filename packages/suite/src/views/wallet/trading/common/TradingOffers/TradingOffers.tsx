@@ -42,7 +42,7 @@ export const TradingOffers = () => {
         <TradingOffersExchange />
     ) : (
         <OffersContainer>
-            <TradingUtilsTorWarning tradingType="exchange" noOffer={false} showButton />
+            <TradingUtilsTorWarning tradingType="exchange" noOffer={false} />
             {quotes?.map(quote => (
                 <TradingOffersItem
                     key={quote?.orderId}

@@ -57,12 +57,12 @@ export const TradingOffersExchange = () => {
     );
 
     if (!quotes) {
-        return <TradingUtilsTorWarning tradingType="exchange" noOffer={false} showButton />;
+        return <TradingUtilsTorWarning tradingType="exchange" noOffer={false} />;
     }
 
     return (
         <>
-            <TradingUtilsTorWarning tradingType="exchange" noOffer={false} showButton />
+            <TradingUtilsTorWarning tradingType="exchange" noOffer={false} />
 
             {(showAll ||
                 exchangeTypeFilter === TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX) && (

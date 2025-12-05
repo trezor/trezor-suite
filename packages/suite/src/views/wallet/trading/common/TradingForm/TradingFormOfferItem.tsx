@@ -53,9 +53,7 @@ export const TradingFormOfferItem = ({
             );
         }
         if (noOffersWithTor) {
-            return (
-                <TradingUtilsTorWarning tradingType={tradingType} noOffer={!bestQuote} showButton />
-            );
+            return <TradingUtilsTorWarning tradingType={tradingType} noOffer={!bestQuote} />;
         }
 
         return (
