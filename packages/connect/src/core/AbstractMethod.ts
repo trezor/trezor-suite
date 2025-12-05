@@ -147,8 +147,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
 
-    requireDeviceMode: DeviceMode[];
-
     requiredDeviceCapabilities: Capability[] = [];
 
     network: NETWORK.NetworkType;
@@ -186,7 +184,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.useEmptyPassphrase =
             typeof payload.useEmptyPassphrase === 'boolean' ? payload.useEmptyPassphrase : false;
         this.allowDeviceMode = [UI.SEEDLESS]; // Allow seedless by default
-        this.requireDeviceMode = [];
 
         // Determine the type based on the method name
         this.network = 'bitcoin';

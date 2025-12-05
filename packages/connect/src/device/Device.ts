@@ -1048,7 +1048,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.features ? this.features.major_version === 1 : false;
     }
 
-    hasUnexpectedMode(allow: string[], require: string[]) {
+    hasUnexpectedMode(allow: string[]) {
         // both allow and require cases might generate single unexpected mode
         if (this.features) {
             // allow cases
@@ -1060,11 +1060,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
             if (this.isSeedless() && !allow.includes(UI.SEEDLESS)) {
                 return UI.SEEDLESS;
-            }
-
-            // require cases
-            if (!this.isBootloader() && require.includes(UI.BOOTLOADER)) {
-                return UI.NOT_IN_BOOTLOADER;
             }
         }
 
