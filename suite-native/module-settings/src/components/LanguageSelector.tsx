@@ -38,8 +38,8 @@ export const LanguageSelector = () => {
             title={<Translation id="moduleSettings.preferences.languageLabel" />}
         >
             <Select
-                selectValue={userSelectedLocaleCode}
-                selectLabel={<Translation id="moduleSettings.preferences.languageLabel" />}
+                value={userSelectedLocaleCode}
+                title={<Translation id="moduleSettings.preferences.languageLabel" />}
                 items={languageItems}
                 onSelectItem={handleSelectLanguage}
                 testID="@settings/localization/language-selector"

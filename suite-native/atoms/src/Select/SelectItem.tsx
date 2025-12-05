@@ -15,39 +15,35 @@ export type SelectItemProps = {
     value: SelectItemValue;
     onSelect: () => void;
     isSelected: boolean;
-    isLastChild?: boolean;
     icon?: ReactNode;
 };
 
 type SelectItemStyleProps = {
-    isLastChild: boolean;
     isSelected: boolean;
 };
-const selectItemStyle = prepareNativeStyle(() => ({
+
+const selectItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
+    ...utils.boxShadows.small,
 }));
 
-const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
-    (utils, { isLastChild, isSelected }) => ({
+const selectItemContentStyle = prepareNativeStyle<SelectItemStyleProps>(
+    (utils, { isSelected }) => ({
+        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        flex: 1,
-        color: utils.colors.textSubdued,
-        paddingVertical: 20,
-        marginLeft: 10,
-        borderBottomWidth: utils.borders.widths.small,
-        borderColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
+        padding: utils.spacings.sp16,
+        borderWidth: utils.borders.widths.large,
+        borderRadius: utils.borders.radii.r12,
+        borderColor: utils.colors.backgroundSurfaceElevation1,
+        backgroundColor: utils.colors.backgroundSurfaceElevation1,
+        color: utils.colors.textDefault,
         extend: [
-            {
-                condition: isLastChild,
-                style: {
-                    borderBottomWidth: 0,
-                },
-            },
             {
                 condition: isSelected,
                 style: {
+                    borderColor: utils.colors.backgroundPrimaryDefault,
                     color: utils.colors.textDefault,
                 },
             },
@@ -55,14 +51,7 @@ const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
     }),
 );
 
-export const SelectItem = ({
-    label,
-    value,
-    onSelect,
-    isSelected,
-    icon,
-    isLastChild = false,
-}: SelectItemProps) => {
+export const SelectItem = ({ label, value, onSelect, isSelected, icon }: SelectItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     if (G.isNullable(value)) return null;
@@ -78,7 +67,7 @@ export const SelectItem = ({
         >
             {icon}
             <Box
-                style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}
+                style={applyStyle(selectItemContentStyle, { isSelected })}
                 testID={`@select/item/${value}/content`}
             >
                 <Text numberOfLines={1}>{label}</Text>

@@ -146,7 +146,7 @@ export const selectIsDeviceBackupUnfinished = createMemoizedSelector(
 
 export const selectDeviceLanguage = createMemoizedSelector(
     [selectDeviceFeatures],
-    features => features?.language ?? null,
+    features => (features?.language as Locale) ?? null,
 );
 
 export const selectAvailableDeviceTranslations = createMemoizedSelector(

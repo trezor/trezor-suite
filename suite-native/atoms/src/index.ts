@@ -43,6 +43,7 @@ export * from './Card/HeaderedCard';
 export * from './Card/CardDivider';
 export * from './Card/CardWithIconLayout';
 export * from './Card/CompactCardWithIconLayout';
+export * from './ScreenFooterGradient';
 export * from './ScreenHeaderWrapper';
 export * from './ErrorMessage';
 export * from './Table';

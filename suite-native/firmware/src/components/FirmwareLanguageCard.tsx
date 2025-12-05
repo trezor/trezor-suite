@@ -40,8 +40,8 @@ export const FirmwareLanguageCard = () => {
                 </HStack>
                 <Select
                     items={supportedDeviceLanguages}
-                    selectValue={deviceLanguage}
-                    selectLabel={<Translation id="firmware.languageCard.title" />}
+                    value={deviceLanguage}
+                    title={<Translation id="firmware.languageCard.title" />}
                     onSelectItem={changeFirmwareLanguageIfDifferent}
                 />
             </VStack>

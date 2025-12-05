@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import { Box, PictogramTitleHeader, VStack } from '@suite-native/atoms';
-import { Screen, ScreenFooterGradient } from '@suite-native/navigation';
+import { Box, PictogramTitleHeader, ScreenFooterGradient, VStack } from '@suite-native/atoms';
+import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountImportScreenHeader } from './AccountImportScreenHeader';

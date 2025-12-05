@@ -1,9 +1,15 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
-import { SelectItem, SelectItemValue } from './SelectItem';
-import { SelectTrigger } from './SelectTrigger';
+import { Translation } from '@suite-native/intl';
+
+import { Box } from '../Box';
+import { Button } from '../Button/Button';
+import { ScreenFooterGradient } from '../ScreenFooterGradient';
 import { BottomSheetModal } from '../Sheet/BottomSheetModal';
 import { useBottomSheetModal } from '../Sheet/hooks/useBottomSheetModal';
+import { VStack } from '../Stack';
+import { SelectItem, SelectItemValue } from './SelectItem';
+import { SelectTrigger } from './SelectTrigger';
 
 export type SelectItemType<TItemValue extends SelectItemValue> = {
     value: TItemValue;
@@ -11,48 +17,86 @@ export type SelectItemType<TItemValue extends SelectItemValue> = {
 };
 
 type SelectProps<TItemValue extends SelectItemValue> = {
+    title: ReactNode;
     items: SelectItemType<TItemValue>[];
-    selectValue: SelectItemValue;
+    value: TItemValue;
     onSelectItem: (value: TItemValue) => void;
-    selectLabel?: ReactNode;
+    isConfirmable?: boolean;
     testID?: string;
 };
 
 export const Select = <TItemValue extends SelectItemValue>({
+    title,
     items,
-    selectLabel,
-    selectValue,
+    value,
     onSelectItem,
+    isConfirmable = false,
     testID,
 }: SelectProps<TItemValue>) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const selectedItem = useMemo(
-        () => items.find(item => item.value === selectValue),
-        [selectValue, items],
+    const selectTriggerValue = useMemo(
+        () => items.find(item => item.value === value)?.label ?? null,
+        [items, value],
     );
-    const handleSelectItem = (itemValue: TItemValue) => {
+
+    const [selectedItemValue, setSelectedItemValue] = useState(value);
+    const [isConfirmButtonVisible, setIsConfirmButtonVisible] = useState(false);
+
+    const openBottomSheet = () => {
+        setSelectedItemValue(value);
+        setIsConfirmButtonVisible(false);
+        openModal();
+    };
+
+    const confirmSelection = (itemValue: TItemValue) => {
         onSelectItem(itemValue);
         closeModal();
     };
 
+    const handleSelectItem = (itemValue: TItemValue) => {
+        if (isConfirmable) {
+            setSelectedItemValue(itemValue);
+            setIsConfirmButtonVisible(itemValue !== value);
+        } else {
+            confirmSelection(itemValue);
+        }
+    };
+
     return (
         <>
-            <BottomSheetModal ref={bottomSheetRef} title={selectLabel} isCloseDisplayed>
-                {items.map(({ value, label }, index) => (
-                    <SelectItem
-                        key={value}
-                        label={label}
-                        value={value}
-                        isSelected={value === selectedItem?.value}
-                        isLastChild={index === items.length - 1}
-                        onSelect={() => handleSelectItem(value)}
-                    />
-                ))}
+            <BottomSheetModal
+                ref={bottomSheetRef}
+                title={title}
+                footer={
+                    isConfirmButtonVisible && (
+                        <>
+                            <ScreenFooterGradient />
+                            <Box marginHorizontal="sp16" marginBottom="sp16">
+                                <Button onPress={() => confirmSelection(selectedItemValue)}>
+                                    <Translation id="generic.buttons.confirm" />
+                                </Button>
+                            </Box>
+                        </>
+                    )
+                }
+                isCloseDisplayed
+            >
+                <VStack spacing="sp12">
+                    {items.map(({ value: itemValue, label }) => (
+                        <SelectItem
+                            key={itemValue}
+                            label={label}
+                            value={itemValue}
+                            isSelected={itemValue === selectedItemValue}
+                            onSelect={() => handleSelectItem(itemValue)}
+                        />
+                    ))}
+                </VStack>
             </BottomSheetModal>
             <SelectTrigger
-                value={selectedItem?.label ?? null}
-                handlePress={openModal}
+                value={selectTriggerValue}
+                handlePress={openBottomSheet}
                 testID={testID}
             />
         </>
