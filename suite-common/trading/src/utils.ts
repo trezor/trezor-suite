@@ -368,9 +368,9 @@ export const getTradingFormState = ({
             }
 
             return {
-                isSlip24Active,
                 activeSection,
                 recipientName: provider.companyName,
+                isSlip24Active: isSlip24Active && !!receiveAccountKey,
                 send: {
                     cryptoId: trade.cryptoCurrency,
                     accountKey: sendAccountKey,
@@ -410,7 +410,7 @@ export const getTradingFormState = ({
             return {
                 activeSection,
                 recipientName: provider.companyName,
-                isSlip24Active,
+                isSlip24Active: isSlip24Active && !!receiveAccountKey,
                 send: {
                     cryptoId: trade.send,
                     accountKey: sendAccountKey,

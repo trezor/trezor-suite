@@ -138,3 +138,26 @@ export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
 
     return tokenTransfer.symbol ? `${formattedAmount} ${tokenTransfer.symbol}` : formattedAmount;
 };
+
+type FormatBigNumberToLEParams = { value: BigNumber; bytesLength: number };
+
+/**
+ * Formats BigNumber to little-endian hex string of given byte length
+ */
+export const formatBigNumberToLE = (params: FormatBigNumberToLEParams): string => {
+    const paddingLength = params.bytesLength * 2;
+    let hexString = params.value.toString(16);
+
+    if (hexString.length > paddingLength) {
+        throw new Error(`Exceeds ${params.bytesLength} bytes`);
+    }
+
+    hexString = hexString.padStart(paddingLength, '0');
+    const bytes = new Uint8Array(params.bytesLength);
+
+    for (let i = 0; i < params.bytesLength; i++) {
+        bytes[i] = parseInt(hexString.substring(i * 2, i * 2 + 2), 16);
+    }
+
+    return Buffer.from(bytes.reverse()).toString('hex');
+};

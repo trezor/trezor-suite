@@ -2,16 +2,18 @@ import {
     CreateTradeSignatureRequestExchange,
     CreateTradeSignatureRequestSell,
     ExchangeTradeSigned,
-    PaymentRequestOutput,
     SellFiatTradeSigned,
 } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import { PROTO } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getNonce } from './getNonce';
+import { getPaymentRequestOutputs } from './getPaymentRequestOutputs';
+import { getPurchaseAddress } from './getPurchaseAddress';
 import { getRefundAddress } from './getRefundAddress';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -19,12 +21,14 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeProviders,
+    selectTradingExchangeReceiveAccountKey,
+    selectTradingExchangeReceiveAddress,
     selectTradingExchangeSelectedQuote,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
-    selectTradingVerifiedAddress,
 } from '../../selectors/tradingSelectors';
 import { TradingSendRejectedProps, TradingTradeSellExchangeType } from '../../types';
+import { cryptoIdToNetwork } from '../../utils';
 import {
     tradingExchangeCreatePaymentRequest,
     tradingGetCoinSlip44,
@@ -64,37 +68,10 @@ export const createPaymentRequestsThunk = createThunk<
             });
         }
 
-        const outputs: PaymentRequestOutput[] = [];
-
-        for (const output of composedLevels.outputs) {
-            if ('address' in output && output.address) {
-                outputs.push({
-                    amount: output.amount.toString(),
-                    address: output.address,
-                });
-            }
-
-            if ('address_n' in output && output.address_n) {
-                const getAddress = await TrezorConnect.getAddress({
-                    path: output.address_n,
-                    showOnTrezor: false,
-                    keepSession: true,
-                });
-
-                if (getAddress.success) {
-                    outputs.push({
-                        amount: output.amount.toString(),
-                        address: getAddress.payload.address,
-                    });
-                }
-            }
-        }
-
         switch (type) {
             case 'exchange': {
                 const quote = selectTradingExchangeSelectedQuote(getState());
                 const providers = selectTradingExchangeProviders(getState());
-                const verifiedAddress = selectTradingVerifiedAddress(getState());
                 const sendSlip44 = await tradingGetCoinSlip44(quote?.send);
                 const receiveSlip44 = await tradingGetCoinSlip44(quote?.receive);
                 const receiveDisplaySymbol = selectTradingCoinSymbolByCryptoId(
@@ -102,13 +79,19 @@ export const createPaymentRequestsThunk = createThunk<
                     quote?.receive,
                 );
 
+                const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
+                const receiveAddress = selectTradingExchangeReceiveAddress(getState());
+                const receiveAccount = selectAccountByKey(getState(), receiveAccountKey);
+                const sendNetwork = quote?.send ? cryptoIdToNetwork(quote.send) : undefined;
+
                 if (
                     !quote?.orderId ||
-                    !verifiedAddress?.mac ||
-                    !verifiedAddress.path ||
                     sendSlip44 === undefined ||
                     receiveSlip44 === undefined ||
-                    !receiveDisplaySymbol
+                    receiveAddress === undefined ||
+                    !receiveAccount ||
+                    !receiveDisplaySymbol ||
+                    !sendNetwork
                 ) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
@@ -117,6 +100,14 @@ export const createPaymentRequestsThunk = createThunk<
                         },
                     });
                 }
+
+                const { mac: macPurchase, path: pathPurchase } = await dispatch(
+                    getPurchaseAddress({ account: receiveAccount, address: receiveAddress }),
+                ).unwrap();
+
+                const outputs = await dispatch(
+                    getPaymentRequestOutputs({ network: sendNetwork, composedLevels }),
+                ).unwrap();
 
                 const trade = await invityAPI.getSignedTrade<
                     ExchangeTradeSigned,
@@ -131,8 +122,9 @@ export const createPaymentRequestsThunk = createThunk<
                 });
 
                 const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
+                const sendStringAmount = formattedMaxAmount ?? trade?.sendStringAmount;
 
-                if (!provider || !trade) {
+                if (!provider || !trade || !sendStringAmount) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
                         error: {
@@ -142,18 +134,17 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const paymentRequest = tradingExchangeCreatePaymentRequest({
-                    trade: {
-                        ...trade,
-                        sendStringAmount: formattedMaxAmount ?? trade.sendStringAmount,
-                    },
+                    trade,
                     provider,
-                    macPurchase: verifiedAddress.mac,
-                    pathPurchase: verifiedAddress.path,
+                    macPurchase,
+                    pathPurchase,
                     macRefund,
                     pathRefund,
                     nonce,
                     receiveSlip44,
                     receiveDisplaySymbol,
+                    sendStringAmount,
+                    sendTokenDecimals: composedLevels.token?.decimals,
                 });
 
                 if (!paymentRequest) {
@@ -172,7 +163,17 @@ export const createPaymentRequestsThunk = createThunk<
                 const providers = selectTradingSellProviders(getState());
                 const sendSlip44 = await tradingGetCoinSlip44(quote?.cryptoCurrency);
 
-                if (!quote?.paymentId || sendSlip44 === undefined) {
+                if (!quote?.paymentId || sendSlip44 === undefined || !quote.cryptoCurrency) {
+                    return rejectWithValue({
+                        type: 'sign-tx-error',
+                        error: {
+                            id: 'TR_PAYMENT_REQUESTS_ERROR',
+                        },
+                    });
+                }
+
+                const sendNetwork = cryptoIdToNetwork(quote.cryptoCurrency);
+                if (!sendNetwork) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
                         error: {
@@ -189,6 +190,10 @@ export const createPaymentRequestsThunk = createThunk<
                 // TODO: slip24 - will be changed soon
                 const memoText = `Selling ${quote.cryptoStringAmount} ${cryptoSymbol?.symbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
 
+                const outputs = await dispatch(
+                    getPaymentRequestOutputs({ network: sendNetwork, composedLevels }),
+                ).unwrap();
+
                 const trade = await invityAPI.getSignedTrade<
                     SellFiatTradeSigned,
                     CreateTradeSignatureRequestSell
@@ -202,8 +207,9 @@ export const createPaymentRequestsThunk = createThunk<
                 });
 
                 const provider = trade?.exchange ? providers?.[trade.exchange] : undefined;
+                const sendStringAmount = formattedMaxAmount ?? trade?.cryptoStringAmount;
 
-                if (!provider || !trade) {
+                if (!provider || !trade || !sendStringAmount) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
                         error: {
@@ -213,15 +219,14 @@ export const createPaymentRequestsThunk = createThunk<
                 }
 
                 const paymentRequest = tradingSellCreatePaymentRequest({
-                    trade: {
-                        ...trade,
-                        cryptoStringAmount: formattedMaxAmount ?? trade.cryptoStringAmount,
-                    },
+                    trade,
                     provider,
                     macRefund,
                     pathRefund,
                     nonce,
                     memoText,
+                    sendStringAmount,
+                    sendTokenDecimals: composedLevels.token?.decimals,
                 });
 
                 if (!paymentRequest) {
