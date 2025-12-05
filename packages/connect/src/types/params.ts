@@ -15,7 +15,6 @@ export interface CommonParams {
     device?: DeviceIdentity & { state?: DeviceState | string }; // Note: state as string should be removed https://github.com/trezor/trezor-suite/issues/12710
     useEmptyPassphrase?: boolean;
     useEventListener?: boolean; // this param is set automatically in factory
-    allowSeedlessDevice?: boolean;
     keepSession?: boolean;
     override?: boolean;
     skipFinalReload?: boolean;

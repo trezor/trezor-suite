@@ -141,8 +141,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     useEmptyPassphrase: boolean;
 
-    allowSeedlessDevice: boolean;
-
     firmwareRange: FirmwareRange;
 
     requiredPermissions: MethodPermission[];
@@ -187,13 +185,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.overridden = false;
         this.useEmptyPassphrase =
             typeof payload.useEmptyPassphrase === 'boolean' ? payload.useEmptyPassphrase : false;
-        this.allowSeedlessDevice =
-            typeof payload.allowSeedlessDevice === 'boolean' ? payload.allowSeedlessDevice : false;
-        this.allowDeviceMode = [];
+        this.allowDeviceMode = [UI.SEEDLESS]; // Allow seedless by default
         this.requireDeviceMode = [];
-        if (this.allowSeedlessDevice) {
-            this.allowDeviceMode = [UI.SEEDLESS];
-        }
+
         // Determine the type based on the method name
         this.network = 'bitcoin';
         typedObjectKeys(NETWORK.TYPES).forEach(key => {
