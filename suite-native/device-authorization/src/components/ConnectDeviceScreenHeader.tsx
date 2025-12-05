@@ -6,10 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import {
-    selectDeviceRequestedPin,
-    selectIsCreatingNewPassphraseWallet,
-} from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -22,13 +18,19 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
+import {
+    selectDeviceRequestedPin,
+    selectIsCreatingNewPassphraseWallet,
+} from '../deviceAuthorizationSlice';
+
 type ConnectDeviceScreenHeaderProps = {
     shouldDisplayCancelButton?: boolean;
     onCancelNavigationTarget?: NavigateParameters<RootStackParamList>;
     closeActionType?: CloseActionType;
+    onCancel?: () => void;
 };
 
-type NavigationProp = StackToStackCompositeNavigationProps<
+type NavigationProps = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
     RootStackParamList
@@ -38,8 +40,9 @@ export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
     onCancelNavigationTarget,
     closeActionType = 'close',
+    onCancel,
 }: ConnectDeviceScreenHeaderProps) => {
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation<NavigationProps>();
     const { showAlert, hideAlert } = useAlert();
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
@@ -70,14 +73,12 @@ export const ConnectDeviceScreenHeader = ({
                 TrezorConnect.cancel('pin-cancelled');
             }
 
-            if (onCancelNavigationTarget) {
+            if (onCancel) {
+                onCancel();
+            } else if (onCancelNavigationTarget) {
                 // Temporary solution, the onCancelNavigationTarget should be removed completely as a follow up.
                 navigation.navigateDeprecated({ ...onCancelNavigationTarget });
-
-                return;
-            }
-
-            if (navigation.canGoBack()) {
+            } else if (navigation.canGoBack()) {
                 navigation.goBack();
             }
         }
@@ -87,6 +88,7 @@ export const ConnectDeviceScreenHeader = ({
         hasDeviceRequestedPin,
         showAlert,
         hideAlert,
+        onCancel,
         onCancelNavigationTarget,
         navigation,
     ]);

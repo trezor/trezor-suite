@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     selectHasRunningDiscovery,
     selectIsDeviceBackupRequired,
@@ -23,26 +21,25 @@ import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     DynamicScreenHeader,
-    FirmwareUpdateStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
-    StackToStackCompositeNavigationProps,
+    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
+export const DeviceFirmwareScreen = ({
+    navigation,
+    route: { params },
+}: StackToStackCompositeScreenProps<
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes.DeviceFirmware,
     RootStackParamList
->;
-
-export const DeviceFirmwareScreen = () => {
+>) => {
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     const { showAlert } = useAlert();
     const { openModal: openCheckBackupModal, bottomSheetRef, closeModal } = useBottomSheetModal();
     const { navigateToCheckBackup } = useNavigateToCheckBackup();
-    const navigation = useNavigation<NavigationProps>();
 
     const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
@@ -54,9 +51,7 @@ export const DeviceFirmwareScreen = () => {
     };
 
     const handleUpdateConfirmation = useCallback(() => {
-        navigation.replace(DeviceSettingsStackRoutes.FirmwareUpdateStack, {
-            screen: FirmwareUpdateStackRoutes.ConfirmFirmwareUpdate,
-        });
+        navigation.navigate(DeviceSettingsStackRoutes.FirmwareUpdateStack);
     }, [navigation]);
 
     const handleConfirmButtonPress = () => {
@@ -92,7 +87,7 @@ export const DeviceFirmwareScreen = () => {
                 <DynamicScreenHeader
                     title={<Translation id="moduleDeviceSettings.firmware.title" />}
                     subtitle={<Translation id="moduleDeviceSettings.firmware.subtitle" />}
-                    closeActionType="close"
+                    closeActionType={params.closeActionType}
                 />
             }
         >

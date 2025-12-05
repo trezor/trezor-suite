@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { selectIsDeviceAuthorized } from '@suite-common/wallet-core';
+import { ConnectDeviceScreenHeader } from '@suite-native/device-authorization';
 import { CloseActionType, Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import TrezorConnect, { DEVICE } from '@trezor/connect';
-
-import { ConnectDeviceScreenHeader } from './ConnectDeviceScreenHeader';
 
 type ConnectDeviceScreenProps = {
     closeActionType?: CloseActionType;

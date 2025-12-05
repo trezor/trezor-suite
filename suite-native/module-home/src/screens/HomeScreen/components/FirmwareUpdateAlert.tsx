@@ -80,6 +80,7 @@ export const FirmwareUpdateAlert = () => {
     const handleUpdateFirmware = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
             screen: DeviceSettingsStackRoutes.DeviceFirmware,
+            params: { closeActionType: 'close' },
         });
     };
 

@@ -7,7 +7,6 @@ import { FirmwareInfoScreenContent, FirmwareInfoScreenFooter } from '@suite-nati
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
     DynamicScreenHeader,
     FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
@@ -33,7 +32,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
     }, [navigation, showLowBatteryAlertIfNecessary]);
 
     const handleCancel = () => {
-        navigation.popTo(DeviceSettingsStackRoutes.DeviceSettings);
+        navigation.goBack();
     };
 
     return (
