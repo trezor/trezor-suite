@@ -4845,6 +4845,10 @@ export default defineMessages({
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',
     },
+    TR_LABELING_WALLET_LABEL: {
+        id: 'TR_LABELING_WALLET_LABEL',
+        defaultMessage: 'Wallet label',
+    },
     TR_NOTIFICATIONS: {
         id: 'TR_NOTIFICATIONS',
         defaultMessage: 'Activity',

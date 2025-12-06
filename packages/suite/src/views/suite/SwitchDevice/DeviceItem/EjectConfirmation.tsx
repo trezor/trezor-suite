@@ -41,7 +41,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                     onClick={handleEject}
                     intent="brand"
                     data-testid="@switch-device/eject"
-                    width="100%"
+                    flex="1"
                 >
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON" />
                 </Button>
@@ -51,7 +51,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                     intent="neutral"
                     priority="secondary"
                     data-testid="@switch-device/cancelEject"
-                    width="100%"
+                    flex="1"
                 >
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON" />
                 </Button>
