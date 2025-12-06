@@ -62,7 +62,7 @@ export const PortfolioCardHeader = ({
             justifyContent="space-between"
             alignItems={isContentBelowBreakpoint ? 'flex-start' : 'center'}
             gap={8}
-            margin={{ top: 16, horizontal: 24, bottom: 8 }}
+            margin={{ top: 16, horizontal: 24, bottom: 16 }}
         >
             {valueLoading ? (
                 <SkeletonRectangle width={140} height={53} />

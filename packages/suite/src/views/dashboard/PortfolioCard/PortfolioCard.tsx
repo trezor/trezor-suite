@@ -139,7 +139,10 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
             actions={
-                !isWalletEmpty && !isWalletLoading && !isWalletError && !isGraphHidden ? (
+                !isWalletEmpty &&
+                !isWalletLoading &&
+                !isWalletError &&
+                hasNetworkWithEnabledGraph ? (
                     <Dropdown
                         placement={{ position: 'bottom', alignment: 'start' }}
                         content={
