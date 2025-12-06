@@ -133,7 +133,7 @@ export const StakingCard = ({
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
 
     const canUnstake = new BigNumber(autocompoundBalance).gt(0) && !isStakeConfirming;
-    const canClaimRewards = new BigNumber(restakedReward).gt(0);
+    const canClaimRewards = new BigNumber(restakedReward).gt(0) && !isStakeConfirming;
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
 
     const isStakedWithEverstake = isCardanoStakedWithEverstake(account, cardanoStakingPools);
