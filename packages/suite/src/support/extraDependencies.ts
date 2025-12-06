@@ -4,7 +4,7 @@ import { type History, createMemoryHistory } from 'history';
 
 import { createElectronSecureStorage } from '@suite/secure-storage-electron';
 import { createWebauthnSecureStorage } from '@suite/secure-storage-webauthn';
-import { createSuiteSyncDesktop } from '@suite/suite-sync';
+import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
     ExtraDependenciesStatic,
@@ -25,6 +25,7 @@ import {
     SendState,
     TransactionsState,
     WalletSettingsState,
+    delegatedIdentityKeyCompositionRoot,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
@@ -69,20 +70,29 @@ export const createRouterServices = (history: History) => ({
     navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
 
-const secureStorage = isDesktop()
-    ? createElectronSecureStorage({ desktopApi })
-    : createWebauthnSecureStorage();
+export const suiteExtraFactory: ExtraWithStoreFactory = store => {
+    const secureStorage = isDesktop()
+        ? createElectronSecureStorage({ desktopApi })
+        : createWebauthnSecureStorage();
 
-export const suiteExtraFactory: ExtraWithStoreFactory = store => ({
-    services: {
-        suiteSync: createSuiteSyncDesktop({
-            ...store,
-            secureStorage,
-            trezorConnect: TrezorConnect,
-        }),
+    const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
+        ...store,
         secureStorage,
-    },
-});
+        trezorConnect: TrezorConnect,
+    });
+
+    return {
+        services: {
+            suiteSync: createSuiteSyncDesktopCompositionRoot({
+                ...store,
+                secureStorage,
+                trezorConnect: TrezorConnect,
+                ensureDelegatedIdentityKey,
+            }),
+            secureStorage,
+        },
+    };
+};
 
 export const extraDependencies: ExtraDependenciesStatic = {
     thunks: {

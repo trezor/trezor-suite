@@ -1,1 +1,1 @@
-export { initSuiteSyncNative } from './initSuiteSyncNative';
+export { createSuiteSyncNativeCompositionRoot } from './createSuiteSyncNativeCompositionRoot';
