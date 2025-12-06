@@ -2,11 +2,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
-import {
-    configureMockStore,
-    extraDependenciesMock,
-    initPreloadedState,
-} from '@suite-common/test-utils';
+import { configureMockStore, initPreloadedState, servicesMock } from '@suite-common/test-utils';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
@@ -180,11 +176,7 @@ describe('useRbfForm hook', () => {
                 );
             };
 
-            const { unmount } = renderWithProviders(
-                store,
-                extraDependenciesMock.services,
-                <TestComponent />,
-            );
+            const { unmount } = renderWithProviders(store, servicesMock, <TestComponent />);
 
             const composeTransactionSpy = jest.spyOn(TrezorConnect, 'composeTransaction');
 
