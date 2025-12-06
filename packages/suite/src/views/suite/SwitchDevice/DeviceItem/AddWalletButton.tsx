@@ -38,6 +38,10 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     const isLocked = !device || !device.connected || isDeviceOrUiLocked;
     const [isPassphraseExpanded, setIsPassphraseExpanded] = useState(false);
 
+    if (!isPassphraseProtectionEnabled && emptyPassphraseWalletExists) {
+        return null;
+    }
+
     const onAddWallet = ({
         walletType,
         isExisting,
