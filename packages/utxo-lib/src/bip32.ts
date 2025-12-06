@@ -222,6 +222,8 @@ class BIP32 implements BIP32Interface {
     derive(index: number): BIP32Interface {
         typeforce(typeforce.UInt32, index);
 
+        if ( this.depth >= 255 ) throw new TypeError('Cannot derive keys with depth over 255');
+
         const isHardened = index >= HIGHEST_BIT;
         const data = Buffer.allocUnsafe(37);
 

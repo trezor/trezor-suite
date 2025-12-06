@@ -195,6 +195,33 @@ it('works when private key has leading zeros', () => {
     );
 });
 
+it('throws when private -> private would overflow depth', () => {
+    let extKey = BIP32.fromSeed(Buffer.alloc(32, 0));
+
+    for (let i = 0; i < 255; i++) {
+        extKey = extKey.derive(0);
+    }
+
+    expect(() => {
+        extKey.derive(0);
+    }).toThrow(new TypeError('Cannot derive keys with depth over 255'));
+
+});
+
+it('throws when public -> public would overflow depth', () => {
+    let extKey = BIP32.fromSeed(Buffer.alloc(32, 0)).neutered();
+
+    for (let i = 0; i < 255; i++) {
+        extKey = extKey.derive(0);
+    }
+
+    expect(() => {
+        extKey.derive(0);
+    }).toThrow(new TypeError('Cannot derive keys with depth over 255'));
+
+});
+
+
 it('fromSeed', () => {
     // TODO
     //    'throws if IL is not within interval [1, n - 1] | IL === n || IL === 0'
