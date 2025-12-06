@@ -3,6 +3,7 @@ import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import type { UseFormReturn } from '@suite-native/forms';
+import { Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { getFeeDecimals } from './utils';
@@ -11,89 +12,227 @@ export type FeesFormContext = {
     symbol?: NetworkSymbol;
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
+    translate?: Translate;
 };
 
-const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'normal', 'high', 'custom'];
+const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'low', 'normal', 'high', 'custom'];
+
+const validateFeeDecimalLength = (value: string | undefined, context: FeesFormContext) => {
+    if (!value) return true;
+
+    const { networkFeeInfo, symbol } = context!;
+
+    if (!symbol) return false;
+
+    const { networkType } = getNetwork(symbol);
+
+    if (!networkFeeInfo || !networkType) return false;
+
+    const maxDecimals = getFeeDecimals({ symbol });
+
+    if (maxDecimals === null) return true;
+
+    return isDecimalsValid(value, maxDecimals);
+};
 
 export const feesFormValidationSchema = yup.object({
     feeLevel: yup.string().oneOf(FeeLevelLabels).required('Fee level is required'),
     customFeePerUnit: yup
         .string()
-        .required()
+        .test('too-many-decimals', 'Too many decimals.', function (value) {
+            if (!value) return true;
+            const { translate, ...context } = this.options.context as FeesFormContext;
+            if (!validateFeeDecimalLength(value, context)) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.decimals',
+                    ),
+                });
+            }
+
+            return true;
+        })
+        .test('fee-too-low', 'Fee is too low.', function (value) {
+            if (!value) return true;
+            const { networkFeeInfo, translate } = this.options.context as FeesFormContext;
+
+            if (!networkFeeInfo) return false;
+            const { minFee } = networkFeeInfo;
+            const feeBig = new BigNumber(value);
+
+            if (feeBig.isLessThan(minFee)) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.feePerUnit.low',
+                    ),
+                });
+            }
+
+            return true;
+        })
+        .test('fee-too-high', 'Fee is too high.', function (value) {
+            if (!value) return true;
+            const { networkFeeInfo, translate } = this.options.context as FeesFormContext;
+
+            if (!networkFeeInfo) return false;
+
+            const feeBig = new BigNumber(value);
+            const { maxFee } = networkFeeInfo;
+
+            if (feeBig.gt(maxFee)) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.feePerUnit.high',
+                    ),
+                });
+            }
+
+            return true;
+        })
+        .required(),
+    customFeeLimit: yup.string().test(
+        'fee-limit-too-low',
+        'Value is too low.',
+
+        function (value) {
+            if (!value) return true;
+            const { symbol, minimalFeeLimit, translate } = this.options.context as FeesFormContext;
+
+            if (!symbol) return true;
+
+            const { networkType } = getNetwork(symbol);
+
+            // Fee limit is used only for Ethereum, pass this validation for other networks.
+            if (networkType !== 'ethereum') return true;
+
+            if (!value || !minimalFeeLimit) return false;
+
+            const feeBig = new BigNumber(value);
+
+            if (feeBig.isLessThan(minimalFeeLimit)) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
+                        { minGasLimit: minimalFeeLimit },
+                    ),
+                });
+            }
+
+            return true;
+        },
+    ),
+    // EIP1559 only validations
+    customMaxFeePerGas: yup
+        .string()
+        .test('too-many-decimals', 'Too many decimals.', function (value) {
+            if (!value) return true;
+
+            const { translate, ...context } = this.options.context as FeesFormContext;
+            if (!validateFeeDecimalLength(value, context)) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.decimals',
+                    ),
+                });
+            }
+
+            return true;
+        })
+        .test('max-fee-per-gas-range', 'Max fee per gas is out of range.', function (value) {
+            if (!value) return true;
+
+            const { translate, networkFeeInfo, symbol } = this.options.context as FeesFormContext;
+
+            if (!networkFeeInfo || !symbol) return false;
+
+            const { maxFee, minFee } = networkFeeInfo;
+            const feeBig = new BigNumber(value);
+
+            if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.maxFeePerGas.outOfRange',
+                        {
+                            minFee,
+                            maxFee,
+                        },
+                    ),
+                });
+            }
+
+            return true;
+        })
         .test(
-            'too-many-decimals',
-            'Too many decimals.',
-            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
+            'custom-max-fee-per-gas-higher-than-priority',
+            'Max fee must be higher than priority fee.',
+            function (value) {
                 if (!value) return true;
 
-                const { networkFeeInfo, symbol } = context!;
+                const { customMaxPriorityFeePerGas } = this.parent;
 
-                if (!symbol) return false;
+                if (!customMaxPriorityFeePerGas) return true;
 
-                const { networkType } = getNetwork(symbol);
+                const { translate } = this.options.context as FeesFormContext;
+                const feeBig = new BigNumber(value);
 
-                if (!networkFeeInfo || !networkType) return false;
+                if (feeBig.isLessThan(customMaxPriorityFeePerGas)) {
+                    return this.createError({
+                        message: translate!(
+                            'transactionManagement.fees.custom.bottomSheet.errors.maxFeePerGas.lessThanPriority',
+                        ),
+                    });
+                }
 
-                const maxDecimals = getFeeDecimals({ symbol });
-
-                if (maxDecimals === null) return true;
-
-                return isDecimalsValid(value, maxDecimals);
+                return true;
             },
-        )
+        ),
+    customMaxPriorityFeePerGas: yup
+        .string()
+        .test('too-many-decimals', 'Too many decimals.', function (value) {
+            const { translate, ...context } = this.options.context as FeesFormContext;
+            if (!validateFeeDecimalLength(value, context)) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.decimals',
+                    ),
+                });
+            }
+
+            return true;
+        })
         .test(
-            'fee-too-low',
-            'Fee is too low.',
-            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
+            'custom-priority-fee-per-gas',
+            'Priority fee higher than max fee or below minimum.',
+            function (value) {
                 if (!value) return true;
-                const { networkFeeInfo } = context!;
+                const { networkFeeInfo, translate } = this.options.context as FeesFormContext;
 
                 if (!networkFeeInfo) return false;
-                const { minFee } = networkFeeInfo;
-
-                return Number(value) >= minFee;
-            },
-        )
-        .test(
-            'fee-too-high',
-            'Fee is too high.',
-            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
-                if (!value) return true;
-
-                const { networkFeeInfo } = context!;
-
-                if (!value || !networkFeeInfo) return false;
-
-                const feeBig = new BigNumber(value);
-                const { maxFee } = networkFeeInfo;
-
-                return feeBig.lte(maxFee);
-            },
-        ),
-    customFeeLimit: yup
-        .string()
-        .test(
-            'fee-limit-too-low',
-            'Value is too low.',
-            (value, { options: { context } }: yup.TestContext<FeesFormContext>) => {
-                const { symbol, minimalFeeLimit } = context!;
-                if (!symbol) return true;
-
-                const { networkType } = getNetwork(symbol);
-
-                // Fee limit is used only for Ethereum, pass this validation for other networks.
-                if (networkType !== 'ethereum') return true;
-
-                if (!value || !minimalFeeLimit) return false;
-
+                const { minPriorityFee } = networkFeeInfo;
                 const feeBig = new BigNumber(value);
 
-                return feeBig.gte(minimalFeeLimit);
+                if (feeBig.isLessThan(minPriorityFee)) {
+                    return this.createError({
+                        message: translate!(
+                            'transactionManagement.fees.custom.bottomSheet.errors.maxPriorityFee.min',
+                            { minPriorityFee },
+                        ),
+                    });
+                }
+
+                const { customMaxFeePerGas } = this.parent;
+
+                if (customMaxFeePerGas && feeBig.isGreaterThan(customMaxFeePerGas)) {
+                    return this.createError({
+                        message: translate!(
+                            'transactionManagement.fees.custom.bottomSheet.errors.maxPriorityFee.higherThanMaxFee',
+                        ),
+                    });
+                }
+
+                return true;
             },
         ),
-    // FIXME: add validations
-    customMaxFeePerGas: yup.string(),
-    customMaxPriorityFeePerGas: yup.string(),
 });
 
 export type FeesFormValues = yup.InferType<typeof feesFormValidationSchema>;

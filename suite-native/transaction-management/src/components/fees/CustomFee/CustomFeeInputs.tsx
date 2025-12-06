@@ -77,7 +77,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                         rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
                         onChangeText={handleFieldChangeValue(
                             maxFeePerGasFieldName,
-                            integerTransformer,
+                            cryptoAmountTransformer,
                         )}
                     />
                     <TextInputField
@@ -91,7 +91,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                         keyboardType="number-pad"
                         onChangeText={handleFieldChangeValue(
                             maxPriorityFeePerGasFieldName,
-                            integerTransformer,
+                            cryptoAmountTransformer,
                         )}
                     />
                 </>
