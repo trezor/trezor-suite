@@ -16,6 +16,7 @@ import {
     Column,
     Divider,
     Icon,
+    IconButton,
     Row,
     Text,
     Tooltip,
@@ -23,12 +24,14 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import { MetadataLabeling, WalletLabeling } from 'src/components/suite';
+import { WalletLabeling } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { Labeling } from 'src/components/suite/labeling/MetadataLabeling/MetadataLabeling';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
@@ -60,6 +63,7 @@ export const WalletInstance = ({
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();
     const store = useStore();
+    const { translationString } = useTranslation();
     const { isSuiteSyncEnabled } = useLabelingCombined({
         deviceStaticSessionId: instance?.state?.staticSessionId,
     });
@@ -127,100 +131,86 @@ export const WalletInstance = ({
     const valueLabel =
         walletLabel === undefined || walletLabel.trim() === '' ? defaultWalletLabel : walletLabel;
 
-    return (
-        <Box position={{ type: 'relative' }} width="100%">
-            <Card
-                key={`${instance.instance}${instance.state}`}
-                paddingType="small"
-                onClick={handleClick}
-                tabIndex={0}
-                data-testid={dataTestBase}
-                variant={isSelected ? 'primary' : undefined}
-                {...rest}
-            >
-                <Collapsible isOpen={isEjecting}>
-                    <Column>
-                        <Text
-                            as="div"
-                            variant={isSelected ? 'default' : 'tertiary'}
-                            typographyStyle={isSelected ? 'highlight' : 'body'}
-                            ellipsisLineCount={1}
-                        >
-                            <Row justifyContent="space-between">
-                                <Row gap={spacings.xxs}>
-                                    {instance.useEmptyPassphrase === false && (
-                                        <Tooltip
-                                            content={
-                                                <Translation id="TR_WALLET_PASSPHRASE_WALLET" />
-                                            }
-                                        >
-                                            <Icon name="asterisk" size={12} />
-                                        </Tooltip>
-                                    )}
-                                    {instance.state?.staticSessionId ? (
-                                        <Column>
-                                            <span>
-                                                <MetadataLabeling
-                                                    variant="text"
-                                                    deviceStaticSessionId={
-                                                        instance.state.staticSessionId
-                                                    }
-                                                    defaultVisibleValue={valueLabel}
-                                                    payload={{
-                                                        type: 'walletLabel',
-                                                        entityKey: instance.state.staticSessionId,
-                                                        defaultValue:
-                                                            instance.state.staticSessionId,
-                                                        value:
-                                                            // This is some legacy weird stuff I do not want to refacotr.
-                                                            // `payload.value` needs to be falsey for the `MetadataLabeling` component
-                                                            // to display `add` button, instead of `edit` button
-                                                            isSuiteSyncEnabled &&
-                                                            instance?.metadata[
-                                                                METADATA_LABELING.ENCRYPTION_VERSION
-                                                            ]
-                                                                ? oldWalletLabel
-                                                                : walletLabel,
-                                                    }}
-                                                    defaultEditableValue={valueLabel}
-                                                />
-                                            </span>
-                                            <SuiteSyncWalletDebug device={instance} />
-                                        </Column>
-                                    ) : (
-                                        <WalletLabeling device={instance} />
-                                    )}
-                                </Row>
+    const passphraseIcon = instance.useEmptyPassphrase === false && (
+        <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
+            <Icon name="asterisk" size={12} />
+        </Tooltip>
+    );
 
-                                {!isEjecting && (
-                                    <Box
-                                        position={{
-                                            type: 'absolute',
-                                            right: spacings.sm,
-                                            top: spacings.sm,
-                                        }}
-                                    >
-                                        <Collapsible.Toggle>
-                                            <Tooltip
-                                                cursor="pointer"
-                                                content={<Translation id="TR_EJECT_HEADING" />}
-                                            >
-                                                <Icon
-                                                    data-testid={`${dataTestBase}/eject-button`}
-                                                    name="eject"
-                                                    size={18}
-                                                    variant="tertiary"
-                                                    onClick={e => {
-                                                        e.stopPropagation();
-                                                        setIsEjecting(true);
-                                                    }}
-                                                />
-                                            </Tooltip>
-                                        </Collapsible.Toggle>
-                                    </Box>
+    return (
+        <Card
+            key={`${instance.instance}${instance.state}`}
+            paddingType="none"
+            onClick={handleClick}
+            tabIndex={0}
+            data-testid={dataTestBase}
+            variant={isSelected ? 'primary' : undefined}
+            {...rest}
+        >
+            <Box padding={{ vertical: 12, right: 12, left: 16 }}>
+                <Collapsible isOpen={isEjecting}>
+                    <Column gap={8}>
+                        <Row justifyContent="space-between">
+                            <Text
+                                as="div"
+                                variant={isSelected ? 'default' : 'tertiary'}
+                                typographyStyle={isSelected ? 'highlight' : 'body'}
+                            >
+                                {instance.state?.staticSessionId ? (
+                                    <Column>
+                                        <Labeling
+                                            placeholder={translationString(
+                                                'TR_LABELING_WALLET_LABEL',
+                                            )}
+                                            maxWidth={220}
+                                            deviceStaticSessionId={instance.state.staticSessionId}
+                                            defaultValue={defaultWalletLabel}
+                                            payload={{
+                                                type: 'walletLabel',
+                                                entityKey: instance.state.staticSessionId,
+                                                defaultValue: instance.state.staticSessionId,
+                                                value:
+                                                    // This is some legacy weird stuff I do not want to refacotr.
+                                                    // `payload.value` needs to be falsey for the `MetadataLabeling` component
+                                                    // to display `add` button, instead of `edit` button
+                                                    isSuiteSyncEnabled &&
+                                                    instance?.metadata[
+                                                        METADATA_LABELING.ENCRYPTION_VERSION
+                                                    ]
+                                                        ? oldWalletLabel
+                                                        : walletLabel,
+                                            }}
+                                            leftAddon={passphraseIcon}
+                                        >
+                                            {valueLabel}
+                                        </Labeling>
+                                        <SuiteSyncWalletDebug device={instance} />
+                                    </Column>
+                                ) : (
+                                    <Row gap={4}>
+                                        {passphraseIcon}
+                                        <WalletLabeling device={instance} />
+                                    </Row>
                                 )}
-                            </Row>
-                        </Text>
+                            </Text>
+                            <Collapsible.Toggle>
+                                <IconButton
+                                    data-testid={
+                                        isEjecting
+                                            ? `@switch-device/cancelEject`
+                                            : `${dataTestBase}/eject-button`
+                                    }
+                                    icon={isEjecting ? 'x' : 'eject'}
+                                    size="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        setIsEjecting(prev => !prev);
+                                    }}
+                                />
+                            </Collapsible.Toggle>
+                        </Row>
 
                         <FiatHeader
                             amount={walletBalance}
@@ -239,7 +229,7 @@ export const WalletInstance = ({
                         />
                     </Collapsible.Content>
                 </Collapsible>
-            </Card>
-        </Box>
+            </Box>
+        </Card>
     );
 };

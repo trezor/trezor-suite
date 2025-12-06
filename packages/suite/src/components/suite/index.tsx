@@ -17,6 +17,7 @@ import { PriceTicker } from './Ticker/PriceTicker';
 import {
     AccountLabeling,
     AddressLabeling,
+    Labeling,
     MetadataLabeling,
     WalletLabeling,
     useGetWalletLabel,
@@ -66,6 +67,7 @@ export {
     WebUsbButton,
     HiddenPlaceholder,
     AccountLabeling,
+    Labeling,
     AddressLabeling,
     WalletLabeling,
     useGetWalletLabel,
