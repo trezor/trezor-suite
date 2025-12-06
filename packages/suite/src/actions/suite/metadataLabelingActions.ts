@@ -507,45 +507,47 @@ export const setDeviceMetadataKey =
     };
 
 export const addMetadata =
-    (payload: MetadataAddPayload) => (dispatch: Dispatch, getState: GetState) =>
-        (payload.type === 'walletLabel'
-            ? dispatch(addDeviceMetadata(payload))
-            : dispatch(addAccountMetadata(payload))
-        ).then(result => {
-            if (!result.success) {
-                if ('code' in result) {
-                    console.log(result.code);
+    (payload: MetadataAddPayload) => async (dispatch: Dispatch, getState: GetState) => {
+        const result = await dispatch(
+            payload.type === 'walletLabel'
+                ? addDeviceMetadata(payload)
+                : addAccountMetadata(payload),
+        );
+
+        if (!result.success) {
+            if ('code' in result) {
+                console.log(result.code);
+                dispatch(
+                    metadataProviderActions.handleProviderError({
+                        error: result,
+                        action: ProviderErrorAction.SAVE,
+                        clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                    }),
+                );
+            } else {
+                const providerInstance = dispatch(
+                    metadataProviderActions.getProviderInstance({
+                        clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                        dataType: 'labels',
+                    }),
+                );
+                if (providerInstance) {
                     dispatch(
                         metadataProviderActions.handleProviderError({
-                            error: result,
+                            error: providerInstance.error(
+                                'OTHER_ERROR',
+                                'error' in result ? result.error : '',
+                            ),
                             action: ProviderErrorAction.SAVE,
                             clientId: selectSelectedProviderForLabels(getState())!.clientId,
                         }),
                     );
-                } else {
-                    const providerInstance = dispatch(
-                        metadataProviderActions.getProviderInstance({
-                            clientId: selectSelectedProviderForLabels(getState())!.clientId,
-                            dataType: 'labels',
-                        }),
-                    );
-                    if (providerInstance) {
-                        dispatch(
-                            metadataProviderActions.handleProviderError({
-                                error: providerInstance.error(
-                                    'OTHER_ERROR',
-                                    'error' in result ? result.error : '',
-                                ),
-                                action: ProviderErrorAction.SAVE,
-                                clientId: selectSelectedProviderForLabels(getState())!.clientId,
-                            }),
-                        );
-                    }
                 }
             }
+        }
 
-            return result.success;
-        });
+        return result.success;
+    };
 
 /**
  * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
