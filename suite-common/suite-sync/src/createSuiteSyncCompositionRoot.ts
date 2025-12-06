@@ -2,17 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorageDep } from '@suite-common/secure-storage';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-// Circular issue, see: https://github.com/trezor/trezor-suite/issues/21553
-import { selectThp } from '@suite-common/thp/src/thpSelectors';
-import {
-    RetrieveDelegatedIdentityKeyFromDeviceDeps,
-    createEnsureDelegatedIdentityKey,
-    createLoadDelegatedIdentityKeyFromState,
-    createRetrieveDelegatedIdentityKeyFromDevice,
-    createSaveDelegatedIdentityKey,
-    selectAllDeviceOwners,
-    selectDeviceDelegatedIdentityKey,
-} from '@suite-common/wallet-core';
+import { EnsureDelegatedIdentityKeyDep, selectAllDeviceOwners } from '@suite-common/wallet-core';
 
 import { SuiteSync } from './SuiteSync';
 import { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
@@ -33,9 +23,9 @@ import { createTurnOffSuiteSync } from './turnOffSuiteSync';
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'] &
-        RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'];
-} & CreateSuiteStorageDep &
+    trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'];
+} & EnsureDelegatedIdentityKeyDep &
+    CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
     SecureStorageDep;
 
@@ -61,29 +51,10 @@ export const createSuiteSyncCompositionRoot = (
         trezorConnect: deps.trezorConnect,
     });
 
-    // Todo: this shall be extracted upstream in the composition root
-    const ensureDelegatedIdentityKey = createEnsureDelegatedIdentityKey({
-        loadDelegatedIdentityKeyFromState: createLoadDelegatedIdentityKeyFromState({
-            dispatch: deps.dispatch,
-            secureStorage: deps.secureStorage,
-            getDeviceDelegatedIdentityKey: deviceId =>
-                selectDeviceDelegatedIdentityKey(deps.getState(), deviceId),
-        }),
-        retrieveDelegatedIdentityKeyFromDevice: createRetrieveDelegatedIdentityKeyFromDevice({
-            trezorConnect: deps.trezorConnect,
-        }),
-        saveDelegatedIdentityKey: createSaveDelegatedIdentityKey({
-            dispatch: deps.dispatch,
-            secureStorage: deps.secureStorage,
-        }),
-        getThpStaticKey: () => selectThp(deps.getState()).staticKey,
-    });
-    // Todo: ------------------------------------------------------------
-
     const refreshSuiteSyncKeys = createRefreshSuiteSyncKeys({
         dispatch: deps.dispatch,
         getState: deps.getState,
-        ensureDelegatedIdentityKey,
+        ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         ensureSuiteSyncOwnerKeys,
     });
 

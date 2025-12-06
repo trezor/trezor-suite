@@ -6,11 +6,14 @@ import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/re
 import { createNativeSecureStorage } from '@suite-common/secure-storage-native';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    delegatedIdentityKeyCompositionRoot,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import { initSuiteSyncNative } from '@suite-native/suite-sync';
+import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
 import messages from '@trezor/protobuf/messages.json';
@@ -35,13 +38,19 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const nativeExtraFactory: ExtraWithStoreFactory = store => {
     const secureStorage = createNativeSecureStorage();
+    const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
+        ...store,
+        secureStorage,
+        trezorConnect: TrezorConnect,
+    });
 
     return {
         services: {
-            suiteSync: initSuiteSyncNative({
+            suiteSync: createSuiteSyncNativeCompositionRoot({
                 ...store,
                 secureStorage,
                 trezorConnect: TrezorConnect,
+                ensureDelegatedIdentityKey,
             }),
             secureStorage,
         },
