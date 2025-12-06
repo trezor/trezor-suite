@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { selectShouldOfferSecureSync } from '@suite-common/suite-sync';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
-import { spacingsPx } from '@trezor/theme';
+import { EditableText } from '@trezor/product-components';
+import { SpacingValuesNew, spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
@@ -333,10 +334,114 @@ const LabelContent = ({
 
 const showEditOption = (variant: LabelingVariant) => variant === 'text';
 
+type LabelingProps = {
+    payload: MetadataAddPayload;
+    deviceStaticSessionId: StaticSessionId;
+    children: ReactNode;
+    isDisabled?: boolean;
+    placeholder?: string;
+    maxWidth?: number;
+    leftAddon?: ReactNode;
+    rightAddon?: ReactNode;
+    gap?: SpacingValuesNew;
+};
+
+export const Labeling = ({
+    payload,
+    deviceStaticSessionId,
+    children,
+    isDisabled,
+    placeholder,
+    leftAddon,
+    rightAddon,
+    maxWidth,
+    gap,
+}: LabelingProps) => {
+    const dispatch = useDispatch();
+    const { isDiscoveryRunning } = useDiscovery();
+    const {
+        isSuiteSyncEnabled,
+        isEvoluSupportedByDevice,
+        legacyMetadataState,
+        hasDeviceSuiteSyncOwner,
+    } = useLabelingCombined({ deviceStaticSessionId });
+    const isLegacyLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
+    const shouldOfferSecureSync = useSelector(selectShouldOfferSecureSync);
+    const isEvoluLabeling =
+        isSuiteSyncEnabled && isEvoluSupportedByDevice && hasDeviceSuiteSyncOwner;
+    const deviceState =
+        payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
+    const isLegacyLabelingEnabled = useSelector(state =>
+        selectIsLabelingAvailableForEntity(state, payload.entityKey, deviceState),
+    );
+
+    const handleEdit = useCallback(async () => {
+        // When clicking on inline input edit, ensure that everything needed is already ready.
+        if (
+            !isSuiteSyncEnabled &&
+            // Isn't initiation in progress?
+            !legacyMetadataState.initiating &&
+            // Is there something that needs to be initiated?
+            !isLegacyLabelingEnabled
+        ) {
+            if (shouldOfferSecureSync) {
+                dispatch(updateShowEnableSuiteSyncModal({ show: true }));
+
+                // user can decide if they want to enable metadata or not, so we do not set editing state yet
+                return;
+            } else {
+                const result = await dispatch(
+                    init(
+                        // Provide force=true argument (user wants to enable metadata).
+                        true,
+                        // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
+                        deviceState,
+                    ),
+                );
+
+                return result;
+            }
+        }
+    }, [
+        isSuiteSyncEnabled,
+        legacyMetadataState.initiating,
+        isLegacyLabelingEnabled,
+        shouldOfferSecureSync,
+        dispatch,
+        deviceState,
+    ]);
+
+    const handleSubmit = async (value: string | undefined) => {
+        if (isSuiteSyncEnabled) {
+            await dispatch(
+                processLegacyMetadataIntoSuiteSyncThunk({ payload, deviceStaticSessionId, value }),
+            );
+
+            return true;
+        } else {
+            return await dispatch(addMetadata({ ...payload, value: value || undefined }));
+        }
+    };
+
+    return (
+        <EditableText
+            onSubmit={handleSubmit}
+            onEdit={handleEdit}
+            isDisabled={
+                isDisabled ||
+                (!isLegacyLabelingEnabled && !isLegacyLabelingInitPossible && !isEvoluLabeling)
+            }
+            isLoading={legacyMetadataState.initiating || isDiscoveryRunning}
+            data-testid={`@metadata/${payload.type}/${payload.defaultValue}/hover-container`}
+            {...rest}
+        >
+            {children}
+        </EditableText>
+    );
+};
+
 /**
- * User defined labeling component.
- * - This component shows defaultVisibleValue and "Add label" button if no metadata is present.
- * - Otherwise it shows metadata value and provides way to edit it.
+ * @deprecated Use Labeling instead
  */
 export const MetadataLabeling = ({
     payload,
