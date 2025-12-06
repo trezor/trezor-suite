@@ -2,20 +2,14 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
-import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
-import { createNativeSecureStorage } from '@suite-common/secure-storage-native';
+import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
-import {
-    delegatedIdentityKeyCompositionRoot,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
-import TrezorConnect from '@trezor/connect';
 import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
@@ -35,27 +29,6 @@ const transportsPerDeviceType = {
 } as const;
 
 const transports = transportsPerDeviceType[deviceType];
-
-export const nativeExtraFactory: ExtraWithStoreFactory = store => {
-    const secureStorage = createNativeSecureStorage();
-    const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
-        ...store,
-        secureStorage,
-        trezorConnect: TrezorConnect,
-    });
-
-    return {
-        services: {
-            suiteSync: createSuiteSyncNativeCompositionRoot({
-                ...store,
-                secureStorage,
-                trezorConnect: TrezorConnect,
-                ensureDelegatedIdentityKey,
-            }),
-            secureStorage,
-        },
-    };
-};
 
 export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(extraDependenciesMock, {
     selectors: {
