@@ -2,16 +2,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
-import { createElectronSecureStorage } from '@suite/secure-storage-electron';
-import { createWebauthnSecureStorage } from '@suite/secure-storage-webauthn';
-import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import {
-    ExtraDependenciesStatic,
-    ExtraWithStoreFactory,
-    LocationPushState,
-    To,
-} from '@suite-common/redux-utils';
+import { ExtraDependenciesStatic, LocationPushState, To } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -25,12 +17,10 @@ import {
     SendState,
     TransactionsState,
     WalletSettingsState,
-    delegatedIdentityKeyCompositionRoot,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -69,30 +59,6 @@ export const createRouterServices = (history: History) => ({
     getLocation: () => history.location,
     navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
-
-export const suiteExtraFactory: ExtraWithStoreFactory = store => {
-    const secureStorage = isDesktop()
-        ? createElectronSecureStorage({ desktopApi })
-        : createWebauthnSecureStorage();
-
-    const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
-        ...store,
-        secureStorage,
-        trezorConnect: TrezorConnect,
-    });
-
-    return {
-        services: {
-            suiteSync: createSuiteSyncDesktopCompositionRoot({
-                ...store,
-                secureStorage,
-                trezorConnect: TrezorConnect,
-                ensureDelegatedIdentityKey,
-            }),
-            secureStorage,
-        },
-    };
-};
 
 export const extraDependencies: ExtraDependenciesStatic = {
     thunks: {
