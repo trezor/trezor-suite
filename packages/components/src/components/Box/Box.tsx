@@ -103,7 +103,7 @@ type BorderWidth =
     | BorderWidths;
 
 export type BoxProps = AllowedFrameProps & {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     borderWidth?: BorderWidth;
     hasBackground?: boolean;
     // TODO: type to token names
@@ -118,6 +118,7 @@ export type BoxProps = AllowedFrameProps & {
     onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
+    tabIndex?: number;
 };
 
 export const Box = ({
@@ -133,6 +134,7 @@ export const Box = ({
     onClick,
     onMouseEnter,
     onMouseLeave,
+    tabIndex,
     ...rest
 }: BoxProps) => {
     const { elevation } = useElevation();
@@ -152,6 +154,7 @@ export const Box = ({
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             $shadow={shadow}
+            tabIndex={tabIndex}
             {...frameProps}
         >
             {children}

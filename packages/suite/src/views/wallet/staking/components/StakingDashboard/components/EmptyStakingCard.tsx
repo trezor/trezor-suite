@@ -96,8 +96,8 @@ export const EmptyStakingCard = () => {
                         values={{
                             t: text => (
                                 <Tooltip
-                                    dashed
-                                    isInline
+                                    display="inline-flex"
+                                    as="span"
                                     content={<Translation id="TR_STAKE_APY_DESC" />}
                                 >
                                     <abbr>{text}</abbr>

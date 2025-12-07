@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { Box, Card, Column, Icon, IconName, InfoItem, Tooltip } from '@trezor/components';
+import { Card, Column, IconName, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
@@ -24,23 +24,9 @@ export const SettingsSection = ({ title, icon, children, tooltipText }: Settings
             labelWidth={width}
             iconName={icon}
             label={
-                <>
+                <Tooltip hasIcon content={tooltipText}>
                     {title}
-                    {tooltipText && (
-                        <Box
-                            as="span"
-                            position={{
-                                type: 'relative',
-                                top: 2,
-                                left: 5,
-                            }}
-                        >
-                            <Tooltip isInline content={tooltipText}>
-                                <Icon name="question" size="medium" />
-                            </Tooltip>
-                        </Box>
-                    )}
-                </>
+                </Tooltip>
             }
             variant="default"
             typographyStyle="titleSmall"

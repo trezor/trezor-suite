@@ -99,8 +99,8 @@ export const AddAccountButton = ({
     if (tooltipMessage) {
         return (
             <Tooltip
-                isFullWidth={isFullWidth}
-                maxWidth={200}
+                width={isFullWidth ? '100%' : undefined}
+                tooltipMaxWidth={200}
                 content={tooltipMessage}
                 placement="bottom"
                 cursor="not-allowed"

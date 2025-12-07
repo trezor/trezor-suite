@@ -314,7 +314,6 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                                 defaultMessage="Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet can use its own passphrase. Your standard wallet will still be accessible without a passphrase."
                                             />
                                         }
-                                        dashed
                                     >
                                         <>{props.title}</>
                                     </Tooltip>

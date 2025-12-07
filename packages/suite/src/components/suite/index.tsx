@@ -38,7 +38,6 @@ import { getMessageId } from './getMessageId';
 import { CoinGroup } from './CoinGroup/CoinGroup';
 import { CoinList } from './CoinList/CoinList';
 import { CloseButton } from './CloseButton';
-import TooltipSymbol from './TooltipSymbol';
 import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { TorLoader } from './TorLoader/TorLoader';
@@ -90,7 +89,6 @@ export {
     CoinGroup,
     CoinList,
     CloseButton,
-    TooltipSymbol,
     StatusLight,
     AmountUnitSwitchWrapper,
     TorLoader,

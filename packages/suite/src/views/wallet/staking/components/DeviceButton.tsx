@@ -21,7 +21,7 @@ export const DeviceButton = ({
     tooltipContent,
     children,
 }: DeviceButtonProps) => (
-    <Tooltip maxWidth={285} content={tooltipContent}>
+    <Tooltip tooltipMaxWidth={285} content={tooltipContent}>
         <Button
             isDisabled={isDisabled}
             isLoading={isLoading}
