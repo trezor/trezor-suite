@@ -1,7 +1,7 @@
 import { Bip329Label } from '@suite-common/metadata-types';
 import { AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
 
-type SuiteSyncToBip329 = {
+type SuiteSyncToBip329Params = {
     outputLabels: OutputLabel[];
     addressLabels: AddressLabel[];
     allSpendable: boolean;
@@ -11,7 +11,7 @@ export const suiteSyncToBip329 = ({
     outputLabels,
     addressLabels,
     allSpendable,
-}: SuiteSyncToBip329): Bip329Label[] => {
+}: SuiteSyncToBip329Params): Bip329Label[] => {
     const bip329Labels: Bip329Label[] = [];
 
     if (outputLabels.length > 0) {

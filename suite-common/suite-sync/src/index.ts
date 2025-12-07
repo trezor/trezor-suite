@@ -45,4 +45,4 @@ export { labelingActions } from './labeling/labelingActions';
 
 // Legacy
 export { processMetadataMessageThunk } from './labeling/processMetadataMessageThunk';
-export { suiteSyncToBip329 } from './labeling/suiteSyncToBip329';
+export { suiteSyncToBip329 } from './labeling/suiteSyncToBip329Params';
