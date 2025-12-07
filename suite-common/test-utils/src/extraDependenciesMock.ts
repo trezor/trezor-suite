@@ -12,8 +12,7 @@ import {
     SecureStorage,
     asEncryptedHex,
 } from '@suite-common/secure-storage';
-import { SuiteSync } from '@suite-common/suite-sync';
-import type { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import type { SuiteSync, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import {
     ReportSecurityCheckProps,
     Route,
@@ -99,8 +98,8 @@ const suiteSyncMock: SuiteSync = {
             ownerSecret: asSuiteSyncOwnerSecretHex('test-2'),
         }),
     changeRelayUrl: () => Promise.resolve(),
-    turnOnSuiteSyncForWallet: () => Promise.resolve(),
-    turnOffSuiteSyncForWallet: () => Promise.resolve(),
+    subscribeSuiteSyncStorage: () => Promise.resolve(),
+    unsubscribeSuiteSyncStorage: () => Promise.resolve(),
     turnOffSuiteSync: () => Promise.resolve(),
 };
 
@@ -112,13 +111,6 @@ const secureStorageMock: SecureStorage = {
         Promise.resolve(ok(value as unknown as T)),
 };
 
-// Intentionally not type here, It is not possible to type
-// as this is used across platforms. It needs to just match both.
-export const servicesMock = {
-    suiteSync: suiteSyncMock,
-    secureStorage: secureStorageMock,
-};
-
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
@@ -127,7 +119,10 @@ export const extraDependenciesMock: ExtraDependencies = {
         addAccountMetadata: mockThunk('addAccountMetadata'),
         forgetBluetoothDevice: mockThunk('forgetBluetoothDevice'),
     },
-    services: {},
+    services: {
+        suiteSync: suiteSyncMock,
+        secureStorage: secureStorageMock,
+    },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(
             'selectTokenDefinitonsEnabledNetworks',
