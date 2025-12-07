@@ -3,7 +3,7 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { processMetadataMessageThunk, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,
@@ -39,6 +39,7 @@ import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
 import { findLabelsToBeMovedOrDeletedThunk } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
 import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
+import { processLegacyMetadataIntoSuiteSyncThunk } from '../processLegacyMetadataIntoSuiteSyncThunk';
 
 export const saveSendFormDraftThunk = createThunk(
     `${MODULE_PREFIX}/saveSendFormDraftThunk`,
@@ -166,7 +167,7 @@ const applySendFormMetadataLabelsThunk = createThunk<
                 synchronize(() => {
                     if (isSuiteSyncEnabled) {
                         return dispatch(
-                            processMetadataMessageThunk({
+                            processLegacyMetadataIntoSuiteSyncThunk({
                                 payload: output,
                                 deviceStaticSessionId: selectedAccount.deviceState,
                                 value: output.value,

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     WithLabelingState,
     selectAddressLabel,
-    updateAddressLabelThunk,
+    updateAddressLabel,
 } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
@@ -38,7 +38,7 @@ export const AddressLabelEditable = ({
 
     const onSubmit = (newLabel: string) => {
         dispatch(
-            updateAddressLabelThunk({
+            updateAddressLabel({
                 deviceStaticSessionId,
                 address,
                 label: newLabel,

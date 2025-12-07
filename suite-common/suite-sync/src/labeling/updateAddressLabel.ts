@@ -1,12 +1,11 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { LABELING_PREFIX } from './labelingActions';
+import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
 
-type UpdateAddressLabelThunkParams = {
+type UpdateAddressLabelParams = {
     deviceStaticSessionId: StaticSessionId;
     address: string;
     label: string | null;
@@ -14,13 +13,16 @@ type UpdateAddressLabelThunkParams = {
     networkSymbol: NetworkSymbol;
 };
 
-export const updateAddressLabelThunk = createThunk<void, UpdateAddressLabelThunkParams, void>(
-    `${LABELING_PREFIX}/updateAddressLabelThunk`,
-    (
-        { deviceStaticSessionId, address, label, accountDescriptor, networkSymbol },
-        { getState, extra: { services } },
-    ) => {
-        const device = selectDevices(getState())?.find(
+type UpdateAddressLabel = (params: UpdateAddressLabelParams) => void;
+
+type UpdateAddressLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
+
+export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
+
+export const createUpdateAddressLabel =
+    (deps: UpdateAddressLabelDeps): UpdateAddressLabel =>
+    ({ deviceStaticSessionId, address, label, accountDescriptor, networkSymbol }) => {
+        const device = selectDevices(deps.getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
@@ -35,8 +37,7 @@ export const updateAddressLabelThunk = createThunk<void, UpdateAddressLabelThunk
             return;
         }
 
-        services.suiteSync.suiteSyncStorageRepository
+        deps.suiteSyncStorageRepository
             .get(owner)
             .addressLabels.update({ address, label, accountDescriptor, networkSymbol });
-    },
-);
+    };

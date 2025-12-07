@@ -1,11 +1,10 @@
-import { createThunk } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDevices } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { LABELING_PREFIX } from './labelingActions';
+import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
 
-type UpdateOutputLabelThunkParams = {
+type UpdateOutputLabelParams = {
     deviceStaticSessionId: StaticSessionId;
     txId: string;
     outputIndex: number;
@@ -14,13 +13,16 @@ type UpdateOutputLabelThunkParams = {
     networkSymbol: NetworkSymbol;
 };
 
-export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkParams, void>(
-    `${LABELING_PREFIX}/updateOutputLabelThunk`,
-    (
-        { deviceStaticSessionId, txId, outputIndex, label, accountDescriptor, networkSymbol },
-        { getState, extra: { services } },
-    ) => {
-        const device = selectDevices(getState())?.find(
+type UpdateOutputLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
+
+type UpdateOutputLabel = (params: UpdateOutputLabelParams) => void;
+
+export type UpdateOutputLabelDep = { updateOutputLabel: UpdateOutputLabel };
+
+export const createUpdateOutputLabel =
+    (deps: UpdateOutputLabelDeps): UpdateOutputLabel =>
+    ({ outputIndex, label, accountDescriptor, txId, networkSymbol, deviceStaticSessionId }) => {
+        const device = selectDevices(deps.getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
@@ -35,8 +37,7 @@ export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkPa
             return;
         }
 
-        services.suiteSync.suiteSyncStorageRepository
+        deps.suiteSyncStorageRepository
             .get(owner)
             .outputLabels.update({ txId, outputIndex, label, accountDescriptor, networkSymbol });
-    },
-);
+    };

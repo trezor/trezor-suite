@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     WithLabelingState,
     selectOutputLabel,
-    updateOutputLabelThunk,
+    updateOutputLabel,
 } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
@@ -50,7 +50,7 @@ export const TransactionOutputLabelEditable = ({
                     label={label ?? ''}
                     onSubmit={value => {
                         dispatch(
-                            updateOutputLabelThunk({
+                            updateOutputLabel({
                                 deviceStaticSessionId,
                                 txId,
                                 outputIndex,

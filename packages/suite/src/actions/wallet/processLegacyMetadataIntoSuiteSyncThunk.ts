@@ -1,0 +1,69 @@
+import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { createThunk } from '@suite-common/redux-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { StaticSessionId } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
+
+type ProcessMetadataMessageThunkParams = {
+    deviceStaticSessionId: StaticSessionId;
+    payload: MetadataAddPayload;
+    value: string | undefined;
+};
+
+/**
+ * This is a compatibility thunk to map the old Metadata code to a new Evolu storage.
+ *
+ * @deprecated This shall be removed, once we phase out the old Metadata code.
+ */
+export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
+    void,
+    ProcessMetadataMessageThunkParams,
+    void
+>(
+    '@suite/labeling/processMetadataMessageThunk',
+    ({ payload, deviceStaticSessionId, value }, { extra: { services } }) => {
+        const labelType = payload.type;
+
+        switch (labelType) {
+            case 'walletLabel':
+                services.suiteSync.labeling.updateWalletLabel({
+                    deviceStaticSessionId,
+                    label: value ?? null,
+                });
+                break;
+
+            case 'accountLabel':
+                services.suiteSync.labeling.updateAccountLabel({
+                    deviceStaticSessionId,
+                    accountKey: payload.entityKey,
+                    label: value ?? null,
+                });
+                break;
+
+            case 'addressLabel':
+                services.suiteSync.labeling.updateAddressLabel({
+                    deviceStaticSessionId,
+                    address: payload.defaultValue, // WTF, but this is the address. For example: `"bc1q9mnl3ae6dra54uu2n9hp3d4jwkt0c2ux5l79ja"`
+                    // entityKey is for example `zpub6rY6av7j6m7Lnd6rgqw5jffjX2rgeirDWWivEmFDMCKxt7FkWD5XQSrXCSW2Vsh3vnqUo1r9XjoGZiW41jqfEBkrxxdPnS15QhwJFjwfZ1U-btc-momP8m1p6w1nteR3hNREZjNc48buvpPv8K@BCCD2503E021276E78A8EBB2:2`
+                    label: value ?? null,
+                    accountDescriptor: payload.accountDescriptor,
+                    networkSymbol: payload.networkSymbol as NetworkSymbol,
+                });
+                break;
+
+            case 'outputLabel':
+                services.suiteSync.labeling.updateOutputLabel({
+                    deviceStaticSessionId,
+                    txId: payload.txid,
+                    outputIndex: Number(payload.outputIndex),
+                    label: value ?? null,
+                    accountDescriptor: payload.accountDescriptor,
+                    networkSymbol: payload.networkSymbol as NetworkSymbol,
+                });
+                break;
+
+            default:
+                exhaustive(labelType);
+        }
+    },
+);

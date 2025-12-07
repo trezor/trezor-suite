@@ -11,6 +11,10 @@ import {
     createEnsureSuiteSyncOwnerKeys,
 } from './device/ensureSuiteSyncOwnerKeys';
 import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
+import { createUpdateAccountLabel } from './labeling/updateAccountLabel';
+import { createUpdateAddressLabel } from './labeling/updateAddressLabel';
+import { createUpdateOutputLabel } from './labeling/updateOutputLabel';
+import { createUpdateWalletLabel } from './labeling/updateWalletLabel';
 import { createRefreshSuiteSyncKeys } from './refreshSuiteSyncKeys';
 import { createChangeRelayUrl } from './relay/changeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
@@ -19,6 +23,7 @@ import { createTurnOffSuiteSyncForWallet } from './storage/turnOffSuiteSyncForWa
 import { createTurnOnSuiteSyncForWallet } from './storage/turnOnSuiteSyncForWallet';
 import { selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
 import { createTurnOffSuiteSync } from './turnOffSuiteSync';
+import { createTurnOnSuiteSync } from './turnOnSuteSync';
 
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
@@ -82,7 +87,30 @@ export const createSuiteSyncCompositionRoot = (
         turnOffSuiteSyncForWallet,
         turnOffSuiteSync: createTurnOffSuiteSync({
             getState: deps.getState,
+            dispatch: deps.dispatch,
             turnOffSuiteSyncForWallet,
         }),
+        turnOnSuiteSync: createTurnOnSuiteSync({
+            getState: deps.getState,
+            dispatch: deps.dispatch,
+        }),
+        labeling: {
+            updateWalletLabel: createUpdateWalletLabel({
+                getState: deps.getState,
+                suiteSyncStorageRepository,
+            }),
+            updateAccountLabel: createUpdateAccountLabel({
+                getState: deps.getState,
+                suiteSyncStorageRepository,
+            }),
+            updateOutputLabel: createUpdateOutputLabel({
+                getState: deps.getState,
+                suiteSyncStorageRepository,
+            }),
+            updateAddressLabel: createUpdateAddressLabel({
+                getState: deps.getState,
+                suiteSyncStorageRepository,
+            }),
+        },
     };
 };

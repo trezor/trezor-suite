@@ -1,19 +1,24 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 
-import { LABELING_PREFIX } from './labelingActions';
+import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
 
-type UpdateAccountLabelThunkParams = {
+type UpdateAccountLabelParams = {
     deviceStaticSessionId: string;
     accountKey: string;
     label: string | null;
 };
 
-export const updateAccountLabelThunk = createThunk<void, UpdateAccountLabelThunkParams, void>(
-    `${LABELING_PREFIX}/updateAccountLabelThunk`,
-    ({ deviceStaticSessionId, accountKey, label }, { getState, extra: { services } }) => {
-        const device = selectDevices(getState())?.find(
+type UpdateAccountLabel = (params: UpdateAccountLabelParams) => void;
+
+type UpdateOutputLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
+
+export type UpdateAccountLabelDep = { updateAccountLabel: UpdateAccountLabel };
+
+export const createUpdateAccountLabel =
+    (deps: UpdateOutputLabelDeps): UpdateAccountLabel =>
+    ({ deviceStaticSessionId, accountKey, label }) => {
+        const device = selectDevices(deps.getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
@@ -30,8 +35,7 @@ export const updateAccountLabelThunk = createThunk<void, UpdateAccountLabelThunk
 
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 
-        services.suiteSync.suiteSyncStorageRepository
+        deps.suiteSyncStorageRepository
             .get(owner)
             .accountLabels.update({ accountDescriptor, networkSymbol, label });
-    },
-);
+    };
