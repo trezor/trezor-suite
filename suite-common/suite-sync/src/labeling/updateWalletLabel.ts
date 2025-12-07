@@ -1,19 +1,24 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { LABELING_PREFIX } from './labelingActions';
+import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
 
-type UpdateWalletLabelThunkParams = {
+type UpdateWalletLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
+
+type UpdateWalletLabelParams = {
     deviceStaticSessionId: StaticSessionId;
     label: string | null;
 };
 
-export const updateWalletLabelThunk = createThunk<void, UpdateWalletLabelThunkParams, void>(
-    `${LABELING_PREFIX}/updateWalletLabelThunk`,
-    ({ deviceStaticSessionId, label }, { getState, extra: { services } }) => {
-        const device = selectDevices(getState())?.find(
+type UpdateWalletLabel = (params: UpdateWalletLabelParams) => void;
+
+export type UpdateWalletLabelDep = { updateWalletLabel: UpdateWalletLabel };
+
+export const createUpdateWalletLabel =
+    (deps: UpdateWalletLabelDeps): UpdateWalletLabel =>
+    ({ deviceStaticSessionId, label }) => {
+        const device = selectDevices(deps.getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );
 
@@ -30,8 +35,5 @@ export const updateWalletLabelThunk = createThunk<void, UpdateWalletLabelThunkPa
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        services.suiteSync.suiteSyncStorageRepository
-            .get(owner)
-            .walletLabels.update({ walletDescriptor, label });
-    },
-);
+        deps.suiteSyncStorageRepository.get(owner).walletLabels.update({ walletDescriptor, label });
+    };

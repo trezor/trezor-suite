@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { updateAccountLabelThunk } from '@suite-common/suite-sync';
+import { updateAccountLabel } from '@suite-common/suite-sync';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     AccountFormValues,
@@ -60,7 +60,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));
         if (isLabelingEnabled && account.deviceState) {
             dispatch(
-                updateAccountLabelThunk({
+                updateAccountLabel({
                     deviceStaticSessionId: account.deviceState,
                     accountKey,
                     label: formValues.accountLabel,
