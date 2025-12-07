@@ -64,7 +64,7 @@ export const ChangeDeviceLabelForm = ({
             <Tooltip
                 isActive={isDeviceLocked}
                 content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
-                isFullWidth
+                width="100%"
             >
                 <Button
                     onClick={onClick}

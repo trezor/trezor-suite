@@ -112,7 +112,6 @@ export const AccountsMenuHeader = () => {
                 <CollapsedSidebarOnly>
                     <Column alignItems="center" margin={{ bottom: spacings.sm }}>
                         <AddAccountButton
-                            isFullWidth={false}
                             isIconOnly={true}
                             data-testid="@account-menu/add-account"
                             device={device}

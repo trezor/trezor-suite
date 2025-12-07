@@ -139,7 +139,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                 }
                                 key={`${instance.id}-${instance.instance}-${instance.state}`}
                                 isOpen={showTooltip && index === 0}
-                                isFullWidth
+                                width="100%"
                                 placement="right-start"
                                 hasArrow
                                 offset={30}

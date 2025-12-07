@@ -1,112 +1,49 @@
 import { ReactElement, ReactNode } from 'react';
 
-import styled from 'styled-components';
+import { paletteV1 } from '@trezor/theme';
 
-import { borders, paletteV1, spacings, spacingsPx, typography } from '@trezor/theme';
+import { Box } from '../Box/Box';
+import { Column, Row } from '../Flex/Flex';
+import { Text } from '../typography/Text/Text';
 
-import { Icon, IconName } from '../Icon/Icon';
-
-export const TOOLTIP_BORDER_RADIUS = borders.radii.sm;
-
-const getContainerPadding = (isLarge: boolean, isWithHeader: boolean) => {
-    if (isLarge) {
-        if (isWithHeader) {
-            return `${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.xs}`;
-        }
-
-        return `${spacingsPx.xs} ${spacingsPx.md}`;
-    }
-
-    return spacingsPx.xs;
-};
-
-type TooltipContainerStyledProps = {
-    $maxWidth: string | number;
-    $isLarge: boolean;
-    $isWithHeader: boolean;
-};
-
-const TooltipContainerStyled = styled.div<TooltipContainerStyledProps>`
-    background: ${paletteV1.darkGray300};
-    color: ${({ theme }) => theme.textDefault};
-    border-radius: ${TOOLTIP_BORDER_RADIUS};
-    text-align: left;
-    margin: ${spacingsPx.xxxs};
-    max-width: ${props => props.$maxWidth}px;
-
-    ${typography.hint}
-    > div {
-        padding: ${({ $isLarge, $isWithHeader }) => getContainerPadding($isLarge, $isWithHeader)};
-    }
-`;
-
-const HeaderContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: ${spacingsPx.sm};
-    width: 100%;
-`;
-
-const TooltipTitle = styled.div<{ $isLarge: boolean }>`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-    width: 100%;
-    color: ${({ theme }) => theme.textSubdued};
-    ${({ $isLarge }) => ($isLarge ? typography.highlight : typography.hint)}
-`;
-
-const Addon = styled.div`
-    margin-left: auto;
-`;
+export const TOOLTIP_BORDER_RADIUS = 12;
 
 export type TooltipBoxProps = {
     content: ReactNode;
-    maxWidth?: string | number;
-    /**
-     *  @deprecated Legacy prop
-     */
-    isLarge?: boolean;
+    tooltipMaxWidth?: string | number;
     addon?: ReactNode;
-    headerIcon?: IconName;
     title?: ReactElement;
 };
 
-type TooltipBoxExtendedProps = TooltipBoxProps &
-    Required<Pick<TooltipBoxProps, 'maxWidth' | 'isLarge'>>;
+type TooltipBoxExtendedProps = TooltipBoxProps & Required<Pick<TooltipBoxProps, 'tooltipMaxWidth'>>;
 
-export const TooltipBox = ({
-    addon,
-    maxWidth,
-    isLarge,
-    content,
-    headerIcon,
-    title,
-}: TooltipBoxExtendedProps) => {
-    const hasTitleOrAddon = title !== undefined || addon !== undefined;
+export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBoxExtendedProps) => {
+    const hasTitleOrAddon = title || addon;
 
     return (
-        <TooltipContainerStyled
-            $isLarge={isLarge}
-            $isWithHeader={hasTitleOrAddon}
-            $maxWidth={maxWidth}
+        <Box
+            maxWidth={tooltipMaxWidth}
             tabIndex={-1}
+            borderRadius={TOOLTIP_BORDER_RADIUS}
+            backgroundColor={paletteV1.darkGray300}
+            padding={hasTitleOrAddon ? 12 : { vertical: 6, horizontal: 8 }}
         >
-            {hasTitleOrAddon && (
-                <HeaderContainer>
-                    {title && (
-                        <TooltipTitle $isLarge={isLarge}>
-                            {headerIcon && <Icon name={headerIcon} size={spacings.md} />}
-                            {title}
-                        </TooltipTitle>
-                    )}
+            <Column gap={12}>
+                {hasTitleOrAddon && (
+                    <Row gap={12} justifyContent="space-between">
+                        {title && (
+                            <Text typographyStyle="hint" variant="tertiary">
+                                {title}
+                            </Text>
+                        )}
+                        {addon && <Box margin={{ left: 'auto' }}>{addon}</Box>}
+                    </Row>
+                )}
 
-                    {addon && <Addon>{addon}</Addon>}
-                </HeaderContainer>
-            )}
-
-            <div>{content}</div>
-        </TooltipContainerStyled>
+                <Text typographyStyle="hint" as="div" variant="default" breakAll>
+                    {content}
+                </Text>
+            </Column>
+        </Box>
     );
 };

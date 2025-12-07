@@ -105,7 +105,7 @@ export const DeviceSelector = () => {
             <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
                 <Tooltip
                     isActive={isDiscoveryRunning}
-                    isFullWidth
+                    width="100%"
                     placement="bottom"
                     cursor={isDiscoveryRunning ? 'not-allowed' : undefined}
                     content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}

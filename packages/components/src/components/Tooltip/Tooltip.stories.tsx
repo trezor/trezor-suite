@@ -1,10 +1,6 @@
-import { useState } from 'react';
-
 import { Placement } from '@floating-ui/react';
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
-
-import { Elevation, mapElevationToBackground, spacingsPx, zIndices } from '@trezor/theme';
 
 import { Tooltip as TooltipComponent, TooltipProps, allowedTooltipFrameProps } from './Tooltip';
 import {
@@ -14,42 +10,6 @@ import {
     TOOLTIP_DELAY_SHORT,
 } from './TooltipDelay';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import { Button } from '../buttons/Button/Button';
-
-const Center = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xxl};
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 100px 0;
-`;
-
-const HigherZ = styled.div<{ $elevation: Elevation }>`
-    display: flex;
-    flex-direction: column;
-    height: 100px;
-    justify-content: center;
-    background-color: ${mapElevationToBackground};
-
-    /* Simulate "Modal" */
-    z-index: ${zIndices.modal};
-    position: relative;
-`;
-
-const ModalMock = (args: TooltipProps) => {
-    const { elevation } = useElevation();
-
-    return (
-        <HigherZ $elevation={elevation}>
-            <TooltipComponent {...args}>
-                <span>Text with tooltip in Modal</span>
-            </TooltipComponent>
-        </HigherZ>
-    );
-};
 
 const Addon = styled.span`
     background: blue;
@@ -64,50 +24,19 @@ const meta: Meta<typeof TooltipComponent> = {
 };
 export default meta;
 
-const TooltipWrapper = (args: TooltipProps) => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <Center>
-            <TooltipComponent {...args}>
-                <span>Text with tooltip</span>
-            </TooltipComponent>
-            <ElevationContext baseElevation={0}>
-                <ModalMock {...args} />
-            </ElevationContext>
-
-            <TooltipComponent
-                {...args}
-                delayShow={undefined}
-                delayHide={undefined}
-                isOpen={open}
-                placement="bottom-start"
-                content={
-                    <div>
-                        <Button intent="brand" isInverse onClick={() => setOpen(false)}>
-                            Click to close
-                        </Button>
-                    </div>
-                }
-            >
-                <Button onClick={() => setOpen(true)}>Click to open Tooltip</Button>
-            </TooltipComponent>
-        </Center>
-    );
-};
-
 const DELAYS = [TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT, TOOLTIP_DELAY_NORMAL, TOOLTIP_DELAY_LONG];
 
 export const Tooltip: StoryObj<TooltipProps> = {
-    render: (args: TooltipProps) => <TooltipWrapper {...args} />,
+    render: (args: TooltipProps) => (
+        <TooltipComponent {...args}>
+            <span>Text with tooltip</span>
+        </TooltipComponent>
+    ),
     args: {
-        content: (
-            <span>
-                Passphrase is an optional feature.
-                <TooltipComponent content="Because why not?">Tooltip in tooltip.</TooltipComponent>
-            </span>
-        ),
+        content: <span>Passphrase is an optional feature.</span>,
         offset: 10,
+        hasArrow: false,
+        hasIcon: false,
         delayHide: TOOLTIP_DELAY_SHORT,
         delayShow: TOOLTIP_DELAY_SHORT,
         ...getFramePropsStory(allowedTooltipFrameProps).args,
@@ -118,27 +47,12 @@ export const Tooltip: StoryObj<TooltipProps> = {
         },
         hasIcon: {
             type: 'boolean',
-            control: 'boolean',
         },
-        dashed: {
-            type: 'boolean',
-        },
-        isInline: {
-            type: 'boolean',
-        },
-        maxWidth: {
+        tooltipMaxWidth: {
             type: 'number',
         },
         title: {
-            options: ['null', 'title'],
-            mapping: { null: null, title: <span>Title</span> },
-            control: {
-                type: 'select',
-                labels: {
-                    null: 'Null',
-                    title: 'Title',
-                },
-            },
+            control: 'text',
         },
         placement: {
             control: 'select',
@@ -156,10 +70,6 @@ export const Tooltip: StoryObj<TooltipProps> = {
                 'left-start',
                 'left-end',
             ] as Placement[],
-        },
-        cursor: {
-            control: 'select',
-            options: ['pointer', 'help', 'not-allowed', 'default'],
         },
         addon: {
             options: ['null', 'addon'],

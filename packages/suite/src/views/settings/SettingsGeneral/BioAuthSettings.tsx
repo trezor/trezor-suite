@@ -44,7 +44,7 @@ export const BioAuthSettings = () => {
                 <PositionedSwitch>
                     <Tooltip
                         isActive={tooltipActive}
-                        isFullWidth
+                        width="100%"
                         placement="bottom"
                         cursor={tooltipActive ? 'not-allowed' : undefined}
                         content={
