@@ -113,7 +113,6 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                 },
                             });
                         }}
-                        isFullWidth={false}
                         isIconOnly={false}
                     />
                 </Row>

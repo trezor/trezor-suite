@@ -8,7 +8,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
@@ -47,20 +46,20 @@ export const ConfirmPassphraseBeforeAction = () => {
     return (
         <SwitchDeviceModal onCancel={onEnterPassphraseDialogCancel}>
             <CardWithDevice onCancel={onEnterPassphraseDialogCancel} device={device}>
-                <Column gap={spacings.sm}>
+                <Column gap={8} padding={{ horizontal: 8 }} margin={{ bottom: 16 }}>
                     <H3>
                         <Translation id="TR_CONFIRM_PASSPHRASE" />
                     </H3>
                     <Paragraph>
                         <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
                     </Paragraph>
-                    <PassphraseInputCard
-                        deviceModel={deviceModel ?? undefined}
-                        onSubmit={onSubmit}
-                        offerPassphraseOnDevice={offerPassphraseOnDevice}
-                        allowNonAsciiCharacters
-                    />
                 </Column>
+                <PassphraseInputCard
+                    deviceModel={deviceModel ?? undefined}
+                    onSubmit={onSubmit}
+                    offerPassphraseOnDevice={offerPassphraseOnDevice}
+                    allowNonAsciiCharacters
+                />
             </CardWithDevice>
         </SwitchDeviceModal>
     );

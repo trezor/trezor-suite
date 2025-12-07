@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Banner, Column, H3, Modal, Paragraph } from '@trezor/components';
 import type { Deferred } from '@trezor/utils';
 
 import { connectProvider } from 'src/actions/suite/metadataProviderActions';
@@ -51,8 +50,9 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
     return (
         <Modal
             onCancel={onModalCancel}
-            heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-testid="@modal/metadata-provider"
+            size="small"
+            iconName="tag"
             bottomContent={
                 <>
                     <Modal.Button
@@ -95,18 +95,19 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                 </>
             }
         >
-            <Paragraph typographyStyle="hint">
-                <Translation id="METADATA_MODAL_DESCRIPTION" />
-            </Paragraph>
-            {error && (
-                <Paragraph
-                    variant="destructive"
-                    typographyStyle="label"
-                    margin={{ top: spacings.xs }}
-                >
-                    {error}
+            <Column gap={4}>
+                <H3>
+                    <Translation id="METADATA_MODAL_HEADING" />
+                </H3>
+                <Paragraph typographyStyle="hint" variant="tertiary">
+                    <Translation id="METADATA_MODAL_DESCRIPTION" />
                 </Paragraph>
-            )}
+                {error && (
+                    <Banner intent="critical" icon>
+                        {error}
+                    </Banner>
+                )}
+            </Column>
         </Modal>
     );
 };

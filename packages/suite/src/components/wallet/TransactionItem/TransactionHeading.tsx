@@ -9,12 +9,12 @@ import {
     getTxOperation,
     isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { Icon, Row } from '@trezor/components';
+import { Icon, Row, Tooltip } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FormattedCryptoAmount, TooltipSymbol, TrezorLink } from 'src/components/suite';
+import { FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
@@ -141,7 +141,7 @@ export const TransactionHeading = ({
             >
                 <HeadingWrapper data-testid={`${dataTestBase}/heading`}>
                     {isPhishingTransaction && (
-                        <TooltipSymbol
+                        <Tooltip
                             content={
                                 <Translation
                                     id="TR_ZERO_PHISHING_TOOLTIP"
@@ -158,8 +158,11 @@ export const TransactionHeading = ({
                                     }}
                                 />
                             }
-                            icon="warning"
-                        />
+                            maxWidth={250}
+                            hasIcon
+                        >
+                            <span />
+                        </Tooltip>
                     )}
                     <BlurWrapper $isBlurred={isPhishingTransaction}>
                         <Row gap={spacings.xxs} flexWrap="wrap">

@@ -11,7 +11,7 @@ interface AddButtonProps extends Omit<ButtonProps, 'children'> {
 }
 
 export const AddButton = ({ disabledMessage, networkName, ...buttonProps }: AddButtonProps) => (
-    <Tooltip maxWidth={285} content={disabledMessage}>
+    <Tooltip tooltipMaxWidth={285} content={disabledMessage}>
         <Modal.Button isDisabled={!!disabledMessage} data-testid="@add-account" {...buttonProps}>
             <Translation id="TR_ADD_NETWORK_ACCOUNT" values={{ network: networkName }} />
         </Modal.Button>
