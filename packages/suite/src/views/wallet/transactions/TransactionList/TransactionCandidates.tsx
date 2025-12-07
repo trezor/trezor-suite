@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
-import { Card, IMAGES, Paragraph, variables } from '@trezor/components';
+import { Card, IMAGES, Paragraph, Tooltip, variables } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { typography } from '@trezor/theme';
 
-import TooltipSymbol from 'src/components/suite/TooltipSymbol';
 import { Translation } from 'src/components/suite/Translation';
 import { TxTypeIconWrapper } from 'src/components/wallet/TransactionItem/CommonComponents';
 import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/TransactionTypeIcon';
@@ -73,10 +72,13 @@ const TransactionCandidate = () => (
                     <Translation id="TR_CANDIDATE_TRANSACTION" />
                 </Heading>
                 <Description>
-                    <Translation id="TR_CANDIDATE_TRANSACTION_DESCRIPTION" />
-                    <TooltipSymbol
+                    <Tooltip
                         content={<Translation id="TR_CANDIDATE_TRANSACTION_EXPLANATION" />}
-                    />
+                        maxWidth={250}
+                        hasIcon
+                    >
+                        <Translation id="TR_CANDIDATE_TRANSACTION_DESCRIPTION" />
+                    </Tooltip>
                 </Description>
             </Paragraph>
         </Wrapper>

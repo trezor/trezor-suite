@@ -30,7 +30,6 @@ export const QuestionTooltip = ({ label, tooltip, className }: QuestionTooltipPr
             (tooltip ? (
                 <Tooltip
                     content={typeof tooltip === 'string' ? <Translation id={tooltip} /> : tooltip}
-                    dashed
                 >
                     <H3 margin={{ right: 4 }} variant="tertiary">
                         {typeof label === 'string' ? <Translation id={label} /> : label}

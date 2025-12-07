@@ -86,7 +86,8 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
                                 placement={isBelowTablet ? 'top' : 'left'}
                                 title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
                                 content={<Hologram />}
-                                isInline
+                                display="inline-flex"
+                                as="span"
                                 hasIcon
                             >
                                 {chunks}

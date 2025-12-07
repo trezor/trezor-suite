@@ -72,7 +72,6 @@ export const PassphraseTypeCardHeading = ({
                             title={<FormattedMessage id="TR_WHAT_IS_PASSPHRASE" />}
                             addon={learnMoreTooltipOnClick}
                             content={<FormattedMessage id="TR_HIDDEN_WALLET_TOOLTIP" />}
-                            dashed
                         >
                             <>{title}</>
                         </Tooltip>

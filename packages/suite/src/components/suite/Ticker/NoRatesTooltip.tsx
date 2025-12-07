@@ -1,8 +1,8 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
+import { Tooltip } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
-import { TooltipSymbol } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 
 import { TranslationKey } from '../Translation';
@@ -21,18 +21,14 @@ interface NoRatesTooltipProps {
     className?: string;
 }
 
-export const NoRatesTooltip = ({ customText, customTooltip, className }: NoRatesTooltipProps) => {
-    const theme = useTheme();
-
-    return (
-        <NoRatesMessage className={className}>
+export const NoRatesTooltip = ({ customText, customTooltip, className }: NoRatesTooltipProps) => (
+    <NoRatesMessage className={className}>
+        <Tooltip
+            content={<Translation id={customTooltip || 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP'} />}
+            maxWidth={250}
+            hasIcon
+        >
             <Translation id={customText || 'TR_FIAT_RATES_NOT_AVAILABLE'} />
-            <TooltipSymbol
-                content={
-                    <Translation id={customTooltip || 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP'} />
-                }
-                iconColor={theme.iconSubdued}
-            />
-        </NoRatesMessage>
-    );
-};
+        </Tooltip>
+    </NoRatesMessage>
+);
