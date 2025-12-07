@@ -3,7 +3,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 import { fireEvent } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics';
-import { servicesMock } from '@suite-common/test-utils';
+import { extraDependenciesMock } from '@suite-common/test-utils';
 import { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
@@ -137,7 +137,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -155,7 +155,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -173,7 +173,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
@@ -185,7 +185,7 @@ describe(`${Preloader.name} component`, () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
@@ -204,7 +204,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -223,7 +223,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -251,7 +251,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -281,7 +281,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -311,7 +311,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -342,7 +342,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -370,7 +370,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -398,7 +398,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -428,7 +428,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -457,7 +457,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -487,7 +487,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -517,7 +517,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -548,7 +548,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 
@@ -570,7 +570,7 @@ describe(`${Preloader.name} component`, () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
         expect(findByTestId('@device-compromised')).not.toBeNull();
@@ -598,7 +598,7 @@ describe(`${Preloader.name} component`, () => {
         );
         const { unmount } = renderWithProviders(
             store,
-            servicesMock,
+            extraDependenciesMock.services,
             <Index app={store.getState().router.app} />,
         );
 

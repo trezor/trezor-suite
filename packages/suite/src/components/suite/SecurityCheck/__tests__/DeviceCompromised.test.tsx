@@ -1,7 +1,7 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { servicesMock, testMocks } from '@suite-common/test-utils';
+import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
@@ -150,7 +150,7 @@ describe(`${DeviceCompromised.name} component`, () => {
             const store = initStore(getInitialState(device));
             const { getByText, unmount } = renderWithProviders(
                 store,
-                servicesMock,
+                extraDependenciesMock.services,
                 <DeviceCompromised />,
             );
             expect(getByText(result)).not.toBeNull();

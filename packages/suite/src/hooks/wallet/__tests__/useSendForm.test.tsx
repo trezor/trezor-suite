@@ -7,8 +7,8 @@ import { waitFor } from '@testing-library/react';
 
 import {
     configureMockStore,
+    extraDependenciesMock,
     initPreloadedState,
-    servicesMock,
     testMocks,
 } from '@suite-common/test-utils';
 import { FormState } from '@suite-common/wallet-types';
@@ -240,7 +240,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    servicesMock,
+                    extraDependenciesMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -281,7 +281,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    servicesMock,
+                    extraDependenciesMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -314,7 +314,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    servicesMock,
+                    extraDependenciesMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -343,7 +343,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    servicesMock,
+                    extraDependenciesMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -385,7 +385,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    servicesMock,
+                    extraDependenciesMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -416,7 +416,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    servicesMock,
+                    extraDependenciesMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,

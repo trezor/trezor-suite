@@ -28,15 +28,14 @@ import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
-import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
+import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { desktopComponents } from './support/desktopComponents';
 import { type History, createMemoryHistory } from 'history';
 import { createRouterServices } from 'src/support/extraDependencies';
-import { FindBar } from 'src/components/suite/FindBar/FindBar';
+import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
 import { GlobalStyle } from './GlobalStyle';
 import { initSentry } from './sentry';
-import { SuiteServicesProvider } from 'src/support/ServicesProvider';
-import { suiteCompositionRoot } from 'src/support/suiteCompositionRoot';
+import { ServicesProvider } from '@suite-common/redux-utils';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();
@@ -71,12 +70,10 @@ export const init = async (container: HTMLElement) => {
     const memoryHistory = createMemoryHistory();
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
-    const { store } = initStore(preloadAction, {
+    const { store, extra } = initStore(preloadAction, {
         statePatch,
         additionalExtraDeps: { routerServices: createRouterServices(memoryHistory) },
     });
-
-    const services = suiteCompositionRoot(store);
 
     // Expose Redux store for Playwright/e2e tests
     if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
@@ -104,13 +101,13 @@ export const init = async (container: HTMLElement) => {
     if (shouldRunTor) {
         await new Promise(resolve => {
             root.render(
-                <SuiteServicesProvider services={services}>
+                <ServicesProvider services={extra.services}>
                     <ReduxProvider store={store}>
                         <ConnectedIntlProvider>
                             <TorLoadingScreen callback={resolve} />
                         </ConnectedIntlProvider>
                     </ReduxProvider>
-                </SuiteServicesProvider>,
+                </ServicesProvider>,
             );
             desktopApi.toggleTor(true);
         });
@@ -142,10 +139,10 @@ export const init = async (container: HTMLElement) => {
 
     // finally render whole app
     root.render(
-        <SuiteServicesProvider services={services}>
+        <ServicesProvider services={extra.services}>
             <ReduxProvider store={store}>
                 <MainDesktop history={memoryHistory} />
             </ReduxProvider>
-        </SuiteServicesProvider>,
+        </ServicesProvider>,
     );
 };
