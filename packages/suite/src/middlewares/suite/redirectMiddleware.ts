@@ -37,8 +37,15 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
         dispatch(routerActions.goto('firmware-index'));
     }
 
+    const selected = selectSelectedDevice(state);
+
     // reset wallet params if switching from one device to another
-    if (selectSelectedDevice(state) && state.router.app === 'wallet' && state.router.params) {
+    if (
+        selected &&
+        selected.id !== device.id &&
+        state.router.app === 'wallet' &&
+        state.router.params
+    ) {
         dispatch(routerActions.goto(state.router.route.name));
     }
 };
