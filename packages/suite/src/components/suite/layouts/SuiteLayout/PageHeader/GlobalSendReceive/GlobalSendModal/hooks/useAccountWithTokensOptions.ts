@@ -24,7 +24,6 @@ import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFil
 import {
     TokensWithRates,
     enhanceTokensWithRates,
-    getAccountsWithPositiveBalanceOrVisibleTokens,
     getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
