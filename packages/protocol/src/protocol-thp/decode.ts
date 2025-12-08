@@ -1,16 +1,7 @@
 import { ThpState } from './ThpState';
-import {
-    CRC_LENGTH,
-    TAG_LENGTH,
-    THP_CONTROL_BYTE_DECRYPTED,
-    THP_CONTROL_BYTE_ENCRYPTED,
-    THP_CREATE_CHANNEL_RESPONSE,
-    THP_ERROR_HEADER_BYTE,
-    THP_HANDSHAKE_COMPLETION_RESPONSE,
-    THP_HANDSHAKE_INIT_RESPONSE,
-    THP_READ_ACK_HEADER_BYTE,
-} from './constants';
+import { CRC_LENGTH, TAG_LENGTH } from './constants';
 import { aesgcm } from './crypto';
+import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
 import { TransportProtocolDecode } from '../types';
 import { crc32 } from './crypto/crc32';
 import { getHandshakeHash, getTrezorState } from './crypto/pairing';
@@ -189,10 +180,10 @@ export const decodeSendAck = (decodedMessage: MessageV2) => {
     validateCrc(decodedMessage);
 
     const { magic } = readThpHeader(decodedMessage.header);
-    if (magic === THP_ERROR_HEADER_BYTE) {
+    if (magic === THP_CONTROL_BYTE.ERROR) {
         return decodeThpError(decodedMessage.payload);
     }
-    if (magic === THP_READ_ACK_HEADER_BYTE) {
+    if (magic === THP_CONTROL_BYTE.ACK_MESSAGE) {
         return decodeReadAck();
     }
 };
@@ -217,32 +208,27 @@ export const decode = (
     };
 
     const { magic } = header;
-    if (magic === THP_ERROR_HEADER_BYTE) {
+    if (magic === THP_CONTROL_BYTE.ERROR) {
         return decodeThpError(message.payload);
     }
 
-    if (magic === THP_READ_ACK_HEADER_BYTE) {
+    if (magic === THP_CONTROL_BYTE.ACK_MESSAGE) {
         return decodeReadAck();
     }
 
-    if (magic === THP_CREATE_CHANNEL_RESPONSE) {
+    if (magic === THP_CONTROL_BYTE.CHANNEL_ALLOCATION_RES) {
         return createChannelResponse(message, protobufDecoder);
     }
 
-    if (magic === THP_HANDSHAKE_INIT_RESPONSE) {
+    if (magic === THP_CONTROL_BYTE.HANDSHAKE_INIT_RES) {
         return readHandshakeInitResponse(message);
     }
 
-    if (magic === THP_HANDSHAKE_COMPLETION_RESPONSE) {
+    if (magic === THP_CONTROL_BYTE.HANDSHAKE_COMP_RES) {
         return readHandshakeCompletionResponse(message);
     }
 
-    if (magic === THP_CONTROL_BYTE_ENCRYPTED) {
-        return readProtobufMessage(message, protobufDecoder);
-    }
-
-    // TODO: decrypted message decoding (not implemented in FW)
-    if (magic === THP_CONTROL_BYTE_DECRYPTED) {
+    if (magic === THP_CONTROL_BYTE.ENCRYPTED) {
         return readProtobufMessage(message, protobufDecoder);
     }
 

@@ -1,15 +1,7 @@
 import { ThpState } from './ThpState';
-import {
-    CRC_LENGTH,
-    TAG_LENGTH,
-    THP_CONTROL_BYTE_ENCRYPTED,
-    THP_CREATE_CHANNEL_REQUEST,
-    THP_DEFAULT_CHANNEL,
-    THP_HANDSHAKE_COMPLETION_REQUEST,
-    THP_HANDSHAKE_INIT_REQUEST,
-    THP_READ_ACK_HEADER_BYTE,
-} from './constants';
+import { CRC_LENGTH, TAG_LENGTH, THP_DEFAULT_CHANNEL } from './constants';
 import { aesgcm, crc32 } from './crypto';
+import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
 import { getIvFromNonce } from './crypto/tools';
 import { addAckBit, addSequenceBit, isThpMessageName } from './utils';
 
@@ -103,7 +95,7 @@ const createChannelRequest = (data: Buffer, channel: Buffer) => {
     const length = Buffer.alloc(2);
     length.writeUInt16BE(data.length + CRC_LENGTH); // 8 nonce + 4 crc
 
-    const magic = Buffer.from([THP_CREATE_CHANNEL_REQUEST]);
+    const magic = Buffer.from([THP_CONTROL_BYTE.CHANNEL_ALLOCATION_REQ]);
     const message = Buffer.concat([magic, channel, length, data]);
     const crc = crc32(message);
 
@@ -114,7 +106,7 @@ const handshakeInitRequest = (data: Buffer, channel: Buffer) => {
     const length = Buffer.alloc(2);
     length.writeUInt16BE(data.length + CRC_LENGTH);
 
-    const magic = Buffer.from([THP_HANDSHAKE_INIT_REQUEST]);
+    const magic = Buffer.from([THP_CONTROL_BYTE.HANDSHAKE_INIT_REQ]);
     const message = Buffer.concat([magic, channel, length, data]);
     const crc = crc32(message);
 
@@ -125,7 +117,7 @@ const handshakeCompletionRequest = (data: Buffer, channel: Buffer, sendBit: numb
     const length = Buffer.alloc(2);
     length.writeUInt16BE(data.length + CRC_LENGTH);
 
-    const magic = addSequenceBit(THP_HANDSHAKE_COMPLETION_REQUEST, sendBit);
+    const magic = addSequenceBit(THP_CONTROL_BYTE.HANDSHAKE_COMP_REQ, sendBit);
     const message = Buffer.concat([magic, channel, length, data]);
     const crc = crc32(message);
 
@@ -169,7 +161,7 @@ export const encodeProtobufMessage = (
     length.writeUInt16BE(1 + 2 + data.length + TAG_LENGTH + CRC_LENGTH); // 1 session_id + 2 messageType + protobuf len + 16 tag + 4 crc
 
     // TODO: distinguish encrypted and decrypted messages (not implemented in FW)
-    const magic = addSequenceBit(THP_CONTROL_BYTE_ENCRYPTED, thpState.sendBit);
+    const magic = addSequenceBit(THP_CONTROL_BYTE.ENCRYPTED, thpState.sendBit);
     const header = Buffer.concat([magic, channel]);
 
     const messageTypeBytes = Buffer.alloc(2);
@@ -195,7 +187,7 @@ export const encodeAck = (state: ThpState) => {
     const length = Buffer.alloc(2);
     length.writeUInt16BE(CRC_LENGTH);
 
-    const magic = addAckBit(THP_READ_ACK_HEADER_BYTE, state.recvAckBit);
+    const magic = addAckBit(THP_CONTROL_BYTE.ACK_MESSAGE, state.recvAckBit);
     const message = Buffer.concat([magic, state.channel, length]);
     const crc = crc32(message);
 
