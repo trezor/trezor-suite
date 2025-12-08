@@ -279,25 +279,24 @@ export default defineMessages({
         id: 'TR_TRADING_INVALID_RESPONSE',
     },
     TR_TRADING_NO_OFFER_BUY_OR_SELL: {
-        defaultMessage: 'No offers found, try different currency, assets, or amounts.',
+        defaultMessage: 'No offers found. Adjust the currency, assets, or amounts.',
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL',
     },
     TR_TRADING_NO_OFFER_SWAP: {
-        defaultMessage: 'No offers found, try different assets or amounts.',
+        defaultMessage: 'No offers found. Adjust the assets or amounts.',
         id: 'TR_TRADING_NO_OFFER_SWAP',
     },
     TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR: {
         defaultMessage:
-            'No offers found. Adjust the currency, assets, or amounts, or disable Tor to see more offers.',
+            'Adjust the currency, assets, or amounts, or disable Tor to see more offers.',
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR',
     },
     TR_TRADING_NO_OFFER_SWAP_TOR: {
-        defaultMessage:
-            'No offers found. Adjust the assets or amounts, or disable Tor to see more offers.',
+        defaultMessage: 'Adjust the assets or amounts, or disable Tor to see more offers.',
         id: 'TR_TRADING_NO_OFFER_SWAP_TOR',
     },
     TR_TRADING_DISABLE_TOR: {
-        defaultMessage: 'You may see more offers with Tor disabled.',
+        defaultMessage: 'Disable Tor to see better offers.',
         id: 'TR_TRADING_DISABLE_TOR',
     },
     TR_CHECKED_BALANCES_ON: {
@@ -844,7 +843,7 @@ export default defineMessages({
         id: 'TR_SELL_DETAIL_PENDING_SUPPORT',
     },
     TR_SELL_HEADER_TITLE: {
-        defaultMessage: 'Your sell',
+        defaultMessage: '売却',
         id: 'TR_SELL_HEADER_TITLE',
     },
     TR_SELL_DETAIL_SENDING_TRANSACTION: {
@@ -876,7 +875,7 @@ export default defineMessages({
     },
     TR_TRADING_TERMS_1: {
         id: 'TR_TRADING_TERMS_1',
-        defaultMessage: "Invity doesn't provide this service. It's governed by ",
+        defaultMessage: "Invity doesn't provide this service. It's governed by",
     },
     TR_TRADING_TERMS_2: {
         id: 'TR_TRADING_TERMS_2',
@@ -3795,7 +3794,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC: {
         id: 'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC',
         defaultMessage:
-            'Shelley-era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
+            'Cardano addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
     },
     TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC',
@@ -3823,7 +3822,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER',
-        defaultMessage: 'Export Labels (BIP 329)',
+        defaultMessage: 'Export labels (BIP 329)',
     },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON',
@@ -3831,7 +3830,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION',
-        defaultMessage: 'Export label files to your computer using the standard BIP 329',
+        defaultMessage: 'Export label files to your computer using the BIP-329 standard.',
     },
     TR_ACCOUNT_DETAILS_XPUB: {
         id: 'TR_ACCOUNT_DETAILS_XPUB',
@@ -5676,7 +5675,7 @@ export default defineMessages({
     },
     TR_ADD_TOKEN_ADDRESS_DUPLICATE: {
         id: 'TR_ADD_TOKEN_ADDRESS_DUPLICATE',
-        defaultMessage: 'Token address is already added',
+        defaultMessage: 'Token address is already activated',
     },
     TR_ADD_TOKEN_TOAST_SUCCESS: {
         id: 'TR_ADD_TOKEN_TOAST_SUCCESS',
