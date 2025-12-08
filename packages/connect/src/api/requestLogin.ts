@@ -17,10 +17,22 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
 
         const { payload } = this;
 
+        // validate incoming parameters
+        Assert(RequestLoginSchema, payload);
+
         const identity: PROTO.IdentityType = {};
         const settings: ConnectSettings = DataManager.getSettings();
-        if (settings.origin) {
-            const [proto, host, port] = settings.origin.split(':');
+
+        let origin;
+        if (settings.trustedHost && payload.origin) {
+            // passed from Suite
+            origin = payload.origin;
+        } else if (settings.origin) {
+            origin = settings.origin;
+        }
+
+        if (origin) {
+            const [proto, host, port] = origin.split(':');
             identity.proto = proto;
             identity.host = host.substring(2);
             if (port) {
@@ -28,9 +40,6 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
             }
             identity.index = 0;
         }
-
-        // validate incoming parameters
-        Assert(RequestLoginSchema, payload);
 
         this.params = {
             identity,
