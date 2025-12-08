@@ -2801,6 +2801,24 @@ export const messages = {
                         maxFeePerGas: 'Max fee per gas',
                         maxPriorityFeePerGas: 'Max priority fee per gas',
                     },
+                    errors: {
+                        feeLimit: {
+                            low: 'Value is too low.',
+                        },
+                        decimals: 'Too many decimals.',
+                        feePerUnit: {
+                            low: 'Fee is too low.',
+                            high: 'Fee is too high.',
+                        },
+                        maxFeePerGas: {
+                            lessThanPriority: 'This fee can’t be lower than Max priority fee.',
+                            outOfRange: 'Enter a max fee per gas between {minFee} and {maxFee}',
+                        },
+                        maxPriorityFee: {
+                            min: 'Max priority fee must be at least {minPriorityFee}',
+                            higherThanMaxFee: 'This fee can’t be higher than Max fee per gas',
+                        },
+                    },
                     total: 'Total fee',
                     confirmButton: 'Confirm custom fee',
                 },
