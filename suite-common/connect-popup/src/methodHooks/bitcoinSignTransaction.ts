@@ -9,9 +9,8 @@ import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
+import { PostCallHookParams, PreCallHookParams } from './types';
 import { createPlaceholderAccount } from './utils';
-
-import { PostCallHookParams, PreCallHookParams } from './index';
 
 const temporaryAccounts: Account[] = [];
 
