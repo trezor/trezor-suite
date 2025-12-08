@@ -128,7 +128,6 @@ export const cardanoGetAddress = async (api: TrezorConnect) => {
         },
         useEmptyPassphrase: true,
         keepSession: false,
-        skipFinalReload: false,
         addressParameters: {
             addressType: CardanoAddressType.BASE,
             path: 'm/44',

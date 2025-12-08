@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/WipeDevice.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
+import { Device } from '../device/Device';
 import { DEVICE, UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 
@@ -9,7 +10,7 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS, UI.BOOTLOADER];
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
-        this.skipFinalReload = this.payload.skipFinalReload ?? false;
+        this.skipFinalReload = false;
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
     }
 
@@ -26,6 +27,14 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
 
     get info() {
         return 'Wipe device';
+    }
+
+    setDevice(device: Device) {
+        super.setDevice(device);
+
+        // In bootloader mode we need to skip the final reload, otherwise we never get the resolution
+        // THP device will require pairing. THP state is cleared, credentials are invalid
+        this.skipFinalReload = device.features?.bootloader_mode || !!device.getThpState();
     }
 
     async run() {

@@ -17,7 +17,6 @@ export interface CommonParams {
     useEventListener?: boolean; // this param is set automatically in factory
     keepSession?: boolean;
     override?: boolean;
-    skipFinalReload?: boolean;
     useCardanoDerivation?: boolean;
     /**
      * internal flag. if set to true, call will only return info about the method, not execute it.

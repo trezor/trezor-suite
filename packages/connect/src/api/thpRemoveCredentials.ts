@@ -8,7 +8,6 @@ export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCrede
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
-        this.skipFinalReload = true;
     }
 
     run() {

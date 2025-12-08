@@ -498,18 +498,13 @@ export const wipeDeviceThunk = createThunk(
     async (_, { dispatch, getState, rejectWithValue }) => {
         const device = selectSelectedDevice(getState());
         if (!device) return;
-        const isBootloaderMode = device.mode === 'bootloader';
+
         const devices = selectDevices(getState());
         // collect devices with old "device.id" to be removed (see description below)
         const deviceInstances = getDeviceInstances(device, devices);
 
         const result = await TrezorConnect.wipeDevice({
-            device: {
-                path: device.path,
-            },
-            // In bootloader mode we need the skip the final reload, otherwise we never get the resolution
-            // THP device will require pairing. THP state is cleared, credentials are invalid
-            skipFinalReload: isBootloaderMode || !!device.thp,
+            device: { path: device.path },
         });
 
         if (

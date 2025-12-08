@@ -37,7 +37,6 @@ export const rippleGetAddress = async (api: TrezorConnect) => {
         },
         useEmptyPassphrase: true,
         keepSession: false,
-        skipFinalReload: false,
         path: 'm/44',
         address: 'a',
         showOnTrezor: true,

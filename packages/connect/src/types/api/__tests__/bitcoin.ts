@@ -35,7 +35,6 @@ export const getAddress = async (api: TrezorConnect) => {
         },
         useEmptyPassphrase: true,
         keepSession: false,
-        skipFinalReload: false,
         path: 'm/44',
         address: 'a',
         showOnTrezor: true,
@@ -404,7 +403,6 @@ export const signTransaction = async (api: TrezorConnect) => {
         // common:
         useEmptyPassphrase: true,
         keepSession: false,
-        skipFinalReload: false,
     });
 
     if (sign.success) {

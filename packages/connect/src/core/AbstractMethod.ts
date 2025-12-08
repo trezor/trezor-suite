@@ -173,8 +173,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             ? Object.prototype.hasOwnProperty.call(payload.device, 'state')
             : false;
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
-        this.skipFinalReload =
-            typeof payload.skipFinalReload === 'boolean' ? payload.skipFinalReload : true;
+        this.skipFinalReload = true;
         this.overridePreviousCall =
             typeof payload.override === 'boolean' ? payload.override : false;
         this.overridden = false;

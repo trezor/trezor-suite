@@ -23,7 +23,6 @@ export const getNonce = createThunk<string, void, { rejectValue: TradingSendReje
             device,
             useEmptyPassphrase: true,
             keepSession: true,
-            skipFinalReload: true,
         });
 
         if (!nonceResponse.success) {

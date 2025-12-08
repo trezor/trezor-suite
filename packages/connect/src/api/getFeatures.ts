@@ -9,7 +9,6 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
         this.useUi = false;
         this.allowDeviceMode = [...this.allowDeviceMode, UI.INITIALIZE, UI.BOOTLOADER];
         this.useDeviceState = false;
-        this.skipFinalReload = true;
     }
 
     checkFirmwareRange() {
