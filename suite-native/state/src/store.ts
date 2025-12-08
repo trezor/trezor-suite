@@ -7,6 +7,7 @@ import {
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
+import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import {
     prepareFiatRatesMiddleware,
     preparePushNotificationMiddleware,
@@ -41,6 +42,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
         thpMiddleware,
         prepareTradingMiddleware(getExtra),
         preparePushNotificationMiddleware(getExtra),
+        prepareSuiteSyncMiddleware(getExtra),
     ];
 
     if (__DEV__) {

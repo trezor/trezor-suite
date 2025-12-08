@@ -29,4 +29,6 @@ export type { WithLabelingState } from './labeling/labelingSelectors';
 export { labelingReducer, initialLabelingState } from './labeling/labelingReducer';
 export type { LabelingState } from './labeling/labelingReducer';
 export { labelingActions } from './labeling/labelingActions';
+export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
+
 export { suiteSyncToBip329 } from './labeling/suiteSyncToBip329';

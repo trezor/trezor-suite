@@ -3,7 +3,6 @@ import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/su
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     AccountInfo,
     BundleProgress,
@@ -73,37 +72,22 @@ const initNewDeviceStateMetadataThunk = createThunk(
         if (isMetadataEnabled && !metadataPresentOnDevice) {
             await dispatch(extra.thunks.initMetadata(false));
         }
-
-        const isSuiteSyncEnabled = extra.selectors.selectIsSuiteSyncEnabled(getState());
-
-        if (isSuiteSyncEnabled && device !== undefined) {
-            const reselectDeviceForSecret = selectDeviceByStaticSessionId(
-                getState(),
-                staticSessionId,
-            );
-
-            if (isTrezorDeviceWithState(reselectDeviceForSecret)) {
-                extra.services.suiteSync.turnOnSuiteSyncForWallet({
-                    device: reselectDeviceForSecret,
-                });
-            }
-        }
     },
 );
 
-const applyDeviceStatesThunk = createThunk(
+export const applyDeviceStatesThunk = createThunk<
+    { staticSessionId: StaticSessionId },
+    {
+        isAddingHiddenWallet?: boolean;
+        newDeviceState: DeviceState;
+        devicePath: DeviceUniquePath;
+    },
+    { rejectValue: string }
+>(
     `${DISCOVERY_MODULE_PREFIX}/applyDeviceStates`,
     async (
-        {
-            isAddingHiddenWallet,
-            newDeviceState,
-            devicePath,
-        }: {
-            isAddingHiddenWallet?: boolean;
-            newDeviceState: DeviceState;
-            devicePath: DeviceUniquePath;
-        },
-        { dispatch, getState },
+        { isAddingHiddenWallet, newDeviceState, devicePath },
+        { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         try {
             const currentDeviceByStaticSessionId = newDeviceState.staticSessionId
@@ -111,11 +95,9 @@ const applyDeviceStatesThunk = createThunk(
                 : null;
 
             if (currentDeviceByStaticSessionId && isAddingHiddenWallet) {
-                console.warn(
+                return rejectWithValue(
                     'applyDeviceStatesThunk: applying state to a device with static session id',
                 );
-
-                return;
             }
 
             const devices = selectDevices(getState());
@@ -125,9 +107,9 @@ const applyDeviceStatesThunk = createThunk(
             // is when you would create a copy of device and store it in redux before authorizing it (this is actually the old way of doing things)
             // todo: this sanity check could be moved somewhere higher.
             if (devicesByPathWithoutState.length > 1) {
-                console.error('there must be either one or zero physical devices without state');
-
-                return;
+                return rejectWithValue(
+                    'there must be either one or zero physical devices without state',
+                );
             }
             const device = devicesByPath[0];
 
@@ -162,14 +144,19 @@ const applyDeviceStatesThunk = createThunk(
                 // select the device after deviceReducer updates it (it's a new object reference)
                 const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
                 if (newlyAddedDevice === undefined) {
-                    return;
+                    return rejectWithValue('applyDeviceStatesThunk: newly added device not found');
                 }
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
             }
 
             await dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
+
+            // TODO isDone is just MVP, tweak this to something better.
+            return fulfillWithValue({ staticSessionId });
         } catch (error) {
             console.error('applyDeviceStatesThunk error', error);
+
+            return rejectWithValue(error);
         }
     },
 );

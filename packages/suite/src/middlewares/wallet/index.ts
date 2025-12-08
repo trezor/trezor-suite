@@ -17,6 +17,7 @@ import { tradingMiddleware } from './tradingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
+import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 
 export const getWalletMiddlewares = (getExtra: () => ExtraDependencies | null) => [
     prepareBlockchainMiddleware(getExtra),
@@ -33,4 +34,5 @@ export const getWalletMiddlewares = (getExtra: () => ExtraDependencies | null) =
     replaceByFeeErrorMiddleware,
     prepareConnectPopupMiddleware(getExtra),
     prepareWalletConnectMiddleware(getExtra),
+    prepareSuiteSyncMiddleware(getExtra),
 ];
