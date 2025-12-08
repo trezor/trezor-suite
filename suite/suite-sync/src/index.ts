@@ -12,7 +12,7 @@ import { SuiteSync } from '@suite-common/suite-sync-types';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core';
 import { TrezorConnect } from '@trezor/connect';
 
-type InitSuiteSyncDesktopDeps = {
+type SuiteSyncDesktopCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: TrezorConnect;
@@ -20,7 +20,7 @@ type InitSuiteSyncDesktopDeps = {
     EnsureDelegatedIdentityKeyDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (
-    deps: InitSuiteSyncDesktopDeps,
+    deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
     // This is the place where we set Evolu as a SuiteSync Storage.
     const createEvoluInstance = createEvoluInstanceFactory(evoluWebDeps);

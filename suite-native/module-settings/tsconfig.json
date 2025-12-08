@@ -6,6 +6,9 @@
             "path": "../../suite-common/analytics"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {

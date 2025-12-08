@@ -12,14 +12,16 @@ import { SuiteSync } from '@suite-common/suite-sync-types';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core';
 import { TrezorConnect } from '@trezor/connect';
 
-type InitSuiteSyncNativeDeps = {
+type SuiteSyncNativeCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: TrezorConnect;
 } & SecureStorageDep &
     EnsureDelegatedIdentityKeyDep;
 
-export const createSuiteSyncNativeCompositionRoot = (deps: InitSuiteSyncNativeDeps): SuiteSync => {
+export const createSuiteSyncNativeCompositionRoot = (
+    deps: SuiteSyncNativeCompositionRootDeps,
+): SuiteSync => {
     const createEvoluInstance = createEvoluInstanceFactory(evoluReactNativeDeps);
     const createEvoluStorage = createEvoluStorageFactory({ createEvoluInstance });
 
