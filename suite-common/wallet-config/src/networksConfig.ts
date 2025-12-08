@@ -287,7 +287,6 @@ export const networks = {
                 isDebugOnlyAccountType: true,
             },
         },
-        isExperimentalOnlyNetwork: true,
         coingeckoId: 'avalanche',
         tradeCryptoId: 'avalanche-2',
         caipId: 'eip155:43114',

@@ -69,6 +69,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
                 count: experimentalNetworks.length,
             },
         },
+        isDisabled: () => experimentalNetworks.length === 0,
     },
     // temporarily disabled, moved to debug
     /*     'suite-sync': {
