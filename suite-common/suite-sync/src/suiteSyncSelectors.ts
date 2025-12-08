@@ -1,4 +1,4 @@
-import { DeviceRootState } from '@suite-common/wallet-core/src/device/deviceReducer';
+import { DeviceRootState } from '@suite-common/wallet-core';
 
 import { SuiteSyncState } from './suiteSyncReducer';
 
@@ -8,16 +8,16 @@ export type WithSuiteSyncState = {
 
 export type WithSuiteSyncAndDeviceState = WithSuiteSyncState & DeviceRootState;
 
-export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncState): boolean =>
+export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncEnabled;
 
-export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncState): boolean =>
+export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
-export const selectIsFeatureSuiteSyncAvailable = (state: WithSuiteSyncState): boolean =>
+export const selectIsFeatureSuiteSyncAvailable = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isFeatureSuiteSyncAvailable;
 
-export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncState) =>
+export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
     state.suiteSync.settings.suiteSyncRelayUrl;
 
 export const selectShouldOfferSecureSync = (state: WithSuiteSyncAndDeviceState): boolean =>

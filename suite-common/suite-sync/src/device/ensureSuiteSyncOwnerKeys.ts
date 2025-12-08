@@ -5,15 +5,17 @@ import {
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import {
+    DeviceCancelledErr,
+    DeviceError,
+    ProofOfDelegatedSignFailed,
+    getProofOfDelegatedIdentity,
+    isCanceledErrorMessage,
+} from '@suite-common/wallet-core';
+import {
     ProofOfDelegatedSignFailed,
     getProofOfDelegatedIdentity,
 } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/getProofOfDelegatedIdentity';
 // Todo: move to device utils
-import {
-    DeviceCancelledErr,
-    DeviceError,
-    isCanceledErrorMessage,
-} from '@suite-common/wallet-core/src/device/deviceUtils';
 import TrezorConnect from '@trezor/connect';
 import { Result, err } from '@trezor/type-utils';
 

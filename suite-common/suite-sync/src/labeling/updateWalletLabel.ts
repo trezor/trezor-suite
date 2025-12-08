@@ -1,4 +1,4 @@
-import { selectDevices } from '@suite-common/wallet-core/src/device/deviceSelectors';
+import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
 
