@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "exactOptionalPropertyTypes": true
+    },
+    "references": [
+        { "path": "../suite-sync-storage" },
+        { "path": "../suite-types" },
+        { "path": "../wallet-config" },
+        { "path": "../wallet-types" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" }
+    ]
+}

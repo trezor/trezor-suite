@@ -1,19 +1,6 @@
+import { UpdateAccountLabel, UpdateOutputLabelDeps } from '@suite-common/suite-sync-types';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
-
-import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
-
-type UpdateAccountLabelParams = {
-    deviceStaticSessionId: string;
-    accountKey: string;
-    label: string | null;
-};
-
-type UpdateAccountLabel = (params: UpdateAccountLabelParams) => void;
-
-type UpdateOutputLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
-
-export type UpdateAccountLabelDep = { updateAccountLabel: UpdateAccountLabel };
 
 export const createUpdateAccountLabel =
     (deps: UpdateOutputLabelDeps): UpdateAccountLabel =>

@@ -12,8 +12,8 @@ import {
     SecureStorage,
     asEncryptedHex,
 } from '@suite-common/secure-storage';
-import type { SuiteSync } from '@suite-common/suite-sync';
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import type { SuiteSync } from '@suite-common/suite-sync-types';
 import {
     ReportSecurityCheckProps,
     Route,

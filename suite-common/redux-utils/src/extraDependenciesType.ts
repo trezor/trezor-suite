@@ -5,8 +5,8 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { SecureStorage } from '@suite-common/secure-storage';
-import { SuiteSync } from '@suite-common/suite-sync';
+import { SecureStorage } from '@suite-common/secure-storage'; // also only types
+import { SuiteSync } from '@suite-common/suite-sync-types';
 import {
     ReportSecurityCheckProps,
     Route,

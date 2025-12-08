@@ -1,23 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { UpdateAddressLabel, UpdateAddressLabelDeps } from '@suite-common/suite-sync-types';
 import { selectDevices } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import type { StaticSessionId } from '@trezor/connect';
-
-import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
-
-type UpdateAddressLabelParams = {
-    deviceStaticSessionId: StaticSessionId;
-    address: string;
-    label: string | null;
-    accountDescriptor: Account['descriptor'];
-    networkSymbol: NetworkSymbol;
-};
-
-type UpdateAddressLabel = (params: UpdateAddressLabelParams) => void;
-
-type UpdateAddressLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
-
-export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
 
 export const createUpdateAddressLabel =
     (deps: UpdateAddressLabelDeps): UpdateAddressLabel =>

@@ -2,15 +2,12 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorageDep } from '@suite-common/secure-storage';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
+import { EnsureSuiteSyncOwnerDeps, SuiteSync } from '@suite-common/suite-sync-types';
 import { EnsureDelegatedIdentityKeyDep, selectAllDeviceOwners } from '@suite-common/wallet-core';
 
-import { SuiteSync } from './SuiteSync';
 import { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
-import {
-    EnsureSuiteSyncOwnerDeps,
-    createEnsureSuiteSyncOwnerKeys,
-} from './device/ensureSuiteSyncOwnerKeys';
-import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
+import { createEnsureSuiteSyncOwnerKeys } from './device/ensureSuiteSyncOwnerKeys';
+import { createSubscribeLabeling } from './labeling/subscribeLabeling';
 import { createUpdateAccountLabel } from './labeling/updateAccountLabel';
 import { createUpdateAddressLabel } from './labeling/updateAddressLabel';
 import { createUpdateOutputLabel } from './labeling/updateOutputLabel';

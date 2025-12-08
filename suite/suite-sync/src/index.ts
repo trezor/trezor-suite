@@ -2,12 +2,13 @@ import { evoluWebDeps } from '@evolu/web';
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorageDep } from '@suite-common/secure-storage';
-import { SuiteSync, createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
+import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
     createEvoluInstanceFactory,
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
+import { SuiteSync } from '@suite-common/suite-sync-types';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core';
 import { TrezorConnect } from '@trezor/connect';
 

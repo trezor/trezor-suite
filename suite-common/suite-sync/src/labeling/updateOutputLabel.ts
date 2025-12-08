@@ -1,23 +1,5 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { UpdateOutputLabel, UpdateOutputLabelDeps } from '@suite-common/suite-sync-types';
 import { selectDevices } from '@suite-common/wallet-core';
-import type { StaticSessionId } from '@trezor/connect';
-
-import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
-
-type UpdateOutputLabelParams = {
-    deviceStaticSessionId: StaticSessionId;
-    txId: string;
-    outputIndex: number;
-    label: string | null;
-    accountDescriptor: string;
-    networkSymbol: NetworkSymbol;
-};
-
-type UpdateOutputLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
-
-type UpdateOutputLabel = (params: UpdateOutputLabelParams) => void;
-
-export type UpdateOutputLabelDep = { updateOutputLabel: UpdateOutputLabel };
 
 export const createUpdateOutputLabel =
     (deps: UpdateOutputLabelDeps): UpdateOutputLabel =>

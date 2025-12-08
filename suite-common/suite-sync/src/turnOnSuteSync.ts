@@ -1,18 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { Dispatch } from '@reduxjs/toolkit';
+import {
+    CreateTurnOnSuiteSyncDeps,
+    TurnOnSuiteSync,
+} from '@suite-common/suite-sync-types/src/turnOnSuteSync';
 
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
-
-export type TurnOnSuiteSync = () => void;
-
-export type TurnOnSuiteSyncDep = { turnOnSuiteSync: TurnOnSuiteSync };
-
-type CreateTurnOnSuiteSyncDeps = {
-    getState: () => any;
-    dispatch: Dispatch;
-};
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>

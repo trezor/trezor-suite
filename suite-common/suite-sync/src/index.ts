@@ -12,11 +12,6 @@ export { suiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
-export type { SuiteSync } from './SuiteSync';
-export type {
-    SuiteSyncStorageRepository,
-    CreateSuiteSyncStorageRepository,
-} from './SuiteSyncStorageRepository';
 export { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 
 // Labeling

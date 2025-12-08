@@ -11235,7 +11235,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/secure-storage": "workspace:*"
-    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -11353,6 +11353,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/suite-sync-types@workspace:*, @suite-common/suite-sync-types@workspace:suite-common/suite-sync-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/suite-sync-types@workspace:suite-common/suite-sync-types"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/suite-sync@workspace:*, @suite-common/suite-sync@workspace:suite-common/suite-sync":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync@workspace:suite-common/suite-sync"
@@ -11361,6 +11375,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -11425,6 +11440,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -12524,6 +12540,7 @@ __metadata:
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.2.6"
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -13559,7 +13576,8 @@ __metadata:
     "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
-    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     expo: "npm:~54.0.20"
     expo-sqlite: "npm:^16.0.8"
@@ -13959,7 +13977,8 @@ __metadata:
     "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
-    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
