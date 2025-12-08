@@ -5,6 +5,9 @@ const sanitizeInternalImports = (src, moduleType) => {
     return src.replace(searchValue, replaceValue);
 };
 
+const sanitizeDynamicImport = src =>
+    // Manually replace .ts extensions with .js (for dynamic imports)
+    src.replace(/\.ts(['"`]|$)/g, '.js$1');
 /**
  * Babel plugin to sanitize non-index internal imports, from src to the built lib or libESM folder.
  * e.g. @trezor/utils/src/bufferUtils → @trezor/utils/lib/bufferUtils
@@ -22,6 +25,18 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
         const first = args[0];
         if (!types.isStringLiteral(first)) return;
         first.value = sanitizeInternalImports(first.value, 'cjs');
+    };
+
+    const modifyTemplateLiteral = path => {
+        const { quasis } = path.node;
+        if (!quasis || quasis.length === 0) return;
+
+        quasis.forEach(quasi => {
+            if (quasi.value && quasi.value.raw) {
+                quasi.value.raw = sanitizeDynamicImport(quasi.value.raw);
+                quasi.value.cooked = sanitizeDynamicImport(quasi.value.cooked || quasi.value.raw);
+            }
+        });
     };
 
     return {
@@ -51,6 +66,10 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
                 ) {
                     modifyCJSRequireArg(path);
                 }
+            },
+            // handle template literals (for dynamic imports with template strings)
+            TemplateLiteral(path) {
+                modifyTemplateLiteral(path);
             },
         },
     };
