@@ -1,6 +1,11 @@
 name: "[Release] Connect NPM"
+
 on:
   workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   extract-version:
@@ -18,6 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Extract connect version
         id: set-version
@@ -105,8 +111,6 @@ jobs:
 
       - name: Deploy to NPM ${{ matrix.package }}
         if: matrix.package != 'no-packages-to-release'
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         uses: ./.github/actions/release-connect-npm
         with:
           deploymentType: ${{ env.DEPLOYMENT_TYPE }}
@@ -137,8 +141,6 @@ jobs:
           fi
 
       - name: Deploy to NPM ${{ matrix.package }}
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         uses: ./.github/actions/release-connect-npm
         with:
           deploymentType: ${{ env.DEPLOYMENT_TYPE }}
