@@ -1,5 +1,3 @@
-import { useSelector } from 'react-redux';
-
 import { CreateTurnOffSuiteSyncDeps, TurnOffSuiteSync } from '@suite-common/suite-sync-types';
 
 import { suiteSyncActions } from './suiteSyncActions';
@@ -8,7 +6,7 @@ import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
     async () => {
-        const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+        const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(deps.getState());
 
         if (!isSuiteSyncEnabled) {
             return;

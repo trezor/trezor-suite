@@ -53,11 +53,11 @@ export const SuiteSyncSettings = () => {
     };
 
     return (
-        <SettingsSection title="Local First Storage">
+        <SettingsSection title="Suite Sync">
             <SectionItem>
                 <TextColumn
-                    title="Local First Storage (Evolu)"
-                    description="This enables Local First Storage (Evolu) for labeling in the application settings. This is an experimental feature."
+                    title="Suite Sync (Evolu)"
+                    description="This enables Suite Sync (Evolu) for labeling in the application settings. This is an experimental feature."
                 />
                 <ActionColumn>
                     <Checkbox
@@ -99,7 +99,7 @@ export const SuiteSyncSettings = () => {
                         </ActionColumn>
                     </SectionItem>
                     <SectionItem>
-                        <TextColumn title="Local First Storage (Evolu) Debug" />
+                        <TextColumn title="Suite Sync (Evolu) Debug" />
                         <ActionColumn>
                             <Checkbox
                                 isChecked={isSuiteSyncDebugEnabled}

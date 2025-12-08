@@ -51,6 +51,10 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
                 isShownInSettings: !isFeatureSuiteSyncAvailable,
             }),
         );
+
+        if (isFeatureSuiteSyncAvailable) {
+            suiteSync.turnOffSuiteSync();
+        }
     };
 
     const enableSuiteSyncIfNeeded = () => {

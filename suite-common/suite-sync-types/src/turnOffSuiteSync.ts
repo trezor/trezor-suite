@@ -11,4 +11,5 @@ export type TurnOffSuiteSyncDep = { turnOffSuiteSync: TurnOffSuiteSync };
 export type CreateTurnOffSuiteSyncDeps = {
     getAllDevicesOwners: () => SuiteSyncOwner[];
     dispatch: Dispatch;
+    getState: () => any;
 } & TurnOffSuiteSyncForWalletDep;

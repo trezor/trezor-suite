@@ -26,7 +26,6 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "react-redux": "9.2.0"
+        "@trezor/utils": "workspace:*"
     }
 }

@@ -56,7 +56,7 @@ export const Labeling = () => {
     const handleOnChange = (selected: LabelingOptionTranslated) => {
         const { value } = selected;
 
-        // show a warning legacy modal when user selects legacy option while using local first storage
+        // show a warning legacy modal when user selects legacy option while using Suite Sync
         if (value === 'legacy' && isSuiteSyncEnabled) {
             setLegacyModalWarningVisible(true);
 

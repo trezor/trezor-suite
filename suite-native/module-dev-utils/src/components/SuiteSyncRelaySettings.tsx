@@ -33,7 +33,7 @@ export const SuiteSyncRelaySettings = () => {
     const onSubmit = form.handleSubmit(async values => {
         await suiteSync.changeRelayUrl({ relayUrl: values.suiteSyncRelayUrl });
         showToast({
-            message: 'Local First Storage relay URL updated',
+            message: 'Suite Sync relay URL updated',
             variant: 'success',
         });
     });
@@ -62,7 +62,7 @@ export const SuiteSyncRelaySettings = () => {
         await suiteSync.changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         showToast({
-            message: 'Local First Storage relay URL reset to default',
+            message: 'Suite Sync relay URL reset to default',
             variant: 'success',
         });
     };
