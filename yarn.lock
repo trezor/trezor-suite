@@ -14219,6 +14219,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-cli@workspace:packages/connect-cli":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
+  dependencies:
+    "@trezor/connect": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
+    "@trezor/transport": "workspace:*"
+    "@trezor/transport-bluetooth": "workspace:*"
+    tsx: "npm:^4.20.3"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
