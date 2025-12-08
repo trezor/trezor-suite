@@ -85,6 +85,7 @@ export const createSuiteSyncCompositionRoot = (
         turnOffSuiteSync: createTurnOffSuiteSync({
             getAllDevicesOwners: () => selectAllDeviceOwners(deps.getState()),
             dispatch: deps.dispatch,
+            getState: deps.getState,
             turnOffSuiteSyncForWallet,
         }),
         turnOnSuiteSync: createTurnOnSuiteSync({
