@@ -10,9 +10,8 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useDevice, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { RewardsList } from './Rewards/RewardsList';
@@ -31,10 +30,8 @@ interface SolStakingDashboardProps {
 
 export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProps) => {
     const { account } = selectedAccount;
-    const { device } = useDevice();
 
     const { isBelowLaptop } = useLayoutSize();
-    const isDeviceConnected = device?.connected && device?.available;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
@@ -58,7 +55,6 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                         <>
                             <DashboardSection>
                                 <Column alignItems="normal" gap={spacings.sm}>
-                                    {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                     {isDiscoveryRunning && <DiscoveryWarning />}
                                     {rewardsNotAvailableYet && <StakingRewardsWarning />}
 

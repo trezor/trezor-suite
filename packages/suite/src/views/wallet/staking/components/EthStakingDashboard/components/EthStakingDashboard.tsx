@@ -17,8 +17,7 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
-import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
 import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
@@ -36,11 +35,9 @@ interface EthStakingDashboardProps {
 
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
     const { account } = selectedAccount;
-    const { device } = useDevice();
 
     const accountKey = account?.key ?? '';
     const { isBelowLaptop } = useLayoutSize();
-    const isDeviceConnected = device?.connected && device?.available;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { data, isLoading } =
@@ -84,7 +81,6 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                     {isStakingActive ? (
                         <DashboardSection>
                             <Column gap={spacings.sm}>
-                                {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                                 <InstantStakeBanner

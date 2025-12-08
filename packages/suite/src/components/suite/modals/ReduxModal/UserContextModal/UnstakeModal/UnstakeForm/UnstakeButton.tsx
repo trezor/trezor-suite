@@ -3,13 +3,15 @@ import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
 export const UnstakeButton = () => {
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(
         state => state.wallet.selectedAccount,
@@ -31,14 +33,25 @@ export const UnstakeButton = () => {
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
 
+    const isDeviceConnected = device?.connected && device?.available;
+
     const isDisabled =
-        !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
+        !(formIsValid && hasValues) || isSubmitting || (isDeviceConnected && isLocked());
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state =>
         selectAreFeesLoading(state, selectedAccount.network.symbol),
     );
 
     const onUnstakeClick = () => {
+        if (!isDeviceConnected) {
+            if (device?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
+
         handleSubmit(signTx)();
 
         analytics.report({
