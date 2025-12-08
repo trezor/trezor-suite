@@ -7,6 +7,7 @@ import { fromWei, numberToHex, toWei } from 'web3-utils';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    DAYS_TO_ADD_TO_POOL_DEFAULT,
     DEFAULT_PAYMENT,
     MIN_ETH_AMOUNT_FOR_STAKING,
     STAKE_GAS_LIMIT_RESERVE,
@@ -592,7 +593,7 @@ export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => 
         validatorsQueue?.validatorAddingDelay === undefined ||
         validatorsQueue?.validatorActivationTime === undefined
     ) {
-        return undefined;
+        return DAYS_TO_ADD_TO_POOL_DEFAULT;
     }
 
     const secondsToWait =

@@ -44,8 +44,7 @@ export const ConfirmStakeModal = ({
     const account = useSelector(selectSelectedAccount);
     const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
 
-    const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
-    const daysToAddToPool = daysToAddToPoolInitial === undefined ? 30 : daysToAddToPoolInitial;
+    const daysToAddToPool = getDaysToAddToPoolInitial(validatorsQueue);
 
     const isDisabled = !hasAgreed || isLoading;
 
