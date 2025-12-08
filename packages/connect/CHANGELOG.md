@@ -11,13 +11,44 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.7.0-beta.1
+# 9.7.0-beta.2
 
-This release enables a new flow that replaces the old popup with web-based Suite. It allows for TS7 support on the web and provides an improved UI, consistent with Suite Desktop.
+We are deprecating `coreMode: 'iframe'` for connect-web, which is now limited due to [Local Network Access](https://developer.chrome.com/blog/local-network-access) permission. If you are using it explicitly, we recommend moving to `coreMode: 'auto'` for a better user experience.
 
-Additionally, Monero support has been added to Connect APIs.
+We've updated `requestLogin` method to be up to date with the newer Connect implementations.
+However this change required removing the `callback` and `asyncChallenge` parameters, so please make sure to update your code accordingly by simply fetching the data first and passing it to the method.
 
-If you encounter any issues with the new flow, please let us know.
+Monero support has been added to Connect APIs - `moneroGetAddress`, `moneroGetWatchKey`, `moneroKeyImageSync`, `moneroSignTransaction`.
+
+This release also fixes import issues with CommonJS in Node environments.
+
+- feat(connect): handle requestLogin origin in suite (a8539c8)
+- fix(connect): turn requestLogin to a normal method (bb85884)
+- chore(connect): clean up connect call factory (f5f44b7)
+- fix(connect): move TNP subscription to DeviceList (b665d56)
+- fix(protocol): don't throw on malformed push notification (d382cbf)
+- refactor(connect): simplify tpn subscription (414392e)
+- refactor(connect): restartEmu util (02acc0a)
+- chore(connect): remove now useless sessionId fix (ebd6685)
+- feat(connect): ignore invalid passphrase when using THP session id (6b492dc)
+- refactor(connect): unexpected state checking (b24d217)
+- chore(blockchain-link-types): remove TokenInfo.type (11ae574)
+- chore(connect): simplify ui-request_thp_pairing (c02dcaa)
+- chore(protocol): export ThpPairingMethod as enum (e61610e)
+- chore(protocol): distinguish DeviceThpState and ThpChannelState (780e532)
+- fix(connect): reset sessionId when new is created (b4282bf)
+- chore(connect): remove unused UI.IFRAME_FAILURE (ea11886)
+- fix(connect): update current release when bootloader mode (c250f5f)
+- fix(connect-popup): button requests in fixtures for eos and ripple (a244dd1)
+- fix(connect): payment request buffer issue (3951709)
+- fix(connect): test tropic authenticateDevice only for T3W1 (1ff76c3)
+- fix(connect): new credential (84b179b)
+- fix(connect): PaymentRequest amount (c19c043)
+- feat(connect-web): in core-in-suite-desktop handle permission error (41da933)
+- feat(connect): monero support (7e4e42c)
+- feat(connect-webextension): suite web popup implementation for webextension (175e40c)
+- feat(connect): use existing message channels for suite web (314464a)
+- feat(connect): suite web popup implementation (6bafb1e)
 
 # 9.6.4
 
