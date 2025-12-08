@@ -73,3 +73,5 @@ web3-utils
 worker-loader
 xrpl
 yup
+@tanstack/react-query-devtools
+@tanstack/react-query

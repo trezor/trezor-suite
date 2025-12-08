@@ -71,6 +71,8 @@
         "@suite/secure-storage-electron": "workspace:*",
         "@suite/secure-storage-webauthn": "workspace:*",
         "@suite/suite-sync": "workspace:*",
+        "@tanstack/react-query": "^5.90.10",
+        "@tanstack/react-query-devtools": "^5.91.0",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/address-validator": "workspace:*",
         "@trezor/analytics": "workspace:*",

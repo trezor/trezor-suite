@@ -13,6 +13,7 @@
         "@blockaid/client": "^0.56.0",
         "@suite-common/connect-popup": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",
+        "@tanstack/react-query": "^5.90.10",
         "@trezor/connect": "workspace:^",
         "react": "18.2.0"
     }

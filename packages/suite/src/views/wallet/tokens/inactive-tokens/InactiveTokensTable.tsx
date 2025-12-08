@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -82,37 +83,30 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
     const dispatch = useDispatch();
     const { account } = selectedAccount;
     const coingeckoId = getCoingeckoId(account.symbol);
-    const [allInactiveTokens, setAllInactiveTokens] = useState<StellarTokenInfo[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [hasError, setHasError] = useState(false);
     const [tokenToActivate, setTokenToActivate] = useState<StellarTokenInfo | null>(null);
 
-    useEffect(() => {
-        if (account.symbol === 'xlm') {
-            setIsLoading(true);
-            setHasError(false);
-            getInactiveStellarTokens(account)
-                .then(tokens => {
-                    setAllInactiveTokens(tokens);
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    console.error('Failed to load inactive tokens:', error);
-                    setAllInactiveTokens([]);
-                    setIsLoading(false);
-                    setHasError(true);
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'error',
-                            error: 'Failed to load inactive tokens. Please try again later.',
-                        }),
-                    );
-                });
-        } else {
-            setAllInactiveTokens([]);
-            setIsLoading(false);
-        }
-    }, [account, dispatch]);
+    const getInactiveTokens = useMutation({
+        mutationFn: getInactiveStellarTokens,
+        onError: () => {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Failed to load inactive tokens. Please try again later.',
+                }),
+            );
+        },
+    });
+
+    const {
+        data: allInactiveTokens,
+        isLoading,
+        isError,
+    } = useQuery({
+        enabled: account.symbol === 'xlm',
+        queryKey: ['inactive-tokens', account.symbol],
+        queryFn: () => getInactiveTokens.mutateAsync(account),
+        initialData: [],
+    });
 
     const filteredTokens = useMemo(() => {
         if (!searchQuery) {
@@ -143,7 +137,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
         return <Loading />;
     }
 
-    if (hasError) {
+    if (isError) {
         return <NoTokens title={<Translation id="TR_ERROR_LOADING_TOKENS" />} />;
     }
 

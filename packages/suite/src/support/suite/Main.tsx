@@ -14,6 +14,7 @@ import Protocol from 'src/support/suite/Protocol';
 import Resize from 'src/support/suite/Resize';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
+import { ReactQueryProvider } from './ReactQueryProvider';
 import { RouterHandler } from './RouterHandler';
 import { useConnectPopupModals } from './useConnectPopupModals';
 
@@ -37,16 +38,18 @@ export const Main = ({
             <ConnectedThemeProvider>
                 <ResponsiveContextProvider>
                     <ErrorBoundary>
-                        <Autodetect />
-                        <Resize />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler history={history} />
-                        <ConnectedIntlProvider>
-                            <FormatterProvider config={formattersConfig}>
-                                {children}
-                            </FormatterProvider>
-                        </ConnectedIntlProvider>
+                        <ReactQueryProvider>
+                            <Autodetect />
+                            <Resize />
+                            <Protocol />
+                            <OnlineStatus />
+                            <RouterHandler history={history} />
+                            <ConnectedIntlProvider>
+                                <FormatterProvider config={formattersConfig}>
+                                    {children}
+                                </FormatterProvider>
+                            </ConnectedIntlProvider>
+                        </ReactQueryProvider>
                     </ErrorBoundary>
                 </ResponsiveContextProvider>
             </ConnectedThemeProvider>

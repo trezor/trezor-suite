@@ -41,8 +41,7 @@ export const TxSimulation = () => {
     const { bottomSheetRef: feeInfoBottomSheetRef, openModal: openFeeInfoModal } =
         useBottomSheetModal();
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
-    const { isLoading, simulationResult, error, needsDisclaimer, network, targetContract } =
-        useTxSimulationConnectPopup(popupCall);
+    const { txSimulationQuery, network, targetContract } = useTxSimulationConnectPopup(popupCall);
 
     const isSigningTransaction =
         popupCall?.state === 'tx-simulation' && popupCall?.method === 'ethereumSignTransaction';
@@ -54,15 +53,21 @@ export const TxSimulation = () => {
     const [gasLimit, setGasLimit] = useState(defaultGasLimit);
 
     useEffect(() => {
+        if (!txSimulationQuery.isSuccess) {
+            return;
+        }
+
+        const { gas_estimation } = txSimulationQuery.data;
+
         // Use TX simulation gas estimation instead of the default
         if (
-            simulationResult?.gas_estimation?.status === 'Success' &&
+            gas_estimation?.status === 'Success' &&
             defaultGasLimit === ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
         ) {
-            const newFeeLimit = Number(simulationResult.gas_estimation.estimate).toString();
+            const newFeeLimit = Number(gas_estimation.estimate).toString();
             setGasLimit(newFeeLimit);
         }
-    }, [simulationResult, defaultGasLimit]);
+    }, [txSimulationQuery, defaultGasLimit]);
 
     const onConfirm = () => {
         if (isSigningTransaction) {
@@ -135,7 +140,7 @@ export const TxSimulation = () => {
                 </VStack>
             )}
 
-            {isLoading && (
+            {txSimulationQuery.isLoading && (
                 <Card>
                     <HStack paddingVertical="sp64" justifyContent="center" alignItems="center">
                         <Loader
@@ -147,14 +152,14 @@ export const TxSimulation = () => {
                 </Card>
             )}
 
-            {simulationResult?.simulation?.status === 'Success' && (
+            {txSimulationQuery.data?.simulation?.status === 'Success' && (
                 <VStack>
                     <Text>
                         <Translation id="moduleConnectPopup.simulation.simulation" />
                     </Text>
                     <Card noPadding>
                         <VStack spacing={0}>
-                            {simulationResult.simulation.account_summary.assets_diffs.map(
+                            {txSimulationQuery.data.simulation.account_summary.assets_diffs.map(
                                 (assetDiff, index) => (
                                     <TxSimulationAsset
                                         key={index}
@@ -163,7 +168,7 @@ export const TxSimulation = () => {
                                     />
                                 ),
                             )}
-                            {simulationResult.simulation.account_summary.exposures.map(
+                            {txSimulationQuery.data.simulation.account_summary.exposures.map(
                                 (assetExposure, index) => (
                                     <TxSimulationAsset
                                         key={index}
@@ -211,45 +216,45 @@ export const TxSimulation = () => {
                 </VStack>
             )}
 
-            {simulationResult?.validation?.result_type === 'Malicious' && (
+            {txSimulationQuery.data?.validation?.result_type === 'Malicious' && (
                 <TxSimulationBanner
                     type="error"
                     title={
                         <Translation id="moduleConnectPopup.simulation.simulationStatusMalicious" />
                     }
-                    description={simulationResult.validation?.description}
+                    description={txSimulationQuery.data.validation?.description}
                     disclaimerAccepted={disclaimerAccepted}
                     setDisclaimerAccepted={setDisclaimerAccepted}
                 />
             )}
 
-            {simulationResult?.validation?.result_type === 'Warning' && (
+            {txSimulationQuery.data?.validation?.result_type === 'Warning' && (
                 <TxSimulationBanner
                     type="warning"
                     title={
                         <Translation id="moduleConnectPopup.simulation.simulationStatusWarning" />
                     }
-                    description={simulationResult.validation?.description}
+                    description={txSimulationQuery.data.validation?.description}
                     disclaimerAccepted={disclaimerAccepted}
                     setDisclaimerAccepted={setDisclaimerAccepted}
                 />
             )}
 
-            {simulationResult?.simulation?.status === 'Error' && (
+            {txSimulationQuery.data?.simulation?.status === 'Error' && (
                 <TxSimulationBanner
                     type="error"
                     title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
-                    description={simulationResult.simulation.error}
+                    description={txSimulationQuery.data.simulation.error}
                     disclaimerAccepted={disclaimerAccepted}
                     setDisclaimerAccepted={setDisclaimerAccepted}
                 />
             )}
 
-            {error && (
+            {txSimulationQuery.error && (
                 <TxSimulationBanner
                     type="error"
                     title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
-                    description={error.message}
+                    description={txSimulationQuery.error.message}
                     disclaimerAccepted={disclaimerAccepted}
                     setDisclaimerAccepted={setDisclaimerAccepted}
                 />
@@ -265,7 +270,10 @@ export const TxSimulation = () => {
             <Button
                 testID="@popup/confirm-simulation"
                 onPress={onConfirm}
-                isDisabled={isLoading || (needsDisclaimer && !disclaimerAccepted)}
+                isDisabled={
+                    txSimulationQuery.isLoading ||
+                    (txSimulationQuery.data?.needsDisclaimer && !disclaimerAccepted)
+                }
             >
                 <Translation id="generic.buttons.continue" />
             </Button>
@@ -281,7 +289,7 @@ export const TxSimulation = () => {
             <ContractInfoBottomSheet
                 ref={contractInfoBottomSheetRef}
                 targetContract={targetContract}
-                simulationResult={simulationResult}
+                simulationResult={txSimulationQuery.data}
             />
             <FeeInfoBottomSheet
                 ref={feeInfoBottomSheetRef}

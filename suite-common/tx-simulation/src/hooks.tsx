@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 
-import type { SiteScanResponse, TransactionScanResponse } from '@blockaid/client/resources';
 import type { JsonRpcScanParams } from '@blockaid/client/resources/evm';
+import { useQuery } from '@tanstack/react-query';
 
 import { ConnectPopupCall } from '@suite-common/connect-popup';
 import { getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
@@ -9,52 +9,27 @@ import type { EthereumSignTransaction, EthereumSignTypedData } from '@trezor/con
 
 import { client } from './client';
 
-export const useTxSimulationEVM = (input?: JsonRpcScanParams) => {
-    // Call tx simulation API with the provided input
-    const [isLoading, setIsLoading] = useState(false);
-    const [simulationResult, setSimulationResult] = useState<TransactionScanResponse | null>(null);
-    const [error, setError] = useState<Error | null>(null);
-    const lastInput = useRef<JsonRpcScanParams | undefined>(undefined);
+function useTxSimulationEVM(input?: JsonRpcScanParams) {
+    return useQuery({
+        enabled: Boolean(input),
+        // TODO: use global constant for query keys
+        queryKey: ['tx-simulation-evm', input],
+        queryFn: async () => {
+            const simulationResult = await client.evm.jsonRpc.scan(input!);
+            const needsDisclaimer =
+                simulationResult.validation?.result_type === 'Malicious' ||
+                simulationResult.validation?.result_type === 'Warning' ||
+                simulationResult.simulation?.status === 'Error';
 
-    useEffect(() => {
-        if (!input) {
-            setSimulationResult(null);
-            setError(null);
+            return {
+                ...simulationResult,
+                needsDisclaimer,
+            };
+        },
+    });
+}
 
-            return;
-        }
-        // Avoid unnecessary re-fetching
-        if (lastInput.current && JSON.stringify(lastInput.current) === JSON.stringify(input)) {
-            return;
-        }
-        lastInput.current = input;
-        setIsLoading(true);
-        client.evm.jsonRpc
-            .scan(input)
-            .then(result => {
-                setSimulationResult(result);
-            })
-            .catch(err => {
-                setError(err);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [input]);
-
-    const needsDisclaimer =
-        error ||
-        simulationResult?.simulation?.status === 'Error' ||
-        simulationResult?.validation?.result_type === 'Malicious' ||
-        simulationResult?.validation?.result_type === 'Warning';
-
-    return {
-        isLoading,
-        simulationResult,
-        error,
-        needsDisclaimer,
-    };
-};
+export type TxSimulationResult = NonNullable<ReturnType<typeof useTxSimulationEVM>['data']>;
 
 export const useTxSimulationConnectPopup = (popupCall?: ConnectPopupCall) => {
     const payload = useMemo(() => {
@@ -134,43 +109,26 @@ export const useTxSimulationConnectPopup = (popupCall?: ConnectPopupCall) => {
         }
     }, [popupCall]);
 
-    const result = useTxSimulationEVM(payload);
+    const txSimulationQuery = useTxSimulationEVM(payload);
 
     return {
-        ...result,
+        txSimulationQuery,
         network,
         targetContract,
     };
 };
 
-export const useDappScan = (url?: string) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [result, setResult] = useState<SiteScanResponse | null>(null);
-    const [error, setError] = useState<Error | null>(null);
+export const useDappScan = (url?: string) =>
+    useQuery({
+        enabled: Boolean(url),
+        queryKey: ['dapp-scan', url],
+        queryFn: async () => {
+            const scanResult = await client.site.scan({ url: url! });
+            const isMalicious = scanResult?.status === 'hit' && scanResult.is_malicious;
 
-    useEffect(() => {
-        if (!url) {
-            setResult(null);
-            setError(null);
-
-            return;
-        }
-
-        setIsLoading(true);
-        client.site
-            .scan({ url })
-            .then(res => {
-                setResult(res);
-            })
-            .catch(err => {
-                setError(err);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [url]);
-
-    const isMalicious = result?.status === 'hit' && result.is_malicious;
-
-    return { isLoading, result, error, isMalicious };
-};
+            return {
+                ...scanResult,
+                isMalicious,
+            };
+        },
+    });

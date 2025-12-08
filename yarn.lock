@@ -11534,6 +11534,7 @@ __metadata:
     "@blockaid/client": "npm:^0.56.0"
     "@suite-common/connect-popup": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
+    "@tanstack/react-query": "npm:^5.90.10"
     "@trezor/connect": "workspace:^"
     react: "npm:18.2.0"
   languageName: unknown
@@ -13988,6 +13989,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.90.10":
+  version: 5.90.10
+  resolution: "@tanstack/query-core@npm:5.90.10"
+  checksum: 10/0aa6118110f28d0d706a1bb939dfe73e4a385078b7b5ef2a603cada9eb73e89ee32cc49bdcf099be0b993e2355b1755785dcb1ba841b35e4456ac996eb4cb341
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-devtools@npm:5.91.0":
+  version: 5.91.0
+  resolution: "@tanstack/query-devtools@npm:5.91.0"
+  checksum: 10/053757751304f8a99a2d2d803cd5b8867c70a35f8b85349a4425ced192068ab7d8978b706c0d081a58e02d01693995d581bc3943a17be5d6b9ecf89e622b6643
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-devtools@npm:^5.91.0":
+  version: 5.91.0
+  resolution: "@tanstack/react-query-devtools@npm:5.91.0"
+  dependencies:
+    "@tanstack/query-devtools": "npm:5.91.0"
+  peerDependencies:
+    "@tanstack/react-query": ^5.90.10
+    react: ^18 || ^19
+  checksum: 10/4bdfb309a212efd4b5aa0909efd6556b3bf83ed92968803a1b8a1b39507bf85313100cf11bc560cf4ad669880724fc885d341010f00c68fe2140ae81b6b0770f
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.90.10":
+  version: 5.90.10
+  resolution: "@tanstack/react-query@npm:5.90.10"
+  dependencies:
+    "@tanstack/query-core": "npm:5.90.10"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10/5ff30c09154ab4848440bba567d6a45622ae35d3a87a7e9546535c9400192c1dab160a8d6a5c37891d932717c3cb15ce4d60fba45525184cdeda1a236b24838f
+  languageName: node
+  linkType: hard
+
 "@tanstack/react-virtual@npm:^3.13.9":
   version: 3.13.9
   resolution: "@tanstack/react-virtual@npm:3.13.9"
@@ -15286,6 +15324,8 @@ __metadata:
     "@suite/secure-storage-electron": "workspace:*"
     "@suite/secure-storage-webauthn": "workspace:*"
     "@suite/suite-sync": "workspace:*"
+    "@tanstack/react-query": "npm:^5.90.10"
+    "@tanstack/react-query-devtools": "npm:^5.91.0"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:^16.3.0"
     "@testing-library/user-event": "npm:^14.6.1"
