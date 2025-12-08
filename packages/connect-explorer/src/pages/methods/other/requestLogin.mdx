@@ -13,10 +13,11 @@ import login from '../../../data/methods/other/login.ts';
 />
 
 export const paramDescriptions = {
-    callback:
-        'which will be called from API to fetch `challengeHidden` and `challengeVisual` from server',
     challengeHidden: 'hexadecimal value',
     challengeVisual: 'text displayed on Trezor',
+    origin: 'domain requesting the login, do not fill manually under normal circumstances',
+    asyncChallenge: 'deprecated',
+    callback: 'deprecated',
 };
 
 ## Request login

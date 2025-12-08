@@ -13,6 +13,7 @@ export type LoginChallenge = Static<typeof LoginChallenge>;
 export const LoginChallenge = Type.Object({
     challengeHidden: Type.String(),
     challengeVisual: Type.String(),
+    origin: Type.Optional(Type.String()),
     asyncChallenge: Type.Optional(Type.Undefined()),
     callback: Type.Optional(Type.Undefined()),
 });

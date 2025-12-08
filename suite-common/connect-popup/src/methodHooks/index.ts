@@ -12,6 +12,7 @@ import {
 import { addressConfirmationModalHooks } from './addressConfirmation';
 import { bitcoinSignTransaction } from './bitcoinSignTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
+import { requestLoginHooks } from './requestLogin';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { ConnectCallSource } from '../connectPopupTypes';
 
@@ -34,6 +35,9 @@ export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHook
 
     const ethereumPayload = await ethereumSignTransaction.preCallHook(params);
     if (ethereumPayload) return ethereumPayload;
+
+    const requestLoginPayload = requestLoginHooks.preCallHook(params);
+    if (requestLoginPayload) return requestLoginPayload;
 
     const addressConfirmPayload = await addressConfirmationModalHooks.preCallHook(params);
     if (addressConfirmPayload) return addressConfirmPayload;
