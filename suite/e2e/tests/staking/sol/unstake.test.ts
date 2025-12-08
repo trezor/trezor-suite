@@ -13,7 +13,7 @@ const stakedAmountFormatted = `${stakedAmount} SOL`;
 const unstakingAmount = solStakingAccountDeactivating.stakeInSol;
 const unstakingAmountFormatted = `${unstakingAmount} SOL`;
 
-test.describe('SOL unstaking and claim', { tag: ['@group=staking', '@webOnly'] }, () => {
+test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',

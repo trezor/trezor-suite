@@ -226,7 +226,9 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     values: { amount: '3234 ETH' },
                 });
                 await expect(stakingSection.claimCard).toBeHidden();
-                await expect(walletPage.balanceOfAccount('eth').first()).toHaveText('4,468');
+                await expect(walletPage.balanceOfAccount({ symbol: 'eth', atIndex: 0 })).toHaveText(
+                    '4,468',
+                );
             });
         },
     );

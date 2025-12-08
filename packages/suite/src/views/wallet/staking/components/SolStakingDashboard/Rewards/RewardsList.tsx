@@ -26,6 +26,8 @@ interface RewardsListProps {
     rewards: SolanaRewards;
 }
 
+const TEST_ID = '@staking/rewards-item';
+
 export const RewardsList = ({ account, rewards }: RewardsListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
     const isSolanaMainnet = !isTestnet(account.symbol);
@@ -58,9 +60,9 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                 ) : (
                     <Column gap={40}>
                         {rewards.slicedRewards?.map(reward => (
-                            <Column gap={10} key={reward.epoch}>
+                            <Column gap={10} key={reward.epoch} data-testid={TEST_ID}>
                                 <Row>
-                                    <ColDate>
+                                    <ColDate data-testid={`${TEST_ID}/date`}>
                                         <FormattedDate
                                             value={reward?.time ?? undefined}
                                             day="numeric"
@@ -90,7 +92,11 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                                                     }
                                                 >
                                                     <Badge size="small">
-                                                        <Row gap={spacings.xxs} alignItems="center">
+                                                        <Row
+                                                            gap={spacings.xxs}
+                                                            alignItems="center"
+                                                            data-testid={`${TEST_ID}/epoch`}
+                                                        >
                                                             <Translation
                                                                 id="TR_STAKE_REWARDS_BADGE"
                                                                 values={{ count: reward.epoch }}
@@ -110,6 +116,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                                                             account.symbol,
                                                         )}
                                                         symbol={account.symbol}
+                                                        data-testid={`${TEST_ID}/crypto-amount`}
                                                     />
                                                 </HiddenPlaceholder>
                                                 <HiddenPlaceholder>
@@ -120,6 +127,7 @@ export const RewardsList = ({ account, rewards }: RewardsListProps) => {
                                                                 account.symbol,
                                                             )}
                                                             symbol={account.symbol}
+                                                            data-testid={`${TEST_ID}/fiat-amount`}
                                                         />
                                                     </Text>
                                                 </HiddenPlaceholder>

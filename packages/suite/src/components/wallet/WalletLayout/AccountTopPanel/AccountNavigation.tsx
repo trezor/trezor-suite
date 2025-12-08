@@ -26,6 +26,7 @@ export const AccountNavigation = () => {
             },
             title: <Translation id="TR_NAV_TRANSACTIONS" />,
             isHidden: false,
+            'data-testid': '@wallet/menu/wallet-overview',
         },
         {
             id: 'wallet-tokens',

@@ -59,7 +59,7 @@ test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
             });
             const expectedAccounts = ['btc', ...coinsToActivate] as NetworkSymbol[];
             for (const symbol of expectedAccounts) {
-                await expect.soft(walletPage.balanceOfAccount(symbol).first()).toBeVisible({
+                await expect.soft(walletPage.balanceOfAccount({ symbol, atIndex: 0 })).toBeVisible({
                     timeout: DISCOVERY_LIMIT,
                 });
             }

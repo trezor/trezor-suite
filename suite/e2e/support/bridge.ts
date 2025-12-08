@@ -11,7 +11,7 @@ export const expectBridgeToBeRunning = async (request: APIRequestContext) => {
     const bridgeResponse = await request.get(BRIDGE_STATUS_URL, {
         headers: HEADERS,
     });
-    await expect(bridgeResponse).toBeOK();
+    await expect(bridgeResponse, 'expect bridge GET response to be OK = is running').toBeOK();
 };
 
 export const expectBridgeToBeStopped = async (request: APIRequestContext) => {
@@ -19,7 +19,7 @@ export const expectBridgeToBeStopped = async (request: APIRequestContext) => {
         await request.get(BRIDGE_STATUS_URL, {
             headers: HEADERS,
         });
-    }).rejects.toThrow();
+    }, 'expect bridge GET request to be rejected = is stopped').rejects.toThrow();
 };
 
 // We wait for `@welcome-layout/body` or `@dashboard/graph` since
