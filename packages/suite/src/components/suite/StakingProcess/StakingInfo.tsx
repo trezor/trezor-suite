@@ -125,6 +125,7 @@ export const StakingInfo = ({ isExpanded, flow }: StakingInfoProps) => {
 
     if (!account) return null;
 
+    // TODO: this is only for Ethereum
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
     const infoRowsData = getInfoRowsData(account, flow, daysToAddToPoolInitial);
 

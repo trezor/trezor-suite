@@ -1,5 +1,7 @@
 import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk-ethereum';
 
+import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '@suite-common/wallet-constants';
+
 export const transformTxFixtures = [
     {
         description:
@@ -604,7 +606,7 @@ export const getDaysToAddToPoolInitialFixture = [
         args: {
             validatorsQueue: {}, // validatorAddingDelay and validatorActivationTime are undefined
         },
-        result: undefined,
+        result: DAYS_TO_ADD_TO_POOL_DEFAULT,
     },
     {
         description: 'should return the number of days to wait',

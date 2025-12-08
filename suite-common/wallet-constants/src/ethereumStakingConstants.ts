@@ -20,3 +20,5 @@ export const BACKUP_REWARD_PAYOUT_DAYS = 7;
 
 // Used when Everstake unstaking period is not available from the API.
 export const UNSTAKING_ETH_PERIOD = 3;
+
+export const DAYS_TO_ADD_TO_POOL_DEFAULT = 30;
