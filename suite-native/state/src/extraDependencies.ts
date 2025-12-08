@@ -36,7 +36,7 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
-export const nativeExtraFactory: ExtraWithStoreFactory = store => {
+export const createNativeCompositionRoot: ExtraWithStoreFactory = store => {
     const secureStorage = createNativeSecureStorage();
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         ...store,

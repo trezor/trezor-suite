@@ -70,7 +70,7 @@ export const createRouterServices = (history: History) => ({
     navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
 
-export const suiteExtraFactory: ExtraWithStoreFactory = store => {
+export const createSuiteCompositionRoot: ExtraWithStoreFactory = store => {
     const secureStorage = isDesktop()
         ? createElectronSecureStorage({ desktopApi })
         : createWebauthnSecureStorage();

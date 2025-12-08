@@ -16,7 +16,7 @@
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/graph": "workspace:*",
-        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

@@ -43,7 +43,7 @@ import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
-import { extraDependencies, suiteExtraFactory } from '../support/extraDependencies';
+import { createSuiteCompositionRoot, extraDependencies } from '../support/extraDependencies';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 
@@ -163,7 +163,7 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
                         extraFactory: api => ({
                             ...extraDependencies,
                             ...(options.additionalExtraDeps || {}),
-                            ...suiteExtraFactory(api),
+                            ...createSuiteCompositionRoot(api),
                         }),
                         onExtraCreated: initializedExtra => {
                             extra = initializedExtra;

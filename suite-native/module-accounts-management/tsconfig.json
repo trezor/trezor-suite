@@ -7,7 +7,7 @@
         },
         { "path": "../../suite-common/graph" },
         {
-            "path": "../../suite-common/suite-sync"
+            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/token-definitions"

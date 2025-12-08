@@ -1,4 +1,3 @@
-// Circular issue, see: https://github.com/trezor/trezor-suite/issues/21553
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorageDep } from '@suite-common/secure-storage';
@@ -13,13 +12,15 @@ import {
 } from './retrieveDelegatedIdentityKeyFromDevice';
 import { createSaveDelegatedIdentityKey } from './saveDelegatedIdentityKey';
 
-export type Deps = {
+export type DelegatedIdentityKeyCompositionRootDeps = {
     dispatch: Dispatch;
     getState: () => any;
     trezorConnect: RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'];
 } & SecureStorageDep;
 
-export const delegatedIdentityKeyCompositionRoot = (deps: Deps) => {
+export const delegatedIdentityKeyCompositionRoot = (
+    deps: DelegatedIdentityKeyCompositionRootDeps,
+) => {
     const ensureDelegatedIdentityKey = createEnsureDelegatedIdentityKey({
         loadDelegatedIdentityKeyFromState: createLoadDelegatedIdentityKeyFromState({
             dispatch: deps.dispatch,
