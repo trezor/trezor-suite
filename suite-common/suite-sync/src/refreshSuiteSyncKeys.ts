@@ -3,17 +3,13 @@ import {
     RefreshSuiteSyncKeys,
     RefreshSuiteSyncKeysDeps,
 } from '@suite-common/suite-sync-types';
-import { deviceActions, selectDevices } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { err, ok } from '@trezor/type-utils';
 
 export const createRefreshSuiteSyncKeys =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
-    async ({ device: originalDevice }) => {
-        const device = selectDevices(deps.getState())?.find(
-            it => it.state?.staticSessionId === originalDevice.state?.staticSessionId,
-        );
-
+    async ({ device }) => {
         if (device?.suiteSyncOwner !== undefined) {
             return ok();
         }

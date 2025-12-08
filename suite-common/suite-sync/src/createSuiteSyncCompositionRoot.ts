@@ -55,7 +55,6 @@ export const createSuiteSyncCompositionRoot = (
 
     const refreshSuiteSyncKeys = createRefreshSuiteSyncKeys({
         dispatch: deps.dispatch,
-        getState: deps.getState,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         ensureSuiteSyncOwnerKeys,
     });

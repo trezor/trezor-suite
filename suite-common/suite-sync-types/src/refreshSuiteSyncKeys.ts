@@ -10,7 +10,6 @@ import { Result } from '@trezor/type-utils';
 import { EnsureSuiteSyncOwnerDep } from './device/ensureSuiteSyncOwnerKeys';
 
 export type RefreshSuiteSyncKeysDeps = {
-    getState: () => any;
     dispatch: Dispatch;
 } & EnsureSuiteSyncOwnerDep &
     EnsureDelegatedIdentityKeyDep;
