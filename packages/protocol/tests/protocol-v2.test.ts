@@ -41,8 +41,11 @@ describe('protocol-v2', () => {
 
     it('decode with error', () => {
         expect(() => decode(Buffer.alloc(0))).toThrow('Malformed protocol format');
+        // CONTINUATION_PACKET
+        expect(() => decode(Buffer.from('8012380000', 'hex'))).toThrow('Malformed protocol format');
+        // unrecognized chunk
+        expect(() => decode(Buffer.from('9912380000', 'hex'))).toThrow('Malformed protocol format');
     });
-
     it('getHeaders', () => {
         expect(getHeaders(Buffer.from('0412380000', 'hex'))).toEqual([
             Buffer.from('041238', 'hex'),
