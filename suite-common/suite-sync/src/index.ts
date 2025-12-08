@@ -22,6 +22,8 @@ export {
     selectAccountLabel,
     selectOutputLabels,
     selectOutputLabel,
+    selectOutputLabelsByAccount,
+    selectAddressLabelsByAccount,
 } from './labeling/labelingSelectors';
 export { findAccountLabel, findOutputLabel, findAddressLabel } from './labeling/selectorUtils';
 export type { WithLabelingState } from './labeling/labelingSelectors';

@@ -1,0 +1,36 @@
+import { Button, CardWithIconLayout, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { ExportBip329BottomSheet } from '@suite-native/labeling';
+
+type AccountSettingsExportBip329CardProps = { accountKey: string };
+
+export const AccountSettingsExportBip329Card = ({
+    accountKey,
+}: AccountSettingsExportBip329CardProps) => {
+    const {
+        bottomSheetRef: ExportBip329BottomSheetRef,
+        openModal: openBip329Modal,
+        closeModal: closeBip329Sheet,
+    } = useBottomSheetModal();
+
+    return (
+        <CardWithIconLayout
+            icon="fileArrowDown"
+            title={<Translation id="moduleAccounts.accountSettingsExportBip329Button.title" />}
+        >
+            <VStack marginTop="sp2" spacing="sp16">
+                <Text variant="hint" adjustsFontSizeToFit numberOfLines={3}>
+                    <Translation id="moduleAccounts.accountSettingsExportBip329Button.description" />
+                </Text>
+                <Button size="small" onPress={openBip329Modal} colorScheme="tertiaryElevation0">
+                    <Translation id="moduleAccounts.accountSettingsExportBip329Button.button" />
+                </Button>
+            </VStack>
+            <ExportBip329BottomSheet
+                ref={ExportBip329BottomSheetRef}
+                accountKey={accountKey}
+                onClose={closeBip329Sheet}
+            />
+        </CardWithIconLayout>
+    );
+};

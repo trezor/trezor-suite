@@ -43,6 +43,8 @@ cashaddrjs
 create-hmac
 eth-phishing-detect
 event-target-shim
+expo-file-system
+expo-sharing
 golomb
 immer
 int64-buffer

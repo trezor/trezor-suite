@@ -77,6 +77,7 @@ const usedIcons = [
     'eyeSlash',
     'facebookLogo',
     'filePdf',
+    'fileArrowDown',
     'fingerprint',
     'fingerprintSimple',
     'flag',

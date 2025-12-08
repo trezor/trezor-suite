@@ -21,6 +21,7 @@ import {
 } from '@suite-native/navigation';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
+import { AccountSettingsExportBip329Card } from '../components/AccountSettingsExportBip329Card';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
@@ -71,6 +72,8 @@ export const AccountSettingsScreen = ({
 
     if (!account) return null;
 
+    const isBitcoinAccount = account.networkType === 'bitcoin';
+
     return (
         <Screen
             header={
@@ -81,26 +84,32 @@ export const AccountSettingsScreen = ({
             }
         >
             <Box flex={1} justifyContent="space-between">
-                <Card>
-                    <VStack spacing="sp4">
-                        <AccountDetailSettingsRow
-                            title={
-                                <Translation id="moduleAccountManagement.accountSettingsScreen.coin" />
-                            }
-                        >
-                            <CryptoNameWithIcon symbol={account.symbol} />
-                        </AccountDetailSettingsRow>
-                        {formattedAccountType && (
+                <VStack spacing="sp12">
+                    <Card>
+                        AccountSettingsExportBip329Button
+                        <VStack spacing="sp4">
                             <AccountDetailSettingsRow
                                 title={
-                                    <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
+                                    <Translation id="moduleAccountManagement.accountSettingsScreen.coin" />
                                 }
                             >
-                                <Text variant="hint">{formattedAccountType}</Text>
+                                <CryptoNameWithIcon symbol={account.symbol} />
                             </AccountDetailSettingsRow>
-                        )}
-                    </VStack>
-                </Card>
+                            {formattedAccountType && (
+                                <AccountDetailSettingsRow
+                                    title={
+                                        <Translation id="moduleAccountManagement.accountSettingsScreen.accountType" />
+                                    }
+                                >
+                                    <Text variant="hint">{formattedAccountType}</Text>
+                                </AccountDetailSettingsRow>
+                            )}
+                        </VStack>
+                    </Card>
+                    {isBitcoinAccount && (
+                        <AccountSettingsExportBip329Card accountKey={account.key} />
+                    )}
+                </VStack>
                 <VStack spacing="sp16">
                     <AccountSettingsShowXpubButton accountKey={account.key} />
                     {isPortfolioTrackerDevice && (

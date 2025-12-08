@@ -27,6 +27,8 @@
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../../packages/connect" }
+        { "path": "../toasts" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/styles" }
     ]
 }

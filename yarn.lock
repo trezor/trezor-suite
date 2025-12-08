@@ -11973,8 +11973,13 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/toasts": "workspace:^"
     "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:^"
+    expo-file-system: "npm:19.0.17"
+    expo-sharing: "npm:14.0.7"
     react: "npm:19.1.0"
+    react-native: "npm:^0.82.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -25292,7 +25297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-file-system@npm:~19.0.17":
+"expo-file-system@npm:19.0.17, expo-file-system@npm:~19.0.17":
   version: 19.0.17
   resolution: "expo-file-system@npm:19.0.17"
   peerDependencies:
@@ -25476,6 +25481,15 @@ __metadata:
   version: 1.0.2
   resolution: "expo-server@npm:1.0.2"
   checksum: 10/0fd26e70686ffd95292c76a99450cc92d3f72f806edb80d756bb3bdb97a54fe409ba094f3a4dd8c93ddbe29c353baabd2ae7d43b6ac527f8d9ca7d74866f8d7e
+  languageName: node
+  linkType: hard
+
+"expo-sharing@npm:14.0.7":
+  version: 14.0.7
+  resolution: "expo-sharing@npm:14.0.7"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/6097a0e3f7e2d0dea1258cf15ba342e907fcb70abb5fbab6e80903db13acb0c31c94759de5c13e51b89cc0af6c6c9eb8d4ca5c457e1587344e8bbb11a96f5b32
   languageName: node
   linkType: hard
 

@@ -23,8 +23,13 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/toasts": "workspace:^",
         "@trezor/connect": "workspace:*",
+        "@trezor/styles": "workspace:^",
+        "expo-file-system": "19.0.17",
+        "expo-sharing": "14.0.7",
         "react": "19.1.0",
+        "react-native": "^0.82.1",
         "react-redux": "9.2.0"
     }
 }
