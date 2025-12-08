@@ -7,7 +7,7 @@ import { expect, test } from '../../support/fixtures';
 import { getModelFromEnv } from '../../support/helpers/modelFromEnv';
 
 test.use({ exceptionLogger: skipFixture });
-test.describe('Suite Sync - Labelling', { tag: '@webOnly' }, () => {
+test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware'] }, () => {
     test.use({
         emulatorStartConf: { model: getModelFromEnv(), version: '2-main', wipe: true },
         emulatorSetupConf: { mnemonic: generateMnemonic(wordlist), passphrase_protection: true },
