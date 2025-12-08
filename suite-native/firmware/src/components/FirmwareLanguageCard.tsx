@@ -43,6 +43,7 @@ export const FirmwareLanguageCard = () => {
                     value={deviceLanguage}
                     title={<Translation id="firmware.languageCard.title" />}
                     onSelectItem={changeFirmwareLanguageIfDifferent}
+                    isConfirmable
                 />
             </VStack>
         </Card>
