@@ -10,10 +10,11 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
+import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/wallet/useClaimForm';
@@ -27,6 +28,7 @@ interface ClaimModalModalProps {
 }
 
 const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) => {
+    const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
@@ -61,7 +63,9 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         ? formIsValid && hasValues
         : !isCardanoClaimingDisabled;
 
-    const isDisabled = !isFormInputsValid || isSubmitting || isLocked() || !device?.available;
+    const isDeviceConnected = device?.connected && device?.available;
+
+    const isDisabled = !isFormInputsValid || isSubmitting || (isDeviceConnected && isLocked());
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     // cardano specific logic
@@ -89,6 +93,15 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
     }, [onClaimChange, claimableAmount]);
 
     const onClaimClick = () => {
+        if (!isDeviceConnected) {
+            if (device?.descriptor?.apiType === 'bluetooth') {
+                dispatch(setConnectionMode('bluetooth'));
+            }
+            dispatch(setConnectionModal(true));
+
+            return;
+        }
+
         handleSubmit(signTx)();
 
         analytics.report({
