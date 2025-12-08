@@ -1,18 +1,6 @@
 import type { ThpState } from './ThpState';
-import {
-    THP_CONTINUATION_PACKET,
-    THP_CONTROL_BYTE_DECRYPTED,
-    THP_CONTROL_BYTE_ENCRYPTED,
-    THP_CREATE_CHANNEL_REQUEST,
-    THP_CREATE_CHANNEL_RESPONSE,
-    THP_ERROR_HEADER_BYTE,
-    THP_HANDSHAKE_COMPLETION_REQUEST,
-    THP_HANDSHAKE_COMPLETION_RESPONSE,
-    THP_HANDSHAKE_INIT_REQUEST,
-    THP_HANDSHAKE_INIT_RESPONSE,
-    THP_READ_ACK_HEADER_BYTE,
-} from './constants';
 import { ThpMessageSyncBit, ThpPairingMethod } from './messages';
+import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
 
 export const addAckBit = (magic: number, ackBit: number) => {
     const result = Buffer.alloc(1);
@@ -60,7 +48,9 @@ export const readThpHeader = (bytes: Buffer) => {
 // Trezor doesn't expect ThpAck ThpCreateChannelResponse
 export const isAckExpected = (bytesOrMagic: Buffer | number[]) => {
     const isCreateChannelMessage = (magic: number) =>
-        [THP_CREATE_CHANNEL_REQUEST, THP_CREATE_CHANNEL_RESPONSE].includes(magic);
+        [THP_CONTROL_BYTE.CHANNEL_ALLOCATION_REQ, THP_CONTROL_BYTE.CHANNEL_ALLOCATION_RES].includes(
+            magic,
+        );
 
     if (Array.isArray(bytesOrMagic)) {
         return !bytesOrMagic.find(n => isCreateChannelMessage(n));
@@ -73,20 +63,17 @@ export const isAckExpected = (bytesOrMagic: Buffer | number[]) => {
 export const getExpectedResponses = (bytes: Buffer) => {
     const { magic } = readThpHeader(bytes);
 
-    if (magic === THP_CREATE_CHANNEL_REQUEST) {
-        return [THP_CREATE_CHANNEL_RESPONSE];
+    if (magic === THP_CONTROL_BYTE.CHANNEL_ALLOCATION_REQ) {
+        return [THP_CONTROL_BYTE.CHANNEL_ALLOCATION_RES];
     }
-    if (magic === THP_HANDSHAKE_INIT_REQUEST) {
-        return [THP_HANDSHAKE_INIT_RESPONSE, THP_CONTINUATION_PACKET];
+    if (magic === THP_CONTROL_BYTE.HANDSHAKE_INIT_REQ) {
+        return [THP_CONTROL_BYTE.HANDSHAKE_INIT_RES, THP_CONTROL_BYTE.CONTINUATION_PACKET];
     }
-    if (magic === THP_HANDSHAKE_COMPLETION_REQUEST) {
-        return [THP_HANDSHAKE_COMPLETION_RESPONSE, THP_CONTINUATION_PACKET];
+    if (magic === THP_CONTROL_BYTE.HANDSHAKE_COMP_REQ) {
+        return [THP_CONTROL_BYTE.HANDSHAKE_COMP_RES, THP_CONTROL_BYTE.CONTINUATION_PACKET];
     }
-    if (magic === THP_CONTROL_BYTE_ENCRYPTED) {
-        return [THP_CONTROL_BYTE_ENCRYPTED, THP_CONTINUATION_PACKET];
-    }
-    if (magic === THP_CONTROL_BYTE_DECRYPTED) {
-        return [THP_CONTROL_BYTE_DECRYPTED, THP_CONTINUATION_PACKET];
+    if (magic === THP_CONTROL_BYTE.ENCRYPTED) {
+        return [THP_CONTROL_BYTE.ENCRYPTED, THP_CONTROL_BYTE.CONTINUATION_PACKET];
     }
 
     return [];
@@ -95,12 +82,12 @@ export const getExpectedResponses = (bytes: Buffer) => {
 // get expected responses from ThpState (stored as numbers)
 // and join them with the channel to receive 3 bytes header
 export const getExpectedHeaders = (state: ThpState): Buffer[] =>
-    [...state.expectedResponses, THP_ERROR_HEADER_BYTE] // error could be sent any time
+    [...state.expectedResponses, THP_CONTROL_BYTE.ERROR] // error could be sent any time
         .map(resp => {
             switch (resp) {
-                case THP_CONTINUATION_PACKET:
-                    return Buffer.from([resp]); // THP_CONTINUATION_PACKET is not masked with sequence bit
-                case THP_READ_ACK_HEADER_BYTE:
+                case THP_CONTROL_BYTE.CONTINUATION_PACKET:
+                    return Buffer.from([resp]); // THP_CONTROL_BYTE.CONTINUATION_PACKET is not masked with sequence bit
+                case THP_CONTROL_BYTE.ACK_MESSAGE:
                     return addAckBit(resp, state.sendAckBit);
                 default:
                     return addSequenceBit(resp, state.recvBit);
@@ -121,7 +108,7 @@ export const isExpectedResponse = (bytes: Buffer, state: ThpState) => {
     }
 
     const { magic } = header;
-    if (magic === THP_ERROR_HEADER_BYTE) {
+    if (magic === THP_CONTROL_BYTE.ERROR) {
         // ThpError is always expected
         return true;
     }
@@ -131,7 +118,7 @@ export const isExpectedResponse = (bytes: Buffer, state: ThpState) => {
         if (magic === expectedResponses[i]) {
             // continuation packet is not masked by controlBit
             if (
-                magic !== THP_CONTINUATION_PACKET &&
+                magic !== THP_CONTROL_BYTE.CONTINUATION_PACKET &&
                 (header.sequenceBit !== state?.recvBit || header.ackBit !== state?.recvAckBit)
             ) {
                 console.warn('Unexpected control bit');
