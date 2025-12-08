@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { BadgeSize } from '@trezor/components';
+import { BadgeSize, Row } from '@trezor/components';
 
 import { useDefaultAccountLabel } from 'src/hooks/suite';
 
 import { AccountTypeBadge } from './AccountTypeBadge';
-import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
@@ -28,10 +27,9 @@ export const AccountLabel = ({
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { symbol, accountType, index, path, networkType, accountLabel } = account;
-    const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
-        <ContentFlex gap={isContentBelowBreakpoint ? 4 : 12} alignItems="flex-start">
+        <Row gap={12}>
             {accountLabel ? (
                 <TabularNums>{accountLabel}</TabularNums>
             ) : (
@@ -45,6 +43,6 @@ export const AccountLabel = ({
                     networkType={networkType}
                 />
             )}
-        </ContentFlex>
+        </Row>
     );
 };
