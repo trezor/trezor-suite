@@ -6,11 +6,11 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const models: Model[] = ['T1B1', 'T2T1', 'T3B1', 'T3T1'];
 
-test.describe(
-    'Firmware - check readiness',
-    { tag: ['@group=device-management', '@firmware-ready'] },
-    () => {
-        for (const model of models) {
+for (const model of models) {
+    test.describe(
+        'Firmware - check readiness',
+        { tag: ['@group=device-management', '@firmware-ready'] },
+        () => {
             test.use({
                 emulatorStartConf: { model, wipe: true },
                 setupEmulator: false,
@@ -31,6 +31,6 @@ test.describe(
                     await onboardingPage.firmware.expectFirmwareToBeReady();
                 },
             );
-        }
-    },
-);
+        },
+    );
+}
