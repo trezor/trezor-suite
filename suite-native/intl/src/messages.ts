@@ -2291,6 +2291,7 @@ export const messages = {
                     "Invity doesn't provide this service. It's governed by provider's Terms & Conditions.",
                 termsOfUse: "Invity's Terms of Use",
                 learnMore: 'Learn more',
+                poweredBy: 'Powered by',
             },
             balance: 'Balance:',
             providerOffer: 'Provider offer: {amount}',
@@ -2487,7 +2488,7 @@ export const messages = {
                 submitted: 'Submitted',
                 approvalPending: 'Approval pending',
                 waitingForUser: 'Waiting for user',
-                success: 'Approved',
+                success: 'Success',
                 error: 'Rejected',
                 blocked: 'Blocked',
                 siteActionRequest: 'Site action requested',
@@ -2600,6 +2601,83 @@ export const messages = {
             emptyDescription: 'Check the spelling or browse the list to select an option.',
             searchInputPlaceholder: 'Search country',
         },
+        legalSheet: {
+            buy: {
+                title: 'Buy with {companyName}',
+                subheaderSecurity: 'Security first with your Trezor',
+                infoSecurity1:
+                    "You're here to buy cryptocurrencies. If you were directed to this site for any other reason, contact {companyName} support before proceeding.",
+                infoSecurity2:
+                    "You're buying cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
+                infoSecurity3:
+                    "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+                subheaderPartners: 'Verified partners by Invity',
+                infoPartners:
+                    "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
+                subheaderLegal: 'Legal notice',
+                infoLegal1:
+                    "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+                infoLegal2:
+                    'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
+            },
+            exchange: {
+                dex: {
+                    title: 'Swap {send} to {receive} with {companyName}',
+                    security: {
+                        title: 'Security first with your Trezor',
+                        line1: "You're here to swap cryptocurrencies with a DEX (decentralized exchange) by using {companyName}'s contract.",
+                        line2: "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
+                        line3: "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+                    },
+                    verifiedPartners: {
+                        title: 'Verified partners by Invity',
+                        line1: "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
+                    },
+                    legal: {
+                        title: 'Legal notice',
+                        line1: "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+                        line2: 'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
+                    },
+                },
+                cex: {
+                    title: 'Swap {send} to {receive} with {companyName}',
+                    security: {
+                        title: 'Security first with your Trezor',
+                        line1: "You're here to swap cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
+                        line2: "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
+                        line3: "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+                    },
+                    verifiedPartners: {
+                        title: 'Verified partners by Invity',
+                        line1: "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
+                    },
+                    legal: {
+                        title: 'Legal notice',
+                        line1: "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+                        line2: 'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
+                    },
+                },
+                continueButton: "I'm ready to swap",
+            },
+            sell: {
+                title: 'Sell {symbol} with {companyName}',
+                subheaderSecurity: 'Security first with your Trezor',
+                infoSecurity1:
+                    "You're here to sell cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
+                infoSecurity2:
+                    "You're selling cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
+                infoSecurity3:
+                    "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+                subheaderPartners: 'Verified partners by Invity',
+                infoPartners:
+                    "You understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms & Conditions.",
+                subheaderLegal: 'Legal notice',
+                infoLegal1:
+                    "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+                infoLegal2:
+                    'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
+            },
+        },
     },
     notifications: {
         transaction: {
@@ -2630,12 +2708,13 @@ export const messages = {
             },
             currentFirmware: 'Current firmware',
             newFirmware: 'New firmware',
+            version: 'Version',
         },
         languageCard: {
             title: 'Language',
         },
         changeLanguage: {
-            success: `Language changed to {languageName}`,
+            success: 'Language changed to {languageName}',
             failure: {
                 title: 'Translation download failed',
                 description: 'Check your internet connection and try again.',
@@ -2679,6 +2758,13 @@ export const messages = {
             skipButton: 'Skip for now',
             title: 'Firmware update',
             subtitle: 'Firmware is your Trezor’s operating system.',
+            currentFirmware: 'Current Firmware',
+            changelog: {
+                button: 'What’s new?',
+                title: 'What’s new?',
+                closeButton: 'Close',
+                changelogUnavailable: 'No changelog available',
+            },
         },
         firmwareUpdateProgress: {
             generalSubtitle: 'Firmware is your Trezor’s operating system.',
