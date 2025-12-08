@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { selectDevices } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core/src/device/deviceSelectors';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
 import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';

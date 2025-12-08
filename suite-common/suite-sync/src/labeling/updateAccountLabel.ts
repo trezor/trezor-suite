@@ -1,4 +1,4 @@
-import { selectDevices } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core/src/device/deviceSelectors';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 
 import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';

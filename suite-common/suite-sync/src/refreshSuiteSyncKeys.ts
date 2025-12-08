@@ -2,14 +2,11 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    DeviceCancelledErr,
-    DeviceError,
-    EnsureDelegatedIdentityKeyDep,
-    ProofOfDelegatedSignFailed,
-    deviceActions,
-    selectDevices,
-} from '@suite-common/wallet-core';
+import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/ensureDelegatedIdentityKey';
+import { ProofOfDelegatedSignFailed } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/getProofOfDelegatedIdentity';
+import { deviceActions } from '@suite-common/wallet-core/src/device/deviceActions';
+import { selectDevices } from '@suite-common/wallet-core/src/device/deviceSelectors';
+import { DeviceCancelledErr, DeviceError } from '@suite-common/wallet-core/src/device/deviceUtils';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { Result, err, ok } from '@trezor/type-utils';
 

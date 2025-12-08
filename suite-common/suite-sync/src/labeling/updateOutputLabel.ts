@@ -1,5 +1,5 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectDevices } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core/src/device/deviceSelectors';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
