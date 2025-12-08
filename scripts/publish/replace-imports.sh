@@ -28,5 +28,4 @@ else
     BABEL_CONFIG="$SCRIPT_DIR/babel.config.cjs.json"
 fi
 
-
-babel "$1" --out-dir "$1" --extensions ".js" --config-file "$BABEL_CONFIG"
+yarn run -T babel "$1" --out-dir "$1" --extensions ".js" --config-file "$BABEL_CONFIG"
