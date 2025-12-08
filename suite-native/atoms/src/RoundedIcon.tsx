@@ -7,6 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
 import { Box, BoxProps } from './Box';
+import { FileArrowDownSvg } from './Pictogram/FileArrowDownSvg';
 
 export type RoundedIconProps = {
     name?: IconName;
@@ -37,6 +38,38 @@ const iconContainerStyle = prepareNativeStyle<{ backgroundColor?: Color; contain
         },
     }),
 );
+
+const IconSvgMap = {
+    fileArrowDown: FileArrowDownSvg,
+};
+
+export const RoundedIconSvg = ({
+    name,
+    symbol,
+    contractAddress,
+    color,
+    iconSize,
+    backgroundColor,
+    containerSize,
+    style,
+    ...boxProps
+}: any) => {
+    const { applyStyle } = useNativeStyles();
+
+    const IconComponent = name ? IconSvgMap[name as keyof typeof IconSvgMap] : null;
+    if (!IconComponent) {
+        return null;
+    }
+
+    return (
+        <Box
+            style={[applyStyle(iconContainerStyle, { backgroundColor, containerSize }), style]}
+            {...boxProps}
+        >
+            <IconComponent color="#000000" />
+        </Box>
+    );
+};
 
 export const RoundedIcon = ({
     name,
