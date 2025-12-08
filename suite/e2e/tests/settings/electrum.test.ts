@@ -35,7 +35,9 @@ test.describe(
 
                 await dashboardPage.navigateTo();
                 await page.discoveryShouldFinish();
-                await expect(walletPage.balanceOfAccount('regtest').first()).toBeVisible();
+                await expect(
+                    walletPage.balanceOfAccount({ symbol: 'regtest', atIndex: 0 }),
+                ).toBeVisible();
                 await expect(assetsSection.assetFiatAmount('regtest')).toBeVisible();
             },
         );

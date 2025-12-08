@@ -19,7 +19,10 @@ test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
             }),
         },
         async ({ trezorUserEnvLink, dashboardPage, settingsPage, walletPage }) => {
-            const firstAccountBalanceLocator = walletPage.balanceOfAccount('regtest').first();
+            const firstAccountBalanceLocator = walletPage.balanceOfAccount({
+                symbol: 'regtest',
+                atIndex: 0,
+            });
             await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
             await test.step('Regtest discovered with non zero value', async () => {
                 await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });

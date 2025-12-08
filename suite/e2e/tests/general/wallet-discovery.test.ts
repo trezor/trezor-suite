@@ -21,7 +21,7 @@ test.describe('Wallet discover tests', { tag: ['@group=wallet'] }, () => {
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.ejectWallet();
             await dashboardPage.addStandardWallet();
-            await expect(walletPage.balanceOfAccount('btc').first()).toBeVisible();
+            await expect(walletPage.balanceOfAccount({ symbol: 'btc', atIndex: 0 })).toBeVisible();
         },
     );
 });

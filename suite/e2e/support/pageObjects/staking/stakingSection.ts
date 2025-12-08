@@ -3,7 +3,11 @@ import { Locator, Page, expect } from '@playwright/test';
 import { paletteV1 } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
+import { RewardsList } from './rewardList';
+
 export class StakingSection {
+    readonly rewardList: RewardsList;
+    // Timers
     readonly watchPeriod = '01:00';
     readonly solanaEpochCachePeriod = '01:00:00';
     // Locators
@@ -55,6 +59,7 @@ export class StakingSection {
     readonly claimedToast: Locator;
 
     constructor(private readonly page: Page) {
+        this.rewardList = new RewardsList(page);
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
         this.stakingDashboardCard = this.page.getByTestId('@wallet/staking/card');
         this.stakingEmptyCard = this.page.getByTestId('@wallet/staking/empty-card');

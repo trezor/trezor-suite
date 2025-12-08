@@ -10,7 +10,7 @@ type WalletParams = {
     symbol?: NetworkSymbol;
     type?: 'normal' | 'legacy' | 'segwit' | 'ledger';
     atIndex?: number;
-    tokens?: boolean;
+    subAccount?: 'tokens' | 'staking';
 };
 
 export class WalletPage {
@@ -23,8 +23,12 @@ export class WalletPage {
     readonly openTradingGlobalButton: Locator;
     readonly openSwapGlobalButton: Locator;
     readonly tradingDropdownBuyButton: Locator;
-    readonly balanceOfAccount = (symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
+    readonly balanceOfAccount = (params: WalletParams) =>
+        this.accountButton(params).getByTestId(`@wallet/coin-balance/value-${params.symbol}`);
+    readonly balanceOfAccountWithSymbol = (params: WalletParams) =>
+        this.accountButton(params).getByTestId(
+            `@wallet/coin-balance/value-${params.symbol}-with-symbol`,
+        );
     readonly accountDetailsTabButton: Locator;
     readonly accountDetails: Locator;
     readonly showPublicKeyButton: Locator;
@@ -54,6 +58,7 @@ export class WalletPage {
     readonly buyButton: Locator;
     readonly sellButton: Locator;
     readonly swapButton: Locator;
+    readonly overviewTabButton: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -96,29 +101,25 @@ export class WalletPage {
         this.buyButton = this.page.getByTestId('@accounts/empty-account/buy');
         this.sellButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
         this.swapButton = this.page.getByTestId('@trading/menu/wallet-trading-exchange');
+        this.overviewTabButton = this.page.getByTestId('@wallet/menu/wallet-overview');
     }
 
     accountButton = ({
         symbol = 'btc',
         type = 'normal',
         atIndex = 0,
-        tokens = false,
+        subAccount,
     }: WalletParams = {}): Locator =>
         this.page.getByTestId(
-            `@account-menu/${symbol}/${type}/${atIndex}${tokens ? '/tokens' : ''}`,
+            `@account-menu/${symbol}/${type}/${atIndex}${subAccount ? `/${subAccount}` : ''}`,
         );
 
     accountLabel = ({ symbol = 'btc', type = 'normal', atIndex = 0 }: WalletParams = {}): Locator =>
         this.page.getByTestId(`@account-menu/${symbol}/${type}/${atIndex}/label`);
 
     @step()
-    async openAccount({
-        symbol = 'btc',
-        type = 'normal',
-        atIndex = 0,
-        tokens = false,
-    }: WalletParams = {}) {
-        await this.accountButton({ symbol, type, atIndex, tokens }).click();
+    async openAccount(params: WalletParams = {}) {
+        await this.accountButton(params).click();
         await expect(this.fiatAmount).toBeVisible();
     }
 
@@ -164,21 +165,21 @@ export class WalletPage {
 
     @step()
     async openBuyTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
-        await this.openAccount({ symbol, tokens: true });
+        await this.openAccount({ symbol, subAccount: 'tokens' });
         await this.page.getByRole('row', { name: tokenName }).getByRole('button').first().click();
         await this.page.getByTestId('@trading/tokens/buy-button').click();
     }
 
     @step()
     async openSellTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
-        await this.openAccount({ symbol, tokens: true });
+        await this.openAccount({ symbol, subAccount: 'tokens' });
         await this.page.getByRole('row', { name: tokenName }).getByRole('button').first().click();
         await this.page.getByTestId('@trading/tokens/sell-button').click();
     }
 
     @step()
     async openSwapTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
-        await this.openAccount({ symbol, tokens: true });
+        await this.openAccount({ symbol, subAccount: 'tokens' });
         await this.page.getByRole('row', { name: tokenName }).getByRole('button').nth(1).click();
     }
 
