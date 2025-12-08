@@ -1,8 +1,16 @@
 import path from 'node:path';
 
-const isIndexableNativeElement = (
-    v: Detox.IndexableNativeElement | Detox.NativeMatcher,
-): v is Detox.IndexableNativeElement => {
+import { scheduleAction } from '@trezor/utils';
+
+type ElementAttributes = {
+    text?: string;
+    label?: string;
+    value?: string;
+};
+
+type ElementOrMatcher = Detox.IndexableNativeElement | Detox.NativeMatcher;
+
+const isIndexableNativeElement = (v: ElementOrMatcher): v is Detox.IndexableNativeElement => {
     const anyV = v as any;
 
     return !!anyV && (typeof anyV.tap === 'function' || typeof anyV.atIndex === 'function');
@@ -13,6 +21,11 @@ export const platform = device.getPlatform();
 // There is inconsistency between platforms. Android needs to have 100% of an element visible to be able to interact with it.
 // On the other hand, if we are trying to scroll to 100% visibility on iOS, it causes scrolling more than height of the screen and it makes Detox crash.
 const SCROLL_VISIBILITY_THRESHOLD = platform === 'android' ? 100 : undefined;
+
+export const RETRY_CONF = {
+    attempts: 5,
+    gap: 500,
+};
 
 export const wait = async (ms: number) => {
     await new Promise(resolve => setTimeout(resolve, ms));
@@ -40,13 +53,17 @@ function pruneToAppStack(invocationStack: string): string {
     return kept.length ? ['Error'].concat(kept).join('\n') : invocationStack;
 }
 
-export const waitForVisible = async (
-    elementOrMatcher: Detox.IndexableNativeElement | Detox.NativeMatcher,
-    { timeout = 30_000 }: { timeout?: number } = {},
-) => {
-    const target = isIndexableNativeElement(elementOrMatcher)
+function getTarget(elementOrMatcher: ElementOrMatcher) {
+    return isIndexableNativeElement(elementOrMatcher)
         ? elementOrMatcher
         : element(elementOrMatcher);
+}
+
+export const waitForVisible = async (
+    elementOrMatcher: ElementOrMatcher,
+    { timeout = 30_000 }: { timeout?: number } = {},
+) => {
+    const target = getTarget(elementOrMatcher);
     const invocationStack = new Error().stack || '';
     try {
         await waitFor(target).toBeVisible().withTimeout(timeout);
@@ -56,6 +73,34 @@ export const waitForVisible = async (
         appStackError.stack = `${appStackError.name}: ${appStackError.message}\n${pruneToAppStack(invocationStack)}`;
         throw appStackError;
     }
+};
+
+export const waitToHaveRegex = async (
+    elementOrMatcher: ElementOrMatcher,
+    expectedRegex: RegExp,
+    {
+        timeout = 30_000,
+        attributeType = 'text',
+    }: { timeout?: number; attributeType?: 'text' | 'label' | 'value' } = {},
+) => {
+    const target = getTarget(elementOrMatcher);
+    await waitForVisible(target, { timeout });
+    await scheduleAction(async () => {
+        const attributes = await target.getAttributes();
+        const testedAttribute = (attributes as ElementAttributes)[attributeType];
+
+        if (typeof testedAttribute !== 'string') {
+            throw new Error(
+                `waitForRegex(): could not get "${attributeType}" property from the element`,
+            );
+        }
+
+        if (!expectedRegex.test(testedAttribute)) {
+            throw new Error(
+                `waitForRegex(): target text "${testedAttribute}" not matching ${expectedRegex} after ${timeout}ms`,
+            );
+        }
+    }, RETRY_CONF);
 };
 
 export const appIsFullyLoaded = async () => {
@@ -85,9 +130,7 @@ export const inputTextToElement = async (element: Detox.IndexableNativeElement, 
 };
 
 // Use this method in absolute necessity only! Try-catch in tests is discouraged because it may hide real issues.
-export const isElementVisible = async (
-    elementOrMatcher: Detox.IndexableNativeElement | Detox.NativeMatcher,
-): Promise<boolean> => {
+export const isElementVisible = async (elementOrMatcher: ElementOrMatcher): Promise<boolean> => {
     const target = isIndexableNativeElement(elementOrMatcher)
         ? elementOrMatcher
         : element(elementOrMatcher);
