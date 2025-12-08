@@ -74,6 +74,8 @@ describe('useSellFlow', () => {
         capturedHandleTradeArgs = null;
         mockNavigation.navigate.mockClear();
         jest.clearAllMocks();
+
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
     });
 
     describe('doSellTrade', () => {
@@ -324,6 +326,51 @@ describe('useSellFlow', () => {
             });
 
             expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'handleTradeThunkMock',
+                }),
+            );
+        });
+    });
+
+    describe('retryDoSellTrade', () => {
+        it('should do nothing when no quote is selected', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.retryDoSellTrade();
+            });
+
+            expect(dispatchSpy).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'handleTradeThunkMock',
+                }),
+            );
+        });
+
+        it('should call doSellTrade', async () => {
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const trade = { ...sellQuotes[0], quoteId: 'test-quote-id' };
+
+            act(() => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.saveSelectedQuote(trade));
+            });
+
+            const { result } = await renderUseSellFlow();
+
+            await act(async () => {
+                await result.current.retryDoSellTrade();
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     type: 'handleTradeThunkMock',
                 }),

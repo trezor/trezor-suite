@@ -1,5 +1,5 @@
 import type { TradingTransactionSell } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';
@@ -12,12 +12,14 @@ jest.mock('@react-navigation/native', () => ({
 const mockDoBankAccountVerificationCheck = jest.fn();
 const mockFetchFeesAndCompose = jest.fn();
 const mockTxnErrorString = null;
+const mockRetryDoSellTrade = jest.fn();
 
 jest.mock('../../hooks/sell/useSellFlow', () => ({
     useSellFlow: () => ({
         txnErrorString: mockTxnErrorString,
         doBankAccountVerificationCheck: mockDoBankAccountVerificationCheck,
         fetchFeesAndCompose: mockFetchFeesAndCompose,
+        retryDoSellTrade: mockRetryDoSellTrade,
     }),
 }));
 
@@ -180,5 +182,22 @@ describe('TradingSellPreviewScreen', () => {
 
         // Should be called exactly once for this orderId
         expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render continue button for submitted quote', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        const submittedStateQuote = {
+            ...sellQuotes[0],
+            status: 'SUBMITTED' as const,
+            orderId: 'test_order_id_1',
+        };
+        preloadedState.wallet!.trading!.sell!.selectedQuote = submittedStateQuote;
+
+        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+        await userEvent.press(getByText('Continue'));
+
+        expect(mockRetryDoSellTrade).toHaveBeenCalledTimes(1);
     });
 });
