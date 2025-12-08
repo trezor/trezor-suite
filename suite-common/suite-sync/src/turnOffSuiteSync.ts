@@ -2,8 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { selectDevices } from '@suite-common/wallet-core/src/device/deviceSelectors';
-import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
 import { suiteSyncActions } from './suiteSyncActions';
@@ -14,7 +13,7 @@ export type TurnOffSuiteSync = () => Promise<void>;
 export type TurnOffSuiteSyncDep = { turnOffSuiteSync: TurnOffSuiteSync };
 
 type CreateTurnOffSuiteSyncDeps = {
-    getState: () => any;
+    getAllDevicesOwners: () => SuiteSyncOwner[];
     dispatch: Dispatch;
 } & TurnOffSuiteSyncForWalletDep;
 
@@ -29,11 +28,7 @@ export const createTurnOffSuiteSync =
 
         deps.dispatch(suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: false }));
 
-        const devices = selectDevices(deps.getState()) ?? [];
-
         await Promise.all(
-            devices
-                .filter(isTrezorDeviceWithState)
-                .map(device => deps.turnOffSuiteSyncForWallet({ device })),
+            deps.getAllDevicesOwners().map(owner => deps.turnOffSuiteSyncForWallet({ owner })),
         );
     };

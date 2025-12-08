@@ -2,7 +2,7 @@ import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     SuiteSyncState,
     initialSuiteSyncState as commonInitialState,
-    prepareSuiteSyncReducer,
+    suiteSyncReducer,
 } from '@suite-common/suite-sync';
 
 import { Action } from 'src/types/suite';
@@ -30,9 +30,7 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
             state.showEnableSuiteSyncModal = action.payload.show;
         },
     },
-    extraReducers: (builder, extra) => {
-        const commonReducer = prepareSuiteSyncReducer(extra);
-
+    extraReducers: builder => {
         builder
             .addCase(STORAGE.LOAD, (state, action) => {
                 const actionWithPayload = action as Action;
@@ -51,7 +49,7 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
                 }
             })
             .addDefaultCase((state, action) => {
-                commonReducer(state, action as AnyAction);
+                suiteSyncReducer(state, action as AnyAction);
             });
     },
 });

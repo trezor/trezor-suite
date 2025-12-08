@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { selectIsSuiteSyncEnabled, useToggleSuiteSyncMethods } from '@suite-common/suite-sync';
+import { useServices } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
 import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -17,8 +18,8 @@ type EditableLabelLayoutParams = {
 
 export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutParams) => {
     const { showAlert } = useAlert();
+    const { suiteSync } = useServices();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { enableSuiteSyncIfNeeded } = useToggleSuiteSyncMethods();
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
@@ -29,7 +30,7 @@ export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutPara
             description: <Translation id="labeling.enableAlert.description" />,
             primaryButtonTitle: <Translation id="labeling.enableAlert.cta" />,
             onPressPrimaryButton: () => {
-                enableSuiteSyncIfNeeded();
+                suiteSync.turnOnSuiteSync();
                 onSuccess();
             },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,

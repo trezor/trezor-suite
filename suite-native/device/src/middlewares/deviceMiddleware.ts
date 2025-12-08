@@ -58,7 +58,9 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             if (isTrezorDeviceWithState(device)) {
                 const accountsToRemove = selectAccountsByDeviceState(getState(), device.state);
                 dispatch(accountsActions.removeAccount(accountsToRemove));
-                extra.services.suiteSync.unsubscribeSuiteSyncStorage({ device });
+                extra.services.suiteSync.turnOffSuiteSyncForWallet({
+                    owner: device.suiteSyncOwner,
+                });
             }
         }
 

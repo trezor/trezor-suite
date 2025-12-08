@@ -1,6 +1,6 @@
 import { AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
 
-import { suiteSyncToBip329 } from '../suiteSyncToBip329Params';
+import { suiteSyncToBip329 } from '../suiteSyncToBip329';
 
 describe(suiteSyncToBip329.name, () => {
     it('transform properly', () => {

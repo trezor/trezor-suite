@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
@@ -12,7 +12,7 @@ import {
     setOutputLabel,
     setWalletLabel,
 } from '../labelingActions';
-import { LabelingState, prepareLabelingReducer } from '../labelingReducer';
+import { LabelingState, labelingReducer } from '../labelingReducer';
 import {
     selectAccountLabel,
     selectAccountLabels,
@@ -22,8 +22,6 @@ import {
     selectOutputLabels,
     selectWalletLabel,
 } from '../labelingSelectors';
-
-const labelingReducer = prepareLabelingReducer(extraDependenciesMock);
 
 const initialState: LabelingState = {
     walletsLabels: {},

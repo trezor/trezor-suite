@@ -2,7 +2,7 @@
 // data provided by TrezorConnect are mocked
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { prepareLabelingReducer, prepareSuiteSyncReducer } from '@suite-common/suite-sync';
+import { labelingReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
@@ -32,8 +32,6 @@ const { getSuiteDevice } = testMocks;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
-const labelingReducer = prepareLabelingReducer(extraDependencies);
-const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 

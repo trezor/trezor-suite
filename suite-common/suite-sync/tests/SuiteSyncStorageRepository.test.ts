@@ -1,13 +1,11 @@
+import { CreateSuiteStorage } from '@suite-common/suite-sync-storage';
 import {
     SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-types';
 
-import {
-    CreateSuiteStorage,
-    createSuiteSyncStorageRepositoryFactory,
-} from '../src/SuiteSyncStorageRepository';
+import { createSuiteSyncStorageRepositoryFactory } from '../src/SuiteSyncStorageRepository';
 
 const owner: SuiteSyncOwner = {
     ownerSecret: asSuiteSyncOwnerSecretHex('Secret123'),
