@@ -13,6 +13,7 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { useForm } from '@suite-native/forms';
+import { useTranslate } from '@suite-native/intl';
 
 import { FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
 import { selectFeeLevels } from '../../selectors';
@@ -32,6 +33,8 @@ export const useFeesForm = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
+    const { translate } = useTranslate();
 
     const feeLevels = useSelector(selectFeeLevels);
 
@@ -64,6 +67,7 @@ export const useFeesForm = ({
             networkFeeInfo,
             symbol: account?.symbol,
             minimalFeeLimit,
+            translate,
         },
     });
 };
