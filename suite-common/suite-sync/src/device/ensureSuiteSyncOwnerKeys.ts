@@ -5,12 +5,14 @@ import {
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import {
-    DeviceCancelledErr,
-    DeviceError,
     ProofOfDelegatedSignFailed,
     getProofOfDelegatedIdentity,
+} from '@suite-common/wallet-core/src/device/delegatedIdentityKey/getProofOfDelegatedIdentity';
+import {
+    DeviceCancelledErr,
+    DeviceError,
     isCanceledErrorMessage,
-} from '@suite-common/wallet-core';
+} from '@suite-common/wallet-core/src/device/deviceUtils';
 import TrezorConnect from '@trezor/connect';
 import { Result, err } from '@trezor/type-utils';
 

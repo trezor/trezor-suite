@@ -2,7 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core/src/device/deviceSelectors';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 

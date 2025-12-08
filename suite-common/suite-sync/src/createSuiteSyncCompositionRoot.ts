@@ -2,7 +2,8 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorageDep } from '@suite-common/secure-storage';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-import { EnsureDelegatedIdentityKeyDep, selectAllDeviceOwners } from '@suite-common/wallet-core';
+import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/ensureDelegatedIdentityKey';
+import { selectAllDeviceOwners } from '@suite-common/wallet-core/src/device/deviceSelectors';
 
 import { SuiteSync } from './SuiteSync';
 import { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
