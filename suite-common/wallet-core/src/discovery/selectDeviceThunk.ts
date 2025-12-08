@@ -1,7 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { getSelectedDevice, sortByTimestamp } from '@suite-common/suite-utils';
-import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { Device } from '@trezor/connect';
 import { isNative } from '@trezor/env-utils';
 
@@ -17,9 +16,13 @@ type SelectDeviceThunkParams = {
  * - `@trezor/connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
  * - from user action in `@suite-components/DeviceMenu`
  */
-export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void>(
+export const selectDeviceThunk = createThunk<
+    { device: TrezorDevice },
+    SelectDeviceThunkParams,
+    { rejectValue: 'no-device' }
+>(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
-    ({ device }, { dispatch, getState, extra }) => {
+    ({ device }, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
         let trezorDevice: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
         if (device) {
@@ -37,13 +40,11 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
             }
         }
 
+        if (!trezorDevice) return rejectWithValue('no-device');
+
         dispatch(deviceActions.selectDevice(trezorDevice));
 
-        const isSuiteSyncEnabled = extra.selectors.selectIsSuiteSyncEnabled(getState());
-
-        if (isTrezorDeviceWithState(trezorDevice) && isSuiteSyncEnabled) {
-            extra.services.suiteSync.turnOnSuiteSyncForWallet({ device: trezorDevice });
-        }
+        return fulfillWithValue({ device: trezorDevice });
     },
 );
 
