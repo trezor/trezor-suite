@@ -1,21 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { Dispatch } from '@reduxjs/toolkit';
+import { CreateTurnOffSuiteSyncDeps, TurnOffSuiteSync } from '@suite-common/suite-sync-types';
 
-import { SuiteSyncOwner } from '@suite-common/suite-types';
-
-import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
-
-export type TurnOffSuiteSync = () => Promise<void>;
-
-export type TurnOffSuiteSyncDep = { turnOffSuiteSync: TurnOffSuiteSync };
-
-type CreateTurnOffSuiteSyncDeps = {
-    getAllDevicesOwners: () => SuiteSyncOwner[];
-    dispatch: Dispatch;
-} & TurnOffSuiteSyncForWalletDep;
 
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>

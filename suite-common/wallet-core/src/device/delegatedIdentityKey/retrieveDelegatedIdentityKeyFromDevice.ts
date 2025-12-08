@@ -40,13 +40,14 @@ export const createRetrieveDelegatedIdentityKeyFromDevice =
                 instance: device.instance ?? 0,
             },
             useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-            thp:
-                thpStaticHostKey !== undefined && thpCredential !== undefined
-                    ? {
+            ...(thpStaticHostKey !== undefined && thpCredential !== undefined
+                ? {
+                      thp: {
                           credential: thpCredential,
                           staticHostKey: thpStaticHostKey,
-                      }
-                    : undefined,
+                      },
+                  }
+                : undefined),
         });
 
         if (result.success) {

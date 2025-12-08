@@ -16,7 +16,10 @@
             "path": "../../suite-common/suite-sync-evolu"
         },
         {
-            "path": "../../suite-common/suite-sync-storage"
+            "path": "../../suite-common/suite-sync-types"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
         },
         { "path": "../../packages/connect" }
     ]

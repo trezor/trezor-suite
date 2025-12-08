@@ -1,27 +1,28 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsSuiteSyncEnabled, useToggleSuiteSyncMethods } from '@suite-common/suite-sync';
+import { useServices } from '@suite-common/redux-utils';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const ToggleLabelingCard = () => {
     const { showAlert } = useAlert();
+    const { suiteSync } = useServices();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const { enableSuiteSyncIfNeeded, disableSuiteSyncIfNeeded } = useToggleSuiteSyncMethods();
 
     const showSuiteSyncDisableConfirmationAlert = () => {
         showAlert({
             title: <Translation id="labeling.disableAlert.title" />,
             description: <Translation id="labeling.disableAlert.description" />,
             primaryButtonTitle: <Translation id="labeling.disableAlert.cta" />,
-            onPressPrimaryButton: disableSuiteSyncIfNeeded,
+            onPressPrimaryButton: suiteSync.turnOffSuiteSync,
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
         });
     };
 
     const toggleSuiteSync = () =>
-        isSuiteSyncEnabled ? showSuiteSyncDisableConfirmationAlert() : enableSuiteSyncIfNeeded();
+        isSuiteSyncEnabled ? showSuiteSyncDisableConfirmationAlert() : suiteSync.turnOnSuiteSync();
 
     return (
         <>

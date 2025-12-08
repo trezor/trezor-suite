@@ -1,20 +1,7 @@
-import { SuiteSyncOwner } from '@suite-common/suite-types';
-
-import { SubscriptionStorage } from './subscriptionStorage';
-import { SuiteSyncStorageRepository } from '../SuiteSyncStorageRepository';
-
-type CreateTurnOnSuiteSyncForWalletDeps = {
-    suiteSyncStorageRepository: SuiteSyncStorageRepository;
-    subscriptionStorage: SubscriptionStorage;
-};
-
-export type TurnOffSuiteSyncForWallet = (params: {
-    owner: SuiteSyncOwner | undefined;
-}) => Promise<void>;
-
-export type TurnOffSuiteSyncForWalletDep = {
-    turnOffSuiteSyncForWallet: TurnOffSuiteSyncForWallet;
-};
+import {
+    CreateTurnOnSuiteSyncForWalletDeps,
+    TurnOffSuiteSyncForWallet,
+} from '@suite-common/suite-sync-types';
 
 export const createTurnOffSuiteSyncForWallet =
     (deps: CreateTurnOnSuiteSyncForWalletDeps): TurnOffSuiteSyncForWallet =>

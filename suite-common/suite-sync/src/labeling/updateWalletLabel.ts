@@ -1,19 +1,6 @@
+import { UpdateWalletLabel, UpdateWalletLabelDeps } from '@suite-common/suite-sync-types';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import type { StaticSessionId } from '@trezor/connect';
-
-import { SuiteSyncStorageRepositoryDep } from '../SuiteSyncStorageRepository';
-
-type UpdateWalletLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
-
-type UpdateWalletLabelParams = {
-    deviceStaticSessionId: StaticSessionId;
-    label: string | null;
-};
-
-type UpdateWalletLabel = (params: UpdateWalletLabelParams) => void;
-
-export type UpdateWalletLabelDep = { updateWalletLabel: UpdateWalletLabel };
 
 export const createUpdateWalletLabel =
     (deps: UpdateWalletLabelDeps): UpdateWalletLabel =>

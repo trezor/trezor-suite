@@ -1,37 +1,14 @@
-import { Dispatch } from '@reduxjs/toolkit';
-
-import { TrezorDeviceWithState } from '@suite-common/suite-types';
+import {
+    TurnOnSuiteSyncForWallet,
+    TurnOnSuiteSyncForWalletDeps,
+} from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { SubscribeLabeling } from '../labeling/createSubscribeLabeling';
-import { RefreshSuiteSyncKeys } from '../refreshSuiteSyncKeys';
 import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
-type TurnOnSuiteSyncForWalletDeps = {
-    dispatch: Dispatch;
-    getState: () => any;
-    subscribeLabeling: SubscribeLabeling;
-    refreshSuiteSyncKeys: RefreshSuiteSyncKeys;
-};
-
-export type TurnOnSuiteSyncForWallet = (params: { device: TrezorDeviceWithState }) => Promise<void>;
-
-export type TurnOffSuiteSyncForWallet = (params: {
-    device: TrezorDeviceWithState;
-}) => Promise<void>;
-
-export type TurnOnSuiteSyncForWalletDep = {
-    turnOnSuiteSyncForWallet: TurnOnSuiteSyncForWallet;
-};
-
-/**
- * Intentionally no `createThunk`, it is unnecessarily complicated, all we need is `Result` type.
- *
- * This is part of the experiment here: https://github.com/trezor/trezor-suite/issues/23202
- */
 export const createTurnOnSuiteSyncForWallet =
     (deps: TurnOnSuiteSyncForWalletDeps): TurnOnSuiteSyncForWallet =>
     async ({ device }) => {
