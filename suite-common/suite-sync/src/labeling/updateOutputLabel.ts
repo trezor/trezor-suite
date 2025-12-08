@@ -1,18 +1,13 @@
 import { UpdateOutputLabel, UpdateOutputLabelDeps } from '@suite-common/suite-sync-types';
-import { selectDevices } from '@suite-common/wallet-core';
 
 export const createUpdateOutputLabel =
     (deps: UpdateOutputLabelDeps): UpdateOutputLabel =>
     ({ outputIndex, label, accountDescriptor, txId, networkSymbol, deviceStaticSessionId }) => {
-        const device = selectDevices(deps.getState())?.find(
-            it => it.state?.staticSessionId === deviceStaticSessionId,
-        );
+        const owner = deps.findSuiteSyncOwnerForDeviceStaticId(deviceStaticSessionId);
 
-        const owner = device?.suiteSyncOwner;
-
-        if (owner === undefined) {
+        if (owner === null) {
             console.error(
-                'Evolu: [updateOutputLabelThunk] no keys found on the selected device',
+                'Evolu: [UpdateOutputLabel] no keys found on the selected device',
                 deviceStaticSessionId,
             );
 

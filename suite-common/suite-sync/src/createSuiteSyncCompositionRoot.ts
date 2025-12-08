@@ -3,7 +3,12 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { SecureStorageDep } from '@suite-common/secure-storage';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import { EnsureSuiteSyncOwnerDeps, SuiteSync } from '@suite-common/suite-sync-types';
-import { EnsureDelegatedIdentityKeyDep, selectAllDeviceOwners } from '@suite-common/wallet-core';
+import {
+    EnsureDelegatedIdentityKeyDep,
+    selectAllDeviceOwners,
+    selectSuiteSyncOwnerForDeviceStaticId,
+} from '@suite-common/wallet-core';
+import { StaticSessionId } from '@trezor/connect';
 
 import { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 import { createEnsureSuiteSyncOwnerKeys } from './device/ensureSuiteSyncOwnerKeys';
@@ -71,10 +76,15 @@ export const createSuiteSyncCompositionRoot = (
         subscriptionStorage,
     });
 
+    const findSuiteSyncOwnerForDeviceStaticId = (deviceStaticId: StaticSessionId) =>
+        selectSuiteSyncOwnerForDeviceStaticId(deps.getState(), deviceStaticId);
+
+    const getAllDevicesOwners = () => selectAllDeviceOwners(deps.getState());
+
     return {
         changeRelayUrl: createChangeRelayUrl({
             suiteSyncStorageRepository,
-            getAllDevicesOwners: () => selectAllDeviceOwners(deps.getState()),
+            getAllDevicesOwners,
             dispatch: deps.dispatch,
         }),
         suiteSyncStorageRepository,
@@ -82,7 +92,7 @@ export const createSuiteSyncCompositionRoot = (
         turnOnSuiteSyncForWallet,
         turnOffSuiteSyncForWallet,
         turnOffSuiteSync: createTurnOffSuiteSync({
-            getAllDevicesOwners: () => selectAllDeviceOwners(deps.getState()),
+            getAllDevicesOwners,
             dispatch: deps.dispatch,
             getState: deps.getState,
             turnOffSuiteSyncForWallet,
@@ -93,19 +103,19 @@ export const createSuiteSyncCompositionRoot = (
         }),
         labeling: {
             updateWalletLabel: createUpdateWalletLabel({
-                getState: deps.getState,
+                findSuiteSyncOwnerForDeviceStaticId,
                 suiteSyncStorageRepository,
             }),
             updateAccountLabel: createUpdateAccountLabel({
-                getState: deps.getState,
+                findSuiteSyncOwnerForDeviceStaticId,
                 suiteSyncStorageRepository,
             }),
             updateOutputLabel: createUpdateOutputLabel({
-                getState: deps.getState,
+                findSuiteSyncOwnerForDeviceStaticId,
                 suiteSyncStorageRepository,
             }),
             updateAddressLabel: createUpdateAddressLabel({
-                getState: deps.getState,
+                findSuiteSyncOwnerForDeviceStaticId,
                 suiteSyncStorageRepository,
             }),
         },

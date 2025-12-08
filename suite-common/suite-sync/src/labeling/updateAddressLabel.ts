@@ -1,18 +1,13 @@
 import { UpdateAddressLabel, UpdateAddressLabelDeps } from '@suite-common/suite-sync-types';
-import { selectDevices } from '@suite-common/wallet-core';
 
 export const createUpdateAddressLabel =
     (deps: UpdateAddressLabelDeps): UpdateAddressLabel =>
     ({ deviceStaticSessionId, address, label, accountDescriptor, networkSymbol }) => {
-        const device = selectDevices(deps.getState())?.find(
-            it => it.state?.staticSessionId === deviceStaticSessionId,
-        );
+        const owner = deps.findSuiteSyncOwnerForDeviceStaticId(deviceStaticSessionId);
 
-        const owner = device?.suiteSyncOwner;
-
-        if (owner === undefined) {
+        if (owner === null) {
             console.error(
-                'Evolu: [updateAddressLabelThunk] no keys found on the selected device',
+                'Evolu: [UpdateAddressLabel] no keys found on the selected device',
                 deviceStaticSessionId,
             );
 

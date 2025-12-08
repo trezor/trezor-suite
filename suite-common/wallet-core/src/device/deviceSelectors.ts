@@ -661,3 +661,10 @@ export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(
     (persistentDeviceData, deviceId) =>
         persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
 );
+
+export const selectSuiteSyncOwnerForDeviceStaticId = createMemoizedSelector(
+    [selectDevices, (_state, deviceStaticId: StaticSessionId) => deviceStaticId],
+    (devices, deviceStaticId) =>
+        devices.find(device => device.state?.staticSessionId === deviceStaticId)?.suiteSyncOwner ??
+        null,
+);

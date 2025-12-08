@@ -1,3 +1,4 @@
+import { SuiteSyncOwner } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
@@ -14,6 +15,8 @@ export type UpdateAddressLabelParams = {
 
 export type UpdateAddressLabel = (params: UpdateAddressLabelParams) => void;
 
-export type UpdateAddressLabelDeps = { getState: () => any } & SuiteSyncStorageRepositoryDep;
+export type UpdateAddressLabelDeps = {
+    findSuiteSyncOwnerForDeviceStaticId: (staticId: StaticSessionId) => SuiteSyncOwner | null;
+} & SuiteSyncStorageRepositoryDep;
 
 export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
