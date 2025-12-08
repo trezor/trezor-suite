@@ -15,8 +15,7 @@ import { connectPopupActions } from '../connectPopupActions';
 import { createPlaceholderAccount } from './utils';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
-
-import { PostCallHookParams, PreCallHookParams } from './index';
+import { PostCallHookParams, PreCallHookParams } from './types';
 
 const temporaryAccounts: Account[] = [];
 

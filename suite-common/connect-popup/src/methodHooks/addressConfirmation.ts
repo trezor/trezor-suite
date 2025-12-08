@@ -3,8 +3,7 @@ import { HDNodeResponse } from '@trezor/connect/src/types/api/getPublicKey';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
-
-import { PostCallHookParams, PreCallHookParams } from './index';
+import { PostCallHookParams, PreCallHookParams } from './types';
 
 const methodsAddress = [
     'getAddress',
