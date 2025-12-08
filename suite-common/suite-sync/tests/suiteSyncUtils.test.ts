@@ -1,5 +1,5 @@
 import { getSuiteDevice } from '@suite-common/test-utils';
-import { portfolioTrackerDevice } from '@suite-common/wallet-core/src/device/deviceConstants';
+import { portfolioTrackerDevice } from '@suite-common/wallet-core';
 
 import { isSuiteSyncSupportedByDevice } from '../src/suiteSyncUtils';
 
