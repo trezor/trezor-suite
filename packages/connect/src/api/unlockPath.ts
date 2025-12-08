@@ -9,7 +9,6 @@ import { UnlockPathParams } from '../types/api/unlockPath';
 export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.UnlockPath> {
     init() {
         this.requiredPermissions = ['read'];
-        this.skipFinalReload = true;
         this.firmwareRange = getFirmwareRange(this.name, undefined, this.firmwareRange);
 
         const { payload } = this;

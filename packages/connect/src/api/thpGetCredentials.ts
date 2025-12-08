@@ -10,7 +10,6 @@ export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
-        this.skipFinalReload = true;
     }
 
     async run() {

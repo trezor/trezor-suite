@@ -36,7 +36,6 @@ export const ethereumGetAddress = async (api: TrezorConnect) => {
         },
         useEmptyPassphrase: true,
         keepSession: false,
-        skipFinalReload: false,
         path: 'm/44',
         address: '0x',
         showOnTrezor: true,

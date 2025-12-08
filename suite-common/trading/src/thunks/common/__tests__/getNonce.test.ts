@@ -76,7 +76,6 @@ describe('getNonce thunk', () => {
                 device: mockDevice,
                 useEmptyPassphrase: true,
                 keepSession: true,
-                skipFinalReload: true,
             });
         });
 
@@ -166,7 +165,6 @@ describe('getNonce thunk', () => {
                 device: mockDevice,
                 useEmptyPassphrase: true,
                 keepSession: true,
-                skipFinalReload: true,
             });
         });
 
@@ -222,7 +220,6 @@ describe('getNonce thunk', () => {
                 device: minimalDevice,
                 useEmptyPassphrase: true,
                 keepSession: true,
-                skipFinalReload: true,
             });
         });
 
@@ -255,7 +252,6 @@ describe('getNonce thunk', () => {
                 device: trezorOneDevice,
                 useEmptyPassphrase: true,
                 keepSession: true,
-                skipFinalReload: true,
             });
         });
     });
