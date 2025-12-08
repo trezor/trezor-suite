@@ -12,7 +12,8 @@ import {
     SecureStorage,
     asEncryptedHex,
 } from '@suite-common/secure-storage';
-import type { SuiteSync, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import type { SuiteSync } from '@suite-common/suite-sync';
+import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import {
     ReportSecurityCheckProps,
     Route,
@@ -98,9 +99,16 @@ const suiteSyncMock: SuiteSync = {
             ownerSecret: asSuiteSyncOwnerSecretHex('test-2'),
         }),
     changeRelayUrl: () => Promise.resolve(),
-    subscribeSuiteSyncStorage: () => Promise.resolve(),
-    unsubscribeSuiteSyncStorage: () => Promise.resolve(),
+    turnOnSuiteSyncForWallet: () => Promise.resolve(),
+    turnOffSuiteSyncForWallet: () => Promise.resolve(),
+    turnOnSuiteSync: () => Promise.resolve(),
     turnOffSuiteSync: () => Promise.resolve(),
+    labeling: {
+        updateAccountLabel: () => {},
+        updateAddressLabel: () => {},
+        updateOutputLabel: () => {},
+        updateWalletLabel: () => {},
+    },
 };
 
 const secureStorageMock: SecureStorage = {

@@ -1,4 +1,4 @@
-import { TrezorDeviceWithState } from '@suite-common/suite-types';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { SubscriptionStorage } from './subscriptionStorage';
 import { SuiteSyncStorageRepository } from '../SuiteSyncStorageRepository';
@@ -9,7 +9,7 @@ type CreateTurnOnSuiteSyncForWalletDeps = {
 };
 
 export type TurnOffSuiteSyncForWallet = (params: {
-    device: TrezorDeviceWithState;
+    owner: SuiteSyncOwner | undefined;
 }) => Promise<void>;
 
 export type TurnOffSuiteSyncForWalletDep = {
@@ -18,9 +18,7 @@ export type TurnOffSuiteSyncForWalletDep = {
 
 export const createTurnOffSuiteSyncForWallet =
     (deps: CreateTurnOnSuiteSyncForWalletDeps): TurnOffSuiteSyncForWallet =>
-    async ({ device }) => {
-        const owner = device.suiteSyncOwner;
-
+    async ({ owner }) => {
         if (owner === undefined) {
             return;
         }

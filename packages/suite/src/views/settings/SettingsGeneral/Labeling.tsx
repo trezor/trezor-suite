@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useServices } from '@suite-common/redux-utils';
 import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -25,6 +26,7 @@ import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/
 
 export const Labeling = () => {
     const { translationString } = useTranslation();
+    const { suiteSync } = useServices();
 
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
@@ -36,7 +38,6 @@ export const Labeling = () => {
         legacyMetadataState,
         legacyEnableIfNeeded,
         legacyDisableIfNeeded,
-        disableSuiteSyncIfNeeded,
         enableSuiteSyncIfNeeded,
         isEvoluSupportedByDevice,
         isSuiteSyncEnabled,
@@ -65,7 +66,7 @@ export const Labeling = () => {
         switch (value) {
             case 'off':
                 legacyDisableIfNeeded();
-                disableSuiteSyncIfNeeded();
+                suiteSync.turnOffSuiteSync();
                 break;
 
             case 'secure-sync':
@@ -73,7 +74,7 @@ export const Labeling = () => {
                 break;
 
             case 'legacy':
-                disableSuiteSyncIfNeeded();
+                suiteSync.turnOffSuiteSync();
                 legacyEnableIfNeeded();
                 break;
 
@@ -120,7 +121,7 @@ export const Labeling = () => {
                 <LabelingSwitchToLegacyModal
                     onClose={() => setLegacyModalWarningVisible(false)}
                     onSwitch={() => {
-                        disableSuiteSyncIfNeeded();
+                        suiteSync.turnOffSuiteSync();
                         legacyEnableIfNeeded();
                         setLegacyModalWarningVisible(false);
                     }}

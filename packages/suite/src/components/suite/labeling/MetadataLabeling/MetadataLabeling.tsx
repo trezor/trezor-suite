@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { processMetadataMessageThunk, selectShouldOfferSecureSync } from '@suite-common/suite-sync';
+import { selectShouldOfferSecureSync } from '@suite-common/suite-sync';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
@@ -21,6 +21,7 @@ import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } from './definitions';
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
+import { processLegacyMetadataIntoSuiteSyncThunk } from '../../../../actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 import { NO_HIGHLIGHT_ATTRIBUTE } from '../../FindBar/consts';
@@ -443,7 +444,9 @@ export const MetadataLabeling = ({
         setPending(true);
 
         if (isSuiteSyncEnabled) {
-            await dispatch(processMetadataMessageThunk({ payload, deviceStaticSessionId, value }));
+            await dispatch(
+                processLegacyMetadataIntoSuiteSyncThunk({ payload, deviceStaticSessionId, value }),
+            );
 
             setShowSuccess(true);
             // Intentional pattern how to use timers with useEffect

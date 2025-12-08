@@ -47,7 +47,7 @@ export const initialSuiteSyncState: SuiteSyncState = {
     },
 };
 
-export const prepareSuiteSyncReducer = createReducer(initialSuiteSyncState, builder =>
+export const suiteSyncReducer = createReducer(initialSuiteSyncState, builder =>
     builder
         .addCase(suiteSyncActions.updateSuiteSyncEnabled, (state, { payload }) => {
             state.settings.isSuiteSyncEnabled = payload.isEnabled;

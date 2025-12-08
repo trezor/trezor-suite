@@ -1,9 +1,9 @@
+import { useServices } from '@suite-common/redux-utils';
 import {
     selectIsFeatureSuiteSyncAvailable,
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncEnabled,
     suiteSyncActions,
-    useToggleSuiteSyncMethods,
 } from '@suite-common/suite-sync';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
@@ -27,15 +27,13 @@ type UseLabelingCombinedParams = {
  */
 export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombinedParams) => {
     const dispatch = useDispatch();
+    const { suiteSync } = useServices();
 
     const device = useSelector(state =>
         deviceStaticSessionId !== undefined
             ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
             : undefined,
     );
-
-    const { disableSuiteSyncIfNeeded, enableSuiteSyncIfNeeded: enableSuiteSyncIfNeededCommon } =
-        useToggleSuiteSyncMethods();
 
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
@@ -65,12 +63,12 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
                 provider: 'evolu',
             },
         });
-        enableSuiteSyncIfNeededCommon();
+        suiteSync.turnOnSuiteSync();
     };
 
     const legacyEnableIfNeeded = () => {
         if (!legacyMetadataState.enabled) {
-            disableSuiteSyncIfNeeded(); // Enabling Legacy Labeling implicitly disables Evolu
+            suiteSync.turnOffSuiteSync(); // Enabling Legacy Labeling implicitly disables Evolu
             dispatch(metadataLabelingActions.init(true));
         }
     };
@@ -88,7 +86,6 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         isSuiteSyncDebugEnabled,
         hasDeviceSuiteSyncOwner,
         enableSuiteSyncIfNeeded,
-        disableSuiteSyncIfNeeded,
 
         /** Legacy Labeling */
         isMetadataEnabled: legacyMetadataState.enabled,

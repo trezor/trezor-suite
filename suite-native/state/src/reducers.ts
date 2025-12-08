@@ -9,7 +9,7 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { prepareLabelingReducer, prepareSuiteSyncReducer } from '@suite-common/suite-sync';
+import { labelingReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { prepareThpReducer } from '@suite-common/thp';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
@@ -83,8 +83,6 @@ const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
-const labelingReducer = prepareLabelingReducer(extraDependencies);
-const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({

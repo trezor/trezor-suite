@@ -8,7 +8,7 @@ import {
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/ensureDelegatedIdentityKey';
+import { EnsureDelegatedIdentityKeyDep , selectAllDeviceOwners } from '@suite-common/wallet-core';
 import { TrezorConnect } from '@trezor/connect';
 
 type InitSuiteSyncNativeDeps = {
@@ -26,5 +26,6 @@ export const createSuiteSyncNativeCompositionRoot = (deps: InitSuiteSyncNativeDe
         ...deps,
         createSuiteStorage: createEvoluStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        getAllDevicesOwners: () => selectAllDeviceOwners(deps.getState()),
     });
 };

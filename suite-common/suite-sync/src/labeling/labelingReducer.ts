@@ -39,7 +39,7 @@ const getOrCreateWalletsLabelsState = (
     return state.walletsLabels[walletDescriptor];
 };
 
-export const prepareLabelingReducer = createReducer(initialLabelingState, builder =>
+export const labelingReducer = createReducer(initialLabelingState, builder =>
     builder
         .addCase(labelingActions.setWalletLabel, (state, { payload }) => {
             const walletLabelState = getOrCreateWalletsLabelsState(state, payload.walletDescriptor);

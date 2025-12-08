@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { selectIsSuiteSyncEnabled, updateOutputLabel } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectPrecomposedSendForm, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
@@ -20,7 +20,7 @@ export const addTransactionLabelingThunk = createThunk<
     void
 >(
     `${TRANSACTION_MANAGEMENT_PREFIX}/sendTransactionThunk`,
-    async ({ selectedAccount, txId }, { getState, dispatch }) => {
+    ({ selectedAccount, txId }, { getState, extra }) => {
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
 
         if (!isSuiteSyncEnabled) {
@@ -57,16 +57,14 @@ export const addTransactionLabelingThunk = createThunk<
             }, []);
 
             for (const label of transactionUtxoLabels) {
-                await dispatch(
-                    updateOutputLabel({
-                        deviceStaticSessionId: selectedAccount.deviceState,
-                        txId,
-                        outputIndex: label.outputIndex,
-                        label: label.value,
-                        accountDescriptor: selectedAccount.descriptor,
-                        networkSymbol: selectedAccount.symbol,
-                    }),
-                );
+                extra.services.suiteSync.labeling.updateOutputLabel({
+                    deviceStaticSessionId: selectedAccount.deviceState,
+                    txId,
+                    outputIndex: label.outputIndex,
+                    label: label.value,
+                    accountDescriptor: selectedAccount.descriptor,
+                    networkSymbol: selectedAccount.symbol,
+                });
             }
         }
     },

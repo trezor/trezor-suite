@@ -8,7 +8,7 @@ export {
 } from './suiteSyncSelectors';
 export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
-export { prepareSuiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
+export { suiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { suiteSyncActions } from './suiteSyncActions';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
@@ -31,7 +31,7 @@ export {
 } from './labeling/labelingSelectors';
 export { findAccountLabel, findOutputLabel, findAddressLabel } from './labeling/selectorUtils';
 export type { WithLabelingState } from './labeling/labelingSelectors';
-export { prepareLabelingReducer, initialLabelingState } from './labeling/labelingReducer';
+export { labelingReducer, initialLabelingState } from './labeling/labelingReducer';
 export type { LabelingState } from './labeling/labelingReducer';
 export { labelingActions } from './labeling/labelingActions';
 export { suiteSyncToBip329 } from './labeling/suiteSyncToBip329';

@@ -8,6 +8,7 @@ import {
     ProofOfDelegatedSignFailed,
     getProofOfDelegatedIdentity,
 } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/getProofOfDelegatedIdentity';
+// Todo: move to device utils
 import {
     DeviceCancelledErr,
     DeviceError,
