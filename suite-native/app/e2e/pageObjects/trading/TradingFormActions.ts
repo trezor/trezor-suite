@@ -22,6 +22,10 @@ export abstract class TradingFormActions extends TradingActions {
         return this.getElementById('fiat-amount-input');
     }
 
+    getReceiveCryptoAmountElement() {
+        return this.getElementById('crypto-amount-input');
+    }
+
     getSendCryptoAmountElement() {
         return this.getElementById('send-amount-input');
     }
@@ -39,6 +43,7 @@ export abstract class TradingFormActions extends TradingActions {
         await this.expectSheetHeaderTitle('Currency');
         await this.getSearchFiatElement().replaceText(fiatCurrency.slice(0, -1));
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await waitForVisible(by.text(fiatCurrency));
         await element(by.text(fiatCurrency)).tap();
 
         await waitFor(this.getElementById('fiat-button/ticker'))
@@ -53,6 +58,7 @@ export abstract class TradingFormActions extends TradingActions {
 
         await this.expectSheetHeaderTitle('Country of residence');
         await this.getSearchCountryElement().replaceText(countrySearch);
+        await waitForVisible(by.text(country));
         await element(by.text(country)).tap();
 
         await waitFor(this.getElementById('country/value'))
@@ -133,7 +139,7 @@ export abstract class TradingFormActions extends TradingActions {
             await networkFilterTab.tap();
         }
 
-        await waitForVisible(by.text(asset), { timeout: this.BOTTOM_SHEET_ANIMATION_DURATION });
+        await waitForVisible(by.text(asset));
         await element(by.text(asset)).tap();
 
         await waitFor(this.getElementById('asset-receive-button/symbol'))

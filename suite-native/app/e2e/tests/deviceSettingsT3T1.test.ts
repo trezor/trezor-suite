@@ -22,7 +22,7 @@ conditionalDescribe(
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateT3T1 } });
             await prepareTrezorEmulator({ model: 'T3T1' });
-            await waitForVisible(by.id('@device-manager/connection-status'));
+            await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
             await onDeviceManager.tapDeviceSwitch();
             await onDeviceManager.tapDeviceSettingsButton();
         });
