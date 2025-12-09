@@ -1,5 +1,5 @@
 import * as ERRORS from '../errors';
-import { HEADER_SIZE, MESSAGE_LEN_SIZE, MESSAGE_TYPE, THP_CONTROL_BYTE } from './constants';
+import { HEADER_SIZE, MESSAGE_LEN_SIZE, THP_CONTROL_BYTE } from './constants';
 import { getHeaders } from './encode';
 import { TransportProtocolDecode } from '../types';
 
@@ -56,7 +56,7 @@ export const decode: TransportProtocolDecode = bytes => {
         header,
         chunkHeader,
         length: buffer.readUint16BE(HEADER_SIZE),
-        messageType: MESSAGE_TYPE, // will be decoded by `protocol-thp`, TODO messageType
+        messageType,
         payload: buffer.subarray(HEADER_SIZE + MESSAGE_LEN_SIZE),
     };
 };

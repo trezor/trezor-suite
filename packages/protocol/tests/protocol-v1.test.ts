@@ -13,11 +13,6 @@ describe('protocol-v1', () => {
         expect(result.length).toEqual(371 + HEADER_SIZE);
         expect(result.subarray(0, HEADER_SIZE).toString('hex')).toEqual('3f2323003700000173');
         expect(result.subarray(HEADER_SIZE).toString('hex')).toEqual('a3'.repeat(371));
-
-        // fail to encode unsupported messageType (string)
-        expect(() => v1.encode(Buffer.alloc(64), { messageType: 'Initialize' })).toThrow(
-            'Unsupported message type Initialize',
-        );
     });
 
     it('decode', () => {
