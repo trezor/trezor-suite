@@ -86,14 +86,7 @@ const start = async (bridge: BridgeInterface) => {
     }
 };
 
-const shouldUseLegacyBridge = (store: Dependencies['store']) => {
-    const legacyRequestedBySettings = store.getBridgeSettings().legacy;
-    const legacyRequestedBySwitch = hasSwitch('bridge-legacy');
-    // Legacy bridge explicitly requested
-    if (legacyRequestedBySwitch || legacyRequestedBySettings) return true;
-
-    return false;
-};
+const shouldUseLegacyBridge = (_store: Dependencies['store']) => true;
 
 let bridge: BridgeInterface;
 let legacyBridge: BridgeInterface;
