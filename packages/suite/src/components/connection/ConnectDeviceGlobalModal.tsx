@@ -64,29 +64,39 @@ type ConnectModalContentProps = {
     isBluetoothMode: boolean;
 };
 
-const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentProps) => (
-    <Column alignItems="center" gap={32} overflow="hidden">
-        <H3 typographyStyle="titleMedium" align="center" textWrap="balance">
-            <Translation
-                id={
-                    isBluetoothMode
-                        ? 'TR_CONNECT_UNLOCK_BLUETOOTH_DEVICE'
-                        : 'TR_CONNECT_UNLOCK_YOUR_DEVICE'
-                }
-            />
-        </H3>
-        <Row gap={8} alignItems="center" justifyContent="center" height={36}>
-            <Spinner size={16} isGrey={false} />
-            <Text variant="primary">
+const ConnectModalContent = ({ children, isBluetoothMode }: ConnectModalContentProps) => {
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+
+    return (
+        <Column alignItems="center" gap={32} overflow="hidden">
+            <H3 typographyStyle="titleMedium" align="center" textWrap="balance">
                 <Translation
-                    id={isBluetoothMode ? 'TR_SCAN_TREZORS_NEARBY' : 'TR_CHECK_CONNECTED_TREZORS'}
+                    id={
+                        isBluetoothMode
+                            ? 'TR_CONNECT_UNLOCK_BLUETOOTH_DEVICE'
+                            : 'TR_CONNECT_UNLOCK_YOUR_DEVICE'
+                    }
                 />
-            </Text>
-        </Row>
-        {children}
-        <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
-    </Column>
-);
+            </H3>
+            {!isWebUsbTransport && (
+                <Row gap={8} alignItems="center" justifyContent="center" height={36}>
+                    <Spinner size={16} isGrey={false} />
+                    <Text variant="primary">
+                        <Translation
+                            id={
+                                isBluetoothMode
+                                    ? 'TR_SCAN_TREZORS_NEARBY'
+                                    : 'TR_CHECK_CONNECTED_TREZORS'
+                            }
+                        />
+                    </Text>
+                </Row>
+            )}
+            {children}
+            <CableConnectionAnimation isBluetoothMode={isBluetoothMode} />
+        </Column>
+    );
+};
 
 type ConnectionModeCardProps = {
     onClick: () => void;
