@@ -132,7 +132,6 @@ export const ActionsContainer = ({
                     }
                     hasArrow
                     delayShow={0}
-                    cursor="inherit"
                 >
                     <IconButton
                         intent="critical"
@@ -173,7 +172,6 @@ export const ActionsContainer = ({
                         }
                         hasArrow
                         delayShow={1000}
-                        cursor="inherit"
                     >
                         <IconButton
                             data-testid={
@@ -200,7 +198,6 @@ export const ActionsContainer = ({
                             }
                             hasArrow
                             delayShow={1000}
-                            cursor="inherit"
                         >
                             <IconButton
                                 intent="critical"
