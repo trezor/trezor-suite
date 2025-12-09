@@ -63,18 +63,9 @@ runs:
       shell: bash
       run: node ./scripts/ci/check-version.js ${{ inputs.packageName }} ${{ inputs.deploymentType }}
 
-    - name: Set NPM token
-      shell: bash
-      run: yarn config set npmAuthToken ${{ env.NPM_TOKEN }}
-
     - name: Publish to NPM
       shell: bash
       run: |
         cd ./packages/${{ inputs.packageName }}
         yarn build:lib
         yarn npm publish --tag ${{ inputs.deploymentType }} --access public
-
-    - name: Cleanup
-      shell: bash
-      if: always()
-      run: yarn config unset npmAuthToken
