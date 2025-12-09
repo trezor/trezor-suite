@@ -1,13 +1,11 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     applyDeviceStatesThunk,
     deviceActions,
     handleDeviceDisconnect,
-    selectDeviceByStaticSessionId,
     selectDeviceThunk,
-    selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
@@ -15,40 +13,28 @@ import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 
-const getHasWalletBeenCreated = (action: UnknownAction) =>
-    applyDeviceStatesThunk.fulfilled.match(action) &&
-    action.payload &&
-    typeof action.payload === 'object' &&
-    'staticSessionId' in action.payload;
+// Thunk triggers for which we want to turn on Suite Sync for the currently selected wallet
+const suiteSyncTurnOnTriggers = [
+    // New wallet created
+    applyDeviceStatesThunk.fulfilled,
+    // Wallet selected
+    selectDeviceThunk.fulfilled,
+] as const;
 
 export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
     (action, { next, getState, extra, dispatch }) => {
-        if (getHasWalletBeenCreated(action) && selectIsSuiteSyncEnabled(getState())) {
-            const { payload } = action as ReturnType<typeof applyDeviceStatesThunk.fulfilled>;
-            const { staticSessionId } = payload;
-
-            const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
-
-            if (isTrezorDeviceWithState(device)) {
-                extra.services.suiteSync.turnOnSuiteSyncForWallet({
-                    device,
-                });
-            }
-        }
-
-        if (selectDeviceThunk.fulfilled.match(action) && selectIsSuiteSyncEnabled(getState())) {
-            const { device } = action.payload;
-            if (isTrezorDeviceWithState(device)) {
-                extra.services.suiteSync.turnOnSuiteSyncForWallet({ device });
-            }
+        if (selectIsSuiteSyncEnabled(getState()) && isAnyOf(...suiteSyncTurnOnTriggers)(action)) {
+            const { payload } = action as ReturnType<(typeof suiteSyncTurnOnTriggers)[number]>;
+            extra.services.suiteSync.turnOnSuiteSyncForWallet({
+                staticSessionId: payload.device.state?.staticSessionId,
+            });
         }
 
         if (suiteSyncActions.updateSuiteSyncEnabled.match(action)) {
             const device = selectSelectedDevice(getState());
-            const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(getState());
-            if (isTrezorDeviceWithState(device) && !isPortfolioTrackerDevice) {
-                extra.services.suiteSync.turnOnSuiteSyncForWallet({ device });
-            }
+            extra.services.suiteSync.turnOnSuiteSyncForWallet({
+                staticSessionId: device?.state?.staticSessionId ?? undefined,
+            });
         }
 
         if (deviceActions.forgetDevice.match(action)) {

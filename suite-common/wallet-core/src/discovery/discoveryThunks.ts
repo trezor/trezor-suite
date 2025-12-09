@@ -76,7 +76,7 @@ const initNewDeviceStateMetadataThunk = createThunk(
 );
 
 export const applyDeviceStatesThunk = createThunk<
-    { staticSessionId: StaticSessionId },
+    { device: TrezorDevice },
     {
         isAddingHiddenWallet?: boolean;
         newDeviceState: DeviceState;
@@ -151,8 +151,7 @@ export const applyDeviceStatesThunk = createThunk<
 
             await dispatch(initNewDeviceStateMetadataThunk(staticSessionId));
 
-            // TODO isDone is just MVP, tweak this to something better.
-            return fulfillWithValue({ staticSessionId });
+            return fulfillWithValue({ device });
         } catch (error) {
             console.error('applyDeviceStatesThunk error', error);
 

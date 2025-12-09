@@ -1,6 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { TrezorDeviceWithState } from '@suite-common/suite-types';
+import { StaticSessionId } from '@trezor/connect';
 
 import { SubscribeLabeling } from '../labeling/subscribeLabeling';
 import { RefreshSuiteSyncKeys } from '../refreshSuiteSyncKeys';
@@ -12,7 +12,7 @@ export type TurnOnSuiteSyncForWalletDeps = {
     refreshSuiteSyncKeys: RefreshSuiteSyncKeys;
 };
 
-export type TurnOnSuiteSyncForWalletParams = { device: TrezorDeviceWithState };
+export type TurnOnSuiteSyncForWalletParams = { staticSessionId: StaticSessionId | undefined };
 
 export type TurnOnSuiteSyncForWallet = (params: TurnOnSuiteSyncForWalletParams) => Promise<void>;
 
