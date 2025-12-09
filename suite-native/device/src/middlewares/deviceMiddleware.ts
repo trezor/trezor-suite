@@ -37,7 +37,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 };
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, next, getState, extra }) => {
+    (action, { dispatch, next, getState }) => {
         if (isDeviceEventAction(action, DEVICE.DISCONNECT)) {
             dispatch(forgetDisconnectedDevices({ device: action.payload }));
 
@@ -53,14 +53,9 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
         if (deviceActions.forgetDevice.match(action)) {
             const { device } = action.payload;
-            dispatch(handleDeviceDisconnect(action.payload.device));
-
             if (isTrezorDeviceWithState(device)) {
                 const accountsToRemove = selectAccountsByDeviceState(getState(), device.state);
                 dispatch(accountsActions.removeAccount(accountsToRemove));
-                extra.services.suiteSync.turnOffSuiteSyncForWallet({
-                    owner: device.suiteSyncOwner,
-                });
             }
         }
 

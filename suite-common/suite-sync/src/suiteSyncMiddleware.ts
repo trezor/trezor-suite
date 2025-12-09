@@ -3,6 +3,8 @@ import { UnknownAction } from '@reduxjs/toolkit';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     applyDeviceStatesThunk,
+    deviceActions,
+    handleDeviceDisconnect,
     selectDeviceByStaticSessionId,
     selectDeviceThunk,
     selectIsPortfolioTrackerDevice,
@@ -20,8 +22,7 @@ const getHasWalletBeenCreated = (action: UnknownAction) =>
     'staticSessionId' in action.payload;
 
 export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
-    (action, { next, getState, extra }) => {
-        // Wallet creation getting evolu keys
+    (action, { next, getState, extra, dispatch }) => {
         if (getHasWalletBeenCreated(action) && selectIsSuiteSyncEnabled(getState())) {
             const { payload } = action as ReturnType<typeof applyDeviceStatesThunk.fulfilled>;
             const { staticSessionId } = payload;
@@ -35,7 +36,6 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
             }
         }
 
-        // Selecting device (either by user or auto-selection on connect)
         if (selectDeviceThunk.fulfilled.match(action) && selectIsSuiteSyncEnabled(getState())) {
             const { device } = action.payload;
             if (isTrezorDeviceWithState(device)) {
@@ -43,12 +43,22 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
             }
         }
 
-        // Check currently selected device and subscribe if SuiteSync got enabled
         if (suiteSyncActions.updateSuiteSyncEnabled.match(action)) {
             const device = selectSelectedDevice(getState());
             const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(getState());
             if (isTrezorDeviceWithState(device) && !isPortfolioTrackerDevice) {
                 extra.services.suiteSync.turnOnSuiteSyncForWallet({ device });
+            }
+        }
+
+        if (deviceActions.forgetDevice.match(action)) {
+            const { device } = action.payload;
+
+            dispatch(handleDeviceDisconnect(device));
+            if (isTrezorDeviceWithState(device)) {
+                extra.services.suiteSync.turnOffSuiteSyncForWallet({
+                    owner: device.suiteSyncOwner,
+                });
             }
         }
 
