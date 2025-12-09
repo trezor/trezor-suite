@@ -12,7 +12,7 @@ export type FeedbackCategory =
     | 'trade'
     | 'other';
 
-type FeedbackExtras = Record<string, string | number | boolean | undefined>;
+type FeedbackExtras = Record<string, any>;
 
 interface BasePayload extends UserData, FeedbackExtras {
     description: string;

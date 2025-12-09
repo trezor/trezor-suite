@@ -9,7 +9,7 @@ import {
 
 import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
-import { ExperimentId } from '@suite-common/message-system';
+import { ExperimentId, selectActiveExperimentsWithVariants } from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
 import { Button, Card, Column, H3, IconCircle, Paragraph, Row, Textarea } from '@trezor/components';
 
@@ -44,6 +44,8 @@ export const TradingDetailFeedback = ({
     const dispatch = useDispatch();
     const geolocation = useSelector(selectCountryCode);
 
+    const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
+
     const submitFeedback = () => {
         if (!rating) return;
 
@@ -64,6 +66,7 @@ export const TradingDetailFeedback = ({
                     receiveCurrency,
                     geolocation: geolocation || undefined,
                     countryOfResidence: country || undefined,
+                    activeExperimentsWithVariants,
                     ...userData,
                 },
             }),
