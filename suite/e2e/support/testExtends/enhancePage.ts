@@ -9,6 +9,12 @@ declare module '@playwright/test' {
 
         // Methods
         discoveryShouldFinish(): Promise<void>;
+        /**
+         * Ensure that the Redux store is exposed, which is not instant in Playwright Electron.
+         * On Desktop this must be called before using the store further.
+         * On Web this is no-op (resolves instantly).
+         */
+        ensureStoreOnDesktop(): Promise<void>;
         expectReduxObjectNotToBeEmpty(
             objectPath: string,
             options?: { timeout?: number },
@@ -63,6 +69,13 @@ export const enhancePage = (page: Page): Page => {
                 await option.click({ timeout: 2000 });
             }).toPass({ timeout: 10_000 });
         });
+    };
+
+    page.ensureStoreOnDesktop = async () => {
+        await expect(async () => {
+            const store = await page.evaluate(() => window.store);
+            expect(store).toBeDefined();
+        }).toPass({ timeout: 5000 });
     };
 
     page.getReduxObject = async (objectPath: string) => {

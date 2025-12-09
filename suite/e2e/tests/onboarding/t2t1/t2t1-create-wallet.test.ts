@@ -1,4 +1,3 @@
-import { SeedType } from '../../../support/enums/seedType';
 import { expect, test } from '../../../support/fixtures';
 
 test.describe(
@@ -25,7 +24,7 @@ test.describe(
 
             // Will be clicking on Shamir backup button
             await onboardingPage.createWalletButton.click();
-            await onboardingPage.selectSeedType(SeedType.Advanced);
+            await onboardingPage.selectSeedType('shamir-advanced');
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
 

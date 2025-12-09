@@ -15181,6 +15181,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/connect-web": "workspace:*"

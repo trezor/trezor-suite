@@ -1,6 +1,5 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
-import { SeedType } from '../../../support/enums/seedType';
 import { test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
@@ -38,7 +37,7 @@ test.describe(
 
                 // Create wallet with Shamir backup
                 await onboardingPage.createWalletButton.click();
-                await onboardingPage.selectSeedType(SeedType.Advanced);
+                await onboardingPage.selectSeedType('shamir-advanced');
 
                 // Accept ToS
                 await devicePrompt.confirmOnDevicePromptIsShown();

@@ -1,10 +1,10 @@
 import { Locator, Page, TestInfo, expect } from '@playwright/test';
 
-import { SUITE as SuiteActions } from '@trezor/suite/src//actions/suite/constants';
+import { BackupType } from '@suite-common/suite-types';
+import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 import { StartEmu } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, isWebProject, step } from '../../common';
-import { SeedType } from '../../enums/seedType';
 import { AnalyticsSection } from '../analyticsSection';
 import { DevicePrompt } from '../devicePrompt';
 import { BackupSection } from './backupSection';
@@ -33,11 +33,12 @@ export class OnboardingPage {
     readonly retryRecoveryButton: Locator;
     readonly suiteLoadedIndicator: Locator;
     readonly createWalletButton: Locator;
-    readonly selectSeedTypeCheckbox = (seedType: SeedType): Locator =>
-        this.page.getByTestId(`@onboarding/select-seed-type-${seedType}`);
+    readonly selectSeedTypeCheckbox = (backupType: BackupType): Locator =>
+        this.page.getByTestId(`@onboarding/select-seed-type-${backupType}`);
     readonly selectSeedTypeOpenButton: Locator;
     readonly selectSeedConfirmButton: Locator;
     readonly continueAtYourOwnRiskButton: Locator;
+    readonly deviceCompromisedModal: Locator;
     readonly pairingInputAtIndex = (index: number) =>
         this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
 
@@ -78,6 +79,7 @@ export class OnboardingPage {
             '@onboarding/select-seed-type-confirm',
         );
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
+        this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
     }
 
     @step()
@@ -273,9 +275,9 @@ export class OnboardingPage {
     }
 
     @step()
-    async selectSeedType(seedType: SeedType) {
+    async selectSeedType(backupType: BackupType) {
         await this.selectSeedTypeOpenButton.click();
-        await this.selectSeedTypeCheckbox(seedType).click();
+        await this.selectSeedTypeCheckbox(backupType).click();
         await this.selectSeedConfirmButton.click();
     }
 }
