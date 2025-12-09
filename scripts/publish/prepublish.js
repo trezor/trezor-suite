@@ -16,7 +16,7 @@ if (!isValidPackageName) {
 
 // Run babel with custom plugins to fix non-index internal imports and add .js extensions.
 const scriptPath = path.join(__dirname, 'replace-imports.sh');
-const args = [path.join(__dirname, '..', 'packages', packageName, 'lib')];
+const args = [path.join(__dirname, '..', '..', 'packages', packageName, 'lib'), 'cjs'];
 execFileSync(scriptPath, args, {
     encoding: 'utf-8',
     cwd: __dirname,
