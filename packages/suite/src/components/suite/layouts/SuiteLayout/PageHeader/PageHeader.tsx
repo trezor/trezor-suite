@@ -9,7 +9,7 @@ import { spacingsPx, zIndices } from '@trezor/theme';
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
 import { HeaderActions } from './HeaderActions';
@@ -30,26 +30,23 @@ const Container = styled.div`
     padding: ${spacingsPx.xs} ${spacingsPx.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    overflow: auto hidden;
+    overflow: hidden;
     z-index: ${zIndices.pageHeader};
 `;
 
-// TODO: perhaps this could be a part of some router config / useLayoutHook / somthing else?
 interface PageHeaderProps {
     children?: ReactNode;
 }
 
 export const PageHeader = ({ children }: PageHeaderProps) => {
-    const selectedAccount = useSelector(selectSelectedAccount);
-    const accounts = useSelector(selectAccounts);
-    // TODO subpages + tabs could be in some router config? this approach feels a bit fragile
+    // Select minimal state to avoid unnecessary re-renders
+    const selectedAccountKey = useSelector(selectSelectedAccountKey);
+    const hasAccounts = useSelector(state => selectAccounts(state).length > 0);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const routeName = useSelector(selectRouteName);
 
     // handle moment when children are not rendered yet in the Trade section
     const isTradeSection = routeName?.includes('wallet-trading');
-
-    const hasAccounts = accounts.length > 0;
 
     return isTradeSection || children ? (
         <Container>{children ?? null}</Container>
@@ -64,7 +61,7 @@ export const PageHeader = ({ children }: PageHeaderProps) => {
                     <GlobalSendReceive />
                 </Row>
             )}
-            {!!selectedAccount && isAccountTabPage && <HeaderActions />}
+            {!!selectedAccountKey && isAccountTabPage && <HeaderActions />}
         </Container>
     );
 };
