@@ -68,12 +68,6 @@ export const selectBannerMessage = createMemoizedSelector(
     activeBannerMessages => activeBannerMessages[0],
 );
 
-export const selectContextMessage = createMemoizedSelector(
-    [selectActiveContextMessages, (_state, domain: ContextDomain) => domain],
-    (activeContextMessages, domain) =>
-        activeContextMessages.find(message => message.context?.domain === domain),
-);
-
 export const selectContextMessageContent = createMemoizedSelector(
     [
         selectActiveContextMessages,

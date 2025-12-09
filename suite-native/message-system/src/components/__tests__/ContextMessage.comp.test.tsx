@@ -6,6 +6,7 @@ import { ContextMessage } from '../ContextMessage';
 
 const contextActionId = 'ContextActionId_1';
 const contentText = 'Content Text';
+const contentTextCs = 'Content Text Cs';
 const tradingContextMsg = {
     id: contextActionId,
     priority: 1,
@@ -15,7 +16,7 @@ const tradingContextMsg = {
     content: {
         en: contentText,
         es: contentText,
-        cs: contentText,
+        cs: contentTextCs,
         ru: contentText,
         ja: contentText,
         hu: contentText,
@@ -86,5 +87,35 @@ describe('ContextMessage', () => {
             context: Context.getTrading('buy'),
         });
         expect(queryByHintText(contextActionId)).toBeNull();
+    });
+
+    it('should render content in English when locale is en-US', async () => {
+        const { queryByText } = await render({
+            context: Context.getTrading('buy'),
+            preloadedState: {
+                ...stateWithTradeContextMessage,
+                locale: {
+                    appLocaleCode: 'en-US',
+                    systemLocaleCode: 'en-US',
+                },
+            },
+        });
+        expect(queryByText(contentText)).toBeTruthy();
+        expect(queryByText(contentTextCs)).toBeNull();
+    });
+
+    it('should render content in Czech when locale is cs-CZ - different from en-US', async () => {
+        const { queryByText } = await render({
+            context: Context.getTrading('buy'),
+            preloadedState: {
+                ...stateWithTradeContextMessage,
+                locale: {
+                    appLocaleCode: 'cs-CZ',
+                    systemLocaleCode: 'cs-CZ',
+                },
+            },
+        });
+        expect(queryByText(contentTextCs)).toBeTruthy();
+        expect(queryByText(contentText)).toBeNull();
     });
 });
