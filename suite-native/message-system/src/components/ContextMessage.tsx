@@ -3,12 +3,11 @@ import { useSelector } from 'react-redux';
 import {
     ContextDomain,
     MessageSystemRootState,
-    selectContextMessage,
+    selectContextMessageContent,
 } from '@suite-common/message-system';
 import { InlineAlertBox, InlineAlertBoxProps, Text } from '@suite-native/atoms';
+import { selectLocale } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-
-import { useHandleMessageLink } from '../hooks/useHandleMessageLink';
 
 export type ContextMessageProps = Omit<
     InlineAlertBoxProps,
@@ -18,34 +17,29 @@ export type ContextMessageProps = Omit<
 };
 
 export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
-    // TODO: We use only English locale in suite-native so far. When the localization to other
-    const language = 'en';
-    // languages is implemented, the language selection logic has to be added here.
+    const locale = useSelector(selectLocale);
     const message = useSelector((state: MessageSystemRootState) =>
-        selectContextMessage(state, context),
+        selectContextMessageContent(state, context, locale),
     );
 
-    const { linkLabel } = useHandleMessageLink({
-        messageCTA: message?.cta,
-        language,
-    });
+    if (!message) {
+        return null;
+    }
 
-    if (!message) return null;
-
-    const msgText = message.content[language];
-    const link = message?.cta?.link;
-    const shouldDisplayLink = !!(link && linkLabel);
+    const { content, variant, cta } = message;
+    const { label, link } = cta ?? {};
+    const shouldDisplayLink = !!(link && label);
 
     return (
         <InlineAlertBox
-            variant={message.variant}
+            variant={variant}
             title={
                 <Text variant="label">
-                    {msgText}
-                    {msgText && shouldDisplayLink && ' '}
+                    {content}
+                    {content && shouldDisplayLink && ' '}
                     {shouldDisplayLink && (
                         <Link
-                            label={linkLabel}
+                            label={label}
                             textVariant="label"
                             href={link}
                             isUnderlined
