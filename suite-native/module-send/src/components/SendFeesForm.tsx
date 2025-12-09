@@ -147,7 +147,7 @@ export const SendFeesForm = ({ accountKey, tokenContract }: SendFormProps) => {
                             selectedFeeLevel={selectedFeeLevel}
                             feeLevels={feeLevels}
                             symbol={symbol}
-                            networkType={networkType}
+                            networkType={account.networkType}
                             accountKey={accountKey}
                             areFeesLoading={areFeesLoading}
                             onSelectedFeeLevel={handleFeeLevelChange}

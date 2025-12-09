@@ -112,6 +112,8 @@ export const composeTradingTransactionThunk = createThunk(
             feeLimit,
             feePerUnit,
             isSlip24Active,
+            maxPriorityFeePerGas,
+            maxFeePerGas,
         }: {
             tradeType: TradingSellType | TradingExchangeType;
             account: Account;
@@ -120,6 +122,8 @@ export const composeTradingTransactionThunk = createThunk(
             selectedFeeLevel?: FeeLevelLabel;
             feeLimit?: string;
             feePerUnit?: string;
+            maxFeePerGas?: string;
+            maxPriorityFeePerGas?: string;
             isSlip24Active?: boolean;
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
@@ -154,6 +158,8 @@ export const composeTradingTransactionThunk = createThunk(
                     label: selectedFeeLevel,
                     feePerUnit: feePerUnit ?? '',
                     feeLimit: feeLimit ?? '',
+                    maxFeePerGas: maxFeePerGas ?? '',
+                    maxPriorityFeePerGas: maxPriorityFeePerGas ?? '',
                 },
                 isSlip24Active,
                 sendAccountKey: account.key,
@@ -332,7 +338,14 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 export const updateTradingSelectedFeeLevelThunk = createThunk(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/updateSelectedFeeLevelThunk`,
     (
-        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey }: UpdateSelectedFeeLevelThunkParams,
+        {
+            feeLevelLabel,
+            feePerUnit,
+            feeLimit,
+            formDraftKey,
+            maxPriorityFeePerGas,
+            maxFeePerGas,
+        }: UpdateSelectedFeeLevelThunkParams,
         { dispatch, getState },
     ) => {
         const key = formDraftKey ?? '';
@@ -345,6 +358,12 @@ export const updateTradingSelectedFeeLevelThunk = createThunk(
         }
         if (feeLimit) {
             formDraft.feeLimit = feeLimit;
+        }
+        if (maxFeePerGas) {
+            formDraft.maxFeePerGas = maxFeePerGas;
+        }
+        if (maxPriorityFeePerGas) {
+            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
         }
 
         dispatch(formDraftActions.storeDraft({ key, formDraft }));
