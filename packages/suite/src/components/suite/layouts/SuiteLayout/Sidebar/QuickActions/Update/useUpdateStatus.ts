@@ -3,47 +3,12 @@ import { versionUtils } from '@trezor/utils';
 
 import { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
-import {
-    DesktopUpdateState,
-    UpdateState,
-} from '../../../../../../../reducers/suite/desktopUpdateReducer';
+import { UpdateState } from '../../../../../../../reducers/suite/desktopUpdateReducer';
 
 type UpdateStatusData = {
     updateStatus: UpdateStatus;
     updateStatusDevice: UpdateStatusDevice;
     updateStatusSuite: UpdateStatusSuite;
-};
-
-type GetSuiteUpdateStatusArgs = {
-    desktopUpdate: DesktopUpdateState;
-};
-
-const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): UpdateStatusSuite => {
-    const isSuiteJustUpdated = desktopUpdate.firstRunAfterUpdate;
-
-    if (isSuiteJustUpdated && !desktopUpdate.justUpdatedInteractedWith) {
-        return 'just-updated';
-    }
-
-    // We don't show update-availability in case of auto-updates until the update is downloaded
-    if (desktopUpdate.isAutomaticUpdateEnabled && desktopUpdate.state === UpdateState.Ready) {
-        return 'update-downloaded-auto-restart-to-update';
-    }
-
-    if (!desktopUpdate.isAutomaticUpdateEnabled) {
-        const isUpdateAvailable = [UpdateState.Available, UpdateState.Downloading].includes(
-            desktopUpdate.state,
-        );
-        if (isUpdateAvailable) {
-            return 'update-available';
-        }
-
-        if (desktopUpdate.state === UpdateState.Ready) {
-            return 'update-downloaded-manual';
-        }
-    }
-
-    return 'up-to-date';
 };
 
 type GetDeviceStatusParams = {
@@ -95,7 +60,7 @@ export const useUpdateStatus = (): UpdateStatusData => {
     const isFirmwareOutdated =
         isValidSuiteVersion && !!shouldBeOffered && device?.firmware === 'outdated';
 
-    const updateStatusSuite = getSuiteUpdateStatus({ desktopUpdate });
+    const updateStatusSuite = 'up-to-date';
 
     const updateStatusDevice = getDeviceStatus({
         isDeviceDisconnected,
