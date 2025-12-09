@@ -1,13 +1,14 @@
-import { thp as protocolThp } from '@trezor/protocol';
+import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
 import { scheduleAction } from '@trezor/utils';
 
-import { success } from './result';
+import { receive } from './receive';
+// import { success } from './result';
 import { AbstractApi } from '../api/abstract';
 import { Logger } from '../types';
 
-type Receiver = (attemptSignal?: AbortSignal) => ReturnType<AbstractApi['read']>;
-
-type Options = {
+type ReadWithExpectedHeadersOptions = {
+    thpState: protocolThp.ThpState;
+    apiRead: (attemptSignal?: AbortSignal) => ReturnType<AbstractApi['read']>;
     signal?: AbortSignal;
     attempts?: number;
     timeout?: number;
@@ -17,27 +18,28 @@ type Options = {
 
 const ATTEMPT_ERROR = 'Unexpected chunk';
 
-async function readAndAssert<T extends Receiver>(
-    receiver: T,
-    thpState?: protocolThp.ThpState,
-    { signal, logger }: Options = {},
-): ReturnType<AbstractApi['read']> {
-    logger?.debug('readAndAssert start');
-    // try to read one packet
-    const chunk = await receiver(signal);
-    if (!chunk.success) {
-        return chunk;
+async function readAndAssert({
+    thpState,
+    apiRead,
+    signal,
+    logger,
+}: ReadWithExpectedHeadersOptions) {
+    // try to read whole message
+    const message = await receive(() => apiRead(signal), protocolV2);
+    if (!message.success) {
+        return message;
     }
 
+    const encodedMessage = message.payload;
     const expectedHeaders = thpState ? protocolThp.getExpectedHeaders(thpState) : [];
     // if there are no expectedHeaders are set then each chunk is expected
     if (expectedHeaders.length === 0) {
         logger?.debug('readAndAssert skip');
 
-        return chunk;
+        return message;
     }
 
-    const bytes = chunk.payload;
+    const bytes = encodedMessage.header;
     const expected = expectedHeaders.find(
         header =>
             header.length <= bytes.length && bytes.subarray(0, header.length).compare(header) === 0,
@@ -46,7 +48,7 @@ async function readAndAssert<T extends Receiver>(
     if (expected) {
         logger?.debug('readAndAssert done');
 
-        return success(chunk.payload);
+        return message;
     }
 
     logger?.warn(`readAndAssert unexpected header`);
@@ -65,24 +67,20 @@ async function readAndAssert<T extends Receiver>(
 // AbstractApi['read'] wrapper
 // returns function: (expectedHeaders: Buffer[]) => ReturnType<AbstractApi['read']>
 // read until received chunk contains expected header and ignore other chunks
-export function readWithExpectedHeaders<T extends Receiver>(receiver: T, options: Options = {}) {
-    return (thpState?: protocolThp.ThpState, signal?: AbortSignal) =>
-        scheduleAction(
-            attemptSignal =>
-                readAndAssert(receiver, thpState, { ...options, signal: attemptSignal }),
-            {
-                signal: signal ?? options?.signal,
-                graceful: options?.graceful,
-                attempts: options?.attempts || Infinity,
-                timeout: options?.timeout,
-                attemptFailureHandler: error => {
-                    if (error.message !== ATTEMPT_ERROR) {
-                        options.logger?.debug(`readAndAssert attempt error ${error.message}`);
+export function readWithExpectedHeaders(options: ReadWithExpectedHeadersOptions) {
+    return (signal?: AbortSignal) =>
+        scheduleAction(attemptSignal => readAndAssert({ ...options, signal: attemptSignal }), {
+            signal: signal ?? options?.signal,
+            graceful: options?.graceful,
+            attempts: options?.attempts || Infinity,
+            timeout: options?.timeout,
+            attemptFailureHandler: error => {
+                if (error.message !== ATTEMPT_ERROR) {
+                    options.logger?.debug(`readAndAssert attempt error ${error.message}`);
 
-                        // stop scheduleAction attempts on any other error
-                        return error;
-                    }
-                },
+                    // stop scheduleAction attempts on any other error
+                    return error;
+                }
             },
-        );
+        });
 }

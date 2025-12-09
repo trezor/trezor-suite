@@ -1,4 +1,4 @@
-import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
+import { thp as protocolThp } from '@trezor/protocol';
 import { scheduleAction } from '@trezor/utils';
 
 import type { ReceiveThpMessageProps } from './receive';
@@ -42,11 +42,13 @@ export const sendThpMessage = async ({
 
     // ThpAck is expected.
     // set expectedResponses to ThpAck
-    thpState.setExpectedResponses([0x20]); // THP_READ_ACK_HEADER_BYTE
+    thpState.setExpectedResponses([0x20, ...expectedResponses]); // THP_READ_ACK_HEADER_BYTE
 
     let attempt = 0;
 
-    const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, {
+    const apiReadWithExpectedHeaders = readWithExpectedHeaders({
+        thpState,
+        apiRead,
         signal,
         graceful,
         logger,
@@ -68,7 +70,7 @@ export const sendThpMessage = async ({
                 logger?.debug(`sendThpMessage read ThpAck`);
 
                 // read until ThpAck or ThpError
-                return scheduleAction(signal => apiReadWithExpectedHeaders(thpState, signal), {
+                return scheduleAction(signal => apiReadWithExpectedHeaders(signal), {
                     signal: attemptSignal,
                     graceful,
                     deadline: Date.now() + THP_ACK_DEADLINE,
@@ -95,7 +97,7 @@ export const sendThpMessage = async ({
         }
 
         // parse and check the result
-        const decodedResult = protocolThp.decodeSendAck(protocolV2.decode(result.payload));
+        const decodedResult = protocolThp.decodeSendAck(result.payload);
         // fail on ThpError
         if (decodedResult?.type === 'ThpError') {
             const { code, message } = decodedResult.message;

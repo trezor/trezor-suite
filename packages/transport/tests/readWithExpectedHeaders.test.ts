@@ -32,34 +32,39 @@ describe('readWithExpectedHeaders', () => {
 
     it('read aborted', async () => {
         const abortController = new AbortController();
-        const read = readWithExpectedHeaders(apiRead, {
+        const read = readWithExpectedHeaders({
+            thpState,
+            apiRead,
             signal: abortController.signal,
             graceful: true,
         });
 
         thpState.setExpectedResponses([0]);
-        const resultPromise = read(thpState);
+        const resultPromise = read();
         await new Promise(resolve => setTimeout(resolve, 1));
         abortController.abort();
         await expect(() => resultPromise).rejects.toThrow('Aborted by signal in API');
     });
 
     it('read timeout', async () => {
-        const read = readWithExpectedHeaders(apiRead, {
+        const read = readWithExpectedHeaders({
+            thpState,
+            apiRead,
             timeout: 7, // see default apiRead timeout
         });
 
         thpState.setExpectedResponses([0]);
-        const resultPromise = read(thpState);
+        const resultPromise = read();
 
         // error thrown from scheduleAction
         await expect(() => resultPromise).rejects.toThrow('Aborted by timeout');
     });
 
     it('api.read error', async () => {
-        const read = readWithExpectedHeaders(() =>
-            Promise.resolve({ success: false, error: 'unexpected error' }),
-        );
+        const read = readWithExpectedHeaders({
+            thpState,
+            apiRead: () => Promise.resolve({ success: false, error: 'unexpected error' }),
+        });
 
         const result = await read();
         expect(result).toMatchObject({ success: false, error: 'unexpected error' });
@@ -70,20 +75,30 @@ describe('readWithExpectedHeaders', () => {
             Promise.resolve({ success: true, payload: Buffer.alloc(64) } as const),
         );
         thpState.setExpectedResponses([SUCCESS.readInt8()]);
-        const read = readWithExpectedHeaders(apiRead, { attempts: 7 });
+        const read = readWithExpectedHeaders({
+            thpState,
+            apiRead,
+            attempts: 7,
+        });
         // error thrown from scheduleAction
-        await expect(() => read(thpState)).rejects.toThrow('Unexpected chunk');
+        await expect(() => read()).rejects.toThrow('Unexpected chunk');
         expect(apiRead).toHaveBeenCalledTimes(7);
     });
 
     it('success with expectedHeaders', async () => {
         thpState.setExpectedResponses([SUCCESS.readInt8()]);
-        const result = await readWithExpectedHeaders(apiRead)(thpState);
+        const result = await readWithExpectedHeaders({
+            thpState,
+            apiRead,
+        })();
         expect(result).toMatchObject({ success: true });
     });
 
     it('success. expectedHeaders not set', async () => {
-        const result = await readWithExpectedHeaders(apiRead)();
+        const result = await readWithExpectedHeaders({
+            thpState,
+            apiRead,
+        })();
         expect(result).toMatchObject({ success: true });
     });
 
@@ -101,7 +116,10 @@ describe('readWithExpectedHeaders', () => {
                 }),
         );
 
-        const result = await readWithExpectedHeaders(apiRead)(thpState);
+        const result = await readWithExpectedHeaders({
+            thpState,
+            apiRead,
+        })();
 
         expect(apiRead).toHaveBeenCalledTimes(5);
         expect(result).toMatchObject({ success: true });
@@ -127,7 +145,10 @@ describe('readWithExpectedHeaders', () => {
         thpState.setExpectedResponses([0x20]); // expect ThpAck
         thpState.sync('send', 'ThpAck'); // ThpAck is masked, data will start with "28" instead of "20"
 
-        const result = await readWithExpectedHeaders(apiRead)(thpState);
+        const result = await readWithExpectedHeaders({
+            thpState,
+            apiRead,
+        })();
         expect(result).toMatchObject({ success: true });
     });
 });

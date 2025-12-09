@@ -1,7 +1,7 @@
 // receive with ThpAck
 
 import { decodeMessage } from '@trezor/protobuf';
-import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
+import { thp as protocolThp } from '@trezor/protocol';
 
 import type { AbstractApi } from '../api/abstract';
 import { Logger } from '../types';
@@ -35,12 +35,14 @@ export const receiveThpMessage = async ({
     logger?.debug(`receiveThpMessage start ${thpState.expectedResponses}`);
 
     try {
-        const apiReadWithExpectedHeaders = readWithExpectedHeaders(apiRead, {
+        const apiReadWithExpectedHeaders = readWithExpectedHeaders({
+            thpState,
+            apiRead,
             signal,
             graceful,
             logger,
         });
-        const message = await receive(() => apiReadWithExpectedHeaders(thpState), protocolV2);
+        const message = await apiReadWithExpectedHeaders();
         if (!message.success) {
             return message;
         }
