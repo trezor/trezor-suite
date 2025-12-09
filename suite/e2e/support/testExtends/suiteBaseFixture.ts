@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable jest/no-commented-out-tests */
 import { BrowserContext, Page, TestInfo, test as base, mergeTests } from '@playwright/test';
 import { execSync } from 'child_process';
 
@@ -29,6 +30,7 @@ type suiteBaseFixture = {
     startEmulator: boolean;
     setupEmulator: boolean;
     emulatorStartConf: StartEmuModelRequired;
+    emulatorStartConfFinalizer: void;
     emulatorSetupConf: SetupEmu;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
@@ -119,16 +121,11 @@ const webTeardown = async (page: Page, browserContext: BrowserContext, testInfo:
     }
 };
 
-const getDefaultEmuStartConf = (emulatorModel?: Model): StartEmuModelRequired => {
-    const model = emulatorModel ?? getModelFromEnv();
+const getDefaultFirmwareVersion = (model: Model): string => {
     const DefaultFirmwareMajorVersion = model === 'T1B1' ? 1 : 2;
     const defaultFirmwareType = process.env.CANARY_FIRMWARE ? '-main' : '-latest';
 
-    return {
-        model,
-        wipe: true,
-        version: `${DefaultFirmwareMajorVersion}${defaultFirmwareType}`,
-    };
+    return `${DefaultFirmwareMajorVersion}${defaultFirmwareType}`;
 };
 
 const trezorEnvSetup = async (
@@ -161,9 +158,6 @@ const trezorEnvSetup = async (
         await TrezorUserEnvLinkProxy.stopEmu();
         await TrezorUserEnvLinkProxy.connect();
 
-        const defaultEmulatorStartConf = getDefaultEmuStartConf(emulatorStartConf.model);
-        emulatorStartConf.version = emulatorStartConf.version || defaultEmulatorStartConf.version;
-
         if (startEmulator) {
             await TrezorUserEnvLinkProxy.startEmu(emulatorStartConf);
         }
@@ -185,7 +179,19 @@ const baseWithCurrents = mergeTests(base, currentsTest);
 const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
-    emulatorStartConf: getDefaultEmuStartConf(),
+    emulatorStartConf: { model: getModelFromEnv(), wipe: true },
+    // emulatorStartConf override from test file:
+    //   test.use({emulatorStartConf: { model: 'T1B1', wipe: true }});
+    // can lack version and it needs to be finalized based on model and CANARY_FIRMWARE env var
+    emulatorStartConfFinalizer: [
+        async ({ emulatorStartConf }, use) => {
+            if (!emulatorStartConf.version) {
+                emulatorStartConf.version = getDefaultFirmwareVersion(emulatorStartConf.model);
+            }
+            await use();
+        },
+        { auto: true },
+    ],
     emulatorSetupConf: {},
     electronConf: {},
     ignoreJSExceptions: [],
