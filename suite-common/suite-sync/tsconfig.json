@@ -6,6 +6,7 @@
     },
     "references": [
         { "path": "../metadata-types" },
+        { "path": "../redux-utils" },
         { "path": "../secure-storage" },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },

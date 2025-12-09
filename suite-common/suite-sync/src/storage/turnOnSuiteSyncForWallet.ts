@@ -3,22 +3,27 @@ import {
     TurnOnSuiteSyncForWalletDeps,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices } from '@suite-common/wallet-core';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { selectDeviceByStaticSessionId, selectDevices } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
 export const createTurnOnSuiteSyncForWallet =
     (deps: TurnOnSuiteSyncForWalletDeps): TurnOnSuiteSyncForWallet =>
-    async ({ device }) => {
-        if (!isSuiteSyncSupportedByDevice(device)) {
+    async ({ staticSessionId }) => {
+        if (!staticSessionId) return;
+
+        const device = selectDeviceByStaticSessionId(deps.getState(), staticSessionId);
+
+        const canTurnOnSuiteSync =
+            device && isTrezorDeviceWithState(device) && isSuiteSyncSupportedByDevice(device);
+
+        if (!canTurnOnSuiteSync) {
             return;
         }
 
-        const deviceStaticSessionId = device.state.staticSessionId;
-
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+        const { walletDescriptor } = parseDeviceStaticSessionId(staticSessionId);
 
         if (device.suiteSyncOwner === undefined) {
             const result = await deps.refreshSuiteSyncKeys({ device });
@@ -58,7 +63,7 @@ export const createTurnOnSuiteSyncForWallet =
 
         // Reselect the device to get the correct secret (cipherKey)
         const reselectedDevice = selectDevices(deps.getState())?.find(
-            it => it.state?.staticSessionId === deviceStaticSessionId,
+            it => it.state?.staticSessionId === staticSessionId,
         );
 
         const owner = reselectedDevice?.suiteSyncOwner;
