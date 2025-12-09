@@ -7,6 +7,7 @@ import {
     BottomSheetFooter,
     BottomSheetFooterProps,
     BottomSheetModal as BottomSheetModalBase,
+    BottomSheetModalProps as BottomSheetModalBaseProps,
 } from '@gorhom/bottom-sheet';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
@@ -28,6 +29,7 @@ export type BottomSheetModalProps = {
     subtitle?: ReactNode;
     isCloseDisplayed?: boolean;
     onDismiss?: () => void;
+    bottomSheetCustomProps?: Partial<BottomSheetModalBaseProps>;
 } & BoxProps;
 
 const backgroundStyle = prepareNativeStyle(({ colors }) => ({
@@ -43,7 +45,17 @@ export type BottomSheetModalRef = Ref<BottomSheetModalMethods>;
 
 export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetModalProps>(
     (
-        { children, footer, style, title, isCloseDisplayed = false, subtitle, onDismiss, ...rest },
+        {
+            children,
+            footer,
+            style,
+            title,
+            isCloseDisplayed = false,
+            subtitle,
+            onDismiss,
+            bottomSheetCustomProps = {},
+            ...rest
+        },
         ref,
     ) => {
         const { top, bottom } = useSafeAreaInsets();
@@ -98,6 +110,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                     </BottomSheetFooter>
                 )}
                 onDismiss={onDismiss}
+                {...bottomSheetCustomProps}
             >
                 <BottomSheetModalContent
                     handleScroll={handleScroll}

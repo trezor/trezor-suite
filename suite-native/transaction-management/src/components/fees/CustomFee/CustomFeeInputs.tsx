@@ -11,7 +11,9 @@ import { integerTransformer, useAmountInputTransformers } from '@suite-native/he
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 
+import { EIP1559CustomInputs } from './EIP1559CustomInputs';
 import { FeesFormValues } from '../../../feesFormSchema';
+import { FEE_LIMIT_FIELD_NAME, FEE_PER_UNIT_FIELD_NAME } from '../../../presets';
 
 export type CustomFeeInputsProps = {
     symbol: NetworkSymbol;
@@ -30,20 +32,18 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
         trigger,
     } = useFormContext<FeesFormValues>();
 
-    const customFeeLimitName = 'customFeeLimit';
-    const feePerUnitFieldName = 'customFeePerUnit';
-    const maxFeePerGasFieldName = 'customMaxFeePerGas';
-    const maxPriorityFeePerGasFieldName = 'customMaxPriorityFeePerGas';
-    const hasFeePerByteError = G.isNotNullable(errors[feePerUnitFieldName]);
+    const hasFeePerByteError = G.isNotNullable(errors[FEE_PER_UNIT_FIELD_NAME]);
 
     const networkType = getNetworkType(symbol);
     const feeUnits = getFeeUnits(networkType);
     const formattedFeePerUnit = `${feeInfo?.minFee} ${feeUnits}`;
-    const isEip1559Fee = networkType === 'ethereum' && isEip1559(feeInfo?.levels[0]);
+    const isEip1559Fee = networkType === 'ethereum' && isEip1559(feeInfo?.levels?.[0]);
 
     const handleFieldChangeValue =
-        (fieldName: keyof FeesFormValues, transformer: (value: string) => string) =>
+        (fieldName: keyof FeesFormValues, transformerType: 'crypto' | 'integer') =>
         (value: string) => {
+            const transformer =
+                transformerType === 'crypto' ? cryptoAmountTransformer : integerTransformer;
             const transformedValue = transformer(value);
             setValue(fieldName, transformedValue);
 
@@ -57,44 +57,19 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                     label={translate(
                         'transactionManagement.fees.custom.bottomSheet.label.gasLimit',
                     )}
-                    name={customFeeLimitName}
-                    testID={`@transactionManagement/${customFeeLimitName}-input`}
+                    name={FEE_LIMIT_FIELD_NAME}
+                    testID={`@transactionManagement/${FEE_LIMIT_FIELD_NAME}-input`}
                     accessibilityLabel="address input"
                     keyboardType="number-pad"
-                    onChangeText={handleFieldChangeValue(customFeeLimitName, integerTransformer)}
+                    onChangeText={handleFieldChangeValue(FEE_LIMIT_FIELD_NAME, 'integer')}
                 />
             )}
             {isEip1559Fee ? (
-                <>
-                    <TextInputField
-                        label={translate(
-                            'transactionManagement.fees.custom.bottomSheet.label.maxFeePerGas',
-                        )}
-                        name={maxFeePerGasFieldName}
-                        testID={`@transactionManagement/${maxFeePerGasFieldName}-input`}
-                        accessibilityLabel="address input"
-                        keyboardType="number-pad"
-                        rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
-                        onChangeText={handleFieldChangeValue(
-                            maxFeePerGasFieldName,
-                            cryptoAmountTransformer,
-                        )}
-                    />
-                    <TextInputField
-                        label={translate(
-                            'transactionManagement.fees.custom.bottomSheet.label.maxPriorityFeePerGas',
-                        )}
-                        name={maxPriorityFeePerGasFieldName}
-                        testID={`@transactionManagement/${maxPriorityFeePerGasFieldName}-input`}
-                        accessibilityLabel="address input"
-                        rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
-                        keyboardType="number-pad"
-                        onChangeText={handleFieldChangeValue(
-                            maxPriorityFeePerGasFieldName,
-                            cryptoAmountTransformer,
-                        )}
-                    />
-                </>
+                <EIP1559CustomInputs
+                    feeLevel={feeInfo?.levels?.[0]}
+                    feeUnits={feeUnits}
+                    handleFieldChangeValue={handleFieldChangeValue}
+                />
             ) : (
                 <TextInputField
                     label={
@@ -106,15 +81,12 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                                   'transactionManagement.fees.custom.bottomSheet.label.feeRate',
                               )
                     }
-                    name={feePerUnitFieldName}
-                    testID={`@transactionManagement/${feePerUnitFieldName}-input`}
+                    name={FEE_PER_UNIT_FIELD_NAME}
+                    testID={`@transactionManagement/${FEE_PER_UNIT_FIELD_NAME}-input`}
                     accessibilityLabel="address input"
                     keyboardType={networkType === 'bitcoin' ? 'decimal-pad' : 'number-pad'}
                     rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
-                    onChangeText={handleFieldChangeValue(
-                        feePerUnitFieldName,
-                        cryptoAmountTransformer,
-                    )}
+                    onChangeText={handleFieldChangeValue(FEE_PER_UNIT_FIELD_NAME, 'crypto')}
                 />
             )}
             {networkType !== 'ethereum' && !hasFeePerByteError && (

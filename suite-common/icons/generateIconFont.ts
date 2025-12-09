@@ -81,6 +81,7 @@ const usedIcons = [
     'fingerprintSimple',
     'flag',
     'flagCheckered',
+    'gasPump',
     'gear',
     'gearFilled',
     'githubLogo',

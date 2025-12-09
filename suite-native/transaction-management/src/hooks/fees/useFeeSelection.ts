@@ -13,6 +13,13 @@ type UseFeeSelectionParams = {
     formDraftKey?: string;
 };
 
+export type CustomFeeParams = {
+    customFeePerUnit?: string;
+    customFeeLimit?: string;
+    customMaxFeePerGas?: string;
+    customMaxPriorityFeePerGas?: string;
+};
+
 export const useFeeSelection = ({
     accountKey,
     tokenContract,
@@ -22,7 +29,15 @@ export const useFeeSelection = ({
     const dispatch = useDispatch();
 
     const handleFeeLevelChange = useCallback(
-        (feeLevel: FeeLevelLabel, customFeePerUnit?: string, customFeeLimit?: string) => {
+        (
+            feeLevel: FeeLevelLabel,
+            {
+                customFeePerUnit,
+                customFeeLimit,
+                customMaxFeePerGas,
+                customMaxPriorityFeePerGas,
+            }: CustomFeeParams = {},
+        ) => {
             analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeLevel } });
 
             let thunkParams: UpdateSelectedFeeLevelThunkParams;
@@ -33,6 +48,8 @@ export const useFeeSelection = ({
                     feeLevelLabel: 'custom',
                     feePerUnit: customFeePerUnit!,
                     feeLimit: customFeeLimit,
+                    maxFeePerGas: customMaxFeePerGas,
+                    maxPriorityFeePerGas: customMaxPriorityFeePerGas,
                     formDraftKey,
                 };
             } else {
@@ -50,8 +67,18 @@ export const useFeeSelection = ({
     );
 
     const handleCustomFeeSet = useCallback(
-        (customFeePerUnit: string, customFeeLimit?: string) => {
-            handleFeeLevelChange('custom', customFeePerUnit, customFeeLimit);
+        ({
+            customFeePerUnit,
+            customFeeLimit,
+            customMaxFeePerGas,
+            customMaxPriorityFeePerGas,
+        }: CustomFeeParams) => {
+            handleFeeLevelChange('custom', {
+                customFeePerUnit,
+                customFeeLimit,
+                customMaxFeePerGas,
+                customMaxPriorityFeePerGas,
+            });
         },
         [handleFeeLevelChange],
     );
