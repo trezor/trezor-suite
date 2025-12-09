@@ -7,8 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ./jest.config.js"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
