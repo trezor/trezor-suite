@@ -8,12 +8,12 @@ export type { ThpState, ThpStateSerialized, ThpChannelState } from './protocol-t
 export type TransportProtocolDecode = (bytes: Buffer) => {
     header: Buffer;
     length: number;
-    messageType: number | string;
+    messageType: number;
     payload: Buffer;
 };
 
 export interface TransportProtocolEncodeOptions {
-    messageType: number | string;
+    messageType: number;
     header?: Buffer;
 }
 

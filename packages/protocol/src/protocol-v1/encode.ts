@@ -18,10 +18,6 @@ export const getHeaders: TransportProtocol['getHeaders'] = () => {
 
 export const encode: TransportProtocol['encode'] = (data, options) => {
     const { messageType } = options;
-    if (typeof messageType === 'string') {
-        throw new Error(`Unsupported message type ${messageType}`);
-    }
-
     const fullSize = HEADER_SIZE + data.length;
 
     const encodedBuffer = Buffer.alloc(fullSize);

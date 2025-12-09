@@ -1,6 +1,5 @@
 export const HEADER_SIZE = 1 + 2; // 1: control_byte + 2: channel
 export const MESSAGE_LEN_SIZE = 2;
-export const MESSAGE_TYPE = 'TrezorHostProtocolMessage';
 
 // https://github.com/trezor/trezor-firmware/blob/dc7dccfa6c6121333f732c39565878fc46e67085/core/src/trezor/wire/thp/__init__.py
 export const THP_CONTROL_BYTE = {
