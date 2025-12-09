@@ -17,7 +17,10 @@ import { FeeLevel } from '@trezor/connect';
 interface CreateFormStateForSendFormParams {
     quote: ExchangeTrade | SellFiatTrade;
     providers: Record<string, ExchangeProviderInfo> | { [name: string]: SellProviderInfo };
-    feeLevel?: Pick<FeeLevel, 'label' | 'feePerUnit' | 'feeLimit'>;
+    feeLevel?: Pick<
+        FeeLevel,
+        'label' | 'feePerUnit' | 'feeLimit' | 'maxPriorityFeePerGas' | 'maxFeePerGas'
+    >;
     extraField?: string;
     isSlip24Active?: boolean;
     sendAccountKey: string | undefined;
@@ -114,8 +117,8 @@ export const createFormStateForSendForm = ({
         setMaxOutputId: undefined,
         selectedFee: feeLevel.label,
         feePerUnit: feeLevel.feePerUnit || '',
-        maxPriorityFeePerGas: '',
-        maxFeePerGas: '',
+        maxPriorityFeePerGas: feeLevel?.maxPriorityFeePerGas || '',
+        maxFeePerGas: feeLevel?.maxFeePerGas || '',
         baseFeePerGas: '',
         feeLimit: feeLevel.feeLimit || '',
         estimatedFeeLimit: '',

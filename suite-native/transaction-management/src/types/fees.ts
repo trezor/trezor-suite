@@ -18,6 +18,14 @@ export type UpdateSelectedFeeLevelThunkParams = {
           feeLevelLabel: NativeSupportedPredefinedFeeLevel;
           feePerUnit?: never;
           feeLimit?: never;
+          maxPriorityFeePerGas?: never;
+          maxFeePerGas?: never;
       }
-    | { feeLevelLabel: 'custom'; feePerUnit: string; feeLimit?: string }
+    | {
+          feeLevelLabel: 'custom';
+          feePerUnit: string;
+          feeLimit?: string;
+          maxPriorityFeePerGas?: string;
+          maxFeePerGas?: string;
+      }
 );

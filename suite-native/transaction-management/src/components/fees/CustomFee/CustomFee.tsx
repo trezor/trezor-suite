@@ -11,13 +11,14 @@ import { Translation } from '@suite-native/intl';
 import { CustomFeeBottomSheet } from './CustomFeeBottomSheet';
 import { CustomFeeCard } from './CustomFeeCard';
 import { FeesFormValues } from '../../../feesFormSchema';
+import { CustomFeeParams } from '../../../hooks';
 import { useCustomFee } from '../../../hooks/fees/useCustomFee';
 
 type CustomFeeProps = {
     accountKey: AccountKey;
     symbol: NetworkSymbol;
     formDraft: FormState | null | undefined;
-    onCustomFeeSet: (feePerUnit: string, feeLimit?: string) => void;
+    onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
 };
 
 type CustomFeeButtonProps = {

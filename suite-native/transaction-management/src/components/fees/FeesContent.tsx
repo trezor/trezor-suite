@@ -5,6 +5,7 @@ import { Translation } from '@suite-native/intl';
 
 import { CustomFee } from './CustomFee/CustomFee';
 import { FeeOptionsList, FeeOptionsListProps } from './FeeOptionList/FeeOptionsList';
+import { CustomFeeParams } from '../../hooks';
 
 type FeesContentProps = {
     selectedFeeLevel: FeeLevelLabel;
@@ -13,7 +14,7 @@ type FeesContentProps = {
     accountKey: AccountKey;
     areFeesLoading: boolean;
     onSelectedFeeLevel: FeeOptionsListProps['onSelectedFeeLevel'];
-    onCustomFeeSet: (feePerUnit: string, feeLimit?: string) => void;
+    onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
     formDraft: FormState | null | undefined;
     networkType: NetworkType;
 };
