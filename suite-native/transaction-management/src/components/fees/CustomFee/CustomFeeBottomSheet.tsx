@@ -6,6 +6,7 @@ import { AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     BottomSheetModalRef,
+    Box,
     HStack,
     InlineAlertBox,
     Text,
@@ -17,7 +18,7 @@ import { Translation } from '@suite-native/intl';
 
 import { CustomFeeInputs } from './CustomFeeInputs';
 import { FeesFormValues } from '../../../feesFormSchema';
-
+import { CustomFeeParams } from '../../../hooks';
 type CustomFeeBottomSheetProps = {
     onClose: () => void;
     accountKey: AccountKey;
@@ -25,7 +26,7 @@ type CustomFeeBottomSheetProps = {
     isFeeLoading: boolean;
     isSubmittable: boolean;
     isErrorBoxVisible: boolean;
-    onCustomFeeSet: (feePerUnit: string, feeLimit?: string) => void;
+    onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
     ref: BottomSheetModalRef;
 };
 
@@ -47,9 +48,16 @@ export const CustomFeeBottomSheet = ({
 
     const handleSetCustomFee = handleSubmit(() => {
         setValue('feeLevel', 'custom');
-        const feePerUnit = getValues('customFeePerUnit');
-        const feeLimit = getValues('customFeeLimit');
-        onCustomFeeSet(feePerUnit, feeLimit);
+        const customFeePerUnit = getValues('customFeePerUnit');
+        const customFeeLimit = getValues('customFeeLimit');
+        const customMaxFeePerGas = getValues('customMaxFeePerGas');
+        const customMaxPriorityFeePerGas = getValues('customMaxPriorityFeePerGas');
+        onCustomFeeSet({
+            customFeePerUnit,
+            customFeeLimit,
+            customMaxFeePerGas,
+            customMaxPriorityFeePerGas,
+        });
         onClose();
     });
 
@@ -61,8 +69,12 @@ export const CustomFeeBottomSheet = ({
             title={<Translation id="transactionManagement.fees.custom.bottomSheet.title" />}
             testID="@transactionManagement/custom-fee-bottom-sheet"
             isCloseDisplayed
+            bottomSheetCustomProps={{
+                enableDynamicSizing: false,
+                snapPoints: ['95%'],
+            }}
         >
-            <VStack spacing="sp24" justifyContent="space-between" flex={1}>
+            <VStack marginTop="sp24" spacing="sp24" justifyContent="space-between" flex={1}>
                 <CustomFeeInputs symbol={symbol} />
                 <HStack
                     flex={1}
@@ -96,6 +108,8 @@ export const CustomFeeBottomSheet = ({
                         />
                     </Animated.View>
                 )}
+            </VStack>
+            <Box marginTop="sp16">
                 <FormSubmitButton
                     onPress={handleSetCustomFee}
                     isVisible={isSubmittable}
@@ -103,7 +117,7 @@ export const CustomFeeBottomSheet = ({
                 >
                     <Translation id="transactionManagement.fees.custom.bottomSheet.confirmButton" />
                 </FormSubmitButton>
-            </VStack>
+            </Box>
         </BottomSheetModal>
     );
 };

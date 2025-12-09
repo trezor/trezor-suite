@@ -73,6 +73,7 @@ export const TradingFeesForm = ({ accountKey, tokenContract }: TradingFeesFormPr
                         onSelectedFeeLevel={handleFeeLevelChange}
                         onCustomFeeSet={handleCustomFeeSet}
                         formDraft={formDraft}
+                        networkType={account.networkType}
                     />
                     {!!totalAmount && !!fee && (
                         <FeesFooter

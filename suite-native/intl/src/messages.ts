@@ -2786,12 +2786,13 @@ export const messages = {
                 high: 'High',
             },
             description: {
-                title: 'Transaction fee',
+                title: { general: 'Transaction fee', ethereum: 'Maximum fee' },
                 body: 'Fees are paid directly to validators for processing your transactions.',
             },
             custom: {
                 addButton: 'Add custom fee',
                 bottomSheet: {
+                    currentBaseFeeEthereum: 'Current base fee: {baseFee}',
                     title: 'Custom fee',
                     minimumLabel: 'The minimum fee rate is {feePerUnit}',
                     label: {
