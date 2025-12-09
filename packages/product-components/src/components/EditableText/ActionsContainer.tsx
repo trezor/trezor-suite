@@ -131,7 +131,6 @@ export const ActionsContainer = ({
                         />
                     }
                     delayShow={0}
-                    cursor="inherit"
                 >
                     <IconButton
                         intent="critical"
@@ -171,7 +170,6 @@ export const ActionsContainer = ({
                             <FormattedMessage id="TR_LABELING_EDIT_LABEL" defaultMessage="Edit" />
                         }
                         delayShow={1000}
-                        cursor="inherit"
                     >
                         <IconButton
                             data-testid={
@@ -197,7 +195,6 @@ export const ActionsContainer = ({
                                 />
                             }
                             delayShow={1000}
-                            cursor="inherit"
                         >
                             <IconButton
                                 intent="critical"

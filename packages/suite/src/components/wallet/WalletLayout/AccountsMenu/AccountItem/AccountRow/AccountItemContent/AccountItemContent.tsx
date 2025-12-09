@@ -64,13 +64,13 @@ export const AccountItemContent = ({
                     margin={{ right: spacings.xxs }}
                     justifyContent="space-between"
                 >
-                    <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
+                    <Row flex="1" minWidth={60} gap={4} data-testid={`${dataTestKey}/label`}>
                         <AccountLabel account={account} />
                         <AccountTypeBadge
                             accountType={account.accountType}
                             networkType={account.networkType}
                         />
-                    </AccountLabelContainer>
+                    </Row>
 
                     {!isCardanoStaking ? (
                         <BaseCurrency

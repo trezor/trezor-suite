@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { selectShouldOfferSecureSync } from '@suite-common/suite-sync';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
-import { EditableText } from '@trezor/product-components';
-import { SpacingValuesNew, spacingsPx } from '@trezor/theme';
+import { EditableText, EditableTextProps } from '@trezor/product-components';
+import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
@@ -339,23 +339,14 @@ type LabelingProps = {
     deviceStaticSessionId: StaticSessionId;
     children: ReactNode;
     isDisabled?: boolean;
-    placeholder?: string;
-    maxWidth?: number;
-    leftAddon?: ReactNode;
-    rightAddon?: ReactNode;
-    gap?: SpacingValuesNew;
-};
+} & Partial<EditableTextProps>;
 
 export const Labeling = ({
     payload,
     deviceStaticSessionId,
     children,
     isDisabled,
-    placeholder,
-    leftAddon,
-    rightAddon,
-    maxWidth,
-    gap,
+    ...rest
 }: LabelingProps) => {
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
