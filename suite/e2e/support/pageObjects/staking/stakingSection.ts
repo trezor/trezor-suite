@@ -57,6 +57,7 @@ export class StakingSection {
     readonly stakedToast: Locator;
     readonly unstakedToast: Locator;
     readonly claimedToast: Locator;
+    readonly modalHeader: Locator;
 
     constructor(private readonly page: Page) {
         this.rewardList = new RewardsList(page);
@@ -123,6 +124,7 @@ export class StakingSection {
         this.stakedToast = this.page.getByTestId('@toast/tx-staked');
         this.unstakedToast = this.page.getByTestId('@toast/tx-unstaked');
         this.claimedToast = this.page.getByTestId('@toast/tx-claimed');
+        this.modalHeader = this.page.getByTestId('@modal/header');
     }
 
     async expectProgressIndicatorsToMatchPhase(

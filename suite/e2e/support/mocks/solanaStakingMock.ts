@@ -199,7 +199,7 @@ export class SolanaStakingMock {
     enableRoutesForTransactions() {
         // necessary routes for sending and finalizing transactions
         // cannot be enabled during discovery as they would interfere with it
-        this.enableRoutes(['sendTransaction', 'getSignaturesForAddress']);
+        this.enableRoutes(['getTransaction', 'getSignaturesForAddress']);
     }
 
     @step()
