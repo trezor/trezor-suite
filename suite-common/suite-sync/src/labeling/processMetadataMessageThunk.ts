@@ -28,7 +28,10 @@ export const processMetadataMessageThunk = createThunk<
 >(
     `${LABELING_PREFIX}/processMetadataMessageThunk`,
     async ({ payload, deviceStaticSessionId, value }, { dispatch }) => {
+        console.log('processMetadataMessageThunk');
         const labelType = payload.type;
+
+        console.log('labelType', labelType);
 
         switch (labelType) {
             case 'walletLabel':

@@ -20,6 +20,7 @@ export const updateOutputLabelThunk = createThunk<void, UpdateOutputLabelThunkPa
         { deviceStaticSessionId, txId, outputIndex, label, accountDescriptor, networkSymbol },
         { getState, extra: { services } },
     ) => {
+        console.log('updateOutputLabelThunk');
         const device = selectDevices(getState())?.find(
             it => it.state?.staticSessionId === deviceStaticSessionId,
         );

@@ -28,6 +28,7 @@ import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
+import { JsonlReader } from 'src/components/suite/JsonlReader';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.textSubdued};
@@ -104,10 +105,17 @@ const Details = () => {
     const shouldDisplayExportBip329Labels =
         account.networkType === 'bitcoin' && (isMetadataEnabled || isLocalFirstStorageEnabled);
 
+    // TODO: add the condition when import is implemented !!!!!!!!!!!
+    const shouldDisplayImportBip329Labels = account.networkType === 'bitcoin';
+
     const handleXpubClick = () => dispatch(showXpub());
 
     const handleExportBip329 = () =>
         dispatch(exportMetadataToBip329File({ getDefaultAccountLabel }));
+
+    const handleImportBip329 = () => {
+        console.log('handleImportBip329');
+    };
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
@@ -193,6 +201,30 @@ const Details = () => {
                                 minWidth={140}
                             >
                                 <Translation id="TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON" />
+                            </Button>
+                        </DetailsRow>
+                    )}
+                    {shouldDisplayImportBip329Labels && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_IMPORT_LABELS_HEADER"
+                            description={
+                                <Translation id="TR_ACCOUNT_DETAILS_IMPORT_LABELS_DESCRIPTION" />
+                            }
+                            learnMoreUrl={HELP_CENTER_BIP329_URL}
+                        >
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                data-testid="@wallets/details/import-label-bip329"
+                                onClick={handleImportBip329}
+                                isLoading={locked}
+                                size="small"
+                                minWidth={140}
+                            >
+                                {/* <Translation id="TR_ACCOUNT_DETAILS_IMPORT_LABELS_BUTTON" /> */}
+                                <JsonlReader onDataLoaded={data => {
+                                    console.log('Imported BIP-329 data:', data);
+                                }} />
                             </Button>
                         </DetailsRow>
                     )}

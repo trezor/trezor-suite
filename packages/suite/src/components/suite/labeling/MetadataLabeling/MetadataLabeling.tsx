@@ -439,8 +439,12 @@ export const MetadataLabeling = ({
     };
 
     const defaultOnSubmit = async (value: string | undefined) => {
+        console.log('defaultOnSubmit');
         isSubscribedToSubmitResult.current = payload.defaultValue;
         setPending(true);
+        console.log('isSuiteSyncEnabled', isSuiteSyncEnabled);
+        console.log('payload', payload);
+        console.log('value', value);
 
         if (isSuiteSyncEnabled) {
             await dispatch(processMetadataMessageThunk({ payload, deviceStaticSessionId, value }));

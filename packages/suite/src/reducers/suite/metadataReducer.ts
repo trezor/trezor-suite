@@ -86,6 +86,7 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 }
                 draft.selectedProvider[action.payload.dataType] = action.payload.clientId;
                 break;
+            // TODO: mirar aqui!
             case METADATA.SET_EDITING:
                 draft.editing = action.payload;
                 break;
