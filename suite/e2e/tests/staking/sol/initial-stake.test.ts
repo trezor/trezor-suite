@@ -48,14 +48,13 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.startStakingButton.click();
-                await expect(page.getByTestId('@modal/header')).toHaveTranslation(
+                await expect(stakingSection.modalHeader).toHaveTranslation(
                     'TR_STAKE_STAKING_IN_A_NUTSHELL',
                 );
                 await stakingSection.continueButton.click();
-                await expect(page.getByTestId('@modal/header')).toHaveTranslation(
-                    'TR_STAKE_STAKE_TOKEN',
-                    { values: { symbol: 'SOL' } },
-                );
+                await expect(stakingSection.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                    values: { symbol: 'SOL' },
+                });
                 await stakingSection.everstakeAcknowledgeCheckbox.click();
                 await stakingSection.confirmButton.click();
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText('1,000 SOL');
@@ -63,6 +62,9 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
             });
 
             await test.step('Initiate staking and confirm on device', async () => {
+                await expect(stakingSection.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                    values: { symbol: 'SOL' },
+                });
                 await stakingSection.continueButton.click();
                 await stakingSection.acknowledgeCheckbox.click();
                 await stakingSection.confirmAndStakeButton.click();
