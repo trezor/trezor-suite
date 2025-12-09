@@ -20,7 +20,6 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 
 const DiscoveryButtonWrapper = styled.div`
     margin-top: ${spacingsPx.xl};
@@ -69,8 +68,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 
 export const SettingsCoins = () => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const { showUnsupportedCoins, supportedMainnets, unsupportedMainnets, supportedTestnets } =
-        useNetworkSupport();
+    const { supportedMainnets } = useNetworkSupport();
     const { device, isLocked } = useDevice();
     const isDeviceLocked = !!device && isLocked();
     const dispatch = useDispatch();
@@ -78,7 +76,6 @@ export const SettingsCoins = () => {
     const isDiscoveryButtonVisible = useSelector(state =>
         selectShowRediscoverButton(state, device),
     );
-    const useTestnetNetworks = useSelector(selectHasExperimentalFeature('testnet-networks'));
 
     const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
 
@@ -107,33 +104,6 @@ export const SettingsCoins = () => {
                     <CoinGroup networks={supportedMainnets} enabledNetworks={enabledNetworks} />
                 </SettingsSectionItem>
             </SettingsSection>
-
-            {useTestnetNetworks && (
-                <SettingsSection
-                    tooltipText={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
-                    title={<Translation id="TR_TESTNET_COINS" />}
-                    icon="coin"
-                >
-                    <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
-                        <CoinGroup networks={supportedTestnets} enabledNetworks={enabledNetworks} />
-                    </SettingsSectionItem>
-                </SettingsSection>
-            )}
-
-            {showUnsupportedCoins && (
-                <SettingsSection
-                    tooltipText={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
-                    title={<Translation id="TR_UNSUPPORTED_COINS" />}
-                    icon="coin"
-                >
-                    <SettingsSectionItem anchorId={SettingsAnchor.UnsupportedCrypto}>
-                        <CoinGroup
-                            networks={unsupportedMainnets}
-                            enabledNetworks={enabledNetworks}
-                        />
-                    </SettingsSectionItem>
-                </SettingsSection>
-            )}
 
             <AnimatePresence>
                 {isDiscoveryButtonVisible && (
