@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Center, H2, H3 } from '@trezor/components';
+import { H2 } from '@trezor/components';
 
 import { useIsContentBelowBreakpoint } from '../../../../../../support/suite/ContentFlex';
 
@@ -16,15 +16,16 @@ export interface BasicNameProps {
 
 export const BasicName = ({ 'data-testid': dataTest, onClick, children }: BasicNameProps) => {
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
-    const Heading = isContentBelowBreakpoint ? H3 : H2;
 
     return (
         <NoDragContainer data-testid={dataTest}>
-            <Center>
-                <Heading textWrap="nowrap" onClick={onClick}>
-                    {children}
-                </Heading>
-            </Center>
+            <H2
+                typographyStyle={isContentBelowBreakpoint ? 'titleSmall' : 'titleMedium'}
+                textWrap="nowrap"
+                onClick={onClick}
+            >
+                {children}
+            </H2>
         </NoDragContainer>
     );
 };

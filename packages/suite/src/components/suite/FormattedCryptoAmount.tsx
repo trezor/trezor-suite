@@ -28,6 +28,7 @@ const Value = styled.span<{ $isTabular: boolean }>`
     ${({ $isTabular }) => $isTabular && 'font-variant-numeric: tabular-nums;'}
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 0;
 `;
 
 export interface FormattedCryptoAmountProps {

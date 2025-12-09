@@ -85,7 +85,7 @@ export const ActionsContainer = ({
 }: ActionContainerProps) => {
     const [isDirty, setIsDirty] = useState(false);
 
-    const isActive = isEditable || isHovered || savingStatus !== 'idle' || !!isLoading;
+    const isActive = Boolean(isEditable || isHovered || savingStatus !== 'idle' || isLoading);
 
     useEffect(() => {
         if (!isActive) {
@@ -128,7 +128,6 @@ export const ActionsContainer = ({
                     }
                     hasArrow
                     delayShow={0}
-                    cursor="inherit"
                 >
                     <IconButton
                         intent="critical"
@@ -169,7 +168,6 @@ export const ActionsContainer = ({
                         }
                         hasArrow
                         delayShow={1000}
-                        cursor="inherit"
                     >
                         <IconButton
                             data-testid={
@@ -196,7 +194,6 @@ export const ActionsContainer = ({
                             }
                             hasArrow
                             delayShow={1000}
-                            cursor="inherit"
                         >
                             <IconButton
                                 intent="critical"
