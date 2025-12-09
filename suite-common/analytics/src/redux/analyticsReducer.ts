@@ -18,7 +18,7 @@ type AnalyticsRootState = {
 const analyticsInitialState: AnalyticsState = {
     sessionId: undefined,
     instanceId: undefined,
-    enabled: undefined,
+    enabled: false,
     confirmed: false,
 };
 
