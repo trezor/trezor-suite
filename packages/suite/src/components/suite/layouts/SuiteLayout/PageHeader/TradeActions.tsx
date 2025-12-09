@@ -1,8 +1,5 @@
-import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { breakpoints } from '@trezor/theme';
 
@@ -21,7 +18,6 @@ interface TradeActionsProps {
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
-    const device = useSelector(selectSelectedDevice);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
 
@@ -59,30 +55,6 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         });
     };
 
-    const onSwapClick = () => {
-        if (account) {
-            dispatch(
-                tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
-                ),
-            );
-        }
-
-        goToWithAnalytics('wallet-trading-exchange', {
-            preserveParams: false,
-        });
-
-        analytics.report({
-            type: EventType.TradingNavigate,
-            payload: {
-                action: 'navigate',
-                type: 'exchange',
-                from: account ? 'account/header' : 'dashboard/header',
-                networkSymbol: account?.symbol,
-            },
-        });
-    };
-
     const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
 
     return (
@@ -100,20 +72,6 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                         <Translation id="TR_TRADING_BUY_AND_SELL" />
                     </HeaderActionButton>
                 </ConditionalRender>
-                {!hasBitcoinOnlyFirmware(device) && (
-                    <ConditionalRender container="content" minWidth={breakpoints.tablet}>
-                        <HeaderActionButton
-                            icon="arrowsLeftRight"
-                            onClick={onSwapClick}
-                            data-testid="@wallet/menu/wallet-trading-exchange"
-                            intent="neutral"
-                            priority="secondary"
-                            isDisabled={isAccountLoading}
-                        >
-                            <Translation id="TR_TRADING_SWAP" />
-                        </HeaderActionButton>
-                    </ConditionalRender>
-                )}
             </AppNavigationTooltip>
         </Row>
     );

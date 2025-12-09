@@ -6,21 +6,16 @@ import { Translation } from 'src/components/suite/Translation';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { WalletParams } from 'src/types/wallet';
 
 import { HeaderDropdown } from './HeaderDropdown';
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 
 export const HeaderActions = () => {
     const goToWithAnalytics = useGoToWithAnalytics();
-    const account = useSelector(selectSelectedAccount);
-    const routerParams = useSelector(state => state.router.params) as WalletParams;
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { device } = useDevice();
 
-    const accountType = account?.accountType || routerParams?.accountType || '';
-    const isTradingAvailable = !['coinjoin'].includes(accountType);
+    const isTradingAvailable = false;
     const isAccountLoading = selectedAccount.status === 'loading';
     const isDeviceConnected = device?.connected && device?.available;
 
