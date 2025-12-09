@@ -74,10 +74,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
 
             await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
 
-            // TODO remove after https://github.com/trezor/trezor-trade-api/issues/386 is resolved
-            const is386Resolved = false;
-            if (!is386Resolved) return;
-
             await exchangePreviewActions.waitForFeesToLoad();
             await exchangePreviewActions.scrollScreenToBottom();
             await exchangePreviewActions.goToFees();
