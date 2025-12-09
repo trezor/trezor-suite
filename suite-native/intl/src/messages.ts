@@ -2804,7 +2804,7 @@ export const messages = {
                     },
                     errors: {
                         feeLimit: {
-                            low: 'Value is too low.',
+                            low: 'Gas limit must be at least {minGasLimit}',
                         },
                         decimals: 'Too many decimals.',
                         feePerUnit: {
