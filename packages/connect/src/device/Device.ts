@@ -56,7 +56,6 @@ import {
     VersionArray,
     asBluetoothDeviceId,
 } from '../types';
-import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
 import { initLog } from '../utils/debug';
 import {
@@ -538,8 +537,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
             // update features
             try {
-                await handshakeCancel({ device: this, logger: _log, signal: abortSignal });
-
                 if (this.protocol.name === 'v2') {
                     const withInteraction = !!fn;
                     this.busy = await getThpChannel(this, withInteraction);
