@@ -9,9 +9,9 @@ import Animated, {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
-import { BUTTON_PRESS_ANIMATION_DURATION } from './useButtonPressAnimatedStyle';
 import { HStack } from '../Stack';
+import { pressTimingConfig } from '../constants';
+import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
 
 export type TextButtonVariant = 'primary' | 'tertiary' | 'blue';
 
@@ -105,11 +105,11 @@ export const TextButton = ({
     };
 
     const handlePressIn = () => {
-        textPressedColorValue.value = withTiming(1, { duration: BUTTON_PRESS_ANIMATION_DURATION });
+        textPressedColorValue.value = withTiming(1, pressTimingConfig);
         interpolatePressColor();
     };
     const handlePressOut = () => {
-        textPressedColorValue.value = withTiming(0, { duration: BUTTON_PRESS_ANIMATION_DURATION });
+        textPressedColorValue.value = withTiming(0, pressTimingConfig);
         interpolatePressColor();
     };
 

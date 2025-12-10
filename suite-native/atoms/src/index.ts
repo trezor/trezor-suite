@@ -75,6 +75,7 @@ export * from './Sheet/BottomSheetModal';
 export * from './Sheet/hooks/useBottomSheetModal';
 export * from './AnimatedDoubleView/AnimatedDoubleView';
 export * from './AnimatedDoubleView/AnimatedDoubleInput';
+export * from './PressableOpacity';
 
 export { useDebugView } from './DebugView';
 export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';
