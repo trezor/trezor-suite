@@ -1,3 +1,4 @@
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 
 import { useNetworkSupport } from '../../../../hooks/settings/useNetworkSupport';
@@ -11,9 +12,12 @@ export const useAvailableNetworkSymbols = () => {
         network => network.symbol,
     );
 
-    const availableNetworksSymbols = enabledNetworks.filter(networkSymbol =>
-        supportedNetworkSymbols.includes(networkSymbol),
-    );
+    const availableNetworksSymbols = enabledNetworks.filter(networkSymbol => {
+        // if the testnet is enabled, show it even though testnets are disabled in experimental features
+        const isTestnet = getNetwork(networkSymbol).testnet;
+
+        return isTestnet || supportedNetworkSymbols.includes(networkSymbol);
+    });
 
     return availableNetworksSymbols;
 };

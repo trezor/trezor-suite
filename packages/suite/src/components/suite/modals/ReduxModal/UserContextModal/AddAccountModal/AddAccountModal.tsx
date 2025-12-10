@@ -3,7 +3,13 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Network, NetworkAccount, NetworkSymbol, networks } from '@suite-common/wallet-config';
+import {
+    Network,
+    NetworkAccount,
+    NetworkSymbol,
+    getNetwork,
+    networks,
+} from '@suite-common/wallet-config';
 import {
     accountsActions,
     changeCoinVisibility,
@@ -18,6 +24,7 @@ import { arrayPartition } from '@trezor/utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { CoinList } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
@@ -92,9 +99,14 @@ export const AddAccountModal = ({
 
     const isSelectedNetworkEnabled =
         !!selectedNetwork && enabledNetworkSymbols.includes(selectedNetwork.symbol);
-    const [enabledNetworks, disabledNetworks] = arrayPartition(supportedNetworks, network =>
-        enabledNetworkSymbols.includes(network.symbol),
+
+    const availableNetworksSymbols = useAvailableNetworkSymbols();
+
+    const enabledNetworks = availableNetworksSymbols.map(symbol => getNetwork(symbol));
+    const disabledNetworks = supportedNetworks.filter(
+        network => !availableNetworksSymbols.includes(network.symbol),
     );
+
     const [disabledMainnetNetworks, disabledTestnetNetworks] = arrayPartition(
         disabledNetworks,
         network => !network?.testnet,
