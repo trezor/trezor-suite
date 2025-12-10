@@ -25,7 +25,10 @@ import { typedObjectKeys } from '@trezor/utils';
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
-import { selectIsElectrumBackendSelected } from '../blockchain/blockchainSelectors';
+import {
+    selectActiveBackendType,
+    selectIsElectrumBackendSelected,
+} from '../blockchain/blockchainSelectors';
 
 type UpdateTxsFiatRatesThunkPayload = {
     accountKey: AccountKey;
@@ -135,7 +138,7 @@ export const updateFiatRatesThunk = createThunk<
                 }
             }
 
-            const isElectrumBackend = selectIsElectrumBackendSelected(getState(), ticker.symbol);
+            const backendType = selectActiveBackendType(getState(), ticker.symbol);
 
             const rate = await ((): Promise<FiatRatesResult | null> => {
                 switch (rateType) {
@@ -143,14 +146,14 @@ export const updateFiatRatesThunk = createThunk<
                         return fetchCurrentFiatRates({
                             ticker,
                             localCurrency: baseCurrencyCode,
-                            isElectrumBackend,
+                            backendType,
                             skipCache,
                         });
                     case 'lastWeek':
                         return fetchLastWeekFiatRates({
                             ticker,
                             localCurrency: baseCurrencyCode,
-                            isElectrumBackend,
+                            backendType,
                         });
                     default:
                         return exhaustive(rateType);
