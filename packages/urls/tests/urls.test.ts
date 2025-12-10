@@ -19,6 +19,8 @@ const excluded = [
     URLS.HELP_CENTER_FW_DOWNGRADE_T3W1_URL,
     URLS.HELP_CENTER_SOLANA_HELP_URL,
     URLS.IMAGE_PROXY_API_URL, // returns 'unauthorized'
+    // TODO temporary ignore; fix the link on invity's side
+    URLS.TRADING_DOWNLOAD_INVITY_APP_URL,
 ];
 
 // Sometimes we run test too much, I guess....
