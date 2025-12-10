@@ -1,7 +1,7 @@
 import { parseConfigure } from '@trezor/protobuf';
-import { bridge as bridgeProtocol, v1 as v1Protocol } from '@trezor/protocol';
+import { bridge as bridgeProtocol, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 
-import { receiveAndParse } from '../src/utils/receive';
+import { receive, receiveAndParse } from '../src/utils/receive';
 import { buildMessage, createChunks } from '../src/utils/send';
 
 const messages = {
@@ -128,9 +128,9 @@ describe('encoding json -> protobuf -> json', () => {
                     messages: parsedMessages,
                     name: f.name,
                     data: f.in,
-                    protocol: v1Protocol,
+                    protocol: protocolV1,
                 });
-                const [, chunkHeader] = v1Protocol.getHeaders(result);
+                const [, chunkHeader] = protocolV1.getHeaders(result);
                 const chunks = createChunks(result, chunkHeader, 64);
                 // each protocol chunks are equal 64 bytes
                 chunks.forEach(chunk => {
@@ -144,7 +144,7 @@ describe('encoding json -> protobuf -> json', () => {
 
                         return Promise.resolve({ success: true, payload: chunks[i] });
                     },
-                    v1Protocol,
+                    protocolV1,
                 );
                 if (!decoded.success) {
                     throw new Error('Decoding failed');
@@ -155,6 +155,90 @@ describe('encoding json -> protobuf -> json', () => {
                 expect(message).toEqual(f.in);
             });
         });
+    });
+});
+
+describe('receive', () => {
+    const getApiRead = (chunks: string[]) =>
+        jest.fn(() =>
+            Promise.resolve({
+                success: true,
+                payload: Buffer.from(chunks.shift() || 'dead', 'hex'),
+            } as const),
+        );
+
+    test('protocol-v1 ne chunk', async () => {
+        const result = await receive(getApiRead(['3f23230002000000060a046d656f77']), protocolV1);
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 2 },
+        });
+    });
+
+    test('protocol-v1 multiple chunks', async () => {
+        const result = await receive(
+            getApiRead(['3f23230002000000060a', '3f046d65', '3f6f77']),
+            protocolV1,
+        );
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 2 },
+        });
+    });
+
+    test('protocol-v1 malformed initial packet', async () => {
+        // protocol-v2 message
+        const result = await receive(getApiRead(['2833da0004527eb068']), protocolV1);
+        expect(result.success).toBe(false);
+    });
+
+    test('protocol-v1 malformed continuation packet', async () => {
+        // missing 3f in second chunk
+        const result = await receive(
+            getApiRead(['3f23230002000000060a', '046d656f77']),
+            protocolV1,
+        );
+        expect(result.success).toBe(false);
+    });
+
+    test('protocol-v2 receive one chunk', async () => {
+        const result = await receive(getApiRead(['2833da0004527eb068']), protocolV2);
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 32 },
+        });
+    });
+
+    test('protocol-v2 multiple chunks', async () => {
+        const apiRead = getApiRead(['2833da0004', '8033da527e', '8033dab068']);
+        const result = await receive(apiRead, protocolV2);
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 32 },
+        });
+        expect(apiRead).toHaveBeenCalledTimes(3);
+    });
+
+    test('protocol-v2 malformed initial packet', async () => {
+        // protocol-v1 message
+        const apiRead = getApiRead(['3f0000']);
+        const result = await receive(apiRead, protocolV2);
+        expect(result.success).toBe(false);
+        expect(apiRead).toHaveBeenCalledTimes(1);
+    });
+
+    test('protocol-v2 malformed continuation packet', async () => {
+        // missing second chunk is protocol-v1
+        let apiRead = getApiRead(['2833da0004', '3f00000000']);
+        let result = await receive(apiRead, protocolV2);
+        expect(result.success).toBe(false);
+        expect(apiRead).toHaveBeenCalledTimes(2);
+
+        // third chunk is missing
+        apiRead = getApiRead(['2833da0004', '8033da52']);
+        result = await receive(apiRead, protocolV2);
+        expect(result.success).toBe(false);
+        expect(apiRead).toHaveBeenCalledTimes(3);
     });
 });
 
