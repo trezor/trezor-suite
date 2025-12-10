@@ -1,6 +1,6 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import { isBlockbookBasedNetwork } from '@suite-common/wallet-config';
+import { BackendType, isBlockbookBasedNetwork } from '@suite-common/wallet-config';
 import type {
     FiatRatesResult,
     HistoricRates,
@@ -27,7 +27,7 @@ const parallelRequestsCache = new ParallelRequestsCache();
 type FiatRatesParams = {
     ticker: TickerId;
     localCurrency: BaseCurrencyCode;
-    isElectrumBackend: boolean;
+    backendType: BackendType | undefined;
     skipCache?: boolean;
 };
 
@@ -73,7 +73,7 @@ const getConnectFiatRatesForTimestamp = async (
 export const fetchCurrentFiatRates = ({
     ticker,
     localCurrency,
-    isElectrumBackend,
+    backendType,
     skipCache,
 }: FiatRatesParams): Promise<FiatRatesResult | null> =>
     parallelRequestsCache.cache(
@@ -81,8 +81,8 @@ export const fetchCurrentFiatRates = ({
         async () => {
             // If skipCache is true, skip Blockbook support check and fetch fiat rates
             // directly from Coingecko to ensure up-to-date values.
-            if (isBlockbookBasedNetwork(ticker.symbol) && !skipCache) {
-                if (!isElectrumBackend) {
+            if (isBlockbookBasedNetwork(ticker.symbol) && backendType !== 'evm-rpc' && !skipCache) {
+                if (backendType !== 'electrum') {
                     const { success, payload } = await scheduleAction(
                         () =>
                             TrezorConnect.blockchainGetCurrentFiatRates({
@@ -151,7 +151,7 @@ export const fetchCurrentFiatRates = ({
 export const fetchLastWeekFiatRates = ({
     ticker,
     localCurrency,
-    isElectrumBackend,
+    backendType,
 }: FiatRatesParams): Promise<FiatRatesResult | null> =>
     parallelRequestsCache.cache(
         ['fetchLastWeekFiatRates', ticker.symbol, ticker.tokenAddress, localCurrency],
@@ -160,7 +160,7 @@ export const fetchLastWeekFiatRates = ({
             const timestamps = [weekAgoTimestamp];
 
             if (isBlockbookBasedNetwork(ticker.symbol)) {
-                if (!isElectrumBackend) {
+                if (backendType !== 'electrum') {
                     const { success, payload } = await getConnectFiatRatesForTimestamp(
                         ticker,
                         timestamps,
