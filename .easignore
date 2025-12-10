@@ -2,6 +2,7 @@
 docker
 docs
 
+packages/connect-cli/
 packages/ipc-proxy/
 packages/suite/
 packages/suite-analytics/
@@ -14,6 +15,7 @@ packages/suite-storage/
 packages/suite-web/
 packages/transport-bluetooth/
 suite/e2e/
+
 
 ### content of all .gitignore files is not applied if .easignore is present
 
