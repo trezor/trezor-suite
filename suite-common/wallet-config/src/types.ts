@@ -48,6 +48,7 @@ export const TREZOR_CONNECT_BACKENDS = [
     'blockfrost',
     'solana',
     'stellar',
+    'evm-rpc',
 ] as const;
 
 export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;

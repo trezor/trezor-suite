@@ -32,6 +32,8 @@ const validateUrl = (type: BackendOption, value: string) => {
             return isUrlWithQuery(value);
         case 'stellar':
             return isUrlWithQuery(value);
+        case 'evm-rpc':
+            return isUrlWithQuery(value);
         default:
             return false;
     }
@@ -47,6 +49,7 @@ const getUrlPlaceholder = (symbol: NetworkSymbol, type: BackendOption) => {
             return `electrum.example.com:50001:t`;
         case 'solana':
         case 'stellar':
+        case 'evm-rpc':
             return 'https://';
         case 'ripple':
             return 'wss://';

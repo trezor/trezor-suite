@@ -758,7 +758,8 @@ export type SuiteAnalyticsEvent =
                   | 'coinjoin'
                   | 'default'
                   | 'solana'
-                  | 'stellar';
+                  | 'stellar'
+                  | 'evm-rpc';
               totalRegular: number;
               totalOnion: number;
           };
