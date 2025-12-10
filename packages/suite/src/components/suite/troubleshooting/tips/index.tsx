@@ -1,10 +1,10 @@
-import { isAndroid, isDesktop, isLinux, isWeb } from '@trezor/env-utils';
+import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 
-import { BridgeToggle, SuiteDesktopTip } from './BridgeTip';
+import { SuiteDesktopTip } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';
 import { TroubleshootingTipsItem } from '../TroubleshootingTips';
 
@@ -38,14 +38,6 @@ export const TROUBLESHOOTING_TIP_SUITE_DESKTOP: TroubleshootingTipsItem = {
     heading: <SuiteDesktopTip />,
     hide: !isWeb(),
     icon: 'desktop',
-};
-
-export const TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE: TroubleshootingTipsItem = {
-    key: 'suite-desktop-toggle',
-    description: <BridgeToggle />,
-    heading: <Translation id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE" />,
-    icon: 'bridge',
-    hide: isWeb() || isAndroid(),
 };
 
 export const TROUBLESHOOTING_TIP_CABLE: TroubleshootingTipsItem = {
