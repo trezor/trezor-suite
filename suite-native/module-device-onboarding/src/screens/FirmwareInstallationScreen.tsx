@@ -1,4 +1,4 @@
-import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
+import { FirmwareInstallationScreenContent } from '@suite-native/firmware/src/components/FirmwareInstallationScreenContent';
 import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
 
 import { useExitAlert } from '../hooks/useExitAlert';
