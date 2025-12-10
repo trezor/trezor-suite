@@ -95,6 +95,7 @@ export const AccountItemContent = ({
                             data-testid="@wallet"
                             value={formattedBalance}
                             symbol={account.symbol}
+                            showApproximation
                         />
                     )}
                 </Column>
@@ -133,6 +134,7 @@ export const AccountItemContent = ({
                             data-testid="@wallet"
                             value={formattedBalance}
                             symbol={account.symbol}
+                            showApproximation
                         />
                     )}
                     {!isBalanceShown && <BalancePlaceholder networkSymbol={account.symbol} />}
