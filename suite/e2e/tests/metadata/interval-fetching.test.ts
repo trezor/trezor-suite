@@ -39,7 +39,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                 'Bitcoin #1',
             );
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.passThroughInitMetadata(p.provider);
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                 'already existing label',

@@ -85,7 +85,6 @@ export const ActionsContainer = ({
     isDeleteButtonVisible,
     isSubmitButtonVisible,
     savingStatus,
-    dataTestIdBase,
 }: ActionContainerProps) => {
     const [isDirty, setIsDirty] = useState(false);
 
@@ -116,7 +115,7 @@ export const ActionsContainer = ({
                     margin={{ right: 4 }}
                     hasFinished={!isLoading}
                     isGrey={isLoading}
-                    data-testid={savingStatus === 'saved' ? `${dataTestIdBase}/success` : undefined}
+                    data-testid={savingStatus === 'saved' ? `@metadata/success` : undefined}
                 />
             );
         }
@@ -174,11 +173,7 @@ export const ActionsContainer = ({
                         delayShow={1000}
                     >
                         <IconButton
-                            data-testid={
-                                isDeleteButtonVisible
-                                    ? `${dataTestIdBase}/edit-label-button`
-                                    : `${dataTestIdBase}/add-label-button`
-                            }
+                            data-testid="@metadata/edit"
                             intent="neutral"
                             icon="pencil"
                             onClick={() => {

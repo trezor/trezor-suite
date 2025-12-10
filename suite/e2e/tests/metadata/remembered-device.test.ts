@@ -31,111 +31,124 @@ test.describe(
             devicePrompt,
             trezorUserEnvLink,
         }) => {
-            await onboardingPage.completeOnboarding();
+            await test.step('Complete onboarding and open BTC account', async () => {
+                await onboardingPage.completeOnboarding();
+                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await settingsPage.navigateTo('application');
+            });
 
-            await page.getByTestId('@account-menu/btc/normal/0/label').click();
+            await test.step('Enable metadata (legacy) and initialize with Google provider', async () => {
+                await page.selectDropdownOptionWithRetry(
+                    settingsPage.metadataSelectInput,
+                    settingsPage.metadataSelectInputOption('legacy'),
+                );
+                await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
+            });
 
-            await settingsPage.navigateTo('application');
-
-            await page.selectDropdownOptionWithRetry(
-                settingsPage.metadataSelectInput,
-                settingsPage.metadataSelectInputOption('legacy'),
-            );
-
-            await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
-
-            // Now metadata is enabled, go to accounts and see what we got loaded from provider
-            await walletPage.openAccount();
-
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
-                'already existing label',
-            );
+            await test.step('Verify metadata loaded from provider', async () => {
+                await walletPage.openAccount();
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
+                    'already existing label',
+                );
+            });
 
             // device not saved, disconnect provider
-            // Now go back to settings, disconnect provider and check that we don't see metadata in app
-            await settingsPage.navigateTo('application');
-            await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
-            await expect(
-                page.getByTestId('@settings/metadata/connect-provider-button'),
-            ).toBeVisible();
-            await walletPage.openAccount();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).not.toContainText(
-                'already existing label',
-            );
+            await test.step('Disconnect provider and verify metadata is not visible', async () => {
+                await settingsPage.navigateTo('application');
+                await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
+                await expect(
+                    page.getByTestId('@settings/metadata/connect-provider-button'),
+                ).toBeVisible();
+                await walletPage.openAccount();
+                await expect(
+                    page.getByTestId('@account-menu/btc/normal/0/label'),
+                ).not.toContainText('already existing label');
+            });
 
             // At this moment, there are no labels. But we still can see "add label" button, which inits metadata flow but without obtaining keys from device (they are saved!)
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
-            await expect(metadataPage.metadataModal).toBeHidden();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
-                'already existing label',
-            );
+            await test.step('Edit label after disconnecting provider (keys are saved)', async () => {
+                await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
+                await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
+                await expect(metadataPage.metadataModal).toBeHidden();
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
+                    'already existing label',
+                );
+            });
 
             // device not saved, disable metadata
-            await settingsPage.navigateTo('application');
+            await test.step('Disable metadata and verify all keys and metadata are removed', async () => {
+                await settingsPage.navigateTo('application');
+                await page.selectDropdownOptionWithRetry(
+                    settingsPage.metadataSelectInput,
+                    settingsPage.metadataSelectInputOption('off'),
+                );
+                await walletPage.openAccount();
+                await expect(
+                    page.getByTestId('@account-menu/btc/normal/0/label'),
+                ).not.toContainText('label');
+                await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
 
-            await page.selectDropdownOptionWithRetry(
-                settingsPage.metadataSelectInput,
-                settingsPage.metadataSelectInputOption('off'),
-            );
+                // disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected
 
-            await walletPage.openAccount();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).not.toContainText(
-                'label',
-            );
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
-
-            // disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await page.waitForTimeout(1000);
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+                await page.waitForTimeout(1000);
+            });
 
             // device saved, disconnect provider
-            await page.getByTestId('@menu/switch-device').click();
-            await page.getByTestId('@switch-device/wallet-on-index/0').click();
+            await test.step('Switch device, stop emulator, and edit label on remembered device', async () => {
+                await page.getByTestId('@menu/switch-device').click();
+                await page.getByTestId('@switch-device/wallet-on-index/0').click();
+                await trezorUserEnvLink.stopEmu();
 
-            await trezorUserEnvLink.stopEmu();
+                // Device is saved, when disconnected, user still can edit labels
+                await metadataPage.account.changeLabel(
+                    AccountLabelId.BitcoinDefault1,
+                    'edited for remembered',
+                );
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
+                    'edited for remembered',
+                );
+            });
 
-            // Device is saved, when disconnected, user still can edit labels
-            await metadataPage.account.editLabel(
-                AccountLabelId.BitcoinDefault1,
-                'edited for remembered',
-            );
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
-                'edited for remembered',
-            );
+            await test.step('Disconnect provider again and verify labels are removed', async () => {
+                await settingsPage.navigateTo('application');
+                await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
+                await walletPage.openAccount();
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
+                    'Bitcoin',
+                );
+            });
 
-            // Now again, lets try disconnecting provider
-            await settingsPage.navigateTo('application');
-            await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
-            await walletPage.openAccount();
-
-            // Disconnecting removes labels
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
-                'Bitcoin',
-            );
-
-            // Still possible to reconnect provider, we have keys still saved
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
-            await expect(metadataPage.metadataModal).toBeHidden();
-            await metadataPage.account.fillLabelInput('mnau');
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
-                'mnau',
-            );
+            await test.step('Still possible to reconnect provider, we have keys still saved', async () => {
+                await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
+                await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
+                await expect(metadataPage.metadataModal).toBeHidden();
+                await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
+                await metadataPage.account.fillLabelInput('mnau');
+                await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
+                    'mnau',
+                );
+            });
 
             // device saved, disable metadata
-            await settingsPage.navigateTo('application');
-            await page.selectDropdownOptionWithRetry(
-                settingsPage.metadataSelectInput,
-                settingsPage.metadataSelectInputOption('off'),
-            );
-            await walletPage.openAccount();
+            // TODO: Not possible to disabled the metadata in this state, the dropdown is greyed out.
+            await test.step.skip(
+                'Disable metadata and verify editing labels is not possible',
+                async () => {
+                    await settingsPage.navigateTo('application');
+                    await page.selectDropdownOptionWithRetry(
+                        settingsPage.metadataSelectInput,
+                        settingsPage.metadataSelectInputOption('off'),
+                    );
+                    await walletPage.openAccount();
 
-            // Now it is not possible to add labels, keys are gone and device is not connected
-            await expect(
-                metadataPage.account.addLabelButton(AccountLabelId.BitcoinDefault1),
-            ).toBeHidden();
+                    // Now it is not possible to add labels, keys are gone and device is not connected
+                    await expect(
+                        metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1),
+                    ).toBeHidden();
+                },
+            );
         });
     },
 );

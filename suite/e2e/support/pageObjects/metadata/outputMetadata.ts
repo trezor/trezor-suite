@@ -8,6 +8,10 @@ export class OutputMetadata extends MetadataBase {
         this.page.getByTestId(`${this.getLabelTestId(outputId, txNumber)}/dropdown/copy-address`);
     readonly outputDropdownEditLabel = (outputId: string, txNumber: number) =>
         this.page.getByTestId(`${this.getLabelTestId(outputId, txNumber)}/dropdown/edit-label`);
+    readonly outputMetadataInput = (outputId: string, txNumber: number) =>
+        this.page
+            .getByTestId(this.getLabelTestId(outputId, txNumber))
+            .getByTestId('@metadata/input');
 
     private getLabelTestId(outputId: string, txNumber: number): string {
         return `@metadata/outputLabel/${outputId}-${txNumber}`;
@@ -24,13 +28,15 @@ export class OutputMetadata extends MetadataBase {
     @step()
     async addLabel(outputId: string, txNumber: number, label: string) {
         await this.clickAddLabelButton(outputId, txNumber);
-        await this.fillLabelInput(label);
+        await this.outputMetadataInput(outputId, txNumber).fill(label);
+        await this.page.keyboard.press('Enter');
     }
 
     @step()
     async editLabel(outputId: string, txNumber: number, newLabel: string) {
         await this.outputLabel(outputId, txNumber).click();
         await this.outputDropdownEditLabel(outputId, txNumber).click();
-        await this.fillLabelInput(newLabel);
+        await this.outputMetadataInput(outputId, txNumber).fill(newLabel);
+        await this.page.keyboard.press('Enter');
     }
 }
