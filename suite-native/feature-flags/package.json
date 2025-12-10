@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.10.1",
+        "@reduxjs/toolkit": "2.11.0",
         "@suite-native/config": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "react-native": "0.81.4",
