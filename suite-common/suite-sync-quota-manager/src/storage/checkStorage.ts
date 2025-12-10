@@ -11,12 +11,12 @@ type AskForStoragePublicKeyResponse = AskForStorageResponse & {
 };
 
 export type CheckStorageByPublicKeyParams = {
-    baseUrl: string;
+    baseUrl: string | null;
     publicKey: string;
 };
 
 export type CheckStorageByOwnerIdParams = {
-    baseUrl: string;
+    baseUrl: string | null;
     ownerId: string;
 };
 

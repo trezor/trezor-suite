@@ -46,14 +46,14 @@ import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
 import { createSuiteCompositionRoot, extraDependencies } from '../support/extraDependencies';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
-import { prepareSuiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
+import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
-const suiteSyncQuotaManagerReducer = prepareSuiteSyncQuotaManagerReducer(extraDependencies);
+const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     ...suiteReducers,

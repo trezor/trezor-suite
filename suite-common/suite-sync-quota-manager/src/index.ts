@@ -4,7 +4,6 @@
 export { checkStorageByOwnerId, checkStorageByPublicKey } from './storage/checkStorage';
 export { registerStorageThunk } from './storage/registerStorageThunk';
 export { transferStorageThunk } from './storage/transferStorageThunk';
-export { prepareChallengeSession as prepareChallengeThunk } from './challenge/prepareChallengeSession';
 export { prepareChallengeSession } from './challenge/prepareChallengeSession';
 export { ensureDeviceHasQuotaThunk } from './ensureDeviceHasQuotaThunk';
 
@@ -32,7 +31,11 @@ export {
 /**
  * Reducers.
  */
-export { prepareSuiteSyncQuotaManagerReducer } from './quotaManagerReducer';
+export {
+    suiteSyncQuotaManagerReducer,
+    quotaManagerInitialState,
+    type SuiteSyncQuotaManagerState,
+} from './quotaManagerReducer';
 
 /**
  * Constants.

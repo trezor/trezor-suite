@@ -477,6 +477,24 @@ export const saveSuiteSyncSettings = () => (_dispatch: Dispatch, getState: GetSt
     );
 };
 
+export const saveSuiteSyncQuotaManager = () => (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+
+    const { suiteSyncQuotaManager } = getState();
+
+    return db.addItem(
+        'suiteSyncQuotaManager',
+        {
+            baseUrl: suiteSyncQuotaManager.baseUrl,
+            enabled: suiteSyncQuotaManager.enabled,
+            registeredDevices: suiteSyncQuotaManager.registeredDevices,
+            ownersAllowance: suiteSyncQuotaManager.ownersAllowance,
+        },
+        'suiteSyncQuotaManager',
+        true,
+    );
+};
+
 export const saveDeviceMetadataError =
     (device: TrezorDevice) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return;

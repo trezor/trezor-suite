@@ -21,6 +21,7 @@
         "@suite-common/platform-encryption-native": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-quota-manager": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",

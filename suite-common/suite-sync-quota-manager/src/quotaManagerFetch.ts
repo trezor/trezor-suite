@@ -1,13 +1,15 @@
 import { err, ok } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
+import { DEFAULT_QUOTA_MANAGER_URL } from './constants';
+
 type SupportedMethod = 'GET' | 'POST' | 'DELETE';
 
 // explicit list of supported endpoints and their methods
 type SupportedPath = '/challenge' | '/storage/ask' | '/storage/register' | '/storage/add' | '/sync';
 
 type QuotaManagerFetchParams = {
-    baseUrl: string;
+    baseUrl: string | null;
     path: SupportedPath;
     method: SupportedMethod;
     body?: unknown;
@@ -21,7 +23,7 @@ export const quotaManagerFetch = async ({
     body,
     queryParams,
 }: QuotaManagerFetchParams) => {
-    const url = new URL(path, baseUrl);
+    const url = new URL(path, baseUrl ?? DEFAULT_QUOTA_MANAGER_URL);
 
     if (queryParams !== undefined) {
         typedObjectEntries(queryParams).forEach(([key, value]) => {
