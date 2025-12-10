@@ -7,11 +7,9 @@ import {
     getIsThpDevice,
     getSelectedDevice,
 } from '@suite-common/suite-utils';
-import {
-    autoInitThpAfterDeviceConnectionThunk,
-    connectThpDeviceThunk,
-    thpActions,
-} from '@suite-common/thp';
+import { autoInitThpAfterDeviceConnectionThunk } from '@suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk';
+import { connectThpDeviceThunk } from '@suite-common/thp/src/connectThpDeviceThunk';
+import { thpActions } from '@suite-common/thp/src/thpActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AccountKey } from '@suite-common/wallet-types';
 import {

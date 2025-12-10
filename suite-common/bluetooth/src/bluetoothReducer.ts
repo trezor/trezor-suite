@@ -1,7 +1,10 @@
 import { AnyAction, Draft } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { DeviceConnectActionPayload, deviceActions } from '@suite-common/wallet-core';
+import {
+    DeviceConnectActionPayload,
+    deviceActions,
+} from '@suite-common/wallet-core/src/device/deviceActions';
 import { BluetoothDeviceId, TrezorPushNotificationType } from '@trezor/connect';
 
 import { bluetoothActions } from './bluetoothActions';
