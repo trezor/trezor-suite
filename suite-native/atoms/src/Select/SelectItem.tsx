@@ -7,6 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
 import { Radio } from '../Radio';
+import { HStack } from '../Stack';
 import { Text } from '../Text';
 
 export type SelectItemValue = string | number;
@@ -16,6 +17,7 @@ export type SelectItemProps = {
     onSelect: () => void;
     isSelected: boolean;
     icon?: ReactNode;
+    badge?: ReactNode;
 };
 
 type SelectItemStyleProps = {
@@ -23,8 +25,6 @@ type SelectItemStyleProps = {
 };
 
 const selectItemStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    alignItems: 'center',
     ...utils.boxShadows.small,
 }));
 
@@ -51,7 +51,14 @@ const selectItemContentStyle = prepareNativeStyle<SelectItemStyleProps>(
     }),
 );
 
-export const SelectItem = ({ label, value, onSelect, isSelected, icon }: SelectItemProps) => {
+export const SelectItem = ({
+    label,
+    value,
+    onSelect,
+    isSelected,
+    icon,
+    badge,
+}: SelectItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     if (G.isNullable(value)) return null;
@@ -65,13 +72,18 @@ export const SelectItem = ({ label, value, onSelect, isSelected, icon }: SelectI
             accessibilityLabel={label}
             testID={`@select/item/${value}`}
         >
-            {icon}
             <Box
                 style={applyStyle(selectItemContentStyle, { isSelected })}
                 testID={`@select/item/${value}/content`}
             >
-                <Text numberOfLines={1}>{label}</Text>
-                <Radio value={value} onPress={onSelect} isChecked={isSelected} />
+                <HStack>
+                    {icon}
+                    <Text numberOfLines={1}>{label}</Text>
+                </HStack>
+                <HStack spacing="sp12">
+                    {badge}
+                    <Radio value={value} onPress={onSelect} isChecked={isSelected} />
+                </HStack>
             </Box>
         </TouchableOpacity>
     );

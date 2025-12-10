@@ -2633,6 +2633,7 @@ export const messages = {
         },
         languageCard: {
             title: 'Language',
+            betaBadge: 'Beta',
         },
         changeLanguage: {
             success: `Language changed to {languageName}`,
