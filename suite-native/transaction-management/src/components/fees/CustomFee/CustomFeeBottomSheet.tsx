@@ -19,6 +19,12 @@ import { Translation } from '@suite-native/intl';
 import { CustomFeeInputs } from './CustomFeeInputs';
 import { FeesFormValues } from '../../../feesFormSchema';
 import { CustomFeeParams } from '../../../hooks';
+import {
+    FEE_LIMIT_FIELD_NAME,
+    FEE_PER_UNIT_FIELD_NAME,
+    MAX_FEE_PER_GAS_FIELD_NAME,
+    MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
+} from '../../../presets';
 type CustomFeeBottomSheetProps = {
     onClose: () => void;
     accountKey: AccountKey;
@@ -48,10 +54,10 @@ export const CustomFeeBottomSheet = ({
 
     const handleSetCustomFee = handleSubmit(() => {
         setValue('feeLevel', 'custom');
-        const customFeePerUnit = getValues('customFeePerUnit');
-        const customFeeLimit = getValues('customFeeLimit');
-        const customMaxFeePerGas = getValues('customMaxFeePerGas');
-        const customMaxPriorityFeePerGas = getValues('customMaxPriorityFeePerGas');
+        const customFeePerUnit = getValues(FEE_PER_UNIT_FIELD_NAME);
+        const customFeeLimit = getValues(FEE_LIMIT_FIELD_NAME);
+        const customMaxFeePerGas = getValues(MAX_FEE_PER_GAS_FIELD_NAME);
+        const customMaxPriorityFeePerGas = getValues(MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME);
         onCustomFeeSet({
             customFeePerUnit,
             customFeeLimit,

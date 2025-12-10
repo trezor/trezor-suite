@@ -13,6 +13,12 @@ import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { FeesFormValues } from '../../feesFormSchema';
+import {
+    FEE_LIMIT_FIELD_NAME,
+    FEE_PER_UNIT_FIELD_NAME,
+    MAX_FEE_PER_GAS_FIELD_NAME,
+    MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
+} from '../../presets';
 import { selectCustomFeeLevel, selectFeeLevelTransactionBytes } from '../../selectors';
 import { NativeSendRootState } from '../../sendFormSlice';
 import { calculateCustomFeeLevelThunk } from '../../thunks';
@@ -21,11 +27,6 @@ type UseCustomFeeProps = {
     accountKey: AccountKey;
     formState: FormState | null | undefined;
 };
-
-const FEE_PER_UNIT_FIELD_NAME = 'customFeePerUnit';
-const FEE_LIMIT_FIELD_NAME = 'customFeeLimit';
-const MAX_FEE_PER_GAS_FIELD_NAME = 'customMaxFeePerGas';
-const MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME = 'customMaxPriorityFeePerGas';
 
 export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
     const debounce = useDebounce();
