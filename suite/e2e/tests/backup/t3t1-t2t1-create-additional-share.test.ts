@@ -31,7 +31,7 @@ for (const model of testCases) {
                         stream: TestStream.Foundation,
                     }),
                 },
-                async ({ page, settingsPage, trezorUserEnvLink }) => {
+                async ({ settingsPage, trezorUserEnvLink }) => {
                     await settingsPage.navigateTo('device');
                     await settingsPage.device.createMultiShareBackupButton.click();
                     await settingsPage.device.proceedMultiShareBackupModal();
@@ -50,7 +50,6 @@ for (const model of testCases) {
                     }
 
                     // [device screen] create additional backup?
-                    await page.waitForTimeout(1000); // without this timeout, backup on device simply disappears, it stinks TODO: https://github.com/trezor/trezor-suite/issues/17128
                     await trezorUserEnvLink.pressYes();
                     await trezorUserEnvLink.readAndConfirmShamirMnemonicEmu({
                         shares: 3,
