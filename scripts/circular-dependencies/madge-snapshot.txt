@@ -43,7 +43,6 @@ packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/s
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/contents.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/index.ts
 packages/suite-desktop-core/src/modules/index.ts > packages/suite-desktop-core/src/modules/event-logging/process.ts
-packages/suite/src/actions/suite/metadataActions.ts > packages/suite/src/actions/suite/metadataProviderActions.ts
 packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipAccount.tsx
 packages/suite/src/components/suite/graph/TransactionsGraph/TransactionsGraph.tsx > packages/suite/src/components/suite/graph/TransactionsGraph/GraphTooltipDashboard.tsx
 packages/suite/src/components/suite/index.tsx > packages/suite/src/components/suite/Preloader/Preloader.tsx > packages/suite/src/views/start/AnalyticsConsentScreen.tsx

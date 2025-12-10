@@ -10,9 +10,9 @@ import { Dispatch, GetState } from 'src/types/suite';
 import { LabelableEntityKeys, PasswordEntry, ProviderErrorAction } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
 
-import * as metadataActions from './metadataActions';
-import * as metadataProviderActions from './metadataProviderActions';
-import type { FetchIntervalTrackingId } from './metadataProviderActions';
+import * as metadataProviderActions from './metadataProviderThunks';
+import type { FetchIntervalTrackingId } from './metadataProviderThunks';
+import * as metadataThunks from './metadataThunks';
 
 export const fetchPasswords =
     (keys: LabelableEntityKeys) => async (dispatch: Dispatch, _getState: GetState) => {
@@ -218,14 +218,14 @@ export const addPasswordMetadata =
             metadata.entries[nextId] = payload;
 
             dispatch(
-                metadataActions.setMetadata({
+                metadataThunks.setMetadata({
                     provider,
                     fileName,
                     data: metadata,
                 }),
             );
 
-            metadataActions.encryptAndSaveMetadata({
+            metadataThunks.encryptAndSaveMetadata({
                 providerInstance,
                 fileName,
                 data: metadata,
@@ -259,14 +259,14 @@ export const removePasswordMetadata =
             delete metadata.entries[index];
 
             dispatch(
-                metadataActions.setMetadata({
+                metadataThunks.setMetadata({
                     provider,
                     fileName,
                     data: metadata,
                 }),
             );
 
-            metadataActions.encryptAndSaveMetadata({
+            metadataThunks.encryptAndSaveMetadata({
                 providerInstance,
                 fileName,
                 data: metadata,

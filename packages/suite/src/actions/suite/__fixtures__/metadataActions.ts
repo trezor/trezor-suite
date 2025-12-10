@@ -5,7 +5,8 @@ import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants/';
 
 import * as metadataActions from '../metadataActions';
 import * as metadataLabelingActions from '../metadataLabelingActions';
-import * as metadataProviderActions from '../metadataProviderActions';
+import * as metadataProviderActions from '../metadataProviderThunks';
+import * as metadataThunks from '../metadataThunks';
 
 const { getSuiteDevice, getWalletAccount } = testMocks;
 
@@ -458,7 +459,7 @@ export const enableMetadata: Fixture<(typeof metadataActions)['enableMetadata']>
     },
 ];
 
-export const disableMetadata: Fixture<(typeof metadataActions)['disableMetadata']>[] = [
+export const disableMetadata: Fixture<(typeof metadataThunks)['disableMetadata']>[] = [
     {
         description: 'disable metadata',
         initialState: {
@@ -605,7 +606,7 @@ const init: Fixture<(typeof metadataLabelingActions)['init']>[] = [
     },
 ];
 
-const disposeMetadata: Fixture<(typeof metadataActions)['disposeMetadata']>[] = [
+const disposeMetadata: Fixture<(typeof metadataThunks)['disposeMetadata']>[] = [
     {
         description: '',
         initialState: {
@@ -647,7 +648,7 @@ const disposeMetadata: Fixture<(typeof metadataActions)['disposeMetadata']>[] = 
     },
 ];
 
-const disposeMetadataKeys: Fixture<(typeof metadataActions)['disposeMetadataKeys']>[] = [
+const disposeMetadataKeys: Fixture<(typeof metadataThunks)['disposeMetadataKeys']>[] = [
     {
         description: 'keys',
         initialState: {
