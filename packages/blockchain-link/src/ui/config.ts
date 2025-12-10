@@ -1,6 +1,28 @@
 export default [
     {
         blockchain: {
+            name: 'Custom EVM RPC',
+            worker: 'js/evm-rpc-worker.js',
+            server: ['https://base.llamarpc.com'],
+            debug: true,
+        },
+        data: {
+            address: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3', // all ETH#1
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '0x2a0c0dbecc7e4d658f48e01e3fa353f44050c208', // Poloniex: https://www.walletexplorer.com/wallet/Poloniex.com
+        },
+    },
+    {
+        blockchain: {
             name: 'Ripple',
             worker: 'js/ripple-worker.js',
             server: [
