@@ -12,8 +12,12 @@ import {
     selectAccountFormattedBalance,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import {
+    AccountKey,
+    BaseCurrencyAmount,
+    TokenAddress,
+    TokenSymbol,
+} from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
 import { GraphBaseCurrencyBalance } from '@suite-native/graph';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';

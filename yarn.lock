@@ -10330,7 +10330,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/assets@workspace:suite-common/assets"
   dependencies:
-    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -11038,6 +11038,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:^"
     "@types/invity-api": "npm:^1.1.12"
     react: "npm:19.1.0"
   languageName: unknown
@@ -11348,6 +11349,7 @@ __metadata:
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -11585,6 +11587,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:^"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -12422,7 +12425,7 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -13270,7 +13273,6 @@ __metadata:
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -14301,6 +14303,7 @@ __metadata:
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-types": "workspace:^"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/asset-utils": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"

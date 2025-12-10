@@ -41,12 +41,13 @@ import {
     selectSelectedDevice,
     selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
 import {
+    Account,
     BaseCurrencyAmount,
+    RatesByKey,
     asBaseCurrencyAmount,
-    getAccountFiatBalance,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-types';
+import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { NativeFirmwareRootState } from '@suite-native/firmware';

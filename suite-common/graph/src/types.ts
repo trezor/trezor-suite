@@ -1,6 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { AccountKey, BaseCurrencyAmount, TokenAddress } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 export type FiatGraphPoint = {

@@ -14,8 +14,8 @@ import {
 import { Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
-import { asBaseCurrencyAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { FormState, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import {
     Banner,
     Card,

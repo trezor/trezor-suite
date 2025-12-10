@@ -6,8 +6,7 @@ import {
     TradingTradeMapProps,
     cryptoIdToNetworkSymbolAndContractAddress,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Paragraph, Row, Text, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx, typography } from '@trezor/theme';

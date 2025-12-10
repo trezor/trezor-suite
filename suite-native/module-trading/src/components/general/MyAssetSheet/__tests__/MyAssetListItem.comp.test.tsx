@@ -1,8 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { TokenAddress, TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import { MyAsset } from '@suite-native/trading-types';

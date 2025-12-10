@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
 import { Badge, Box, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';

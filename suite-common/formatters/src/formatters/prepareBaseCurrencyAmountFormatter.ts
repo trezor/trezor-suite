@@ -2,10 +2,9 @@ import { IntlShape } from 'react-intl';
 
 import { FormatNumberOptions } from '@formatjs/intl';
 
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
-    BaseCurrencyAmount,
     asAmountUnit,
-    asBaseCurrencyAmount,
     isBaseCurrencyWithSats,
     redactNumericalSubstring,
     unitsToSubunits,

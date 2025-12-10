@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
     TestStore,

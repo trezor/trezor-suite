@@ -2,7 +2,7 @@ import { Ref, forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';

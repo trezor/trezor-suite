@@ -25,6 +25,9 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../asset-utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../components" },

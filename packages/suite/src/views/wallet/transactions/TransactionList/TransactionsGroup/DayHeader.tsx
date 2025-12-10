@@ -3,7 +3,8 @@ import { FormattedDate } from 'react-intl';
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, parseTransactionDateKey } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

@@ -1,6 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { AmountUnit, BASE_CURRENCY_ZERO, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { AmountUnit, BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite';

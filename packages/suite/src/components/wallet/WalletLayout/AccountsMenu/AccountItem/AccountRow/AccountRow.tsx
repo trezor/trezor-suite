@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';

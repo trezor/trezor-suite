@@ -11,7 +11,7 @@ import {
     selectBaseCurrency,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { percentageDiff } from '@suite-native/graph';
 import { BigNumber } from '@trezor/utils';
 

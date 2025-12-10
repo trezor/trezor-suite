@@ -1,6 +1,6 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 

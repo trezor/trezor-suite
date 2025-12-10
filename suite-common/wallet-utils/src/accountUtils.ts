@@ -18,6 +18,7 @@ import {
     Account,
     AccountDescriptor,
     AccountKey,
+    BaseCurrencyAmount,
     FailedAccount,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
@@ -25,6 +26,7 @@ import {
     ReceiveInfo,
     SuccessfulAccount,
     TokenAddress,
+    asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
@@ -46,7 +48,6 @@ import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { getAccountDecimals } from './amountUtils';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';

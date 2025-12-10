@@ -1,7 +1,7 @@
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { AmountUnit, asAmountUnit } from './AmountTypes';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 
 type ToFiatCurrencyParams = {
     // Todo: remove `string`, its used only for backwards compatibility
