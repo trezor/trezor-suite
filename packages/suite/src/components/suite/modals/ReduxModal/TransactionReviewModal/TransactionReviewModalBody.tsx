@@ -15,18 +15,9 @@ import { useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
-import { isStakeState } from './TransactionReviewModal';
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
+import { isStakeState } from './types';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
-
-export const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
-
-export const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormState) => {
-    const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
-    const tradeType = precomposedForm.trading?.activeSection ? 'trade' : undefined;
-
-    return stakeType ?? tradeType;
-};
 
 export type TransactionReviewModalBodyProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
