@@ -39,7 +39,9 @@ export const TroubleshootingTips = ({
     const visibleTips = items.filter(item => !item.hide);
 
     const TroubleshootingButton = () => {
-        const [isTroubleshootingModalVisible, setIsTroubleshootingModalVisible] = useState(false);
+        const [isTroubleshootingModalVisible, setIsTroubleshootingModalVisible] = useState(
+            initiallyIsOpen ?? false,
+        );
         const onOpen = () => {
             setIsTroubleshootingModalVisible(true);
         };
@@ -56,7 +58,7 @@ export const TroubleshootingTips = ({
                     onClick={onOpen}
                     intent="neutral"
                     size="small"
-                    priority={!initiallyIsOpen ? 'secondary' : 'primary'}
+                    priority="secondary"
                     iconLeft="question"
                     data-testid="@onboarding/troubleshooting-tips/button"
                 >

@@ -3,7 +3,6 @@ import { Translation } from 'src/components/suite/Translation';
 
 export const DeviceDisconnectRequired = () => (
     <TroubleshootingTips
-        initiallyIsOpen={true}
         intent="warning"
         items={[
             {
