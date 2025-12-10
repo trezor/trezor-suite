@@ -26,18 +26,16 @@ import {
     spacingsPx,
 } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite/Translation';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
+
 import { FloatingSelections } from './FloatingSelections';
 import { OptionText, SelectedOption } from './OptionWithContent';
 import { typesToLabelMap } from './typesToLabelMap';
-import { Translation } from '../../../../components/suite/Translation';
-import { useLayoutSize, useSelector } from '../../../../hooks/suite';
+import { isShamirBackupType } from '../utils';
 
 const SELECT_ELEMENT_HEIGHT = 84;
 const SELECT_ELEMENT_HEIGHT_MOBILE = 62;
-
-const SHAMIR_TYPES: BackupType[] = ['shamir-single', 'shamir-advanced'];
-
-export const isShamirBackupType = (type: BackupType) => SHAMIR_TYPES.includes(type);
 
 const Wrapper = styled.div`
     width: 100%;
