@@ -1,4 +1,7 @@
+import { useSelector } from 'react-redux';
+
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useBluetoothAdapter } from '@suite-native/bluetooth';
 import {
     useDetectDeviceError,
@@ -14,13 +17,15 @@ import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
  * that are supposed to be active globally once the app is ready.
  */
 export const useGlobalHooks = () => {
+    const device = useSelector(selectSelectedDevice);
+
     useConnectPopupNavigation();
 
     useBluetoothAdapter();
 
     useDetectDeviceError();
     useHandleDeviceAuthorization();
-    useReportDeviceCompromised();
+    useReportDeviceCompromised({ device });
     useRenderDeviceDangerBanner();
     useDeviceCompromisedNotification();
 
