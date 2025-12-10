@@ -1,4 +1,4 @@
-import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
+import { PROTOCOL_MALFORMED, thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
 import { scheduleAction } from '@trezor/utils';
 
 import { receive } from './receive';
@@ -18,7 +18,7 @@ type ReadWithExpectedHeadersOptions = {
 
 const ATTEMPT_ERROR = 'Unexpected chunk';
 
-async function readAndAssert({
+export async function readAndAssert({
     thpState,
     apiRead,
     signal,
@@ -27,6 +27,10 @@ async function readAndAssert({
     // try to read whole message
     const message = await receive(() => apiRead(signal), protocolV2);
     if (!message.success) {
+        if (message.error === PROTOCOL_MALFORMED) {
+            throw new Error(ATTEMPT_ERROR);
+        }
+
         return message;
     }
 

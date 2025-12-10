@@ -8,7 +8,7 @@ describe('readWithExpectedHeaders', () => {
     });
 
     // common AbstractApi['read'] mock
-    const SUCCESS = Buffer.from('3f23230002000000060a046d656f77', 'hex'); // proto Success
+    const ACK = Buffer.from('2833da0004527eb068', 'hex'); // ThpAck
     const apiRead = jest.fn(
         signal =>
             new Promise<any>((resolve, reject) => {
@@ -22,7 +22,7 @@ describe('readWithExpectedHeaders', () => {
                     signal.removeEventListener('abort', listener);
                     resolve({
                         success: true,
-                        payload: SUCCESS,
+                        payload: ACK,
                     });
                 }, 10);
             }),
@@ -74,7 +74,7 @@ describe('readWithExpectedHeaders', () => {
         const apiRead = jest.fn(() =>
             Promise.resolve({ success: true, payload: Buffer.alloc(64) } as const),
         );
-        thpState.setExpectedResponses([SUCCESS.readInt8()]);
+        thpState.setExpectedResponses([ACK.readInt8()]);
         const read = readWithExpectedHeaders({
             thpState,
             apiRead,
@@ -86,7 +86,7 @@ describe('readWithExpectedHeaders', () => {
     });
 
     it('success with expectedHeaders', async () => {
-        thpState.setExpectedResponses([SUCCESS.readInt8()]);
+        thpState.setExpectedResponses([ACK.readInt8()]);
         const result = await readWithExpectedHeaders({
             thpState,
             apiRead,
@@ -103,7 +103,7 @@ describe('readWithExpectedHeaders', () => {
     });
 
     it('success. received at 5th attempt', async () => {
-        thpState.setExpectedResponses([SUCCESS.readInt8()]);
+        thpState.setExpectedResponses([ACK.readInt8()]);
         let attempt = 0;
         const apiRead = jest.fn(
             () =>
@@ -111,7 +111,7 @@ describe('readWithExpectedHeaders', () => {
                     if (++attempt < 5) {
                         resolve({ success: true, payload: Buffer.alloc(32) });
                     } else {
-                        resolve({ success: true, payload: SUCCESS });
+                        resolve({ success: true, payload: ACK });
                     }
                 }),
         );
@@ -149,6 +149,43 @@ describe('readWithExpectedHeaders', () => {
             thpState,
             apiRead,
         })();
-        expect(result).toMatchObject({ success: true });
+        expect(result).toMatchObject({ success: true, payload: { messageType: 32 } });
+    });
+
+    it('success. THP stream with unexpected chunks', async () => {
+        const chunks = [
+            'dead', // 0 attempt, unexpected gibberish
+            '8033da666666666666', // 1 attempt, unexpected chunk header
+            '2833da001066666666', // 2 attempt
+            '8033da666666666666',
+            '2833da001066666666', // 3 attempt, unexpected chunk header
+            '8033da666666666666', // 4 attempt, unexpected initial header
+            '8033da666666666666', // 5 attempt
+            '0433da001066666666', // 6 attempt, success
+            '8033da666666666666',
+            '8033da666666666666',
+        ];
+        const apiRead = jest.fn(() =>
+            Promise.resolve({
+                success: true,
+                payload: Buffer.from(chunks.shift() || 'dead', 'hex'),
+            } as const),
+        );
+
+        const thpState = new protocolThp.ThpState();
+        thpState.setChannel(Buffer.from('33da', 'hex'));
+        thpState.setExpectedResponses([0x20, 0x04]); // expect ThpAck and encrypted message
+        thpState.sync('send', 'ThpAck'); // ThpAck is masked, data will start with "28" instead of "04"
+
+        const result = await readWithExpectedHeaders({
+            thpState,
+            apiRead,
+            attempts: 6, // todo remove
+        })();
+
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 4 },
+        });
     });
 });
