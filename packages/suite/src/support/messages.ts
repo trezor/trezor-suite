@@ -7865,15 +7865,6 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION',
         defaultMessage: 'Run the  <a>Trezor Suite</a> desktop app',
     },
-    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE: {
-        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_TITLE',
-        defaultMessage: 'Switch connection method',
-    },
-    TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION: {
-        id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_ALT_DESCRIPTION',
-        defaultMessage:
-            "<a>Click to switch</a> how your Trezor connects to Trezor Suite. This may help if you're experiencing connection issues. Current version {currentVersion}",
-    },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
         defaultMessage:
