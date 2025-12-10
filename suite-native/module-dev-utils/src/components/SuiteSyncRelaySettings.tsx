@@ -1,11 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/redux-utils';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsFeatureSuiteSyncAvailable,
     selectSuiteSyncRelayUrl,
-    suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
@@ -17,7 +16,6 @@ const DEFAULT_CUSTOM_RELAY_URL = '';
 export const SuiteSyncRelaySettings = () => {
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
     const isFeatureSuiteSyncEnabled = useSelector(selectIsFeatureSuiteSyncAvailable);
-    const dispatch = useDispatch();
     const { suiteSync } = useServices();
     const { showToast } = useToast();
 
@@ -39,22 +37,10 @@ export const SuiteSyncRelaySettings = () => {
     });
 
     const handleSuiteSyncEnableToggle = () => {
-        const originalIsSuiteSyncEnabled = isFeatureSuiteSyncEnabled;
-        // This is probably irrelevant for native
-        dispatch(
-            suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
-                isShownInSettings: !isFeatureSuiteSyncEnabled,
-            }),
-        );
-        // Here, we need this as well,as we don't have experimental feature in Native
-        dispatch(
-            suiteSyncActions.updateSuiteSyncEnabled({
-                isEnabled: !isFeatureSuiteSyncEnabled,
-            }),
-        );
-
-        if (originalIsSuiteSyncEnabled) {
+        if (isFeatureSuiteSyncEnabled) {
             suiteSync.turnOffSuiteSync();
+        } else {
+            suiteSync.turnOnSuiteSync();
         }
     };
 
