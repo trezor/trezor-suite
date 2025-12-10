@@ -33,9 +33,18 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
         return tokens;
     }
 
+    const isEvmNetwork = account.networkType === 'ethereum';
+
     // get list of tokens that are not included in default response, their balances need to be fetched
     const customTokens =
-        account.tokens?.filter(t => !payloadTokens?.find(p => p.contract === t.contract)) ?? [];
+        account.tokens?.filter(
+            t =>
+                !payloadTokens?.some(p =>
+                    isEvmNetwork
+                        ? p.contract.toLowerCase() === t.contract.toLowerCase()
+                        : p.contract === t.contract,
+                ),
+        ) ?? [];
 
     const promises = customTokens.map(t =>
         TrezorConnect.getAccountInfo({
