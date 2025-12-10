@@ -47,7 +47,7 @@ test.describe('Google API errors', { tag: ['@group=metadata', '@webOnly'] }, () 
             await onboardingPage.completeOnboarding();
 
             await walletPage.openAccount();
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
 
             await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE, {
                 skipVerification: true,

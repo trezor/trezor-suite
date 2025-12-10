@@ -25,93 +25,107 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         trezorUserEnvLink,
         metadataMock,
     }) => {
-        // Setup standard wallet with label and edit it
-        await page.getByTestId('@account-menu/btc/normal/0/label').click();
-        await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('Bitcoin #1');
+        await test.step('Setup standard wallet and enable labels', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await metadataPage.wallet.clickEditLabel(standardWalletIndex);
+            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
+        });
 
-        await dashboardPage.openDeviceSwitcher();
-        await metadataPage.wallet.clickAddLabel(standardWalletIndex);
-        await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
-        await metadataPage.wallet.fillLabelInput('label for standard wallet');
-        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
-            'label for standard wallet',
-        );
+        await test.step('Add and Edit label of standard wallet', async () => {
+            await metadataPage.wallet.clickEditLabel(standardWalletIndex);
+            await metadataPage.wallet.fillLabelInput('label for standard wallet');
 
-        await metadataPage.wallet.clickEditLabel(standardWalletIndex);
-        await metadataPage.wallet.fillLabelInput('wallet for drugs');
+            await metadataPage.wallet.successIconIsVisible(standardWalletIndex);
+            await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
+                'label for standard wallet',
+            );
 
-        // Add hidden wallet and enable labeling
-        await dashboardPage.addUnusedHiddenWallet('abc');
+            await metadataPage.wallet.clickEditLabel(standardWalletIndex);
+            await metadataPage.wallet.fillLabelInput('wallet for drugs');
+            await metadataPage.wallet.successIconIsVisible(standardWalletIndex);
+        });
 
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+        await test.step('Add hidden wallet and enable labeling', async () => {
+            await dashboardPage.addUnusedHiddenWallet('abc');
 
-        await dashboardPage.openDeviceSwitcher();
-        await metadataPage.wallet.clickAddLabel(hiddenWalletIndex);
-        await metadataPage.wallet.fillLabelInput('wallet not for drugs');
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        // Verify wallet labels
-        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
-            'wallet for drugs',
-        );
-        await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
-            'wallet not for drugs',
-        );
+            await dashboardPage.openDeviceSwitcher();
+            await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
+            await metadataPage.wallet.fillLabelInput('wallet not for drugs');
+            await metadataPage.wallet.successIconIsVisible(hiddenWalletIndex);
+        });
 
-        // Reload app
-        await page.waitForTimeout(1000); // wait for changes to db
-        await page.reload();
-        await metadataMock.setupWindowStubs();
+        await test.step('Verify wallet labels', async () => {
+            await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
+                'wallet for drugs',
+            );
+            await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
+                'wallet not for drugs',
+            );
+        });
 
-        // Verify wallet labels after reload
-        await dashboardPage.openDeviceSwitcher();
+        await test.step('Reload app', async () => {
+            await page.waitForTimeout(1000); // wait for changes to db
+            await page.reload();
+            await metadataMock.setupWindowStubs();
+        });
 
-        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
-            'wallet for drugs',
-        );
-        await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
-            'wallet not for drugs',
-        );
+        await test.step('Verify wallet labels after reload', async () => {
+            await dashboardPage.openDeviceSwitcher();
+
+            await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
+                'wallet for drugs',
+            );
+            await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
+                'wallet not for drugs',
+            );
+        });
     });
 
     test('labels can be enabled and edited when different wallet is open', async ({
-        page,
         dashboardPage,
         metadataPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
-        // Setup standard wallet with label and edit it
-        await page.getByTestId('@account-menu/btc/normal/0/label').click();
-        await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('Bitcoin #1');
+        await test.step('Setup standard wallet with label and edit it', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await metadataPage.wallet.clickEditLabel(standardWalletIndex);
+            await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
+            await metadataPage.wallet.clickEditLabel(standardWalletIndex);
+            await metadataPage.wallet.fillLabelInput('label for standard wallet');
+            await metadataPage.wallet.successIconIsVisible(standardWalletIndex);
+        });
 
-        await dashboardPage.openDeviceSwitcher();
-        await metadataPage.wallet.clickAddLabel(standardWalletIndex);
-        await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
-        await metadataPage.wallet.fillLabelInput('label for standard wallet');
+        await test.step('Add passphrase wallet C and switch back to first wallet', async () => {
+            await dashboardPage.addUnusedHiddenWallet('C');
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressNo();
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.walletAtIndex(standardWalletIndex).click();
+        });
 
-        // Add passphrase wallet C and switch back to first wallet
-        await dashboardPage.addUnusedHiddenWallet('C');
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressNo();
-        await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.walletAtIndex(standardWalletIndex).click();
+        await test.step('Enable labeling for wallet C', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
+            await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
+            await metadataPage.wallet.fillLabelInput(
+                'still works, metadata enabled for currently not selected device',
+            );
+            await metadataPage.wallet.successIconIsVisible(hiddenWalletIndex);
+        });
 
-        // Enable labeling for wallet C
-        await dashboardPage.openDeviceSwitcher();
-        await metadataPage.wallet.clickAddLabel(hiddenWalletIndex);
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
-        await metadataPage.wallet.fillLabelInput(
-            'still works, metadata enabled for currently not selected device',
-        );
-
-        // Verify wallet labels
-        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
-            'label for standard wallet',
-        );
-        await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
-            'still works, metadata enabled for currently not selected device',
-        );
+        await test.step('Verify wallet labels', async () => {
+            await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
+                'label for standard wallet',
+            );
+            await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
+                'still works, metadata enabled for currently not selected device',
+            );
+        });
     });
 });

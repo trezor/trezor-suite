@@ -5,31 +5,34 @@ const metadataAddress = 'bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
 test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ metadataMock }) => {
+    test.beforeEach(async ({ metadataMock, onboardingPage }) => {
         await metadataMock.start(MetadataProvider.GOOGLE);
+        await onboardingPage.completeOnboarding();
     });
 
-    test('google provider', async ({ page, onboardingPage, metadataPage, walletPage }) => {
-        await onboardingPage.completeOnboarding();
+    test('google provider', async ({ page, metadataPage, walletPage }) => {
+        await test.step('Interact with accounts and metadata', async () => {
+            await walletPage.openAccount();
+            await walletPage.receiveButton.click();
+            await walletPage.showMoreButton.click();
+            await metadataPage.address.clickEditLabel(metadataAddress);
+            await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
+        });
 
-        // Interact with accounts and metadata
-        await walletPage.openAccount();
-        await walletPage.receiveButton.click();
-        await walletPage.showMoreButton.click();
-        await metadataPage.address.clickAddLabel(metadataAddress);
+        await test.step('Add address label', async () => {
+            await metadataPage.address.clickEditLabel(metadataAddress);
+            await metadataPage.address.fillLabelInput('meow address');
+            await page.keyboard.press('Enter');
+            await metadataPage.address.successIconIsVisible(metadataAddress);
+            await expect(metadataPage.address.label(metadataAddress)).toHaveText('meow address');
+        });
 
-        // Initialize metadata flow
-        // Metadata provider: google
-        metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
-
-        await metadataPage.address.metadataInput.fill('meow address');
-        await page.keyboard.press('Enter');
-        await expect(metadataPage.address.label(metadataAddress)).toHaveText('meow address');
-
-        // Edit metadata label
-        await metadataPage.address.clickEditLabel(metadataAddress);
-        await metadataPage.address.metadataInput.fill('meow meow');
-        await page.keyboard.press('Enter');
-        await expect(metadataPage.address.label(metadataAddress)).toHaveText('meow meow');
+        await test.step('Edit metadata label', async () => {
+            await metadataPage.address.clickEditLabel(metadataAddress);
+            await metadataPage.address.fillLabelInput('meow meow');
+            await page.keyboard.press('Enter');
+            await metadataPage.address.successIconIsVisible(metadataAddress);
+            await expect(metadataPage.address.label(metadataAddress)).toHaveText('meow meow');
+        });
     });
 });
