@@ -2,6 +2,7 @@ import {
     CreateTurnOnSuiteSyncDeps,
     TurnOnSuiteSync,
 } from '@suite-common/suite-sync-types/src/turnOnSuteSync';
+import { selectDevices } from '@suite-common/wallet-core';
 
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
@@ -17,5 +18,9 @@ export const createTurnOnSuiteSync =
 
         deps.dispatch(suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: true }));
 
-        // Todo: iterate over all device and turn them ON
+        // Turn on and subscribe labeling for all wallets.
+        const devices = selectDevices(deps.getState());
+        devices?.forEach(device => {
+            deps.turnOnSuiteSyncForWallet({ staticSessionId: device?.state?.staticSessionId });
+        });
     };

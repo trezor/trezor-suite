@@ -100,6 +100,7 @@ export const createSuiteSyncCompositionRoot = (
         turnOnSuiteSync: createTurnOnSuiteSync({
             getState: deps.getState,
             dispatch: deps.dispatch,
+            turnOnSuiteSyncForWallet,
         }),
         labeling: {
             updateWalletLabel: createUpdateWalletLabel({
