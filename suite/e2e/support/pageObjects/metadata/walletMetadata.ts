@@ -1,38 +1,26 @@
+import { expect } from '@playwright/test';
+
 import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
 export class WalletMetadata extends MetadataBase {
-    private readonly walletSelectorBeginPart = '[data-testid^="@metadata/walletLabel/"]';
-    readonly walletLabel = (index: number) =>
-        this.page.locator(`${this.walletSelectorBeginPart}[data-testid$=":${index + 1}"]`);
-
+    readonly walletLabel = (index: number) => this.walletOnIndex(index).getByTestId(this.inputId);
+    readonly walletOnIndex = (index: number) =>
+        this.page.getByTestId(`@switch-device/wallet-on-index/${index}`);
+    readonly labelChangeSuccessIcon = (index: number) =>
+        this.walletOnIndex(index).getByTestId(this.successId);
     @step()
-    async clickAddLabel(index: number) {
-        await this.page.waitForTimeout(2000); // I couldn't figure out any other working solution for flaky hover+click
-        await this.page
-            .locator(
-                `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/hover-container"]`,
-            )
-            .hover();
-        await this.page
-            .locator(
-                `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/add-label-button"]`,
-            )
-            .click();
+    async clickEditLabel(index: number) {
+        await this.resetMousePosition();
+        // ensure wallet label is loaded - test can be too fast
+        await expect(this.walletLabel(index)).toHaveText(/[A-Za-z]+/);
+        await this.walletOnIndex(index).getByTestId(this.inputId).hover();
+        await this.walletOnIndex(index).getByTestId(this.editButtonId).click();
     }
 
     @step()
-    async clickEditLabel(index: number) {
-        await this.page.waitForTimeout(2000); // I couldn't figure out any other working solution for flaky hover+click
-        await this.page
-            .locator(
-                `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/hover-container"]`,
-            )
-            .hover();
-        await this.page
-            .locator(
-                `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}/edit-label-button"]`,
-            )
-            .click();
+    async successIconIsVisible(standardWalletIndex: number) {
+        await expect(this.labelChangeSuccessIcon(standardWalletIndex)).toBeVisible();
+        await expect(this.labelChangeSuccessIcon(standardWalletIndex)).toBeHidden();
     }
 }

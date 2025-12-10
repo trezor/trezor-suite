@@ -27,7 +27,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware']
         const newLabel = 'my synced btc account label';
         await test.step('Change BTC account label in first session', async () => {
             await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.account.metadataInput.fill(newLabel);
             await page.keyboard.press('Enter');
             await expect(

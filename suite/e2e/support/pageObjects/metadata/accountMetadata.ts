@@ -1,13 +1,13 @@
+import { expect } from '@playwright/test';
+
 import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
 export class AccountMetadata extends MetadataBase {
-    readonly addLabelButton = (accountId: string) =>
-        this.page.getByTestId(`${this.getLabelTestId(accountId)}/add-label-button`);
     readonly editLabelButton = (accountId: string) =>
-        this.page.getByTestId(`${this.getLabelTestId(accountId)}/edit-label-button`);
+        this.accountLabel(accountId).getByTestId(this.editButtonId);
     readonly successLabel = (accountId: string) =>
-        this.page.getByTestId(`${this.getLabelTestId(accountId)}/success`);
+        this.accountLabel(accountId).getByTestId(this.successId);
     readonly accountLabel = (accountId: string) =>
         this.page.getByTestId(`${this.getLabelTestId(accountId)}/hover-container`);
 
@@ -16,21 +16,25 @@ export class AccountMetadata extends MetadataBase {
     }
 
     @step()
-    async editLabel(accountId: string, newLabel: string) {
-        await this.accountLabel(accountId).click();
+    async changeLabel(accountId: string, newLabel: string) {
+        await this.resetMousePosition();
+        // ensure account label is loaded - test can be too fast
+        await expect(this.accountLabel(accountId)).toHaveText(/[A-Za-z]+/);
+        await this.accountLabel(accountId).hover();
         await this.editLabelButton(accountId).click();
         await this.fillLabelInput(newLabel, { useButton: true });
     }
 
     @step()
-    async clickAddLabelButton(accountId: string) {
+    async clickEditLabelButton(accountId: string) {
+        await this.resetMousePosition();
         await this.accountLabel(accountId).hover();
-        await this.addLabelButton(accountId).click();
+        await this.editLabelButton(accountId).click();
     }
 
     @step()
-    async addLabel(accountId: string, label: string) {
-        await this.clickAddLabelButton(accountId);
-        await this.fillLabelInput(label);
+    async successIconIsVisible(accountId: string) {
+        await expect(this.successLabel(accountId)).toBeVisible();
+        await expect(this.successLabel(accountId)).toBeHidden();
     }
 }

@@ -35,7 +35,7 @@ test.describe(
             // Navigate to account and hover over add label button
             await page.getByTestId('@suite/menu/suite-index').click();
             await walletPage.openAccount();
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressNo();
 
@@ -71,10 +71,6 @@ test.describe(
             // Enable labeling dialogue appears again
             await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
             await trezorUserEnvLink.pressNo();
-        });
-
-        test.afterEach(async ({ metadataMock }) => {
-            await metadataMock.stop();
         });
     },
 );

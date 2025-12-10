@@ -10,11 +10,20 @@ export class MetadataBase {
     readonly metadataSubmitButton: Locator;
     readonly metadataCancelButton: Locator;
     readonly metadataInput: Locator;
+    readonly editButtonId = '@metadata/edit';
+    readonly inputId = '@metadata/input';
+    readonly successId = '@metadata/success';
 
     constructor(protected readonly page: Page) {
         this.metadataSubmitButton = page.getByTestId('@metadata/submit');
         this.metadataCancelButton = page.getByTestId('@metadata/cancel');
-        this.metadataInput = page.getByTestId('@metadata/input');
+        this.metadataInput = page
+            .getByTestId('@metadata/input')
+            .and(page.locator('[contenteditable="true"]'));
+    }
+
+    async resetMousePosition() {
+        await this.page.mouse.move(0, 0); // reset mouse position to avoid hover issues
     }
 
     @step()
