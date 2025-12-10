@@ -9,13 +9,23 @@ import { FeesFormValues } from '../../../feesFormSchema';
 type CustomFeeLabelProps = {
     networkType: NetworkType;
 };
+
+const getFormattedFeeUnits = (fee: string, networkType: NetworkType) => {
+    const value = Number(fee);
+    switch (networkType) {
+        case 'ethereum':
+            return value.toFixed(2);
+        default:
+            return value;
+    }
+};
 export const CustomFeeLabel = ({ networkType }: CustomFeeLabelProps) => {
     const feeUnits = getFeeUnits(networkType);
 
     const { watch } = useFormContext<FeesFormValues>();
     const { customFeePerUnit } = watch();
 
-    const formattedFeePerUnit = `${Number(customFeePerUnit).toFixed(3)} ${feeUnits}`;
+    const formattedFeePerUnit = `${getFormattedFeeUnits(customFeePerUnit, networkType)} ${feeUnits}`;
 
     if (networkType === 'ethereum') {
         return (

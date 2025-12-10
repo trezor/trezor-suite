@@ -11,7 +11,7 @@ import {
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { FeesFormType } from '../../../../feesFormSchema';
-import { useFeesForm } from '../../../../hooks';
+import { CustomFeeParams, useFeesForm } from '../../../../hooks';
 import { useCustomFee } from '../../../../hooks/fees/useCustomFee';
 import { CustomFee } from '../CustomFee';
 
@@ -26,7 +26,7 @@ type CustomFeeProps = {
     accountKey: AccountKey;
     symbol: NetworkSymbol;
     formDraft: FormState | null | undefined;
-    onCustomFeeSet: (feePerUnit: string, feeLimit?: string) => void;
+    onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
 };
 
 describe('CustomFee', () => {
