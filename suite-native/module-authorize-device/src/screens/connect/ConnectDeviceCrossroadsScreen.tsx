@@ -1,4 +1,3 @@
-import { Pressable } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
@@ -7,6 +6,7 @@ import {
     Card,
     HStack,
     Image,
+    PressableOpacity,
     RoundedIcon,
     Text,
     TextDivider,
@@ -28,33 +28,40 @@ type ConnectCardProps = {
     title: TxKeyPath;
     subtitle: TxKeyPath;
     icon: IconName;
+    onPress: () => void;
 };
 
-const ConnectCard = ({ image, title, subtitle, icon }: ConnectCardProps) => (
+const ConnectCard = ({ image, title, subtitle, icon, onPress }: ConnectCardProps) => (
     <Card>
-        <VStack marginTop="sp16" spacing="sp24" alignItems="center">
-            <Image source={image} width={228} height={128} contentFit="contain" />
-            <Box alignItems="center">
-                <Text variant="titleSmall">
-                    <Translation
-                        id={title}
-                        values={{
-                            bold: chunks => (
-                                <Text key={1} variant="titleSmall" style={{ fontWeight: 'bold' }}>
-                                    {chunks}
-                                </Text>
-                            ),
-                        }}
-                    />
-                </Text>
-                <HStack alignItems="center">
+        <PressableOpacity onPress={onPress}>
+            <VStack marginTop="sp16" spacing="sp24" alignItems="center">
+                <Image source={image} width={228} height={128} contentFit="contain" />
+                <Box alignItems="center">
                     <Text variant="titleSmall">
-                        <Translation id={subtitle} />
+                        <Translation
+                            id={title}
+                            values={{
+                                bold: chunks => (
+                                    <Text
+                                        key={1}
+                                        variant="titleSmall"
+                                        style={{ fontWeight: 'bold' }}
+                                    >
+                                        {chunks}
+                                    </Text>
+                                ),
+                            }}
+                        />
                     </Text>
-                    <RoundedIcon name={icon} iconSize="mediumLarge" containerSize={28} />
-                </HStack>
-            </Box>
-        </VStack>
+                    <HStack alignItems="center">
+                        <Text variant="titleSmall">
+                            <Translation id={subtitle} />
+                        </Text>
+                        <RoundedIcon name={icon} iconSize="mediumLarge" containerSize={28} />
+                    </HStack>
+                </Box>
+            </VStack>
+        </PressableOpacity>
     </Card>
 );
 
@@ -80,23 +87,21 @@ export const ConnectDeviceCrossroadsScreen = ({
     return (
         <ConnectDeviceScreen>
             <VStack marginTop="sp16" spacing="sp16">
-                <Pressable onPress={navigateToTurnOnAndUnlockDeviceScreen}>
-                    <ConnectCard
-                        image={require('../../assets/devices-bluetooth.webp')}
-                        title="moduleConnectDevice.crossroads.bluetooth.title"
-                        subtitle="moduleConnectDevice.crossroads.bluetooth.subtitle"
-                        icon="bluetooth"
-                    />
-                </Pressable>
+                <ConnectCard
+                    image={require('../../assets/devices-bluetooth.webp')}
+                    title="moduleConnectDevice.crossroads.bluetooth.title"
+                    subtitle="moduleConnectDevice.crossroads.bluetooth.subtitle"
+                    icon="bluetooth"
+                    onPress={navigateToTurnOnAndUnlockDeviceScreen}
+                />
                 <TextDivider />
-                <Pressable onPress={navigateToConnectAndUnlockDeviceScreen}>
-                    <ConnectCard
-                        image={require('../../assets/devices-cable.webp')}
-                        title="moduleConnectDevice.crossroads.cable.title"
-                        subtitle="moduleConnectDevice.crossroads.cable.subtitle"
-                        icon="cableUsbC"
-                    />
-                </Pressable>
+                <ConnectCard
+                    image={require('../../assets/devices-cable.webp')}
+                    title="moduleConnectDevice.crossroads.cable.title"
+                    subtitle="moduleConnectDevice.crossroads.cable.subtitle"
+                    icon="cableUsbC"
+                    onPress={navigateToConnectAndUnlockDeviceScreen}
+                />
             </VStack>
         </ConnectDeviceScreen>
     );
