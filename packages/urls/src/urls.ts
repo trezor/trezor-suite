@@ -315,6 +315,7 @@ export const LTC_ADDRESS_INFO_URL: Url = withPlatformUtm(
     'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707',
 );
 
+// borken
 export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://invity.onelink.me/yIY4/q7ltbnv0';
 
 // =====================
