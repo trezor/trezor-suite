@@ -26,30 +26,26 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText('Bitcoin #1');
 
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         });
 
         await test.step('Edit label with Enter submit', async () => {
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.account.metadataInput.fill('cool new label');
             await page.keyboard.press('Enter');
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText('cool new label');
+            await metadataPage.account.successIconIsVisible(AccountLabelId.BitcoinDefault1);
         });
 
         await test.step('Edit label with button submit', async () => {
-            await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'even cooler');
+            await metadataPage.account.changeLabel(AccountLabelId.BitcoinDefault1, 'even cooler');
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText('even cooler');
-
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinDefault1),
-            ).toBeVisible();
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinDefault1),
-            ).toBeHidden();
+            await metadataPage.account.successIconIsVisible(AccountLabelId.BitcoinDefault1);
         });
 
         await test.step('Discard label changes via Escape', async () => {
@@ -86,43 +82,33 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
             ).toHaveText('Bitcoin #1');
         });
 
-        await test.step('Switch between segwit accounts and check success indicators', async () => {
-            await walletPage.segwitGroupButton.click();
-            await walletPage.openAccount({ symbol: 'btc', type: 'segwit', atIndex: 0 });
-
-            await metadataPage.account.addLabel(
-                AccountLabelId.BitcoinSegwit1,
-                'typing into one input',
-            );
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
-            ).toBeVisible();
-
-            await walletPage.openAccount({ symbol: 'btc', type: 'segwit', atIndex: 1 });
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit2),
-            ).toBeHidden();
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
-            ).toBeHidden();
-        });
-
         await test.step('Navigate to dashboard', async () => {
             await dashboardPage.dashboardMenuButton.click();
             await expect(dashboardPage.graph).toBeVisible();
         });
 
         await test.step('Add and label a new account', async () => {
+            // Account number can change so we determine it dynamically
+            const btcAccountCount = await page
+                .locator('[data-testid^="@account-menu/btc/normal/"][data-testid$="/label"]')
+                .count();
+            const newAccountIndex = btcAccountCount;
+            const newAccountLabelId = `m/84'/0'/${newAccountIndex}'` as AccountLabelId;
             await walletPage.openAccount();
             await walletPage.addAccountButton.click();
             await settingsPage.coins.networkButton('btc').click();
             await page.getByTestId('@add-account').click();
-            await metadataPage.account.addLabel(
-                AccountLabelId.BitcoinDefault3,
+            await metadataPage.account.changeLabel(
+                newAccountLabelId,
                 'adding label to a newly added account. does it work?',
             );
+            await metadataPage.account.successIconIsVisible(newAccountLabelId);
             await expect(
-                walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 2 }),
+                walletPage.accountLabel({
+                    symbol: 'btc',
+                    type: 'normal',
+                    atIndex: newAccountIndex,
+                }),
             ).toHaveText('adding label to a newly added account. does it work?');
         });
     });

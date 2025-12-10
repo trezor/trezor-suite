@@ -26,7 +26,7 @@ test.describe('Import a BTC csv file', { tag: ['@group=wallet', '@webOnly'] }, (
         },
         async ({ page, dashboardPage, metadataPage, walletPage }) => {
             await walletPage.openAccount();
-            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
             await walletPage.openSendFormButton.click();
