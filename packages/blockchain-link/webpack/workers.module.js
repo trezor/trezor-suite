@@ -9,6 +9,7 @@ module.exports = {
         'blockfrost-worker': `${SRC}workers/blockfrost/index.ts`,
         'solana-worker': `${SRC}workers/solana/index.ts`,
         'stellar-worker': `${SRC}workers/stellar/index.ts`,
+        'evm-rpc-worker': `${SRC}workers/evm-rpc/index.ts`,
     },
     output: {
         filename: '[name].js',

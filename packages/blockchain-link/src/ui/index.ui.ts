@@ -3,6 +3,7 @@ import BlockchainLink from '../index';
 import { fillValues, getInputValue, onClear } from './utils';
 import BlockbookWorker from '../workers/blockbook/index';
 import BlockfrostWorker from '../workers/blockfrost/index';
+import EvmRpc from '../workers/evm-rpc';
 import RippleWorker from '../workers/ripple/index';
 import SolanaWorker from '../workers/solana';
 import StellarWorker from '../workers/stellar';
@@ -385,6 +386,10 @@ CONFIG.forEach(i => {
 
     if (i.blockchain.worker.includes('stellar')) {
         worker = StellarWorker;
+    }
+
+    if (i.blockchain.worker.includes('evm-rpc')) {
+        worker = EvmRpc;
     }
 
     const b = new BlockchainLink({

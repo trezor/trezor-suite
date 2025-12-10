@@ -7,6 +7,7 @@ export class WorkerState {
     accounts: SubscriptionAccountInfo[];
     subscription: { [key: string]: unknown };
     cache: Cache;
+    url?: string;
 
     constructor() {
         this.addresses = [];
