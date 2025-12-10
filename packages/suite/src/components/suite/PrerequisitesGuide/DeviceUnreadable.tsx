@@ -63,6 +63,7 @@ export const DeviceUnreadable = () => {
             intent="warning"
             items={items}
             data-testid="@connect-device-prompt/unreadable-unknown"
+            initiallyIsOpen
         />
     );
 };
