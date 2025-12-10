@@ -7,7 +7,7 @@ import { CustomFee } from './CustomFee/CustomFee';
 import { FeeOptionsList, FeeOptionsListProps } from './FeeOptionList/FeeOptionsList';
 import { CustomFeeParams } from '../../hooks';
 
-type FeesContentProps = {
+export type FeesContentProps = {
     selectedFeeLevel: FeeLevelLabel;
     feeLevels: FeeOptionsListProps['feeLevels'];
     symbol: NetworkSymbol;

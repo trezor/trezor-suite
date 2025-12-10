@@ -31,15 +31,15 @@ type CustomFeeBottomSheetProps = {
 };
 
 export const CustomFeeBottomSheet = ({
-                                         onClose,
-                                         accountKey,
-                                         feeValue,
-                                         isFeeLoading,
-                                         isSubmittable,
-                                         isErrorBoxVisible,
-                                         ref,
-                                         onCustomFeeSet,
-                                     }: CustomFeeBottomSheetProps) => {
+    onClose,
+    accountKey,
+    feeValue,
+    isFeeLoading,
+    isSubmittable,
+    isErrorBoxVisible,
+    ref,
+    onCustomFeeSet,
+}: CustomFeeBottomSheetProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );

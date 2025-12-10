@@ -98,7 +98,7 @@ describe('TradingFeesForm', () => {
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 
-        expect(getByText('Transaction fee')).toBeTruthy();
+        expect(getByText('Maximum fee')).toBeTruthy();
     });
 
     it('should not render anything when account is not available', async () => {

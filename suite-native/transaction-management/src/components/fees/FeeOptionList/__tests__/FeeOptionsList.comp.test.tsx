@@ -124,7 +124,7 @@ describe('FeeOptionsList', () => {
             expect(queryAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
         });
 
-        it('should filter out custom and low fee levels', async () => {
+        it('should filter out custom and low fee levels for btc network', async () => {
             const feeLevels = {
                 ...createMockFeeLevels(),
                 custom: createMockFeeLevel(),
@@ -132,7 +132,7 @@ describe('FeeOptionsList', () => {
             };
 
             const { getByText, queryByText } = await renderFeeOptionsList({
-                props: { feeLevels },
+                props: { feeLevels, symbol: 'btc' },
             });
 
             expect(getByText(/Low/)).toBeTruthy();

@@ -90,7 +90,7 @@ describe('CustomFeeCard', () => {
                 form,
             });
 
-            expect(getByText('Limit: 11000 • Price: 1 Gwei')).toBeTruthy();
+            expect(getByText('1.00 Gwei')).toBeTruthy();
         });
 
         it('should not render if using wrong accountKey', async () => {

@@ -101,8 +101,7 @@ describe('CustomFeeLabel', () => {
                 form,
             });
 
-            expect(getByText(/Limit/)).toBeTruthy();
-            expect(getByText(/Price/)).toBeTruthy();
+            expect(getByText(/Gwei/)).toBeTruthy();
         });
 
         it('should display fee per unit with Gwei units for ethereum', async () => {
@@ -128,7 +127,7 @@ describe('CustomFeeLabel', () => {
                 form,
             });
 
-            expect(getByText(/25 Gwei/)).toBeTruthy();
+            expect(getByText(/25.00 Gwei/)).toBeTruthy();
         });
     });
 
