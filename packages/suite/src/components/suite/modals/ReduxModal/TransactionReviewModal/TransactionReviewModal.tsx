@@ -1,7 +1,5 @@
 import { UserContextPayload } from '@suite-common/suite-types';
 import {
-    SendState,
-    StakeState,
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
     selectStake,
@@ -21,8 +19,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 import { TransactionReviewModalExchange } from './TransactionReviewModalExchange';
 import { TransactionReviewModalSell } from './TransactionReviewModalSell';
-
-export const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
+import { isStakeState } from './types';
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop

@@ -14,7 +14,7 @@ import { Deferred } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite/Translation';
 
-import { getTxType } from '../TransactionReviewModalBody';
+import { getTxType } from '../utils';
 
 const mapRbfTypeToReporting: Record<
     RbfTransactionType,

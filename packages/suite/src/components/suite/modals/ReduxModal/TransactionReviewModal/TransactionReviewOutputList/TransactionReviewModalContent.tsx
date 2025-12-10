@@ -23,7 +23,7 @@ import { ExpiredTxValidity } from '../../UserContextModal/TxDetailModal/ExpiredT
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList';
-import { hasTxValidityExpired } from '../TransactionReviewModalBody';
+import { hasTxValidityExpired } from '../utils';
 
 type TransactionReviewModalContentProps = {
     account: Account;
