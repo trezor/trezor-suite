@@ -159,9 +159,21 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
     availableDeviceTranslations => {
         const supportedDeviceLanguages = Object.entries(LANGUAGES)
             .filter(([code]) => availableDeviceTranslations[code])
-            .map(([code, { name }]) => ({ value: code as Locale, label: `${name} (beta)` }))
+            .map(([code, { icon, name }]) => ({
+                value: code as Locale,
+                icon,
+                label: name,
+                isBeta: true, // TODO: This will need tweaking in the future.
+            }))
             .sort((a, b) => a.label.localeCompare(b.label));
-        supportedDeviceLanguages.unshift({ value: 'en-US', label: LANGUAGES['en-US'].name });
+
+        const { icon, name } = LANGUAGES['en-US'];
+        supportedDeviceLanguages.unshift({
+            value: 'en-US',
+            icon,
+            label: name,
+            isBeta: false,
+        });
 
         return supportedDeviceLanguages;
     },

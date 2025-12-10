@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box } from '../Box';
+import { HStack } from '../Stack';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 
 type SelectTriggerProps = {
@@ -30,21 +30,17 @@ const selectStyle = prepareNativeStyle(utils => ({
     height: SELECT_HEIGHT,
 }));
 
-const iconWrapperStyle = prepareNativeStyle(() => ({ marginRight: 1 }));
-
 export const SelectTrigger = ({ value, icon, handlePress, testID }: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
-            <Box flexDirection="row" alignItems="center">
-                <Text numberOfLines={1}>
-                    {icon && <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>}
-                    <Text numberOfLines={1} ellipsizeMode="tail">
-                        {value}
-                    </Text>
+            <HStack alignItems="center">
+                {icon}
+                <Text numberOfLines={1} ellipsizeMode="tail">
+                    {value}
                 </Text>
-            </Box>
+            </HStack>
             <Icon size="large" color="iconSubdued" name="caretDown" />
         </TouchableOpacity>
     );

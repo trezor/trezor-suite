@@ -14,6 +14,8 @@ import { SelectTrigger } from './SelectTrigger';
 export type SelectItemType<TItemValue extends SelectItemValue> = {
     value: TItemValue;
     label: string;
+    icon?: ReactNode;
+    badge?: ReactNode;
 };
 
 type SelectProps<TItemValue extends SelectItemValue> = {
@@ -35,8 +37,8 @@ export const Select = <TItemValue extends SelectItemValue>({
 }: SelectProps<TItemValue>) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const selectTriggerValue = useMemo(
-        () => items.find(item => item.value === value)?.label ?? null,
+    const selectTriggerItem = useMemo(
+        () => items.find(item => item.value === value),
         [items, value],
     );
 
@@ -83,19 +85,22 @@ export const Select = <TItemValue extends SelectItemValue>({
                 isCloseDisplayed
             >
                 <VStack spacing="sp12">
-                    {items.map(({ value: itemValue, label }) => (
+                    {items.map(({ value: itemValue, label, icon, badge }) => (
                         <SelectItem
                             key={itemValue}
                             label={label}
                             value={itemValue}
                             isSelected={itemValue === selectedItemValue}
                             onSelect={() => handleSelectItem(itemValue)}
+                            icon={icon}
+                            badge={badge}
                         />
                     ))}
                 </VStack>
             </BottomSheetModal>
             <SelectTrigger
-                value={selectTriggerValue}
+                value={selectTriggerItem?.label ?? null}
+                icon={selectTriggerItem?.icon}
                 handlePress={openBottomSheet}
                 testID={testID}
             />
