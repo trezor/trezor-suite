@@ -15,7 +15,7 @@ export const selectRegisteredDevices = (state: WithSuiteSyncQuotaManagerState) =
     state.suiteSyncQuotaManager.registeredDevices;
 
 export const selectAssignedOwnerIds = (state: WithSuiteSyncQuotaManagerState) =>
-    state.suiteSyncQuotaManager.assignedOwnerIds;
+    state.suiteSyncQuotaManager.ownersAllowance;
 
 export const selectIsQuotaManagerEnabled = (state: WithSuiteSyncQuotaManagerState) =>
     state.suiteSyncQuotaManager.enabled;

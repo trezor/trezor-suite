@@ -4,7 +4,7 @@ import { quotaManagerFetch } from '../quotaManagerFetch';
 import { generateSessionId } from '../util/generateSessionId';
 
 type PrepareChallengeSessionParams = {
-    baseUrl: string;
+    baseUrl: string | null;
 };
 
 type ChallengeResponse = {

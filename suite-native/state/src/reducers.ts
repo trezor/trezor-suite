@@ -10,6 +10,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { labelingReducer, suiteSyncReducer } from '@suite-common/suite-sync';
+import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
 import { prepareThpReducer } from '@suite-common/thp';
 import { notificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
@@ -280,6 +281,13 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const quotaManagerPersistedReducer = await preparePersistReducer({
+        reducer: suiteSyncQuotaManagerReducer,
+        persistedKeys: ['baseUrl', 'enabled', 'registeredDevices', 'ownersAllowance'],
+        key: 'suiteSyncQuotaManager',
+        version: 1,
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             analytics: analyticsPersistedReducer,
@@ -306,6 +314,7 @@ export const prepareRootReducers = async () => {
             tokenDefinitions: tokenDefinitionsReducer,
             wallet: walletPersistedReducer,
             walletConnect: walletConnectReducer,
+            suiteSyncQuotaManager: quotaManagerPersistedReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

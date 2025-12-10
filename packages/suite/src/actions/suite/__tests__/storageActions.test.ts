@@ -13,6 +13,7 @@ import * as discoveryActions from '@suite-common/wallet-core';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -33,6 +34,7 @@ const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
+const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
@@ -84,7 +86,7 @@ const tx2 = getWalletTransaction({
     symbol: 'btc',
 });
 
-type PartialState = Pick<AppState, 'suite' | 'device'> & {
+type PartialState = Pick<AppState, 'suite' | 'device' | 'suiteSyncQuotaManager'> & {
     wallet: Partial<
         Pick<
             AppState['wallet'],
@@ -103,6 +105,10 @@ type PartialState = Pick<AppState, 'suite' | 'device'> & {
 const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
+        action || ({ type: 'foo' } as any),
+    ),
+    suiteSyncQuotaManager: quotaManagerSliceReducer(
+        prevState ? prevState.suiteSyncQuotaManager : undefined,
         action || ({ type: 'foo' } as any),
     ),
     device: deviceReducer(

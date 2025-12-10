@@ -6,6 +6,7 @@ import { AnalyticsState } from '@suite-common/analytics';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
 import { SuiteSyncSettings } from '@suite-common/suite-sync';
+import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,
@@ -142,6 +143,10 @@ export interface SuiteDBSchema extends DBSchema {
     suiteSyncSettings: {
         key: 'suiteSyncSettings';
         value: SuiteSyncSettings;
+    };
+    suiteSyncQuotaManager: {
+        key: 'suiteSyncQuotaManager';
+        value: SuiteSyncQuotaManagerState;
     };
     messageSystem: {
         key: string;

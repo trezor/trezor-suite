@@ -1,5 +1,4 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { isDevEnv } from '@suite-common/suite-utils';
+import { createReducer } from '@reduxjs/toolkit';
 
 import {
     quotaManagerDeviceFetched,
@@ -10,23 +9,22 @@ import type { AssignedOwnerId, RegisteredDevice } from './types';
 
 export type SuiteSyncQuotaManagerState = {
     enabled: boolean; // user can enable/disable Quota Manager in settings and quota manager is disabled automatically when relay URL is not Trezor ones
-    baseUrl: string;
+    baseUrl: string | null;
 
     registeredDevices: RegisteredDevice[];
-    assignedOwnerIds: AssignedOwnerId[];
+    ownersAllowance: AssignedOwnerId[];
 };
 
 export const quotaManagerInitialState: SuiteSyncQuotaManagerState = {
     enabled: false,
-    baseUrl: isDevEnv
-        ? 'https://suite-sync.suite.sldev.cz/gate/'
-        : 'https://suite-sync.trezor.io/gate/',
+    baseUrl: null,
     registeredDevices: [],
-    assignedOwnerIds: [],
+    ownersAllowance: [],
 };
 
-export const prepareSuiteSyncQuotaManagerReducer =
-    createReducerWithExtraDeps<SuiteSyncQuotaManagerState>(quotaManagerInitialState, builder =>
+export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerState>(
+    quotaManagerInitialState,
+    builder =>
         builder
             .addCase(updateQuotaManagerBaseUrl, (state, { payload }) => {
                 state.baseUrl = payload.baseUrl;
@@ -51,4 +49,4 @@ export const prepareSuiteSyncQuotaManagerReducer =
                     });
                 }
             }),
-    );
+);

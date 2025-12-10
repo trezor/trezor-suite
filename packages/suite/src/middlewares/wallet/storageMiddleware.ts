@@ -7,6 +7,7 @@ import { connectPopupActions } from '@suite-common/connect-popup';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import { suiteSyncActions } from '@suite-common/suite-sync';
+import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
 import { TokenManagementAction } from '@suite-common/token-definitions';
@@ -185,6 +186,16 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 api.dispatch(storageActions.saveSuiteSyncSettings());
+            }
+
+            if (
+                isAnyOf(
+                    suiteSyncQuotaManagerActions.quotaManagerDeviceFetched,
+                    suiteSyncQuotaManagerActions.quotaManagerEnabledUpdated,
+                    suiteSyncQuotaManagerActions.updateQuotaManagerBaseUrl,
+                )
+            ) {
+                api.dispatch(storageActions.saveSuiteSyncQuotaManager());
             }
 
             if (deviceActions.setRememberDevice.match(action)) {

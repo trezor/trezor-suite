@@ -6,7 +6,6 @@
     },
     "references": [
         { "path": "../delegated-identity-key" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../wallet-core" },
