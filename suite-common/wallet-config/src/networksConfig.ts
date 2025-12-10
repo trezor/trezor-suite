@@ -62,7 +62,7 @@ export const networks = {
             'mev-protection',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -102,7 +102,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -136,7 +136,7 @@ export const networks = {
             'mev-protection',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -171,7 +171,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -207,7 +207,7 @@ export const networks = {
             'mev-protection',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -243,7 +243,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -278,7 +278,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
@@ -369,7 +369,7 @@ export const networks = {
         testnet: false,
         explorer: getExplorerUrls('https://etc.trezor.io', 'ethereum'),
         features: ['sign-verify', 'tokens', 'coin-definitions', 'graph'],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
         tradeCryptoId: 'ethereum-classic',
@@ -559,7 +559,7 @@ export const networks = {
         testnet: true,
         explorer: getExplorerUrls('https://sepolia.etherscan.io', 'ethereum'),
         features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559', 'graph'],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {},
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
@@ -584,7 +584,7 @@ export const networks = {
             'eip1559',
             'graph',
         ],
-        backendTypes: ['blockbook'],
+        backendTypes: ['blockbook', 'evm-rpc'],
         accountTypes: {},
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets

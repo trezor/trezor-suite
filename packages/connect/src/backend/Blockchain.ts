@@ -12,6 +12,7 @@ import {
     BlockbookWorker,
     BlockfrostWorker,
     ElectrumWorker,
+    EvmRpcWorker,
     RippleWorker,
     SolanaWorker,
     StellarWorker,
@@ -31,6 +32,8 @@ const getWorker = (type: string) => {
             return SolanaWorker;
         case 'stellar':
             return StellarWorker;
+        case 'evm-rpc':
+            return EvmRpcWorker;
         default:
             return null;
     }
