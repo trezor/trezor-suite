@@ -14,6 +14,11 @@ export type SuiteSyncStorage = {
     outputLabels: OutputLabelsStore;
     addressLabels: AddressLabelsStore;
 
+    /**
+     * Returns a Promise that resolves when the storage is fully initialized and ready to use.
+     * This ensures the Jazz instance is created and the account root is loaded.
+     */
+    isReady(): Promise<void>;
     updateRelayUrl(url: string): Promise<void>;
     dispose(): Promise<void>;
 };

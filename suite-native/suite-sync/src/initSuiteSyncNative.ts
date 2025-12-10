@@ -1,13 +1,10 @@
-import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
-import {
-    createEvoluInstanceFactory,
-    createEvoluStorageFactory,
-    evoluCreateSuiteSyncOwner,
-} from '@suite-common/suite-sync-evolu';
+import { createJazzStorageFactory, jazzCreateSuiteSyncOwner } from '@suite-common/suite-sync-jazz';
 import { SuiteSync } from '@suite-common/suite-sync-storage';
+
+import { createJazzInstanceFactory } from './createJazzInstanceNative';
 
 type InitSuiteSyncNativeDeps = {
     getState: () => any;
@@ -15,13 +12,16 @@ type InitSuiteSyncNativeDeps = {
 };
 
 export const initSuiteSyncNative = (deps: InitSuiteSyncNativeDeps): SuiteSync => {
-    const createEvoluInstance = createEvoluInstanceFactory(evoluReactNativeDeps);
-    const createEvoluStorage = createEvoluStorageFactory({ createEvoluInstance });
+    // Create Jazz instance factory
+    const createJazzInstance = createJazzInstanceFactory();
+
+    // Create Jazz storage factory
+    const createJazzStorage = createJazzStorageFactory({ createJazzInstance });
 
     return createSuiteSyncCompositionRoot({
         getState: deps.getState,
         dispatch: deps.dispatch,
-        createSuiteStorage: createEvoluStorage,
-        createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        createSuiteStorage: createJazzStorage,
+        createSuiteSyncOwner: jazzCreateSuiteSyncOwner,
     });
 };

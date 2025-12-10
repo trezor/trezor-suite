@@ -112,6 +112,70 @@ const config = {
                 };
             }
 
+            // jazz-tools package exports handling
+            if (moduleName === 'jazz-tools/expo') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + '/jazz-tools/dist/expo/index.js',
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === 'jazz-tools/expo/polyfills') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + '/jazz-tools/dist/expo/polyfills.js',
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === 'jazz-tools/react-native-core') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + '/jazz-tools/dist/react-native-core/index.js',
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === 'jazz-tools/react-native-core/crypto') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + '/jazz-tools/dist/react-native-core/crypto.js',
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === 'jazz-tools/react-core') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + '/jazz-tools/dist/react-core/index.js',
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === 'jazz-tools/media') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + '/jazz-tools/dist/media/index.native.js',
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
+            if (moduleName === 'cojson/crypto/PureJSCrypto') {
+                return {
+                    filePath: require.resolve(
+                        rootNodeModulesPath + '/cojson/dist/crypto/PureJSCrypto.js',
+                    ),
+                    type: 'sourceFile',
+                };
+            }
+
             if (moduleName === 'uuid') {
                 return {
                     filePath: require.resolve(rootNodeModulesPath + '/uuid/dist/index.js'),

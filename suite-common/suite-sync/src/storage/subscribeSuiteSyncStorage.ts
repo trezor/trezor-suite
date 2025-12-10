@@ -75,7 +75,7 @@ export const createSubscribeSuiteSyncStorage =
             return;
         }
 
-        deps.subscribeLabeling({ owner, walletDescriptor });
+        await deps.subscribeLabeling({ owner, walletDescriptor });
 
         return;
     };

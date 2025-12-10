@@ -12,7 +12,7 @@ type SubscribeLabelingParams = {
     walletDescriptor: WalletDescriptor;
 };
 
-export type SubscribeLabeling = (params: SubscribeLabelingParams) => void;
+export type SubscribeLabeling = (params: SubscribeLabelingParams) => Promise<void>;
 
 export type CreateSubscribeLabelingDeps = {
     suiteSyncStorageRepository: SuiteSyncStorageRepository;
@@ -22,8 +22,12 @@ export type CreateSubscribeLabelingDeps = {
 
 export const createSubscribeLabeling =
     (deps: CreateSubscribeLabelingDeps): SubscribeLabeling =>
-    ({ owner, walletDescriptor }) => {
+    async ({ owner, walletDescriptor }) => {
         const storage = deps.suiteSyncStorageRepository.get(owner);
+
+        // Wait for the Jazz storage to be fully initialized before subscribing
+        // This ensures the Jazz instance is created and account root is loaded
+        await storage.isReady();
 
         const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
             if (walletDescriptor !== payload.walletDescriptor) {

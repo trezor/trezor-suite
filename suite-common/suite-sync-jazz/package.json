@@ -1,5 +1,5 @@
 {
-    "name": "@suite/suite-sync",
+    "name": "@suite-common/suite-sync-jazz",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -7,13 +7,17 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.10.1",
-        "@suite-common/suite-sync": "workspace:*",
-        "@suite-common/suite-sync-jazz": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "cojson": "^0.19.3",
         "jazz-tools": "^0.19.3"
     }
 }

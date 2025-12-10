@@ -1,13 +1,13 @@
-import { evoluWebDeps } from '@evolu/web';
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
-    createEvoluInstanceFactory,
-    createEvoluStorageFactory,
-    evoluCreateSuiteSyncOwner,
-} from '@suite-common/suite-sync-evolu';
+    createJazzStorageFactory,
+    jazzCreateSuiteSyncOwner,
+} from '@suite-common/suite-sync-jazz';
 import { SuiteSync } from '@suite-common/suite-sync-storage';
+
+import { createJazzInstanceFactory } from './createJazzInstanceBrowser';
 
 type InitSuiteSyncDesktopDeps = {
     getState: () => any;
@@ -15,14 +15,16 @@ type InitSuiteSyncDesktopDeps = {
 };
 
 export const createSuiteSyncDesktop = (deps: InitSuiteSyncDesktopDeps): SuiteSync => {
-    // This is the place where we set Evolu as a SuiteSync Storage.
-    const createEvoluInstance = createEvoluInstanceFactory(evoluWebDeps);
-    const createEvoluStorage = createEvoluStorageFactory({ createEvoluInstance });
+    // Create Jazz instance factory
+    const createJazzInstance = createJazzInstanceFactory();
+
+    // Create Jazz storage factory
+    const createJazzStorage = createJazzStorageFactory({ createJazzInstance });
 
     return createSuiteSyncCompositionRoot({
         getState: deps.getState,
         dispatch: deps.dispatch,
-        createSuiteStorage: createEvoluStorage,
-        createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        createSuiteStorage: createJazzStorage,
+        createSuiteSyncOwner: jazzCreateSuiteSyncOwner,
     });
 };
