@@ -82,3 +82,6 @@ export const initStore = async (preloadedState?: PreloadedState) => {
 
     return castExtraStore(store, extra);
 };
+
+export type StoreWithExtra = Awaited<ReturnType<typeof initStore>>;
+export type Store = StoreWithExtra['store'];

@@ -4,11 +4,11 @@ import { Provider } from 'react-redux';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
-import { PreloadedState, initStore } from '@suite-native/state';
+import { PreloadedState, Store, initStore } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
 
-export type TestStore = Awaited<ReturnType<typeof initStore>>['store'];
+export type TestStore = Store;
 
 type ReduxProviderProps = {
     children: ReactNode;

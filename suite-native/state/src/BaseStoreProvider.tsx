@@ -8,7 +8,7 @@ import { ServicesProvider } from '@suite-common/redux-utils';
 import { captureSentryException } from '@suite-native/sentry';
 import { StorageProvider } from '@suite-native/storage';
 
-import { PreloadedState, initStore } from './store';
+import { PreloadedState, StoreWithExtra, initStore } from './store';
 
 export type BaseStoreProviderProps = {
     children: ReactNode;
@@ -17,7 +17,7 @@ export type BaseStoreProviderProps = {
 
 export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProviderProps) => {
     const initStoreCalledRef = useRef(false);
-    const [store, setStore] = useState<Awaited<ReturnType<typeof initStore>> | null>(null);
+    const [store, setStore] = useState<StoreWithExtra | null>(null);
     const [storePersistor, setStorePersistor] = useState<Persistor | null>(null);
 
     const initStoreAsync = useCallback(async () => {
