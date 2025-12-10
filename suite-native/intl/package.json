@@ -18,7 +18,7 @@
         "translations:download": "crowdin download --all -l en -l cs -l de -l pt-BR -l ja"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.10.1",
+        "@reduxjs/toolkit": "2.11.0",
         "@suite-common/suite-types": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-localization": "~17.0.7",

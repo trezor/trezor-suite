@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.6",
-        "@reduxjs/toolkit": "2.10.1",
+        "@reduxjs/toolkit": "2.11.0",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/validators": "workspace:*",

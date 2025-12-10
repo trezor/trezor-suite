@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest --coverage"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.10.1",
+        "@reduxjs/toolkit": "2.11.0",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/intl-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
