@@ -157,9 +157,6 @@ export type UserContextPayload =
           address: string;
       }
     | {
-          type: 'cardano-withdraw-modal';
-      }
-    | {
           type: 'connect-popup';
       }
     | {

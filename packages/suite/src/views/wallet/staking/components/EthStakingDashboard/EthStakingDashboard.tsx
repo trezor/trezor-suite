@@ -20,14 +20,14 @@ import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
-import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
-import { ApyCard } from '../../StakingDashboard/components/ApyCard';
-import { ClaimCard } from '../../StakingDashboard/components/ClaimCard';
-import { DiscoveryWarning } from '../../StakingDashboard/components/DiscoveryWarning';
-import { EmptyStakingCard } from '../../StakingDashboard/components/EmptyStakingCard';
-import { PayoutCardNextRewards } from '../../StakingDashboard/components/PayoutCardNextRewards';
-import { StakingCard } from '../../StakingDashboard/components/StakingCard';
-import { Transactions } from '../../StakingDashboard/components/Transactions';
+import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
+import { ApyCard } from '../StakingDashboard/components/ApyCard';
+import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
+import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
+import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
+import { PayoutCardNextRewards } from '../StakingDashboard/components/PayoutCardNextRewards';
+import { StakingCard } from '../StakingDashboard/components/StakingCard';
+import { Transactions } from '../StakingDashboard/components/Transactions';
 
 interface EthStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;

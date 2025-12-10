@@ -12,7 +12,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
-import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateInstantEthAmount';
+import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/ApproximateInstantEthAmount';
 
 import { UnstakeInputs } from './UnstakeInputs';
 import { SolanaStakingLimitBanner } from '../../SolanaStakingLimitBanner';

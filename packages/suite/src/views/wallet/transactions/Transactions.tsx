@@ -16,7 +16,7 @@ import { WalletTransactionList } from './TransactionList/WalletTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { NoTransactions } from './components/NoTransactions';
 import { TransactionSummary } from './components/TransactionSummary';
-import { CardanoNewProviderCard } from '../staking/components/CardanoNewProviderCard';
+import { CardanoNewProviderCard } from '../staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];

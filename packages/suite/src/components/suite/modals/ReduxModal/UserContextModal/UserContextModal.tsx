@@ -6,7 +6,6 @@ import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
 
-import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';
@@ -102,8 +101,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <TransactionReviewModal {...payload} />;
         case 'review-transaction-rbf-previous-transaction-mined-error':
             return <TransactionReviewModal {...payload} />;
-        case 'cardano-withdraw-modal':
-            return <CardanoWithdrawModal onCancel={onCancel} />;
         case 'import-transaction':
             return <ImportTransactionModal {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':

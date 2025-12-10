@@ -38,33 +38,14 @@ export type ActionAvailability =
     | { status: false; reason?: string };
 
 export type CardanoStaking = {
-    address?: string;
-    pendingStakeTx: PendingStakeTx | undefined;
-    deviceAvailable: {
-        status: boolean;
-        reason?: 'DEVICE_LOCK' | 'DEVICE_DISCONNECTED';
-    };
     withdrawingAvailable: ActionAvailability;
     delegatingAvailable: ActionAvailability;
     loading: boolean;
     fee?: string;
     deposit?: string;
-    registeredPoolId?: string | null;
-    isStakingOnTrezorPool: boolean | null;
-    isFetchError: boolean;
-    isCurrentPoolOversaturated: boolean;
-    trezorPools: PoolsResponse | undefined;
-    trezorDRep?: DRepResponse;
-    accountDRepHex?: string;
     isActive?: boolean;
-    alreadyVoted: boolean;
     rewards?: string;
-    delegate: () => void;
-    withdrawal: () => void;
-    voteDelegate: () => void;
-    voteAbstain: () => void;
     calculateFeeAndDeposit: (action: CardanoAction) => Promise<void>;
-    error?: string;
     isStakingDisabled: boolean;
 };
 
