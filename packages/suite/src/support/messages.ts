@@ -6385,6 +6385,10 @@ export default defineMessages({
         id: 'TR_BACKEND_DEFAULT_SERVERS',
         defaultMessage: 'Trezor servers (default)',
     },
+    TR_BACKEND_CUSTOM_RPC: {
+      id: 'TR_BACKEND_CUSTOM_RPC',
+      defaultMessage: 'Custom RPC',
+    },
     TR_BACKEND_CUSTOM_SERVERS: {
         id: 'TR_BACKEND_CUSTOM_SERVERS',
         defaultMessage: 'Custom {type} server',
