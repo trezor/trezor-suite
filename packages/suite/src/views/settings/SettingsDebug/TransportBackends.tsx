@@ -43,23 +43,6 @@ export const TransportBackends = () => {
                     />
                 </ActionColumn>
             </SectionItem>
-            <SectionItem data-testid="@settings/debug/processes/bridgeLegacy">
-                <TextColumn
-                    title="Use legacy Bridge"
-                    description="Legacy trezord-go will be spawned as a subprocess. This is useful to interact with older (HID) devices."
-                />
-                <ActionColumn>
-                    <Checkbox
-                        isChecked={bridgeSettings?.legacy}
-                        onClick={() => {
-                            changeBridgeSettings({
-                                ...bridgeSettings,
-                                legacy: !bridgeSettings?.legacy,
-                            });
-                        }}
-                    />
-                </ActionColumn>
-            </SectionItem>
             <SectionItem data-testid="@settings/debug/processes/runOnStartUp">
                 <TextColumn
                     title="Run on startup"

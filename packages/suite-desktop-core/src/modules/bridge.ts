@@ -7,7 +7,6 @@ import { TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 
 import { hasSwitch } from '../libs/process-switches';
-import { BridgeProcess } from '../libs/processes/BridgeProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
 import { b2t } from '../libs/utils';
 import { ipcMain } from '../typed-electron';
@@ -18,10 +17,7 @@ const bridgeTest = hasSwitch('bridge-test');
 
 export const SERVICE_NAME = 'bridge';
 
-type BridgeInterface = Pick<BridgeProcess, 'start' | 'startTest' | 'stop' | 'status'>;
-
-/** Wrapper around TrezordNode ThreadProxy which unifies its api with legacy BridgeProcess */
-class TrezordNodeProcess implements BridgeInterface {
+class TrezordNodeProcess {
     private readonly proxy;
 
     constructor() {
@@ -78,7 +74,7 @@ class TrezordNodeProcess implements BridgeInterface {
     }
 }
 
-const start = async (bridge: BridgeInterface) => {
+const start = async (bridge: TrezordNodeProcess) => {
     if (bridgeTest) {
         await bridge.startTest();
     } else {
@@ -86,18 +82,7 @@ const start = async (bridge: BridgeInterface) => {
     }
 };
 
-const shouldUseLegacyBridge = (store: Dependencies['store']) => {
-    const legacyRequestedBySettings = store.getBridgeSettings().legacy;
-    const legacyRequestedBySwitch = hasSwitch('bridge-legacy');
-    // Legacy bridge explicitly requested
-    if (legacyRequestedBySwitch || legacyRequestedBySettings) return true;
-
-    return false;
-};
-
-let bridge: BridgeInterface;
-let legacyBridge: BridgeInterface;
-let nodeBridge: BridgeInterface;
+let bridge: TrezordNodeProcess;
 
 const handleBridgeStatus = async ({
     mainThreadEmitter,
@@ -123,10 +108,7 @@ const loadBridge = async ({ store }: Pick<Dependencies, 'store'>) => {
     }
 
     try {
-        logger.info(
-            SERVICE_NAME,
-            `Starting (Legacy: ${b2t(shouldUseLegacyBridge(store))}, Test: ${b2t(bridgeTest)})`,
-        );
+        logger.info(SERVICE_NAME, `Starting (Test: ${b2t(bridgeTest)})`);
         await start(bridge);
     } catch (err) {
         bridge.stop();
@@ -143,9 +125,7 @@ export const initBackground = ({
 }: Pick<Dependencies, 'store' | 'mainThreadEmitter' | 'mainWindowProxy'>) => {
     let loaded = false;
 
-    legacyBridge = new BridgeProcess();
-    nodeBridge = new TrezordNodeProcess();
-    bridge = shouldUseLegacyBridge(store) ? legacyBridge : nodeBridge;
+    bridge = new TrezordNodeProcess();
 
     const onLoad = async () => {
         if (loaded) return;
@@ -202,10 +182,8 @@ export const initBackground = ({
 export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies) => {
     ipcMain.handle(
         'bridge/change-settings',
-        async (ipcEvent, payload: { doNotStartOnStartup: boolean; legacy?: boolean }) => {
+        (ipcEvent, payload: { doNotStartOnStartup: boolean }) => {
             validateIpcMessage({ ipcEvent });
-
-            const oldSettings = store.getBridgeSettings();
 
             try {
                 store.setBridgeSettings(payload);
@@ -216,17 +194,6 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
             } finally {
                 const newSettings = store.getBridgeSettings();
                 mainWindowProxy?.getInstance()?.webContents.send('bridge/settings', newSettings);
-
-                if (oldSettings.legacy !== payload.legacy) {
-                    const wasBridgeRunning = await bridge.status();
-                    if (wasBridgeRunning.service) {
-                        await bridge.stop();
-                    }
-                    bridge = shouldUseLegacyBridge(store) ? legacyBridge : nodeBridge;
-                    if (wasBridgeRunning.service) {
-                        await start(bridge);
-                    }
-                }
             }
         },
     );
