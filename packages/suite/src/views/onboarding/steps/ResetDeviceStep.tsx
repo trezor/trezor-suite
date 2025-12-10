@@ -12,7 +12,8 @@ import * as STEP from 'src/constants/onboarding/steps';
 import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 
-import { SelectBackupType, isShamirBackupType } from './SelectBackupType/SelectBackupType';
+import { SelectBackupType } from './SelectBackupType/SelectBackupType';
+import { isShamirBackupType } from './utils';
 
 const canChooseBackupType = (device: DeviceModelInternal) => device !== DeviceModelInternal.T1B1;
 
