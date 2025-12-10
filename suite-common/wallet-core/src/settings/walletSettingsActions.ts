@@ -1,11 +1,10 @@
-import { Dispatch, createAction } from '@reduxjs/toolkit';
+import { createAction } from '@reduxjs/toolkit';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
 import { WALLET_SETTINGS } from './walletSettingsConstants';
-import { selectBitcoinAmountUnit } from './walletSettingsReducer';
 
 export const setBaseCurrency = createAction(
     WALLET_SETTINGS.SET_BASE_CURRENCY,
@@ -88,14 +87,3 @@ export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAc
     type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
     payload: units,
 });
-
-export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: () => any) => {
-    const currentUnits = selectBitcoinAmountUnit(getState());
-
-    const nextUnits =
-        currentUnits === PROTO.AmountUnit.BITCOIN
-            ? PROTO.AmountUnit.SATOSHI
-            : PROTO.AmountUnit.BITCOIN;
-
-    dispatch(setBitcoinAmountUnits(nextUnits));
-};
