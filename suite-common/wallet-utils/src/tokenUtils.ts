@@ -4,7 +4,7 @@ import {
     type NetworkType,
     getExplorerUrl,
 } from '@suite-common/wallet-config';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 export const getContractAddressForNetworkSymbol = (
@@ -74,3 +74,20 @@ export const getNftContractExplorerUrl = (explorer: Explorer, nft: TokenInfo) =>
 
     return `${explorerUrl}${contractAddress}${queryString}`;
 };
+
+export const isTokenMatchesSearch = (token: TokenInfo, search: string) =>
+    token.symbol?.toLowerCase().includes(search) ||
+    token.name?.toLowerCase().includes(search) ||
+    token.contract.toLowerCase().includes(search) ||
+    token.fingerprint?.toLowerCase().includes(search) ||
+    token.policyId?.toLowerCase().includes(search);
+
+export const isTokenTransferMatchesSearch = (token: TokenTransfer, search: string) =>
+    token.symbol?.toLowerCase().includes(search) ||
+    token.name?.toLowerCase().includes(search) ||
+    token.contract.toLowerCase().includes(search);
+
+export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
+    token.symbol?.toLowerCase().includes(search) ||
+    token.name?.toLowerCase().includes(search) ||
+    token.contract?.toLowerCase().includes(search);

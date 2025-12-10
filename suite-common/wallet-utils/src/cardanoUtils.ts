@@ -15,7 +15,7 @@ import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     networkAmountToSmallestUnit,
-} from './accountUtils';
+} from './amountUtils';
 
 export const getDerivationType = (accountType: AccountType) => {
     switch (accountType) {

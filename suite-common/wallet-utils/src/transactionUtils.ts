@@ -32,15 +32,12 @@ import { Branded } from '@trezor/type-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import {
-    convertAmountSubunitsToUnits,
-    formatNetworkAmount,
-    isTokenTransferMatchesSearch,
-} from './accountUtils';
+import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { getEvmApprovalTxData, getEvmTransactionTextSignature } from './ethUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
+import { isTokenTransferMatchesSearch } from './tokenUtils';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
