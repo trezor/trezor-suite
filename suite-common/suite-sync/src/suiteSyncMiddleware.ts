@@ -6,11 +6,9 @@ import {
     deviceActions,
     handleDeviceDisconnect,
     selectDeviceThunk,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
-import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 
 // Thunk triggers for which we want to turn on Suite Sync for the currently selected wallet
@@ -27,13 +25,6 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
             const { payload } = action as ReturnType<(typeof suiteSyncTurnOnTriggers)[number]>;
             extra.services.suiteSync.turnOnSuiteSyncForWallet({
                 staticSessionId: payload.device.state?.staticSessionId,
-            });
-        }
-
-        if (suiteSyncActions.updateSuiteSyncEnabled.match(action)) {
-            const device = selectSelectedDevice(getState());
-            extra.services.suiteSync.turnOnSuiteSyncForWallet({
-                staticSessionId: device?.state?.staticSessionId ?? undefined,
             });
         }
 
