@@ -6,13 +6,13 @@ const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
 // to be able to use patterns like ${author} and ${arch}
 module.exports = {
     // distingush between dev and prod builds
-    appId: `io.trezor.TrezorSuite${isCodesignBuild ? '' : '.dev'}`,
+    appId: `io.trezor.TrezorSuite.firmwareUpdater${isCodesignBuild ? '' : '.dev'}`,
     extraMetadata: {
         version: suiteVersion,
         // distingush between dev and prod builds so different userDataDir is used
-        name: `@trezor/suite-desktop${isCodesignBuild ? '' : '-dev'}`,
+        name: `@trezor/suite-desktop-firmware-updater${isCodesignBuild ? '' : '-dev'}`,
     },
-    productName: 'Trezor Suite',
+    productName: 'Trezor Suite Firmware Updater',
     copyright: 'Copyright © ${author}',
     asar: true,
     asarUnpack: ['**/*.node'],
@@ -56,10 +56,10 @@ module.exports = {
         name: 'Trezor Suite',
         schemes,
     },
-    publish: {
-        provider: 'generic',
-        url: 'https://data.trezor.io/suite/releases/desktop/latest',
-    },
+    // publish: {
+    //     provider: 'generic',
+    //     url: 'https://data.trezor.io/suite/releases/desktop/latest',
+    // },
     dmg: {
         sign: false,
         contents: [
@@ -100,7 +100,7 @@ module.exports = {
                 to: 'bin/bluetooth',
             },
         ],
-        icon: 'build/static/images/desktop/512x512.icns',
+        icon: 'build/static/images/desktop/512x512.png',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
         hardenedRuntime: true,
         gatekeeperAssess: false,
