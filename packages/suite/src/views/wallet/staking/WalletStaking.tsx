@@ -4,8 +4,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 
-import { NewCardanoStakingDashboard } from './components/CardanoStakingDashboard/NewCardanoStakingDashboard';
-import { EthStakingDashboard } from './components/EthStakingDashboard/components/EthStakingDashboard';
+import { AdaStakingDashboard } from './components/AdaStakingDashboard/AdaStakingDashboard';
+import { EthStakingDashboard } from './components/EthStakingDashboard/EthStakingDashboard';
 import { SolStakingDashboard } from './components/SolStakingDashboard/SolStakingDashboard';
 
 export const WalletStaking = () => {
@@ -18,7 +18,7 @@ export const WalletStaking = () => {
     if (hasNetworkFeatures(selectedAccount.account, 'staking')) {
         switch (selectedAccount.account.networkType) {
             case 'cardano':
-                return <NewCardanoStakingDashboard selectedAccount={selectedAccount} />;
+                return <AdaStakingDashboard selectedAccount={selectedAccount} />;
             case 'ethereum':
                 return <EthStakingDashboard selectedAccount={selectedAccount} />;
             case 'solana':

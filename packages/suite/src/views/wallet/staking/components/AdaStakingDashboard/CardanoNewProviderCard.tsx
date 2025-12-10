@@ -13,7 +13,7 @@ import {
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
-import { NewProviderCard } from '../../staking/components/StakingDashboard/components/NewProviderCard';
+import { NewProviderCard } from '../StakingDashboard/components/NewProviderCard';
 
 interface CardanoNewProviderCardProps {
     account: Account;

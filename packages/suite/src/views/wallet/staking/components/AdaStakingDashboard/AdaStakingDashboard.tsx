@@ -17,7 +17,7 @@ import { spacings } from '@trezor/theme';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
-import { CardanoNewProviderCard } from '../CardanoNewProviderCard';
+import { CardanoNewProviderCard } from './CardanoNewProviderCard';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
@@ -27,13 +27,12 @@ import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCar
 import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
 import { Transactions } from '../StakingDashboard/components/Transactions';
-interface NewCardanoStakingDashboardProps {
+
+interface AdaStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
 }
 
-export const NewCardanoStakingDashboard = ({
-    selectedAccount,
-}: NewCardanoStakingDashboardProps) => {
+export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProps) => {
     const { account } = selectedAccount;
     const accountKey = account?.key ?? '';
 
