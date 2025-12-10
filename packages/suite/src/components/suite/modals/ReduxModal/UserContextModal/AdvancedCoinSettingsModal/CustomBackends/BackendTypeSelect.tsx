@@ -8,13 +8,37 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 import type { BackendOption } from 'src/hooks/settings/backends';
+import { useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 const Capitalize = styled.span`
     text-transform: capitalize;
 `;
 
-const useBackendOptions = (network: Network) =>
-    useMemo(
+const useBackendOptions = (network: Network, isDebugModeActive: boolean) => {
+    const getBackendLabel = (backend: string) => {
+        switch (backend) {
+            case 'default':
+                return <Translation id="TR_BACKEND_DEFAULT_SERVERS" />;
+            case 'evm-rpc':
+                return <Translation id="TR_BACKEND_CUSTOM_RPC" />;
+            default:
+                return (
+                    <Translation
+                        id="TR_BACKEND_CUSTOM_SERVERS"
+                        values={{
+                            type: (
+                                <Capitalize data-testid={`@settings/advance/${backend}`}>
+                                    {backend}
+                                </Capitalize>
+                            ),
+                        }}
+                    />
+                );
+        }
+    };
+
+    return useMemo(
         () =>
             ['default', ...network.backendTypes]
                 .filter(backend => {
@@ -23,30 +47,19 @@ const useBackendOptions = (network: Network) =>
                             return network.symbol !== 'regtest';
                         case 'electrum':
                             return isDesktop();
+                        case 'evm-rpc':
+                            return isDebugModeActive;
                         default:
                             return true;
                     }
                 })
                 .map(backend => ({
-                    label:
-                        backend === 'default' ? (
-                            <Translation id="TR_BACKEND_DEFAULT_SERVERS" />
-                        ) : (
-                            <Translation
-                                id="TR_BACKEND_CUSTOM_SERVERS"
-                                values={{
-                                    type: (
-                                        <Capitalize data-testid={`@settings/advance/${backend}`}>
-                                            {backend}
-                                        </Capitalize>
-                                    ),
-                                }}
-                            />
-                        ),
+                    label: getBackendLabel(backend),
                     value: backend,
                 })),
-        [network],
+        [network, isDebugModeActive],
     );
+};
 
 type BackendTypeSelectProps = {
     network: Network;
@@ -55,7 +68,8 @@ type BackendTypeSelectProps = {
 };
 
 export const BackendTypeSelect = ({ network, value, onChange }: BackendTypeSelectProps) => {
-    const backendOptions = useBackendOptions(network);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const backendOptions = useBackendOptions(network, isDebugModeActive);
 
     if (!backendOptions.length) {
         return null;
