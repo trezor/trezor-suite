@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectThpStep } from '@suite-common/thp';
-import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
+import { FirmwareInstallationScreenContent } from '@suite-native/firmware/src/components/FirmwareInstallationScreenContent';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
