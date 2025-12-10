@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import { isSignValuePositive } from '@suite-common/formatters';
@@ -7,6 +9,7 @@ import {
     getDisplaySymbol,
     getNetworkOptional,
 } from '@suite-common/wallet-config';
+import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
 import {
     AmountUnit,
     formatCoinBalance,
@@ -15,6 +18,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -36,6 +40,7 @@ export interface FormattedCryptoAmountProps {
     symbol?: NetworkSymbolExtended;
     contractAddress?: string | null;
     isBalance?: boolean;
+    showApproximation?: boolean;
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
     /**
@@ -52,6 +57,7 @@ export const FormattedCryptoAmount = ({
     symbol,
     contractAddress, // include contractAddress whenever the symbol is an token
     isBalance,
+    showApproximation = false,
     signValue,
     disableHiddenPlaceholder,
     isRawString,
@@ -62,6 +68,13 @@ export const FormattedCryptoAmount = ({
     const locale = useSelector(selectLanguage);
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
+
+    const isAmountLow = useMemo(() => {
+        if (!value || !showApproximation) return false;
+        const valueBn = new BigNumber(value);
+
+        return !valueBn.isZero() && valueBn.lt(LOW_BALANCE_THRESHOLD);
+    }, [value, showApproximation]);
 
     if (!value) {
         return null;
@@ -89,11 +102,14 @@ export const FormattedCryptoAmount = ({
     }
 
     // format truncation + locale (used for balances) or just locale
-    if (isBalance) {
+    if (isBalance && !isAmountLow) {
         formattedValue = formatCoinBalance(String(formattedValue), locale);
     } else {
         formattedValue = localizeNumber(formattedValue, locale);
     }
+
+    // prefix balance with < if it's below threshold
+    formattedValue = isAmountLow ? `< ${LOW_BALANCE_THRESHOLD}` : formattedValue;
 
     // output as a string, mostly for compatibility with graphs
     if (isRawString) {
