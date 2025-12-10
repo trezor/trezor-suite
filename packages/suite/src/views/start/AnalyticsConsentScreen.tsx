@@ -6,7 +6,8 @@ import { analytics } from '@suite-common/analytics';
 import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
-import { TrezorLink } from '../../components/suite';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
+
 import { WelcomeLayoutWithoutModalSwitcher } from '../../components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
 
 const Content = styled.div`
