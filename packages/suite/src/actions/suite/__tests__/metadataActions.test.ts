@@ -16,7 +16,8 @@ import * as fixtures from '../__fixtures__/metadataActions';
 import { MODAL, STORAGE } from '../constants';
 import * as metadataActions from '../metadataActions';
 import * as metadataLabelingActions from '../metadataLabelingActions';
-import * as metadataProviderActions from '../metadataProviderActions';
+import * as metadataProviderActions from '../metadataProviderThunks';
+import * as metadataThunks from '../metadataThunks';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
@@ -252,7 +253,7 @@ describe('Metadata Actions', () => {
     fixtures.disableMetadata.forEach(f => {
         it(`disableMetadata - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataActions.disableMetadata());
+            await store.dispatch(metadataThunks.disableMetadata());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -276,7 +277,7 @@ describe('Metadata Actions', () => {
     fixtures.disposeMetadata.forEach(f => {
         it(`disposeMetadata - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataActions.disposeMetadata(...f.params));
+            await store.dispatch(metadataThunks.disposeMetadata(...f.params));
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }
@@ -286,7 +287,7 @@ describe('Metadata Actions', () => {
     fixtures.disposeMetadataKeys.forEach(f => {
         it(`disposeMetadataKeys - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
-            await store.dispatch(metadataActions.disposeMetadataKeys(...f.params));
+            await store.dispatch(metadataThunks.disposeMetadataKeys(...f.params));
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }

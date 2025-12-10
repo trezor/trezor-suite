@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import * as metadataPasswordsActions from 'src/actions/suite/metadataPasswordsActions';
-import * as metadataProviderActions from 'src/actions/suite/metadataProviderActions';
+import * as metadataProviderActions from 'src/actions/suite/metadataProviderThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectPasswordManagerState,

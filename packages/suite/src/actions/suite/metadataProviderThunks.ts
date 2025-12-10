@@ -1,11 +1,13 @@
+import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Device } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
-import { createDeferred, typedObjectKeys } from '@trezor/utils';
+import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     DataType,
@@ -17,7 +19,7 @@ import {
     Tokens,
 } from 'src/types/suite/metadata';
 
-import * as metadataActions from './metadataActions';
+import { disposeMetadata } from './metadataThunks';
 import { DropboxProvider } from '../../services/suite/metadata/DropboxProvider';
 import { FileSystemProvider } from '../../services/suite/metadata/FileSystemProvider';
 import { GoogleProvider } from '../../services/suite/metadata/GoogleProvider';
@@ -114,7 +116,7 @@ export const disconnectProvider =
 
         // dispose metadata values (not keys)
         if (removeMetadata) {
-            dispatch(metadataActions.disposeMetadata());
+            dispatch(disposeMetadata());
         }
 
         const provider = dispatch(getProviderInstance({ clientId, dataType }));
@@ -179,7 +181,7 @@ export const handleProviderError =
                 case 'ACCESS_ERROR':
                 case 'BAD_INPUT_ERROR':
                 case 'OTHER_ERROR':
-                    dispatch(metadataActions.disposeMetadata());
+                    dispatch(disposeMetadata());
                     dispatch(
                         disconnectProvider({
                             clientId,
@@ -285,3 +287,48 @@ export const connectProvider =
 
         return true;
     };
+
+export const exportMetadataToLocalFile = () => async (dispatch: Dispatch, getState: GetState) => {
+    const providerInstance = dispatch(
+        getProviderInstance({
+            clientId: selectSelectedProviderForLabels(getState())!.clientId,
+            dataType: 'labels',
+        }),
+    );
+
+    if (!providerInstance) return;
+
+    const filesListResult = await providerInstance.getFilesList();
+
+    if (!filesListResult.success || !filesListResult.payload?.length) {
+        dispatch(
+            notificationsActions.addToast({ type: 'error', error: 'Exporting labels failed' }),
+        );
+
+        return;
+    }
+
+    const files = filesListResult.payload;
+
+    return Promise.all(
+        files.map(file =>
+            providerInstance.getFileContent(file).then(result => {
+                if (!result.success) throw new Error(result.error);
+
+                return { name: file, content: result.payload };
+            }),
+        ),
+    )
+        .then(filesContent => {
+            const zipBlob = createZip(filesContent);
+            // Trigger download
+            triggerWebDownloadFile(zipBlob, 'archive.zip');
+        })
+        .catch(_err => {
+            dispatch(
+                notificationsActions.addToast({ type: 'error', error: 'Exporting labels failed' }),
+            );
+
+            return;
+        });
+};

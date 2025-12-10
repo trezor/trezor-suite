@@ -27,7 +27,8 @@ import * as metadataUtils from 'src/utils/suite/metadata';
 
 import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
-import * as metadataProviderActions from './metadataProviderActions';
+import * as metadataProviderActions from './metadataProviderThunks';
+import * as metadataThunks from './metadataThunks';
 
 export const getLabelableEntities =
     (deviceState: StaticSessionId) => (_dispatch: Dispatch, getState: GetState) =>
@@ -232,7 +233,7 @@ export const fetchAndSaveMetadata =
             const promises = labelableEntities.map(entity =>
                 dispatch(fetchMetadata({ provider, entity })).then(result => {
                     if (result) {
-                        dispatch(metadataActions.setMetadata({ ...result, provider }));
+                        dispatch(metadataThunks.setMetadata({ ...result, provider }));
                     }
                 }),
             );
@@ -316,7 +317,7 @@ export const addDeviceMetadata =
         nextMetadata.walletLabel = walletLabel;
 
         dispatch(
-            metadataActions.setMetadata({
+            metadataThunks.setMetadata({
                 provider,
                 fileName,
                 data: nextMetadata,
@@ -334,7 +335,7 @@ export const addDeviceMetadata =
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
         }
 
-        return metadataActions.encryptAndSaveMetadata({
+        return metadataThunks.encryptAndSaveMetadata({
             data: { walletLabel },
             aesKey,
             fileName,
@@ -420,7 +421,7 @@ export const addAccountMetadata =
         }
 
         dispatch(
-            metadataActions.setMetadata({
+            metadataThunks.setMetadata({
                 fileName,
                 provider,
                 data: nextMetadata,
@@ -443,7 +444,7 @@ export const addAccountMetadata =
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
         }
 
-        return metadataActions.encryptAndSaveMetadata({
+        return metadataThunks.encryptAndSaveMetadata({
             data: {
                 accountLabel: nextMetadata.accountLabel,
                 outputLabels: nextMetadata.outputLabels,
@@ -609,7 +610,7 @@ export const init =
                 // NOTE: when the request for the device fails / is cancelled on the device
                 // disable metadata labeling for all but only when it was off before this invocation
                 if (!globalLabelingEnabledBeforeToggle) {
-                    dispatch(metadataActions.disableMetadata());
+                    dispatch(metadataThunks.disableMetadata());
                 }
 
                 return false;
@@ -641,7 +642,7 @@ export const init =
                 // NOTE: when the provider is not initialized
                 // disable metadata labeling for all but only when it was off before this invocation
                 if (!globalLabelingEnabledBeforeToggle) {
-                    dispatch(metadataActions.disableMetadata());
+                    dispatch(metadataThunks.disableMetadata());
                 }
 
                 return false;

@@ -9,8 +9,8 @@ import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+import * as metadataThunks from 'src/actions/suite/metadataThunks';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
@@ -42,7 +42,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
     const legacyMetadataState = useSelector(state => state.metadata);
 
     const legacyDisableIfNeeded = () => {
-        if (legacyMetadataState.enabled) dispatch(metadataActions.disableMetadata());
+        if (legacyMetadataState.enabled) dispatch(metadataThunks.disableMetadata());
     };
 
     const toggleIsFeatureSuiteSyncAvailable = () => {

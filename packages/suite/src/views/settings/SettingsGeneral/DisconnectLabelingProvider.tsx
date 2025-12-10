@@ -1,6 +1,6 @@
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { disconnectProvider } from 'src/actions/suite/metadataProviderActions';
+import { disconnectProvider } from 'src/actions/suite/metadataProviderThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
