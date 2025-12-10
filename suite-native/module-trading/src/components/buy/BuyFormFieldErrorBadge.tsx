@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';

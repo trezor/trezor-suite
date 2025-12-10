@@ -2,9 +2,8 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { Timestamp } from '@suite-common/wallet-types';
+import { Timestamp, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
-    asBaseCurrencyAmount,
     formatNetworkAmount,
     getFiatRateKey,
     isTestnet,

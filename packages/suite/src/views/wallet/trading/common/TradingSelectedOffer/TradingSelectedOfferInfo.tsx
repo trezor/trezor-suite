@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
 import { TradingTradeType, isBuyTrade, isExchangeTrade } from '@suite-common/trading';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, InfoItem, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';

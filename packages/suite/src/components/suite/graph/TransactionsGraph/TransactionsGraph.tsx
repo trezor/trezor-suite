@@ -4,7 +4,8 @@ import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } 
 import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, isPending } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { typography, zIndices } from '@trezor/theme';
 

@@ -4,7 +4,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { invariant } from '@suite-common/suite-utils';
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';

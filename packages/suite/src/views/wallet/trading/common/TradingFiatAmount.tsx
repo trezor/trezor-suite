@@ -1,5 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 interface TradingFiatAmountProps {
     amount?: BaseCurrencyAmount;

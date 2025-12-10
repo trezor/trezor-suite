@@ -1,6 +1,5 @@
 import { getCoingeckoId, getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { AssetLogo, shouldShowNetworkIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

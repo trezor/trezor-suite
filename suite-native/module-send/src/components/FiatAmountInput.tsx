@@ -10,7 +10,7 @@ import {
     selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Input } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';

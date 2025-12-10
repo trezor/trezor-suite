@@ -18,6 +18,7 @@ import {
     Timestamp,
     TokenAddress,
     WalletAccountTransaction,
+    asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
@@ -36,11 +37,10 @@ import {
     formatNetworkAmount,
     isTokenTransferMatchesSearch,
 } from './accountUtils';
-import { asBaseCurrencyAmount } from './baseCurrency';
 import { getEvmApprovalTxData, getEvmTransactionTextSignature } from './ethUtils';
+import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
-import { toFiatCurrency } from '../src/fiatConverterUtils';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order

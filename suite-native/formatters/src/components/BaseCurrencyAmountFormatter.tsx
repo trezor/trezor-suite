@@ -2,7 +2,8 @@ import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';

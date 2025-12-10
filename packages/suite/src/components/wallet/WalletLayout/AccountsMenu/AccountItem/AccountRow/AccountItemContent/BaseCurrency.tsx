@@ -8,7 +8,7 @@ import {
     selectIsDiscreteModeActive,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { valuablesBaseCurrencyCodes } from '@trezor/blockchain-link-types';
 import { SkeletonRectangle, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { isArrayMember } from '@trezor/utils';

@@ -21,6 +21,9 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../discovery" },

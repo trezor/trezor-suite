@@ -9,12 +9,10 @@ import {
     selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { BaseCurrencyAmount, TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
-    BaseCurrencyAmount,
     asAmountSubunit,
     asAmountUnit,
-    asBaseCurrencyAmount,
     fromBaseCurrencyToCryptoUnit,
     getFiatRateKey,
     isTestnet,

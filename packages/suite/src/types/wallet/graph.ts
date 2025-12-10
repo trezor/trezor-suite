@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {

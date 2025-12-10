@@ -9,7 +9,7 @@ import {
     selectTradingCoinSymbolByCryptoId,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
