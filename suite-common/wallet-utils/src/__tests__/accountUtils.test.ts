@@ -5,11 +5,8 @@ import { Account } from '@suite-common/wallet-types';
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
     accountSearchFn,
-    convertAmountSubunitsToUnits,
-    convertAmountUnitsToSubunits,
     enhanceAddresses,
     findAccountDevice,
-    formatNetworkAmount,
     getAccountIdentifier,
     getAccountKey,
     getBip43Type,
@@ -21,13 +18,18 @@ import {
     getUtxoOutpoint,
     hasNetworkFeatures,
     isTestnet,
-    networkAmountToSmallestUnit,
     parseBIP44Path,
     readUtxoOutpoint,
     sortByBIP44AddressIndex,
     sortByCoin,
     substituteBip43Path,
 } from '../accountUtils';
+import {
+    convertAmountSubunitsToUnits,
+    convertAmountUnitsToSubunits,
+    formatNetworkAmount,
+    networkAmountToSmallestUnit,
+} from '../amountUtils';
 
 const { getSuiteDevice, getWalletAccount } = testMocks;
 

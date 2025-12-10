@@ -45,12 +45,12 @@ import {
 import { typedObjectKeys } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { getUtxoOutpoint } from './accountUtils';
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
-    getUtxoOutpoint,
     networkAmountToSmallestUnit,
-} from './accountUtils';
+} from './amountUtils';
 import { isBaseCurrencyWithSats } from './baseCurrency';
 import {
     getEvmTransactionTextSignature,

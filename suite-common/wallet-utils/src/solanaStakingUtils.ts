@@ -8,7 +8,7 @@ import {
 import { SolanaStakingAccount, StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
-import { formatNetworkAmount } from './accountUtils';
+import { formatNetworkAmount } from './amountUtils';
 
 export function isSupportedSolStakingNetworkSymbol(
     symbol: NetworkSymbol,

@@ -10,7 +10,6 @@ import {
     type NetworkType,
     type TrezorConnectBackendType,
     getNetwork,
-    getNetworkDisplaySymbol,
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
@@ -40,14 +39,13 @@ import TrezorConnect, {
     PrecomposedTransactionFinalCardano,
     StaticSessionId,
     TokenInfo,
-    TokenTransfer,
 } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
-import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { getAccountDecimals } from './amountUtils';
+import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -304,112 +302,6 @@ export const getAccountTypeUrl = (path: string) => {
         default:
             return HELP_CENTER_ADDRESSES_URL;
     }
-};
-
-/**
- * Sats -> BTC, etc...
- *
- * @deprecated Use `subunitsToUnits` instead!
- */
-export const convertAmountSubunitsToUnits = (amount: BigNumberValue, decimals: number) => {
-    const safeAmount = amount || '0';
-    const bAmount = new BigNumber(safeAmount);
-
-    if (bAmount.isNaN()) {
-        throw new Error('Amount is not a number');
-    }
-
-    const factor = new BigNumber(10).exponentiatedBy(decimals);
-
-    return bAmount.div(factor).toString(10);
-};
-
-/**
- * BTC -> Sats, etc...
- *
- * @deprecated Use `unitsToSubunits` instead!
- */
-export const convertAmountUnitsToSubunits = (amount: BigNumberValue, decimals: number) => {
-    try {
-        const bAmount = new BigNumber(amount);
-        if (bAmount.isNaN()) {
-            throw new Error('Amount is not a number');
-        }
-
-        return bAmount.times(10 ** decimals).toString(10);
-    } catch {
-        // TODO: return null, so we can decide how to handle missing value in caller component
-        return '-1';
-    }
-};
-
-/**
- * @deprecated Use `subunitsToUnits` instead!
- */
-export const satoshiAmountToBtc = (amount: BigNumberValue) => {
-    try {
-        const satsAmount = new BigNumber(amount);
-        if (satsAmount.isNaN()) {
-            throw new Error('Amount is not a number');
-        }
-
-        return satsAmount.times(10 ** -8).toString(10);
-    } catch {
-        // TODO: return null, so we can decide how to handle missing value in caller component
-        return '-1';
-    }
-};
-
-/**
- * @deprecated Use `subunitsToUnits` instead!
- */
-export const networkAmountToSmallestUnit = (amount: string | null, symbol: NetworkSymbol) => {
-    if (!amount) return '0';
-
-    const decimals = getAccountDecimals(symbol);
-
-    if (!decimals) return amount;
-
-    return convertAmountUnitsToSubunits(amount, decimals);
-};
-
-/**
- * @deprecated use `subunitsToUnits` if you don't need formatting. If you need formating, use function that does ONLY formatting.
- */
-export const formatNetworkAmount = (
-    amount: string,
-    symbol: NetworkSymbol,
-    withSymbol = false,
-    isSatoshis?: boolean,
-) => {
-    const decimals = getAccountDecimals(symbol);
-
-    if (!decimals) return amount;
-
-    let formattedAmount = convertAmountSubunitsToUnits(amount, decimals);
-
-    if (withSymbol) {
-        let formattedSymbol = getNetworkDisplaySymbol(symbol);
-
-        if (isSatoshis) {
-            formattedAmount = amount || '0';
-            formattedSymbol = `sat ${getNetworkDisplaySymbol(symbol)}`;
-        }
-
-        return `${formattedAmount} ${formattedSymbol}`;
-    }
-
-    return formattedAmount;
-};
-
-export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
-    const formattedAmount = convertAmountSubunitsToUnits(
-        tokenTransfer.amount,
-        tokenTransfer.decimals,
-    );
-    const formattedTokenSymbol = tokenTransfer.symbol?.toUpperCase();
-
-    return formattedTokenSymbol ? `${formattedAmount} ${formattedTokenSymbol}` : formattedAmount;
 };
 
 /**
@@ -1207,23 +1099,6 @@ export const isAddressBasedNetwork = (networkType: NetworkType) => {
 
     return exhaustive(networkType);
 };
-
-export const isTokenMatchesSearch = (token: TokenInfo, search: string) =>
-    token.symbol?.toLowerCase().includes(search) ||
-    token.name?.toLowerCase().includes(search) ||
-    token.contract.toLowerCase().includes(search) ||
-    token.fingerprint?.toLowerCase().includes(search) ||
-    token.policyId?.toLowerCase().includes(search);
-
-export const isTokenTransferMatchesSearch = (token: TokenTransfer, search: string) =>
-    token.symbol?.toLowerCase().includes(search) ||
-    token.name?.toLowerCase().includes(search) ||
-    token.contract.toLowerCase().includes(search);
-
-export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
-    token.symbol?.toLowerCase().includes(search) ||
-    token.name?.toLowerCase().includes(search) ||
-    token.contract?.toLowerCase().includes(search);
 
 export const accountEqualTo = (a: Account) => (b: Account) =>
     a.deviceState === b.deviceState &&

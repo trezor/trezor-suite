@@ -23,10 +23,10 @@
             "path": "../../suite-common/wallet-config"
         },
         {
-            "path": "../../suite-common/wallet-utils"
+            "path": "../../suite-common/wallet-types"
         },
         {
-            "path": "../../suite-common/wallet-types"
+            "path": "../../suite-common/wallet-utils"
         },
         { "path": "../asset-utils" },
         { "path": "../blockchain-link-types" },
