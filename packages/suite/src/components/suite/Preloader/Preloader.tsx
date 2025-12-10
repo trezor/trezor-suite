@@ -7,7 +7,7 @@ import { Card } from '@trezor/components';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
 import { useGuideKeyboard } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
     selectIsTransportInitialized,
@@ -52,7 +52,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     );
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
-    useReportDeviceCompromised();
+    const { device } = useDevice();
+    useReportDeviceCompromised({ device });
     useDeviceCompromisedNotification();
 
     const dispatch = useDispatch();

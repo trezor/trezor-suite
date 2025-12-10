@@ -5,7 +5,6 @@
         { "path": "../firmware" },
         { "path": "../redux-utils" },
         { "path": "../suite-utils" },
-        { "path": "../wallet-core" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/utils" },

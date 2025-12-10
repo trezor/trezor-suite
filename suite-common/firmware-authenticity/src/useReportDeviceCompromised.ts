@@ -2,8 +2,8 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFirmwareUpdateSource } from '@suite-common/firmware';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
@@ -11,8 +11,10 @@ import { isArrayMember } from '@trezor/utils';
 import { reportSecurityCheckThunk } from './reportSecurityCheckThunk';
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
-const useCommonData = () => {
-    const device = useSelector(selectSelectedDevice);
+// to avoid unnecessary wallet-core import
+type CommonProps = { device: TrezorDevice | undefined };
+
+const useCommonData = ({ device }: CommonProps) => {
     const model = device?.features?.internal_model;
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
@@ -24,10 +26,9 @@ const useCommonData = () => {
     );
 };
 
-const useReportRevisionCheck = () => {
+const useReportRevisionCheck = ({ device }: CommonProps) => {
     const dispatch = useDispatch();
-    const device = useSelector(selectSelectedDevice);
-    const commonData = useCommonData();
+    const commonData = useCommonData({ device });
     const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
     const revisionCheck = isDeviceAcquired(device)
@@ -57,10 +58,9 @@ const useReportRevisionCheck = () => {
     }, [dispatch, commonData, errorType, errorPayload, shouldReport]);
 };
 
-const useReportHashCheck = () => {
+const useReportHashCheck = ({ device }: CommonProps) => {
     const dispatch = useDispatch();
-    const device = useSelector(selectSelectedDevice);
-    const commonData = useCommonData();
+    const commonData = useCommonData({ device });
     const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks.firmwareHash : null;
@@ -114,7 +114,7 @@ const useReportHashCheck = () => {
  * Optionally report both FW authenticity checks (revision and hash) to Sentry and/or show toast notifications,
  * based on behavior scenarios definitions. This may happen even when no UI is displayed for the checks.
  */
-export const useReportDeviceCompromised = () => {
-    useReportRevisionCheck();
-    useReportHashCheck();
+export const useReportDeviceCompromised = ({ device }: CommonProps) => {
+    useReportRevisionCheck({ device });
+    useReportHashCheck({ device });
 };
