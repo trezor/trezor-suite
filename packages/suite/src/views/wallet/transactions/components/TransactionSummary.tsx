@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectActiveBackendType, selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row } from '@trezor/components';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -45,6 +45,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const graph = useSelector(state => state.wallet.graph);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
+    const backendType = useSelector(state => selectActiveBackendType(state, account.symbol));
     const dispatch = useDispatch();
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
@@ -94,7 +95,8 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
             }),
         );
 
-    const isGraphSupported = getNetworkFeatures(account.symbol).includes('graph');
+    const isGraphSupported =
+        getNetworkFeatures(account.symbol).includes('graph') && backendType !== 'evm-rpc';
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
