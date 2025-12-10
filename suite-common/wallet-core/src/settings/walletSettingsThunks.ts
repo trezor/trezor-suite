@@ -1,9 +1,16 @@
+import { Dispatch } from '@reduxjs/toolkit';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { PROTO } from '@trezor/connect';
 
-import { changeNetworks, setAutoForgetDeviceData } from './walletSettingsActions';
+import {
+    changeNetworks,
+    setAutoForgetDeviceData,
+    setBitcoinAmountUnits,
+} from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
-import { selectEnabledNetworks } from './walletSettingsReducer';
+import { selectBitcoinAmountUnit, selectEnabledNetworks } from './walletSettingsReducer';
 import { accountsActions } from '../accounts/accountsActions';
 import {
     forgetAllDevicesPersistentDataThunk,
@@ -63,3 +70,14 @@ export const setAutoForgetDeviceDataThunk = createThunk<
         await dispatch(setDeviceAutoEjectThunk({ shouldEnable: true }));
     },
 );
+
+export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: () => any) => {
+    const currentUnits = selectBitcoinAmountUnit(getState());
+
+    const nextUnits =
+        currentUnits === PROTO.AmountUnit.BITCOIN
+            ? PROTO.AmountUnit.SATOSHI
+            : PROTO.AmountUnit.BITCOIN;
+
+    dispatch(setBitcoinAmountUnits(nextUnits));
+};
