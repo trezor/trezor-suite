@@ -1,6 +1,17 @@
-import { CreateSubscribeLabelingDeps, SubscribeLabeling } from '@suite-common/suite-sync-types';
+import { Dispatch } from '@reduxjs/toolkit';
+
+import {
+    SubscribeLabeling,
+    SubscriptionStorageDep,
+    SuiteSyncStorageRepositoryDep,
+} from '@suite-common/suite-sync-types';
 
 import { clearAllLabels, labelingActions } from './labelingActions';
+
+export type CreateSubscribeLabelingDeps = SuiteSyncStorageRepositoryDep &
+    SubscriptionStorageDep & {
+        dispatch: Dispatch;
+    };
 
 export const createSubscribeLabeling =
     (deps: CreateSubscribeLabelingDeps): SubscribeLabeling =>

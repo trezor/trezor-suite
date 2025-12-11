@@ -1,9 +1,16 @@
-import { EnsureSuiteSyncOwnerDeps, EnsureSuiteSyncOwnerKeys } from '@suite-common/suite-sync-types';
+import { getProofOfDelegatedIdentity } from '@suite-common/delegated-identity-key';
+import { CreateSuiteSyncOwner } from '@suite-common/suite-sync-storage';
+import { EnsureSuiteSyncOwnerKeys } from '@suite-common/suite-sync-types';
 import { DeviceCancelledErr, DeviceError, isCanceledErrorMessage } from '@suite-common/wallet-core';
-import { getProofOfDelegatedIdentity } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
 import { err } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
+
+export type EnsureSuiteSyncOwnerDeps = {
+    createSuiteSyncOwner: CreateSuiteSyncOwner;
+    trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode'>;
+};
 
 export const createEnsureSuiteSyncOwnerKeys =
     (deps: EnsureSuiteSyncOwnerDeps): EnsureSuiteSyncOwnerKeys =>

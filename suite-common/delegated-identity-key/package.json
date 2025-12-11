@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/suite-sync-types",
+    "name": "@suite-common/delegated-identity-key",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -10,13 +10,16 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@noble/curves": "^2.0.1",
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/delegated-identity-key-types": "workspace:*",
-        "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/secure-storage": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/thp": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

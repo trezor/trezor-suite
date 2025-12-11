@@ -5,11 +5,14 @@
         "exactOptionalPropertyTypes": true
     },
     "references": [
-        { "path": "../delegated-identity-key" },
-        { "path": "../redux-utils" },
+        {
+            "path": "../delegated-identity-key-types"
+        },
+        { "path": "../secure-storage" },
         { "path": "../suite-types" },
-        { "path": "../suite-utils" },
+        { "path": "../thp" },
         { "path": "../wallet-core" },
+        { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

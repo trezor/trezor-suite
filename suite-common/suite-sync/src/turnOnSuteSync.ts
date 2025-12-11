@@ -1,11 +1,16 @@
-import {
-    CreateTurnOnSuiteSyncDeps,
-    TurnOnSuiteSync,
-} from '@suite-common/suite-sync-types/src/turnOnSuteSync';
+import { Dispatch } from '@reduxjs/toolkit';
+
+import { TurnOnSuiteSync, TurnOnSuiteSyncForWallet } from '@suite-common/suite-sync-types';
 import { selectDevices } from '@suite-common/wallet-core';
 
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
+
+export type CreateTurnOnSuiteSyncDeps = {
+    getState: () => any;
+    dispatch: Dispatch;
+    turnOnSuiteSyncForWallet: TurnOnSuiteSyncForWallet;
+};
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>

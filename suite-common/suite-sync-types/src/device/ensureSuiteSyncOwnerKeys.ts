@@ -1,19 +1,12 @@
-import { CreateSuiteSyncOwner, CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
+import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
+import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
 import {
     DelegatedIdentityKey,
     SuiteSyncOwner,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { DeviceCancelledErr, DeviceError } from '@suite-common/wallet-core/src/device/deviceUtils';
-import TrezorConnect from '@trezor/connect';
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
-
-import { ProofOfDelegatedSignFailed } from '../getProofOfDelegatedIdentity';
-
-export type EnsureSuiteSyncOwnerDeps = {
-    createSuiteSyncOwner: CreateSuiteSyncOwner;
-    trezorConnect: Pick<typeof TrezorConnect, 'evoluGetNode'>;
-};
 
 export type EnsureSuiteSyncOwnerKeysParams = {
     device: Pick<TrezorDeviceWithState, 'useEmptyPassphrase' | 'path' | 'state' | 'instance'>;
@@ -25,7 +18,10 @@ export type EnsureSuiteSyncOwnerKeys = (
 ) => Promise<
     Result<
         SuiteSyncOwner,
-        DeviceCancelledErr | DeviceError | ProofOfDelegatedSignFailed | CreateSuiteSyncOwnerError
+        | DeviceCancelledErrType
+        | DeviceErrorType
+        | ProofOfDelegatedSignFailedType
+        | CreateSuiteSyncOwnerError
     >
 >;
 

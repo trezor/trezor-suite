@@ -7,6 +7,9 @@
     "include": [".", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/delegated-identity-key-types"
+        },
+        {
             "path": "../../suite-common/secure-storage"
         },
         {
@@ -17,9 +20,6 @@
         },
         {
             "path": "../../suite-common/suite-sync-types"
-        },
-        {
-            "path": "../../suite-common/wallet-core"
         },
         { "path": "../../packages/connect" }
     ]

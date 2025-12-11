@@ -26,6 +26,9 @@
             "path": "../../suite-common/connect-popup"
         },
         {
+            "path": "../../suite-common/delegated-identity-key"
+        },
+        {
             "path": "../../suite-common/device-authenticity"
         },
         { "path": "../../suite-common/feedback" },

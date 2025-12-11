@@ -1,11 +1,10 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { ChangeRelayUrlDeps } from '@suite-common/suite-sync-types';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
 
 import { mockNotExpected } from '../../../tests/utils';
-import { createChangeRelayUrl } from '../changeRelayUrl';
+import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../changeRelayUrl';
 
 const owner1 = {
     ownerId: asSuiteSyncOwnerId('OwnerId_1'),

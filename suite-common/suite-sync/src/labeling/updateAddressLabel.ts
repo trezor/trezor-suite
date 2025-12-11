@@ -1,4 +1,10 @@
-import { UpdateAddressLabel, UpdateAddressLabelDeps } from '@suite-common/suite-sync-types';
+import { SuiteSyncStorageRepositoryDep, UpdateAddressLabel } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
+import { StaticSessionId } from '@trezor/connect';
+
+export type UpdateAddressLabelDeps = {
+    findSuiteSyncOwnerForDeviceStaticId: (staticId: StaticSessionId) => SuiteSyncOwner | null;
+} & SuiteSyncStorageRepositoryDep;
 
 export const createUpdateAddressLabel =
     (deps: UpdateAddressLabelDeps): UpdateAddressLabel =>

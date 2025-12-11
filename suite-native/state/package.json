@@ -13,6 +13,7 @@
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
+        "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/logger": "workspace:*",

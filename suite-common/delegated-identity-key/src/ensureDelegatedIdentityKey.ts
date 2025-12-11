@@ -1,31 +1,15 @@
-import { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite-types';
-import { Result, ok } from '@trezor/type-utils';
+import { EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
+import { ok } from '@trezor/type-utils';
 
-import { DeviceCancelledErr, DeviceError } from '../deviceUtils';
 import { LoadDelegatedIdentityKeyFromStateDep } from './loadDelegatedIdentityKeyFromState';
-import {
-    RetrieveDelegatedIdentityKeyFromDeviceDep,
-    RetrieveDelegatedIdentityKeyParams,
-} from './retrieveDelegatedIdentityKeyFromDevice';
+import { RetrieveDelegatedIdentityKeyFromDeviceDep } from './retrieveDelegatedIdentityKeyFromDevice';
 import { SaveDelegatedIdentityKeyDep } from './saveDelegatedIdentityKey';
-
-export type EnsureDelegatedIdentityKeyParams = {
-    device: Pick<TrezorDeviceWithState, 'id'> & RetrieveDelegatedIdentityKeyParams['device'];
-};
-
-export type EnsureDelegatedIdentityKey = (
-    params: EnsureDelegatedIdentityKeyParams,
-) => Promise<Result<DelegatedIdentityKey, DeviceError | DeviceCancelledErr>>;
 
 export type EnsureDelegatedIdentityKeyDeps = {
     getThpStaticKey: () => string | undefined;
 } & SaveDelegatedIdentityKeyDep &
     LoadDelegatedIdentityKeyFromStateDep &
     RetrieveDelegatedIdentityKeyFromDeviceDep;
-
-export type EnsureDelegatedIdentityKeyDep = {
-    ensureDelegatedIdentityKey: EnsureDelegatedIdentityKey;
-};
 
 export const createEnsureDelegatedIdentityKey =
     (deps: EnsureDelegatedIdentityKeyDeps): EnsureDelegatedIdentityKey =>
