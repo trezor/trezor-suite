@@ -1,8 +1,7 @@
-import { TouchableOpacity } from 'react-native';
-
 import { Icon } from '@suite-native/icons';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { PressableOpacity } from './Pressable';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
 type CheckBoxProps = {
@@ -48,7 +47,7 @@ export const CheckBox = ({ isChecked, isDisabled = false, onChange, style }: Che
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             disabled={isDisabled}
             onPress={() => onChange(!isChecked)}
             accessibilityRole="checkbox"
@@ -56,6 +55,6 @@ export const CheckBox = ({ isChecked, isDisabled = false, onChange, style }: Che
             style={[applyStyle(checkBoxStyle, { isChecked, isDisabled }), style]}
         >
             {isChecked && <Icon name="check" color="iconOnPrimary" size={CHECKMARK_SIZE} />}
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

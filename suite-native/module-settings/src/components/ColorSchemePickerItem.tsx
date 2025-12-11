@@ -1,6 +1,4 @@
-import { TouchableOpacity } from 'react-native';
-
-import { Box, Text } from '@suite-native/atoms';
+import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { AppColorScheme, useSystemColorScheme, useUserColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -69,7 +67,7 @@ export const ColorSchemePickerItem = ({
     };
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             onPress={handleSchemePress}
             style={applyStyle(pickerItemWrapperStyle, { isColorSchemeActive })}
         >
@@ -99,6 +97,6 @@ export const ColorSchemePickerItem = ({
             >
                 <Translation id={translationId} />
             </Text>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

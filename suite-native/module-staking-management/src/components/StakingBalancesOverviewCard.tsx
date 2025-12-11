@@ -1,8 +1,7 @@
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { Box, Card, Text } from '@suite-native/atoms';
+import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -70,7 +69,7 @@ export const StakingBalancesOverviewCard = ({
     );
 
     return (
-        <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
+        <PressableOpacity onPress={() => handleToggleBottomSheet(true)}>
             <Card>
                 <Box style={applyStyle(stakingWrapperStyle)}>
                     <Box flex={1}>
@@ -136,6 +135,6 @@ export const StakingBalancesOverviewCard = ({
                     <Text>{apy}%</Text>
                 </Box>
             </Card>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

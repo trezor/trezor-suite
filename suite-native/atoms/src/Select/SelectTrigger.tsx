@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
 
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { PressableOpacity } from '../Pressable';
 import { HStack } from '../Stack';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 
@@ -34,7 +34,7 @@ export const SelectTrigger = ({ value, icon, handlePress, testID }: SelectTrigge
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
+        <PressableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
             <HStack alignItems="center">
                 {icon}
                 <Text numberOfLines={1} ellipsizeMode="tail">
@@ -42,6 +42,6 @@ export const SelectTrigger = ({ value, icon, handlePress, testID }: SelectTrigge
                 </Text>
             </HStack>
             <Icon size="large" color="iconSubdued" name="caretDown" />
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

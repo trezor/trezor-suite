@@ -1,11 +1,12 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Badge } from './Badge';
 import { Box } from './Box';
+import { PressableOpacity } from './Pressable';
 import { Radio } from './Radio';
 import { VStack } from './Stack';
 import { Text } from './Text';
@@ -68,11 +69,7 @@ export const SelectableItem = ({
     const { applyStyle, utils } = useNativeStyles();
 
     return (
-        <TouchableOpacity
-            onPress={onSelected}
-            activeOpacity={0.6}
-            style={applyStyle(cardStyle, { isSelected })}
-        >
+        <PressableOpacity onPress={onSelected} style={applyStyle(cardStyle, { isSelected })}>
             <VStack spacing={utils.spacings.sp4}>
                 <Box style={applyStyle(titleWrapperStyle)}>
                     <Text variant="titleSmall" color="textDefault">
@@ -97,6 +94,6 @@ export const SelectableItem = ({
             <View style={applyStyle(radioWrapperStyle)}>
                 <Radio value="toggle" onPress={onSelected} isChecked={isSelected} />
             </View>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

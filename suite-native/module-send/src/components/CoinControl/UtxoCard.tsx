@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +14,16 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { Card, CheckBox, Divider, HStack, Text, TextButton, VStack } from '@suite-native/atoms';
+import {
+    Card,
+    CheckBox,
+    Divider,
+    HStack,
+    PressableOpacity,
+    Text,
+    TextButton,
+    VStack,
+} from '@suite-native/atoms';
 import {
     AccountAddressFormatter,
     BaseCurrencyAmountFormatter,
@@ -107,7 +115,7 @@ export const UtxoCard = ({
             style={applyStyle(cardStyle)}
         >
             <VStack spacing="sp12">
-                <TouchableOpacity onPress={handleToggle}>
+                <PressableOpacity onPress={handleToggle}>
                     <HStack
                         paddingTop="sp16"
                         paddingHorizontal="sp12"
@@ -157,7 +165,7 @@ export const UtxoCard = ({
                         </VStack>
                         <CheckBox isChecked={isSelected} onChange={handleToggle} />
                     </HStack>
-                </TouchableOpacity>
+                </PressableOpacity>
                 <Divider />
                 <HStack
                     justifyContent="space-between"

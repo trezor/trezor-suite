@@ -1,9 +1,8 @@
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { Box, Card, Text } from '@suite-native/atoms';
+import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { selectClaimableAmountByAccountKey } from '@suite-native/staking';
@@ -47,7 +46,7 @@ export const StakeClaimableCard = ({
     }
 
     return (
-        <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
+        <PressableOpacity onPress={() => handleToggleBottomSheet(true)}>
             <Card>
                 <Box style={applyStyle(stakingItemStyle)}>
                     <Box flex={1}>
@@ -75,6 +74,6 @@ export const StakeClaimableCard = ({
                     </Box>
                 </Box>
             </Card>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

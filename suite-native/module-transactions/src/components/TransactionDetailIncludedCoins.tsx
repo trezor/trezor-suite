@@ -1,10 +1,9 @@
-import { TouchableOpacity } from 'react-native';
-
 import { AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     Box,
     Card,
+    PressableOpacity,
     RoundedIcon,
     Text,
     useBottomSheetModal,
@@ -38,7 +37,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
 
     return (
         <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
-            <TouchableOpacity onPress={onPress}>
+            <PressableOpacity onPress={onPress}>
                 <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box flexDirection="row" alignItems="center">
                         <Box marginRight="sp16">
@@ -48,7 +47,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
                     </Box>
                     <Icon name="caretCircleRight" color="iconPrimaryDefault" />
                 </Box>
-            </TouchableOpacity>
+            </PressableOpacity>
         </Card>
     );
 };

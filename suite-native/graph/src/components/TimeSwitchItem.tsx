@@ -1,6 +1,4 @@
-import { TouchableOpacity } from 'react-native';
-
-import { Text } from '@suite-native/atoms';
+import { PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -46,7 +44,7 @@ export const TimeSwitchItem = ({
     const isSelected = selectedTimeFrame === value;
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             onPress={() => onSelectTimeFrame(value)}
             testID={`TimeSwitchItem_${value}`}
             style={applyStyle(switchItemStyle, { isSelected })}
@@ -54,6 +52,6 @@ export const TimeSwitchItem = ({
             <Text variant="hint" style={applyStyle(textStyle, { isSelected })}>
                 <Translation id={translationId} />
             </Text>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

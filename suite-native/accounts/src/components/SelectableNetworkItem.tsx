@@ -1,8 +1,6 @@
-import { TouchableOpacity } from 'react-native';
-
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
+import { Badge, Box, HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isCoinWithTokens } from '@suite-native/tokens';
@@ -40,7 +38,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
     const hasTokens = isCoinWithTokens(symbol);
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             disabled={!onPress}
             onPress={handlePress}
             testID={`@onboarding/select-coin/${symbol}`}
@@ -71,6 +69,6 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                 </Box>
                 {rightIcon && <Icon name={rightIcon} color="iconDisabled" size="large" />}
             </Box>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

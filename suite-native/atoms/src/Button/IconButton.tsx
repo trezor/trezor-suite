@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Pressable, PressableProps } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { PressableProps } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import {
@@ -20,6 +19,7 @@ import {
 } from './Button';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { Loader } from '../Loader';
+import { AnimatedPressable } from '../Pressable';
 type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     iconName: IconName;
     colorScheme?: ButtonColorScheme;
@@ -47,8 +47,6 @@ const iconButtonStyle = mergeNativeStyles([
         paddingHorizontal: 0,
     })),
 ]);
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const IconButton = ({
     iconName,

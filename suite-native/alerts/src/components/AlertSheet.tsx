@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { Modal, Pressable, StyleSheet } from 'react-native';
+import { Modal, StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
+    AnimatedPressable,
     Box,
     Button,
     Card,
@@ -54,8 +55,6 @@ const sheetOverlayStyle = prepareNativeStyle(_ => ({
     height: SCREEN_HEIGHT,
     ...StyleSheet.absoluteFillObject,
 }));
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const AlertSheet = ({ alert }: AlertSheetProps) => {
     const { hideAlert } = useAlert();

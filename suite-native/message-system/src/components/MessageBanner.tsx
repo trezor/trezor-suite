@@ -1,10 +1,9 @@
-import { TouchableOpacity } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { messageSystemActions } from '@suite-common/message-system';
 import { Message, Variant } from '@suite-common/suite-types';
-import { Box, HStack, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { Box, HStack, PressableOpacity, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
@@ -72,14 +71,14 @@ const MessageCloseButton = ({
     backgroundColor: Color;
     onClose: () => void;
 }) => (
-    <TouchableOpacity onPress={onClose}>
+    <PressableOpacity onPress={onClose}>
         <RoundedIcon
             name="x"
             iconSize="medium"
             containerSize={44}
             backgroundColor={backgroundColor}
         />
-    </TouchableOpacity>
+    </PressableOpacity>
 );
 
 export const MessageBanner = ({ message }: MessageBannerProps) => {

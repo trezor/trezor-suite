@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +10,7 @@ import {
     CheckBox,
     ErrorMessage,
     HStack,
+    PressableOpacity,
     Text,
     TextDivider,
     TitleHeader,
@@ -92,7 +92,7 @@ export const PermissionConfirmation = () => {
 
                 <TextDivider title="moduleConnectPopup.optional" />
 
-                <TouchableOpacity onPress={() => setIsRemembered(!isRemembered)}>
+                <PressableOpacity onPress={() => setIsRemembered(!isRemembered)}>
                     <HStack spacing="sp16" padding="sp8" alignItems="center">
                         <CheckBox
                             isChecked={isRemembered}
@@ -102,7 +102,7 @@ export const PermissionConfirmation = () => {
                             <Translation id="moduleConnectPopup.alwaysAllow" />
                         </Text>
                     </HStack>
-                </TouchableOpacity>
+                </PressableOpacity>
             </Card>
 
             <Button testID="@popup/call-device" onPress={onConfirm}>

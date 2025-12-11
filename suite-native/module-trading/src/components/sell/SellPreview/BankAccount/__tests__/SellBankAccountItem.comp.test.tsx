@@ -97,7 +97,7 @@ describe('SellBankAccountItem', () => {
                 onPress: mockOnPress,
             });
 
-            // Since Radio is a TouchableOpacity, we can press the main component
+            // Since Radio is a PressableOpacity, we can press the main component
             // The onPress will be called through the AccessoryView
             await userEvent.press(getByTestId(BANK_ACCOUNT_ITEM_TEST_ID));
 

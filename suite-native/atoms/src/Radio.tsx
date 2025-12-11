@@ -1,11 +1,12 @@
-import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+import { PressableProps, View } from 'react-native';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
+import { PressableOpacity } from './Pressable';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
-export type RadioProps<TValue> = Omit<TouchableOpacityProps, 'style' | 'onPress'> & {
+export type RadioProps<TValue> = Omit<PressableProps, 'style' | 'onPress'> & {
     value: TValue;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -66,13 +67,13 @@ export const Radio = <TValue extends string | number>({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             disabled={isDisabled}
             onPress={() => onPress(value)}
             style={[applyStyle(radioStyle, { isChecked, isDisabled, activeColor }), style]}
             {...props}
         >
             {isChecked && <View style={applyStyle(radioCheckStyle, { isDisabled, activeColor })} />}
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

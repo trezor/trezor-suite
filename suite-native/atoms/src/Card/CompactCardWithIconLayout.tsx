@@ -1,17 +1,18 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { PressableProps } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { Card } from './Card';
 import { Box } from '../Box';
 import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { Loader } from '../Loader';
+import { PressableOpacity } from '../Pressable';
 import { RoundedIcon } from '../RoundedIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
+import { Card } from './Card';
 
 type CardVariant = 'normal' | 'danger' | 'primary';
 
@@ -25,7 +26,7 @@ export type CompactCardWithIconLayoutProps = {
     variant?: CardVariant;
     noShadow?: boolean;
     borderColor?: Color | null;
-} & TouchableOpacityProps;
+} & PressableProps;
 
 type CardColorScheme = {
     iconWrapperBackgroundColor: Color;
@@ -88,7 +89,7 @@ export const CompactCardWithIconLayout = ({
         cardVariantToColorsMap[variant];
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             style={applyStyle(touchableOpacityStyle, { noShadow })}
             disabled={isDisabled}
             onPress={onPress}
@@ -126,6 +127,6 @@ export const CompactCardWithIconLayout = ({
                     </Box>
                 )}
             </Card>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

@@ -1,4 +1,3 @@
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
@@ -9,6 +8,7 @@ import {
     Card,
     CardDivider,
     HStack,
+    PressableOpacity,
     RoundedIcon,
     Text,
     TitledSection,
@@ -56,7 +56,7 @@ export const ConnectionSettings = () => {
                 <CardDivider />
                 <Box paddingHorizontal="sp16" paddingVertical="sp12">
                     <WalletConnectPairBottomSheet ref={bottomSheetRef} onClose={closeModal} />
-                    <TouchableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
+                    <PressableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
                         <HStack justifyContent="space-between" alignItems="center">
                             <HStack spacing="sp16" alignItems="center">
                                 <RoundedIcon
@@ -71,7 +71,7 @@ export const ConnectionSettings = () => {
                             </HStack>
                             <Icon name="plus" color="textSecondaryHighlight" />
                         </HStack>
-                    </TouchableOpacity>
+                    </PressableOpacity>
                 </Box>
             </Card>
 

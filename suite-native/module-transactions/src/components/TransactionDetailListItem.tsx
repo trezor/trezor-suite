@@ -1,9 +1,7 @@
-import { TouchableOpacity } from 'react-native';
-
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountKey } from '@suite-common/wallet-types';
-import { Box, RoundedIcon, Text } from '@suite-native/atoms';
+import { Box, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -63,7 +61,7 @@ export const TransactionDetailListItem = ({
     };
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             onPress={handleNavigation}
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
@@ -89,6 +87,6 @@ export const TransactionDetailListItem = ({
                     <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
                 )}
             </Box>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

@@ -1,8 +1,14 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { BottomSheetModal, Box, Button, Text, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    Box,
+    Button,
+    PressableOpacity,
+    Text,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -46,7 +52,7 @@ const BottomSheetTrigger = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
+        <PressableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
             <Box flexDirection="row" alignItems="center">
                 <Box marginRight="sp16">
                     <Icon name={iconName} color="iconDefault" size="mediumLarge" />
@@ -54,7 +60,7 @@ const BottomSheetTrigger = ({
                 <Text>{title}</Text>
             </Box>
             <Icon name="caretRight" color="iconSubdued" size="mediumLarge" />
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };
 

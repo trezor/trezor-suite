@@ -1,8 +1,16 @@
 import { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, Button, Card, Switch, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    PressableOpacity,
+    Switch,
+    Text,
+    TitleHeader,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -96,10 +104,7 @@ export const AnalyticsConsentScreen = ({
                                         }
                                     />
                                 </VStack>
-                                <TouchableOpacity
-                                    onPress={toggleAnalyticsConsent}
-                                    activeOpacity={0.5}
-                                >
+                                <PressableOpacity onPress={toggleAnalyticsConsent}>
                                     <Box
                                         flexDirection="row"
                                         alignItems="center"
@@ -115,7 +120,7 @@ export const AnalyticsConsentScreen = ({
                                             onChange={toggleAnalyticsConsent}
                                         />
                                     </Box>
-                                </TouchableOpacity>
+                                </PressableOpacity>
                             </VStack>
                         </Box>
                     </Card>
