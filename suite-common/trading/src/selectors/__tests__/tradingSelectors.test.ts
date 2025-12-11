@@ -18,11 +18,9 @@ import { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
 import { ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
 import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
-import type { TradingPaymentMethodListProps, TradingPaymentMethodProps } from '../../types';
+import type { TradingPaymentMethodListProps } from '../../types';
 import {
     TradingRootStateWithDeviceAndAccounts,
-    selectBestBuyQuoteByPaymentMethod,
-    selectBuyQuotesByPaymentMethod,
     selectDeviceHasTradingTrades,
     selectDeviceTradingTradesOrderedByDate,
     selectTrading,
@@ -901,50 +899,6 @@ describe('tradingSelectors', () => {
     describe(selectTradingBuyQuotes.name, () => {
         it('should return quotes', () => {
             expect(selectTradingBuyQuotes(state)).toBe(state.wallet.trading.buy.quotes);
-        });
-    });
-
-    describe(selectBestBuyQuoteByPaymentMethod.name, () => {
-        it('should return best quote', () => {
-            expect(selectBestBuyQuoteByPaymentMethod(state, 'eps')).toEqual(
-                expect.objectContaining({
-                    paymentMethod: 'eps',
-                    quoteId: 'quoteId2',
-                }),
-            );
-        });
-
-        it('should be undefined when payment method is not specified', () => {
-            expect(selectBestBuyQuoteByPaymentMethod(state, undefined)).toBeUndefined();
-        });
-
-        it('should be undefined when no quotes are loaded', () => {
-            state.wallet.trading.buy.quotes = [];
-
-            expect(selectBestBuyQuoteByPaymentMethod(state, 'eps')).toBeUndefined();
-        });
-    });
-
-    describe(selectBuyQuotesByPaymentMethod.name, () => {
-        it('should return undefined when payment method is not provided', () => {
-            const result = selectBuyQuotesByPaymentMethod(state, undefined);
-            expect(result).toBeUndefined();
-        });
-
-        it('should filter quotes by payment method and sort by rate', () => {
-            const paymentMethod: TradingPaymentMethodProps = 'eps';
-            const result = selectBuyQuotesByPaymentMethod(state, paymentMethod);
-
-            expect(result).toHaveLength(2);
-            expect(result?.[0].orderId).toBe('orderId2');
-            expect(result?.[1].orderId).toBe('orderId1');
-        });
-
-        it('should return empty array when no quotes match payment method', () => {
-            const paymentMethod: TradingPaymentMethodProps = 'bankTransfer';
-            const result = selectBuyQuotesByPaymentMethod(state, paymentMethod);
-
-            expect(result).toHaveLength(0);
         });
     });
 

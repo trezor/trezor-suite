@@ -17,19 +17,8 @@ import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
 import { SellInfo, TradingSellState } from '../reducers/sellReducer';
 import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
-import {
-    TradingFiatCurrenciesProps,
-    TradingPaymentMethodProps,
-    TradingTransaction,
-    TradingType,
-} from '../types';
-import {
-    cryptoIdToNetwork,
-    getTradingQuotesByPaymentMethod,
-    isBuyTrade,
-    isExchangeProvider,
-    testnetToProdCryptoId,
-} from '../utils';
+import { TradingFiatCurrenciesProps, TradingTransaction, TradingType } from '../types';
+import { cryptoIdToNetwork, isBuyTrade, isExchangeProvider, testnetToProdCryptoId } from '../utils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -509,23 +498,6 @@ export const selectTradingBuyQuoteByOrderId = (
     state: TradingRootState,
     orderId: string | undefined,
 ) => (orderId ? state.wallet.trading.buy.quotes.find(q => q.orderId === orderId) : undefined);
-
-// TODO 23653 - not used from anywhere?
-export const selectBuyQuotesByPaymentMethod = createMemoizedSelector(
-    [
-        selectTradingBuyQuotes,
-        (_: TradingRootState, paymentMethod: TradingPaymentMethodProps | undefined) =>
-            paymentMethod,
-    ],
-    (quotes, paymentMethod) =>
-        paymentMethod ? getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod) : undefined,
-);
-
-// TODO 23653 - not used from anywhere?
-export const selectBestBuyQuoteByPaymentMethod = createMemoizedSelector(
-    [selectBuyQuotesByPaymentMethod],
-    quotes => (quotes && quotes.length > 0 ? quotes[0] : undefined),
-);
 
 export const selectTradingExchangeIsLoading = (state: TradingRootState) =>
     state.wallet.trading.exchange.isLoading;
