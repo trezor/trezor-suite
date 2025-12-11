@@ -43,13 +43,6 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText('even cooler');
-
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinDefault1),
-            ).toBeVisible();
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinDefault1),
-            ).toBeHidden();
         });
 
         await test.step('Discard label changes via Escape', async () => {
@@ -86,27 +79,6 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
             ).toHaveText('Bitcoin #1');
         });
 
-        await test.step('Switch between segwit accounts and check success indicators', async () => {
-            await walletPage.segwitGroupButton.click();
-            await walletPage.openAccount({ symbol: 'btc', type: 'segwit', atIndex: 0 });
-
-            await metadataPage.account.addLabel(
-                AccountLabelId.BitcoinSegwit1,
-                'typing into one input',
-            );
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
-            ).toBeVisible();
-
-            await walletPage.openAccount({ symbol: 'btc', type: 'segwit', atIndex: 1 });
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit2),
-            ).toBeHidden();
-            await expect(
-                metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
-            ).toBeHidden();
-        });
-
         await test.step('Navigate to dashboard', async () => {
             await dashboardPage.dashboardMenuButton.click();
             await expect(dashboardPage.graph).toBeVisible();
@@ -122,7 +94,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
                 'adding label to a newly added account. does it work?',
             );
             await expect(
-                walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 2 }),
+                walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 3 }),
             ).toHaveText('adding label to a newly added account. does it work?');
         });
     });

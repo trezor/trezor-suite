@@ -11,6 +11,7 @@ import {
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';
 
 import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -44,7 +45,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
 };
 
 export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, next, getState }) => {
+    (action, { dispatch, next, getState, extra }) => {
         const prevApp = getState().router.app;
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
             dispatch(appChanged(action.payload.app));
@@ -86,6 +87,17 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
 
         // pass action to reducers
         next(action);
+
+        if (deviceActions.forgetDevice.match(action)) {
+            const { device } = action.payload;
+
+            dispatch(handleDeviceDisconnect(device));
+            if (isTrezorDeviceWithState(device)) {
+                extra.services.suiteSync.turnOffSuiteSyncForWallet({
+                    owner: device.suiteSyncOwner,
+                });
+            }
+        }
 
         switch (action.type) {
             case SUITE.DESKTOP_HANDSHAKE:

@@ -24,7 +24,6 @@ export const createRefreshSuiteSyncKeys =
             return err(RefreshSuiteKeysUnavailable());
         }
 
-        // On connect device (musi mit features)
         const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
         if (!delegatedKeyResult.ok) {
