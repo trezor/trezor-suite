@@ -28,7 +28,7 @@ import { createTurnOffSuiteSyncForWallet } from './storage/turnOffSuiteSyncForWa
 import { createTurnOnSuiteSyncForWallet } from './storage/turnOnSuiteSyncForWallet';
 import { selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
 import { createTurnOffSuiteSync } from './turnOffSuiteSync';
-import { createTurnOnSuiteSync } from './turnOnSuteSync';
+import { createTurnOnSuiteSync } from './turnOnSuiteSync';
 
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
