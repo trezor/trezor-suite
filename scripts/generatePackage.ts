@@ -9,6 +9,7 @@ import templatePackageJsonWeb from './package-template/package.json';
 import templatePackageJsonNative from './package-template-native/package.json';
 import { getPrettierConfig } from './utils/getPrettierConfig';
 import { getWorkspacesList } from './utils/getWorkspacesList';
+import { getDirname } from './ci/helpers';
 
 const scopes = {
     '@suite-common': {
@@ -42,7 +43,7 @@ const isValidScope = (scope: string): scope is keyof typeof scopes =>
     Object.keys(scopes).includes(scope);
 
 // Get the directory of the current file
-const currentDir = path.dirname(__filename);
+const currentDir = getDirname(import.meta.url);
 const rootDir = path.resolve(currentDir, '..');
 
 (async () => {

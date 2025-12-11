@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
 
-const semver = require('semver');
-const child_process = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import semver from 'semver';
+import child_process from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { getDirname } from './helpers';
 
 const args = process.argv.slice(2);
 
@@ -18,7 +19,7 @@ if (!['latest', 'beta'].includes(distTag)) {
     throw new Error('distTag (3rd parameter) must be either "beta" or "latest"');
 }
 
-const ROOT = path.join(__dirname, '..', '..');
+const ROOT = path.join(getDirname(import.meta.url), '..', '..');
 const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
 
 // read package version

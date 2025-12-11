@@ -3,14 +3,14 @@
  *
  * This script checks the dependencies for the specified package to ensure they match expected criteria.
  * It is used to verify the output of scripts/ci/connect-bump-versions.ts. */
-const { promisify } = require('util');
-const fs = require('fs');
-const path = require('path');
+import { promisify } from 'util';
+import fs from 'node:fs';
+import path from 'node:path';
+import { checkPackageDependencies, getDirname } from './helpers';
 
 const readdir = promisify(fs.readdir);
-const { checkPackageDependencies } = require('./helpers');
 
-const rootPath = path.join(__dirname, '..', '..');
+const rootPath = path.join(getDirname(import.meta.url), '..', '..');
 const packagesPath = path.join(rootPath, 'packages');
 
 const args = process.argv.slice(2);
