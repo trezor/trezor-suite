@@ -48,7 +48,7 @@ describe('useExchangeForm', () => {
     });
 
     describe('on quotes change', () => {
-        it('should select fixed quote with best rate', async () => {
+        it('should select first fixed quote', async () => {
             const { result } = await renderUseExchangeForm();
             act(() => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
@@ -56,7 +56,7 @@ describe('useExchangeForm', () => {
 
             expect(result.current.getValues('quote')).toEqual(
                 expect.objectContaining({
-                    quoteId: 'mercuryo-fixed-best',
+                    quoteId: 'mercuryo-fixed-worst',
                 }),
             );
         });
@@ -107,7 +107,7 @@ describe('useExchangeForm', () => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
 
-            expect(result.current.getValues('receiveCryptoAmount')).toBe('0.00089537');
+            expect(result.current.getValues('receiveCryptoAmount')).toBe('0.00083554');
         });
 
         it('should set receiveCryptoAmount in sats when using BTC and amount in sats', async () => {
@@ -118,7 +118,7 @@ describe('useExchangeForm', () => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
 
-            expect(result.current.getValues('receiveCryptoAmount')).toBe('89537');
+            expect(result.current.getValues('receiveCryptoAmount')).toBe('83554');
         });
 
         describe('when quote is selected and new quotes are fetched', () => {

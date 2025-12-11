@@ -25,7 +25,6 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
-    getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
     isBuyTrade,
     isExchangeProvider,
@@ -511,6 +510,7 @@ export const selectTradingBuyQuoteByOrderId = (
     orderId: string | undefined,
 ) => (orderId ? state.wallet.trading.buy.quotes.find(q => q.orderId === orderId) : undefined);
 
+// TODO 23653 - not used from anywhere?
 export const selectBuyQuotesByPaymentMethod = createMemoizedSelector(
     [
         selectTradingBuyQuotes,
@@ -518,16 +518,13 @@ export const selectBuyQuotesByPaymentMethod = createMemoizedSelector(
             paymentMethod,
     ],
     (quotes, paymentMethod) =>
-        paymentMethod
-            ? getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod)?.sort(
-                  (a, b) => (a.rate ?? 0) - (b.rate ?? 0),
-              )
-            : undefined,
+        paymentMethod ? getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod) : undefined,
 );
 
+// TODO 23653 - not used from anywhere?
 export const selectBestBuyQuoteByPaymentMethod = createMemoizedSelector(
     [selectBuyQuotesByPaymentMethod],
-    quotes => getBestRatedQuote(quotes, 'buy'),
+    quotes => (quotes && quotes.length > 0 ? quotes[0] : undefined),
 );
 
 export const selectTradingExchangeIsLoading = (state: TradingRootState) =>

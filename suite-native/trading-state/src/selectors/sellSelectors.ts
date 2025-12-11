@@ -4,7 +4,6 @@ import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     TradingCountryCode,
     TradingPaymentMethodProps,
-    getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
     selectTradingSellInfo,
@@ -77,25 +76,19 @@ export const selectSellSelectedSendAccount = createMemoizedSelectorWithAccounts(
 export const selectSellBestQuotesForAvailablePaymentMethods = createMemoizedSelector(
     [selectValidTradingSellQuotes],
     quotes => {
-        const allQuotesByPaymentMethodMap = quotes.reduce((quotesByPaymentMethodMap, quote) => {
+        const bestQuoteByPaymentMethodMap = quotes.reduce((quotesByPaymentMethodMap, quote) => {
             const { paymentMethod, paymentMethodName } = quote;
-            if (!paymentMethod || !paymentMethodName) {
-                return quotesByPaymentMethodMap;
-            }
+            const isValidPaymentMethod = paymentMethod && paymentMethodName;
 
-            const existingQuotes = quotesByPaymentMethodMap.get(paymentMethod);
-            if (!existingQuotes) {
-                quotesByPaymentMethodMap.set(paymentMethod, [quote]);
-            } else {
-                existingQuotes.push(quote);
+            // we only want one quote per payment method (and the 1st is considered the best)
+            if (isValidPaymentMethod && !quotesByPaymentMethodMap.has(paymentMethod)) {
+                quotesByPaymentMethodMap.set(paymentMethod, quote);
             }
 
             return quotesByPaymentMethodMap;
-        }, new Map<SellCryptoPaymentMethod, SellFiatTrade[]>());
+        }, new Map<SellCryptoPaymentMethod, SellFiatTrade>());
 
-        return [...allQuotesByPaymentMethodMap.values()].map(quotesForPaymentMethod =>
-            getBestRatedQuote(quotesForPaymentMethod, 'sell'),
-        ) as SellFiatTrade[];
+        return [...bestQuoteByPaymentMethodMap.values()];
     },
 );
 
@@ -106,10 +99,6 @@ export const selectSellQuotesByPaymentMethod = createMemoizedSelector(
             paymentMethod,
     ],
     (quotes, paymentMethod) => ({
-        fixed: paymentMethod
-            ? getTradingQuotesByPaymentMethod<'sell'>(quotes, paymentMethod)?.sort(
-                  (a, b) => (b.rate ?? 0) - (a.rate ?? 0),
-              )
-            : [],
+        fixed: paymentMethod ? getTradingQuotesByPaymentMethod<'sell'>(quotes, paymentMethod) : [],
     }),
 );
