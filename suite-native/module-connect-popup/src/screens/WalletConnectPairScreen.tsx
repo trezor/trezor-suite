@@ -1,4 +1,3 @@
-import { TouchableOpacity } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,6 +12,7 @@ import {
     CardDivider,
     HStack,
     IconButton,
+    PressableOpacity,
     Text,
     VStack,
     useBottomSheetModal,
@@ -58,7 +58,7 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
     return (
         <Card key={session.topic}>
             <VStack spacing={0}>
-                <TouchableOpacity onPress={() => (isExpanded.value = !isExpanded.value)}>
+                <PressableOpacity onPress={() => (isExpanded.value = !isExpanded.value)}>
                     <HStack spacing="sp12" alignItems="center">
                         <ConnectAppIcon
                             src={session.peer.metadata.icons?.[0]}
@@ -75,7 +75,7 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
                             <Icon name="caretDown" size="mediumLarge" />
                         </AnimatedBox>
                     </HStack>
-                </TouchableOpacity>
+                </PressableOpacity>
                 <AccordionContent isOpened={isExpanded}>
                     <VStack spacing="sp16" paddingTop="sp16">
                         <CardDivider />

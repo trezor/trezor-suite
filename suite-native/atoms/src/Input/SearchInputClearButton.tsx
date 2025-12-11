@@ -1,9 +1,9 @@
-import { TouchableOpacity } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Icon } from '@suite-native/icons';
 
 import { AnimatedBox } from '../Box';
+import { PressableOpacity } from '../Pressable';
 
 export type SearchInputClearButtonProps = {
     onPress: () => void;
@@ -17,9 +17,9 @@ export const SearchInputClearButton = ({ onPress, isVisible }: SearchInputClearB
 
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut}>
-            <TouchableOpacity onPress={onPress}>
+            <PressableOpacity onPress={onPress}>
                 <Icon name="xCircle" size="large" color="iconSubdued" />
-            </TouchableOpacity>
+            </PressableOpacity>
         </AnimatedBox>
     );
 };

@@ -1,6 +1,6 @@
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
-import { TITLE_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
+import { PressableOpacity, TITLE_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -38,7 +38,7 @@ export const TabBarItem = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             onPress={() => {
@@ -73,6 +73,6 @@ export const TabBarItem = ({
                     </Text>
                 )}
             </View>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

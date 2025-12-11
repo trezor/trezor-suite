@@ -1,7 +1,7 @@
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, PressableOpacity, Switch, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isCoinWithTokens } from '@suite-native/tokens';
@@ -49,10 +49,9 @@ export const NetworkSymbolSwitchItem = ({
 
     return (
         <Card style={applyStyle(cardStyle, { isEnabled })}>
-            <TouchableOpacity
+            <PressableOpacity
                 onPress={() => onToggle(!isEnabled)}
                 accessibilityRole="togglebutton"
-                activeOpacity={0.6}
                 testID={`@coin-enabling/toggle-${symbol}`}
             >
                 <HStack style={applyStyle(wrapperStyle)}>
@@ -77,7 +76,7 @@ export const NetworkSymbolSwitchItem = ({
                         <Switch onChange={onToggle} isChecked={isEnabled} />
                     </HStack>
                 </HStack>
-            </TouchableOpacity>
+            </PressableOpacity>
         </Card>
     );
 };

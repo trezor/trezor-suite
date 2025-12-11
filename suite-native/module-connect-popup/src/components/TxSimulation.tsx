@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
@@ -13,6 +12,7 @@ import {
     CardDivider,
     HStack,
     Loader,
+    PressableOpacity,
     Text,
     TitleHeader,
     VStack,
@@ -176,7 +176,7 @@ export const TxSimulation = () => {
 
                         <CardDivider />
 
-                        <TouchableOpacity onPress={openContractInfoModal}>
+                        <PressableOpacity onPress={openContractInfoModal}>
                             <HStack
                                 padding="sp16"
                                 justifyContent="space-between"
@@ -187,13 +187,13 @@ export const TxSimulation = () => {
                                 </Text>
                                 <Icon name="caretDown" size="small" color="textSubdued" />
                             </HStack>
-                        </TouchableOpacity>
+                        </PressableOpacity>
 
                         {isSigningTransaction && (
                             <>
                                 <CardDivider />
 
-                                <TouchableOpacity onPress={openFeeInfoModal}>
+                                <PressableOpacity onPress={openFeeInfoModal}>
                                     <HStack
                                         padding="sp16"
                                         justifyContent="space-between"
@@ -204,7 +204,7 @@ export const TxSimulation = () => {
                                         </Text>
                                         <Icon name="caretDown" size="small" color="textSubdued" />
                                     </HStack>
-                                </TouchableOpacity>
+                                </PressableOpacity>
                             </>
                         )}
                     </Card>

@@ -1,6 +1,4 @@
-import { TouchableOpacity } from 'react-native';
-
-import { Box } from '@suite-native/atoms';
+import { Box, PressableOpacity } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -28,9 +26,9 @@ export const SwitchAmountsButton = ({ onPress }: SwitchAmountsButtonProps) => {
 
     return (
         <Box style={applyStyle(buttonWrapperStyle)}>
-            <TouchableOpacity style={applyStyle(buttonStyle)} onPress={onPress}>
+            <PressableOpacity style={applyStyle(buttonStyle)} onPress={onPress}>
                 <Icon size="mediumLarge" name="arrowsCounterClockwise" />
-            </TouchableOpacity>
+            </PressableOpacity>
         </Box>
     );
 };

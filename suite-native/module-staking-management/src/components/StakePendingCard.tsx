@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { Box, Card, InlineAlertBoxProps, Text } from '@suite-native/atoms';
+import { Box, Card, InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -102,7 +101,7 @@ export const StakePendingCard = ({
     const title = getTitle(symbol);
 
     return (
-        <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
+        <PressableOpacity onPress={() => handleToggleBottomSheet(true)}>
             <Card alertProps={cardAlertProps}>
                 <Box style={applyStyle(stakingItemStyle)}>
                     <Box flex={1} flexDirection="row" alignItems="center">
@@ -128,6 +127,6 @@ export const StakePendingCard = ({
                     </Box>
                 </Box>
             </Card>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

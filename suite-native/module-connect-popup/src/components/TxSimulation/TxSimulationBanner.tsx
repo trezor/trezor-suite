@@ -1,7 +1,6 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
 
-import { CheckBox, FullAlertBox, HStack, Text } from '@suite-native/atoms';
+import { CheckBox, FullAlertBox, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const TxSimulationBanner = ({
@@ -23,7 +22,7 @@ export const TxSimulationBanner = ({
             title={title}
             description={description}
         />
-        <TouchableOpacity onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}>
+        <PressableOpacity onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}>
             <HStack spacing="sp16" padding="sp8" alignItems="center">
                 <CheckBox
                     isChecked={disclaimerAccepted}
@@ -33,6 +32,6 @@ export const TxSimulationBanner = ({
                     <Translation id="moduleConnectPopup.simulation.disclaimerOverride" />
                 </Text>
             </HStack>
-        </TouchableOpacity>
+        </PressableOpacity>
     </>
 );

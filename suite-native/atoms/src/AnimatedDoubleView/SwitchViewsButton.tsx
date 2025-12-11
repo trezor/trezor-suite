@@ -1,10 +1,9 @@
-import { TouchableOpacity } from 'react-native';
-
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
+import { PressableOpacity } from '../Pressable';
 
 type SwitchAmountsButtonProps = { onPress: () => void; label?: string };
 
@@ -31,7 +30,7 @@ export const SwitchViewsButton = ({ onPress, label }: SwitchAmountsButtonProps) 
 
     return (
         <Box style={applyStyle(buttonWrapperStyle)}>
-            <TouchableOpacity
+            <PressableOpacity
                 style={applyStyle(buttonStyle)}
                 onPress={onPress}
                 accessibilityLabel={
@@ -39,7 +38,7 @@ export const SwitchViewsButton = ({ onPress, label }: SwitchAmountsButtonProps) 
                 }
             >
                 <Icon size="mediumLarge" name="arrowsCounterClockwise" />
-            </TouchableOpacity>
+            </PressableOpacity>
         </Box>
     );
 };

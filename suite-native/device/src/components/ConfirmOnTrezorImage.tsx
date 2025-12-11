@@ -1,8 +1,8 @@
 import React, { ReactNode, useMemo } from 'react';
-import { Image, Pressable } from 'react-native';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { Image } from 'react-native';
+import { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
-import { useBottomSheetModal } from '@suite-native/atoms';
+import { AnimatedPressable, useBottomSheetModal } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConfirmOnTrezorBottomSheet } from './ConfirmOnTrezorBottomSheet';
@@ -18,8 +18,6 @@ const imageContainerStyle = prepareNativeStyle(utils => ({
     right: 0,
     alignItems: 'center',
 }));
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImageProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();

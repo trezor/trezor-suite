@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode, useState } from 'react';
-import { Pressable, PressableProps } from 'react-native';
+import { PressableProps } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { MergeExclusive } from 'type-fest';
@@ -11,6 +11,7 @@ import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { Loader } from '../Loader';
+import { AnimatedPressable } from '../Pressable';
 import { HStack } from '../Stack';
 import { TestProps } from '../types';
 
@@ -315,8 +316,6 @@ export const ButtonAccessoryView = ({
 
     return element;
 };
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const Button = ({
     viewLeft,

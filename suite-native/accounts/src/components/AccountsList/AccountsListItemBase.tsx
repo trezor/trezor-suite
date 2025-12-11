@@ -1,7 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { PressableProps } from 'react-native';
 
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type AccountListItemBaseProps = {
@@ -11,7 +11,7 @@ export type AccountListItemBaseProps = {
     secondaryValue: React.ReactNode;
     badges?: React.ReactNode;
 
-    onPress?: TouchableOpacityProps['onPress'];
+    onPress?: PressableProps['onPress'];
     disabled?: boolean;
 
     hasBackground?: boolean;
@@ -97,7 +97,7 @@ export const AccountsListItemBase = ({
 }: AccountListItemBaseProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const BaseComponent = onPress ? TouchableOpacity : Box;
+    const BaseComponent = onPress ? PressableOpacity : Box;
 
     return (
         <BaseComponent

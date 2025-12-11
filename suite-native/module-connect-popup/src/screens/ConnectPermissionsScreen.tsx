@@ -1,10 +1,18 @@
-import { TouchableOpacity } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { AnimatedBox, Button, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    AnimatedBox,
+    Button,
+    Card,
+    CardDivider,
+    HStack,
+    PressableOpacity,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { AccordionContent } from '@suite-native/atoms/src/Accordion/AccordionContent';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -31,7 +39,7 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
     return (
         <Card>
             <VStack spacing={0}>
-                <TouchableOpacity onPress={() => (isExpanded.value = !isExpanded.value)}>
+                <PressableOpacity onPress={() => (isExpanded.value = !isExpanded.value)}>
                     <HStack spacing="sp12" alignItems="center">
                         <ConnectAppIcon
                             src={app.manifest?.appIcon}
@@ -50,7 +58,7 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                             <Icon name="caretDown" size="mediumLarge" />
                         </AnimatedBox>
                     </HStack>
-                </TouchableOpacity>
+                </PressableOpacity>
                 <AccordionContent isOpened={isExpanded}>
                     <VStack spacing="sp16" paddingTop="sp16">
                         <CardDivider />

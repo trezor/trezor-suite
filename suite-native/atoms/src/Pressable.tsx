@@ -3,9 +3,9 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 
 import { pressTimingConfig } from './constants';
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+export const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export const PressableOpacity = ({ onPress, children, ...rest }: PressableProps) => {
+export const PressableOpacity = ({ onPress, style, children, ...rest }: PressableProps) => {
     const opacity = useSharedValue(1);
     const fadeOut = () => (opacity.value = withTiming(0.5, pressTimingConfig));
     const fadeIn = () => (opacity.value = withTiming(1, pressTimingConfig));
@@ -19,7 +19,7 @@ export const PressableOpacity = ({ onPress, children, ...rest }: PressableProps)
             onPress={onPress}
             onPressIn={fadeOut}
             onPressOut={fadeIn}
-            style={animatedStyle}
+            style={[animatedStyle, style]}
             {...rest}
         >
             {children}

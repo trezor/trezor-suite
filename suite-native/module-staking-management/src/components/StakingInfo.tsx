@@ -1,6 +1,4 @@
-import { TouchableOpacity } from 'react-native';
-
-import { Box, Text, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, PressableOpacity, Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -55,11 +53,11 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
                         <Translation id="staking.stakingCanBeManaged" />
                     </Text>
 
-                    <TouchableOpacity onPress={handleDesktopClick}>
+                    <PressableOpacity onPress={handleDesktopClick}>
                         <Text color="textSubdued" style={applyStyle(linkStyle)}>
                             <Translation id="staking.trezorDesktop" />
                         </Text>
-                    </TouchableOpacity>
+                    </PressableOpacity>
                 </Box>
             </Box>
 

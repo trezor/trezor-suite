@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
 
 import { useAlert } from '@suite-native/alerts';
+import { PressableOpacity } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -25,8 +25,8 @@ export const AddressReviewHelpSheet = ({ body, title, subtitle }: AddressReviewH
         });
 
     return (
-        <TouchableOpacity onPress={handleOpen}>
+        <PressableOpacity onPress={handleOpen}>
             <Icon name="question" size="large" color="iconSubdued" />
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

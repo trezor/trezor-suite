@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 
 import { Box } from './Box';
 import { Card } from './Card/Card';
+import { PressableOpacity } from './Pressable';
 import { HStack, VStack } from './Stack';
 import { Switch } from './Switch';
 import { Text } from './Text';
@@ -40,7 +40,7 @@ export const TouchableSwitchRow = ({
 
     return (
         <Card borderColor="borderElevation1" noPadding>
-            <TouchableOpacity
+            <PressableOpacity
                 onPress={handleChange}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="switch"
@@ -64,7 +64,7 @@ export const TouchableSwitchRow = ({
                         />
                     </HStack>
                 </HStack>
-            </TouchableOpacity>
+            </PressableOpacity>
         </Card>
     );
 };

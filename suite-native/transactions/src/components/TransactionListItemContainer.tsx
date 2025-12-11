@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
-import { Badge, Box, DiscreetText, HStack, Text } from '@suite-native/atoms';
+import { Badge, Box, DiscreetText, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
@@ -144,7 +143,7 @@ export const TransactionListItemContainer = ({
     const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             onPress={handleNavigateToTransactionDetail}
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
@@ -184,6 +183,6 @@ export const TransactionListItemContainer = ({
                 </Box>
             </Box>
             <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };

@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
 
 import { G } from '@mobily/ts-belt';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
+import { PressableOpacity } from '../Pressable';
 import { Radio } from '../Radio';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
@@ -64,7 +64,7 @@ export const SelectItem = ({
     if (G.isNullable(value)) return null;
 
     return (
-        <TouchableOpacity
+        <PressableOpacity
             style={applyStyle(selectItemStyle)}
             onPress={onSelect}
             accessibilityRole="radio"
@@ -85,6 +85,6 @@ export const SelectItem = ({
                     <Radio value={value} onPress={onSelect} isChecked={isSelected} />
                 </HStack>
             </Box>
-        </TouchableOpacity>
+        </PressableOpacity>
     );
 };
