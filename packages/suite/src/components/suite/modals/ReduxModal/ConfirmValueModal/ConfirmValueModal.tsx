@@ -226,6 +226,7 @@ export const ConfirmValueModal = ({
                                         value={value}
                                         data-testid="@modal/output-value"
                                         isChunked={isValueChunked}
+                                        isDeviceRendered
                                     />
                                 </Column>
                                 <Button
