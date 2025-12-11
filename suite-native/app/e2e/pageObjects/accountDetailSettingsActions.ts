@@ -1,3 +1,4 @@
+import { waitForVisible } from '../support/utils';
 class AccountDetailSettingsActions {
     async renameAccount({ newAccountName }: { newAccountName: string }) {
         await element(by.id('@account-detail/settings/edit-button')).tap();
@@ -6,7 +7,11 @@ class AccountDetailSettingsActions {
         await accountNameInput.clearText();
         await accountNameInput.typeText(newAccountName);
 
-        await element(by.id('@account-detail/settings/account-rename/confirm-button')).tap();
+        const confirmButton = element(
+            by.id('@account-detail/settings/account-rename/confirm-button'),
+        );
+        await waitForVisible(confirmButton);
+        await confirmButton.tap();
     }
 
     async removeAccount() {
