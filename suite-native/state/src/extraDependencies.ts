@@ -24,7 +24,7 @@ import { mergeDeepObject } from '@trezor/utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
-const bridgeTransport = new BridgeTransport({ messages, port: 21325, id: 'bridge' });
+const bridgeTransport = new BridgeTransport({ messages, port: 21328, id: 'bridge' });
 
 const transportsPerDeviceType = {
     device: Platform.select({
