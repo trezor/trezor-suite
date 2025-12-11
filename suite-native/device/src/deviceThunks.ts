@@ -7,6 +7,7 @@ import {
     selectDevicePath,
     selectIsDeviceInitialized,
     selectSelectedDevice,
+    selectSimulatedEntropyCheckFail,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
@@ -77,6 +78,8 @@ export const createAndBackupWalletThunk = createThunk<
             Feature.entropyCheckMobile,
             true,
         );
+        // Used only in tests! See deviceReducer for the property definition.
+        const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
 
         if (!device || !device.features || !devicePath) {
             return rejectWithValue('Device not found');
@@ -124,6 +127,11 @@ export const createAndBackupWalletThunk = createThunk<
         // full response from connect, which is either success or error
         const result = deviceResponse.payload;
         if (isEntropyCheckEnabled) {
+            if (simulatedFailResult) {
+                dispatch(processEntropyCheckResultThunk({ device, result: simulatedFailResult }));
+
+                return fulfillWithValue(simulatedFailResult);
+            }
             dispatch(processEntropyCheckResultThunk({ device, result }));
         }
 

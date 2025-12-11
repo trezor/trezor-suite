@@ -69,6 +69,10 @@ export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
 export const selectPersistentDeviceData = (state: DeviceRootState) =>
     state.device.persistentDeviceData;
 
+// Use in tests only! See deviceReducer for the property definition.
+export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
+    state.device.simulatedEntropyCheckFail;
+
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(
     [selectDevices],
