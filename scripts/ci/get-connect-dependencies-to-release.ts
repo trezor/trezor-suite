@@ -6,11 +6,11 @@ import util from 'util';
 import path from 'path';
 import semver from 'semver';
 
-import { getNpmRemoteGreatestVersion } from './helpers';
+import { getDirname, getNpmRemoteGreatestVersion } from './helpers';
 
 const readFile = util.promisify(fs.readFile);
 
-const ROOT = path.join(__dirname, '..', '..');
+const ROOT = path.join(getDirname(import.meta.url), '..', '..');
 
 const nonReleaseDependencies: string[] = [];
 

@@ -10,7 +10,7 @@ set -euxo pipefail
 #   <module-type>   (Optional) The module system to use: "cjs" | "esm"
 #
 # Example:
-#   To replace imports in the ./lib directory using the CJS module typ:
+#   To replace imports in the ./lib directory using the CJS module type:
 #     bash replace-imports.sh ./lib cjs
 #
 #   To replace imports in the ./libESM directory using the ESM module type:

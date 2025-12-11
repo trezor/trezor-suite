@@ -1,9 +1,8 @@
 import { execFileSync } from 'child_process';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { getDirname } from '../ci/helpers';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = getDirname(import.meta.url);
 
 console.log('prepublish script running for package: ' + process.env.npm_package_name);
 const packageName = process.env.npm_package_name.split('/')[1];

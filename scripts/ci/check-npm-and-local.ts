@@ -1,5 +1,4 @@
 import { execSync } from 'child_process';
-
 import fs from 'fs';
 import util from 'util';
 import fetch from 'cross-fetch';
@@ -8,6 +7,10 @@ import * as tar from 'tar';
 import crypto from 'crypto';
 import semver from 'semver';
 
+import { fileURLToPath } from 'node:url';
+
+// duplicated with ./helpers.ts to avoidi circular dep
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const mkdir = util.promisify(fs.mkdir);
 const existsDirectory = util.promisify(fs.exists);
 

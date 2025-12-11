@@ -1,5 +1,3 @@
-const process = require('process');
-
 const DEBUG = false;
 
 const log = (...args) => {
