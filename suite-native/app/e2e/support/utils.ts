@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import { MODELS, Model } from '@trezor/trezor-user-env-link';
 import { scheduleAction } from '@trezor/utils';
 
 type ElementAttributes = {
@@ -142,3 +143,9 @@ export const isElementVisible = async (elementOrMatcher: ElementOrMatcher): Prom
         return false;
     }
 };
+
+export function getModelFromEnv(): Model {
+    const envValue = process.env.EMULATOR_MODEL as Model;
+
+    return MODELS.includes(envValue) ? envValue : 'T3T1';
+}

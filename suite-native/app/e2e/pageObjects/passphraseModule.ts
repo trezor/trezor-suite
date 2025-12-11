@@ -3,8 +3,7 @@ import { expect as detoxExpect } from 'detox';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onDeviceManager } from './deviceManagerActions';
-import { getModelFromEnv } from '../support/setup';
-import { waitForVisible } from '../support/utils';
+import { getModelFromEnv, waitForVisible } from '../support/utils';
 
 class PassphraseModule {
     public async openNewPassphraseFlow() {

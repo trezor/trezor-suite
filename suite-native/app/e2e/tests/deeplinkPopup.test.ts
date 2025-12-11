@@ -12,13 +12,8 @@ import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { DeepLinkServer } from '../support/deepLinkServer';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../support/setup';
-import { waitForVisible } from '../support/utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv, waitForVisible } from '../support/utils';
 
 const deepLinkServer = new DeepLinkServer();
 

@@ -5,8 +5,8 @@ import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
-import { getModelFromEnv, openApp, prepareTrezorEmulator } from '../support/setup';
-import { waitForVisible } from '../support/utils';
+import { openApp, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv, waitForVisible } from '../support/utils';
 
 conditionalDescribe(
     device.getPlatform() === 'android',

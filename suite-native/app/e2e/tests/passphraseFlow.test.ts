@@ -11,13 +11,8 @@ import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryF
 import { regtestDiscoveryFinishedStateT3W1 } from '../fixtures/regtestDiscoveryFinishedStateT3W1';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../support/setup';
-import { wait } from '../support/utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv, wait } from '../support/utils';
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 
