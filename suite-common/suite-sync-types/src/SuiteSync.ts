@@ -9,7 +9,7 @@ import { ChangeRelayUrlDep } from './relay/changeRelayUrl';
 import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
 import { TurnOnSuiteSyncForWalletDep } from './storage/turnOnSuiteSyncForWallet';
 import { TurnOffSuiteSyncDep } from './turnOffSuiteSync';
-import { TurnOnSuiteSyncDep } from './turnOnSuteSync';
+import { TurnOnSuiteSyncDep } from './turnOnSuiteSync';
 
 export type SuiteSync = ChangeRelayUrlDep &
     SuiteSyncStorageRepositoryDep &

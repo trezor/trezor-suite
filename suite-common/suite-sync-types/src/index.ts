@@ -11,7 +11,7 @@ export type {
 } from './device/ensureSuiteSyncOwnerKeys';
 export type { RefreshSuiteSyncKeys } from './refreshSuiteSyncKeys';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
-export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuteSync';
+export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
 export { RefreshSuiteKeysUnavailable } from './refreshSuiteSyncKeys';
 export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
 export type {
