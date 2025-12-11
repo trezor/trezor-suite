@@ -4,11 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import type { BuyCryptoPaymentMethod, BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
-import {
-    TradingAmountLimitProps,
-    getBestRatedQuote,
-    selectTradingBuyQuotesRequest,
-} from '@suite-common/trading';
+import { TradingAmountLimitProps, selectTradingBuyQuotesRequest } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
@@ -152,8 +148,7 @@ const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
             quoteCandidates = quotes;
         }
 
-        const selectedQuote = getBestRatedQuote(quoteCandidates, 'buy');
-        setValue('quote', selectedQuote);
+        setValue('quote', quoteCandidates[0]);
     }, [quotes, getValues, setValue]);
 };
 

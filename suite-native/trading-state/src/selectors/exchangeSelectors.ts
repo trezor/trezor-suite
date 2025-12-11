@@ -75,11 +75,6 @@ export const selectExchangeBuyTradeableAssets = createMemoizedSelector(
 export const selectExchangeQuotes = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotes;
 
-const ratingSortingComparator = (
-    a: { rate?: number | undefined },
-    b: { rate?: number | undefined },
-) => (b.rate ?? 0) - (a.rate ?? 0);
-
 export const selectGroupedExchangeQuotes = createTradingWithFeatureFlagsMemoizedSelector(
     [
         selectExchangeQuotes,
@@ -110,10 +105,6 @@ export const selectGroupedExchangeQuotes = createTradingWithFeatureFlagsMemoized
             } else {
                 groups.float.push(quote);
             }
-        });
-
-        Object.values(groups).forEach(group => {
-            group.sort(ratingSortingComparator);
         });
 
         return groups;

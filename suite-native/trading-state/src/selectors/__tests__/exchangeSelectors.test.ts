@@ -146,10 +146,10 @@ describe('exchangeSelectors', () => {
             expect(groupedQuotes).toEqual({
                 fixed: [
                     expect.objectContaining({
-                        quoteId: 'mercuryo-fixed-best',
+                        quoteId: 'mercuryo-fixed-worst',
                     }),
                     expect.objectContaining({
-                        quoteId: 'mercuryo-fixed-worst',
+                        quoteId: 'mercuryo-fixed-best',
                     }),
                 ],
                 float: [
@@ -178,20 +178,6 @@ describe('exchangeSelectors', () => {
             const groupedQuotes = selectGroupedExchangeQuotes(state);
 
             expect(groupedQuotes.dex).toEqual([]);
-        });
-
-        it('should sort quotes by rate within each group (highest rate first)', () => {
-            state.wallet.trading.exchange.quotes = exchangeQuotes;
-
-            const groupedQuotes = selectGroupedExchangeQuotes(state);
-
-            // Fixed quotes should be sorted by rate (highest first)
-            expect(groupedQuotes.fixed[0].rate ?? 0).toBeGreaterThan(
-                groupedQuotes.fixed[1].rate ?? 0,
-            );
-
-            // DEX quotes should be sorted by rate (highest first)
-            expect(groupedQuotes.dex[0].rate ?? 0).toBeGreaterThan(groupedQuotes.dex[1].rate ?? 0);
         });
 
         it('should be stable', () => {

@@ -509,7 +509,7 @@ describe('useSellForm', () => {
             expect(result.current.getValues('quote')).toEqual(sellQuotes[1]);
         });
 
-        it('if no quote is selected and no bankTransferQuote is available should select best rated quote', async () => {
+        it('if no quote is selected and no bankTransferQuote is available should select first quote', async () => {
             const { result } = await renderUseSellForm();
             initFormAndQuoteRequest(result.current);
 
@@ -517,7 +517,7 @@ describe('useSellForm', () => {
                 store.dispatch(tradingSellActions.saveQuotes([sellQuotes[0], sellQuotes[2]]));
             });
 
-            expect(result.current.getValues('quote')).toEqual(sellQuotes[2]);
+            expect(result.current.getValues('quote')).toEqual(sellQuotes[0]);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {

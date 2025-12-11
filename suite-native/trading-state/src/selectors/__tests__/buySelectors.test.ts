@@ -280,7 +280,7 @@ describe('buySelectors', () => {
             state.wallet.trading.buy.quotes = buyQuotes;
         });
 
-        it('should return only best quote for each payment method', () => {
+        it('should return only first quote for each payment method', () => {
             expect(selectBuyBestQuotesForAvailablePaymentMethods(state)).toEqual([
                 expect.objectContaining({
                     paymentMethod: 'applePay',

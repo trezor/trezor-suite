@@ -5,7 +5,6 @@ import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import {
     TradingAmountLimitProps,
-    getBestRatedQuote,
     selectTradingSellQuotesRequest,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
@@ -137,8 +136,7 @@ const useSellQuotesChangeEffect = ({ getValues, setValue }: SellFormType) => {
             quoteCandidates = quotes;
         }
 
-        const selectedQuote = getBestRatedQuote(quoteCandidates, 'sell');
-        setValue('quote', selectedQuote);
+        setValue('quote', quoteCandidates[0]);
     }, [quotes, getValues, setValue]);
 };
 

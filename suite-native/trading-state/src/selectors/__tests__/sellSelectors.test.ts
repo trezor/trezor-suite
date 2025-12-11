@@ -275,11 +275,11 @@ describe('sellSelectors', () => {
             state.wallet.trading.sell.quotes = sellQuotes;
         });
 
-        it('should return only best quote for each payment method', () => {
+        it('should return only first quote for each payment method', () => {
             expect(selectSellBestQuotesForAvailablePaymentMethods(state)).toEqual([
                 expect.objectContaining({
                     paymentMethod: 'creditCard',
-                    rate: 3940,
+                    rate: 3869.9570815450643,
                 }),
                 expect.objectContaining({
                     paymentMethod: 'bankTransfer',
@@ -325,8 +325,8 @@ describe('sellSelectors', () => {
         it('should select valid quotes', () => {
             expect(selectSellQuotesByPaymentMethod(state, 'creditCard')).toEqual({
                 fixed: [
-                    expect.objectContaining({ orderId: 'order_id_2' }),
                     expect.objectContaining({ orderId: 'order_id_0' }),
+                    expect.objectContaining({ orderId: 'order_id_2' }),
                 ],
             });
         });
