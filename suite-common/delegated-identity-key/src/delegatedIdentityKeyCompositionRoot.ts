@@ -1,6 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { SecureStorageDep } from '@suite-common/secure-storage';
+import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { selectThp } from '@suite-common/thp/src/thpSelectors';
 import { selectDeviceDelegatedIdentityKey } from '@suite-common/wallet-core';
 
@@ -16,7 +16,7 @@ export type DelegatedIdentityKeyCompositionRootDeps = {
     dispatch: Dispatch;
     getState: () => any;
     trezorConnect: RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'];
-} & SecureStorageDep;
+} & PlatformEncryptionDep;
 
 export const delegatedIdentityKeyCompositionRoot = (
     deps: DelegatedIdentityKeyCompositionRootDeps,
@@ -24,7 +24,7 @@ export const delegatedIdentityKeyCompositionRoot = (
     const ensureDelegatedIdentityKey = createEnsureDelegatedIdentityKey({
         loadDelegatedIdentityKeyFromState: createLoadDelegatedIdentityKeyFromState({
             dispatch: deps.dispatch,
-            secureStorage: deps.secureStorage,
+            platformEncryption: deps.platformEncryption,
             getDeviceDelegatedIdentityKey: deviceId =>
                 selectDeviceDelegatedIdentityKey(deps.getState(), deviceId),
         }),
@@ -33,7 +33,7 @@ export const delegatedIdentityKeyCompositionRoot = (
         }),
         saveDelegatedIdentityKey: createSaveDelegatedIdentityKey({
             dispatch: deps.dispatch,
-            secureStorage: deps.secureStorage,
+            platformEncryption: deps.platformEncryption,
         }),
         getThpStaticKey: () => selectThp(deps.getState()).staticKey,
     });

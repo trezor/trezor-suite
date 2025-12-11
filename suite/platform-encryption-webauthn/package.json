@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/secure-storage-native",
+    "name": "@suite/platform-encryption-webauthn",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/secure-storage": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

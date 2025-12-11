@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
+import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { useServices } from '@suite-common/redux-utils';
-import { asEncryptedHex } from '@suite-common/secure-storage';
 import { Button, ButtonGroup, Column, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Branded } from '@trezor/type-utils';
@@ -13,14 +13,14 @@ import { SectionItem } from '../../../components/suite';
 type Value = string & Branded<'Value'>;
 const asValue = (value: string) => value as Value;
 
-export const SecureStorage = () => {
+export const PlatformEncrypton = () => {
     const [plaintext, setPlaintext] = useState(asValue(''));
     const [ciphertext, setCiphertext] = useState(asEncryptedHex<Value>(''));
 
     const services = useServices();
 
     const encrypt = async () => {
-        const result = await services.secureStorage.encrypt({ value: plaintext });
+        const result = await services.platformEncryption.encrypt({ value: plaintext });
 
         if (result.ok) {
             setCiphertext(result.value);
@@ -30,7 +30,7 @@ export const SecureStorage = () => {
     };
 
     const decrypt = async () => {
-        const result = await services.secureStorage.decrypt({ value: ciphertext });
+        const result = await services.platformEncryption.decrypt({ value: ciphertext });
 
         if (result.ok) {
             setPlaintext(result.value);

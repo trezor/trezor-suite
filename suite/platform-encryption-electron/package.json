@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/secure-storage",
+    "name": "@suite/platform-encryption-electron",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -10,6 +10,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/platform-encryption": "workspace:*",
+        "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

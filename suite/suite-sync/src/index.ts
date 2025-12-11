@@ -2,7 +2,7 @@ import { evoluWebDeps } from '@evolu/web';
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { SecureStorageDep } from '@suite-common/secure-storage';
+import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
     createEvoluInstanceFactory,
@@ -16,7 +16,7 @@ type SuiteSyncDesktopCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: TrezorConnect;
-} & SecureStorageDep &
+} & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (

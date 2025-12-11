@@ -27,9 +27,9 @@ export const DecryptionFailed = (): DecryptionFailed => ({
 export type EncryptionError = EncryptionUnavailable;
 export type DecryptionError = EncryptionUnavailable | DecryptionFailed;
 
-export type SecureStorageDep = { secureStorage: SecureStorage };
+export type PlatformEncryptionDep = { platformEncryption: PlatformEncryption };
 
-export interface SecureStorage {
+export interface PlatformEncryption {
     encrypt: <T extends EncryptableBranded>(params: {
         value: T;
     }) => Promise<Result<EncryptedHex<T>, EncryptionError>>;

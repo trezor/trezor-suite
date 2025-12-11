@@ -13,7 +13,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/metadata-types": "workspace:*",
-        "@suite-common/secure-storage": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

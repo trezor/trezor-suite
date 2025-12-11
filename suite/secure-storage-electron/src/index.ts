@@ -1,1 +1,0 @@
-export { createElectronSecureStorage } from './electronSecureStorage';

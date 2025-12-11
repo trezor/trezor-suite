@@ -6,10 +6,7 @@
     },
     "references": [
         {
-            "path": "../../suite-common/secure-storage"
-        },
-        {
-            "path": "../../packages/suite-desktop-api"
+            "path": "../../suite-common/platform-encryption"
         },
         { "path": "../../packages/type-utils" }
     ]

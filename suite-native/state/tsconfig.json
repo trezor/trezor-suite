@@ -20,9 +20,11 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../platform-encryption-native"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
-        { "path": "../secure-storage-native" },
         {
             "path": "../../suite-common/suite-sync"
         },

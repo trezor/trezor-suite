@@ -1,14 +1,13 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { SecureStorage } from '@suite-common/secure-storage';
+import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
 
 export type SaveDelegatedIdentityKeyDeps = {
-    secureStorage: SecureStorage;
     dispatch: Dispatch;
-};
+} & PlatformEncryptionDep;
 
 type SaveDelegatedIdentityKeyParms = {
     deviceId: string;
@@ -24,7 +23,7 @@ export type SaveDelegatedIdentityKeyDep = {
 export const createSaveDelegatedIdentityKey =
     (deps: SaveDelegatedIdentityKeyDeps): SaveDelegatedIdentityKey =>
     async ({ deviceId, delegatedIdentityKey }) => {
-        const result = await deps.secureStorage.encrypt({
+        const result = await deps.platformEncryption.encrypt({
             value: delegatedIdentityKey,
         });
 

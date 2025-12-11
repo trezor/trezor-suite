@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../metadata-types" },
-        { "path": "../secure-storage" },
+        { "path": "../platform-encryption" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },

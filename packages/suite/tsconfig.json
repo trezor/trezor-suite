@@ -56,10 +56,10 @@
             "path": "../../suite-common/metadata-types"
         },
         {
-            "path": "../../suite-common/redux-utils"
+            "path": "../../suite-common/platform-encryption"
         },
         {
-            "path": "../../suite-common/secure-storage"
+            "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/sentry" },
         { "path": "../../suite-common/staking" },
@@ -123,10 +123,10 @@
             "path": "../../suite/idb-migration-utils"
         },
         {
-            "path": "../../suite/secure-storage-electron"
+            "path": "../../suite/platform-encryption-electron"
         },
         {
-            "path": "../../suite/secure-storage-webauthn"
+            "path": "../../suite/platform-encryption-webauthn"
         },
         { "path": "../../suite/suite-sync" },
         { "path": "../address-validator" },

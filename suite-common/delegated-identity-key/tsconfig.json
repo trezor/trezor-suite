@@ -8,7 +8,7 @@
         {
             "path": "../delegated-identity-key-types"
         },
-        { "path": "../secure-storage" },
+        { "path": "../platform-encryption" },
         { "path": "../suite-types" },
         { "path": "../thp" },
         { "path": "../wallet-core" },

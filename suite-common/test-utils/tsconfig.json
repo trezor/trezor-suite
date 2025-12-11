@@ -2,8 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../platform-encryption" },
         { "path": "../redux-utils" },
-        { "path": "../secure-storage" },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
