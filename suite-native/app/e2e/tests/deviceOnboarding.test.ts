@@ -7,12 +7,8 @@ import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../support/setup';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv } from '../support/utils';
 
 const finishOnboardingFlow = async () => {
     // Create Pin

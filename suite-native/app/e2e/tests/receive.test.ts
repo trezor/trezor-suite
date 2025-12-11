@@ -11,12 +11,8 @@ import { onAccountReceive } from '../pageObjects/accountReceiveActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../support/setup';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,

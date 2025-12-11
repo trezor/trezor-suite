@@ -3,10 +3,10 @@ import { resolveConfig } from 'detox/internals';
 
 import { LaunchArguments } from '@suite-native/config';
 import { PreloadedState } from '@suite-native/state';
-import { MNEMONICS, MODELS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { appIsFullyLoaded, platform } from './utils';
+import { appIsFullyLoaded, getModelFromEnv, platform } from './utils';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 
@@ -113,12 +113,6 @@ export const openApp = async ({
         await appIsFullyLoaded();
     }
 };
-
-export function getModelFromEnv(): Model {
-    const envValue = process.env.EMULATOR_MODEL as Model;
-
-    return MODELS.includes(envValue) ? envValue : 'T3T1';
-}
 
 const getFwVersion = (model: Model, version: string | undefined) => {
     if (model === 'T3W1') {

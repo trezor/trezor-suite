@@ -16,12 +16,8 @@ import { FeeValues, onSendFees } from '../pageObjects/send/sendFeesActions';
 import { onSendOutputsForm } from '../pageObjects/send/sendOutputsFormActions';
 import { onSendOutputsReview } from '../pageObjects/send/sendOutputsReviewActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../support/setup';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv } from '../support/utils';
 
 const SEND_FORM_ERROR_MESSAGES = {
     invalidAddress: 'The address format is incorrect.',

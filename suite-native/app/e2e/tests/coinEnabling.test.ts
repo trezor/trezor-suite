@@ -10,13 +10,8 @@ import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../support/setup';
-import { waitForVisible } from '../support/utils';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv, waitForVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,

@@ -10,12 +10,8 @@ import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import {
-    getModelFromEnv,
-    openApp,
-    preparePreloadedReduxState,
-    prepareTrezorEmulator,
-} from '../support/setup';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { getModelFromEnv } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
