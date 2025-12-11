@@ -14,13 +14,14 @@ import {
     Card,
     Column,
     H3,
+    Icon,
     IconCircle,
-    InfoItem,
     Link,
     Modal,
     ModalProps,
     Paragraph,
     Row,
+    Text,
 } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -29,12 +30,13 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { AccountLabel, Address, MetadataLabeling } from 'src/components/suite';
+import { AccountLabel, Address, Labeling } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
 import { Translation } from 'src/components/suite/Translation';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
 import { ThunkAction } from 'src/types/suite';
@@ -70,6 +72,7 @@ export const ConfirmValueModal = ({
     const { accountLabel, addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
+    const { translationString } = useTranslation();
 
     const { isSuiteSyncEnabled, legacyMetadataState } = useLabelingCombined({
         deviceStaticSessionId: account!.deviceState,
@@ -117,9 +120,8 @@ export const ConfirmValueModal = ({
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
-    const outputValue = (
-        <Address value={value} data-testid="@modal/output-value" isChunked={isValueChunked} />
-    );
+    const addressLabel =
+        suiteSyncAddressLabels?.find(it => it.address === value)?.label ?? addressLabels[value];
 
     return (
         <Modal.Backdrop onClick={isCancelable ? onCancel : undefined}>
@@ -185,43 +187,48 @@ export const ConfirmValueModal = ({
                             />
                         </Banner>
                     )}
-                    <Card fillType="flat">
-                        <Row
-                            gap={spacings.xl}
-                            alignItems="stretch"
-                            data-testid="@modal/output-address"
-                        >
+                    <Card fillType="flat" paddingType="large">
+                        <Row gap={32} alignItems="stretch" data-testid="@modal/output-address">
                             <Box aspectRatio="1" width={170} height={170}>
                                 <QrCode value={value} />
                             </Box>
-                            <Column gap={spacings.lg}>
-                                <Column gap={spacings.xs}>
-                                    {label ? (
-                                        <InfoItem label={label}>{outputValue}</InfoItem>
-                                    ) : (
-                                        outputValue
-                                    )}
-                                    {account && (
-                                        <MetadataLabeling
-                                            variant="button"
-                                            deviceStaticSessionId={account.deviceState}
-                                            payload={{
-                                                type: 'addressLabel',
-                                                entityKey: account.key,
-                                                defaultValue: value,
-                                                networkSymbol: account.symbol,
-                                                accountDescriptor: account.descriptor,
-                                                value:
-                                                    suiteSyncAddressLabels?.find(
-                                                        it => it.address === value,
-                                                    )?.label ?? addressLabels[value],
-                                            }}
-                                            visible
-                                            isDisabled={isMetadataBlockedByDeviceCall}
-                                        />
-                                    )}
-                                </Column>
-
+                            <Column gap={12} alignItems="flex-start">
+                                {account ? (
+                                    <Labeling
+                                        deviceStaticSessionId={account.deviceState}
+                                        isDisabled={isMetadataBlockedByDeviceCall}
+                                        displayValue={
+                                            <Text typographyStyle="highlight">
+                                                Add address label
+                                            </Text>
+                                        }
+                                        placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
+                                        leftAddon={
+                                            addressLabel ? undefined : (
+                                                <Icon name="tag" size={16} variant="tertiary" />
+                                            )
+                                        }
+                                        payload={{
+                                            type: 'addressLabel',
+                                            entityKey: account.key,
+                                            defaultValue: value,
+                                            networkSymbol: account.symbol,
+                                            accountDescriptor: account.descriptor,
+                                            value: addressLabel,
+                                        }}
+                                        maxWidth={255}
+                                    >
+                                        {addressLabel}
+                                    </Labeling>
+                                ) : (
+                                    label
+                                )}
+                                <Address
+                                    value={value}
+                                    data-testid="@modal/output-value"
+                                    isChunked={isValueChunked}
+                                    isDeviceRendered
+                                />
                                 <Button
                                     onClick={copy}
                                     intent="neutral"
@@ -229,6 +236,7 @@ export const ConfirmValueModal = ({
                                     data-testid={copyButtonDataTest}
                                     size="small"
                                     iconLeft={isCopied ? 'check' : 'copy'}
+                                    margin={{ top: 'auto' }}
                                 >
                                     <Translation
                                         id={
