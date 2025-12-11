@@ -1,35 +1,21 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import { selectAddressLabels } from '@suite-common/suite-sync';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Button, Card, Column, GradientOverlay, Row, Table, Text } from '@trezor/components';
+import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { AccountAddress } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { FormattedCryptoAmount, MetadataLabeling } from 'src/components/suite';
+import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite/';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
-
-const AddressActions = styled.div<{ $isVisible?: boolean }>`
-    opacity: ${({ $isVisible }) => ($isVisible ? '1' : '0')};
-`;
-
-const AddressWrapper = styled.div`
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
-    font-variant-numeric: tabular-nums slashed-zero;
-    user-select: none;
-`;
 
 const DEFAULT_LIMIT = 10;
 
@@ -46,6 +32,7 @@ type ItemProps = {
 const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
     const [isHovered, setIsHovered] = useState(false);
+    const { translationString } = useTranslation();
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
@@ -55,42 +42,40 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
     return (
         <Table.Row onHover={setIsHovered}>
             <Table.Cell>
-                <Text typographyStyle="hint" data-testid={`@wallet/receive/used-address/${index}`}>
-                    <MetadataLabeling
-                        variant="text"
-                        deviceStaticSessionId={account.deviceState}
+                <Text typographyStyle="body" data-testid={`@wallet/receive/used-address/${index}`}>
+                    <Labeling
                         payload={{
                             ...metadataPayload,
                         }}
-                        visible={isHovered}
-                        // if metadata is present, confirm on device option will become available in dropdown
-                        defaultVisibleValue={
-                            <AddressWrapper>
-                                <GradientOverlay hiddenFrom="120px" />
-                                {address}
-                            </AddressWrapper>
+                        deviceStaticSessionId={account.deviceState}
+                        displayValue={<Address value={address} isTruncated />}
+                        placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
+                        margin={{ vertical: 4 }}
+                        minHeight={28}
+                        maxWidth={400}
+                        gap={8}
+                        rightAddon={
+                            isHovered && (
+                                <ReceiveDisabledWrapper>
+                                    <Button
+                                        data-testid={`@wallet/receive/reveal-address-button/${index}`}
+                                        intent="neutral"
+                                        priority="secondary"
+                                        isDisabled={isDisabled}
+                                        isLoading={locked}
+                                        onClick={onClick}
+                                        size="small"
+                                    >
+                                        <Translation id="TR_REVEAL_ADDRESS" />
+                                    </Button>
+                                </ReceiveDisabledWrapper>
+                            )
                         }
-                    />
+                    >
+                        {metadataPayload.value}
+                    </Labeling>
                 </Text>
             </Table.Cell>
-            <Table.Cell align="end">
-                <AddressActions $isVisible={isHovered}>
-                    <ReceiveDisabledWrapper>
-                        <Button
-                            data-testid={`@wallet/receive/reveal-address-button/${index}`}
-                            intent="neutral"
-                            priority="secondary"
-                            isDisabled={isDisabled}
-                            isLoading={locked}
-                            onClick={onClick}
-                            size="small"
-                        >
-                            <Translation id="TR_REVEAL_ADDRESS" />
-                        </Button>
-                    </ReceiveDisabledWrapper>
-                </AddressActions>
-            </Table.Cell>
-
             <Table.Cell align="end">
                 <Text typographyStyle="hint">
                     {fresh ? (
@@ -122,7 +107,6 @@ export const UsedAddresses = ({
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
-
     const suiteSyncAddressLabels = useSelector(state =>
         selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
     );
@@ -167,7 +151,6 @@ export const UsedAddresses = ({
                             <Table.Cell>
                                 <Translation id="RECEIVE_TABLE_ADDRESS" />
                             </Table.Cell>
-                            <Table.Cell />
                             <Table.Cell align="end">
                                 <Translation id="RECEIVE_TABLE_RECEIVED" />
                             </Table.Cell>
