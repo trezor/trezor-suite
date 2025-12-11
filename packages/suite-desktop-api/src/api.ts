@@ -1,4 +1,4 @@
-import { DecryptionError, EncryptionError } from '@suite-common/secure-storage';
+import { DecryptionError, EncryptionError } from '@suite-common/platform-encryption';
 import { Result } from '@trezor/type-utils';
 
 import {

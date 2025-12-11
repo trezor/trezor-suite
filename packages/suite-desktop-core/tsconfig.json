@@ -4,7 +4,7 @@
     "include": ["src", "e2e", "**/*.json"],
     "references": [
         {
-            "path": "../../suite-common/secure-storage"
+            "path": "../../suite-common/platform-encryption"
         },
         { "path": "../../suite-common/sentry" },
         {

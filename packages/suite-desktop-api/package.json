@@ -19,7 +19,7 @@
         "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
-        "@suite-common/secure-storage": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "electron": "39.0.0"
     }

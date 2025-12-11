@@ -1,6 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { EncryptedHex, SecureStorageDep } from '@suite-common/secure-storage';
+import { EncryptedHex, PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
@@ -8,7 +8,7 @@ import { exhaustive } from '@trezor/type-utils';
 export type LoadDelegatedIdentityKeyFromStateDeps = {
     getDeviceDelegatedIdentityKey: (deviceId: string) => EncryptedHex<DelegatedIdentityKey> | null;
     dispatch: Dispatch;
-} & SecureStorageDep;
+} & PlatformEncryptionDep;
 
 export type LoadDelegatedIdentityKeyFromStateParams = {
     deviceId: string;
@@ -31,7 +31,7 @@ export const createLoadDelegatedIdentityKeyFromState =
             return null;
         }
 
-        const result = await deps.secureStorage.decrypt({
+        const result = await deps.platformEncryption.decrypt({
             value: encryptedCurrentDelegatedKey,
         });
 

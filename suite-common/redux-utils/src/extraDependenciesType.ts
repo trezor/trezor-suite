@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { SecureStorage } from '@suite-common/secure-storage'; // also only types
+import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
 import { SuiteSync } from '@suite-common/suite-sync-types';
 import {
     ReportSecurityCheckProps,
@@ -46,7 +46,7 @@ export type LocationPushState = Record<string, unknown>;
 export type ExtraWithStoreFactory = (store: { getState: () => any; dispatch: any }) => {
     services: {
         suiteSync: SuiteSync;
-        secureStorage: SecureStorage;
+        platformEncryption: PlatformEncryption;
     };
 };
 

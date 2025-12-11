@@ -10,7 +10,7 @@
             "path": "../../suite-common/delegated-identity-key-types"
         },
         {
-            "path": "../../suite-common/secure-storage"
+            "path": "../../suite-common/platform-encryption"
         },
         {
             "path": "../../suite-common/suite-sync"

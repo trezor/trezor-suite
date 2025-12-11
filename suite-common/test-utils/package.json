@@ -12,8 +12,8 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.10.1",
+        "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/secure-storage": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

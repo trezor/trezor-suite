@@ -1,12 +1,12 @@
 import {
     EncryptableBranded,
     EncryptedHex,
-    SecureStorage,
+    PlatformEncryption,
     asEncryptedHex,
-} from '@suite-common/secure-storage';
+} from '@suite-common/platform-encryption';
 import { ok } from '@trezor/type-utils';
 
-export const createNativeSecureStorage = (): SecureStorage => ({
+export const createNativePlatformEncryption = (): PlatformEncryption => ({
     encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
         // Todo: implement / encrypt this with Mobile Keyring.
         //       See: https://github.com/trezor/trezor-suite/issues/23282

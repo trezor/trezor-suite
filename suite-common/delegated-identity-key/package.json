@@ -13,7 +13,7 @@
         "@noble/curves": "^2.0.1",
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/delegated-identity-key-types": "workspace:*",
-        "@suite-common/secure-storage": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/thp": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

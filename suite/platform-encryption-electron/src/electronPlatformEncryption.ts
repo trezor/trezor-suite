@@ -1,17 +1,19 @@
 import {
     EncryptableBranded,
     EncryptedHex,
-    SecureStorage,
+    PlatformEncryption,
     asEncryptedHex,
-} from '@suite-common/secure-storage';
+} from '@suite-common/platform-encryption';
 import { type DesktopApi } from '@trezor/suite-desktop-api';
 import { ok } from '@trezor/type-utils';
 
-export type ElectronSecureStorageDeps = {
+export type ElectronPlatformEncryptionDeps = {
     desktopApi: DesktopApi;
 };
 
-export const createElectronSecureStorage = (deps: ElectronSecureStorageDeps): SecureStorage => ({
+export const createElectronPlatformEncryption = (
+    deps: ElectronPlatformEncryptionDeps,
+): PlatformEncryption => ({
     encrypt: async <T extends EncryptableBranded>({ value }: { value: T }) => {
         const result = await deps.desktopApi.safeStoreEncrypt({ value });
 

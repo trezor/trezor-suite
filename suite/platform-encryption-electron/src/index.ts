@@ -1,0 +1,1 @@
+export { createElectronPlatformEncryption } from './electronPlatformEncryption';

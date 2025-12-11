@@ -4,7 +4,7 @@ import {
     EncryptedHex,
     EncryptionUnavailable,
     asEncryptedHex,
-} from '@suite-common/secure-storage';
+} from '@suite-common/platform-encryption';
 import { err, ok } from '@trezor/type-utils';
 
 import { createLoadDelegatedIdentityKeyFromState } from '../loadDelegatedIdentityKeyFromState';
@@ -14,7 +14,7 @@ describe(createLoadDelegatedIdentityKeyFromState.name, () => {
         const getDelegatedIdentityKey = createLoadDelegatedIdentityKeyFromState({
             dispatch: () => {},
             getDeviceDelegatedIdentityKey: () => asEncryptedHex('delegated-key-<encrypted>'),
-            secureStorage: {
+            platformEncryption: {
                 encrypt: () => {
                     throw new Error('Not expected!');
                 },
@@ -38,7 +38,7 @@ describe(createLoadDelegatedIdentityKeyFromState.name, () => {
         const getDelegatedIdentityKey = createLoadDelegatedIdentityKeyFromState({
             dispatch: () => {},
             getDeviceDelegatedIdentityKey: () => asEncryptedHex('delegated-key-<encrypted>'),
-            secureStorage: {
+            platformEncryption: {
                 encrypt: () => {
                     throw new Error('Not expected!');
                 },

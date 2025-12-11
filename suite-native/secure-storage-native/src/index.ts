@@ -1,1 +1,0 @@
-export { createNativeSecureStorage } from './nativeSecureStorage';

@@ -2,8 +2,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
-import { createElectronSecureStorage } from '@suite/secure-storage-electron';
-import { createWebauthnSecureStorage } from '@suite/secure-storage-webauthn';
+import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
+import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
@@ -71,13 +71,13 @@ export const createRouterServices = (history: History) => ({
 });
 
 export const createSuiteCompositionRoot: ExtraWithStoreFactory = store => {
-    const secureStorage = isDesktop()
-        ? createElectronSecureStorage({ desktopApi })
-        : createWebauthnSecureStorage();
+    const platformEncryption = isDesktop()
+        ? createElectronPlatformEncryption({ desktopApi })
+        : createWebauthnPlatformEncryption();
 
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         ...store,
-        secureStorage,
+        platformEncryption,
         trezorConnect: TrezorConnect,
     });
 
@@ -85,11 +85,11 @@ export const createSuiteCompositionRoot: ExtraWithStoreFactory = store => {
         services: {
             suiteSync: createSuiteSyncDesktopCompositionRoot({
                 ...store,
-                secureStorage,
+                platformEncryption,
                 trezorConnect: TrezorConnect,
                 ensureDelegatedIdentityKey,
             }),
-            secureStorage,
+            platformEncryption,
         },
     };
 };

@@ -1,5 +1,5 @@
 import { DeviceMetadata } from '@suite-common/metadata-types';
-import { EncryptedHex } from '@suite-common/secure-storage';
+import { EncryptedHex } from '@suite-common/platform-encryption';
 import {
     DeviceButtonRequest,
     DeviceEvent,

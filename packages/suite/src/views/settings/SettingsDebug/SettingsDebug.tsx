@@ -22,10 +22,10 @@ import { MessageSystemConfigSourceSelect } from './MessageSystem/MessageSystemCo
 import { MessageSystemDebug } from './MessageSystem/MessageSystemDebug';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
+import { PlatformEncrypton } from './PlatformEncrypton';
 import { PreField } from './PreField';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
 import { ResetThpCredentials } from './ResetThpCredentials';
-import { SecureStorage } from './SecureStorage';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { SuiteSyncSettings } from './SuiteSyncSettings';
 import { ThrowTestingError } from './ThrowTestingError';
@@ -111,7 +111,7 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SuiteSyncSettings />
             <QuotaManagerSettings />
-            <SecureStorage />
+            <PlatformEncrypton />
         </SettingsLayout>
     );
 };

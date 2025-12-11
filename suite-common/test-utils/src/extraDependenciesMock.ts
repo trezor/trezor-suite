@@ -1,17 +1,17 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
+    EncryptableBranded,
+    EncryptedHex,
+    PlatformEncryption,
+    asEncryptedHex,
+} from '@suite-common/platform-encryption';
+import {
     type ExtraDependencies,
     type LocationPushState,
     type To,
     createThunk,
 } from '@suite-common/redux-utils';
-import {
-    EncryptableBranded,
-    EncryptedHex,
-    SecureStorage,
-    asEncryptedHex,
-} from '@suite-common/secure-storage';
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import {
@@ -111,7 +111,7 @@ const suiteSyncMock: SuiteSync = {
     },
 };
 
-const secureStorageMock: SecureStorage = {
+const platformEncryptionMock: PlatformEncryption = {
     encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
         Promise.resolve(ok(asEncryptedHex(value as T))),
 
@@ -129,7 +129,7 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     services: {
         suiteSync: suiteSyncMock,
-        secureStorage: secureStorageMock,
+        platformEncryption: platformEncryptionMock,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(

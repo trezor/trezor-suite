@@ -1,0 +1,1 @@
+export { createWebauthnPlatformEncryption } from './webauthnPlatformEncryption';

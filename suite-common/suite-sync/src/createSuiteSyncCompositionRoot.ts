@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { SecureStorageDep } from '@suite-common/secure-storage';
+import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import { SuiteSync } from '@suite-common/suite-sync-types';
 import {
@@ -37,7 +37,7 @@ type CreateSuiteSyncCompositionRootDeps = {
 } & EnsureDelegatedIdentityKeyDep &
     CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
-    SecureStorageDep;
+    PlatformEncryptionDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,

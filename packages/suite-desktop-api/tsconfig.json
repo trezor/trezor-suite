@@ -8,7 +8,7 @@
     "include": ["."],
     "references": [
         {
-            "path": "../../suite-common/secure-storage"
+            "path": "../../suite-common/platform-encryption"
         },
         { "path": "../type-utils" }
     ]

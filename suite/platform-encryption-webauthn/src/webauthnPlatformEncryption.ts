@@ -2,11 +2,11 @@ import {
     EncryptableBranded,
     EncryptedHex,
     EncryptionUnavailable,
-    SecureStorage,
-} from '@suite-common/secure-storage';
+    PlatformEncryption,
+} from '@suite-common/platform-encryption';
 import { err } from '@trezor/type-utils';
 
-export const createWebauthnSecureStorage = (): SecureStorage => ({
+export const createWebauthnPlatformEncryption = (): PlatformEncryption => ({
     encrypt: <T extends EncryptableBranded>(_: { value: T }) =>
         Promise.resolve(err(EncryptionUnavailable('Webauthn not implemented'))),
 

@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { EncryptedHex } from '@suite-common/secure-storage';
+import { EncryptedHex } from '@suite-common/platform-encryption';
 import {
     AcquiredDevice,
     ButtonRequest,

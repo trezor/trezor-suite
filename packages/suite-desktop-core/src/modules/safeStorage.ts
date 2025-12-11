@@ -1,6 +1,6 @@
 import { safeStorage } from 'electron';
 
-import { DecryptionFailed, EncryptionUnavailable } from '@suite-common/secure-storage';
+import { DecryptionFailed, EncryptionUnavailable } from '@suite-common/platform-encryption';
 import { isLinux } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { err, ok } from '@trezor/type-utils';
