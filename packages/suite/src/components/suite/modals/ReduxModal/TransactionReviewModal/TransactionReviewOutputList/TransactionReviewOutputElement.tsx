@@ -116,10 +116,10 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
                     <Translation id="TR_SEND_ADDRESS_CONFIRMATION_NOTE" />
                 </Note>
             ) : (
-                <Address value={value} />
+                <Address value={value} isDeviceRendered />
             );
         case 'safe-address':
-            return <Address value={value} />;
+            return <Address value={value} isDeviceRendered />;
         case 'data':
             return <Data value={value} />;
         case 'amount': {
