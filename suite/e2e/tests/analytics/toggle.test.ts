@@ -3,7 +3,6 @@ import { EventType } from '@trezor/suite-analytics';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other'] }, () => {
-    test.use({ electronConf: { disableAuthenticityCheck: true } });
     test.beforeEach(async ({ analytics, onboardingPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.disableNecessaryFirmwareChecks();

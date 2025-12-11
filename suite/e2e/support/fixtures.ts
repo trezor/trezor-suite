@@ -62,13 +62,11 @@ const test = suiteBaseTest.extend<Fixtures>({
     onboardingPage: async (
         { page, model, devicePrompt, analyticsSection, settingsPage, emulatorStartConf },
         use,
-        testInfo,
     ) => {
         await use(
             new OnboardingPage(
                 page,
                 model,
-                testInfo,
                 devicePrompt,
                 analyticsSection,
                 settingsPage,

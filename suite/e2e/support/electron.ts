@@ -2,18 +2,12 @@ import { ElectronApplication, Page, _electron as electron } from '@playwright/te
 import { createWriteStream, ensureDirSync } from 'fs-extra';
 import path from 'path';
 
-import { StartEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from './bridge';
-import { getModelFromEnv } from './helpers/modelFromEnv';
+
 const appDir = path.join(__dirname, '../../../packages/suite-desktop');
-const disableHashChecksPatch = '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
-const disableFirmwareRevisionChecksPatch =
-    '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
-const disableAuthenticityCheckPatch =
-    '--state.suite.settings.enabledSecurityChecks.deviceAuthenticity=false';
 const showDebugMenuStatePatch = '--state.suite.settings.debug.showDebugMenu=true';
-const disableDisconnectPromptPatch = '--state.suite.flags.hasSeenDisconnectTooltip=true';
 const showConnectLogsArgument = '--state.suite.settings.debug.showConnectLogs=true';
 // #15670 Bug in desktop app that loglevel is ignored
 const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
@@ -47,7 +41,7 @@ const formatErrorLogMessage = (data: string) => {
     return `${timestamp} - ${bold}${red}ERROR${unbold}: ${data}${reset}`;
 };
 
-const buildArgs = (params: LaunchSuiteParams, emulatorStartConf: StartEmu) => {
+const buildArgs = (params: LaunchSuiteParams) => {
     const args = [
         // This needs to be just path to the app root, so it is same as for production builds,
         // electron will resolve the path to app.js from the package.json => "main": "dist/app.js",
@@ -58,9 +52,7 @@ const buildArgs = (params: LaunchSuiteParams, emulatorStartConf: StartEmu) => {
         `--height=${params.viewport.height}`,
         logLevelArgument,
         disableHWAccelerationArgument,
-        disableHashChecksPatch,
         showDebugMenuStatePatch,
-        disableDisconnectPromptPatch,
         showConnectLogsArgument,
     ];
 
@@ -77,14 +69,6 @@ const buildArgs = (params: LaunchSuiteParams, emulatorStartConf: StartEmu) => {
     const deleteUserData = !params.keepUserData;
     if (deleteUserData) {
         args.push(removeUserDataArgument);
-    }
-
-    if (emulatorStartConf.version?.endsWith('-main')) {
-        args.push(disableFirmwareRevisionChecksPatch);
-    }
-
-    if (getModelFromEnv() === 'T3W1' || params.disableAuthenticityCheck) {
-        args.push(disableAuthenticityCheckPatch);
     }
 
     return args;
@@ -104,17 +88,14 @@ const setupLoggingToFile = (electronApp: ElectronApplication, params: LaunchSuit
     });
 };
 
-export const launchSuiteElectronApp = async (
-    params: LaunchSuiteParams,
-    emulatorStartConf: StartEmu,
-) => {
+export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     if (!params.bridgeDaemon) {
         await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     }
 
     const electronApp = await electron.launch({
         cwd: appDir,
-        args: buildArgs(params, emulatorStartConf),
+        args: buildArgs(params),
         env: {
             ...process.env,
             PLAYWRIGHT_RUN: 'true',
@@ -129,11 +110,8 @@ export const launchSuiteElectronApp = async (
     return electronApp;
 };
 
-export const launchSuite = async (
-    params: LaunchSuiteParams,
-    emulatorStartConf: StartEmu,
-): Promise<Suite> => {
-    const electronApp = await launchSuiteElectronApp(params, emulatorStartConf);
+export const launchSuite = async (params: LaunchSuiteParams): Promise<Suite> => {
+    const electronApp = await launchSuiteElectronApp(params);
     const window = await electronApp.firstWindow();
 
     return { electronApp, window };

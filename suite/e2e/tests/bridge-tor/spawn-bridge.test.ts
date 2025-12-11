@@ -26,18 +26,12 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
         await trezorUserEnvLink.stopBridge();
     });
 
-    test('App spawns bundled bridge and stops it after app quit', async ({
-        request,
-        emulatorStartConf,
-    }, testInfo) => {
-        const suite = await launchSuite(
-            {
-                bridgeDaemon: true,
-                artefactFolder: testInfo.outputDir,
-                viewport: testInfo.project.use.viewport!,
-            },
-            emulatorStartConf,
-        );
+    test('App spawns bundled bridge and stops it after app quit', async ({ request }, testInfo) => {
+        const suite = await launchSuite({
+            bridgeDaemon: true,
+            artefactFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        });
         const title = await suite.window.title();
         enhancePage(suite.window);
         expect(title).toContain('Trezor Suite');
@@ -72,13 +66,10 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
         await trezorUserEnvLink.setupEmu({});
         await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
-        const suite = await launchSuite(
-            {
-                artefactFolder: testInfo.outputDir,
-                viewport: testInfo.project.use.viewport!,
-            },
-            emulatorStartConf,
-        );
+        const suite = await launchSuite({
+            artefactFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        });
         enhancePage(suite.window);
         await suite.window.title();
 
@@ -87,7 +78,6 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
         const onboardingPage = new OnboardingPage(
             suite.window,
             model,
-            testInfo,
             devicePrompt,
             new AnalyticsSection(suite.window),
             new SettingsPage(suite.window),
