@@ -83,6 +83,11 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn install
 
+      # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
+      - name: Sign message system config
+        working-directory: ./suite-common/message-system
+        run: yarn sign-config
+
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@v1
