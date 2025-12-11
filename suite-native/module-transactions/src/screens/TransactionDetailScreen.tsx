@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Button, HStack, VStack } from '@suite-native/atoms';
+import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
@@ -83,26 +83,27 @@ export const TransactionDetailScreen = ({
             header={
                 <ScreenHeader
                     closeActionType={closeActionType}
-                    title={
+                    customContent={
                         <HStack spacing="sp8" alignItems="center" justifyContent="center">
                             <CryptoIconWithNetwork
                                 symbol={transaction.symbol}
                                 contractAddress={tokenTransfer?.contract}
-                                size="extraSmall"
                             />
-                            <Translation
-                                id="transactions.detail.header"
-                                values={{
-                                    transactionType: _ => (
-                                        <TransactionName
-                                            key={transaction.txid}
-                                            transaction={transaction}
-                                            isPending={isPending}
-                                            variant="highlight"
-                                        />
-                                    ),
-                                }}
-                            />
+                            <Text variant="highlight">
+                                <Translation
+                                    id="transactions.detail.header"
+                                    values={{
+                                        transactionType: _ => (
+                                            <TransactionName
+                                                key={transaction.txid}
+                                                transaction={transaction}
+                                                isPending={isPending}
+                                                variant="highlight"
+                                            />
+                                        ),
+                                    }}
+                                />
+                            </Text>
                         </HStack>
                     }
                 />
