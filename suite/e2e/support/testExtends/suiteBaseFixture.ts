@@ -21,10 +21,7 @@ import { getModelFromEnv } from '../helpers/modelFromEnv';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
-type ElectronConf = Pick<
-    LaunchSuiteParams,
-    'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs' | 'disableAuthenticityCheck'
->;
+type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
 
 type suiteBaseFixture = {
     startEmulator: boolean;
@@ -45,18 +42,14 @@ const electronSetup = async (
     locale: string | undefined,
     colorScheme: any,
     electronConf: ElectronConf,
-    emulatorStartConf: StartEmu,
 ) => {
-    const suite = await launchSuite(
-        {
-            locale,
-            colorScheme,
-            artefactFolder: testInfo.outputDir,
-            viewport: testInfo.project.use.viewport!,
-            ...electronConf,
-        },
-        emulatorStartConf,
-    );
+    const suite = await launchSuite({
+        locale,
+        colorScheme,
+        artefactFolder: testInfo.outputDir,
+        viewport: testInfo.project.use.viewport!,
+        ...electronConf,
+    });
 
     await suite.window
         .context()
@@ -238,13 +231,7 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
         });
 
         if (isDesktopProject(testInfo)) {
-            const suite = await electronSetup(
-                testInfo,
-                locale,
-                colorScheme,
-                electronConf,
-                emulatorStartConf,
-            );
+            const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
             enhancePage(suite.window);
             await use(suite.window);
             await electronTeardown(suite, testInfo, electronConf);

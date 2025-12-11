@@ -17,33 +17,24 @@ test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
         await trezorUserEnvLink.stopBridge();
     });
 
-    test('App in daemon mode spawns node-bridge', async ({
-        request,
-        emulatorStartConf,
-    }, testInfo) => {
+    test('App in daemon mode spawns node-bridge', async ({ request }, testInfo) => {
         await expectBridgeToBeStopped(request);
 
-        const daemonApp = await launchSuiteElectronApp(
-            {
-                bridgeDaemon: true,
-                artefactFolder: testInfo.outputDir,
-                viewport: testInfo.project.use.viewport!,
-            },
-            emulatorStartConf,
-        );
+        const daemonApp = await launchSuiteElectronApp({
+            bridgeDaemon: true,
+            artefactFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        });
 
         await expect(async () => {
             await expectBridgeToBeRunning(request);
         }).toPass({ timeout: 3_000 });
 
         // launch UI, with node-bridge already running in background
-        const suite = await launchSuite(
-            {
-                artefactFolder: testInfo.outputDir,
-                viewport: testInfo.project.use.viewport!,
-            },
-            emulatorStartConf,
-        );
+        const suite = await launchSuite({
+            artefactFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        });
         const title = await suite.window.title();
         expect(title).toContain('Trezor Suite');
 
