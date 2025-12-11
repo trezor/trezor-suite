@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import styled from 'styled-components';
-
 import { getNetwork } from '@suite-common/wallet-config';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
@@ -10,7 +8,6 @@ import {
     Button,
     ButtonProps,
     Card,
-    GradientOverlay,
     H4,
     InfoItem,
     Paragraph,
@@ -21,17 +18,11 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { ReadMoreLink } from 'src/components/suite';
+import { Address, ReadMoreLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { AppState } from 'src/types/suite';
-
-const FreshAddressWrapper = styled.div`
-    position: relative;
-    user-select: none;
-    overflow: hidden;
-`;
 
 const TooltipLabel = ({
     symbol,
@@ -158,12 +149,13 @@ export const FreshAddress = ({
                     }
                     flex="1"
                 >
-                    <FreshAddressWrapper>
-                        {addressValue && <GradientOverlay hiddenFrom="220px" />}
-                        <Text typographyStyle="titleMedium">
-                            {addressValue ?? <Translation id="RECEIVE_ADDRESS_UNAVAILABLE" />}
-                        </Text>
-                    </FreshAddressWrapper>
+                    <Text typographyStyle="titleMedium">
+                        {addressValue ? (
+                            <Address value={addressValue} isTruncated />
+                        ) : (
+                            <Translation id="RECEIVE_ADDRESS_UNAVAILABLE" />
+                        )}
+                    </Text>
                 </InfoItem>
                 <Tooltip content={buttonTooltipContent()}>
                     {isDeviceConnected ? (

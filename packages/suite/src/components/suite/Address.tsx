@@ -50,7 +50,7 @@ export const Address = ({
     value,
     isTruncated,
     isChunked,
-    isDeviceRendered = true,
+    isDeviceRendered = false,
     'data-testid': dataTestId,
 }: AddressProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
