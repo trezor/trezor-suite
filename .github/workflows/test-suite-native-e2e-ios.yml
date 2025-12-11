@@ -56,6 +56,7 @@ jobs:
         working-directory: ./suite-native/app
         run: yarn prebuild --platform ios --clean
 
+      # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
         working-directory: ./suite-common/message-system
         run: yarn sign-config
