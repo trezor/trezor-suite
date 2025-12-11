@@ -14,7 +14,14 @@ import {
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
-import { Device, DeviceState, Features, KnownDevice, StaticSessionId } from '@trezor/connect';
+import {
+    Device,
+    DeviceState,
+    Features,
+    KnownDevice,
+    StaticSessionId,
+    Unsuccessful,
+} from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 
 import { DeviceStateActionPayload, deviceActions } from './deviceActions';
@@ -41,6 +48,8 @@ export type DeviceReducerState = {
         firmwareAuthenticity?: string[];
     };
     lastConnectedAuthenticityChecks?: KnownDevice['authenticityChecks'];
+    // Setting with no UI to toggle it on, used in tests to simulate various outcomes of entropy check failure
+    simulatedEntropyCheckFail?: Unsuccessful;
 };
 
 export const deviceInitialState: DeviceReducerState = {
@@ -719,6 +728,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     d => d.state?.staticSessionId === payload.staticSessionId,
                 );
                 if (device) device.discovered = payload.success;
+            })
+            .addCase(deviceActions.setSimulatedEntropyCheckFail, (state, { payload }) => {
+                state.simulatedEntropyCheckFail = payload;
             })
             .addMatcher(
                 isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),

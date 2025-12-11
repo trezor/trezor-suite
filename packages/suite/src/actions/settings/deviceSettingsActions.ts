@@ -2,7 +2,11 @@ import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { processEntropyCheckResultThunk, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    processEntropyCheckResultThunk,
+    selectSelectedDevice,
+    selectSimulatedEntropyCheckFail,
+} from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -149,6 +153,8 @@ export const resetDevice =
 
         const isEntropyCheckEnabled =
             isEntropyCheckEnabledInSettings && !isEntropyCheckDisabledByMessageSystem;
+        // Used only in tests! See deviceReducer for the property definition.
+        const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
 
         const result = await TrezorConnect.resetDevice({
             ...defaults,
@@ -160,6 +166,11 @@ export const resetDevice =
         });
 
         if (isEntropyCheckEnabled) {
+            if (simulatedFailResult) {
+                dispatch(processEntropyCheckResultThunk({ device, result: simulatedFailResult }));
+
+                return simulatedFailResult;
+            }
             dispatch(processEntropyCheckResultThunk({ device, result }));
         }
 

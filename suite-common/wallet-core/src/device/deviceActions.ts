@@ -15,6 +15,7 @@ import {
     Device,
     DeviceState,
     StaticSessionId,
+    Unsuccessful,
 } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
@@ -174,6 +175,12 @@ const setDiscovered = createAction(
     }),
 );
 
+// Use in tests only! See deviceReducer for the property definition.
+const setSimulatedEntropyCheckFail = createAction(
+    `${DEVICE_MODULE_PREFIX}/setSimulatedEntropyCheckFail`,
+    (payload: Unsuccessful) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     createDeviceInstance,
@@ -199,4 +206,5 @@ export const deviceActions = {
     setSuiteSyncOwner,
     setDiscovered,
     devicePushNotification,
+    setSimulatedEntropyCheckFail,
 };
