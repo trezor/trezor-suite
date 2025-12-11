@@ -18,7 +18,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
         if (selectIsSuiteSyncEnabled(getState()) && isAnyOf(...suiteSyncTurnOnTriggers)(action)) {
             const { payload } = action as ReturnType<(typeof suiteSyncTurnOnTriggers)[number]>;
             extra.services.suiteSync.turnOnSuiteSyncForWallet({
-                staticSessionId: payload.device.state?.staticSessionId,
+                staticSessionId: payload.device?.state?.staticSessionId,
             });
         }
 

@@ -17,12 +17,12 @@ type SelectDeviceThunkParams = {
  * - from user action in `@suite-components/DeviceMenu`
  */
 export const selectDeviceThunk = createThunk<
-    { device: TrezorDevice },
+    { device: TrezorDevice | undefined },
     SelectDeviceThunkParams,
-    { rejectValue: 'no-device' }
+    void
 >(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
-    ({ device }, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
+    ({ device }, { dispatch, getState, fulfillWithValue }) => {
         let trezorDevice: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
         if (device) {
@@ -39,8 +39,6 @@ export const selectDeviceThunk = createThunk<
                 trezorDevice = sortByTimestamp(instances)[0];
             }
         }
-
-        if (!trezorDevice) return rejectWithValue('no-device');
 
         dispatch(deviceActions.selectDevice(trezorDevice));
 

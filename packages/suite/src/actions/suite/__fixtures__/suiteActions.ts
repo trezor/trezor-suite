@@ -194,7 +194,7 @@ const selectDevice = [
         state: {},
         device: undefined,
         result: {
-            payload: 'no-device',
+            payload: undefined,
         },
     },
     {
@@ -206,7 +206,7 @@ const selectDevice = [
         },
         device: SUITE_DEVICE,
         result: {
-            payload: 'no-device',
+            payload: undefined,
         },
     },
     {
