@@ -28,12 +28,12 @@ const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): Ru
     }
 };
 
-const AddressWrapper = styled.p<{ $device: DeviceModelInternal; $isChunked: boolean }>`
+const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isChunked: boolean }>`
     text-wrap: balance;
     letter-spacing: 0;
     word-break: ${({ $isChunked }) => ($isChunked ? 'normal' : 'break-all')};
 
-    ${({ $device }) => mapDeviceModelToFontStyle($device)}
+    ${({ $device }) => $device && mapDeviceModelToFontStyle($device)}
 `;
 
 const addSpacing = (value: string) => value.match(/.{1,4}/g)?.join(' ') || value;
@@ -42,6 +42,7 @@ export type AddressProps = {
     value: string;
     isTruncated?: boolean;
     isChunked?: boolean;
+    isDeviceRendered?: boolean;
     'data-testid'?: string;
 };
 
@@ -49,6 +50,7 @@ export const Address = ({
     value,
     isTruncated,
     isChunked,
+    isDeviceRendered = true,
     'data-testid': dataTestId,
 }: AddressProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -77,7 +79,7 @@ export const Address = ({
         <AddressWrapper
             onCopy={handleCopy}
             data-testid={dataTestId}
-            $device={deviceModelInternal}
+            $device={isDeviceRendered ? deviceModelInternal : undefined}
             $isChunked={isAddressChunked}
         >
             {formattedValue ?? value}

@@ -4853,6 +4853,10 @@ export default defineMessages({
         id: 'TR_LABELING_ACCOUNT_LABEL',
         defaultMessage: 'Account label',
     },
+    TR_LABELING_ADDRESS_LABEL: {
+        id: 'TR_LABELING_ADDRESS_LABEL',
+        defaultMessage: 'Address label',
+    },
     TR_NOTIFICATIONS: {
         id: 'TR_NOTIFICATIONS',
         defaultMessage: 'Activity',
