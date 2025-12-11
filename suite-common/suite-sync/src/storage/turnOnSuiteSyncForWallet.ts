@@ -1,6 +1,9 @@
+import { Dispatch } from '@reduxjs/toolkit';
+
 import {
+    RefreshSuiteSyncKeys,
+    SubscribeLabeling,
     TurnOnSuiteSyncForWallet,
-    TurnOnSuiteSyncForWalletDeps,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDeviceByStaticSessionId, selectDevices } from '@suite-common/wallet-core';
@@ -8,6 +11,13 @@ import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-comm
 import { exhaustive } from '@trezor/type-utils';
 
 import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
+
+export type TurnOnSuiteSyncForWalletDeps = {
+    dispatch: Dispatch;
+    getState: () => any;
+    subscribeLabeling: SubscribeLabeling;
+    refreshSuiteSyncKeys: RefreshSuiteSyncKeys;
+};
 
 export const createTurnOnSuiteSyncForWallet =
     (deps: TurnOnSuiteSyncForWalletDeps): TurnOnSuiteSyncForWallet =>
@@ -34,7 +44,7 @@ export const createTurnOnSuiteSyncForWallet =
                 switch (errType) {
                     case 'RefreshSuiteKeysUnavailable':
                         // This may happen for multiple reasons (disconnected device, ...)
-                        // and its ok. We just do nothing.
+                        // and it's ok. We just do nothing.
                         return;
 
                     case 'DeviceError':

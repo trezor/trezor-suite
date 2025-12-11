@@ -1,18 +1,8 @@
-import { Dispatch } from '@reduxjs/toolkit';
-
+import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
 import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/wallet-core/src/device/delegatedIdentityKey/ensureDelegatedIdentityKey';
-import { DeviceCancelledErr, DeviceError } from '@suite-common/wallet-core/src/device/deviceUtils';
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
-
-import { EnsureSuiteSyncOwnerDep } from './device/ensureSuiteSyncOwnerKeys';
-import { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
-
-export type RefreshSuiteSyncKeysDeps = {
-    dispatch: Dispatch;
-} & EnsureSuiteSyncOwnerDep &
-    EnsureDelegatedIdentityKeyDep;
 
 type RefreshSuiteSyncKeysParams = {
     device: TrezorDevice;
@@ -35,10 +25,10 @@ export type RefreshSuiteSyncKeys = (
 ) => Promise<
     Result<
         void,
-        | DeviceError
-        | DeviceCancelledErr
+        | DeviceErrorType
+        | DeviceCancelledErrType
         | RefreshSuiteKeysUnavailable
-        | ProofOfDelegatedSignFailed
+        | ProofOfDelegatedSignFailedType
         | CreateSuiteSyncOwnerError
     >
 >;

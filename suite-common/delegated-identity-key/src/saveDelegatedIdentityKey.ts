@@ -2,9 +2,8 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorage } from '@suite-common/secure-storage';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
+import { deviceActions } from '@suite-common/wallet-core';
 import { exhaustive } from '@trezor/type-utils';
-
-import { deviceActions } from '../deviceActions';
 
 export type SaveDelegatedIdentityKeyDeps = {
     secureStorage: SecureStorage;

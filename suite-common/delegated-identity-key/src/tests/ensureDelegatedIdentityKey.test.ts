@@ -1,10 +1,10 @@
+import { EnsureDelegatedIdentityKeyParams } from '@suite-common/delegated-identity-key-types';
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
 import {
     EnsureDelegatedIdentityKeyDeps,
-    EnsureDelegatedIdentityKeyParams,
     createEnsureDelegatedIdentityKey,
 } from '../ensureDelegatedIdentityKey';
 

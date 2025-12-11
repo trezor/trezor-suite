@@ -10906,6 +10906,34 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/delegated-identity-key-types@workspace:*, @suite-common/delegated-identity-key-types@workspace:suite-common/delegated-identity-key-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/delegated-identity-key-types@workspace:suite-common/delegated-identity-key-types"
+  dependencies:
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/delegated-identity-key@workspace:*, @suite-common/delegated-identity-key@workspace:suite-common/delegated-identity-key":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/delegated-identity-key@workspace:suite-common/delegated-identity-key"
+  dependencies:
+    "@noble/curves": "npm:^2.0.1"
+    "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/secure-storage": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/thp": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/device-authenticity@workspace:*, @suite-common/device-authenticity@workspace:suite-common/device-authenticity":
   version: 0.0.0-use.local
   resolution: "@suite-common/device-authenticity@workspace:suite-common/device-authenticity"
@@ -11223,11 +11251,11 @@ __metadata:
   resolution: "@suite-common/suite-sync-quota-manager@workspace:suite-common/suite-sync-quota-manager"
   dependencies:
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11251,6 +11279,7 @@ __metadata:
   resolution: "@suite-common/suite-sync-types@workspace:suite-common/suite-sync-types"
   dependencies:
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11265,6 +11294,8 @@ __metadata:
   resolution: "@suite-common/suite-sync@workspace:suite-common/suite-sync"
   dependencies:
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/delegated-identity-key": "workspace:*"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/secure-storage": "workspace:*"
@@ -11537,12 +11568,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
-    "@noble/curves": "npm:^2.0.1"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/intl-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
-    "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -13417,6 +13446,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.10.1"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
+    "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/logger": "workspace:*"
@@ -13504,11 +13534,11 @@ __metadata:
   dependencies:
     "@evolu/react-native": "npm:^14.2.0"
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     expo: "npm:~54.0.20"
     expo-sqlite: "npm:^16.0.8"
@@ -13895,11 +13925,11 @@ __metadata:
   dependencies:
     "@evolu/web": "npm:^2.3.0"
     "@reduxjs/toolkit": "npm:2.10.1"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/secure-storage": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -15214,6 +15244,7 @@ __metadata:
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
+    "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"

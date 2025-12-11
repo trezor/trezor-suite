@@ -5,6 +5,7 @@ import { type History, createMemoryHistory } from 'history';
 import { createElectronSecureStorage } from '@suite/secure-storage-electron';
 import { createWebauthnSecureStorage } from '@suite/secure-storage-webauthn';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
     ExtraDependenciesStatic,
@@ -25,7 +26,6 @@ import {
     SendState,
     TransactionsState,
     WalletSettingsState,
-    delegatedIdentityKeyCompositionRoot,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';

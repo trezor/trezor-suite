@@ -1,7 +1,11 @@
 import {
-    CreateTurnOnSuiteSyncForWalletDeps,
+    SubscriptionStorageDep,
+    SuiteSyncStorageRepositoryDep,
     TurnOffSuiteSyncForWallet,
 } from '@suite-common/suite-sync-types';
+
+export type CreateTurnOnSuiteSyncForWalletDeps = SuiteSyncStorageRepositoryDep &
+    SubscriptionStorageDep;
 
 export const createTurnOffSuiteSyncForWallet =
     (deps: CreateTurnOnSuiteSyncForWalletDeps): TurnOffSuiteSyncForWallet =>

@@ -1,4 +1,10 @@
-import { UpdateOutputLabel, UpdateOutputLabelDeps } from '@suite-common/suite-sync-types';
+import { SuiteSyncStorageRepositoryDep, UpdateOutputLabel } from '@suite-common/suite-sync-types';
+import { SuiteSyncOwner } from '@suite-common/suite-types';
+import { StaticSessionId } from '@trezor/connect';
+
+export type UpdateOutputLabelDeps = {
+    findSuiteSyncOwnerForDeviceStaticId: (staticId: StaticSessionId) => SuiteSyncOwner | null;
+} & SuiteSyncStorageRepositoryDep;
 
 export const createUpdateOutputLabel =
     (deps: UpdateOutputLabelDeps): UpdateOutputLabel =>

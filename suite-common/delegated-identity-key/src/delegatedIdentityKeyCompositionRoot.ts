@@ -2,10 +2,10 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { SecureStorageDep } from '@suite-common/secure-storage';
 import { selectThp } from '@suite-common/thp/src/thpSelectors';
+import { selectDeviceDelegatedIdentityKey } from '@suite-common/wallet-core';
 
 import { createEnsureDelegatedIdentityKey } from './ensureDelegatedIdentityKey';
 import { createLoadDelegatedIdentityKeyFromState } from './loadDelegatedIdentityKeyFromState';
-import { selectDeviceDelegatedIdentityKey } from '../deviceSelectors';
 import {
     RetrieveDelegatedIdentityKeyFromDeviceDeps,
     createRetrieveDelegatedIdentityKeyFromDevice,

@@ -2,14 +2,12 @@ import { Platform } from 'react-native';
 
 import * as Device from 'expo-device';
 
+import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
 import { createNativeSecureStorage } from '@suite-common/secure-storage-native';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
-import {
-    delegatedIdentityKeyCompositionRoot,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';

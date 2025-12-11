@@ -5,6 +5,10 @@
         "exactOptionalPropertyTypes": true
     },
     "references": [
+        { "path": "../delegated-identity-key" },
+        {
+            "path": "../delegated-identity-key-types"
+        },
         { "path": "../metadata-types" },
         { "path": "../redux-utils" },
         { "path": "../secure-storage" },

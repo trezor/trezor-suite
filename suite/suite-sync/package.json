@@ -12,11 +12,11 @@
     "dependencies": {
         "@evolu/web": "^2.3.0",
         "@reduxjs/toolkit": "2.10.1",
+        "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/secure-storage": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*"
     }
 }

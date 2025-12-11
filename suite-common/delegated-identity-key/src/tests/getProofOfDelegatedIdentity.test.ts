@@ -1,5 +1,6 @@
 import { asDelegatedIdentityKey } from '@suite-common/suite-types';
-import { getProofOfDelegatedIdentity } from '@suite-common/wallet-utils';
+
+import { getProofOfDelegatedIdentity } from '../getProofOfDelegatedIdentity';
 
 describe(getProofOfDelegatedIdentity.name, () => {
     it('calculates the proof', () => {

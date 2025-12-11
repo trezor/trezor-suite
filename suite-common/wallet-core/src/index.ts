@@ -9,14 +9,17 @@ export * from './blockchain/blockchainMiddleware';
 export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainSelectors';
 export * from './blockchain/blockchainThunks';
-export { delegatedIdentityKeyCompositionRoot } from './device/delegatedIdentityKey/delegatedIdentityKeyCompositionRoot';
-export type { EnsureDelegatedIdentityKeyDep } from './device/delegatedIdentityKey/ensureDelegatedIdentityKey';
 export * from './device/deviceActions';
 export * from './device/deviceConstants';
 export * from './device/deviceReducer';
 export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
-export * from './device/deviceUtils';
+export {
+    getIsIgnoredEntropyCheckError,
+    DeviceError,
+    DeviceCancelledErr,
+    isCanceledErrorMessage,
+} from './device/deviceUtils';
 export * from './device/preparePushNotificationMiddleware';
 export * from './device/publicKeyActions';
 export * from './device/usePinHook';

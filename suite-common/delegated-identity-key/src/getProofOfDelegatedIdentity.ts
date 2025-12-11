@@ -1,12 +1,12 @@
 import { p256 } from '@noble/curves/nist.js';
 
-import { ProofOfDelegatedSignFailed } from '@suite-common/suite-sync-types';
+import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
 import { DelegatedIdentityKey } from '@suite-common/suite-types';
 import { ProofOfDelegatedIdentity, asProofOfDelegatedIdentity } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 import { bufferUtils } from '@trezor/utils';
 
-export const createProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFailed => ({
+export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFailedType => ({
     type: 'ProofOfDelegatedSignFailed',
     caused,
 });
@@ -20,7 +20,7 @@ export type GetProofOfDelegatedIdentityParams = {
 
 type GetProofOfDelegatedIdentityResult = Result<
     ProofOfDelegatedIdentity,
-    ProofOfDelegatedSignFailed
+    ProofOfDelegatedSignFailedType
 >;
 
 export const getProofOfDelegatedIdentity = ({
@@ -49,6 +49,6 @@ export const getProofOfDelegatedIdentity = ({
 
         return ok(asProofOfDelegatedIdentity(Buffer.from(signature).toString('hex')));
     } catch (e) {
-        return err(createProofOfDelegatedSignFailed(e));
+        return err(ProofOfDelegatedSignFailed(e));
     }
 };
