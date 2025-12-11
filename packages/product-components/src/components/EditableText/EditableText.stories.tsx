@@ -67,7 +67,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
                 <Text typographyStyle="body">
                     <EditableTextComponent {...rest}>{children}</EditableTextComponent>
                 </Text>
-                <Text typographyStyle="hint" variant="tertiary">
+                <Text typographyStyle="hint" variant="tertiary" align="end">
                     <EditableTextComponent {...rest}>{children}</EditableTextComponent>
                 </Text>
             </Column>
