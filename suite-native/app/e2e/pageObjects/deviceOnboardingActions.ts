@@ -1,7 +1,8 @@
 import { BackupType } from '@suite-common/suite-types';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { scrollUntilVisible, waitForVisible } from '../support/utils';
+import { getModelFromEnv } from '../support/setup';
+import { isElementVisible, scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
 class DeviceOnboardingActions {
     async selectCreateWalletOption() {
@@ -108,6 +109,10 @@ class DeviceOnboardingActions {
         await element(by.id(buttonId)).tap();
     }
 
+    async waitForDeviceCompromisedModal() {
+        await waitForVisible(by.id('@screen/DeviceCompromisedModal'));
+    }
+
     async dismissTheUninitializedDeviceLanding() {
         await element(by.id('@deviceOnboarding/UninitializedDeviceLandingScreen/confirmBtn')).tap();
     }
@@ -127,6 +132,57 @@ class DeviceOnboardingActions {
             throw new Error(`Screen content did not contain pairing code\n${screenContentBody}`);
         }
         await element(by.id('@thpSecurityCode/Input')).replaceText(code);
+    }
+
+    async proceedToCreateOrRecoverCrossroads() {
+        await this.waitForUninitializedDeviceLanding();
+        await this.dismissTheUninitializedDeviceLanding();
+        // During our release process, the TrezorUserEnv might not have the latest firmware version.
+        // In such cases, the firmware update screen appears here.
+        // We want to skip the update in e2e tests as it is not supported.
+        const isFirmwareUpdateScreenPresent = await isElementVisible(
+            by.id('@device-firmware/update-button'),
+        );
+        if (isFirmwareUpdateScreenPresent) {
+            await this.skipFirmwareUpdate();
+            console.warn(
+                'SKIPPING FIRMWARE UPDATE: Firmware update was displayed, make sure it was only due to TrezorUserEnv not having latest firmware version.',
+            );
+        }
+
+        await TrezorUserEnvLink.pressYes();
+
+        if (getModelFromEnv() !== 'T3W1') {
+            // skip device authenticity check on T3W1 because we are using 2-main FW
+            await this.waitForDeviceAuthenticitySuccess();
+            await this.dismissDeviceAuthenticitySuccess();
+        }
+
+        await TrezorUserEnvLink.pressYes();
+
+        await this.waitForCreateOrRecoverCrossroadsScreen();
+    }
+
+    async startCreatingWallet() {
+        await this.selectCreateWalletOption();
+        await this.waitForCreateWalletLoadingScreen();
+        await this.waitForWalletBackupTutorialScreen();
+        await this.gotToNextWalletBackupTutorialStep(1);
+        await this.gotToNextWalletBackupTutorialStep(2);
+        await this.gotToNextWalletBackupTutorialStep(3);
+        await this.gotToNextWalletBackupTutorialStep(4);
+        await this.validateSelectedBackupType('shamir-single');
+        await this.gotToNextWalletBackupTutorialStep(5);
+        await wait(5000); // wait for entering animation to finish
+
+        await this.pressHoldToConfirmButton();
+        await this.waitForWalletCreationScreen();
+
+        await TrezorUserEnvLink.swipeEmu('up');
+        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLink.pressNo();
+        // at this point, wallet creation + entropy check on device has begun
     }
 }
 
