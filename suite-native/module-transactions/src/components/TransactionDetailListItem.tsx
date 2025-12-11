@@ -52,7 +52,7 @@ export const TransactionDetailListItem = ({
 
     const handleNavigation = () => {
         onPress();
-        navigation.push(RootStackRoutes.TransactionDetailStack, {
+        navigation.navigate(RootStackRoutes.TransactionDetailStack, {
             screen: TransactionDetailStackRoutes.TransactionDetail,
             params: {
                 txid: transaction.txid,
