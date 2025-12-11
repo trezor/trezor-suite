@@ -5,6 +5,7 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { tradingBuyActions } from '../pageObjects/trading/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/trading/tradingHistoryActions';
 import { openApp, preparePreloadedReduxState } from '../support/setup';
+import { scrollUntilVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     portfolioTrackerBtcAccountState,
@@ -26,7 +27,11 @@ describe('Trade Buy [@noDevice]', () => {
         await tradingBuyActions.selectCountry('Polan', '🇵🇱 Poland');
         await tradingBuyActions.setFiatAmount('100');
 
-        await onHome.scrollScreenToBottom();
+        // Scroll to bottom of the page.
+        // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
+        const learnMoreLink = element(by.text('Learn more'));
+        await scrollUntilVisible(learnMoreLink);
+
         await tradingBuyActions.viewPaymentMethods();
         await tradingBuyActions.viewProviders();
         await tradingBuyActions.expectValidBuyForm();
