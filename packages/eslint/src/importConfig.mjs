@@ -16,7 +16,8 @@ export const globalNoExtraneousDependenciesDevDependencies = [
     // ----------------------------------------------------------------
     '**/*fixtures*/**',
     '**/*.test.{tsx,ts,js}',
-    '**/eslint.config.mjs',
+    '**/eslint.config.mjs', // for CJS packages, those files should eventually be renamed to .js and this line deleted
+    '**/eslint.config.js',
 
     '**/*e2e/**', // Todo: This shall be only in packages that has e2e tests
 ];
