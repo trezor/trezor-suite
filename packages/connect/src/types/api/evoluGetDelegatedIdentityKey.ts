@@ -1,11 +1,6 @@
 import { PROTO } from '../../constants';
-import { Params, Response } from '../params';
+import { CommonParams, Params, Response } from '../params';
 
 export declare function evoluGetDelegatedIdentityKey(
-    params: Params<{
-        thp?: {
-            staticHostKey: string;
-            credential: string;
-        };
-    }>,
+    params: Params<CommonParams>,
 ): Response<PROTO.EvoluDelegatedIdentityKey>;

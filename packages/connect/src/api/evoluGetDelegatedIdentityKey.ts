@@ -1,6 +1,4 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { thp } from '@trezor/protocol';
-import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
@@ -12,23 +10,10 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     hasBundle?: boolean;
 
     init() {
+        this.useDevice = true;
+        this.useUi = true;
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
-
-        const { payload } = this;
-
-        Assert(PROTO.EvoluGetDelegatedIdentityKey, payload);
-
-        if (payload.thp !== undefined) {
-            const staticKey = Buffer.from(payload.thp.staticHostKey, 'hex');
-            const hostStaticKeys = thp.getCurve25519KeyPair(staticKey);
-            this.params = {
-                thp_credential: payload.thp.credential,
-                host_static_public_key: hostStaticKeys.publicKey.toString('hex'),
-            };
-        } else {
-            this.params = {};
-        }
     }
 
     get info() {
@@ -36,6 +21,15 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
     }
 
     async run() {
+        const thpState = this.device.getThpState();
+        if (thpState) {
+            this.params = {
+                thp_credential: thpState.pairingCredentials[0].credential,
+                host_static_public_key:
+                    thpState.handshakeCredentials?.hostStaticPublicKey.toString('hex'),
+            };
+        }
+
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall(
             'EvoluGetDelegatedIdentityKey',
