@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
-import { Platform, Text as RNText, TextProps } from 'react-native';
+import { Text, TextProps } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
-
-// @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
-import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 
 import { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
 import codepoints from '@suite-common/icons/iconFontsMobile/TrezorSuiteIcons.json';
@@ -24,6 +21,7 @@ const MAX_FONT_SIZE_MULTIPLIER = 1.5;
  * 2. Run `yarn generate-icons` to generate the new icon font.
  */
 export type IconName = keyof typeof codepoints;
+export const ICON_NAMES = Object.keys(codepoints) as IconName[];
 
 export const iconSizes = {
     extraSmall: 8,
@@ -38,13 +36,6 @@ export type IconSize = keyof typeof iconSizes;
 
 export const getIconSize = (size: IconSize | number) =>
     typeof size === 'string' ? iconSizes[size] : size;
-
-// NativeText improves the performance of the text rendering, but unfortunately it does not support iOS Accessibility font enlarging.
-// Since iOS devices have enough computational power and the text optimization is not crucial, the NativeText is used only for Android.
-const DefaultTextComponent: typeof RNText = Platform.select({
-    android: NativeText,
-    ios: RNText,
-});
 
 export type IconProps = {
     name: IconName;
@@ -71,13 +62,9 @@ export const Icon = ({ name, size = 'large', color = 'iconDefault', ...props }: 
     }, [sizeNumber, color, colors]);
 
     return (
-        <DefaultTextComponent
-            style={style}
-            {...props}
-            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-        >
+        <Text style={style} {...props} maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}>
             {char}
-        </DefaultTextComponent>
+        </Text>
     );
 };
 
