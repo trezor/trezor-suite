@@ -19,7 +19,7 @@ test.describe(
     { tag: ['@group=migrations', '@webOnly', '@nightlyOnly', '@specificModel'] },
     () => {
         test.use({
-            emulatorStartConf: { model: 'T3T1' },
+            emulatorStartConf: { model: 'T3T1', wipe: true },
             emulatorSetupConf: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
         });
 
@@ -176,10 +176,10 @@ test.describe(
                     await dashboardPage.openDeviceSwitcher();
                     await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
                     await dashboardPage.deviceSwitchingCloseButton.first().click();
-                    await page.getByTestId('@account-subpage/back').last().click();
                 });
 
                 await test.step('Verify send form has still the original address filled in', async () => {
+                    await walletPage.accountButton({ symbol: 'btc', atIndex: 0 }).click();
                     await walletPage.openSendFormButton.click();
                     await expect(page.getByTestId(workaroundBtcAddressInputSelector)).toHaveValue(
                         btcAddress,
