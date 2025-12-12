@@ -6,11 +6,11 @@
 import { promisify } from 'node:util';
 import fs from 'node:fs';
 import path from 'node:path';
-import { checkPackageDependencies, getDirname } from './helpers';
+import { checkPackageDependencies } from './helpers';
 
 const readdir = promisify(fs.readdir);
 
-const rootPath = path.join(getDirname(import.meta.url), '..', '..');
+const rootPath = path.join(import.meta.dirname, '..', '..');
 const packagesPath = path.join(rootPath, 'packages');
 
 const args = process.argv.slice(2);

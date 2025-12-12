@@ -4,7 +4,6 @@ import semver from 'semver';
 import child_process from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { getDirname } from './helpers';
 
 const args = process.argv.slice(2);
 
@@ -19,7 +18,7 @@ if (!['latest', 'beta'].includes(distTag)) {
     throw new Error('distTag (3rd parameter) must be either "beta" or "latest"');
 }
 
-const ROOT = path.join(getDirname(import.meta.url), '..', '..');
+const ROOT = path.join(import.meta.dirname, '..', '..');
 const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
 
 // read package version

@@ -5,7 +5,6 @@ import path from 'node:path';
 import prettier from 'prettier';
 import sortPackageJson from 'sort-package-json';
 
-import { getDirname } from './ci/helpers';
 import templatePackageJsonWeb from './package-template/package.json';
 import templatePackageJsonNative from './package-template-native/package.json';
 import { getPrettierConfig } from './utils/getPrettierConfig';
@@ -43,7 +42,7 @@ const isValidScope = (scope: string): scope is keyof typeof scopes =>
     Object.keys(scopes).includes(scope);
 
 // Get the directory of the current file
-const currentDir = getDirname(import.meta.url);
+const currentDir = import.meta.dirname;
 const rootDir = path.resolve(currentDir, '..');
 
 (async () => {

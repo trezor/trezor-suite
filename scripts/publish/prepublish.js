@@ -1,9 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-import { getDirname } from '../ci/helpers';
-
-const __dirname = getDirname(import.meta.url);
+const currentDir = import.meta.dirname;
 
 console.log('prepublish script running for package: ' + process.env.npm_package_name);
 const packageName = process.env.npm_package_name.split('/')[1];
@@ -15,11 +13,11 @@ if (!isValidPackageName) {
 }
 
 // Run babel with custom plugins to fix non-index internal imports and add .js extensions.
-const scriptPath = path.join(__dirname, 'replace-imports.sh');
-const args = [path.join(__dirname, '..', '..', 'packages', packageName, 'lib'), 'cjs'];
+const scriptPath = path.join(currentDir, 'replace-imports.sh');
+const args = [path.join(currentDir, '..', '..', 'packages', packageName, 'lib'), 'cjs'];
 execFileSync(scriptPath, args, {
     encoding: 'utf-8',
-    cwd: __dirname,
+    cwd: currentDir,
 });
 
 if (!process.env.CI) {

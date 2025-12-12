@@ -2,11 +2,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 
 import { promisify } from 'node:util';
-import {
-    getDirname,
-    getPackagesAndDependenciesRequireUpdate,
-    gettingNpmDistributionTags,
-} from './helpers';
+import { getPackagesAndDependenciesRequireUpdate, gettingNpmDistributionTags } from './helpers';
 
 const readFile = promisify(fs.readFile);
 const existsDirectory = promisify(fs.exists);
@@ -39,7 +35,7 @@ const deploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semver)
     ? 'canary'
     : 'stable';
 
-const ROOT = path.join(getDirname(import.meta.url), '..', '..');
+const ROOT = path.join(import.meta.dirname, '..', '..');
 
 const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
     exec('git', [
