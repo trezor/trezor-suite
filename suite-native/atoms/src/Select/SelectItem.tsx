@@ -33,16 +33,19 @@ const selectItemContentStyle = prepareNativeStyle<SelectItemStyleProps>(
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        margin: utils.spacings.sp1, // prevents layout shift after selection
         padding: utils.spacings.sp16,
-        borderWidth: utils.borders.widths.large,
+        borderWidth: utils.borders.widths.small,
         borderRadius: utils.borders.radii.r12,
-        borderColor: utils.colors.backgroundSurfaceElevation1,
+        borderColor: utils.colors.borderOnElevation1,
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
         color: utils.colors.textDefault,
         extend: [
             {
                 condition: isSelected,
                 style: {
+                    margin: 0,
+                    borderWidth: utils.borders.widths.large,
                     borderColor: utils.colors.backgroundPrimaryDefault,
                     color: utils.colors.textDefault,
                 },
