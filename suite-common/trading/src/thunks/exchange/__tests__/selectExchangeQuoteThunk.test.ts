@@ -7,7 +7,8 @@ import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { invityAPI } from '../../../invityAPI';
 import { ExchangeInfo, TradingExchangeState } from '../../../reducers/exchangeReducer';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { SelectExchangeQuoteThunkProps } from '../selectExchangeQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

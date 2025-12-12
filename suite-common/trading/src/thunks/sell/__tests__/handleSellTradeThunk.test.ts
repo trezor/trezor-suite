@@ -7,7 +7,8 @@ import { Account } from '@suite-common/wallet-types';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingSellState } from '../../../reducers/sellReducer';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { handleSellTradeThunk } from '../handleSellTradeThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

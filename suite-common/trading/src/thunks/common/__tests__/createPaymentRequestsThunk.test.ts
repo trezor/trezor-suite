@@ -7,7 +7,8 @@ import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-typ
 import { PROTO } from '@trezor/connect';
 
 import { invityAPI } from '../../../invityAPI';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { tradingGetCoinSlip44 } from '../../../utils/signature/signatureUtils';
 import { createPaymentRequestsThunk } from '../createPaymentRequestsThunk';
 import { getNonce } from '../getNonce';

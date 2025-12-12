@@ -17,7 +17,7 @@ import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
 import { ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
 import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
-import { type TradingRootState, initialState } from '../../reducers/tradingReducer';
+import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
 import type { TradingPaymentMethodListProps, TradingPaymentMethodProps } from '../../types';
 import {
     TradingRootStateWithDeviceAndAccounts,

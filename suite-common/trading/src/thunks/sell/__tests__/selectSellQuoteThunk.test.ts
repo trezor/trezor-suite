@@ -6,7 +6,8 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
 import { SellInfo, TradingSellState } from '../../../reducers/sellReducer';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 import { SelectSellQuoteThunkProps } from '../selectSellQuoteThunk';
 

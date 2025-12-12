@@ -7,7 +7,8 @@ import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { tradingThunks } from '../';
 import { accounts } from '../../../reducers/__fixtures__/account';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 const mockedSuiteReducer = createReducerWithExtraDeps(

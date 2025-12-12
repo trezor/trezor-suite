@@ -7,7 +7,7 @@ import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
-import { tradingActions } from '../../reducers/tradingReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingBuyQuotesRequest,
     selectTradingCoinSymbolByCryptoId,
