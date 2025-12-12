@@ -11788,13 +11788,13 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-mobile": "workspace:^"
     "@trezor/e2e-utils": "workspace:*"
+    "@trezor/eslint": "workspace:*"
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/node": "npm:22.13.10"
-    "@types/react-native-get-random-values": "npm:1.8.2"
     "@walletconnect/react-native-compat": "npm:^2.20.3"
     "@whatwg-node/events": "npm:0.1.2"
     abortcontroller-polyfill: "npm:1.7.8"
@@ -11836,7 +11836,7 @@ __metadata:
     react-native-ble-plx: "patch:react-native-ble-plx@npm%3A3.5.0#~/.yarn/patches/react-native-ble-plx-npm-3.5.0-c98fd0ae25.patch"
     react-native-edge-to-edge: "npm:1.7.0"
     react-native-gesture-handler: "npm:2.29.0"
-    react-native-get-random-values: "npm:^1.11.0"
+    react-native-get-random-values: "npm:^2.0.0"
     react-native-keyboard-controller: "npm:1.19.2"
     react-native-launch-arguments: "npm:^4.1.1"
     react-native-mmkv: "npm:~4.0.0"
@@ -16848,13 +16848,6 @@ __metadata:
   peerDependencies:
     "@types/react": ^19.0.0
   checksum: 10/b5b20b7f0797f34c5a11915b74dcf8b3b7a9da9fea90279975ce6f150ca5d31bb069dbb0838638a5e9e168098aa4bb4a6f61d078efa1bbb55d7f0bdfe47bb142
-  languageName: node
-  linkType: hard
-
-"@types/react-native-get-random-values@npm:1.8.2":
-  version: 1.8.2
-  resolution: "@types/react-native-get-random-values@npm:1.8.2"
-  checksum: 10/08f3f82efbb5b6d9acd8f7f55a2dac9f228886323ac3018a1bab46cd1b45f24809d194fd2a3fe02a9ec4196606325e5cfffde0b0057ae785208b658fdc83c821
   languageName: node
   linkType: hard
 
@@ -39846,14 +39839,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-get-random-values@npm:^1.11.0":
-  version: 1.11.0
-  resolution: "react-native-get-random-values@npm:1.11.0"
+"react-native-get-random-values@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "react-native-get-random-values@npm:2.0.0"
   dependencies:
     fast-base64-decode: "npm:^1.0.0"
   peerDependencies:
-    react-native: ">=0.56"
-  checksum: 10/eb04833ce2b66309d737f1447ab01ad32aca00a8d1cc4de7b4e751c23f4d9f8059a2643bb16e0b6f3e6b074a9e57e769bb2bf2afc50a912c5661d80a6ce4de34
+    react-native: ">=0.81"
+  checksum: 10/f55218ac9710f9d329f0cfb1d8dce9765b4d06fdd2b9f966ed0476298f8373875679caf68b44f4e3b363abe81d1cb6f4c47b45f58b87eae63bd54776beeded46
   languageName: node
   linkType: hard
 

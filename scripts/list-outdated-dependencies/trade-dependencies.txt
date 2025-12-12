@@ -1,7 +1,6 @@
 @config-plugins/detox
 @expo/config-plugins
 @mobily/ts-belt
-@types/react-native-get-random-values
 @react-native-community/cli
 @react-native-community/netinfo
 @react-native/babel-preset
