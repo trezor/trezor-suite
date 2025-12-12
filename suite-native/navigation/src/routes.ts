@@ -25,6 +25,7 @@ export enum RootStackRoutes {
     BootloaderMode = 'BootloaderMode',
     TradingLocationModal = 'TradingLocationModal',
     DemoAccountQuestionnaireStack = 'DemoAccountQuestionnaireStack',
+    Storybook = 'Storybook',
 }
 
 export enum AppTabsRoutes {
