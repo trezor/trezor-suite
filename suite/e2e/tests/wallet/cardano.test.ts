@@ -6,15 +6,16 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const receiveAddress =
-    'addr_test1qphsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrq5at0x5';
+    // 'addr_test1qphsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrq5at0x5';
+    'addr1q8y96gsk7dh870g7zhzj7d62yv9qasjqdkpvmq93u8aaxzgfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrqz4fyst';
 
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
 
 test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-        await settingsPage.navigateTo('coins');
+        await onboardingPage.completeOnboarding();
+        await settingsPage.changeNetworks({ enableNetworks: ['ada'], disableNetworks: ['btc'] });
     });
 
     test(
@@ -27,41 +28,29 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({
-            page,
-            dashboardPage,
-            devicePrompt,
-            settingsPage,
-            walletPage,
-            trezorUserEnvLink,
-        }) => {
-            await settingsPage.toggleTestnetNetworks();
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coins.enableNetwork('tada');
-            // await settingsPage.coins.openNetworkAdvanceSettings('tada');
-            // await expect(settingsPage.modal).toHaveScreenshot('cardano-advanced-settings.png', {
-            //     mask: [settingsPage.coins.coinAddressInput],
-            // });
-            // await settingsPage.modalCloseButton.click();
-
+        async (
+            { page, dashboardPage, devicePrompt, settingsPage, walletPage, trezorUserEnvLink },
+            testInfo,
+        ) => {
             await test.step('Verify Cardano account details', async () => {
                 await dashboardPage.navigateTo();
-                await walletPage.openAccount({ symbol: 'tada' });
+                await walletPage.openAccount({ symbol: 'ada' });
                 await walletPage.accountDetailsTabButton.click();
-                await expect(walletPage.accountDetails).toMatchAriaSnapshot(cardanoAccountDetails);
+                await expect(walletPage.accountDetails).toMatchAriaSnapshot(
+                    cardanoAccountDetails(testInfo.project.name),
+                );
             });
 
             await test.step('Verify public key', async () => {
                 await walletPage.showPublicKeyButton.click();
                 await devicePrompt.waitForPromptAndConfirm();
                 await expect(walletPage.copyPublicKeyButton).toBeEnabled();
-                // await expect(settingsPage.modal).toHaveScreenshot('cardano-show-xpub.png');
                 await settingsPage.modalCloseButton.click();
             });
 
             await test.step('Verify Cardano send form', async () => {
                 await walletPage.openSendFormButton.click();
-                // await expect(walletPage.sendForm).toHaveScreenshot('cardano-send.png');
+                await expect(walletPage.sendForm).toContainText('Cardano');
                 await page.getByTestId('@account-subpage/back').click();
             });
 
@@ -71,7 +60,6 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(devicePrompt).toDisplayReceiveAddress(receiveAddress, {
                     lineFormat: 'fullLine',
-                    specialAccountType: 'Legacy Testnet',
                 });
                 await trezorUserEnvLink.pressYes();
                 await expect(walletPage.copyAddressButton).toBeEnabled();
@@ -79,17 +67,6 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await settingsPage.modalCloseButton.click();
                 await page.getByTestId('@account-subpage/back').click();
-            });
-
-            //TODO: Needs rework after Cardano staking changes
-            await test.step.skip('Verify Cardano staking', async () => {
-                await walletPage.stakingButton.click();
-                await expect(walletPage.stakeAddress).toHaveText(
-                    'stake_test1uqyuj8h935q6panx0klttu026rzam0y9c2v97pv3l56uk3s5v5fjr',
-                );
-                await expect(page.getByRole('button', { name: 'Delegate' })).toBeDisabled();
-                // Recently there were a lot of changes in staking, and the snapshot became problematic
-                // await expect(walletPage.stakingCardano).toMatchAriaSnapshot(cardanoStaking);
             });
         },
     );

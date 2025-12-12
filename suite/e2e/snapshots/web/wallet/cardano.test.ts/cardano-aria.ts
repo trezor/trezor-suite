@@ -1,17 +1,21 @@
-export const cardanoAccountDetails = `
+export const cardanoAccountDetails = (platform: string) => `
     - text: Account type
     - paragraph:
-      - paragraph: Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.
+      - paragraph: Shelley-era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.
     - text: Default
     - paragraph: (Shelley)
     - text: Derivation path
     - paragraph: The derivation path is a way to navigate and generate specific keys within the organized structure of an HD (Hierarchical Deterministic) wallet.
     - link "Learn more":
+      - /url: https://trezor.io/learn/advanced/standards-proposals/what-is-bip32?utm_medium=${platform}
+      - text: Learn more
       - img
-    - paragraph: /m\\/\\d+'\\/\\d+'\\/0'/
+    - paragraph: m/1852'/1815'/0'
     - text: Public key (XPUB)
     - paragraph: Handle your account public key (XPUB) carefully. When exposed, a third party will be able to see your entire transaction history.
     - link "Learn more":
+      - /url: https://trezor.io/learn/supported-assets/bitcoin/what-is-a-public-key-xpub?utm_medium=${platform}
+      - text: Learn more
       - img
     - button "Show public key"
 `;
