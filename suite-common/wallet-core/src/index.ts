@@ -14,12 +14,7 @@ export * from './device/deviceConstants';
 export * from './device/deviceReducer';
 export * from './device/deviceSelectors';
 export * from './device/deviceThunks';
-export {
-    getIsIgnoredEntropyCheckError,
-    DeviceError,
-    DeviceCancelledErr,
-    isCanceledErrorMessage,
-} from './device/deviceUtils';
+export * from './device/deviceUtils';
 export * from './device/preparePushNotificationMiddleware';
 export * from './device/publicKeyActions';
 export * from './device/usePinHook';
