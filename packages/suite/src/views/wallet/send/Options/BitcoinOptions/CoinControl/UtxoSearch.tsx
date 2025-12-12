@@ -1,16 +1,8 @@
 import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useCallback, useRef } from 'react';
 
-import styled, { useTheme } from 'styled-components';
-
 import { Icon, Input, KEYBOARD_CODE } from '@trezor/components';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';
-
-const Container = styled.div`
-    display: flex;
-    align-items: center;
-    width: 100%;
-`;
 
 export type UtxoSearchProps = {
     searchQuery: string;
@@ -19,7 +11,6 @@ export type UtxoSearchProps = {
 };
 
 export const UtxoSearch = ({ searchQuery, setSearch, setSelectedPage }: UtxoSearchProps) => {
-    const theme = useTheme();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const { translationString } = useTranslation();
 
@@ -43,20 +34,18 @@ export const UtxoSearch = ({ searchQuery, setSearch, setSelectedPage }: UtxoSear
     );
 
     return (
-        <Container>
-            <Input
-                data-testid="@wallet/send/search-icon"
-                innerRef={inputRef}
-                leftContent={<Icon name="magnifyingGlass" size={16} color={theme.iconSubdued} />}
-                placeholder={translationString('TR_SEARCH_UTXOS')}
-                onChange={onSearch}
-                onKeyDown={onKeyDown}
-                value={searchQuery}
-                maxLength={512}
-                showClearButton="always"
-                size="small"
-                onClear={() => setSearch('')}
-            />
-        </Container>
+        <Input
+            data-testid="@wallet/send/search-icon"
+            innerRef={inputRef}
+            leftContent={<Icon name="magnifyingGlass" size={16} variant="tertiary" />}
+            placeholder={translationString('TR_SEARCH_UTXOS')}
+            onChange={onSearch}
+            onKeyDown={onKeyDown}
+            value={searchQuery}
+            maxLength={512}
+            showClearButton="always"
+            size="small"
+            onClear={() => setSearch('')}
+        />
     );
 };

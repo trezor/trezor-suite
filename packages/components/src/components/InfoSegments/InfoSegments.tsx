@@ -1,9 +1,10 @@
 import { Children, Fragment, ReactNode, useId } from 'react';
 
-import { spacings } from '@trezor/theme';
+import { SpacingValuesNew } from '@trezor/theme';
 
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
+import { Icon, IconVariant } from '../Icon/Icon';
 import { Text, TextVariant } from '../typography/Text/Text';
 import { TextProps, TextPropsKeys } from '../typography/utils';
 
@@ -14,7 +15,10 @@ export const allowedInfoSegmentsFrameProps = ['margin'] as const satisfies Frame
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInfoSegmentsFrameProps)[number]>;
 
 export type InfoSegmentsProps = AllowedFrameProps &
-    AllowedTextProps & { variant?: TextVariant; 'data-testid'?: string } & {
+    AllowedTextProps & {
+        variant?: TextVariant;
+        'data-testid'?: string;
+        gap?: SpacingValuesNew;
         children: Array<ReactNode>;
     };
 
@@ -23,6 +27,7 @@ export const InfoSegments = ({
     typographyStyle,
     variant,
     margin,
+    gap = 4,
     'data-testid': dataTestId,
 }: InfoSegmentsProps) => {
     const validChildren = Children.toArray(children).filter(child => Boolean(child));
@@ -36,11 +41,17 @@ export const InfoSegments = ({
             margin={margin}
             variant={variant}
         >
-            <Row gap={spacings.xxs}>
+            <Row gap={gap}>
                 {validChildren.map((child, index) => (
                     <Fragment key={`${id}-${index}`}>
                         {child}
-                        {index < validChildren.length - 1 && <span>&bull;</span>}
+                        {index < validChildren.length - 1 && (
+                            <Icon
+                                name="dotOutlineFilled"
+                                size={16}
+                                variant={variant as IconVariant}
+                            />
+                        )}
                     </Fragment>
                 ))}
             </Row>

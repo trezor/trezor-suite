@@ -199,7 +199,7 @@ export const ConfirmValueModal = ({
                                         isDisabled={isMetadataBlockedByDeviceCall}
                                         displayValue={
                                             <Text typographyStyle="highlight">
-                                                Add address label
+                                                <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
                                             </Text>
                                         }
                                         placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}

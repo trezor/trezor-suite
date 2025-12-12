@@ -4865,6 +4865,10 @@ export default defineMessages({
         id: 'TR_LABELING_ADDRESS_LABEL',
         defaultMessage: 'Address label',
     },
+    TR_LABELING_OUTPUT_LABEL: {
+        id: 'TR_LABELING_OUTPUT_LABEL',
+        defaultMessage: 'Coin label',
+    },
     TR_NOTIFICATIONS: {
         id: 'TR_NOTIFICATIONS',
         defaultMessage: 'Activity',
@@ -6457,6 +6461,10 @@ export default defineMessages({
     TR_LABELING_ADD_ADDRESS: {
         id: 'TR_LABELING_ADD_ADDRESS',
         defaultMessage: 'Add label',
+    },
+    TR_LABELING_ADD_ADDRESS_LABEL: {
+        id: 'TR_LABELING_ADD_ADDRESS_LABEL',
+        defaultMessage: 'Add address label',
     },
     TR_LABELING_EDIT_ADDRESS: {
         id: 'TR_LABELING_EDIT_ADDRESS',

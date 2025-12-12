@@ -51,6 +51,7 @@ const Container = styled.div<
         $backgroundColorOnInteraction?: CSSColor;
         $borderColor?: CSSColor;
         $shadow?: string;
+        $backgroundColorOnInteraction?: CSSColor;
     }
 >`
     background: unset;
@@ -163,6 +164,7 @@ export const Box = ({
             $backgroundColor={backgroundColor}
             $backgroundColorOnInteraction={backgroundColorOnInteraction}
             $borderColor={borderColor}
+            $backgroundColorOnInteraction={backgroundColorOnInteraction}
             $hasBackground={hasBackground}
             $elevation={elevation}
             onClick={onClick}

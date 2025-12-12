@@ -4,20 +4,14 @@ import { transparentize } from 'polished';
 import styled from 'styled-components';
 
 import { selectAccountTransactions } from '@suite-common/wallet-core';
-import { Icon, IconName, Paragraph, useElevation } from '@trezor/components';
+import { Column, Icon, IconName, Paragraph } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { CSSColor, Elevation, mapElevationToBorder, typography } from '@trezor/theme';
+import { CSSColor, typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { UtxoSelection } from './UtxoSelection/UtxoSelection';
-
-const Wrapper = styled.section<{ $elevation: Elevation }>`
-    border-bottom: 1px solid ${mapElevationToBorder};
-    margin: 12px 0 16px;
-    padding-bottom: 14px;
-`;
 
 const Header = styled.header`
     align-items: center;
@@ -53,13 +47,12 @@ export const UtxoSelectionList = ({
     utxos,
     withHeader,
 }: UtxoSelectionListProps) => {
-    const { elevation } = useElevation();
     const { account } = useSendFormContext();
 
     const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
 
     return (
-        <Wrapper $elevation={elevation}>
+        <Column>
             {withHeader && (
                 <Header>
                     <StyledIcon
@@ -78,15 +71,17 @@ export const UtxoSelectionList = ({
                     </div>
                 </Header>
             )}
-            {utxos.map(utxo => (
-                <UtxoSelection
-                    key={`${utxo.txid}-${utxo.vout}`}
-                    transaction={accountTransactions.find(
-                        transaction => transaction.txid === utxo.txid,
-                    )}
-                    utxo={utxo}
-                />
-            ))}
-        </Wrapper>
+            <Column gap={4}>
+                {utxos.map(utxo => (
+                    <UtxoSelection
+                        key={`${utxo.txid}-${utxo.vout}`}
+                        transaction={accountTransactions.find(
+                            transaction => transaction.txid === utxo.txid,
+                        )}
+                        utxo={utxo}
+                    />
+                ))}
+            </Column>
+        </Column>
     );
 };
