@@ -1,15 +1,15 @@
 import chalk from 'chalk';
-import fs from 'node:fs';
 import fsExtra from 'fs-extra';
+import fs from 'node:fs';
 import path from 'node:path';
 import prettier from 'prettier';
 import sortPackageJson from 'sort-package-json';
 
+import { getDirname } from './ci/helpers';
 import templatePackageJsonWeb from './package-template/package.json';
 import templatePackageJsonNative from './package-template-native/package.json';
 import { getPrettierConfig } from './utils/getPrettierConfig';
 import { getWorkspacesList } from './utils/getWorkspacesList';
-import { getDirname } from './ci/helpers';
 
 const scopes = {
     '@suite-common': {

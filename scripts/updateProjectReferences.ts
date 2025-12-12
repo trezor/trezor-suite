@@ -1,6 +1,6 @@
 import chalk from 'chalk';
-import fs from 'node:fs';
 import { minimatch } from 'minimatch';
+import fs from 'node:fs';
 import path from 'node:path';
 import prettier from 'prettier';
 import yargs from 'yargs';
