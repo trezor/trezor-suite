@@ -1,7 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { selectThp } from '@suite-common/thp/src/thpSelectors';
 import { selectDeviceDelegatedIdentityKey } from '@suite-common/wallet-core';
 
 import { createEnsureDelegatedIdentityKey } from './ensureDelegatedIdentityKey';
@@ -35,7 +34,6 @@ export const delegatedIdentityKeyCompositionRoot = (
             dispatch: deps.dispatch,
             platformEncryption: deps.platformEncryption,
         }),
-        getThpStaticKey: () => selectThp(deps.getState()).staticKey,
     });
 
     return {

@@ -5,9 +5,7 @@ import { LoadDelegatedIdentityKeyFromStateDep } from './loadDelegatedIdentityKey
 import { RetrieveDelegatedIdentityKeyFromDeviceDep } from './retrieveDelegatedIdentityKeyFromDevice';
 import { SaveDelegatedIdentityKeyDep } from './saveDelegatedIdentityKey';
 
-export type EnsureDelegatedIdentityKeyDeps = {
-    getThpStaticKey: () => string | undefined;
-} & SaveDelegatedIdentityKeyDep &
+export type EnsureDelegatedIdentityKeyDeps = SaveDelegatedIdentityKeyDep &
     LoadDelegatedIdentityKeyFromStateDep &
     RetrieveDelegatedIdentityKeyFromDeviceDep;
 
@@ -22,10 +20,8 @@ export const createEnsureDelegatedIdentityKey =
             return ok(currentDelegatedKey);
         }
 
-        const thpStaticHostKey = deps.getThpStaticKey();
         const result = await deps.retrieveDelegatedIdentityKeyFromDevice({
             device,
-            thpStaticHostKey,
         });
 
         if (!result.ok) {

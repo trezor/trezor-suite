@@ -14,7 +14,6 @@ const deps: EnsureDelegatedIdentityKeyDeps = {
     saveDelegatedIdentityKey: () => Promise.resolve(),
     retrieveDelegatedIdentityKeyFromDevice: () =>
         Promise.resolve(ok(asDelegatedIdentityKey('trezor-delegated-key-123'))),
-    getThpStaticKey: () => 'thp-static-key',
 };
 
 const device: EnsureDelegatedIdentityKeyParams['device'] = {
@@ -22,12 +21,6 @@ const device: EnsureDelegatedIdentityKeyParams['device'] = {
     path: asDeviceUniquePath('1/2/3'),
     state: {
         staticSessionId: '1@2:3',
-    },
-    thp: {
-        credentials: [
-            { credential: 'thp-credential', trezor_static_public_key: 'trezor_static_public_key' },
-        ],
-        channel: 'thp-channel',
     },
 };
 

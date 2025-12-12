@@ -28,7 +28,6 @@ describe(createRetrieveDelegatedIdentityKeyFromDevice.name, () => {
 
         const result = await retrieveDelegatedIdentityKeyFromDevice({
             device: device123,
-            thpStaticHostKey: 'thp-static-key',
         });
 
         expect(result.ok).toBe(true);
