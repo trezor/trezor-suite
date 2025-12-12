@@ -3833,6 +3833,18 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION',
         defaultMessage: 'Export label files to your computer using the standard BIP 329',
     },
+    TR_ACCOUNT_DETAILS_IMPORT_LABELS_HEADER: {
+        id: 'TR_ACCOUNT_DETAILS_IMPORT_LABELS_HEADER',
+        defaultMessage: 'Import Labels (BIP 329)',
+    },
+    TR_ACCOUNT_DETAILS_IMPORT_LABELS_BUTTON: {
+        id: 'TR_ACCOUNT_DETAILS_IMPORT_LABELS_BUTTON',
+        defaultMessage: 'Import',
+    },
+    TR_ACCOUNT_DETAILS_IMPORT_LABELS_DESCRIPTION: {
+        id: 'TR_ACCOUNT_DETAILS_IMPORT_LABELS_DESCRIPTION',
+        defaultMessage: 'Import label files from your computer using the standard BIP 329',
+    },
     TR_ACCOUNT_DETAILS_XPUB: {
         id: 'TR_ACCOUNT_DETAILS_XPUB',
         defaultMessage:

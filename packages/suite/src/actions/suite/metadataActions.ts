@@ -12,6 +12,7 @@ import {
 } from '@suite-common/suite-sync/src/labeling/labelingSelectors';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -194,6 +195,52 @@ export const encryptAndSaveMetadata = async ({
 
     return providerInstance.setFileContent(fileName, encrypted);
 };
+
+export const importMetadataFromBip329File = createThunk<
+    void,
+    { importLabels: Bip329Label[]; accountDescriptor: string },
+    void
+>(
+    METADATA.IMPORT_METADATA_FROM_BIP329_FILE,
+    ({ importLabels, accountDescriptor }, { getState, extra: { services } }) => {
+        const state = getState();
+        const device = selectSelectedDevice(state);
+        const deviceStaticSessionId = device?.state?.staticSessionId;
+        if (!deviceStaticSessionId) {
+            return;
+        }
+
+        importLabels.forEach(label => {
+            const [txId, outputIndexStr] =
+                label.ref && label.type === 'output' ? label.ref.split(':') : [null, null];
+            switch (label.type) {
+                case 'output':
+                    if (label.ref && txId && outputIndexStr) {
+                        services.suiteSync.labeling.updateOutputLabel({
+                            outputIndex: Number(outputIndexStr),
+                            label: label.label ?? null,
+                            networkSymbol: 'btc' as NetworkSymbol,
+                            deviceStaticSessionId,
+                            accountDescriptor,
+                            txId,
+                        });
+                    }
+                    break;
+                case 'addr':
+                    if (label.ref) {
+                        services.suiteSync.labeling.updateAddressLabel({
+                            address: label.ref,
+                            label: label.label ?? null,
+                            networkSymbol: 'btc' as NetworkSymbol,
+                            deviceStaticSessionId,
+                            accountDescriptor,
+                        });
+                    }
+                    break;
+            }
+        });
+    },
+);
 
 export const exportMetadataToBip329File = createThunk<
     void,

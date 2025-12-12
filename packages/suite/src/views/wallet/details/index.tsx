@@ -13,9 +13,13 @@ import {
     Url,
 } from '@trezor/urls';
 
-import { exportMetadataToBip329File } from 'src/actions/suite/metadataActions';
+import {
+    exportMetadataToBip329File,
+    importMetadataFromBip329File,
+} from 'src/actions/suite/metadataActions';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { JsonlReader } from 'src/components/suite/JsonlReader';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
@@ -104,10 +108,24 @@ const Details = () => {
     const shouldDisplayExportBip329Labels =
         account.networkType === 'bitcoin' && (isMetadataEnabled || isLocalFirstStorageEnabled);
 
+    // TODO: add the condition when import is implemented !!!!!!!!!!!
+    const shouldDisplayImportBip329Labels = account.networkType === 'bitcoin';
+
     const handleXpubClick = () => dispatch(showXpub());
 
     const handleExportBip329 = () =>
         dispatch(exportMetadataToBip329File({ getDefaultAccountLabel }));
+
+    const handleImportBip329 = data => {
+        console.log('handleImportBip329');
+        console.log('data', data);
+        dispatch(
+            importMetadataFromBip329File({
+                importLabels: data,
+                accountDescriptor: account.descriptor,
+            }),
+        );
+    };
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
@@ -194,6 +212,17 @@ const Details = () => {
                             >
                                 <Translation id="TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON" />
                             </Button>
+                        </DetailsRow>
+                    )}
+                    {shouldDisplayImportBip329Labels && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_IMPORT_LABELS_HEADER"
+                            description={
+                                <Translation id="TR_ACCOUNT_DETAILS_IMPORT_LABELS_DESCRIPTION" />
+                            }
+                            learnMoreUrl={HELP_CENTER_BIP329_URL}
+                        >
+                            <JsonlReader onDataLoaded={handleImportBip329} />
                         </DetailsRow>
                     )}
                 </Column>
