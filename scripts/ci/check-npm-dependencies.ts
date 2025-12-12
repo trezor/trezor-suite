@@ -27,7 +27,7 @@ if (!allowedSemvers.includes(semanticVersion)) {
     );
 }
 
-const currentDeploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semver)
+const currentDeploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semanticVersion)
     ? 'canary'
     : 'stable';
 
