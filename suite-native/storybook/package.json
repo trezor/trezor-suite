@@ -1,0 +1,22 @@
+{
+    "name": "@suite-native/storybook",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": ".rnstorybook/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@storybook/addon-ondevice-controls": "^10.0.7",
+        "@storybook/react-native": "^10.0.7",
+        "react": "19.1.0",
+        "react-dom": "19.1.0",
+        "react-native-mmkv": "~4.0.0",
+        "storybook": "^10.1.0"
+    }
+}

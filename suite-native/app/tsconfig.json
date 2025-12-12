@@ -105,6 +105,7 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../storybook" },
         { "path": "../test-utils" },
         {
             "path": "../../packages/connect-mobile"

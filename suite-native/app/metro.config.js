@@ -4,6 +4,7 @@
 const { withRozenite } = require('@rozenite/metro');
 const { withRozeniteReduxDevTools } = require('@rozenite/redux-devtools-plugin/metro');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
+const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
 const { mergeConfig } = require('metro-config');
 const nodejs = require('node-libs-browser');
 
@@ -134,16 +135,22 @@ const config = {
     },
 };
 
-const mergedConfig = mergeConfig(jsonExpoConfig, config);
+const configWithStorybook = mergeConfig(
+    jsonExpoConfig,
+    withStorybook(config, {
+        enabled: process.env.EXPO_PUBLIC_ENVIRONMENT !== 'production',
+        configPath: './../storybook/.rnstorybook',
+    }),
+);
 
 if (
     process.env.EXPO_PUBLIC_IS_DETOX_BUILD !== 'true' &&
     process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug'
 ) {
     // enable Rozenite plugins only in debug build
-    module.exports = withRozenite(mergedConfig, {
+    module.exports = withRozenite(configWithStorybook, {
         enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),
     });
 } else {
-    module.exports = mergedConfig;
+    module.exports = configWithStorybook;
 }

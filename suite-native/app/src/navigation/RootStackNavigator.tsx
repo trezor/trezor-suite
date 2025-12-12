@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
@@ -38,6 +39,7 @@ import {
 } from '@suite-native/navigation';
 import { ReceiveStackNavigator } from '@suite-native/receive';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { StorybookUI } from '@suite-native/storybook';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
 import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
 
@@ -174,6 +176,17 @@ export const RootStackNavigator = () => {
                     name={RootStackRoutes.TradingLocationModal}
                     component={TradingLocationModalScreen}
                 />
+
+                {isDevelopOrDebugEnv() && (
+                    <RootStack.Screen
+                        name={RootStackRoutes.Storybook}
+                        component={StorybookUI}
+                        options={{
+                            headerShown: true,
+                            headerBackButtonDisplayMode: 'minimal',
+                        }}
+                    />
+                )}
             </RootStack.Group>
         </RootStack.Navigator>
     );
