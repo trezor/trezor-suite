@@ -1,4 +1,3 @@
-import 'react-native-get-random-values';
 import { MMKV } from 'react-native-mmkv';
 
 import { useMMKVDevTools } from '@rozenite/mmkv-plugin';

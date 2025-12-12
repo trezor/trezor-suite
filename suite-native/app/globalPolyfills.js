@@ -14,6 +14,7 @@ import isSubsetOf from 'set.prototype.issubsetof';
 import isSupersetOf from 'set.prototype.issupersetof';
 import symmetricDifference from 'set.prototype.symmetricdifference';
 import union from 'set.prototype.union';
+import 'react-native-get-random-values';
 
 // Event, EventTarget and CustomEvent are needed for @solana/kit to work
 globalThis.Event = Event;
