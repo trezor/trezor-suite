@@ -1,10 +1,11 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/redux-utils';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsFeatureSuiteSyncAvailable,
     selectSuiteSyncRelayUrl,
+    suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
@@ -18,6 +19,7 @@ export const SuiteSyncRelaySettings = () => {
     const isFeatureSuiteSyncEnabled = useSelector(selectIsFeatureSuiteSyncAvailable);
     const { suiteSync } = useServices();
     const { showToast } = useToast();
+    const dispatch = useDispatch();
 
     const form = useForm<{ suiteSyncRelayUrl: string }>({
         defaultValues: {
@@ -37,11 +39,11 @@ export const SuiteSyncRelaySettings = () => {
     });
 
     const handleSuiteSyncEnableToggle = () => {
-        if (isFeatureSuiteSyncEnabled) {
-            suiteSync.turnOffSuiteSync();
-        } else {
-            suiteSync.turnOnSuiteSync();
-        }
+        dispatch(
+            suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
+                isShownInSettings: !isFeatureSuiteSyncEnabled,
+            }),
+        );
     };
 
     const handleResetToDefault = async () => {

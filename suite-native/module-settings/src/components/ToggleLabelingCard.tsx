@@ -21,8 +21,13 @@ export const ToggleLabelingCard = () => {
         });
     };
 
-    const toggleSuiteSync = () =>
-        isSuiteSyncEnabled ? showSuiteSyncDisableConfirmationAlert() : suiteSync.turnOnSuiteSync();
+    const toggleSuiteSync = () => {
+        if (isSuiteSyncEnabled) {
+            showSuiteSyncDisableConfirmationAlert();
+        } else {
+            suiteSync.turnOnSuiteSync();
+        }
+    };
 
     return (
         <>
