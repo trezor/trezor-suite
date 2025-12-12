@@ -7,7 +7,7 @@ import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtc
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
-import { outputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
+import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
 import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
 import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
@@ -74,10 +74,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
 
             await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
 
-            // TODO remove after https://github.com/trezor/trezor-trade-api/issues/386 is resolved
-            const is386Resolved = false;
-            if (!is386Resolved) return;
-
             await exchangePreviewActions.waitForFeesToLoad();
             await exchangePreviewActions.scrollScreenToBottom();
             await exchangePreviewActions.goToFees();
@@ -87,12 +83,12 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
 
             await exchangePreviewActions.goToTransactionSigning();
 
-            await outputsReviewActions.expectOutputsReviewScreenToBeVisible();
-            await outputsReviewActions.expectAndConfirmRecipientAddress();
-            await outputsReviewActions.expectAndConfirmTotalFee();
-            await outputsReviewActions.signTransaction();
-            await outputsReviewActions.expectSendTransactionButton();
-            await outputsReviewActions.cancelTransaction();
+            await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();
+            await exchangeOutputsReviewActions.expectAndConfirmRecipientAddress();
+            await exchangeOutputsReviewActions.expectAndConfirmTotalFee();
+            await exchangeOutputsReviewActions.signTransaction();
+            await exchangeOutputsReviewActions.expectSendTransactionButton();
+            await exchangeOutputsReviewActions.cancelTransaction();
 
             await tradingExchangeActions.waitForTradeDataToLoad();
         });

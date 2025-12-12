@@ -6,12 +6,12 @@ import { TradingActions } from './TradingActions';
 import { waitForVisible } from '../../support/utils';
 
 class OutputsReviewActions extends TradingActions {
-    constructor() {
+    constructor(private readonly screenName: string) {
         super('outputs-review');
     }
 
     getScreen() {
-        return element(by.id('@screen/TradingOutputsReview'));
+        return element(by.id(`@screen/${this.screenName}`));
     }
 
     async expectOutputsReviewScreenToBeVisible() {
@@ -45,4 +45,8 @@ class OutputsReviewActions extends TradingActions {
     }
 }
 
-export const outputsReviewActions = new OutputsReviewActions();
+export const exchangeOutputsReviewActions = new OutputsReviewActions(
+    'TradingExchangeOutputsReview',
+);
+
+export const sellOutputsReviewActions = new OutputsReviewActions('TradingSellOutputsReview');
