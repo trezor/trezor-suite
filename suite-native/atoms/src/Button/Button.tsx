@@ -19,23 +19,27 @@ import { TestProps } from '../types';
 // and also because string needs to be rendered in the <Text> element anyway
 export type ButtonAccessory = IconName | ReactElement;
 
-export type ButtonSize = 'tiny' | 'extraSmall' | 'small' | 'medium' | 'large';
-export type ButtonColorScheme =
-    | 'primary'
-    | 'primaryElevation0'
-    | 'secondary'
-    | 'tertiaryElevation0'
-    | 'tertiaryElevation1'
-    | 'redBold'
-    | 'redElevation0'
-    | 'redElevation1'
-    | 'yellowBold'
-    | 'yellowElevation0'
-    | 'yellowElevation1'
-    | 'blueBold'
-    | 'blueElevation0'
-    | 'blueElevation1'
-    | 'backgroundSurfaceElevation0';
+export const BUTTON_SIZES = ['tiny', 'extraSmall', 'small', 'medium', 'large'] as const;
+export type ButtonSize = (typeof BUTTON_SIZES)[number];
+
+export const BUTTON_COLOR_SCHEMES = [
+    'primary',
+    'primaryElevation0',
+    'secondary',
+    'tertiaryElevation0',
+    'tertiaryElevation1',
+    'redBold',
+    'redElevation0',
+    'redElevation1',
+    'yellowBold',
+    'yellowElevation0',
+    'yellowElevation1',
+    'blueBold',
+    'blueElevation0',
+    'blueElevation1',
+    'backgroundSurfaceElevation0',
+] as const;
+export type ButtonColorScheme = (typeof BUTTON_COLOR_SCHEMES)[number];
 
 export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     children: ReactNode;
