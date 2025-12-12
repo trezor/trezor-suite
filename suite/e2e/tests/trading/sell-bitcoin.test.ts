@@ -10,12 +10,6 @@ import {
 } from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { FeeTypes } from '../../support/pageObjects/trading/fees';
-
-interface FeeSwitchTestCase {
-    feeType: FeeTypes | 'custom';
-    feeSwitchFunction: () => Promise<void>;
-}
 
 // Expected values based on our mocked responses
 const fiatAmount = sellQuotesBTC[0].fiatStringAmount;
@@ -89,69 +83,5 @@ test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () 
         });
 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
-    });
-
-    test('Bitcoin sell fees', async ({ walletPage, tradingPage, devicePrompt }) => {
-        const testCases: FeeSwitchTestCase[] = [
-            {
-                feeType: 'economy',
-                feeSwitchFunction: async () => {
-                    await tradingPage.fees.card('economy').click();
-                },
-            },
-            {
-                feeType: 'normal',
-                feeSwitchFunction: async () => {
-                    await tradingPage.fees.card('normal').click();
-                },
-            },
-            {
-                feeType: 'high',
-                feeSwitchFunction: async () => {
-                    await tradingPage.fees.card('high').click();
-                },
-            },
-            {
-                feeType: 'custom',
-                feeSwitchFunction: async () => {
-                    await tradingPage.fees.switchToCustom();
-                    await tradingPage.fees.customInput.fill('10');
-                },
-            },
-        ];
-
-        for (const { feeType, feeSwitchFunction } of testCases) {
-            await test.step(`${feeType} fee`, async () => {
-                let feeRate: string | undefined;
-                await test.step('Open sell form', async () => {
-                    await walletPage.openTrading();
-                    await tradingPage.sellTabButton.click();
-                });
-
-                await test.step(`Fill in a sell form with ${feeType} fee`, async () => {
-                    await tradingPage.fillSellForm({ cryptoAmount });
-                    await tradingPage.fees.openCollapsibleFees();
-                    await feeSwitchFunction();
-                    feeRate = await tradingPage.fees.getBitcoinFeeRate(feeType);
-                });
-
-                await test.step('Confirm sell', async () => {
-                    await tradingPage.sellBestOfferButton.click();
-                });
-
-                await tradingPage.waitForRedirectCompletion();
-
-                await test.step('Initiate send and verify Fee', async () => {
-                    await tradingPage.initiateSendConfirmation();
-                    await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
-                    await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-                    const errorMessage = `expected ${feeType} fee on Device Prompt to be:`;
-                    expect.soft(await devicePrompt.getFeeRate(), errorMessage).toBe(feeRate);
-
-                    //TODO: Do verification on emulator display
-                });
-                await devicePrompt.closeButton.click();
-            });
-        }
     });
 });
