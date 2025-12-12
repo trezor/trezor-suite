@@ -10,7 +10,18 @@ import {
     filterAndCategorizeUtxos,
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
-import { Card, Checkbox, Column, Icon, Row, Switch, Text } from '@trezor/components';
+import {
+    Banner,
+    Card,
+    Checkbox,
+    Column,
+    Divider,
+    Icon,
+    Paragraph,
+    Row,
+    Switch,
+    Text,
+} from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -26,24 +37,10 @@ import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSortingSelect } from './UtxoSortingSelect';
 
-const Header = styled.header`
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
-    padding-bottom: ${spacingsPx.sm};
-`;
-
-const MissingToInput = styled.div<{ $isVisible: boolean }>`
-    /* using visibility rather than display to prevent line height change */
-    visibility: ${({ $isVisible }) => !$isVisible && 'hidden'};
-`;
-
 const Empty = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
     margin-bottom: ${spacingsPx.sm};
     padding: ${spacingsPx.sm} 0;
-`;
-
-const StyledPagination = styled(Pagination)`
-    margin: ${spacingsPx.lg} 0;
 `;
 
 type CoinControlProps = {
@@ -171,8 +168,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     };
 
     return (
-        <Card>
-            <Header>
+        <Card paddingType="large">
+            <Column gap={16}>
                 <Row justifyContent="space-between">
                     <Translation id="TR_COIN_CONTROL" />
                     <Row gap={spacings.md}>
@@ -181,7 +178,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     </Row>
                 </Row>
 
-                <Row justifyContent="space-between" margin={{ top: spacings.md }}>
+                <Row justifyContent="space-between" margin={{ top: 24 }}>
                     <Checkbox
                         isChecked={allUtxosSelected}
                         isDisabled={!hasEligibleUtxos}
@@ -192,74 +189,82 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         </Text>
                     </Checkbox>
 
-                    <Column alignItems="end">
-                        <Text variant="tertiary">
-                            <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
-                        </Text>
+                    <Text variant="tertiary">
+                        <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
+                    </Text>
+                </Row>
 
-                        <MissingToInput $isVisible={isMissingVisible}>
+                {isMissingVisible && (
+                    <Banner icon>
+                        <Paragraph>
                             <Translation id={missingToInputId} values={missingToInputValues} />
-                        </MissingToInput>
-                    </Column>
-                </Row>
-            </Header>
-            {hasEligibleUtxos && (
-                <Row gap={spacings.sm} margin={{ top: spacings.lg }}>
-                    <UtxoSearch
-                        searchQuery={searchQuery}
-                        setSearch={setSearchQuery}
-                        setSelectedPage={setSelectedPage}
+                        </Paragraph>
+                    </Banner>
+                )}
+
+                <Divider margin={0} />
+
+                {hasEligibleUtxos && (
+                    <Row gap={12}>
+                        <UtxoSearch
+                            searchQuery={searchQuery}
+                            setSearch={setSearchQuery}
+                            setSelectedPage={setSelectedPage}
+                        />
+                        <UtxoSortingSelect />
+                    </Row>
+                )}
+                {!!spendableUtxosOnPage.length && (
+                    <UtxoSelectionList
+                        withHeader={isCoinjoinAccount}
+                        heading={<Translation id="TR_PRIVATE" />}
+                        description={
+                            <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
+                        }
+                        icon="shieldCheck"
+                        iconColor={theme.iconPrimaryDefault}
+                        utxos={spendableUtxosOnPage}
                     />
-                    <UtxoSortingSelect />
-                </Row>
-            )}
-            {!!spendableUtxosOnPage.length && (
-                <UtxoSelectionList
-                    withHeader={isCoinjoinAccount}
-                    heading={<Translation id="TR_PRIVATE" />}
-                    description={
-                        <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
-                    }
-                    icon="shieldCheck"
-                    iconColor={theme.iconPrimaryDefault}
-                    utxos={spendableUtxosOnPage}
-                />
-            )}
-            {!!lowAnonymityUtxosOnPage.length && (
-                <UtxoSelectionList
-                    withHeader
-                    heading={<Translation id="TR_NOT_PRIVATE" />}
-                    description={
-                        <Translation id="TR_NOT_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
-                    }
-                    icon="shieldWarning"
-                    iconColor={theme.iconAlertYellow}
-                    utxos={lowAnonymityUtxosOnPage}
-                />
-            )}
-            {!hasEligibleUtxos && (
-                <Empty>
-                    <Translation id="TR_NO_SPENDABLE_UTXOS" />
-                </Empty>
-            )}
-            {!!dustUtxosOnPage.length && (
-                <UtxoSelectionList
-                    withHeader
-                    heading={<Translation id="TR_DUST" />}
-                    description={<Translation id="TR_DUST_DESCRIPTION" />}
-                    icon="info"
-                    iconColor={theme.iconSubdued}
-                    utxos={dustUtxosOnPage}
-                />
-            )}
-            {showPagination && (
-                <StyledPagination
-                    currentPage={currentPage}
-                    totalItems={totalItems}
-                    perPage={utxosPerPage}
-                    onPageSelected={setSelectedPage}
-                />
-            )}
+                )}
+                {!!lowAnonymityUtxosOnPage.length && (
+                    <UtxoSelectionList
+                        withHeader
+                        heading={<Translation id="TR_NOT_PRIVATE" />}
+                        description={
+                            <Translation
+                                id="TR_NOT_PRIVATE_DESCRIPTION"
+                                values={{ targetAnonymity }}
+                            />
+                        }
+                        icon="shieldWarning"
+                        iconColor={theme.iconAlertYellow}
+                        utxos={lowAnonymityUtxosOnPage}
+                    />
+                )}
+                {!hasEligibleUtxos && (
+                    <Empty>
+                        <Translation id="TR_NO_SPENDABLE_UTXOS" />
+                    </Empty>
+                )}
+                {!!dustUtxosOnPage.length && (
+                    <UtxoSelectionList
+                        withHeader
+                        heading={<Translation id="TR_DUST" />}
+                        description={<Translation id="TR_DUST_DESCRIPTION" />}
+                        icon="info"
+                        iconColor={theme.iconSubdued}
+                        utxos={dustUtxosOnPage}
+                    />
+                )}
+                {showPagination && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalItems={totalItems}
+                        perPage={utxosPerPage}
+                        onPageSelected={setSelectedPage}
+                    />
+                )}
+            </Column>
         </Card>
     );
 };

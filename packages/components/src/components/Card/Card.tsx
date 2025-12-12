@@ -90,7 +90,7 @@ const CardContainer = styled.div<CardContainerProps>`
                 position: absolute;
                 border-radius: ${borders.radii.md};
                 inset: 0;
-                border-left: ${spacingsPx.xxs} solid ${mapVariantToColor({ theme, $variant })};
+                border-left: 2px solid ${mapVariantToColor({ theme, $variant })};
                 pointer-events: none;
             }
         `}
