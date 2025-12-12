@@ -84,13 +84,15 @@ runs:
       shell: bash
       run: |
         echo "::group::Install PW Dependencies"
-        echo "Silently installing Playwright dependencies"
-        yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }} > /dev/null
+        echo "Installing Playwright dependencies"
+        yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }} 1>/dev/null
         if [[ "${{ inputs.project }}" == "web" ]]; then
-          npx playwright install --with-deps > /dev/null
+          echo "Installing conditional Web dependencies"
+          npx playwright install --with-deps 1>/dev/null
         fi
         # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
-        yarn message-system-sign-config
+        echo "Building message-system-sign-config"
+        yarn message-system-sign-config 1>/dev/null
         echo "::endgroup::"
 
     - name: Pull Docker Images
