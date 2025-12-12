@@ -128,6 +128,28 @@ const getDefaultFirmwareVersion = (model: Model): string => {
     return `${DefaultFirmwareMajorVersion}${defaultFirmwareType}`;
 };
 
+// Gives trezorUserEnv promise a 30s to complete, else restart tenv to recover from potential hangs
+export const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const timeoutPromise = new Promise(
+        (_, reject) =>
+            (timeoutId = setTimeout(() => {
+                if (process.env.COMPOSE_FILE) {
+                    execSync('docker compose restart trezor-user-env-unix', { cwd: '../../' }); // restart tenv to fix potential hangs
+                }
+                reject(new Error('TrezorUserEnv action timed out'));
+            }, 30_000)),
+    );
+
+    const promiseWithClearingTimeout = async () => {
+        await promise;
+        clearTimeout(timeoutId);
+    };
+
+    await Promise.race([promiseWithClearingTimeout(), timeoutPromise]);
+};
+
 const trezorEnvSetup = async (
     testInfo: TestInfo,
     startEmulator: boolean,
@@ -135,17 +157,6 @@ const trezorEnvSetup = async (
     emulatorStartConf: StartEmu,
     emulatorSetupConf: SetupEmu,
 ) => {
-    let timeoutId;
-    const setupTimeoutPromise = new Promise(
-        (_, reject) =>
-            (timeoutId = setTimeout(() => {
-                if (process.env.COMPOSE_FILE) {
-                    execSync('docker compose restart trezor-user-env-unix', { cwd: '../../' }); // restart tenv to fix potential hangs
-                }
-                reject(new Error('TrezorUserEnv setup timed out'));
-            }, 30_000)),
-    );
-
     const setupPromise = (async () => {
         await TrezorUserEnvLinkProxy.logTestDetails(
             ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
@@ -164,11 +175,9 @@ const trezorEnvSetup = async (
         if (startEmulator && setupEmulator) {
             await TrezorUserEnvLinkProxy.setupEmu(emulatorSetupConf);
         }
-
-        clearTimeout(timeoutId); // prevent timeout and tenv restart if setup completed successfully
     })();
 
-    await Promise.race([setupPromise, setupTimeoutPromise]);
+    await trezorUserEnvStuckProtection(setupPromise);
 };
 
 // We first add currents fixtures to ensure current initialize first and quarantine works even for fails in beforeEach
