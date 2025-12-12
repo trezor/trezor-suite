@@ -1,9 +1,9 @@
 // This script should check what packages from the repository have a higher version than in NPM
 // and stdout out those to be used by GitHub workflow.
 
-import fs from 'fs';
-import util from 'util';
-import path from 'path';
+import fs from 'node:fs';
+import util from 'node:util';
+import path from 'node:path';
 import semver from 'semver';
 
 import { getDirname, getNpmRemoteGreatestVersion } from './helpers';

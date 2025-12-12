@@ -1,10 +1,10 @@
-import { execSync } from 'child_process';
-import fs from 'fs';
-import util from 'util';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import util from 'node:util';
 import fetch from 'cross-fetch';
-import path from 'path';
+import path from 'node:path';
 import * as tar from 'tar';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import semver from 'semver';
 
 import { fileURLToPath } from 'node:url';

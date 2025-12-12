@@ -1,5 +1,5 @@
 import { A, D, pipe } from '@mobily/ts-belt';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 
 type WorkspacePackageName = string;
 type WorkspaceItem = {

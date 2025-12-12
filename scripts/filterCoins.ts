@@ -1,5 +1,5 @@
 // Exclude coins that are not supported by any device model during yarn update-coins
-import fs from 'fs';
+import fs from 'node:fs';
 
 const coinsJsonPath = './packages/connect-common/files/coins.json';
 const coinsData: Record<string, { support: Record<string, string | boolean> }[]> = JSON.parse(
