@@ -56,7 +56,7 @@ export const DevicePinProtectionCard = () => {
     })();
 
     const handleOnPress = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.PinProtection);
+        navigation.navigate(DeviceSettingsStackRoutes.DevicePinProtection);
     };
 
     return (

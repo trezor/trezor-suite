@@ -30,7 +30,7 @@ const DisableOrChangePinCard = () => (
             icon="check"
             title={<Translation id="moduleDeviceSettings.pinProtection.pictograms.change.title" />}
         />
-        <VStack>
+        <VStack spacing="sp12">
             <DevicePinActionButton type="change" colorScheme="primary">
                 <Translation id="moduleDeviceSettings.pinProtection.buttons.changePin" />
             </DevicePinActionButton>
@@ -50,12 +50,12 @@ export const PinProtectionScreen = () => {
                 <DynamicScreenHeader
                     title={<Translation id="moduleDeviceSettings.pinProtection.title" />}
                     subtitle={<Translation id="moduleDeviceSettings.pinProtection.content" />}
-                    closeActionType="close"
+                    closeActionType="back"
                 />
             }
         >
             <Card>
-                <VStack spacing="sp32">
+                <VStack marginTop="sp16" spacing="sp32">
                     {isDeviceProtectedByPin ? <DisableOrChangePinCard /> : <EnablePinCard />}
                 </VStack>
             </Card>
