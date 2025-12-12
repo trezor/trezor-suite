@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../env-utils" },
-        { "path": "../protobuf" },
         { "path": "../utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../eslint" },

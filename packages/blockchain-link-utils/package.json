@@ -23,7 +23,6 @@
         "@mobily/ts-belt": "^3.13.1",
         "@stellar/stellar-sdk": "14.2.0",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/protobuf": "workspace:*",
         "@trezor/utils": "workspace:*",
         "xrpl": "4.4.3"
     },

@@ -13,8 +13,14 @@ import {
 
 import type { TokenDetailByMint, Transaction } from '@trezor/blockchain-link-types';
 import { isCodesignBuild } from '@trezor/env-utils';
-import type { StellarAsset } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+
+// copy paste from protobuf to avoid extra dependency
+export type StellarAsset = {
+    type: 0 | 1 | 2 | 'NATIVE' | 'ALPHANUM4' | 'ALPHANUM12';
+    code?: string;
+    issuer?: string;
+};
 
 export const STELLAR_DECIMALS = 7;
 
