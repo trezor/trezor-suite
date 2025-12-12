@@ -9,6 +9,7 @@ export * from './utils/sell/sellUtils';
 export * from './utils/signature/signatureUtils';
 export * from './constants';
 export * from './reducers/tradingReducer';
+export * from './reducers/tradingCommonReducer';
 export * from './reducers/buyReducer';
 export * from './reducers/exchangeReducer';
 export * from './reducers/sellReducer';

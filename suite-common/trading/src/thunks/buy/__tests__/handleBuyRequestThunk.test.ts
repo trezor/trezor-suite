@@ -6,7 +6,8 @@ import { getNetwork } from '@suite-common/wallet-config';
 
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {
     HandleBuyRequestThunkProps,
     TradingBuyFormProps,

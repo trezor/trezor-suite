@@ -4,7 +4,11 @@ import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
-import { TradingComposedTransactionInfo, initialState, tradingActions } from '../tradingReducer';
+import {
+    TradingComposedTransactionInfo,
+    initialState,
+    tradingActions,
+} from '../tradingCommonReducer';
 import { accounts } from './account';
 import {
     TradingPaymentMethodListProps,

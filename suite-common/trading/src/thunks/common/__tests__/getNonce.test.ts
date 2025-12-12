@@ -4,7 +4,8 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getNonce } from '../getNonce';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

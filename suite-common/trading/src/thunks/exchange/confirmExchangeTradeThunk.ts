@@ -7,7 +7,7 @@ import { Account } from '@suite-common/wallet-types';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingExchangeAccountKey,
     selectTradingExchangeReceiveAccountKey,

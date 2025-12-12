@@ -9,7 +9,8 @@ import { sellThunks } from '../';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingSellState } from '../../../reducers/sellReducer';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 import * as handleSellTradeThunk from '../handleSellTradeThunk';
 

@@ -9,7 +9,8 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../../utils';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

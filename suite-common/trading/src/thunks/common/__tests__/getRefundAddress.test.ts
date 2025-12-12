@@ -6,7 +6,8 @@ import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { accounts } from '../../../reducers/__fixtures__/account';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getRefundAddress } from '../getRefundAddress';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

@@ -6,7 +6,7 @@ import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
-import { tradingActions } from '../../reducers/tradingReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingActiveSection } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
 

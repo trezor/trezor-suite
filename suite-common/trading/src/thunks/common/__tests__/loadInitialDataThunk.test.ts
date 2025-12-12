@@ -9,12 +9,8 @@ import { invityAPI } from '../../../invityAPI';
 import { tradingBuyActions } from '../../../reducers/buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from '../../../reducers/exchangeReducer';
 import { SellInfo, tradingSellActions } from '../../../reducers/sellReducer';
-import {
-    TradingState,
-    initialState,
-    prepareTradingReducer,
-    tradingActions,
-} from '../../../reducers/tradingReducer';
+import { TradingState, initialState, tradingActions } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { regional } from '../../../regional';
 import { buyThunks } from '../../buy';
 import { exchangeThunks } from '../../exchange';

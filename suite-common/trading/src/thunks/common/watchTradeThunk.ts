@@ -5,7 +5,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
 import {
     TradingTradeMapProps,

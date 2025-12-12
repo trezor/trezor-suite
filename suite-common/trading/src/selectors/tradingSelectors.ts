@@ -16,7 +16,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
 import { SellInfo, TradingSellState } from '../reducers/sellReducer';
-import type { TradingRootState, TradingState } from '../reducers/tradingReducer';
+import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
 import {
     TradingFiatCurrenciesProps,
     TradingPaymentMethodProps,

@@ -3,6 +3,7 @@ import { CryptoId, SellFiatFlowType } from 'invity-api';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const TRADING_PREFIX = '@trading';
+export const TRADING_EXTENDED_PREFIX = `${TRADING_PREFIX}-extended`;
 export const TRADING_BUY_PREFIX = `${TRADING_PREFIX}-buy`;
 export const TRADING_EXCHANGE_PREFIX = `${TRADING_PREFIX}-exchange`;
 export const TRADING_SELL_PREFIX = `${TRADING_PREFIX}-sell`;

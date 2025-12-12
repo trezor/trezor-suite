@@ -5,7 +5,7 @@ import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingAccountAccordingActiveSection,
     selectTradingBuyInfo,

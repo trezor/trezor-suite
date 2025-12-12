@@ -7,7 +7,8 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { invityAPI } from '../../../invityAPI';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { HandleExchangeRequestThunkProps, TradingExchangeFormProps } from '../../../types';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

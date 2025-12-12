@@ -11,7 +11,8 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { exchangeThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);

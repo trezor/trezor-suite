@@ -12,11 +12,8 @@ import { Account, FeesState } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 
 import { accountBtc } from '../../../__fixtures__/utils';
-import {
-    TradingState,
-    initialState,
-    prepareTradingReducer,
-} from '../../../reducers/tradingReducer';
+import { TradingState, initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { tradingThunks } from '../index';
 
 jest.mock('@suite-common/wallet-core', () => {

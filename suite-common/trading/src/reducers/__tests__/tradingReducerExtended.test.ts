@@ -6,8 +6,12 @@ import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSele
 import { buyThunks } from '../../thunks/buy';
 import { sellThunks } from '../../thunks/sell';
 import { tradingFixtures } from '../__fixtures__/tradingReducer';
+import { buyInitialState, tradingBuyActions } from '../buyReducer';
+import { exchangeInitialState, tradingExchangeActions } from '../exchangeReducer';
+import { sellInitialState, tradingSellActions } from '../sellReducer';
 import { settingsInitialState, tradingSettingsActions } from '../settingsReducer';
-import { initialState, prepareTradingReducer } from '../tradingReducer';
+import { initialState, tradingActions } from '../tradingCommonReducer';
+import { prepareTradingReducer } from '../tradingReducer';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
@@ -107,9 +111,13 @@ describe('Testing trading reducer', () => {
         );
     });
 
-    describe('tradingSettings', () => {
-        it('should contain settings initial state', () => {
-            const store = configureMockStore({
+    describe('action delegation', () => {
+        let store: ReturnType<
+            typeof configureMockStore<{ wallet: { trading: typeof initialState } }>
+        >;
+
+        beforeEach(() => {
+            store = configureMockStore({
                 extra: {},
                 reducer: combineReducers({
                     wallet: combineReducers({
@@ -117,23 +125,72 @@ describe('Testing trading reducer', () => {
                     }),
                 }),
             });
-
-            expect(store.getState().wallet.trading.settings).toEqual(settingsInitialState);
         });
 
-        it('should delegate settings actions to settings slice', () => {
-            const store = configureMockStore({
-                extra: {},
-                reducer: combineReducers({
-                    wallet: combineReducers({
-                        trading: tradingReducer,
-                    }),
-                }),
+        describe('tradingCommon', () => {
+            it('should contain whole trading common state', () => {
+                expect(store.getState().wallet.trading).toEqual(initialState);
             });
 
-            store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('2'));
+            it('should delegate common actions to common slice', () => {
+                store.dispatch(tradingActions.setModalAccountKey('MY_KEY'));
 
-            expect(selectTradingMaxSlippagePercentage(store.getState())).toEqual('2');
+                expect(store.getState().wallet.trading.modalAccountKey).toEqual('MY_KEY');
+            });
+        });
+
+        describe('tradingSettings', () => {
+            it('should contain settings initial state', () => {
+                expect(store.getState().wallet.trading.settings).toEqual(settingsInitialState);
+            });
+
+            it('should delegate settings actions to settings slice', () => {
+                store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('2'));
+
+                expect(selectTradingMaxSlippagePercentage(store.getState())).toEqual('2');
+            });
+        });
+
+        describe('buy', () => {
+            it('should contain buy initial state', () => {
+                expect(store.getState().wallet.trading.buy).toEqual(buyInitialState);
+            });
+
+            it('should delegate buy actions to buy slice', () => {
+                store.dispatch(tradingBuyActions.setTradingAccountKey('TRADING_KEY'));
+
+                expect(store.getState().wallet.trading.buy.tradingAccountKey).toEqual(
+                    'TRADING_KEY',
+                );
+            });
+        });
+
+        describe('exchange', () => {
+            it('should contain exchange initial state', () => {
+                expect(store.getState().wallet.trading.exchange).toEqual(exchangeInitialState);
+            });
+
+            it('should delegate exchange actions to exchange slice', () => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey('TRADING_KEY'));
+
+                expect(store.getState().wallet.trading.exchange.tradingAccountKey).toEqual(
+                    'TRADING_KEY',
+                );
+            });
+        });
+
+        describe('sell', () => {
+            it('should contain sell initial state', () => {
+                expect(store.getState().wallet.trading.sell).toEqual(sellInitialState);
+            });
+
+            it('should delegate sell actions to sell slice', () => {
+                store.dispatch(tradingSellActions.setTradingAccountKey('TRADING_KEY'));
+
+                expect(store.getState().wallet.trading.sell.tradingAccountKey).toEqual(
+                    'TRADING_KEY',
+                );
+            });
         });
     });
 });

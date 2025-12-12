@@ -7,7 +7,8 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { sellThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
-import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {
     HandleSellRequestThunkProps,
     MinimalSellFormProps,

@@ -5,11 +5,8 @@ import { Account } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import {
-    TradingState,
-    initialState,
-    prepareTradingReducer,
-} from '../../../reducers/tradingReducer';
+import { TradingState, initialState } from '../../../reducers/tradingCommonReducer';
+import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {
     TradingTransaction,
     TradingTransactionBuy,

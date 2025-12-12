@@ -8,7 +8,7 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { tradingActions } from '../../reducers/tradingReducer';
+import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     selectTradingSellInfo,
     selectTradingSellProviders,
