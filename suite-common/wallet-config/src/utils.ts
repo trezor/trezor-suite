@@ -29,7 +29,7 @@ export const getMainnets = ({
     debug = false,
     useExperimentalNetworks = false,
     allNetworks = networksCollection,
-}: GetMainnetsProps) =>
+}: GetMainnetsProps = {}) =>
     allNetworks.filter(
         n =>
             !n.testnet &&
