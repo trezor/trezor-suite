@@ -10,7 +10,6 @@
         },
         { "path": "../platform-encryption" },
         { "path": "../suite-types" },
-        { "path": "../thp" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
