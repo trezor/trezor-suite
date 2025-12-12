@@ -7,8 +7,11 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 export const DeviceUnavailable = () => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
+    const passphraseProtection = !!device?.features?.passphrase_protection;
 
-    if (!device?.connected || device.available || !device.features) return null;
+    if (!device?.connected || device.available || !device.features || passphraseProtection) {
+        return null;
+    }
 
     const handleButtonClick = () => dispatch(applySettings({ use_passphrase: true }));
 
