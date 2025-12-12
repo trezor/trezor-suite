@@ -10925,7 +10925,6 @@ __metadata:
     "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
