@@ -66,8 +66,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         },
     );
 
-    //TODO: #17855 Fix unstable test
-    test.skip(
+    test(
         'Success after retrying GET request',
         {
             annotation: createTestAnnotation({
