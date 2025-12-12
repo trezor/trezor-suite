@@ -9,11 +9,7 @@ import TrezorConnect from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 
 export type RetrieveDelegatedIdentityKeyParams = {
-    device: Pick<
-        TrezorDeviceWithState,
-        'path' | 'state' | 'instance' | 'useEmptyPassphrase' | 'thp'
-    >;
-    thpStaticHostKey: string | undefined;
+    device: Pick<TrezorDeviceWithState, 'path' | 'state' | 'instance' | 'useEmptyPassphrase'>;
 };
 
 export type RetrieveDelegatedIdentityKeyFromDeviceDeps = {
@@ -30,9 +26,7 @@ export type RetrieveDelegatedIdentityKeyFromDeviceDep = {
 
 export const createRetrieveDelegatedIdentityKeyFromDevice =
     (deps: RetrieveDelegatedIdentityKeyFromDeviceDeps): RetrieveDelegatedIdentityKeyFromDevice =>
-    async ({ device, thpStaticHostKey }) => {
-        const thpCredential = device.thp?.credentials?.[0].credential;
-
+    async ({ device }) => {
         const result = await deps.trezorConnect.evoluGetDelegatedIdentityKey({
             device: {
                 path: device.path,
@@ -40,14 +34,6 @@ export const createRetrieveDelegatedIdentityKeyFromDevice =
                 instance: device.instance ?? 0,
             },
             useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-            ...(thpStaticHostKey !== undefined && thpCredential !== undefined
-                ? {
-                      thp: {
-                          credential: thpCredential,
-                          staticHostKey: thpStaticHostKey,
-                      },
-                  }
-                : undefined),
         });
 
         if (result.success) {
