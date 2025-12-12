@@ -47,7 +47,6 @@ export const DeviceSettingsModalScreen = () => {
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.general" />}
                 >
-                    {isDeviceInitialized && <DevicePinProtectionCard />}
                     <DeviceFirmwareCard />
                     {isThpDevice && <DeviceAutoConnectCard />}
                     {isDeviceConnectedViaBluetooth && <UnpairBluetoothDeviceCard />}
@@ -55,6 +54,7 @@ export const DeviceSettingsModalScreen = () => {
                 <TitledSection
                     title={<Translation id="moduleDeviceSettings.sectionTitles.security" />}
                 >
+                    {isDeviceInitialized && <DevicePinProtectionCard />}
                     {isDeviceInitialized && <BackupAndPassphraseCard />}
                     {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
                 </TitledSection>

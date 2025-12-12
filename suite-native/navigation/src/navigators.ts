@@ -227,31 +227,24 @@ export type AddCoinAccountStackParamList = {
 
 export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceSettings]: undefined;
-    [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
-        type: PinActionType;
-    };
-    [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
-    [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
     [DeviceSettingsStackRoutes.DeviceFirmware]: {
         closeActionType: CloseActionType;
     };
     [DeviceSettingsStackRoutes.FirmwareUpdateStack]: undefined;
     [DeviceSettingsStackRoutes.FirmwareLanguageStack]: undefined;
+    [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;
+    [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
+        type: PinActionType;
+    };
+    [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
+    [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
-    [DeviceSettingsStackRoutes.PinProtection]: undefined;
     [DeviceSettingsStackRoutes.BackupAndPassphraseStack]: NavigatorScreenParams<BackupAndPassphraseParamList>;
     [DeviceSettingsStackRoutes.AutoConnectSettings]: undefined;
     [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
     [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
-};
-
-export type DevicePinProtectionStackParamList = {
-    [DevicePinProtectionStackRoutes.ContinueOnTrezor]: undefined;
-    [DevicePinProtectionStackRoutes.EnterCurrentPin]: undefined;
-    [DevicePinProtectionStackRoutes.EnterNewPin]: undefined;
-    [DevicePinProtectionStackRoutes.ConfirmNewPin]: undefined;
 };
 
 export type FirmwareUpdateStackParamList = {
@@ -264,6 +257,14 @@ export type FirmwareUpdateStackParamList = {
 export type FirmwareLanguageStackParamList = {
     [FirmwareLanguageStackRoutes.DeviceConnectionGuard]: undefined;
     [FirmwareLanguageStackRoutes.ConfirmLanguageChange]: undefined;
+};
+
+export type DevicePinProtectionStackParamList = {
+    [DevicePinProtectionStackRoutes.DeviceConnectionGuard]: undefined;
+    [DevicePinProtectionStackRoutes.ContinueOnTrezor]: undefined;
+    [DevicePinProtectionStackRoutes.EnterCurrentPin]: undefined;
+    [DevicePinProtectionStackRoutes.EnterNewPin]: undefined;
+    [DevicePinProtectionStackRoutes.ConfirmNewPin]: undefined;
 };
 
 export type WipeDeviceStackParamList = {

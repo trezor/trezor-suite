@@ -36,16 +36,12 @@ export const DeviceSettingsStackNavigator = () => (
             component={DeviceSettingsModalScreen}
         />
         <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.DevicePinProtectionStack}
-            component={DevicePinProtectionStackNavigator}
-        />
-        <DeviceSettingsStack.Screen
-            name={DeviceSettingsStackRoutes.PinProtection}
-            component={PinProtectionScreen}
-        />
-        <DeviceSettingsStack.Screen
             name={DeviceSettingsStackRoutes.DeviceFirmware}
             component={DeviceFirmwareScreen}
+        />
+        <DeviceSettingsStack.Screen
+            name={DeviceSettingsStackRoutes.DevicePinProtection}
+            component={PinProtectionScreen}
         />
         <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
             <DeviceSettingsStack.Screen
@@ -55,6 +51,10 @@ export const DeviceSettingsStackNavigator = () => (
             <DeviceSettingsStack.Screen
                 name={DeviceSettingsStackRoutes.FirmwareLanguageStack}
                 component={FirmwareLanguageStackNavigator}
+            />
+            <DeviceSettingsStack.Screen
+                name={DeviceSettingsStackRoutes.DevicePinProtectionStack}
+                component={DevicePinProtectionStackNavigator}
             />
         </DeviceSettingsStack.Group>
         <DeviceSettingsStack.Screen
