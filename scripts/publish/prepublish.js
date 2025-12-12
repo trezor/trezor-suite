@@ -1,5 +1,5 @@
-import { execFileSync } from 'child_process';
-import path from 'path';
+import { execFileSync } from 'node:child_process';
+import path from 'node:path';
 import { getDirname } from '../ci/helpers';
 
 const __dirname = getDirname(import.meta.url);

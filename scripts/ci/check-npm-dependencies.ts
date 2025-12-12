@@ -3,7 +3,7 @@
  *
  * This script checks the dependencies for the specified package to ensure they match expected criteria.
  * It is used to verify the output of scripts/ci/connect-bump-versions.ts. */
-import { promisify } from 'util';
+import { promisify } from 'node:util';
 import fs from 'node:fs';
 import path from 'node:path';
 import { checkPackageDependencies, getDirname } from './helpers';

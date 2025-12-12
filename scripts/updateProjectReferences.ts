@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import fs from 'fs';
+import fs from 'node:fs';
 import { minimatch } from 'minimatch';
-import path from 'path';
+import path from 'node:path';
 import prettier from 'prettier';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
