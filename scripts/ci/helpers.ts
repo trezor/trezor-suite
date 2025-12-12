@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import semver from 'semver';
 import fetch from 'cross-fetch';
 import { promisify } from 'node:util';
@@ -10,10 +9,7 @@ import { getLocalAndRemoteChecksums } from './check-npm-and-local';
 
 const readFile = promisify(fs.readFile);
 
-// Helper to get __dirname equivalent in ESM scope when called with getDirname(import.meta.url)
-export const getDirname = (fileURL: string) => path.dirname(fileURLToPath(fileURL));
-
-const ROOT = path.join(getDirname(import.meta.url), '..', '..');
+const ROOT = path.join(import.meta.dirname, '..', '..');
 
 const updateNeeded: string[] = [];
 const errors: string[] = [];

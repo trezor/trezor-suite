@@ -7,10 +7,6 @@ import * as tar from 'tar';
 import crypto from 'node:crypto';
 import semver from 'semver';
 
-import { fileURLToPath } from 'node:url';
-
-// duplicated with ./helpers.ts to avoidi circular dep
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const mkdir = util.promisify(fs.mkdir);
 const existsDirectory = util.promisify(fs.exists);
 
@@ -71,7 +67,7 @@ const downloadFile = (url: string, filePath: string) =>
 
 const packModule = (moduleName: string, modulePath: string, outputDirectory: string) => {
     try {
-        const currentPwd = __dirname;
+        const currentPwd = import.meta.dirname;
         // Change the current working directory
         process.chdir(modulePath);
 
@@ -127,11 +123,11 @@ export const getLocalAndRemoteChecksums = async (
       }
     | { success: false; error: string }
 > => {
-    const ROOT = path.join(__dirname, '..', '..');
+    const ROOT = path.join(import.meta.dirname, '..', '..');
 
     const [_prefix, name] = moduleName.split('/');
     const PACKAGE_PATH = path.join(ROOT, 'packages', name);
-    const tmpDir = path.join(__dirname, 'tmp');
+    const tmpDir = path.join(import.meta.dirname, 'tmp');
     const npmRegistryUrl = `https://registry.npmjs.org/${moduleName}`;
 
     try {
@@ -156,12 +152,12 @@ export const getLocalAndRemoteChecksums = async (
 
         const tarballUrl = data.versions[greatestSemver].dist.tarball;
 
-        const tarballDestination = path.join(__dirname, 'tmp', name);
+        const tarballDestination = path.join(import.meta.dirname, 'tmp', name);
         console.info(`downloading tarball from ${tarballUrl} to `);
         const fileName = await downloadFile(tarballUrl, tarballDestination);
         console.info(`File downloaded!: ${fileName}`);
 
-        const extractRemotePath = path.join(__dirname, 'tmp', 'remote', name);
+        const extractRemotePath = path.join(import.meta.dirname, 'tmp', 'remote', name);
         console.info(
             `extracting remote tarball from ${tarballDestination} to ${extractRemotePath}`,
         );
@@ -173,7 +169,7 @@ export const getLocalAndRemoteChecksums = async (
             return { success: false, error: 'Error packing module tarball' };
         }
 
-        const extractLocalPath = path.join(__dirname, 'tmp', 'local', name);
+        const extractLocalPath = path.join(import.meta.dirname, 'tmp', 'local', name);
 
         console.info(`extracting local tarball  from ${tarballPath} to ${extractLocalPath}`);
         await extractTarball(tarballPath, extractLocalPath);
