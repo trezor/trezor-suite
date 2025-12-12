@@ -33,6 +33,8 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware']
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText(newLabel);
+
+            await page.waitForTimeout(5_000); // wait for sync to complete
         });
 
         await test.step('Wipe Suite to simulate new session', async () => {
