@@ -407,7 +407,7 @@ jest.mock('expo-constants', () => {
 
 jest.mock('expo-video', () => ({ VideoView: () => null }));
 
-jest.mock('redux-devtools-expo-dev-plugin', () => () => next => next);
+jest.mock('react-native-nitro-modules', () => ({}));
 
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 
@@ -416,6 +416,8 @@ jest.mock('react-native-permissions', () => require('react-native-permissions/mo
 jest.mock('react-native-keyboard-controller', () =>
     require('react-native-keyboard-controller/jest'),
 );
+
+jest.mock('redux-devtools-expo-dev-plugin', () => () => next => next);
 
 jest.mock('@gorhom/bottom-sheet', () => {
     const { ScrollView } = require('react-native');

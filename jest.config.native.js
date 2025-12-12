@@ -18,9 +18,9 @@ module.exports = {
     watchPathIgnorePatterns,
     moduleNameMapper: {
         ...moduleNameMapper,
-        '^@evolu/common/evolu$': '<rootDir>/../../suite-native/test-utils/src/evoluMock.ts',
+        '^@evolu/common/evolu$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/react-native/expo-sqlite$':
-            '<rootDir>/../../suite-native/test-utils/src/evoluMock.ts',
+            '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
     },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
@@ -32,13 +32,12 @@ module.exports = {
         'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@shopify/react-native-skia|@shopify/flash-list|@noble|@scure|@evolu|nanoid|msgpackr|@gorhom|uuid)',
     ],
     setupFiles: [
-        '<rootDir>/../../suite-native/test-utils/src/nitroModulesMock.js',
+        '<rootDir>/../../suite-native/test-utils/src/mocks/expoAndRNMock.jsx',
+        '<rootDir>/../../suite-native/test-utils/src/mocks/everstakeJestSetup.js',
+        '<rootDir>/../../suite-native/test-utils/src/mocks/TextEncoderMock.js',
         '<rootDir>/../../node_modules/@shopify/react-native-skia/jestSetup.js',
         '<rootDir>/../../node_modules/@shopify/flash-list/jestSetup.js',
         '<rootDir>/../../node_modules/react-native-gesture-handler/jestSetup.js',
-        '<rootDir>/../../suite-native/test-utils/src/everstakeJestSetup.js',
-        '<rootDir>/../../suite-native/test-utils/src/expoMock.jsx',
-        '<rootDir>/../../suite-native/test-utils/src/TextEncoderMock.js',
         '<rootDir>/../../suite-native/firmware/src/jestSetup.js',
         '<rootDir>/../../suite-native/connection-status/src/jestSetup.js',
         '<rootDir>/../../suite-native/react-native-graph/src/jestSetup.js',
@@ -48,5 +47,6 @@ module.exports = {
         '<rootDir>/../../suite-native/module-connect-popup/src/jest.setup.ts',
         '<rootDir>/../../suite-native/module-device-onboarding/src/jest.setup.ts',
         '<rootDir>/../../suite-native/config/src/jest.setup.ts',
+        '<rootDir>/../../suite-native/intl/src/jest.setup.ts',
     ],
 };
