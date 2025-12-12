@@ -1,16 +1,28 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { fulfillWithResult } from '../../support/mocks/solanaStakingMock';
 
+const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
 const customFeeRate = 1;
 let bitcoinBalance: string | null;
 let solanaBalance: string | null;
 
 test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage, solanaStakingMock }) => {
         await onboardingPage.completeOnboarding();
-
+        await test.step('Mock Solana account to have 5 SOL', async ({}) => {
+            await solanaStakingMock.replaceRoute('getBalance', {
+                predicate: params => params?.[0] === solanaBalanceAddress,
+                respond: async (route, body) => {
+                    await fulfillWithResult(route, body, {
+                        context: { slot: 0 },
+                        value: 5_000_000_000,
+                    });
+                },
+            });
+        });
         await test.step('Enable Solana', async () => {
             await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
             await dashboardPage.deviceSwitchingOpenButton.click();
@@ -97,10 +109,8 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
         });
 
         await test.step('Try all % inputs on Solana', async () => {
-            await page.selectDropdownOptionWithRetry(
-                tradingPage.accountDropdown,
-                tradingPage.accountOption('solana').first(),
-            );
+            await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
+            await walletPage.sellButton.click();
             await expect(tradingPage.swapAmountInputCurrencyTicker).toHaveText('SOL');
 
             for (const percentage of [10, 25, 50]) {
@@ -111,11 +121,21 @@ test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, 
                         balance: solanaBalance,
                         symbol: 'sol',
                     });
+                    await expect(page.getByTestId('@trading/best-offer/amount')).not.toHaveText(
+                        '0',
+                        {
+                            timeout: 30_000,
+                        },
+                    );
                 });
             }
 
+            //TODO: Bug in production
             await test.step.skip('Max of Solana balance', async () => {
                 await page.getByRole('button', { name: 'Max' }).click();
+                await expect(page.getByTestId('@trading/best-offer/amount')).not.toHaveText('0', {
+                    timeout: 30_000,
+                });
                 const resultingFee = await tradingPage.fees.getSolanaFee();
                 const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
                 await expect
