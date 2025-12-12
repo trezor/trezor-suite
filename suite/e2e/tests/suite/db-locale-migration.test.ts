@@ -15,7 +15,7 @@ test.describe(
     { tag: ['@group=migrations', '@webOnly', '@nightlyOnly', '@specificModel'] },
     () => {
         test.use({
-            emulatorStartConf: { model: 'T3T1' },
+            emulatorStartConf: { model: 'T3T1', wipe: true },
             emulatorSetupConf: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
         });
 
