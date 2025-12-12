@@ -5,10 +5,9 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { FormatterProvider, FormatterProviderConfig } from '@suite-common/formatters';
+import { IntlProviderForTests } from '@suite-native/intl';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
-
-import { IntlProviderForTests } from './IntlProviderForTests';
 
 type ProviderProps = {
     children: ReactNode;
