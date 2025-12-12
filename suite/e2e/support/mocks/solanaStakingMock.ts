@@ -35,7 +35,7 @@ export type SolanaRouteMethod =
 
 const BASE_EPOCH = 864; // chosen based of our mocked program accounts activation/deactivation epochs
 
-const fulfillWithResult = async (route: Route, body: JsonRequestBody, result: unknown) => {
+export const fulfillWithResult = async (route: Route, body: JsonRequestBody, result: unknown) => {
     await route.fulfill({
         json: {
             jsonrpc: '2.0',
