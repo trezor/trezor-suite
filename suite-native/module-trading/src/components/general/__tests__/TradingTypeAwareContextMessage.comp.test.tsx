@@ -6,19 +6,19 @@ import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessag
 jest.mock('@suite-common/message-system', () => {
     const messages: Record<string, unknown> = {
         'trading.buy': {
-            content: { en: 'Trading buy message' },
+            content: 'Trading buy message',
         },
         'trading.exchange': {
-            content: { en: 'Trading exchange message' },
+            content: 'Trading exchange message',
         },
         'trading.sell': {
-            content: { en: 'Trading sell message' },
+            content: 'Trading sell message',
         },
     };
 
     return {
         ...jest.requireActual('@suite-common/message-system'),
-        selectContextMessage: (_: unknown, context: string) => messages[context],
+        selectContextMessageContent: (_: unknown, context: string) => messages[context],
     };
 });
 

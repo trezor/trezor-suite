@@ -5,13 +5,13 @@ import { ProviderSheetHandle, ProviderSheetHandleProps } from '../ProviderSheetH
 jest.mock('@suite-common/message-system', () => {
     const messages: Record<string, unknown> = {
         'trading.exchange': {
-            content: { en: 'Trading exchange message' },
+            content: 'Trading exchange message',
         },
     };
 
     return {
         ...jest.requireActual('@suite-common/message-system'),
-        selectContextMessage: (_: unknown, context: string) => messages[context],
+        selectContextMessageContent: (_: unknown, context: string) => messages[context],
     };
 });
 

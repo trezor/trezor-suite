@@ -4,12 +4,12 @@ import { LegalGatewayContextMessage } from '../LegalGatewayContextMessage';
 
 jest.mock('@suite-common/message-system', () => {
     const messages: Record<string, unknown> = {
-        'legal.gateway': { content: { en: 'Legal gateway message' } },
+        'legal.gateway': { content: 'Legal gateway message' },
     };
 
     return {
         ...jest.requireActual('@suite-common/message-system'),
-        selectContextMessage: (_: unknown, context: string) => messages[context],
+        selectContextMessageContent: (_: unknown, context: string) => messages[context],
     };
 });
 
