@@ -94,7 +94,7 @@ export const prepareSuiteMiddleware = createMiddlewareWithExtraDeps(
             dispatch(handleDeviceDisconnect(device));
             if (isTrezorDeviceWithState(device)) {
                 extra.services.suiteSync.turnOffSuiteSyncForWallet({
-                    owner: device.suiteSyncOwner,
+                    deviceStaticSessionId: device.state.staticSessionId,
                 });
             }
         }

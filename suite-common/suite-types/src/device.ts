@@ -54,6 +54,15 @@ export type SuiteSyncOwner = {
 };
 
 /**
+ * JSON.stringify(SuiteSyncOwner)
+ */
+export type SuiteSyncOwnerSerialized = string & Branded<'SuiteSyncOwnerSerialized'>;
+export const serializeSuiteSyncOwner = (value: SuiteSyncOwner) =>
+    JSON.stringify(value) as SuiteSyncOwnerSerialized;
+export const deserializeSuiteSyncOwner = (value: SuiteSyncOwnerSerialized) =>
+    JSON.parse(value) as SuiteSyncOwner;
+
+/**
  * Private Key that is unique to the Device. It is created when it
  * is requested for the first time (so it is not known beforehand).
  * It is used as a "hot" key for Suite, where device delegates
@@ -77,7 +86,7 @@ export interface ExtendedDevice {
     firstConnectedTimestamp: number;
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
-    suiteSyncOwner: SuiteSyncOwner | undefined;
+    suiteSyncOwner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
     passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice

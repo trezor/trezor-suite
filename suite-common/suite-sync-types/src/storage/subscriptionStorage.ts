@@ -1,4 +1,4 @@
-import { SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { StorageId } from './suiteSyncStorageRepository';
 
 /**
  * SuiteSync can handle multiple domains.
@@ -7,14 +7,14 @@ import { SuiteSyncOwnerId } from '@suite-common/suite-types';
 export type SubscriptionName = 'labeling';
 
 export type SubscriptionStorageParams = {
-    ownerId: SuiteSyncOwnerId;
+    storageId: StorageId;
     unsubscribe: () => void;
     name: SubscriptionName;
 };
 
 export type SubscriptionStorage = {
     add: (params: SubscriptionStorageParams) => void;
-    disposeAll: (ownerId: SuiteSyncOwnerId) => void;
+    disposeAll: (storageId: StorageId) => void;
 };
 
 export type SubscriptionStorageDep = {

@@ -1,15 +1,11 @@
 export type { SuiteSync } from './SuiteSync';
 export type {
-    SuiteSyncStorageRepository,
-    CreateSuiteSyncStorageRepository,
     SuiteSyncStorageRepositoryDep,
-} from './SuiteSyncStorageRepository';
-export type {
-    EnsureSuiteSyncOwnerDep,
-    EnsureSuiteSyncOwnerKeys,
-    EnsureSuiteSyncOwnerKeysParams,
-} from './device/ensureSuiteSyncOwnerKeys';
-export type { RefreshSuiteSyncKeys } from './refreshSuiteSyncKeys';
+    CreateSuiteSyncStorageRepository,
+    SuiteSyncStorageRepository,
+    StorageId,
+} from './storage/suiteSyncStorageRepository';
+export type { RefreshSuiteSyncKeys, RefreshSuiteSyncKeysDep } from './refreshSuiteSyncKeys';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
 export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
 export { RefreshSuiteKeysUnavailable } from './refreshSuiteSyncKeys';
@@ -48,3 +44,8 @@ export type {
 } from './labeling/updateWalletLabel';
 
 export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
+export type {
+    EnsureSuiteSyncOwnerDep,
+    EnsureSuiteSyncOwnerParams,
+    EnsureSuiteSyncOwner,
+} from './owner/ensureSuiteSyncOwner';

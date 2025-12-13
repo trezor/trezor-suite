@@ -5,26 +5,23 @@ import {
     SuiteSyncOwner,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import type { DeviceErrorType } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
 
-export type EnsureSuiteSyncOwnerKeysParams = {
+export type EnsureSuiteSyncOwnerParams = {
     device: Pick<TrezorDeviceWithState, 'useEmptyPassphrase' | 'path' | 'state' | 'instance'>;
     delegatedKey: DelegatedIdentityKey;
 };
 
-export type EnsureSuiteSyncOwnerKeys = (
-    params: EnsureSuiteSyncOwnerKeysParams,
+export type EnsureSuiteSyncOwner = (
+    params: EnsureSuiteSyncOwnerParams,
 ) => Promise<
     Result<
         SuiteSyncOwner,
-        | DeviceCancelledErrType
-        | DeviceErrorType
-        | ProofOfDelegatedSignFailedType
-        | CreateSuiteSyncOwnerError
+        DeviceErrorType | ProofOfDelegatedSignFailedType | CreateSuiteSyncOwnerError
     >
 >;
 
 export type EnsureSuiteSyncOwnerDep = {
-    ensureSuiteSyncOwnerKeys: EnsureSuiteSyncOwnerKeys;
+    ensureSuiteSyncOwner: EnsureSuiteSyncOwner;
 };

@@ -1,14 +1,15 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { ChangeRelayUrl, SuiteSyncStorageRepositoryDep } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwner } from '@suite-common/suite-types';
+import { StaticSessionId } from '@trezor/connect';
 
 import { setSuiteSyncRelayUrl } from '../suiteSyncActions';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relayUrl';
+import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
 
 export type ChangeRelayUrlDeps = {
-    getAllDevicesOwners: () => SuiteSyncOwner[];
     dispatch: Dispatch;
+    getAllDeviceSessionIds: () => StaticSessionId[];
 } & SuiteSyncStorageRepositoryDep;
 
 export const createChangeRelayUrl =
@@ -20,9 +21,14 @@ export const createChangeRelayUrl =
         const normalizedUrl =
             relayUrl === null || relayUrl.trim() === '' ? DEFAULT_SUITE_SYNC_RELAY_URL : relayUrl;
 
-        const owners = deps.getAllDevicesOwners();
+        const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
 
-        for (const owner of owners) {
-            await deps.suiteSyncStorageRepository.get(owner).updateRelayUrl(normalizedUrl);
+        for (const deviceStaticSessionId of deviceStaticSessionIds) {
+            const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
+            const storage = deps.suiteSyncStorageRepository.get(storageId);
+
+            if (storage !== null) {
+                await storage.updateRelayUrl(normalizedUrl);
+            }
         }
     };

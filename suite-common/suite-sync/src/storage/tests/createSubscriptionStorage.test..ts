@@ -1,9 +1,8 @@
-import { asSuiteSyncOwnerId } from '@suite-common/suite-types';
-
 import { createSubscriptionStorage } from '../subscriptionStorage';
+import { asStorageId } from '../suiteSyncStorageRepository';
 
-const ownerId1 = asSuiteSyncOwnerId('1');
-const ownerId2 = asSuiteSyncOwnerId('2');
+const storageId1 = asStorageId('1');
+const storageId2 = asStorageId('2');
 
 describe(createSubscriptionStorage.name, () => {
     it('subscribes multiple owners and dispose just one', () => {
@@ -13,21 +12,21 @@ describe(createSubscriptionStorage.name, () => {
         let isOwnerID2Unsubscribed = false;
 
         storage.add({
-            ownerId: ownerId1,
+            storageId: storageId1,
             name: 'labeling',
             unsubscribe: () => {
                 isOwnerID1Unsubscribed = true;
             },
         });
         storage.add({
-            ownerId: ownerId2,
+            storageId: storageId2,
             name: 'labeling',
             unsubscribe: () => {
                 isOwnerID2Unsubscribed = true;
             },
         });
 
-        storage.disposeAll(ownerId1);
+        storage.disposeAll(storageId1);
         expect(isOwnerID1Unsubscribed).toBe(true);
         expect(isOwnerID2Unsubscribed).toBe(false);
     });
@@ -38,7 +37,7 @@ describe(createSubscriptionStorage.name, () => {
         let isUnsubscribed = false;
 
         storage.add({
-            ownerId: ownerId1,
+            storageId: storageId1,
             name: 'labeling',
             unsubscribe: () => {
                 isUnsubscribed = true;
@@ -47,7 +46,7 @@ describe(createSubscriptionStorage.name, () => {
         expect(isUnsubscribed).toBe(false);
 
         storage.add({
-            ownerId: ownerId1,
+            storageId: storageId1,
             name: 'labeling',
             unsubscribe: () => {},
         });

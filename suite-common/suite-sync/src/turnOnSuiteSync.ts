@@ -14,7 +14,7 @@ export type CreateTurnOnSuiteSyncDeps = {
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>
-    () => {
+    async () => {
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(deps.getState());
 
         if (isSuiteSyncEnabled) {
@@ -25,7 +25,17 @@ export const createTurnOnSuiteSync =
 
         // Turn on and subscribe labeling for all wallets.
         const devices = selectDevices(deps.getState());
-        devices?.forEach(device => {
-            deps.turnOnSuiteSyncForWallet({ staticSessionId: device?.state?.staticSessionId });
-        });
+
+        for (const device of devices) {
+            if (device?.state?.staticSessionId) {
+                const result = await deps.turnOnSuiteSyncForWallet({
+                    deviceStaticSessionId: device.state.staticSessionId,
+                });
+
+                if (!result.ok) {
+                    // Todo: notification? Here or in the caller?
+                    console.error('[createTurnOnSuiteSync] error', result.error);
+                }
+            }
+        }
     };

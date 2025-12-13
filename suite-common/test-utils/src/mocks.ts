@@ -243,7 +243,7 @@ export const getSuiteDevice = (
             ts: 0,
             buttonRequests: [],
             metadata: {},
-            suiteSyncOwner: undefined,
+            suiteSyncOwner: null,
             ...dev,
             ...device,
             state: dev?.state

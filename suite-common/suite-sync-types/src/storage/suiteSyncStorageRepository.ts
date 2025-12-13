@@ -1,9 +1,12 @@
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { SuiteSyncOwner, SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { Branded } from '@trezor/type-utils';
+
+export type StorageId = string & Branded<'StorageId'>;
 
 export type SuiteSyncStorageRepository = {
-    get: (owner: SuiteSyncOwner) => SuiteSyncStorage;
-    delete: (ownerId: SuiteSyncOwnerId) => Promise<void>;
+    get: (storageId: StorageId) => SuiteSyncStorage | null;
+    delete: (storageId: StorageId) => Promise<void>;
+    set: (storageId: StorageId, storage: SuiteSyncStorage) => void;
 };
 
 export type CreateSuiteSyncStorageRepository = () => SuiteSyncStorageRepository;

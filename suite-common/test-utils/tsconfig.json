@@ -4,7 +4,6 @@
     "references": [
         { "path": "../platform-encryption" },
         { "path": "../redux-utils" },
-        { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
