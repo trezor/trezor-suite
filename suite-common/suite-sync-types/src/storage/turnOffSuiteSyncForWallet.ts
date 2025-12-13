@@ -1,7 +1,7 @@
-import { SuiteSyncOwner } from '@suite-common/suite-types';
+import { StaticSessionId } from '@trezor/connect';
 
 export type TurnOffSuiteSyncForWallet = (params: {
-    owner: SuiteSyncOwner | undefined;
+    deviceStaticSessionId: StaticSessionId;
 }) => Promise<void>;
 
 export type TurnOffSuiteSyncForWalletDep = {

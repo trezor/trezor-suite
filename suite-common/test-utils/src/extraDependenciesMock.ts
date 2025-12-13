@@ -12,14 +12,8 @@ import {
     type To,
     createThunk,
 } from '@suite-common/redux-utils';
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
-import {
-    ReportSecurityCheckProps,
-    Route,
-    asSuiteSyncOwnerId,
-    asSuiteSyncOwnerSecretHex,
-} from '@suite-common/suite-types';
+import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { ok } from '@trezor/type-utils';
 
@@ -81,25 +75,8 @@ export const mockReducer = (name: string) => (state: any, action: any) => {
 };
 
 const suiteSyncMock: SuiteSync = {
-    suiteSyncStorageRepository: {
-        get: () =>
-            ({
-                accountLabels: {},
-                walletLabels: {},
-                outputLabels: {},
-                addressLabels: {},
-                deviceMetadata: {},
-                deviceMetadataPasswords: {},
-            }) as any as SuiteSyncStorage,
-        delete: () => Promise.resolve(),
-    },
-    createSuiteSyncOwner: () =>
-        ok({
-            ownerId: asSuiteSyncOwnerId('test-1'),
-            ownerSecret: asSuiteSyncOwnerSecretHex('test-2'),
-        }),
     changeRelayUrl: () => Promise.resolve(),
-    turnOnSuiteSyncForWallet: () => Promise.resolve(),
+    turnOnSuiteSyncForWallet: () => Promise.resolve(ok()),
     turnOffSuiteSyncForWallet: () => Promise.resolve(),
     turnOnSuiteSync: () => Promise.resolve(),
     turnOffSuiteSync: () => Promise.resolve(),

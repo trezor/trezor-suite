@@ -5,7 +5,7 @@ import {
     AcquiredDevice,
     ButtonRequest,
     DelegatedIdentityKey,
-    SuiteSyncOwner,
+    SuiteSyncOwnerSerialized,
     ThpSuiteCredentials,
     TrezorDevice,
 } from '@suite-common/suite-types';
@@ -144,8 +144,14 @@ const setThpCredentials = createAction(
 
 const setSuiteSyncOwner = createAction(
     `${DEVICE_MODULE_PREFIX}/setSuiteSyncOwner`,
-    ({ device, owner }: { device: TrezorDevice; owner: SuiteSyncOwner | undefined }) => ({
-        payload: { device, owner },
+    ({
+        deviceStaticId,
+        owner,
+    }: {
+        deviceStaticId: StaticSessionId;
+        owner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
+    }) => ({
+        payload: { deviceStaticId, owner },
     }),
 );
 

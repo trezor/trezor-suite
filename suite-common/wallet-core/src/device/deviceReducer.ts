@@ -141,7 +141,7 @@ const connectDevice = (
                 ? Number(device.firstConnectedTimestamp ?? currentTime)
                 : currentTime,
         ts: currentTime,
-        suiteSyncOwner: undefined,
+        suiteSyncOwner: null,
     };
     // connected device is unacquired/unreadable
     if (!device.features) {
@@ -210,7 +210,7 @@ const connectDevice = (
         temporaryRemember: false,
         available: true,
         instance: deviceInstance,
-        suiteSyncOwner: undefined,
+        suiteSyncOwner: null,
     };
 
     // update affected devices
@@ -334,7 +334,7 @@ const addAuthorizedDevice = (
         useEmptyPassphrase,
         remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         state,
-        suiteSyncOwner: undefined,
+        suiteSyncOwner: null,
     };
 
     draft.devices.push(newDevice);
@@ -439,7 +439,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         buttonRequests: [],
         metadata: {},
         passwords: {},
-        suiteSyncOwner: undefined,
+        suiteSyncOwner: null,
     };
     draft.devices.push(newDevice);
 };
@@ -703,12 +703,17 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     data.delegatedIdentityKey = delegatedKey;
                 },
             )
-            .addCase(deviceActions.setSuiteSyncOwner, (state, { payload: { device, owner } }) => {
-                if (!device.features) return;
-                const index = deviceUtils.findInstanceIndex(state.devices, device);
-                if (!state.devices[index]) return;
-                state.devices[index].suiteSyncOwner = owner;
-            })
+            .addCase(
+                deviceActions.setSuiteSyncOwner,
+                (state, { payload: { deviceStaticId, owner } }) => {
+                    const index = state.devices.findIndex(
+                        d => d.features && d.state && d.state.staticSessionId === deviceStaticId,
+                    );
+
+                    if (!state.devices[index]) return;
+                    state.devices[index].suiteSyncOwner = owner;
+                },
+            )
             .addCase(deviceActions.setDiscovered, (state, { payload }) => {
                 const device = state.devices.find(
                     d => d.state?.staticSessionId === payload.staticSessionId,

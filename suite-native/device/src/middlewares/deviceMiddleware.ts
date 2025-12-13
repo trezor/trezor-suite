@@ -60,7 +60,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 const accountsToRemove = selectAccountsByDeviceState(getState(), device.state);
                 dispatch(accountsActions.removeAccount(accountsToRemove));
                 extra.services.suiteSync.turnOffSuiteSyncForWallet({
-                    owner: device.suiteSyncOwner,
+                    deviceStaticSessionId: device.state.staticSessionId,
                 });
             }
         }

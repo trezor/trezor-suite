@@ -1,27 +1,23 @@
-import { SuiteSyncStorageRepositoryDep, UpdateWalletLabel } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwner } from '@suite-common/suite-types';
+import { UpdateWalletLabel } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import { ok } from '@trezor/type-utils';
 
-export type UpdateWalletLabelDeps = {
-    findSuiteSyncOwnerForDeviceStaticId: (staticId: StaticSessionId) => SuiteSyncOwner | null;
-} & SuiteSyncStorageRepositoryDep;
+import { EnsureStorageDep } from '../storage/ensureStorage';
+
+export type UpdateWalletLabelDeps = EnsureStorageDep;
 
 export const createUpdateWalletLabel =
     (deps: UpdateWalletLabelDeps): UpdateWalletLabel =>
-    ({ deviceStaticSessionId, label }) => {
-        const owner = deps.findSuiteSyncOwnerForDeviceStaticId(deviceStaticSessionId);
+    async ({ deviceStaticSessionId, label }) => {
+        const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
-        if (owner === null) {
-            console.error(
-                'Evolu: [UpdateWalletLabel] no keys found on the selected device',
-                deviceStaticSessionId,
-            );
-
-            return;
+        if (!storageResult.ok) {
+            return storageResult;
         }
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        deps.suiteSyncStorageRepository.get(owner).walletLabels.update({ walletDescriptor, label });
+        storageResult.value.walletLabels.update({ walletDescriptor, label });
+
+        return ok();
     };

@@ -5,8 +5,8 @@ import {
     BackupType,
     LANGUAGES,
     Locale,
-    SuiteSyncOwner,
     TrezorDevice,
+    TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -20,6 +20,7 @@ import {
     getStatus,
 } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { Device, DeviceState, StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -296,7 +297,11 @@ export const selectDeviceByState = createMemoizedSelector(
 
 export const selectDeviceByStaticSessionId = createMemoizedSelector(
     [selectDevices, (_state, staticSessionId: StaticSessionId) => staticSessionId],
-    (devices, staticSessionId) => devices.find(d => d.state?.staticSessionId === staticSessionId),
+    (devices, staticSessionId) =>
+        devices.find(
+            (d): d is TrezorDeviceWithState =>
+                isTrezorDeviceWithState(d) && d.state?.staticSessionId === staticSessionId,
+        ),
 );
 
 export const selectDeviceUnavailableCapabilities = createMemoizedSelector(
@@ -658,14 +663,14 @@ export const selectIsDevicePinLocked = createMemoizedSelector(
     selectedDevice => selectedDevice && getStatus(selectedDevice) === 'device-pin-locked',
 );
 
-export const selectAllDeviceOwners = createMemoizedSelector([selectDevices], devices =>
-    devices.reduce((acc, it) => {
-        if (it.suiteSyncOwner !== undefined) {
-            acc.push(it.suiteSyncOwner);
+export const selectAllDeviceStaticIds = createMemoizedSelector([selectDevices], devices =>
+    devices.reduce<StaticSessionId[]>((acc, it) => {
+        if (it.state?.staticSessionId !== undefined) {
+            acc.push(it.state?.staticSessionId);
         }
 
         return acc;
-    }, [] as SuiteSyncOwner[]),
+    }, []),
 );
 
 export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(

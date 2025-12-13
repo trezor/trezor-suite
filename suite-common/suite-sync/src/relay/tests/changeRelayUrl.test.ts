@@ -1,15 +1,12 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
+import { StaticSessionId } from '@trezor/connect';
 
 import { mockNotExpected } from '../../../tests/utils';
 import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../changeRelayUrl';
 
-const owner1 = {
-    ownerId: asSuiteSyncOwnerId('OwnerId_1'),
-    ownerSecret: asSuiteSyncOwnerSecretHex('OwnerSecret_2'),
-};
+const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 describe(createChangeRelayUrl.name, () => {
     it('changes url', () => {
@@ -25,11 +22,12 @@ describe(createChangeRelayUrl.name, () => {
         };
 
         const deps: ChangeRelayUrlDeps = {
-            getAllDevicesOwners: () => [owner1],
+            getAllDeviceSessionIds: () => [deviceStaticSessionId],
             dispatch: (action: any) => actions.push(action),
             suiteSyncStorageRepository: {
                 delete: mockNotExpected('delete'),
                 get: jest.fn(() => mockStorage),
+                set: mockNotExpected('set'),
             },
         };
 
@@ -43,7 +41,7 @@ describe(createChangeRelayUrl.name, () => {
             },
         ]);
 
-        expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith(owner1);
+        expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith('1'); // <--- "1" is the WalletDescriptor
         expect(mockStorage.updateRelayUrl).toHaveBeenCalledWith('http://localhost:4000');
     });
 });

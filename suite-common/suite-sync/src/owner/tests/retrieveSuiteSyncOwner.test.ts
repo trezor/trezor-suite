@@ -1,4 +1,3 @@
-import { EnsureSuiteSyncOwnerKeysParams } from '@suite-common/suite-sync-types';
 import {
     SuiteSyncOwner,
     asDelegatedIdentityKey,
@@ -9,11 +8,12 @@ import { asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
 import {
-    EnsureSuiteSyncOwnerDeps,
-    createEnsureSuiteSyncOwnerKeys,
-} from '../ensureSuiteSyncOwnerKeys';
+    RetrieveSuiteSyncOwnerDeps,
+    RetrieveSuiteSyncOwnerParams,
+    createRetrieveSuiteSyncOwner,
+} from '../retrieveSuiteSyncOwner';
 
-const device: EnsureSuiteSyncOwnerKeysParams['device'] = {
+const device: RetrieveSuiteSyncOwnerParams['device'] = {
     instance: 0,
     path: asDeviceUniquePath('path'),
     state: {
@@ -27,7 +27,7 @@ const owner1: SuiteSyncOwner = {
     ownerSecret: asSuiteSyncOwnerSecretHex('owner1secretHex'),
 };
 
-const trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'] = {
+const trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'] = {
     evoluGetNode: () =>
         Promise.resolve({
             payload: { data: 'evoluNodeData' },
@@ -35,9 +35,9 @@ const trezorConnect: EnsureSuiteSyncOwnerDeps['trezorConnect'] = {
         }),
 };
 
-describe(createEnsureSuiteSyncOwnerKeys.name, () => {
+describe(createRetrieveSuiteSyncOwner.name, () => {
     it('succeeds for valid delegated key', async () => {
-        const ensureSuiteSyncOwner = createEnsureSuiteSyncOwnerKeys({
+        const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
             createSuiteSyncOwner: () => ok(owner1),
             trezorConnect,
         });
@@ -53,7 +53,7 @@ describe(createEnsureSuiteSyncOwnerKeys.name, () => {
     });
 
     it('fails for invalid DelegatedIdentityKey', async () => {
-        const ensureSuiteSyncOwner = createEnsureSuiteSyncOwnerKeys({
+        const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
             createSuiteSyncOwner: () => ok(owner1),
             trezorConnect,
         });

@@ -1,9 +1,13 @@
-import { SuiteSyncOwner } from '@suite-common/suite-types';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import { DeviceErrorType } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
+import { Result } from '@trezor/type-utils';
+
+import { RefreshSuiteKeysUnavailable } from '../refreshSuiteSyncKeys';
 
 type SubscribeLabelingParams = {
-    owner: SuiteSyncOwner;
-    walletDescriptor: WalletDescriptor;
+    deviceStaticSessionId: StaticSessionId;
 };
 
-export type SubscribeLabeling = (params: SubscribeLabelingParams) => void;
+export type SubscribeLabeling = (
+    params: SubscribeLabelingParams,
+) => Promise<Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType>>;

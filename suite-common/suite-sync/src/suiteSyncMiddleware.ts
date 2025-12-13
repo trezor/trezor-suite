@@ -2,6 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { applyDeviceStatesThunk, selectDeviceThunk } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 
@@ -17,9 +18,12 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
     (action, { next, getState, extra }) => {
         if (selectIsSuiteSyncEnabled(getState()) && isAnyOf(...suiteSyncTurnOnTriggers)(action)) {
             const { payload } = action as ReturnType<(typeof suiteSyncTurnOnTriggers)[number]>;
-            extra.services.suiteSync.turnOnSuiteSyncForWallet({
-                staticSessionId: payload.device?.state?.staticSessionId,
-            });
+
+            if (isTrezorDeviceWithState(payload.device)) {
+                extra.services.suiteSync.turnOnSuiteSyncForWallet({
+                    deviceStaticSessionId: payload.device.state.staticSessionId,
+                });
+            }
         }
 
         return next(action);

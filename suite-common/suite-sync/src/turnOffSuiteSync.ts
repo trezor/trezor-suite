@@ -1,15 +1,15 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { TurnOffSuiteSync, TurnOffSuiteSyncForWalletDep } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwner } from '@suite-common/suite-types';
+import { StaticSessionId } from '@trezor/connect';
 
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 
 export type CreateTurnOffSuiteSyncDeps = {
-    getAllDevicesOwners: () => SuiteSyncOwner[];
     dispatch: Dispatch;
     getState: () => any;
+    getAllDeviceSessionIds: () => StaticSessionId[];
 } & TurnOffSuiteSyncForWalletDep;
 
 export const createTurnOffSuiteSync =
@@ -23,7 +23,9 @@ export const createTurnOffSuiteSync =
 
         deps.dispatch(suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: false }));
 
-        await Promise.all(
-            deps.getAllDevicesOwners().map(owner => deps.turnOffSuiteSyncForWallet({ owner })),
-        );
+        const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
+
+        for (const deviceStaticSessionId of deviceStaticSessionIds) {
+            await deps.turnOffSuiteSyncForWallet({ deviceStaticSessionId });
+        }
     };

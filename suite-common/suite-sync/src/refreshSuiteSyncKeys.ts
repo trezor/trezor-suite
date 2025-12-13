@@ -7,22 +7,18 @@ import {
     RefreshSuiteKeysUnavailable,
     RefreshSuiteSyncKeys,
 } from '@suite-common/suite-sync-types';
-import { deviceActions } from '@suite-common/wallet-core';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
-import { err, ok } from '@trezor/type-utils';
+import { err, exhaustive, ok } from '@trezor/type-utils';
 
 export type RefreshSuiteSyncKeysDeps = {
     dispatch: Dispatch;
 } & EnsureSuiteSyncOwnerDep &
     EnsureDelegatedIdentityKeyDep;
 
-export const createRefreshSuiteSyncKeys =
+export const createRefreshSuiteSync =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
     async ({ device }) => {
-        if (device?.suiteSyncOwner !== undefined) {
-            return ok();
-        }
-
         if (
             device === undefined ||
             !device.connected || // disconnected device cannot resolve Evolu-Keys
@@ -32,39 +28,56 @@ export const createRefreshSuiteSyncKeys =
             return err(RefreshSuiteKeysUnavailable());
         }
 
-        const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
+        const getKeys = async () => {
+            const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
-        if (!delegatedKeyResult.ok) {
-            return delegatedKeyResult;
-        }
+            if (!delegatedKeyResult.ok) {
+                return delegatedKeyResult;
+            }
 
-        const evoluNodeResult = await deps.ensureSuiteSyncOwnerKeys({
-            device,
-            delegatedKey: delegatedKeyResult.value,
-        });
-
-        if (!evoluNodeResult.ok) {
-            deps.dispatch(deviceActions.setSuiteSyncOwner({ device, owner: undefined }));
-            deps.dispatch(
-                deviceActions.setDelegatedIdentityKey({ deviceId: device.id, delegatedKey: null }),
+            await deps.dispatch(
+                ensureDeviceHasQuotaThunk({
+                    device,
+                    delegatedKey: delegatedKeyResult.value,
+                }),
             );
 
-            return evoluNodeResult;
-        }
-
-        await deps.dispatch(
-            ensureDeviceHasQuotaThunk({
+            const ownerResult = await deps.ensureSuiteSyncOwner({
                 device,
                 delegatedKey: delegatedKeyResult.value,
-            }),
-        );
+            });
 
-        deps.dispatch(
-            deviceActions.setSuiteSyncOwner({
-                device,
-                owner: evoluNodeResult.value ?? undefined,
-            }),
-        );
+            if (!ownerResult.ok) {
+                return ownerResult;
+            }
 
-        return ok();
+            return ok(ownerResult.value);
+        };
+
+        const result = await getKeys();
+
+        if (!result.ok) {
+            const errType = result.error.type;
+
+            switch (errType) {
+                case 'DeviceError':
+                case 'DeviceCancelled':
+                    deps.dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
+
+                    return err(RefreshSuiteKeysUnavailable());
+
+                // Those errors are most likely due to Bug in the code or data corruption
+                case 'CreateSuiteSyncOwnerError':
+                case 'ProofOfDelegatedSignFailed':
+                    console.error(result.error);
+                    // Todo: dispatch better notification
+                    deps.dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
+
+                    return err(RefreshSuiteKeysUnavailable());
+                default:
+                    return exhaustive(errType);
+            }
+        }
+
+        return ok(result.value);
     };

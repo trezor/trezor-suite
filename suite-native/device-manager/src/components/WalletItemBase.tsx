@@ -76,7 +76,8 @@ const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
         ' @ ' +
         deviceId.slice(-8) +
         ' E: ' +
-        device.suiteSyncOwner?.ownerId.slice(-8);
+        // Todo: delete this `typeof` check after while (back compatibility)
+        (typeof device.suiteSyncOwner === 'string' ? device.suiteSyncOwner.slice(-8) : null);
 
     return <Text>{evoluDebug}</Text>;
 };

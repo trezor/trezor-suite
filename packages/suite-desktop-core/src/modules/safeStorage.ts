@@ -46,8 +46,8 @@ export const init: ModuleInit = () => {
             return isEncryptionAvailableResult;
         }
 
-        const buffer = Buffer.from(params.value, 'hex');
         try {
+            const buffer = Buffer.from(params.value, 'hex');
             const decrypted = safeStorage.decryptString(buffer);
 
             return Promise.resolve(ok(decrypted));
